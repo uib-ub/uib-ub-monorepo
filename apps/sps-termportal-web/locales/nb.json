@@ -1,0 +1,157 @@
+{
+  "global": {
+    "language": "Språk | Språk",
+    "termbase": "Termbase",
+    "skipLink": "Gå til hovedinnhold",
+    "domain": {
+      "domain": "Domene | domene",
+      "all": "Alle domener",
+      "humaniora": "Humaniora",
+      "naturvitenskap": "Naturvitenskap & teknologi",
+      "sammfunnsfag": "Samfunnsfag",
+      "okonomAdmin": "Økonomi & administrasjon"
+    },
+    "lang": {
+      "none": "–",
+      "all": "Alle språk | Alle språk",
+      "ar": "Arabic | arabic",
+      "da": "Dansk | dansk",
+      "de": "Tysk | tysk",
+      "en": "Engelsk | engelsk",
+      "es": "Spansk | spansk",
+      "fi": "Finsk | finsk",
+      "fr": "Fransk | fransk",
+      "it": "Italienisk | italienisk",
+      "la": "Latin | latin",
+      "nb": "Bokmål | bokmål",
+      "nn": "Nynorsk | nynorsk",
+      "pl": "Polsk | polsk",
+      "ru": "Russisk | russisk",
+      "so": "Somali | somali",
+      "sv": "Svensk | svensk",
+      "ti": "Tigrinja | tigrinja"
+    },
+    "samling": {
+      "all": "Alle termbaser",
+      "ARTSDB": "Artsdatabanken",
+      "ASTRONOMI": "Astronomi",
+      "CMBIOLOGI": "Celle- og molekylærbiologi",
+      "EVERTEBRATER": "Evertebrater",
+      "FBK": "Felles Begrepskatalog",
+      "KLIMA": "Klima",
+      "LINGVISTIKK": "Lingvistikk",
+      "MRT": "Maritim ordbok",
+      "MRT2": "Maritim ordbok del 2",
+      "NOT": "NOT – Norsk termbanks termdatabase",
+      "NHH": "NHHs termbase",
+      "NOJU": "Norsk-tysk juridisk ordbok (NOJU)",
+      "ROMFYS": "Romfysikk",
+      "RTT": "Rådet for teknisk terminologi (RTT)",
+      "SDIR": "Maritim terminologi (Sjøfartsdirektoratet)",
+      "TOLKING": "Tolking",
+      "UHR": "Universitets- og høgskolerådet",
+      "TUNDUIA": "TUNDUIA",
+      "BIOLOGI": "Biologi",
+      "KJEMI": "Kjemi"
+    },
+    "predicate": {
+      "prefLabel": "Anbefalt term",
+      "altLabel": "Tillat term",
+      "hiddenLabel": "Frarådet term"
+    },
+    "matching": {
+      "full-cs": "helt, versalfølsom",
+      "full-ci": "helt, versalufølsom",
+      "startsWith-ci": "begynner med",
+      "endsWith-ci": "endte med",
+      "subWord-ci": "underord begynner med",
+      "contains-ci": "inneholder"
+    }
+  },
+
+  "domainOverview": { "domainsAndBases": "Domener & termbaser" },
+  "navBar": {
+    "om": "Om Termportalen",
+    "innstillinger": "Inn­stillinger",
+    "menuButtonShow": "Utvid menyen",
+    "menuButtonHide": "Skjul menyen"
+  },
+  "searchBar": {
+    "search": "Søk",
+    "inDomain": "i",
+    "inLanguage": "på",
+    "searchLanguage": "Søkespråk",
+    "searchTranslate": "Målspråk",
+    "searchBase": "Termbase",
+    "searchfieldLabel": "Søkefelt",
+    "clearTextLabel": "Tøm søkefeltet",
+    "searchButtonLabel": "Utføre søk"
+  },
+  "searchFilter": {
+    "results": "resultater",
+    "results-heading": "Resultater",
+    "filter": "Filter",
+    "filterTitleShow": "Vis filter for søkeresultater",
+    "filterTitleHide": "Skjul filter for søkeresultater",
+    "termproperty": "Egenskap",
+    "matching": "Matchende"
+  },
+  "footer": {
+    "contact": "Kontakt oss",
+    "accDeclaration": "Tilgjengelighetserklæring"
+  },
+  "spinnerIcon": {
+    "srText": "Venter på søkeresultater"
+  },
+
+  "buttonScrollTop": {"srLabel": "Tilbake til toppen"},
+
+  "samling": {
+    "organisation": "Organisajon",
+    "orgnr": "Organisasjonsnr",
+    "email": "Epost",
+    "telephone": "Telefone",
+    "license": "Lisens",
+    "languages": "Språk",
+    "startLang": "Opprinnelig språk"
+  },
+  "id": {
+    "topheading": "Konseptvisning",
+    "tableview": "Tabellvisning",
+    "languagedata": "Språkdata",
+    "prefLabel": "Anbefalt term",
+    "altLabel": "Tillatt term",
+    "hiddenLabel": "Frarådet term",
+    "definisjon": "Definisjon",
+    "general": "Felles",
+    "relasjon": "Relasjon",
+    "narrower": "Overordnet",
+    "specializes": "Overordnet generisk",
+    "isPartOf": "Overordnet partitiv",
+    "broader": "Underordnet",
+    "generalizes": "Underordnet generisk",
+    "hasPart": "Underordnet partitiv",
+    "seeAlso": "Se også",
+    "related": "Assosiert",
+    "collection": "Termbase",
+    "subject": "Fagområde",
+    "domain": "Domene",
+    "modified": "Sist oppdatert",
+    "note": "Merknad",
+    "tilbake": "Til søkeresultater"
+  },
+  "index": { "title": "Termportalen" },
+  "search": {
+    "title": "Søkeresultater",
+    "term": "Term",
+    "language": "Språk",
+    "termbase": "Termbase"
+  },
+  "om": { "title": "Om Termportalen" },
+  "innstillinger": {
+    "title": "Inn­stillinger",
+    "global": "Global",
+    "conceptview": "Begrepsvisning",
+    "dataDispLang": "Data viser språk"
+  }
+}

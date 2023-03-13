@@ -1,0 +1,17 @@
+stages:
+- beta
+
+publish_beta:
+  stage: beta
+  image: oyvindlg/gitlab-ci-library:ansible-cgi
+  before_script:
+  - eval $(ssh-agent -s)
+  - echo "$PRIVATE_KEY" | base64 --decode | ssh-add -
+
+  script:
+  - ssh -4 -o StrictHostKeyChecking=no $USER@termportalen.ubbe.no "cd /home/frontend/jterm-beta && git fetch && git checkout $CI_COMMIT_SHA && npm ci && sudo /usr/bin/systemctl restart node"
+  tags:
+  - terminologi
+
+
+

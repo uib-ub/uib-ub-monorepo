@@ -1,0 +1,21 @@
+{
+  "defaults": {
+    "timeout": 10000,
+    "runners": [
+      "axe",
+      "htmlcs"
+    ],
+    "standard": "WCAG2AAA",
+    "includeWarnings": true,
+    "includeNotices": true,
+    "reporters": ["pa11y-ci-reporter-html"]
+  },
+  "urls": [
+    "localhost:3000",
+    "localhost:3000/about",
+    "localhost:3000/config",
+    "localhost:3000/MRT",
+    {"url": "localhost:3000/search",
+     "action": []}
+  ]
+}

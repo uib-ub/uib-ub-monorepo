@@ -1,0 +1,127 @@
+{
+  "global": {
+    "language": "Language | Languages",
+    "termbase": "Termbase",
+    "domain": {
+      "domain": "Domain",
+      "all": "All Domains",
+      "humaniora": "Humanities",
+      "naturvitenskap": "Sciences & Technology",
+      "sammfunnsfag": "Social Sciences",
+      "okonomAdmin": "Economy & Administration"
+    },
+    "lang": {
+      "none": "–",
+      "all": "All languages",
+      "ar": "Arabic",
+      "da": "Dansk",
+      "de": "German",
+      "en": "English",
+      "es": "Spanish",
+      "fi": "Finnish",
+      "fr": "French",
+      "it": "Italian",
+      "la": "Latin",
+      "nb": "Bokmål",
+      "nn": "Nynorsk",
+      "pl": "Polish",
+      "ru": "Russian",
+      "so": "Somali",
+      "sv": "Swedish",
+      "ti": "Tigrinya"
+    },
+    "samling": {
+      "all": "All termbases",
+      "ARTSDB": "ARTSDB",
+      "ASTRONOMI": "Astronomi",
+      "CMBIOLOGI": "Celle- og molekylærbiologi",
+      "EVERTEBRATER": "EVERTEBRATER",
+      "FBK": "Felles Begrepskatalog",
+      "KLIMA": "Klima",
+      "LINGVISTIKK": "Lingvistikk",
+      "MRT": "MRT",
+      "MRT2": "MRT2",
+      "NOT": "NOT",
+      "NHH": "NHH",
+      "NOJU": "NOJU",
+      "ROMFYS": "Romfysikk",
+      "RTT": "RTT",
+      "SDIR": "SDIR",
+      "TOLKING": "TOLKING",
+      "UHR": "UHR",
+      "TUNDUIA": "TUNDUIA",
+      "BIOLOGI": "BIOLOGI",
+      "KJEMI": "Kjemi"
+    },
+    "predicate": {
+      "prefLabel": "Preferred label",
+      "altLabel": "Alternative label",
+      "hiddenLabel": "Hidden label "
+    },
+    "matching": {
+      "full-cs": "full, case sensitive",
+      "full-ci": "full, case insensitive",
+      "startsWith-ci": "starts with",
+      "endsWith-ci": "ends with",
+      "subWord-ci": "subword starts with",
+      "contains-ci": "contains"
+    }
+  },
+  "footer": {
+    "contact": "Concact us"
+  },
+
+  "domainOverview": {"domainsAndBases": "Domains & Termbases"},
+  "navBar": { "om": "About", "innstillinger": "Settings" },
+  "searchBar": {
+    "search": "Search",
+    "searchLanguage": "Search language",
+    "searchTranslate": "Translation language",
+    "searchBase": "Termbase"
+  },
+  "searchFilter": {
+    "results": "results",
+    "results-heading": "Results",
+    "filter": "Filter",
+    "termproperty": "Termproperty",
+    "matching": "Matching"
+  },
+
+  "samling": {
+    "organisation": "Organisation",
+    "orgnr": "Organisation nr",
+    "email": "Email",
+    "telephone": "Telephone",
+    "license": "License",
+    "startLang": "Starting language"
+  },
+  "id": {
+    "topheading": "Concept view",
+    "tableview": "Table view",
+    "languagedata": "Language data",
+    "prefLabel": "Preferred label",
+    "altLabel": "Alternative label",
+    "hiddenLabel": "Hidden label",
+    "general": "General information",
+    "collection": "Collection",
+    "subject": "Subject",
+    "domain": "Domain",
+    "modified": "Modified",
+    "note": "Note",
+    "tilbake": "Back to search results"
+  },
+  "index": { "title": "Termportalen" },
+  "search": {
+    "title": "Search Results",
+    "term": "Term",
+    "language": "Språk",
+    "termbase": "Termbase"
+  },
+  "om": { "title": "About Termportalen" },
+  "innstillinger": {
+    "title": "Settings",
+    "global": "Global",
+    "conceptview": "Conceot view",
+    "dataDispLang": "Data display languages"
+  }
+}
