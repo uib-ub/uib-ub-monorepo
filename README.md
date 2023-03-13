@@ -1,4 +1,4 @@
-# Cultural Heritage Collections @ UiB-UB
+# UiB-UB Monorepo
 
 This is a monorepo containing the web sites, APIs, a link shortener and related packages created by UiB-UB.
 
