@@ -1,0 +1,194 @@
+# Items
+
+```
+https://api-ub.vercel.app/items/ubb-ms-0003
+```
+
+<a href="/items/ubb-ms-0003" target={'_blank'} rel='noreferrer'>/items&#123;id&#125; (ubb-ms-0003 as example)</a>
+
+## Manifest
+
+```json
+https://api-ub.vercel.app/items/ubb-ms-0003?as=iiif
+https://api-ub.vercel.app/items/ubb-ms-0003/manifest
+```
+ 
+ <a href="/items/ubb-ms-0003?as=iiif" target={'_blank'} rel='noreferrer'>/items/&#123;id&#125;?as=iiif (ubb-ms-0003 as example)</a>
+
+## RDF Object (defaults to JSON-LD)
+```json
+https://api-ub.vercel.app/items/ubb-ms-0003?as=rdf
+```
+
+<a href="/items/ubb-ms-0003?as=rdf" target={'_blank'} rel='noreferrer'>/items/&#123;id&#125;?as=rdf (ubb-ms-0003 as example)</a>. Default response format is JSON-LD, equalt to <code>&format=json</code>.
+
+## RDF Object as turtle
+
+```json
+https://api-ub.vercel.app/items/ubb-ms-0003?as=rdf&format=turtle
+```
+
+<a href="/items/ubb-ms-0003?as=rdf&format=turtle" target={'_blank'} rel='noreferrer'>/items/&#123;id&#125;?as=rdf&format=turtle (ubb-ms-0003 as example)</a>.
+
+## RDF Object as XML
+
+```json
+https://api-ub.vercel.app/items/ubb-ms-0003?as=rdf&format=xml
+```
+  
+<a href="/items/ubb-ms-0003?as=rdf&format=xml" target={'_blank'} rel='noreferrer'>/items/&#123;id&#125;?as=rdf&format=xml (ubb-ms-0003 as example)</a>.
+
+
+<h1 id="university-of-bergen-library-cultural-heritage-collections-api-items">Items</h1>
+
+## get__items_\{item_id\}
+
+> Code samples
+
+```javascript
+const headers = {
+  'Accept':'application/ld+json'
+};
+
+fetch('https://api-ub.vercel.app/items/{item_id}',
+  {
+    method: 'GET',
+    headers: headers
+  })
+  .then(function(res) {
+      return res.json();
+    })
+  .then(function(body) {
+    console.log(body);
+  }
+);
+
+```
+
+`GET /items/{item_id}`
+
+*A single object metadata JSON or a IIIF manifest by the given identifier, with the option to as for IIIF or RDF. \{id\} is the identifier from our collections management system.*
+
+### Parameters
+
+| Name    | In    | Type   | Required | Description                                                                                |
+| ------- | ----- | ------ | -------- | ------------------------------------------------------------------------------------------ |
+| item_id | path  | string | true     | The ID of the manifest to retrieve                                                         |
+| as      | query | string | false    | The data domain model to use. Supports 'iiif' and 'rdf'.                                   |
+| format  | query | string | false    | The data format to use. Supports 'json' (default), 'turtle' and 'xml'. Ignored if as=iiif. |
+
+> Example responses
+
+> 404 Response
+
+```json
+"string"
+```
+
+### Responses
+
+| Status | Meaning                                                        | Description                | Schema |
+| ------ | -------------------------------------------------------------- | -------------------------- | ------ |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)        | Request was successful     | None   |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4) | Requested ID was not found | string |
+
+<aside>
+This operation does not require authentication
+</aside>
+
+## get__items_\{item_id\}_manifest
+
+> Code samples
+
+```javascript
+const headers = {
+  'Accept':'application/ld+json'
+};
+
+fetch('https://api-ub.vercel.app/items/{item_id}/manifest',
+  {
+    method: 'GET',
+    headers: headers
+  })
+  .then(function(res) {
+      return res.json();
+  }).then(function(body) {
+      console.log(body);
+  }
+);
+
+```
+
+`GET /items/{item_id}/manifest`
+
+*A single object IIIF manifest by the given identifier. \{id\} is the identifier from our collections management system.*
+
+### Parameters
+
+| Name    | In   | Type   | Required | Description                        |
+| ------- | ---- | ------ | -------- | ---------------------------------- |
+| item_id | path | string | true     | The ID of the manifest to retrieve |
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "@context": [
+    "http://www.w3.org/ns/anno.jsonld",
+    "http://iiif.io/api/presentation/3/context.json"
+  ],
+  "id": "string",
+  "type": "string",
+  "label": {
+    "no": [
+      "string"
+    ]
+  },
+  "summary": {
+    "no": [
+      "string"
+    ]
+  },
+  "items": [
+    {
+      "id": "string",
+      "type": "string",
+      "label": [
+        {
+          "no": "string"
+        }
+      ],
+      "homepage": [
+        {
+          "id": "string",
+          "type": "string",
+          "label": [
+            {
+              "no": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "partOf": [
+    {
+      "id": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+### Responses
+
+| Status | Meaning                                                        | Description                           | Schema                          |
+| ------ | -------------------------------------------------------------- | ------------------------------------- | ------------------------------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)        | Request for a manifest was successful | [ManifestV3](#schemamanifestv3) |
+| 404    | [Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4) | Requested ID was not found            | string                          |
+
+<aside>
+This operation does not require authentication
+</aside>

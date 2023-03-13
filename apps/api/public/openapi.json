@@ -1,0 +1,1721 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "University of Bergen Library - Cultural heritage collections API",
+    "description": "The University of Bergen Library's API are a work-in-progress. It aims to provide JSON-formatted data as a REST-style service that allows developers to explore and integrate the library’s public data into their projects. This API is the same tool that will power our website and many other technologies in the library.",
+    "version": "1.1",
+    "contact": {
+      "name": "Digital development at the University of Bergen Library",
+      "url": "https://www.uib.no/en/digitaldevelopment",
+      "email": "tarje.lavik@uib.no"
+    }
+  },
+  "externalDocs": {
+    "description": "Find more info here",
+    "url": "https://docs-ub.vercel.app/"
+  },
+  "servers": [
+    {
+      "url": "https://api-ub.vercel.app",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/items/{item_id}": {
+      "summary": "A single object in the collection.",
+      "description": "This resource represents an object in the collection. Each object is identified by a string `id`.",
+      "get": {
+        "summary": "A single object metadata JSON or a IIIF manifest by the given identifier, with the option to as for IIIF or RDF. {id} is the identifier from our collections management system.",
+        "operationID": "getItem",
+        "tags": [
+          "Items"
+        ],
+        "externalDocs": {
+          "description": "Find more info here",
+          "url": "https://docs-ub.vercel.app/docs/apis/items"
+        },
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the manifest to retrieve",
+            "schema": {
+              "type": "string"
+            },
+            "example": "ubb-jg-n-0614-06"
+          },
+          {
+            "name": "as",
+            "in": "query",
+            "required": false,
+            "description": "The data domain model to use. Supports 'iiif' and 'rdf'.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "rdf"
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "The data format to use. Supports 'json' (default), 'turtle' and 'xml'. Ignored if as=iiif.",
+            "schema": {
+              "type": "string"
+            },
+            "example": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/items/{item_id}/manifest": {
+      "get": {
+        "summary": "A single object IIIF manifest by the given identifier. {id} is the identifier from our collections management system.",
+        "operationID": "getManifest",
+        "tags": [
+          "Items"
+        ],
+        "externalDocs": {
+          "description": "Find more info here",
+          "url": "https://docs-ub.vercel.app/docs/apis/items"
+        },
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the manifest to retrieve",
+            "schema": {
+              "type": "string"
+            },
+            "example": "ubb-jg-n-0614-06"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ManifestSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "description": "Page number",
+            "schema": {
+              "type": "number"
+            },
+            "example": "0"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CollectionSearchSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/search/{id}": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Collection identifier",
+            "schema": {
+              "type": "string"
+            },
+            "example": "ubb-jg-"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "description": "Page number",
+            "schema": {
+              "type": "number"
+            },
+            "example": "0"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CollectionSearchSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/collections/search": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Collection identifier",
+            "schema": {
+              "type": "string"
+            },
+            "example": "ubb-kk-"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "description": "Page number",
+            "schema": {
+              "type": "number"
+            },
+            "example": "0"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CollectionSearchSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "summary": "A list of all events",
+        "tags": [
+          "Events"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/EventsSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/events/{event_id}": {
+      "get": {
+        "summary": "A single event.",
+        "tags": [
+          "Events"
+        ],
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the event to retrieve",
+            "schema": {
+              "type": "string"
+            },
+            "example": "132b08be5e363b9a3e9e5eec79bd0ad72c345af2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/EventSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/actors": {
+      "get": {
+        "summary": "A list of \"all\" actors (LIMIT 1000)",
+        "tags": [
+          "Actors"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ActorsSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/actors/{actor_id}": {
+      "get": {
+        "summary": "A single actor.",
+        "tags": [
+          "Actors"
+        ],
+        "parameters": [
+          {
+            "name": "actor_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the actor to retrieve",
+            "schema": {
+              "type": "string"
+            },
+            "example": "132b08be5e363b9a3e9e5eec79bd0ad72c345af2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ActorSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/links/{path}": {
+      "get": {
+        "summary": "A single link redirect with all metadata",
+        "tags": [
+          "Links"
+        ],
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "description": "The path slug to look up.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "4hM3Tchx"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/LinkSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/links": {
+      "get": {
+        "summary": "A list of all links",
+        "tags": [
+          "Links"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/LinksSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new shortlink",
+        "tags": [
+          "Links"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "description": "API token",
+            "schema": {
+              "type": "string"
+            },
+            "example": "some-key"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "originalURL": {
+                    "type": "string"
+                  },
+                  "domain": {
+                    "type": "string"
+                  },
+                  "qr": {
+                    "type": "string"
+                  },
+                  "redirectType": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "format": "nullable"
+                  },
+                  "expiresAt": {
+                    "type": "string",
+                    "format": "nullable"
+                  },
+                  "expiresURL": {
+                    "type": "string",
+                    "format": "nullable"
+                  },
+                  "utmSource": {
+                    "type": "string",
+                    "format": "nullable"
+                  },
+                  "utmMedium": {
+                    "type": "string",
+                    "format": "nullable"
+                  },
+                  "utmCampaign": {
+                    "type": "string",
+                    "format": "nullable"
+                  },
+                  "utmTerm": {
+                    "type": "string",
+                    "format": "nullable"
+                  },
+                  "utmContent": {
+                    "type": "string",
+                    "format": "nullable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/LinkSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/resolver/{id}": {
+      "get": {
+        "summary": "Resolve an id and get the service that it belongs to.",
+        "tags": [
+          "Resolver"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of instance to resolve.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "astrup-samlingen"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ResolverSuccess"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Full": {
+        "type": "string",
+        "enum": [
+          "full"
+        ]
+      },
+      "Arr": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        }
+      },
+      "Image3Context": {
+        "type": "string",
+        "enum": [
+          "http://iiif.io/api/image/3/context.json"
+        ]
+      },
+      "Prezi3Context": {
+        "type": "array",
+        "enum": [
+          [
+            "http://www.w3.org/ns/anno.jsonld",
+            "http://iiif.io/api/presentation/3/context.json"
+          ]
+        ]
+      },
+      "CollectionSearch": {
+        "type": "object",
+        "properties": {}
+      },
+      "ManifestV3": {
+        "type": "object",
+        "properties": {
+          "@context": {
+            "$ref": "#/components/schemas/Prezi3Context"
+          },
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "label": {
+            "type": "object",
+            "properties": {
+              "no": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "no": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "no": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "homepage": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "no": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "partOf": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CanvasV3": {
+        "type": "object",
+        "properties": {
+          "@context": {
+            "$ref": "#/components/schemas/Prezi3Context"
+          },
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Canvas"
+            ]
+          }
+        }
+      },
+      "CollectionV3": {
+        "type": "object",
+        "properties": {
+          "@context": {
+            "$ref": "#/components/schemas/Prezi3Context"
+          },
+          "id": {
+            "type": "string",
+            "description": "The Collection URI"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Collection"
+            ]
+          }
+        }
+      },
+      "ImageV3": {
+        "type": "object",
+        "properties": {
+          "@context": {
+            "$ref": "#/components/schemas/Image3Context"
+          },
+          "@id": {
+            "type": "string",
+            "description": "The Image URI"
+          },
+          "@type": {
+            "type": "string",
+            "enum": [
+              "sc:Image"
+            ]
+          }
+        }
+      },
+      "HumanMadeObject": {
+        "type": "object",
+        "properties": {
+          "@context": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/ns/ubbont/context.json"
+          },
+          "id": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/items/ubb-jg-n-0614-06"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Photograph"
+            }
+          },
+          "hasRepresentation": {
+            "type": "string",
+            "example": "http://data.ub.uib.no/instance/aggregation/ubb-jg-n-0614-06"
+          },
+          "hasThumbnail": {
+            "type": "string",
+            "example": "https://data.ub.uib.no/files/bs/ubb/ubb-jg/ubb-jg-n/ubb-jg-n-0614/ubb-jg-n-0614-06/jpg/ubb-jg-n-0614-06_th.jpg"
+          },
+          "showWeb": {
+            "type": "boolean"
+          },
+          "technique": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "http://data.ub.uib.no/instance/technique/c264e440-8c1d-4c97-a60d-6bea1fca5f9c"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "Technique"
+                },
+                "identifier": {
+                  "type": "string",
+                  "example": "c264e440-8c1d-4c97-a60d-6bea1fca5f9c"
+                },
+                "label": {
+                  "type": "object",
+                  "properties": {
+                    "no": {
+                      "type": "string",
+                      "example": "Format: 120mm"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "image": {
+            "type": "string",
+            "example": "https://data.ub.uib.no/files/bs/ubb/ubb-jg/ubb-jg-n/ubb-jg-n-0614/ubb-jg-n-0614-06/jpg/ubb-jg-n-0614-06_md.jpg"
+          },
+          "subjectOfManifest": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/items/ubb-jg-n-0614-06/manifest"
+          },
+          "producedIn": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "http://data.ub.uib.no/instance/event/352916f6-2db5-4995-bbf8-c5689716051a"
+              },
+              "type": {
+                "type": "string",
+                "example": "Event"
+              },
+              "identifier": {
+                "type": "string",
+                "example": "352916f6-2db5-4995-bbf8-c5689716051a"
+              },
+              "label": {
+                "type": "object",
+                "properties": {
+                  "no": {
+                    "type": "string",
+                    "example": "1956 Suezkrisen"
+                  }
+                }
+              }
+            }
+          },
+          "available": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "xsd:date"
+              },
+              "@value": {
+                "type": "string",
+                "format": "date",
+                "example": "2019-03-19"
+              }
+            }
+          },
+          "description": {
+            "type": "object",
+            "properties": {
+              "en": {
+                "type": "string",
+                "example": "The picture is taken on a journey to the Middle East, where UN-photographer Jørgen Grinde documentet UN-operations such as UNEF, UNRWA and UNTSO"
+              },
+              "no": {
+                "type": "string",
+                "example": "Bildet er tatt p&#229; en reise i Midt&#248;sten 1956/57, hvor FN-fotograf J&#248;rgen      Grinde dokumenterte forskjellige FN-operasjoner som UNEF, UNRWA og UNTSO.<br>"
+              }
+            }
+          },
+          "identifier": {
+            "type": "string",
+            "example": "ubb-jg-n-0614-06"
+          },
+          "isPartOf": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "http://data.ub.uib.no/instance/collection/ubb-jg"
+              },
+              "type": {
+                "type": "string",
+                "example": "Collection"
+              },
+              "identifier": {
+                "type": "string",
+                "example": "ubb-jg"
+              },
+              "label": {
+                "type": "object",
+                "properties": {
+                  "en": {
+                    "type": "string",
+                    "example": "UN-collections"
+                  },
+                  "no": {
+                    "type": "string",
+                    "example": "FN-samlingen"
+                  }
+                }
+              }
+            }
+          },
+          "modified": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "xsd:date"
+              },
+              "@value": {
+                "type": "string",
+                "example": "2022-11-14T14:06:44"
+              }
+            }
+          },
+          "relation": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "http://data.ub.uib.no/instance/photograph/ubb-jg-l-1017"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "Photograph"
+                },
+                "identifier": {
+                  "type": "string",
+                  "example": "ubb-jg-l-1017"
+                },
+                "label": {
+                  "type": "object",
+                  "properties": {
+                    "no": {
+                      "type": "string",
+                      "example": "[FN i Egypt 1957]"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "rightsHolder": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "http://data.ub.uib.no/instance/organization/billedsamlingen"
+              },
+              "type": {
+                "type": "string",
+                "example": "Organization"
+              },
+              "identifier": {
+                "type": "string",
+                "example": "billedsamlingen"
+              },
+              "label": {
+                "type": "object",
+                "properties": {
+                  "no": {
+                    "type": "string",
+                    "example": "Billedsamlingen"
+                  }
+                }
+              },
+              "lat": {
+                "type": "number",
+                "example": "60.38886"
+              },
+              "long": {
+                "type": "number",
+                "example": "5.32504"
+              }
+            }
+          },
+          "spatial": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "http://data.ub.uib.no/instance/spatialthing/a7871bb4-7178-49ab-b6c4-20d17d449619"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "SpatialThing"
+                },
+                "identifier": {
+                  "type": "string",
+                  "example": "a7871bb4-7178-49ab-b6c4-20d17d449619"
+                },
+                "label": {
+                  "type": "object",
+                  "properties": {
+                    "no": {
+                      "type": "string",
+                      "example": "Port Said"
+                    }
+                  }
+                },
+                "lat": {
+                  "type": "number",
+                  "example": "31.265289"
+                },
+                "long": {
+                  "type": "number",
+                  "example": "32.301866"
+                }
+              }
+            }
+          },
+          "subject": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "http://data.ub.uib.no/topic/0bf2c3ff-b237-4687-a877-1acd1be3f8e2"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "Concept"
+                },
+                "identifier": {
+                  "type": "string",
+                  "example": "0bf2c3ff-b237-4687-a877-1acd1be3f8e2"
+                },
+                "label": {
+                  "type": "object",
+                  "properties": {
+                    "en": {
+                      "type": "string",
+                      "example": "Medium format"
+                    },
+                    "no": {
+                      "type": "string",
+                      "example": "Mellomformat"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "object",
+            "properties": {
+              "en": {
+                "type": "string",
+                "example": "[UN in Egypt 1957]"
+              },
+              "no": {
+                "type": "string",
+                "example": "[FN i Egypt 1957]"
+              }
+            }
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "http://data.ub.uib.no/instance/organization/billedsamlingen"
+              },
+              "type": {
+                "type": "string",
+                "example": "Organization"
+              },
+              "identifier": {
+                "type": "string",
+                "example": "billedsamlingen"
+              },
+              "label": {
+                "type": "object",
+                "properties": {
+                  "no": {
+                    "type": "string",
+                    "example": "Billedsamlingen"
+                  }
+                }
+              },
+              "lat": {
+                "type": "number",
+                "example": "60.38886"
+              },
+              "long": {
+                "type": "number",
+                "example": "5.32504"
+              }
+            }
+          },
+          "label": {
+            "type": "object",
+            "properties": {
+              "en": {
+                "type": "string",
+                "example": "[UN in Egypt 1957]"
+              },
+              "no": {
+                "type": "string",
+                "example": "[FN i Egypt 1957]"
+              }
+            }
+          },
+          "homepage": {
+            "type": "string",
+            "example": "http://marcus.uib.no/instance/photograph/ubb-jg-n-0614-06"
+          },
+          "maker": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "http://data.ub.uib.no/instance/person/e643029b-7ecd-42ce-bc38-6c8724204407"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "Person"
+                },
+                "identifier": {
+                  "type": "string",
+                  "example": "e643029b-7ecd-42ce-bc38-6c8724204407"
+                },
+                "label": {
+                  "type": "object",
+                  "properties": {
+                    "no": {
+                      "type": "string",
+                      "example": "Jørgen Grinde"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "timespan": {
+            "type": "object",
+            "properties": {
+              "edtf": {
+                "type": "string",
+                "example": "1957-01-01/1957-01-31"
+              },
+              "beginOfTheBegin": {
+                "type": "string",
+                "example": "1957-01-01T00:00:00.000Z"
+              },
+              "endOfTheBegin": {
+                "type": "string",
+                "example": "1957-01-02T00:00:00.000Z"
+              },
+              "beginOfTheEnd": {
+                "type": "string",
+                "example": "1957-01-31T00:00:00.000Z"
+              },
+              "endOfTheEnd": {
+                "type": "string",
+                "example": "1957-02-01T00:00:00.000Z"
+              }
+            }
+          }
+        }
+      },
+      "Events": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/events/352916f6-2db5-4995-bbf8-c5689716051a"
+          },
+          "type": {
+            "type": "string",
+            "example": "Event"
+          },
+          "beginOfTheBegin": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "xsd:date"
+              },
+              "value": {
+                "type": "string",
+                "format": "date",
+                "example": "1956-10-29"
+              }
+            }
+          },
+          "endOdTheEnd": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "xsd:date"
+              },
+              "value": {
+                "type": "string",
+                "format": "date",
+                "example": "1956-11-06"
+              }
+            }
+          },
+          "ubbont:homepage": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "https://marcus.uib.no/instance/event/352916f6-2db5-4995-bbf8-c5689716051a"
+              }
+            }
+          },
+          "dct:identifier": {
+            "type": "string",
+            "example": "352916f6-2db5-4995-bbf8-c5689716051a"
+          },
+          "prefLabel": {
+            "type": "object",
+            "properties": {
+              "none": {
+                "type": "string",
+                "example": "1956 Suezkrisen"
+              }
+            }
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "@context": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/ns/ubbont/context.json"
+          },
+          "id": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/events/352916f6-2db5-4995-bbf8-c5689716051a"
+          },
+          "type": {
+            "type": "string",
+            "example": "Event"
+          },
+          "beginOfTheBegin": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "xsd:date"
+              },
+              "value": {
+                "type": "string",
+                "format": "date",
+                "example": "1956-10-29"
+              }
+            }
+          },
+          "endOdTheEnd": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "xsd:date"
+              },
+              "value": {
+                "type": "string",
+                "format": "date",
+                "example": "1956-11-06"
+              }
+            }
+          },
+          "ubbont:homepage": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "https://marcus.uib.no/instance/event/352916f6-2db5-4995-bbf8-c5689716051a"
+              }
+            }
+          },
+          "ubbont:showWeb": {
+            "type": "boolean"
+          },
+          "product": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "http://data.ub.uib.no/instance/photograph/ubb-jg-k-0003"
+            }
+          },
+          "dct:identifier": {
+            "type": "string",
+            "example": "352916f6-2db5-4995-bbf8-c5689716051a"
+          },
+          "modified": {
+            "type": "string",
+            "example": "2021-11-23T14:42:15"
+          },
+          "inScheme": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "http://data.ub.uib.no/conceptscheme/billedsamlingens-emneord"
+            }
+          },
+          "prefLabel": {
+            "type": "object",
+            "properties": {
+              "none": {
+                "type": "string",
+                "example": "1956 Suezkrisen"
+              }
+            }
+          },
+          "foaf:logo": {
+            "type": "string",
+            "example": "http://data.ub.uib.no/files/bs/ubb/ubb-jg/ubb-jg-k/ubb-jg-k-0085/ubb-jg-k-0085-02detalj/jpg/ubb-jg-k-0085-02detalj_th.jpg"
+          },
+          "page": {
+            "type": "string",
+            "example": "http://data.ub.uib.no/instance/webresource/44b79a9b-e73b-4c9c-ab7c-03b66c2cc29d"
+          },
+          "timespan": {
+            "type": "object",
+            "properties": {
+              "edtf": {
+                "type": "string",
+                "example": "1956-10-29/"
+              },
+              "beginOfTheBegin": {
+                "type": "string",
+                "example": "1956-10-29T00:00:00.000Z"
+              },
+              "endOfTheBegin": {
+                "type": "string",
+                "example": "1956-10-30T00:00:00.000Z"
+              }
+            }
+          }
+        }
+      },
+      "Actors": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/actors/00325061-3fa1-46c8-960e-9675f413c39e"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Person"
+            }
+          },
+          "ubbont:homepage": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "https://marcus.uib.no/instance/person/00325061-3fa1-46c8-960e-9675f413c39e"
+              }
+            }
+          },
+          "dbo:profession": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "oseanograf"
+            }
+          },
+          "foaf:familyName": {
+            "type": "string",
+            "example": "Fjeldstad"
+          },
+          "foaf:firstName": {
+            "type": "string",
+            "example": "Jonas Ekman"
+          },
+          "foaf:name": {
+            "type": "string",
+            "example": "Jonas Ekman Fjeldstad"
+          }
+        }
+      },
+      "Actor": {
+        "type": "object",
+        "properties": {
+          "@context": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/ns/ubbont/context.json"
+          },
+          "id": {
+            "type": "string",
+            "example": "https://api-ub.vercel.app/actors/07dd8798-d0c5-432b-8267-99913f654165"
+          },
+          "type": {
+            "type": "string",
+            "example": "Person"
+          },
+          "cataloguer": {
+            "type": "string",
+            "example": "http://data.ub.uib.no/instance/cataloguer/9e7cca14-8d21-4ceb-afd7-7e64408ae0dd"
+          },
+          "ubbont:homepage": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "https://marcus.uib.no/instance/person/07dd8798-d0c5-432b-8267-99913f654165"
+              }
+            }
+          },
+          "birthYear": {
+            "type": "string",
+            "example": "1788"
+          },
+          "deathYear": {
+            "type": "string",
+            "example": "1859"
+          },
+          "relationToString": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "ubb-ms-1124"
+            }
+          },
+          "available": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "xsd:date"
+              },
+              "value": {
+                "type": "string",
+                "format": "date",
+                "example": "2017-02-11"
+              }
+            }
+          },
+          "dct:identifier": {
+            "type": "string",
+            "example": "07dd8798-d0c5-432b-8267-99913f654165"
+          },
+          "relation": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "http://data.ub.uib.no/instance/manuscript/ubb-ms-0289"
+            }
+          },
+          "parent": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "http://data.ub.uib.no/instance/person/84e278fc-c58e-4bd2-884e-b3b956c76933"
+            }
+          },
+          "sibling": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "http://data.ub.uib.no/instance/person/18e5207f-153e-4bfc-881b-30f6021690ca"
+            }
+          },
+          "inScheme": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "http://data.ub.uib.no/conceptscheme/8c7a6025-d771-4d6c-9c41-72f5b36ecde5"
+            }
+          },
+          "foaf:familyName": {
+            "type": "string",
+            "example": "Kølle"
+          },
+          "foaf:firstName": {
+            "type": "string",
+            "example": "Catharina Hermine"
+          },
+          "made": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "http://data.ub.uib.no/instance/manuscript/ubb-ms-0659-e-09-02"
+            }
+          },
+          "foaf:name": {
+            "type": "string",
+            "example": "Catharine Hermine Kølle"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "modified": {
+            "type": "string"
+          },
+          "originalURL": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "qr": {
+            "type": "string"
+          },
+          "redirectType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "views": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tags": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "expiresURL": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmSource": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmMedium": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmCampaign": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmTerm": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmContent": {
+            "type": "string",
+            "format": "nullable"
+          }
+        }
+      },
+      "Links": {
+        "type": "array",
+        "properties": {
+          "created": {
+            "type": "string",
+            "example": "2023-01-06T11:51:18.018Z"
+          },
+          "domain": {
+            "type": "string",
+            "example": "ub-urls.vercel.app"
+          },
+          "id": {
+            "type": "string",
+            "example": "rec_ces0mdmt871nm5h4f400"
+          },
+          "modified": {
+            "type": "string",
+            "example": "2023-01-06T11:51:18.018Z"
+          },
+          "originalURL": {
+            "type": "string",
+            "example": "https://marcus.uib.no/exhibition/mer-enn-det-humanitare-blikket"
+          },
+          "path": {
+            "type": "string",
+            "example": "V87r9HNx"
+          },
+          "qr": {
+            "type": "string",
+            "example": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 37 37\" shape-rendering=\"crispEdges\"><path fill=\"#ffffff\" d=\"M0 0h37v37H0z\"/><path stroke=\"#000000\" d=\"M4 4.5h7m2 0h1m1 0h2m2 0h5m2 0h7M4 5.5h1m5 0h1m2 0h2m1 0h1m4 0h1m4 0h1m5 0h1M4 6.5h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1M4 7.5h1m1 0h3m1 0h1m1 0h2m1 0h2m4 0h1m1 0h1m2 0h1m1 0h3m1 0h1M4 8.5h1m1 0h3m1 0h1m1 0h2m3 0h3m2 0h3m1 0h1m1 0h3m1 0h1M4 9.5h1m5 0h1m1 0h1m1 0h1m2 0h3m2 0h1m1 0h1m1 0h1m5 0h1M4 10.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M12 11.5h6m1 0h1m4 0h1M4 12.5h1m1 0h5m2 0h2m3 0h1m1 0h2m4 0h5M9 13.5h1m1 0h1m8 0h1m2 0h2m1 0h3m3 0h1M4 14.5h1m1 0h1m1 0h5m1 0h1m1 0h1m2 0h1m2 0h1m1 0h2m1 0h2M7 15.5h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h2m1 0h5m1 0h1M5 16.5h3m1 0h3m2 0h1m1 0h1m4 0h1m5 0h1m1 0h2M6 17.5h3m2 0h1m5 0h4m2 0h6m3 0h1M5 18.5h2m1 0h4m1 0h3m1 0h3m2 0h1m3 0h5M4 19.5h1m6 0h2m1 0h2m1 0h1m1 0h1m2 0h2m1 0h1m1 0h1m3 0h1M5 20.5h1m2 0h3m1 0h3m3 0h1m2 0h2m1 0h1m4 0h2M4 21.5h1m1 0h4m1 0h2m1 0h2m3 0h6m1 0h1m1 0h1m1 0h1m1 0h1M4 22.5h1m1 0h5m2 0h1m2 0h1m2 0h3m2 0h2m4 0h1M4 23.5h1m2 0h3m1 0h2m2 0h2m1 0h2m4 0h1m1 0h1m1 0h1m2 0h1M4 24.5h1m2 0h1m1 0h2m5 0h1m3 0h1m3 0h5m1 0h3M12 25.5h3m1 0h3m5 0h1m3 0h5M4 26.5h7m2 0h1m3 0h3m1 0h1m1 0h2m1 0h1m1 0h3M4 27.5h1m5 0h1m1 0h2m2 0h2m4 0h3m3 0h1m3 0h1M4 28.5h1m1 0h3m1 0h1m1 0h2m1 0h2m1 0h5m1 0h5m1 0h2M4 29.5h1m1 0h3m1 0h1m1 0h1m3 0h1m3 0h2m2 0h2m3 0h4M4 30.5h1m1 0h3m1 0h1m1 0h2m2 0h5m1 0h2m1 0h7M4 31.5h1m5 0h1m2 0h6m1 0h1m1 0h3m1 0h4m1 0h1M4 32.5h7m1 0h6m1 0h5m1 0h6\"/></svg>"
+          },
+          "redirectType": {
+            "type": "number",
+            "example": "302"
+          },
+          "title": {
+            "type": "string",
+            "example": "Mer enn det humanitære blikket"
+          },
+          "views": {
+            "type": "number",
+            "example": "15"
+          },
+          "tags": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "expiresURL": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmSource": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmMedium": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmCampaign": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmTerm": {
+            "type": "string",
+            "format": "nullable"
+          },
+          "utmContent": {
+            "type": "string",
+            "format": "nullable"
+          }
+        }
+      },
+      "ResolverResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "url"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://sparql.ub.uib.no/sparql/query?query="
+          }
+        }
+      }
+    },
+    "responses": {
+      "ManifestSuccess": {
+        "description": "Request for a manifest was successful",
+        "content": {
+          "application/ld+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManifestV3"
+            }
+          },
+          "application/ld+json;profile=http://iiif.io/api/presentation/3/context.json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManifestV3"
+            }
+          },
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManifestV3"
+            }
+          }
+        }
+      },
+      "CollectionSearchSuccess": {
+        "description": "Request for a collection was successful",
+        "content": {
+          "application/ld+json": {
+            "schema": {
+              "$ref": "#/components/schemas/CollectionSearch"
+            }
+          },
+          "application/ld+json;profile=http://iiif.io/api/presentation/3/context.json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManifestV3"
+            }
+          },
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManifestV3"
+            }
+          }
+        }
+      },
+      "HumanMadeObjectSuccess": {
+        "description": "Request for an item was successful",
+        "content": {
+          "application/ld+json": {
+            "schema": {
+              "$ref": "#/components/schemas/HumanMadeObject"
+            }
+          }
+        }
+      },
+      "EventsSuccess": {
+        "description": "Request for events was successful",
+        "content": {
+          "application/ld+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Events"
+            }
+          }
+        }
+      },
+      "EventSuccess": {
+        "description": "Request for a event was successful",
+        "content": {
+          "application/ld+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Event"
+            }
+          }
+        }
+      },
+      "ActorsSuccess": {
+        "description": "Request for actors was successful",
+        "content": {
+          "application/ld+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Actors"
+            }
+          }
+        }
+      },
+      "ActorSuccess": {
+        "description": "Request for an actor was successful",
+        "content": {
+          "application/ld+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Actor"
+            }
+          }
+        }
+      },
+      "LinksSuccess": {
+        "description": "Request for links was successful",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Links"
+            }
+          }
+        }
+      },
+      "LinkSuccess": {
+        "description": "Request for a link was successful",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Link"
+            }
+          }
+        }
+      },
+      "ResolverSuccess": {
+        "description": "Request to resolve an id was successful",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ResolverResponse"
+            }
+          }
+        }
+      },
+      "Success": {
+        "description": "Request was successful"
+      },
+      "NotFound": {
+        "description": "Requested ID was not found",
+        "content": {
+          "application/ld+json": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Items"
+    },
+    {
+      "name": "Search"
+    },
+    {
+      "name": "Collections",
+      "description": "WIP. Collections are used to group manifests together. They can be used to group manifests by theme, by time period, by location, or any other criteria."
+    },
+    {
+      "name": "Events"
+    },
+    {
+      "name": "Actors"
+    },
+    {
+      "name": "Links"
+    },
+    {
+      "name": "Resolver"
+    }
+  ]
+}

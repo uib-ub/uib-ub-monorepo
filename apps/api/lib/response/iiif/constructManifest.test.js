@@ -1,0 +1,1 @@
+import { constructManifest } from './constructManifest';

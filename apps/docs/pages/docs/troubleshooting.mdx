@@ -1,0 +1,14 @@
+# Troubleshooting
+
+## Vercel looks for missing linux build for some pagckages
+
+For some reason Vercel does not install linux pagckages for turbo, esbuild and @napi-rs/simple-git. Solution is to add them to the package-lock.json file, but there are som black magic here...
+
+## Invalid hook call error in React caused by transpilation
+
+Solution suggested here:
+https://github.com/martpie/next-transpile-modules#i-have-trouble-with-duplicated-dependencies-or-the-invalid-hook-call-error-in-react
+
+## No inputs were found in config file in TypeScript
+
+[Fix is to add at least on .ts file](https://bobbyhadz.com/blog/typescript-error-no-inputs-were-found-in-config-file)

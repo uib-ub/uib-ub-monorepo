@@ -1,0 +1,117 @@
+# APIs
+The [University of Bergen Library](https://uib.no/ub)'s API are a work-in-progress. It aims to provide JSON-formatted data as a REST-style service that allows developers to explore and integrate the library’s public data into their projects. This API is the same tool that will power our website and many other technologies in the library.
+
+## Quick Start
+An [API](https://en.wikipedia.org/wiki/API) is a structured way that one software application can talk to another.
+
+The API is a RESTful API, which means that it uses HTTP requests to GET, PUT, POST and DELETE data. It uses standard HTTP response codes to indicate the success or failure of requests. In short, if you can do it in a browser, you can do it with our API.
+
+### OpenAPI
+
+The API is documented using the [OpenAPI](https://swagger.io/specification/) specification. Currently two APIs are documented.
+
+* https://api-ub.vercel.app/spec
+* https://ordbokene.no/api/swagger-ui.html
+
+## Example
+
+You can access the /items listing endpoint in our API by visiting the following URL to see all the published artworks in our collection:
+
+https://api-ub.vercel.app/items
+
+If you want to see data for just one items, you can use the /items/\{id\} detail endpoint. For example, here's a photograph by Jørgen Grinde:
+
+https://api-ub.vercel.app/items/ubb-jg-n-0614-06
+
+Any valid id or _signature_ from these datasets will be resolved. Test some example manifests!
+
+## Sources 
+
+This API serves data from <a href="https://marcus.uib.no">Marcus</a> and <a href="https://skeivtarkiv.no">The Norwegian archive for queer history</a>.
+
+
+## Resources
+
+* [OpenAPI Spec (swagger)](https://api-ub.vercel.app/spec)
+* [JSONLD Context](https://api-ub.vercel.app/ns/ubbont/context.json)
+* [UBBONT Ontology](https://api-ub.vercel.app/ns/ubbont/ubbont.owl)
+
+
+## IIIF manifest examples
+
+{<table className='border-collapse border border-slate-500'>
+  <thead>
+    <tr>
+      <th className='border border-slate-600 p-2'>Source</th>
+      <th className='border border-slate-600 p-2'>JSON</th>
+      <th className='border border-slate-600 p-2'>Manifest</th>
+      <th className='border border-slate-600 p-2'>Mirador</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td className='border border-slate-700 p-2'>Marcus</td>
+      <td className='border border-slate-700 p-2'><a href="/collections/search?id=astrup-samlingen">/collections/search?id=astrup-samlingen</a></td>
+      <td className='border border-slate-700 p-2'>---</td>
+      <td className='border border-slate-700 p-2'>
+        <a href={`https://projectmirador.org/embed/?manifest=${'https://api-ub.vercel.app' || ''}/collections/search?id=astrup-samlingen`} target="_blank" rel='noreferrer'>open in new window</a>
+      </td>
+    </tr>
+    <tr>
+      <td className='border border-slate-700 p-2'>Marcus</td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ms-0003">/items/ubb-ms-0003</a></td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ms-0003?as=iiif">/items/ubb-ms-0003?as=iiif</a></td>
+      <td className='border border-slate-700 p-2'>
+        <a href={`https://projectmirador.org/embed/?manifest=${'https://api-ub.vercel.app' || ''}/items/ubb-ms-0003?as=iiif`} target="_blank" rel='noreferrer'>open in new window</a>
+      </td>
+    </tr>
+    <tr>
+      <td className='border border-slate-700 p-2'>Marcus</td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-jg-n-0614-06">/items/ubb-jg-n-0614-06</a></td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-jg-n-0614-06?as=iiif">/items/ubb-jg-n-0614-06?as=iiif</a></td>
+      <td className='border border-slate-700 p-2'>
+        <a href={`https://projectmirador.org/embed/?manifest=${'https://api-ub.vercel.app' || ''}/items/ubb-jg-n-0614-06?as=iiif`} target="_blank" rel='noreferrer'>open in new window</a>
+      </td>
+    </tr>
+    <tr>
+      <td className='border border-slate-700 p-2'>Marcus</td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ms-0185-j-a-007">/items/ubb-ms-0185-j-a-007</a></td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ms-0185-j-a-007?as=iiif">/items/ubb-ms-0185-j-a-007?as=iiif</a></td>
+      <td className='border border-slate-700 p-2'>
+        <a href={`https://projectmirador.org/embed/?manifest=${'https://api-ub.vercel.app' || ''}/items/ubb-ms-0185-j-a-007?as=iiif`} target="_blank" rel='noreferrer'>open in new window</a>
+      </td>
+    </tr>
+    <tr>
+      <td className='border border-slate-700 p-2'>Marcus</td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-wil-f-208">/items/ubb-wil-f-208</a></td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-wil-f-208?as=iiif">/items/ubb-wil-f-208?as=iiif</a></td>
+      <td className='border border-slate-700 p-2'>
+        <a href={`https://projectmirador.org/embed/?manifest=${'https://api-ub.vercel.app' || ''}/items/ubb-wil-f-208?as=iiif`} target="_blank" rel='noreferrer'>open in new window</a>
+      </td>
+    </tr>
+    <tr>
+      <td className='border border-slate-700 p-2'>Skeivt arkiv</td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ska-0001-f-01-01-02">/items/ubb-ska-0001-f-01-01-02</a></td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ska-0001-f-01-01-02?as=iiif">/items/ubb-ska-0001-f-01-01-02?as=iiif</a></td>
+      <td className='border border-slate-700 p-2'>
+        <a href={`https://projectmirador.org/embed/?manifest=${'https://api-ub.vercel.app' || ''}/items/ubb-ska-0001-f-01-01-02?as=iiif`} target="_blank" rel='noreferrer'>open in new window</a>
+      </td>
+    </tr>
+    <tr>
+      <td className='border border-slate-700 p-2'>Skeivt arkiv</td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ska-a0009-u-457">/items/ubb-ska-a0009-u-457</a></td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ska-a0009-u-457?as=iiif">/items/ubb-ska-a0009-u-457?as=iiif</a></td>
+      <td className='border border-slate-700 p-2'>
+        <a href={`https://projectmirador.org/embed/?manifest=${'https://api-ub.vercel.app' || ''}/items/ubb-ska-a0009-u-457?as=iiif`} target="_blank" rel='noreferrer'>open in new window</a>
+      </td>
+    </tr>
+    <tr>
+      <td className='border border-slate-700 p-2'>Skeivt arkiv</td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ska-a0033-u-0002">/items/ubb-ska-a0033-u-0002</a></td>
+      <td className='border border-slate-700 p-2'><a href="/items/ubb-ska-a0033-u-0002?as=iiif">/items/ubb-ska-a0033-u-0002?as=iiif</a></td>
+      <td className='border border-slate-700 p-2'>
+        <a href={`https://projectmirador.org/embed/?manifest=${'https://api-ub.vercel.app' || ''}/items/ubb-ska-a0033-u-0002?as=iiif`} target="_blank" rel='noreferrer'>open in new window</a>
+      </td>
+    </tr>
+  </tbody>
+</table>}

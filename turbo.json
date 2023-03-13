@@ -1,0 +1,131 @@
+{
+  "schema": "https://turborepo.org/schema.json",
+  "globalEnv": [],
+  "pipeline": {
+    "build": {
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "storybook-static/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "build#chc-web": {
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NEXTAUTH_SECRET",
+        "DATAPORTEN_ID",
+        "DATAPORTEN_SECRET",
+        "MARCUS_API",
+        "SKA_API",
+        "ES_HOST",
+        "ES_APIKEY",
+        "ES_PATH",
+        "ES_INDEX_SECRET",
+        "NEXT_PUBLIC_VERCEL_URL",
+        "NEXT_PUBLIC_SANITY_API_VERSION",
+        "NEXT_PUBLIC_PUBLIC_DOMAIN",
+        "SANITY_API_READ_TOKEN",
+        "SANITY_REQUIRE_PREVIEW_SECRET",
+        "NEXT_PUBLIC_SANITY_PROJECT_TITLE"
+      ]
+    },
+    "build#api": {
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NEXTAUTH_SECRET",
+        "DATAPORTEN_ID",
+        "DATAPORTEN_SECRET",
+        "MARCUS_API",
+        "SKA_API",
+        "ES_HOST",
+        "ES_APIKEY",
+        "ES_PATH",
+        "ES_INDEX_SECRET",
+        "NEXT_PUBLIC_VERCEL_URL",
+        "NEXT_PUBLIC_PUBLIC_DOMAIN"
+      ]
+    },
+    "build#chc-exh-nt-web": {
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NODE_ENV",
+        "VERCEL_URL",
+        "API_SECRET",
+        "SANITY_API_TOKEN",
+        "NEXT_PUBLIC_SANITY_API_TOKEN",
+        "NEXT_PUBLIC_BASE_PATH",
+        "NEXT_PUBLIC_SANITY_DATASET",
+        "NEXT_PUBLIC_SANITY_PROJECT_ID",
+        "NEXT_PUBLIC_BASE_PATH",
+        "NEXT_PUBLIC_BASE_LANGUAGE",
+        "NEXT_PUBLIC_VERCEL_ENV",
+        "NEXT_PUBLIC_GOOGLE_ANALYTICS",
+        "SANITY_PREVIEW_SECRET",
+        "VERCEL_ENV",
+        "VERCEL_URL"
+      ]
+    },
+    "build#docs": {
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
+    },
+    "test": {
+      "outputs": [
+        "coverage/**"
+      ],
+      "dependsOn": []
+    },
+    "lint": {
+      "outputs": []
+    },
+    "dev": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "dev#chc-exh-nt-web": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_STUDIO_URL",
+        "NEXT_PUBLIC_STUDIO_URL",
+        "NEXT_PUBLIC_SANITY_DATASET",
+        "NEXT_PUBLIC_SANITY_PROJECT_ID"
+      ]
+    },
+    "deploy": {
+      "cache": false,
+      "dependsOn": []
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

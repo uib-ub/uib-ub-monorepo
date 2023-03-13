@@ -1,0 +1,33 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: var(--size-3);
+  width: 20%;
+}
+
+.link {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  width: var(--size-content-3);
+  box-shadow: var(--shadow-1);
+  padding: var(--size-3);
+  background-color: var(--gray-8);
+  border-radius: var(--radius-conditional-1);
+  border: var(--border-size-1) solid var(--gray-7);
+}
+
+.link:hover {
+  box-shadow: var(--shadow-5);
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.icon {
+  display: inline-block;
+  width: 1rem; 
+  height: 1rem; 
+}

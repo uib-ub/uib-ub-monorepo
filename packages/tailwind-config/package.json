@@ -1,0 +1,12 @@
+{
+  "name": "tailwind-config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "tailwind.config.js",
+  "scripts": {
+    "clean": "rm -rf node_modules"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.2.4"
+  }
+}

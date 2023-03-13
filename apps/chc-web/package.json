@@ -1,0 +1,47 @@
+{
+  "name": "chc-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next -p 3011",
+    "format": "npx prettier --write .",
+    "lint": "next lint",
+    "lint:fix": "npm run format && npm run lint -- --fix",
+    "start": "next start",
+    "type-check": "tsc --noEmit",
+    "edit": "node ./scripts/editDocument.js"
+  },
+  "dependencies": {
+    "@portabletext/react": "^2.0.0",
+    "@sanity/demo": "^1.0.1",
+    "@sanity/image-url": "^1.0.1",
+    "@sanity/vision": "^3.4.0",
+    "@tailwindcss/typography": "^0.5.8",
+    "@vercel/og": "^0.0.21",
+    "classnames": "^2.3.2",
+    "date-fns": "^2.29.3",
+    "intl-segmenter-polyfill": "^0.4.4",
+    "next": "^13.2.3",
+    "next-sanity": "^4.1.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-is": "^18.2.0",
+    "sanity": "^3.6.0",
+    "sanity-plugin-asset-source-unsplash": "^1.0.1",
+    "server-only": "^0.0.1",
+    "styled-components": "^5.3.6",
+    "suspend-react": "^0.0.8",
+    "sanity-plugin-external-api-input": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "autoprefixer": "^10.4.13",
+    "eslint-config-custom": "*",
+    "postcss": "^8.4.21",
+    "rxjs": "^7.8.0",
+    "tailwindcss": "^3.2.4",
+    "tsconfig": "*",
+    "typescript": "^4.9.3"
+  }
+}

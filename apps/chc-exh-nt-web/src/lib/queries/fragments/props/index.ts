@@ -1,0 +1,1 @@
+export { depicts } from './depicts'

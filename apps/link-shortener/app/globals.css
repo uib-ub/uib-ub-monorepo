@@ -1,0 +1,12 @@
+/* the props */
+@import "open-props/style";
+
+/* optional imports that use the props */
+@import "open-props/normalize";
+@import "open-props/buttons";
+
+body{
+  padding: var(--size-3);
+  display: flex;
+  justify-content: center;
+}

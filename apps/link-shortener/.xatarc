@@ -1,0 +1,8 @@
+{
+  "databaseURL": "https://uib-ub-workspace-ta2cdc.eu-west-1.xata.sh/db/url-shortener",
+  "codegen": {
+    "output": "utils/xata.ts",
+    "moduleType": "esm",
+    "declarations": true
+  }
+}

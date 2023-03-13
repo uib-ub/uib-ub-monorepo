@@ -1,0 +1,14 @@
+import { defineType } from 'sanity'
+import { homepage, label, preferredIdentifier } from "../../../properties/datatype"
+
+export default defineType({
+  name: 'Dataset',
+  type: 'object',
+  title: 'Datasett',
+  titleEN: 'Dataset',
+  fields: [
+    homepage,
+    label,
+    preferredIdentifier
+  ],
+})

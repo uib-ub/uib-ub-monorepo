@@ -1,0 +1,28 @@
+{
+  "name": "link-shortener",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3002",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.16",
+    "@xata.io/client": "^0.22.1",
+    "next": "^13.2.1",
+    "open-props": "^1.5.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.13.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "typescript": "^4.9.3"
+  }
+}

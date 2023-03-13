@@ -1,0 +1,26 @@
+# Working with datasets
+
+Helpful hints on how to work with UiB-UB datasets.
+
+## Create language props suitable for indexing
+
+`json-ld context` is a way to define a vocabulary for a JSON document. It is used to define the meaning of properties in a JSON document. It is also used to define the meaning of properties in a JSON-LD document. The context is a JSON object that maps property names to IRIs. The context can be used to define a default language for properties, and to define language-specific properties.
+
+The following example shows how to create language-specific properties for indexing in Elasticsearch.
+
+```json
+{
+  "@context": {
+    "ex": "http://example.com/vocab/",
+    "@language": "ja",
+    "name": { "@id": "ex:name", "@language": null },
+    "occupation": { "@id": "ex:occupation" },
+    "occupation_en": { "@id": "ex:occupation", "@language": "en" },
+    "occupation_cs": { "@id": "ex:occupation", "@language": "cs" }
+  },
+  "name": "Yagyū Muneyoshi",
+  "occupation": "忍者",
+  "occupation_en": "Ninja",
+  "occupation_cs": "Nindža",
+}
+```
