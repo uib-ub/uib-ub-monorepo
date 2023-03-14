@@ -1,27 +1,28 @@
 # UiB-UB Monorepo
 
-This is a monorepo containing the web sites, APIs, a link shortener and related packages created by UiB-UB.
+This is a monorepo containing the web sites, APIs, and related packages created by UiB-UB.
 
 ## What's inside?
 
-This Turborepo uses [npm](https://npmjs.com) as a packages manager. It uses Next.js v13, React v18 and Sanity Studio v3. 
+This Turborepo uses [npm](https://npmjs.com) as a packages manager. It contains Next.js v13, Nuxt v3, and Sanity Studio v3. 
 
 It includes the following packages/apps:
 
 ### Apps
 
-- `chc-web`: the WIP Marcus website, a [Next.js](https://nextjs.org) app and a [Sanity](https://sanity.io) Studio.
-- `chc-exh-nt-web`: the exhibition _Never-ending and temporary_, a [Next.js](https://nextjs.org) app and a [Sanity](https://sanity.io) Studio.
 - `api`: the API for the Special collection at the University of Bergen Library, a [Next.js](https://nextjs.org) app
+- `chc-web`: the WIP Marcus website, a [Next.js](https://nextjs.org) app and a [Sanity](https://sanity.io) Studio.
+- `chc-exh-nt-web`: the exhibition _More than the humanitarian gaze_, a [Next.js](https://nextjs.org) app with a [Sanity](https://sanity.io) Studio.
 - `docs`: the documentation site, a [Nextra](https://nextra.site) app
 - `link-shortener`: WIP, a url redirect service with QR, a [Next.js](https://nextjs.org) app
+- `sps-termportal-web`: Termportalen.no, a [Nuxt.js](https://nuxtjs.org) app
 
 
 ### Packages
 
 - `eslint-preset-custom`: ESLint preset
 - `tailwind-config`: shared tailwindcss config
-- `tailwind-ui`: React components with Tailwind CSS. Depreciated.
+- `tailwind-ui`: React components with Tailwind CSS.
 - `tsconfig`: shared tsconfig.jsons used throughout the monorepo
 - `utils`: shared utility functions
 
@@ -39,7 +40,7 @@ This Turborepo has some additional tools already setup for you:
 
 ```sh
 git clone ...
-cd chc-monorepo
+cd uib-ub-monorepo
 ```
 
 ### Build
@@ -47,7 +48,7 @@ cd chc-monorepo
 To build all apps and packages, run the following command:
 
 ```
-npm build
+npm run build
 ```
 
 ### Develop
@@ -55,7 +56,7 @@ npm build
 To develop all apps and packages, run the following command:
 
 ```
-npm dev
+npm run dev
 ```
 
 ### Useful commands
@@ -74,21 +75,6 @@ Examples here use `npm`, but this is easy to fudge up. Do not install packages d
 * npm run changeset - Generate a changeset
 * npm run clean - Clean up all node_modules and dist folders (runs each package's clean script)
 
-### Changesets
-
-We are not currently using chengesets, but it is ready when we want it.
-
-```sh
-# Create feature branch
-# Commit change(s)
-# Merge
-npm changeset
-# Answer the questions
-git add . && git commit -m "<message>"
-git push
-# New PR should have been created by Github Action
-git fetch && git reset --hard origin/main
-```
 
 ### Remote Caching
 

@@ -5,14 +5,14 @@ import { UIBUBLeftEngLogo } from 'tailwind-ui';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  docsRepositoryBase: 'https://github.com/uib-ub/chc-monorepo',
+  docsRepositoryBase: 'https://github.com/uib-ub/uib-ub-monorepo',
   logo:
     <div style={{ display: 'flex', gap: '.5em' }}>
       <UiBIcon className='fill-current' style={{ width: '1.5em', height: '1.5em' }} />
       <span>Dev @ UiB-UB</span>
     </div>,
   project: {
-    link: 'https://github.com/uib-ub/chc-monorepo',
+    link: 'https://github.com/uib-ub/uib-ub-monorepo',
   },
   useNextSeoProps() {
     const { asPath } = useRouter()
