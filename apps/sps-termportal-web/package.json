@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@intlify/unplugin-vue-i18n": "^0.8.1",
-    "@nuxt/image-edge": "^1.0.0-27907872.f4dd19d",
     "@nuxt/test-utils-edge": "^3.0.1-rc.0-27907907.1406d21",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/html-validator": "^1.2.3",
