@@ -1,12 +1,12 @@
 <template>
   <footer class="bg-tpblue-400 static left-0 right-0 bottom-0 text-white">
     <div class="flex flex-wrap items-center justify-center gap-x-6 p-2">
-      <nuxt-img
+      <img
         src="/logo_sprakradet_neg.png"
-        width="180px"
+        style="width:180px"
         alt="logo språkrådet"
       />
-      <nuxt-img src="/logo_ugle_white.svg" width="100px" alt="logo uib" />
+      <img src="/logo_ugle_white.svg" style="width:100px" alt="logo uib" />
       <div class="flex flex-col space-y-2 text-lg">
         <AppLink
           to="mailto:termportalen@uib.no"
