@@ -3,8 +3,8 @@ import 'styles/index.css'
 import { Footer } from 'components/global/Footer'
 import { Navbar } from 'components/global/Navbar'
 import { PreviewBanner } from 'components/preview/PreviewBanner'
-import { getSettings } from 'lib/sanity.client'
-import { getPreviewToken } from 'lib/sanity.server.preview'
+import { getSettings } from 'lib/sanity/sanity.client'
+import { getPreviewToken } from 'lib/sanity/sanity.server.preview'
 
 export default async function IndexRoute({
   children,

@@ -1,3 +1,5 @@
+import { useLocale } from 'next-intl';
+import { notFound } from 'next/navigation';
 import 'tailwindcss/tailwind.css'
 
 import { IBM_Plex_Mono, Inter, PT_Serif } from 'next/font/google'
@@ -20,14 +22,21 @@ const mono = IBM_Plex_Mono({
   weight: ['500', '700'],
 })
 
-export default async function RootLayout({
-  children,
+export default async function LocaleLayout({
+  children, params
 }: {
-  children: React.ReactNode
+  children: React.ReactNode, params: any
 }) {
+  const locale = useLocale();
+
+  // Show a 404 error if the user requests an unknown locale
+  if (params.locale !== locale) {
+    notFound();
+  }
+
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${mono.variable} ${sans.variable} ${serif.variable}`}
     >
       <body>{children}</body>

@@ -1,4 +1,11 @@
 /** @type {import('next').NextConfig} */
+
+const withNextIntl = require('next-intl/plugin')(
+  // This is the default (also the `src` folder is supported out of the box)
+  './i18n.ts'
+);
+
+
 const config = {
   // @TODO turn swcMinify back on once the agressive dead code elimination bug that casues
   // `ReferenceError: FieldPresenceWithOverlay is not defined` is fixed
@@ -23,4 +30,7 @@ const config = {
   },
 }
 
-export default config
+module.exports = withNextIntl({
+  // Other Next.js configuration ...
+  ...config
+});
