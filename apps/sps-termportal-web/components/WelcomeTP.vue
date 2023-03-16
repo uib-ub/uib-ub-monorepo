@@ -1,8 +1,8 @@
 <template>
   <article>
     <template v-if="$i18n.locale === 'nb'">
-      <h2 id="velkommen" class="pb-3 text-2xl">
-        <AppLink to="#velkommen">Velkommen til Termportalen</AppLink>
+      <h2 id="main" class="pb-3 text-2xl">
+        <AppLink to="#main">Velkommen til Termportalen</AppLink>
       </h2>
       <div class="space-y-2">
         <p>
