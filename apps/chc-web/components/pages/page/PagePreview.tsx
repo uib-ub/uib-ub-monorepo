@@ -1,7 +1,7 @@
 'use client'
 
-import { usePreview } from 'lib/sanity.preview'
-import { pagesBySlugQuery } from 'lib/sanity.queries'
+import { usePreview } from 'lib/sanity/sanity.preview'
+import { pagesBySlugQuery } from 'lib/sanity/sanity.queries'
 import type { PagePayload } from 'types'
 
 import { Page } from './Page'
