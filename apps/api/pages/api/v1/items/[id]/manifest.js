@@ -9,7 +9,6 @@ const manifestFrame = {
   "@context": {
     "id": "@id",
     "type": "@type",
-    "value": "@value",
     "body": {
       "@id": "http://www.w3.org/ns/oa#body",
     },
