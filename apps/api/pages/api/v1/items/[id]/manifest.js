@@ -9,7 +9,6 @@ const manifestFrame = {
   "@context": {
     "id": "@id",
     "type": "@type",
-    "value": "@value",
     "body": {
       "@id": "http://www.w3.org/ns/oa#body",
     },
@@ -219,6 +218,7 @@ export default async function handler(req, res) {
           '@type': 'Manifest'
         });
         let framed = await awaitFramed
+        console.log("🚀 ~ file: manifest.js:222 ~ handler ~ framed:", JSON.stringify(framed, null, 2))
 
         // Remove json-ld context 
         framed = omit(framed, ["@context"])
@@ -236,7 +236,7 @@ export default async function handler(req, res) {
         }
 
         // Sort nested arrays before we send the objects to be manifestified
-        framed.items = sortBy(framed.items, o => o.label['@none'][0])
+        // framed.items = sortBy(framed.items, o => o.label['@none'][0])
         framed.structures.items = sortBy(framed.structures.items, i => parseInt(i.split("_p")[1]))
         // We assume all @none language tags are really norwegian
         framed = JSON.parse(JSON.stringify(framed).replaceAll('"@none":', '"no":'))
@@ -244,7 +244,8 @@ export default async function handler(req, res) {
 
         const allMetadata = await fetch(`${API_URL}/items/${id}`).then(res => res.json())
         const metadata = await constructMetadata(allMetadata)
-        console.log("🚀 ~ file: manifest.js:247 ~ handler ~ metadata", metadata)
+        // console.log("🚀 ~ file: manifest.js:247 ~ handler ~ metadata", metadata)
+
         // Create the manifest
         let manifest = await constructManifest(framed, url)
         metadata ? manifest.metadata = metadata : null
