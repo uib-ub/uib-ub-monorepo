@@ -43,9 +43,9 @@
         <input id="viewToggle" v-model="conceptViewToggle" type="checkbox" />
         <label for="viewToggle">{{ $t("id.tableview") }}</label>
       </div>
-      <main id="main" ref="main" class="h-full">
-        <h2 id="ctitle" class="pb-4">
-          <AppLink class="text-3xl" to="#ctitle">{{ pagetitle }}</AppLink>
+      <main ref="main" class="h-full">
+        <h2 id="main" class="pb-4">
+          <AppLink class="text-3xl" to="#main">{{ pagetitle }}</AppLink>
           <div v-if="data[id]?.memberOf">
             <AppLink
               class="text-lg text-gray-600 underline hover:text-black"

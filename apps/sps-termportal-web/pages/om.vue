@@ -1,9 +1,12 @@
 <template>
-  <main id="main">
+  <main>
     <Head>
       <Title>{{ $t("om.title") }} | {{ $t("index.title") }}</Title>
     </Head>
-    <h1 class="pt-5 pb-2 text-3xl">{{ $t("om.title") }}</h1>
+    <h1 id="main" class="pt-5 pb-2 text-3xl">
+      <AppLink to="#main">{{ $t("om.title") }} </AppLink>
+    </h1>
+
     <div class="max-w-3xl space-y-2">
       <p>
         Dette er nettsiden til Termportalen. Siden er fortsatt under utvikling,

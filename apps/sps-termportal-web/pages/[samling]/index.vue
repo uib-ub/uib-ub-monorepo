@@ -1,13 +1,15 @@
 <template>
-  <main id="main">
+  <main>
     <Head>
       <Title
         >{{ uriData?.label[0]["@value"] || uriData?.label[0] || samling }} |
         Termportalen</Title
       >
     </Head>
-    <h1 class="pt-5 pb-2 text-2xl">
-      {{ uriData?.label[0]["@value"] || uriData?.label[0] || samling }}
+    <h1 id="main" class="pt-5 pb-2 text-2xl">
+      <AppLink to="#main">
+        {{ uriData?.label[0]["@value"] || uriData?.label[0] || samling }}
+      </AppLink>
     </h1>
     <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
       <!--Description-->

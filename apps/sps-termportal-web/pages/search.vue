@@ -5,9 +5,9 @@
     </Head>
     <h1 class="sr-only">{{ $t("search.title") }}</h1>
     <SearchFilter />
-    <main id="main">
-      <h2 id="mainheading" class="pb-2 pt-3 text-2xl">
-        <AppLink to="#mainheading">
+    <main>
+      <h2 id="main" class="pb-2 pt-3 text-2xl">
+        <AppLink to="#main">
           {{ $t("searchFilter.results-heading") }}</AppLink
         >
       </h2>

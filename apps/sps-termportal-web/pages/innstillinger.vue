@@ -1,10 +1,10 @@
 <template>
-  <main id="main">
+  <main>
     <Head>
       <Title>{{ $t("innstillinger.title") }} | {{ $t("index.title") }}</Title>
     </Head>
-    <h1 id="innstillinger" class="pt-5 pb-2 text-3xl">
-      <AppLink to="#innstillinger">{{ $t("innstillinger.title") }}</AppLink>
+    <h1 id="main" class="pt-5 pb-2 text-3xl">
+      <AppLink to="#main">{{ $t("innstillinger.title") }}</AppLink>
     </h1>
     <section>
       <h2 id="global" class="pb-2 text-2xl">
