@@ -1,4 +1,4 @@
-import { resolveHref } from 'lib/sanity.links'
+import { resolveHref } from 'lib/sanity/sanity.links'
 import Link from 'next/link'
 import { MenuItem } from 'types'
 
@@ -18,11 +18,10 @@ export function Navbar({ menuItems }: NavbarProps) {
           return (
             <Link
               key={key}
-              className={`text-lg hover:text-black md:text-xl ${
-                menuItem?._type === 'home'
+              className={`text-lg hover:text-black md:text-xl ${menuItem?._type === 'home'
                   ? 'font-extrabold text-black'
                   : 'text-gray-600'
-              }`}
+                }`}
               href={href}
             >
               {menuItem.title}

@@ -1,7 +1,7 @@
 'use client'
 
-import { usePreview } from 'lib/sanity.preview'
-import { homePageQuery } from 'lib/sanity.queries'
+import { usePreview } from 'lib/sanity/sanity.preview'
+import { homePageQuery } from 'lib/sanity/sanity.queries'
 import type { HomePagePayload } from 'types'
 
 import { HomePage } from './HomePage'

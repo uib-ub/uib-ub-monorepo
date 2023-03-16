@@ -1,13 +1,13 @@
 import 'server-only'
 
-import { apiVersion, dataset, projectId, useCdn } from 'lib/sanity.api'
+import { apiVersion, dataset, projectId, useCdn } from 'lib/sanity/sanity.api'
 import {
   homePageQuery,
   homePageTitleQuery,
   pagesBySlugQuery,
   projectBySlugQuery,
   settingsQuery,
-} from 'lib/sanity.queries'
+} from 'lib/sanity/sanity.queries'
 import { createClient } from 'next-sanity'
 import type {
   HomePagePayload,

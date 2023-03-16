@@ -4,8 +4,8 @@ import {
   previewSecretId,
   projectId,
   useCdn,
-} from 'lib/sanity.api'
-import { resolveHref } from 'lib/sanity.links'
+} from 'lib/sanity/sanity.api'
+import { resolveHref } from 'lib/sanity/sanity.links'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { PageConfig } from 'next/types'
 import { createClient } from 'next-sanity'

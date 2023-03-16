@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@portabletext/react": "^2.0.0",
+    "@samvera/clover-iiif": "^1.13.3",
     "@sanity/demo": "^1.0.1",
     "@sanity/image-url": "^1.0.1",
     "@sanity/vision": "^3.4.0",
@@ -23,6 +24,7 @@
     "date-fns": "^2.29.3",
     "intl-segmenter-polyfill": "^0.4.4",
     "next": "^13.2.3",
+    "next-intl": "^2.12.0-beta.5",
     "next-sanity": "^4.1.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
