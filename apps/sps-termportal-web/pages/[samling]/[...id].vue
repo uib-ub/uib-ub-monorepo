@@ -354,7 +354,7 @@ function getRelationData(relationType: SemanticRelation) {
   if (data.value[id]?.[relationType]) {
     return data.value[id]?.[relationType].map((target: string) => {
       try {
-        const label = getConceptDisplaytitle(data.value, target)
+        const label = getConceptDisplaytitle(data.value, target);
         const link = "/" + target.replace("-3A", "/");
         return [label, link];
       } catch (error) {
