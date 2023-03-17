@@ -123,7 +123,10 @@ const fetchFurtherSearchData = () => {
             ? searchFilterData.value.predicate
             : searchOptions.value.searchPredicate,
         searchTranslate: searchOptions.value.searchTranslate,
-        searchMatching: Object.keys(offset),
+        searchMatching:
+          searchFilterData.value.matching.length > 0
+            ? searchFilterData.value.matching
+            : Object.keys(offset),
         searchLimit: searchOptions.value.searchLimit,
         searchOffset: offset,
       };
