@@ -7,9 +7,7 @@
     <SearchFilter />
     <main>
       <h2 id="main" class="pb-2 pt-3 text-2xl">
-        <AppLink to="#main">
-          {{ $t("searchFilter.results-heading") }}</AppLink
-        >
+        <AppLink to="#main"> {{ $t("searchFilter.results-heading") }}</AppLink>
       </h2>
       <ol
         v-if="searchData.length > 0"
@@ -138,6 +136,6 @@ const fetchFurtherSearchData = () => {
 
 const searchScrollBarPos = useSearchScrollBarPos();
 onBeforeUnmount(() => {
-  searchScrollBarPos.value = window.pageYOffset
-})
+  searchScrollBarPos.value = window.pageYOffset;
+});
 </script>
