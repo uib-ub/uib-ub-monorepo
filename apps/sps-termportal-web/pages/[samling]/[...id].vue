@@ -350,19 +350,28 @@ const displayInfo = computed(() => {
   return info;
 });
 
-function getRelationData(relationType: SemanticRelation) {
-  if (data.value[id]?.[relationType]) {
-    return data.value[id]?.[relationType].map((target: string) => {
+function getRelationData(
+  data,
+  relationType: SemanticRelation
+): Array<Array<string>> | null {
+  // Check if concept with id has relation of relationtype
+  if (data[id]?.[relationType]) {
+    return data[id]?.[relationType].map((target: string) => {
       try {
-        const label = getConceptDisplaytitle(data.value, target);
+        const label = getConceptDisplaytitle(data, target);
         const link = "/" + target.replace("-3A", "/");
-        return [label, link];
+        // Don't return links with no label -> linked concept doesn't exist
+        if (label) {
+          return [label, link];
+        } else {
+          return null;
+        }
       } catch (error) {
-        return false;
+        return null;
       }
     });
   } else {
-    return false;
+    return null;
   }
 }
 
