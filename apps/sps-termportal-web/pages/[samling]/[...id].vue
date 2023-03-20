@@ -63,7 +63,7 @@
               <tr>
                 <th class="" scope=""></th>
                 <th
-                  v-for="lang in displayInfo.displayLanguages"
+                  v-for="lang in displayInfo?.displayLanguages"
                   :key="'langSection_' + lang"
                   scope="col"
                 >
@@ -79,7 +79,7 @@
               >
                 <th scope="row">{{ $t("id.prefLabel") }}</th>
                 <td
-                  v-for="lang in displayInfo.displayLanguages"
+                  v-for="lang in displayInfo?.displayLanguages"
                   :key="'prefLabel_' + lang + i"
                 >
                   {{
@@ -95,7 +95,7 @@
               >
                 <th scope="row">{{ $t("id.altLabel") }}</th>
                 <td
-                  v-for="lang in displayInfo.displayLanguages"
+                  v-for="lang in displayInfo?.displayLanguages"
                   :key="'altLabel_' + lang + i"
                 >
                   {{
@@ -110,7 +110,7 @@
               >
                 <th scope="row">{{ $t("id.hiddenLabel") }}</th>
                 <td
-                  v-for="lang in displayInfo.displayLanguages"
+                  v-for="lang in displayInfo?.displayLanguages"
                   :key="'hiddenLabel' + lang + i"
                 >
                   {{
@@ -126,7 +126,7 @@
         </div>
         <div v-else class="grid gap-y-5">
           <div
-            v-for="lang in displayInfo.displayLanguages"
+            v-for="lang in displayInfo?.displayLanguages"
             :key="'disp_' + lang"
           >
             <h3 :id="lang" class="pb-1 text-xl">
@@ -172,7 +172,7 @@
               </tbody>
             </table>
           </div>
-          <div v-if="displayInfo.semanticRelations">
+          <div v-if="displayInfo?.semanticRelations">
             <h3 id="relasjon" class="pb-1 text-xl">
               <AppLink to="#relasjon"> {{ $t("id.relasjon") }}</AppLink>
             </h3>
