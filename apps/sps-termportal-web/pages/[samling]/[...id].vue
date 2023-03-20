@@ -276,8 +276,8 @@ const pagetitle = computed(() => {
   }
 });
 
-function getConceptDisplaytitle(data, id: string) {
-  let title = "";
+function getConceptDisplaytitle(data, id: string): string | null {
+  let title = null;
   const languages = languageOrder[i18n.locale.value as LocalLangCode].slice(
     0,
     3
