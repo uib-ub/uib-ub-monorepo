@@ -63,7 +63,7 @@
               <tr>
                 <th class="" scope=""></th>
                 <th
-                  v-for="lang in displayInfo.displayLanguages"
+                  v-for="lang in displayInfo?.displayLanguages"
                   :key="'langSection_' + lang"
                   scope="col"
                 >
@@ -79,7 +79,7 @@
               >
                 <th scope="row">{{ $t("id.prefLabel") }}</th>
                 <td
-                  v-for="lang in displayInfo.displayLanguages"
+                  v-for="lang in displayInfo?.displayLanguages"
                   :key="'prefLabel_' + lang + i"
                 >
                   {{
@@ -95,7 +95,7 @@
               >
                 <th scope="row">{{ $t("id.altLabel") }}</th>
                 <td
-                  v-for="lang in displayInfo.displayLanguages"
+                  v-for="lang in displayInfo?.displayLanguages"
                   :key="'altLabel_' + lang + i"
                 >
                   {{
@@ -110,7 +110,7 @@
               >
                 <th scope="row">{{ $t("id.hiddenLabel") }}</th>
                 <td
-                  v-for="lang in displayInfo.displayLanguages"
+                  v-for="lang in displayInfo?.displayLanguages"
                   :key="'hiddenLabel' + lang + i"
                 >
                   {{
@@ -126,7 +126,7 @@
         </div>
         <div v-else class="grid gap-y-5">
           <div
-            v-for="lang in displayInfo.displayLanguages"
+            v-for="lang in displayInfo?.displayLanguages"
             :key="'disp_' + lang"
           >
             <h3 :id="lang" class="pb-1 text-xl">
@@ -172,7 +172,7 @@
               </tbody>
             </table>
           </div>
-          <div v-if="displayInfo.semanticRelations">
+          <div v-if="displayInfo?.semanticRelations">
             <h3 id="relasjon" class="pb-1 text-xl">
               <AppLink to="#relasjon"> {{ $t("id.relasjon") }}</AppLink>
             </h3>
@@ -276,8 +276,8 @@ const pagetitle = computed(() => {
   }
 });
 
-function getConceptDisplaytitle(data, id: string) {
-  let title = "";
+function getConceptDisplaytitle(data, id: string): string | null {
+  let title = null;
   const languages = languageOrder[i18n.locale.value as LocalLangCode].slice(
     0,
     3
@@ -320,49 +320,64 @@ const data = computed(() => {
 });
 
 const displayInfo = computed(() => {
-  const conceptLanguages = getConceptLanguages(data.value[id]);
-  const displayLanguages = dataDisplayLanguages.value.filter((language) =>
-    Array.from(conceptLanguages).includes(language)
-  );
-  const prefLabelLength = getMaxNumberOfInstances(data.value?.[id]?.prefLabel);
-  const altLabelLength = getMaxNumberOfInstances(data.value?.[id]?.altLabel);
-  const hiddenLabelLength = getMaxNumberOfInstances(
-    data.value?.[id]?.hiddenLabel
-  );
-  const info = {
-    conceptLanguages,
-    displayLanguages,
-    prefLabelLength,
-    altLabelLength,
-    hiddenLabelLength,
-  };
-  for (const relationType of semanticRelationTypes) {
-    const data = getRelationData(relationType);
-    if (data) {
-      try {
-        info.semanticRelations[relationType] = data;
-      } catch {
-        info.semanticRelations = {};
-        info.semanticRelations[relationType] = data;
+  if (fetchedData.value?.["@graph"]) {
+    const conceptLanguages = getConceptLanguages(data.value[id]);
+    const displayLanguages = dataDisplayLanguages.value.filter((language) =>
+      Array.from(conceptLanguages).includes(language)
+    );
+    const prefLabelLength = getMaxNumberOfInstances(
+      data.value?.[id]?.prefLabel
+    );
+    const altLabelLength = getMaxNumberOfInstances(data.value?.[id]?.altLabel);
+    const hiddenLabelLength = getMaxNumberOfInstances(
+      data.value?.[id]?.hiddenLabel
+    );
+    const info = {
+      conceptLanguages,
+      displayLanguages,
+      prefLabelLength,
+      altLabelLength,
+      hiddenLabelLength,
+    };
+    for (const relationType of semanticRelationTypes) {
+      const relData = getRelationData(data.value, relationType);
+      if (relData) {
+        try {
+          info.semanticRelations[relationType] = relData;
+        } catch {
+          info.semanticRelations = {};
+          info.semanticRelations[relationType] = relData;
+        }
       }
     }
+    return info;
+  } else {
+    return null;
   }
-  return info;
 });
 
-function getRelationData(relationType: SemanticRelation) {
-  if (data.value[id]?.[relationType]) {
-    return data.value[id]?.[relationType].map((target: string) => {
+function getRelationData(
+  data,
+  relationType: SemanticRelation
+): Array<Array<string>> | null {
+  // Check if concept with id has relation of relationtype
+  if (data[id]?.[relationType]) {
+    return data[id]?.[relationType].map((target: string) => {
       try {
-        const label = getConceptDisplaytitle(data.value, target);
+        const label = getConceptDisplaytitle(data, target);
         const link = "/" + target.replace("-3A", "/");
-        return [label, link];
+        // Don't return links with no label -> linked concept doesn't exist
+        if (label) {
+          return [label, link];
+        } else {
+          return null;
+        }
       } catch (error) {
-        return false;
+        return null;
       }
     });
   } else {
-    return false;
+    return null;
   }
 }
 
