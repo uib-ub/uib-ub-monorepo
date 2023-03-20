@@ -320,34 +320,40 @@ const data = computed(() => {
 });
 
 const displayInfo = computed(() => {
-  const conceptLanguages = getConceptLanguages(data.value[id]);
-  const displayLanguages = dataDisplayLanguages.value.filter((language) =>
-    Array.from(conceptLanguages).includes(language)
-  );
-  const prefLabelLength = getMaxNumberOfInstances(data.value?.[id]?.prefLabel);
-  const altLabelLength = getMaxNumberOfInstances(data.value?.[id]?.altLabel);
-  const hiddenLabelLength = getMaxNumberOfInstances(
-    data.value?.[id]?.hiddenLabel
-  );
-  const info = {
-    conceptLanguages,
-    displayLanguages,
-    prefLabelLength,
-    altLabelLength,
-    hiddenLabelLength,
-  };
-  for (const relationType of semanticRelationTypes) {
-    const data = getRelationData(relationType);
-    if (data) {
-      try {
-        info.semanticRelations[relationType] = data;
-      } catch {
-        info.semanticRelations = {};
-        info.semanticRelations[relationType] = data;
+  if (fetchedData.value?.["@graph"]) {
+    const conceptLanguages = getConceptLanguages(data.value[id]);
+    const displayLanguages = dataDisplayLanguages.value.filter((language) =>
+      Array.from(conceptLanguages).includes(language)
+    );
+    const prefLabelLength = getMaxNumberOfInstances(
+      data.value?.[id]?.prefLabel
+    );
+    const altLabelLength = getMaxNumberOfInstances(data.value?.[id]?.altLabel);
+    const hiddenLabelLength = getMaxNumberOfInstances(
+      data.value?.[id]?.hiddenLabel
+    );
+    const info = {
+      conceptLanguages,
+      displayLanguages,
+      prefLabelLength,
+      altLabelLength,
+      hiddenLabelLength,
+    };
+    for (const relationType of semanticRelationTypes) {
+      const relData = getRelationData(data.value, relationType);
+      if (relData) {
+        try {
+          info.semanticRelations[relationType] = relData;
+        } catch {
+          info.semanticRelations = {};
+          info.semanticRelations[relationType] = relData;
+        }
       }
     }
+    return info;
+  } else {
+    return null;
   }
-  return info;
 });
 
 function getRelationData(
