@@ -5,13 +5,6 @@ export async function constructMetadata(data) {
   const spatialLabelsByLang = data.spatial ? reduceValuesByLanguage(data.spatial.map(s => s.label)) : undefined
 
   const metadata = [
-    data.label !== null ? {
-      label: {
-        no: ["Tittel"],
-        en: ["Title"]
-      },
-      value: data.label
-    } : undefined,
     data.identifier ? {
       label: {
         en: ["Identifier"],
