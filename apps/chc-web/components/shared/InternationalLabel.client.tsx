@@ -48,7 +48,7 @@ export const InternationalLabel = (
             {rest ? (
               <>
                 {Object.entries(rest).map((value: any, key: any) => (
-                  <div className="py-1">{value[1]}</div>
+                  <div key={key} className="py-1">{value[1]}</div>
                 ))}
               </>
             ) : null}
