@@ -19,8 +19,8 @@ export function Navbar({ menuItems }: NavbarProps) {
             <Link
               key={key}
               className={`text-lg hover:text-black md:text-xl ${menuItem?._type === 'home'
-                  ? 'font-extrabold text-black'
-                  : 'text-gray-600'
+                ? 'font-extrabold text-black'
+                : 'text-gray-600'
                 }`}
               href={href}
             >
@@ -28,6 +28,12 @@ export function Navbar({ menuItems }: NavbarProps) {
             </Link>
           )
         })}
+      <Link
+        href="/id/ubb-jg-l-0985"
+        className={`text-lg hover:text-black md:text-xl text-gray-600`}
+      >
+        ubb-jg-l-0985
+      </Link>
     </div>
   )
 }

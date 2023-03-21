@@ -13,6 +13,6 @@ export default async function ItemRoute({
   }
 
   return (
-    <div className="border border-red-500">{children}</div>
+    <div className="ring-2 ring-offset-8 ring-magenta-600 rounded-sm before:content-['ItemRouteLayout'] before:relative before:bg-white before:-top-[22px] before:px-2">{children}</div>
   )
 }

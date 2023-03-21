@@ -1,5 +1,6 @@
 {
   "Item": {
-    "title": "Hei verden! Dette er objekt siden."
+    "title": "Hei verden! Dette er objekt siden.",
+    "greeting": "Hei, hvem du nå er! Du er på en norsk side."
   }
 }

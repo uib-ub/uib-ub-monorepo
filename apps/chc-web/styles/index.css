@@ -16,3 +16,7 @@ ul {
 ol {
   list-style-type: disc;
 }
+
+dt {
+  font-weight: 700;
+}
