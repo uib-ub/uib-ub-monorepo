@@ -7,7 +7,7 @@ export async function constructManifest(data, API) {
     id: data.id,
     type: data.type,
     label: data.label,
-    summary: data.description,
+    summary: data.summary,
     metadata: [
       data.label !== null ? {
         label: {

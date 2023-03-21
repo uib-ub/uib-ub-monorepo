@@ -2,8 +2,8 @@ import Cors from 'cors'
 import * as jsonld from 'jsonld'
 import { omit, sortBy } from 'lodash'
 import { constructManifest } from '../../../../../lib/response/iiif/constructManifest'
-import { API_URL, getBaseUrl, SPARQL_PREFIXES } from '../../../../../lib/constants'
 import { constructMetadata } from '../../../../../lib/response/iiif/constructMetadata'
+import { API_URL, getBaseUrl, SPARQL_PREFIXES } from '../../../../../lib/constants'
 
 const manifestFrame = {
   "@context": {
@@ -115,7 +115,7 @@ async function getObject(api, id) {
       ?manifestURL rdfs:label ?label .
       ?manifestURL rdfs:seeAlso ?s .
       ?manifestURL sc:homepage ?homepage .
-      ?manifestURL dc:description ?desc .
+      ?manifestURL as:summary ?desc .
       ?manifestURL sc:thumbnail ?thumb .
       ?manifestURL sc:items ?part .
       ?manifestURL sc:items ?singleCanvas .
