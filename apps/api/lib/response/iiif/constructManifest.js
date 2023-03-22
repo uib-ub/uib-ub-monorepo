@@ -28,7 +28,7 @@ export async function constructManifest(data, API) {
     ],
     thumbnail: [
       {
-        id: data.thumbnail.value ?? data.thumbnail,
+        id: data.thumbnail['@value' ?? 'value'] ?? data.thumbnail,
         type: "Image",
         format: "image/jpeg",
         width: 250,
