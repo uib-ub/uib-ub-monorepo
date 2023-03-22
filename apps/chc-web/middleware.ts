@@ -1,14 +1,9 @@
 import createIntlMiddleware from 'next-intl/middleware';
+import { i18n } from 'i18n';
 
-export default createIntlMiddleware({
-  // A list of all locales that are supported
-  locales: ['no', 'en'],
-
-  // If this locale is matched, pathnames work without a prefix (e.g. `/about`)
-  defaultLocale: 'no'
-});
+export default createIntlMiddleware(i18n);
 
 export const config = {
   // Skip all paths that aren't pages that you'd like to internationalize
-  matcher: ['/((?!api|studio|_next|favicon.ico|assets).*)']
+  matcher: ['/((?!api|studio|_next|favicon*|assets).*)']
 };

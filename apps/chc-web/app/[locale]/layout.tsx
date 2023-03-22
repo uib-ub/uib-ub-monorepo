@@ -39,6 +39,9 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${mono.variable} ${sans.variable} ${serif.variable}`}
     >
+      <head>
+        <link rel="icon" href="/favicon/favicon.svg" />
+      </head>
       <body>{children}</body>
     </html>
   )
