@@ -1,6 +1,7 @@
 import { IIIFMetadata } from 'components/shared/IIIF/IIIFMetadata.client';
 import ManifestViewer from 'components/shared/IIIF/ManifestViewer.client';
 import { InternationalLabel } from 'components/shared/InternationalLabel.client';
+import LocaleSwitcher from 'components/shared/LanguageSwitcher';
 
 async function getData(manifest: string) {
   const res = await fetch(manifest);
@@ -38,8 +39,11 @@ export async function ItemPage({
           showInformationToggle: false, */
         }}
       />
+      <div className="max-w-prose">
+        <IIIFMetadata label={manifest.label} summary={manifest.summary} metadata={manifest.metadata} lang={locale} />
+      </div>
 
-      <IIIFMetadata label={manifest.label} summary={manifest.summary} metadata={manifest.metadata} lang={locale} />
+      <LocaleSwitcher locale={locale} />
 
       {/* <pre className='text-xs'>{JSON.stringify(data, null, 2)}</pre> */}
     </div>
