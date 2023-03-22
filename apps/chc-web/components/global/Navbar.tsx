@@ -1,4 +1,4 @@
-import { resolveHref } from 'lib/sanity.links'
+import { resolveHref } from 'lib/sanity/sanity.links'
 import Link from 'next/link'
 import { MenuItem } from 'types'
 
@@ -18,17 +18,28 @@ export function Navbar({ menuItems }: NavbarProps) {
           return (
             <Link
               key={key}
-              className={`text-lg hover:text-black md:text-xl ${
-                menuItem?._type === 'home'
-                  ? 'font-extrabold text-black'
-                  : 'text-gray-600'
-              }`}
+              className={`text-lg hover:text-black md:text-xl ${menuItem?._type === 'home'
+                ? 'font-extrabold text-black'
+                : 'text-gray-600'
+                }`}
               href={href}
             >
               {menuItem.title}
             </Link>
           )
         })}
+      <Link
+        href="/id/ubb-jg-l-0985"
+        className={`text-lg hover:text-black md:text-xl text-gray-600`}
+      >
+        ubb-jg-l-0985
+      </Link>
+      <Link
+        href="/id/ubb-ms-0008"
+        className={`text-lg hover:text-black md:text-xl text-gray-600`}
+      >
+        ubb-ms-0008
+      </Link>
     </div>
   )
 }

@@ -2,7 +2,7 @@
  * This plugin contains all the logic for setting up the singletons
  */
 
-import { apiVersion, previewSecretId } from 'lib/sanity.api'
+import { apiVersion, previewSecretId } from 'lib/sanity/sanity.api'
 import { type DocumentDefinition } from 'sanity'
 import { type StructureResolver } from 'sanity/desk'
 

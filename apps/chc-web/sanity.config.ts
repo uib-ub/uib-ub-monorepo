@@ -3,7 +3,7 @@
  */
 
 import { visionTool } from '@sanity/vision'
-import { apiVersion, dataset, previewSecretId, projectId } from 'lib/sanity.api'
+import { apiVersion, dataset, previewSecretId, projectId } from 'lib/sanity/sanity.api'
 import { previewDocumentNode } from 'plugins/previewPane'
 import { productionUrl } from 'plugins/productionUrl'
 import { pageStructure, singletonPlugin } from 'plugins/settings'

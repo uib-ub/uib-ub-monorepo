@@ -1,5 +1,4 @@
-import * as demo from 'lib/demo.data'
-import { urlForImage } from 'lib/sanity.image'
+import { urlForImage } from 'lib/sanity/sanity.image'
 import type { Image } from 'sanity'
 
 /**
@@ -26,7 +25,7 @@ export function SiteMeta({
 
   return (
     <>
-      <title>{metaTitle || demo.title}</title>
+      <title>{metaTitle}</title>
       <meta name="viewport" content="width=device-width,initial-scale=1.0" />
       <link
         rel="apple-touch-icon"
