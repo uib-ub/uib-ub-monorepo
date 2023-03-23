@@ -9,7 +9,7 @@ const CloverIIIF = dynamic(() => import('@samvera/clover-iiif'), {
 
 const ManifestViewer = (props: any) => {
   return (
-    <Boundary color='blue' labels={['ManifestViewer']} size='small'>
+    <Boundary color='orange' labels={['ManifestViewer (client)']} size='small'>
       <div className='my-3 min-h-[70vh]'>
         <CloverIIIF {...props} />
       </div>

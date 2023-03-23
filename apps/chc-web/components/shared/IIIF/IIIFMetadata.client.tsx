@@ -10,7 +10,7 @@ export const IIIFMetadata = ({ label, summary, metadata, lang }: {
   lang?: string,
 }) => {
   return (
-    <Boundary color='cyan' labels={['IIIFMetadata']} size='small'>
+    <Boundary color='orange' labels={['IIIFMetadata (client)']} size='small'>
       <div>
         <Label label={label} as="h1" className='text-lg font-black' lang={lang} />
         <Summary summary={summary} as="p" lang={lang} />
