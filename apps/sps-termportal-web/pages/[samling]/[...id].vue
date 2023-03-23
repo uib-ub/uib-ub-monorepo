@@ -212,7 +212,7 @@
                 <!--Domene-->
                 <DataRow
                   v-if="data[id]?.domene"
-                  :data="data[id]?.domene"
+                  :data="data[id]?.domene.split('-3A').pop()"
                   :label="$t('id.domain')"
                 />
                 <!--Bruksområde-->
