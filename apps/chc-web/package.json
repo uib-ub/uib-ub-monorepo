@@ -13,9 +13,9 @@
     "edit": "node ./scripts/editDocument.js"
   },
   "dependencies": {
+    "@heroicons/react": "^2.0.16",
     "@portabletext/react": "^2.0.0",
     "@radix-ui/react-accordion": "^1.1.1",
-    "@radix-ui/react-icons": "^1.2.0",
     "@samvera/clover-iiif": "^1.13.3",
     "@samvera/nectar-iiif": "^0.0.20",
     "@sanity/demo": "^1.0.1",
