@@ -9,7 +9,7 @@ export default async function ItemRoute({
 }) {
 
   return (
-    <Boundary color='cyan' labels={['InternationalLabel']} size='small'>
+    <Boundary color='cyan' labels={['ItemRoute (server)']} size='small'>
       {children}
     </Boundary>
 

@@ -10,7 +10,7 @@ export default function LocaleSwitcher({ locale }: { locale: string }) {
   const currentLocale = locale
 
   return (
-    <Boundary color='orange' labels={['LanguageSwitcher']} size='small'>
+    <Boundary color='orange' labels={['LanguageSwitcher (client)']} size='small'>
       <div>
         <p>Locale switcher:</p>
         <ul>
