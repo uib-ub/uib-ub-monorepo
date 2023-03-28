@@ -14,9 +14,7 @@
     <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
       <!--Description-->
       <div class="basis-GRb space-y-2">
-        <p v-for="p in description" :key="p">
-          {{ p }}
-        </p>
+        <p v-for="p in description" :key="p" v-html="p" />
       </div>
       <!--Table-->
       <aside class="basis-GRs">
