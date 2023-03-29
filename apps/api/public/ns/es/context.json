@@ -418,9 +418,6 @@
     "Parish": {
       "@id": "ubbont:Parish"
     },
-    "label": {
-      "@id": "rdfs:label"
-    },
     "label_none": {
       "@id": "rdfs:label",
       "@language": null

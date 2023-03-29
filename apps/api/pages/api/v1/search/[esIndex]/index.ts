@@ -1,23 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Client } from '@elastic/elasticsearch'
-import { HumanMadeObjects } from '../HumanMadeObjects'
-const { Transport } = require('@elastic/transport')
+import client from '../../../../../lib/clients/search.client'
 
-class MTransport extends Transport {
-  request(params: any, options: any, callback: any) {
-    params.path = process.env.ES_PATH + params.path
-    return super.request(params, options, callback)
-  }
+const getData = async (url: string) => {
+  const response = await fetch(url)
+  return response.json()
 }
 
-const client = new Client({
-  node: process.env.ES_HOST,
-  /* @ts-ignore */
-  Transport: MTransport,
-  auth: {
-    apiKey: process.env.ES_APIKEY || ''
-  }
-})
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const {
@@ -31,10 +19,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).send('You are not authorized!')
       }
       try {
-        const operations = HumanMadeObjects.flatMap(doc => [{ index: { _index: esIndex } }, doc])
-        const bulkResponse = await client.bulk({ refresh: true, operations })
+        const data = await getData('http://localhost:3009/items')
+        const operations = data['@graph'].flatMap((doc: any) => [{ index: { _index: esIndex } }, doc])
+        const bulkResponse = await client.bulk({ refresh: true, operations, pipeline: 'marcus-next-ingester' })
 
-        /* if (bulkResponse.errors) {
+        if (bulkResponse.errors) {
           const erroredDocuments: {
             status: any; error: any; operation: any; document: any
           }[] = []
@@ -50,16 +39,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // fix the document before to try it again.
                 status: action[operation].status,
                 error: action[operation].error,
-                operation: body[i * 2],
-                document: body[i * 2 + 1]
+                operation: operations[i * 2],
+                document: operations[i * 2 + 1]
               })
             }
           })
           console.log(erroredDocuments)
-        } */
+        }
 
         const count = await client.count({ index: esIndex })
-        console.log(count)
+        console.log("🚀 ~ file: index.ts:62 ~ handler ~ count:", count)
 
         res.status(200).json(bulkResponse)
       } catch (err) {

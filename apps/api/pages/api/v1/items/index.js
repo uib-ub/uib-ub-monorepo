@@ -27,21 +27,27 @@ async function getObject(url) {
     ${SPARQL_PREFIXES}
     CONSTRUCT {
       ?uri a crm:E22_Human-Made_Object ;
+        ?p ?o ;
         rdfs:label ?label ;
-        dct:identifier ?identifier ;
         muna:image ?image ;
         muna:subjectOfManifest ?manifest ;
         foaf:homepage ?homepage .
+      ?o a ?oClass ;
+        dct:identifier ?identifier ;
+        rdfs:label ?oLabel ;
+        wgs:long ?long ;
+        wgs:lat ?lat .
     } WHERE { 
-      GRAPH ?g {
-        ?uri rdf:type/(rdfs:subClassOf)* bibo:Document ;
-          dct:identifier ?identifier .
-          OPTIONAL {?uri dct:title ?title } .
-          OPTIONAL {?uri foaf:name ?name } .
-          OPTIONAL {?uri skos:prefLabel ?prefLabel } .
-          OPTIONAL {?uri rdfs:label ?rdfsLabel } .
-          BIND (COALESCE(?title,?name,?prefLabel,?rdfsLabel) AS ?label) .
-          # Get multipage image
+      GRAPH <urn:x-arq:UnionGraph> {
+        ?uri rdf:type/rdfs:subClassOf* bibo:Document ;
+        dct:identifier ?id ;
+        ?p ?o .
+        OPTIONAL {?uri dct:title ?title } .
+        OPTIONAL {?uri foaf:name ?name } .
+        OPTIONAL {?uri skos:prefLabel ?prefLabel } .
+        OPTIONAL {?uri rdfs:label ?rdfsLabel } .
+        BIND (COALESCE(?title,?name,?prefLabel,?rdfsLabel) AS ?label) .
+        # Get multipage image
         OPTIONAL { 
           ?uri ubbont:hasRepresentation / dct:hasPart ?page .
           ?page ubbont:sequenceNr 1 .
@@ -56,15 +62,22 @@ async function getObject(url) {
           OPTIONAL {?part ubbont:hasSMView ?imgSM .} 
         }
         BIND (COALESCE(?imgMD,?imgSM,?mdImage,?smImage) AS ?image) .
-        
-        OPTIONAL { 
-          ?uri dct:license / rdfs:label ?licenseLabel .
+        OPTIONAL {
+          ?o a ?oClass ;
+            (dct:title|foaf:name|skos:prefLabel|rdfs:label) ?oLabel ;
+            dct:identifier ?identifier .
+            OPTIONAL {
+              ?o wgs:long ?long ;
+                wgs:lat ?lat
+            }
         }
         BIND(iri(REPLACE(str(?uri), "data.ub.uib.no","marcus.uib.no","i")) as ?homepage) .
         BIND(CONCAT("https://api-ub.vercel.app/items/", ?id, "/manifest") as ?manifest) .
+        FILTER(?p != ubbont:cataloguer && ?p != ubbont:internalNote && ?p != dct:relation && ?p != dct:hasPart)
       } 
     }
-    LIMIT 100
+    OFFSET 0
+    LIMIT 50000
   `
 
   const results = await fetch(
@@ -95,7 +108,7 @@ export default async function handler(req, res) {
         //res.status(200).json(result)
 
         const awaitFramed = jsonld.frame(result, {
-          '@context': [`${getBaseUrl()}/ns/ubbont/context.json`],
+          '@context': [`${getBaseUrl()}/ns/es/context.json`],
           '@type': 'HumanMadeObject',
           '@embed': '@always',
         })
