@@ -7,7 +7,7 @@ export function genConceptQuery(
   const query = `
   #jterm-beta>concept: ${url}
   PREFIX dc: <http://purl.org/dc/elements/1.1/>
-  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX dct: <http://purl.org/dc/terms/>
   PREFIX xkos: <http://rdf-vocabulary.ddialliance.org/xkos#>
   PREFIX text: <http://jena.apache.org/text#>
   PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
@@ -17,6 +17,7 @@ export function genConceptQuery(
   PREFIX skosp: <http://www.data.ub.uib.no/ns/spraksamlingene/skos#>
   PREFIX skosno: <https://data.norge.no/vocabulary/skosno#>
   PREFIX skosno: <https://vokab.norge.no/skosno#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   PREFIX base: <${base}>
 
   CONSTRUCT  {

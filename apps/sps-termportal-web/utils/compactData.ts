@@ -13,21 +13,21 @@ export async function compactData(data: any, base: string) {
       skosno: "https://vokab.norge.no/skosno#",
       skosno2: "http://difi.no/skosno#",
       skosp: "http://www.data.ub.uib.no/ns/spraksamlingene/skos#",
-      dcterms: "http://purl.org/dc/terms/",
+      dct: "http://purl.org/dc/terms/",
       xsd: "http://www.w3.org/2001/XMLSchema#",
       vcard: "http://www.w3.org/2006/vcard/ns#",
       literalForm: "skosxl:literalForm",
       label: "rdfs:label",
       domene: "skosp:domene",
-      modified: "dcterms:modified",
-      identifier: "dcterms:identifier",
-      language: "dcterms:language",
+      modified: "dct:modified",
+      identifier: "dct:identifier",
+      language: "dct:language",
       scopeNote: "skos:scopeNote", // TODO
       opprinneligSpraak: "skosp:opprinneligSpraak",
       hasTelephone: "vcard:hasTelephone",
       hasEmail: { "@id": "vcard:hasEmail", "@type": "@id" },
       description: {
-        "@id": "dcterms:description",
+        "@id": "dct:description",
         "@container": "@set",
       },
       semanticRelation: {
@@ -77,7 +77,7 @@ export async function compactData(data: any, base: string) {
       },
 
       subject: {
-        "@id": "dcterms:subject",
+        "@id": "dct:subject",
         "@type": "@id",
         "@container": "@set",
       },
@@ -112,11 +112,11 @@ export async function compactData(data: any, base: string) {
         "@container": "@set",
       },
       publisher: {
-        "@id": "dcterms:publisher",
+        "@id": "dct:publisher",
         "@type": "@id",
       },
       source: {
-        "@id": "dcterms:source",
+        "@id": "dct:source",
         "@type": "@id",
       },
     };
