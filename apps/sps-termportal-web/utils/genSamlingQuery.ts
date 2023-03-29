@@ -2,7 +2,7 @@ export function genSamlingQuery(namespace: string): string {
   const runtimeConfig = useRuntimeConfig();
   const query = `
   #jterm-beta>termbase: ${namespace}
-    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX dct: <http://purl.org/dc/terms/>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX skosp: <http://www.data.ub.uib.no/ns/spraksamlingene/skos#>
