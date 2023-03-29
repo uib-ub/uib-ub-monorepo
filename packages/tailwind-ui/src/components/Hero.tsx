@@ -18,7 +18,7 @@ export const Hero: React.FC<HeroProps> = ({ label, creators, image, figCaption, 
       {image && (
         <figure className='relative'>
           {/* <div className='h-[600px] min-w-[600px] relative'> */}
-          <div className='sm:w-[500px] sm:h-[500px] relative'>
+          <div className='sm:w-[500px] sm:min-h-[500px] relative'>
             {image}
           </div>
 

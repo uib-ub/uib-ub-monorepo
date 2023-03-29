@@ -11,8 +11,8 @@ const ActorBlock = (props) => {
 
   return (
     <div className='my-4 col-start-3 col-end-4'>
-      <h3>
-        <Link href={`/id/${_id}`}>{label[locale || 'no']}</Link>
+      <h3 className='text-2xl font-bold'>
+        {label[locale || 'no']}
       </h3>
       {referredToBy ?
         <div className='max-w-prose xl:text-xl text-light'>
