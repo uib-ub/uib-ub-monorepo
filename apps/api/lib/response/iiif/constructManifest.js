@@ -9,13 +9,6 @@ export async function constructManifest(data, API) {
     label: data.label,
     summary: data.summary,
     metadata: [
-      data.label !== null ? {
-        label: {
-          no: ["Tittel"],
-          en: ["Title"]
-        },
-        value: data.label
-      } : undefined,
       data.identifier ? {
         label: {
           en: ["Identifier"],
@@ -136,7 +129,7 @@ export async function constructManifest(data, API) {
                   motivation: "painting",
                   target: canvas.id,
                   body: {
-                    id: canvas.items?.['ubbont:hasXLView'] || canvas.items?.['ubbont:hasMDView'],
+                    id: canvas.items?.['ubbont:hasXLView'] || canvas.items?.['ubbont:hasMDView'] || canvas.items?.['ubbont:hasSMView'],
                     type: "Image",
                     format: "image/jpeg",
                     width: 1024,
