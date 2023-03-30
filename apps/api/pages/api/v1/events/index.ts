@@ -71,7 +71,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Deal with response
       if (response.status >= 200 && response.status <= 299) {
         const result = await response.json()
-        //console.log(result)
 
         // Frame the result for nested json
         const awaitFramed = jsonld.frame(result, {
