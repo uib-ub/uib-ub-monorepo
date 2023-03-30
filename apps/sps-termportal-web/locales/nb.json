@@ -104,7 +104,7 @@
     "srText": "Venter på søkeresultater"
   },
 
-  "buttonScrollTop": {"srLabel": "Tilbake til toppen"},
+  "buttonScrollTop": { "srLabel": "Tilbake til toppen" },
 
   "samling": {
     "organisation": "Organisajon",
@@ -152,7 +152,6 @@
     "title": "Inn­stillinger",
     "global": "Global",
     "conceptview": "Begrepsvisning",
-    "dataDispLang": "Data viser språk",
-    "data": "test"
+    "dataDispLang": "Data viser språk"
   }
 }
