@@ -90,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Transform the data, set a timespan as an example
         framed.timespan = getTimespan(undefined, framed?.beginOfTheBegin, framed?.endOfTheEnd)
         // delete framed?.beginOfTheBegin
-        //delete framed?.endOfTheEnd
+        // delete framed?.endOfTheEnd
 
         res.status(200).json(framed)
       } else {
