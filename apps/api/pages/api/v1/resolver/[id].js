@@ -5,14 +5,23 @@ export default async function handler(req, res) {
   } = req
 
   const query = `
-    PREFIX  dct:  <http://purl.org/dc/terms/>
-
+    PREFIX dct: <http://purl.org/dc/terms/>
     ASK { 
-      GRAPH ?g { 
+      { 
         VALUES ?id { "${id}" }
         ?s dct:identifier ?id .
       }
-    }
+      UNION
+      {
+        ?s dct:identifier ?id .
+        FILTER langMatches( lang(?id), "no" ) 
+      }
+      UNION
+      {
+        ?s dct:identifier ?id .
+        FILTER langMatches( lang(?id), "en" ) 
+      }
+    }      
   `
 
   const askMarcus = await fetch(`${process.env.MARCUS_API}${query}`).then(res => res.json()).then(res => {
