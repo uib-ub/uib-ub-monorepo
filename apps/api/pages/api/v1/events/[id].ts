@@ -77,7 +77,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const result = await response.json()
         // console.log(result)
 
-        //const compacted = jsonld.compact(result, { '@context': 'https://api-ub.vercel.app/ns/ubbont/context.json' });
+        // const compacted = jsonld.compact(result, { '@context': 'https://api-ub.vercel.app/ns/ubbont/context.json' });
 
         // Frame the result for nested json
         const awaitFramed = jsonld.frame(result, {
