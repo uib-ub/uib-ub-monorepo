@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { marcusMapping } from './marcusMapping'
-import { handleError } from '../../../../../../lib/request/esHelpers'
+import { handleError } from '../../../../../../lib/response/esHelpers'
 import client from '../../../../../../lib/clients/search.client'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

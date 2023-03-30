@@ -413,14 +413,20 @@
     },
     "altLabel": {
       "@id": "skos:altLabel",
-      "@container": "@language"
+      "@container": [
+        "@language",
+        "@set"
+      ]
     },
     "Parish": {
       "@id": "ubbont:Parish"
     },
     "label": {
       "@id": "rdfs:label",
-      "@container": "@language"
+      "@container": [
+        "@language",
+        "@set"
+      ]
     },
     "PressClipping": {
       "@id": "ubbont:PressClipping"
@@ -1001,7 +1007,10 @@
     },
     "title": {
       "@id": "dct:title",
-      "@container": "@language"
+      "@container": [
+        "@language",
+        "@set"
+      ]
     },
     "Bestallingsbrev": {
       "@id": "ubbont:Bestallingsbrev"
@@ -1396,7 +1405,10 @@
     },
     "prefLabel": {
       "@id": "skos:prefLabel",
-      "@container": "@language"
+      "@container": [
+        "@language",
+        "@set"
+      ]
     },
     "formationDate": {
       "@id": "dbo:formationDate",
@@ -1413,7 +1425,10 @@
     },
     "description": {
       "@id": "dct:description",
-      "@container": "@language"
+      "@container": [
+        "@language",
+        "@set"
+      ]
     },
     "hasTranscription": {
       "@id": "ubbont:hasTranscription",
