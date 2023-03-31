@@ -55,12 +55,12 @@ async function getObject(id, url) {
       BIND (COALESCE(?imgMD,?imgSM,?mdImage,?smImage) AS ?image) .
       OPTIONAL {
         ?o a ?oClass ;
-          (dct:title|foaf:name|skos:prefLabel|rdfs:label) ?oLabel ;
-          dct:identifier ?identifier .
-          OPTIONAL {
-            ?o wgs:long ?long ;
-              wgs:lat ?lat
-          }
+          (dct:title|foaf:name|skos:prefLabel|rdfs:label) ?oLabel .
+        OPTIONAL {?o dct:identifier ?identifier } .
+        OPTIONAL {
+          ?o wgs:long ?long ;
+            wgs:lat ?lat
+        }
       }
       OPTIONAL { 
         ?uri dct:license / rdfs:label ?licenseLabel .
