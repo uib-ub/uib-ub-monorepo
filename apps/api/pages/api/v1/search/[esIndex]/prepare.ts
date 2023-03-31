@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { marcusMapping } from './mapping/marcusMapping'
-import { marcusNextIngester } from './pipelines/marcusNextIngester'
+import { mappings } from '../../../../../lib/request/search/mappings'
+import { pipelines } from '../../../../../lib/request/search/pipelines'
 import client from '../../../../../lib/clients/search.client'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -9,6 +9,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     method,
   } = req
 
+  // ts ignore because of the dynamic index name
+  // @ts-ignore
+  const PIPELINES = pipelines[esIndex.replace('-', '_')]
+  // @ts-ignore
+  const MAPPINGS = mappings[esIndex.replace('-', '_')]
+
+  if (!PIPELINES || !MAPPINGS) {
+    return res.status(404).json(
+      {
+        ok: false,
+        message: 'Missing mappings or pipelines for this index name, aborting.'
+      }
+    )
+  }
+
   switch (method) {
     case 'POST':
       if (req.query.token !== process.env.ES_INDEX_SECRET) {
@@ -16,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       try {
         /* @ts-ignore */
-        const deleteIndex = await client.indices.delete({ index: esIndex }, function (err) {
+        const deleteIndex = await client.indices.delete({ index: esIndex, ignore_unavailable: true }, function (err) {
           if (err) {
             throw new Error(err)
           }
@@ -29,14 +44,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
 
         /* @ts-ignore */
-        const putPipeline = await client.ingest.putPipeline(marcusNextIngester, function (err) {
+        const putPipeline = await client.ingest.putPipeline(PIPELINES, function (err) {
           if (err) {
             throw new Error(err)
           }
         })
 
         /* @ts-ignore */
-        const putMapping = await client.indices.putMapping({ index: esIndex, body: marcusMapping }, function (err) {
+        const putMapping = await client.indices.putMapping({ index: esIndex, body: MAPPINGS }, function (err) {
           if (err) {
             throw new Error(err)
           }
@@ -46,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(200).json(values)
         })
 
-        //res.status(200).json({ deleteIndex, createIndex, putMapping, putPipeline })
+        res.status(200).json({ ok: true, message: 'Index created, pipelines and mappings applied.' })
       } catch (err) {
         (err: any) => { return err }
         return res.status(200).json({ message: err })

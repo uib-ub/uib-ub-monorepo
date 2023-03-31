@@ -1,4 +1,4 @@
-export const marcusNextIngester = {
+export const marcus_demo = {
   "id": "marcus-next-ingester",
   "version": 1,
   "description": "Marcus-next pipeline",

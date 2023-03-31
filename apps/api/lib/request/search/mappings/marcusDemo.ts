@@ -1,4 +1,4 @@
-export const marcusMapping = {
+export const marcus_demo = {
   "properties": {
     "@context": {
       "type": "keyword",
