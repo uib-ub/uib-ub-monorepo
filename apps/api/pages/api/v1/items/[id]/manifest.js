@@ -199,7 +199,7 @@ export default async function handler(req, res) {
 
       if (response.status >= 200 && response.status <= 299) {
         const results = await response.json();
-        console.log("🚀 ~ file: manifest.js:201 ~ handler ~ results:", results)
+        // console.log("🚀 ~ file: manifest.js:201 ~ handler ~ results:", results)
 
         // Frame the result for nested json
         const awaitFramed = jsonld.frame(results, {
@@ -207,7 +207,7 @@ export default async function handler(req, res) {
           '@type': 'Manifest'
         });
         let framed = await awaitFramed
-        console.log("🚀 ~ file: manifest.js:209 ~ handler ~ framed:", framed)
+        // console.log("🚀 ~ file: manifest.js:209 ~ handler ~ framed:", framed)
 
         // Remove json-ld context 
         framed = omit(framed, ["@context"])
