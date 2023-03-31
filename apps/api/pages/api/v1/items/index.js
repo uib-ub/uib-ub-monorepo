@@ -8,7 +8,8 @@ const cors = Cors({
   methods: ['POST', 'GET', 'HEAD'],
 })
 
-async function getObject(url, page) {
+async function getObject(url, page, limit = 100) {
+  const LIMIT = limit
   const query = `
     ${SPARQL_PREFIXES}
     CONSTRUCT {
@@ -20,8 +21,8 @@ async function getObject(url, page) {
             dct:identifier ?id .
         }
       ORDER BY ?id
-      OFFSET ${(page * 100)}
-      LIMIT 100
+      OFFSET ${(page * LIMIT)}
+      LIMIT ${LIMIT}
     }
   `
 
@@ -46,7 +47,7 @@ export default async function handler(req, res) {
       const url = 'https://sparql.ub.uib.no/sparql/query?query='
 
       const response = await getObject(url, page)
-      console.log("🚀 ~ file: index.js:65 ~ handler ~ page:", page)
+      // console.log("🚀 ~ file: index.js:65 ~ handler ~ page:", page)
 
       // Deal with response
       if (response.status >= 200 && response.status <= 299) {
