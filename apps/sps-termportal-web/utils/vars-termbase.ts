@@ -91,8 +91,8 @@ export const domainNesting = {
       "KJEMI",
     ],
   },
-  sammfunnsfag: { bases: ["NOJU", "TOLKING", "UHR"] },
-  okonomAdmin: { bases: ["NHH", "FBK"] },
+  sammfunnsfag: { bases: ["NOJU", "TOLKING"] },
+  okonomAdmin: { bases: ["NHH", "FBK", "UHR"] },
 };
 
 export const termbaseUriPatterns = {
