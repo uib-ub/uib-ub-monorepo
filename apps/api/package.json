@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
+    "_experimental-ingest-marcus-demo": "node scripts/ingester.js"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

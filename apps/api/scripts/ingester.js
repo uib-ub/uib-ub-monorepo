@@ -5,6 +5,8 @@ const { Client } = require('@elastic/elasticsearch')
 const { Transport } = require('@elastic/transport')
 
 const { ES_HOST, ES_APIKEY, ES_PATH } = process.env
+// Hardcoded for now
+const PIPELINE = 'marcus-demo'
 
 class MTransport extends Transport {
   request(params, options, callback) {
@@ -69,7 +71,7 @@ const indexData = async (data) => {
   const response = await client.bulk({
     refresh: true,
     body: data,
-    pipeline: 'marcus-next-ingester'
+    pipeline: PIPELINE
   })
   // console.log("🚀 ~ file: ingester.js:86 ~ indexData ~ response:", response)
 
