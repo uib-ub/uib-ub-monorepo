@@ -18,9 +18,8 @@
       class="max-w-prose"
       :class="{ 'text-right': langRtoL(dataLang as LangCode) }"
       :lang="dataLang"
-    >
-      {{ data }}
-    </td>
+      v-html="data"
+    />
   </tr>
 </template>
 
