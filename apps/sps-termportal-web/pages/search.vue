@@ -30,9 +30,12 @@
 <script setup lang="ts">
 import { Matching, MatchingNested } from "../utils/vars";
 import { SearchOptions } from "../composables/states";
+import { FetchType } from "../composables/useFetchSearchData";
+
 const searchData = useSearchData();
 const searchFilterData = useSearchFilterData();
 const searchDataStats = useSearchDataStats();
+const allowSearchFetch = useAllowSearchFetch();
 const countFetchedMatches = computed(() => {
   return countSearchEntries(searchData.value);
 });
@@ -141,4 +144,35 @@ const searchScrollBarPos = useSearchScrollBarPos();
 onBeforeUnmount(() => {
   searchScrollBarPos.value = window.pageYOffset;
 });
+
+function considerSearchFetching(situation: FetchType) {
+  if (allowSearchFetch.value && searchOptions.value.searchTerm !== null) {
+    searchData.value = [];
+    useFetchSearchData(searchOptions.value, situation);
+    allowSearchFetch.value = false;
+  }
+}
+
+watch(
+  () => searchOptions.value.searchTerm,
+  () => {
+    allowSearchFetch.value = true;
+    considerSearchFetching("initial");
+  }
+);
+
+watch(
+  () => [
+    searchOptions.value.searchDomain,
+    searchOptions.value.searchLanguage,
+    searchOptions.value.searchBase,
+    searchOptions.value.searchTranslate,
+  ],
+  () => {
+    allowSearchFetch.value = true;
+    considerSearchFetching("options");
+  }
+);
+
+considerSearchFetching("initial");
 </script>
