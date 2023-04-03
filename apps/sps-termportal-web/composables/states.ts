@@ -21,7 +21,7 @@ export interface SearchDataStats {
 }
 
 export interface SearchOptions {
-  searchTerm: string;
+  searchTerm: string | null;
   searchBase: string | string[];
   searchDomain: string[];
   searchLanguage: LangCode | "all" | LangCode[];
@@ -34,7 +34,7 @@ export interface SearchOptions {
 
 export const useSearchOptions = () =>
   useState<SearchOptions>("searchOptions", () => ({
-    searchTerm: "",
+    searchTerm: null,
     searchBase: "all",
     searchDomain: ["all"],
     searchLanguage: "all",
@@ -51,6 +51,8 @@ export const useSearchOptions = () =>
     searchOffset: undefined,
   }));
 
+export const useAllowSearchFetch = () =>
+  useState<boolean>("allowSearchFetch ", () => true);
 export const useSearchBarWasFocused = () =>
   useState<boolean>("searchBarWasFocused", () => false);
 export const useSearchterm = () => useState<string>("searchterm", () => "");

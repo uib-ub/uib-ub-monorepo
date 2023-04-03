@@ -24,7 +24,7 @@ export async function fetchSearchDataMatching(
   }
 }
 
-type FetchType = "initial" | "filter" | "further";
+export type FetchType = "initial" | "filter" | "further" | "options";
 async function fetchSearchDataAggregate(
   searchOptions: SearchOptions,
   matching: string[],
@@ -42,7 +42,7 @@ async function fetchSearchDataAggregate(
     {}
   );
   if (currentFetch === searchFetchLatest.value) {
-    if (type === "initial") {
+    if (type === "initial" || type === "options") {
       searchDataStats.value = newStats;
     } else if (type === "filter") {
       const zeroedStats = resetStats(searchDataStats.value, false);
@@ -98,7 +98,7 @@ export async function useFetchSearchData(
     };
   }
 
-  if (fetchType === "initial" || fetchType === "filter") {
+  if (fetchType === "initial" || fetchType === "filter" || fetchType === "options") {
     searchDataPending.value.aggregate = true;
     fetchSearchDataAggregate(
       searchOptions,

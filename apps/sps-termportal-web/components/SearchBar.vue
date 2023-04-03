@@ -144,6 +144,7 @@ const searchOptions = useSearchOptions();
 const searchterm = useSearchterm();
 const searchData = useSearchData();
 const searchBarWasFocused = useSearchBarWasFocused();
+const allowSearchFetch = useAllowSearchFetch();
 
 const expandSearchBar = computed(() => {
   if (
@@ -176,7 +177,6 @@ const clearText = () => {
 };
 
 function execSearch() {
-  searchData.value = [];
   const myparams = route.query;
   searchOptions.value.searchTerm = searchterm.value;
   myparams.q = searchOptions.value.searchTerm;
@@ -185,9 +185,7 @@ function execSearch() {
     force: true,
     query: myparams,
   });
-  useFetchSearchData(searchOptions.value, "initial");
-  searchbutton.focus();
-  searchfield.focus();
+  allowSearchFetch.value = true;
 }
 
 function filterTermbases(termbases, filterTermbases, option, defaultValue) {
