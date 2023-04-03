@@ -21,7 +21,7 @@ export interface SearchDataStats {
 }
 
 export interface SearchOptions {
-  searchTerm: string;
+  searchTerm: string | null;
   searchBase: string | string[];
   searchDomain: string[];
   searchLanguage: LangCode | "all" | LangCode[];
@@ -34,7 +34,7 @@ export interface SearchOptions {
 
 export const useSearchOptions = () =>
   useState<SearchOptions>("searchOptions", () => ({
-    searchTerm: "",
+    searchTerm: null,
     searchBase: "all",
     searchDomain: ["all"],
     searchLanguage: "all",
