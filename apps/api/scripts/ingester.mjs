@@ -7,9 +7,9 @@ import { Transport } from '@elastic/transport';
 ;
 dotenv.config();
 const { ES_HOST, ES_APIKEY, ES_PATH, NODE_ENV } = process.env
+const API = NODE_ENV === 'production' ? 'https://api-ub.vercel.app' : 'http://localhost:3009'
 // store index name
 let INDEX = ''
-const API = NODE_ENV === 'production' ? 'https://api-ub.vercel.app' : 'http://localhost:3009'
 
 class MTransport extends Transport {
   request(params, options, callback) {
@@ -125,7 +125,7 @@ const start = async () => {
   let totalIndexed = 0
   let totalRuntime = 0
 
-  while (true && page < 4) {
+  while (true) {
     // store the start time
     const t0 = performance.now()
     // 3. get the ids from the api
@@ -162,7 +162,7 @@ const start = async () => {
   const seconds = ((totalRuntime % 60000) / 1000).toFixed(0);
 
   // 9. report the number of items indexed
-  console.log(`Indexed ${totalIndexed} items of ${total} ids in total. It took ${minutes}:${seconds} minutes.`)
+  console.log(`Indexed ${totalIndexed} items of ${total} ids in total into "${INDEX}". It took ${minutes}:${seconds} minutes.`)
   // 10. exit
 }
 
