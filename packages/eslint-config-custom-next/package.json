@@ -1,0 +1,16 @@
+{
+  "name": "eslint-config-custom-next",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf node_modules"
+  },
+  "dependencies": {
+    "eslint-config-next": "latest",
+    "eslint-plugin-react": "latest"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
