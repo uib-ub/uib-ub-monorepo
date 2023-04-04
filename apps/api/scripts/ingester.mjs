@@ -6,9 +6,10 @@ import { Client } from '@elastic/elasticsearch';
 import { Transport } from '@elastic/transport';
 ;
 dotenv.config();
-const { ES_HOST, ES_APIKEY, ES_PATH } = process.env
+const { ES_HOST, ES_APIKEY, ES_PATH, NODE_ENV } = process.env
 // store index name
 let INDEX = ''
+const API = NODE_ENV === 'production' ? 'https://api-ub.vercel.app' : 'http://localhost:3009'
 
 class MTransport extends Transport {
   request(params, options, callback) {
@@ -63,7 +64,7 @@ const checkIndex = async (index) => {
  * @returns {Promise} array of objects with id and indentifier
  */
 const getIds = async (page) => {
-  const response = await fetch(`http://localhost:3009/items?page=${page}`, { method: 'GET', retry: 3, pause: 500 })
+  const response = await fetch(`${API}/items?page=${page}`, { method: 'GET', retry: 3, pause: 500 })
   const data = await response.json()
   return data
 }
