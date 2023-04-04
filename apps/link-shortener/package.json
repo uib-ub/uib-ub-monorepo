@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
-    "@xata.io/client": "^0.22.1",
+    "@xata.io/client": "^0.23.4",
     "next": "^13.2.1",
     "open-props": "^1.5.5",
     "react": "^18.2.0",
