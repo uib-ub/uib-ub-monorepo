@@ -20,12 +20,38 @@
       "description": "Production server"
     }
   ],
+  "tags": [
+    {
+      "name": "Resolver"
+    },
+    {
+      "name": "Items"
+    },
+    {
+      "name": "Links"
+    },
+    {
+      "name": "Experimental"
+    },
+    {
+      "name": "Search"
+    },
+    {
+      "name": "Collections",
+      "description": "WIP. Collections are used to group manifests together. They can be used to group manifests by theme, by time period, by location, or any other criteria."
+    },
+    {
+      "name": "Events"
+    },
+    {
+      "name": "Actors"
+    }
+  ],
   "paths": {
-    "/items/{item_id}": {
-      "summary": "A single object in the collection.",
-      "description": "This resource represents an object in the collection. Each object is identified by a string `id`.",
+    "/items/{id}": {
       "get": {
-        "summary": "A single object metadata JSON or a IIIF manifest by the given identifier, with the option to as for IIIF or RDF. {id} is the identifier from our collections management system.",
+        "summary": "A single object metadata JSON or a IIIF manifest by identifier.",
+        "description": "This resource represents an object in the collection, with the option to as for IIIF or RDF. Each object is identified by a string `id`. `id` is the identifier from our collections management system.",
         "operationID": "getItem",
         "tags": [
           "Items"
@@ -36,7 +62,7 @@
         },
         "parameters": [
           {
-            "name": "item_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "description": "The ID of the manifest to retrieve",
@@ -59,7 +85,7 @@
             "name": "format",
             "in": "query",
             "required": false,
-            "description": "The data format to use. Supports 'json' (default), 'turtle' and 'xml'. Ignored if as=iiif.",
+            "description": "The data format to use. Supports `json` (default), `turtle` and `xml`. Ignored if `as=iiif`.",
             "schema": {
               "type": "string"
             },
@@ -76,9 +102,10 @@
         }
       }
     },
-    "/items/{item_id}/manifest": {
+    "/items/{id}/manifest": {
       "get": {
-        "summary": "A single object IIIF manifest by the given identifier. {id} is the identifier from our collections management system.",
+        "summary": "A single object IIIF manifest by the given identifier.",
+        "description": "OBS! The prefered way of getting a manifest is to use the `/items/{id}?as=iiif`. {id} is the identifier from our collections management system.",
         "operationID": "getManifest",
         "tags": [
           "Items"
@@ -89,7 +116,7 @@
         },
         "parameters": [
           {
-            "name": "item_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "description": "The ID of the manifest to retrieve",
@@ -109,9 +136,46 @@
         }
       }
     },
-    "/search": {
+    "/search/{index}/prepare": {
+      "post": {
+        "summary": "Prepare the search index.",
+        "description": "This will delete the index, recreate it, add pipelines and mappings. This is a destructive operation.",
+        "tags": [
+          "Experimental",
+          "Search"
+        ],
+        "parameters": [
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "description": "The name of the index to prepare",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "description": "API token",
+            "schema": {
+              "type": "string"
+            },
+            "example": "some-key"
+          }
+        ],
+        "responses": {
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/search/collection": {
       "get": {
         "tags": [
+          "Experimental",
           "Search"
         ],
         "summary": "",
@@ -137,9 +201,10 @@
         }
       }
     },
-    "/search/{id}": {
+    "/search/collection/{id}": {
       "get": {
         "tags": [
+          "Experimental",
           "Search"
         ],
         "summary": "",
@@ -178,6 +243,7 @@
     "/collections/search": {
       "get": {
         "tags": [
+          "Experimental",
           "Collections"
         ],
         "summary": "",
@@ -217,6 +283,7 @@
       "get": {
         "summary": "A list of all events",
         "tags": [
+          "Experimental",
           "Events"
         ],
         "responses": {
@@ -229,15 +296,16 @@
         }
       }
     },
-    "/events/{event_id}": {
+    "/events/{id}": {
       "get": {
         "summary": "A single event.",
         "tags": [
+          "Experimental",
           "Events"
         ],
         "parameters": [
           {
-            "name": "event_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "description": "The ID of the event to retrieve",
@@ -261,6 +329,7 @@
       "get": {
         "summary": "A list of \"all\" actors (LIMIT 1000)",
         "tags": [
+          "Experimental",
           "Actors"
         ],
         "responses": {
@@ -273,15 +342,16 @@
         }
       }
     },
-    "/actors/{actor_id}": {
+    "/actors/{id}": {
       "get": {
         "summary": "A single actor.",
         "tags": [
+          "Experimental",
           "Actors"
         ],
         "parameters": [
           {
-            "name": "actor_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "description": "The ID of the actor to retrieve",
@@ -1693,29 +1763,5 @@
         }
       }
     }
-  },
-  "tags": [
-    {
-      "name": "Items"
-    },
-    {
-      "name": "Search"
-    },
-    {
-      "name": "Collections",
-      "description": "WIP. Collections are used to group manifests together. They can be used to group manifests by theme, by time period, by location, or any other criteria."
-    },
-    {
-      "name": "Events"
-    },
-    {
-      "name": "Actors"
-    },
-    {
-      "name": "Links"
-    },
-    {
-      "name": "Resolver"
-    }
-  ]
+  }
 }

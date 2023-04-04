@@ -4,6 +4,7 @@ import { omit, sortBy } from 'lodash'
 import { constructManifest } from '../../../../../lib/response/iiif/constructManifest'
 import { constructMetadata } from '../../../../../lib/response/iiif/constructMetadata'
 import { API_URL, getBaseUrl, SPARQL_PREFIXES } from '../../../../../lib/constants'
+import { runMiddleware } from '../../../../../lib/request/runMiddleware'
 
 const manifestFrame = {
   "@context": {
@@ -73,6 +74,7 @@ const manifestFrame = {
         "@set"
       ],
     },
+
     "sc": "http://iiif.io/api/presentation/3#",
     "oa": "http://www.w3.org/ns/oa#",
     "dct": "http://purl.org/dc/terms/",
@@ -89,20 +91,6 @@ const manifestFrame = {
 const cors = Cors({
   methods: ['POST', 'GET', 'HEAD'],
 })
-
-// Helper method to wait for a middleware to execute before continuing
-// And to throw an error when an error happens in a middleware
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result)
-      }
-
-      return resolve(result)
-    })
-  })
-}
 
 async function getObject(api, id) {
   if (!id) return error
@@ -157,9 +145,9 @@ async function getObject(api, id) {
           ?repr dct:hasPart ?singlePart ;
             rdfs:label ?partLabel .
           ?singlePart  ubbont:hasXSView  ?singleCanvasThumb ;
-            ubbont:hasMDView ?singleMD .
+            ubbont:hasSMView ?singleSM .
+          OPTIONAL { ?singlePart ubbont:hasMDView ?singleMD . }
           OPTIONAL { ?singlePart ubbont:hasXLView ?singleXL . }
-          OPTIONAL { ?singlePart ubbont:hasSMView ?singleSM . }
         }
         OPTIONAL { 
           ?repr dct:hasPart ?part ;
@@ -167,9 +155,9 @@ async function getObject(api, id) {
           ?part ubbont:hasResource ?resource ;
             ubbont:sequenceNr ?seq .
           ?resource ubbont:hasXSView ?canvasThumb ;
-            ubbont:hasMDView ?partMD . 
-            OPTIONAL { ?resource ubbont:hasXLView ?partXL . }
-            OPTIONAL { ?resource ubbont:hasSMView ?partSM . }
+            ubbont:hasSMView ?partSM . 
+          OPTIONAL { ?resource ubbont:hasMDView ?partMD . }
+          OPTIONAL { ?resource ubbont:hasXLView ?partXL . }
         }
         BIND(iri(concat("${getBaseUrl()}", "/items/", ?id, "/manifest")) AS ?manifestURL)
         BIND(iri(concat("http://data.ub.uib.no/instance/manuscript/", ?id, "/manifest/range/1")) AS ?rangeURL)
@@ -211,6 +199,7 @@ export default async function handler(req, res) {
 
       if (response.status >= 200 && response.status <= 299) {
         const results = await response.json();
+        // console.log("🚀 ~ file: manifest.js:201 ~ handler ~ results:", results)
 
         // Frame the result for nested json
         const awaitFramed = jsonld.frame(results, {
@@ -218,6 +207,7 @@ export default async function handler(req, res) {
           '@type': 'Manifest'
         });
         let framed = await awaitFramed
+        // console.log("🚀 ~ file: manifest.js:209 ~ handler ~ framed:", framed)
 
         // Remove json-ld context 
         framed = omit(framed, ["@context"])
@@ -243,7 +233,7 @@ export default async function handler(req, res) {
 
         const allMetadata = await fetch(`${API_URL}/items/${id}`).then(res => res.json())
         const metadata = await constructMetadata(allMetadata)
-        console.log("🚀 ~ file: manifest.js:247 ~ handler ~ metadata", metadata)
+        // console.log("🚀 ~ file: manifest.js:247 ~ handler ~ metadata", metadata)
         // Create the manifest
         let manifest = await constructManifest(framed, url)
         metadata ? manifest.metadata = metadata : null

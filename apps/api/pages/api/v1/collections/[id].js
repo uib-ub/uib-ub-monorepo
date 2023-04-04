@@ -1,43 +1,14 @@
 import { sortBy } from 'lodash'
 import Cors from 'cors'
 import { API_URL, getBaseUrl, SPARQL_PREFIXES } from '../../../../lib/constants'
+import { runMiddleware } from '../../../../lib/request/runMiddleware'
+import { labelSplitter } from '../../../../lib/response/labelSplitter'
 
 // Initializing the cors middleware
 // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
 const cors = Cors({
   methods: ['POST', 'GET', 'HEAD'],
 })
-
-// Helper method to wait for a middleware to execute before continuing
-// And to throw an error when an error happens in a middleware
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result)
-      }
-
-      return resolve(result)
-    })
-  })
-}
-
-/**
- * labelSplitter is a functions for handeling concatinated, multilingual strings. For SPARQL to calculate
- * offset and limit correctly each item in the set needs to be on one line.
- * @param {string} label 
- * @returns {object}
- */
-const labelSplitter = (label) => {
-  const splitted = label.split('|')
-  const data = splitted.map(l => {
-    const langArr = l.split('@')
-    return {
-      [langArr[1] ? `@${langArr[1]}` : '@none']: [langArr[0].replaceAll("\"", "")]
-    }
-  })
-  return data[0]
-}
 
 async function getData(url, id) {
   const query = `

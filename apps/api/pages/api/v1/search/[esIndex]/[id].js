@@ -1,6 +1,6 @@
 import * as jsonld from 'jsonld'
 import { Client } from '@elastic/elasticsearch'
-import { API_URL } from '../../../../../../lib/constants'
+import { API_URL } from '../../../../../lib/constants'
 const { Transport } = require('@elastic/transport')
 
 class MTransport extends Transport {
