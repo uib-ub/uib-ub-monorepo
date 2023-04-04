@@ -1,5 +1,5 @@
 export const marcus_demo = {
-  "id": "marcus-next-ingester",
+  "id": "marcus-demo",
   "version": 1,
   "description": "Marcus-next pipeline",
   "processors": [

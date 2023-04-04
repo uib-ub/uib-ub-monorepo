@@ -5,10 +5,10 @@ import { runMiddleware } from '../../../../lib/request/runMiddleware'
 // Initializing the cors middleware
 // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
 const cors = Cors({
-  methods: ['POST', 'GET', 'HEAD'],
+  methods: ['GET', 'HEAD'],
 })
 
-async function getObject(url, page, limit = 100) {
+async function getObject(url, page = 0, limit = 100) {
   const LIMIT = limit
   const query = `
     ${SPARQL_PREFIXES}

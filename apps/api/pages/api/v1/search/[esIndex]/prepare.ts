@@ -61,7 +61,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(200).json(values)
         })
 
-        res.status(200).json({ ok: true, message: 'Index created, pipelines and mappings applied.' })
+        res.status(200).json({
+          ok: true,
+          message: 'Index created, pipelines and mappings applied.',
+          jobs: [
+            {
+              "name": "Delete index",
+              ...deleteIndex
+            },
+            {
+              "name": "Create index",
+              ...createIndex
+            },
+            {
+              "name": "Add pipeline",
+              ...putPipeline
+            },
+            {
+              "name": "Add mapping",
+              ...putMapping
+            }
+          ]
+        })
       } catch (err) {
         (err: any) => { return err }
         return res.status(200).json({ message: err })
