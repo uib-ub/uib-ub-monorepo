@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
+  extends: ["nuxt"],
   plugins: ["eslint-plugin-tsdoc"],
-  extends: ["custom-nuxt"],
   rules: {},
 };
