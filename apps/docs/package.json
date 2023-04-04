@@ -1,21 +1,21 @@
 {
   "name": "docs",
   "version": "1.0.0",
-  "description": "",
   "private": true,
+  "description": "",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uib-ub/uib-ub-monorepo.git"
   },
-  "scripts": {
-    "dev": "next dev --port 3010",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
-  },
-  "author": "",
   "license": "MIT",
+  "author": "",
+  "scripts": {
+    "build": "next build",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
+    "dev": "next dev --port 3010",
+    "lint": "next lint",
+    "start": "next start"
+  },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
     "clsx": "^1.2.1",
@@ -33,6 +33,7 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "autoprefixer": "^10.4.13",
+    "eslint-config-custom-next": "*",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.7",
     "tsconfig": "*",
