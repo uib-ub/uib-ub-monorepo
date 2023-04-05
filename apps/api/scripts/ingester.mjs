@@ -55,16 +55,52 @@ const checkIndex = async (index) => {
     console.log(`The index "${index}" does not exist. Please create it first.`)
     process.exit(1)
   }
-  return
+  return null
 }
+
+/**
+ * Turn off the refresh interval
+ * @param {*} indexName 
+ */
+const turnOffRefreshInterval = async (indexName) => {
+  try {
+    const result = await client.indices.putSettings({
+      index: indexName,
+      body: {
+        'index.refresh_interval': '-1'
+      }
+    });
+    console.log("The refresh interval was turned off for the duration of the indexing process.");
+  } catch (error) {
+    console.error("There was an error turning off the refresh interval. Continuing anyway...");
+  }
+};
+
+/**
+ * Turn on the refresh interval
+ * @param {*} indexName 
+ */
+const turnOnRefreshInterval = async (indexName) => {
+  try {
+    const result = await client.indices.putSettings({
+      index: indexName,
+      body: {
+        'index.refresh_interval': '1s'
+      }
+    });
+    console.log("The refresh interval was turned on.");
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 /**
  * Get ids from the api
  * @param {*} page 
  * @returns {Promise} array of objects with id and indentifier
  */
-const getIds = async (page) => {
-  const response = await fetch(`${API}/items?page=${page}`, { method: 'GET', retry: 3, pause: 500 })
+const getIds = async (page, limit) => {
+  const response = await fetch(`${API}/items?page=${page}&limit=${limit}`, { method: 'GET', retry: 3, pause: 500 })
   const data = await response.json()
   return data
 }
@@ -120,16 +156,17 @@ const indexData = async (data) => {
 // 2. repeat the process for the next pages until all id have been resolved
 const start = async () => {
   checkIndex(INDEX)
+  turnOffRefreshInterval(INDEX)
   let page = 0
   let total = 0
   let totalIndexed = 0
   let totalRuntime = 0
 
-  while (true) {
+  while (true && total < 1000) {
     // store the start time
     const t0 = performance.now()
     // 3. get the ids from the api
-    const data = await getIds(page)
+    const data = await getIds(page, 100)
     // 4. count the number of ids and stop if there are no more ids
     const idCount = data.length ?? 0
     total += idCount
@@ -163,6 +200,7 @@ const start = async () => {
 
   // 9. report the number of items indexed
   console.log(`Indexed ${totalIndexed} items of ${total} ids in total into "${INDEX}". It took ${minutes}:${seconds} minutes.`)
+  turnOnRefreshInterval(INDEX)
   // 10. exit
 }
 
