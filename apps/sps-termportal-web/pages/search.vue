@@ -32,6 +32,7 @@ import { Matching, MatchingNested } from "../utils/vars";
 import { SearchOptions } from "../composables/states";
 import { FetchType } from "../composables/useFetchSearchData";
 
+const route = useRoute();
 const searchData = useSearchData();
 const searchFilterData = useSearchFilterData();
 const searchDataStats = useSearchDataStats();
@@ -39,6 +40,7 @@ const allowSearchFetch = useAllowSearchFetch();
 const countFetchedMatches = computed(() => {
   return countSearchEntries(searchData.value);
 });
+const searchterm = useSearchterm();
 const searchOptions = useSearchOptions();
 const count = computed(() => {
   try {
@@ -175,4 +177,34 @@ watch(
 );
 
 considerSearchFetching("initial");
+
+onMounted(() => {
+  /*
+  Set searchOptions state based on route query values.
+
+  Triggers only when searchTerm hasn't been set before
+  i.e. when search route is visited directly
+  */
+  if (searchOptions.value.searchTerm === null) {
+    for (const [key, value] of Object.entries(searchOptionsInfo)) {
+      // Only set state if present in route
+      if (route.query[value.q]) {
+        // searchterm needs be to added to searchbar field
+        if (key === "searchTerm") {
+          searchterm.value = route.query[value.q] as string;
+        }
+
+        // searchdomain needs to be handled differently because state is a list
+        if (key === "searchDomain") {
+          const domene = route.query[value.q] as string;
+          searchOptions.value[key] = domene.split(",");
+        }
+        //
+        else {
+          searchOptions.value[key] = route.query[value.q] as string;
+        }
+      }
+    }
+  }
+});
 </script>

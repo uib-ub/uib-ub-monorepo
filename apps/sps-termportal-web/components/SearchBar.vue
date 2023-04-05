@@ -137,7 +137,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const route = useRoute();
 const router = useRouter();
 const searchOptions = useSearchOptions();
@@ -176,18 +176,43 @@ const clearText = () => {
   searchfield.focus();
 };
 
+// TODO, add reset filter if searchTerm is not changed
 function execSearch() {
-  const myparams = route.query;
   searchOptions.value.searchTerm = searchterm.value;
-  myparams.q = searchOptions.value.searchTerm;
-  router.push({
-    path: "/search",
-    force: true,
-    query: myparams,
-  });
   allowSearchFetch.value = true;
 }
 
+watch(
+  searchOptions.value,
+  () => {
+    const searchOpt = searchOptions.value;
+    const myparams = route.query;
+
+    for (const [key, value] of Object.entries(searchOptionsInfo)) {
+      let defaultVal: string | null;
+      if (value.default === null) {
+        defaultVal = value.default;
+      } else {
+        defaultVal = value.default.toString();
+      }
+
+      if (searchOpt[key].toString() !== defaultVal) {
+        myparams[value.q] = searchOpt[key];
+      } else {
+        myparams[value.q] = undefined;
+      }
+    }
+    router.push({
+      path: "/search",
+      force: true,
+      query: myparams,
+    });
+  },
+  { deep: true }
+);
+
+// TODO refactor, use searchOptionsInfo for default value
+// TODO Typing
 function filterTermbases(termbases, filterTermbases, option, defaultValue) {
   if (searchOptions.value[option] !== defaultValue) {
     return intersectUnique(filterTermbases, termbases);
@@ -196,6 +221,8 @@ function filterTermbases(termbases, filterTermbases, option, defaultValue) {
   }
 }
 
+// TODO refactor, searchOptionsInfo def value
+// TODO Typing
 function deriveSearchOptions(searchOption, defaultValue) {
   const topdomain = searchOptions.value.searchDomain[0];
   const currentValue = searchOptions.value[searchOption];

@@ -48,3 +48,11 @@ export const semanticRelationTypes: SemanticRelation[] = [
   "related",
   "seeAlso",
 ];
+
+export const searchOptionsInfo = {
+  searchTerm: { q: "q", default: null },
+  searchLanguage: { q: "ss", default: "all" },
+  searchTranslate: { q: "ms", default: "none" },
+  searchBase: { q: "tb", default: "all" },
+  searchDomain: { q: "d", default: ["all"] },
+};
