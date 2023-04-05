@@ -180,33 +180,15 @@ const clearText = () => {
 function execSearch() {
   searchOptions.value.searchTerm = searchterm.value;
   allowSearchFetch.value = true;
+  usePushSearchOptionsToRoute();
 }
 
 watch(
   searchOptions.value,
   () => {
-    const searchOpt = searchOptions.value;
-    const myparams = route.query;
-
-    for (const [key, value] of Object.entries(searchOptionsInfo)) {
-      let defaultVal: string | null;
-      if (value.default === null) {
-        defaultVal = value.default;
-      } else {
-        defaultVal = value.default.toString();
-      }
-
-      if (searchOpt[key].toString() !== defaultVal) {
-        myparams[value.q] = searchOpt[key];
-      } else {
-        myparams[value.q] = undefined;
-      }
+    if (route.path === "/search") {
+      usePushSearchOptionsToRoute();
     }
-    router.push({
-      path: "/search",
-      force: true,
-      query: myparams,
-    });
   },
   { deep: true }
 );
