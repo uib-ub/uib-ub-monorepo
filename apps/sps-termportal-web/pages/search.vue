@@ -9,17 +9,19 @@
       <h2 id="main" class="pb-2 pt-3 text-2xl">
         <AppLink to="#main"> {{ $t("searchFilter.results-heading") }}</AppLink>
       </h2>
-      <ol
-        v-if="searchData.length > 0"
-        ref="scrollComponent"
-        aria-labelledby="resultsheading"
-      >
-        <SearchResultListEntry
-          v-for="entry in searchData"
-          :key="entry.link + '_' + entry.label"
-          :entry-data="entry"
-        />
-      </ol>
+      <TransitionOpacitySearchResults>
+        <ol
+          v-if="searchData.length > 0"
+          ref="scrollComponent"
+          aria-labelledby="resultsheading"
+        >
+          <SearchResultListEntry
+            v-for="entry in searchData"
+            :key="entry.link + '_' + entry.label"
+            :entry-data="entry"
+          />
+        </ol>
+      </TransitionOpacitySearchResults>
       <TransitionOpacity v-if="false" class="flex justify-center p-2">
         <SpinnerIcon v-if="pending && countFetchedMatches > 30" />
       </TransitionOpacity>
