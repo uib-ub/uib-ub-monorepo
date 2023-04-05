@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "coverage": "vitest run --coverage",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "lighthouse": "unlighthouse",
     "lint": "eslint --ext .ts,.js,.vue --ignore-path ../../.gitignore .",
     "pa11y": "pa11y-ci",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
-    "lighthouse": "unlighthouse"
+    "preview": "nuxt preview",
+    "test": "vitest"
   },
   "devDependencies": {
     "@intlify/unplugin-vue-i18n": "^0.8.1",
@@ -27,6 +27,7 @@
     "@vueuse/core": "^9.13.0",
     "@vueuse/nuxt": "^9.13.0",
     "eslint": "^8.32.0",
+    "eslint-config-custom": "*",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-tsdoc": "^0.2.17",
     "jsonld": "^8.1.0",

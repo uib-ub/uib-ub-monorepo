@@ -1,16 +1,20 @@
 {
   "name": "eslint-config-custom",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
+  "files": [
+    "base.js",
+    "next.js",
+    "nuxt.js"
+  ],
   "scripts": {
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
     "eslint": "^8.28.0",
-    "eslint-config-next": "latest",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-turbo": "latest",
+    "eslint-config-next": "latest",
     "eslint-plugin-react": "latest",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "prettier-plugin-packagejson": "^2.3.0"
