@@ -137,7 +137,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const route = useRoute();
 const router = useRouter();
 const searchOptions = useSearchOptions();
@@ -176,6 +176,7 @@ const clearText = () => {
   searchfield.focus();
 };
 
+// TODO, add reset filter if searchTerm is not changed
 function execSearch() {
   searchOptions.value.searchTerm = searchterm.value;
   allowSearchFetch.value = true;
@@ -220,6 +221,8 @@ function filterTermbases(termbases, filterTermbases, option, defaultValue) {
   }
 }
 
+// TODO refactor, searchOptionsInfo def value
+// TODO Typing
 function deriveSearchOptions(searchOption, defaultValue) {
   const topdomain = searchOptions.value.searchDomain[0];
   const currentValue = searchOptions.value[searchOption];
