@@ -37,7 +37,7 @@ async function getObject(url, page = 0, limit = 100) {
 export default async function handler(req, res) {
   const {
     method,
-    query: { page },
+    query: { page, limit },
   } = req
 
   await runMiddleware(req, res, cors)
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     case 'GET':
       const url = 'https://sparql.ub.uib.no/sparql/query?query='
 
-      const response = await getObject(url, page)
+      const response = await getObject(url, page, limit)
       // console.log("🚀 ~ file: index.js:65 ~ handler ~ page:", page)
 
       // Deal with response
