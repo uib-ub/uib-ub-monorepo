@@ -13,11 +13,16 @@
 export const reduceValuesByLanguage = (values: Record<string, any>): Record<string, any> => {
   return values.reduce((acc: any, value: any) => {
     const keys = Object.keys(value)
-    keys.forEach(key => {
+
+    keys.forEach((key: string) => {
       if (acc[key]) {
-        acc[key].push(value[key])
+        if (Array.isArray(value[key])) {
+          acc[key].push(...value[key as any])
+        } else {
+          acc[key].push(value[key])
+        }
       } else {
-        acc[key] = [value[key]]
+        acc[key] = value[key]
       }
     })
     return acc

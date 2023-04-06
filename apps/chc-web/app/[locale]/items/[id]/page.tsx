@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { getItemData } from 'lib/marcus/marcus.client';
-import { ItemPage } from 'components/pages/item/ItemPage';
+import { ItemPage } from 'components/pages/items/ItemPage';
+import { notFound } from 'next/navigation';
 
 export default async function ItemRoute({
   params
@@ -9,6 +10,10 @@ export default async function ItemRoute({
 }) {
   const t = await getTranslations('Item');
   const itemData = await getItemData(params.id);
+
+  if (!itemData) {
+    notFound();
+  }
 
   return (
     <div>
