@@ -188,14 +188,16 @@ export default async function handler(req, res) {
     case 'GET':
 
       // Find the service that contains data on this item
-      const checkedServices = await fetch(`${API_URL}/resolver/${id}?v=1`).then(res => res.json())
-      const url = await checkedServices.url
+      const checkedServices = await fetch(`${API_URL}/resolver/${id}?v=1`)
+      if (checkedServices.status === 404) {
+        return res.status(404).json({ error: 'Not found' })
+      }
+      if (!checkedServices.ok) {
+        return res.status(400).json({ error: 'Bad request' })
+      }
 
-      // No URL means no service found, but this is horrible error handeling
-      if (!url) return res.status(404).json(checkedServices)
-
-      // Get the RDF for this tiem
-      const response = await getObject(url, id)
+      const service = await checkedServices.json()
+      const response = await getObject(id, service.url)
 
       if (response.status >= 200 && response.status <= 299) {
         const results = await response.json();
