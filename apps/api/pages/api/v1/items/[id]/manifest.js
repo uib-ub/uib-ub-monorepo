@@ -92,7 +92,7 @@ const cors = Cors({
   methods: ['POST', 'GET', 'HEAD'],
 })
 
-async function getObject(api, id) {
+async function getObject(id, url) {
   if (!id) return error
 
   const query = `
@@ -169,7 +169,7 @@ async function getObject(api, id) {
   `
 
   const result = await fetch(
-    `${api}${encodeURIComponent(
+    `${url}${encodeURIComponent(
       query,
     )}&output=json`)
 
@@ -237,7 +237,7 @@ export default async function handler(req, res) {
         const metadata = await constructMetadata(allMetadata)
         // console.log("🚀 ~ file: manifest.js:247 ~ handler ~ metadata", metadata)
         // Create the manifest
-        let manifest = await constructManifest(framed, url)
+        let manifest = await constructManifest(framed, service.url)
         metadata ? manifest.metadata = metadata : null
 
         res.status(200).json(manifest)
