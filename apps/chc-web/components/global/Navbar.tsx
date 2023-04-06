@@ -29,13 +29,13 @@ export function Navbar({ menuItems }: NavbarProps) {
           )
         })}
       <Link
-        href="/id/ubb-jg-l-0985"
+        href="/items/ubb-jg-l-0985"
         className={`text-lg hover:text-black md:text-xl text-gray-600`}
       >
         ubb-jg-l-0985
       </Link>
       <Link
-        href="/id/ubb-ms-0008"
+        href="/items/ubb-ms-0008"
         className={`text-lg hover:text-black md:text-xl text-gray-600`}
       >
         ubb-ms-0008
