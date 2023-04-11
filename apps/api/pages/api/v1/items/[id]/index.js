@@ -82,26 +82,28 @@ async function getObject(id, url) {
 
 export default async function handler(req, res) {
   const {
-    query: { id },
+    query: { id, context },
     method,
   } = req
+
+  let useIIIFContext = ""
+
+  switch (context) {
+    case "ubbont":
+      useIIIFContext = context
+      break;
+    case "es":
+      useIIIFContext = context
+      break;
+    default:
+      useIIIFContext = "ubbont"
+      break;
+  }
 
   await runMiddleware(req, res, cors)
 
   switch (method) {
     case 'GET':
-
-      // create generic fetch function with error handling and return json response if status is ok (200-299)
-      //const fetch = async (url) => {
-      //  const response = await fetch(url)
-      //  if (response.status >= 200 && response.status <= 299) {
-      //    return response.json()
-      //  } else {
-      //    throw Error(response.statusText)
-      //  }
-      //}
-
-
       // Find the service that contains data on this item
       const checkedServices = await fetch(`${API_URL}/resolver/${id}?v=1`)
       if (checkedServices.status === 404) {
@@ -120,7 +122,7 @@ export default async function handler(req, res) {
           const result = await response.json()
 
           const awaitFramed = jsonld.frame(result, {
-            '@context': [`${getBaseUrl()}/ns/ubbont/context.json`],
+            '@context': [`${getBaseUrl()}/ns/${useIIIFContext}/context.json`],
             '@type': 'HumanMadeObject',
             '@embed': '@always',
           })

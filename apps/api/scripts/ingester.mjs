@@ -112,7 +112,7 @@ const getIds = async (page, limit) => {
  */
 const resolveIds = async (data) => {
   const ids = data.map(item => item.id)
-  const promises = ids.map(id => fetch(id, { method: 'GET', retry: 3, pause: 300 }))
+  const promises = ids.map(id => fetch(`${id}?context=es`, { method: 'GET', retry: 3, pause: 300 }))
   const responses = await (await Promise.all(promises))
   const results = await Promise.all(responses.filter(response => response.ok).map(response => response.json()))
   return results
