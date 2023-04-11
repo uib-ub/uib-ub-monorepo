@@ -61,6 +61,7 @@ async function getObject(id, url) {
           ?o wgs:long ?long ;
             wgs:lat ?lat
         }
+        FILTER(?oClass != rdfs:Class)
       }
       OPTIONAL { 
         ?uri dct:license / rdfs:label ?licenseLabel .
@@ -104,47 +105,47 @@ export default async function handler(req, res) {
       // Find the service that contains data on this item
       const checkedServices = await fetch(`${API_URL}/resolver/${id}?v=1`)
       if (checkedServices.status === 404) {
-        return res.status(404).json({ error: 'Not found' })
+        return res.status(404).json({ message: 'Not found' })
       }
       if (!checkedServices.ok) {
-        return res.status(400).json({ error: 'Bad request' })
+        return res.status(400).json({ message: 'Bad request' })
       }
 
-      const service = await checkedServices.json()
-      const response = await getObject(id, service.url)
+      try {
+        const service = await checkedServices.json()
+        const response = await getObject(id, service.url)
 
-      // Deal with response
-      if (response.status >= 200 && response.status <= 299) {
-        const result = await response.json()
-        //console.log(result)
-        //res.status(200).json(result)
+        // Deal with response
+        if (response.status >= 200 && response.status <= 299) {
+          const result = await response.json()
 
-        const awaitFramed = jsonld.frame(result, {
-          '@context': [`${getBaseUrl()}/ns/ubbont/context.json`],
-          '@type': 'HumanMadeObject',
-          '@embed': '@always',
-        })
-        let framed = await awaitFramed
+          const awaitFramed = jsonld.frame(result, {
+            '@context': [`${getBaseUrl()}/ns/ubbont/context.json`],
+            '@type': 'HumanMadeObject',
+            '@embed': '@always',
+          })
+          let framed = await awaitFramed
 
-        // Change id as this did not work in the query
-        framed.id = `${getBaseUrl()}/items/${framed.identifier}`
-        // We assume all @none language tags are really norwegian
-        framed = JSON.parse(JSON.stringify(framed).replaceAll('"none":', '"no":'))
+          // Change id as this did not work in the query
+          framed.id = `${getBaseUrl()}/items/${framed.identifier}`
+          // We assume all @none language tags are really norwegian
+          framed = JSON.parse(JSON.stringify(framed).replaceAll('"none":', '"no":'))
 
-        framed.timespan = getTimespan(framed?.created, framed?.madeAfter, framed?.madeBefore)
-        delete framed?.madeAfter
-        delete framed?.madeBefore
+          framed.timespan = getTimespan(framed?.created, framed?.madeAfter, framed?.madeBefore)
+          delete framed?.madeAfter
+          delete framed?.madeBefore
 
-        // @TODO: Remove this when we have dct:modified on all items in the dataset
-        framed.modified = {
-          "type": "xsd:date",
-          "@value": framed.modified ?? "2020-01-01T00:00:00"
+          // @TODO: Remove this when we have dct:modified on all items in the dataset
+          framed.modified = {
+            "type": "xsd:date",
+            "@value": framed.modified ?? "2020-01-01T00:00:00"
+          }
+
+          res.status(200).json(framed)
         }
-
-        res.status(200).json(framed)
-      } else {
-        // Handle errors
-        console.log(response.status, response.statusText);
+      } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error' })
       }
 
       break

@@ -156,13 +156,13 @@ const indexData = async (data) => {
 // 2. repeat the process for the next pages until all id have been resolved
 const start = async () => {
   checkIndex(INDEX)
-  turnOffRefreshInterval(INDEX)
+  //turnOffRefreshInterval(INDEX)
   let page = 0
   let total = 0
   let totalIndexed = 0
   let totalRuntime = 0
 
-  while (true && total < 1000) {
+  while (true) {
     // store the start time
     const t0 = performance.now()
     // 3. get the ids from the api
@@ -186,7 +186,7 @@ const start = async () => {
     // calculate the time it took to index the items
     const took = t1 - t0
     // log the number of items indexed and the time it took
-    console.log(`Indexed ${count} items in ${took} milliseconds.`)
+    console.log(`Indexed ${count} items in ${took} milliseconds. Total: ${totalIndexed + count} of ${total} ids. Page: ${page}`)
 
     // store variables for reporting
     totalIndexed += count
@@ -200,7 +200,7 @@ const start = async () => {
 
   // 9. report the number of items indexed
   console.log(`Indexed ${totalIndexed} items of ${total} ids in total into "${INDEX}". It took ${minutes}:${seconds} minutes.`)
-  turnOnRefreshInterval(INDEX)
+  //turnOnRefreshInterval(INDEX)
   // 10. exit
 }
 

@@ -93,7 +93,7 @@ const cors = Cors({
 })
 
 async function getObject(id, url) {
-  if (!id) return error
+  if (!id) return new Error("Missing id")
 
   const query = `
     ${SPARQL_PREFIXES}
@@ -190,65 +190,67 @@ export default async function handler(req, res) {
       // Find the service that contains data on this item
       const checkedServices = await fetch(`${API_URL}/resolver/${id}?v=1`)
       if (checkedServices.status === 404) {
-        return res.status(404).json({ error: 'Not found' })
+        return res.status(404).json({ message: 'Not found' })
       }
       if (!checkedServices.ok) {
-        return res.status(400).json({ error: 'Bad request' })
+        return res.status(400).json({ message: 'Bad request' })
       }
 
-      const service = await checkedServices.json()
-      const response = await getObject(id, service.url)
+      try {
+        const service = await checkedServices.json()
+        const response = await getObject(id, service.url)
 
-      if (response.status >= 200 && response.status <= 299) {
-        const results = await response.json();
-        // console.log("🚀 ~ file: manifest.js:201 ~ handler ~ results:", results)
-
-        // Frame the result for nested json
-        const awaitFramed = jsonld.frame(results, {
-          '@context': manifestFrame,
-          '@type': 'Manifest'
-        });
-        let framed = await awaitFramed
-        // console.log("🚀 ~ file: manifest.js:209 ~ handler ~ framed:", framed)
-
-        // Remove json-ld context 
-        framed = omit(framed, ["@context"])
-
-        if (Object.keys(framed).length === 0) {
-          return res.status(404).json({ message: 'Not found' })
+        if (response.status == 503) {
+          res.status(503).json({ message: "Service is unavailable" })
         }
 
-        // When madeObject is a single page we convert items and structures.items to an array of one
-        if (Array.isArray(framed.items) === false) {
-          framed.items = [framed.items]
+        if (response.status >= 200 && response.status <= 299) {
+          const results = await response.json();
+          // console.log("🚀 ~ file: manifest.js:201 ~ handler ~ results:", results)
+
+          // Frame the result for nested json
+          const awaitFramed = jsonld.frame(results, {
+            '@context': manifestFrame,
+            '@type': 'Manifest'
+          });
+          let framed = await awaitFramed
+          // console.log("🚀 ~ file: manifest.js:209 ~ handler ~ framed:", framed)
+
+          // Remove json-ld context 
+          framed = omit(framed, ["@context"])
+
+          if (Object.keys(framed).length === 0) {
+            return res.status(404).json({ message: 'Not found' })
+          }
+
+          // When madeObject is a single page we convert items and structures.items to an array of one
+          if (Array.isArray(framed.items) === false) {
+            framed.items = [framed.items]
+          }
+          if (Array.isArray(framed.structures.items) === false) {
+            framed.structures.items = [framed.structures.items]
+          }
+
+          // Sort nested arrays before we send the objects to be manifestified
+          framed.items = sortBy(framed.items, o => o.label['@none'][0])
+          framed.structures.items = sortBy(framed.structures.items, i => parseInt(i.split("_p")[1]))
+          // We assume all @none language tags are really norwegian
+          framed = JSON.parse(JSON.stringify(framed).replaceAll('"@none":', '"no":'))
+          //console.log("🚀 ~ file: manifest.js:244 ~ handler ~ framed", framed)
+
+          const allMetadata = await fetch(`${API_URL}/items/${id}`).then(res => res.json())
+          const metadata = await constructMetadata(allMetadata)
+          // console.log("🚀 ~ file: manifest.js:247 ~ handler ~ metadata", metadata)
+          // Create the manifest
+          let manifest = await constructManifest(framed, service.url)
+          metadata ? manifest.metadata = metadata : null
+
+          res.status(200).json(manifest)
         }
-        if (Array.isArray(framed.structures.items) === false) {
-          framed.structures.items = [framed.structures.items]
-        }
-
-        // Sort nested arrays before we send the objects to be manifestified
-        framed.items = sortBy(framed.items, o => o.label['@none'][0])
-        framed.structures.items = sortBy(framed.structures.items, i => parseInt(i.split("_p")[1]))
-        // We assume all @none language tags are really norwegian
-        framed = JSON.parse(JSON.stringify(framed).replaceAll('"@none":', '"no":'))
-        //console.log("🚀 ~ file: manifest.js:244 ~ handler ~ framed", framed)
-
-        const allMetadata = await fetch(`${API_URL}/items/${id}`).then(res => res.json())
-        const metadata = await constructMetadata(allMetadata)
-        // console.log("🚀 ~ file: manifest.js:247 ~ handler ~ metadata", metadata)
-        // Create the manifest
-        let manifest = await constructManifest(framed, service.url)
-        metadata ? manifest.metadata = metadata : null
-
-        res.status(200).json(manifest)
+      } catch (error) {
+        console.log("🚀 ~ file: manifest.js:257 ~ handler ~ error", error)
+        res.status(500).json({ message: 'Internal server error' })
       }
-      if (response.status == 503) {
-        res.status(503).json({ message: "Service is unavailable" })
-      } else {
-        // Handle errors
-        console.log(response.status, response.statusText);
-      }
-
       break
     default:
       res.setHeader('Allow', ['GET'])

@@ -11,7 +11,8 @@ export const marcus_demo = {
       "type": "keyword"
     },
     "hasRepresentation": {
-      "type": "keyword"
+      "enabled": false,
+      "type": "object"
     },
     "hasThumbnail": {
       "type": "keyword"

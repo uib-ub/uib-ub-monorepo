@@ -7,7 +7,7 @@ export const marcus_demo = {
       script: {
         source: `
           if (ctx.containsKey('label') && ctx.label.containsKey('no')) {
-            ctx.label_no = ctx.label.no
+            ctx.label_no = ctx.label.no[0]
           }
         `
       }

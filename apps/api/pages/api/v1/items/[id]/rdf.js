@@ -121,26 +121,28 @@ export default async function handler(req, res) {
 
       // Find the service that contains data on this item
       const checkedServices = await fetch(`${API_URL}/resolver/${id}?v=1`)
-
       if (checkedServices.status === 404) {
-        return res.status(404).json({ message: 'ID not found' })
+        return res.status(404).json({ message: 'Not found' })
+      }
+      if (!checkedServices.ok) {
+        return res.status(400).json({ message: 'Bad request' })
       }
 
-      const service = await checkedServices.json()
-      // No URL means no service found, but this is horrible error handeling
+      try {
+        const service = await checkedServices.json()
+        const response = await getObject(id, service.url, format)
 
-      const response = await getObject(id, service.url, format)
+        // Deal with response
+        if (response.status >= 200 && response.status <= 299) {
+          const result = await response.text()
+          //console.log(result)
+          //res.status(200).json(result)
 
-      // Deal with response
-      if (response.status >= 200 && response.status <= 299) {
-        const result = await response.text()
-        //console.log(result)
-        //res.status(200).json(result)
-
-        res.status(200).send(result)
-      } else {
-        // Handle errors
-        console.log(response.status, response.statusText);
+          res.status(200).send(result)
+        }
+      } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Something went wrong' })
       }
 
       break
