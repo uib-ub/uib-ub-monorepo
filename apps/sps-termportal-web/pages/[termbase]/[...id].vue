@@ -296,24 +296,32 @@ function getConceptDisplaytitle(data, id: string): string | null {
   return title;
 }
 
-const fetchedData = ref({});
+const { data: fetchedData } = await useFetch(`/api/concept`, {
+  method: "POST",
+  body: { concept: id, base, termbase },
+  pick: ["@graph"],
+});
 const data = computed(() => {
   if (fetchedData.value?.["@graph"]) {
     const identified = identifyData(fetchedData.value?.["@graph"]);
-    let labels: string[] = [id];
-    for (const type of semanticRelationTypes) {
-      if (identified[id][type]) {
-        labels = labels.concat(identified[id][type]);
+    if (identified[id]) {
+      let labels: string[] = [id];
+      for (const type of semanticRelationTypes) {
+        if (identified[id][type]) {
+          labels = labels.concat(identified[id][type]);
+        }
       }
+      const labeled = idSubobjectsWithLang(identified, labels, [
+        "prefLabel",
+        "altLabel",
+        "hiddenLabel",
+        "definisjon",
+        "betydningsbeskrivelse",
+      ]);
+      return labeled;
+    } else {
+      return {};
     }
-    const labeled = idSubobjectsWithLang(identified, labels, [
-      "prefLabel",
-      "altLabel",
-      "hiddenLabel",
-      "definisjon",
-      "betydningsbeskrivelse",
-    ]);
-    return labeled;
   } else {
     return {};
   }
@@ -380,16 +388,6 @@ function getRelationData(
     return null;
   }
 }
-
-async function fetchConceptData() {
-  const fetched = await fetchData(
-    genConceptQuery(base, route.path, id),
-    "application/ld+json"
-  );
-  const compacted = await compactData(fetched, base);
-  fetchedData.value = compacted;
-}
-fetchConceptData();
 
 // Resize sidebar
 const sidebar = ref(null);
