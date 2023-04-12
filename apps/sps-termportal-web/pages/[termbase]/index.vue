@@ -2,13 +2,13 @@
   <main>
     <Head>
       <Title
-        >{{ uriData?.label[0]["@value"] || uriData?.label[0] || samling }} |
+        >{{ uriData?.label[0]["@value"] || uriData?.label[0] || termbase }} |
         Termportalen</Title
       >
     </Head>
     <h1 id="main" class="pt-5 pb-2 text-2xl">
       <AppLink to="#main">
-        {{ uriData?.label[0]["@value"] || uriData?.label[0] || samling }}
+        {{ uriData?.label[0]["@value"] || uriData?.label[0] || termbase }}
       </AppLink>
     </h1>
     <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
@@ -24,27 +24,27 @@
             <DataRow
               v-if="orgData?.label?.['@value']"
               :data="orgData.label['@value']"
-              :label="$t('samling.organisation')"
+              :label="$t('termbase.organisation')"
             />
             <!--Organisation number-->
             <DataRow
               v-if="orgData?.identifier"
               :data="orgData.identifier"
-              :label="$t('samling.orgnr')"
+              :label="$t('termbase.orgnr')"
             />
 
             <!--Email-->
             <DataRow
               v-if="contactData?.hasEmail"
               :data="contactData.hasEmail.split(':')[1]"
-              :label="$t('samling.email')"
+              :label="$t('termbase.email')"
               :to="contactData.hasEmail"
             />
             <!--Telephone-->
             <DataRow
               v-if="contactData?.hasTelephone"
               :data="contactData?.hasTelephone"
-              :label="$t('samling.telephone')"
+              :label="$t('termbase.telephone')"
             />
             <!--Languages-->
             <DataRow
@@ -56,7 +56,7 @@
             <DataRow
               v-if="uriData?.opprinneligSpraak"
               :data="$t('global.lang.' + uriData.opprinneligSpraak, 2)"
-              :label="$t('samling.startLang')"
+              :label="$t('termbase.startLang')"
             />
           </tbody>
         </table>
@@ -68,14 +68,16 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 const i18n = useI18n();
-const runtimeConfig = useRuntimeConfig();
 
 const route = useRoute();
-const samling = getSamlingFromParam();
-const uri = `${samling}-3A${samling}`;
-const samlingData = ref();
+const termbase = getTermbaseFromParam();
+const uri = `${termbase}-3A${termbase}`;
+
+const { data } = await useFetch(`/api/termbase/${termbase}`, {
+  pick: ["@graph"],
+});
 const displayData = computed(() => {
-  return identifyData(samlingData.value?.["@graph"]);
+  return identifyData(data.value?.["@graph"]);
 });
 const uriData = computed(() => {
   idSubobjectsWithLang(displayData.value, [uri], ["description"]);
@@ -103,18 +105,12 @@ const contactData = computed(() => {
   return displayData.value?.[`${uri}-23contact`];
 });
 
-function getSamlingFromParam() {
-  const samling = route.params.samling;
-  if (typeof samling === "string") {
-    return samling;
+function getTermbaseFromParam() {
+  const termbase = route.params.termbase;
+  if (typeof termbase === "string") {
+    return termbase;
   } else {
-    return samling[0];
+    return termbase[0];
   }
 }
-
-async function fetchSamlingData() {
-  const data = await fetchData(genSamlingQuery(samling), "application/ld+json");
-  samlingData.value = await compactData(data, runtimeConfig.public.base);
-}
-fetchSamlingData();
 </script>
