@@ -18,7 +18,6 @@ export async function compactData(data: any, base: string) {
       vcard: "http://www.w3.org/2006/vcard/ns#",
       literalForm: "skosxl:literalForm",
       label: "rdfs:label",
-      domene: "skosp:domene",
       modified: "dct:modified",
       identifier: "dct:identifier",
       language: "dct:language",
@@ -26,6 +25,7 @@ export async function compactData(data: any, base: string) {
       opprinneligSpraak: "skosp:opprinneligSpraak",
       hasTelephone: "vcard:hasTelephone",
       hasEmail: { "@id": "vcard:hasEmail", "@type": "@id" },
+      domene: { "@id": "skosp:domene", "@type": "@id" },
       description: {
         "@id": "dct:description",
         "@container": "@set",
