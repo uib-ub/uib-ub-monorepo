@@ -206,7 +206,7 @@
                   :data="
                     $t('global.samling.' + data[id]?.memberOf.split('-3A')[1])
                   "
-                  :to="`/${samling}`"
+                  :to="`/${termbase}`"
                   :label="$t('id.collection')"
                 />
                 <!--Domene-->
@@ -252,7 +252,7 @@ import { LocalLangCode } from "~~/utils/vars-language";
 const runtimeConfig = useRuntimeConfig();
 const i18n = useI18n();
 const route = useRoute();
-const samling = route.params.samling;
+const termbase = route.params.termbase;
 const idArray = route.params.id as Array<string>;
 const dataDisplayLanguages = useDataDisplayLanguages();
 const conceptViewToggle = useConceptViewToggle();
@@ -260,11 +260,11 @@ const searchData = useSearchData();
 
 let base: string;
 let id: string;
-if (!Object.keys(termbaseUriPatterns).includes(samling)) {
+if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
   base = runtimeConfig.public.base;
-  id = `${samling}-3A${idArray[0]}`;
+  id = `${termbase}-3A${idArray[0]}`;
 } else {
-  base = termbaseUriPatterns[samling][idArray[0]];
+  base = termbaseUriPatterns[termbase][idArray[0]];
   id = idArray.slice(1).join("/");
 }
 
