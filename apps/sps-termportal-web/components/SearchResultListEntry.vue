@@ -4,9 +4,7 @@
       <section
         class="py-1.5 px-2 hover:bg-gray-200 lg:flex lg:py-2"
         :class="{
-          'sm:flex':
-            searchOptions.searchTranslate === 'none' &&
-            searchOptions.searchTranslate !== 'all',
+          'sm:flex': searchOptions.searchTranslate === 'none',
         }"
       >
         <div class="grow justify-between sm:flex">
@@ -106,5 +104,14 @@ const props = defineProps<Props>();
 <style scoped>
 li {
   margin-bottom: -1px;
+  animation: show 200ms 0ms cubic-bezier(0.5, 0.1, 0.9, 0.8) forwards;
+  opacity: 0;
+}
+
+@keyframes show {
+  100% {
+    opacity: 1;
+    transform: none;
+  }
 }
 </style>
