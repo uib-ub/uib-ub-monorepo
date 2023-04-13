@@ -10,6 +10,7 @@ const { ES_HOST, ES_APIKEY, ES_PATH, NODE_ENV } = process.env
 const API = NODE_ENV === 'production' ? 'https://api-ub.vercel.app' : 'http://localhost:3009'
 // store index name
 let INDEX = ''
+let PAGE = ''
 
 class MTransport extends Transport {
   request(params, options, callback) {
@@ -34,11 +35,18 @@ const QUESTIONS = [
     name: 'index',
     message: "What is the name of the index you want to use?",
   },
+  {
+    type: 'number',
+    name: 'page',
+    message: "Which page do you want to start with?",
+    default: 0
+  },
 ];
 
 // 1. Ask for index name
 await inquirer.prompt(QUESTIONS).then(answers => {
   INDEX = answers.index
+  PAGE = answers.page
 });
 
 /**
@@ -112,7 +120,7 @@ const getIds = async (page, limit) => {
  */
 const resolveIds = async (data) => {
   const ids = data.map(item => item.id)
-  const promises = ids.map(id => fetch(id, { method: 'GET', retry: 3, pause: 300 }))
+  const promises = ids.map(id => fetch(`${id}?context=es`, { method: 'GET', retry: 3, pause: 300 }))
   const responses = await (await Promise.all(promises))
   const results = await Promise.all(responses.filter(response => response.ok).map(response => response.json()))
   return results
@@ -157,12 +165,12 @@ const indexData = async (data) => {
 const start = async () => {
   checkIndex(INDEX)
   turnOffRefreshInterval(INDEX)
-  let page = 0
+  let page = PAGE ?? 0
   let total = 0
   let totalIndexed = 0
   let totalRuntime = 0
 
-  while (true && total < 1000) {
+  while (true) {
     // store the start time
     const t0 = performance.now()
     // 3. get the ids from the api
@@ -186,7 +194,7 @@ const start = async () => {
     // calculate the time it took to index the items
     const took = t1 - t0
     // log the number of items indexed and the time it took
-    console.log(`Indexed ${count} items in ${took} milliseconds.`)
+    console.log(`Indexed ${count} items in ${took} milliseconds. Total: ${totalIndexed + count} of ${total} ids. Page: ${page}`)
 
     // store variables for reporting
     totalIndexed += count

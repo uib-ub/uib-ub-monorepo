@@ -33,6 +33,15 @@ export const InternationalLabel = (
     },
     lang: string
   }) => {
+  if (!label) {
+    return (
+      <Boundary color='orange' labels={['InternationalLabel (client)']} size='small'>
+        <div className='text-4xl font-bold'>
+          Missing title
+        </div>
+      </Boundary>
+    );
+  }
 
   const rest: any = {
     ...omit(label, [lang])

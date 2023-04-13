@@ -11,7 +11,8 @@ export const marcus_demo = {
       "type": "keyword"
     },
     "hasRepresentation": {
-      "type": "keyword"
+      "enabled": false,
+      "type": "object"
     },
     "hasThumbnail": {
       "type": "keyword"
@@ -32,7 +33,13 @@ export const marcus_demo = {
           "type": "keyword"
         },
         "label_none": {
-          "type": "keyword",
+          "type": "text",
+          "analyzer": "norwegian",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
         },
         "label_no": {
           "type": "keyword",
@@ -63,13 +70,31 @@ export const marcus_demo = {
       }
     },
     "description_none": {
-      "type": "keyword",
+      "type": "text",
+      "analyzer": "norwegian",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+        }
+      }
     },
     "description_no": {
-      "type": "keyword",
+      "type": "text",
+      "analyzer": "norwegian",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+        }
+      }
     },
     "description_en": {
-      "type": "keyword",
+      "type": "text",
+      "analyzer": "norwegian",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+        }
+      }
     },
     "identifier": {
       "type": "keyword"
@@ -112,7 +137,13 @@ export const marcus_demo = {
           "type": "keyword"
         },
         "label_none": {
-          "type": "keyword",
+          "type": "text",
+          "analyzer": "norwegian",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
         },
         "label_no": {
           "type": "keyword",
@@ -141,7 +172,13 @@ export const marcus_demo = {
           "type": "keyword"
         },
         "label_none": {
-          "type": "keyword",
+          "type": "text",
+          "analyzer": "norwegian",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
         },
         "label_no": {
           "type": "keyword",
@@ -164,7 +201,13 @@ export const marcus_demo = {
           "type": "keyword"
         },
         "label_none": {
-          "type": "keyword",
+          "type": "text",
+          "analyzer": "norwegian",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
         },
         "label_no": {
           "type": "keyword",
@@ -201,7 +244,13 @@ export const marcus_demo = {
           "type": "keyword"
         },
         "label_none": {
-          "type": "keyword",
+          "type": "text",
+          "analyzer": "norwegian",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
         },
         "label_no": {
           "type": "keyword",
@@ -218,7 +267,13 @@ export const marcus_demo = {
       }
     },
     "label_none": {
-      "type": "keyword",
+      "type": "text",
+      "analyzer": "norwegian",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+        }
+      }
     },
     "label_no": {
       "type": "keyword",
@@ -243,7 +298,13 @@ export const marcus_demo = {
           "type": "keyword"
         },
         "label_none": {
-          "type": "keyword",
+          "type": "text",
+          "analyzer": "norwegian",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
         },
         "label_en": {
           "type": "keyword",
