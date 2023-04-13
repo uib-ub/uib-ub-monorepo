@@ -46,12 +46,12 @@
       <main ref="main" class="h-full">
         <h2 id="main" class="pb-4">
           <AppLink class="text-3xl" to="#main">{{ pagetitle }}</AppLink>
-          <div v-if="data[id]?.memberOf">
+          <div v-if="data[procId]?.memberOf">
             <AppLink
               class="text-lg text-gray-600 underline hover:text-black"
-              :to="'/' + data[id]?.memberOf.split('-3A')[1]"
+              :to="'/' + data[procId]?.memberOf.split('-3A')[1]"
             >
-              {{ $t("global.samling." + data[id]?.memberOf.split("-3A")[1]) }}
+              {{ $t("global.samling." + data[procId]?.memberOf.split("-3A")[1]) }}
             </AppLink>
           </div>
         </h2>
@@ -83,7 +83,7 @@
                   :key="'prefLabel_' + lang + i"
                 >
                   {{
-                    data[data[id]?.prefLabel[lang]?.[i]]?.literalForm["@value"]
+                    data[data[procId]?.prefLabel[lang]?.[i]]?.literalForm["@value"]
                   }}
                 </td>
                 <!--Kontekst?-->
@@ -99,7 +99,7 @@
                   :key="'altLabel_' + lang + i"
                 >
                   {{
-                    data[data[id]?.altLabel[lang]?.[i]]?.literalForm["@value"]
+                    data[data[procId]?.altLabel[lang]?.[i]]?.literalForm["@value"]
                   }}
                 </td>
               </tr>
@@ -114,7 +114,7 @@
                   :key="'hiddenLabel' + lang + i"
                 >
                   {{
-                    data[data[id]?.hiddenLabel[lang]?.[i]]?.literalForm[
+                    data[data[procId]?.hiddenLabel[lang]?.[i]]?.literalForm[
                       "@value"
                     ]
                   }}
@@ -138,8 +138,8 @@
               <tbody>
                 <!--Definisjon-->
                 <DataRow
-                  v-for="def in data[id]?.definisjon?.[lang] ||
-                  data[id]?.betydningsbeskrivelse?.[lang]"
+                  v-for="def in data[procId]?.definisjon?.[lang] ||
+                  data[procId]?.betydningsbeskrivelse?.[lang]"
                   :key="'definisjoin_' + def"
                   :data="data[def]?.label['@value']"
                   :label="$t('id.definisjon')"
@@ -147,7 +147,7 @@
                 />
                 <!--Anbefalt term-->
                 <DataRow
-                  v-for="label in data[id]?.prefLabel?.[lang]"
+                  v-for="label in data[procId]?.prefLabel?.[lang]"
                   :key="'prefLabel_' + label"
                   :data="data[label]?.literalForm['@value']"
                   :label="$t('id.prefLabel')"
@@ -155,7 +155,7 @@
                 />
                 <!--AltLabel-->
                 <DataRow
-                  v-for="label in data[id]?.altLabel?.[lang]"
+                  v-for="label in data[procId]?.altLabel?.[lang]"
                   :key="'altLabel_' + label"
                   :data="data[label]?.literalForm['@value']"
                   :label="$t('id.altLabel')"
@@ -163,7 +163,7 @@
                 />
                 <!--HiddenLabel-->
                 <DataRow
-                  v-for="label in data[id]?.hiddenLabel?.[lang]"
+                  v-for="label in data[procId]?.hiddenLabel?.[lang]"
                   :key="'hiddenLabel_' + label"
                   :data="data[label]?.literalForm['@value']"
                   :label="$t('id.hiddenLabel')"
@@ -195,43 +195,43 @@
             </table>
           </div>
           <div>
-            <h3 v-if="data[id]" id="felles" class="pb-1 text-xl">
+            <h3 v-if="data[procId]" id="felles" class="pb-1 text-xl">
               <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
             </h3>
             <table>
               <tbody>
                 <!--Termbase-->
                 <DataRow
-                  v-if="data[id]?.memberOf"
+                  v-if="data[procId]?.memberOf"
                   :data="
-                    $t('global.samling.' + data[id]?.memberOf.split('-3A')[1])
+                    $t('global.samling.' + data[procId]?.memberOf.split('-3A')[1])
                   "
-                  :to="`/${samling}`"
+                  :to="`/${termbase}`"
                   :label="$t('id.collection')"
                 />
                 <!--Domene-->
                 <DataRow
-                  v-if="data[id]?.domene"
-                  :data="data[id]?.domene?.split('-3A').pop()"
+                  v-if="data[procId]?.domene"
+                  :data="data[procId]?.domene?.split('-3A').pop()"
                   :label="$t('id.domain')"
                 />
                 <!--Bruksområde-->
                 <DataRow
-                  v-if="data[id]?.subject"
-                  :data="data[id]?.subject.join(', ')"
+                  v-if="data[procId]?.subject"
+                  :data="data[procId]?.subject.join(', ')"
                   :label="$t('id.subject')"
                 />
                 <!--Modified-->
                 <DataRow
-                  v-if="data[id]?.modified"
-                  :data="data[id]?.modified['@value']"
+                  v-if="data[procId]?.modified"
+                  :data="data[procId]?.modified['@value']"
                   :label="$t('id.modified')"
                 />
                 <!--Created-->
                 <!--Note TODO after export fix-->
                 <DataRow
-                  v-if="data[id]?.scopeNote"
-                  :data="data[id]?.scopeNote"
+                  v-if="data[procId]?.scopeNote"
+                  :data="data[procId]?.scopeNote"
                   th-class=""
                   :label="$t('id.note')"
                 />
@@ -252,7 +252,7 @@ import { LocalLangCode } from "~~/utils/vars-language";
 const runtimeConfig = useRuntimeConfig();
 const i18n = useI18n();
 const route = useRoute();
-const samling = route.params.samling;
+const termbase = route.params.termbase;
 const idArray = route.params.id as Array<string>;
 const dataDisplayLanguages = useDataDisplayLanguages();
 const conceptViewToggle = useConceptViewToggle();
@@ -260,17 +260,20 @@ const searchData = useSearchData();
 
 let base: string;
 let id: string;
-if (!Object.keys(termbaseUriPatterns).includes(samling)) {
+let procId: string;
+if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
   base = runtimeConfig.public.base;
-  id = `${samling}-3A${idArray[0]}`;
+  id = `${termbase}-3A${idArray[0]}`;
+  procId = id;
 } else {
-  base = termbaseUriPatterns[samling][idArray[0]];
+  base = termbaseUriPatterns[termbase][idArray[0]];
   id = idArray.slice(1).join("/");
+  procId = base + id;
 }
 
 const pagetitle = computed(() => {
-  if (data.value[id]) {
-    return getConceptDisplaytitle(data.value, id);
+  if (data.value[procId]) {
+    return getConceptDisplaytitle(data.value, procId);
   } else {
     return "";
   }
@@ -296,24 +299,32 @@ function getConceptDisplaytitle(data, id: string): string | null {
   return title;
 }
 
-const fetchedData = ref({});
+const { data: fetchedData } = await useFetch(`/api/concept`, {
+  method: "POST",
+  body: { concept: id, base, termbase },
+  pick: ["@graph"],
+});
 const data = computed(() => {
   if (fetchedData.value?.["@graph"]) {
     const identified = identifyData(fetchedData.value?.["@graph"]);
-    let labels: string[] = [id];
-    for (const type of semanticRelationTypes) {
-      if (identified[id][type]) {
-        labels = labels.concat(identified[id][type]);
+    if (identified[procId]) {
+      let labels: string[] = [procId];
+      for (const type of semanticRelationTypes) {
+        if (identified[procId][type]) {
+          labels = labels.concat(identified[procId][type]);
+        }
       }
+      const labeled = idSubobjectsWithLang(identified, labels, [
+        "prefLabel",
+        "altLabel",
+        "hiddenLabel",
+        "definisjon",
+        "betydningsbeskrivelse",
+      ]);
+      return labeled;
+    } else {
+      return {};
     }
-    const labeled = idSubobjectsWithLang(identified, labels, [
-      "prefLabel",
-      "altLabel",
-      "hiddenLabel",
-      "definisjon",
-      "betydningsbeskrivelse",
-    ]);
-    return labeled;
   } else {
     return {};
   }
@@ -321,16 +332,16 @@ const data = computed(() => {
 
 const displayInfo = computed(() => {
   if (fetchedData.value?.["@graph"]) {
-    const conceptLanguages = getConceptLanguages(data.value[id]);
+    const conceptLanguages = getConceptLanguages(data.value[procId]);
     const displayLanguages = dataDisplayLanguages.value.filter((language) =>
       Array.from(conceptLanguages).includes(language)
     );
     const prefLabelLength = getMaxNumberOfInstances(
-      data.value?.[id]?.prefLabel
+      data.value?.[procId]?.prefLabel
     );
-    const altLabelLength = getMaxNumberOfInstances(data.value?.[id]?.altLabel);
+    const altLabelLength = getMaxNumberOfInstances(data.value?.[procId]?.altLabel);
     const hiddenLabelLength = getMaxNumberOfInstances(
-      data.value?.[id]?.hiddenLabel
+      data.value?.[procId]?.hiddenLabel
     );
     const info = {
       conceptLanguages,
@@ -361,8 +372,8 @@ function getRelationData(
   relationType: SemanticRelation
 ): Array<Array<string>> | null {
   // Check if concept with id has relation of relationtype
-  if (data[id]?.[relationType]) {
-    return data[id]?.[relationType].map((target: string) => {
+  if (data[procId]?.[relationType]) {
+    return data[procId]?.[relationType].map((target: string) => {
       try {
         const label = getConceptDisplaytitle(data, target);
         const link = "/" + target.replace("-3A", "/");
@@ -380,16 +391,6 @@ function getRelationData(
     return null;
   }
 }
-
-async function fetchConceptData() {
-  const fetched = await fetchData(
-    genConceptQuery(base, route.path, id),
-    "application/ld+json"
-  );
-  const compacted = await compactData(fetched, base);
-  fetchedData.value = compacted;
-}
-fetchConceptData();
 
 // Resize sidebar
 const sidebar = ref(null);
