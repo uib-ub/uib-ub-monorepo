@@ -10,6 +10,7 @@ const { ES_HOST, ES_APIKEY, ES_PATH, NODE_ENV } = process.env
 const API = NODE_ENV === 'production' ? 'https://api-ub.vercel.app' : 'http://localhost:3009'
 // store index name
 let INDEX = ''
+let PAGE = ''
 
 class MTransport extends Transport {
   request(params, options, callback) {
@@ -34,11 +35,18 @@ const QUESTIONS = [
     name: 'index',
     message: "What is the name of the index you want to use?",
   },
+  {
+    type: 'number',
+    name: 'page',
+    message: "Which page do you want to start with?",
+    default: 0
+  },
 ];
 
 // 1. Ask for index name
 await inquirer.prompt(QUESTIONS).then(answers => {
   INDEX = answers.index
+  PAGE = answers.page
 });
 
 /**
@@ -156,8 +164,8 @@ const indexData = async (data) => {
 // 2. repeat the process for the next pages until all id have been resolved
 const start = async () => {
   checkIndex(INDEX)
-  //turnOffRefreshInterval(INDEX)
-  let page = 0
+  turnOffRefreshInterval(INDEX)
+  let page = PAGE ?? 0
   let total = 0
   let totalIndexed = 0
   let totalRuntime = 0
@@ -200,7 +208,7 @@ const start = async () => {
 
   // 9. report the number of items indexed
   console.log(`Indexed ${totalIndexed} items of ${total} ids in total into "${INDEX}". It took ${minutes}:${seconds} minutes.`)
-  //turnOnRefreshInterval(INDEX)
+  turnOnRefreshInterval(INDEX)
   // 10. exit
 }
 
