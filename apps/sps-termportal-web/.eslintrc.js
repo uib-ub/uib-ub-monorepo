@@ -2,5 +2,5 @@ module.exports = {
   root: true,
   extends: ["custom/nuxt"],
   plugins: ["eslint-plugin-tsdoc"],
-  rules: {},
+  rules: {"vue/no-v-html": "off"},
 };
