@@ -139,10 +139,8 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const router = useRouter();
 const searchOptions = useSearchOptions();
 const searchterm = useSearchterm();
-const searchData = useSearchData();
 const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
 
