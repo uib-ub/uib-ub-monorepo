@@ -1,9 +1,10 @@
 export default function (base: string, termbase: string, id: string): string {
+  const concept = termbase === "FBK" ? base + id : id
   const log = {
     type: "concept",
     timestamp: new Date().toJSON(),
     termbase,
-    concept: id,
+    concept,
   };
 
   const query = `#log: ${JSON.stringify(log)}
