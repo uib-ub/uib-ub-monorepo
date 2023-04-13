@@ -205,6 +205,9 @@ onMounted(() => {
         }
       }
     }
+  } else {
+    // Push search options to route when navigating back
+    usePushSearchOptionsToRoute();
   }
 });
 </script>
