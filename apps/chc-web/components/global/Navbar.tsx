@@ -40,6 +40,12 @@ export function Navbar({ menuItems }: NavbarProps) {
       >
         ubb-ms-0008
       </Link>
+      <a
+        href="https://search-prototype-one.vercel.app/search"
+        className={`text-lg hover:text-black md:text-xl text-gray-600`}
+      >
+        Search
+      </a>
     </div>
   )
 }
