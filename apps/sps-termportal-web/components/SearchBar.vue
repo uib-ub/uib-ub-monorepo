@@ -148,7 +148,7 @@ const expandSearchBar = computed(() => {
   if (
     route.path === "/" ||
     route.path === "/search" ||
-    route.name === "samling-id" ||
+    route.name === "termbase-id" ||
     searchBarWasFocused.value
   ) {
     return true;
