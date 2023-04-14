@@ -1,7 +1,4 @@
-import { LabelPredicate, Matching } from "./vars";
-import { LangCode } from "./vars-language";
-import { Samling } from "./vars-termbase";
-import { SearchDataEntry, SearchDataStats } from "~~/composables/states";
+import { SearchDataEntry } from "~~/composables/states";
 
 /**
  * Returns object where keys are "\@id"s from objects
@@ -171,25 +168,5 @@ export function processBinding(binding: {
     matching: binding.matching.value,
     score: binding.score.value,
     translate: binding?.translate?.value || "",
-  };
-}
-
-type AggregateKeys = LangCode | Samling | LabelPredicate | Matching;
-export function parseAggregateData(
-  obj: {
-    [key in keyof SearchDataStats]: {
-      [key in keyof AggregateKeys]: string;
-    };
-  },
-  subObj: {
-    [key in keyof SearchDataStats]: { [key in keyof AggregateKeys]: string };
-  }
-) {
-  const category = Object.keys(subObj)[0];
-  return {
-    ...obj,
-    ...{
-      [category]: JSON.parse(Object.values(subObj)[0].value),
-    },
   };
 }
