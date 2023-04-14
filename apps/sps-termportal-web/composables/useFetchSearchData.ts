@@ -97,7 +97,11 @@ export async function useFetchSearchData(
     };
   }
 
-  if (fetchType === "initial" || fetchType === "filter" || fetchType === "options") {
+  if (
+    fetchType === "initial" ||
+    fetchType === "filter" ||
+    fetchType === "options"
+  ) {
     searchDataPending.value.aggregate = true;
     fetchSearchDataAggregate(
       searchOptions,
@@ -114,7 +118,7 @@ export async function useFetchSearchData(
   searchDataPending.value.entries = true;
   let qCount = 0;
   for (const m of searchMatching) {
-    qCount++
+    qCount++;
     await fetchSearchDataMatching(
       searchOptions,
       Array.isArray(m) ? m : [m],
