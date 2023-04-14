@@ -34,16 +34,15 @@ async function fetchSearchDataAggregate(
   const searchDataStats = useSearchDataStats();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
-  const data = await fetchData(
-    genSearchQuery(searchOptions, "aggregate", matching, type)
-  );
-  const newStats = data.results?.bindings.reduce(
-    (o, key) => parseAggregateData(o, key),
-    {}
-  );
+
+  const aggregate = await $fetch("/api/search/aggregate", {
+    method: "POST",
+    body: { searchOptions, matching, situation: type },
+  });
+
   if (currentFetch === searchFetchLatest.value) {
     if (type === "initial" || type === "options") {
-      searchDataStats.value = newStats;
+      searchDataStats.value = aggregate;
     } else if (type === "filter") {
       const zeroedStats = resetStats(searchDataStats.value, false);
       for (const category of Object.keys(zeroedStats)) {
