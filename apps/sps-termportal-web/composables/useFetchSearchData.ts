@@ -10,16 +10,16 @@ export async function fetchSearchDataMatching(
 ) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
-  const data: SearchQueryResponse = await fetchData(
-    genSearchQuery(searchOptions, "entries", matching, querySituation)
-  );
+  const data = await $fetch("/api/search/entries", {
+    method: "POST",
+    body: { searchOptions, matching, situation: querySituation },
+  });
+
   if (currentFetch === searchFetchLatest.value) {
     if (append) {
-      searchData.value = searchData.value.concat(
-        data.results.bindings.map(processBinding)
-      );
+      searchData.value = searchData.value.concat(data);
     } else {
-      searchData.value = data.results.bindings.map(processBinding);
+      searchData.value = data;
     }
   }
 }
