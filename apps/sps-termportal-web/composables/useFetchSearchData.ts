@@ -48,7 +48,7 @@ async function fetchSearchDataAggregate(
       for (const category of Object.keys(zeroedStats)) {
         searchDataStats.value[category as keyof SearchDataStats] = {
           ...zeroedStats[category as keyof SearchDataStats],
-          ...newStats[category],
+          ...aggregate[category],
         };
       }
     }
