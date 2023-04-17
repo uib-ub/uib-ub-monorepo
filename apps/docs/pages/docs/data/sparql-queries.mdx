@@ -1,4 +1,195 @@
-# Queries
+# SPARQL Queries
+
+## Queries
+
+### Filter on a specific class and start of signature
+
+
+```sparql
+SELECT distinct ?id ?identifier WHERE { 
+  ?id rdf:type/(rdfs:subClassOf)* ubbont:Charter ; 
+      dct:identifier ?identifier . 
+  FILTER(strStarts (?identifier, "ubb-diplom")) 
+} 
+ORDER BY ASC(?id) 
+LIMIT 1000
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A+%0ASELECT+distinct+%3Fid+%3Fidentifier+WHERE+%7B+%0A++%3Fid+rdf%3Atype%2F(rdfs%3AsubClassOf)*+ubbont%3ACharter+%3B+%0A++++++dct%3Aidentifier+%3Fidentifier+.+%0A++FILTER(strStarts+(%3Fidentifier%2C+%22ubb-diplom%22))+%0A%7D+%0AORDER+BY+ASC(%3Fid)+%0ALIMIT+1000)
+
+### Count all properties used on a class
+
+```sparql
+SELECT ?predicate (COUNT(*) AS ?frequency)
+WHERE {
+  ?subject a event:Event ;
+    ?predicate ?object .
+}
+GROUP BY ?predicate
+ORDER BY DESC(?frequency)
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A%0ASELECT+%3Fpredicate+(COUNT(*)AS+%3Ffrequency)%0AWHERE+%7B%0A++%3Fsubject+a+event%3AEvent+%3B%0A++++%3Fpredicate+%3Fobject+.%0A%7D%0AGROUP+BY+%3Fpredicate%0AORDER+BY+DESC(%3Ffrequency))
+
+### Get all classes, all used properties and a sample value
+
+```sparql
+SELECT DISTINCT ?type ?property (SAMPLE(?o) AS ?sample)
+WHERE {
+   ?s a ?type .
+   ?s ?property ?o .
+}
+GROUP BY ?type ?property
+ORDER BY ?type ?property
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A%0ASELECT+DISTINCT+%3Ftype+%3Fproperty+(SAMPLE(%3Fo)+AS+%3Fsample)%0AWHERE+%7B%0A+++%3Fs+a+%3Ftype+.%0A+++%3Fs+%3Fproperty+%3Fo+.%0A%7D%0AGROUP+BY+%3Ftype+%3Fproperty%0AORDER+BY+%3Ftype+%3Fproperty)
+
+### Get same as above but as json objects
+
+```sparql
+CONSTRUCT {
+?type ?property ?sample .
+} 
+WHERE {
+SELECT DISTINCT ?type ?property (SAMPLE(?o) AS ?sample)
+WHERE {
+  #VALUES ?type {foaf:Person}
+   ?s a ?type .
+   ?s ?property ?o .
+}
+GROUP BY ?type ?property
+ORDER BY ?type ?property
+}
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A%0ACONSTRUCT+%7B%0A%3Ftype+%3Fproperty+%3Fsample+.%0A%7D+%0AWHERE+%7B%0ASELECT+DISTINCT+%3Ftype+%3Fproperty+(SAMPLE(%3Fo)+AS+%3Fsample)%0AWHERE+%7B%0A++%23VALUES+%3Ftype+%7Bfoaf%3APerson%7D%0A+++%3Fs+a+%3Ftype+.%0A+++%3Fs+%3Fproperty+%3Fo+.%0A%7D%0AGROUP+BY+%3Ftype+%3Fproperty%0AORDER+BY+%3Ftype+%3Fproperty%0A%7D)
+
+### Find all props with english language
+
+```sparql
+SELECT ?s ?p ?localizedString WHERE {
+	?s ?p ?localizedString .
+  filter(lang(?localizedString) = 'en')
+}
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A%0ASELECT+%3Fs+%3Fp+%3FlocalizedString+WHERE+%7B%0A%09%3Fs+%3Fp+%3FlocalizedString+.%0A++filter(lang(%3FlocalizedString)+%3D+'en')%0A%7D)
+
+### Find all descriptions in no and en, plus internalNote for the Jørgen Grinde collection
+
+```sparql
+PREFIX ubbont: <http://data.ub.uib.no/ontology/>
+PREFIX dct: <http://purl.org/dc/terms/>
+
+SELECT ?uri ?id ?desc_no ?desc_en ?alt_text WHERE {
+  values ?col {'ubb-jg-'}
+	?s dct:identifier ?id ;
+      dct:description ?desc .
+  OPTIONAL{ ?s ubbont:internalNote ?alt } .
+  filter(STRSTARTS (?id, ?col))
+  bind(if(contains(?alt, "ALT"), ?alt, ?_ ) as ?alt_text)
+  bind(if(langMatches(lang(?desc),"en"),?desc,?_) as ?desc_en)
+  bind(if(langMatches(lang(?desc),""),?desc,?_) as ?desc_no)
+  bind(uri(replace(str(?s), "data.ub", "marcus")) as ?uri)
+}
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A%0APREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0A%0ASELECT+%3Furi+%3Fid+%3Fdesc_no+%3Fdesc_en+%3Falt_text+WHERE+%7B%0A++values+%3Fcol+%7B'ubb-jg-'%7D%0A%09%3Fs+dct%3Aidentifier+%3Fid+%3B%0A++++++dct%3Adescription+%3Fdesc+.%0A++OPTIONAL%7B+%3Fs+ubbont%3AinternalNote+%3Falt+%7D+.%0A++filter(STRSTARTS+(%3Fid%2C+%3Fcol))%0A++bind(if(contains(%3Falt%2C+%22ALT%22)%2C+%3Falt%2C+%3F_+)+as+%3Falt_text)%0A++bind(if(langMatches(lang(%3Fdesc)%2C%22en%22)%2C%3Fdesc%2C%3F_)+as+%3Fdesc_en)%0A++bind(if(langMatches(lang(%3Fdesc)%2C%22%22)%2C%3Fdesc%2C%3F_)+as+%3Fdesc_no)%0A++bind(uri(replace(str(%3Fs)%2C+%22data.ub%22%2C+%22marcus%22))+as+%3Furi)%0A%7D)
+
+### Count the content in all collections
+
+```sparql
+SELECT ?s (count(?part) as ?total) WHERE {
+  values ?col {<http://purl.org/ontology/bibo/Collection>}
+	?s a ?col ;
+      dct:hasPart ?part .
+  ?part dct:identifier ?partId .
+}
+group by ?s
+order by desc(?total)
+```
+
+[kRun the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A%0ASELECT+%3Fs+(count(%3Fpart)+as+%3Ftotal)+WHERE+%7B%0A++values+%3Fcol+%7B%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2FCollection%3E%7D%0A%09%3Fs+a+%3Fcol+%3B%0A++++++dct%3AhasPart+%3Fpart+.%0A++%3Fpart+dct%3Aidentifier+%3FpartId+.%0A%7D%0Agroup+by+%3Fs%0Aorder+by+desc(%3Ftotal))
+
+### Get the top level collections
+
+```sparql
+SELECT DISTINCT ?uri ?label ?description ?logo WHERE {
+	GRAPH <urn:x-arq:UnionGraph>  {	
+    ?uri a bibo:Collection .
+    OPTIONAL { ?uri rdfs:label ?label . }
+    OPTIONAL { ?uri dct:title ?label . }
+    OPTIONAL { ?uri dct:description ?description . }
+    OPTIONAL { ?uri foaf:logo ?logo . }
+    FILTER NOT EXISTS { ?uri dct:isPartOf ?partOf . }
+  }
+}
+ORDER BY ?label
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A%0ASELECT+DISTINCT+%3Furi+%3Flabel+%3Fdescription+%3Flogo+WHERE+%7B%0A%09GRAPH+%3Curn%3Ax-arq%3AUnionGraph%3E++%7B%09%0A++++%3Furi+a+bibo%3ACollection+.%0A++++OPTIONAL+%7B+%3Furi+rdfs%3Alabel+%3Flabel+.+%7D%0A++++OPTIONAL+%7B+%3Furi+dct%3Atitle+%3Flabel+.+%7D%0A++++OPTIONAL+%7B+%3Furi+dct%3Adescription+%3Fdescription+.+%7D%0A++++OPTIONAL+%7B+%3Furi+foaf%3Alogo+%3Flogo+.+%7D%0A++++FILTER+NOT+EXISTS+%7B+%3Furi+dct%3AisPartOf+%3FpartOf+.+%7D%0A++%7D%0A%7D%0AORDER+BY+%3Flabel)
+
+### Create a search IIIF collection for ... collections
+
+```sparql
+CONSTRUCT 
+  { 
+    ?uri iiif_prezi:summary ?count .
+    ?item rdf:type ?itemType .
+    ?item rdfs:label ?itemLabel .
+    ?item dct:identifier ?itemId .
+  }
+WHERE
+  { 
+    { SELECT ?uri (COUNT(?part) AS ?count)
+        WHERE
+          { VALUES ?id { "ubb-kk-" }
+            ?uri  dct:identifier  ?id ;
+                  dct:hasPart     ?part .
+            ?part rdf:type/(rdfs:subClassOf)* bibo:Document .
+          }
+        GROUP BY ?uri
+      }
+    UNION
+      { SELECT DISTINCT ?item ?itemId ?itemType ?itemLabel
+        WHERE
+          { SELECT DISTINCT  ?item ?itemId ?itemType 
+            (GROUP_CONCAT( concat('"',?itemLabels,'"@',lang(?itemLabels)); separator="|" ) as ?itemLabel)
+            WHERE
+              { VALUES ?id { "ubb-kk-" }
+                ?uri   dct:identifier  ?id .
+                ?item  dct:isPartOf    ?uri ;
+                      rdf:type        ?itemType .
+                ?itemType (rdfs:subClassOf)* bibo:Document .
+                ?item  dct:identifier  ?itemId ;
+                      dct:title       ?itemLabels .
+              }
+            GROUP BY ?item ?itemType ?itemId ?itemLabel
+            ORDER BY ?itemId
+          }
+        OFFSET  0
+        LIMIT   10
+      }
+  }
+ORDER BY ?itemId
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A+%0ACONSTRUCT+%0A++%7B+%0A++++%3Furi+iiif_prezi%3Asummary+%3Fcount+.%0A++++%3Fitem+rdf%3Atype+%3FitemType+.%0A++++%3Fitem+rdfs%3Alabel+%3FitemLabel+.%0A++++%3Fitem+dct%3Aidentifier+%3FitemId+.%0A++%7D%0AWHERE%0A++%7B+%0A++++%7B+SELECT+%3Furi+(COUNT(%3Fpart)+AS+%3Fcount)%0A++++++++WHERE%0A++++++++++%7B+VALUES+%3Fid+%7B+%22ubb-kk-%22+%7D%0A++++++++++++%3Furi++dct%3Aidentifier++%3Fid+%3B%0A++++++++++++++++++dct%3AhasPart+++++%3Fpart+.%0A++++++++++++%3Fpart+rdf%3Atype%2F(rdfs%3AsubClassOf)*+bibo%3ADocument+.%0A++++++++++%7D%0A++++++++GROUP+BY+%3Furi%0A++++++%7D%0A++++UNION%0A++++++%7B+SELECT+DISTINCT+%3Fitem+%3FitemId+%3FitemType+%3FitemLabel%0A++++++++WHERE%0A++++++++++%7B+SELECT+DISTINCT++%3Fitem+%3FitemId+%3FitemType+%0A++++++++++++(GROUP_CONCAT(+concat('%22'%2C%3FitemLabels%2C'%22%40'%2Clang(%3FitemLabels))%3B+separator%3D%22%7C%22+)+as+%3FitemLabel)%0A++++++++++++WHERE%0A++++++++++++++%7B+VALUES+%3Fid+%7B+%22ubb-kk-%22+%7D%0A++++++++++++++++%3Furi+++dct%3Aidentifier++%3Fid+.%0A++++++++++++++++%3Fitem++dct%3AisPartOf++++%3Furi+%3B%0A++++++++++++++++++++++rdf%3Atype++++++++%3FitemType+.%0A++++++++++++++++%3FitemType+(rdfs%3AsubClassOf)*+bibo%3ADocument+.%0A++++++++++++++++%3Fitem++dct%3Aidentifier++%3FitemId+%3B%0A++++++++++++++++++++++dct%3Atitle+++++++%3FitemLabels+.%0A++++++++++++++%7D%0A++++++++++++GROUP+BY+%3Fitem+%3FitemType+%3FitemId+%3FitemLabel%0A++++++++++++ORDER+BY+%3FitemId%0A++++++++++%7D%0A++++++++OFFSET++0%0A++++++++LIMIT+++10%0A++++++%7D%0A++%7D%0AORDER+BY+%3FitemId)
+
+### Get the objects with the most props
+
+```sparql
+SELECT ?id (COUNT(distinct ?p) AS ?props)
+WHERE {
+  ?id rdf:type/(rdfs:subClassOf)* bibo:Document ;
+    ?p ?o .
+}
+GROUP BY ?id
+ORDER BY DESC(?props)
+```
+
+[Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A+%0ASELECT+%3Fid+(COUNT(distinct+%3Fp)+AS+%3Fprops)%0AWHERE+%7B%0A++%3Fid+rdf%3Atype%2F(rdfs%3AsubClassOf)*+bibo%3ADocument+%3B%0A++++%3Fp+%3Fo+.%0A%7D%0AGROUP+BY+%3Fid%0AORDER+BY+DESC(%3Fprops))
 
 ## Prefixes
 
@@ -65,161 +256,3 @@ PREFIX locah: <http://data.archiveshub.ac.uk/def/>
 PREFIX lexvo: <http://lexvo.org/ontology#>
 PREFIX cc: <http://creativecommons.org/ns#>
 PREFIX iiif_prezi: <http://iiif.io/api/presentation/3#>
-```
-
-## Queries
-### Get all prop count on class
-
-```sparql
-SELECT ?predicate (COUNT(*)AS ?frequency)
-WHERE {
-  ?subject a event:Event ;
-    ?predicate ?object .
-}
-GROUP BY ?predicate
-ORDER BY DESC(?frequency)
-```
-
-### Get all classes, all used properties and a sample value
-
-```sparql
-SELECT DISTINCT ?type ?property (SAMPLE(?o) AS ?sample)
-WHERE {
-   ?s a ?type .
-   ?s ?property ?o .
-}
-GROUP BY ?type ?property
-ORDER BY ?type ?property
-```
-
-### Get same as above but as json objects
-
-```sparql
-CONSTRUCT {
-?type ?property ?sample .
-} 
-WHERE {
-SELECT DISTINCT ?type ?property (SAMPLE(?o) AS ?sample)
-WHERE {
-  #VALUES ?type {foaf:Person}
-   ?s a ?type .
-   ?s ?property ?o .
-}
-GROUP BY ?type ?property
-ORDER BY ?type ?property
-}
-```
-
-### Find all subjects with english language
-
-```sparql
-SELECT ?s WHERE {
-	?s ?p ?localizedString .
-  filter(lang(?localizedString) = 'en')
-}
-```
-
-### Find all descriptions in no and en, plus internalNote for the Jørgen Grinde collection
-
-```sparql
-PREFIX ubbont: <http://data.ub.uib.no/ontology/>
-PREFIX dct: <http://purl.org/dc/terms/>
-
-SELECT ?uri ?id ?desc_no ?desc_en ?alt_text WHERE {
-  values ?col {'ubb-jg-'}
-	?s dct:identifier ?id ;
-      dct:description ?desc .
-  OPTIONAL{ ?s ubbont:internalNote ?alt } .
-  filter(STRSTARTS (?id, ?col))
-  bind(if(contains(?alt, "ALT"), ?alt, ?_ ) as ?alt_text)
-  bind(if(langMatches(lang(?desc),"en"),?desc,?_) as ?desc_en)
-  bind(if(langMatches(lang(?desc),""),?desc,?_) as ?desc_no)
-  bind(uri(replace(str(?s), "data.ub", "marcus")) as ?uri)
-}
-```
-
-### Count the content in all collections
-
-```sparql
-SELECT ?s (count(?part) as ?total) WHERE {
-  values ?col {<http://purl.org/ontology/bibo/Collection>}
-	?s a ?col ;
-      dct:hasPart ?part .
-  ?part dct:identifier ?partId .
-}
-group by ?s
-order by desc(?total)
-```
-
-### Get the top level collections
-
-```sparql
-SELECT DISTINCT ?uri ?label ?description ?logo WHERE {
-	GRAPH <urn:x-arq:UnionGraph>  {	
-    ?uri a bibo:Collection .
-    OPTIONAL { ?uri rdfs:label ?label . }
-    OPTIONAL { ?uri dct:title ?label . }
-    OPTIONAL { ?uri dct:description ?description . }
-    OPTIONAL { ?uri foaf:logo ?logo . }
-    FILTER NOT EXISTS { ?uri dct:isPartOf ?partOf . }
-  }
-}
-ORDER BY ?label
-```
-
-### Create a search IIIF collection for ... collections
-
-```
-CONSTRUCT 
-  { 
-    ?uri iiif_prezi:summary ?count .
-    ?item rdf:type ?itemType .
-    ?item rdfs:label ?itemLabel .
-    ?item dct:identifier ?itemId .
-  }
-WHERE
-  { 
-    { SELECT ?uri (COUNT(?part) AS ?count)
-        WHERE
-          { VALUES ?id { "ubb-kk-" }
-            ?uri  dct:identifier  ?id ;
-                  dct:hasPart     ?part .
-            ?part rdf:type/(rdfs:subClassOf)* bibo:Document .
-          }
-        GROUP BY ?uri
-      }
-    UNION
-      { SELECT DISTINCT ?item ?itemId ?itemType ?itemLabel
-        WHERE
-          { SELECT DISTINCT  ?item ?itemId ?itemType 
-            (GROUP_CONCAT( concat('"',?itemLabels,'"@',lang(?itemLabels)); separator="|" ) as ?itemLabel)
-            WHERE
-              { VALUES ?id { "ubb-kk-" }
-                ?uri   dct:identifier  ?id .
-                ?item  dct:isPartOf    ?uri ;
-                      rdf:type        ?itemType .
-                ?itemType (rdfs:subClassOf)* bibo:Document .
-                ?item  dct:identifier  ?itemId ;
-                      dct:title       ?itemLabels .
-              }
-            GROUP BY ?item ?itemType ?itemId ?itemLabel
-            ORDER BY ?itemId
-          }
-        OFFSET  0
-        LIMIT   10
-      }
-  }
-ORDER BY ?itemId
-```
-
-### Get the objects with the most props
-
-```sparql
-SELECT ?id (COUNT(?p) AS ?props)
-WHERE {
-  ?id rdf:type/(rdfs:subClassOf)* bibo:Document ;
-    ?p ?o .
-}
-GROUP BY ?id
-ORDER BY DESC(?props)
-```
