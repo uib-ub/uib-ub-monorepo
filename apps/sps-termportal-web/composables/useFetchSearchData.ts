@@ -1,5 +1,5 @@
 import { SearchDataStats, SearchOptions } from "./states";
-import { SearchQueryResponse, Matching, MatchingNested } from "~~/utils/vars";
+import { MatchingNested } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
