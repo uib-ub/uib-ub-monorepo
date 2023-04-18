@@ -247,6 +247,7 @@
             </table>
           </div>
         </div>
+        <div v-if="error" class="p">Error</div>
       </main>
     </div>
   </div>
@@ -307,14 +308,25 @@ function getConceptDisplaytitle(data, id: string): string | null {
   return title;
 }
 
-const { data: fetchedData } = await useFetch(`/api/concept`, {
-  method: "POST",
-  body: { concept: id, base, termbase },
-  pick: ["@graph"],
-});
+const controller = new AbortController();
+const timer = setTimeout(() => {
+  controller.abort();
+}, 6000);
+
+const { data: fetchedData, error } = await useLazyAsyncData("concept", () =>
+  $fetch(`/api/concept`, {
+    method: "POST",
+    body: { concept: id, base, termbase },
+    signal: controller.signal,
+  }).then((value) => {
+    clearTimeout(timer);
+    return value;
+  })
+);
+
 const data = computed(() => {
-  if (fetchedData.value?.["@graph"]) {
-    const identified = identifyData(fetchedData.value?.["@graph"]);
+  if (fetchedData.value) {
+    const identified = identifyData(fetchedData.value);
     if (identified[procId]) {
       let labels: string[] = [procId];
       for (const type of semanticRelationTypes) {
@@ -339,7 +351,7 @@ const data = computed(() => {
 });
 
 const displayInfo = computed(() => {
-  if (fetchedData.value?.["@graph"]) {
+  if (fetchedData.value) {
     const conceptLanguages = getConceptLanguages(data.value[procId]);
     const displayLanguages = dataDisplayLanguages.value.filter((language) =>
       Array.from(conceptLanguages).includes(language)
@@ -419,6 +431,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  clearTimeout(timer);
+  if (!data.value[procId] && !controller.signal.aborted) {
+    controller.abort();
+  }
   if (sidebar.value) {
     searchScrollBarPos.value = sidebar.value.scrollTop;
   }
