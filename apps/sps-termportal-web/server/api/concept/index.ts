@@ -1,5 +1,5 @@
 import genConceptQuery from "../../utils/genConceptQuery";
-import compactData from "../../utils/compactData";
+import frameData from "../../utils/frameData";
 
 export default defineEventHandler(async (event) => {
   const url = useRuntimeConfig().public.endpointUrl;
@@ -26,8 +26,8 @@ export default defineEventHandler(async (event) => {
       return value;
     });
 
-    return compactData(data).then((value) => {
-      return value["@graph"];
+    return frameData(data, "skos:Concept").then((value) => {
+      return value;
     });
   } catch (e) {
     // console.log(e)
