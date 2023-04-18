@@ -16,6 +16,9 @@ export default defineEventHandler(async (event) => {
         Accept: "application/ld+json",
       },
     });
-    return frameData(data, "skos:Collection");
+    return frameData(data, "skos:Collection").then((value) => {
+      delete value["@context"];
+      return value;
+    });
   }
 });
