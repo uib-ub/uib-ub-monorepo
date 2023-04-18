@@ -2,13 +2,13 @@
   <main>
     <Head>
       <Title
-        >{{ uriData?.label[0]["@value"] || uriData?.label[0] || termbase }} |
+        >{{ data?.label[0]["@value"] || data?.label[0] || termbase }} |
         Termportalen</Title
       >
     </Head>
     <h1 id="main" class="pt-5 pb-2 text-2xl">
       <AppLink to="#main">
-        {{ uriData?.label[0]["@value"] || uriData?.label[0] || termbase }}
+        {{ data?.label[0]["@value"] || data?.label[0] || termbase }}
       </AppLink>
     </h1>
     <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
@@ -22,40 +22,40 @@
           <tbody>
             <!--Organisation-->
             <DataRow
-              v-if="orgData?.label?.['@value']"
-              :data="orgData.label['@value']"
+              v-if="data?.publisher?.label?.['@value']"
+              :data="data?.publisher?.label['@value']"
               :label="$t('termbase.organisation')"
             />
             <!--Organisation number-->
             <DataRow
-              v-if="orgData?.identifier"
-              :data="orgData.identifier"
+              v-if="data?.publisher?.identifier"
+              :data="data?.publisher?.identifier"
               :label="$t('termbase.orgnr')"
             />
 
             <!--Email-->
             <DataRow
-              v-if="contactData?.hasEmail"
-              :data="contactData.hasEmail.split(':')[1]"
+              v-if="data?.contactPoint?.hasEmail"
+              :data="data?.contactPoint?.hasEmail.split(':')[1]"
               :label="$t('termbase.email')"
-              :to="contactData.hasEmail"
+              :to="data?.contactPoint?.hasEmail"
             />
             <!--Telephone-->
             <DataRow
-              v-if="contactData?.hasTelephone"
-              :data="contactData?.hasTelephone"
+              v-if="data?.contactPoint?.hasTelephone"
+              :data="data?.contactPoint?.hasTelephone"
               :label="$t('termbase.telephone')"
             />
             <!--Languages-->
             <DataRow
-              v-if="uriData?.language"
-              :data="intersectUnique(languageOrder[$i18n.locale as keyof typeof languageOrder], uriData.language).map((lang: string) => $t(`global.lang.${lang}`, 2)) .join(', ')"
+              v-if="data?.language"
+              :data="intersectUnique(languageOrder[$i18n.locale as keyof typeof languageOrder], data.language).map((lang: string) => $t(`global.lang.${lang}`, 2)) .join(', ')"
               :label="$t('global.language', 1)"
             />
             <!--Starting languages-->
             <DataRow
-              v-if="uriData?.opprinneligSpraak"
-              :data="$t('global.lang.' + uriData.opprinneligSpraak, 2)"
+              v-if="data?.opprinneligSpraak"
+              :data="$t('global.lang.' + data.opprinneligSpraak, 2)"
               :label="$t('termbase.startLang')"
             />
           </tbody>
@@ -68,41 +68,21 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 const i18n = useI18n();
-
 const route = useRoute();
 const termbase = getTermbaseFromParam();
-const uri = `${termbase}-3A${termbase}`;
-
-const { data } = await useFetch(`/api/termbase/${termbase}`, {
-  pick: ["@graph"],
-});
-const displayData = computed(() => {
-  return identifyData(data.value?.["@graph"]);
-});
-const uriData = computed(() => {
-  idSubobjectsWithLang(displayData.value, [uri], ["description"]);
-  return displayData.value?.[uri];
-});
-
+const { data } = await useLazyFetch(`/api/termbase/${termbase}`);
 const description = computed(() => {
   const localLanguageOrder = languageOrder[i18n.locale.value].slice(0, 3);
   let description = "";
   for (const lang of localLanguageOrder) {
-    if (uriData.value?.description?.[lang]) {
+    if (data.value?.description?.[lang]) {
       try {
-        description = uriData.value?.description?.[lang][0]["@value"];
+        description = data.value?.description?.[lang];
       } catch (e) {}
       break;
     }
   }
   return description.split("\n\n");
-});
-
-const orgData = computed(() => {
-  return displayData.value?.[`${uri}-23org`];
-});
-const contactData = computed(() => {
-  return displayData.value?.[`${uri}-23contact`];
 });
 
 function getTermbaseFromParam() {
