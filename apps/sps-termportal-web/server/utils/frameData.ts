@@ -33,7 +33,7 @@ export default function (data: any, type: string) {
       hasTelephone: "vcard:hasTelephone",
       hasEmail: { "@id": "vcard:hasEmail", "@type": "@id" },
       domene: { "@id": "skosp:domene", "@type": "@id" },
-      publisere: {"@id": "skosp:publisere", "@type": "xsd:boolean"},
+      publisere: { "@id": "skosp:publisere", "@type": "xsd:boolean" },
       description: {
         "@id": "dct:description",
         "@container": "@language",
