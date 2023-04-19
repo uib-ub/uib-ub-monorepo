@@ -1,6 +1,3 @@
-import genConceptQuery from "../../utils/genConceptQuery";
-import frameData from "../../utils/frameData";
-
 export default defineEventHandler(async (event) => {
   const url = useRuntimeConfig().public.endpointUrl;
   const body = await readBody(event);
@@ -26,8 +23,9 @@ export default defineEventHandler(async (event) => {
       return value;
     });
 
-    return frameData(data, "skos:Concept").then((value) => {
-      return value;
+    return frameData(data, "skos:Concept").then((result) => {
+      delete result["@context"];
+      return parseConceptData(result, body.concept);
     });
   } catch (e) {
     // console.log(e)
