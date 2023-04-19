@@ -56,7 +56,7 @@
     },
     "predicate": {
       "prefLabel": "Anbefalt term",
-      "altLabel": "Tillat term",
+      "altLabel": "Tillatt term",
       "hiddenLabel": "Frarådet term"
     },
     "matching": {
