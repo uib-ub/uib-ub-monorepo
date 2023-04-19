@@ -46,14 +46,12 @@
       <main ref="main" class="h-full">
         <h2 id="main" class="pb-4">
           <AppLink class="text-3xl" to="#main">{{ pagetitle }}</AppLink>
-          <div v-if="data[procId]?.memberOf">
+          <div v-if="concept?.memberOf">
             <AppLink
               class="text-lg text-gray-600 underline hover:text-black"
-              :to="'/' + data[procId]?.memberOf.split('-3A')[1]"
+              :to="'/' + concept?.memberOf.split('-3A')[1]"
             >
-              {{
-                $t("global.samling." + data[procId]?.memberOf.split("-3A")[1])
-              }}
+              {{ $t("global.samling." + concept?.memberOf.split("-3A")[1]) }}
             </AppLink>
           </div>
         </h2>
@@ -144,34 +142,39 @@
               <tbody>
                 <!--Definisjon-->
                 <DataRow
-                  v-for="def in data[procId]?.definisjon?.[lang] ||
-                  data[procId]?.betydningsbeskrivelse?.[lang]"
-                  :key="'definisjoin_' + def"
-                  :data="data[def]?.label['@value']"
+                  v-if="
+                    concept?.definisjon?.[lang] ||
+                    concept?.betydningsbeskrivelse?.[lang]
+                  "
+                  :key="'definisjon' + lang"
+                  :data="
+                    concept.definisjon?.[lang][0]?.label['@value'] ||
+                    concept?.betydningsbeskrivelse?.[lang][0]?.label['@value']
+                  "
                   :label="$t('id.definisjon')"
                   :data-lang="lang"
                 />
                 <!--Anbefalt term-->
                 <DataRow
-                  v-for="label in data[procId]?.prefLabel?.[lang]"
-                  :key="'prefLabel_' + label"
-                  :data="data[label]?.literalForm['@value']"
+                  v-if="concept?.prefLabel?.[lang]"
+                  :key="'prefLabel_' + lang"
+                  :data="concept?.prefLabel[lang][0]?.literalForm['@value']"
                   :label="$t('id.prefLabel')"
                   :data-lang="lang"
                 />
                 <!--AltLabel-->
                 <DataRow
-                  v-for="label in data[procId]?.altLabel?.[lang]"
+                  v-for="label in concept?.altLabel?.[lang]"
                   :key="'altLabel_' + label"
-                  :data="data[label]?.literalForm['@value']"
+                  :data="label?.literalForm['@value']"
                   :label="$t('id.altLabel')"
                   :data-lang="lang"
                 />
                 <!--HiddenLabel-->
                 <DataRow
-                  v-for="label in data[procId]?.hiddenLabel?.[lang]"
+                  v-for="label in concept?.hiddenLabel?.[lang]"
                   :key="'hiddenLabel_' + label"
-                  :data="data[label]?.literalForm['@value']"
+                  :data="label?.literalForm['@value']"
                   :label="$t('id.hiddenLabel')"
                   :data-lang="lang"
                 />
@@ -201,45 +204,43 @@
             </table>
           </div>
           <div>
-            <h3 v-if="data[procId]" id="felles" class="pb-1 text-xl">
+            <h3 v-if="data" id="felles" class="pb-1 text-xl">
               <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
             </h3>
             <table>
               <tbody>
                 <!--Termbase-->
                 <DataRow
-                  v-if="data[procId]?.memberOf"
+                  v-if="concept?.memberOf"
                   :data="
-                    $t(
-                      'global.samling.' + data[procId]?.memberOf.split('-3A')[1]
-                    )
+                    $t('global.samling.' + concept.memberOf.split('-3A')[1])
                   "
                   :to="`/${termbase}`"
                   :label="$t('id.collection')"
                 />
                 <!--Domene-->
                 <DataRow
-                  v-if="data[procId]?.domene"
-                  :data="data[procId]?.domene?.split('-3A').pop()"
+                  v-if="concept?.domene"
+                  :data="concept.domene?.split('-3A').pop()"
                   :label="$t('id.domain')"
                 />
                 <!--Bruksområde-->
                 <DataRow
-                  v-if="data[procId]?.subject"
-                  :data="data[procId]?.subject.join(', ')"
+                  v-if="concept?.subject"
+                  :data="concept.subject.join(', ')"
                   :label="$t('id.subject')"
                 />
                 <!--Modified-->
                 <DataRow
-                  v-if="data[procId]?.modified"
-                  :data="data[procId]?.modified['@value']"
+                  v-if="concept?.modified"
+                  :data="concept.modified"
                   :label="$t('id.modified')"
                 />
                 <!--Created-->
                 <!--Note TODO after export fix-->
                 <DataRow
-                  v-if="data[procId]?.scopeNote"
-                  :data="data[procId]?.scopeNote"
+                  v-if="concept?.scopeNote"
+                  :data="concept.scopeNote"
                   th-class=""
                   :label="$t('id.note')"
                 />
