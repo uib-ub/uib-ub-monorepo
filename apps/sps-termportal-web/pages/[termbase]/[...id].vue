@@ -255,18 +255,23 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import { SemanticRelation } from "utils/vars";
-import { LocalLangCode } from "~~/utils/vars-language";
-
 const runtimeConfig = useRuntimeConfig();
-const i18n = useI18n();
 const route = useRoute();
-const termbase = route.params.termbase;
-const idArray = route.params.id as Array<string>;
+const searchScrollBarPos = useSearchScrollBarPos();
 const dataDisplayLanguages = useDataDisplayLanguages();
 const conceptViewToggle = useConceptViewToggle();
 const searchData = useSearchData();
+const sidebar = ref(null);
+const main = ref(null);
+const termbase = route.params.termbase;
+const idArray = route.params.id as Array<string>;
+
+onMounted(() => {
+  if (sidebar.value) {
+    sidebar.value.scrollTop = searchScrollBarPos.value;
+  }
+});
+
 
 let base: string;
 let id: string;
@@ -279,39 +284,6 @@ if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
   base = termbaseUriPatterns[termbase][idArray[0]];
   id = idArray.slice(1).join("/");
   procId = base + id;
-}
-const concept = computed(() => {
-  return data.value?.concept[procId];
-});
-
-const pagetitle = computed(() => {
-  if (data?.value?.concept) {
-    return getConceptDisplaytitle(data.value.concept[procId]);
-  } else {
-    return "";
-  }
-});
-
-function getConceptDisplaytitle(data): string | null {
-  let title = null;
-  const languages = languageOrder[i18n.locale.value as LocalLangCode].slice(
-    0,
-    3
-  );
-  for (const label of ["prefLabel", "altLabel"]) {
-    if (data?.[label]) {
-      for (const lang of languages) {
-        if (data?.[label][lang]) {
-          title = data[label][lang]?.[0]?.literalForm["@value"];
-          break;
-        }
-      }
-      if (title) {
-        break;
-      }
-    }
-  }
-  return title;
 }
 
 const controller = new AbortController();
@@ -330,6 +302,16 @@ const { data, error } = await useAsyncData("concept", () =>
   })
 );
 
+const concept = computed(() => {
+  return data.value?.concept[procId];
+});
+
+const pagetitle = computed(() => {
+  if (concept.value) {
+    return getConceptDisplaytitle(concept.value);
+  }
+});
+
 const displayInfo = computed(() => {
   if (data?.value?.meta) {
     const conceptLanguages = data.value?.meta?.language;
@@ -339,7 +321,6 @@ const displayInfo = computed(() => {
     const info = {
       conceptLanguages,
       displayLanguages,
-      //      prefLabelLength,
       altLabelLength: data.value.meta.maxLen.altLabel,
       hiddenLabelLength: data.value.meta.maxLen.hiddenLabel,
     };
@@ -361,46 +342,9 @@ const displayInfo = computed(() => {
   }
 });
 
-function getRelationData(
-  data,
-  mainConceptId,
-  relationType: SemanticRelation
-): Array<Array<string>> | null {
-  // Check if concept with id has relation of relationtype
-  if (data[mainConceptId]?.[relationType]) {
-    return data[mainConceptId]?.[relationType].map((target: string) => {
-      try {
-        // Pass concept object
-        const label = getConceptDisplaytitle(data[target]);
-        const link = "/" + target.replace("-3A", "/");
-        // Don't return links with no label -> linked concept doesn't exist
-        if (label) {
-          return [label, link];
-        } else {
-          return null;
-        }
-      } catch (error) {
-        return null;
-      }
-    });
-  } else {
-    return null;
-  }
-}
-
-// Resize sidebar
-const sidebar = ref(null);
-const main = ref(null);
 useResizeObserver(main, (e) => {
   if (sidebar.value) {
     sidebar.value.style.maxHeight = `${main.value.offsetHeight - 95}px`;
-  }
-});
-
-const searchScrollBarPos = useSearchScrollBarPos();
-onMounted(() => {
-  if (sidebar.value) {
-    sidebar.value.scrollTop = searchScrollBarPos.value;
   }
 });
 
