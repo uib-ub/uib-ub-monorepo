@@ -1,6 +1,6 @@
 import { SearchOptions } from "../../composables/states";
 import { Matching, QueryType, LabelPredicate } from "../../utils/vars";
-import { Samling, Domains } from "../../utils/vars-termbase";
+import { Samling, Domains, domainNesting } from "../../utils/vars-termbase";
 import { genSearchQueryAll } from "./genSearchQueryAll";
 
 const htmlHighlight = {
