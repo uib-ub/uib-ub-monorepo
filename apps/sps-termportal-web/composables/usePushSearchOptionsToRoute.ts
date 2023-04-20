@@ -7,16 +7,18 @@ export default function () {
 
   for (const [key, value] of Object.entries(searchOptionsInfo)) {
     let defaultVal: string | null;
-    if (value.default === null) {
-      defaultVal = value.default;
-    } else {
-      defaultVal = value.default.toString();
-    }
+    if (searchOptionsInfo[key].q) {
+      if (value.default === null) {
+        defaultVal = value.default;
+      } else {
+        defaultVal = value.default.toString();
+      }
 
-    if (searchOpt[key].toString() !== defaultVal) {
-      myparams[value.q] = searchOpt[key];
-    } else {
-      myparams[value.q] = undefined;
+      if (searchOpt[key].toString() !== defaultVal) {
+        myparams[value.q] = searchOpt[key];
+      } else {
+        myparams[value.q] = undefined;
+      }
     }
   }
 
