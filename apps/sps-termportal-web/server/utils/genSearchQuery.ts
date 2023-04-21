@@ -81,9 +81,9 @@ export function getGraphData(
   searchDomain: string[],
   graphKey: string | string[]
 ): string[] {
-  if (typeof graphKey === "string" && graphKey !== "all") {
+  if (graphKey.length === 1 && graphKey[0] !== "all") {
     return ["", `ns:${samlingMapping[graphKey as Samling]}`];
-  } else if (Array.isArray(graphKey) && graphKey.length > 0) {
+  } else if (graphKey.length > 1) {
     const bases = graphKey
       .map((key) => `FROM NAMED ns:${samlingMapping[key as Samling]}`)
       .join("\n  ");
@@ -99,11 +99,9 @@ export function getGraphData(
   }
 }
 
-export function getLanguageData(language: string | string[]): string[] {
-  if (Array.isArray(language)) {
+export function getLanguageData(language: string[]): string[] {
+  if (language[0] !== "all") {
     return language;
-  } else if (language !== "all") {
-    return [language];
   } else {
     return [""];
   }
@@ -149,19 +147,16 @@ function getPredicateValues(predicate: LabelPredicate[]): string {
   }
 }
 
-export function genSearchQuery(
-  searchOptions: SearchOptions,
-  queryType: QueryType,
-  matching: string[],
-  querySituation
-): string {
-  const termData = getTermData(searchOptions.searchTerm, htmlHighlight);
-  const graph = getGraphData(
-    searchOptions.searchDomain,
-    searchOptions.searchBase
-  );
-  const language = getLanguageData(searchOptions.searchLanguage);
-  const predFilter = getPredicateValues(searchOptions.searchPredicate);
+export function genSearchQuery(searchOptions): string {
+  // TODO tmp
+  const queryType = searchOptions.subtype;
+  const matching = searchOptions.matching;
+  const querySituation = searchOptions.situation;
+
+  const termData = getTermData(searchOptions.term, htmlHighlight);
+  const graph = getGraphData(searchOptions.domain, searchOptions.termbase);
+  const language = getLanguageData(searchOptions.language);
+  const predFilter = getPredicateValues(searchOptions.predicate);
 
   if (matching[0] === "all" && queryType === "entries") {
     return genSearchQueryAll(
@@ -283,13 +278,12 @@ export function genSearchQuery(
       return content[queryType][subEntry];
     };
 
-    const translate =
-      searchOptions.searchTranslate !== "none" ? "?translate" : "";
+    const translate = searchOptions.translate !== "none" ? "?translate" : "";
     const translateOptional =
-      searchOptions.searchTranslate !== "none"
+      searchOptions.translate !== "none"
         ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
   ?label2 skosxl:literalForm ?translate .
-  FILTER ( langmatches(lang(?translate), "${searchOptions.searchTranslate}") ) }`
+  FILTER ( langmatches(lang(?translate), "${searchOptions.translate}") ) }`
         : "";
 
     const subqueryTemplate = (
@@ -318,8 +312,8 @@ export function genSearchQuery(
           BIND ( replace(str(?s), "http://.*wiki.terminologi.no/index.php/Special:URIResolver/.*-3A", "") as ?samling).
         }
         ORDER BY DESC(?score) lcase(?literal)
-        LIMIT ${searchOptions.searchLimit}
-        OFFSET ${searchOptions.searchOffset?.[match as Matching] || 0}
+        LIMIT ${searchOptions.limit}
+        OFFSET ${searchOptions.offset?.[match as Matching] || 0}
       }`,
         count: `
       {
@@ -440,7 +434,7 @@ export function genSearchQuery(
   }
   GROUP BY ?uri ?predicate ?literal ?samling ?score ?matching ${translate}
   ORDER BY DESC(?score) lcase(?literal) DESC(?predicate)
-  LIMIT ${searchOptions.searchLimit}`;
+  LIMIT ${searchOptions.limit}`;
 
     const queryCount = () => `
   ${queryPrefix()}
