@@ -112,30 +112,12 @@ const fetchFurtherSearchData = () => {
         offset.all = countFetchedMatches.value;
       }
 
-      const newOptions = {
-        searchTerm: searchOptions.value.searchTerm,
-        searchBase:
-          searchFilterData.value.samling.length > 0
-            ? searchFilterData.value.samling
-            : searchOptions.value.searchBase,
-        searchDomain: searchOptions.value.searchDomain,
-        searchLanguage:
-          searchFilterData.value.lang.length > 0
-            ? searchFilterData.value.lang
-            : searchOptions.value.searchLanguage,
-        searchPredicate:
-          searchFilterData.value.predicate.length > 0
-            ? searchFilterData.value.predicate
-            : searchOptions.value.searchPredicate,
-        searchTranslate: searchOptions.value.searchTranslate,
-        searchMatching:
-          searchFilterData.value.matching.length > 0
-            ? searchFilterData.value.matching
-            : Object.keys(offset),
-        searchLimit: searchOptions.value.searchLimit,
-        searchOffset: offset,
-      };
-      useFetchSearchData(newOptions, "further", Object.keys(offset));
+      useFetchSearchData(
+        useGenSearchOptions("further", {
+          offset,
+          matching: Object.keys(offset),
+        })
+      );
     }
   }
 };
@@ -148,7 +130,7 @@ onBeforeUnmount(() => {
 function considerSearchFetching(situation: FetchType) {
   if (allowSearchFetch.value && searchOptions.value.searchTerm !== null) {
     searchData.value = [];
-    useFetchSearchData(searchOptions.value, situation);
+    useFetchSearchData(useGenSearchOptions(situation));
     allowSearchFetch.value = false;
   }
 }
