@@ -3,7 +3,7 @@
     <div class="mx-auto max-w-screen-xl bg-white pt-[48px]"></div>
     <nav
       ref="navBar"
-      class="bg-tpblue-400 tp-transition-slow fixed top-0 h-12 w-full text-white"
+      class="bg-tpblue-400 z-10 tp-transition-slow fixed top-0 h-12 w-full text-white"
     >
       <div
         class="xs:px-3 mx-auto flex max-w-screen-xl grow justify-between py-2 px-2 sm:px-4 md:px-5"
