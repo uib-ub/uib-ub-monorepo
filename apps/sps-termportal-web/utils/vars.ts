@@ -50,9 +50,24 @@ export const semanticRelationTypes: SemanticRelation[] = [
 ];
 
 export const searchOptionsInfo = {
+  type: { default: "search" },
+  subtype: { default: "" },
+  situation: { default: "" },
   searchTerm: { q: "q", default: null },
   searchLanguage: { q: "ss", default: "all" },
   searchTranslate: { q: "ms", default: "none" },
   searchBase: { q: "tb", default: "all" },
   searchDomain: { q: "d", default: ["all"] },
+  predicate: { default: ["prefLabel", "altLabel", "hiddenLabel"] },
+  matching: {
+    default: [
+      ["full-cs", "full-ci"],
+      ["startsWith-ci"],
+      ["endsWith-ci"],
+      ["subWord-ci"],
+      ["contains-ci"],
+    ],
+  },
+  limit: { default: 30 },
+  offset: { default: undefined },
 };
