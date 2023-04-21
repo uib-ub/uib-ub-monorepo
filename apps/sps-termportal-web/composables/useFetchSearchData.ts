@@ -3,16 +3,14 @@ import { MatchingNested } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
-  matching: string[],
   append: boolean,
-  currentFetch: number,
-  querySituation
+  currentFetch: number
 ) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
   const data = await $fetch("/api/search/entries", {
     method: "POST",
-    body: { searchOptions, matching, situation: querySituation },
+    body: { searchOptions },
   });
 
   if (currentFetch === searchFetchLatest.value) {
@@ -25,19 +23,16 @@ export async function fetchSearchDataMatching(
 }
 
 export type FetchType = "initial" | "filter" | "further" | "options";
-async function fetchSearchDataAggregate(
-  searchOptions: SearchOptions,
-  matching: string[],
-  type: FetchType,
-  currentFetch: number
-) {
+async function fetchSearchDataAggregate(searchOptions, currentFetch: number) {
+  const type = searchOptions.situation;
+
   const searchDataStats = useSearchDataStats();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
 
   const aggregate = await $fetch("/api/search/aggregate", {
     method: "POST",
-    body: { searchOptions, matching, situation: type },
+    body: { searchOptions },
   });
 
   if (currentFetch === searchFetchLatest.value) {
@@ -56,11 +51,7 @@ async function fetchSearchDataAggregate(
   }
 }
 
-export async function useFetchSearchData(
-  searchOptions: SearchOptions,
-  fetchType: FetchType,
-  matching?: MatchingNested[]
-) {
+export async function useFetchSearchData(options) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
@@ -71,19 +62,7 @@ export async function useFetchSearchData(
   const fetchTime = Date.now();
   searchFetchLatest.value = fetchTime;
 
-  let searchMatching: MatchingNested[] | "all"[];
-
-  if (matching) {
-    searchMatching = matching;
-  } else if (searchOptions.searchTerm.length > 0) {
-    if (typeof searchOptions.searchMatching === "string") {
-      searchMatching = [searchOptions.searchMatching];
-    } else {
-      searchMatching = searchOptions.searchMatching;
-    }
-  } else {
-    searchMatching = ["all"];
-  }
+  const fetchType = options.situation;
 
   if (fetchType === "initial") {
     if (route.path === "/search") {
@@ -104,9 +83,10 @@ export async function useFetchSearchData(
   ) {
     searchDataPending.value.aggregate = true;
     fetchSearchDataAggregate(
-      searchOptions,
-      searchMatching.flat(),
-      fetchType,
+      {
+        ...options,
+        ...{ subtype: "aggregate", matching: options.matching.flat() },
+      },
       fetchTime
     );
   }
@@ -117,20 +97,21 @@ export async function useFetchSearchData(
 
   searchDataPending.value.entries = true;
   let qCount = 0;
-  for (const m of searchMatching) {
+  for (const m of options.matching) {
     qCount++;
+
     await fetchSearchDataMatching(
-      searchOptions,
-      Array.isArray(m) ? m : [m],
+      { ...options, ...{ subtype: "entries", matching: m } },
       append,
       fetchTime,
       fetchType + qCount
     );
+
     append = true;
     if (fetchTime !== searchFetchLatest.value) {
       break;
     }
-    if (countSearchEntries(searchData.value) >= searchOptions.searchLimit) {
+    if (countSearchEntries(searchData.value) >= options.limit) {
       break;
     }
   }
