@@ -131,30 +131,8 @@ watch(
     if (searchFetchInitial.value) {
       searchFetchInitial.value = false;
     } else {
-      const newOptions: SearchOptions = {
-        searchTerm: searchOptions.value.searchTerm,
-        searchBase:
-          searchFilterData.value.samling.length > 0
-            ? searchFilterData.value.samling
-            : searchOptions.value.searchBase,
-        searchDomain: searchOptions.value.searchDomain,
-        searchLanguage:
-          searchFilterData.value.lang.length > 0
-            ? searchFilterData.value.lang
-            : searchOptions.value.searchLanguage,
-        searchPredicate:
-          searchFilterData.value.predicate.length > 0
-            ? searchFilterData.value.predicate
-            : searchOptions.value.searchPredicate,
-        searchTranslate: searchOptions.value.searchTranslate,
-        searchMatching:
-          searchFilterData.value.matching.length > 0
-            ? searchFilterData.value.matching
-            : searchOptions.value.searchMatching,
-        searchLimit: searchOptions.value.searchLimit,
-        searchOffset: searchOptions.value.searchOffset,
-      };
-      useFetchSearchData(newOptions, "filter");
+
+      useFetchSearchData(useGenSearchOptions("filter"));
     }
   },
   { deep: true }
