@@ -65,7 +65,6 @@ onUnmounted(() => {
 });
 
 const fetchFurtherSearchData = () => {
-  const searchFetchLatest = useSearchFetchLatest();
   const element = scrollComponent.value;
   if (count.value > countFetchedMatches.value && !pending.value) {
     if (element.getBoundingClientRect().bottom * 0.75 < window.innerHeight) {
@@ -112,6 +111,7 @@ const fetchFurtherSearchData = () => {
       } else {
         offset.all = countFetchedMatches.value;
       }
+
       const newOptions = {
         searchTerm: searchOptions.value.searchTerm,
         searchBase:
@@ -135,8 +135,6 @@ const fetchFurtherSearchData = () => {
         searchLimit: searchOptions.value.searchLimit,
         searchOffset: offset,
       };
-      const fetchTime = Date.now();
-      searchFetchLatest.value = fetchTime;
       useFetchSearchData(newOptions, "further", Object.keys(offset));
     }
   }
