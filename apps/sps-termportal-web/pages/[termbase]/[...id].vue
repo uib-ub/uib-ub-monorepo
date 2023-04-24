@@ -51,7 +51,9 @@
               class="text-lg text-gray-600 underline hover:text-black"
               :to="'/' + data[procId]?.memberOf.split('-3A')[1]"
             >
-              {{ $t("global.samling." + data[procId]?.memberOf.split("-3A")[1]) }}
+              {{
+                $t("global.samling." + data[procId]?.memberOf.split("-3A")[1])
+              }}
             </AppLink>
           </div>
         </h2>
@@ -83,7 +85,9 @@
                   :key="'prefLabel_' + lang + i"
                 >
                   {{
-                    data[data[procId]?.prefLabel[lang]?.[i]]?.literalForm["@value"]
+                    data[data[procId]?.prefLabel[lang]?.[i]]?.literalForm[
+                      "@value"
+                    ]
                   }}
                 </td>
                 <!--Kontekst?-->
@@ -99,7 +103,9 @@
                   :key="'altLabel_' + lang + i"
                 >
                   {{
-                    data[data[procId]?.altLabel[lang]?.[i]]?.literalForm["@value"]
+                    data[data[procId]?.altLabel[lang]?.[i]]?.literalForm[
+                      "@value"
+                    ]
                   }}
                 </td>
               </tr>
@@ -204,7 +210,9 @@
                 <DataRow
                   v-if="data[procId]?.memberOf"
                   :data="
-                    $t('global.samling.' + data[procId]?.memberOf.split('-3A')[1])
+                    $t(
+                      'global.samling.' + data[procId]?.memberOf.split('-3A')[1]
+                    )
                   "
                   :to="`/${termbase}`"
                   :label="$t('id.collection')"
@@ -339,7 +347,9 @@ const displayInfo = computed(() => {
     const prefLabelLength = getMaxNumberOfInstances(
       data.value?.[procId]?.prefLabel
     );
-    const altLabelLength = getMaxNumberOfInstances(data.value?.[procId]?.altLabel);
+    const altLabelLength = getMaxNumberOfInstances(
+      data.value?.[procId]?.altLabel
+    );
     const hiddenLabelLength = getMaxNumberOfInstances(
       data.value?.[procId]?.hiddenLabel
     );
@@ -352,7 +362,7 @@ const displayInfo = computed(() => {
     };
     for (const relationType of semanticRelationTypes) {
       const relData = getRelationData(data.value, relationType);
-      if (relData) {
+      if (relData && relData[0]) {
         try {
           info.semanticRelations[relationType] = relData;
         } catch {
