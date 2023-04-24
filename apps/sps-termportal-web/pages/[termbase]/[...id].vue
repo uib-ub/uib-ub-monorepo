@@ -352,7 +352,7 @@ const displayInfo = computed(() => {
     };
     for (const relationType of semanticRelationTypes) {
       const relData = getRelationData(data.value, relationType);
-      if (relData) {
+      if (relData && relData[0]) {
         try {
           info.semanticRelations[relationType] = relData;
         } catch {
