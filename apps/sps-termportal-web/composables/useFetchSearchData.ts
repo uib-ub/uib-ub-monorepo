@@ -101,10 +101,16 @@ export async function useFetchSearchData(options) {
     qCount++;
 
     await fetchSearchDataMatching(
-      { ...options, ...{ subtype: "entries", matching: m } },
+      {
+        ...options,
+        ...{
+          subtype: "entries",
+          matching: m,
+          situation: `${fetchType}>${qCount}`,
+        },
+      },
       append,
-      fetchTime,
-      fetchType + qCount
+      fetchTime
     );
 
     append = true;
