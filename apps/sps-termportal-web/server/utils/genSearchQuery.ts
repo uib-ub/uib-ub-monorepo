@@ -148,24 +148,16 @@ function getPredicateValues(predicate: LabelPredicate[]): string {
 }
 
 export function genSearchQuery(searchOptions): string {
-  // TODO tmp
-  const queryType = searchOptions.subtype;
-  const matching = searchOptions.matching;
-  const querySituation = searchOptions.situation;
-
   const termData = getTermData(searchOptions.term, htmlHighlight);
   const graph = getGraphData(searchOptions.domain, searchOptions.termbase);
   const language = getLanguageData(searchOptions.language);
   const predFilter = getPredicateValues(searchOptions.predicate);
 
-  if (matching[0] === "all" && queryType === "entries") {
-    return genSearchQueryAll(
-      searchOptions,
-      graph,
-      language,
-      predFilter,
-      querySituation
-    );
+  if (
+    searchOptions.matching[0] === "all" &&
+    searchOptions.subtype === "entries"
+  ) {
+    return genSearchQueryAll(searchOptions, graph, language, predFilter);
   } else {
     const aggregateCategories = [
       "?lang",
@@ -336,7 +328,7 @@ export function genSearchQuery(searchOptions): string {
               }`,
       };
 
-      if (queryType === "count" && matching.length === 1) {
+      if (queryType === "count" && searchOptions.matching.length === 1) {
         return subquery[queryType] + "\n        UNION {}";
       } else {
         return subquery[queryType as QueryType];
@@ -363,12 +355,20 @@ export function genSearchQuery(searchOptions): string {
     const categoriesArray: string[] = [];
     for (const category of aggregateCategories) {
       const subqueryArray: string[] = [];
-      for (const match of matching) {
+      for (const match of searchOptions.matching) {
         const whereArray: string[] = [];
-        if (queryType === "aggregate" && matching.length === 7) {
+        if (
+          searchOptions.subtype === "aggregate" &&
+          searchOptions.matching.length === 7
+        ) {
           language.forEach((lang) => {
             whereArray.push(
-              getLanguageWhere(subqueries, queryType, "allPatterns", lang)
+              getLanguageWhere(
+                subqueries,
+                searchOptions.subtype,
+                "allPatterns",
+                lang
+              )
             );
           });
           const where = whereArray.join("\n            UNION\n            ");
@@ -377,7 +377,7 @@ export function genSearchQuery(searchOptions): string {
             subqueryTemplate(
               subqueries,
               category.replace("?", ""),
-              queryType,
+              searchOptions.subtype,
               "allPatterns",
               where
             )
@@ -386,7 +386,7 @@ export function genSearchQuery(searchOptions): string {
         } else {
           language.forEach((lang) => {
             whereArray.push(
-              getLanguageWhere(subqueries, queryType, match, lang)
+              getLanguageWhere(subqueries, searchOptions.subtype, match, lang)
             );
           });
           const where = whereArray.join("\n            UNION\n            ");
@@ -395,7 +395,7 @@ export function genSearchQuery(searchOptions): string {
             subqueryTemplate(
               subqueries,
               category.replace("?", ""),
-              queryType,
+              searchOptions.subtype,
               match,
               where
             )
@@ -404,7 +404,7 @@ export function genSearchQuery(searchOptions): string {
       }
       const subquery = subqueryArray.join("\n        UNION");
 
-      if (queryType === "aggregate") {
+      if (searchOptions.subtype === "aggregate") {
         categoriesArray.push(categoryTemplate(category, subquery));
       } else {
         categoriesArray.push(subquery);
@@ -458,7 +458,7 @@ export function genSearchQuery(searchOptions): string {
     }
   }`;
 
-    switch (queryType) {
+    switch (searchOptions.subtype) {
       case "entries":
         return queryEntries();
       case "count":
