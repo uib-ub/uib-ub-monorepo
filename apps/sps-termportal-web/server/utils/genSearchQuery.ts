@@ -420,7 +420,7 @@ export function genSearchQuery(searchOptions): string {
   PREFIX ns: <http://spraksamlingane.no/terminlogi/named/>`;
 
     const queryEntries = () => `
-  #jterm-beta>${querySituation}>entry: ${JSON.stringify(searchOptions)}
+  #log: ${JSON.stringify(searchOptions)}
   ${queryPrefix()}
 
   SELECT DISTINCT ?uri ?predicate ?literal ?samling ?score ${translate}
@@ -448,7 +448,7 @@ export function genSearchQuery(searchOptions): string {
   }`;
 
     const queryAggregate = () => `
-  #jterm-beta>${querySituation}>aggregate: ${JSON.stringify(searchOptions)}
+  #log: ${JSON.stringify(searchOptions)}
   ${queryPrefix()}
 
   SELECT ${aggregateCategories.join(" ")}
