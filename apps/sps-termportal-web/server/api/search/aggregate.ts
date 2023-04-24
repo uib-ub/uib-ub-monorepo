@@ -3,7 +3,7 @@ import { genSearchQuery } from "~~/server/utils/genSearchQuery";
 export default defineEventHandler(async (event) => {
   const url = useRuntimeConfig().public.endpointUrl;
   const body = await readBody(event);
-  const query = genSearchQuery(body.searchOptions);
+  const query = genSearchQuery(body);
 
   const data = await $fetch(url, {
     method: "post",
