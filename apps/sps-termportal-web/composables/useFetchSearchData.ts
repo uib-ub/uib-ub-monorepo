@@ -61,10 +61,9 @@ export async function useFetchSearchData(options) {
   let append = false;
   const fetchTime = Date.now();
   searchFetchLatest.value = fetchTime;
+  const situation = options.situation;
 
-  const fetchType = options.situation;
-
-  if (fetchType === "initial") {
+  if (situation === "initial") {
     if (route.path === "/search") {
       searchFetchInitial.value = true;
     }
@@ -77,9 +76,9 @@ export async function useFetchSearchData(options) {
   }
 
   if (
-    fetchType === "initial" ||
-    fetchType === "filter" ||
-    fetchType === "options"
+    situation === "initial" ||
+    situation === "filter" ||
+    situation === "options"
   ) {
     searchDataPending.value.aggregate = true;
     fetchSearchDataAggregate(
@@ -91,7 +90,7 @@ export async function useFetchSearchData(options) {
     );
   }
 
-  if (fetchType === "further") {
+  if (situation === "further") {
     append = true;
   }
 
@@ -106,7 +105,7 @@ export async function useFetchSearchData(options) {
         ...{
           subtype: "entries",
           matching: m,
-          situation: `${fetchType}>${qCount}`,
+          situation: `${situation}>${qCount}`,
         },
       },
       append,
