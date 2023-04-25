@@ -24,7 +24,7 @@ export async function fetchSearchDataMatching(
 
 export type FetchType = "initial" | "filter" | "further" | "options";
 async function fetchSearchDataAggregate(searchOptions, currentFetch: number) {
-  const type = searchOptions.situation;
+  const situation = searchOptions.situation;
 
   const searchDataStats = useSearchDataStats();
   const searchFetchLatest = useSearchFetchLatest();
@@ -36,9 +36,9 @@ async function fetchSearchDataAggregate(searchOptions, currentFetch: number) {
   });
 
   if (currentFetch === searchFetchLatest.value) {
-    if (type === "initial" || type === "options") {
+    if (situation === "initial" || situation === "options") {
       searchDataStats.value = aggregate;
-    } else if (type === "filter") {
+    } else if (situation === "filter") {
       const zeroedStats = resetStats(searchDataStats.value, false);
       for (const category of Object.keys(zeroedStats)) {
         searchDataStats.value[category as keyof SearchDataStats] = {
