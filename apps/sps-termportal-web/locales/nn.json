@@ -56,7 +56,7 @@
     "predicate": {
       "prefLabel": "Anbefalt term",
       "altLabel": "Tillat term",
-      "hiddenLabel": "Frarådet term"
+      "hiddenLabel": "Fraråda term"
     },
     "matching": {
       "full-cs": "helt, versalfølsom",
