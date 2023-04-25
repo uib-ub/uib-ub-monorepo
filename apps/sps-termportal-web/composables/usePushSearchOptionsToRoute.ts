@@ -1,8 +1,8 @@
 export default function () {
   const route = useRoute();
   const router = useRouter();
-  const searchOptions = useSearchOptions();
-  const searchOpt = searchOptions.value;
+  const searchInterface = useSearchInterface();
+  const searchOpt = searchInterface.value;
   const myparams = route.query;
 
   for (const [key, value] of Object.entries(searchOptionsInfo)) {
