@@ -1,6 +1,6 @@
 import { getBaseUrl, SPARQL_PREFIXES } from '../../constants';
 
-export async function getManfestSeedData(id, url) {
+export async function getManifestSeedData(id, url) {
   if (!id)
     return new Error("Missing id");
 

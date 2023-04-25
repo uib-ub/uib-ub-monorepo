@@ -2,7 +2,7 @@ import Cors from 'cors'
 import * as jsonld from 'jsonld'
 import { omit } from 'lodash'
 import { API_URL } from '../../../../../lib/constants'
-import { getManfestSeedData } from '../../../../../lib/request/apis/getManfestSeedData'
+import { getManifestSeedData } from '../../../../../lib/request/apis/getManifestSeedData'
 import { runMiddleware } from '../../../../../lib/request/runMiddleware'
 import { constructManifest } from '../../../../../lib/response/iiif/constructManifest'
 import { manifestFrame } from '../../../../../lib/response/iiif/frames/manifestFrame'
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
 
       try {
         const service = await checkedServices.json()
-        const response = await getManfestSeedData(id, service.url)
+        const response = await getManifestSeedData(id, service.url)
 
         if (response.status == 503) {
           res.status(503).json({ message: "Service is unavailable" })
