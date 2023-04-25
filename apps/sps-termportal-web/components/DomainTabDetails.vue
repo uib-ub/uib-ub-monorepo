@@ -5,11 +5,11 @@
     role="tabpanel"
     :aria-labelledby="`${tabId}Domains-tab`"
   >
-    {{ searchOptions.searchDomain[0] }}
+    {{ searchInterface.domain[0] }}
   </div>
 </template>
 <script setup>
-const searchOptions = useSearchOptions();
+const searchInterface = useSearchInterface();
 
 const props = defineProps({
   tabId: { type: String, required: true },

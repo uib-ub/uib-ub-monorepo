@@ -5,7 +5,7 @@
     </label>
     <select
       :id="`${dropdown}Select`"
-      v-model="searchOptions[dropdown]"
+      v-model="searchInterface[dropdown]"
       class="tp-search-dd cursor-pointer p-1 pr-0 sm:h-9 sm:pl-2"
       :style="{ 'min-width': `${ddWidth}` }"
     >
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-const searchOptions = useSearchOptions();
+const searchInterface = useSearchInterface();
 const props = defineProps({
   dropdown: { type: String, required: true },
   ddWidth: { type: String, required: false, default: "0px" },

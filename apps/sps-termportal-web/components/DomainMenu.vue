@@ -5,11 +5,11 @@
         class="h-9 min-w-full rounded-t px-2 text-left hover:bg-gray-100"
         @click="displayDomainMenu = !displayDomainMenu"
       >
-        <span v-if="searchOptions.searchDomain[0] !== 'all'"
+        <span v-if="searchInterface.domain[0] !== 'all'"
           >{{ $t("global.domain.domain") }}:
         </span>
         <span class="pr-2">{{
-          $t("global.domain." + searchOptions.searchDomain[0])
+          $t("global.domain." + searchInterface.domain[0])
         }}</span>
         <Icon
           v-if="!displayDomainMenu"
@@ -27,14 +27,13 @@
           v-for="domain in ['all'].concat(Object.keys(domainNesting))"
           :key="`${domain}Menu`"
           class="hover:bg-gray-100"
-          :class="{ activeDomain: searchOptions.searchDomain[0] == domain }"
+          :class="{ activeDomain: searchInterface.domain[0] == domain }"
         >
           <button
             class="min-w-full px-2 py-2 text-left"
-            :aria-current="searchOptions.searchDomain[0] == domain"
+            :aria-current="searchInterface.domain[0] == domain"
             @click="
-              (searchOptions.searchDomain = [domain]),
-                (displayDomainMenu = false)
+              (searchInterface.domain = [domain]), (displayDomainMenu = false)
             "
           >
             {{ $t("global.domain." + domain) }}
@@ -46,7 +45,6 @@
 </template>
 
 <script setup lang="ts">
-const searchOptions = useSearchOptions();
-const displayDetails = ref(false);
+const searchInterface = useSearchInterface();
 const displayDomainMenu = ref(false);
 </script>

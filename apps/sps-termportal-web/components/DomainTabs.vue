@@ -27,23 +27,23 @@
       class="rounded border border-solid border-gray-300"
     >
       <DomainTabDetails
-        v-if="searchOptions.searchDomain[0] === 'all'"
+        v-if="searchInterface.domain[0] === 'all'"
         tab-id="all"
       />
       <DomainTabDetails
-        v-if="searchOptions.searchDomain[0] === 'humaniora'"
+        v-if="searchInterface.domain[0] === 'humaniora'"
         tab-id="humaniora"
       />
       <DomainTabDetails
-        v-if="searchOptions.searchDomain[0] === 'naturvitenskap'"
+        v-if="searchInterface.domain[0] === 'naturvitenskap'"
         tab-id="naturvitenskap"
       />
       <DomainTabDetails
-        v-if="searchOptions.searchDomain[0] === 'sammfunnsfag'"
+        v-if="searchInterface.domain[0] === 'sammfunnsfag'"
         tab-id="sammfunnsfag"
       />
       <DomainTabDetails
-        v-if="searchOptions.searchDomain[0] === 'okonomAdmin'"
+        v-if="searchInterface.domain[0] === 'okonomAdmin'"
         tab-id="okonomAdmin"
       />
     </div>
@@ -51,6 +51,6 @@
 </template>
 
 <script setup lang="ts">
-const searchOptions = useSearchOptions();
+const searchInterface = useSearchInterface();
 const displayDetails = ref(false);
 </script>
