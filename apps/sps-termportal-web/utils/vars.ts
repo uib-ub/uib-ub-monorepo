@@ -53,11 +53,11 @@ export const searchOptionsInfo = {
   type: { default: "search" },
   subtype: { default: "" },
   situation: { default: "" },
-  searchTerm: { q: "q", default: null },
-  searchLanguage: { q: "ss", default: "all" },
-  searchTranslate: { q: "ms", default: "none" },
-  searchBase: { q: "tb", default: "all" },
-  searchDomain: { q: "d", default: ["all"] },
+  term: { q: "q", default: null },
+  language: { q: "ss", default: "all" },
+  translate: { q: "ms", default: "none" },
+  termbase: { q: "tb", default: "all" },
+  domain: { q: "d", default: ["all"] },
   predicate: { default: ["prefLabel", "altLabel", "hiddenLabel"] },
   matching: {
     default: [
