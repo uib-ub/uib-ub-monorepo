@@ -40,11 +40,35 @@
       <h2 id="velkommen" class="pb-3 text-2xl">
         <AppLink to="#velkommen"></AppLink>
       </h2>
+      <div class="space-y-2">
+        <p></p>
+        <p>
+          <AppLink
+            class="underline hover:decoration-2"
+            to="mailto:termportalen@uib.no"
+          >
+            termportalen@uib.no
+          </AppLink>
+        </p>
+        <p></p>
+      </div>
     </template>
     <template v-if="locale === 'en'">
       <h2 id="velkommen" class="pb-3 text-2xl">
         <AppLink to="#velkommen"></AppLink>
       </h2>
+      <div class="space-y-2">
+        <p></p>
+        <p>
+          <AppLink
+            class="underline hover:decoration-2"
+            to="mailto:termportalen@uib.no"
+          >
+            termportalen@uib.no
+          </AppLink>
+        </p>
+        <p></p>
+      </div>
     </template>
   </article>
 </template>
