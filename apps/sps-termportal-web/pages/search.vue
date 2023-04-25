@@ -34,14 +34,13 @@ import { FetchType } from "../composables/useFetchSearchData";
 
 const route = useRoute();
 const searchData = useSearchData();
-const searchFilterData = useSearchFilterData();
 const searchDataStats = useSearchDataStats();
 const allowSearchFetch = useAllowSearchFetch();
 const countFetchedMatches = computed(() => {
   return countSearchEntries(searchData.value);
 });
 const searchterm = useSearchterm();
-const searchOptions = useSearchOptions();
+const searchInterface = useSearchInterface();
 const count = computed(() => {
   try {
     return sum(Object.values(searchDataStats.value?.matching || [])) || 0;
@@ -68,21 +67,14 @@ const fetchFurtherSearchData = () => {
   const element = scrollComponent.value;
   if (count.value > countFetchedMatches.value && !pending.value) {
     if (element.getBoundingClientRect().bottom * 0.75 < window.innerHeight) {
-      const offset: SearchOptions["searchOffset"] = {};
+      const offset: SearchOptions["offset"] = {};
 
-      if (searchOptions.value.searchTerm.length > 0) {
+      if (searchInterface.value.term.length > 0) {
         let newOffsetCalc;
         let oldOffsetCalc = countFetchedMatches.value;
         let fetchNextMatching = false;
 
-        let searchMatching: Matching[] | MatchingNested[];
-        if (typeof searchOptions.value.searchMatching === "string") {
-          searchMatching = [searchOptions.value.searchMatching];
-        } else {
-          searchMatching = searchOptions.value.searchMatching;
-        }
-
-        for (const match of searchMatching.flat()) {
+        for (const match of searchOptionsInfo.matching.default.flat()) {
           if (
             Object.keys(searchDataStats.value.matching || []).includes(match)
           ) {
@@ -101,7 +93,7 @@ const fetchFurtherSearchData = () => {
             const nextfetchCalc = matchCount - oldOffsetCalc;
             if (
               nextfetchCalc > 0 &&
-              nextfetchCalc < searchOptions.value.searchLimit
+              nextfetchCalc < searchOptionsInfo.limit.default
             ) {
               fetchNextMatching = true;
             }
@@ -128,7 +120,7 @@ onBeforeUnmount(() => {
 });
 
 function considerSearchFetching(situation: FetchType) {
-  if (allowSearchFetch.value && searchOptions.value.searchTerm !== null) {
+  if (allowSearchFetch.value && searchInterface.value.term !== null) {
     searchData.value = [];
     useFetchSearchData(useGenSearchOptions(situation));
     allowSearchFetch.value = false;
@@ -136,7 +128,7 @@ function considerSearchFetching(situation: FetchType) {
 }
 
 watch(
-  () => searchOptions.value.searchTerm,
+  () => searchInterface.value.term,
   () => {
     allowSearchFetch.value = true;
     considerSearchFetching("initial");
@@ -145,10 +137,10 @@ watch(
 
 watch(
   () => [
-    searchOptions.value.searchDomain,
-    searchOptions.value.searchLanguage,
-    searchOptions.value.searchBase,
-    searchOptions.value.searchTranslate,
+    searchInterface.value.domain,
+    searchInterface.value.language,
+    searchInterface.value.termbase,
+    searchInterface.value.translate,
   ],
   () => {
     allowSearchFetch.value = true;
@@ -165,7 +157,7 @@ onMounted(() => {
   Triggers only when searchTerm hasn't been set before
   i.e. when search route is visited directly
   */
-  if (searchOptions.value.searchTerm === null) {
+  if (searchInterface.value.term === null) {
     for (const [key, value] of Object.entries(searchOptionsInfo)) {
       // Only set state if present in route
       if (route.query[value.q]) {
@@ -177,11 +169,11 @@ onMounted(() => {
         // searchdomain needs to be handled differently because state is a list
         if (key === "searchDomain") {
           const domene = route.query[value.q] as string;
-          searchOptions.value[key] = domene.split(",");
+          searchInterface.value[key] = domene.split(",");
         }
         //
         else {
-          searchOptions.value[key] = route.query[value.q] as string;
+          searchInterface.value[key] = route.query[value.q] as string;
         }
       }
     }
