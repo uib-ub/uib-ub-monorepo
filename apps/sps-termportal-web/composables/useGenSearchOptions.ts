@@ -1,5 +1,5 @@
 export default function (situation: string, options?: Object) {
-  const searchOptions = useSearchOptions();
+  const searchInterface = useSearchInterface();
   const searchFilterData = useSearchFilterData();
 
   const newOptions = {
@@ -7,11 +7,11 @@ export default function (situation: string, options?: Object) {
     subtype: undefined,
     situation,
     // searchOptionsInterface
-    term: searchOptions.value.searchTerm || "",
-    language: [searchOptions.value.searchLanguage],
-    translate: searchOptions.value.searchTranslate,
-    termbase: [searchOptions.value.searchBase],
-    domain: searchOptions.value.searchDomain,
+    term: searchInterface.value.term || "",
+    language: [searchInterface.value.language],
+    translate: searchInterface.value.translate,
+    termbase: [searchInterface.value.termbase],
+    domain: searchInterface.value.domain,
     // default data
     predicate: searchOptionsInfo.predicate.default,
     matching: searchOptionsInfo.matching.default,
