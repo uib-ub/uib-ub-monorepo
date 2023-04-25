@@ -78,7 +78,6 @@
 </template>
 
 <script setup lang="ts">
-import { SearchOptions } from "~~/composables/states";
 import { LocalLangCode } from "~~/utils/vars-language";
 
 const displayFilter = ref(false);
@@ -87,7 +86,6 @@ const searchData = useSearchData();
 const searchDataStats = useSearchDataStats();
 const searchFilterData = useSearchFilterData();
 const searchDataPending = useSearchDataPending();
-const searchOptions = useSearchOptions();
 const searchFetchInitial = useSearchFetchInitial();
 const pending = computed(() => {
   return !Object.values(searchDataPending.value).every((el) => !el);
