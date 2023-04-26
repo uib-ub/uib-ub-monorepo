@@ -327,7 +327,7 @@ const displayInfo = computed(() => {
 
     for (const relationType of semanticRelationTypes) {
       const relData = getRelationData(data.value.concept, procId, relationType);
-      if (relData && relData[0]) {
+      if (relData) {
         try {
           info.semanticRelations[relationType] = relData;
         } catch {
