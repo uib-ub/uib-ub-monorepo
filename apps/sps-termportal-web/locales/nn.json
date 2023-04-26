@@ -2,10 +2,10 @@
   "global": {
     "language": "Språk | Språk",
     "termbase": "Termbase",
-    "skipLink": "Gå til hovedinnhold",
+    "skipLink": "Gå til hovudinnhald",
     "domain": {
       "domain": "Domene",
-      "all": "Alle domener",
+      "all": "Alle domene",
       "humaniora": "Humaniora",
       "naturvitenskap": "Naturvitenskap & Teknologi",
       "sammfunnsfag": "Samfunnsfag",
@@ -14,14 +14,14 @@
     "lang": {
       "none": "–",
       "all": "Alle språk",
-      "ar": "Arabic",
+      "ar": "Arabisk",
       "da": "Dansk",
       "de": "Tysk",
       "en": "Engelsk",
       "es": "Spansk",
       "fi": "Finsk",
       "fr": "Fransk",
-      "it": "Italienisk",
+      "it": "Italiensk",
       "la": "Latin",
       "nb": "Bokmål",
       "nn": "Nynorsk",
@@ -32,8 +32,8 @@
       "ti": "Tigrinja"
     },
     "samling": {
-      "all": "Alle termbaser",
-      "ARTSDB": "ARTSDB",
+      "all": "Alle termbasar",
+      "ARTSDB": "Arsdatabanken",
       "ASTRONOMI": "Astronomi",
       "CMBIOLOGI": "Celle- og molekylærbiologi",
       "EVERTEBRATER": "EVERTEBRATER",
