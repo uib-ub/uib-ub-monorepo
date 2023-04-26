@@ -227,14 +227,14 @@
                 />
                 <!--Bruksområde-->
                 <DataRow
-                  v-if="concept?.subject"
-                  :data="concept.subject.join(', ')"
+                  v-if="displayInfo.subject"
+                  :data="displayInfo.subject"
                   :label="$t('id.subject')"
                 />
                 <!--Modified-->
                 <DataRow
                   v-if="concept?.modified"
-                  :data="concept.modified"
+                  :data="concept.modified['@value']"
                   :label="$t('id.modified')"
                 />
                 <!--Created-->
@@ -338,6 +338,20 @@ const displayInfo = computed(() => {
         }
       }
     }
+    if (data.value?.concept?.[procId]?.subject) {
+      const subj = data.value?.concept[procId].subject
+      console.log("subj present");
+      let subjectlist;
+      if (typeof subj[0] === "string") {
+        subjectlist = subj;
+      } else {
+        subjectlist = subj.map((subj) => {
+          return subj["@value"];
+        });
+      }
+      info.subject = subjectlist.join(", ");
+    }
+
     return info;
   } else {
     return null;

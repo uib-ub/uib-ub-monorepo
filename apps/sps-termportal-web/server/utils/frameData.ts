@@ -86,7 +86,6 @@ export default function (data: any, type: string) {
 
       subject: {
         "@id": "dct:subject",
-        "@type": "@id",
         "@container": "@set",
       },
       memberOf: {
