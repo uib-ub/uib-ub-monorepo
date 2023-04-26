@@ -279,30 +279,35 @@ if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
   id = idArray.slice(1).join("/");
   procId = base + id;
 }
+const concept = computed(() => {
+  return data.value?.concept[procId];
+});
 
 const pagetitle = computed(() => {
-  if (data.value[procId]) {
-    return getConceptDisplaytitle(data.value, procId);
+  if (data?.value?.concept) {
+    return getConceptDisplaytitle(data.value.concept[procId]);
   } else {
     return "";
   }
 });
 
-function getConceptDisplaytitle(data, id: string): string | null {
+function getConceptDisplaytitle(data): string | null {
   let title = null;
   const languages = languageOrder[i18n.locale.value as LocalLangCode].slice(
     0,
     3
   );
   for (const label of ["prefLabel", "altLabel"]) {
-    for (const lang of languages) {
-      if (data[data[id]?.[label][lang]]) {
-        title = data[data[id]?.[label][lang]?.[0]]?.literalForm["@value"];
+    if (data?.[label]) {
+      for (const lang of languages) {
+        if (data?.[label][lang]) {
+          title = data[label][lang]?.[0]?.literalForm["@value"];
+          break;
+        }
+      }
+      if (title) {
         break;
       }
-    }
-    if (title) {
-      break;
     }
   }
   return title;
@@ -313,7 +318,7 @@ const timer = setTimeout(() => {
   controller.abort();
 }, 6000);
 
-const { data: fetchedData, error } = await useLazyAsyncData("concept", () =>
+const { data, error } = await useAsyncData("concept", () =>
   $fetch(`/api/concept`, {
     method: "POST",
     body: { concept: id, base, termbase },
@@ -324,56 +329,22 @@ const { data: fetchedData, error } = await useLazyAsyncData("concept", () =>
   })
 );
 
-const data = computed(() => {
-  if (fetchedData.value) {
-    const identified = identifyData(fetchedData.value);
-    if (identified[procId]) {
-      let labels: string[] = [procId];
-      for (const type of semanticRelationTypes) {
-        if (identified[procId][type]) {
-          labels = labels.concat(identified[procId][type]);
-        }
-      }
-      const labeled = idSubobjectsWithLang(identified, labels, [
-        "prefLabel",
-        "altLabel",
-        "hiddenLabel",
-        "definisjon",
-        "betydningsbeskrivelse",
-      ]);
-      return labeled;
-    } else {
-      return {};
-    }
-  } else {
-    return {};
-  }
-});
-
 const displayInfo = computed(() => {
-  if (fetchedData.value) {
-    const conceptLanguages = getConceptLanguages(data.value[procId]);
+  if (data?.value?.meta) {
+    const conceptLanguages = data.value?.meta?.language;
     const displayLanguages = dataDisplayLanguages.value.filter((language) =>
       Array.from(conceptLanguages).includes(language)
-    );
-    const prefLabelLength = getMaxNumberOfInstances(
-      data.value?.[procId]?.prefLabel
-    );
-    const altLabelLength = getMaxNumberOfInstances(
-      data.value?.[procId]?.altLabel
-    );
-    const hiddenLabelLength = getMaxNumberOfInstances(
-      data.value?.[procId]?.hiddenLabel
     );
     const info = {
       conceptLanguages,
       displayLanguages,
-      prefLabelLength,
-      altLabelLength,
-      hiddenLabelLength,
+      //      prefLabelLength,
+      altLabelLength: data.value.meta.maxLen.altLabel,
+      hiddenLabelLength: data.value.meta.maxLen.hiddenLabel,
     };
+
     for (const relationType of semanticRelationTypes) {
-      const relData = getRelationData(data.value, relationType);
+      const relData = getRelationData(data.value.concept, procId, relationType);
       if (relData && relData[0]) {
         try {
           info.semanticRelations[relationType] = relData;
@@ -391,13 +362,15 @@ const displayInfo = computed(() => {
 
 function getRelationData(
   data,
+  mainConceptId,
   relationType: SemanticRelation
 ): Array<Array<string>> | null {
   // Check if concept with id has relation of relationtype
-  if (data[procId]?.[relationType]) {
-    return data[procId]?.[relationType].map((target: string) => {
+  if (data[mainConceptId]?.[relationType]) {
+    return data[mainConceptId]?.[relationType].map((target: string) => {
       try {
-        const label = getConceptDisplaytitle(data, target);
+        // Pass concept object
+        const label = getConceptDisplaytitle(data[target]);
         const link = "/" + target.replace("-3A", "/");
         // Don't return links with no label -> linked concept doesn't exist
         if (label) {
