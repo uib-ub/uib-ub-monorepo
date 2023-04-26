@@ -62,10 +62,10 @@
     "matching": {
       "full-cs": "heilt, versalfølsam",
       "full-ci": "heilt, versalufølsam",
-      "startsWith-ci": "begynner med",
-      "endsWith-ci": "endte med",
-      "subWord-ci": "underord begynner med",
-      "contains-ci": "inneholder"
+      "startsWith-ci": "startar med",
+      "endsWith-ci": "sluttar med",
+      "subWord-ci": "underord startar med",
+      "contains-ci": "inneheld"
     }
   },
   "domainOverview": { "domainsAndBases": "Domener & termbaser" },
@@ -87,12 +87,12 @@
     "searchButtonLabel": "Utføre søk"
   },
   "searchFilter": {
-    "results": "resultater",
-    "results-heading": "Resultater",
+    "results": "resultat",
+    "results-heading": "Resultat",
     "filter": "Filter",
-    "filterTitleShow": "Vis filter for søkeresultater",
-    "filterTitleHide": "Skjul filter for søkeresultater",
-    "termproperty": "Egenskap",
+    "filterTitleShow": "Vis filter for søkeresultat",
+    "filterTitleHide": "Skjul filter for søkeresultat",
+    "termproperty": "Eigenskap",
     "matching": "Matchende"
   },
   "footer": {
@@ -104,42 +104,42 @@
   },
   "buttonScrollTop": { "srLabel": "Tilbake til toppen" },
   "termbase": {
-    "organisation": "Organisajon",
-    "orgnr": "Organisasjonsnr",
-    "email": "Epost",
-    "telephone": "Telefone",
+    "organisation": "Organisasjon",
+    "orgnr": "Organisasjonsnr.",
+    "email": "E-post",
+    "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Opprinnelig språk"
+    "startLang": "Opphaveleg språk"
   },
   "id": {
     "topheading": "Konseptvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
-    "prefLabel": "Anbefalt term",
-    "altLabel": "Tillatt term",
-    "hiddenLabel": "Frarådet term",
+    "prefLabel": "Tilrådd term",
+    "altLabel": "Tillaten term",
+    "hiddenLabel": "Frårådd term",
     "definisjon": "Definisjon",
     "general": "Felles",
     "relasjon": "Relasjon",
-    "narrower": "Overordnet",
-    "specializes": "Overordnet generisk",
-    "isPartOf": "Overordnet partitiv",
-    "broader": "Underordnet",
-    "generalizes": "Underordnet generisk",
-    "hasPart": "Underordnet partitiv",
-    "seeAlso": "Se også",
+    "narrower": "Overordna",
+    "specializes": "Overordna generisk",
+    "isPartOf": "Overordna partitiv",
+    "broader": "Underordna",
+    "generalizes": "Underordna generisk",
+    "hasPart": "Underordna partitiv",
+    "seeAlso": "Sjå også",
     "related": "Assosiert",
     "collection": "Samling",
     "subject": "Fagområde",
     "domain": "Domene",
     "modified": "Sist oppdatert",
     "note": "Merknad",
-    "tilbake": "Tilbake til søkeresultater"
+    "tilbake": "Tilbake til søkeresultat"
   },
   "index": { "title": "Termportalen" },
   "search": {
-    "title": "Søkeresultater",
+    "title": "Søkeresultat",
     "term": "Term",
     "language": "Språk",
     "termbase": "Termbase"
