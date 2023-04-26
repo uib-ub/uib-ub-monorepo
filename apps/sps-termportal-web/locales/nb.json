@@ -1,6 +1,6 @@
 {
   "global": {
-    "language": "Språk | Språk",
+    "language": "Språk | språk",
     "termbase": "Termbase",
     "skipLink": "Gå til hovedinnhold",
     "domain": {
@@ -13,7 +13,7 @@
     },
     "lang": {
       "none": "–",
-      "all": "Alle språk | Alle språk",
+      "all": "Alle språk | alle språk",
       "ar": "Arabisk | arabisk",
       "da": "Dansk | dansk",
       "de": "Tysk | tysk",
@@ -21,7 +21,7 @@
       "es": "Spansk | spansk",
       "fi": "Finsk | finsk",
       "fr": "Fransk | fransk",
-      "it": "Italienisk | italienisk",
+      "it": "Italienisk | italiensk",
       "la": "Latin | latin",
       "nb": "Bokmål | bokmål",
       "nn": "Nynorsk | nynorsk",
