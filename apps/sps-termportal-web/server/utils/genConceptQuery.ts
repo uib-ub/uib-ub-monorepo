@@ -1,5 +1,5 @@
 export default function (base: string, termbase: string, id: string): string {
-  const concept = termbase === "FBK" ? base + id : id
+  const concept = termbase === "FBK" ? base + id : id;
   const log = {
     type: "concept",
     timestamp: new Date().toJSON(),
@@ -52,5 +52,5 @@ WHERE {
   }
 }`;
 
-return query;
+  return query;
 }

@@ -30,13 +30,14 @@ export function parseConceptData(data, mainConceptId: string) {
       language: languages,
       maxLen: {
         altLabel: getMaxNumberOfInstances(identified[mainConceptId]?.altLabel),
-        hiddenLabel: getMaxNumberOfInstances(identified[mainConceptId]?.hiddenLabel),
+        hiddenLabel: getMaxNumberOfInstances(
+          identified[mainConceptId]?.hiddenLabel
+        ),
       },
     },
     concept: identified,
   };
 }
-
 
 /**
  * Parse list of objects and return object where keys are "\@id"s from objects
@@ -126,7 +127,7 @@ function validateLabel(label: any): boolean {
 function getConceptLanguages(concept, languageProps) {
   //  console.log(Object.keys(concept["prefLabel"]));
   const lang = languageProps.flatMap((prop) => {
-    if (concept[prop]) {
+    if (concept?.[prop]) {
       return Object.keys(concept[prop]);
     } else return [];
   });
