@@ -4,16 +4,16 @@
       <section
         class="py-1.5 px-2 hover:bg-gray-200 lg:flex lg:py-2"
         :class="{
-          'sm:flex': searchOptions.searchTranslate === 'none',
+          'sm:flex': searchInterface.translate === 'none',
         }"
       >
         <div class="grow justify-between sm:flex">
           <div
             class="flex grow justify-between"
             :class="{
-              'sm:justify-start': searchOptions.searchTranslate !== 'none',
+              'sm:justify-start': searchInterface.translate !== 'none',
               'text-right': langRtoL(entryData.lang[0] as LangCode),
-              'sm:grow-0': searchOptions.searchTranslate !== 'none'
+              'sm:grow-0': searchInterface.translate !== 'none'
             }"
           >
             <SearchResultLabel
@@ -25,10 +25,10 @@
               class="pl-3 font-light lg:hidden"
               :class="{
                 hidden:
-                  searchOptions.searchTranslate === 'none' &&
-                  searchOptions.searchLanguage !== 'all',
-                'md:hidden': searchOptions.searchTranslate === 'none',
-                'sm:hidden': searchOptions.searchLanguage !== 'all',
+                  searchInterface.translate === 'none' &&
+                  searchInterface.language !== 'all',
+                'md:hidden': searchInterface.translate === 'none',
+                'sm:hidden': searchInterface.language !== 'all',
               }"
             >
               <span class="hidden sm:inline">
@@ -48,9 +48,9 @@
             </div>
           </div>
           <div
-            v-if="searchOptions.searchLanguage === 'all'"
+            v-if="searchInterface.language === 'all'"
             class="hidden px-2 sm:w-2/5 lg:block lg:max-w-[10rem]"
-            :class="{ 'md:block': searchOptions.searchTranslate === 'none' }"
+            :class="{ 'md:block': searchInterface.translate === 'none' }"
           >
             {{
               intersectUnique(
@@ -62,16 +62,16 @@
             }}
           </div>
           <div
-            v-if="searchOptions.searchTranslate !== 'none'"
+            v-if="searchInterface.translate !== 'none'"
             class="flex justify-between sm:w-1/2 sm:px-2"
             :class="{
-              'text-right': langRtoL(searchOptions.searchTranslate),
-              'lg:w-5/12': searchOptions.searchLanguage === 'all',
+              'text-right': langRtoL(searchInterface.translate),
+              'lg:w-5/12': searchInterface.language === 'all',
             }"
           >
             <b v-html="entryData.translate"></b>
             <div class="text-right font-light sm:hidden">
-              {{ $t("global.lang." + searchOptions.searchTranslate) }}
+              {{ $t("global.lang." + searchInterface.translate) }}
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@
 <script setup lang="ts">
 import { LangCode, LocalLangCode } from "../utils/vars-language";
 
-const searchOptions = useSearchOptions();
+const searchInterface = useSearchInterface();
 interface Props {
   entryData: {
     link: string;

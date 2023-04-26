@@ -23,40 +23,40 @@
         class="form-control focus:border-tpblue-300 min-w-0 flex-auto rounded border border-white bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-gray-700 transition ease-in-out focus:border focus:bg-white focus:text-gray-700 focus:outline-none"
         :placeholder="
           $t('searchBar.search') +
-          (searchOptions.searchLanguage !== 'all'
+          (searchInterface.language !== 'all'
             ? ` ${$t('searchBar.inLanguage')} ${$t(
-                `global.lang.${searchOptions.searchLanguage}`,
+                `global.lang.${searchInterface.language}`,
                 2
               )}`
             : '') +
-          (searchOptions.searchBase !== 'all'
+          (searchInterface.termbase !== 'all'
             ? ` ${$t('searchBar.inDomain')} ${$t(
-                'global.samling.' + searchOptions.searchBase
+                'global.samling.' + searchInterface.termbase
               )}`
-            : searchOptions.searchDomain[0] !== 'all'
+            : searchInterface.domain[0] !== 'all'
             ? ` ${$t('searchBar.inDomain')} ${$t(
                 'global.domain.domain',
                 2
-              )} ${$t('global.domain.' + searchOptions.searchDomain.slice(-1))}`
+              )} ${$t('global.domain.' + searchInterface.domain.slice(-1))}`
             : '')
         "
         :aria-label="
           $t('searchBar.search') +
-          (searchOptions.searchLanguage !== 'all'
+          (searchInterface.language !== 'all'
             ? ` ${$t('searchBar.inLanguage')} ${$t(
-                `global.lang.${searchOptions.searchLanguage}`,
+                `global.lang.${searchInterface.language}`,
                 2
               )}`
             : '') +
-          (searchOptions.searchBase !== 'all'
+          (searchInterface.termbase !== 'all'
             ? ` ${$t('searchBar.inDomain')} ${$t(
-                'global.samling.' + searchOptions.searchBase
+                'global.samling.' + searchInterface.termbase
               )}`
-            : searchOptions.searchDomain[0] !== 'all'
+            : searchInterface.domain[0] !== 'all'
             ? ` ${$t('searchBar.inDomain')} ${$t(
                 'global.domain.domain',
                 2
-              )} ${$t('global.domain.' + searchOptions.searchDomain.slice(-1))}`
+              )} ${$t('global.domain.' + searchInterface.domain.slice(-1))}`
             : '')
         "
         aria-describedby="searchbutton"
@@ -91,13 +91,13 @@
       v-if="expandSearchBar"
       class="xs:px-1 flex flex-wrap gap-x-3 pt-2 sm:text-lg"
     >
-      <SearchBarDropdown dropdown="searchLanguage" dd-width="7.8em">
+      <SearchBarDropdown dropdown="language" dd-width="7.8em">
         <option value="all">
           {{ $t("global.lang.all") }} ({{ filteredSearchLangs.length }})
         </option>
         <option
           v-for="lc in intersectUnique(
-            languageOrder[$i18n.locale],
+            languageOrder[$i18n.locale as LocalLangCode],
             filteredSearchLangs
           )"
           :key="'searchlang_' + lc"
@@ -106,13 +106,13 @@
           {{ $t("global.lang." + lc) }}
         </option>
       </SearchBarDropdown>
-      <SearchBarDropdown dropdown="searchTranslate" dd-width="5.5em">
+      <SearchBarDropdown dropdown="translate" dd-width="5.5em">
         <option value="none">
           {{ $t("global.lang.none") }}
         </option>
         <option
           v-for="lc in intersectUnique(
-            languageOrder[$i18n.locale],
+            languageOrder[$i18n.locale as LocalLangCode],
             filteredTranslationLangs
           )"
           :key="'translationlang_' + lc"
@@ -121,7 +121,7 @@
           {{ $t("global.lang." + lc) }}
         </option>
       </SearchBarDropdown>
-      <SearchBarDropdown dropdown="searchBase" dd-width="20em">
+      <SearchBarDropdown dropdown="termbase" dd-width="20em">
         <option value="all">
           {{ $t("global.samling.all") }} ({{ filteredTermbases.length }})
         </option>
@@ -138,8 +138,10 @@
 </template>
 
 <script setup lang="ts">
+import { LocalLangCode } from "~~/utils/vars-language";
+
 const route = useRoute();
-const searchOptions = useSearchOptions();
+const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
 const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
@@ -158,15 +160,15 @@ const expandSearchBar = computed(() => {
 });
 
 const filteredSearchLangs = computed(() => {
-  return deriveSearchOptions("searchLanguage", "all");
+  return deriveSearchOptions("language", "all");
 });
 
 const filteredTranslationLangs = computed(() => {
-  return deriveSearchOptions("searchTranslate", "none");
+  return deriveSearchOptions("translate", "none");
 });
 
 const filteredTermbases = computed(() => {
-  return deriveSearchOptions("searchBase", "all");
+  return deriveSearchOptions("termbase", "all");
 });
 
 const clearText = () => {
@@ -176,13 +178,13 @@ const clearText = () => {
 
 // TODO, add reset filter if searchTerm is not changed
 function execSearch() {
-  searchOptions.value.searchTerm = searchterm.value;
+  searchInterface.value.term = searchterm.value;
   allowSearchFetch.value = true;
   usePushSearchOptionsToRoute();
 }
 
 watch(
-  searchOptions.value,
+  searchInterface.value,
   () => {
     if (route.path === "/search") {
       usePushSearchOptionsToRoute();
@@ -194,47 +196,48 @@ watch(
 // TODO refactor, use searchOptionsInfo for default value
 // TODO Typing
 function filterTermbases(termbases, filterTermbases, option, defaultValue) {
-  if (searchOptions.value[option] !== defaultValue) {
-    return intersectUnique(filterTermbases, termbases);
-  } else {
-    return termbases;
+  let termbasesOut = termbases;
+  if (searchInterface.value[option] !== defaultValue) {
+    termbasesOut = intersectUnique(filterTermbases, termbases);
   }
+
+  return termbasesOut;
 }
 
 // TODO refactor, searchOptionsInfo def value
 // TODO Typing
 function deriveSearchOptions(searchOption, defaultValue) {
-  const topdomain = searchOptions.value.searchDomain[0];
-  const currentValue = searchOptions.value[searchOption];
+  const topdomain = searchInterface.value.domain[0];
+  const currentValue = searchInterface.value[searchOption];
   let termbases = termbaseOrder;
   let options;
   if (topdomain !== "all") {
     termbases = domainNesting[topdomain]?.bases;
   }
 
-  if (searchOption !== "searchLanguage") {
+  if (searchOption !== "language") {
     termbases = filterTermbases(
       termbases,
-      languageInfo[searchOptions.value.searchLanguage],
-      "searchLanguage",
+      languageInfo[searchInterface.value.language],
+      "language",
       "all"
     );
   }
 
-  if (searchOption !== "searchTranslate") {
+  if (searchOption !== "translate") {
     termbases = filterTermbases(
       termbases,
-      languageInfo[searchOptions.value.searchTranslate],
-      "searchTranslate",
+      languageInfo[searchInterface.value.translate],
+      "translate",
       "none"
     );
   }
 
-  if (searchOption !== "searchBase") {
+  if (searchOption !== "termbase") {
     termbases = filterTermbases(
       termbases,
-      [searchOptions.value.searchBase],
-      "searchBase",
+      [searchInterface.value.termbase],
+      "termbase",
       "all"
     );
 
@@ -251,7 +254,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
   }
 
   if (!options.includes(currentValue)) {
-    searchOptions.value[searchOption] = defaultValue;
+    searchInterface.value[searchOption] = defaultValue;
   }
   return options;
 }

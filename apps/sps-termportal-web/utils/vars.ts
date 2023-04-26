@@ -1,3 +1,9 @@
+import { LangCode } from "./vars-language";
+import { Samling, Domains } from "./vars-termbase";
+
+export type QueryType = "search" | "concept" | "termbase";
+export type SearchQueryType = "entries" | "aggregate";
+
 export type LabelPredicate = "prefLabel" | "altLabel" | "hiddenLabel";
 export type Matching =
   | "full-cs"
@@ -26,7 +32,6 @@ export const matchingOrder: Matching[] | Matching[][] = [
   "subWord-ci",
   "contains-ci",
 ];
-export type QueryType = "entries" | "aggregate" | "count";
 
 export type SemanticRelation =
   | "narrower"
@@ -49,10 +54,40 @@ export const semanticRelationTypes: SemanticRelation[] = [
   "seeAlso",
 ];
 
+export interface SearchOptions {
+  type: QueryType;
+  subtype: SearchQueryType;
+  situation: string;
+  term: string;
+  language: (LangCode | "all")[];
+  translate: LangCode | "none";
+  termbase: Samling[];
+  domain: (Domains | "all")[];
+  predicate: LabelPredicate[];
+  matching: (Matching | "all")[] | Matching[][];
+  limit: number;
+  offset: any;
+}
+
 export const searchOptionsInfo = {
-  searchTerm: { q: "q", default: null },
-  searchLanguage: { q: "ss", default: "all" },
-  searchTranslate: { q: "ms", default: "none" },
-  searchBase: { q: "tb", default: "all" },
-  searchDomain: { q: "d", default: ["all"] },
+  type: { default: "search" },
+  subtype: { default: "" },
+  situation: { default: "" },
+  term: { q: "q", default: null },
+  language: { q: "ss", default: "all" },
+  translate: { q: "ms", default: "none" },
+  termbase: { q: "tb", default: "all" },
+  domain: { q: "d", default: ["all"] },
+  predicate: { default: ["prefLabel", "altLabel", "hiddenLabel"] },
+  matching: {
+    default: [
+      ["full-cs", "full-ci"],
+      ["startsWith-ci"],
+      ["endsWith-ci"],
+      ["subWord-ci"],
+      ["contains-ci"],
+    ],
+  },
+  limit: { default: 30 },
+  offset: { default: undefined },
 };

@@ -1,55 +1,49 @@
-import { SearchDataStats, SearchOptions } from "./states";
-import { SearchQueryResponse, Matching, MatchingNested } from "~~/utils/vars";
+import { SearchDataStats } from "./states";
+import { MatchingNested } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
-  matching: string[],
   append: boolean,
-  currentFetch: number,
-  querySituation
+  currentFetch: number
 ) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
-  const data: SearchQueryResponse = await fetchData(
-    genSearchQuery(searchOptions, "entries", matching, querySituation)
-  );
+  const data = await $fetch("/api/search/entries", {
+    method: "POST",
+    body: searchOptions,
+  });
+
   if (currentFetch === searchFetchLatest.value) {
     if (append) {
-      searchData.value = searchData.value.concat(
-        data.results.bindings.map(processBinding)
-      );
+      searchData.value = searchData.value.concat(data);
     } else {
-      searchData.value = data.results.bindings.map(processBinding);
+      searchData.value = data;
     }
   }
 }
 
 export type FetchType = "initial" | "filter" | "further" | "options";
-async function fetchSearchDataAggregate(
-  searchOptions: SearchOptions,
-  matching: string[],
-  type: FetchType,
-  currentFetch: number
-) {
+async function fetchSearchDataAggregate(searchOptions, currentFetch: number) {
+  const situation = searchOptions.situation;
+
   const searchDataStats = useSearchDataStats();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
-  const data = await fetchData(
-    genSearchQuery(searchOptions, "aggregate", matching, type)
-  );
-  const newStats = data.results?.bindings.reduce(
-    (o, key) => parseAggregateData(o, key),
-    {}
-  );
+
+  const aggregate = await $fetch("/api/search/aggregate", {
+    method: "POST",
+    body: searchOptions,
+  });
+
   if (currentFetch === searchFetchLatest.value) {
-    if (type === "initial" || type === "options") {
-      searchDataStats.value = newStats;
-    } else if (type === "filter") {
+    if (situation === "initial" || situation === "options") {
+      searchDataStats.value = aggregate;
+    } else if (situation === "filter") {
       const zeroedStats = resetStats(searchDataStats.value, false);
       for (const category of Object.keys(zeroedStats)) {
         searchDataStats.value[category as keyof SearchDataStats] = {
           ...zeroedStats[category as keyof SearchDataStats],
-          ...newStats[category],
+          ...aggregate[category],
         };
       }
     }
@@ -57,11 +51,7 @@ async function fetchSearchDataAggregate(
   }
 }
 
-export async function useFetchSearchData(
-  searchOptions: SearchOptions,
-  fetchType: FetchType,
-  matching?: MatchingNested[]
-) {
+export async function useFetchSearchData(options) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
@@ -71,22 +61,9 @@ export async function useFetchSearchData(
   let append = false;
   const fetchTime = Date.now();
   searchFetchLatest.value = fetchTime;
+  const situation = options.situation;
 
-  let searchMatching: MatchingNested[] | "all"[];
-
-  if (matching) {
-    searchMatching = matching;
-  } else if (searchOptions.searchTerm.length > 0) {
-    if (typeof searchOptions.searchMatching === "string") {
-      searchMatching = [searchOptions.searchMatching];
-    } else {
-      searchMatching = searchOptions.searchMatching;
-    }
-  } else {
-    searchMatching = ["all"];
-  }
-
-  if (fetchType === "initial") {
+  if (situation === "initial") {
     if (route.path === "/search") {
       searchFetchInitial.value = true;
     }
@@ -98,36 +75,48 @@ export async function useFetchSearchData(
     };
   }
 
-  if (fetchType === "initial" || fetchType === "filter" || fetchType === "options") {
+  if (
+    situation === "initial" ||
+    situation === "filter" ||
+    situation === "options"
+  ) {
     searchDataPending.value.aggregate = true;
     fetchSearchDataAggregate(
-      searchOptions,
-      searchMatching.flat(),
-      fetchType,
+      {
+        ...options,
+        ...{ subtype: "aggregate", matching: options.matching.flat() },
+      },
       fetchTime
     );
   }
 
-  if (fetchType === "further") {
+  if (situation === "further") {
     append = true;
   }
 
   searchDataPending.value.entries = true;
   let qCount = 0;
-  for (const m of searchMatching) {
-    qCount++
+  for (const m of options.matching) {
+    qCount++;
+
     await fetchSearchDataMatching(
-      searchOptions,
-      Array.isArray(m) ? m : [m],
+      {
+        ...options,
+        ...{
+          subtype: "entries",
+          matching: m,
+          situation: `${situation}>${qCount}`,
+        },
+      },
       append,
-      fetchTime,
-      fetchType + qCount
+      fetchTime
     );
+
     append = true;
     if (fetchTime !== searchFetchLatest.value) {
       break;
     }
-    if (countSearchEntries(searchData.value) >= searchOptions.searchLimit) {
+    if (countSearchEntries(searchData.value) >= options.limit) {
       break;
     }
   }

@@ -71,9 +71,9 @@
   "navBar": { "om": "Om Termportalen", "innstillinger": "Inn­stillingar" },
   "searchBar": {
     "search": "Søk",
-    "searchLanguage": "Søkespråk",
-    "searchTranslation": "Oversettelsesspråk",
-    "searchBase": "Termbase",
+    "language": "Søkespråk",
+    "translation": "Oversettelsesspråk",
+    "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
     "searchButtonLabel": "Utføre søk"

@@ -3,11 +3,11 @@
     <button
       :id="`${tabId}Domains-tab`"
       class="rounded-t border border-b-0 border-gray-300 px-2 py-1 hover:bg-gray-300"
-      :class="{ 'bg-gray-200': searchOptions.searchDomain[0] == tabId }"
-      :aria-current="searchOptions.searchDomain[0] == tabId"
+      :class="{ 'bg-gray-200': searchInterface.domain[0] == tabId }"
+      :aria-current="searchInterface.domain[0] == tabId"
       type="button"
       role="tab"
-      @click="searchOptions.searchDomain = [tabId]"
+      @click="searchInterface.domain = [tabId]"
     >
       {{ $t("global.domain." + tabId) }}
     </button>
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-const searchOptions = useSearchOptions();
+const searchInterface = useSearchInterface();
 
 const props = defineProps({
   tabId: { type: String, required: true },

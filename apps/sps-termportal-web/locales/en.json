@@ -71,13 +71,13 @@
     "contact": "Concact us"
   },
 
-  "domainOverview": {"domainsAndBases": "Domains & Termbases"},
+  "domainOverview": { "domainsAndBases": "Domains & Termbases" },
   "navBar": { "om": "About", "innstillinger": "Settings" },
   "searchBar": {
     "search": "Search",
-    "searchLanguage": "Search language",
-    "searchTranslate": "Translation language",
-    "searchBase": "Termbase"
+    "language": "Search language",
+    "translate": "Translation language",
+    "termbase": "Termbase"
   },
   "searchFilter": {
     "results": "results",

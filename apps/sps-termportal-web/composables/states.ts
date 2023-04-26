@@ -20,35 +20,21 @@ export interface SearchDataStats {
   matching?: { [key in Matching]: number };
 }
 
-export interface SearchOptions {
-  searchTerm: string | null;
-  searchBase: string | string[];
-  searchDomain: string[];
-  searchLanguage: LangCode | "all" | LangCode[];
-  searchPredicate: LabelPredicate[];
-  searchTranslate: LangCode | "none";
-  searchMatching: Matching | MatchingNested[];
-  searchLimit: number;
-  searchOffset?: { [key in Matching]: number };
+export interface SearchInterface {
+  term: string | null;
+  language: LangCode | "all";
+  translate: LangCode | "none";
+  domain: string[];
+  termbase: Samling | "all";
 }
 
-export const useSearchOptions = () =>
-  useState<SearchOptions>("searchOptions", () => ({
-    searchTerm: null,
-    searchBase: "all",
-    searchDomain: ["all"],
-    searchLanguage: "all",
-    searchPredicate: ["prefLabel", "altLabel", "hiddenLabel"],
-    searchTranslate: "none",
-    searchMatching: [
-      ["full-cs", "full-ci"],
-      "startsWith-ci",
-      "endsWith-ci",
-      "subWord-ci",
-      "contains-ci",
-    ],
-    searchLimit: 30,
-    searchOffset: undefined,
+export const useSearchInterface = () =>
+  useState<SearchInterface>("searchinterface", () => ({
+    term: null,
+    language: "all",
+    translate: "none",
+    termbase: "all",
+    domain: ["all"],
   }));
 
 export const useAllowSearchFetch = () =>

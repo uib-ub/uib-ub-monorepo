@@ -56,7 +56,7 @@
     },
     "predicate": {
       "prefLabel": "Anbefalt term",
-      "altLabel": "Tillat term",
+      "altLabel": "Tillatt term",
       "hiddenLabel": "Frarådet term"
     },
     "matching": {
@@ -80,9 +80,9 @@
     "search": "Søk",
     "inDomain": "i",
     "inLanguage": "på",
-    "searchLanguage": "Søkespråk",
-    "searchTranslate": "Målspråk",
-    "searchBase": "Termbase",
+    "language": "Søkespråk",
+    "translate": "Målspråk",
+    "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
     "searchButtonLabel": "Utføre søk"

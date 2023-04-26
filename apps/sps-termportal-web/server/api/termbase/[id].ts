@@ -1,5 +1,5 @@
 import genTermbaseQuery from "../../utils/genTermbaseQuery";
-import compactData from "../../utils/compactData";
+import frameData from "../../utils/frameData";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
@@ -16,7 +16,9 @@ export default defineEventHandler(async (event) => {
         Accept: "application/ld+json",
       },
     });
-
-    return compactData(data);
+    return frameData(data, "skos:Collection").then((value) => {
+      delete value["@context"];
+      return value;
+    });
   }
 });

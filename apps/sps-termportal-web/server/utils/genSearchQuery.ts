@@ -1,6 +1,12 @@
-import { SearchOptions } from "../composables/states";
-import { Matching, QueryType, LabelPredicate } from "../utils/vars";
-import { Samling, Domains } from "./vars-termbase";
+import {
+  Matching,
+  QueryType,
+  LabelPredicate,
+  SearchOptions,
+  SearchQueryType,
+} from "../../utils/vars";
+import { Samling, Domains, domainNesting } from "../../utils/vars-termbase";
+import { genSearchQueryAll } from "./genSearchQueryAll";
 
 const htmlHighlight = {
   open: "<mark class='tp-shighlight'>",
@@ -78,11 +84,11 @@ export function getTermData(
 
 export function getGraphData(
   searchDomain: string[],
-  graphKey: string | string[]
+  graphKey: (Samling | "all")[]
 ): string[] {
-  if (typeof graphKey === "string" && graphKey !== "all") {
-    return ["", `ns:${samlingMapping[graphKey as Samling]}`];
-  } else if (Array.isArray(graphKey) && graphKey.length > 0) {
+  if (graphKey.length === 1 && graphKey[0] !== "all") {
+    return ["", `ns:${samlingMapping[graphKey[0]]}`];
+  } else if (graphKey.length > 1) {
     const bases = graphKey
       .map((key) => `FROM NAMED ns:${samlingMapping[key as Samling]}`)
       .join("\n  ");
@@ -98,20 +104,18 @@ export function getGraphData(
   }
 }
 
-export function getLanguageData(language: string | string[]): string[] {
-  if (Array.isArray(language)) {
+export function getLanguageData(language: string[]): string[] {
+  if (language[0] !== "all") {
     return language;
-  } else if (language !== "all") {
-    return [language];
   } else {
     return [""];
   }
 }
 
 function getLanguageWhere(
-  subqueries,
-  queryTypeIn: string,
-  match: string,
+  subqueries: any,
+  queryTypeIn: SearchQueryType,
+  match: Matching | "all" | "allPatterns",
   lang: string
 ): string {
   let queryType = queryTypeIn;
@@ -148,28 +152,17 @@ function getPredicateValues(predicate: LabelPredicate[]): string {
   }
 }
 
-export function genSearchQuery(
-  searchOptions: SearchOptions,
-  queryType: QueryType,
-  matching: string[],
-  querySituation
-): string {
-  const termData = getTermData(searchOptions.searchTerm, htmlHighlight);
-  const graph = getGraphData(
-    searchOptions.searchDomain,
-    searchOptions.searchBase
-  );
-  const language = getLanguageData(searchOptions.searchLanguage);
-  const predFilter = getPredicateValues(searchOptions.searchPredicate);
+export function genSearchQuery(searchOptions: SearchOptions): string {
+  const termData = getTermData(searchOptions.term, htmlHighlight);
+  const graph = getGraphData(searchOptions.domain, searchOptions.termbase);
+  const language = getLanguageData(searchOptions.language);
+  const predFilter = getPredicateValues(searchOptions.predicate);
 
-  if (matching[0] === "all" && queryType === "entries") {
-    return genSearchQueryAll(
-      searchOptions,
-      graph,
-      language,
-      predFilter,
-      querySituation
-    );
+  if (
+    searchOptions.matching[0] === "all" &&
+    searchOptions.subtype === "entries"
+  ) {
+    return genSearchQueryAll(searchOptions, graph, language, predFilter);
   } else {
     const aggregateCategories = [
       "?lang",
@@ -178,7 +171,7 @@ export function genSearchQuery(
       "?matching",
     ];
     const subqueries = (
-      queryType: QueryType,
+      queryType: SearchQueryType | "count",
       subEntry: string,
       aggregateMatch?: string
     ) => {
@@ -282,20 +275,19 @@ export function genSearchQuery(
       return content[queryType][subEntry];
     };
 
-    const translate =
-      searchOptions.searchTranslate !== "none" ? "?translate" : "";
+    const translate = searchOptions.translate !== "none" ? "?translate" : "";
     const translateOptional =
-      searchOptions.searchTranslate !== "none"
+      searchOptions.translate !== "none"
         ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
   ?label2 skosxl:literalForm ?translate .
-  FILTER ( langmatches(lang(?translate), "${searchOptions.searchTranslate}") ) }`
+  FILTER ( langmatches(lang(?translate), "${searchOptions.translate}") ) }`
         : "";
 
     const subqueryTemplate = (
       subqueries,
       category: string,
-      queryType: string,
-      match: string,
+      queryType: SearchQueryType | "count",
+      match: Matching | "all" | "allPatterns",
       where: string
     ) => {
       const subquery = {
@@ -317,8 +309,8 @@ export function genSearchQuery(
           BIND ( replace(str(?s), "http://.*wiki.terminologi.no/index.php/Special:URIResolver/.*-3A", "") as ?samling).
         }
         ORDER BY DESC(?score) lcase(?literal)
-        LIMIT ${searchOptions.searchLimit}
-        OFFSET ${searchOptions.searchOffset?.[match as Matching] || 0}
+        LIMIT ${searchOptions.limit}
+        OFFSET ${searchOptions.offset?.[match as Matching] || 0}
       }`,
         count: `
       {
@@ -341,10 +333,10 @@ export function genSearchQuery(
               }`,
       };
 
-      if (queryType === "count" && matching.length === 1) {
+      if (queryType === "count" && searchOptions.matching.length === 1) {
         return subquery[queryType] + "\n        UNION {}";
       } else {
-        return subquery[queryType as QueryType];
+        return subquery[queryType as SearchQueryType];
       }
     };
 
@@ -368,12 +360,20 @@ export function genSearchQuery(
     const categoriesArray: string[] = [];
     for (const category of aggregateCategories) {
       const subqueryArray: string[] = [];
-      for (const match of matching) {
+      for (const match of searchOptions.matching) {
         const whereArray: string[] = [];
-        if (queryType === "aggregate" && matching.length === 7) {
+        if (
+          searchOptions.subtype === "aggregate" &&
+          searchOptions.matching.length === 7
+        ) {
           language.forEach((lang) => {
             whereArray.push(
-              getLanguageWhere(subqueries, queryType, "allPatterns", lang)
+              getLanguageWhere(
+                subqueries,
+                searchOptions.subtype,
+                "allPatterns",
+                lang
+              )
             );
           });
           const where = whereArray.join("\n            UNION\n            ");
@@ -382,7 +382,7 @@ export function genSearchQuery(
             subqueryTemplate(
               subqueries,
               category.replace("?", ""),
-              queryType,
+              searchOptions.subtype,
               "allPatterns",
               where
             )
@@ -391,7 +391,7 @@ export function genSearchQuery(
         } else {
           language.forEach((lang) => {
             whereArray.push(
-              getLanguageWhere(subqueries, queryType, match, lang)
+              getLanguageWhere(subqueries, searchOptions.subtype, match, lang)
             );
           });
           const where = whereArray.join("\n            UNION\n            ");
@@ -400,7 +400,7 @@ export function genSearchQuery(
             subqueryTemplate(
               subqueries,
               category.replace("?", ""),
-              queryType,
+              searchOptions.subtype,
               match,
               where
             )
@@ -409,7 +409,7 @@ export function genSearchQuery(
       }
       const subquery = subqueryArray.join("\n        UNION");
 
-      if (queryType === "aggregate") {
+      if (searchOptions.subtype === "aggregate") {
         categoriesArray.push(categoryTemplate(category, subquery));
       } else {
         categoriesArray.push(subquery);
@@ -425,7 +425,7 @@ export function genSearchQuery(
   PREFIX ns: <http://spraksamlingane.no/terminlogi/named/>`;
 
     const queryEntries = () => `
-  #jterm-beta>${querySituation}>entry: ${JSON.stringify(searchOptions)}
+  #log: ${JSON.stringify(searchOptions)}
   ${queryPrefix()}
 
   SELECT DISTINCT ?uri ?predicate ?literal ?samling ?score ${translate}
@@ -439,7 +439,7 @@ export function genSearchQuery(
   }
   GROUP BY ?uri ?predicate ?literal ?samling ?score ?matching ${translate}
   ORDER BY DESC(?score) lcase(?literal) DESC(?predicate)
-  LIMIT ${searchOptions.searchLimit}`;
+  LIMIT ${searchOptions.limit}`;
 
     const queryCount = () => `
   ${queryPrefix()}
@@ -453,7 +453,7 @@ export function genSearchQuery(
   }`;
 
     const queryAggregate = () => `
-  #jterm-beta>${querySituation}>aggregate: ${JSON.stringify(searchOptions)}
+  #log: ${JSON.stringify(searchOptions)}
   ${queryPrefix()}
 
   SELECT ${aggregateCategories.join(" ")}
@@ -463,7 +463,7 @@ export function genSearchQuery(
     }
   }`;
 
-    switch (queryType) {
+    switch (searchOptions.subtype) {
       case "entries":
         return queryEntries();
       case "count":

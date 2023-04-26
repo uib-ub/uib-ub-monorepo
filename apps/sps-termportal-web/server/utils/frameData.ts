@@ -1,8 +1,8 @@
 import pkg from "jsonld";
 
-const { compact } = pkg;
+const { frame } = pkg;
 
-export default function (data: any) {
+export default function (data: any, type: string) {
   const runtimeConfig = useRuntimeConfig();
   const base = runtimeConfig.public.base;
   const context = function () {
@@ -16,21 +16,27 @@ export default function (data: any) {
       skosno2: "http://difi.no/skosno#",
       skosp: "http://www.data.ub.uib.no/ns/spraksamlingene/skos#",
       dct: "http://purl.org/dc/terms/",
+      dcat: "http://www.w3.org/ns/dcat#",
       xsd: "http://www.w3.org/2001/XMLSchema#",
       vcard: "http://www.w3.org/2006/vcard/ns#",
-      literalForm: "skosxl:literalForm",
+      literalForm: { "@id": "skosxl:literalForm" },
       label: "rdfs:label",
-      modified: "dct:modified",
+      modified: {
+        "@id": "dct:modified",
+        "@type": "xsd:dateTime",
+      },
       identifier: "dct:identifier",
       language: "dct:language",
       scopeNote: "skos:scopeNote", // TODO
       opprinneligSpraak: "skosp:opprinneligSpraak",
+      contactPoint: "dcat:contactPoint",
       hasTelephone: "vcard:hasTelephone",
       hasEmail: { "@id": "vcard:hasEmail", "@type": "@id" },
       domene: { "@id": "skosp:domene", "@type": "@id" },
+      publisere: { "@id": "skosp:publisere", "@type": "xsd:boolean" },
       description: {
         "@id": "dct:description",
-        "@container": "@set",
+        "@container": "@language",
       },
       semanticRelation: {
         "@id": "skos:semanticRelation",
@@ -106,7 +112,7 @@ export default function (data: any) {
       betydningsbeskrivelse: {
         "@id": "skosno2:betydningsbeskrivelse",
         "@type": "@id",
-        "@container": "@set",
+        "@container": "@type",
       },
       hiddenLabel: {
         "@id": "skosxl:hiddenLabel",
@@ -125,6 +131,20 @@ export default function (data: any) {
   };
 
   try {
-    return compact(data, context());
+    return frame(data, {
+      "@context": [context()],
+      "@type": type,
+      "@embed": "@always",
+      // don't embed semantic relations
+      semanticRelation: { "@type": "skos:Concept", "@embed": "@never" },
+      related: { "@type": "skos:Concept", "@embed": "@never" },
+      broader: { "@type": "skos:Concept", "@embed": "@never" },
+      specializes: { "@type": "skos:Concept", "@embed": "@never" },
+      isPartOf: { "@type": "skos:Concept", "@embed": "@never" },
+      narrower: { "@type": "skos:Concept", "@embed": "@never" },
+      generalizes: { "@type": "skos:Concept", "@embed": "@never" },
+      hasPart: { "@type": "skos:Concept", "@embed": "@never" },
+      seeAlso: { "@type": "skos:Concept", "@embed": "@never" },
+    });
   } catch {}
 }

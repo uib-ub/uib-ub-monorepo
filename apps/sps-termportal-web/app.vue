@@ -72,6 +72,6 @@ body {
   background-color: white;
   padding: 0.5em;
   border: 1px solid black;
-  z-index: 1  ;
+  z-index: 50  ;
 }
 </style>

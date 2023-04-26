@@ -5,7 +5,6 @@ export function genSearchQueryAll(
   graph,
   language,
   predFilter,
-  querySituation
 ) {
   let languageFilter: string;
   if (language[0] === "") {
@@ -18,12 +17,12 @@ export function genSearchQueryAll(
   }
 
   const translate =
-    searchOptions.searchTranslate !== "none" ? "?translate" : "";
+    searchOptions.translate !== "none" ? "?translate" : "";
   const translateOptional =
-    searchOptions.searchTranslate !== "none"
+    searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
                      ?label2 skosxl:literalForm ?translate .
-                     FILTER ( langmatches(lang(?translate), '${searchOptions.searchTranslate}') ) }`
+                     FILTER ( langmatches(lang(?translate), '${searchOptions.translate}') ) }`
       : "";
 
   const innerQuery = `
@@ -39,12 +38,12 @@ export function genSearchQueryAll(
           }
         }
         ORDER BY lcase(str(?lit))
-        LIMIT ${searchOptions.searchLimit}
-        OFFSET ${searchOptions.searchOffset?.all || 0}
+        LIMIT ${searchOptions.limit}
+        OFFSET ${searchOptions.offset?.all || 0}
       }`;
 
   const outerQuery = `
-  #jterm-beta>${querySituation}>entries ${JSON.stringify(searchOptions)}
+  #log: ${JSON.stringify(searchOptions)}
   PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
   PREFIX skosp: <http://www.data.ub.uib.no/ns/spraksamlingene/skos#>
   PREFIX text: <http://jena.apache.org/text#>
@@ -63,12 +62,12 @@ export function genSearchQueryAll(
           Bind ( str(?lit) as ?literal)
         }
         ORDER BY lcase(?literal)
-        LIMIT ${searchOptions.searchLimit}
+        LIMIT ${searchOptions.limit}
     }
   }
   GROUP BY ?uri ?predicate ?literal ?samling ?score ?lang ?matching ${translate}
   ORDER BY lcase(?literal) DESC(?predicate)
-  LIMIT ${searchOptions.searchLimit}
+  LIMIT ${searchOptions.limit}
   `;
 
   return outerQuery;
