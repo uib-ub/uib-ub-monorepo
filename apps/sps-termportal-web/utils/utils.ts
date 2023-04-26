@@ -93,24 +93,32 @@ export function getRelationData(
   mainConceptId: string,
   relationType: SemanticRelation
 ): Array<Array<string>> | null {
+  let relationData = null;
   // Check if concept with id has relation of relationtype
   if (data[mainConceptId]?.[relationType]) {
-    return data[mainConceptId]?.[relationType].map((target: string) => {
-      try {
-        // Pass concept object
-        const label = getConceptDisplaytitle(data[target]);
-        const link = "/" + target.replace("-3A", "/");
-        // Don't return links with no label -> linked concept doesn't exist
-        if (label) {
-          return [label, link];
-        } else {
+    const tmpRelData = data[mainConceptId]?.[relationType].map(
+      (target: string) => {
+        try {
+          // Pass concept object
+          const label = getConceptDisplaytitle(data[target]);
+          const link = "/" + target.replace("-3A", "/");
+          // Don't return links with no label -> linked concept doesn't exist
+          if (label) {
+            return [label, link];
+          } else {
+            return null;
+          }
+        } catch (error) {
           return null;
         }
-      } catch (error) {
-        return null;
       }
-    });
-  } else {
-    return null;
+    );
+    const cleanedUp = tmpRelData.filter(
+      (entry: null | Array<Array<string>>) => entry
+    );
+    if (cleanedUp.length > 0) {
+      relationData = tmpRelData;
+    }
   }
+  return relationData;
 }
