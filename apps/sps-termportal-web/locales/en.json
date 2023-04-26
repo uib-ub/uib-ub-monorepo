@@ -55,9 +55,9 @@
       "KJEMI": "Chemistry"
     },
     "predicate": {
-      "prefLabel": "Preferred label",
-      "altLabel": "Alternative label",
-      "hiddenLabel": "Hidden label "
+      "prefLabel": "Preferred term",
+      "altLabel": "Alternative term",
+      "hiddenLabel": "Hidden term"
     },
     "matching": {
       "full-cs": "full, case sensitive",
@@ -119,9 +119,9 @@
     "topheading": "Concept view",
     "tableview": "Table view",
     "languagedata": "Language data",
-    "prefLabel": "Preferred label",
-    "altLabel": "Alternative label",
-    "hiddenLabel": "Hidden label",
+    "prefLabel": "Preferred term",
+    "altLabel": "Alternative term",
+    "hiddenLabel": "Hidden term",
     "definisjon": "Definition",
     "general": "General information",
     "relasjon": "Relation",
