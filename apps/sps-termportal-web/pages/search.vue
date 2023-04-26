@@ -68,7 +68,7 @@ const fetchFurtherSearchData = () => {
     if (element.getBoundingClientRect().bottom * 0.75 < window.innerHeight) {
       const offset: SearchOptions["offset"] = {};
 
-      if (searchInterface.value.term.length > 0) {
+      if (searchInterface.value.term && searchInterface.value.term.length > 0) {
         let newOffsetCalc;
         let oldOffsetCalc = countFetchedMatches.value;
         let fetchNextMatching = false;
@@ -161,12 +161,12 @@ onMounted(() => {
       // Only set state if present in route
       if (route.query[value.q]) {
         // searchterm needs be to added to searchbar field
-        if (key === "searchTerm") {
+        if (key === "term") {
           searchterm.value = route.query[value.q] as string;
         }
 
         // searchdomain needs to be handled differently because state is a list
-        if (key === "searchDomain") {
+        if (key === "domain") {
           const domene = route.query[value.q] as string;
           searchInterface.value[key] = domene.split(",");
         }
