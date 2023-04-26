@@ -1,8 +1,10 @@
 export default defineEventHandler(async (event) => {
   const url = useRuntimeConfig().public.endpointUrl;
   const body = await readBody(event);
+  const concept = body.termbase === "FBK" ? body.base + body.concept : body.concept;
+  console.log(concept)
   const query = genConceptQuery(body.base, body.termbase, body.concept);
-
+  
   const controller = new AbortController();
   const timer = setTimeout(() => {
     controller.abort();
@@ -25,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
     return frameData(data, "skos:Concept").then((result) => {
       delete result["@context"];
-      return parseConceptData(result, body.concept);
+      return parseConceptData(result, concept);
     });
   } catch (e) {
     // console.log(e)
