@@ -38,13 +38,19 @@
       </h1>
 
       <div class="max-w-3xl space-y-2">
-        <p></p>
-        <p>
+        <p> Dette er nettsida til Termportalen. Sida er framleis under
+          utvikling, så ein del funksjonar er ikkje på plass enno. Arbeidet med å
+          vidareutvikle og utvide innhaldet går kontinuerlig føre seg, og fleire
+          termbasar blir tilgjengelige for søk etter kvart som dei blir
+          importerte eller ei løysning for hausting kjem på plass. I tillegg blir det 
+          stadig oppretta nye termgrupper, derfor vil talet på domene og mengda
+          terminologi ein kan søke i, øke jamnt og trutt.</p>
+        <p>  Kontakt oss gjerne på
           <AppLink
             class="underline hover:decoration-2"
             to="mailto:termportalen@uib.no"
             >termportalen@uib.no</AppLink
-          >
+          >   for spørsmål eller tilbakemeldingar.
         </p>
       </div>
     </template>
@@ -57,13 +63,18 @@
       </h1>
 
       <div class="max-w-3xl space-y-2">
-        <p></p>
-        <p>
+        <p> This is Termportalen's webpage. This page is still being developed
+        and some features may not be ready. The development and extension 
+        of Termportalen's contents is always ongoing, and more termbases will become
+        available and searcable as soon as they are imported or a solution for 
+        elicitation is ready. In addition, new term groups are regularly
+        created and the number of searchable domains and terms will therefore be steadily increasing. </p>
+        <p> Feel free to contact us on
           <AppLink
             class="underline hover:decoration-2"
             to="mailto:termportalen@uib.no"
             >termportalen@uib.no</AppLink
-          >
+          >  for questions or feedback.
         </p>
       </div>
     </template>
