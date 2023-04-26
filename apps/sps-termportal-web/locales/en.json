@@ -2,9 +2,9 @@
   "global": {
     "language": "Language | Languages",
     "termbase": "Termbase | termbase",
-    "skipLink": "",
+    "skipLink": "Go to  main content",
     "domain": {
-      "domain": "Domain",
+      "domain": "Domain | domain",
       "all": "All Domains",
       "humaniora": "Humanities",
       "naturvitenskap": "Sciences & Technology",
@@ -13,7 +13,7 @@
     },
     "lang": {
       "none": "–",
-      "all": "All languages",
+      "all": "All languages | all languages",
       "ar": "Arabic",
       "da": "Danish",
       "de": "German",
@@ -36,7 +36,7 @@
       "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomy",
       "CMBIOLOGI": "Cell and molecular biology",
-      "EVERTEBRATER": "Evertebrats",
+      "EVERTEBRATER": "Evertebrater",
       "FBK": "Felles Begrepskatalog",
       "KLIMA": "Climate",
       "LINGVISTIKK": "Linguistics",
@@ -44,7 +44,7 @@
       "MRT2": "Maritim ordbok del 2",
       "NOT": "NOT - Norsk termbanks termdatabase",
       "NHH": "NHHs termbase",
-      "NOJU": "Norsk-tysk juridiskordbok (NOJU)",
+      "NOJU": "Norsk-tysk juridisk ordbok (NOJU)",
       "ROMFYS": "Space physics",
       "RTT": "Rådet for teknisk terminologi (RTT)",
       "SDIR": "Maritim teknologi (Sjøfartsdirektoratet)",
@@ -70,10 +70,10 @@
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
   "navBar": {
-    "om": "About",
+    "om": "About Termportalen",
     "innstillinger": "Settings",
-    "menuButtonShow": "",
-    "menuButtonHide": ""
+    "menuButtonShow": "Extend menu",
+    "menuButtonHide": "Hide menu"
   },
 
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
@@ -85,9 +85,9 @@
     "searchLanguage": "Search language",
     "searchTranslate": "Translation language",
     "searchBase": "Termbase",
-    "searchfieldLabel": "",
-    "clearTextLabel": "",
-    "searchButtonLabel": ""
+    "searchfieldLabel": "Search field",
+    "clearTextLabel": "Clear search field",
+    "searchButtonLabel": "Search"
   },
   "searchFilter": {
     "results": "results",
@@ -100,18 +100,18 @@
   },
   "footer": {
     "contact": "Contact us",
-    "accDeclaration": ""
+    "accDeclaration": "Accessibility Statement"
   },
   "spinnerIcon": {
-    "srText": ""
+    "srText": "Waiting for search results"
   },
-  "buttonScrollTop": { "srLabel": "" },
+  "buttonScrollTop": { "srLabel": "Return to top" },
   "termbase": {
     "organisation": "Organisation",
-    "orgnr": "Organisation nr.",
+    "orgnr": "Organisation no.",
     "email": "E-mail",
     "telephone": "Telephone",
-    "license": "License",
+    "license": "Licence",
     "languages": "Languages",
     "startLang": "Starting language"
   },
@@ -125,18 +125,18 @@
     "definisjon": "Definition",
     "general": "General information",
     "relasjon": "Relation",
-    "narrower": "",
-    "specializes": "",
-    "isPartOf": "",
-    "broader": "",
-    "generalizes": "",
-    "hasPart": "",
-    "seeAlso": "",
+    "narrower": "Superordinate",
+    "specializes": "Superordinate generic",
+    "isPartOf": "Superordinate partitive",
+    "broader": "Subordinate",
+    "generalizes": "Subordinate generic",
+    "hasPart": "Subordinate partitive",
+    "seeAlso": "See also",
     "related": "",
-    "collection": "Collection",
+    "collection": "Termbase",
     "subject": "Subject",
     "domain": "Domain",
-    "modified": "Modified",
+    "modified": "Last modified",
     "note": "Note",
     "tilbake": "Back to search results"
   },
