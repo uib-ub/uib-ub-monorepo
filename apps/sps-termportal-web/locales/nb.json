@@ -14,7 +14,7 @@
     "lang": {
       "none": "–",
       "all": "Alle språk | Alle språk",
-      "ar": "Arabic | arabic",
+      "ar": "Arabisk | arabisk",
       "da": "Dansk | dansk",
       "de": "Tysk | tysk",
       "en": "Engelsk | engelsk",
@@ -63,7 +63,7 @@
       "full-cs": "helt, versalfølsom",
       "full-ci": "helt, versalufølsom",
       "startsWith-ci": "begynner med",
-      "endsWith-ci": "endte med",
+      "endsWith-ci": "ender med",
       "subWord-ci": "underord begynner med",
       "contains-ci": "inneholder"
     }
@@ -104,10 +104,10 @@
   },
   "buttonScrollTop": { "srLabel": "Tilbake til toppen" },
   "termbase": {
-    "organisation": "Organisajon",
-    "orgnr": "Organisasjonsnr",
-    "email": "Epost",
-    "telephone": "Telefone",
+    "organisation": "Organisasjon",
+    "orgnr": "Organisasjonsnr.",
+    "email": "E-post",
+    "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
     "startLang": "Opprinnelig språk"
