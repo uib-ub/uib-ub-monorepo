@@ -1,10 +1,10 @@
 {
   "global": {
-    "language": "Språk | Språk",
+    "language": "Språk | språk",
     "termbase": "Termbase",
     "skipLink": "Gå til hovudinnhald",
     "domain": {
-      "domain": "Domene",
+      "domain": "Domene | domene",
       "all": "Alle domene",
       "humaniora": "Humaniora",
       "naturvitenskap": "Naturvitenskap & Teknologi",
@@ -13,7 +13,7 @@
     },
     "lang": {
       "none": "–",
-      "all": "Alle språk",
+      "all": "Alle språk | alle språk",
       "ar": "Arabisk | arabisk",
       "da": "Dansk | dansk",
       "de": "Tysk | tysk",
@@ -33,7 +33,7 @@
     },
     "samling": {
       "all": "Alle termbasar",
-      "ARTSDB": "Arsdatabanken",
+      "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomi",
       "CMBIOLOGI": "Celle- og molekylærbiologi",
       "EVERTEBRATER": "Evertebrater",
@@ -97,7 +97,7 @@
   },
   "footer": {
     "contact": "Kontakt oss",
-    "accDeclaration": "Tilgjengelighetserklæring"
+    "accDeclaration": "Tilgjengeligheitserklæring"
   },
   "spinnerIcon": {
     "srText": "Venter på søkeresultater"
@@ -130,12 +130,12 @@
     "hasPart": "Underordna partitiv",
     "seeAlso": "Sjå også",
     "related": "Assosiert",
-    "collection": "Samling",
+    "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
     "modified": "Sist oppdatert",
     "note": "Merknad",
-    "tilbake": "Tilbake til søkeresultat"
+    "tilbake": "Til søkeresultat"
   },
   "index": { "title": "Termportalen" },
   "search": {
