@@ -1,3 +1,9 @@
+import { LangCode } from "./vars-language";
+import { Samling, Domains } from "./vars-termbase";
+
+export type QueryType = "search" | "concept" | "termbase";
+export type SearchQueryType = "entries" | "aggregate";
+
 export type LabelPredicate = "prefLabel" | "altLabel" | "hiddenLabel";
 export type Matching =
   | "full-cs"
@@ -26,7 +32,6 @@ export const matchingOrder: Matching[] | Matching[][] = [
   "subWord-ci",
   "contains-ci",
 ];
-export type QueryType = "entries" | "aggregate" | "count";
 
 export type SemanticRelation =
   | "narrower"
@@ -48,6 +53,21 @@ export const semanticRelationTypes: SemanticRelation[] = [
   "related",
   "seeAlso",
 ];
+
+export interface SearchOptions {
+  type: QueryType;
+  subtype: SearchQueryType;
+  situation: string;
+  term: string;
+  language: (LangCode | "all")[];
+  translate: LangCode | "none";
+  termbase: Samling[];
+  domain: (Domains | "all")[];
+  predicate: LabelPredicate[];
+  matching: (Matching | "all")[] | Matching[][];
+  limit: number;
+  offset: any;
+}
 
 export const searchOptionsInfo = {
   type: { default: "search" },

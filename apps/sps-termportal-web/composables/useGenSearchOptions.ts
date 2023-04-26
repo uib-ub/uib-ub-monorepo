@@ -1,10 +1,12 @@
-export default function (situation: string, options?: Object) {
+import { SearchOptions } from "~~/utils/vars";
+
+export default function (situation: string, options?: SearchOptions) {
   const searchInterface = useSearchInterface();
   const searchFilterData = useSearchFilterData();
 
-  const newOptions = {
+  const newOptions: SearchOptions = {
     type: "search",
-    subtype: undefined,
+    subtype: "",
     situation,
     // searchOptionsInterface
     term: searchInterface.value.term || "",

@@ -1,5 +1,10 @@
-import { SearchOptions } from "../../composables/states";
-import { Matching, QueryType, LabelPredicate } from "../../utils/vars";
+import {
+  Matching,
+  QueryType,
+  LabelPredicate,
+  SearchOptions,
+  SearchQueryType,
+} from "../../utils/vars";
 import { Samling, Domains, domainNesting } from "../../utils/vars-termbase";
 import { genSearchQueryAll } from "./genSearchQueryAll";
 
@@ -79,10 +84,10 @@ export function getTermData(
 
 export function getGraphData(
   searchDomain: string[],
-  graphKey: string | string[]
+  graphKey: (Samling | "all")[]
 ): string[] {
   if (graphKey.length === 1 && graphKey[0] !== "all") {
-    return ["", `ns:${samlingMapping[graphKey as Samling]}`];
+    return ["", `ns:${samlingMapping[graphKey[0]]}`];
   } else if (graphKey.length > 1) {
     const bases = graphKey
       .map((key) => `FROM NAMED ns:${samlingMapping[key as Samling]}`)
@@ -108,9 +113,9 @@ export function getLanguageData(language: string[]): string[] {
 }
 
 function getLanguageWhere(
-  subqueries,
-  queryTypeIn: string,
-  match: string,
+  subqueries: any,
+  queryTypeIn: SearchQueryType,
+  match: Matching | "all" | "allPatterns",
   lang: string
 ): string {
   let queryType = queryTypeIn;
@@ -147,7 +152,7 @@ function getPredicateValues(predicate: LabelPredicate[]): string {
   }
 }
 
-export function genSearchQuery(searchOptions): string {
+export function genSearchQuery(searchOptions: SearchOptions): string {
   const termData = getTermData(searchOptions.term, htmlHighlight);
   const graph = getGraphData(searchOptions.domain, searchOptions.termbase);
   const language = getLanguageData(searchOptions.language);
@@ -166,7 +171,7 @@ export function genSearchQuery(searchOptions): string {
       "?matching",
     ];
     const subqueries = (
-      queryType: QueryType,
+      queryType: SearchQueryType | "count",
       subEntry: string,
       aggregateMatch?: string
     ) => {
@@ -281,8 +286,8 @@ export function genSearchQuery(searchOptions): string {
     const subqueryTemplate = (
       subqueries,
       category: string,
-      queryType: string,
-      match: string,
+      queryType: SearchQueryType | "count",
+      match: Matching | "all" | "allPatterns",
       where: string
     ) => {
       const subquery = {
@@ -331,7 +336,7 @@ export function genSearchQuery(searchOptions): string {
       if (queryType === "count" && searchOptions.matching.length === 1) {
         return subquery[queryType] + "\n        UNION {}";
       } else {
-        return subquery[queryType as QueryType];
+        return subquery[queryType as SearchQueryType];
       }
     };
 

@@ -37,37 +37,6 @@ export const useSearchInterface = () =>
     domain: ["all"],
   }));
 
-export interface SearchOptions {
-  searchTerm: string | null;
-  searchBase: string | string[];
-  searchDomain: string[];
-  searchLanguage: LangCode | "all" | LangCode[];
-  searchPredicate: LabelPredicate[];
-  searchTranslate: LangCode | "none";
-  searchMatching: Matching | MatchingNested[];
-  searchLimit: number;
-  searchOffset?: { [key in Matching]: number };
-}
-
-export const useSearchOptions = () =>
-  useState<SearchOptions>("searchOptions", () => ({
-    searchTerm: null,
-    searchBase: "all",
-    searchDomain: ["all"],
-    searchLanguage: "all",
-    searchPredicate: ["prefLabel", "altLabel", "hiddenLabel"],
-    searchTranslate: "none",
-    searchMatching: [
-      ["full-cs", "full-ci"],
-      "startsWith-ci",
-      "endsWith-ci",
-      "subWord-ci",
-      "contains-ci",
-    ],
-    searchLimit: 30,
-    searchOffset: undefined,
-  }));
-
 export const useAllowSearchFetch = () =>
   useState<boolean>("allowSearchFetch ", () => true);
 export const useSearchBarWasFocused = () =>

@@ -28,8 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { Matching, MatchingNested } from "../utils/vars";
-import { SearchOptions } from "../composables/states";
+import { Matching, SearchOptions } from "../utils/vars";
 import { FetchType } from "../composables/useFetchSearchData";
 
 const route = useRoute();
