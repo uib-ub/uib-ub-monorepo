@@ -21,10 +21,7 @@ export default function (data: any, type: string) {
       vcard: "http://www.w3.org/2006/vcard/ns#",
       literalForm: { "@id": "skosxl:literalForm" },
       label: "rdfs:label",
-      modified: {
-        "@id": "dct:modified",
-        "@type": "xsd:dateTime",
-      },
+      modified: "dct:modified",
       identifier: "dct:identifier",
       language: "dct:language",
       scopeNote: "skos:scopeNote", // TODO
@@ -111,7 +108,7 @@ export default function (data: any, type: string) {
       betydningsbeskrivelse: {
         "@id": "skosno2:betydningsbeskrivelse",
         "@type": "@id",
-        "@container": "@type",
+        "@container": "@set",
       },
       hiddenLabel: {
         "@id": "skosxl:hiddenLabel",
