@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      endpointUrl: "https://sparql.terminologi.no/termwiki_test/query",
+      endpointUrl: "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
   },
