@@ -128,6 +128,7 @@
             </tbody>
           </table>
         </div>
+        <!--USED-->
         <div v-else class="grid gap-y-5">
           <div
             v-for="lang in displayInfo?.displayLanguages"
@@ -255,6 +256,8 @@
 </template>
 
 <script setup lang="ts">
+import { Samling } from "~~/utils/vars-termbase";
+
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute();
 const searchScrollBarPos = useSearchScrollBarPos();
@@ -263,7 +266,7 @@ const conceptViewToggle = useConceptViewToggle();
 const searchData = useSearchData();
 const sidebar = ref(null);
 const main = ref(null);
-const termbase = route.params.termbase;
+const termbase = route.params.termbase as Samling;
 const idArray = route.params.id as Array<string>;
 
 onMounted(() => {
@@ -271,7 +274,6 @@ onMounted(() => {
     sidebar.value.scrollTop = searchScrollBarPos.value;
   }
 });
-
 
 let base: string;
 let id: string;
@@ -328,9 +330,9 @@ const displayInfo = computed(() => {
     for (const relationType of semanticRelationTypes) {
       const relData = getRelationData(data.value.concept, procId, relationType);
       if (relData) {
-        try {
+        if (info.semanticRelations) {
           info.semanticRelations[relationType] = relData;
-        } catch {
+        } else {
           info.semanticRelations = {};
           info.semanticRelations[relationType] = relData;
         }
