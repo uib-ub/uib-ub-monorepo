@@ -29,7 +29,7 @@ export async function getManifestSeedData(id, url) {
         ubbont:hasMDView ?partMD ; 
         ubbont:hasSMView ?partSM .
       ?singleCanvas rdf:type sc:Canvas .
-      ?singleCanvas rdfs:label 1 .
+      ?singleCanvas rdfs:label "1" .
       ?singleCanvas sc:thumbnail ?singleCanvasThumb .
       ?singleCanvas sc:items ?singlePart .
       ?singlePart rdf:type oa:Annotation ;

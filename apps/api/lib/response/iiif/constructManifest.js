@@ -21,7 +21,7 @@ export async function constructManifest(data, metadata, API) {
     : sortBy(data.items, o => o.label['@none'][0])
 
   data.structures.items = Array.isArray(data.structures.items) === false
-    ? sortBy(data.structures.items, i => parseInt(i.split("_p")[1]))
+    ? sortBy([data.structures.items], i => parseInt(i.split("_p")[1]))
     : sortBy(data.structures.items, i => parseInt(i.split("_p")[1]))
 
   // We assume all @none language tags are really norwegian
