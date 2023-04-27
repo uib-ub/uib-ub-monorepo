@@ -4,6 +4,13 @@
 
 For some reason Vercel does not install linux packages for turbo, esbuild and @napi-rs/simple-git. Solution is to add them to the package-lock.json file, but there are som black magic here...
 
+A solution is to install os specific packages and commit the package-lock.json file. This is not a good solution, but it works.
+
+```bash
+npm install -D --arch=arm64 --platform=darwin esbuild @napi-rs/simple-git
+npm install -D --arch=arm64 --platform=linux esbuild @napi-rs/simple-git
+```
+
 ## Invalid hook call error in React caused by transpilation
 
 Solution suggested here:
