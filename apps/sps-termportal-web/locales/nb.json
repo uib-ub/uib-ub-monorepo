@@ -62,8 +62,8 @@
     "matching": {
       "full-cs": "helt, versalfølsom",
       "full-ci": "helt, versalufølsom",
-      "startsWith-ci": "begynner med",
-      "endsWith-ci": "ender med",
+      "startsWith-ci": "starter med",
+      "endsWith-ci": "slutter med",
       "subWord-ci": "underord begynner med",
       "contains-ci": "inneholder"
     }
@@ -92,7 +92,7 @@
     "filter": "Filter",
     "filterTitleShow": "Vis filter for søkeresultater",
     "filterTitleHide": "Skjul filter for søkeresultater",
-    "termproperty": "Egenskap",
+    "termproperty": "termstatus",
     "matching": "Matchende"
   },
   "footer": {
@@ -113,16 +113,16 @@
     "startLang": "Opprinnelig språk"
   },
   "id": {
-    "topheading": "Konseptvisning",
+    "topheading": "Begrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
     "hiddenLabel": "Frarådet term",
     "definisjon": "Definisjon",
-    "general": "Felles",
-    "relasjon": "Relasjon",
-    "narrower": "Overordnet",
+    "general": "Generell informasjon",
+    "relasjon": "Begrepsrelasjon",
+    "narrower": "Overbegrep",
     "specializes": "Overordnet generisk",
     "isPartOf": "Overordnet partitiv",
     "broader": "Underordnet",
