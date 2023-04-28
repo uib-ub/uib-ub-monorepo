@@ -56,8 +56,8 @@
     },
     "predicate": {
       "prefLabel": "Preferred term",
-      "altLabel": "Alternative term",
-      "hiddenLabel": "Hidden term"
+      "altLabel": "Admitted term",
+      "hiddenLabel": "Deprecated term"
     },
     "matching": {
       "full-cs": "full, case sensitive",
@@ -95,7 +95,7 @@
     "filter": "Filter",
     "filterTitleShow": "Show search filter",
     "filterTitleHide": "Hide search filter",
-    "termproperty": "Term property",
+    "termproperty": "Acceptability rating",
     "matching": "Matching"
   },
   "footer": {
@@ -120,15 +120,15 @@
     "tableview": "Table view",
     "languagedata": "Language data",
     "prefLabel": "Preferred term",
-    "altLabel": "Alternative term",
-    "hiddenLabel": "Hidden term",
+    "altLabel": "Admitted term",
+    "hiddenLabel": "Depreciated term",
     "definisjon": "Definition",
     "general": "General information",
-    "relasjon": "Relation",
-    "narrower": "Superordinate",
+    "relasjon": "Concept relation",
+    "narrower": "Subordinate",
     "specializes": "Superordinate generic",
     "isPartOf": "Superordinate partitive",
-    "broader": "Subordinate",
+    "broader": "Superordinate",
     "generalizes": "Subordinate generic",
     "hasPart": "Subordinate partitive",
     "seeAlso": "See also",
