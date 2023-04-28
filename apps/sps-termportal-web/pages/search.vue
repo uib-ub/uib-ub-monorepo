@@ -106,7 +106,7 @@ const fetchFurtherSearchData = () => {
       useFetchSearchData(
         useGenSearchOptions("further", {
           offset,
-          matching: Object.keys(offset),
+          matching: [Object.keys(offset)],
         })
       );
     }
