@@ -92,7 +92,7 @@
     "filter": "Filter",
     "filterTitleShow": "Vis filter for søkeresultat",
     "filterTitleHide": "Skjul filter for søkeresultat",
-    "termproperty": "Eigenskap",
+    "termproperty": "Termstatus",
     "matching": "Matchende"
   },
   "footer": {
@@ -113,15 +113,15 @@
     "startLang": "Opphaveleg språk"
   },
   "id": {
-    "topheading": "Konseptvisning",
+    "topheading": "Omgrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
     "definisjon": "Definisjon",
-    "general": "Felles",
-    "relasjon": "Relasjon",
+    "general": "Generell informasjon",
+    "relasjon": "Omgrepsrelasjon",
     "narrower": "Overordna",
     "specializes": "Overordna generisk",
     "isPartOf": "Overordna partitiv",
