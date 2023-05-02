@@ -39,8 +39,8 @@
 
       <div class="max-w-3xl space-y-2">
         <p> Dette er nettsida til Termportalen. Sida er framleis under
-          utvikling, så ein del funksjonar er ikkje på plass enno. Arbeidet med å
-          vidareutvikle og utvide innhaldet går kontinuerlig føre seg, og fleire
+          utvikling, så ein del funksjonar er ikkje enno på plass. Arbeidet med å
+          vidareutvikle og utvide innhaldet går kontinuerleg føre seg, og fleire
           termbasar blir tilgjengelige for søk etter kvart som dei blir
           importerte eller ei løysning for hausting kjem på plass. I tillegg blir det 
           stadig oppretta nye termgrupper, derfor vil talet på domene og mengda
