@@ -50,7 +50,7 @@
           bokmål, nynorsk og engelsk, mens ein del termbasar også har terminologi
           på andre språk.</p>
         <p>
-          I tillegg til søkesida til Termportalen er det utvikla ein
+          I tillegg til søkesida til Termportalen har det blitt utvikla ein
           redigeringsapplikasjon som kan brukast fritt til registrering av
           terminologi. Ta kontakt med oss på
           <AppLink
