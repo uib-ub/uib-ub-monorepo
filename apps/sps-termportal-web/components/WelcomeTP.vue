@@ -73,29 +73,29 @@
         <AppLink to="#velkommen">Welcome to Termportalen</AppLink>
       </h2>
       <div class="space-y-2">
-        <p>Termportalen provides free access to Norwegian terminology in many different 
-          fagområder in one common søkerute. It is possible to search for terms 
-          in different domains, termbases and languages. The termbases are grouped in
-          general domains og it is possible to seach for terms in either the whole 
-          Termportalen.no, in one specific domain or in a selection og termbases.
-          You can also choose languages in advance. Most of our termbases contains 
+        <p> Termportalen provides free access to Norwegian terminology in many different 
+          subject fields through one shared search field. It is possible to search for terms 
+          across different domains, termbases and languages. The termbases are grouped into
+          overall domains and it is possible to search for terms in either the whole 
+          Termportalen.no, in one specific domain, or in a selection of termbases.
+          You can also choose a search language in advance. Most of the termbases contain 
           terminology in Norwegian bokmål, Norwegian nynorsk and English, and some
-          termbases also contains teminology in additional languages.</p>
+          termbases also contain terminology in additional languages. </p>
         <p>
-        In addition to Termportalen's søkeside, an application/app/editor for registration
-        of terminology is available. Contact us on
+        In addition to Termportalen's search interface, an application for registration
+        of terminology has been developed. Contact us on
           <AppLink
             class="underline hover:decoration-2"
             to="mailto:termportalen@uib.no"
           >
             termportalen@uib.no
           </AppLink>
-          if you want to get startet with terminology in your own field/fagområde.
+          if you want to get started with terminology work in your own subject field.
         </p>
-        <p>Termportalen is a part of The Norwegian Language Collections ved Universitetet i Bergen,
-          og the terminology work is done in consultation with Språkrådet.
-          Termportalen is funded by Kunnskapsdepartementet and Kultur- og
-          likestillingsdepartementet.</p>
+        <p>Termportalen is a part of The Norwegian Language Collections at The University of Bergen,
+          and the terminology work is done in consultation with The Language Council of Norway.
+          Termportalen is funded by The Ministry of Education and Research as well as 
+          the the Ministry of Culture and Equality.</p>
       </div>
     </template>
   </article>
