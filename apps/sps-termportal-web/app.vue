@@ -59,7 +59,6 @@ watch(
 <style>
 body {
   overflow-y: scroll;
-  @apply bg-tpblue-100;
 }
 
 .tp-shighlight {
