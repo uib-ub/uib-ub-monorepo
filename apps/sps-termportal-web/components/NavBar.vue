@@ -44,24 +44,12 @@
           class="xs:gap-4 xs:pt-0 xs:space-y-0 xs:mt-0 xs:rounded-none xs:border-none xs:p-0 right-0 mt-[8.5px] space-y-2 rounded-b border border-t-0 p-4 md:flex"
           :class="{ hidden: !navMenuExpanded }"
         >
-          <li>
-            <AppLink
-              to="/om"
-              class="decoration-inherit hover:text-black"
-              @click="navMenuExpanded = false"
-            >
-              {{ $t("navBar.om") }}</AppLink
-            >
-          </li>
-          <li>
-            <AppLink
-              to="/innstillinger"
-              class="decoration-inherit hover:text-black"
-              @click="navMenuExpanded = false"
-            >
-              {{ $t("navBar.innstillinger") }}</AppLink
-            >
-          </li>
+          <NavBarPageLink to="/om">
+            {{ $t("navBar.om") }}
+          </NavBarPageLink>
+          <NavBarPageLink to="/innstillinger">
+            {{ $t("navBar.innstillinger") }}
+          </NavBarPageLink>
         </ul>
       </div>
     </div>
