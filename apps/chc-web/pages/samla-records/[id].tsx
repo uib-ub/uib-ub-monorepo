@@ -1,4 +1,3 @@
-import { Navbar } from 'components/global/Navbar';
 import { IIIFMetadata } from 'components/shared/IIIF/IIIFMetadata.client';
 import ManifestViewer from 'components/shared/IIIF/ManifestViewer.client';
 import { getSamlaIIIFv2RecordData } from 'lib/samla/samla.client';
