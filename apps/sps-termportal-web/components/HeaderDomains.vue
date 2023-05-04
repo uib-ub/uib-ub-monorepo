@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="subDomains">
     <div class="flex">
       <button
         class="mt-[2px] flex rounded px-2 align-top hover:bg-gray-200"
@@ -43,4 +43,9 @@
 </template>
 <script setup lang="ts">
 const displaySubdomains = ref(false);
+const subDomains = ref<HTMLElement | null>(null);
+
+onClickOutside(subDomains, () => {
+  displaySubdomains.value = false;
+});
 </script>
