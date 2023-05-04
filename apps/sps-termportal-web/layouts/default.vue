@@ -12,7 +12,7 @@
       <div
         class="container flex-1"
         :class="{
-          'xs:pb-4 max-w-screen-xl pt-2  xl:pl-0': route.path !== '/',
+          'xs:pb-4 max-w-screen-xl pt-2 xl:pl-0 px-2 sm:px-3 md:px-4 lg:px-5': route.path !== '/',
           'mb-[10vh] max-w-5xl p-5': route.path === '/',
         }"
       >
