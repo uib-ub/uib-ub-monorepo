@@ -42,7 +42,7 @@ const fixedBarDisplayed = ref(false);
 
 function toggleNavBar(prevScrollpos: number) {
   const currentScrollPos = window.pageYOffset;
-  if (prevScrollpos < currentScrollPos) {
+  if (route.path !== "/" && prevScrollpos < currentScrollPos) {
     if (currentScrollPos > 48 && !fixedBarDisplayed.value) {
       fixPosition.value = true;
     }
