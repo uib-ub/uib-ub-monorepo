@@ -2,13 +2,6 @@
   <div>
     <!--Filter-->
     <div class="flex h-9 justify-between text-lg">
-      <div class="flex">
-        <div class="w-16 pr-1 text-right">{{ count }}</div>
-        <div>{{ $t("searchFilter.results") }}</div>
-      </div>
-      <TransitionOpacity>
-        <SpinnerIcon v-if="pending" />
-      </TransitionOpacity>
       <button
         class="h-full w-32 rounded border border-solid border-gray-300 hover:bg-gray-200"
         type="button"
@@ -37,6 +30,13 @@
           aria-hidden="true"
         />
       </button>
+      <TransitionOpacity>
+        <SpinnerIcon v-if="pending" />
+      </TransitionOpacity>
+      <div class="flex">
+        <div class="w-16 pr-1 text-right">{{ count }}</div>
+        <div>{{ $t("searchFilter.results") }}</div>
+      </div>
     </div>
     <section v-if="displayFilter" id="filterCard" class="mt-2">
       <h2 class="pb-2 pt-1 text-2xl">{{ $t("searchFilter.filter") }}</h2>
