@@ -2,5 +2,11 @@
   "Item": {
     "title": "Hei verden! Dette er objekt siden.",
     "greeting": "Hei, hvem du nå er! Du er på en norsk side."
+  },
+  "SamlaTopCollection": {
+    "title": "SAMLA samlinger (øverste nivå)"
+  },
+  "SamlaCollection": {
+    "title": "SAMLA samling"
   }
 }
