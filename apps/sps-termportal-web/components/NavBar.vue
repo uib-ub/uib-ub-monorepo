@@ -20,7 +20,7 @@
           <SearchField class="max-w-[51em]" />
         </div>
       </div>
-      <div class="px-4 text-lg font-semibold text-gray-500">
+      <div ref="navPageLinks" class="px-4 text-lg font-semibold text-gray-500">
         <div class="md:hidden">
           <button
             class="ml-auto mr-0 flex rounded border px-2 py-1"
@@ -57,11 +57,19 @@
 </template>
 
 <script setup lang="ts">
-const navBar = ref(null);
+const navMenuExpanded = useNavMenuExpanded();
+const navBar = ref<HTMLElement | null>(null);
+const navPageLinks = ref<HTMLElement | null>(null);
+
 defineExpose({ navBar });
 
 const props = defineProps({
   context: { type: String, required: true },
 });
-const navMenuExpanded = ref(false);
+
+onClickOutside(navPageLinks, () => {
+  if (navMenuExpanded.value) {
+    navMenuExpanded.value = false;
+  }
+});
 </script>
