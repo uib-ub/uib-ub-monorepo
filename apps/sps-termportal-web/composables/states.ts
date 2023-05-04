@@ -122,3 +122,6 @@ export const useDataDisplayLanguages = () =>
   ]);
 export const useConceptViewToggle = () =>
   useState<boolean>("conceptViewToggle", () => false);
+
+export const useNavMenuExpanded = () =>
+  useState<boolean>("navMenuExpanded", () => false);
