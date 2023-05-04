@@ -7,17 +7,17 @@
     <div class="mx-auto flex h-full grow items-center justify-between">
       <div class="grow">
         <div v-if="context !== 'minimal'" class="flex grow">
-          <div
-            class="flex w-12 justify-center font-medium lg:w-40 xl:w-[10vw] xl:min-w-[10rem] xl:max-w-[13rem]"
-          >
-            <AppLink id="anchor" to="/"
-              ><span class="text-[1.4em] font-semibold lg:font-normal">T</span
+          <AppLink id="anchor" to="/"
+            ><div
+              class="flex w-12 justify-center font-medium lg:w-40 xl:w-[10vw] xl:min-w-[10rem] xl:max-w-[13rem]"
+            >
+              <span class="text-[1.4em] font-semibold lg:font-normal">T</span
               ><span class="hidden text-[1.4em] transition lg:inline"
                 >ermportalen</span
-              ></AppLink
-            >
-          </div>
-          <SearchField class="max-w-[60em]" />
+              >
+            </div></AppLink
+          >
+          <SearchField class="max-w-[51em]" />
         </div>
       </div>
       <div class="px-4 text-lg font-semibold text-gray-500">
