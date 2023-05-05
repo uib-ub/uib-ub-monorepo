@@ -64,10 +64,10 @@ function SamlaRecord({ data, id }: { data: any, id: string }) {
           id={data}
           options={{
             canvasHeight: '60vh',
-            renderAbout: false,
+            renderAbout: true,
             showIIIFBadge: false,
             showTitle: false,
-            showInformationToggle: false,
+            showInformationToggle: true,
           }}
         />
         <IIIFMetadata label={data.label} summary={data.summary} metadata={data.metadata} />
