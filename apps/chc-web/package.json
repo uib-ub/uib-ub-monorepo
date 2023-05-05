@@ -36,7 +36,8 @@
     "sanity-plugin-asset-source-unsplash": "^1.0.1",
     "server-only": "^0.0.1",
     "styled-components": "^5.3.9",
-    "suspend-react": "^0.0.9"
+    "suspend-react": "^0.0.9",
+    "utils": "*"
   },
   "devDependencies": {
     "@types/react": "^18.0.33",
