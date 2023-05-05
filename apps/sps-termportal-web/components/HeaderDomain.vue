@@ -6,7 +6,6 @@
       :class="{ 'border-b-[2px] border-black': searchInterface.domain[0] == tabId }"
       :aria-current="searchInterface.domain[0] == tabId"
       type="button"
-      role="tab"
       @click="searchInterface.domain = [tabId]"
     >
       {{ $t("global.domain." + tabId) }}
