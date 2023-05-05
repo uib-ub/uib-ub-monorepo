@@ -7,9 +7,11 @@
     <SearchStatusBar />
     <div class="xl:flex">
       <SearchFilter />
-      <main>
+      <main class="grow">
         <h2 id="main" class="pb-2 pt-3 text-2xl">
-          <AppLink to="#main"> {{ $t("searchFilter.results-heading") }}</AppLink>
+          <AppLink to="#main">
+            {{ $t("searchFilter.results-heading") }}</AppLink
+          >
         </h2>
         <ol
           v-if="searchData.length > 0"
