@@ -16,12 +16,14 @@
           'mb-[10vh] max-w-5xl p-5': route.path === '/',
         }"
       >
-        <h1
-          v-if="route.path === '/'"
-          class="xs:text-6xl pb-9 pt-[0.2em] text-5xl font-light tracking-tight text-black/75 antialiased sm:text-7xl md:text-8xl"
-        >
-          Termportalen
-        </h1>
+        <header>
+          <h1
+            v-if="route.path === '/'"
+            class="xs:text-6xl pb-9 pt-[0.2em] text-5xl font-light tracking-tight text-black/75 antialiased sm:text-7xl md:text-8xl"
+          >
+            Termportalen
+          </h1>
+        </header>
         <slot />
       </div>
     </div>
