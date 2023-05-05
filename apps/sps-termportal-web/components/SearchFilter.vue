@@ -30,8 +30,18 @@
               ]"
         :key="title"
       >
-        <SearchFilterFieldset v-if="data.length > 0" :title="title">
-          <FilterCheckbox v-for="d in data" :key="d" :ftype="key" :fvalue="d" />
+        <SearchFilterFieldset
+          v-if="data.length > 0"
+          :title="title"
+          class="pt-1"
+        >
+          <FilterCheckbox
+            v-for="d in data"
+            :key="d"
+            :ftype="key"
+            :fvalue="d"
+            class="pl-2"
+          />
         </SearchFilterFieldset>
       </template>
     </div>
