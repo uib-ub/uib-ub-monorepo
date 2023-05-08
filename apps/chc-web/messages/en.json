@@ -2,5 +2,11 @@
   "Item": {
     "title": "Hello World, this the item page",
     "greeting": "Hi, whoever you are! You're on the english page."
+  },
+  "SamlaTopCollection": {
+    "title": "SAMLA collections (top level)"
+  },
+  "SamlaCollection": {
+    "title": "SAMLA collection"
   }
 }

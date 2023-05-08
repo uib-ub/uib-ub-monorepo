@@ -42,7 +42,7 @@ export async function ItemPage({
     <>
       <InternationalLabel label={data.label} lang={locale} />
       <ManifestViewer
-        id={data.subjectOfManifest}
+        id={manifest}
         options={{
           canvasHeight: '70vh',
           renderAbout: false,
