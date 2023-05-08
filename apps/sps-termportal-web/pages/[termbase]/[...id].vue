@@ -340,7 +340,6 @@ const displayInfo = computed(() => {
     }
     if (data.value?.concept?.[procId]?.subject) {
       const subj = data.value?.concept[procId].subject
-      console.log("subj present");
       let subjectlist;
       if (typeof subj[0] === "string") {
         subjectlist = subj;
