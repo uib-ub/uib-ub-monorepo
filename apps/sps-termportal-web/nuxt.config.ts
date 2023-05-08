@@ -5,14 +5,21 @@ import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   meta: { title: "Termportalen" },
-  modules: ["@nuxtjs/tailwindcss", "nuxt-icon", '@vueuse/nuxt'],
+  extends: ["nuxt-umami"],
+  modules: ["@nuxtjs/tailwindcss", "nuxt-icon", "@vueuse/nuxt"],
   buildModules: ["@nuxtjs/html-validator", "@unlighthouse/nuxt"],
   content: {
     // https://content.nuxtjs.org/api/configuration
   },
+  appConfig: {
+    umami: {
+      version: 2,
+    },
+  },
   runtimeConfig: {
     public: {
-      endpointUrl: "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",
+      endpointUrl:
+        "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
   },

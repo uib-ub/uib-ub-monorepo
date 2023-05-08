@@ -130,6 +130,9 @@ watch(
   () => searchInterface.value.term,
   () => {
     allowSearchFetch.value = true;
+    umTrackEvent("Search: New term", {
+      term: searchInterface.value.term as string,
+    });
     considerSearchFetching("initial");
   }
 );
@@ -143,6 +146,7 @@ watch(
   ],
   () => {
     allowSearchFetch.value = true;
+    umTrackEvent("Search: Option change");
     considerSearchFetching("options");
   }
 );
