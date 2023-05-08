@@ -2,7 +2,6 @@ export default defineEventHandler(async (event) => {
   const url = useRuntimeConfig().public.endpointUrl;
   const body = await readBody(event);
   const concept = body.termbase === "FBK" ? body.base + body.concept : body.concept;
-  console.log(concept)
   const query = genConceptQuery(body.base, body.termbase, body.concept);
   
   const controller = new AbortController();
