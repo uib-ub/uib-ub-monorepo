@@ -11,6 +11,11 @@ export default defineNuxtConfig({
   content: {
     // https://content.nuxtjs.org/api/configuration
   },
+  appConfig: {
+    umami: {
+      version: 2,
+    },
+  },
   runtimeConfig: {
     public: {
       endpointUrl:
