@@ -7,7 +7,7 @@ export default function () {
 
   for (const [key, value] of Object.entries(searchOptionsInfo)) {
     let defaultVal: string | null;
-    if (searchOptionsInfo[key].q) {
+    if (searchOptionsInfo[key].q && searchOpt[key]) {
       if (value.default === null) {
         defaultVal = value.default;
       } else {
