@@ -85,8 +85,8 @@
     "searchLanguage": "Search language",
     "searchTranslate": "Translation language",
     "searchBase": "Termbase",
-    "searchfieldLabel": "Search field",
-    "clearTextLabel": "Clear search field",
+    "searchfieldLabel": "Search bar",
+    "clearTextLabel": "Clear search bar",
     "searchButtonLabel": "Search"
   },
   "searchFilter": {
