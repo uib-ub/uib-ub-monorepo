@@ -163,7 +163,8 @@ onMounted(() => {
   if (searchInterface.value.term === null) {
     for (const [key, value] of Object.entries(searchOptionsInfo)) {
       // Only set state if present in route
-      if (route.query[value.q]) {
+      // term can be empty string so the undefined check is neccessary
+      if (route.query[value.q] !== undefined) {
         // searchterm needs be to added to searchbar field
         if (key === "term") {
           searchterm.value = route.query[value.q] as string;
