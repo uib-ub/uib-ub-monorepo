@@ -93,8 +93,8 @@
     "results": "results",
     "results-heading": "Results",
     "filter": "Filter",
-    "filterTitleShow": "Show search filter",
-    "filterTitleHide": "Hide search filter",
+    "filterTitleShow": "Show filter",
+    "filterTitleHide": "Hide filter",
     "termproperty": "Acceptability rating",
     "matching": "Search alternatives"
   },
