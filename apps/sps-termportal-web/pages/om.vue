@@ -15,7 +15,7 @@
           videreutvikle og utvide innholdet pågår kontinuerlig, og flere
           termbaser vil bli gjort tilgjengelig for søk etter hvert som de blir
           importert eller løsning for høsting er på plass. I tillegg opprettes
-          det stadig termgrupper som gjør at antall domener og mengden
+          det stadig termgrupper, noe som gjør at antall domener og mengden
           terminologi en kan søke i, vil øke jevnt og trutt.
         </p>
         <p>
@@ -39,12 +39,12 @@
 
       <div class="max-w-3xl space-y-2">
         <p> Dette er nettsida til Termportalen. Sida er framleis under
-          utvikling, så ein del funksjonar er ikkje enno på plass. Arbeidet med å
+          utvikling, så ein del funksjonar er enno ikkje på plass. Arbeidet med å
           vidareutvikle og utvide innhaldet går kontinuerleg føre seg, og fleire
           termbasar blir tilgjengelege for søk etter kvart som dei blir
           importerte eller ei løysning for hausting kjem på plass. I tillegg blir det 
           stadig oppretta nye termgrupper, derfor vil talet på domene og mengda
-          terminologi ein kan søke i, øke jamnt og trutt.</p>
+          terminologi ein kan søke i, auke jamnt og trutt.</p>
         <p>  Kontakt oss gjerne på
           <AppLink
             class="underline hover:decoration-2"
@@ -69,7 +69,7 @@
         available and searchable as soon as they are imported or a solution for 
         elicitation is ready. In addition, new term groups are regularly
         created and the number of searchable domains and terms will therefore be steadily increasing. </p>
-        <p> Feel free to contact us on
+        <p> Please contact us on
           <AppLink
             class="underline hover:decoration-2"
             to="mailto:termportalen@uib.no"
