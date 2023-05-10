@@ -151,8 +151,6 @@ watch(
   }
 );
 
-considerSearchFetching("initial");
-
 onMounted(() => {
   /*
   Set searchOptions state based on route query values.
