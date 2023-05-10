@@ -90,8 +90,8 @@
     "results": "resultat",
     "results-heading": "Resultat",
     "filter": "Filter",
-    "filterTitleShow": "Vis filter for søkeresultat",
-    "filterTitleHide": "Skjul filter for søkeresultat",
+    "filterTitleShow": "Vis filter",
+    "filterTitleHide": "Skjul filter",
     "termproperty": "Termstatus",
     "matching": "Søkealternativ"
   },
