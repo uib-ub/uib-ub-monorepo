@@ -23,8 +23,8 @@
       "fr": "French",
       "it": "Italian",
       "la": "Latin",
-      "nb": "Norwegian bokmål",
-      "nn": "Norwegian nynorsk",
+      "nb": "Norwegian Bokmål",
+      "nn": "Norwegian Nynorsk",
       "pl": "Polish",
       "ru": "Russian",
       "so": "Somali",
@@ -36,7 +36,7 @@
       "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomy",
       "CMBIOLOGI": "Cell and molecular biology",
-      "EVERTEBRATER": "Evertebrater",
+      "EVERTEBRATER": "Invertebrates",
       "FBK": "Felles Begrepskatalog",
       "KLIMA": "Climate",
       "LINGVISTIKK": "Linguistics",
@@ -81,9 +81,9 @@
   "searchBar": {
     "search": "Search",
     "inDomain": "in",
-    "inLanguage": "on",
+    "inLanguage": "in",
     "searchLanguage": "Search language",
-    "searchTranslate": "Translation language",
+    "searchTranslate": "Target language",
     "searchBase": "Termbase",
     "searchfieldLabel": "Search bar",
     "clearTextLabel": "Clear search bar",
@@ -96,7 +96,7 @@
     "filterTitleShow": "Show search filter",
     "filterTitleHide": "Hide search filter",
     "termproperty": "Acceptability rating",
-    "matching": "Matching"
+    "matching": "Search alternatives"
   },
   "footer": {
     "contact": "Contact us",
@@ -125,16 +125,16 @@
     "definisjon": "Definition",
     "general": "General information",
     "relasjon": "Concept relation",
-    "narrower": "Subordinate",
-    "specializes": "Superordinate generic",
-    "isPartOf": "Superordinate partitive",
-    "broader": "Superordinate",
-    "generalizes": "Subordinate generic",
-    "hasPart": "Subordinate partitive",
+    "narrower": "Subordinate concept",
+    "specializes": "Superordinate concept (generic)",
+    "isPartOf": "Superordinate concept (partitive)",
+    "broader": "Superordinate concept",
+    "generalizes": "Subordinate concept (generic)",
+    "hasPart": "Subordinate concept (partitive)",
     "seeAlso": "See also",
-    "related": "Associated",
+    "related": "Associated concept",
     "collection": "Termbase",
-    "subject": "Subject",
+    "subject": "Subject field",
     "domain": "Domain",
     "modified": "Last modified",
     "note": "Note",
@@ -151,7 +151,7 @@
   "innstillinger": {
     "title": "Settings",
     "global": "Global",
-    "conceptview": "Concept view",
-    "dataDispLang": "Data display languages"
+    "conceptview": "Term entry",
+    "dataDispLang": "Choose language(s)"
   }
 }
