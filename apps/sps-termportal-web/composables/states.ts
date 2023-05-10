@@ -38,7 +38,7 @@ export const useSearchInterface = () =>
   }));
 
 export const useAllowSearchFetch = () =>
-  useState<boolean>("allowSearchFetch ", () => true);
+  useState<boolean | null>("allowSearchFetch ", () => true);
 export const useSearchBarWasFocused = () =>
   useState<boolean>("searchBarWasFocused", () => false);
 export const useSearchterm = () => useState<string>("searchterm", () => "");
