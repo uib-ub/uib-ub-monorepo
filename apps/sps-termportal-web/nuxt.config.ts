@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   appConfig: {
     umami: {
       version: 2,
+      ignoreLocalhost: true,
     },
   },
   runtimeConfig: {
