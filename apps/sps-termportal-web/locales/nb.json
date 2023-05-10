@@ -93,7 +93,7 @@
     "filterTitleShow": "Vis filter for søkeresultater",
     "filterTitleHide": "Skjul filter for søkeresultater",
     "termproperty": "termstatus",
-    "matching": "Matchende"
+    "matching": "Søkealternativ"
   },
   "footer": {
     "contact": "Kontakt oss",
@@ -110,7 +110,7 @@
     "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Opprinnelig språk"
+    "startLang": "Utgangsspråk"
   },
   "id": {
     "topheading": "Begrepsvisning",
@@ -122,14 +122,14 @@
     "definisjon": "Definisjon",
     "general": "Generell informasjon",
     "relasjon": "Begrepsrelasjon",
-    "narrower": "Underordnet",
-    "specializes": "Overordnet generisk",
-    "isPartOf": "Overordnet partitiv",
-    "broader": "Overordnet",
-    "generalizes": "Underordnet generisk",
-    "hasPart": "Underordnet partitiv",
+    "narrower": "Underbegrep",
+    "specializes": "Overbegrep (generisk)",
+    "isPartOf": "Overbegrep (partitiv)",
+    "broader": "Overbegrep",
+    "generalizes": "Underbegrep (generisk)",
+    "hasPart": "Underbegrep (partitiv)",
     "seeAlso": "Se også",
-    "related": "Assosiert",
+    "related": "Assosiert begrep",
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
@@ -147,8 +147,8 @@
   "om": { "title": "Om Termportalen" },
   "innstillinger": {
     "title": "Inn­stillinger",
-    "global": "Global",
-    "conceptview": "Begrepsvisning",
-    "dataDispLang": "Data viser språk"
+    "global": "Velg visningsspråk",
+    "conceptview": "Termpost",
+    "dataDispLang": "Velg språk"
   }
 }
