@@ -85,8 +85,8 @@
     "searchLanguage": "Search language",
     "searchTranslate": "Target language",
     "searchBase": "Termbase",
-    "searchfieldLabel": "Search bar",
-    "clearTextLabel": "Clear search bar",
+    "searchfieldLabel": "Search field",
+    "clearTextLabel": "Clear search field",
     "searchButtonLabel": "Search"
   },
   "searchFilter": {
@@ -150,7 +150,7 @@
   "om": { "title": "About Termportalen" },
   "innstillinger": {
     "title": "Settings",
-    "global": "Global",
+    "global": "Choose display language",
     "conceptview": "Term entry",
     "dataDispLang": "Choose language(s)"
   }
