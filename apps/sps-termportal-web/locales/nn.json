@@ -7,7 +7,7 @@
       "domain": "Domene | domene",
       "all": "Alle domene",
       "humaniora": "Humaniora",
-      "naturvitenskap": "Naturvitenskap & Teknologi",
+      "naturvitenskap": "Naturvitskap & Teknologi",
       "sammfunnsfag": "Samfunnsfag",
       "okonomAdmin": "Økonomi & Administrasjon"
     },
@@ -36,7 +36,7 @@
       "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomi",
       "CMBIOLOGI": "Celle- og molekylærbiologi",
-      "EVERTEBRATER": "Evertebrater",
+      "EVERTEBRATER": "Evertebratar",
       "FBK": "Felles Begrepskatalog",
       "KLIMA": "Klima",
       "LINGVISTIKK": "Lingvistikk",
@@ -93,7 +93,7 @@
     "filterTitleShow": "Vis filter for søkeresultat",
     "filterTitleHide": "Skjul filter for søkeresultat",
     "termproperty": "Termstatus",
-    "matching": "Matchende"
+    "matching": "Søkealternativ"
   },
   "footer": {
     "contact": "Kontakt oss",
@@ -110,7 +110,7 @@
     "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Opphaveleg språk"
+    "startLang": "Utgangsspråk"
   },
   "id": {
     "topheading": "Omgrepsvisning",
@@ -122,14 +122,14 @@
     "definisjon": "Definisjon",
     "general": "Generell informasjon",
     "relasjon": "Omgrepsrelasjon",
-    "narrower": "Underordna",
-    "specializes": "Overordna generisk",
-    "isPartOf": "Overordna partitiv",
-    "broader": "Overordna",
-    "generalizes": "Underordna generisk",
-    "hasPart": "Underordna partitiv",
-    "seeAlso": "Sjå óg",
-    "related": "Assosiert",
+    "narrower": "Underomgrep",
+    "specializes": "Overomgrep (generisk)",
+    "isPartOf": "Overomgrep (partitiv)",
+    "broader": "Overomgrep",
+    "generalizes": "Underomgrep (generisk)",
+    "hasPart": "Underomgrep (partitiv)",
+  "seeAlso": "Sjå òg",
+    "related": "Assosiert omgrep",
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
@@ -147,8 +147,8 @@
   "om": { "title": "Om Termportalen" },
   "instillinger": {
     "title": "Inn­stillingar",
-    "global": "Global",
-    "conceptview": "Omgrepsvisning",
-    "dataDispLang": "Data viser språk"
+    "global": "Vel visningsspråk",
+    "conceptview": "Termpost",
+    "dataDispLang": "Vel språk"
   }
 }
