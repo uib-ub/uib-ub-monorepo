@@ -87,8 +87,8 @@
     "searchButtonLabel": "Søk"
   },
   "searchFilter": {
-    "results": "resultater",
-    "results-heading": "Resultater",
+    "results": "treff",
+    "results-heading": "Treff",
     "filter": "Filter",
     "filterTitleShow": "Vis filter",
     "filterTitleHide": "Skjul filter",
