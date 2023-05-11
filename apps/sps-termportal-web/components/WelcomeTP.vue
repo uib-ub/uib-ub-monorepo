@@ -9,7 +9,7 @@
           Termportalen gir fri tilgang til norsk terminologi på en lang rekke
           fagområder via én felles søkerute. Du kan søke etter termer på tvers
           av domener, termbaser og språk. Termbasene er gruppert i overordnede
-          domener og du kan søke etter termer enten i hele Termportalen.no, på
+          domener og du kan søke etter termer enten i hele Termportalen.no, innen
           ett spesifikt domene eller i et utvalg av termbasene. Forhåndsvalg av
           søkespråk er også mulig. De fleste termbasene har terminologi på
           bokmål, nynorsk og engelsk, mens en del termbaser også har terminologi
@@ -44,7 +44,7 @@
         <p> Termportalen gir fri tilgang til norsk terminologi på ei lang rekke
           fagområde via éi felles søkerute. Du kan søke etter termar på tvers
           av domene, termbasar og språk. Termbasane er grupperte i overordna
-          domene og du kan søke etter termar enten i heile Termportalen.no, på
+          domene og du kan søke etter termar enten i heile Termportalen.no, innan
           eitt spesifikt domene eller i eit utval av termbasane. Du kan òg velje 
           søkespråk på førehand. Dei fleste termbasane har terminologi på
           bokmål, nynorsk og engelsk, mens ein del termbasar òg har terminologi
@@ -92,10 +92,10 @@
           </AppLink>
           if you want to get started with terminology work in your own subject field.
         </p>
-        <p>Termportalen is a part of The Norwegian Language Collections (Språksamlingane) at the University of Bergen,
+        <p>Termportalen is a part of the Norwegian Language Collections (Språksamlingane) at the University of Bergen,
           and the terminology work is done in consultation with the Language Council of Norway.
-          Termportalen is funded by the Ministry of Education and Research and the
-          the the Ministry of Culture and Equality.</p>
+          Termportalen is funded by the Ministry of Education and Research and
+          the Ministry of Culture and Equality.</p>
       </div>
     </template>
   </article>
