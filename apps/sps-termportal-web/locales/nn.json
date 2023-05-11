@@ -128,7 +128,7 @@
     "broader": "Overomgrep",
     "generalizes": "Underomgrep (generisk)",
     "hasPart": "Underomgrep (partitiv)",
-  "seeAlso": "Sjå òg",
+    "seeAlso": "Sjå òg",
     "related": "Assosiert omgrep",
     "collection": "Termbase",
     "subject": "Fagområde",
@@ -146,7 +146,7 @@
   },
   "om": { "title": "Om Termportalen" },
   "instillinger": {
-    "title": "Inn­stillingar",
+    "title": "Innstillingar",
     "global": "Vel visningsspråk",
     "conceptview": "Termpost",
     "dataDispLang": "Vel språk"
