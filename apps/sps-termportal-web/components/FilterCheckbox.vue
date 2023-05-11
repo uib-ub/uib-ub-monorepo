@@ -1,5 +1,5 @@
 <template>
-  <div class="text-lg space-x-3">
+  <div class="space-x-3 text-lg">
     <input
       :id="`filter-${ftype}-${fvalue}`"
       v-model="searchFilterData[ftype as keyof SearchDataStats]"
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { SearchDataStats } from "~~/composables/states";
 import { Matching, LabelPredicate } from "~~/utils/vars";
-import { LangCode } from "~~/utils/vars-language";
+import { LangCode } from "~/composables/locale";
 import { Samling } from "~~/utils/vars-termbase";
 
 const searchFilterData = useSearchFilterData();

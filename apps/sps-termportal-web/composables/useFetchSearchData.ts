@@ -1,5 +1,5 @@
 import { SearchDataStats } from "./states";
-import { MatchingNested } from "~~/utils/vars";
+import { SearchOptions } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
@@ -23,7 +23,10 @@ export async function fetchSearchDataMatching(
 }
 
 export type FetchType = "initial" | "filter" | "further" | "options";
-async function fetchSearchDataAggregate(searchOptions, currentFetch: number) {
+async function fetchSearchDataAggregate(
+  searchOptions: SearchOptions,
+  currentFetch: number
+) {
   const situation = searchOptions.situation;
 
   const searchDataStats = useSearchDataStats();
@@ -51,7 +54,7 @@ async function fetchSearchDataAggregate(searchOptions, currentFetch: number) {
   }
 }
 
-export async function useFetchSearchData(options) {
+export async function useFetchSearchData(options: SearchOptions) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
