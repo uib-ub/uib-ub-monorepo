@@ -1,4 +1,5 @@
 import { SearchOptions } from "~~/utils/vars";
+import { Samling } from "~/utils/vars-termbase";
 
 export default function (situation: string, options?: SearchOptions) {
   const searchInterface = useSearchInterface();

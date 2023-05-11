@@ -18,7 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { LangCode } from "utils/vars-language";
+import { LangCode } from "~/composables/locale";
+
 const route = useRoute();
 
 interface Props {

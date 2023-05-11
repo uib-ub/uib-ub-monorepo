@@ -1,4 +1,5 @@
-import { Samling } from "./vars-termbase";
+import { useI18n } from "vue-i18n";
+import { Samling } from "~/utils/vars-termbase";
 
 export type LocalLangCode = "en" | "nb" | "nn";
 
@@ -21,7 +22,21 @@ export type LangCode =
   | "sv"
   | "ti";
 
-export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
+export const useLocale = () => {
+  const i18n = useI18n();
+  return i18n.locale.value as LocalLangCode;
+};
+
+export const useLocales = () => {
+  return Object.keys(languageOrder) as LocalLangCode[];
+};
+
+export const useLocaleLangOrder = () => {
+  const locale = useLocale();
+  return languageOrder[locale];
+};
+
+const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
   nb: [
     "nb",
     "nn",

@@ -96,10 +96,7 @@
           {{ $t("global.lang.all") }} ({{ filteredSearchLangs.length }})
         </option>
         <option
-          v-for="lc in intersectUnique(
-            languageOrder[$i18n.locale as LocalLangCode],
-            filteredSearchLangs
-          )"
+          v-for="lc in intersectUnique(localeLangOrder, filteredSearchLangs)"
           :key="'searchlang_' + lc"
           :value="lc"
         >
@@ -112,7 +109,7 @@
         </option>
         <option
           v-for="lc in intersectUnique(
-            languageOrder[$i18n.locale as LocalLangCode],
+            localeLangOrder,
             filteredTranslationLangs
           )"
           :key="'translationlang_' + lc"
@@ -138,13 +135,15 @@
 </template>
 
 <script setup lang="ts">
-import { LocalLangCode } from "~~/utils/vars-language";
+import { LangCode } from "~/composables/locale";
+import { Samling } from "~/utils/vars-termbase";
 
 const route = useRoute();
 const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
 const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
+const localeLangOrder = useLocaleLangOrder();
 
 const expandSearchBar = computed(() => {
   if (
@@ -195,7 +194,12 @@ watch(
 
 // TODO refactor, use searchOptionsInfo for default value
 // TODO Typing
-function filterTermbases(termbases, filterTermbases, option, defaultValue) {
+function filterTermbases(
+  termbases: Samling[],
+  filterTermbases: Samling[],
+  option,
+  defaultValue: string
+) {
   let termbasesOut = termbases;
   if (searchInterface.value[option] !== defaultValue) {
     termbasesOut = intersectUnique(filterTermbases, termbases);
@@ -206,7 +210,7 @@ function filterTermbases(termbases, filterTermbases, option, defaultValue) {
 
 // TODO refactor, searchOptionsInfo def value
 // TODO Typing
-function deriveSearchOptions(searchOption, defaultValue) {
+function deriveSearchOptions(searchOption, defaultValue: string) {
   const topdomain = searchInterface.value.domain[0];
   const currentValue = searchInterface.value[searchOption];
   let termbases = termbaseOrder;
@@ -218,7 +222,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
   if (searchOption !== "language") {
     termbases = filterTermbases(
       termbases,
-      languageInfo[searchInterface.value.language],
+      languageInfo[searchInterface.value.language as LangCode],
       "language",
       "all"
     );
@@ -227,7 +231,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
   if (searchOption !== "translate") {
     termbases = filterTermbases(
       termbases,
-      languageInfo[searchInterface.value.translate],
+      languageInfo[searchInterface.value.translate as LangCode],
       "translate",
       "none"
     );
@@ -245,9 +249,9 @@ function deriveSearchOptions(searchOption, defaultValue) {
       const languages = [
         ...new Set(termbases.map((tb) => termbaseInfo[tb]).flat()),
       ];
-      options = intersectUnique(languageOrder.nb, languages);
+      options = intersectUnique(localeLangOrder, languages);
     } else {
-      options = languageOrder.nb;
+      options = localeLangOrder;
     }
   } else {
     options = termbases;

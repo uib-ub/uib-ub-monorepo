@@ -1,5 +1,5 @@
-import { LangCode } from "./vars-language";
 import { Samling, Domains } from "./vars-termbase";
+import { LangCode } from "~/composables/locale";
 
 export type QueryType = "search" | "concept" | "termbase";
 export type SearchQueryType = "entries" | "aggregate";

@@ -6,7 +6,7 @@
         Termportalen</Title
       >
     </Head>
-    <h1 id="main" class="pt-5 pb-2 text-2xl">
+    <h1 id="main" class="pb-2 pt-5 text-2xl">
       <AppLink to="#main">
         {{ data?.label[0]["@value"] || data?.label[0] || termbase }}
       </AppLink>
@@ -49,7 +49,7 @@
             <!--Languages-->
             <DataRow
               v-if="data?.language"
-              :data="intersectUnique(languageOrder[$i18n.locale as keyof typeof languageOrder], data.language).map((lang: string) => $t(`global.lang.${lang}`, 2)) .join(', ')"
+              :data="intersectUnique(localeLangOrder, data.language).map((lang: LangCode) => $t(`global.lang.${lang}`, 2)) .join(', ')"
               :label="$t('global.language', 1)"
             />
             <!--Starting languages-->
@@ -66,15 +66,16 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-const i18n = useI18n();
+import { LangCode } from "~/composables/locale";
+
 const route = useRoute();
 const termbase = getTermbaseFromParam();
+const localeLangOrder = useLocaleLangOrder();
+
 const { data } = await useLazyFetch(`/api/termbase/${termbase}`);
 const description = computed(() => {
-  const localLanguageOrder = languageOrder[i18n.locale.value].slice(0, 3);
   let description = "";
-  for (const lang of localLanguageOrder) {
+  for (const lang of localeLangOrder) {
     if (data.value?.description?.[lang]) {
       try {
         description = data.value?.description?.[lang];

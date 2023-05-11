@@ -1,4 +1,4 @@
-import { LangCode } from "./vars-language";
+import { LangCode } from "~/composables/locale";
 
 export type Samling =
   | "ARTSDB"

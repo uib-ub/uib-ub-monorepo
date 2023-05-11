@@ -1,8 +1,8 @@
 <template>
-  <li class="rounded border border-gray-300">
+  <li>
     <AppLink :to="`/${entryData.link}`">
       <section
-        class="py-1.5 px-2 hover:bg-gray-200 lg:flex lg:py-2"
+        class="px-2 py-1.5 hover:bg-gray-200 lg:flex lg:py-2"
         :class="{
           'sm:flex': searchInterface.translate === 'none',
         }"
@@ -53,10 +53,7 @@
             :class="{ 'md:block': searchInterface.translate === 'none' }"
           >
             {{
-              intersectUnique(
-                languageOrder[$i18n.locale as LocalLangCode],
-                entryData.lang
-              )
+              intersectUnique(localeLangOrder, entryData.lang)
                 .map((l: string) => $t(`global.lang.${l}`))
                 .join(", ")
             }}
@@ -84,7 +81,8 @@
 </template>
 
 <script setup lang="ts">
-import { LangCode, LocalLangCode } from "../utils/vars-language";
+import { LangCode } from "~/composables/locale";
+const localeLangOrder = useLocaleLangOrder();
 
 const searchInterface = useSearchInterface();
 interface Props {
@@ -103,7 +101,6 @@ const props = defineProps<Props>();
 
 <style scoped>
 li {
-  margin-bottom: -1px;
   animation: show 200ms 0ms cubic-bezier(0.5, 0.1, 0.9, 0.8) forwards;
   opacity: 0;
 }

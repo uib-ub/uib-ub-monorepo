@@ -1,6 +1,6 @@
 <template>
   <article>
-    <template v-if="$i18n.locale === 'nb'">
+    <template v-if="locale === 'nb'">
       <h2 id="main" class="pb-3 text-2xl">
         <AppLink to="#main">Velkommen til Termportalen</AppLink>
       </h2>
@@ -36,15 +36,19 @@
         </p>
       </div>
     </template>
-    <template v-if="$i18n.locale === 'nn'">
+    <template v-if="locale === 'nn'">
       <h2 id="velkommen" class="pb-3 text-2xl">
         <AppLink to="#velkommen"></AppLink>
       </h2>
     </template>
-    <template v-if="$i18n.locale === 'en'">
+    <template v-if="locale === 'en'">
       <h2 id="velkommen" class="pb-3 text-2xl">
         <AppLink to="#velkommen"></AppLink>
       </h2>
     </template>
   </article>
 </template>
+
+<script setup lang="ts">
+const locale = useLocale();
+</script>
