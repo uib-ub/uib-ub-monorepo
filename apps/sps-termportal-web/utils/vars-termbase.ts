@@ -95,7 +95,10 @@ export const domainNesting = {
   "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
 };
 
-export const termbaseUriPatterns = {
+type CollectionUriPatternKey = "bkg" | "nav" | "brreg" | "bufdir" | "fbk";
+export const termbaseUriPatterns: {
+  [key in Samling]?: { [key in CollectionUriPatternKey]: string };
+} = {
   FBK: {
     bkg: "http://begrepskatalogen/begrep/",
     nav: "https://data.nav.no/begrep/",
