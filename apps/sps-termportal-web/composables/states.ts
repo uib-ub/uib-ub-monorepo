@@ -1,5 +1,5 @@
-import { LabelPredicate, Matching, MatchingNested } from "~~/utils/vars";
-import { LangCode } from "~~/utils/vars-language";
+import { LangCode } from "./locale";
+import { LabelPredicate, Matching } from "~~/utils/vars";
 import { Samling } from "~~/utils/vars-termbase";
 
 export interface SearchDataEntry {

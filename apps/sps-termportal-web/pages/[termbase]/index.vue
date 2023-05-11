@@ -66,8 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import { LangCode } from "~/utils/vars-language";
+import { LangCode } from "~/composables/locale";
 
 const route = useRoute();
 const termbase = getTermbaseFromParam();

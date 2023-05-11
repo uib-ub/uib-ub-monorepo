@@ -1,5 +1,5 @@
 import { SearchDataStats } from "./states";
-import { SearchOptions } from "~~/utils/vars";
+import { Matching, SearchOptions } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
@@ -107,7 +107,7 @@ export async function useFetchSearchData(options: SearchOptions) {
         ...options,
         ...{
           subtype: "entries",
-          matching: m,
+          matching: m as Matching[],
           situation: `${situation}>${qCount}`,
         },
       },
