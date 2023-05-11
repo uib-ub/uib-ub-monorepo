@@ -3,7 +3,7 @@
     <Head>
       <Title>{{ $t("innstillinger.title") }} | {{ $t("index.title") }}</Title>
     </Head>
-    <h1 id="main" class="pt-5 pb-2 text-3xl">
+    <h1 id="main" class="pb-2 pt-5 text-3xl">
       <AppLink to="#main">{{ $t("innstillinger.title") }}</AppLink>
     </h1>
     <section>
@@ -17,22 +17,26 @@
         id="locale-select"
         class="tp-search-dd cursor-pointer px-2 py-1 text-lg"
       >
-        <option v-for="lang in ['nb', 'nn', 'en']" :key="lang" :value="lang">
+        <option v-for="lang in locales" :key="lang" :value="lang">
           {{ $t("global.lang." + lang) }}
         </option>
       </select>
       <span class="text-lg"> (deaktivert)</span>
     </section>
     <section>
-      <h2 id="conceptview" class="pt-3 pb-2 text-2xl">
-        <AppLink to="#conceptview">{{ $t("innstillinger.conceptview") }}</AppLink>
+      <h2 id="conceptview" class="pb-2 pt-3 text-2xl">
+        <AppLink to="#conceptview">{{
+          $t("innstillinger.conceptview")
+        }}</AppLink>
       </h2>
       <fieldset>
         <legend id="dataDispLang" class="pb-1 text-xl">
-          <AppLink to="#dataDispLang">{{ $t("innstillinger.dataDispLang") }}</AppLink>
+          <AppLink to="#dataDispLang">{{
+            $t("innstillinger.dataDispLang")
+          }}</AppLink>
         </legend>
-        <div class="grid w-72 grid-flow-col grid-rows-6 gap-y-2 gap-x-3">
-          <div v-for="lang in languageOrder[$i18n.locale]" :key="lang">
+        <div class="grid w-72 grid-flow-col grid-rows-6 gap-x-3 gap-y-2">
+          <div v-for="lang in localeLangOrder" :key="lang">
             <input
               :id="`ddl-${lang}`"
               v-model="dataDisplayLanguages"
@@ -53,6 +57,7 @@
 </template>
 
 <script setup>
-// v-model="$i18n.locale"
 const dataDisplayLanguages = useDataDisplayLanguages();
+const locales = useLocales();
+const localeLangOrder = useLocaleLangOrder();
 </script>

@@ -2,7 +2,7 @@
   <h3 v-if="predicate == 'prefLabel'" class="grow">
     <b
       :lang="(intersectUnique(
-                languageOrder[$i18n.locale as LocalLangCode],
+                localeLangOrder,
                 labelLang as LangCode[])[0]
               )"
       :class="{
@@ -15,7 +15,7 @@
     v-else
     class="grow"
     :lang="(intersectUnique(
-                languageOrder[$i18n.locale as LocalLangCode],
+                localeLangOrder,
                 labelLang as LangCode[])[0]
               )"
     v-html="labelData"
@@ -23,7 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import { LangCode, LocalLangCode } from "../utils/vars-language";
+import { LangCode } from "~/composables/locale";
+
+const localeLangOrder = useLocaleLangOrder();
 
 const props = defineProps({
   predicate: { type: String, required: true },

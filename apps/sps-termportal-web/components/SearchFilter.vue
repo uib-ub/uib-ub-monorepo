@@ -45,27 +45,35 @@
       >
         <SearchFilterFieldset
           v-for="{ title, key, data } in [
-            { title: $t('global.language'),
+            {
+              title: $t('global.language'),
               key: 'lang',
               data: intersectUnique(
-                    languageOrder[$i18n.locale as LocalLangCode],
-                    Object.keys(searchDataStats.lang || {})) },
-            { title: $t('global.termbase'),
-              key:'samling',
-              data: Object.keys(searchDataStats.samling || {}).sort()},
-            { title: $t('searchFilter.termproperty'),
+                localeLangOrder,
+                Object.keys(searchDataStats.lang || {})
+              ),
+            },
+            {
+              title: $t('global.termbase'),
+              key: 'samling',
+              data: Object.keys(searchDataStats.samling || {}).sort(),
+            },
+            {
+              title: $t('searchFilter.termproperty'),
               key: 'predicate',
               data: intersectUnique(
                 predicateOrder,
                 Object.keys(searchDataStats.predicate || {})
-              )
+              ),
             },
-            { title: $t('searchFilter.matching'),
+            {
+              title: $t('searchFilter.matching'),
               key: 'matching',
               data: intersectUnique(
-                    matchingOrder,
-                    Object.keys(searchDataStats.matching || {})
-              )}
+                matchingOrder,
+                Object.keys(searchDataStats.matching || {})
+              ),
+            },
           ]"
           :key="title"
           :title="title"
@@ -78,8 +86,6 @@
 </template>
 
 <script setup lang="ts">
-import { LocalLangCode } from "~~/utils/vars-language";
-
 const displayFilter = ref(false);
 
 const searchData = useSearchData();
@@ -87,6 +93,7 @@ const searchDataStats = useSearchDataStats();
 const searchFilterData = useSearchFilterData();
 const searchDataPending = useSearchDataPending();
 const searchFetchInitial = useSearchFetchInitial();
+const localeLangOrder = useLocaleLangOrder();
 const pending = computed(() => {
   return !Object.values(searchDataPending.value).every((el) => !el);
 });
@@ -129,7 +136,6 @@ watch(
     if (searchFetchInitial.value) {
       searchFetchInitial.value = false;
     } else {
-
       useFetchSearchData(useGenSearchOptions("filter"));
     }
   },
