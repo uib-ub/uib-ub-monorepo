@@ -19,10 +19,21 @@ useHead({
     lang: "nb",
   },
 });
-
-const searchBarWasFocused = useSearchBarWasFocused();
 const route = useRoute();
+const searchBarWasFocused = useSearchBarWasFocused();
+const allowSearchFetch = useAllowSearchFetch();
 const skipLink = ref();
+
+onMounted(() => {
+  /*
+  SearchInterface watchers trigger when setting options from route.
+  Only watcher for search term should trigger fetch.
+  null value is handled by other options watcher to avoid two fetches.
+  */
+  if (route.path === "/search") {
+    allowSearchFetch.value = null;
+  }
+});
 
 watch(
   () => route.path,
@@ -72,6 +83,6 @@ body {
   background-color: white;
   padding: 0.5em;
   border: 1px solid black;
-  z-index: 50  ;
+  z-index: 50;
 }
 </style>
