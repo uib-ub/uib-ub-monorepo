@@ -68,7 +68,6 @@
       "contains-ci": "inneholder"
     }
   },
-
   "domainOverview": { "domainsAndBases": "Domener & termbaser" },
   "navBar": {
     "om": "Om Termportalen",
@@ -103,9 +102,7 @@
   "spinnerIcon": {
     "srText": "Venter på søkeresultater"
   },
-
-  "buttonScrollTop": {"srLabel": "Tilbake til toppen"},
-
+  "buttonScrollTop": { "srLabel": "Tilbake til toppen" },
   "termbase": {
     "organisation": "Organisajon",
     "orgnr": "Organisasjonsnr",

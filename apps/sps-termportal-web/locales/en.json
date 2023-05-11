@@ -2,6 +2,7 @@
   "global": {
     "language": "Language | Languages",
     "termbase": "Termbase | termbase",
+    "skipLink": "",
     "domain": {
       "domain": "Domain",
       "all": "All Domains",
@@ -67,32 +68,51 @@
       "contains-ci": "contains"
     }
   },
-  "footer": {
-    "contact": "Concact us"
+  "domainOverview": { "domainsAndBases": "Domains & Termbases" },
+  "navBar": {
+    "om": "About",
+    "innstillinger": "Settings",
+    "menuButtonShow": "",
+    "menuButtonHide": ""
   },
 
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
   "navBar": { "om": "About", "innstillinger": "Settings" },
   "searchBar": {
     "search": "Search",
+    "inDomain": "i",
+    "inLanguage": "på",
     "language": "Search language",
     "translate": "Translation language",
-    "termbase": "Termbase"
+    "termbase": "Termbase",
+    "searchfieldLabel": "",
+    "clearTextLabel": "",
+    "searchButtonLabel": ""
   },
   "searchFilter": {
     "results": "results",
     "results-heading": "Results",
     "filter": "Filter",
+    "filterTitleShow": "Show search filter",
+    "filterTitleHide": "Hide search filter",
     "termproperty": "Termproperty",
     "matching": "Matching"
   },
-
+  "footer": {
+    "contact": "Contact us",
+    "accDeclaration": ""
+  },
+  "spinnerIcon": {
+    "srText": ""
+  },
+  "buttonScrollTop": { "srLabel": "" },
   "termbase": {
     "organisation": "Organisation",
     "orgnr": "Organisation nr",
     "email": "Email",
     "telephone": "Telephone",
     "license": "License",
+    "languages": "Languages",
     "startLang": "Starting language"
   },
   "id": {
@@ -102,7 +122,17 @@
     "prefLabel": "Preferred label",
     "altLabel": "Alternative label",
     "hiddenLabel": "Hidden label",
+    "definisjon": "Definition",
     "general": "General information",
+    "relasjon": "Relasjon",
+    "narrower": "",
+    "specializes": "",
+    "isPartOf": "",
+    "broader": "",
+    "generalizes": "",
+    "hasPart": "",
+    "seeAlso": "",
+    "related": "",
     "collection": "Collection",
     "subject": "Subject",
     "domain": "Domain",
@@ -121,7 +151,7 @@
   "innstillinger": {
     "title": "Settings",
     "global": "Global",
-    "conceptview": "Conceot view",
+    "conceptview": "Concept view",
     "dataDispLang": "Data display languages"
   }
 }

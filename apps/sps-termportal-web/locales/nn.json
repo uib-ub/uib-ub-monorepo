@@ -2,6 +2,7 @@
   "global": {
     "language": "Språk | Språk",
     "termbase": "Termbase",
+    "skipLink": "Gå til hovedinnhold",
     "domain": {
       "domain": "Domene",
       "all": "Alle domener",
@@ -68,9 +69,16 @@
     }
   },
   "domainOverview": { "domainsAndBases": "Domener & termbaser" },
-  "navBar": { "om": "Om Termportalen", "innstillinger": "Inn­stillingar" },
+  "navBar": {
+    "om": "Om Termportalen",
+    "innstillinger": "Inn­stillingar",
+    "menuButtonShow": "Utvid menyen",
+    "menuButtonHide": "Skjul menyen"
+  },
   "searchBar": {
     "search": "Søk",
+    "inDomain": "i",
+    "inLanguage": "på",
     "language": "Søkespråk",
     "translation": "Oversettelsesspråk",
     "termbase": "Termbase",
@@ -82,13 +90,19 @@
     "results": "resultater",
     "results-heading": "Resultater",
     "filter": "Filter",
+    "filterTitleShow": "Vis filter for søkeresultater",
+    "filterTitleHide": "Skjul filter for søkeresultater",
     "termproperty": "Egenskap",
     "matching": "Matchende"
   },
   "footer": {
-    "contact": "Kontakt oss"
+    "contact": "Kontakt oss",
+    "accDeclaration": "Tilgjengelighetserklæring"
   },
-
+  "spinnerIcon": {
+    "srText": "Venter på søkeresultater"
+  },
+  "buttonScrollTop": { "srLabel": "Tilbake til toppen" },
   "termbase": {
     "organisation": "Organisajon",
     "orgnr": "Organisasjonsnr",
@@ -105,7 +119,17 @@
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
     "hiddenLabel": "Frarådet term",
+    "definisjon": "Definisjon",
     "general": "Felles",
+    "relasjon": "Relasjon",
+    "narrower": "Overordnet",
+    "specializes": "Overordnet generisk",
+    "isPartOf": "Overordnet partitiv",
+    "broader": "Underordnet",
+    "generalizes": "Underordnet generisk",
+    "hasPart": "Underordnet partitiv",
+    "seeAlso": "Se også",
+    "related": "Assosiert",
     "collection": "Samling",
     "subject": "Fagområde",
     "domain": "Domene",
