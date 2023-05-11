@@ -156,6 +156,7 @@ watch(
 );
 
 onMounted(() => {
+  considerSearchFetching("initial");
   /*
   SearchInterface watchers trigger when setting options from route.
   Only watcher for search term should trigger fetch.
