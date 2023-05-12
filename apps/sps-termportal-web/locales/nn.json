@@ -1,7 +1,7 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase",
+    "termbase": "Termbase | termbase",
     "skipLink": "Gå til hovudinnhald",
     "domain": {
       "domain": "Domene | domene",
@@ -32,7 +32,7 @@
       "ti": "Tigrinja | tigrinja"
     },
     "samling": {
-      "all": "Alle termbasar",
+      "all": "Alle termbasar | alle termbasar",
       "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomi",
       "CMBIOLOGI": "Celle- og molekylærbiologi",
