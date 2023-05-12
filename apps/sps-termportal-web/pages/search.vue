@@ -112,7 +112,7 @@ const fetchFurtherSearchData = () => {
     }
   }
 };
-
+// 
 const searchScrollBarPos = useSearchScrollBarPos();
 onBeforeUnmount(() => {
   searchScrollBarPos.value = window.pageYOffset;
