@@ -23,8 +23,13 @@ const route = useRoute();
 const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
 const skipLink = ref();
+const domainData = useDomainData();
 
 onMounted(() => {
+  $fetch("/api/domain").then((data) => {
+    domainData.value = data;
+  });
+
   /*
   SearchInterface watchers trigger when setting options from route.
   Only watcher for search term should trigger fetch.
