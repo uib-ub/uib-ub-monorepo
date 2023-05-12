@@ -51,7 +51,8 @@
       "UHR": "UHR",
       "TUNDUIA": "TUNDUIA",
       "BIOLOGI": "BIOLOGI",
-      "KJEMI": "Kjemi"
+      "KJEMI": "Kjemi",
+      "DOMENE": "Domene"
     },
     "predicate": {
       "prefLabel": "Anbefalt term",

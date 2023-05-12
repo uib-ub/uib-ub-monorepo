@@ -52,7 +52,8 @@
       "UHR": "Universitets- og høgskolerådet",
       "TUNDUIA": "TUNDUIA",
       "BIOLOGI": "Biologi",
-      "KJEMI": "Kjemi"
+      "KJEMI": "Kjemi",
+      "DOMENE": "Domene"
     },
     "predicate": {
       "prefLabel": "Anbefalt term",
