@@ -1,6 +1,6 @@
 {
   "global": {
-    "language": "Language | Languages",
+    "language": "Language | language",
     "termbase": "Termbase | termbase",
     "skipLink": "Go to  main content",
     "domain": {
@@ -14,22 +14,22 @@
     "lang": {
       "none": "–",
       "all": "All languages | all languages",
-      "ar": "Arabic",
-      "da": "Danish",
-      "de": "German",
-      "en": "English",
-      "es": "Spanish",
-      "fi": "Finnish",
-      "fr": "French",
-      "it": "Italian",
-      "la": "Latin",
-      "nb": "Norwegian Bokmål",
-      "nn": "Norwegian Nynorsk",
-      "pl": "Polish",
-      "ru": "Russian",
-      "so": "Somali",
-      "sv": "Swedish",
-      "ti": "Tigrinya"
+      "ar": "Arabic | Arabic",
+      "da": "Danish | Danish",
+      "de": "German | German",
+      "en": "English | English",
+      "es": "Spanish | Spanish",
+      "fi": "Finnish | Finnish",
+      "fr": "French | French",
+      "it": "Italian | Italian",
+      "la": "Latin | Latin",
+      "nb": "Norwegian Bokmål | Norwegian Bokmål",
+      "nn": "Norwegian Nynorsk | Norwegian Nynorsk",
+      "pl": "Polish | Polish",
+      "ru": "Russian | Russian",
+      "so": "Somali | Somali",
+      "sv": "Swedish | Swedish",
+      "ti": "Tigrinya | Tigrinya"
     },
     "samling": {
       "all": "All termbases",
