@@ -28,6 +28,8 @@ export interface SearchInterface {
   termbase: Samling | "all";
 }
 
+export const useDomainData = () => useState("domainData", () => undefined);
+
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
     term: null,
