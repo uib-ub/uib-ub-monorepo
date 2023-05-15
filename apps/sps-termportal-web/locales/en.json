@@ -109,7 +109,8 @@
     "domain": "Domain",
     "modified": "Modified",
     "note": "Note",
-    "tilbake": "Back to search results"
+    "tilbake": "Back to search results",
+    "noteTermbaseIsUnmaintained": ""
   },
   "index": { "title": "Termportalen" },
   "search": {
