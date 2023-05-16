@@ -30,8 +30,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     }
     else if (!store.endpoint) {
-        const config = useRuntimeConfig()
-        await get_concepts(config.public.endpointEnv == 'prod' ? 'oda' : 'odd', 'prod')
+        await get_concepts(process.env.NODE_ENV == 'production' ? 'oda' : 'odd', 'prod')
     }
     
 })
