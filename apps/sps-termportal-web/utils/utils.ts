@@ -118,3 +118,31 @@ export function getRelationData(
   }
   return relationData;
 }
+
+/**
+ * Create nested dictionary with related ressources
+ *
+ * @param data - List of dictionaries with concept data
+ * @param startId - key for starting point in dict
+ * @param relation - relation to follow
+ * @param newKey - Key to nest related entries under
+ */
+export function parseRelationsRecursively(
+  data: any,
+  startId: string,
+  relation: string,
+  newKey: string
+) {
+  if (data[startId][relation] && data[startId][relation].length > 0) {
+    return Object.assign(
+      {},
+      ...data[startId][relation].map((startId: string) => ({
+        [startId]: {
+          [newKey]: parseRelationsRecursively(data, startId, relation, newKey),
+        },
+      }))
+    );
+  } else {
+    return undefined;
+  }
+}
