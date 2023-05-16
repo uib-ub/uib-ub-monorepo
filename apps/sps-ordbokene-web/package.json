@@ -1,4 +1,5 @@
 {
+  "name": "sps-ordbokene-web",
   "private": true,
   "scripts": {
     "build": "nuxt build",
