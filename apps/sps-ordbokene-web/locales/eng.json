@@ -1,0 +1,230 @@
+{
+  "name": "English",
+  "sub_title": "Bokmålsordboka and Nynorskordboka",
+  "help": "Help",
+  "autocomplete_suggestions": "Search suggestion | search suggestions",
+  "maximum_autocomplete": "maximum number of suggestions",
+  "advanced_help": "Show help",
+  "advanced_help_hide": "Hide help",
+  "advanced": "Advanced search",
+  "to_advanced": "Go to advanced search",
+  "show_articles": "Show explanations",
+  "show_list": "Show list | Show lists",
+  "simple": "Simple search",
+  "about": "About",
+  "monthly": "Titbit from ",
+  "photo": "Photo by Clay Banks on unsplash.com",
+  "close": "Close",
+  "cancel": "Cancel",
+  "or": " or ",
+  "in": " in ",
+  "and": " and ",
+  "from": "from",
+  "to_top": "Back to top",
+  "home": "Home",
+  "per_page": "Results per page: ",
+  "previous-page": "Previous page",
+  "next-page": "Next page",
+  "pageof": "Page {page} of {pages}",
+  "search_placeholder": "Search in ",
+  "search": "Search",
+  "reset": "Reset",
+  "clear": "Clear",
+  "chosen_dict": "Chosen dictionary: ",
+  "footer_description": " show spelling and inflection in line with official Norwegian spelling. The Language Council and the University of Bergen are behind the dictionaries.",
+  "accessibility": {
+    "menu": "Open top menu",
+    "homograph": "Meaning "
+  },
+  "dicts": {
+      "nn": "Nynorsk dictionary",
+      "bm": "Bokmål dictionary",
+      "bm,nn": "Both dictionaries"
+  },
+  "dicts_inline": {
+      "nn": "the Nynorsk dictionary",
+      "bm": "the Bokmål dictionary",
+      "bm,nn": "the dictionaries"
+  },
+  "dicts_short": {
+    "nn": "Nynorsk",
+    "bm": "Bokmål",
+    "bm,nn": "Both"
+  },
+  "menu": {
+    "title": "Menu",
+    "search_pages": "Search pages"
+  },
+  "options": {
+    "title": "Search options",
+    "inflected": "Include inflected forms",
+    "fulltext": "Full-text search",
+    "pos": "Part of speech",
+    "collapse": "Collapse articles"
+  },
+  "pos": "Part of speech",
+"all_pos": "all",
+"tags": {
+  "NOUN": "noun",
+  "VERB": "verb",
+  "ADJ": "adjective",
+  "ADP": "preposition",
+  "PFX": "prefix",
+  "ADV": "adverb",
+  "DET": "determiner",
+  "PROPN": "proper noun",
+  "ABBR": "abbreviation",
+  "INTJ": "interjection",
+  "SYM": "symbol",
+  "PRON": "pronoun",
+  "CCONJ": "conjunction",
+  "SCONJ": "subjunction",
+  "INFM": "infinitive particle",
+  "COMPPFX": "in compounds",
+  "Masc": "masculine",
+  "Fem": "feminine",
+  "Neuter": "neuter",
+  "Uninfl": "uninflectable"
+  },
+"pos_tags_plural": {
+  "NOUN": "Nouns",
+  "PRON": "Pronouns",
+  "DET": "Determiners",
+  "ADJ": "Adjectives",
+  "CCONJ": "Conjunctions",
+  "SCONJ": "Subjunctions",
+  "ADV": "Adverbs",
+  "ADP": "Prepositions",
+  "VERB": "Verbs",
+  "INTJ": "Interjections"
+},
+"determiner": {
+  "Quant": "quantifier",
+  "Dem": "demonstrative",
+  "Poss": "possessive"
+},
+"split_inf": {
+  "title": "split infinitive",
+  "label": "More information about split infinitive",
+  "content": ["If you use split infinitive, the infinitive form of this verb will have the suffix", "", "Read more here (Norwegian)"]
+},
+  "settings": {
+      "title": "Settings",
+      "inflection_no": "Show inflection codes",
+      "inflection_expanded": "Always show inflection tables",
+      "inflection_table_context": "Show context for participle forms in the inflection tables",
+      "submit_select": "Select search query when submitting search",
+      "simple_search_list": "List view in simple search",
+      "auto_select": "Select search term automatically after search",
+      "locale": {
+        "title": "Locale" ,
+        "description": "Default language settings for the language of headings, buttons, messages, and menus. The settings will not affect examples and definitions: the Bokmål dictionary will remain in Bokmål and the Nynorsk dictionary stays Nynorsk "
+      },
+      "dict": {
+          "title": "Default dictionaries",
+          "description": "Default dictionary settings for which of the dictionaries to be queried when using ordbokene.no. The settings will not affect current searches or links to searches in dictionaries. To change the dictionary during use, change the settings temporarily via the menu to the right of the search field. "
+      },
+      "collapse": {
+        "description": "Default search presentation settings. Choose between seeing complete articles, article excepts or an automatically generated presentation.",
+        "auto": "Auto (exerpts when more than two results)",
+        "always": "Show exerpts of articles",
+        "never": "Show complete articles"
+    },
+    "reset": "Delete stored settings"
+},
+"contact": {
+  "title": "Contact us",
+  "content": [    
+      "The content of the dictionaries",
+      "Functionality and bug reports",
+      "Feedback and questions regarding words, inflected forms and other content of the dictionaries: ",
+      "Report bugs or give feedback regarding the user interface: "
+  ],
+  "faq": {
+      "title": "Frequently asked questions:",
+      "items": [
+          {"title": "Why are some words missing in the dictionaries?", 
+            "text": [" are not to be regarded as lists of words permitted to use in Norwegian. There are many words – old as well as new – that are not in the dictionaries. But you can use anyway. New words do not need official approval before they can be used. It is the language users who jointly decide which words are commonly used in Norwegian. Normally, new words do not enter the dictionaries until they have been in use for some time and are well-established in the language. The dictionary editors decide which words are to be included based on surveys of large text corpora, and the Norwegian Language Council decides how the words are to be spelled and inflected. ", 
+                     "Read more in the About-page"]
+          },
+          {"title": "Where are the inflection codes from the printed dictionaries?", "text": "You can toggle this feature in settings, which is located at the bottom of the page and in the navigation menu."},
+          {"title": "Can I avoid having to click “show inflection” and “show article”?", "text": "Yes, you can change this in settings, which is located at the bottom of the page and in the navigation menu. Choose “Always show inflection tables” if you want to reduce the number of clicks to a minimum."}
+    ]
+  }
+},
+"notifications": {
+    "inflected": " is an inflected form of ",
+    "similar": "Did you mean:",
+    "similar_bm": "Add similar results from Bokmålsordboka: ",
+    "similar_nn": "Add similar results from Nynorskordboka: ",
+    "search": "Search",
+    "back": "Back to search",
+    "no_results": "No results",
+    "not_a_word": " is not a word in ",
+    "results": "No results | One result | {count} results",
+    "ignored_words": "The search was ignored because we limit queries to 20 words.",
+    "ignored_chars": "The search was ignored because we do not accept words with more than 40 characters.",
+    "no_pos_results": " (no matching {pos})",
+    "suggest_dict": [
+        "Did you search in the wrong dictionary?",
+        "Try searching"
+    ],
+    "fulltext": "Suggested full-text searches:"
+},
+"article": {
+    "definition": "Definition",
+    "show": "Open article",
+    "show_inflection": "Inflection",
+    "hide_inflection": "Inflection",
+    "share": "Share the word",
+    "copy_link": "Copy link",
+    "cite": "Cite",
+    "cite_title": "Cite the article",
+    "cite_description": ["If you want to cite this article in the ", " we recommend that you state when the article was retrieved (read), e. g. as follows:"],
+    "download": "Download RIS file",
+    "link_copied": "Link copied to the clipboard",
+    "citation_copied": "Citation copied to the clipboard",
+    "citation": "« {lemma} ». In: <em> {dict}. </em> Språkrådet & Universitetet i Bergen. &lt;<a href='{link}'> {link} </a>&gt; ( retrieved {dd}. {mm}. {yyyy}). ",
+    "headings": {
+      "etymology": "Etymology",
+      "pronunciation": "Pronunciation",
+      "expressions": "Set phrases",
+      "definitions": "Senses and Example Sentences",
+      "examples": "Example"
+  }
+},
+"error": {
+      "article": "An error has occured in article {no} in {dict}",
+      "404": {
+          "title": "404: Not Found",
+          "description": "The page may have been deleted or moved, or you may have used an invalid link."
+      },
+      "503": {
+          "title": "503: Unavailable service",
+          "description": "The server is temporarily overloaded or under maintenance."
+      },
+      "server": {
+          "title": "Server Error",
+          "description": "Something went wrong on the server side (status code: {code})"},
+      "generic_code": {
+          "title": "Error",
+          "description": "An unexpected error occurred while communicating with the server (status code: {code})"},
+      "network": {
+          "title": "Connection Error",
+          "description": "A network problem prevented the page from loading. Please try reloading the page or check if you are connected to the internet."},
+      "no_article": "The server could not find an article with ID {id}. The article may have been deleted or moved, or you may have used an invalid link.",
+      "generic": {
+          "title": "Error",
+          "description": "Something went wrong ..."
+      }
+  },
+"label": {
+  "nav": "Main menu",
+  "footer_nav": "Footer menu",
+  "search_pages": "Search pages",
+  "dict_nav": "Dictionary navigation"
+},
+"navigation": {
+  "site": "Navigation menu"
+}
+}
