@@ -1,0 +1,38 @@
+stages:
+  - build
+  - deploy
+
+image: node:16
+
+build-nrec-preview:
+  tags:
+    - spraaksamlingene_01
+  stage: build
+  script:
+  - npm install
+  - echo "WATERMARK=$CI_COMMIT_BRANCH ($CI_COMMIT_SHORT_SHA)" >> .env.dev_server
+  - npm run build -- --mode dev_server
+  artifacts:
+    expire_in: "1 week"
+    paths:
+    - .output
+
+
+deploy-nrec-preview:
+  tags:
+    - spraaksamlingene_01
+  stage: deploy
+  before_script:
+  - eval $(ssh-agent -s)
+  - echo "$NREC_DEV_KEY" | base64 --decode | ssh-add -
+
+  script:
+  - ssh -o StrictHostKeyChecking=no node@$NREC_DEV_IP
+    "sudo /usr/bin/systemctl stop nuxt-dev.service &&
+    whoami &&
+    rm -rf /node/.output"
+  - scp -r .output node@$NREC_DEV_IP:/node/.output
+  - ssh -o StrictHostKeyChecking=no node@$NREC_DEV_IP
+    sudo /usr/bin/systemctl start nuxt-dev.service
+
+    
