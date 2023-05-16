@@ -30,7 +30,7 @@
 </footer>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 
 nav {
   font-variant: all-small-caps;
