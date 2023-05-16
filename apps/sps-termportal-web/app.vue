@@ -27,7 +27,14 @@ const domainData = useDomainData();
 
 onMounted(() => {
   $fetch("/api/domain").then((data) => {
-    domainData.value = data;
+    for (const domain in domainData.value) {
+      domainData.value[domain].subdomains = parseRelationsRecursively(
+        data,
+        domain,
+        "narrower",
+        "subdomains"
+      );
+    }
   });
 
   /*
