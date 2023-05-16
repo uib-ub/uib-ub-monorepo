@@ -3,11 +3,17 @@
   "display": "Next.js",
   "extends": "./base.json",
   "compilerOptions": {
+    "strictNullChecks": true,
     "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
+    ],
+    "plugins": [
+      {
+        "name": "next"
+      }
     ],
     "allowJs": true,
     "skipLibCheck": true,
