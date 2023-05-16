@@ -1,29 +1,43 @@
-export async function getSamlaIIIFv1TopCollectionData(): Promise<any> {
+import 'server-only';
+
+export const getSamlaIIIFv1TopCollectionData = async (): Promise<any> => {
   const res = await fetch(`https://viewer.samla.no/viewer/api/v1/collections/DC/`, { next: { revalidate: 1800 } });
 
   if (!res.ok) {
-    return undefined
+    if (res.status === 404) {
+      return undefined
+    } else {
+      throw new Error('Failed to fetch data');
+    }
   }
 
   return res.json();
 }
 
-export async function getSamlaIIIFv1CollectionData(id: string): Promise<any> {
+export const getSamlaIIIFv1CollectionData = async (id: string): Promise<any> => {
   const res = await fetch(`https://viewer.samla.no/viewer/api/v1/collections/DC/${id}`, { next: { revalidate: 1800 } });
 
   if (!res.ok) {
-    return undefined
+    if (res.status === 404) {
+      return undefined
+    } else {
+      throw new Error('Failed to fetch data');
+    }
   }
 
   return res.json();
 }
 
 
-export async function getSamlaIIIFv2RecordData(id: string): Promise<any> {
+export const getSamlaIIIFv2RecordData = async (id: string): Promise<any> => {
   const res = await fetch(`https://viewer.samla.no/viewer/api/v2/records/${id}/manifest/`, { next: { revalidate: 1800 } });
 
   if (!res.ok) {
-    return undefined
+    if (res.status === 404) {
+      return undefined
+    } else {
+      throw new Error('Failed to fetch data');
+    }
   }
 
   return res.json();
