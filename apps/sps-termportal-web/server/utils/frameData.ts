@@ -148,6 +148,7 @@ export default function (data: any, type: string, domain?: boolean) {
         "@context": [context()],
         "@type": type,
         "@embed": "@always",
+        narrower: { "@type": "skos:Concept", "@embed": "@never" },
       });
     }
   } catch {}

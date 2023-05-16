@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
     return frameData(data, "skos:Concept", true).then((result) => {
       delete result["@context"];
-      return identifyData(identifyData(result["@graph"])["DOMENE-3AToppdomene"].narrower);
+      return identifyData(result["@graph"]);
     });
   } catch (e) {}
 });
