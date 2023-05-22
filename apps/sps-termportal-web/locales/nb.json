@@ -9,7 +9,11 @@
       "humaniora": "Humaniora",
       "naturvitenskap": "Naturvitenskap & teknologi",
       "sammfunnsfag": "Samfunnsfag",
-      "okonomAdmin": "Økonomi & administrasjon"
+      "okonomAdmin": "Økonomi & administrasjon",
+      "DOMENE-3AHumaniora": "Humaniora",
+      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
+      "DOMENE-3ASamfunnsfag": "Samfunnsfag",
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon"
     },
     "lang": {
       "none": "–",
