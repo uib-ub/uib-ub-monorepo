@@ -24,7 +24,7 @@
         class="gap-x-2 border-t border-gray-300"
       >
         <li
-          v-for="domain in ['all'].concat(Object.keys(domainNesting))"
+          v-for="domain in ['all'].concat(Object.keys(domainData))"
           :key="`${domain}Menu`"
           class="hover:bg-gray-100"
           :class="{ activeDomain: searchInterface.domain[0] == domain }"
@@ -47,4 +47,5 @@
 <script setup lang="ts">
 const searchInterface = useSearchInterface();
 const displayDomainMenu = ref(false);
+const domainData = useDomainData();
 </script>
