@@ -1,6 +1,5 @@
 import {
   Matching,
-  QueryType,
   LabelPredicate,
   SearchOptions,
   SearchQueryType,

@@ -45,7 +45,7 @@ export function parseConceptData(data, mainConceptId: string) {
  * @param graph - List of objects to identity
  * @returns identified `graph`
  */
-function identifyData(graph: Array<any>) {
+export function identifyData(graph: Array<any>) {
   try {
     return Object.assign({}, ...graph.map((x) => ({ [x["@id"]]: x })));
   } catch (e) {}
