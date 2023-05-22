@@ -1,6 +1,5 @@
-import { useI18n } from "vue-i18n";
-import { LangCode, LocalLangCode } from "./vars-language";
 import { SemanticRelation } from "./vars";
+import { LangCode } from "~/composables/locale";
 import { SearchDataEntry } from "~~/composables/states";
 
 /**
