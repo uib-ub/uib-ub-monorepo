@@ -2,7 +2,11 @@ import pkg from "jsonld";
 
 const { frame } = pkg;
 
-export default function (data: any, type: string, domain?: boolean) {
+export default function (
+  data: any,
+  type: string,
+  domain?: boolean
+): Promise<any> {
   const runtimeConfig = useRuntimeConfig();
   const base = runtimeConfig.public.base;
   const context = function () {
@@ -126,30 +130,28 @@ export default function (data: any, type: string, domain?: boolean) {
     };
   };
 
-  try {
-    if (!domain) {
-      return frame(data, {
-        "@context": [context()],
-        "@type": type,
-        "@embed": "@always",
-        // don't embed semantic relations
-        semanticRelation: { "@type": "skos:Concept", "@embed": "@never" },
-        related: { "@type": "skos:Concept", "@embed": "@never" },
-        broader: { "@type": "skos:Concept", "@embed": "@never" },
-        specializes: { "@type": "skos:Concept", "@embed": "@never" },
-        isPartOf: { "@type": "skos:Concept", "@embed": "@never" },
-        narrower: { "@type": "skos:Concept", "@embed": "@never" },
-        generalizes: { "@type": "skos:Concept", "@embed": "@never" },
-        hasPart: { "@type": "skos:Concept", "@embed": "@never" },
-        seeAlso: { "@type": "skos:Concept", "@embed": "@never" },
-      });
-    } else {
-      return frame(data, {
-        "@context": [context()],
-        "@type": type,
-        "@embed": "@always",
-        narrower: { "@type": "skos:Concept", "@embed": "@never" },
-      });
-    }
-  } catch {}
+  if (!domain) {
+    return frame(data, {
+      "@context": [context()],
+      "@type": type,
+      "@embed": "@always",
+      // don't embed semantic relations
+      semanticRelation: { "@type": "skos:Concept", "@embed": "@never" },
+      related: { "@type": "skos:Concept", "@embed": "@never" },
+      broader: { "@type": "skos:Concept", "@embed": "@never" },
+      specializes: { "@type": "skos:Concept", "@embed": "@never" },
+      isPartOf: { "@type": "skos:Concept", "@embed": "@never" },
+      narrower: { "@type": "skos:Concept", "@embed": "@never" },
+      generalizes: { "@type": "skos:Concept", "@embed": "@never" },
+      hasPart: { "@type": "skos:Concept", "@embed": "@never" },
+      seeAlso: { "@type": "skos:Concept", "@embed": "@never" },
+    });
+  } else {
+    return frame(data, {
+      "@context": [context()],
+      "@type": type,
+      "@embed": "@always",
+      narrower: { "@type": "skos:Concept", "@embed": "@never" },
+    });
+  }
 }
