@@ -105,7 +105,7 @@
     "srText": "Venter på søkeresultater"
   },
 
-  "buttonScrollTop": {"srLabel": "Tilbake til toppen"},
+  "buttonScrollTop": { "srLabel": "Tilbake til toppen" },
 
   "termbase": {
     "organisation": "Organisajon",
