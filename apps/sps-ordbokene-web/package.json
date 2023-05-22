@@ -1,0 +1,26 @@
+{
+  "name": "sps-ordbokene-web",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^0.4.1",
+    "@nuxtjs/tailwindcss": "^6.6.6",
+    "@pinia-plugin-persistedstate/nuxt": "^1.0.0",
+    "nuxt": "~3.4.1",
+    "nuxt-icon": "^0.2.6"
+  },
+  "dependencies": {
+    "@intlify/unplugin-vue-i18n": "^0.5.0",
+    "@pinia/nuxt": "^0.4.1",
+    "@vueuse/core": "^9.1.0",
+    "notosans-fontface": "^1.3.0",
+    "pinia": "^2.0.21",
+    "vue": "^3.2.38",
+    "vue-i18n": "^9.2.2"
+  }
+}

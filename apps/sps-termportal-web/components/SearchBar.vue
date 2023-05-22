@@ -144,6 +144,7 @@ const searchterm = useSearchterm();
 const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
 const localeLangOrder = useLocaleLangOrder();
+const domainData = useDomainData();
 
 const expandSearchBar = computed(() => {
   if (
@@ -216,7 +217,7 @@ function deriveSearchOptions(searchOption, defaultValue: string) {
   let termbases = termbaseOrder;
   let options;
   if (topdomain !== "all") {
-    termbases = domainNesting[topdomain]?.bases;
+    termbases = domainData.value[topdomain]?.bases;
   }
 
   if (searchOption !== "language") {

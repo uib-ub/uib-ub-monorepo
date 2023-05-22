@@ -28,6 +28,30 @@ export interface SearchInterface {
   termbase: Samling | "all";
 }
 
+export const useDomainData = () =>
+  useState("domainData", () => ({
+    "DOMENE-3ANaturvitenskapTeknologi": {
+      bases: [
+        "NOT",
+        "MRT",
+        "MRT2",
+        "SDIR",
+        "ARTSDB",
+        "EVERTEBRATER",
+        "RTT",
+        "ROMFYS",
+        "KLIMA",
+        "ASTRONOMI",
+        // "BIOLOGI",
+        "CMBIOLOGI",
+        "KJEMI",
+      ],
+    },
+    "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
+    "DOMENE-3ASamfunnsfag": { bases: ["NOJU", "TOLKING"] },
+    "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK"] },
+  }));
+
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
     term: null,

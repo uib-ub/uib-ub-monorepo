@@ -53,6 +53,7 @@
       "TUNDUIA": "TUNDUIA",
       "BIOLOGI": "Biology",
       "KJEMI": "Chemistry"
+      "DOMENE": "Domain"
     },
     "predicate": {
       "prefLabel": "Preferred term",

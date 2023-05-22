@@ -1,7 +1,7 @@
 import { API_URL } from 'lib/constants';
 
 export async function getItemData(id: string): Promise<any> {
-  const res = await fetch(`${API_URL}/items/${id}`);
+  const res = await fetch(`${API_URL}/items/${id}`, { next: { revalidate: 3200 } });
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
 

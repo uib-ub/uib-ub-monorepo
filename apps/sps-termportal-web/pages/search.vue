@@ -119,9 +119,7 @@ onBeforeUnmount(() => {
 });
 
 function considerSearchFetching(situation: FetchType) {
-  if (allowSearchFetch.value === null) {
-    allowSearchFetch.value = false;
-  } else if (allowSearchFetch.value && searchInterface.value.term !== null) {
+  if (allowSearchFetch.value && searchInterface.value.term !== null) {
     searchData.value = [];
     useFetchSearchData(useGenSearchOptions(situation));
     allowSearchFetch.value = false;
@@ -157,12 +155,6 @@ watch(
 
 onMounted(() => {
   considerSearchFetching("initial");
-  /*
-  SearchInterface watchers trigger when setting options from route.
-  Only watcher for search term should trigger fetch.
-  null value is handled by other options watchter to avoid to fetches.
-  */
-  allowSearchFetch.value = null;
 
   /*
   Set searchOptions state based on route query values.

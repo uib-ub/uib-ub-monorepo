@@ -7,10 +7,14 @@
     </h2>
     <ul class="pl-1">
       <DomainOverviewEntry
-        v-for="domain in Object.keys(domainNesting)"
+        v-for="domain in Object.keys(domainData)"
         :key="domain"
         :domain="domain"
       />
     </ul>
   </section>
 </template>
+
+<script setup>
+const domainData = useDomainData();
+</script>

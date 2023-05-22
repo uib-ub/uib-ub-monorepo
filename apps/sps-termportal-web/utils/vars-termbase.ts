@@ -23,10 +23,10 @@ export type Samling =
   | "FBK";
 
 export type Domains =
-  | "humaniora"
-  | "naturvitenskap"
-  | "sammfunnsfag"
-  | "okonomAdmin";
+  | "DOMENE-3AHumaniora"
+  | "DOMENE-3ANaturvitenskapTeknologi"
+  | "DOMENE-3ASamfunnsfag"
+  | "DOMENE-3AOkonomiAdministrasjon";
 
 export const termbaseOrder: Samling[] = [
   "ARTSDB",
@@ -73,8 +73,8 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
 };
 
 export const domainNesting = {
-  humaniora: { bases: ["LINGVISTIKK"] },
-  naturvitenskap: {
+  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK"] },
+  "DOMENE-3ANaturvitenskapTeknologi": {
     bases: [
       "NOT",
       "MRT",
@@ -91,8 +91,8 @@ export const domainNesting = {
       "KJEMI",
     ],
   },
-  sammfunnsfag: { bases: ["NOJU", "TOLKING"] },
-  okonomAdmin: { bases: ["NHH", "FBK", "UHR"] },
+  "DOMENE-3ASamfunnsfag": { bases: ["NOJU", "TOLKING"] },
+  "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
 };
 
 export const termbaseUriPatterns = {
