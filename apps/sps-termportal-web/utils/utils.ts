@@ -120,7 +120,7 @@ export function getRelationData(
 }
 
 /**
- * Create nested dictionary with related ressources
+ * Create nested dictionary with related ressources.
  *
  * @param data - List of dictionaries with concept data
  * @param startId - key for starting point in dict
