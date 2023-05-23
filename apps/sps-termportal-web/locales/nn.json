@@ -112,7 +112,8 @@
     "domain": "Domene",
     "modified": "Sist oppdatert",
     "note": "Merknad",
-    "tilbake": "Tilbake til søkeresultater"
+    "tilbake": "Tilbake til søkeresultater",
+    "noteTermbaseIsUnmaintained": "Dette er ein historisk ressurs som p.t. ikkje blir oppdatert"
   },
   "index": { "title": "Termportalen" },
   "search": {
