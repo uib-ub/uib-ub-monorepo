@@ -76,16 +76,13 @@
     "menuButtonShow": "Extend menu",
     "menuButtonHide": "Hide menu"
   },
-
-  "domainOverview": { "domainsAndBases": "Domains & Termbases" },
-  "navBar": { "om": "About", "innstillinger": "Settings" },
   "searchBar": {
     "search": "Search",
     "inDomain": "in",
     "inLanguage": "in",
-    "searchLanguage": "Search language",
-    "searchTranslate": "Target language",
-    "searchBase": "Termbase",
+    "language": "Search language",
+    "translate": "Target language",
+    "termbase": "Termbase",
     "searchfieldLabel": "Search field",
     "clearTextLabel": "Clear search field",
     "searchButtonLabel": "Search"
@@ -139,7 +136,7 @@
     "domain": "Domain",
     "modified": "Last modified",
     "note": "Note",
-    "tilbake": "Back to search results",
+    "tilbake": "To search results",
     "noteTermbaseIsUnmaintained": "This is an historical resource and is not currently being updated"
   },
   "index": { "title": "Termportalen" },
