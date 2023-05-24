@@ -242,7 +242,12 @@
                 <DataRow
                   v-if="concept?.scopeNote"
                   :data="concept.scopeNote"
-                  th-class=""
+                  :label="$t('id.note')"
+                />
+                <!--Note for historical termbases-->
+                <DataRow
+                  v-if="route.params.termbase === 'NOT' || route.params.termbase === 'RTT'"
+                  :data="$t('id.noteTermbaseIsUnmaintained')"
                   :label="$t('id.note')"
                 />
               </tbody>
