@@ -6,10 +6,10 @@
     "domain": {
       "domain": "Domain | domain",
       "all": "All Domains",
-      "humaniora": "Humanities",
-      "naturvitenskap": "Sciences & Technology",
-      "sammfunnsfag": "Social Sciences",
-      "okonomAdmin": "Economy & Administration"
+      "DOMENE-3AHumaniora": "Humanities",
+      "DOMENE-3ANaturvitenskapTeknologi": "Sciences & Technology",
+      "DOMENE-3ASamfunnsfag": "Social Sciences",
+      "DOMENE-3AOkonomiAdministrasjon": "Economy & Administration"
     },
     "lang": {
       "none": "–",
