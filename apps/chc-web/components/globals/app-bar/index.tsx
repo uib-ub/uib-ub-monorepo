@@ -1,5 +1,5 @@
 'use client'
-import styles from './App-bar.module.css'
+import styles from './app-bar.module.css'
 import { nav } from 'components/globals/nav'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { NavLink } from 'components/globals/app-bar/nav-link';
