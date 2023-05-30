@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { getItemData } from 'lib/marcus/marcus.client';
-import { ItemPage } from 'components/pages/items/ItemPage';
+import { ItemPage } from 'components/pages/items/item-page';
 import { notFound } from 'next/navigation';
 
 export default async function ItemRoute({

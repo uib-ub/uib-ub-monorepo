@@ -1,5 +1,3 @@
-import { Boundary } from 'components/shared/Boundary'
-
 export default async function ItemRoute({
   children,
 }: {
@@ -7,9 +5,8 @@ export default async function ItemRoute({
 }) {
 
   return (
-    <Boundary color='cyan' labels={['ItemRoute (server)']} size='small'>
+    <div>
       {children}
-    </Boundary>
-
+    </div>
   )
 }

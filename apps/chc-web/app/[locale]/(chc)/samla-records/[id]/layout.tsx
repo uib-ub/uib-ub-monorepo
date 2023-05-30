@@ -1,5 +1,3 @@
-import { Boundary } from 'components/shared/Boundary'
-
 export default async function SamlaRecordRoute({
   children,
 }: {
@@ -7,9 +5,9 @@ export default async function SamlaRecordRoute({
 }) {
 
   return (
-    <Boundary color='cyan' labels={['ItemRoute (server)']} size='small'>
+    <>
       {children}
-    </Boundary>
+    </>
 
   )
 }

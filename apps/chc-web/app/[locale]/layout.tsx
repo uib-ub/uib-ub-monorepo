@@ -1,28 +1,12 @@
+import { mono, sans, serif } from 'app/fonts';
+import AppShell from 'components/shells/app-shell';
+import AppBar from 'components/globals/app-bar';
 import { useLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
-import 'tailwindcss/tailwind.css'
+import { Providers } from './providers';
+import 'styles/globals.css'
 
-import { IBM_Plex_Mono, Inter, PT_Serif } from 'next/font/google'
-
-const serif = PT_Serif({
-  variable: '--font-serif',
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-  weight: ['400', '700'],
-})
-const sans = Inter({
-  variable: '--font-sans',
-  subsets: ['latin'],
-  // @todo: understand why extrabold (800) isn't being respected when explicitly specified in this weight array
-  // weight: ['500', '700', '800'],
-})
-const mono = IBM_Plex_Mono({
-  variable: '--font-mono',
-  subsets: ['latin'],
-  weight: ['500', '700'],
-})
-
-export default async function LocaleLayout({
+export default async function RootLayout({
   children, params
 }: {
   children: React.ReactNode, params: any
@@ -42,7 +26,14 @@ export default async function LocaleLayout({
       <head>
         <link rel="icon" href="/favicon/favicon.svg" />
       </head>
-      <body>{children}</body>
+      <body>
+        <Providers>
+          <AppShell>
+            <AppBar locale={locale} />
+            {children}
+          </AppShell>
+        </Providers>
+      </body>
     </html>
   )
 }

@@ -1,0 +1,43 @@
+@import 'open-props/gradients';
+@import 'open-props/sizes';
+@import 'open-props/easings';
+@import 'open-props/animations';
+@import 'open-props/colors';
+@import 'open-props/borders';
+@import 'open-props/shadows';
+@import 'open-props/fonts';
+/* @import 'open-props/normalize'; */
+@import 'open-props/buttons';
+@import 'open-props/masks/edges';
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+p:not(:last-child) {
+  margin-bottom: 0.875rem;
+}
+
+ol,
+ul {
+  margin-left: 1rem;
+}
+
+ol {
+  list-style-type: disc;
+}
+
+dt {
+  font-weight: 700;
+}
+
+h1 {
+  font-family: var(--font-sans);
+}
+
+.ais-Hits-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
