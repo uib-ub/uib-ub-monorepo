@@ -51,7 +51,8 @@
       "UHR": "UHR",
       "TUNDUIA": "TUNDUIA",
       "BIOLOGI": "BIOLOGI",
-      "KJEMI": "Kjemi"
+      "KJEMI": "Kjemi",
+      "DOMENE": "Domain"
     },
     "predicate": {
       "prefLabel": "Preferred label",
@@ -108,7 +109,8 @@
     "domain": "Domain",
     "modified": "Modified",
     "note": "Note",
-    "tilbake": "Back to search results"
+    "tilbake": "Back to search results",
+    "noteTermbaseIsUnmaintained": "This is an historical resource and is not currently being updated"
   },
   "index": { "title": "Termportalen" },
   "search": {

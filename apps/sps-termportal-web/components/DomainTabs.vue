@@ -7,10 +7,10 @@
         role="tablist"
       >
         <DomainTab tab-id="all" />
-        <DomainTab tab-id="humaniora" />
-        <DomainTab tab-id="naturvitenskap" />
-        <DomainTab tab-id="sammfunnsfag" />
-        <DomainTab tab-id="okonomAdmin" />
+        <DomainTab tab-id="DOMENE-3AHumaniora" />
+        <DomainTab tab-id="DOMENE-3ANaturvitenskapTeknologi" />
+        <DomainTab tab-id="DOMENE-3ASamfunnsfag" />
+        <DomainTab tab-id="DOMENE-3AOkonomiAdministrasjon" />
       </ul>
       <button
         id="expand-bt"
@@ -31,20 +31,20 @@
         tab-id="all"
       />
       <DomainTabDetails
-        v-if="searchInterface.domain[0] === 'humaniora'"
-        tab-id="humaniora"
+        v-if="searchInterface.domain[0] === 'DOMENE-3AHumaniora'"
+        tab-id="DOMENE-3AHumaniora"
       />
       <DomainTabDetails
-        v-if="searchInterface.domain[0] === 'naturvitenskap'"
-        tab-id="naturvitenskap"
+        v-if="searchInterface.domain[0] === 'DOMENE-3ANaturvitenskapTeknologi'"
+        tab-id="DOMENE-3ANaturvitenskapTeknologi"
       />
       <DomainTabDetails
-        v-if="searchInterface.domain[0] === 'sammfunnsfag'"
-        tab-id="sammfunnsfag"
+        v-if="searchInterface.domain[0] === 'DOMENE-3ASamfunnsfag'"
+        tab-id="DOMENE-3ASamfunnsfag"
       />
       <DomainTabDetails
-        v-if="searchInterface.domain[0] === 'okonomAdmin'"
-        tab-id="okonomAdmin"
+        v-if="searchInterface.domain[0] === 'DOMENE-3AOkonomiAdministrasjon'"
+        tab-id="DOMENE-3AOkonomiAdministrasjon"
       />
     </div>
   </div>

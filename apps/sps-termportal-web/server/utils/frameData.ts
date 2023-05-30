@@ -2,7 +2,11 @@ import pkg from "jsonld";
 
 const { frame } = pkg;
 
-export default function (data: any, type: string) {
+export default function (
+  data: any,
+  type: string,
+  domain?: boolean
+): Promise<any> {
   const runtimeConfig = useRuntimeConfig();
   const base = runtimeConfig.public.base;
   const context = function () {
@@ -126,7 +130,7 @@ export default function (data: any, type: string) {
     };
   };
 
-  try {
+  if (!domain) {
     return frame(data, {
       "@context": [context()],
       "@type": type,
@@ -142,5 +146,12 @@ export default function (data: any, type: string) {
       hasPart: { "@type": "skos:Concept", "@embed": "@never" },
       seeAlso: { "@type": "skos:Concept", "@embed": "@never" },
     });
-  } catch {}
+  } else {
+    return frame(data, {
+      "@context": [context()],
+      "@type": type,
+      "@embed": "@always",
+      narrower: { "@type": "skos:Concept", "@embed": "@never" },
+    });
+  }
 }
