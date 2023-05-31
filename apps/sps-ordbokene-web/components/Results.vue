@@ -149,4 +149,4 @@ ol.article-column>li {
 .list .article-column:empty  {
     display: none;
 }
-</style
+</style>
