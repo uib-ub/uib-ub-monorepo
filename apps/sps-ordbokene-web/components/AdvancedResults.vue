@@ -22,7 +22,7 @@
           <span v-else-if="articles.meta.bm.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
           <div v-if="listView" class="inline-block lg:hidden"><h2>Bokmålsordboka</h2></div>
         <component :is="listView ? 'ol' : 'div'" class="article-column">
-          <component v-for="(article_id, idx) in bm_articles" :key="article_id + page" :is="listView ? 'li' : 'div'">
+          <component v-for="(article_id, idx) in bm_articles" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'bm')">
               <Article :article_id="article_id" dict="bm" :idx="idx"/>
             </NuxtErrorBoundary>
@@ -35,7 +35,7 @@
           <span v-else-if="articles.meta.nn.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
           <div  v-if="listView" class="inline-block lg:hidden"><h2>Nynorskordboka</h2></div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
-          <component v-for="(article_id, idx) in nn_articles" :key="article_id  + page" :is="listView ? 'li' : 'div'">
+          <component v-for="(article_id, idx) in nn_articles" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'nn')">
               <Article :article_id="article_id" dict="nn" :idx="idx"/>
             </NuxtErrorBoundary>
@@ -51,7 +51,7 @@
           <span v-if="(articles.meta.bm.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
         </div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
-          <component v-for="(article_id, idx) in bm_articles" :key="article_id + page" :is="listView ? 'li' : 'div'">
+          <component v-for="(article_id, idx) in bm_articles" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'bm')">
               <Article :article_id="article_id" dict="bm" :idx="idx"/>
             </NuxtErrorBoundary>
@@ -63,7 +63,7 @@
           <span v-if="(articles.meta.nn.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
         </div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
-          <component v-for="(article_id, idx) in nn_articles" :key="article_id + page" :is="listView ? 'li' : 'div'">
+          <component v-for="(article_id, idx) in nn_articles" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'nn')">
               <Article :article_id="article_id" dict="nn" :idx="idx"/>
             </NuxtErrorBoundary>
@@ -87,7 +87,7 @@
   </div>
   <div v-if="error" aria-live="">
     ERROR: {{error}}
-  </div>
+  </div> 
 
   <SuggestResults v-if="!pending" :suggestions="suggestions"/>
 
@@ -116,7 +116,6 @@ const results = ref()
 
 const announcement = useState('announcement')
 
-
 const bm_articles = ref([])
 const nn_articles = ref([])
 
@@ -134,38 +133,15 @@ const get_suggestions = async () => {
     suggestions.value = null
   } 
 }
-const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
-      $fetch(store.endpoint + 'api/articles?', {
-          params: {
-            w: store.q,
-            dict: store.dict,
-            scope: store.scope,
-            wc: store.pos || ''
-          },
+const { pending, error, refresh, data: articles } = await useFetch(() => `${store.endpoint}api/articles?w=${store.q}&dict=${store.dict}&scope=${store.scope}&wc=${store.pos||''}`, {
           onRequestError({ request, options, error}) {
             console.log("ERROR")
           },
-
           onResponse({ request, options, response }) {
             get_suggestions()
-          }
-        }))
+          },
+        })
 
-
-
-watch(() => store.searchUrl, () => {
-    if (route.query.page) {
-      slice_results()
-      console.log("UPDATING", route.query.page)
-    }
-    else {
-      refresh()
-    }
-})
-
-onMounted(() => {
-    get_suggestions()    
-})
 
 
 const slice_results = () => {
@@ -186,11 +162,13 @@ const slice_results = () => {
 }
 
 
-watch(() => route.query.page, () => {
+onMounted(() => {
+    get_suggestions()    
+})
+
+  watch(() => route.query.page, () => {
   page.value = route.query.page || 1
   slice_results()
-
-
 })
 
 watch(articles, (newArticles) => {
@@ -199,13 +177,8 @@ watch(articles, (newArticles) => {
     let total_nn = newArticles.meta.nn ? newArticles.meta.nn.total : 0
     console.log(Math.max(total_bm, total_nn))
     pages.value = Math.ceil(Math.max(total_bm, total_nn) / per_page)
-    console.log("PAGES", pages)
-
-    let offset = (page.value-1) * per_page
-    console.log("OFFSET", offset)
-    slice_results()
-    
     if (total_bm + total_nn == 0) get_suggestions()
+    slice_results()
   }
 }, {
   deep: true,
