@@ -16,10 +16,10 @@ export default async function ItemRoute({
   }
 
   return (
-    <div>
+    <>
       <span className='block text-xs text-right'>{t('greeting')}</span>
       {/* @ts-expect-error Server Component */}
       <ItemPage data={itemData} locale={params.locale} />
-    </div>
+    </>
   );
 }

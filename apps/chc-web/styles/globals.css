@@ -1,14 +1,6 @@
-@import 'open-props/gradients';
-@import 'open-props/sizes';
-@import 'open-props/easings';
-@import 'open-props/animations';
-@import 'open-props/colors';
-@import 'open-props/borders';
-@import 'open-props/shadows';
-@import 'open-props/fonts';
-/* @import 'open-props/normalize'; */
-@import 'open-props/buttons';
-@import 'open-props/masks/edges';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html {
   -webkit-font-smoothing: antialiased;
@@ -40,4 +32,8 @@ h1 {
 .ais-Hits-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.ais-Hits-item {
+  background: unset !important;
+  box-shadow: unset !important;
 }

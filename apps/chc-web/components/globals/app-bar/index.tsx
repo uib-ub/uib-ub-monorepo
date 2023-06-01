@@ -1,14 +1,14 @@
 'use client'
-import styles from './app-bar.module.css'
 import { nav } from 'components/globals/nav'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { NavLink } from 'components/globals/app-bar/nav-link';
-import LocaleSwitcher from 'components/shared/locale-switcher';
+import LocaleSwitch from 'components/shared/locale-switch';
+import ThemeSwitch from 'components/shared/theme-switch';
 
 export default function AppBar({ locale }: { locale: string }) {
   return (
-    <div className={styles.appBar}>
-      <h1>CHC</h1>
+    <div className='flex gap-5 p-5'>
+      <h1 className='font-extrabold text-2xl'>CHC</h1>
       <Navigation locale={locale} />
     </div>
   )
@@ -16,16 +16,17 @@ export default function AppBar({ locale }: { locale: string }) {
 
 
 const Navigation = ({ locale }: { locale: string }) => (
-  <NavigationMenu.Root className={styles.NavigationMenu}>
-    <NavigationMenu.List className={styles.NavigationMenuList}>
+  <NavigationMenu.Root className="relative z-[1] flex w-screen">
+    <NavigationMenu.List className="m-0 flex gap-3 list-none p-1">
       {nav.mainNav.map((item: any) => (
-        <NavigationMenu.Item key={item.name} className={styles.NavigationMenuItem}>
+        <NavigationMenu.Item key={item.name}>
           <NavLink href={item.link}>
             {item.name}
           </NavLink>
         </NavigationMenu.Item>
       ))}
-      <LocaleSwitcher locale={locale} />
+      <LocaleSwitch locale={locale} />
+      <ThemeSwitch />
     </NavigationMenu.List>
   </NavigationMenu.Root>
 );

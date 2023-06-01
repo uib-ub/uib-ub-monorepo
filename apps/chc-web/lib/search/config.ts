@@ -13,7 +13,6 @@ const client: SearchkitConfig = {
     search_attributes: [
       "objectID",
       "type",
-      "identifier",
       "label",
       "label.no",
       "label.none",

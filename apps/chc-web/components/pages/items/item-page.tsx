@@ -4,9 +4,7 @@ import { InternationalLabel } from 'components/shared/international-label.client
 import { notFound } from 'next/navigation';
 
 async function getData(manifest: string) {
-  const res = await fetch(manifest);
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
+  const res = await fetch(manifest, { next: { revalidate: 24000 } });
 
   if (!res.ok) {
     console.log(res)
@@ -43,18 +41,22 @@ export async function ItemPage({
       <ManifestViewer
         id={manifest}
         options={{
+          canvasBackgroundColor: '#222',
           canvasHeight: '70vh',
           renderAbout: false,
           showIIIFBadge: false,
           showTitle: false,
           showInformationToggle: false,
+          openSeadragon: {
+            gestureSettingsMouse: {
+              scrollToZoom: false,
+            },
+          },
         }}
       />
       <div className="max-w-prose">
         <IIIFMetadata label={manifest.label} summary={manifest.summary} metadata={manifest.metadata} lang={locale} />
       </div>
-
-      {/* <pre className='text-xs'>{JSON.stringify(data, null, 2)}</pre> */}
     </>
   )
 }

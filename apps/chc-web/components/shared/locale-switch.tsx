@@ -1,10 +1,14 @@
 'use client'
 
 import { usePathname } from 'next-intl/client'
-import { Link } from 'next-intl'
-import { i18n } from '../../i18n'
+import Link from 'next-intl/link'
 
-export default function LocaleSwitcher({ locale }: { locale: string }) {
+const i18n = {
+  defaultLocale: 'no',
+  locales: ['no', 'en'],
+}
+
+export default function LocaleSwitch({ locale }: { locale: string }) {
   const pathName = usePathname()
   const currentLocale = locale
 

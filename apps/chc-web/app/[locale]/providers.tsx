@@ -1,18 +1,14 @@
 'use client'
+import { ThemeProvider } from 'next-themes'
 
-/**
- * PLACEHOLDER
- * @param param0 
- * @returns 
- */
 export function Providers({
   children
 }: {
   children: React.ReactNode
 }) {
   return (
-    <>
+    <ThemeProvider attribute='class'>
       {children}
-    </>
+    </ThemeProvider>
   )
 }

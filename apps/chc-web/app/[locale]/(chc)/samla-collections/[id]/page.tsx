@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getSamlaIIIFv1CollectionData } from 'lib/samla/samla.client';
 import { pickSegmentFromEndOfUrl } from 'utils';
+import Link from 'next-intl/link';
 
 export default async function CollectionRoute({
   params
@@ -29,7 +30,7 @@ export default async function CollectionRoute({
 
           return (
             <li key={member['@id']}>
-              {type} – <a href={`/${path}/${id}`}>{member.label?.[1]?.['@value'] ?? member.label}</a>
+              {type} – <Link href={`/${path}/${id}`}>{member.label?.[1]?.['@value'] ?? member.label}</Link>
             </li>
           )
         })}
