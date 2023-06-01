@@ -15,7 +15,7 @@
     </div>
 
 
-    <div class="gap-3 lg:gap-8 grid lg:grid-cols-2" v-if="route.params.dict == 'bm,nn' || route.query.dict == 'bm,nn' ">
+    <div class="gap-3 lg:gap-8 grid lg:grid-cols-2" v-if="route.query.dict == 'bm,nn' ">
       <section class="lg:grid-cols-6" :aria-label="$t('dicts.bm')">
         <div class="hidden lg:inline-block p-2"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span><span v-if="(articles.meta.bm.total > 1)" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
@@ -45,8 +45,8 @@
   </div>
 
     
-    <div v-if="route.params.dict != 'bm,nn' && route.query.dict != 'bm,nn' ">
-      <div v-if="(route.params.dict == 'bm' || route.query.dict == 'bm') && articles.meta.bm">
+    <div v-if="route.query.dict != 'bm,nn' ">
+      <div v-if="route.query.dict == 'bm' && articles.meta.bm">
         <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span v-if="(articles.meta.bm.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
         </div>
@@ -58,7 +58,7 @@
           </component>
         </component>
       </div>
-      <div v-if="(route.params.dict == 'nn' || route.query.dict == 'nn' )  && articles.meta.nn">
+      <div v-if="(route.query.dict == 'nn' )  && articles.meta.nn">
         <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span v-if="(articles.meta.nn.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
         </div>
@@ -126,14 +126,14 @@ const listView = computed(() => {
 
 const get_suggestions = async () => {
   if (!specialSymbols(store.q)) {
-  const response = await $fetch(`${store.endpoint}api/suggest?&q=${store.originalInput || store.q}&dict=${store.dict}${store.pos ? '&pos=' + store.pos : ''}&n=20&dform=int&meta=n&include=eis`)                                
+  const response = await $fetch(`${store.endpoint}api/suggest?&q=${store.originalInput || route.query.q}&dict=${route.query.dict}${route.query.pos ? '&pos=' + route.query.pos : ''}&n=20&dform=int&meta=n&include=eis`)                                
   suggestions.value = filterSuggestions(response, store.originalInput || store.q)
   }
   else {
     suggestions.value = null
   } 
 }
-const { pending, error, refresh, data: articles } = await useFetch(() => `${store.endpoint}api/articles?w=${store.q}&dict=${store.dict}&scope=${store.scope}&wc=${store.pos||''}`, {
+const { pending, error, refresh, data: articles } = await useFetch(() => `${store.endpoint}api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
           onRequestError({ request, options, error}) {
             console.log("ERROR")
           },
