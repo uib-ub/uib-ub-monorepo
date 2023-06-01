@@ -55,13 +55,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                         // kun hvis resultatet er et uttrykk eller har litt andre tegn?
                         //console.log("EXACT", exact[0][0])
 
-                        return navigateTo(`/${store.dict}/${exact[0][0]}`)
+                        return navigateTo(`/${store.dict}/${exact[0][0]}?orig=${to.query.q}`)
                     }
                 }
                 if (inflect) {
                         //console.log("INFLECT", inflect[0][0])
 
-                        return navigateTo(`/${store.dict}/${inflect[0][0]}`)
+                        return navigateTo(`/${store.dict}/${inflect[0][0]}?orig=${to.query.q}`)
                     
                 }
 
