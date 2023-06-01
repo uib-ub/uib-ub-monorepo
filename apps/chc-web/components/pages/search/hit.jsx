@@ -1,28 +1,27 @@
 
 import React from 'react';
 import Image from 'next/image';
-import styles from './hit.module.css';
+import Link from 'next-intl/link';
 
 const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
 
 export function HitCard({ hit }) {
   return (
     <article key={hit.objectID} className='relative flex flex-col flex-grow gap-y-3'>
-      <a href={`https://chc-web.vercel.app/items/${hit.identifier}`} target='_blank' rel="noreferrer">
+      <Link href={`/items/${hit.identifier}`}>
         {
           hit.image ? (
-            <Image src={hit.image} alt='' width={300} height={300} className={styles.image} />
+            <Image src={hit.image} alt='' width={300} height={300} />
           ) : (
             <div className="min-h-64 p-10 inline-block flex-grow-1  w-full opacity-25 bg-gradient-to-r from-slate-500 to-yellow-100">
               No image found!
             </div>
           )
         }
-      </a>
+      </Link>
 
       <h2 className='text-lg font-bold'>
-        <a href={`https://chc-web.vercel.app/items/${hit.identifier}`} target='_blank' rel="noreferrer">
-          {/* <Highlight attribute="hit.label_none" hit={hit} /> */}
+        <a href={`/items/${hit.identifier}`}>
           {hit.label_none ?? hit.label?.no}
         </a>
       </h2>

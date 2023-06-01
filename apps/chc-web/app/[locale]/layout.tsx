@@ -22,6 +22,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={`${mono.variable} ${sans.variable} ${serif.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <link rel="icon" href="/favicon/favicon.svg" />
@@ -30,7 +31,9 @@ export default async function RootLayout({
         <Providers>
           <AppShell>
             <AppBar locale={locale} />
-            {children}
+            <div className='p-5'>
+              {children}
+            </div>
           </AppShell>
         </Providers>
       </body>

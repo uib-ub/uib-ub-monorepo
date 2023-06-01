@@ -29,6 +29,10 @@ export const nav: NavProps = {
     {
       "name": "Samla arkiv",
       "link": "/samla-collections"
+    },
+    {
+      "name": "Example item",
+      "link": "/items/ubb-ms-0028"
     }
   ],
   "secondaryNav": [

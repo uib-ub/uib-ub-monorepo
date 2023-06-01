@@ -46,7 +46,7 @@ export const InternationalLabel = (
 
   if (Object.keys(label).length > 1) {
     return (
-      <Accordion.Root type="single" collapsible>
+      <Accordion.Root type="single" collapsible className='mb-3'>
         <Accordion.Item value="item-1">
           <AccordionTrigger>
             <span className='text-4xl'>
@@ -68,7 +68,7 @@ export const InternationalLabel = (
   }
 
   return (
-    <div className='text-4xl font-bold'>
+    <div className='text-4xl font-bold mb-3'>
       {label[lang] ?? Object.values(label)[0]}
     </div>
   );
