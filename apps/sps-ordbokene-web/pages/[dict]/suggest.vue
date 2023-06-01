@@ -12,8 +12,6 @@
 <script setup>
 import { useStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
-
-import { filterSuggestions } from '~/composables/helpers.ts'
 const store = useStore()
 const route = useRoute()
 
