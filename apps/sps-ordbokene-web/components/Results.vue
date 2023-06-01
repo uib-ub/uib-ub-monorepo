@@ -67,8 +67,9 @@
   <div v-if="error" aria-live="">
     ERROR: {{error}}
   </div>
-
+  <client-only>
   <SuggestResults v-if="!pending" :suggestions="suggestions"/>
+  </client-only>
 
 
 </div>
