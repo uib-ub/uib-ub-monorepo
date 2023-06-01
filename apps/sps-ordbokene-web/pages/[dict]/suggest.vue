@@ -7,9 +7,9 @@
   
 
     </div>
-  </template>
+</template>
   
-  <script setup>
+<script setup>
 import { useStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 
@@ -38,4 +38,4 @@ watch(raw_suggest, (new_raw_suggest) => {
     suggestions.value = filterSuggestions(raw_suggest.value, store.q)
 })
 
-  </script>
+</script>
