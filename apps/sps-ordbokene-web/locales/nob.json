@@ -168,7 +168,7 @@
   },
   "notifications": {
       "inflected": " er en bøyd form av ",
-      "other_inflected": "Også en form av:",
+      "other_inflected": "«{word}» er også en form av:",
       "did_you_mean": "Mente du:",
       "similar": "Lignende oppslagsord:",
       "similar_bm": "Legg til lignende treff fra Bokmålsordboka: ",

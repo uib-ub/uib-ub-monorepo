@@ -153,8 +153,9 @@
   }
 },
 "notifications": {
+    "redirect": "Showing senses of the dictionary entry",
     "inflected": " is an inflected form of ",
-    "other_inflected": "Also a form of:",
+    "other_inflected": "“{word}” is also a form of:",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",
     "similar_bm": "Add similar results from Bokmålsordboka: ",

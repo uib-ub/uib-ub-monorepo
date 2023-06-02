@@ -155,8 +155,9 @@
         }
     },
     "notifications": {
+        "redirect": "Viser betydninger av oppslag",
         "inflected": " er ei bøygd form av ",
-        "other_inflected": "Òg ei form av:",
+        "other_inflected": "«{word}» er òg ei form av:",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",
         "similar_bm": "Legg til liknande treff frå Bokmålsordboka: ",
