@@ -42,7 +42,7 @@ const dict_click = (dict) => {
       store.advanced = false
       store.dict = dict
       if (store.q != store.input) {
-        store.input = store.originalInput || store.q
+        store.input = route.query.orig || store.q
       }
     }
     
@@ -71,11 +71,8 @@ const dict_click = (dict) => {
       if (specialSymbols(store.q)) {
         return  url
       }
-      if (store.originalInput) {
-        url = url + `search?q=${store.originalInput}`
-      }
-      else if (store.q) {
-        url = url + `search?q=${store.q}`
+      else {
+        url += `search?q=${route.query.orig || store.q}`
       }
       return url
       

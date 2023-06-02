@@ -4,7 +4,7 @@
 
     <div ref="results"  v-if="store.view != 'suggest' && !pending && !error && articles && articles.meta" >
     <div tabindex="0" aria-live="polite" role="status" ref="announcement" class="announcement lg:sr-only pb-2 pl-1 text-gray-900 text-md" v-bind:class="{'sr-only': !store.advanced}">
-      <div class="sr-only" v-if="store.originalInput">Viser resultater for oppslagsordet <strong>{{$route.params.slug[0]}}.</strong></div>
+      <div class="sr-only" v-if="route.query.orig">Viser resultater for oppslagsordet <strong>{{$route.params.slug[0]}}.</strong></div>
     <span v-if="articles.meta.bm"><div></div>{{$t('notifications.results', {count: articles.meta.bm.total})+$t("in")+$t('dicts_inline.bm')}}</span>
     <span v-if="articles.meta.nn && articles.meta.bm"> | </span>
     <span v-if="articles.meta.nn">{{$t('notifications.results', {count: articles.meta.nn.total})+$t("in")+$t('dicts_inline.nn')}}</span>
@@ -127,8 +127,8 @@ const listView = computed(() => {
 
 const get_suggestions = async () => {
   if (!specialSymbols(store.q)) {
-  const response = await $fetch(`${store.endpoint}api/suggest?&q=${store.originalInput || route.query.q}&dict=${route.query.dict}${route.query.pos ? '&pos=' + route.query.pos : ''}&n=20&dform=int&meta=n&include=eis`)                                
-  suggestions.value = filterSuggestions(response, store.originalInput || store.q)
+  const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.orig || route.query.q}&dict=${route.query.dict}${route.query.pos ? '&pos=' + route.query.pos : ''}&n=20&dform=int&meta=n&include=eis`)                                
+  suggestions.value = filterSuggestions(response, route.query.orig || store.q)
   }
   else {
     suggestions.value = null

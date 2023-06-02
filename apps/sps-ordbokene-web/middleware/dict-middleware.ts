@@ -16,22 +16,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             store.advanced = false
             store.searchUrl = to.fullPath
             store.q = to.params.slug[0]
-            if (to.redirectedFrom && to.redirectedFrom.query.q != store.q) {
-                //console.log("SETTING ORIGINAL INPUT")
-                store.originalInput = to.redirectedFrom.query.q
-            } else  {
-                store.originalInput = ""
-                store.input = store.q
-            }
-            
-
+            store.input = to.query.orig || to.params.slug[0]           
         }
     }
     else if (to.name == 'dict-suggest') {
         //console.log("SUGGEST")
         store.q = to.query.q
         store.input = to.query.q || ""
-        store.originalInput = ""
         store.view = 'suggest'
         
         
