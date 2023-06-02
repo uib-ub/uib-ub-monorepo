@@ -96,7 +96,7 @@ const listView = computed(() => {
 
 const get_suggestions = async () => {
   if (process.client) {
-    const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${store.dict}&n=20&dform=int&meta=n&include=eis`)                                
+    const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${store.dict}&n=10&dform=int&meta=n&include=eis`)                                
     suggestions.value = filterSuggestions(response, route.query.orig || store.q, store.q)
   }
 }

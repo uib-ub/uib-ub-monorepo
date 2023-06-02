@@ -23,7 +23,7 @@ const suggestions = ref({similar: []})
 
 const { data: raw_suggest, refresh } = await useAsyncData(
     'suggest_'+ store.q + "_" + store.dict, 
-    () => $fetch(`${store.endpoint}api/suggest?&q=${store.q}&dict=${store.dict}&n=20&dform=int&meta=n&include=eis`))
+    () => $fetch(`${store.endpoint}api/suggest?&q=${store.q}&dict=${store.dict}&n=10&dform=int&meta=n&include=eis`))
 
 suggestions.value = filterSuggestions(raw_suggest.value, store.q)
 
