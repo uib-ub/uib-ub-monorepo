@@ -67,8 +67,10 @@ const dict_click = (dict) => {
     })
     
     const dict_link = ((dict) => {
+      
       let url = `/${dict}/`
-      if (specialSymbols(store.q)) {
+
+      if (!store.q || specialSymbols(store.q)) {
         return  url
       }
       else {

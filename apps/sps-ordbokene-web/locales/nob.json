@@ -167,6 +167,7 @@
       }
   },
   "notifications": {
+      "redirect": "Viser betydninger av oppslagsordet",
       "inflected": " er en bøyd form av ",
       "other_inflected": "«{word}» er også en form av:",
       "did_you_mean": "Mente du:",

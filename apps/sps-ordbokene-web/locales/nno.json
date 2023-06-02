@@ -155,7 +155,7 @@
         }
     },
     "notifications": {
-        "redirect": "Viser betydninger av oppslag",
+        "redirect": "Viser tydingar av oppslagsordet",
         "inflected": " er ei bøygd form av ",
         "other_inflected": "«{word}» er òg ei form av:",
         "did_you_mean": "Meinte du:",
