@@ -89,7 +89,7 @@
     ERROR: {{error}}
   </div> 
   <client-only>
-  <SuggestResults v-if="!pending" :suggestions="suggestions"/>
+  <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar">{{$t('notifications.similar')}}</SuggestResults>
   </client-only>
 
 
@@ -107,7 +107,7 @@ const settings = useSettingsStore()
 const store = useStore()
 const route = useRoute()
 
-const suggestions = ref()
+const suggestions = ref({similar: []})
 const error_message = ref()
 const per_page = 10
 const page = ref(parseInt(route.query.page || "1"))
@@ -126,9 +126,9 @@ const listView = computed(() => {
 
 
 const get_suggestions = async () => {
-  if (!specialSymbols(store.q)) {
-  const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.orig || route.query.q}&dict=${route.query.dict}${route.query.pos ? '&pos=' + route.query.pos : ''}&n=20&dform=int&meta=n&include=eis`)                                
-  suggestions.value = filterSuggestions(response, route.query.orig || store.q)
+  if (process.client && !specialSymbols(store.q)) {
+  const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.q}&dict=${route.query.dict}${route.query.pos ? '&pos=' + route.query.pos : ''}&n=20&dform=int&meta=n&include=es`)                                
+  suggestions.value = filterSuggestions(response, store.q, store.q)
   }
   else {
     suggestions.value = null

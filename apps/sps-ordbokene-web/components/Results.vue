@@ -68,7 +68,8 @@
     ERROR: {{error}}
   </div>
   <client-only>
-  <SuggestResults v-if="!pending" :suggestions="suggestions"/>
+  <SuggestResults v-if="!pending && suggestions.inflect" :suggestions="suggestions.inflect">{{$t('notifications.other_inflected')}}</SuggestResults>
+  <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar">{{$t('notifications.similar')}}</SuggestResults>
   </client-only>
 
 
@@ -86,7 +87,7 @@ const settings = useSettingsStore()
 const store = useStore()
 const route = useRoute()
 
-const suggestions = ref()
+const suggestions = ref({inflect: [], similar: []})
 const error_message = ref()
 
 const listView = computed(() => {
@@ -94,9 +95,10 @@ const listView = computed(() => {
 })
 
 const get_suggestions = async () => {
-  const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${store.dict}&n=20&dform=int&meta=n&include=eis`)                                
-  suggestions.value = filterSuggestions(response, route.query.orig || store.q)
-  
+  if (process.client) {
+    const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${store.dict}&n=20&dform=int&meta=n&include=eis`)                                
+    suggestions.value = filterSuggestions(response, route.query.orig || store.q, store.q)
+  }
 }
 
 const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
