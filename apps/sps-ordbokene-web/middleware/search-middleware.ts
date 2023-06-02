@@ -23,7 +23,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         else {
             //console.log("SIMPLE SEARCH")
             store.advanced = false
-            const { pending, error, refresh, data: suggestions } = await useAsyncData(`suggest_${to.query.q}_${to.params.dict}`, () => $fetch(`${store.endpoint}api/suggest?&q=${to.query.q}&dict=${to.params.dict}&n=20&dform=int&meta=n&include=ei`))
+            const { pending, error, refresh, data: suggestions } = await useFetch(() =>  `${store.endpoint}api/suggest?&q=${to.query.q}&dict=${to.params.dict}&n=20&dform=int&meta=n&include=ei`)
             let { exact, inflect } = suggestions.value.a
     
             if (exact) {
