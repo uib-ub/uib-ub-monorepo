@@ -89,7 +89,9 @@
     ERROR: {{error}}
   </div> 
   <client-only>
+    <div class="my-10">
   <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar">{{$t('notifications.similar')}}</SuggestResults>
+    </div>
   </client-only>
 
 

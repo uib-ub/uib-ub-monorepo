@@ -68,8 +68,10 @@
     ERROR: {{error}}
   </div>
   <client-only>
+  <div class="my-10">
   <SuggestResults v-if="!pending && suggestions.inflect" :suggestions="suggestions.inflect">{{$t('notifications.other_inflected', {word: route.query.orig || store.q})}}</SuggestResults>
   <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar">{{$t('notifications.similar')}}</SuggestResults>
+  </div>
   </client-only>
 
 

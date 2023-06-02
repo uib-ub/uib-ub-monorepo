@@ -1,5 +1,5 @@
 <template>
-<div v-if="suggestions && suggestions.length" class="suggestions py-2 px-1 mb-4 mt-8">
+<div v-if="suggestions && suggestions.length" class="suggestions py-2 px-1">
     <h2><slot/></h2>
     <ul class="nav nav-pills flex-column md:flex md:flex-wrap md:gap-8 py-6 pt-4 md:py-8">
         <li class="nav-item flex" v-for="(item, idx) in suggestions" :key="idx">
