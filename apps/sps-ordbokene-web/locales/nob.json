@@ -167,8 +167,11 @@
       }
   },
   "notifications": {
+      "redirect": "Viser betydninger av oppslagsordet",
       "inflected": " er en bøyd form av ",
-      "similar": "Mente du:",
+      "other_inflected": "«{word}» er også en form av:",
+      "did_you_mean": "Mente du:",
+      "similar": "Lignende oppslagsord:",
       "similar_bm": "Legg til lignende treff fra Bokmålsordboka: ",
       "similar_nn": "Legg til lignende treff fra Nynorskordboka: ",
       "search": "Søk i ordbøkene",

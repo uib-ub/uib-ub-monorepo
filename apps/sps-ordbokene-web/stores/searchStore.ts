@@ -4,7 +4,6 @@ export const useStore = defineStore('store', {
     state: () => ({
       q:"",
       input: "",
-      originalInput: "",
       selected: {},
       scope: "ei",
       pos: "",

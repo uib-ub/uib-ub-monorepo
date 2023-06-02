@@ -4,7 +4,7 @@
 
     <div ref="results"  v-if="store.view != 'suggest' && !pending && !error && articles && articles.meta" >
     <div tabindex="0" aria-live="polite" role="status" ref="announcement" class="announcement lg:sr-only pb-2 pl-1 text-gray-900 text-md" v-bind:class="{'sr-only': !store.advanced}">
-      <div class="sr-only" v-if="store.originalInput">Viser resultater for oppslagsordet <strong>{{$route.params.slug[0]}}.</strong></div>
+      <div class="sr-only" v-if="route.query.orig">{{$t('notifications.redirect')}} <strong>{{$route.params.slug[0]}}.</strong></div>
     <span v-if="articles.meta.bm"><div></div>{{$t('notifications.results', {count: articles.meta.bm.total})+$t("in")+$t('dicts_inline.bm')}}</span>
     <span v-if="articles.meta.nn && articles.meta.bm"> | </span>
     <span v-if="articles.meta.nn">{{$t('notifications.results', {count: articles.meta.nn.total})+$t("in")+$t('dicts_inline.nn')}}</span>
@@ -17,7 +17,7 @@
 
     <div class="gap-3 lg:gap-8 grid lg:grid-cols-2" v-if="route.query.dict == 'bm,nn' ">
       <section class="lg:grid-cols-6" :aria-label="$t('dicts.bm')">
-        <div class="hidden lg:inline-block p-2"><h2 class="lg:inline-block">Bokmålsordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span><span v-if="(articles.meta.bm.total > 1)" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
           <span v-else-if="articles.meta.bm.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
           <div v-if="listView" class="inline-block lg:hidden"><h2>Bokmålsordboka</h2></div>
@@ -30,7 +30,7 @@
         </component>
       </section>
       <section class="lg:grid-cols-6" :aria-label="$t('dicts.nn')">
-        <div class="hidden lg:inline-block p-2"><h2 class="lg:inline-block">Nynorskordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span><span v-if="articles.meta.nn.total>1" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
           <span v-else-if="articles.meta.nn.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
           <div  v-if="listView" class="inline-block lg:hidden"><h2>Nynorskordboka</h2></div>
@@ -47,7 +47,7 @@
     
     <div v-if="route.query.dict != 'bm,nn' ">
       <div v-if="route.query.dict == 'bm' && articles.meta.bm">
-        <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Bokmålsordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span v-if="(articles.meta.bm.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
         </div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
@@ -59,7 +59,7 @@
         </component>
       </div>
       <div v-if="(route.query.dict == 'nn' )  && articles.meta.nn">
-        <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Nynorskordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span v-if="(articles.meta.nn.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
         </div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
@@ -89,7 +89,9 @@
     ERROR: {{error}}
   </div> 
   <client-only>
-  <SuggestResults v-if="!pending" :suggestions="suggestions"/>
+    <div class="my-10">
+  <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar">{{$t('notifications.similar')}}</SuggestResults>
+    </div>
   </client-only>
 
 
@@ -107,7 +109,7 @@ const settings = useSettingsStore()
 const store = useStore()
 const route = useRoute()
 
-const suggestions = ref()
+const suggestions = ref({similar: []})
 const error_message = ref()
 const per_page = 10
 const page = ref(parseInt(route.query.page || "1"))
@@ -126,12 +128,12 @@ const listView = computed(() => {
 
 
 const get_suggestions = async () => {
-  if (!specialSymbols(store.q)) {
-  const response = await $fetch(`${store.endpoint}api/suggest?&q=${store.originalInput || route.query.q}&dict=${route.query.dict}${route.query.pos ? '&pos=' + route.query.pos : ''}&n=20&dform=int&meta=n&include=eis`)                                
-  suggestions.value = filterSuggestions(response, store.originalInput || store.q)
+  if (process.client && !specialSymbols(store.q)) {
+  const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.q}&dict=${route.query.dict}${route.query.pos ? '&pos=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=es`)                                
+  suggestions.value = filterSuggestions(response, store.q, store.q)
   }
   else {
-    suggestions.value = null
+    suggestions.value = {similar: []}
   } 
 }
 const { pending, error, refresh, data: articles } = await useFetch(() => `${store.endpoint}api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
