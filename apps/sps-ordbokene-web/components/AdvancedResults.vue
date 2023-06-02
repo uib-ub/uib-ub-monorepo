@@ -131,7 +131,7 @@ const get_suggestions = async () => {
   suggestions.value = filterSuggestions(response, store.q, store.q)
   }
   else {
-    suggestions.value = null
+    suggestions.value = {similar: []}
   } 
 }
 const { pending, error, refresh, data: articles } = await useFetch(() => `${store.endpoint}api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
