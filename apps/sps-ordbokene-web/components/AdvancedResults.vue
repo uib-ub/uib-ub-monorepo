@@ -17,7 +17,7 @@
 
     <div class="gap-3 lg:gap-8 grid lg:grid-cols-2" v-if="route.query.dict == 'bm,nn' ">
       <section class="lg:grid-cols-6" :aria-label="$t('dicts.bm')">
-        <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Bokmålsordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span><span v-if="(articles.meta.bm.total > 1)" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
           <span v-else-if="articles.meta.bm.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
           <div v-if="listView" class="inline-block lg:hidden"><h2>Bokmålsordboka</h2></div>
@@ -30,7 +30,7 @@
         </component>
       </section>
       <section class="lg:grid-cols-6" :aria-label="$t('dicts.nn')">
-        <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Nynorskordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span><span v-if="articles.meta.nn.total>1" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
           <span v-else-if="articles.meta.nn.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
           <div  v-if="listView" class="inline-block lg:hidden"><h2>Nynorskordboka</h2></div>
@@ -47,7 +47,7 @@
     
     <div v-if="route.query.dict != 'bm,nn' ">
       <div v-if="route.query.dict == 'bm' && articles.meta.bm">
-        <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Bokmålsordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span v-if="(articles.meta.bm.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
         </div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
@@ -59,7 +59,7 @@
         </component>
       </div>
       <div v-if="(route.query.dict == 'nn' )  && articles.meta.nn">
-        <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Nynorskordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span v-if="(articles.meta.nn.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
         </div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
