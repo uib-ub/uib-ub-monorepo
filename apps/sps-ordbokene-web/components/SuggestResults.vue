@@ -28,7 +28,7 @@ const suggest_link = (suggestion) => {
         return url
     }
     else {
-        let url = suggestion + "?orig=" + route.query.orig || store.q
+        let url = suggestion + "?orig=" + (route.query.orig || store.q)
 
         return url
     }
