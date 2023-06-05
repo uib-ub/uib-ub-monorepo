@@ -11,7 +11,7 @@
     "@nuxt/devtools": "^0.4.1",
     "@nuxtjs/tailwindcss": "^6.6.6",
     "@pinia-plugin-persistedstate/nuxt": "^1.0.0",
-    "nuxt": "~3.4.1",
+    "nuxt": "~3.5.1",
     "nuxt-icon": "^0.2.6"
   },
   "dependencies": {

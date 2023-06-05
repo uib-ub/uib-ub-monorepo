@@ -8,6 +8,7 @@
     <NuxtPage @click="menu_expanded=false" 
               v-bind:class="{'welcome': !store.q && (route.name == 'search' || route.name == 'dict')}"/>
 <Footer/>
+<img :src="baseUrl + 'logo.png'"/>
 </template>
 
 <script setup>
@@ -27,18 +28,20 @@ const keyboard_navigation = ref(false)
 
 console.log("CLIENT?",process.client)
 
+const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host +"/"
+
 useHead({
     titleTemplate: (titleChunk) => {
       return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
     },
     meta: [
       {name:"twitter:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
-      {name:"twitter:image" , content:"/logo.png"},
+      {name:"twitter:image" , content:"logo.png"},
       {name:"twitter:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
       {property:"og:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
       {property:"og:type" , content:"website"},
       {property:'og:site_name' , content:"ordbokene.no"},
-      {property:'og:image' , content: "/logo.png"},
+      {property:'og:image' , content: baseUrl + "logo.png"},
       {property:"og:image:width" , content:"256px"},
       {property:"og:image:height" , content:"256px"},
       {property:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
