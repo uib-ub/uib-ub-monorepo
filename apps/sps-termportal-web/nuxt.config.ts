@@ -1,6 +1,7 @@
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "url";
 import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
+import {v4 as uuidv4} from 'uuid';
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -18,6 +19,7 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    apiKey: uuidv4(),
     public: {
       endpointUrl:
         "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",
