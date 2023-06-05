@@ -1,7 +1,7 @@
 <template>
 <Head>
   <Meta property='og:site_name' content:="ordbokene.no"/>
-  <Meta property='og:image' content="../assets/logo.png"/>
+  <Meta property='og:image' content="assets/images/logo.png"/>
 </Head>
   <a ref="skip_link" class="bg-tertiary-darken1 text-center z-1000 text-anchor sr-only text-xl font-semibold underline w-full  !focus-within:p-2 focus:not-sr-only focus:absolute focus:min-w-screen" href="#main"> Til innhold</a>
   <Header/>
