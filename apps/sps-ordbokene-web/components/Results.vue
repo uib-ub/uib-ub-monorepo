@@ -128,24 +128,12 @@ const title = computed(()=> {
   return store.dict == "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
 })
 
-const description = computed(()=> {
-  let desc = ""
-  if (store.dict != "nn" && articles.value.meta.bm.total) {
-    desc += `${articles.value.meta.bm.total} oppslagsord i Bokmålsordboka. `
-  }
-  if (store.dict != "bm" && articles.value.meta.nn.total) {
-    desc += `${articles.value.meta.nn.total} oppslagsord i Nynorskordboka. `
-  }
-  return desc
-})
 
 
 useHead({
   title, 
   meta: [
-    {name: 'description', content: description},
-    {property: 'og:title', content: title },
-    {property: 'og:description', content: description }    
+    {property: 'og:title', content: title }, 
   ],
   link: [
     {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
