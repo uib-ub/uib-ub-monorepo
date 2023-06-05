@@ -8,7 +8,6 @@
     <NuxtPage @click="menu_expanded=false" 
               v-bind:class="{'welcome': !store.q && (route.name == 'search' || route.name == 'dict')}"/>
 <Footer/>
-<img :src="baseUrl + 'logo.png'"/>
 </template>
 
 <script setup>
