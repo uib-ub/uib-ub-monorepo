@@ -1,18 +1,4 @@
 <template>
-<Head>
-  <Meta property="twitter:title" content="Ordbøkene.no - Bokmålsordboka og Nynorskordboka" />
-  <Meta property="twitter:image" content="logo.png" />
-  <Meta property="twitter:description" content="Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene." />
-  <Meta property="og:title" content="Ordbøkene.no - Bokmålsordboka og Nynorskordboka" />
-  <Meta property="og:type" content="website" />
-  <Meta property='og:site_name' content:="ordbokene.no"/>
-  <Meta property='og:image' content="/assets/images/logo.png"/>
-  <Meta property="og:image:width" content="256px" />
-  <Meta property="og:image:height" content="256px" />
-  <Meta property="description" content="Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene." />
-
-</Head>
-URL: {{$config.public.baseUrl}}
   <a ref="skip_link" class="bg-tertiary-darken1 text-center z-1000 text-anchor sr-only text-xl font-semibold underline w-full  !focus-within:p-2 focus:not-sr-only focus:absolute focus:min-w-screen" href="#main"> Til innhold</a>
   <Header/>
 <div class="ord-container back-to-search justify-start my-2" v-if="['article', 'settings', 'about', 'help', 'contact'].includes($route.name)">
@@ -44,7 +30,20 @@ console.log("CLIENT?",process.client)
 useHead({
     titleTemplate: (titleChunk) => {
       return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
-    }
+    },
+    meta: [
+      {name:"twitter:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
+      {name:"twitter:image" , content:"assets/images/logo.png"},
+      {name:"twitter:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
+      {property:"og:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
+      {property:"og:type" , content:"website"},
+      {property:'og:site_name' , content:"ordbokene.no"},
+      {property:'og:image' , content: "assets/images/logo.png"},
+      {property:"og:image:width" , content:"256px"},
+      {property:"og:image:height" , content:"256px"},
+      {property:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
+      {name:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."}
+      ]
 })
 
 
