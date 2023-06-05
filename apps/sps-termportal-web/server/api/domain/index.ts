@@ -1,21 +1,26 @@
 export default defineEventHandler(async (event) => {
-  const url = useRuntimeConfig().public.endpointUrl;
-  const query = genDomainQuery(useRuntimeConfig().public.base);
+  const runtimeConfig = useRuntimeConfig();
+  // Check if event provides api key should be injected by server middleware
+  if (event.context.auth === runtimeConfig.apiKey) {
+    const url = runtimeConfig.public.endpointUrl;
+    const query = genDomainQuery(runtimeConfig.public.base);
+    try {
+      const data = await $fetch(url, {
+        method: "post",
+        body: query,
+        headers: {
+          "Content-type": "application/sparql-query",
+          Referer: "termportalen.no", // TODO Referer problem
+          Accept: "application/ld+json",
+        },
+      });
 
-  try {
-    const data = await $fetch(url, {
-      method: "post",
-      body: query,
-      headers: {
-        "Content-type": "application/sparql-query",
-        Referer: "termportalen.no", // TODO Referer problem
-        Accept: "application/ld+json",
-      },
-    });
-
-    return frameData(data, "skos:Concept", true).then((result) => {
-      delete result["@context"];
-      return identifyData(result["@graph"]);
-    });
-  } catch (e) {}
+      return frameData(data, "skos:Concept", true).then((result) => {
+        delete result["@context"];
+        return identifyData(result["@graph"]);
+      });
+    } catch (e) {}
+  } else {
+    return "Access denied.";
+  }
 });
