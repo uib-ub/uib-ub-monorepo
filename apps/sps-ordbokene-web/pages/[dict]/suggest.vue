@@ -15,9 +15,16 @@ import { useRoute } from 'vue-router'
 const store = useStore()
 const route = useRoute()
 
+
+
+
 definePageMeta({
   middleware: ['endpoint-middleware', 'dict-middleware']
   })
+
+useSeoMeta({
+  robots: "noindex"
+})
 
 const suggestions = ref({similar: []})  
 

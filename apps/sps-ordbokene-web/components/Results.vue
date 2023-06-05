@@ -84,17 +84,17 @@
 
 import { useStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
+import { useI18n } from 'vue-i18n'
 
 const settings = useSettingsStore()
 const store = useStore()
 const route = useRoute()
+const { t } = useI18n()
+const i18n = useI18n()
 
 const suggestions = ref({inflect: [], similar: []})
 const error_message = ref()
 
-const listView = computed(() => {
-  return store.q && store.view != "article" && settings.simpleListView && route.name == 'dict-slug'
-})
 
 const get_suggestions = async () => {
   if (process.client) {
@@ -102,6 +102,10 @@ const get_suggestions = async () => {
     suggestions.value = filterSuggestions(response, route.query.orig || store.q, store.q)
   }
 }
+onMounted(() => {
+    get_suggestions()    
+})
+
 
 const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
       $fetch(store.endpoint + 'api/articles?', {
@@ -119,9 +123,48 @@ const { pending, error, refresh, data: articles } = await useAsyncData("articles
           }
         }))
 
-onMounted(() => {
-    get_suggestions()    
+
+const title = computed(()=> {
+  return store.dict == "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
 })
+
+const description = computed(()=> {
+  let desc = ""
+  if (store.dict != "nn" && articles.value.meta.bm.total) {
+    desc += `${articles.value.meta.bm.total} oppslagsord i Bokmålsordboka. `
+  }
+  if (store.dict != "bm" && articles.value.meta.nn.total) {
+    desc += `${articles.value.meta.nn.total} oppslagsord i Nynorskordboka. `
+  }
+  return desc
+})
+
+
+useHead({
+  title, 
+  meta: [
+    {name: 'description', content: description},
+    {property: 'og:title', content: title },
+    {property: 'og:description', content: description }    
+  ],
+  link: [
+    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
+  ]
+  
+})
+
+
+
+
+const listView = computed(() => {
+  return store.q && store.view != "article" && settings.simpleListView && route.name == 'dict-slug'
+})
+
+
+
+
+
+
 
 const article_error = (error, article, dict) => {
   console.log("ARTICLE_ERROR", article, dict)

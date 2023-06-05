@@ -1,4 +1,8 @@
 <template>
+<Head>
+  <Meta property='og:site_name' content:="ordbokene.no"/>
+  <Meta property='og:image' content="../assets/logo.png"/>
+</Head>
   <a ref="skip_link" class="bg-tertiary-darken1 text-center z-1000 text-anchor sr-only text-xl font-semibold underline w-full  !focus-within:p-2 focus:not-sr-only focus:absolute focus:min-w-screen" href="#main"> Til innhold</a>
   <Header/>
 <div class="ord-container back-to-search justify-start my-2" v-if="['article', 'settings', 'about', 'help', 'contact'].includes($route.name)">
