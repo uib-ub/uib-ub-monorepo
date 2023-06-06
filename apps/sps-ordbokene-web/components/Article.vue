@@ -119,7 +119,7 @@ const listView = computed(() => {
   return store.q && store.view != 'article' &&  (store.advanced ? settings.listView && route.name == 'search' : settings.simpleListView && route.name == 'dict-slug')
 })
 
-const { pending, data, error } = useAsyncData('article_'+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
+const { pending, data, error } = useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
                                                                                         {
                                                                                             async onResponseError({ request, response, options }) {
                                                                                                 // TODO: plausible logging, error message if article view
