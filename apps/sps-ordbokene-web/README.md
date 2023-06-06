@@ -1,11 +1,11 @@
 # Ordbøkene: nuxt
 :warning: Git history not transferred from previous repos :warning:
-Before migration to monorepo:
-https://git.app.uib.no/spraksamlingane/ordbok-nuxt/-/tree/main
+## Before migration to monorepo
+<p>https://git.app.uib.no/spraksamlingane/ordbok-nuxt/-/tree/main</p>
 
-Before migration to Nuxt:
-https://git.app.uib.no/spraksamlingane/beta.ordbok.uib.no (Mainly developed by Ole Voldsæter and Henrik Askjer)
-https://git.app.uib.no/spraksamlingane/vue-inflection (Mainly developed by Ole Voldsæter and Paul Maurer)
+## Before migration to Nuxt
+* https://git.app.uib.no/spraksamlingane/beta.ordbok.uib.no (Mainly developed by Ole Voldsæter and Henrik Askjer)
+* https://git.app.uib.no/spraksamlingane/vue-inflection (Mainly developed by Ole Voldsæter and Paul Maurer)
 
 
 ## New features
