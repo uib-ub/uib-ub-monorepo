@@ -120,6 +120,18 @@
         "NEXT_PUBLIC_SANITY_PROJECT_ID"
       ]
     },
+    "dev#experimental-api": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "PORT",
+        "ES_HOST",
+        "ES_APIKEY",
+        "ES_PATH"
+      ]
+    },
     "deploy": {
       "cache": false,
       "dependsOn": []

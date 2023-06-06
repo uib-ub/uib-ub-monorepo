@@ -4,8 +4,9 @@ import inquirer from 'inquirer';
 import { performance } from 'perf_hooks';
 import { Client } from '@elastic/elasticsearch';
 import { Transport } from '@elastic/transport';
-;
+
 dotenv.config();
+
 const { ES_HOST, ES_APIKEY, ES_PATH, NODE_ENV } = process.env
 const API = NODE_ENV === 'production' ? 'https://api-ub.vercel.app' : 'http://localhost:3009'
 // store index name

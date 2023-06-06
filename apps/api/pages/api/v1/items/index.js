@@ -52,14 +52,17 @@ export default async function handler(req, res) {
       // Deal with response
       if (response.status >= 200 && response.status <= 299) {
         const result = await response.json()
-        // console.log("🚀 ~ file: index.js:54 ~ handler ~ result:", result)
         delete result['@context']
         const data = result['@graph'].map((item) => {
-          item['@id'] = item.id
-          item.id = `https://api-ub.vercel.app/items/${item.identifier['@value'] ?? item.identifier}`
+          item.identifier = item['dct:identifier' ?? 'identifier']['@value'] ?? item['dct:identifier' ?? 'identifier']
+          item.id = `https://api-ub.vercel.app/items/${item['dct:identifier' ?? 'identifier']['@value'] ?? item['dct:identifier' ?? 'identifier']}`
+          delete item['dct:identifier']['@value']
+          delete item['dct:identifier']
           delete item['@id']
           return item
         })
+
+        console.log('I was called')
 
         res.status(200).json(data)
       } else {
