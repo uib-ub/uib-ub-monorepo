@@ -243,7 +243,11 @@ const lemma_groups = computed(() => {
     let groups = [{lemmas: data.value.lemmas}]
       try {
         if (data.value.lemmas[0].paradigm_info[0].tags[0] == "DET" && data.value.lemmas[0].paradigm_info[0].tags.length > 1) {
-          groups = [{description: t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], {locale: content_locale}), pos_group: t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: content_locale}), lemmas: data.value.lemmas}]
+          groups = [{description: t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], {locale: content_locale}), 
+                     pos_group: ["Quant", "Dem", "Poss"].includes(data.value.lemmas[0].paradigm_info[0].tags[1]) ? 
+                                                                  t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: content_locale}) 
+                                                                  : '', 
+                    lemmas: data.value.lemmas}]
         }
         else if (data.value.lemmas[0].paradigm_info[0].tags[0] == 'NOUN') {
             let genus_map  = {}
