@@ -14,5 +14,5 @@
     - Simple search: redirects to inflected result if no exact matches
     - Advanced search: all additional query parameters moved here, wildcards, pagination.
 * Vuetify => TailwindCSS with custom components
- - Custom search bar/autocomplete
- - New styling closer to the design from Netlife (since we no longer depend on Vuetify and Meterial Design)
+    - Custom search bar/autocomplete
+    - New styling closer to the design from Netlife (since we no longer depend on Vuetify and Meterial Design)
