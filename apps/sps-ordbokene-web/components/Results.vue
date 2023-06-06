@@ -138,7 +138,6 @@ useHead({
   link: [
     {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
   ]
-  
 })
 
 

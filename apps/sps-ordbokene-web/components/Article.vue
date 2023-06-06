@@ -387,18 +387,25 @@ const snippet = computed(() => {
   
 })
 
+const title = computed(() => {
+  return data.value.lemmas[0].lemma
+})
+
 
 if (store.view == 'article') {
   useHead({
+    title: title,
     meta: [
-      {
-        name: 'description',
-        content: snippet,
-      },
+      {name: 'description', content: snippet },
+      {property: 'og:title', content: title },
+      {property: 'og:description', content: snippet },
+      {name: 'twitter:description', content: snippet }  
     ],
+    link: [
+    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
+  ]
   });
 }
-
 
 
 </script>
