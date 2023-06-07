@@ -136,7 +136,7 @@ useHead({
     {property: 'og:title', content: title }, 
   ],
   link: [
-    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
+    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.q}`}
   ]
 })
 
