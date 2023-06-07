@@ -27,18 +27,18 @@ const route = useRoute()
 
 definePageMeta({
     middleware: ['endpoint-middleware',
-    function (to, from) {
-      console.log("TO", to)
-      const store = useStore()
-      let query = to.params.q || to.query.q
-      if (query) {
-        store.q = query
-        store.input = to.params.orig || query
-      }
-
-    },
-  ]
-})
+      function (to, from) { // Sync store with routing
+        const store = useStore()
+        store.dict = to.params.dict
+        let query = to.params.q || to.query.q
+        if (query) {
+          store.q = query
+          console.log("ORIG", to.query)
+          store.input = to.query.orig || query
+        }
+      },
+    ]
+  })
 
 useHead({
   link: [
