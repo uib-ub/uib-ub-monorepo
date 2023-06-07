@@ -403,7 +403,8 @@
       "@id": "ubbont:Supplication"
     },
     "long": {
-      "@id": "wgs:long"
+      "@id": "wgs:long",
+      "@type": "xsd:float"
     },
     "UserGenereatedContent": {
       "@id": "ubbont:UserGenereatedContent"
@@ -1060,7 +1061,8 @@
       "@id": "ubbont:kulturnavId"
     },
     "lat": {
-      "@id": "wgs:lat"
+      "@id": "wgs:lat",
+      "@type": "xsd:float"
     },
     "originPlace": {
       "@id": "ubbont:originPlace",
