@@ -1,6 +1,6 @@
 <template>
 <div class="py-1">
-<form  @submit.prevent="submitForm" ref="form" action="">
+<form  @submit.prevent="submitForm" ref="form" :action="route.dict">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete v-on:dropdown-submit="submitForm"/>
 </NuxtErrorBoundary>

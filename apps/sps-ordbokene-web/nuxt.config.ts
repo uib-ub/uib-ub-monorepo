@@ -47,21 +47,10 @@ export default defineNuxtConfig({
           {
             name: 'welcome',
             path: '',
+            alias: 'search', //legacy
             file: '~/custom-pages/welcome-view.vue'
           }
         ]
-      })
-      pages.push({
-        path: "/suggest",
-        file: '~/custom-pages/dict-view.vue',
-        children: [
-          {
-            name: "suggest",
-            path: "",
-            file: '~/custom-pages/suggest-view.vue'
-          }
-        ]
-
       })
     }
   },
