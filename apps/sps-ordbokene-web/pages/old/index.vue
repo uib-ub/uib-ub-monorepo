@@ -9,7 +9,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['endpoint-middleware', 'dict-middleware']
+  middleware: ['endpoint-middleware']
 })
 </script>
 

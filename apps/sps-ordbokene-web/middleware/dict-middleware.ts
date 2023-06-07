@@ -2,7 +2,7 @@ import { useStore } from '~/stores/searchStore'
 
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    //console.log("MIDDLEWARE\nFROM: ", from, "\nTO: ", to, "\nREDIRECTED FROM:",to.redirectedFrom)
+    console.log("DICT MIDDLEWARE\nFROM: ", from, "\nTO: ", to, "\nREDIRECTED FROM:",to.redirectedFrom)
     const store = useStore()
     if (to.params.slug) {
         // Articles

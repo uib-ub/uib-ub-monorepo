@@ -44,8 +44,9 @@
         <div v-else>
           
         <h2 v-if="welcome" class="dict-label">{{$t('monthly', 1, { locale: content_locale}) + {"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
-        <h2 v-else-if="store.view != 'article'" class="dict-label lg:hidden d-block">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
-        <h2 v-else-if="store.view == 'article'" class="article-dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
+        <h2 v-else-if="single" class="article-dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
+        <h2 v-else class="dict-label lg:hidden d-block">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
+        
         <div :class="welcome? 'px-4 pb-6 pt-4' : 'px-4 pt-4 pb-2'">
 
         <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict"/>
@@ -112,11 +113,12 @@ const route = useRoute()
 const props = defineProps({
     article_id: Number,
     dict: String,
-    welcome: Boolean
+    welcome: Boolean,
+    single: Boolean
 })
 
 const listView = computed(() => {
-  return store.q && store.view != 'article' &&  (store.advanced ? settings.listView && route.name == 'search' : settings.simpleListView && route.name == 'dict-slug')
+  return store.q && !single &&  (store.advanced ? settings.listView && route.name == 'search' : settings.simpleListView && route.name == 'word')
 })
 
 const { pending, data, error } = useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
@@ -396,7 +398,7 @@ const title = computed(() => {
 })
 
 
-if (store.view == 'article') {
+if (props.single) {
   useHead({
     title: title,
     meta: [
@@ -406,7 +408,7 @@ if (store.view == 'article') {
       {name: 'twitter:description', content: snippet }  
     ],
     link: [
-    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
+    {rel: "canonical", href: `https://ordbokene.no/${props.dict}/${route.params.slug[0]}`}
   ]
   });
 }

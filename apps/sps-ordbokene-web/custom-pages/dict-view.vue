@@ -3,6 +3,9 @@
   <SearchNav v-if="!store.advanced"/>
     <NuxtErrorBoundary @error="form_error">
     <SearchForm v-if="!store.advanced" class="ord-container"/>
+    <div v-if="route.name == 'article' && store.searchUrl" class="ord-container back-to-search justify-start my-2">
+      <NuxtLink :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
+    </div>
   </NuxtErrorBoundary>
 
   
@@ -22,6 +25,10 @@ import { useStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 const store = useStore()
 const route = useRoute()
+
+definePageMeta({
+    middleware: ['endpoint-middleware']
+  })
 
 useHead({
   link: [

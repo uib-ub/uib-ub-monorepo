@@ -2,7 +2,7 @@ import { useStore } from '~/stores/searchStore'
 
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    //console.log("MIDDLEWARE\nFROM: ", from, "\nTO: ", to, "\nREDIRECTED FROM:",to.redirectedFrom)
+    console.log("SEARCH MIDDLEWARE\nFROM: ", from, "\nTO: ", to, "\nREDIRECTED FROM:",to.redirectedFrom)
     const store = useStore()
         // Redirect old links to advanced search
     if (to.query.scope) {
