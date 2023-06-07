@@ -44,25 +44,23 @@ export default async function handler(req, res) {
 
   switch (method) {
     case 'GET':
+      console.log('I was called')
       const url = 'https://sparql.ub.uib.no/sparql/query?query='
 
       const response = await getObject(url, page, limit)
-      // console.log("🚀 ~ file: index.js:65 ~ handler ~ page:", page)
 
       // Deal with response
       if (response.status >= 200 && response.status <= 299) {
         const result = await response.json()
         delete result['@context']
         const data = result['@graph'].map((item) => {
-          item.identifier = item['dct:identifier' ?? 'identifier']['@value'] ?? item['dct:identifier' ?? 'identifier']
-          item.id = `https://api-ub.vercel.app/items/${item['dct:identifier' ?? 'identifier']['@value'] ?? item['dct:identifier' ?? 'identifier']}`
+          item.id = item['dct:identifier' ?? 'identifier']['@value'] ?? item['dct:identifier' ?? 'identifier']
+          item.url = `https://api-ub.vercel.app/items/${item['dct:identifier' ?? 'identifier']['@value'] ?? item['dct:identifier' ?? 'identifier']}`
           delete item['dct:identifier']['@value']
           delete item['dct:identifier']
           delete item['@id']
           return item
         })
-
-        console.log('I was called')
 
         res.status(200).json(data)
       } else {

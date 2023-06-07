@@ -11,7 +11,7 @@ const { performIndexing } = require('./ingester.js');
 
 /** @type {ServiceSchema} */
 module.exports = {
-	name: "indexer",
+	name: "ingester",
 
 	/**
 	 * Settings
@@ -42,19 +42,31 @@ module.exports = {
 			rest: "POST /ingest",
 			params: {
 				index: "string",
-				page: undefined || "number",
-				limit: undefined || "number"
+				page: {
+					type: "number",
+					optional: true
+				},
+				limit: {
+					type: "number",
+					optional: true
+				}
 			},
-			timeout: -1,
+			timeout: 0,
+			retries: 0,
+			visibility: "published",
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-				const { index, page, limit } = ctx.params;
-				const data = await performIndexing(index, page, limit);
-				if (data) {
-					ctx.meta.$statusCode = 200
-					return data
+				const { index, page = 0, limit } = ctx.params;
+				try {
+					const data = await performIndexing(index, page, limit);
+					if (data) {
+						ctx.meta.$statusCode = 200
+						return data
+					}
+				} catch (error) {
+					ctx.meta.$statusCode = 400
+					return error
 				}
-				return ctx.meta.$statusCode = 400
 			}
 		}
 	},

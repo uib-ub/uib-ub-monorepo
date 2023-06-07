@@ -129,7 +129,9 @@
         "PORT",
         "ES_HOST",
         "ES_APIKEY",
-        "ES_PATH"
+        "ES_PATH",
+        "MARCUS_API",
+        "SKA_API"
       ]
     },
     "deploy": {
