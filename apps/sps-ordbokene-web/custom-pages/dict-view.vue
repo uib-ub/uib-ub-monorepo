@@ -26,8 +26,19 @@ const store = useStore()
 const route = useRoute()
 
 definePageMeta({
-    middleware: ['endpoint-middleware']
-  })
+    middleware: ['endpoint-middleware',
+    function (to, from) {
+      console.log("TO", to)
+      const store = useStore()
+      let query = to.params.q || to.query.q
+      if (query) {
+        store.q = query
+        store.input = to.params.orig || query
+      }
+
+    },
+  ]
+})
 
 useHead({
   link: [
