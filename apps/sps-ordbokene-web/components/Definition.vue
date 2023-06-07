@@ -41,7 +41,6 @@ const highlighted = ref(false)
 
 
 onMounted(() => {
-  console.log('myheader mounted');
   if (route && route.hash && route.hash.slice(1) == 'def' + props.body.id) {
     highlighted.value = true
   }

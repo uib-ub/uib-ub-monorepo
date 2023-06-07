@@ -1,6 +1,6 @@
 <template>
 <div class="py-1">
-<form  @submit.prevent="submitForm" ref="form">
+<form  @submit.prevent="submitForm" ref="form" action="">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete v-on:dropdown-submit="submitForm"/>
 </NuxtErrorBoundary>
@@ -17,13 +17,25 @@ const route = useRoute()
 
 const submitForm = async (item) => {
   if (store.input) {
-    console.log("SUBMITTED")
     store.show_autocomplete = false
-    let url = '/' + store.dict
-    url += '/search?q='+store.input
     store.q = store.input
 
-    return navigateTo(url)
+    let { exact, inflect } = store.suggest
+    
+    if (exact) {
+        if (exact[0][0].length == store.q.length) {
+            let redirectUrl = `/${store.dict}/${exact[0][0]}`
+            if (exact[0][0] != store.q) redirectUrl += `?orig=${store.q}`
+            return navigateTo(redirectUrl)
+        }
+    }
+    if (inflect) {
+        return navigateTo(`/${store.dict}/${inflect[0][0]}?orig=${store.q}`)
+    }
+
+
+    navigateTo(`/${route.params.dict}?q=${store.q}`)
+    //navigateTo(`/${route.params.dict}/${store.q}`)
   }
   
 }

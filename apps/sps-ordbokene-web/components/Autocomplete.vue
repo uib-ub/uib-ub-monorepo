@@ -48,7 +48,7 @@ async function fetchAutocomplete(q) {
     if (!pattern) {
 
       let response = ref([])
-      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${store.advanced ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'e'}`
+      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${store.advanced ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
       response.value = await $fetch(url)
 
       // prevent suggestions after submit
@@ -70,6 +70,7 @@ async function fetchAutocomplete(q) {
         if (autocomplete_suggestions.length && store.input.trim() == q && q != store.q) {
 
           store.autocomplete = autocomplete_suggestions
+          store.suggest = response.value.a
           store.show_autocomplete = true;
         }
         else {
@@ -214,6 +215,7 @@ if (process.client) {
           ref="input_element" 
           @input="input_sync"
           role="combobox" 
+          name="q"
           :aria-activedescendant="selected_option >= 0 ? 'autocomplete-item-'+selected_option : null"
           aria-autocomplete="list"
           aria-haspopup="listbox"
