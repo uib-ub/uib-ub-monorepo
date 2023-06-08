@@ -54,15 +54,14 @@ const dict_click = (dict) => {
     })
     
     const dict_link = ((dict) => {
-      
-      let url = `/${dict}`
-      if (!store.articles.articles || !store.articles.articles[dict]) {
-        return url + `?q=${route.query.orig || store.q}`
+      let url = "/" + dict
+      if (route.query.orig) {
+        url += "/" + route.query.orig
       }
-      else {
-        return url + "/" + store.q
+      else if (store.q) {
+        url += "/" + store.q
       }
-      
+        return url
     })
 
 </script>

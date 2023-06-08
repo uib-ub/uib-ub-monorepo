@@ -1,14 +1,13 @@
 <template>
-<div>
+<keep-alive>
 <Welcome v-if="!$route.query.q"/>
-</div>
+</keep-alive>
 </template>
 
 <script setup>
 definePageMeta({
     middleware: [
       function (to, from) { // Sync store with routing
-      console.log("INTERCEPTED", to.)
         if (to.query.q) {
           return `/${to.params.dict}/${to.query.q}`
         }

@@ -1,6 +1,6 @@
 <template>
-    <div class="list-view-item" v-if="listView">
-        <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
+    <div class="list-view-item" v-if="listView && !welcome">
+        <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/>here<div class="skeleton skeleton-content w-50"/></span>
         <NuxtLink v-else class="result-list-item" :to="link_to_self()">
 
     <div v-for="(lemma_group, i) in lemma_groups" :key="i">
@@ -30,7 +30,7 @@
     </NuxtLink>
   </div>
     <div class="article lg:pt-1" v-else-if="!error">
-        <div v-if="pending" class="skeleton-container">
+        <div v-if="pending && !welcome" class="skeleton-container">
             <div class="skeleton mt-4 skeleton-heading"/>
         <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
         <div class="skeleton skeleton-content w-50 "/>
