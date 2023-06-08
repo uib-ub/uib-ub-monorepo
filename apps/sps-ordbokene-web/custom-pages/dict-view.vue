@@ -36,7 +36,7 @@ watch(() => route.query.q, () => {
 })
 
 definePageMeta({
-    middleware: ['endpoint-middleware',
+    middleware: [
       function (to, from) { // Sync store with routing
         const store = useStore()
         store.dict = to.params.dict
