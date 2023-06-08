@@ -116,7 +116,7 @@ useHead({
 
 
 const listView = computed(() => {
-  return store.q && store.view != "article" && settings.simpleListView && route.name == 'dict-slug'
+  return store.q && settings.simpleListView
 })
 
 
