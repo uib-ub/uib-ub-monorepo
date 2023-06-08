@@ -178,19 +178,6 @@ h1 {
 
 }
 
-
-.brand-title {
-  font-size: 2rem;
-  margin-bottom: 0.125rem;
-}
-
-.brand-subtitle {
-  margin-left: 0.125rem;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-
-
 ::selection {
   background-color: theme(colors.secondary.DEFAULT);
   @apply text-white bg-secondary;
