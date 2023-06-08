@@ -1,5 +1,5 @@
 <template>
-<div class="py-1">
+<div class="pt-1 pb-2 lg:pb-1">
 <form  @submit.prevent="submitForm" ref="form" :action="'/' + store.dict || 'bm,nn'">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete v-on:dropdown-submit="submitForm"/>
