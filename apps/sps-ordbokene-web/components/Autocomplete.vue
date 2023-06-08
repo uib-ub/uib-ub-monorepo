@@ -53,6 +53,7 @@ async function fetchAutocomplete(q) {
 
       // prevent suggestions after submit
       if (q == store.input) {
+        store.suggest = response.value.a
         let autocomplete_suggestions = []
         if (store.input.trim() == q && response.value.a.exact) {
           let { exact, inflect, freetext } = response.value.a
@@ -70,7 +71,6 @@ async function fetchAutocomplete(q) {
         if (autocomplete_suggestions.length && store.input.trim() == q && q != store.q) {
 
           store.autocomplete = autocomplete_suggestions
-          store.suggest = response.value.a
           store.show_autocomplete = true;
         }
         else {

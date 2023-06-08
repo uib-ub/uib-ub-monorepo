@@ -67,13 +67,6 @@
   <div v-if="error" aria-live="">
     ERROR: {{error}}
   </div>
-  <client-only>
-  <div class="my-10">
-  <SuggestResults v-if="!pending && suggestions.inflect" :suggestions="suggestions.inflect">{{$t('notifications.other_inflected', {word: route.query.orig || store.q})}}</SuggestResults>
-  <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar">{{$t('notifications.similar')}}</SuggestResults>
-  </div>
-  </client-only>
-
 
 </div>
 
@@ -91,21 +84,7 @@ const store = useStore()
 const route = useRoute()
 const { t } = useI18n()
 const i18n = useI18n()
-
-const suggestions = ref({inflect: [], similar: []})
 const error_message = ref()
-
-
-const get_suggestions = async () => {
-  if (process.client) {
-    const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${store.dict}&n=10&dform=int&meta=n&include=eis`)                                
-    suggestions.value = filterSuggestions(response, route.query.orig || store.q, store.q)
-  }
-}
-onMounted(() => {
-    get_suggestions()    
-})
-
 
 const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
       $fetch(store.endpoint + 'api/articles?', {
@@ -116,10 +95,6 @@ const { pending, error, refresh, data: articles } = await useAsyncData("articles
           },
           onRequestError({ request, options, error}) {
             console.log("ERROR")
-          },
-
-          onResponse({ request, options, response }) {
-            get_suggestions()
           }
         }))
 
@@ -127,7 +102,6 @@ const { pending, error, refresh, data: articles } = await useAsyncData("articles
 const title = computed(()=> {
   return store.dict == "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
 })
-
 
 
 useHead({
@@ -141,15 +115,9 @@ useHead({
 })
 
 
-
-
 const listView = computed(() => {
   return store.q && store.view != "article" && settings.simpleListView && route.name == 'dict-slug'
 })
-
-
-
-
 
 
 

@@ -48,35 +48,20 @@ const dict_click = (dict) => {
     
     
     const advanced_link = computed(() => {
-      if (route.name == 'search') {
-        return route.fullPath
-      }
-      else {
-        let url = route.fullPath
-        if (route.name == 'dict' || route.name == 'dict-suggest') {
-          return `/search`
-        }
-        else if (route.name == "dict-slug") {
-          return  `/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`
-        }
-        else {
-          return url
-        }
-      }
+       return  `?q=${store.q}&dict=${store.dict}&scope=${store.scope}`
+      
       
     })
     
     const dict_link = ((dict) => {
       
-      let url = `/${dict}/`
-
-      if (!store.q || specialSymbols(store.q)) {
-        return  url
+      let url = `/${dict}`
+      if (!store.articles.articles || !store.articles.articles[dict]) {
+        return url + `?q=${route.query.orig || store.q}`
       }
       else {
-        url += `search?q=${route.query.orig || store.q}`
+        return url + "/" + store.q
       }
-      return url
       
     })
 

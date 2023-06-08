@@ -107,21 +107,18 @@ onMounted(() => {
 })
 
 
-const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
-      $fetch(store.endpoint + 'api/articles?', {
-          params: {
-            w: store.q,
-            dict: store.dict,
-            scope: 'e',
-          },
+const { pending, error, refresh, data: articles } = await useFetch(`${store.endpoint}/api/articles?w=${store.q}&dict=${store.dict}&scope=e`, {
           onRequestError({ request, options, error}) {
             console.log("ERROR")
           },
 
           onResponse({ request, options, response }) {
+            console.log("RESPONSE", response)
             get_suggestions()
+            
           }
-        }))
+})
+
 
 
 const title = computed(()=> {

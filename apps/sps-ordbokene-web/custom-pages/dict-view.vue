@@ -14,6 +14,7 @@
   <NuxtErrorBoundary @error="content_error">
     <NuxtPage/>
   </NuxtErrorBoundary>
+  <Suggest v-if="store.q"/>
     </div>
   </section>
 
@@ -25,6 +26,15 @@ import { useStore } from '~/stores/searchStore'
 const store = useStore()
 const route = useRoute()
 
+
+watch(() => route.query.q, () => {
+  console.log("NAVIGATING")
+  if (route.query.q) {
+    store.q = route.query.q
+    navigateTo(store.dict + "/" + route.query.q)
+  }
+})
+
 definePageMeta({
     middleware: ['endpoint-middleware',
       function (to, from) { // Sync store with routing
@@ -33,7 +43,6 @@ definePageMeta({
         let query = to.params.q || to.query.q
         if (query) {
           store.q = query
-          console.log("ORIG", to.query)
           store.input = to.query.orig || query
         }
       },
@@ -52,51 +61,5 @@ const form_error = (error) => {
 const content_error = (error) => {
   console.log("CONTENT ERROR", error)
 }
-
-const dict_click = (dict) => {
-  store.advanced = false
-  store.dict = dict
-  if (store.q != store.input) {
-    store.input = store.q
-  }
-}
-
-
-const advanced_link = computed(() => {
-  if (store.advanced) {
-    return route.fullPath
-  }
-  else {
-    let url = route.fullPath
-    if (route.name == 'dict') {
-      return `/${store.dict}?scope=${store.scope}`
-    }
-    else if (route.name == "dict-slug") {
-      return  `/${store.dict}/search?q=${store.q}&scope=${store.scope}`
-    }
-    else if (!route.query.scope) {
-      return url + "&scope=" + store.scope
-
-    }
-    else {
-      return url
-    }
-  }
-  
-})
-
-const dict_link = ((dict) => {
-  let url = `/${dict}/`
-  if (specialSymbols(store.q)) {
-    return  url
-  }
-  if (store.q) {
-    url = url + 'search?q=' + store.q
-  }
-  return url
-  
-})
-
-
 
 </script>
