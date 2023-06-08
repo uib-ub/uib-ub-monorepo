@@ -10,7 +10,7 @@
 import { useStore } from '~/stores/searchStore'
 const store = useStore()
 const route = useRoute()
-const { pending, data } = await useFetch(() =>  `${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${route.params.dict}&n=10&dform=int&meta=n&include=eis`)
+const { pending, data } = useFetch(() =>  `${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${route.params.dict}&n=10&dform=int&meta=n&include=eis`)
 
 const inflect = computed(() => {
     return data.value.a.inflect ? data.value.a.inflect.filter(item => 
@@ -19,7 +19,6 @@ const inflect = computed(() => {
 })
 
 const similar = computed(() => {
-    console.log("SIMILAR", store.q, route.query.orig)
     let assembled = []
     if (data.value.exact) {
         assembled = data.value.a.exact.filter(item => 
@@ -31,7 +30,8 @@ const similar = computed(() => {
     if (data.value.a.similar) {
         assembled = assembled.concat(
             data.value.a.similar.filter(item => 
-            item[0][0] != '-'
+            item[0] != store.q
+            && item[0][0] != '-'
             && item[0].slice(-1) != '-')
         )
 
