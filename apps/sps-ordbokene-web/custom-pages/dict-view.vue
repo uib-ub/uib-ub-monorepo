@@ -44,6 +44,7 @@ definePageMeta({
         if (query) {
           store.q = query
           store.input = to.query.orig || query
+          store.searchUrl = to.fullPath
         }
       },
     ]

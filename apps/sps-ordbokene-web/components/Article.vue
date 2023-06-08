@@ -91,6 +91,7 @@
         </div>
         </NuxtErrorBoundary>
         <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
+        <div v-else class="text-right"><NuxtLink :to="link_to_self()">{{$t('article.show')}}</NuxtLink></div>
 
         
     </div>
@@ -408,7 +409,7 @@ if (props.single) {
       {name: 'twitter:description', content: snippet }  
     ],
     link: [
-    {rel: "canonical", href: `https://ordbokene.no/${props.dict}/${route.params.slug[0]}`}
+    {rel: "canonical", href: `https://ordbokene.no/${props.dict}/${route.params.article_id}`}
   ]
   });
 }

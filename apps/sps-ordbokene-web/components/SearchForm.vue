@@ -1,6 +1,5 @@
 <template>
 <div class="py-1">
-  {{store.suggest}}
 <form  @submit.prevent="submitForm" ref="form" :action="'/' + store.dict || 'bm,nn'">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete v-on:dropdown-submit="submitForm"/>
