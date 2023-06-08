@@ -8,7 +8,6 @@
     <NuxtPage @click="menu_expanded=false" 
               v-bind:class="{'welcome': !store.q && route.name == 'welcome'}"/>
 <Footer/>
-HER
 {{store.concepts_nn["jf"]}}
 {{store.concepts_bm["jf"]}}
 </template>

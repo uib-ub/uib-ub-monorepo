@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     'pages:extend' (pages) {
       pages.push({
         path: '/:dict(bm|nn|bm,nn)',
-        file: '~/custom-pages/dict-view.vue',
+        file: '~/custom-pages/view-container.vue',
         children: [
           {
             name: 'article',
