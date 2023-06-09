@@ -330,11 +330,11 @@ section a, .secondary-page a  {
   display: inline;
 }
 
-.article section.etymology li:not(:first-child):not(:last-child):before, section.pronunciation li:not(:first-child):not(:last-child):before {
+.article section.etymology>span:not(:first-child):not(:nth-child(2)):not(:last-child):before, section.pronunciation>span:not(:first-child):not(:nth-child(2)):not(:last-child):before {
   content: ", ";
 }
 
-.article section.etymology li:not(:first-child):last-child:before, section.pronunciation li:not(:first-child):last-child:before {
+.article section.etymology>span:not(:first-child):last-child:before, section.pronunciation>span:not(:first-child):last-child:before {
   content: "; ";
   font-size: smaller;
 }
