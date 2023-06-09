@@ -330,16 +330,6 @@ section a, .secondary-page a  {
   display: inline;
 }
 
-.article section.etymology>span:not(:first-child):not(:nth-child(2)):not(:last-child):before, section.pronunciation>span:not(:first-child):not(:nth-child(2)):not(:last-child):before {
-  content: ", ";
-}
-
-.article section.etymology>span:not(:first-child):last-child:before, section.pronunciation>span:not(:first-child):last-child:before {
-  content: "; ";
-  font-size: smaller;
-}
-
-
 
 li.level1.definition {
   list-style: upper-alpha;

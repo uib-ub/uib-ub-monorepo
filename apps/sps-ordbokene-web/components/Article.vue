@@ -66,13 +66,13 @@
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
                 <h4>{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
 
-                <DefElement v-for="(element, index) in data.body.pronunciation" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
+                <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length+1" :test="true" :comma="index <= data.body.pronunciation.length" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
             </section>
             <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
                 <h4>{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h4>
 
-                <DefElement v-for="(element, index) in data.body.etymology" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
+                <DefElement v-for="(element, index) in data.body.etymology" :semicolon="index == data.body.pronunciation.length+1" :test="true" :comma="index <= data.body.pronunciation.length" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
             </section>
             <section class="definitions" v-if="has_content">
