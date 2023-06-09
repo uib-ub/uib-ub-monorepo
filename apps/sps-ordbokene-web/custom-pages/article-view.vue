@@ -10,7 +10,7 @@
 import { useStore } from '~/stores/searchStore'
 const store = useStore()
 const route = useRoute()
-const dict = route.params.dict
+const dict = route.params.dict // prevent reactivity that causes error message when navigating back to search
 </script>
 
 <style scoped>
