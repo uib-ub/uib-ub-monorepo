@@ -316,16 +316,6 @@ section a, .secondary-page a  {
   display: inline;
 }
 
-.article section.etymology li:not(:first-child):not(:last-child):before, section.pronunciation li:not(:first-child):not(:last-child):before {
-  content: ", ";
-}
-
-.article section.etymology li:not(:first-child):last-child:before, section.pronunciation li:not(:first-child):last-child:before {
-  content: "; ";
-  font-size: smaller;
-}
-
-
 
 li.level1.definition {
   list-style: upper-alpha;
