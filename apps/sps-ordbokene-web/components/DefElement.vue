@@ -37,7 +37,6 @@ const props = defineProps({
     dict: String,
     content_locale: String,
     semicolon: Boolean,
-
     comma: Boolean,
     has_article_ref: Boolean,
     welcome: Boolean
