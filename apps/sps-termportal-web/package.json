@@ -20,6 +20,7 @@
     "@nuxtjs/html-validator": "^1.2.3",
     "@nuxtjs/tailwindcss": "^6.2.0",
     "@popperjs/core": "^2.11.6",
+    "@sidebase/nuxt-session": "^0.2.7",
     "@types/bootstrap": "^5.2.6",
     "@types/jsonld": "^1.5.8",
     "@unlighthouse/nuxt": "^0.4.7",

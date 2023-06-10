@@ -6,7 +6,12 @@ import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 export default defineNuxtConfig({
   meta: { title: "Termportalen" },
   extends: ["nuxt-umami"],
-  modules: ["@nuxtjs/tailwindcss", "nuxt-icon", "@vueuse/nuxt"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "nuxt-icon",
+    "@vueuse/nuxt",
+    "@sidebase/nuxt-session",
+  ],
   buildModules: ["@nuxtjs/html-validator", "@unlighthouse/nuxt"],
   content: {
     // https://content.nuxtjs.org/api/configuration
