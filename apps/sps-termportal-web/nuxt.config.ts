@@ -29,6 +29,26 @@ export default defineNuxtConfig({
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
   },
+  session: {
+    // Module is enabled
+    isEnabled: true,
+    session: {
+      // Sessions expire after 600 seconds = 10 minutes
+      expiryInSeconds: 60 * 5,
+      // The session cookie same site policy is `lax`
+      cookieSameSite: "strict",
+      // The request-domain is strictly used for the cookie, no sub-domains allowed
+      domain: true, // fixed
+      // Sessions aren't pinned to the user's IP address
+      ipPinning: true, // fixed
+      // Expiration of the sessions are not reset to the original expiryInSeconds on every request
+      rolling: false,
+    },
+    api: {
+      // The API is enabled
+      isEnabled: false,
+    },
+  },
   vite: {
     plugins: [
       VueI18nVitePlugin({
