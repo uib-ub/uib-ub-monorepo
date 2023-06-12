@@ -16,7 +16,7 @@ data:
   
   
   
-  
+  CACHER: Memory
   
   
 
@@ -47,7 +47,7 @@ metadata:
   #  kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - host: experimental-api.127.0.0.1.nip.io
+  - host: moleculer-demo.127.0.0.1.nip.io
     http:
       paths:
       - path: /
@@ -78,7 +78,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: experimental-api
+        image: moleculer-demo
         imagePullPolicy: IfNotPresent
         envFrom:
         - configMapRef:
@@ -89,32 +89,92 @@ spec:
 
 ---
 #########################################################
-# Greeter service
+# Ingester service
 #########################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: greeter
+  name: ingester
 spec:
   selector:
     matchLabels:
-      app: greeter
+      app: ingester
   replicas: 2
   template:
     metadata:
       labels:
-        app: greeter
+        app: ingester
     spec:
       containers:
-      - name: greeter
-        image: experimental-api
+      - name: ingester
+        image: moleculer-demo
         imagePullPolicy: IfNotPresent
         envFrom:
         - configMapRef:
             name: common-env
         env:
           - name: SERVICES
-            value: greeter
+            value: ingester
+
+
+---
+#########################################################
+# Items service
+#########################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: items
+spec:
+  selector:
+    matchLabels:
+      app: items
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: items
+    spec:
+      containers:
+      - name: items
+        image: moleculer-demo
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: common-env
+        env:
+          - name: SERVICES
+            value: items
+
+
+---
+#########################################################
+# Resolver service
+#########################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resolver
+spec:
+  selector:
+    matchLabels:
+      app: resolver
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: resolver
+    spec:
+      containers:
+      - name: resolver
+        image: moleculer-demo
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: common-env
+        env:
+          - name: SERVICES
+            value: resolver
 
 
 ---

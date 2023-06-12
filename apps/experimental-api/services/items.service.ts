@@ -1,22 +1,34 @@
-"use strict";
-const { SPARQL_PREFIXES } = require('../lib/constants.js');
-const jsonld = require('jsonld');
-const { omit } = require('lodash');
+import type { Context, Service, ServiceSchema } from "moleculer";
+import { SPARQL_PREFIXES } from "../lib/constants";
+import jsonld from "jsonld";
+import { apiFetch as fetch } from "../lib/fetch";
 
-/**
- * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
- * @typedef {import('moleculer').Context} Context Moleculer's Context
- */
+export interface ActionHelloParams {
+	name: string;
+}
 
-/** @type {ServiceSchema} */
-module.exports = {
+interface ItemsSettings {
+	defaultName: string;
+}
+
+interface ItemsMethods {
+	// uppercase(str: string): string;
+}
+
+interface ItemsLocalVars {
+	myVar: string;
+}
+
+type ItemsThis = Service<ItemsSettings> & ItemsMethods & ItemsLocalVars;
+
+const ItemsService: ServiceSchema<ItemsSettings> = {
 	name: "items",
 
 	/**
 	 * Settings
 	 */
 	settings: {
-		/* rest: "items/" */
+		defaultName: "Moleculer",
 	},
 
 	/**
@@ -28,7 +40,6 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-
 		/**
 		 * Ingest Marcus data
 		 *
@@ -81,7 +92,7 @@ module.exports = {
 			/** @param {Context} ctx  */
 			async handler(ctx) {
 				const { id } = ctx.params;
-				const service = await ctx.call("resolver.resolve", { id: id });
+				const service: { id: string, url: string } = await ctx.call("resolver.resolve", { id: id });
 				try {
 					const data = await this.getObjectData(id, service.url);
 
@@ -100,9 +111,7 @@ module.exports = {
 	/**
 	 * Events
 	 */
-	events: {
-
-	},
+	events: {},
 
 	/**
 	 * Methods
@@ -131,10 +140,10 @@ module.exports = {
 				`${url}${encodeURIComponent(
 					query,
 				)}&output=json`,
-			).then((res) => res.json())
+			).then((res: any) => res.json())
 
 			delete result['@context']
-			const data = result['@graph'].map((item) => {
+			const data = result['@graph'].map((item: any) => {
 				item.id = item['dct:identifier' ?? 'identifier']['@value'] ?? item['dct:identifier' ?? 'identifier']
 				item.url = `https://api-ub.vercel.app/items/${item['dct:identifier' ?? 'identifier']['@value'] ?? item['dct:identifier' ?? 'identifier']}`
 				delete item['dct:identifier']['@value']
@@ -207,7 +216,7 @@ module.exports = {
 				const results = await fetch(
 					`${url}${encodeURIComponent(
 						query
-					)}&output=json`).then(res => res.json());
+					)}&output=json`).then((res: any) => res.json());
 
 				// Frame the result for nested json
 				const awaitFramed = jsonld.frame(results, {
@@ -243,22 +252,23 @@ module.exports = {
 	/**
 	 * Service created lifecycle event handler
 	 */
-	created() {
-
-	},
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	created(this: ItemsThis) { },
 
 	/**
 	 * Service started lifecycle event handler
 	 */
-	async started() {
-
-	},
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	async started(this: ItemsThis) { },
 
 	/**
 	 * Service stopped lifecycle event handler
 	 */
-	async stopped() {
-
-	}
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	async stopped(this: ItemsThis) { },
 };
 
+export default ItemsService;

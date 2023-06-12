@@ -1,14 +1,31 @@
-FROM node:16-alpine
+FROM node:16 as build
 
-ENV NODE_ENV=production
+WORKDIR /tmp/app
 
-RUN mkdir /app
-WORKDIR /app
-
+# Install dependencies
 COPY package.json package-lock.json ./
+RUN npm ci --silent
 
-RUN npm install --production
-
+# Copy source
 COPY . .
 
-CMD ["npm", "start"]
+# Build
+RUN npm run build
+
+# -------------------
+FROM node:16-alpine
+
+WORKDIR /app
+
+# Copy source
+COPY . .
+
+# Copy built files
+COPY --from=build /tmp/app/dist .
+
+# Build and cleanup
+ENV NODE_ENV=production
+RUN npm ci --omit=dev
+
+# Start server
+CMD ["node", "./node_modules/moleculer/bin/moleculer-runner.js"]

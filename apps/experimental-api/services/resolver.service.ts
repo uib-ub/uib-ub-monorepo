@@ -1,23 +1,32 @@
-"use strict";
+import type { Context, Service, ServiceSchema } from "moleculer";
+import { apiFetch as fetch } from '../lib/fetch';
 
-// const performIndexing = import("./ingester.mjs");
-//import { performIndexing } from './indexing.js';
-const { performIndexing } = require('./ingester.js');
+export interface ActionHelloParams {
+	name: string;
+}
 
-/**
- * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
- * @typedef {import('moleculer').Context} Context Moleculer's Context
- */
+interface ResolverSettings {
+	defaultName: string;
+}
 
-/** @type {ServiceSchema} */
-module.exports = {
+interface ResolverMethods {
+	uppercase(str: string): string;
+}
+
+interface ResolverLocalVars {
+	myVar: string;
+}
+
+type ResolverThis = Service<ResolverSettings> & ResolverMethods & ResolverLocalVars;
+
+const ResolverService: ServiceSchema<ResolverSettings> = {
 	name: "resolver",
 
 	/**
 	 * Settings
 	 */
 	settings: {
-
+		defaultName: "Moleculer",
 	},
 
 	/**
@@ -29,21 +38,12 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-
-		/**
-		 * Ingest Marcus data
-		 *
-		 * @param {String} index - Index name
-		 * @param {Number} page - Starting page
-		 * @param {Number} limit - Limit
-		 */
-
 		resolve: {
 			rest: "POST /resolve",
 			params: {
 				id: "string"
 			},
-			timeout: 2000,
+			timeout: 20000,
 			retries: 3,
 			visibility: "published",
 			/** @param {Context} ctx  */
@@ -51,6 +51,7 @@ module.exports = {
 				const { id } = ctx.params;
 				try {
 					const data = await this.resolveId(id);
+
 					if (data) {
 						ctx.meta.$statusCode = 200
 						return data
@@ -66,15 +67,13 @@ module.exports = {
 	/**
 	 * Events
 	 */
-	events: {
-
-	},
+	events: {},
 
 	/**
 	 * Methods
 	 */
 	methods: {
-		async resolveId(id) {
+		async resolveId(id: string) {
 			const query = `
 				PREFIX dct: <http://purl.org/dc/terms/>
 				ASK { 
@@ -95,7 +94,7 @@ module.exports = {
 				}      
 			`
 
-			const askMarcus = await fetch(`${process.env.MARCUS_API}${query}`).then(res => res.json()).then(res => {
+			const askMarcus = await fetch(`${process.env.MARCUS_API}${query}`).then((res: any) => res.json()).then((res: any) => {
 				if (res.boolean) {
 					return {
 						name: 'marcus',
@@ -103,7 +102,7 @@ module.exports = {
 					}
 				}
 			})
-			const askSka = await fetch(`${process.env.SKA_API}${query}`).then(res => res.json()).then(res => {
+			const askSka = await fetch(`${process.env.SKA_API}${query}`).then((res: any) => res.json()).then((res: any) => {
 				if (res.boolean) {
 					return {
 						name: 'skeivtarkiv',
@@ -116,7 +115,7 @@ module.exports = {
 				const response = await Promise.all([
 					askMarcus,
 					askSka,
-				]).then(res => res.filter(Boolean)[0])
+				]).then((res: any) => res.filter(Boolean)[0])
 
 				if (response) {
 					return response
@@ -132,21 +131,23 @@ module.exports = {
 	/**
 	 * Service created lifecycle event handler
 	 */
-	created() {
-
-	},
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	created(this: ResolverThis) { },
 
 	/**
 	 * Service started lifecycle event handler
 	 */
-	async started() {
-
-	},
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	async started(this: ResolverThis) { },
 
 	/**
 	 * Service stopped lifecycle event handler
 	 */
-	async stopped() {
-
-	}
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	async stopped(this: ResolverThis) { },
 };
+
+export default ResolverService;

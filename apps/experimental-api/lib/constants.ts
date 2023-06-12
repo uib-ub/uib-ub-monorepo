@@ -1,4 +1,4 @@
-const SPARQL_PREFIXES = `
+export const SPARQL_PREFIXES = `
 PREFIX muna: <http://muna.xyz/model/0.1/>
 PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
 PREFIX ecrm: <http://erlangen-crm.org/current/>
@@ -36,6 +36,4 @@ PREFIX iiif_prezi: <http://iiif.io/api/presentation/3#>
 PREFIX as: <http://www.w3.org/ns/activitystreams#>
 `
 
-module.exports = {
-  SPARQL_PREFIXES
-}
+export const API_URL = process.env.NODE_ENV === 'production' ? 'https://api.marcus.no' : 'http://0.0.0.0:3099'

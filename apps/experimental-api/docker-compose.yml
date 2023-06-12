@@ -5,7 +5,7 @@ services:
   api:
     build:
       context: .
-    image: experimental-api
+    image: moleculer-demo
     env_file: docker-compose.env
     environment:
       SERVICES: api
@@ -19,10 +19,34 @@ services:
     networks:
       - internal
 
-  greeter:
+  ingester:
     build:
       context: .
-    image: experimental-api
+    image: moleculer-demo
+    env_file: docker-compose.env
+    environment:
+      SERVICES: greeter
+    depends_on:
+      - nats
+    networks:
+      - internal
+
+  items:
+    build:
+      context: .
+    image: moleculer-demo
+    env_file: docker-compose.env
+    environment:
+      SERVICES: greeter
+    depends_on:
+      - nats
+    networks:
+      - internal
+
+  resolver:
+    build:
+      context: .
+    image: moleculer-demo
     env_file: docker-compose.env
     environment:
       SERVICES: greeter

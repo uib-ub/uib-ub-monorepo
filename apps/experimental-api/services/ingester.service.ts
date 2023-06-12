@@ -1,23 +1,32 @@
-"use strict";
+import type { Context, Service, ServiceSchema } from "moleculer";
+import { performIndexing } from '../lib/ingester';
 
-// const performIndexing = import("./ingester.mjs");
-//import { performIndexing } from './indexing.js';
-const { performIndexing } = require('./ingester.js');
+export interface ActionHelloParams {
+	name: string;
+}
 
-/**
- * @typedef {import('moleculer').ServiceSchema} ServiceSchema Moleculer's Service Schema
- * @typedef {import('moleculer').Context} Context Moleculer's Context
- */
+interface IngesterSettings {
+	defaultName: string;
+}
 
-/** @type {ServiceSchema} */
-module.exports = {
+interface IngesterMethods {
+	uppercase(str: string): string;
+}
+
+interface IngesterLocalVars {
+	myVar: string;
+}
+
+type IngesterThis = Service<IngesterSettings> & IngesterMethods & IngesterLocalVars;
+
+const IngesterService: ServiceSchema<IngesterSettings> = {
 	name: "ingester",
 
 	/**
 	 * Settings
 	 */
 	settings: {
-
+		defaultName: "Moleculer",
 	},
 
 	/**
@@ -29,7 +38,6 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-
 		/**
 		 * Ingest Marcus data
 		 *
@@ -56,7 +64,7 @@ module.exports = {
 			visibility: "published",
 			/** @param {Context} ctx  */
 			async handler(ctx) {
-				const { index, page = 0, limit } = ctx.params;
+				const { index, page = 0, limit = Infinity } = ctx.params;
 				try {
 					const data = await performIndexing(index, page, limit);
 					if (data) {
@@ -74,9 +82,7 @@ module.exports = {
 	/**
 	 * Events
 	 */
-	events: {
-
-	},
+	events: {},
 
 	/**
 	 * Methods
@@ -88,21 +94,23 @@ module.exports = {
 	/**
 	 * Service created lifecycle event handler
 	 */
-	created() {
-
-	},
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	created(this: IngesterThis) { },
 
 	/**
 	 * Service started lifecycle event handler
 	 */
-	async started() {
-
-	},
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	async started(this: IngesterThis) { },
 
 	/**
 	 * Service stopped lifecycle event handler
 	 */
-	async stopped() {
-
-	}
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	async stopped(this: IngesterThis) { },
 };
+
+export default IngesterService;
