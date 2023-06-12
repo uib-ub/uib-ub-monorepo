@@ -1,6 +1,7 @@
 import { genSearchQuery } from "~~/server/utils/genSearchQuery";
 
 export default defineEventHandler(async (event) => {
+  protectRoute(event);
   const runtimeConfig = useRuntimeConfig();
 
   const url = runtimeConfig.public.endpointUrl;

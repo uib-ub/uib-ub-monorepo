@@ -2,6 +2,7 @@ import genTermbaseQuery from "../../utils/genTermbaseQuery";
 import frameData from "../../utils/frameData";
 
 export default defineEventHandler(async (event) => {
+  protectRoute(event);
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.public.endpointUrl;
 
