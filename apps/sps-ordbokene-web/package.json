@@ -14,7 +14,7 @@
     "nuxt-icon": "^0.2.6"
   },
   "dependencies": {
-    "@intlify/unplugin-vue-i18n": "0.5.0",
+    "@intlify/unplugin-vue-i18n": "^0.5.0",
     "@pinia/nuxt": "^0.4.1",
     "@vueuse/core": "^9.1.0",
     "autoprefixer": "^10.4.14",
