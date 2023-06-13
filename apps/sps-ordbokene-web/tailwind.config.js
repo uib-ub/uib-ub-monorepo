@@ -1,13 +1,5 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./components/**/*.{js,vue,ts}",
-    "./layouts/**/*.vue",
-    "./pages/**/*.vue",
-    "./plugins/**/*.{js,ts}",
-    "./nuxt.config.{js,ts}",
-    "./app.vue",
-  ],
+import defaultTheme from 'tailwindcss/defaultTheme'
+export default {
   theme: {
     fontFamily: {
         sans: ['Noto Sans', 'sans-serif'],
@@ -62,8 +54,7 @@ module.exports = {
         '900': '#373434'
         }
     }
-},
-  plugins: [],
 }
-
+  
+}
 
