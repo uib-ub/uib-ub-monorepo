@@ -3,8 +3,13 @@ import { fileURLToPath } from 'url'
 import VueI18nVitePlugin from '@intlify/unplugin-vue-i18n/vite'
 
 export default defineNuxtConfig({
-  css: ['~/assets/fonts/fonts.css'],
-
+  css: ['~/assets/fonts/fonts.css', '~/assets/css/main.css'],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
   nitro: {
     compressPublicAssets: true,
   },
@@ -18,7 +23,6 @@ export default defineNuxtConfig({
   modules: [
       '@pinia/nuxt',
       '@pinia-plugin-persistedstate/nuxt',
-      '@nuxtjs/tailwindcss',
       'nuxt-icon'
     ],
 
