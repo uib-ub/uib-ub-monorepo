@@ -46,10 +46,17 @@
     }
 
       
-      section a, .secondary-page a  {
-        border-bottom: 2px solid;
-        @apply border-anchor;
-      }
+    section a, .secondary-page a  {
+      border-bottom: 2px solid;
+      @apply border-anchor;
+    }
+
+    ::marker {
+      font-weight: bold;
+      @apply text-primary
+      
+    }
+      
 
     
 
@@ -140,14 +147,23 @@
       
        .article ol {
         margin-bottom: 2rem !important;
+        list-style: decimal;
       }
 
-      .article ol li.level2 {
-        list-style: decimal
+
+
+      .article ol li.definition {
+        @apply ml-5
       }
 
-      .article ul, ol {
-        padding-left: 1rem !important;
+      
+
+      .article ol li.level3.definition {
+        list-style: disc
+      }
+
+      .article ol div {
+        @apply pl-2
       }
 
       .secondary-page {
