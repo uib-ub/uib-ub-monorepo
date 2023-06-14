@@ -2,7 +2,7 @@
 <header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center
       text-white">
       <div class="flex flex-row content-center w-full lg:w-auto">
-  <NuxtLink class="my-auto" to="/" :aria-current="$route.name == 'dict' && 'page'">
+  <NuxtLink class="my-auto" to="/" :aria-current="$route.name == 'welcome' && 'page'">
       <div class="mx-1 md:my-1 lg:my-3 xl:my-2">
       <div><h1 class="text-2xl">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
       <p class="hidden xl:block ml-[0.125rem] text-sm">{{$t("sub_title")}}</p>

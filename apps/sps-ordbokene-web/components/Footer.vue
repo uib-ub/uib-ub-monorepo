@@ -11,7 +11,7 @@
   <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center ">
     <ul class="flex flex-col md:flex-row gap-3 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center  md:text-lg text-center md:gap-10" >
       <li>
-        <NuxtLink :aria-current="$route.name == 'dict' && 'page'" to="/">{{$t('home')}}</NuxtLink>
+        <NuxtLink :aria-current="$route.name == 'welcome' && 'page'" to="/">{{$t('home')}}</NuxtLink>
       </li>
       <li>
         <NuxtLink :aria-current="$route.name == 'help' && 'page'" to="/help">{{$t('help')}}</NuxtLink></li>
