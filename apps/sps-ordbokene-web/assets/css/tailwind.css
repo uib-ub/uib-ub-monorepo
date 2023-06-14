@@ -247,7 +247,11 @@
 
 
       .ord-container, .secondary-page {
-        @apply md:mx-auto px-2 md:container;
+        @apply md:mx-auto md:container;
+      }
+
+      .ord-container {
+        @apply px-2 md:px-0
       }
 
 
