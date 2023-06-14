@@ -1,7 +1,8 @@
 <template>
     <div v-bind:class="{'list': listView}">     
     <Spinner v-if="pending"/>
-    <div ref="results"  v-if="!pending && !error && articles && articles.meta" >
+    <div ref="results" v-if="!pending && !error && articles && articles.meta" >
+      <div class ="callout" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong></div>
     <div class="gap-3 lg:gap-8 grid lg:grid-cols-2" v-if="route.params.dict == 'bm,nn' || route.query.dict == 'bm,nn' ">
       <section class="lg:grid-cols-6" :aria-label="$t('dicts.bm')">
         <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
