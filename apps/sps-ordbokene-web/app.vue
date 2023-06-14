@@ -75,7 +75,7 @@ const nuxtApp = useNuxtApp()
 
 nuxtApp.hook("page:finish", () => {
 
-  if (settings.autoSelect || route.name == "dict") {
+  if (settings.autoSelect || route.name == "welcome") {
     input_element.value.select()
   }
   // Handle focus in one place
