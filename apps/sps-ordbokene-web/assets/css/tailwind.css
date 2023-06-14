@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+
+    #__nuxt {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+    }
+
+    body {
+        overflow-y: scroll;
+    }
+
+
+    body, html, main {
+        height: 100% !important;
+    }
+
+    body {
+        @apply bg-tertiary;
+    }
+
+    main {
+        flex: 1;
+    }
+
+    h1 {
+        font-family: Inria Serif;
+        font-weight: bold;
+    }
+
+    ::selection {
+        background-color: theme(colors.secondary.DEFAULT);
+        @apply text-white bg-secondary;
+      }
+
+    @-moz-document url-prefix() {
+        /* Styles for Firefox only */
+        *:focus {
+          outline: 3px solid theme("colors.secondary.DEFAULT");
+        }
+    }
+
+      
+    section a, .secondary-page a  {
+      border-bottom: 2px solid;
+      @apply border-anchor;
+    }
+
+    ::marker {
+      font-weight: bold;
+      @apply text-primary
+      
+    }
+      
+
+    
+
+}
+
+@layer components {
+
+    .callout {
+        border-left: solid 4px theme("colors.primary.DEFAULT");
+      
+         margin-top: 1rem;
+         margin-bottom: 1rem;
+         padding: 1rem;
+         @apply bg-tertiary-darken1;
+      
+      }
+      
+      .callout i {
+        background-color: theme("colors.primary.DEFAULT");
+        padding-right: 0.5rem;
+        font-size: 1.25rem;
+      }
+      
+      .btn {
+        border-radius: 2rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        border-width: 1px;
+        font-weight: 600;
+      }
+      
+      .btn:hover {
+        background-color: theme(colors.gray.50)
+      }
+      
+      .btn[aria-expanded=true] {
+          @apply bg-tertiary-darken1 hover:bg-tertiary-darken2;
+          box-shadow: 2px 2px 0px theme('colors.gray.500');
+          border: none;
+      }
+      
+      .btn-borderless {
+        @apply border-none;
+      }
+      
+      .rounded-4xl {
+        border-radius: 2rem;
+      }
+
+      .dict-label {
+        color: theme("colors.gray.700") !important;
+        margin-left: 1rem;
+        margin-bottom: 0rem;
+        letter-spacing: .1rem;
+        font-variant-caps: all-small-caps;
+        font-weight: 600;
+        font-size: 1.25rem !important;
+      }
+
+      
+      .article h4 {
+        font-size: 1.5rem;
+        @apply text-primary;
+        font-variant: all-small-caps;
+        font-weight: 600;
+        padding-right: 1rem;
+      
+      }
+      
+      .article h5 {
+        @apply text-primary;
+        font-weight: 600;
+        font-size: 1rem;
+        padding-top: 1rem;
+      }
+      
+      
+      .article li {
+        margin-bottom: 0.25rem;
+        margin-top: 0.25rem;
+      }
+      
+      .article ul {
+        margin-bottom: 1rem !important;
+      }
+      
+       .article ol {
+        margin-bottom: 2rem !important;
+        list-style: decimal;
+      }
+
+
+
+      .article ol li.definition {
+        @apply ml-5
+      }
+
+      
+
+      .article ol li.level3.definition {
+        list-style: disc
+      }
+
+      .article ol div {
+        @apply pl-2
+      }
+
+      .secondary-page {
+        @apply bg-white mb-4 p-4 py-8 md:p-12 md:pt-10;
+        
+      }
+      
+       .secondary-page ul {
+          list-style: disc;
+          margin-block-start: 1em;
+          margin-block-end: 1em;
+          padding-inline-start: 40px;
+        }
+      
+      
+        .secondary-page h2 {
+          font-family: Inria Serif;
+          @apply text-primary;
+          font-weight: bold;
+          font-size: 2rem;
+        }
+      
+        .secondary-page h4 {
+          @apply text-primary;
+          font-weight: 600;
+          font-size: 1.125rem;
+          padding-top: 1rem;
+        }
+      
+       .secondary-page p {
+          padding-bottom: 1rem;
+        }
+      
+      .dict-view h3 {
+          font-size: calc(1.3rem + .6vw);
+        }
+      
+      
+      .secondary-page h3 button, .secondary-page h3, .dict-view h2 {
+          @apply text-primary;
+          font-weight: 600;
+          font-variant: all-small-caps;
+          font-size: 1.75rem;
+        }
+      
+      .secondary-page h3 button {
+        font-size: 1.5rem;
+      }
+      
+      
+      
+      
+      #advanced-info h2 {
+        font-family: Inria Serif;
+        font-variant: normal;
+        @apply text-primary;
+        font-weight: bold;
+      }
+      
+      
+      
+      
+      
+      .article-view .article, .secondary-page {
+          border: solid 1px theme('colors.gray.200') !important;
+          box-shadow: 2px 2px 0px theme('colors.gray.200') !important;
+      
+      }
+
+
+      .welcome .article {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border: none;
+        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none;
+      }
+      
+      .welcome .ord-container {
+          @apply md:!px-10 xl:!px-40;
+      }
+
+
+      .ord-container, .secondary-page {
+        @apply md:mx-auto md:container;
+      }
+
+      .ord-container {
+        @apply px-2 md:px-0
+      }
+
+
+      @media screen(md) {
+        .welcome.simple-search {
+          background-image: url(assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp);
+          @apply flex-col;
+        }
+      }
+
+
+
+
+
+}
