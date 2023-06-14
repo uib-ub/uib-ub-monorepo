@@ -418,64 +418,76 @@ if (props.single) {
 </script>
 
 <style scoped>
-
- h2 {
-    color: theme("colors.gray.700") !important;
-    margin-left: 1rem;
-    margin-bottom: 0rem;
-    letter-spacing: .1rem;
-    font-variant-caps: all-small-caps;
-    font-weight: 600;
-    font-size: 1.25rem !important;
-}
-
-
-
-
 .inflection-container {
     box-shadow: 1px 1px 1px theme("colors.gray.500");
     border-color: theme("colors.gray.500") !important;
     border: solid 1px;
     border-radius: 1.5rem;
     display: inline-flex;
-
-    
-
     @apply border-primary overflow-auto;
-}
-
-ol > li:only-child.level1, li:only-child.level2 {
-  /* level3 a.k.a. underdefinisjoner skal vises med bullet selv om de står alene */
-  /* list-style: none;*/
-  color: blue;
 }
 
 li:only-child.level1 > ol {
   padding-left: 0px;
 }
 
-ul, ol {
-  padding-left: 12px !important;
-}
-
-ul li
-
 ul li.definition {
   list-style: disc;
 }
 
-h4 {
-  font-size: 1.5rem;
-  @apply text-primary;
-  font-variant: all-small-caps;
-  font-weight: 600;
-  padding-right: 1rem;
 
+
+.level1>ol {
+  padding-left: 1.25rem;
 }
 
-.article-dict-label {
-    font-size: 1.5rem !important;
-    padding-bottom: 1rem;
+
+
+section {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+
+section.etymology > h4, section.pronunciation > h4 {
+  display: inline;
+}
+
+section.etymology ul, section.pronunciation ul, section.etymology li, section.pronunciation li {
+  display: inline;
+}
+
+
+li.level1.definition {
+  list-style: upper-alpha;
+}
+
+
+li.level3.definition {
+  /* Norsk ordbok skal ha "lower.alpha" her */
+  list-style: disc;
+}
+
+level2.definition {
+  /* Norsk ordbok skal ha "lower.alpha" her */
+  list-style: revert !important;
+}
+
+li.sub_article > ul {
+  padding-left: 0px;
+}
+
+li::marker {
+  @apply text-primary;
+  font-weight: bold;
+}
+
+li.level2>div {
+  padding-left: 0.5rem;
+}
+
+ol.sub_definitions {
+  padding-left: 1.25rem;
 }
 
 
@@ -532,8 +544,6 @@ span.lemma-group {
 .article .dict_label {
     @apply text-text
     }
-
-
 
 
 .list-view-item {

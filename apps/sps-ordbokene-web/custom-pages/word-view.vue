@@ -132,9 +132,6 @@ const article_error = (error, article, dict) => {
     font-size: 1rem;
 }
 
-ol.article-column>li {
-  list-style: none;
-}
 
 .list ol.article-column {
   margin: 0px;

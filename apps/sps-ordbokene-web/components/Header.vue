@@ -1,5 +1,5 @@
 <template>
-<header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center 
+<header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center
       text-white">
       <div class="flex flex-row content-center w-full lg:w-auto">
   <NuxtLink class="my-auto" to="/" :aria-current="$route.name == 'dict' && 'page'">
@@ -11,8 +11,8 @@
       </NuxtLink>
       <div class="lg:hidden text-lg ml-auto flex align-center">
 
-      <button class="text-lg p-2 px-3 rounded-4xl active:bg-primary-darken focus:bg-primary-darken" 
-              @keydown="escape_menu" 
+      <button class="text-lg p-2 px-3 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
+              @keydown="escape_menu"
               :aria-expanded="menu_expanded"
               :aria-controls="menu_expanded? 'main_menu' : null"
               @click="menu_expanded = !menu_expanded">
@@ -46,11 +46,11 @@
             <option class="text-text bg-canvas" value="eng">English</option>
             <option class="text-text bg-canvas" value="nob">Bokmål</option>
             <option class="text-text bg-canvas" value="nno">Nynorsk</option>
-          </select> 
+          </select>
       </div>
     </div>
   </header>
-    
+
 </template>
 
 
@@ -109,8 +109,8 @@ nav .nav-link {
   list-style-type: none;
   padding-top: .5rem;
 }
-    
-    
+
+
 
 nav .nav-link:focus {
   @apply text-white border-white;
@@ -122,6 +122,12 @@ nav .nav-link:hover {
 nav .nav-link[aria-current=page] {
   border-bottom: solid .125rem theme('colors.secondary.DEFAULT');
 }
-  
+
+@media screen(lg) {
+    .nav-buttons.hidden {
+      display: flex;
+  }
+}
+
 
 </style>
