@@ -48,7 +48,7 @@ const dict_click = (dict) => {
     
     
     const advanced_link = computed(() => {
-       return  `?q=${store.q}&dict=${store.dict}&scope=${store.scope}`
+       return  `/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`
       
       
     })
