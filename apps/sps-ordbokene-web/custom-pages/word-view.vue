@@ -115,6 +115,12 @@ useHead({
   ]
 })
 
+definePageMeta({
+    middleware: [
+      "pattern-redirect"
+    ]
+  })
+
 
 const listView = computed(() => {
   return store.q && settings.simpleListView

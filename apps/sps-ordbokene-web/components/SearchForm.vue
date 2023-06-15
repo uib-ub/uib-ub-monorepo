@@ -20,6 +20,9 @@ const submitForm = async (item) => {
     store.show_autocomplete = false
     store.q = store.input
 
+    if (specialSymbols(store.q)) {
+      return navigateTo(`/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`)
+    }
     let { exact, inflect } = store.suggest
     
     if (exact) {
