@@ -19,7 +19,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*",
+        "../../packages/ui-react/src/*"
+      ]
+    }
   },
   "include": [
     "src",

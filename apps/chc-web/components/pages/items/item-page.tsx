@@ -1,6 +1,6 @@
-import { IIIFMetadata } from 'components/shared/iiif/iiif-metadata.client';
-import ManifestViewer from 'components/shared/iiif/manifest-viewer.client';
-import { InternationalLabel } from 'components/shared/international-label.client';
+import { IIIFMetadata } from '@/components/shared/iiif/iiif-metadata.client';
+import ManifestViewer from '@/components/shared/iiif/manifest-viewer.client';
+import { InternationalLabel } from '@/components/shared/international-label.client';
 import { notFound } from 'next/navigation';
 
 async function getData(manifest: string) {
@@ -54,7 +54,7 @@ export async function ItemPage({
           },
         }}
       />
-      <div className="max-w-prose">
+      <div className="prose max-w-prose">
         <IIIFMetadata label={manifest.label} summary={manifest.summary} metadata={manifest.metadata} lang={locale} />
       </div>
     </>

@@ -1,10 +1,11 @@
 import { mono, sans, serif } from 'app/fonts';
-import AppShell from 'components/shells/app-shell';
-import AppBar from 'components/globals/app-bar';
+import AppShell from '@/components/shells/app-shell';
+import AppBar from '@/components/globals/app-bar';
 import { useLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { Providers } from './providers';
 import 'styles/globals.css'
+import 'ui-react/src/styles/globals.css';
 
 export default async function RootLayout({
   children, params
