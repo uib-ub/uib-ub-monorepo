@@ -1,57 +1,79 @@
-
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next-intl/link';
+import { Badge, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, toBase64, shimmer, DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem, Popover, PopoverContent, PopoverTrigger } from 'ui-react';
+import { ExternalLink, Info, Link } from "lucide-react"
 
 const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
 
-export function HitCard({ hit }) {
+export function Hit({ hit }) {
   return (
-    <article key={hit.objectID} className='relative flex flex-col flex-grow gap-y-3'>
-      <Link href={`/items/${hit.identifier}`}>
-        {
-          hit.image ? (
-            <Image src={hit.image} alt='' width={300} height={300} />
-          ) : (
-            <div className="min-h-64 p-10 inline-block flex-grow-1  w-full opacity-25 bg-gradient-to-r from-slate-500 to-yellow-100">
-              No image found!
-            </div>
-          )
-        }
-      </Link>
-
-      <h2 className='text-lg font-bold'>
-        <a href={`/items/${hit.identifier}`}>
-          {hit.label_none ?? hit.label?.no}
-        </a>
-      </h2>
-      {hit.description_none ?? hit.description?.no ? (
-        <>
-          <div className='text-sm font-serif'>{renderHTML(hit.description_none ?? hit.description?.no)}</div>
-        </>
-      ) : null}
-
-      <a href={`https://projectmirador.org/embed/?manifest=${hit.subjectOfManifest}`} target="_blank" rel='noreferrer'>Open in Mirador</a>
-
-      <a href={hit.homepage} target="_blank" rel='noreferrer'>Open in Marcus</a>
-
-      <div className='font-bold text-lg'>
-        {hit.maker?.map(m => (
-          <div key={m.id}>
-            {m.label_none}
+    <Card className='break-inside-avoid'>
+      {
+        hit.image ? (
+          <div className='w-full rounded-t-lg'>
+            <a href={`/items/${hit.identifier}`}>
+              <Image
+                src={hit.image}
+                className='object-cover h-auto max-w-full bg-neutral-700 dark:bg-neutral-950 rounded-t-lg'
+                alt=''
+                width={400}
+                height={400}
+                placeholder="blur"
+                blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(400, 400))}`}
+              />
+            </a>
           </div>
-        ))}
-      </div>
+        ) : null
+      }
+      <CardHeader>
+        <CardTitle>
+          <a href={`/items/${hit.identifier}`} className='leading-6'>
+            {hit.label_none || hit.label?.no || hit.identifier}
+          </a>
+        </CardTitle>
+        <CardDescription>
+          {hit.maker?.map(m => (
+            <div key={m.id} className='text-sm'>
+              {m.label_none}
+            </div>
+          ))}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {hit.description_none ?? hit.description?.no ? (
+          <div className='text-sm font-serif'>{renderHTML(hit.description_none ?? hit.description?.no)}</div>
+        ) : null}
+      </CardContent>
+      <CardFooter className='flex flex-wrap gap-2 justify-between w-full text-sm'>
+        <Popover>
+          <PopoverTrigger className='flex flex-nowrap items-center gap-1'>Info <Info className="h-4 w-4" /></PopoverTrigger>
+          <PopoverContent>
+            <div className='flex flex-wrap'>
+              <Badge variant='outline' className='shrink-0'>{hit.identifier}</Badge>
+              {Array.isArray(hit.type) ? hit.type.map(t => (
+                <Badge key={t} variant='outline'>{t}</Badge>
+              )) : [hit.type].map(t => (
+                <Badge key={t} variant='outline'>{t}</Badge>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+        <DropdownMenu>
+          <DropdownMenuTrigger className='flex flex-nowrap items-center gap-1'>Links <Link className="h-4 w-4" /></DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Open in:</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <a href={hit.homepage} target="_blank" rel='noreferrer'>Marcus</a>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <a href={`https://projectmirador.org/embed/?manifest=${hit.subjectOfManifest}`} target="_blank" rel='noreferrer'>Mirador</a>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </CardFooter>
+    </Card>
 
-      <div className='my-1 flex flex-wrap gap-2'>
-        {Array.isArray(hit.type) ? hit.type.map(t => (
-          <div key={t} className=' px-2 bg-green-600 text-white rounded'>{t}</div>
-        )) : [hit.type].map(t => (
-          <div key={t} className=' px-2 bg-green-600 text-white rounded'>{t}</div>
-        ))}
-      </div>
-
-      <div className='my-1 inline-block px-2 bg-neutral-600 text-white rounded'>{hit.identifier}</div>
-    </article>
-  );
+  )
 }
+
