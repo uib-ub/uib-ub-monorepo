@@ -56,7 +56,7 @@ export default async function handler(req, res) {
         delete result['@context']
         const data = result['@graph'].map((item) => {
           item['@id'] = item.id
-          item.id = `https://api-ub.vercel.app/items/${item.identifier['@value'] ?? item.identifier}`
+          item.id = `https://api-ub.vercel.app/items/${item.identifier?.['@value'] ?? item.identifier}`
           delete item['@id']
           return item
         })
