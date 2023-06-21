@@ -25,6 +25,7 @@
     "date-fns": "^2.29.3",
     "instantsearch.css": "^8.0.0",
     "intl-segmenter-polyfill": "^0.4.4",
+    "lucide-react": "^0.248.0",
     "next": "^13.4.4",
     "next-intl": "^2.15.0-beta.5",
     "next-themes": "^0.2.1",
