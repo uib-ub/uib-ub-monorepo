@@ -9,8 +9,9 @@ export default async function CollectionRoute({
 }: {
   params: { locale: string, id: string }
 }) {
+  console.log("🚀 ~ file: page.tsx:12 ~ id:", params.id)
   const t = await getTranslations('SamlaCollection');
-  const data = await getSamlaIIIFv1CollectionData(params.id);
+  const data = await getSamlaIIIFv1CollectionData(params.id.replace('-', '.'));
 
   if (!data) {
     notFound();
@@ -30,7 +31,7 @@ export default async function CollectionRoute({
 
           return (
             <li key={member['@id']}>
-              {type} – <Link href={`/${path}/${id}`}>{member.label?.[1]?.['@value'] ?? member.label}</Link>
+              {type} – <Link href={`/${path}/${id.replace('.', '-')}`}>{member.label?.[1]?.['@value'] ?? member.label}</Link>
             </li>
           )
         })}
