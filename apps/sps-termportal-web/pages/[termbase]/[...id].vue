@@ -15,7 +15,7 @@
             name="ion:return-up-back-sharp"
             size="1.7em"
             aria-hidden="true"
-            class="bg-tpblue-400 h-7 w-12 rounded text-white group-hover:bg-blue-700"
+            class="h-7 w-12 rounded bg-tpblue-400 text-white group-hover:bg-blue-700"
           ></Icon>
           <div class="group-hover:underline">
             {{ $t("id.tilbake") }}
@@ -227,8 +227,8 @@
                 />
                 <!--Bruksområde-->
                 <DataRow
-                  v-if="displayInfo.subject"
-                  :data="displayInfo.subject"
+                  v-if="displayInfo?.subject"
+                  :data="displayInfo?.subject"
                   :label="$t('id.subject')"
                 />
                 <!--Modified-->
@@ -246,7 +246,10 @@
                 />
                 <!--Note for historical termbases-->
                 <DataRow
-                  v-if="route.params.termbase === 'NOT' || route.params.termbase === 'RTT'"
+                  v-if="
+                    route.params.termbase === 'NOT' ||
+                    route.params.termbase === 'RTT'
+                  "
                   :data="$t('id.noteTermbaseIsUnmaintained')"
                   :label="$t('id.note')"
                 />
@@ -344,7 +347,7 @@ const displayInfo = computed(() => {
       }
     }
     if (data.value?.concept?.[procId]?.subject) {
-      const subj = data.value?.concept[procId].subject
+      const subj = data.value?.concept[procId].subject;
       let subjectlist;
       if (typeof subj[0] === "string") {
         subjectlist = subj;
