@@ -29,8 +29,8 @@ export default defineEventHandler((event) => {
   if (pathname.startsWith("/api/")) {
     if (getCookie(event, "session") !== runtimeConfig.apiKey) {
       throw createError({
-        statusCode: 401,
-        message: "Unauthorized",
+        statusCode: 500, // internally used for retry. ofetch defines list of retry codes statically
+        message: "Internal Server Error",
       });
     }
   }

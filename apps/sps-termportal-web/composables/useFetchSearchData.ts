@@ -11,6 +11,7 @@ export async function fetchSearchDataMatching(
   const data = await $fetch("/api/search/entries", {
     method: "POST",
     body: searchOptions,
+    retry: 1,
   });
 
   if (currentFetch === searchFetchLatest.value) {
@@ -36,6 +37,7 @@ async function fetchSearchDataAggregate(
   const aggregate = await $fetch("/api/search/aggregate", {
     method: "POST",
     body: searchOptions,
+    retry: 1,
   });
 
   if (currentFetch === searchFetchLatest.value) {
