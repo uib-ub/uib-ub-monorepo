@@ -304,6 +304,9 @@ const timer = setTimeout(() => {
 const { data, error } = await useAsyncData("concept", () =>
   $fetch(`/api/concept`, {
     method: "POST",
+    headers: process.server
+      ? { cookie: "session=" + useRuntimeConfig().apiKey }
+      : undefined,
     body: { concept: id, base, termbase },
     signal: controller.signal,
   }).then((value) => {
