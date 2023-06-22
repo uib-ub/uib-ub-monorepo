@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import * as Accordion from '@radix-ui/react-accordion';
-import { LanguageIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
+import { LanguagesIcon, ChevronDownIcon } from 'lucide-react'
 import { omit } from 'lodash'
 
 // eslint-disable-next-line react/display-name
@@ -16,7 +16,7 @@ const AccordionTrigger = React.forwardRef(({ children, className, ...props }: Ac
         {children}
       </span>
 
-      <LanguageIcon className="ml-3 w-4 h-4" aria-hidden />
+      <LanguagesIcon className="ml-3 w-4 h-4" aria-hidden />
       <ChevronDownIcon className="w-3 h-3" aria-hidden />
     </Accordion.Trigger>
   </Accordion.Header>

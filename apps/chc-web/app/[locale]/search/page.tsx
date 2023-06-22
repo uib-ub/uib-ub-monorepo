@@ -11,6 +11,7 @@ const searchClient = createClient({
 const facetAttributes = [
   {
     attribute: "type",
+    label: "Type",
   },
   {
     attribute: "maker.label_none",
