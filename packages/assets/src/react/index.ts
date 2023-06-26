@@ -6,7 +6,6 @@ export { default as HvlIcon } from "./hvl-icon";
 export { default as Iiif } from "./iiif";
 export { default as NbIcon } from "./nb-icon";
 export { default as NchEn } from "./nch-en";
-export { default as OrdbokeneIcon } from "./ordbokene-icon";
 export { default as UibIcon } from "./uib-icon";
 export { default as UibUbCenteredEn } from "./uib-ub-centered-en";
 export { default as UibUbCenteredNo } from "./uib-ub-centered-no";
