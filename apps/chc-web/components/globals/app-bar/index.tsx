@@ -4,11 +4,13 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { NavLink } from 'components/globals/app-bar/nav-link';
 import LocaleSwitch from 'components/shared/locale-switch';
 import { ThemeSwitch } from 'components/shared/theme-switch';
+import { UibUbNo } from 'assets';
 
 export default function AppBar({ locale }: { locale: string }) {
   return (
-    <div className='flex items-center gap-5 p-5'>
-      <h1 className='font-extrabold text-2xl'>CHC</h1>
+    <div className='flex items-center gap-5 px-5'>
+      <UibUbNo className='h-24 text:white' />
+      <h1 className='sr-only'>CHC</h1>
       <Navigation locale={locale} />
     </div>
   )
