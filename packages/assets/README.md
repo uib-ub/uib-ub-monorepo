@@ -14,5 +14,5 @@ NB! The svg files are not used directly, but are converted to react components. 
 ## How to add a new asset
 
 1. Add the svg asset to the `assets` directory (use *kebab-case*).
-2. `npm run build -w assets` to generate the react components in `build`.
+2. `npm run build-assets -w assets` to generate the react components in `build`.
 3. Copy new react components from `build` to `src/react`, and modify as needed.
