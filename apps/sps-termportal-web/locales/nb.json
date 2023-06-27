@@ -107,7 +107,7 @@
 
   "termbase": {
     "organisation": "Organisasjon",
-    "orgnr": "Organisasjons.nr.",
+    "orgnr": "Organisasjonsnr.",
     "email": "E-post",
     "telephone": "Telefon",
     "license": "Lisens",
