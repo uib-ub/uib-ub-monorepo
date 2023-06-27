@@ -28,9 +28,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     apiKey: uuidv4(),
+    endpointUrl: "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",
     public: {
-      endpointUrl:
-        "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
   },

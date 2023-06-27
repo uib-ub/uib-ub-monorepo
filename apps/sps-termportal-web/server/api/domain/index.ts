@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const url = runtimeConfig.public.endpointUrl;
+  const url = runtimeConfig.endpointUrl;
   const query = genDomainQuery(runtimeConfig.public.base);
   try {
     const data = await $fetch(url, {
