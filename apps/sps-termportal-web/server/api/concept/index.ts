@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const url = runtimeConfig.public.endpointUrl;
+  const url = runtimeConfig.endpointUrl;
   const body = await readBody(event);
   const concept =
     body.termbase === "FBK" ? body.base + body.concept : body.concept;
