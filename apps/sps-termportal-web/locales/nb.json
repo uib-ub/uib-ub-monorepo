@@ -61,11 +61,11 @@
       "hiddenLabel": "Frarådet term"
     },
     "matching": {
-      "full-cs": "helt, versalfølsom",
-      "full-ci": "helt, versalufølsom",
+      "full-cs": "nøyaktig",
+      "full-ci": "nøyaktig",
       "startsWith-ci": "starter med",
       "endsWith-ci": "slutter med",
-      "subWord-ci": "underord begynner med",
+      "subWord-ci": "underord starter med",
       "contains-ci": "inneholder"
     }
   },
@@ -93,8 +93,8 @@
     "filter": "Filter",
     "filterTitleShow": "Vis filter",
     "filterTitleHide": "Skjul filter",
-    "termproperty": "termstatus",
-    "matching": "Søkealternativer"
+    "termproperty": "Termstatus",
+    "matching": "Treffmønster"
   },
   "footer": {
     "contact": "Kontakt oss",
