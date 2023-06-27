@@ -23,8 +23,8 @@
       "fr": "French | French",
       "it": "Italian | Italian",
       "la": "Latin | Latin",
-      "nb": "Norwegian Bokmål | Norwegian Bokmål",
-      "nn": "Norwegian Nynorsk | Norwegian Nynorsk",
+      "nb": "Bokmål |Bokmål",
+      "nn": "Nynorsk |Nynorsk",
       "pl": "Polish | Polish",
       "ru": "Russian | Russian",
       "so": "Somali | Somali",
@@ -61,8 +61,8 @@
       "hiddenLabel": "Deprecated term"
     },
     "matching": {
-      "full-cs": "full, case sensitive",
-      "full-ci": "full, case insensitive",
+      "full-cs": "exact",
+      "full-ci": "exact",
       "startsWith-ci": "starts with",
       "endsWith-ci": "ends with",
       "subWord-ci": "subword starts with",
@@ -94,7 +94,7 @@
     "filterTitleShow": "Show filter",
     "filterTitleHide": "Hide filter",
     "termproperty": "Acceptability rating",
-    "matching": "Search alternatives"
+    "matching": "Matching pattern"
   },
   "footer": {
     "contact": "Contact us",
