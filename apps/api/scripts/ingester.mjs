@@ -4,8 +4,9 @@ import inquirer from 'inquirer';
 import { performance } from 'perf_hooks';
 import { Client } from '@elastic/elasticsearch';
 import { Transport } from '@elastic/transport';
-;
+
 dotenv.config();
+
 const { ES_HOST, ES_APIKEY, ES_PATH, NODE_ENV } = process.env
 const API = NODE_ENV === 'production' ? 'https://api-ub.vercel.app' : 'http://localhost:3009'
 // store index name
@@ -72,7 +73,7 @@ const checkIndex = async (index) => {
  */
 const turnOffRefreshInterval = async (indexName) => {
   try {
-    const result = await client.indices.putSettings({
+    await client.indices.putSettings({
       index: indexName,
       body: {
         'index.refresh_interval': '-1'
@@ -90,7 +91,7 @@ const turnOffRefreshInterval = async (indexName) => {
  */
 const turnOnRefreshInterval = async (indexName) => {
   try {
-    const result = await client.indices.putSettings({
+    await client.indices.putSettings({
       index: indexName,
       body: {
         'index.refresh_interval': '1s'
