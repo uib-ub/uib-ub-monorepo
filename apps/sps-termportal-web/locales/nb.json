@@ -106,8 +106,8 @@
   "buttonScrollTop": { "srLabel": "Tilbake til toppen" },
 
   "termbase": {
-    "organisation": "Organisasjonsnr.",
-    "orgnr": "Org.nr.",
+    "organisation": "Organisasjon",
+    "orgnr": "Organisasjons.nr.",
     "email": "E-post",
     "telephone": "Telefon",
     "license": "Lisens",
