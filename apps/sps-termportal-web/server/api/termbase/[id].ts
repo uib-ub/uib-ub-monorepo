@@ -3,7 +3,8 @@ import frameData from "../../utils/frameData";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const url = runtimeConfig.public.endpointUrl;
+
+  const url = runtimeConfig.endpointUrl;
 
   if (event.context.params) {
     const query = genTermbaseQuery(event.context.params.id);

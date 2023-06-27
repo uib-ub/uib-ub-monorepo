@@ -1,3 +1,4 @@
+import 'server-only';
 import { API_URL } from 'lib/constants';
 
 export async function getItemData(id: string): Promise<any> {

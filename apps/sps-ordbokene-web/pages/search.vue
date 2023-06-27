@@ -4,12 +4,12 @@
         <AdvancedSearchForm class="ord-container"/>
       </NuxtErrorBoundary>
       <NuxtErrorBoundary @error="content_error">  
-    <Results v-if="store.q" class="ord-container"/>
+    <AdvancedResults v-if="store.q" class="ord-container"/>
       </NuxtErrorBoundary>
 
 
     </main>
-    </template>
+</template>
     
 <script setup>
 import { useStore } from '~/stores/searchStore'

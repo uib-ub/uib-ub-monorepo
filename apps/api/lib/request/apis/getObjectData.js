@@ -23,6 +23,7 @@ export async function getObjectData(id, url) {
       VALUES ?id {"${id}"}
       ?uri dct:identifier ?id ;
         ?p ?o .
+      OPTIONAL {?uri ubbont:hasRepresentation  ?repr } .
       OPTIONAL {?uri dct:title ?title } .
       OPTIONAL {?uri foaf:name ?name } .
       OPTIONAL {?uri skos:prefLabel ?prefLabel } .
@@ -57,7 +58,7 @@ export async function getObjectData(id, url) {
         ?uri dct:license / rdfs:label ?licenseLabel .
       }
       BIND(iri(REPLACE(str(?uri), "data.ub.uib.no","marcus.uib.no","i")) as ?homepage) .
-      BIND(CONCAT("https://api-ub.vercel.app/items/", ?id, "/manifest") as ?manifest) .
+      BIND(IF(BOUND(?repr),CONCAT("https://api-ub.vercel.app/items/", ?id, "/manifest"), ?repr) as ?manifest) .
       FILTER(?p != ubbont:cataloguer && ?p != ubbont:internalNote)
     }
   `;
