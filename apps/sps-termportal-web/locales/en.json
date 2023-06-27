@@ -106,7 +106,7 @@
   "buttonScrollTop": { "srLabel": "Return to top" },
   "termbase": {
     "organisation": "Organisation",
-    "orgnr": "Organisation no.",
+    "orgnr": "Org. no.",
     "email": "E-mail",
     "telephone": "Telephone",
     "license": "Licence",
