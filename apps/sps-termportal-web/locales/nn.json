@@ -61,8 +61,8 @@
       "hiddenLabel": "Frårådd term"
     },
     "matching": {
-      "full-cs": "heilt, versalfølsam",
-      "full-ci": "heilt, versalufølsam",
+      "full-cs": "nøyaktig",
+      "full-ci": "nøyaktig",
       "startsWith-ci": "startar med",
       "endsWith-ci": "sluttar med",
       "subWord-ci": "underord startar med",
@@ -94,7 +94,7 @@
     "filterTitleShow": "Vis filter",
     "filterTitleHide": "Skjul filter",
     "termproperty": "Termstatus",
-    "matching": "Søkealternativ"
+    "matching": "Treffmønster"
   },
   "footer": {
     "contact": "Kontakt oss",
