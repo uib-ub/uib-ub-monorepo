@@ -1,10 +1,10 @@
-import { SearchOptions } from "../composables/states";
+import { SearchOptions } from "~/utils/vars";
 
 export function genSearchQueryAll(
   searchOptions: SearchOptions,
   graph,
   language,
-  predFilter,
+  predFilter
 ) {
   let languageFilter: string;
   if (language[0] === "") {
@@ -16,8 +16,7 @@ export function genSearchQueryAll(
     languageFilter = `FILTER ( ${languageFilterExp} )`;
   }
 
-  const translate =
-    searchOptions.translate !== "none" ? "?translate" : "";
+  const translate = searchOptions.translate !== "none" ? "?translate" : "";
   const translateOptional =
     searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
