@@ -3,7 +3,7 @@ FROM node:16 as build
 WORKDIR /tmp/app
 
 # Install dependencies
-COPY package.json package-lock.json ./
+COPY package.json ../../package-lock.json ./
 RUN npm ci --silent
 
 # Copy source
