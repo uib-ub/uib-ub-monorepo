@@ -14,7 +14,6 @@ const htmlHighlight = {
 
 const samlingMapping = {
   MRT: 3000,
-  MRT2: 3002,
   UHR: 3004,
   ARTSDB: 3006,
   EVERTEBRATER: 3008,

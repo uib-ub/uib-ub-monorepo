@@ -3,7 +3,6 @@ import { LangCode } from "~/composables/locale";
 export type Samling =
   | "ARTSDB"
   | "MRT"
-  | "MRT2"
   | "UHR"
   | "EVERTEBRATER"
   | "NHH"
@@ -39,7 +38,6 @@ export const termbaseOrder: Samling[] = [
   "KLIMA",
   "LINGVISTIKK",
   "MRT",
-  "MRT2",
   "SDIR",
   "NHH",
   "NOJU",
@@ -61,7 +59,6 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   KLIMA: ["nb", "nn", "en"],
   LINGVISTIKK: ["nb", "nn", "en"],
   MRT: ["nb", "en", "ar", "da", "de", "es", "sv"],
-  MRT2: ["nb", "en", "da", "de", "la", "sv"],
   SDIR: ["nb", "nn", "en"],
   NHH: ["nb", "nn", "en"],
   NOJU: ["nb", "de"],
@@ -78,7 +75,6 @@ export const domainNesting = {
     bases: [
       "NOT",
       "MRT",
-      "MRT2",
       "SDIR",
       "ARTSDB",
       "EVERTEBRATER",
