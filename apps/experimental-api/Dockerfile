@@ -4,7 +4,7 @@ WORKDIR /tmp/app
 
 # Install dependencies
 COPY package.json ./
-RUN npm ci --silent
+RUN npm install --silent
 
 # Copy source
 COPY . .
@@ -25,7 +25,7 @@ COPY --from=build /tmp/app/dist .
 
 # Build and cleanup
 ENV NODE_ENV=production
-RUN npm install
+RUN npm install --omit=dev
 
 # Start server
 CMD ["node", "./node_modules/moleculer/bin/moleculer-runner.js"]
