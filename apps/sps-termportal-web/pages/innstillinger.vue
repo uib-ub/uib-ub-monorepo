@@ -15,6 +15,7 @@
       </label>
       <select
         id="locale-select"
+        v-model="i18n.locale.value"
         class="tp-search-dd cursor-pointer px-2 py-1 text-lg"
       >
         <option v-for="lang in locales" :key="lang" :value="lang">
@@ -57,6 +58,8 @@
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n";
+const i18n = useI18n();
 const dataDisplayLanguages = useDataDisplayLanguages();
 const locales = useLocales();
 const localeLangOrder = useLocaleLangOrder();
