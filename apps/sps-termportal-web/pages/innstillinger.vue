@@ -22,7 +22,6 @@
           {{ $t("global.lang." + lang) }}
         </option>
       </select>
-      <span class="text-lg"> (deaktivert)</span>
     </section>
     <section>
       <h2 id="conceptview" class="pb-2 pt-3 text-2xl">
