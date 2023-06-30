@@ -1,4 +1,5 @@
 import { H3Event } from "h3";
+import { cookieDefaultOptions } from "~/utils/vars";
 
 /**
  * Set session cookie when not present or not up to date.
@@ -6,16 +7,16 @@ import { H3Event } from "h3";
  * @param event H3Event
  */
 function ensureToken(event: H3Event) {
-  const options = {
-    httpOnly: true,
-    secure: true,
-    sameSite: true,
-  };
   if (
     !getCookie(event, "session") ||
     getCookie(event, "session") !== useRuntimeConfig().apiKey
   ) {
-    setCookie(event, "session", useRuntimeConfig().apiKey, options);
+    setCookie(
+      event,
+      "session",
+      useRuntimeConfig().apiKey,
+      cookieDefaultOptions
+    );
   }
 }
 
