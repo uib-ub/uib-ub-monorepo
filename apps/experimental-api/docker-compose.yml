@@ -6,6 +6,7 @@ services:
     build:
       context: .
     image: moleculer-demo
+    container_name: moleculer-api
     env_file: docker-compose.env
     environment:
       SERVICES: api
@@ -23,6 +24,7 @@ services:
     build:
       context: .
     image: moleculer-demo
+    container_name: moleculer-ingester
     env_file: docker-compose.env
     environment:
       SERVICES: ingester
@@ -35,6 +37,7 @@ services:
     build:
       context: .
     image: moleculer-demo
+    container_name: moleculer-items
     env_file: docker-compose.env
     environment:
       SERVICES: items
@@ -47,6 +50,7 @@ services:
     build:
       context: .
     image: moleculer-demo
+    container_name: moleculer-resolver
     env_file: docker-compose.env
     environment:
       SERVICES: resolver
@@ -57,11 +61,13 @@ services:
 
   nats:
     image: nats:2
+    container_name: nats
     networks:
       - internal
 
   traefik:
     image: traefik:v2.4
+    container_name: traefik
     command:
       - "--api.insecure=true" # Don't do that in production!
       - "--providers.docker=true"
