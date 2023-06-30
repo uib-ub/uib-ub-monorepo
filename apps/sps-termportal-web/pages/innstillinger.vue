@@ -40,7 +40,7 @@
             <input
               :id="`ddl-${lang}`"
               v-model="dataDisplayLanguages"
-              class="checked:bg-tpblue-400 cursor-pointer"
+              class="cursor-pointer checked:bg-tpblue-400"
               type="checkbox"
               :value="lang"
             />
@@ -58,8 +58,14 @@
 
 <script setup>
 import { useI18n } from "vue-i18n";
+
 const i18n = useI18n();
 const dataDisplayLanguages = useDataDisplayLanguages();
 const locales = useLocales();
 const localeLangOrder = useLocaleLangOrder();
+
+watch(i18n.locale, () => {
+  const locale = useCookie("locale", cookieLocaleOptions);
+  locale.value = i18n.locale.value;
+});
 </script>
