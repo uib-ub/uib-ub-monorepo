@@ -8,7 +8,22 @@ const CloverIIIF = dynamic(() => import('@samvera/clover-iiif'), {
 
 const ManifestViewer = (props: any) => {
   return (
-    <CloverIIIF {...props} />
+    <CloverIIIF
+      options={{
+        canvasBackgroundColor: '#222',
+        canvasHeight: '70vh',
+        renderAbout: false,
+        showIIIFBadge: false,
+        showTitle: false,
+        showInformationToggle: false,
+        openSeadragon: {
+          gestureSettingsMouse: {
+            scrollToZoom: false,
+          },
+        },
+      }}
+      {...props}
+    />
   )
 }
 

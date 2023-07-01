@@ -18,7 +18,6 @@ export default async function SamlaRecordRoute({
   return (
     <div>
       <span className='block text-xs text-right'>{t('greeting')}</span>
-      {/* @ts-expect-error Server Component */}
       <SamlaRecordPage data={itemData} locale={params.locale} />
     </div>
   );

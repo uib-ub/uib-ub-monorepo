@@ -68,7 +68,10 @@
     },
     "abstract": {
       "@id": "dct:abstract",
-      "@type": "xsd:string"
+      "@container": [
+        "@language",
+        "@set"
+      ]
     },
     "clause": {
       "@id": "ubbont:clause",
@@ -104,7 +107,7 @@
     },
     "apertureValue": {
       "@id": "exif:apertureValue",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "Furniture": {
       "@id": "ubbont:Furniture"
@@ -134,14 +137,14 @@
     },
     "yResolution": {
       "@id": "exif:yResolution",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "Painting": {
       "@id": "ubbont:Painting"
     },
     "pageStart": {
       "@id": "bibo:pageStart",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "beginOfTheBegin": {
       "@id": "ubbont:begin"
@@ -232,7 +235,7 @@
     },
     "pageEnd": {
       "@id": "bibo:pageEnd",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "originalCreatorOf": {
       "@id": "ubbont:originalCreatorOf",
@@ -271,7 +274,7 @@
     },
     "issue": {
       "@id": "bibo:issue",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "cataloguer": {
       "@id": "ubbont:cataloguer",
@@ -313,7 +316,8 @@
       "@type": "xsd:string"
     },
     "pages": {
-      "@id": "bibo:pages"
+      "@id": "bibo:pages",
+      "@type": "xsd:integer"
     },
     "place": {
       "@id": "event:place",
@@ -621,7 +625,7 @@
     },
     "sequenceNr": {
       "@id": "ubbont:sequenceNr",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "hasTranslation": {
       "@id": "ubbont:hasTranslation",
@@ -632,7 +636,7 @@
     },
     "fylkenr": {
       "@id": "geo-deling:fylkenr",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "Person": {
       "@id": "foaf:Person"
@@ -722,7 +726,8 @@
       "@id": "ubbont:Box"
     },
     "madeAfter": {
-      "@id": "ubbont:madeAfter"
+      "@id": "ubbont:madeAfter",
+      "@type": "xsd:date"
     },
     "hasSource": {
       "@id": "ubbont:hasSource",
@@ -734,7 +739,7 @@
     },
     "postalCode": {
       "@id": "schema:postalCode",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "Technique": {
       "@id": "ubbont:Technique"
@@ -779,7 +784,8 @@
       "@id": "ubbont:userDate"
     },
     "showWeb": {
-      "@id": "ubbont:showWeb"
+      "@id": "ubbont:showWeb",
+      "@type": "xsd:boolean"
     },
     "location": {
       "@id": "wgs:location",
@@ -806,7 +812,8 @@
       "@type": "@id"
     },
     "madeBefore": {
-      "@id": "ubbont:madeBefore"
+      "@id": "ubbont:madeBefore",
+      "@type": "xsd:date"
     },
     "MasterThesis": {
       "@id": "ubbont:MasterThesis"
@@ -871,7 +878,7 @@
     },
     "gnr": {
       "@id": "geo-deling:gnr",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "deprecated": {
       "@id": "owl:deprecated"
@@ -1037,7 +1044,7 @@
     },
     "xResolution": {
       "@id": "exif:xResolution",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "placeOfPublication": {
       "@id": "ubbont:placeOfPublication",
@@ -1115,7 +1122,7 @@
     },
     "volume": {
       "@id": "bibo:volume",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "Fylke": {
       "@id": "geo-deling:Fylke"
@@ -1180,7 +1187,7 @@
     },
     "flash": {
       "@id": "exif:flash",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "bibsysID": {
       "@id": "ubbont:bibsysID",
@@ -1245,7 +1252,7 @@
     },
     "kommunenr": {
       "@id": "geo-deling:kommunenr",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "WindowDisplay": {
       "@id": "ubbont:WindowDisplay"
@@ -1343,7 +1350,8 @@
       "@id": "ubbont:hasView"
     },
     "available": {
-      "@id": "dct:available"
+      "@id": "dct:available",
+      "@type": "xsd:date"
     },
     "userPlace": {
       "@id": "ubbont:userPlace"
@@ -1478,7 +1486,7 @@
     },
     "estimatedCollectionSize": {
       "@id": "ubbont:estimatedCollectionSize",
-      "@type": "xsd:int"
+      "@type": "xsd:integer"
     },
     "BachelorThesis": {
       "@id": "ubbont:BachelorThesis"
