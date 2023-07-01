@@ -2,8 +2,6 @@ import { notFound } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { Badge } from 'ui-react';
 
-const url = "https://sparql.ub.uib.no/sparql/query?query="
-
 async function getData(id: string) {
   const res = await fetch(`http://localhost:3009/id/${id}`, { next: { revalidate: 10000 } });
 
@@ -19,6 +17,7 @@ export default async function Subjects({
 }: {
   data: Array<string>
 }) {
+  if (!data) return null;
   return (
     <>
       <div className='text-xs text-gray-400'>Subjects:</div>

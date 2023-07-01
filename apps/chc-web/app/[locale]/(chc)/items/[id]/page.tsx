@@ -49,9 +49,7 @@ export default async function ItemRoute({
           }}
         /> : null}
         <div className='flex flex-col gap-2 my-5'>
-          {data.subject ? (
-            <Subjects data={data.subject} />
-          ) : null}
+          <Subjects data={data.subject} />
         </div>
       </div>
     </>
