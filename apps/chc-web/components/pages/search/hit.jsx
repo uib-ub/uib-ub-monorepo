@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Badge, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, toBase64, shimmer, DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem, Popover, PopoverContent, PopoverTrigger } from 'ui-react';
-import { ExternalLink, Info, Link } from "lucide-react"
+import { Info, Link } from "lucide-react"
 
 const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
 
@@ -25,7 +25,7 @@ export function Hit({ hit }) {
           </div>
         ) : null
       }
-      <CardHeader>
+      <CardHeader className='p-2'>
         <CardTitle>
           <a href={`/items/${hit.identifier}`} className='leading-6'>
             {hit.label_none || hit.label?.no || hit.identifier}
@@ -39,12 +39,12 @@ export function Hit({ hit }) {
           ))}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className='p-2'>
         {hit.description_none ?? hit.description?.no ? (
           <div className='text-sm font-serif'>{renderHTML(hit.description_none ?? hit.description?.no)}</div>
         ) : null}
       </CardContent>
-      <CardFooter className='flex flex-wrap gap-2 justify-between w-full text-sm'>
+      <CardFooter className='flex flex-wrap gap-2 justify-between w-full text-sm p-2'>
         <Popover>
           <PopoverTrigger className='flex flex-nowrap items-center gap-1'>Info <Info className="h-4 w-4" /></PopoverTrigger>
           <PopoverContent>
