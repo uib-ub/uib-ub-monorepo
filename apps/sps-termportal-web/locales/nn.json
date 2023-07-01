@@ -42,7 +42,7 @@
       "LINGVISTIKK": "Lingvistikk",
       "MRT": "Maritim ordbok",
       "MRT2": "Maritim ordbok del 2",
-      "NOT": "NOT - Norsk termbanks termdatabase",
+      "NOT": "NOT – Norsk termbanks termdatabase",
       "NHH": "NHHs termdatabase",
       "NOJU": "Norsk-tysk juridisk ordbok (NOJU)",
       "ROMFYS": "Romfysikk",
@@ -72,7 +72,7 @@
   "domainOverview": { "domainsAndBases": "Domene & termbasar" },
   "navBar": {
     "om": "Om Termportalen",
-    "innstillinger": "Inn­stillingar",
+    "innstillinger": "Innstillingar",
     "menuButtonShow": "Utvid menyen",
     "menuButtonHide": "Skjul menyen"
   },
@@ -81,7 +81,7 @@
     "inDomain": "i",
     "inLanguage": "på",
     "language": "Søkespråk",
-    "translation": "Målspråk",
+    "translate": "Målspråk",
     "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
