@@ -1,50 +1,19 @@
 import { SearchOptions } from "../../utils/vars";
 import { samlingMapping, sanitizeTerm } from "./genSearchQuery";
+import { genTQLangArgument, genTQGraphValue } from "./genQueryUtils";
 
 export function genAutocompleteQuery(
   searchOptions: SearchOptions,
   base: string
 ): string {
-  const term = () => {
-    return searchOptions.term;
-  };
-  const sanitized = () => {
-    return sanitizeTerm(term());
-  };
-
-  const lang = () => {
-    const langopt = searchOptions.language[0];
-    if (langopt === "all") {
-      return "";
-    } else {
-      return `'lang:${langopt}'`;
-    }
-  };
-
-  const graph = () => {
-    const tbopt = searchOptions.termbase[0];
-    if (tbopt === "all") {
-      return "<urn:x-arq:UnionGraph>";
-    } else {
-      return `ns:${samlingMapping[tbopt]}`;
-    }
-  };
-
-  const domain = () => {
-    const domainopt = searchOptions.domain;
-
-    if (searchOptions.termbase[0] === "all" && domainopt[0] !== "all") {
-      const domains = domainopt
-        .map((d) => {
-          return "base:" + d;
-        })
-        .join("|");
-      return `?c skosxl:prefLabel|skosxl:altLabel|skosxl:hiddenLabel ?l .
-      # ?c skosp:domene|skosp:domeneTransitive ${domains} .`;
-    } else {
-      return "";
-    }
-  };
+  const term = searchOptions.term;
+  const sanitized = sanitizeTerm(term);
+  const lang = genTQLangArgument(searchOptions.language)[0];
+  const graph = genTQGraphValue(searchOptions.termbase)[0];
+  const domain =
+    searchOptions.termbase[0] !== "all"
+      ? genDomainTriple(searchOptions.domain)
+      : "";
 
   const query = `#log: ${JSON.stringify(searchOptions)}
   PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
@@ -54,16 +23,52 @@ export function genAutocompleteQuery(
   PREFIX base: <${base}>
 
   SELECT * {
-  GRAPH ${graph()} {
-      SELECT DISTINCT ?litstr {
-        ( ?l ?sc ?lit ) text:query ("${sanitized()}*" ${lang()}) .
-        ${domain()}
-        BIND ( str(?lit) as ?litstr )
-        FILTER (strStarts(lcase(?litstr), lcase("${term()}")))
+  GRAPH ${graph} {
+      {
+        SELECT DISTINCT ?litstr {
+          ( ?l ?sc ?lit ) text:query ( "\\"${sanitized}\\"" ${lang} ) .
+          ${domain}
+          BIND ( str(?lit) as ?litstr )
+          FILTER ( ?litstr = "${term}" )
+        }
+      }
+      UNION
+      {
+        SELECT DISTINCT ?litstr {
+          ( ?l ?sc ?lit ) text:query ("\\"${sanitized}\\"" ${lang}) .
+          ${domain}
+          BIND ( str(?lit) as ?litstr )
+          FILTER ( lcase(?litstr) = lcase("${term}")
+                   && ?litstr != "${term}"
+                  )
+        }
+      }
+      UNION
+      {
+        SELECT DISTINCT ?litstr {
+          ( ?l ?sc ?lit ) text:query ("${sanitized}*" ${lang}) .
+          ${domain}
+          BIND ( str(?lit) as ?litstr )
+          FILTER ( strStarts( lcase(?litstr), lcase("${term}") ) &&
+                   lcase(?litstr) != lcase("${term}")
+                  )
+        }
+        ORDER by lcase(?litstr)
+        LIMIT 20
+      }
+      UNION
+      {
+        SELECT DISTINCT ?litstr {
+          ( ?l ?sc ?lit ) text:query ("${sanitized}*" ${lang}) .
+          ${domain}
+          BIND ( str(?lit) as ?litstr )
+          FILTER ( !strStarts( lcase(?litstr), lcase("${term}") ) )
+        }
+        ORDER by ?litstr
+        LIMIT 20
       }
     }
   }
-  ORDER by ?litstr
   LIMIT 20
 `;
 
