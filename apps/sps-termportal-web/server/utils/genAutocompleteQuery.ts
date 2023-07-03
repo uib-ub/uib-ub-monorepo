@@ -1,5 +1,5 @@
 import { SearchOptions } from "../../utils/vars";
-import { samlingMapping, sanitizeTerm } from "./genSearchQuery";
+import { sanitizeTerm } from "./genSearchQuery";
 import { genTQLangArgument, genTQGraphValue } from "./genQueryUtils";
 
 export function genAutocompleteQuery(
@@ -7,7 +7,9 @@ export function genAutocompleteQuery(
   base: string
 ): string {
   const term = searchOptions.term;
-  const sanitized = sanitizeTerm(term);
+  const sanitizedLit = term.replaceAll('"', '\\"');
+  const sanitizedIndex = sanitizeTerm(term);
+  const multiIndex = sanitizedIndex.split(" ").join(" AND ");
   const lang = genTQLangArgument(searchOptions.language)[0];
   const graph = genTQGraphValue(searchOptions.termbase)[0];
   const domain =
@@ -15,6 +17,13 @@ export function genAutocompleteQuery(
       ? genDomainTriple(searchOptions.domain)
       : "";
 
+  /**
+   * Relevance
+   * - exact match, case sensitive
+   * - exact match, case insensitive
+   * - term begins with
+   * - subwords begin with
+   */
   const query = `#log: ${JSON.stringify(searchOptions)}
   PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
   PREFIX skosp: <http://www.data.ub.uib.no/ns/spraksamlingene/skos#>
@@ -26,32 +35,32 @@ export function genAutocompleteQuery(
   GRAPH ${graph} {
       {
         SELECT DISTINCT ?litstr {
-          ( ?l ?sc ?lit ) text:query ( "\\"${sanitized}\\"" ${lang} ) .
+          ( ?l ?sc ?lit ) text:query ( "\\"${sanitizedIndex}\\"" ${lang} ) .
           ${domain}
-          BIND ( str(?lit) as ?litstr )
-          FILTER ( ?litstr = "${term}" )
+          BIND ( str(?lit) as ?litsstr )
+          FILTER ( ?litstr = "${sanitizedLit}" )
         }
       }
       UNION
       {
         SELECT DISTINCT ?litstr {
-          ( ?l ?sc ?lit ) text:query ("\\"${sanitized}\\"" ${lang}) .
+          ( ?l ?sc ?lit ) text:query ("\\"${sanitizedIndex}\\"" ${lang}) .
           ${domain}
           BIND ( str(?lit) as ?litstr )
-          FILTER ( lcase(?litstr) = lcase("${term}")
-                   && ?litstr != "${term}"
-                  )
+          FILTER ( lcase(?litstr) = lcase("${sanitizedLit}")
+                   && ?litstr != "${sanitizedLit}"
+                 )
         }
       }
       UNION
       {
         SELECT DISTINCT ?litstr {
-          ( ?l ?sc ?lit ) text:query ("${sanitized}*" ${lang}) .
+          ( ?l ?sc ?lit ) text:query ("${multiIndex}*" ${lang}) .
           ${domain}
           BIND ( str(?lit) as ?litstr )
-          FILTER ( strStarts( lcase(?litstr), lcase("${term}") ) &&
-                   lcase(?litstr) != lcase("${term}")
-                  )
+          FILTER ( strStarts( lcase(?litstr), lcase("${sanitizedLit}") ) &&
+                   lcase(?litstr) != lcase("${sanitizedLit}")
+                 )
         }
         ORDER by lcase(?litstr)
         LIMIT 20
@@ -59,10 +68,12 @@ export function genAutocompleteQuery(
       UNION
       {
         SELECT DISTINCT ?litstr {
-          ( ?l ?sc ?lit ) text:query ("${sanitized}*" ${lang}) .
+          ( ?l ?sc ?lit ) text:query ("${multiIndex}*" ${lang}) .
           ${domain}
           BIND ( str(?lit) as ?litstr )
-          FILTER ( !strStarts( lcase(?litstr), lcase("${term}") ) )
+          FILTER ( !strStarts( lcase(?litstr), lcase("${sanitizedLit}") )
+                   && contains( ?litstr, lcase("${sanitizedLit}") )
+                 )
         }
         ORDER by ?litstr
         LIMIT 20
