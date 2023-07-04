@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
     runtimeConfig.public.base
   );
 
-  console.log(query)
   const controller = new AbortController();
   const timer = setTimeout(() => {
     controller.abort();
@@ -30,6 +29,6 @@ export default defineEventHandler(async (event) => {
       return value;
     });
 
-    return data.results.bindings.map((binding: any) => binding.lit.value + " " + binding.sc.value);
+    return data.results.bindings.map((binding: any) => binding.lit.value);
   } catch (e) {}
 });
