@@ -6,6 +6,7 @@ export type SearchQueryType = "entries" | "aggregate";
 
 export type LabelPredicate = "prefLabel" | "altLabel" | "hiddenLabel";
 export type Matching =
+  | "full"
   | "full-cs"
   | "full-ci"
   | "startsWith-ci"
@@ -25,8 +26,7 @@ export const predicateOrder: LabelPredicate[] = [
   "hiddenLabel",
 ];
 export const matchingOrder: Matching[] | Matching[][] = [
-  "full-cs",
-  "full-ci",
+  "full",
   "startsWith-ci",
   "endsWith-ci",
   "subWord-ci",
