@@ -84,7 +84,7 @@ export function getConceptDisplaytitle(concept): string | null {
  * @returns List of semantic relation of relationtype: [label, link]
  */
 export function getRelationData(
-  data,
+  data: any,
   mainConceptId: string,
   relationType: SemanticRelation
 ): Array<Array<string>> | null {

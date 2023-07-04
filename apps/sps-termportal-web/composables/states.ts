@@ -86,6 +86,9 @@ export const useSearchDataCount = () => useState("searchDataCount", () => {});
 export const useSearchDataStats = () =>
   useState<SearchDataStats>("searchDataStats", () => ({}));
 
+export const useShowSearchFilter = () =>
+  useState<boolean>("showSearchFilter", () => false);
+
 export interface SearchFilterData {
   lang: LangCode[];
   samling: string[];
@@ -122,3 +125,6 @@ export const useDataDisplayLanguages = () =>
   ]);
 export const useConceptViewToggle = () =>
   useState<boolean>("conceptViewToggle", () => false);
+
+export const useNavMenuExpanded = () =>
+  useState<boolean>("navMenuExpanded", () => false);

@@ -25,7 +25,6 @@ export default defineEventHandler(async (event) => {
       clearTimeout(timer);
       return value;
     });
-
     return frameData(data, "skos:Concept").then((result) => {
       delete result["@context"];
       return parseConceptData(result, concept);

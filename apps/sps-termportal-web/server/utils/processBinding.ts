@@ -1,5 +1,5 @@
 import { SearchDataEntry } from "~~/composables/states";
-import { termbaseUriPatterns } from "~~/utils/vars-termbase";
+import { Samling, termbaseUriPatterns } from "~~/utils/vars-termbase";
 
 /* Search data preprocessing
  */
@@ -11,7 +11,7 @@ import { termbaseUriPatterns } from "~~/utils/vars-termbase";
  */
 export default function (binding: { [key: string]: any }): SearchDataEntry {
   const runtimeConfig = useRuntimeConfig();
-  const samling = binding.samling.value;
+  const samling = binding.samling.value as Samling;
 
   const predicate = binding.predicate.value.replace(
     "http://www.w3.org/2008/05/skos-xl#",
@@ -24,7 +24,8 @@ export default function (binding: { [key: string]: any }): SearchDataEntry {
       .replace(runtimeConfig.public.base, "")
       .replace("-3A", "/");
   } else {
-    const patterns = termbaseUriPatterns[samling];
+    const patterns =
+      termbaseUriPatterns[samling as keyof typeof termbaseUriPatterns];
     for (const pattern in patterns) {
       if (binding.uri.value.startsWith(patterns[pattern])) {
         const id = binding.uri.value.replace(patterns[pattern], "");

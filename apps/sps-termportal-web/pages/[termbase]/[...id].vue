@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full" style="height: calc(100% - 128px)">
+  <div class="flex h-full">
     <Head>
       <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
     </Head>
@@ -26,7 +26,7 @@
         <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
           {{ $t("searchFilter.results-heading") }}
         </h2>
-        <ol ref="sidebar" class="overflow-y-auto" style="max-height: 0px">
+        <ol ref="sidebar" class="overflow-y-auto" style="height: 0px">
           <SearchResultListEntryShort
             v-for="entry in searchData"
             :key="entry.label + entry.link + entry.lang"
@@ -370,7 +370,7 @@ const displayInfo = computed(() => {
 
 useResizeObserver(main, (e) => {
   if (sidebar.value) {
-    sidebar.value.style.maxHeight = `${main.value.offsetHeight - 95}px`;
+    sidebar.value.style.height = `${main.value.offsetHeight - 55}px`;
   }
 });
 

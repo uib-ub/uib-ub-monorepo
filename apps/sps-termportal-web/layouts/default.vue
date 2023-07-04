@@ -1,17 +1,32 @@
 <template>
-  <div class="flex h-screen flex-col">
-    <NavBar />
+  <div class="flex min-h-screen flex-col">
+    <HeaderMain />
     <div
-      class="xs:pb-4 xs:px-4 container mx-auto max-w-screen-xl flex-1 bg-white px-2 pb-2 sm:px-5 sm:pb-5 md:px-7 md:pb-7 lg:px-9 lg:pb-9 xl:px-10 xl:pb-10"
+      class="flex grow"
+      :class="{ 'items-center justify-center': route.path === '/' }"
     >
-      <h1
-        v-if="route.path === '/'"
-        class="xs:text-6xl pt-[0.2em] text-5xl font-light tracking-tight text-black/75 antialiased sm:text-7xl md:text-8xl"
+      <div
+        v-if="route.path !== '/'"
+        class="w-0 xl:w-[10vw] xl:min-w-[10em] xl:max-w-[13em]"
+      ></div>
+      <div
+        class="container flex-1"
+        :class="{
+          'xs:pb-4 max-w-screen-xl px-2 pt-2 sm:px-3 md:px-4 lg:px-5 xl:pl-0':
+            route.path !== '/',
+          'mb-[10vh] max-w-5xl p-5': route.path === '/',
+        }"
       >
-        Termportalen
-      </h1>
-      <SearchBar />
-      <slot />
+        <header>
+          <h1
+            v-if="route.path === '/'"
+            class="xs:text-6xl pb-9 pt-[0.2em] text-5xl font-light tracking-tight text-black/75 antialiased sm:text-7xl md:text-8xl"
+          >
+            Termportalen
+          </h1>
+        </header>
+        <slot />
+      </div>
     </div>
     <ButtonScrollTop />
     <FooterTP />

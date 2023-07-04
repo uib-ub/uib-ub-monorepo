@@ -1,5 +1,5 @@
 <template>
-  <li class="rounded border border-gray-300">
+  <li>
     <AppLink :to="`/${entryData.link}`">
       <section
         class="p-2 hover:bg-gray-300 lg:flex"
@@ -43,8 +43,3 @@ const isCurrentEntry = computed(() => {
   }
 });
 </script>
-<style scoped>
-li {
-  margin-bottom: -1px;
-}
-</style>

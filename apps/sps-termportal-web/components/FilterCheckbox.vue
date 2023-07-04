@@ -1,5 +1,5 @@
 <template>
-  <div class="space-x-3 text-lg">
+  <div class="space-x-3">
     <input
       :id="`filter-${ftype}-${fvalue}`"
       v-model="searchFilterData[ftype as keyof SearchDataStats]"
@@ -12,6 +12,7 @@
         searchDataStats[ftype as keyof SearchDataStats][
           fvalue as LangCode | Samling | Matching | LabelPredicate
         ]
+
       }})</label
     >
   </div>
