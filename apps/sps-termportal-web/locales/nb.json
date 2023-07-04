@@ -60,6 +60,7 @@
       "hiddenLabel": "Frarådet term"
     },
     "matching": {
+      "full": "nøyaktig",
       "full-cs": "nøyaktig",
       "full-ci": "nøyaktig",
       "startsWith-ci": "starter med",

@@ -60,6 +60,7 @@
       "hiddenLabel": "Deprecated term"
     },
     "matching": {
+      "full": "exact",
       "full-cs": "exact",
       "full-ci": "exact",
       "startsWith-ci": "starts with",

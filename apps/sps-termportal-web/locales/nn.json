@@ -61,6 +61,7 @@
       "hiddenLabel": "Frårådd term"
     },
     "matching": {
+      "full": "nøyaktig",
       "full-cs": "nøyaktig",
       "full-ci": "nøyaktig",
       "startsWith-ci": "startar med",
