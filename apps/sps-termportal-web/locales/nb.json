@@ -1,15 +1,10 @@
 {
   "global": {
-    "language": "Språk | Språk",
-    "termbase": "Termbase",
+    "language": "Språk | språk",
+    "termbase": "Termbase | termbase",
     "skipLink": "Gå til hovedinnhold",
     "domain": {
       "domain": "Domene | domene",
-      "all": "Alle",
-      "humaniora": "Humaniora",
-      "naturvitenskap": "Naturvitenskap & teknologi",
-      "sammfunnsfag": "Samfunnsfag",
-      "okonomAdmin": "Økonomi & administrasjon",
       "DOMENE-3AHumaniora": "Humaniora",
       "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
@@ -17,15 +12,15 @@
     },
     "lang": {
       "none": "–",
-      "all": "Alle språk | Alle språk",
-      "ar": "Arabic | arabic",
+      "all": "Alle språk | alle språk",
+      "ar": "Arabisk | arabisk",
       "da": "Dansk | dansk",
       "de": "Tysk | tysk",
       "en": "Engelsk | engelsk",
       "es": "Spansk | spansk",
       "fi": "Finsk | finsk",
       "fr": "Fransk | fransk",
-      "it": "Italienisk | italienisk",
+      "it": "Italiensk | italiensk",
       "la": "Latin | latin",
       "nb": "Bokmål | bokmål",
       "nn": "Nynorsk | nynorsk",
@@ -45,7 +40,6 @@
       "KLIMA": "Klima",
       "LINGVISTIKK": "Lingvistikk",
       "MRT": "Maritim ordbok",
-      "MRT2": "Maritim ordbok del 2",
       "NOT": "NOT – Norsk termbanks termdatabase",
       "NHH": "NHHs termbase",
       "NOJU": "Norsk-tysk juridisk ordbok (NOJU)",
@@ -65,15 +59,14 @@
       "hiddenLabel": "Frarådet term"
     },
     "matching": {
-      "full-cs": "helt, versalfølsom",
-      "full-ci": "helt, versalufølsom",
-      "startsWith-ci": "begynner med",
-      "endsWith-ci": "endte med",
-      "subWord-ci": "underord begynner med",
+      "full-cs": "nøyaktig",
+      "full-ci": "nøyaktig",
+      "startsWith-ci": "starter med",
+      "endsWith-ci": "slutter med",
+      "subWord-ci": "underord starter med",
       "contains-ci": "inneholder"
     }
   },
-
   "domainOverview": { "domainsAndBases": "Domener & termbaser" },
   "navBar": {
     "om": "Om Termportalen",
@@ -90,16 +83,16 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
-    "searchButtonLabel": "Utføre søk"
+    "searchButtonLabel": "Søk"
   },
   "searchFilter": {
-    "results": "resultater",
-    "results-heading": "Resultater",
+    "results": "treff",
+    "results-heading": "Treff",
     "filter": "Filter",
-    "filterTitleShow": "Vis filter for søkeresultater",
-    "filterTitleHide": "Skjul filter for søkeresultater",
-    "termproperty": "Egenskap",
-    "matching": "Matchende"
+    "filterTitleShow": "Vis filter",
+    "filterTitleHide": "Skjul filter",
+    "termproperty": "Termstatus",
+    "matching": "Treffmønster"
   },
   "footer": {
     "contact": "Kontakt oss",
@@ -108,36 +101,35 @@
   "spinnerIcon": {
     "srText": "Venter på søkeresultater"
   },
-
   "buttonScrollTop": { "srLabel": "Tilbake til toppen" },
 
   "termbase": {
-    "organisation": "Organisajon",
-    "orgnr": "Organisasjonsnr",
-    "email": "Epost",
-    "telephone": "Telefone",
+    "organisation": "Organisasjon",
+    "orgnr": "Organisasjonsnr.",
+    "email": "E-post",
+    "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Opprinnelig språk"
+    "startLang": "Utgangsspråk"
   },
   "id": {
-    "topheading": "Konseptvisning",
+    "topheading": "Begrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
     "hiddenLabel": "Frarådet term",
     "definisjon": "Definisjon",
-    "general": "Felles",
-    "relasjon": "Relasjon",
-    "narrower": "Overordnet",
-    "specializes": "Overordnet generisk",
-    "isPartOf": "Overordnet partitiv",
-    "broader": "Underordnet",
-    "generalizes": "Underordnet generisk",
-    "hasPart": "Underordnet partitiv",
+    "general": "Generell informasjon",
+    "relasjon": "Begrepsrelasjon",
+    "narrower": "Underbegrep",
+    "specializes": "Overbegrep (generisk)",
+    "isPartOf": "Overbegrep (partitiv)",
+    "broader": "Overbegrep",
+    "generalizes": "Underbegrep (generisk)",
+    "hasPart": "Underbegrep (partitiv)",
     "seeAlso": "Se også",
-    "related": "Assosiert",
+    "related": "Assosiert begrep",
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
@@ -155,9 +147,9 @@
   },
   "om": { "title": "Om Termportalen" },
   "innstillinger": {
-    "title": "Inn­stillinger",
-    "global": "Global",
-    "conceptview": "Begrepsvisning",
-    "dataDispLang": "Data viser språk"
+    "title": "Innstillinger",
+    "global": "Velg visningsspråk",
+    "conceptview": "Termpost",
+    "dataDispLang": "Velg språk"
   }
 }

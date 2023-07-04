@@ -12,9 +12,8 @@ const htmlHighlight = {
   close: "</mark>",
 };
 
-const samlingMapping = {
+export const samlingMapping = {
   MRT: 3000,
-  MRT2: 3002,
   UHR: 3004,
   ARTSDB: 3006,
   EVERTEBRATER: 3008,
@@ -35,17 +34,20 @@ const samlingMapping = {
   KJEMI: 3812,
 };
 
+export function sanitizeTerm(term: string) {
+  return term
+    .replace(/-|\(|\)|<|>|\[|\]|\/|,\s*$|\*|~|'|"|_/g, " ")
+    .replace(/\s\s+/g, " ")
+    .trim();
+}
+
 export function getTermData(
   term: string,
   highlight: { [key: string]: string }
 ) {
   return {
     term,
-    sanitized: () =>
-      term
-        .replace(/-|\(|\)|<|>|\[|\]|\/|,\s*$|\*|~|'|"|_/g, " ")
-        .replace(/\s\s+/g, " ")
-        .trim(),
+    sanitized: () => sanitizeTerm(term),
     starred: function () {
       return this.sanitized()
         .split(/, | /)

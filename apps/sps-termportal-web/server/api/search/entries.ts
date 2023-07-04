@@ -1,7 +1,9 @@
 import { genSearchQuery } from "~~/server/utils/genSearchQuery";
 
 export default defineEventHandler(async (event) => {
-  const url = useRuntimeConfig().public.endpointUrl;
+  const runtimeConfig = useRuntimeConfig();
+
+  const url = runtimeConfig.endpointUrl;
   const body = await readBody(event);
   const query = genSearchQuery(body);
 

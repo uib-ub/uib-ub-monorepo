@@ -17,8 +17,8 @@ export async function constructManifest(data, metadata, API) {
 
   // When madeObject is a single page we convert items and structures.items to an array of one
   data.items = Array.isArray(data.items) === false
-    ? sortBy([data.items], o => o.label['@none'][0])
-    : sortBy(data.items, o => o.label['@none'][0])
+    ? sortBy([data.items], i => parseInt(i.id.split("_p")[1]))
+    : sortBy(data.items, i => parseInt(i.id.split("_p")[1]))
 
   data.structures.items = Array.isArray(data.structures.items) === false
     ? sortBy([data.structures.items], i => parseInt(i.split("_p")[1]))
@@ -46,6 +46,7 @@ export async function constructManifest(data, metadata, API) {
       ]
     }
   ]
+
   const extraMetadata = await constructMetadata(metadata)
 
   // Create the manifest
@@ -55,16 +56,7 @@ export async function constructManifest(data, metadata, API) {
       manifest.setLabel(data.label),
         manifest.setSummary(data.summary),
         manifest.metadata = [
-          data.identifier ? {
-            label: {
-              en: ["Identifier"],
-              no: ["Identifikator"],
-            },
-            value: {
-              none: [data.identifier]
-            }
-          } : undefined,
-          extraMetadata ?? undefined
+          ...extraMetadata ?? undefined
         ],
         manifest.addThumbnail({
           id: data.thumbnail['@value' ?? 'value'] ?? data.thumbnail,

@@ -132,7 +132,7 @@ export function parseRelationsRecursively(
   relation: string,
   newKey: string
 ) {
-  if (data[startId][relation] && data[startId][relation].length > 0) {
+  if (data?.[startId]?.[relation] && data[startId][relation].length > 0) {
     return Object.assign(
       {},
       ...data[startId][relation].map((startId: string) => ({

@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getSamlaIIIFv2RecordData } from 'lib/samla/samla.client';
-import { SamlaRecordPage } from 'components/pages/items/SamlaRecordPage';
+import { SamlaRecordPage } from '@/components/pages/items/samla-record-page';
 
 export default async function SamlaRecordRoute({
   params
@@ -18,7 +18,6 @@ export default async function SamlaRecordRoute({
   return (
     <div>
       <span className='block text-xs text-right'>{t('greeting')}</span>
-      {/* @ts-expect-error Server Component */}
       <SamlaRecordPage data={itemData} locale={params.locale} />
     </div>
   );
