@@ -383,4 +383,9 @@ onBeforeUnmount(() => {
     searchScrollBarPos.value = sidebar.value.scrollTop;
   }
 });
+onMounted(() => {
+  if (typeof window?.MathJax !== "undefined") {
+    window.MathJax.typesetPromise();
+  }
+});
 </script>
