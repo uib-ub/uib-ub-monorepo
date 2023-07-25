@@ -122,6 +122,13 @@
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
     "definisjon": "Definisjon",
+    "referanse": "",
+    "kollokasjon": "",
+    "forkortelse": "",
+    "forkortelseAv": "",
+    "forkortelseType": "",
+    "kontekst": "",
+    "kontekstAv": "",
     "general": "Generell informasjon",
     "relasjon": "Omgrepsrelasjon",
     "narrower": "Underomgrep",
@@ -151,7 +158,9 @@
   "innstillinger": {
     "title": "Innstillingar",
     "global": "Vel visningsspråk",
+    "globalLangComment": "",
     "conceptview": "Termpost",
-    "dataDispLang": "Vel språk"
+    "dataDispLang": "Vel språk",
+    "dataDispLangComment": ""
   }
 }

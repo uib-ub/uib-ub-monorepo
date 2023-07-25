@@ -34,7 +34,6 @@ export const useDomainData = () =>
       bases: [
         "NOT",
         "MRT",
-        "MRT2",
         "SDIR",
         "ARTSDB",
         "EVERTEBRATER",
@@ -43,7 +42,7 @@ export const useDomainData = () =>
         "KLIMA",
         "ASTRONOMI",
         // "BIOLOGI",
-        "CMBIOLOGI",
+        // "CMBIOLOGI",
         "KJEMI",
       ],
     },

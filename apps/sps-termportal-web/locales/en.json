@@ -121,6 +121,13 @@
     "altLabel": "Admitted term",
     "hiddenLabel": "Depreciated term",
     "definisjon": "Definition",
+    "referanse": "",
+    "kollokasjon": "",
+    "forkortelse": "",
+    "forkortelseAv": "",
+    "forkortelseType": "",
+    "kontekst": "",
+    "kontekstAv": "",
     "general": "General information",
     "relasjon": "Concept relation",
     "narrower": "Subordinate concept",
@@ -150,7 +157,9 @@
   "innstillinger": {
     "title": "Settings",
     "global": "Choose display language",
+    "globalLangComment": "",
     "conceptview": "Term entry",
-    "dataDispLang": "Choose language(s)"
+    "dataDispLang": "Choose language(s)",
+    "dataDispLangComment": ""
   }
 }
