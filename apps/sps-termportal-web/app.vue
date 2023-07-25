@@ -24,7 +24,7 @@ if (process.client) {
     script: [
       {
         id: "MathJax-script",
-        src: "/_nuxt/assets/mathjax/es5/tex-chtml.js",
+        src: "/assets/mathjax/es5/tex-chtml.js",
         async: true,
       },
     ],
