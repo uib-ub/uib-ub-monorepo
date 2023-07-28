@@ -1,17 +1,14 @@
 <template>
   <div class="flex flex-wrap gap-x-3">
-    <SearchBarDropdown dropdown="language" dd-width="7.8em">
-      <option value="all">
-        {{ $t("global.lang.all") }} ({{ filteredSearchLangs.length }})
-      </option>
-      <option
-        v-for="lc in intersectUnique(localeLangOrder, filteredSearchLangs)"
-        :key="'searchlang_' + lc"
-        :value="lc"
-      >
-        {{ $t("global.lang." + lc) }}
-      </option>
-    </SearchBarDropdown>
+    <SearchDropdownWrapper target="language">
+      <DropdownPV
+        :id="`languageDropdown`"
+        v-model="searchInterface.language"
+        :options="optionsLanguage"
+        class="min-w-[11rem]"
+      />
+    </SearchDropdownWrapper>
+
     <SearchBarDropdown dropdown="translate" dd-width="5.5em">
       <option value="none">
         {{ $t("global.lang.none") }}
@@ -40,11 +37,43 @@
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n";
+const i18n = useI18n();
 const searchInterface = useSearchInterface();
 const localeLangOrder = useLocaleLangOrder();
 
+const optionsLanguage = computed(() => {
+  const filteredLangs = deriveSearchOptions("language", "all");
+  const intersection = intersectUnique(localeLangOrder, filteredLangs);
+  const options = [
+    {
+      label: i18n.t("global.lang.all") + ` (${intersection.length})`,
+      value: "all",
+    },
+  ].concat(
+    intersection.map((lang) => {
+      return { label: i18n.t("global.lang." + lang), value: lang };
+    })
+  );
+  return options;
+});
+
+// intersectUnique(localeLangOrder, filteredSearchLangs)
 const filteredSearchLangs = computed(() => {
   return deriveSearchOptions("language", "all");
+});
+const optionsLanguag = computed(() => {
+  const lst = [
+    {
+      label: i18n.t("global.lang.all") + ` (${props.optionsLang.length})`,
+      value: "all",
+    },
+  ].concat(
+    props.optionsLang.map((lang) => {
+      return { label: i18n.t("global.lang." + lang), value: lang };
+    })
+  );
+  return lst;
 });
 
 const filteredTranslationLangs = computed(() => {
