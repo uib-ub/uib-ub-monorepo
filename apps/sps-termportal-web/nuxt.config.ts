@@ -7,7 +7,8 @@ import { v4 as uuidv4 } from "uuid";
 export default defineNuxtConfig({
   meta: { title: "Termportalen" },
   extends: ["nuxt-umami"],
-  css: ["public/theme.scss"],
+  css: ["primevue/resources/themes/lara-light-blue/theme.css"],
+  // css: ["assets/themes/theme.scss"],
   build: {
     transpile: ["primevue"],
   },
