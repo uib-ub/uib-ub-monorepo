@@ -69,7 +69,7 @@ const optionsTermbase = computed(() => {
   const filteredTermbases = deriveSearchOptions("termbase", "all");
   const options = [
     {
-      label: i18n.t("global.samling.all"),
+      label: i18n.t("global.samling.all") + ` (${filteredTermbases.length})`,
       value: "all",
     },
   ].concat(
