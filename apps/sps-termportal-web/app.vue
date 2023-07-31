@@ -39,8 +39,17 @@ const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
 const skipLink = ref();
 const domainData = useDomainData();
+const searchHistory = useSearchHistory();
 
 onMounted(() => {
+  const searchHistoryCookie = useCookie("searchhistory");
+  if (searchHistoryCookie.value) {
+    const searchHistoryFromCookie = searchHistoryCookie.value;
+    if (searchHistoryFromCookie.length > 0) {
+      searchHistory.value = searchHistoryFromCookie;
+    }
+  }
+
   $fetch("/api/domain").then((data) => {
     for (const domain in domainData.value) {
       domainData.value[domain].subdomains = parseRelationsRecursively(
