@@ -1,6 +1,6 @@
-import { IIIFMetadata } from 'components/shared/iiif/iiif-metadata.client';
-import ManifestViewer from 'components/shared/iiif/manifest-viewer.client';
-import { InternationalLabel } from 'components/shared/international-label.client';
+import { IIIFMetadata } from '@/app/[locale]/(chc)/_components/iiif/iiif-metadata.client';
+import ManifestViewer from '@/app/[locale]/(chc)/_components/iiif/manifest-viewer.client';
+import { InternationalLabel } from '@/app/[locale]/(chc)/_components/international-label.client';
 
 export async function SamlaRecordPage({
   data,
