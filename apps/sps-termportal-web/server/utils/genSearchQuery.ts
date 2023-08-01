@@ -38,6 +38,7 @@ export function sanitizeTerm(term: string) {
   return term
     .replace(/-|\(|\)|<|>|\[|\]|\/|,\s*$|\*|~|'|"|_/g, " ")
     .replace(/\s\s+/g, " ")
+    .replace(/. /g, " ")
     .trim();
 }
 
