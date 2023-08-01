@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getSamlaIIIFv2RecordData } from 'lib/samla/samla.client';
-import { SamlaRecordPage } from '@/components/pages/items/samla-record-page';
+import { SamlaRecordPage } from '@/app/[locale]/(chc)/_components/samla-record-page';
 
 export default async function SamlaRecordRoute({
   params

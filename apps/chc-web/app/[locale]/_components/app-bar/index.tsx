@@ -1,9 +1,9 @@
 'use client'
-import { nav } from 'components/globals/nav'
+import { nav } from '@/app/[locale]/_components/app-bar/nav'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import { NavLink } from 'components/globals/app-bar/nav-link';
-import LocaleSwitch from 'components/shared/locale-switch';
-import { ThemeSwitch } from 'components/shared/theme-switch';
+import { NavLink } from '@/app/[locale]/_components/app-bar/nav-link';
+import LocaleSwitch from '@/app/[locale]/_components/app-bar/locale-switch';
+import { ThemeSwitch } from '@/app/[locale]/_components/app-bar/theme-switch';
 import { UibUbNo } from 'assets';
 
 export default function AppBar({ locale }: { locale: string }) {
