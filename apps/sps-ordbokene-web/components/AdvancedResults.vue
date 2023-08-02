@@ -135,9 +135,10 @@ const get_suggestions = async () => {
     suggestions.value = {similar: []}
   } 
 }
-const { pending, error, refresh, data: articles } = await useFetch(() => `${store.endpoint}api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
-          onRequestError({ request, options, error}) {
-            console.log("ERROR")
+const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
+          baseURL: store.endpoint,
+          onResponseError(conf) {
+            console.log("RESPONSE ERROR")
           },
           onResponse({ request, options, response }) {
             get_suggestions()
