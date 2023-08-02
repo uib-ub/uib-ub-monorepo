@@ -75,10 +75,12 @@
 </template>
 
 <script setup lang="ts">
+
 const route = useRoute();
 const router = useRouter();
 const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
+const searchHistory = useSearchHistory(searchInterface);
 
 const clearText = () => {
   searchterm.value = "";
@@ -87,7 +89,6 @@ const clearText = () => {
 
 function execSearch() {
   const myparams = route.query;
-  updateSearchHistory(searchterm.value);
   searchInterface.value.term = searchterm.value;
   myparams.q = searchInterface.value.term;
   router.push({
@@ -95,22 +96,5 @@ function execSearch() {
     force: true,
     query: myparams,
   });
-}
-
-function updateSearchHistory(searchterm: string) {
-  const searchHistory = useSearchHistory();
-  const cookie = useCookie("searchhistory", {
-    ...cookieDefaultOptions,
-    ...{ httpOnly: false },
-  });
-  if (searchHistory.value.includes(searchterm)) {
-    const index = searchHistory.value.indexOf(searchterm);
-    searchHistory.value.splice(index, 1);
-  }
-  searchHistory.value.unshift(searchterm);
-  if (searchHistory.value.length > 20) {
-    searchHistory.value.pop();
-  }
-  cookie.value = JSON.stringify(searchHistory.value);
 }
 </script>
