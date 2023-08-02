@@ -66,13 +66,13 @@
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
                 <h4>{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
 
-                <DefElement v-for="(element, index) in data.body.pronunciation" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
+                <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
             </section>
             <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
                 <h4>{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h4>
 
-                <DefElement v-for="(element, index) in data.body.etymology" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
+                <DefElement v-for="(element, index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
             </section>
             <section class="definitions" v-if="has_content">
@@ -119,7 +119,7 @@ const listView = computed(() => {
   return store.q && store.view != 'article' &&  (store.advanced ? settings.listView && route.name == 'search' : settings.simpleListView && route.name == 'dict-slug')
 })
 
-const { pending, data, error } = useAsyncData('article_'+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
+const { pending, data, error } = useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
                                                                                         {
                                                                                             async onResponseError({ request, response, options }) {
                                                                                                 // TODO: plausible logging, error message if article view
@@ -202,7 +202,7 @@ const sub_articles = computed(() => {
           return charcode1 - charcode2
         }
       }
-      return lemma1.lenght < lemma2.length || -1          
+      return lemma1.length < lemma2.length || -1          
 
     })
 })
@@ -243,7 +243,11 @@ const lemma_groups = computed(() => {
     let groups = [{lemmas: data.value.lemmas}]
       try {
         if (data.value.lemmas[0].paradigm_info[0].tags[0] == "DET" && data.value.lemmas[0].paradigm_info[0].tags.length > 1) {
-          groups = [{description: t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], {locale: content_locale}), pos_group: t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: content_locale}), lemmas: data.value.lemmas}]
+          groups = [{description: t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], {locale: content_locale}), 
+                     pos_group: ["Quant", "Dem", "Poss"].includes(data.value.lemmas[0].paradigm_info[0].tags[1]) ? 
+                                                                  t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: content_locale}) 
+                                                                  : '', 
+                    lemmas: data.value.lemmas}]
         }
         else if (data.value.lemmas[0].paradigm_info[0].tags[0] == 'NOUN') {
             let genus_map  = {}
@@ -387,81 +391,100 @@ const snippet = computed(() => {
   
 })
 
+const title = computed(() => {
+  return data.value.lemmas[0].lemma
+})
+
 
 if (store.view == 'article') {
   useHead({
+    title: title,
     meta: [
-      {
-        name: 'description',
-        content: snippet,
-      },
+      {name: 'description', content: snippet },
+      {property: 'og:title', content: title },
+      {property: 'og:description', content: snippet },
+      {name: 'twitter:description', content: snippet }  
     ],
+    link: [
+    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
+  ]
   });
 }
-
 
 
 </script>
 
 <style scoped>
-
- h2 {
-    color: theme("colors.gray.700") !important;
-    margin-left: 1rem;
-    margin-bottom: 0rem;
-    letter-spacing: .1rem;
-    font-variant-caps: all-small-caps;
-    font-weight: 600;
-    font-size: 1.25rem !important;
-}
-
-
-
-
 .inflection-container {
     box-shadow: 1px 1px 1px theme("colors.gray.500");
     border-color: theme("colors.gray.500") !important;
     border: solid 1px;
     border-radius: 1.5rem;
     display: inline-flex;
-
-    
-
     @apply border-primary overflow-auto;
-}
-
-ol > li:only-child.level1, li:only-child.level2 {
-  /* level3 a.k.a. underdefinisjoner skal vises med bullet selv om de står alene */
-  /* list-style: none;*/
-  color: blue;
 }
 
 li:only-child.level1 > ol {
   padding-left: 0px;
 }
 
-ul, ol {
-  padding-left: 12px !important;
-}
-
-ul li
-
 ul li.definition {
   list-style: disc;
 }
 
-h4 {
-  font-size: 1.5rem;
-  @apply text-primary;
-  font-variant: all-small-caps;
-  font-weight: 600;
-  padding-right: 1rem;
 
+
+.level1>ol {
+  padding-left: 1.25rem;
 }
 
-.article-dict-label {
-    font-size: 1.5rem !important;
-    padding-bottom: 1rem;
+
+
+section {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+
+section.etymology > h4, section.pronunciation > h4 {
+  display: inline;
+}
+
+section.etymology ul, section.pronunciation ul, section.etymology li, section.pronunciation li {
+  display: inline;
+}
+
+
+li.level1.definition {
+  list-style: upper-alpha;
+}
+
+
+li.level3.definition {
+  /* Norsk ordbok skal ha "lower.alpha" her */
+  list-style: disc;
+}
+
+level2.definition {
+  /* Norsk ordbok skal ha "lower.alpha" her */
+  list-style: revert !important;
+}
+
+li.sub_article > ul {
+  padding-left: 0px;
+}
+
+li::marker {
+  @apply text-primary;
+  font-weight: bold;
+}
+
+li.level2>div {
+  padding-left: 0.5rem;
+}
+
+ol.sub_definitions {
+  padding-left: 1.25rem;
 }
 
 
@@ -518,8 +541,6 @@ span.lemma-group {
 .article .dict_label {
     @apply text-text
     }
-
-
 
 
 .list-view-item {

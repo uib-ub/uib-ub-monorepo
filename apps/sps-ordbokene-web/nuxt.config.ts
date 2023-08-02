@@ -8,7 +8,6 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
   },
-
   runtimeConfig: {
     public: {
       endpointEnv: process.env.ENDPOINT_ENV || 'dev',
