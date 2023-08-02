@@ -1,5 +1,4 @@
 import { SearchOptions } from "~~/utils/vars";
-import { Samling } from "~/utils/vars-termbase";
 
 export default function (situation: string, options?: SearchOptions) {
   const searchInterface = useSearchInterface();
@@ -38,6 +37,11 @@ export default function (situation: string, options?: SearchOptions) {
     }
     if (searchFilterData.value.matching.length > 0) {
       newOptions.matching = searchFilterData.value.matching.map((e) => [e]);
+    }
+    // Check if flattened array includes "full"
+    // Happens when filter is used
+    if (newOptions.matching.flat().includes("full")) {
+      newOptions.matching.splice(0, 1, ["full-cs", "full-ci"]);
     }
   }
   if (options) {

@@ -1,7 +1,20 @@
 import { getTranslations } from 'next-intl/server';
-import { getItemData } from 'lib/marcus/marcus.client';
-import { ItemPage } from 'components/pages/items/item-page';
 import { notFound } from 'next/navigation';
+import Subjects from '@/app/[locale]/(chc)/_components/subject';
+import ManifestViewer from '@/app/[locale]/(chc)/_components/iiif/manifest-viewer.client';
+import { InternationalLabel } from '@/app/[locale]/(chc)/_components/international-label.client';
+
+const url = "https://sparql.ub.uib.no/sparql/query?query="
+
+async function getData(id: string) {
+  const res = await fetch(`http://localhost:3009/id/${id}`, { next: { revalidate: 10000 } });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch data')
+  }
+
+  return res.json()
+}
 
 export default async function ItemRoute({
   params
@@ -9,17 +22,35 @@ export default async function ItemRoute({
   params: { locale: string, id: string }
 }) {
   const t = await getTranslations('Item');
-  const itemData = await getItemData(params.id);
-
-  if (!itemData) {
+  const data = await getData(params.id)
+  if (!data) {
     notFound();
   }
 
   return (
-    <div>
-      <span className='block text-xs text-right'>{t('greeting')}</span>
-      {/* @ts-expect-error Server Component */}
-      <ItemPage data={itemData} locale={params.locale} />
-    </div>
+    <>
+      <div>
+        <InternationalLabel label={data.label} lang={params.locale} />
+        {data.subjectOfManifest ? <ManifestViewer
+          id={data.subjectOfManifest}
+          options={{
+            canvasBackgroundColor: '#222',
+            canvasHeight: '70vh',
+            renderAbout: true,
+            showIIIFBadge: true,
+            showTitle: false,
+            showInformationToggle: true,
+            openSeadragon: {
+              gestureSettingsMouse: {
+                scrollToZoom: false,
+              },
+            },
+          }}
+        /> : null}
+        <div className='flex flex-col gap-2 my-5'>
+          <Subjects data={data.subject} />
+        </div>
+      </div>
+    </>
   );
 }

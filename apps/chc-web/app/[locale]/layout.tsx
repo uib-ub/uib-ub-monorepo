@@ -1,10 +1,11 @@
 import { mono, sans, serif } from 'app/fonts';
-import AppShell from 'components/shells/app-shell';
-import AppBar from 'components/globals/app-bar';
+import AppShell from '@/app/[locale]/_components/app-shell';
+import AppBar from '@/app/[locale]/_components/app-bar';
 import { useLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { Providers } from './providers';
 import 'styles/globals.css'
+import 'ui-react/src/styles/globals.css';
 
 export default async function RootLayout({
   children, params
@@ -22,6 +23,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={`${mono.variable} ${sans.variable} ${serif.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <link rel="icon" href="/favicon/favicon.svg" />
@@ -30,7 +32,9 @@ export default async function RootLayout({
         <Providers>
           <AppShell>
             <AppBar locale={locale} />
-            {children}
+            <div className='p-5'>
+              {children}
+            </div>
           </AppShell>
         </Providers>
       </body>
