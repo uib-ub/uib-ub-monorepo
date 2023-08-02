@@ -88,7 +88,8 @@ const i18n = useI18n()
 const error_message = ref()
 
 const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
-      $fetch(store.endpoint + 'api/articles?', {
+      $fetch('api/articles?', {
+          baseURL: store.endpoint,
           params: {
             w: store.q,
             dict: store.dict,
