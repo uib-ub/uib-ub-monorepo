@@ -7,7 +7,7 @@
       ref="searchfield"
       v-model="searchterm"
       type="search"
-      class="form-control focus:border-tpblue-300 min-w-0 flex-auto rounded border border-white bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-gray-700 transition ease-in-out focus:border focus:bg-white focus:text-gray-700 focus:outline-none"
+      class="form-control min-w-0 flex-auto rounded border border-white bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-gray-700 transition ease-in-out focus:border focus:border-tpblue-300 focus:bg-white focus:text-gray-700 focus:outline-none"
       :placeholder="
         $t('searchBar.search') +
         (searchInterface.language !== 'all'
@@ -64,7 +64,7 @@
     </button>
     <button
       id="searchbutton"
-      class="bg-tpblue-400 tp-searchbutton-radius inline-block h-full w-14 items-center text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
+      class="tp-searchbutton-radius inline-block h-full w-14 items-center bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
       type="button"
       :aria-label="$t('searchBar.searchButtonLabel')"
       @click="execSearch"
@@ -75,10 +75,12 @@
 </template>
 
 <script setup lang="ts">
+
 const route = useRoute();
 const router = useRouter();
 const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
+const searchHistory = useSearchHistory(searchInterface);
 
 const clearText = () => {
   searchterm.value = "";

@@ -59,6 +59,8 @@ export const useSearchInterface = () =>
     termbase: "all",
     domain: ["all"],
   }));
+export const useSearchHistory = () =>
+  useState<Array<any>>("searchhistory", () => []);
 
 export const useAllowSearchFetch = () =>
   useState<boolean | null>("allowSearchFetch ", () => true);
