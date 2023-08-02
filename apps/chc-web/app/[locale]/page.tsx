@@ -1,9 +1,8 @@
-
 export default async function LocaleHome() {
 
   return (
-    <div>
-      <h1>CHC == Marcus Next</h1>
+    <div className='prose dark:prose-invert'>
+      <h1>Her kommer det mer!</h1>
     </div>
   )
 }

@@ -63,7 +63,7 @@ export default async function handler(req, res) {
           // We assume all @none language tags are really norwegian
           framed = JSON.parse(JSON.stringify(framed).replaceAll('"none":', '"no":'))
 
-          framed.timespan = getTimespan(framed?.created, framed?.madeAfter, framed?.madeBefore)
+          framed.timespan = framed.timespan ? getTimespan(framed?.created, framed?.madeAfter, framed?.madeBefore) : framed.timespan
           delete framed?.madeAfter
           delete framed?.madeBefore
 

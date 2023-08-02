@@ -72,7 +72,11 @@ const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
 
-const { data } = await useLazyFetch(`/api/termbase/${termbase}`);
+const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
+  headers: process.server
+    ? { cookie: "session=" + useRuntimeConfig().apiKey }
+    : undefined,
+});
 const description = computed(() => {
   let description = "";
   for (const lang of localeLangOrder) {

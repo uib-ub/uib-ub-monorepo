@@ -5,7 +5,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src",
-    "./styles.css": "./src/styles.css"
+    "./styles.css": "./src/styles.css",
+    "./tailwind.config.js": "./tailwind.config.js"
   },
   "license": "MIT",
   "scripts": {
@@ -29,7 +30,6 @@
     "react-dom": "^18.2.0",
     "react-portal": "^4.2.2",
     "react-simple-maps": "^3.0.0",
-    "tailwind-config": "*",
     "tailwindcss": "^3.3.1",
     "tsconfig": "*",
     "tsup": "^6.6.3",

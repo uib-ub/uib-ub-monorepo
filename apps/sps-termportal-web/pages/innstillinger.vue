@@ -15,13 +15,13 @@
       </label>
       <select
         id="locale-select"
+        v-model="i18n.locale.value"
         class="tp-search-dd cursor-pointer px-2 py-1 text-lg"
       >
         <option v-for="lang in locales" :key="lang" :value="lang">
           {{ $t("global.lang." + lang) }}
         </option>
       </select>
-      <span class="text-lg"> (deaktivert)</span>
     </section>
     <section>
       <h2 id="conceptview" class="pb-2 pt-3 text-2xl">
@@ -40,7 +40,7 @@
             <input
               :id="`ddl-${lang}`"
               v-model="dataDisplayLanguages"
-              class="checked:bg-tpblue-400 cursor-pointer"
+              class="cursor-pointer checked:bg-tpblue-400"
               type="checkbox"
               :value="lang"
             />
@@ -57,7 +57,15 @@
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n";
+
+const i18n = useI18n();
 const dataDisplayLanguages = useDataDisplayLanguages();
 const locales = useLocales();
 const localeLangOrder = useLocaleLangOrder();
+
+watch(i18n.locale, () => {
+  const locale = useCookie("locale", cookieLocaleOptions);
+  locale.value = i18n.locale.value;
+});
 </script>
