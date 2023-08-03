@@ -539,6 +539,23 @@ export default {
             }
         },
         onArrowDownKey(event) {
+            // FIXED beg
+            let query;
+            // FIXED end
+            if (!this.overlayVisible) {
+                /* original
+                return;
+                */
+
+                // FIXED beg
+                // from  onDropdownClick
+                DomHandler.focus(this.$refs.focusInput);
+                query = this.$refs.focusInput.value;
+
+                if (this.dropdownMode === 'blank') this.search(event, '', 'dropdown');
+                else if (this.dropdownMode === 'current') this.search(event, query, 'dropdown');
+                // FIXED end
+            }
             if (!this.overlayVisible) {
                 return;
             }
