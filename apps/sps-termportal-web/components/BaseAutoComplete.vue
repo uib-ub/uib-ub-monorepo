@@ -168,7 +168,7 @@ export default {
         optionGroupChildren: null,
         scrollHeight: {
             type: String,
-            default: '200px'
+            default: '300px'
         },
         dropdown: {
             type: Boolean,
