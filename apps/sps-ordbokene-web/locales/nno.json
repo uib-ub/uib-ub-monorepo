@@ -38,7 +38,8 @@
       "main_content": "Gå til hovudinnhald",
       "bm": "Gå til treff i Bokmålsordboka",
       "nn": "Gå til treff i Nynorskordboka",
-      "homograph": "Tyding "
+      "homograph": "Tyding ",
+      "callout": "Viser resultater for oppslagsordet "
     },
     "dicts": {
         "nn": "Nynorskordboka",
@@ -184,6 +185,7 @@
         "share": "Del ordet",
         "copy_link": "Kopier lenkje",
         "cite": "Siter",
+        "copy": "Kopier",
         "cite_title": "Sitere artikkelen",
         "cite_description": ["Ønskjer du å sitere denne artikkelen i ", ", rår vi deg til å gje opp når artikkelen vart henta (lesen), t.d. slik:"],
         "download": "Last ned RIS-fil",

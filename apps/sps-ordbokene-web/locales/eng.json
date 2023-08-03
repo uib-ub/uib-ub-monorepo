@@ -34,7 +34,9 @@
   "footer_description": " show spelling and inflection in line with official Norwegian spelling. The Language Council and the University of Bergen are behind the dictionaries.",
   "accessibility": {
     "menu": "Open top menu",
-    "homograph": "Meaning "
+    "homograph": "Meaning ",
+    "callout": "Showing results for the keyword "
+
   },
   "dicts": {
       "nn": "Nynorsk dictionary",
@@ -185,6 +187,7 @@
     "cite_title": "Cite the article",
     "cite_description": ["If you want to cite this article in the ", " we recommend that you state when the article was retrieved (read), e. g. as follows:"],
     "download": "Download RIS file",
+    "copy": "Copy",
     "link_copied": "Link copied to the clipboard",
     "citation_copied": "Citation copied to the clipboard",
     "citation": "« {lemma} ». In: <em> {dict}. </em> Språkrådet & Universitetet i Bergen. &lt;<a href='{link}'> {link} </a>&gt; ( retrieved {dd}. {mm}. {yyyy}). ",

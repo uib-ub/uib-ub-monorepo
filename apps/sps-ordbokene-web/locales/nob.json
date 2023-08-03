@@ -1,247 +1,249 @@
 {
-  "name": "Bokmål",
-  "sub_title": "Bokmålsordboka og Nynorskordboka",
-  "help": "Hjelp til søk",
-  "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
-  "maximum_autocomplete": "maksimalt antall",
-  "advanced_help": "Vis søkehjelp",
-  "advanced_help_hide": "Skjul søkehjelp",
-  "advanced": "Avansert søk",
-  "to_advanced": "Gå til avansert søk",
-  "show_articles": "Vis ordforklaringer",
-  "show_list": "Vis liste | Vis lister",
-  "simple": "Enkelt søk",
-  "about": "Om ordbøkene",
-  "photo": "Foto: Clay Banks (unsplash.com)",
-  "background": "Bakgrunnsbilde",
-  "monthly": "Smakebit fra ",
-  "close": "Lukk",
-  "cancel": "Avbryt",
-  "to_top": "Til toppen",
-  "home": "Til forsiden",
-  "per_page": "Resultater per side: ",
-  "previous-page": "Forrige side",
-  "next-page": "Neste side",
-  "pageof": "Side {page} av {pages}",
-  "or": " eller ",
-  "in": " i ",
-  "and": " og ",
-  "from": "fra",
-  "search_placeholder": "Søk i ",
-  "search": "Søk",
-  "reset": "Nullstill",
-  "clear": "Tøm",
-  "chosen_dict": "Valgt ordbok: ",
-  "footer_description": " viser skrivemåte og bøyning i tråd med norsk rettskrivning. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
-  "accessibility": {
-    "menu": "Åpne toppmeny",
-    "main_content": "Gå til hovedinnhold",
-    "bm": "Gå til treff i Bokmålsordboka",
-    "nn": "Gå til treff i Nynorskordboka",
-    "homograph": "Betydning "
-  },
-  "dicts": {
-      "nn": "Nynorskordboka",
-      "bm": "Bokmålsordboka",
-      "bm,nn": "Begge ordbøkene"
-  },
-  "dicts_inline": {
-      "nn": "Nynorskordboka",
-      "bm": "Bokmålsordboka",
-      "bm,nn": "ordbøkene"
-  },
-  "dicts_short": {
-    "nn": "Nynorsk",
-    "bm": "Bokmål",
-    "bm,nn": "Begge"
-  },
-  "menu": {
-      "title": "Meny",
-      "search_pages": "Søkesider",
-      "help": "Hjelp til søk",
-      "about": "Om ordbøkene"
-      },
-  "options": {
-      "title": "Søkealternativer",
-      "inflected": "Søk i bøyde former",
-      "fulltext": "Søk i ordforklaringer",
-      "pos": "Ordklasse",
-      "collapse": "Komprimer artikler"
-  },
-  "pos": "Ordklasse",
-  "all_pos": "alle",
-    "tags": {
-        "NOUN": "substantiv",
-        "VERB": "verb",
-        "ADJ": "adjektiv",
-        "ADP": "preposisjon",
-        "PFX": "prefiks",
-        "ADV": "adverb",
-        "DET": "determinativ",
-        "PROPN": "egennavn",
-        "ABBR": "forkorting",
-        "INTJ": "interjeksjon",
-        "SYM": "symbol",
-        "PRON": "pronomen",
-        "CCONJ": "konjunksjon",
-        "SCONJ": "subjunksjon",
-        "INFM": "infinitivsmerke",
-        "COMPPFX": "i sammensetting",
-        "Masc": "hankjønn",
-        "Fem": "hunkjønn",
-        "Neuter": "intetkjønn",
-        "Uninfl": "ubøyelig"
+    "name": "Bokmål",
+    "sub_title": "Bokmålsordboka og Nynorskordboka",
+    "help": "Hjelp til søk",
+    "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
+    "maximum_autocomplete": "maksimalt antall",
+    "advanced_help": "Vis søkehjelp",
+    "advanced_help_hide": "Skjul søkehjelp",
+    "advanced": "Avansert søk",
+    "to_advanced": "Gå til avansert søk",
+    "show_articles": "Vis ordforklaringer",
+    "show_list": "Vis liste | Vis lister",
+    "simple": "Enkelt søk",
+    "about": "Om ordbøkene",
+    "photo": "Foto: Clay Banks (unsplash.com)",
+    "background": "Bakgrunnsbilde",
+    "monthly": "Smakebit fra ",
+    "close": "Lukk",
+    "cancel": "Avbryt",
+    "to_top": "Til toppen",
+    "home": "Til forsiden",
+    "per_page": "Resultater per side: ",
+    "previous-page": "Forrige side",
+    "next-page": "Neste side",
+    "pageof": "Side {page} av {pages}",
+    "or": " eller ",
+    "in": " i ",
+    "and": " og ",
+    "from": "fra",
+    "search_placeholder": "Søk i ",
+    "search": "Søk",
+    "reset": "Nullstill",
+    "clear": "Tøm",
+    "chosen_dict": "Valgt ordbok: ",
+    "footer_description": " viser skrivemåte og bøyning i tråd med norsk rettskrivning. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
+    "accessibility": {
+      "menu": "Åpne toppmeny",
+      "main_content": "Gå til hovedinnhold",
+      "bm": "Gå til treff i Bokmålsordboka",
+      "nn": "Gå til treff i Nynorskordboka",
+      "homograph": "Betydning ",
+      "callout": "Viser resultater for oppslagsordet "
     },
-    "pos_tags": {
-    "NOUN": "substantiv",
-    "PRON": "pronomen",
-    "DET": "determinativ",
-    "ADJ": "adjektiv",
-    "CCONJ": "konjunksjon",
-    "SCONJ": "subjunksjon",
-    "ADV": "adverb",
-    "ADP": "preposisjon",
-    "VERB": "verb",
-    "INTJ": "interjeksjon"
-},
-"pos_tags_plural": {
-    "NOUN": "substantiv",
-    "PRON": "pronomen",
-    "DET": "determinativ",
-    "ADJ": "adjektiv",
-    "CCONJ": "konjunksjoner",
-    "SCONJ": "subjunksjoner",
-    "ADV": "adverb",
-    "ADP": "preposisjoner",
-    "VERB": "verb",
-    "INTJ": "interjeksjoner"
-},
-"determiner": {
-    "Quant": "kvantor",
-    "Dem": "demonstrativ",
-    "Poss": "possessiv"
-  },
-"split_inf": {
-    "title": "kløyvd infinitiv",
-    "label": "Mer informasjon om kløyvd infinitiv",
-    "content": ["Dersom du bruker kløyvd infinitiv, skal dette verbet ha", "i infinitiv.", "Les meir her"]
-},
-  "settings": {
-      "title": "Innstillinger",
-      "inflection_no": "Vis bøyningskodene fra de trykte ordbøkene",
-      "inflection_expanded": "Vis alltid bøyningstabellene",
-      "inflection_table_context": "Vis kontekst for partisippformer i bøyningstabellene",
-      "submit_select": "Merk søkjeteksten når du gjennomfører søket",
-      "simple_search_list": "Listevisning i enkelt søk",
-      "auto_select": "Merk søkeordet automatisk etter søk",
-      "locale": {
-        "title": "Nettsidespråk" ,
-        "description":  "Her kan du endre språk eller målform på knapper, meldinger og menyer. Dette vil ikke påvirke definisjoner og eksempler i ordbøkene: Bokmålsordboka vil fortsatt være på bokmål, og Nynorskordboka vil være på nynorsk"
-      },
-      "collapse": {
-          "description": "Velg når artiklene skal komprimeres til utdrag av definisjonene.",
-          "auto": "Automatisk (mer enn to resultater)",
-          "always": "Vis bare utdrag",
-          "never": "Vis bare fullstendige artikler"
-      },
-      "reset": "Slett lagrede innstillinger"
-  },
-  "contact": {
-      "title": "Kontakt oss",
-      "content": [
-          "Innholdet i ordbøkene",
-          "Funksjonalitet og tekniske feil",
-          "Spørsmål og tilbakemeldinger angående ord, bøyningsformer og annet innhold i ordbøkene: ",
-          "Rapporter tekniske feil eller kom med tilbakemeldinger på brukergrensesnittet: "
-      ],
-      "faq": {
-          "title": "Ofte stilte spørsmål:",
-          "items": [
-              {"title": "Hvorfor mangler noen ord i ordbøkene?", 
-                "text": [" er ikke å betrakte som lister over hvilke ord som er tillatt å bruke på norsk. Det finnes mange ord, både gamle og nye, som ikke er med i ordbøkene, men som du gjerne kan bruke likevel. Det er heller ikke slik at nye ord må godkjennes før de kan tas i bruk, det er språkbrukerne som i fellesskap avgjør hvilke ord som er gangbare i norsk. Normalt kommer ikke nye ord inn i ordbøkene før de har vært i bruk en stund og er etablert i språket. Ordbokredaksjonen avgjør hvilke ord som skal være med basert på undersøkelser av store tekstsamlinger, og Språkrådet bestemmer hvordan ordene skal staves og bøyes. ", 
-                         "Les mer på informasjonssiden"]
-              },
-              {"title": "Hvor er bøyningskodene fra de trykte ordbøkene?", "text": "Du kan velge å vise bøyningskodene i innstillingene, som du finner nederst på siden og i menyen øverst til høyre på siden."},
-              {"title": "Kan jeg slippe å trykke «vis bøyning» og «vis artikkel»?", "text": "Ja, du kan endre dette i innstillingene, som du finner nederst på siden og i menyen øverst til høyre på siden. Velg «Vis alltid bøyningstabellene hvis du ønsker minst mulig klikking."}
-        ]
-      }
-  },
-  "notifications": {
-      "redirect": "Viser betydninger av oppslagsordet",
-      "inflected": " er en bøyd form av ",
-      "other_inflected": "«{word}» er også en form av:",
-      "did_you_mean": "Mente du:",
-      "similar": "Lignende oppslagsord:",
-      "similar_bm": "Legg til lignende treff fra Bokmålsordboka: ",
-      "similar_nn": "Legg til lignende treff fra Nynorskordboka: ",
-      "search": "Søk i ordbøkene",
-      "back": "Tilbake til søkeresultatene",
-      "no_results": "Ingen treff",
-      "not_a_word": " er ikke et oppslagsord i ",
-      "results": "Ingen treff | Ett treff| {count} treff",
-      "ignored_words": "Søket ble ingorert fordi vi begrenser forespørsler til 20 ord.",
-      "ignored_chars": "Søket ble ignorert fordi vi ikke tillater ord med flere enn 40 tegn.",
-      "no_pos_results": " i søk på {pos}",
-      "suggest_dict": [
-          "Har du søkt i feil ordbok?",
-          "Prøv å søke i "
-      ],
-      "fulltext": "Forslag til fritekstsøk: "
-  },
-  "article": {
-      "definition": "Definisjon",
-      "show": "Åpne artikkel",
-      "show_inflection": "Vis bøyning",
-      "hide_inflection": "Skjul bøyning",
-      "share": "Del ordet",
-      "copy_link": "Kopier lenke",
-      "cite": "Siter",
-      "cite_title": "Sitere artikkelen",
-      "cite_description": ["Ønsker du å sitere denne artikkelen i ",", anbefaler vi å oppgi når artikkelen ble hentet (lest), f.eks. slik:"],
-      "download": "Last ned RIS-fil",
-      "link_copied": "Lenken er kopiert til utklippstavlen",
-      "citation_copied": "Sitatet er kopiert til utklippstavla",
-      "citation": "«{lemma}». I: <em>{dict}.</em> Språkrådet og Universitetet i Bergen. &lt;<a href='{link}'>{link}</a>&gt; (hentet {dd}.{mm}.{yyyy}).",
-      "headings": {
-          "etymology": "Opphav",
-          "pronunciation": "Uttale",
-          "expressions": "Faste uttrykk",
-          "definitions": "Betydning og bruk",
-          "examples": "Eksempel"
-      }
-  },
-  "error": {
-        "article": "Det har oppstått en feil i artikkel {no} i {dict}",
-        "404": {
-            "title": "404: Ikke funnet",
-            "description": "Siden kan ha blitt slettet eller flyttet, eller du kan ha brukt en ugyldig lenke."
+    "dicts": {
+        "nn": "Nynorskordboka",
+        "bm": "Bokmålsordboka",
+        "bm,nn": "Begge ordbøkene"
+    },
+    "dicts_inline": {
+        "nn": "Nynorskordboka",
+        "bm": "Bokmålsordboka",
+        "bm,nn": "ordbøkene"
+    },
+    "dicts_short": {
+      "nn": "Nynorsk",
+      "bm": "Bokmål",
+      "bm,nn": "Begge"
+    },
+    "menu": {
+        "title": "Meny",
+        "search_pages": "Søkesider",
+        "help": "Hjelp til søk",
+        "about": "Om ordbøkene"
         },
-        "503": {
-            "title": "503: Utilgjengelig tjeneste",
-            "description": "Tjeneren er midlertidig overbelastet eller under vedlikehold."
+    "options": {
+        "title": "Søkealternativer",
+        "inflected": "Søk i bøyde former",
+        "fulltext": "Søk i ordforklaringer",
+        "pos": "Ordklasse",
+        "collapse": "Komprimer artikler"
+    },
+    "pos": "Ordklasse",
+    "all_pos": "alle",
+      "tags": {
+          "NOUN": "substantiv",
+          "VERB": "verb",
+          "ADJ": "adjektiv",
+          "ADP": "preposisjon",
+          "PFX": "prefiks",
+          "ADV": "adverb",
+          "DET": "determinativ",
+          "PROPN": "egennavn",
+          "ABBR": "forkorting",
+          "INTJ": "interjeksjon",
+          "SYM": "symbol",
+          "PRON": "pronomen",
+          "CCONJ": "konjunksjon",
+          "SCONJ": "subjunksjon",
+          "INFM": "infinitivsmerke",
+          "COMPPFX": "i sammensetting",
+          "Masc": "hankjønn",
+          "Fem": "hunkjønn",
+          "Neuter": "intetkjønn",
+          "Uninfl": "ubøyelig"
+      },
+      "pos_tags": {
+      "NOUN": "substantiv",
+      "PRON": "pronomen",
+      "DET": "determinativ",
+      "ADJ": "adjektiv",
+      "CCONJ": "konjunksjon",
+      "SCONJ": "subjunksjon",
+      "ADV": "adverb",
+      "ADP": "preposisjon",
+      "VERB": "verb",
+      "INTJ": "interjeksjon"
+  },
+  "pos_tags_plural": {
+      "NOUN": "substantiv",
+      "PRON": "pronomen",
+      "DET": "determinativ",
+      "ADJ": "adjektiv",
+      "CCONJ": "konjunksjoner",
+      "SCONJ": "subjunksjoner",
+      "ADV": "adverb",
+      "ADP": "preposisjoner",
+      "VERB": "verb",
+      "INTJ": "interjeksjoner"
+  },
+  "determiner": {
+      "Quant": "kvantor",
+      "Dem": "demonstrativ",
+      "Poss": "possessiv"
+    },
+  "split_inf": {
+      "title": "kløyvd infinitiv",
+      "label": "Mer informasjon om kløyvd infinitiv",
+      "content": ["Dersom du bruker kløyvd infinitiv, skal dette verbet ha", "i infinitiv.", "Les meir her"]
+  },
+    "settings": {
+        "title": "Innstillinger",
+        "inflection_no": "Vis bøyningskodene fra de trykte ordbøkene",
+        "inflection_expanded": "Vis alltid bøyningstabellene",
+        "inflection_table_context": "Vis kontekst for partisippformer i bøyningstabellene",
+        "submit_select": "Merk søkjeteksten når du gjennomfører søket",
+        "simple_search_list": "Listevisning i enkelt søk",
+        "auto_select": "Merk søkeordet automatisk etter søk",
+        "locale": {
+          "title": "Nettsidespråk" ,
+          "description":  "Her kan du endre språk eller målform på knapper, meldinger og menyer. Dette vil ikke påvirke definisjoner og eksempler i ordbøkene: Bokmålsordboka vil fortsatt være på bokmål, og Nynorskordboka vil være på nynorsk"
         },
-        "server": {
-            "title": "Feil på server",
-            "description": "Noe gikk galt på serversiden (statuskode: {code})"},
-        "generic_code": {
-            "title": "Feil",
-            "description": "Det har oppstått en uventet feil i kommunikasjonen med serveren (statuskode: {code})"},
-        "network": {
-            "title":"Tilkoblingsfeil",
-            "description": "Et nettverksproblem hindret lasting av siden. Prøv å laste siden på nytt, eller sjekk om du er koblet til internett."},
-        "no_article": "Serveren finner ingen artikkel med ID {id}. Artikkelen kan ha blitt slettet eller flyttet, eller du kan ha brukt en ugyldig lenke.",
-        "generic": {
-            "title": "Feil",
-            "description":"Noe gikk galt..."
+        "collapse": {
+            "description": "Velg når artiklene skal komprimeres til utdrag av definisjonene.",
+            "auto": "Automatisk (mer enn to resultater)",
+            "always": "Vis bare utdrag",
+            "never": "Vis bare fullstendige artikler"
+        },
+        "reset": "Slett lagrede innstillinger"
+    },
+    "contact": {
+        "title": "Kontakt oss",
+        "content": [
+            "Innholdet i ordbøkene",
+            "Funksjonalitet og tekniske feil",
+            "Spørsmål og tilbakemeldinger angående ord, bøyningsformer og annet innhold i ordbøkene: ",
+            "Rapporter tekniske feil eller kom med tilbakemeldinger på brukergrensesnittet: "
+        ],
+        "faq": {
+            "title": "Ofte stilte spørsmål:",
+            "items": [
+                {"title": "Hvorfor mangler noen ord i ordbøkene?", 
+                  "text": [" er ikke å betrakte som lister over hvilke ord som er tillatt å bruke på norsk. Det finnes mange ord, både gamle og nye, som ikke er med i ordbøkene, men som du gjerne kan bruke likevel. Det er heller ikke slik at nye ord må godkjennes før de kan tas i bruk, det er språkbrukerne som i fellesskap avgjør hvilke ord som er gangbare i norsk. Normalt kommer ikke nye ord inn i ordbøkene før de har vært i bruk en stund og er etablert i språket. Ordbokredaksjonen avgjør hvilke ord som skal være med basert på undersøkelser av store tekstsamlinger, og Språkrådet bestemmer hvordan ordene skal staves og bøyes. ", 
+                           "Les mer på informasjonssiden"]
+                },
+                {"title": "Hvor er bøyningskodene fra de trykte ordbøkene?", "text": "Du kan velge å vise bøyningskodene i innstillingene, som du finner nederst på siden og i menyen øverst til høyre på siden."},
+                {"title": "Kan jeg slippe å trykke «vis bøyning» og «vis artikkel»?", "text": "Ja, du kan endre dette i innstillingene, som du finner nederst på siden og i menyen øverst til høyre på siden. Velg «Vis alltid bøyningstabellene hvis du ønsker minst mulig klikking."}
+          ]
         }
     },
-    "label": {
-        "nav": "Hovedmeny",
-        "footer_nav": "Bunnlinjemeny",
-        "search_pages": "Søkesider",
-        "dict_nav": "Ordboknavigasjon"
+    "notifications": {
+        "redirect": "Viser betydninger av oppslagsordet",
+        "inflected": " er en bøyd form av ",
+        "other_inflected": "«{word}» er også en form av:",
+        "did_you_mean": "Mente du:",
+        "similar": "Lignende oppslagsord:",
+        "similar_bm": "Legg til lignende treff fra Bokmålsordboka: ",
+        "similar_nn": "Legg til lignende treff fra Nynorskordboka: ",
+        "search": "Søk i ordbøkene",
+        "back": "Tilbake til søkeresultatene",
+        "no_results": "Ingen treff",
+        "not_a_word": " er ikke et oppslagsord i ",
+        "results": "Ingen treff | Ett treff| {count} treff",
+        "ignored_words": "Søket ble ingorert fordi vi begrenser forespørsler til 20 ord.",
+        "ignored_chars": "Søket ble ignorert fordi vi ikke tillater ord med flere enn 40 tegn.",
+        "no_pos_results": " i søk på {pos}",
+        "suggest_dict": [
+            "Har du søkt i feil ordbok?",
+            "Prøv å søke i "
+        ],
+        "fulltext": "Forslag til fritekstsøk: "
+    },
+    "article": {
+        "definition": "Definisjon",
+        "show": "Åpne artikkel",
+        "show_inflection": "Vis bøyning",
+        "hide_inflection": "Skjul bøyning",
+        "share": "Del ordet",
+        "copy_link": "Kopier lenke",
+        "cite": "Siter",
+        "copy": "Kopier",
+        "cite_title": "Sitere artikkelen",
+        "cite_description": ["Ønsker du å sitere denne artikkelen i ",", anbefaler vi å oppgi når artikkelen ble hentet (lest), f.eks. slik:"],
+        "download": "Last ned RIS-fil",
+        "link_copied": "Lenken er kopiert til utklippstavlen",
+        "citation_copied": "Sitatet er kopiert til utklippstavla",
+        "citation": "«{lemma}». I: <em>{dict}.</em> Språkrådet og Universitetet i Bergen. &lt;<a href='{link}'>{link}</a>&gt; (hentet {dd}.{mm}.{yyyy}).",
+        "headings": {
+            "etymology": "Opphav",
+            "pronunciation": "Uttale",
+            "expressions": "Faste uttrykk",
+            "definitions": "Betydning og bruk",
+            "examples": "Eksempel"
+        }
+    },
+    "error": {
+          "article": "Det har oppstått en feil i artikkel {no} i {dict}",
+          "404": {
+              "title": "404: Ikke funnet",
+              "description": "Siden kan ha blitt slettet eller flyttet, eller du kan ha brukt en ugyldig lenke."
+          },
+          "503": {
+              "title": "503: Utilgjengelig tjeneste",
+              "description": "Tjeneren er midlertidig overbelastet eller under vedlikehold."
+          },
+          "server": {
+              "title": "Feil på server",
+              "description": "Noe gikk galt på serversiden (statuskode: {code})"},
+          "generic_code": {
+              "title": "Feil",
+              "description": "Det har oppstått en uventet feil i kommunikasjonen med serveren (statuskode: {code})"},
+          "network": {
+              "title":"Tilkoblingsfeil",
+              "description": "Et nettverksproblem hindret lasting av siden. Prøv å laste siden på nytt, eller sjekk om du er koblet til internett."},
+          "no_article": "Serveren finner ingen artikkel med ID {id}. Artikkelen kan ha blitt slettet eller flyttet, eller du kan ha brukt en ugyldig lenke.",
+          "generic": {
+              "title": "Feil",
+              "description":"Noe gikk galt..."
+          }
       },
-      "navigation": {
-        "site": "Navigasjonsmeny"
-      }
-}
+      "label": {
+          "nav": "Hovedmeny",
+          "footer_nav": "Bunnlinjemeny",
+          "search_pages": "Søkesider",
+          "dict_nav": "Ordboknavigasjon"
+        },
+        "navigation": {
+          "site": "Navigasjonsmeny"
+        }
+  }
