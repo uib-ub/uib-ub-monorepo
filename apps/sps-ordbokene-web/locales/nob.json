@@ -88,6 +88,7 @@
           "SCONJ": "subjunksjon",
           "INFM": "infinitivsmerke",
           "COMPPFX": "i sammensetting",
+          "Gender":"kjønn",
           "Masc": "hankjønn",
           "Fem": "hunkjønn",
           "Neuter": "intetkjønn",
@@ -145,7 +146,8 @@
             "always": "Vis bare utdrag",
             "never": "Vis bare fullstendige artikler"
         },
-        "reset": "Slett lagrede innstillinger"
+        "reset": "Slett lagrede innstillinger",
+        "reset_done":"Slettet"
     },
     "contact": {
         "title": "Kontakt oss",

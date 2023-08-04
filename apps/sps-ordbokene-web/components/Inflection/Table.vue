@@ -14,9 +14,9 @@
               <tr>
                 <th class="infl-label sub label-border-top-left" :class="mq"
                     v-if="!nounGender && hasGender"
-                    id="gender"
+                    id="Gender"
                     scope="col"
-                    rowspan='2'>kjønn</th>
+                    rowspan='2'>{{$t('tags.Gender')}}</th>
                 <th v-if="hasSing"
                     id="Sing"
                     class="infl-label label-border-top-left" :class="mq" scope="col" colspan='2'>
@@ -974,7 +974,7 @@ export default {
   border-width: 0px 0px 1px 0px;
   padding: 0.5rem;
   font-size: 1rem;
-  @apply border-2 border-gray-50 shadow-md;
+  @apply border-2 border-gray-50 shadow-md duration-200;
   
 }
 
@@ -1009,7 +1009,7 @@ export default {
 .infl-wrapper td.hilite {
     text-align: left;
     background-color: #f7E1EB !important;
-    @apply duration-200 ease-in-out;
+    /* @apply duration-200 ease-in-out; */
 
 }
 

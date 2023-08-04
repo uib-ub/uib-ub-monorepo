@@ -45,3 +45,10 @@
     })
   </script>
   
+  <style>
+  
+    kbd{
+      border-radius: 5px !important;
+      @apply shadow-md bg-tertiary-darken1 text-base border-4 border-tertiary-darken1;  
+    }
+  </style>

@@ -549,7 +549,7 @@ span.lemma-group {
 }
   
 .article:hover{
- @apply shadow-lg border-tertiary-darken3;
+ @apply shadow-xl border-tertiary-darken3;
 }
 
 .article .dict_label {
@@ -559,6 +559,7 @@ span.lemma-group {
 
 .list-view-item {
 display: flex;
+
 }
 
 
@@ -573,6 +574,7 @@ display: flex;
   border: none;
   display: inline-block;
   width: 100%;
+  @apply duration-200;
 
 }
 
@@ -585,7 +587,7 @@ display: flex;
 
 .list-view-item>a:hover {
     /* background-color:theme('colors.gray.100'); */
-    @apply duration-200 bg-gray-50 shadow-lg border-2;
+    @apply duration-200 bg-canvas-darken border-2;
     
 }
 

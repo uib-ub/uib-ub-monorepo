@@ -59,47 +59,48 @@
       inneholder jokertegn.</p>
 
     <h4>Eksempler</h4>
-  <ul>
-    <li>Søket «<a
-        href="https://ordbokene.no/bm,nn/search?q=kj%C3%A6rlighet%7Ckj%C3%A6rleik&scope=ei">kjærlighet|kjærleik</a>» gir
-      treff på «kjærlighet» i <em>Bokmålsordboka</em> og «kjærleik» i <em>Nynorskordboka</em>.</li>
-    <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=undervis_r%7Cl%C3%A6r_r&scope=ei">undervis_r|lær_r</a>» gir
-      treff på «underviser» og «lærer» i <em>Bokmålsordboka</em> og «undervisar» og «lærar» i <em>Nynorskordboka</em>.
-    </li>
-  </ul>
-</div>
+    <ul>
+      <li>Søket «<a
+          href="https://ordbokene.no/bm,nn/search?q=kj%C3%A6rlighet%7Ckj%C3%A6rleik&scope=ei">kjærlighet|kjærleik</a>» gir
+        treff på «kjærlighet» i <em>Bokmålsordboka</em> og «kjærleik» i <em>Nynorskordboka</em>.</li>
+      <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=undervis_r%7Cl%C3%A6r_r&scope=ei">undervis_r|lær_r</a>» gir
+        treff på «underviser» og «lærer» i <em>Bokmålsordboka</em> og «undervisar» og «lærar» i <em>Nynorskordboka</em>.
+      </li>
+    </ul>
+  </div>
 
 
-<div v-if="$i18n.locale === 'nno'">
-  <h3>Søk med jokerteikn</h3>
-  <p>Dersom du er usikker på skrivemåten av eit ord eller ønskjer treff i meir
-    enn éin artikkel, kan du bruke <kbd>%</kbd> og <kbd>*</kbd> for å få treff på null, eitt eller fleire teikn.
-    Symbolet <kbd>_</kbd> erstattar berre eitt teikn. Du kan plassere jokerteikna fleire stader i søkjeordet.</p>
+  <div v-if="$i18n.locale === 'nno'">
+    <h3>Søk med jokerteikn</h3>
+    <p>Dersom du er usikker på skrivemåten av eit ord eller ønskjer treff i meir
+      enn éin artikkel, kan du bruke <kbd>%</kbd> og <kbd>*</kbd> for å få treff på null, eitt eller fleire teikn.
+      Symbolet <kbd>_</kbd> erstattar berre eitt teikn. Du kan plassere jokerteikna fleire stader i søkjeordet.</p>
 
-  <h4>Døme</h4>
-  <ul>
-    <li>Søkjer du på «<a href="https://ordbokene.no/bm,nn/search?q=arbeid%2ar&scope=ei">arbeid*r</a>», er dei første
-      treffa i nedtrekksmenyen «arbeider» i <em>Bokmålsordboka</em> og «arbeidar» i <em>Nynorskordboka</em>.</li>
-    <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=inter%25es%25ant&scope=ei">inter%es%ant</a>» gjev treff på
-      «interessant» i begge ordbøkene. </li>
-    <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=f%C3%B8rsk%25l%C3%A6r_r&scope=ei">førsk%lær_r</a>» gjev
-      treff på «førskolelærer» i <em>Bokmålsordboka</em> og «førskolelærar/førskulelærar» i <em>Nynorskordboka</em>.
-    </li>
-    <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=ku__&scope=e">ku__</a>» gjev treff på ord på fire bokstavar
-      som startar på «ku».</li>
-  </ul>
+    <h4>Døme</h4>
+    <ul>
+      <li>Søkjer du på «<a href="https://ordbokene.no/bm,nn/search?q=arbeid%2ar&scope=ei">arbeid*r</a>», er dei første
+        treffa i nedtrekksmenyen «arbeider» i <em>Bokmålsordboka</em> og «arbeidar» i <em>Nynorskordboka</em>.</li>
+      <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=inter%25es%25ant&scope=ei">inter%es%ant</a>» gjev treff på
+        «interessant» i begge ordbøkene. </li>
+      <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=f%C3%B8rsk%25l%C3%A6r_r&scope=ei">førsk%lær_r</a>» gjev
+        treff på «førskolelærer» i <em>Bokmålsordboka</em> og «førskolelærar/førskulelærar» i <em>Nynorskordboka</em>.
+      </li>
+      <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=ku__&scope=e">ku__</a>» gjev treff på ord på fire bokstavar
+        som startar på «ku».</li>
+    </ul>
 
-  <h3>Kombiner søkjeord</h3>
-  <p>Symbolet <kbd>|</kbd> gjer det mogleg å søkje med fleire søkjeord samtidig. Det er òg mogleg å kombinere søkjeord
-    som inneheld jokerteikn.</p>
+    <h3>Kombiner søkjeord</h3>
+    <p>Symbolet <kbd>|</kbd> gjer det mogleg å søkje med fleire søkjeord samtidig. Det er òg mogleg å kombinere søkjeord
+      som inneheld jokerteikn.</p>
 
-  <h4>Døme</h4>
-  <ul>
-    <li>Søket «<a
-        href="https://ordbokene.no/bm,nn/search?q=kj%C3%A6rlighet%7Ckj%C3%A6rleik&scope=ei">kjærlighet|kjærleik</a>»
-      gjev treff på «kjærlighet» i <em>Bokmålsordboka</em> og «kjærleik» i <em>Nynorskordboka</em>.</li>
-    <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=undervis_r%7Cl%C3%A6r_r&scope=ei">undervis_r|lær_r</a>» gjev
-      treff på «underviser» og «lærer» i <em>Bokmålsordboka</em> og «undervisar» og «lærar» i <em>Nynorskordboka</em>.
-    </li>
-  </ul>
-</div></template>
+    <h4>Døme</h4>
+    <ul>
+      <li>Søket «<a
+          href="https://ordbokene.no/bm,nn/search?q=kj%C3%A6rlighet%7Ckj%C3%A6rleik&scope=ei">kjærlighet|kjærleik</a>»
+        gjev treff på «kjærlighet» i <em>Bokmålsordboka</em> og «kjærleik» i <em>Nynorskordboka</em>.</li>
+      <li>Søket «<a href="https://ordbokene.no/bm,nn/search?q=undervis_r%7Cl%C3%A6r_r&scope=ei">undervis_r|lær_r</a>» gjev
+        treff på «underviser» og «lærer» i <em>Bokmålsordboka</em> og «undervisar» og «lærar» i <em>Nynorskordboka</em>.
+      </li>
+    </ul>
+  </div>
+</template>

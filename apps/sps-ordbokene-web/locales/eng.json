@@ -83,6 +83,7 @@
   "SCONJ": "subjunction",
   "INFM": "infinitive particle",
   "COMPPFX": "in compounds",
+  "Gender":"gender",
   "Masc": "masculine",
   "Fem": "feminine",
   "Neuter": "neuter",
@@ -132,7 +133,8 @@
         "always": "Show exerpts of articles",
         "never": "Show complete articles"
     },
-    "reset": "Delete stored settings"
+    "reset": "Delete stored settings",
+    "reset_done":"Deleted"
 },
 "contact": {
   "title": "Contact us",

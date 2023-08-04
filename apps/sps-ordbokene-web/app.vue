@@ -372,8 +372,9 @@ ol.sub_definitions {
 
 
 .article-view .article, .secondary-page {
-    border: solid 1px theme('colors.gray.200') !important;
-    box-shadow: 2px 2px 0px theme('colors.gray.200') !important;
+    /* border: solid 1px theme('colors.gray.200') !important; */
+    /* box-shadow: 2px 2px 0px theme('colors.gray.500') !important; */
+    @apply !shadow-xl !border-gray-200;
 
 }
 
@@ -417,7 +418,6 @@ ol.sub_definitions {
     outline: 3px solid theme("colors.secondary.DEFAULT");
   }
 }
-
 
 
 </style>
