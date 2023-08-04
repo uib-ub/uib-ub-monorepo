@@ -41,7 +41,7 @@ const skipLink = ref();
 const domainData = useDomainData();
 
 onMounted(() => {
-  $fetch("/api/domain").then((data) => {
+  $fetch("/api/domain", {retry: 1}).then((data) => {
     for (const domain in domainData.value) {
       domainData.value[domain].subdomains = parseRelationsRecursively(
         data,
