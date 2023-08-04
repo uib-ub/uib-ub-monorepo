@@ -189,7 +189,8 @@
     </Portal>
     <!--new-->
     <button
-      class="flex w-8 items-center justify-center text-gray-600"
+      id="clearDdBtn"
+      class="flex w-10 items-center justify-center text-gray-500 focus:text-gray-800"
       @click="onDropdownClick"
     >
       <Icon
@@ -245,6 +246,7 @@ export default {
     "before-hide",
     "show",
     "hide",
+    "execSearch"
   ],
   outsideClickListener: null,
   resizeListener: null,
@@ -763,6 +765,7 @@ export default {
 
         this.hide();
       }
+      this.$emit("execSearch")
 
       event.preventDefault();
     },
@@ -1193,3 +1196,21 @@ export default {
   },
 };
 </script>
+
+<style>
+#clearDdBtn {
+  border: 1px transparent white;
+  border-radius: 6px;
+}
+
+#clearDdBtn:hover {
+  border: 1px solid theme("colors.tpblue.300");
+}
+
+#clearDdBtn:focus {
+  outline: none;
+  border: 1px solid theme("colors.tpblue.300");
+  transition: box-shadow 0.2s;
+  box-shadow: 0 0 1px 0.2rem theme("colors.tpblue.100");
+}
+</style>
