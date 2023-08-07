@@ -20,7 +20,7 @@ const props = defineProps({
 })
 
 const suggest_link = (suggestion) => {
-    if (store.advanced) {
+    if (route.name == 'search') {
         let url = `search?q=${suggestion}&dict=${store.dict}&scope=${store.scope}`
         if (store.pos) {
             url = url + '&pos=' + store.pos

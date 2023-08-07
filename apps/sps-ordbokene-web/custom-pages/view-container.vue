@@ -1,8 +1,8 @@
 <template>
 <main id="main" tabindex="-1" class="dict-view simple-search py-1">
-  <SearchNav v-if="!store.advanced"/>
+  <SearchNav v-if="route.name != 'search'"/>
     <NuxtErrorBoundary @error="form_error">
-    <SearchForm v-if="!store.advanced" class="ord-container"/>
+    <SearchForm v-if="route.name != 'search'" class="ord-container"/>
     <div v-if="route.name == 'article' && store.searchUrl" class="ord-container back-to-search justify-start my-2">
       <NuxtLink :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
     </div>

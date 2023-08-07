@@ -48,7 +48,7 @@ async function fetchAutocomplete(q) {
     if (!pattern) {
 
       let response = ref([])
-      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${store.advanced ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
+      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name != 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
       response.value = await $fetch(url)
 
       // prevent suggestions after submit
@@ -229,7 +229,7 @@ if (process.client) {
           :aria-expanded="store.show_autocomplete || 'false'" 
           :aria-owns="selected_option >= 0 ? 'autocomplete-dropdown' : null"/>
           <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25rem"/></button>
-          <button v-if=" !store.advanced" class="appended-button" type="submit" v-bind:class="{'sr-only': store.advanced}" :aria-label="$t('search')"><Icon name="bi:search" size="1.25rem"/></button>
+          <button v-if="route.name != 'search'" class="appended-button" type="submit" v-bind:class="{'sr-only': route.name == 'search'}" :aria-label="$t('search')"><Icon name="bi:search" size="1.25rem"/></button>
           
 
   </div>
@@ -243,7 +243,7 @@ if (process.client) {
         :lang="['bm','nn','no'][item.dict-1]"
         :id="'autocomplete-item-'+idx">
         <div class="dropdown-item w-full" data-dropdown-item tabindex="-1" @click="dropdown_select(item.q)">
-          <span v-if="item.type == 'pattern' && !store.advanced" aria-live="polite" class=" bg-primary text-white p-1 rounded-1xl ml-3">{{$t('to_advanced')}} 
+          <span v-if="item.type == 'pattern' && route.name != 'search'" aria-live="polite" class=" bg-primary text-white p-1 rounded-1xl ml-3">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right" class="mb-1"/>
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">

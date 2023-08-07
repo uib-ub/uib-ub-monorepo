@@ -13,7 +13,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         else {
             //console.log("WORD")
             store.view = 'word'
-            store.advanced = false
             store.searchUrl = to.fullPath
             store.q = to.params.slug[0]
             store.input = to.query.orig || to.params.slug[0]           
@@ -30,7 +29,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     else {
         store.q = ""
         store.input = ""
-        store.advanced = false
     }
 
 })

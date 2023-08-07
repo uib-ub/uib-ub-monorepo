@@ -3,7 +3,7 @@
     <Spinner v-if="pending"/>
 
     <div ref="results"  v-if="store.view != 'suggest' && !pending && !error && articles && articles.meta" >
-    <div tabindex="0" aria-live="polite" role="status" ref="announcement" class="announcement lg:sr-only pb-2 pl-1 text-gray-900 text-md" v-bind:class="{'sr-only': !store.advanced}">
+    <div tabindex="0" aria-live="polite" role="status" ref="announcement" class="announcement lg:sr-only pb-2 pl-1 text-gray-900 text-md" v-bind:class="{'sr-only': route.name != 'search'}">
     <span v-if="articles.meta.bm"><div></div>{{$t('notifications.results', {count: articles.meta.bm.total})+$t("in")+$t('dicts_inline.bm')}}</span>
     <span v-if="articles.meta.nn && articles.meta.bm"> | </span>
     <span v-if="articles.meta.nn">{{$t('notifications.results', {count: articles.meta.nn.total})+$t("in")+$t('dicts_inline.nn')}}</span>

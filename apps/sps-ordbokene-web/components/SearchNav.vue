@@ -20,7 +20,6 @@
   </li>
   <li>
     <NuxtLink :aria-current="advanced ? 'true' : 'false'"
-              @click="store.advanced = true"
               :to="advanced_link">{{$t('advanced')}} <Icon name="bi:arrow-right" size="1.25em" class="ml-1 md:mt-0.5"/></NuxtLink>
   </li>
 </ul>
@@ -39,7 +38,6 @@ const props = defineProps({
 })
 
 const dict_click = (dict) => {
-      store.advanced = false
       store.dict = dict
       if (store.q != store.input) {
         store.input = route.query.orig || store.q
