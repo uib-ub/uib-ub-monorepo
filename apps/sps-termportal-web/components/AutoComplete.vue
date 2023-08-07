@@ -765,7 +765,10 @@ export default {
 
         this.hide();
       }
-      this.$emit("execSearch")
+      // FIX: cancel timeout when searching
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
       // FIX: Search on enter
       this.$emit("execSearch");
 
