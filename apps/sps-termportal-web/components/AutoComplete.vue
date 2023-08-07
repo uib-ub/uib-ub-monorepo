@@ -754,7 +754,8 @@ export default {
     },
     onEnterKey(event) {
       if (!this.overlayVisible) {
-        this.onArrowDownKey(event);
+        // FIX: Don't display ac after hitting search
+        //  this.onArrowDownKey(event);
       } else {
         if (this.focusedOptionIndex !== -1) {
           this.onOptionSelect(
