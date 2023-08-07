@@ -24,7 +24,8 @@ if (process.client) {
     script: [
       {
         id: "MathJax-script",
-        src: "/mathjax/es5/tex-chtml.js",
+        type:'text/javascript',
+        src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
         async: true,
       },
     ],
