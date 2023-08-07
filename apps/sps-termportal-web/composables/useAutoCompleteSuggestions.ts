@@ -10,6 +10,7 @@ export default async function (searchterm: string) {
             ...{ term: searchterm },
           },
         },
+        retry: 1,
       });
       data.value.unshift(searchterm);
     } else {

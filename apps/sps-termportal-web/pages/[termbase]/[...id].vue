@@ -308,6 +308,7 @@ const { data, error } = await useAsyncData("concept", () =>
       ? { cookie: "session=" + useRuntimeConfig().apiKey }
       : undefined,
     body: { concept: id, base, termbase },
+    retry: 1,
     signal: controller.signal,
   }).then((value) => {
     clearTimeout(timer);
