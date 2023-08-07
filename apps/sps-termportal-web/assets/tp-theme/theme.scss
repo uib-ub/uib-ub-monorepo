@@ -296,11 +296,11 @@
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 .p-autocomplete-panel .p-autocomplete-items {
-  padding: 0.75rem 0;
+  padding: 0.25rem 0;
 }
 .p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item {
   margin: 0;
-  padding: 0.75rem 1.25rem;
+  padding: 0.18rem 0.5rem;
   border: 0 none;
   color: #495057;
   background: transparent;
@@ -309,10 +309,13 @@
 }
 .p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item.p-highlight {
   color: #1D4ED8;
-  background: #EFF6FF;
+  // background: #EFF6FF;
+  @apply bg-tpblue-100
+
 }
 .p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item.p-highlight.p-focus {
-  background: rgba(59, 130, 246, 0.24);
+  // background: rgba(59, 130, 246, 0.24);
+  @apply bg-tpblue-100
 }
 .p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item:not(.p-highlight):not(.p-disabled).p-focus {
   color: #495057;
@@ -757,13 +760,13 @@
   border-radius: 6px;
 }
 .p-dropdown:not(.p-disabled):hover {
-  @apply border-tpblue-200
+  @apply border-tpblue-300
 }
 .p-dropdown:not(.p-disabled).p-focus {
   outline: 0 none;
   outline-offset: 0;
-  box-shadow: 0 0 0 0.2rem theme('colors.tpblue.100');
-  @apply border-tpblue-200
+  box-shadow: 0 0 1px 0.2rem theme('colors.tpblue.100');
+  @apply border-tpblue-300
 }
 .p-dropdown.p-dropdown-clearable .p-dropdown-label {
   padding-right: 1.75rem;
@@ -1108,8 +1111,10 @@
 .p-inputtext:enabled:focus {
   outline: 0 none;
   outline-offset: 0;
-  box-shadow: 0 0 0 0.2rem #BFDBFE;
-  border-color: #3B82F6;
+  box-shadow: 0 0 1px 0.2rem theme("colors.tpblue.100");
+  // border-color: #3B82F6;
+  border: 1px black;
+  @apply border-tpblue-200
 }
 .p-inputtext.p-invalid.p-component {
   border-color: #e24c4c;
@@ -1832,6 +1837,7 @@
 .p-button.p-button-icon-only {
   width: 3rem;
   padding: 0.75rem 0;
+  height: 38px; // TODO
 }
 .p-button.p-button-icon-only .p-button-icon-left,
 .p-button.p-button-icon-only .p-button-icon-right {
@@ -5946,4 +5952,14 @@
 
 .p-speeddial-item.p-focus > .p-speeddial-action {
   box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #9dc1fb, 0 1px 2px 0 black;
+}
+
+
+
+.p-hidden-accessible {
+  display: none;
+}
+
+.p-autocomplete {
+  display: inline-flex;
 }

@@ -37,7 +37,7 @@ export function genAutocompleteQuery(
         SELECT DISTINCT ?litstr {
           ( ?l ?sc ?lit ) text:query ( "\\"${sanitizedIndex}\\"" ${lang} ) .
           ${domain}
-          BIND ( str(?lit) as ?litsstr )
+          BIND ( str(?lit) as ?litstr )
           FILTER ( ?litstr = "${sanitizedLit}" )
         }
       }

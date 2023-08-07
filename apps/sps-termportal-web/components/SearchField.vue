@@ -1,70 +1,21 @@
 <template>
   <div
-    class="flex h-10 grow items-stretch rounded border border-solid border-gray-300"
+    class="flex h-10 grow items-stretch rounded-[7px] border border-solid border-gray-300"
   >
-    <input
-      id="searchfield"
-      ref="searchfield"
+    <AutoComplete
+      id="navbarautocomplete"
       v-model="searchterm"
-      type="search"
-      class="form-control min-w-0 flex-auto rounded border border-white bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-gray-700 transition ease-in-out focus:border focus:border-tpblue-300 focus:bg-white focus:text-gray-700 focus:outline-none"
-      :placeholder="
-        $t('searchBar.search') +
-        (searchInterface.language !== 'all'
-          ? ` ${$t('searchBar.inLanguage')} ${$t(
-              `global.lang.${searchInterface.language}`,
-              2
-            )}`
-          : '') +
-        (searchInterface.termbase !== 'all'
-          ? ` ${$t('searchBar.inDomain')} ${$t(
-              'global.samling.' + searchInterface.termbase
-            )}`
-          : searchInterface.domain[0] !== 'all'
-          ? ` ${$t('searchBar.inDomain')} ${$t('global.domain.domain', 2)} ${$t(
-              'global.domain.' + searchInterface.domain.slice(-1)
-            )}`
-          : '')
-      "
-      :aria-label="
-        $t('searchBar.search') +
-        (searchInterface.language !== 'all'
-          ? ` ${$t('searchBar.inLanguage')} ${$t(
-              `global.lang.${searchInterface.language}`,
-              2
-            )}`
-          : '') +
-        (searchInterface.termbase !== 'all'
-          ? ` ${$t('searchBar.inDomain')} ${$t(
-              'global.samling.' + searchInterface.termbase
-            )}`
-          : searchInterface.domain[0] !== 'all'
-          ? ` ${$t('searchBar.inDomain')} ${$t('global.domain.domain', 2)} ${$t(
-              'global.domain.' + searchInterface.domain.slice(-1)
-            )}`
-          : '')
-      "
-      aria-describedby="searchbutton"
-      @keypress.enter="execSearch"
+      :suggestions="items"
+      :placeholder="placeholder"
+      :aria-label="placeholder"
+      dropdown-mode="current"
+      @complete="search"
+      @exec-search="execSearch"
       @focus="$event.target.select()"
     />
     <button
-      v-if="searchterm.length > 0"
-      type="button"
-      class="flex w-8 items-center justify-center"
-      :aria-label="$t('searchBar.clearTextLabel')"
-      @click="clearText"
-    >
-      <Icon
-        name="ic:sharp-clear"
-        size="1.4em"
-        class="text-gray-600"
-        aria-hidden="true"
-      />
-    </button>
-    <button
       id="searchbutton"
-      class="tp-searchbutton-radius inline-block h-full w-14 items-center bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
+      class="rounded-r-md inline-block h-full w-14 items-center bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
       type="button"
       :aria-label="$t('searchBar.searchButtonLabel')"
       @click="execSearch"
@@ -75,22 +26,55 @@
 </template>
 
 <script setup lang="ts">
-
+import { useI18n } from "vue-i18n";
+const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
-const searchHistory = useSearchHistory(searchInterface);
+
+const items = ref([]);
+
+const search = async (event) => {
+  const term = event.query;
+  items.value = await useAutoCompleteSuggestions(term);
+  // items.value = [...Array(10).keys()].map((item) => event.query + "-" + item);
+};
+
+const placeholder = computed(() => {
+  return (
+    i18n.t("searchBar.search") +
+    (searchInterface.value.language !== "all"
+      ? ` ${i18n.t("searchBar.inLanguage")} ${i18n.t(
+          `global.lang.${searchInterface.value.language}`,
+          2
+        )}`
+      : "") +
+    (searchInterface.value.termbase !== "all"
+      ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t(
+          "global.termbase",
+          2
+        )} ${i18n.t("global.samling." + searchInterface.value.termbase)}`
+      : searchInterface.value.domain[0] !== "all"
+      ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t(
+          "global.domain.domain",
+          2
+        )} ${i18n.t("global.domain." + searchInterface.value.domain.slice(-1))}`
+      : "")
+  );
+});
 
 const clearText = () => {
   searchterm.value = "";
-  searchfield.focus();
+  navbarautocomplete.focus();
 };
 
 function execSearch() {
+  const allowSearchFetch = useAllowSearchFetch();
   const myparams = route.query;
   searchInterface.value.term = searchterm.value;
   myparams.q = searchInterface.value.term;
+  allowSearchFetch.value = true;
   router.push({
     path: "/search",
     force: true,
@@ -98,3 +82,36 @@ function execSearch() {
   });
 }
 </script>
+
+<style>
+#navbarautocomplete_0 {
+  display: none;
+}
+
+#searchbutton:focus {
+  box-shadow: 0px 0px 1px 0.2rem theme("colors.tpblue.100");
+
+}
+
+.p-autocomplete {
+  flex-grow: 1;
+}
+
+.p-autocomplete-input {
+  flex-grow: 1;
+}
+
+
+.p-autocomplete .p-component {
+  border-color: white;
+}
+
+.p-autocomplete .p-component:hover {
+  border: 1px solid theme("colors.tpblue.300");
+}
+
+.p-autocomplete .p-component:focus {
+  border: 1px solid theme("colors.tpblue.300");
+}
+
+</style>
