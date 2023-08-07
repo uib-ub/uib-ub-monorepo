@@ -246,7 +246,7 @@ export default {
     "before-hide",
     "show",
     "hide",
-    "execSearch"
+    "execSearch",
   ],
   outsideClickListener: null,
   resizeListener: null,
@@ -766,6 +766,8 @@ export default {
         this.hide();
       }
       this.$emit("execSearch")
+      // FIX: Search on enter
+      this.$emit("execSearch");
 
       event.preventDefault();
     },
