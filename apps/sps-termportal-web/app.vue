@@ -19,17 +19,6 @@ useHead({
     lang: "nb",
   },
 });
-if (process.client) {
-  useHead({
-    script: [
-      {
-        id: "MathJax-script",
-        src: "/mathjax/es5/tex-chtml.js",
-        async: true,
-      },
-    ],
-  });
-}
 
 const route = useRoute();
 const searchBarWasFocused = useSearchBarWasFocused();
