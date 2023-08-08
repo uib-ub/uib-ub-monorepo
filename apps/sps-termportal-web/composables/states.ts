@@ -42,12 +42,12 @@ export const useDomainData = () =>
         "KLIMA",
         "ASTRONOMI",
         // "BIOLOGI",
-        // "CMBIOLOGI",
+        "CMBIOLOGI",
         "KJEMI",
       ],
     },
     "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
-    "DOMENE-3ASamfunnsfag": { bases: ["NOJU", "TOLKING"] },
+    "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING"] },
     "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK"] },
   }));
 
