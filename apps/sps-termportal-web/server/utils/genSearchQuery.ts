@@ -32,6 +32,7 @@ export const samlingMapping = {
   LINGVISTIKK: 3808,
   CMBIOLOGI: 3810,
   KJEMI: 3812,
+  BIBINF: 3814,
 };
 
 export function sanitizeTerm(term: string) {
