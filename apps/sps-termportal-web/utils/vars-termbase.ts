@@ -19,7 +19,8 @@ export type Samling =
   | "LINGVISTIKK"
   | "CMBIOLOGI"
   | "KJEMI"
-  | "FBK";
+  | "FBK"
+  | "BIBINF";
 
 export type Domains =
   | "DOMENE-3AHumaniora"
@@ -30,8 +31,9 @@ export type Domains =
 export const termbaseOrder: Samling[] = [
   "ARTSDB",
   "ASTRONOMI",
+  "BIBINF",
   // "BIOLOGI",
-  // "CMBIOLOGI",
+  "CMBIOLOGI",
   "EVERTEBRATER",
   "FBK",
   "KJEMI",
@@ -51,6 +53,7 @@ export const termbaseOrder: Samling[] = [
 export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   ARTSDB: ["nb", "nn", "en", "la"],
   ASTRONOMI: ["nb", "nn", "en"],
+  BIBINF: ["nb", "nn", "en", "da"],
   BIOLOGI: [],
   CMBIOLOGI: ["nb", "nn", "en"],
   EVERTEBRATER: ["nb", "la"],
@@ -58,7 +61,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   KJEMI: ["nb", "nn", "en", "da"],
   KLIMA: ["nb", "nn", "en"],
   LINGVISTIKK: ["nb", "nn", "en"],
-  MRT: ["nb", "en", "ar", "da", "de", "es", "sv"],
+  MRT: ["nb", "en", "da", "de", "es", "sv"],
   SDIR: ["nb", "nn", "en"],
   NHH: ["nb", "nn", "en"],
   NOJU: ["nb", "de"],
@@ -83,11 +86,11 @@ export const domainNesting = {
       "KLIMA",
       "ASTRONOMI",
       // "BIOLOGI",
-      // "CMBIOLOGI",
+      "CMBIOLOGI",
       "KJEMI",
     ],
   },
-  "DOMENE-3ASamfunnsfag": { bases: ["NOJU", "TOLKING"] },
+  "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING"] },
   "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
 };
 
