@@ -74,7 +74,8 @@
     "om": "About Termportalen",
     "innstillinger": "Settings",
     "menuButtonShow": "Extend menu",
-    "menuButtonHide": "Hide menu"
+    "menuButtonHide": "Hide menu",
+    "language": "Display language"
   },
   "searchBar": {
     "search": "Search",
