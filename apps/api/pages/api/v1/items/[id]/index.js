@@ -68,10 +68,7 @@ export default async function handler(req, res) {
           delete framed?.madeBefore
 
           // @TODO: Remove this when we have dct:modified on all items in the dataset
-          framed.modified = {
-            "type": "xsd:date",
-            "@value": framed.modified ?? "2020-01-01T00:00:00"
-          }
+          framed.modified = framed.modified ?? "2020-01-01T00:00:00"
 
           res.status(200).json(framed)
         }
