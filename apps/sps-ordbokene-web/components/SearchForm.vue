@@ -32,7 +32,7 @@ const submitForm = async (item) => {
             return navigateTo(redirectUrl)
         }
     }
-    if (inflect) {
+    if (inflect && inflect[0][0] && inflect[0][0][0] != "-" && inflect[0][0].slice(-1) != "-") { // suppress prefixes and suffixes
         return navigateTo(`/${store.dict}/${inflect[0][0]}?orig=${store.q}`)
     }
 
