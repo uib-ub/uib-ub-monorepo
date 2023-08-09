@@ -384,8 +384,10 @@ onBeforeUnmount(() => {
   }
 });
 onMounted(() => {
-  if (typeof window?.MathJax !== "undefined") {
-    window.MathJax.typesetPromise();
+  if (process.client && typeof window?.MathJax !== "undefined") {
+    try {
+      window.MathJax.typesetPromise();
+    } catch (error) {}
   }
 });
 </script>

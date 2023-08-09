@@ -4,8 +4,8 @@
       <div class="flex flex-row content-center w-full lg:w-auto">
   <NuxtLink class="navbar-brand" to="/" :aria-current="$route.name == 'dict' && 'page'">
       <div class="mx-1 md:my-1 lg:my-3 xl:my-4">
-      <div><h1 class="brand-title">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
-      <p class="hidden xl:block brand-subtitle">{{$t("sub_title")}}</p>
+      <div><h1 class="text-2xl mb-0.5">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
+      <p class="hidden xl:block brand-subtitle ml-0.5 mb-1">{{$t("sub_title")}}</p>
       </div>
     </div>
       </NuxtLink>
@@ -121,6 +121,12 @@ nav .nav-link:hover {
 }
 nav .nav-link[aria-current=page] {
   border-bottom: solid .125rem theme('colors.secondary.DEFAULT');
+}
+
+@media screen(lg) {
+    .nav-buttons.hidden {
+      display: flex;
+  }
 }
   
 

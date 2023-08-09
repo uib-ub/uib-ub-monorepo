@@ -19,13 +19,20 @@ useHead({
     lang: "nb",
   },
 });
+
 if (process.client) {
   useHead({
     script: [
       {
+        src: "/mathjax-config.js",
+        type: "text/javascript",
+        defer: true
+      },
+      {
         id: "MathJax-script",
-        src: "/mathjax/es5/tex-chtml.js",
-        async: true,
+        type: "text/javascript",
+        src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+        defer: true,
       },
     ],
   });

@@ -23,6 +23,12 @@ import { useRoute } from 'vue-router'
 const store = useStore()
 const route = useRoute()
 
+useHead({
+  link: [
+    {rel: "canonical", href: "https://ordbokene.no/" + store.dict}
+  ]
+})
+
 const form_error = (error) => {
   console.log("FORM ERROR",error)
 }
