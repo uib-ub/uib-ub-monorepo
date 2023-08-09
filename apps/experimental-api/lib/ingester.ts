@@ -1,12 +1,13 @@
-import { apiFetch as fetch } from "./fetch";
+import { apiFetch as fetch } from "./helpers/fetch";
 import { performance } from "perf_hooks";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { esClient } from "./es-client";
+import { esClient } from "./helpers/es-client";
 import { API_URL } from './constants';
 
 /**
  * Get ids from the API
+ * @deprecated 
  * @param {Number} page - Page number to fetch
  * @param {Number} limit - Number of items per page
  * @returns {Promise} Array of objects with id and identifier
@@ -19,6 +20,7 @@ const getIds = async (page: number, limit: number) => {
 
 /**
  * Resolve the ids from the API and return the data
+ * @deprecated 
  * @param {Array} data - Array of objects containing ids
  * @returns {Array} Array of resolved objects
  */
@@ -31,6 +33,7 @@ const resolveIds = async (data: any) => {
 
 /**
  * Prepare data for bulk indexing
+ * @deprecated 
  * @param {Array} data - Array of objects to be indexed
  * @param {String} indexName - Name of the Elasticsearch index
  * @returns {Array} Array of objects prepared for bulk indexing
@@ -54,6 +57,7 @@ const prepareData = async (data: any, indexName: string) => {
 
 /**
  * Bulk index the data
+ * @deprecated 
  * @param {Array} data - Array of objects to be indexed
  * @param {string} indexName - Name of the Elasticsearch index
  * @returns {number} Number of items indexed
@@ -77,7 +81,13 @@ const indexData = async (data: any, indexName: string) => {
 
 };
 
-const checkIndexExists = async (index: string) => {
+/**
+ * Check if the index exists
+ * @deprecated 
+ * @param {string} index - Name of the index to check
+ * @returns {Promise} Error message if the index does not exist
+ */
+export const checkIndexExists = async (index: string) => {
 	// @ts-ignore
 	const indexExists = await esClient.indices.exists({
 		index: index
@@ -92,6 +102,12 @@ const checkIndexExists = async (index: string) => {
 	return null;
 };
 
+/**
+ * Turn off the refresh interval for the duration of the indexing process
+ * @deprecated
+ * @param {string} index - Name of the index
+ * @returns {Promise} Result of the request
+ */
 const turnOffRefreshInterval = async (indexName: string) => {
 	try {
 		// @ts-ignore
@@ -107,6 +123,12 @@ const turnOffRefreshInterval = async (indexName: string) => {
 	}
 };
 
+/**
+ * Turn on the refresh interval after the indexing process
+ * @deprecated
+ * @param {string} index - Name of the index
+ * @returns {Promise} Result of the request
+ */
 const turnOnRefreshInterval = async (indexName: string) => {
 	try {
 		// @ts-ignore
@@ -125,11 +147,12 @@ const turnOnRefreshInterval = async (indexName: string) => {
 
 /**
  * Function to perform the indexing process
+ * @deprecated
  * @param {string} index - Name of the index to use
  * @param {number} page - Page number to start with
  * @returns {Object} Object containing indexing summary
  */
-export const performIndexing = async (index: string, page: number, limit: number) => {
+export const performIndexing = async (index: string, source: string, page: number, limit: number) => {
 	const indexCheckError = await checkIndexExists(index);
 
 	if (indexCheckError) {

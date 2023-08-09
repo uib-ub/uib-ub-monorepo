@@ -1,30 +1,47 @@
 [![Moleculer](https://badgen.net/badge/Powered%20by/Moleculer/0e83cd)](https://moleculer.services)
 
-# moleculer-demo
-This is a [Moleculer](https://moleculer.services/)-based microservices project. Generated with the [Moleculer CLI](https://moleculer.services/docs/0.14/moleculer-cli.html).
+# experimental-api
+
+_uib-ub_ is testing Node API frameworks, and this is a [Moleculer](https://moleculer.services/)-based microservices project. Generated with the [Moleculer CLI](https://moleculer.services/docs/0.14/moleculer-cli.html). 
+
+It is currently a work in progress, and is not yet ready for other than evaluation. That being said it can be used to index legacy data to the uib-ub [Elasticsearch](https://www.elastic.co/) search cluster.
 
 ## Usage
-Start the project with `npm run dev` command. 
-After starting, open the http://localhost:3099/ URL in your browser. 
+
+```bash
+# start dev in the monorepo (open the http://localhost:3099/ URL in your browser)
+npm run dev -w experimental-api
+# build the production build locally
+npm run build -w experimental-api
+# start the production build locally
+SERVICEDIR=dist/services npm run start -w experimental-api
+```
+
 On the welcome page you can test the generated services via API Gateway and check the nodes & services.
 
+When staring the production build locally, you need to specify the service(s) you want to start.
+
+## CLI
 In the terminal, try the following commands:
 - `nodes` - List all connected nodes.
 - `actions` - List all registered service actions.
-- `call greeter.hello` - Call the `greeter.hello` action.
-- `call greeter.welcome --name John` - Call the `greeter.welcome` action with the `name` parameter.
-
+- `call items.list` - Call the `items.list` action.
+- `call items.get --id ubb-kk-1318-0001` - Call the `items.get` action with the `id` parameter.
 
 
 ## Services
 - **api**: API Gateway services
-- **greeter**: Sample service with `hello` and `welcome` actions.
+- **ingester**: Ingests data from the legacy API to the Elasticsearch cluster
+- **items**: Item services
+- **legacy**: Legacy API services SKA and WAB
+- **resolve**: Resolves an ID to find the service the items belongs to
 
 
 ## Useful links
 
 * Moleculer website: https://moleculer.services/
-* Moleculer Documentation: https://moleculer.services/docs/0.14/
+* Moleculer documentation: https://moleculer.services/docs/0.14/
+* Moleculer deployment tips: https://moleculer.services/docs/0.14/deploying
 
 ## NPM scripts
 

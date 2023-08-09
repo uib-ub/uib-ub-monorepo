@@ -1,7 +1,7 @@
 import type { Context, Service, ServiceSchema } from "moleculer";
 import { SPARQL_PREFIXES } from "../lib/constants";
 import jsonld from "jsonld";
-import { apiFetch as fetch } from "../lib/fetch";
+import { apiFetch as fetch } from "../lib/helpers/fetch";
 
 export interface ActionHelloParams {
 	name: string;
@@ -72,7 +72,7 @@ const ItemsService: ServiceSchema<ItemsSettings> = {
 			async handler(ctx) {
 				const { page, limit } = ctx.params;
 				try {
-					const data = await this.getObjects(page, limit);
+					const data = await this.getItemsList(page, limit);
 
 					if (data) {
 						ctx.meta.$statusCode = 200
@@ -105,7 +105,7 @@ const ItemsService: ServiceSchema<ItemsSettings> = {
 					return error
 				}
 			}
-		}
+		},
 	},
 
 	/**
@@ -117,7 +117,7 @@ const ItemsService: ServiceSchema<ItemsSettings> = {
 	 * Methods
 	 */
 	methods: {
-		async getObjects(page, limit) {
+		async getItemsList(page = 0, limit = 100) {
 			const url = 'https://sparql.ub.uib.no/sparql/query?query='
 
 			const query = `

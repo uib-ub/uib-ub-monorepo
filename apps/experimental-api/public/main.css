@@ -9,7 +9,6 @@ body {
     padding: 0;
     margin: 0;
     color: black;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     padding-bottom: 60px; /* footer */
 }
 
@@ -18,33 +17,16 @@ body {
     user-select: none;
 }
 
-header, footer {
-    text-align: center;
-    color: white;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
-}
-
-header a, header a.router-link-exact-active,
-footer a, footer a.router-link-exact-active
-{
-    color: #63dcfd;
-}
 
 header {
-    background-image: linear-gradient(45deg, #e37682 0%, #5f4d93 100%);
-    padding: 1em;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.6);
+    padding: 0.5em;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 1em;
 }
 
 footer {
-    background-image: linear-gradient(135deg, #e37682 0%, #5f4d93 100%);
     padding: 0.75em;
     font-size: 0.8em;
-    box-shadow: 0 -3px 10px rgba(0,0,0,0.6);
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    margin-top: 1em;
 }
 
 .m-r-xs{
@@ -140,10 +122,6 @@ footer .footer-links a {
     margin: 0 0.5em;
 }
 
-a, a.router-link-exact-active {
-    color: #3CAFCE;
-    text-decoration: none;
-}
 
 nav ul {
     list-style: none;
@@ -172,13 +150,13 @@ nav ul li:hover {
 button, .button {
     background-color: #3CAFCE;
     border: 0;
-    border-radius: 8px;
+    border-radius: 4px;
     color: white;
     font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-weight: 400;
     padding: 0.5em 1em;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,.2);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,.1);
     cursor: pointer;
     user-select: none;
     min-width: 100px;
@@ -318,7 +296,6 @@ pre.broker-options {
     padding: 0.25em 1em;
     margin: 0.5em;
     background: rgba(60, 175, 206, 0.1);
-
     border: 1px solid grey;
     border-radius: 0.25em;
 }
@@ -343,17 +320,17 @@ main input {
 
 main fieldset {
     border: 1px solid lightgrey;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.4);
+    border-radius: 4px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
     background-color: rgba(240, 244, 247, 0.802);
     margin-bottom: 2em;
 }
 
 main fieldset legend {
-    background-color: #cce7ff;
+    background-color: white;
     border: 1px solid lightgrey;
     padding: 4px 10px;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 main fieldset .content {
@@ -444,6 +421,13 @@ main fieldset .action-card {
 
 .action-card-section-response-body{
     padding: 4px 16px;
+    overflow-x: scroll;
+    max-width: 1190px;
+}
+
+.action-card-section-response-body pre{
+    font-size: 0.8em;
+    overflow-x: scroll;
 }
 
 main fieldset .parameters .field {
@@ -518,7 +502,7 @@ table {
     width: 100%;
     /*max-width: 1000px;*/
     border: 1px solid lightgrey;
-    border-radius: 8px;
+    border-radius: 4px;
     background-color: aliceblue;
 }
 

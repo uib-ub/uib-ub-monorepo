@@ -1,5 +1,5 @@
 import type { Context, Service, ServiceSchema } from "moleculer";
-import { apiFetch as fetch } from '../lib/fetch';
+import { apiFetch as fetch } from '../lib/helpers/fetch';
 
 export interface ActionHelloParams {
 	name: string;

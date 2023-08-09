@@ -66,7 +66,6 @@ export const manifestFrame = {
         "@set"
       ],
     },
-
     "sc": "http://iiif.io/api/presentation/3#",
     "oa": "http://www.w3.org/ns/oa#",
     "dct": "http://purl.org/dc/terms/",

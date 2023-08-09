@@ -43,10 +43,7 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 				// The auto-alias feature allows you to declare your route alias directly in your services.
 				// The gateway will dynamically build the full routes from service schema.
 				autoAliases: true,
-
-				aliases: {
-
-				},
+				aliases: {},
 
 				/**
 				 * Before call hook. You can check the request.
@@ -77,7 +74,7 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 				}, */
 
 				// Calling options. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Calling-options
-				callingOptions: {},
+				callOptions: {},
 
 				bodyParsers: {
 					json: {

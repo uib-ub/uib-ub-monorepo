@@ -54,6 +54,18 @@ services:
       - nats
     networks:
       - internal
+  
+  legacy:
+    build:
+      context: .
+    image: moleculer-demo
+    env_file: docker-compose.env
+    environment:
+      SERVICES: legacy
+    depends_on:
+      - nats
+    networks:
+      - internal
 
   nats:
     image: nats:2

@@ -1,4 +1,4 @@
-import type { BrokerOptions, MetricRegistry, ServiceBroker } from "moleculer";
+import type { BrokerOptions, MetricRegistry } from "moleculer";
 import { Errors } from "moleculer";
 
 /**
@@ -39,6 +39,7 @@ const brokerConfig: BrokerOptions = {
 	logger: {
 		type: "Console",
 		options: {
+			level: "info",
 			// Using colors on the output
 			colors: true,
 			// Print module names with different colors (like docker-compose for containers)
