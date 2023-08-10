@@ -9,12 +9,15 @@
       }}</AppLink>
     </h1>
     <section>
-      <h2 id="global" class="pb-2 text-2xl">
+      <h2 id="global" class="pb-1 text-2xl">
         <AppLink to="#global" class="tp-hover-focus px-2 py-1">{{
           $t("innstillinger.global")
         }}</AppLink>
       </h2>
-      <div class="flex flex-col gap-0.5">
+      <div class="pl-2.5">
+        <p>{{ $t("innstillinger.globalLangComment") }}</p>
+      </div>
+      <div class="flex flex-col gap-0.5 pt-2">
         <div
           v-for="lang in locales"
           :key="'rbv' + lang"
@@ -30,7 +33,7 @@
           />
           <label
             :for="'rb-' + lang"
-            class="flex gap-2 rounded-[7px] border border-transparent px-1.5 py-1.5 pr-3 transition-shadow group-hover:cursor-pointer group-hover:border group-hover:border-tpblue-300 peer-focus:border peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+            class="flex gap-2 rounded-[7px] border border-transparent px-1.5 py-1 pr-3 transition-shadow group-hover:cursor-pointer group-hover:border group-hover:border-tpblue-300 peer-focus:border peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
             @click="setLocale(lang)"
           >
             <Icon
@@ -58,7 +61,7 @@
         v-if="false"
         id="locale-select"
         v-model="i18n.locale.value"
-        class="tp-search-dd cursor-pointer px-2 py-1 text-lg"
+        class="tp-search-dd cursor-pointer px-2 py-1"
       >
         <option v-for="lang in locales" :key="lang" :value="lang">
           {{ $t("global.lang." + lang) }}
@@ -77,7 +80,12 @@
             $t("innstillinger.dataDispLang")
           }}</AppLink>
         </legend>
-        <div class="grid w-fit grid-flow-col grid-rows-6 gap-x-6 gap-y-0.5">
+        <div class="pl-2.5">
+          <p>{{ $t("innstillinger.dataDispLangComment") }}</p>
+        </div>
+        <div
+          class="grid w-fit grid-flow-row grid-cols-2 xs:grid-cols-3 gap-x-6 gap-y-0.5 pt-2"
+        >
           <div v-for="lang in localeLangOrder" :key="lang" class="group flex">
             <input
               :id="'ddl-' + lang"
@@ -89,7 +97,7 @@
             />
 
             <label
-              class="flex cursor-pointer items-center gap-x-1.5 rounded-[7px] border border-transparent px-2 py-1 pr-3 text-lg group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+              class="flex cursor-pointer items-center gap-x-1.5 rounded-[7px] border border-transparent px-2 py-1 pr-3 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
               :for="'ddl-' + lang"
             >
               <Icon

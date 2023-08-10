@@ -12,7 +12,7 @@
       <div
         class="container flex-1"
         :class="{
-          'xs:pb-4 max-w-screen-xl px-2 pt-2 sm:px-3 md:px-4 lg:px-5 xl:pl-0':
+          'max-w-screen-xl px-2 pb-3 pt-2 xs:pb-4 sm:px-3 md:px-4 lg:px-5 xl:pl-0':
             route.path !== '/',
           'mb-[10vh] max-w-5xl p-5': route.path === '/',
         }"
@@ -20,7 +20,7 @@
         <header>
           <h1
             v-if="route.path === '/'"
-            class="xs:text-6xl pb-9 pt-[0.2em] text-5xl font-light tracking-tight text-black/75 antialiased sm:text-7xl md:text-8xl"
+            class="pb-9 pt-[0.2em] text-5xl font-light tracking-tight text-black/75 antialiased xs:text-6xl sm:text-7xl md:text-8xl"
           >
             Termportalen
           </h1>
