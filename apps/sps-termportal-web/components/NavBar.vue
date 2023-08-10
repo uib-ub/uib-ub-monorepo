@@ -22,6 +22,7 @@
       </div>
       <div class="flex items-center">
         <button
+          class="pl-4"
           :aria-label="`${$t('navBar.language')}`"
           aria-haspopup="true"
           aria-controls="overlayLangMenu"
