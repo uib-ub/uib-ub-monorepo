@@ -100,4 +100,8 @@ body {
   border: 1px solid black;
   z-index: 50;
 }
+
+.tp-hover-focus {
+  @apply rounded-[7px] border border-transparent outline-none transition-shadow hover:cursor-pointer hover:border hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo;
+}
 </style>
