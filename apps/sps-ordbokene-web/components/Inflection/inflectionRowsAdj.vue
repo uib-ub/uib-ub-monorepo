@@ -41,7 +41,7 @@
   
   export default {
       name: 'inflectionRowsAdj',
-      props: ['paradigms','tags','language','lemmaId'],
+      props: ['paradigms','tags','locLang','lemmaId'],
       data: function () {
           return {
               cells: !this.tags.title ?
@@ -61,7 +61,7 @@
               return markdownToHTML(form)
           },
           tagToName: function (tag) {
-              return tagToName(tag, this.language) || tag
+              return tagToName(tag, this.locLang) || tag
           }
       }
   }

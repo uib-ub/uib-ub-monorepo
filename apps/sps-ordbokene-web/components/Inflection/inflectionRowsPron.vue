@@ -33,21 +33,21 @@
     
     export default {
         name: 'inflectionRowsPron',
-        props: ['paradigms','lemma','tags','language','lemmaId'],
+        props: ['paradigms','lemma','tags','locLang','lemmaId'],
         data: function () {
             return {
                 cells: this.paradigms.map(p => this.inflForm(p, this.tags.tags))
             }
         },
-        computed: {
-        },
+        // computed: {
+        // },
         methods: {
             inflForm: function (paradigm, tagList) {
                 let forms = inflectedForm(paradigm, tagList, [])
                 return forms || [1,0,[this.lemma]] // workaround for missing inflection
             },
             tagToName: function (tag) {
-                return tagToName(tag, this.language)
+                return tagToName(tag, this.locLang)
             }
         }
     }

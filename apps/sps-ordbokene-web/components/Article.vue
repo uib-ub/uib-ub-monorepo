@@ -544,12 +544,12 @@ span.lemma-group {
 .article {
   border-radius: 2rem;
     /* border: 1px solid #560027; */
-    @apply p-1 mb-2 md:mb-4 md:p-2 lg:p-4 bg-canvas duration-200 shadow-md border border-tertiary-darken2; 
+    @apply p-1 mb-2 md:mb-4 md:p-2 lg:p-4 bg-canvas duration-200 shadow-md; 
   
 }
   
 .article:hover{
- @apply shadow-xl border-tertiary-darken3;
+ @apply shadow-xl;
 }
 
 .article .dict_label {

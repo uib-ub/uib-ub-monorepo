@@ -22,6 +22,12 @@
       <div id="main_menu" class="lg:flex lg:ml-auto text-center nav-buttons flex-wrap lg:flex-row content-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
         <nav class="lg:mr-4">
         <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
+          <!-- <li>
+            <div class="nav-link hidden lg:block" @mouseenter="showHoverText" @mouseleave="hideHoverText">
+              <p>Text size</p>
+              <p class="hover-text" v-if="isHovered">To change text size, press <kbd> Ctrl</kbd> ( <kbd>Cmd</kbd> on a Mac) and press <kbd>+</kbd> to increase or <kbd>-</kbd> to decrease.</p>
+            </div>
+          </li> -->
           <li class="nav-item">
             <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" to="/help">{{$t('help')}}</NuxtLink>
           </li>
@@ -91,7 +97,15 @@
   })
   }
   
-  
+  // const isHovered = ref(false);
+
+  // const showHoverText = () => {
+  //   isHovered.value = true;
+  // };
+
+  // const hideHoverText = () => {
+  //   isHovered.value = false;
+  // };
   </script>
   
   <style scoped>
@@ -106,7 +120,6 @@
     font-size: 1.25rem;
     letter-spacing: .1rem;
     list-style-type: none;
-    padding-top: .5rem;
   }
       
       
@@ -127,6 +140,15 @@
         display: flex;
     }
   }
-    
-  
+
+  /* .hover-text {
+  position:absolute;
+  @apply border-2 border-canvas-darken mt-9 mr-4 font-semibold text-black bg-canvas shadow;
+
+  padding: 4px;
+  display:block;
+
+} */
+
+
   </style>

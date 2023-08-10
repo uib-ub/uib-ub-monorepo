@@ -43,7 +43,7 @@
   
   export default {
       name: 'inflectionRowsVerb',
-      props: ['paradigms','tags','language','lemmaId'],
+      props: ['paradigms','tags','locLang','lemmaId'],
       data: function () {
           return {
               cells: !this.tags.title ?
@@ -69,7 +69,7 @@
               }
           },
           tagToName: function (tag) {
-              return tagToName(tag, this.language) || tag
+              return tagToName(tag, this.locLang) || tag
           }
       }
   }

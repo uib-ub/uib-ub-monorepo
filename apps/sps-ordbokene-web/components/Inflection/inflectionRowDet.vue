@@ -26,7 +26,7 @@
     
     export default {
         name: 'inflectionRowPron',
-        props: ['paradigm','language','lemmaId'],
+        props: ['paradigm','locLang','lemmaId'],
         data: function () {
             return {
                 cells: [ this.inflForm(['Masc'],'Sing Masc'),
@@ -44,7 +44,7 @@
                 return [inflectedForm(this.paradigm, tagList), headers]
             },
             tagToName: function (tag) {
-                return tagToName(tag, this.language)
+                return tagToName(tag, this.locLang)
             }    }
     }
     </script>
