@@ -33,7 +33,7 @@
           />
           <label
             :for="'rb-' + lang"
-            class="flex gap-2 rounded-[7px] border border-transparent px-1.5 py-1 pr-3 transition-shadow group-hover:cursor-pointer group-hover:border group-hover:border-tpblue-300 peer-focus:border peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+            class="tp-transition-shadow flex gap-2 rounded-[7px] border border-transparent px-1.5 py-1 pr-3 group-hover:cursor-pointer group-hover:border group-hover:border-tpblue-300 peer-focus:border peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
             @click="setLocale(lang)"
           >
             <Icon
@@ -97,7 +97,7 @@
             />
 
             <label
-              class="flex cursor-pointer items-center gap-x-1.5 rounded-[7px] border border-transparent px-2 py-1 pr-3 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+              class="tp-transition-shadow flex cursor-pointer items-center gap-x-1.5 rounded-[7px] border border-transparent px-2 py-1 pr-3 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
               :for="'ddl-' + lang"
             >
               <Icon
