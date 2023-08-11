@@ -30,7 +30,7 @@ const skipLink = ref();
 const domainData = useDomainData();
 
 onMounted(() => {
-  $fetch("/api/domain", {retry: 1}).then((data) => {
+  $fetch("/api/domain", { retry: 1 }).then((data) => {
     for (const domain in domainData.value) {
       domainData.value[domain].subdomains = parseRelationsRecursively(
         data,
@@ -102,6 +102,12 @@ body {
 }
 
 .tp-hover-focus {
-  @apply rounded-[7px] border border-transparent outline-none transition-shadow hover:cursor-pointer hover:border hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo;
+  @apply tp-transition-shadow rounded-[7px] border border-transparent outline-none hover:cursor-pointer hover:border hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo;
+}
+
+.tp-transition-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
 }
 </style>
