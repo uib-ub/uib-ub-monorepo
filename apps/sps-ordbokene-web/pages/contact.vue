@@ -9,7 +9,7 @@
     </div>
     <div><h3>{{$t('contact.faq.title')}}</h3></div>
     <Collapsible id='faq-1' is="h4" :header="$t('contact.faq.items[0].title')">
-      <p><em>Bokmålsordboka</em>{{$t('and')}}<em>Nynorskordboka</em>{{$t('contact.faq.items[0].text[0]')}}<router-link to="/om" @click="$emit('close')">{{$t('contact.faq.items[0].text[1]')}}</router-link></p>
+      <p><em>Bokmålsordboka</em>{{$t('and')}}<em>Nynorskordboka</em>{{$t('contact.faq.items[0].text[0]')}}<router-link to="/about" @click="$emit('close')">{{$t('contact.faq.items[0].text[1]')}}</router-link></p>
     </Collapsible>
     <Collapsible id='faq-2' is="h4" :header="$t('contact.faq.items[1].title')">
       {{$t('contact.faq.items[1].text')}}

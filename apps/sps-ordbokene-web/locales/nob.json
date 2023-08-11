@@ -11,7 +11,22 @@
     "show_articles": "Vis ordforklaringer",
     "show_list": "Vis liste | Vis lister",
     "simple": "Enkelt søk",
-    "about": "Om ordbøkene",
+    "about":{
+        "title":"Om ordbøkene",
+        "items": [
+            {"title": "Hva betyr det om du ikke finner et ord i ordboka?", "text":""},
+            {"title": "Kvalitetssikra", "text": ""},
+            {"title": "Sitere ordbøkene", "text": ""},
+            {"title": "Ordbøkene på smarttelefon", "text": ""},
+            {"title": "Åpne data", "text": ""},
+            {"title": "Historikk", "text": ""},
+            {"title": "Revisjonsprosjektet", "text": ""},
+            {"title": "Grammatiske koder i ordbøkene", "text": ""},
+            {"title": "Nyttige språklenker", "text": ""},
+            {"title": "Bruk av ordbøkene.no i skolen", "text": ""},
+            {"title": "Personvern", "text": ""}
+      ]
+    },
     "photo": "Foto: Clay Banks (unsplash.com)",
     "background": "Bakgrunnsbilde",
     "monthly": "Smakebit fra ",
