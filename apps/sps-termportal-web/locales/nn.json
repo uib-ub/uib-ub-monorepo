@@ -122,13 +122,13 @@
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
     "definisjon": "Definisjon",
-    "referanse": "",
-    "kollokasjon": "",
-    "forkortelse": "",
-    "forkortelseAv": "",
-    "forkortelseType": "",
-    "kontekst": "",
-    "kontekstAv": "",
+    "referanse": "Referanse",
+    "kollokasjon": "Kollokasjon",
+    "forkortelse": "Forkorting",
+    "forkortelseAv": "Forkorting av",
+    "forkortelseType": "Forkortingstype",
+    "kontekst": "Kontekst til",
+    "kontekstAv": "Kontekst",
     "general": "Generell informasjon",
     "relasjon": "Omgrepsrelasjon",
     "narrower": "Underomgrep",
@@ -157,10 +157,10 @@
   "om": { "title": "Om Termportalen" },
   "innstillinger": {
     "title": "Innstillingar",
-    "global": "Vel visningsspråk",
-    "globalLangComment": "",
+    "global": "Visningsspråk",
+    "globalLangComment": "Vel kva språk du vil vise Termportalen.no på",
     "conceptview": "Termpost",
-    "dataDispLang": "Vel språk",
-    "dataDispLangComment": ""
+    "dataDispLang": "Språk for termpost",
+    "dataDispLangComment": "Vel kva språk som skal visast i termpostane"
   }
 }
