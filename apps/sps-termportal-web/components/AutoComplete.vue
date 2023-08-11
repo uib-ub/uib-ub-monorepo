@@ -190,7 +190,7 @@
     <!--new-->
     <button
       id="clearDdBtn"
-      class="flex w-10 items-center justify-center text-gray-500 focus:text-gray-800"
+      class="flex w-10 items-center tp-hover-focus justify-center text-gray-500 focus:text-gray-800"
       @click="onDropdownClick"
     >
       <Icon
@@ -1204,9 +1204,10 @@ export default {
 </script>
 
 <style>
+/*
 #clearDdBtn {
-  border: 1px transparent white;
-  border-radius: 6px;
+  border: 1px transparent;
+  border-radius: 7px;
 }
 
 #clearDdBtn:hover {
@@ -1219,4 +1220,5 @@ export default {
   transition: box-shadow 0.2s;
   box-shadow: 0 0 1px 0.2rem theme("colors.tpblue.100");
 }
+*/
 </style>

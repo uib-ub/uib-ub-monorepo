@@ -15,7 +15,7 @@
     />
     <button
       id="searchbutton"
-      class="rounded-r-md inline-block h-full w-14 items-center bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
+      class="inline-block h-full w-14 items-center rounded-r-md bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
       type="button"
       :aria-label="$t('searchBar.searchButtonLabel')"
       @click="execSearch"
@@ -89,7 +89,11 @@ function execSearch() {
 }
 
 #searchbutton:focus {
-  box-shadow: 0px 0px 1px 0.2rem theme("colors.tpblue.100");
+  border: 1px solid theme("colors.tpblue.300");
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+  @apply shadow-tphalo
 
 }
 
@@ -100,7 +104,6 @@ function execSearch() {
 .p-autocomplete-input {
   flex-grow: 1;
 }
-
 
 .p-autocomplete .p-component {
   border-color: white;
@@ -113,5 +116,4 @@ function execSearch() {
 .p-autocomplete .p-component:focus {
   border: 1px solid theme("colors.tpblue.300");
 }
-
 </style>

@@ -2,8 +2,8 @@
   <Dropdown
     :model-value="modelValue"
     :options="options"
-    optionLabel="label"
-    optionValue="value"
+    option-label="label"
+    option-value="value"
     class="flex h-8 items-center justify-between"
     @change="$emit('update:modelValue', $event.value)"
   />

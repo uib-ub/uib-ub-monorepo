@@ -765,8 +765,10 @@
 .p-dropdown:not(.p-disabled).p-focus {
   outline: 0 none;
   outline-offset: 0;
-  box-shadow: 0 0 1px 0.2rem theme('colors.tpblue.100');
-  @apply border-tpblue-300
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+  @apply border-tpblue-300 shadow-tphalo
 }
 .p-dropdown.p-dropdown-clearable .p-dropdown-label {
   padding-right: 1.75rem;
@@ -1111,10 +1113,13 @@
 .p-inputtext:enabled:focus {
   outline: 0 none;
   outline-offset: 0;
-  box-shadow: 0 0 1px 0.2rem theme("colors.tpblue.100");
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+  box-shadow: 0 0 1px 0.18rem rgb(105, 185, 254, 0.5); // tp theme
   // border-color: #3B82F6;
   border: 1px black;
-  @apply border-tpblue-200
+  @apply border-tpblue-300
 }
 .p-inputtext.p-invalid.p-component {
   border-color: #e24c4c;
