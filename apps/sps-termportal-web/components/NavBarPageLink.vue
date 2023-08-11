@@ -2,7 +2,7 @@
   <li>
     <AppLink
       :to="to"
-      class="decoration-inherit hover:text-black"
+      class="decoration-inherit hover:text-black tp-hover-focus px-2 py-1.5 focus:text-black"
       @click="navMenuExpanded = false"
     >
       <slot></slot
