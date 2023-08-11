@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap gap-x-6">
+  <div class="flex flex-wrap gap-x-6 gap-y-2">
     <SearchDropdownWrapper target="language">
       <DropdownPV
         :id="`languageDropdown`"
@@ -14,14 +14,6 @@
         v-model="searchInterface.translate"
         :options="optionsTranslate"
         class="min-w-[6rem]"
-      />
-    </SearchDropdownWrapper>
-    <SearchDropdownWrapper target="termbase">
-      <DropdownPV
-        :id="`termbaseDropdown`"
-        v-model="searchInterface.termbase"
-        :options="optionsTermbase"
-        class="min-w-[20rem]"
       />
     </SearchDropdownWrapper>
   </div>
