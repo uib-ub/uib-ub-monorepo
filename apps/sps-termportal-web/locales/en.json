@@ -75,7 +75,8 @@
     "innstillinger": "Settings",
     "menuButtonShow": "Extend menu",
     "menuButtonHide": "Hide menu",
-    "language": "Display language"
+    "language": "Display language",
+    "navigation": "Navigation"
   },
   "searchBar": {
     "search": "Search",

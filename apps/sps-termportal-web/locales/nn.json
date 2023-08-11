@@ -77,7 +77,8 @@
     "innstillinger": "Innstillingar",
     "menuButtonShow": "Utvid menyen",
     "menuButtonHide": "Skjul menyen",
-    "language": "Visningsspråk"
+    "language": "Visningsspråk",
+    "navigation": "Navigasjon" // TODO Check translation
   },
   "searchBar": {
     "search": "Søk",
