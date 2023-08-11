@@ -160,7 +160,7 @@
     "global": "Visningsspråk",
     "globalLangComment": "Velg hvilket språk du vil vise Termportalen.no på",
     "conceptview": "Termpost",
-    "dataDispLang": "Visningsspråk",
+    "dataDispLang": "Språk for termpost",
     "dataDispLangComment": "Velg hvilke språk som skal vises i termpostene"
   }
 }
