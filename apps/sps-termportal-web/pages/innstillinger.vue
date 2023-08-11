@@ -21,7 +21,7 @@
         <div
           v-for="lang in locales"
           :key="'rbv' + lang"
-          class="align-items-center group flex"
+          class="align-items-center group flex w-fit"
         >
           <input
             :id="'rb-' + lang"
