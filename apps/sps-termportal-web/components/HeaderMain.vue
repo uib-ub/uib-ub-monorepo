@@ -13,7 +13,7 @@
       <div class="w-0 xl:w-[10vw] xl:min-w-[10rem] xl:max-w-[13rem]"></div>
       <div>
         <HeaderSearchOptions />
-        <HeaderDomains />
+        <HeaderSearchScope />
       </div>
     </div>
 
