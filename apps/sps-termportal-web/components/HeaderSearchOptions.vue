@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap gap-x-6 gap-y-2">
+  <div class="flex flex-wrap gap-x-6 gap-y-2 py-1">
     <SearchDropdownWrapper target="language">
       <DropdownPV
         :id="`languageDropdown`"
