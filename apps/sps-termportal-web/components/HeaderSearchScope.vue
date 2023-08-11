@@ -1,51 +1,21 @@
 <template>
-  <div ref="subDomains">
-    <div class="flex">
-      <button
-        class="mt-[2px] flex rounded px-2 align-top hover:bg-gray-200"
-        type="button"
-        @click="displaySubdomains = !displaySubdomains"
-      >
-        Domene:
-        <!--
-        <Icon
-          v-if="!displaySubdomains"
-          name="mdi:chevron-down"
-          class="ml-[-4px] mr-[-8px]"
-          aria-hidden="true"
-        /><Icon
-          v-else
-          class="ml-[-4px] mr-[-8px]"
-          name="mdi:chevron-up"
-          aria-hidden="true"
-        />
-        -->
-      </button>
-      <ul class="flex">
-        <HeaderDomain
-          v-for="domain of ['all'].concat(Object.keys(domainNesting))"
-          :key="domain"
-          class="px-2"
-          :tab-id="domain"
-        />
-      </ul>
-    </div>
-
-    <div class="relative flex max-w-screen-xl grow">
-      <div
-        v-if="displaySubdomains"
-        class="absolute z-10 h-44 w-full grow border border-gray-300 bg-white p-2 font-semibold shadow-md"
-      >
-        Subdomener:
+  <div class="py-0.5 flex">
+    <button
+      class="tp-hover-focus flex items-end border-gray-300 px-1.5 pb-1 pt-0.5"
+      @click="searchInterface.inDomain = !searchInterface.inDomain"
+    >
+      <div class="min-w-[5rem]">
+        <span v-if="searchInterface.inDomain">Domains</span>
+        <span v-else>Termbases</span>
       </div>
-    </div>
+
+      <div class="pb-[0.5px]">
+        <Icon name="uil:arrow" rotate="45" aria-hidden="true" class="text-gray-500"/>
+      </div>
+    </button>
   </div>
 </template>
-<script setup lang="ts">
-const displaySubdomains = ref(false);
-const subDomains = ref<HTMLElement | null>(null);
 
-onClickOutside(subDomains, () => {
-  displaySubdomains.value = false;
-});
+<script setup lang="ts">
+const searchInterface = useSearchInterface();
 </script>
