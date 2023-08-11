@@ -121,13 +121,13 @@
     "altLabel": "Admitted term",
     "hiddenLabel": "Depreciated term",
     "definisjon": "Definition",
-    "referanse": "",
-    "kollokasjon": "",
-    "forkortelse": "",
-    "forkortelseAv": "",
-    "forkortelseType": "",
-    "kontekst": "",
-    "kontekstAv": "",
+    "referanse": "Reference",
+    "kollokasjon": "Collocation",
+    "forkortelse": "Abbreviation",
+    "forkortelseAv": "Abbreviation of",
+    "forkortelseType": "Abbreviation type",
+    "kontekst": "Context of",
+    "kontekstAv": "Context",
     "general": "General information",
     "relasjon": "Concept relation",
     "narrower": "Subordinate concept",
@@ -156,10 +156,10 @@
   "om": { "title": "About Termportalen" },
   "innstillinger": {
     "title": "Settings",
-    "global": "Choose display language",
-    "globalLangComment": "",
+    "global": "Display language",
+    "globalLangComment": "Choose which language you want to display Termportalen.no in",
     "conceptview": "Term entry",
-    "dataDispLang": "Choose language(s)",
-    "dataDispLangComment": ""
+    "dataDispLang": "Term entry languages",
+    "dataDispLangComment": "Choose the language(s) you want to see in the term entry"
   }
 }
