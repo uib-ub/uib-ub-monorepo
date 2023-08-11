@@ -26,6 +26,7 @@ export interface SearchInterface {
   translate: LangCode | "none";
   domain: string[];
   termbase: Samling | "all";
+  inDomain: boolean;
 }
 
 export const useDomainData = () =>
@@ -58,6 +59,7 @@ export const useSearchInterface = () =>
     translate: "none",
     termbase: "all",
     domain: ["all"],
+    inDomain: true
   }));
 
 export const useAllowSearchFetch = () =>
