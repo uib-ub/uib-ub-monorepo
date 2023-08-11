@@ -190,7 +190,7 @@
     <!--new-->
     <button
       id="clearDdBtn"
-      class="flex w-10 items-center tp-hover-focus justify-center text-gray-500 focus:text-gray-800"
+      class="tp-hover-focus flex w-10 items-center justify-center border-transparent text-gray-500 focus:text-gray-800"
       @click="onDropdownClick"
     >
       <Icon

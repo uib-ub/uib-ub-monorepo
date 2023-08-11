@@ -102,7 +102,7 @@ body {
 }
 
 .tp-hover-focus {
-  @apply tp-transition-shadow rounded-[7px] border border-transparent outline-none hover:cursor-pointer hover:border hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo;
+  @apply tp-transition-shadow rounded-[7px] border outline-none hover:cursor-pointer hover:border hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo;
 }
 
 .tp-transition-shadow {

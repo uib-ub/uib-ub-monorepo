@@ -14,7 +14,7 @@
               id="anchor"
               to="/"
               aria-label="Termportalen.no"
-              class="tp-hover-focus flex justify-center px-3 py-0.5 text-[1.4em]"
+              class="tp-hover-focus flex justify-center border-transparent px-3 py-0.5 text-[1.4em]"
             >
               <span class="font-semibold lg:font-normal" aria-hidden="true"
                 >T</span
@@ -34,7 +34,7 @@
         >
           <div>
             <button
-              class="tp-hover-focus group px-1.5 pb-1 pt-0.5"
+              class="tp-hover-focus group border-transparent px-1.5 pb-1 pt-0.5"
               :aria-label="`${$t('navBar.language')}`"
               aria-haspopup="menu"
               aria-controls="overlayLangMenu"
@@ -63,7 +63,7 @@
       </div>
       <div class="px-3 lg:hidden">
         <button
-          class="tp-hover-focus ml-auto mr-0 flex rounded border border-black p-1"
+          class="tp-hover-focus ml-auto mr-0 flex rounded border border-transparent p-1"
           aria-haspopup="true"
           aria-controls="overlayMenu"
           :aria-label="

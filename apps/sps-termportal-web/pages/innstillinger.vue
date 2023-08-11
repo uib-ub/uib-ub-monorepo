@@ -4,15 +4,19 @@
       <Title>{{ $t("innstillinger.title") }} | {{ $t("index.title") }}</Title>
     </Head>
     <h1 id="main" class="pb-3 pt-6">
-      <AppLink to="#main" class="tp-hover-focus px-2 py-1 text-3xl">{{
-        $t("innstillinger.title")
-      }}</AppLink>
+      <AppLink
+        to="#main"
+        class="tp-hover-focus border-transparent px-2 py-1 text-3xl"
+        >{{ $t("innstillinger.title") }}</AppLink
+      >
     </h1>
     <section>
       <h2 id="global" class="pb-1 text-2xl">
-        <AppLink to="#global" class="tp-hover-focus px-2 py-1">{{
-          $t("innstillinger.global")
-        }}</AppLink>
+        <AppLink
+          to="#global"
+          class="tp-hover-focus border-transparent px-2 py-1"
+          >{{ $t("innstillinger.global") }}</AppLink
+        >
       </h2>
       <div class="pl-2.5">
         <p>{{ $t("innstillinger.globalLangComment") }}</p>
@@ -70,15 +74,19 @@
     </section>
     <section>
       <h2 id="conceptview" class="pb-2 pt-6 text-2xl">
-        <AppLink to="#conceptview" class="tp-hover-focus px-2 py-1">{{
-          $t("innstillinger.conceptview")
-        }}</AppLink>
+        <AppLink
+          to="#conceptview"
+          class="tp-hover-focus border-transparent px-2 py-1"
+          >{{ $t("innstillinger.conceptview") }}</AppLink
+        >
       </h2>
       <fieldset>
         <legend id="dataDispLang" class="pb-1 text-xl">
-          <AppLink to="#dataDispLang" class="tp-hover-focus px-2 py-1">{{
-            $t("innstillinger.dataDispLang")
-          }}</AppLink>
+          <AppLink
+            to="#dataDispLang"
+            class="tp-hover-focus border-transparent px-2 py-1"
+            >{{ $t("innstillinger.dataDispLang") }}</AppLink
+          >
         </legend>
         <div class="pl-2.5">
           <p>{{ $t("innstillinger.dataDispLangComment") }}</p>
