@@ -2,10 +2,10 @@
   <div class="py-0.5 flex">
     <button
       class="tp-hover-focus flex items-end border-gray-300 px-1.5 pb-1 pt-0.5"
-      @click="searchInterface.inDomain = !searchInterface.inDomain"
+      @click="searchInterface.useDomain = !searchInterface.useDomain"
     >
       <div class="min-w-[5rem]">
-        <span v-if="searchInterface.inDomain">Domains</span>
+        <span v-if="searchInterface.useDomain">Domains</span>
         <span v-else>Termbases</span>
       </div>
 
