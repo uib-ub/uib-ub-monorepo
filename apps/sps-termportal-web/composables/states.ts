@@ -129,3 +129,6 @@ export const useConceptViewToggle = () =>
 
 export const useNavMenuExpanded = () =>
   useState<boolean>("navMenuExpanded", () => false);
+
+export const useLazyLocales = () =>
+  useState<Object>("lazyLocales", () => ({ nb: {}, nn: {}, en: {} }));
