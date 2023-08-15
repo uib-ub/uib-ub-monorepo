@@ -36,8 +36,7 @@ const submitForm = async (item) => {
         return navigateTo(`/${store.dict}/${inflect[0][0]}?orig=${store.q}`)
     }
 
-
-    navigateTo(`/${route.params.dict}?q=${store.q}`)
+    return navigateTo(`/${route.params.dict}?q=${store.q}`)
     //navigateTo(`/${route.params.dict}/${store.q}`)
   }
   
