@@ -33,6 +33,20 @@
         font-weight: bold;
     }
 
+    .ord-container h3 {
+      font-family: Inria Serif;
+      @apply text-primary;
+      font-weight:600;
+      margin-bottom: 0rem;
+  
+  }
+
+  .suggestions h3 {
+    font-size: 1.17rem !important;
+  }
+
+
+
     ::selection {
         background-color: theme(colors.secondary.DEFAULT);
         @apply text-white bg-secondary;
@@ -117,6 +131,11 @@
         font-weight: 600;
         font-size: 1.25rem !important;
       }
+
+    .article-dict-label {
+        font-size: 1.5rem !important;
+        padding-bottom: 1rem;
+    }
 
       
       .article h4 {

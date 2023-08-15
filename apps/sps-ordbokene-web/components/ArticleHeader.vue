@@ -42,13 +42,7 @@ const props = defineProps({
 </script>
 
 <style scoped>
-h3 {
-    font-family: Inria Serif;
-  @apply text-primary;
-  font-weight:600;
-  margin-bottom: 0rem;
 
-}
 
 .header_group_list {
     font-variant: all-small-caps;

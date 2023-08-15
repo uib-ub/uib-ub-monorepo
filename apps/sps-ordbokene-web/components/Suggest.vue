@@ -1,7 +1,12 @@
 <template>
-   <div class="my-10">
-    <SuggestResults v-if="!pending && inflect" :suggestions="inflect">{{$t('notifications.other_inflected', {word: route.query.orig || store.q})}}</SuggestResults>
-    <SuggestResults v-if="!pending && similar" :suggestions="similar">{{$t('notifications.similar')}}</SuggestResults>
+   <div class="mb-10">
+    <SuggestResults v-if="!pending && inflect" :suggestions="inflect">
+        <component :is="props.dict=='bm,nn'? 'h2' : 'h3'">{{$t('notifications.other_inflected', {word: route.query.orig || store.q})}}</component>
+    </SuggestResults>
+    <SuggestResults v-if="!pending && similar" :suggestions="similar">
+        <component :is="props.dict=='bm,nn'? 'h2' : 'h3'">{{$t('notifications.similar')}}</component>
+
+    </SuggestResults>
   </div>
 
 </template>
@@ -10,7 +15,14 @@
 import { useStore } from '~/stores/searchStore'
 const store = useStore()
 const route = useRoute()
-const { pending, data } = await useFetch(() =>  `${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${route.params.dict}&n=10&dform=int&meta=n&include=eis`)
+
+const props = defineProps({
+    dict: String
+})
+
+const suggestQuery = `${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${props.dict}&n=10&dform=int&meta=n&include=eis`
+
+const { pending, data } = await useFetch(() =>  suggestQuery, {key: suggestQuery})
 
 const inflect = computed(() => {
     return data.value.a.inflect ? data.value.a.inflect.filter(item => 

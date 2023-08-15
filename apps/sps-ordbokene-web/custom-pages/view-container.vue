@@ -14,7 +14,7 @@
   <NuxtErrorBoundary @error="content_error">
     <NuxtPage/>
   </NuxtErrorBoundary>
-  <Suggest v-if="store.q"/>
+  <Suggest v-if="false && store.q"/>
     </div>
   </section>
 

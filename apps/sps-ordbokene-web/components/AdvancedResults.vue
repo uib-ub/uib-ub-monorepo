@@ -89,7 +89,7 @@
   </div> 
   <client-only>
     <div class="my-10">
-  <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar">{{$t('notifications.similar')}}</SuggestResults>
+  <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar"><h2>{{$t('notifications.similar')}}</h2></SuggestResults>
     </div>
   </client-only>
 
