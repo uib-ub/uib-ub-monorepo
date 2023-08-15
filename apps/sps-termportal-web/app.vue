@@ -31,6 +31,9 @@ const domainData = useDomainData();
 const lazyLocales = useLazyLocales();
 
 onMounted(() => {
+  /*
+  Get subdomains and relations between conceptual domains that are maintained in the CMS.
+  */
   $fetch("/api/domain", { retry: 1 }).then((data) => {
     for (const domain in domainData.value) {
       domainData.value[domain].subdomains = parseRelationsRecursively(
