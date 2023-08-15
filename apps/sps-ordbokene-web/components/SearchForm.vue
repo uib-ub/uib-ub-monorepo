@@ -16,6 +16,9 @@ const store = useStore()
 const route = useRoute()
 
 const submitForm = async (item) => {
+  if (typeof item === 'string') {
+    return navigateTo(`/${route.params.dict}?q=${item}`)
+  }
   if (store.input) {
     store.show_autocomplete = false
     store.q = store.input

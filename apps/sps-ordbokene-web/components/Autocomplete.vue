@@ -167,7 +167,7 @@ const dropdown_select = (q) => {
   console.log("DROPDOWN: Input from", store.input, "to", q)
   store.input= q
   store.show_autocomplete = false
-  emit('dropdown-submit')
+  emit('dropdown-submit', q)
   console.log("NEXT")
   console.log("AFTER")
 }
