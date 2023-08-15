@@ -28,6 +28,7 @@ const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
 const skipLink = ref();
 const domainData = useDomainData();
+const lazyLocales = useLazyLocales();
 
 onMounted(() => {
   $fetch("/api/domain", { retry: 1 }).then((data) => {
@@ -39,6 +40,21 @@ onMounted(() => {
         "subdomains"
       );
     }
+  });
+
+  /*
+   Get localiztion data where data is produced in the CMS.
+   This applies to:
+   - termbase names
+   - conceptual domain names
+   */
+  $fetch("/api/lazyLocales", { retry: 1 }).then((data) => {
+    data.forEach((entry) => {
+      const lang = entry.label["xml:lang"];
+      const pagelst = entry.page.value.split("/");
+      const page = pagelst[pagelst.length - 1];
+      lazyLocales.value[lang][page] = entry.label.value;
+    });
   });
 
   /*
