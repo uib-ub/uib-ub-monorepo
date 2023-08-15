@@ -51,7 +51,7 @@
         <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict"/>
       
       <button v-if="!settings.inflectionExpanded && inflected && !welcome" class="btn btn-primary my-1 !pr-2" @click="inflection_expanded = !inflection_expanded" type="button" :aria-expanded="inflection_expanded" :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
-             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:plus" class="text-primary ml-4" size="1.5rem"/></span><span v-if="inflection_expanded"><Icon name="bi:dash" class="text-primary ml-4" size="1.5rem"/></span>
+             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:plus" class="text-primary ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:dash" class="text-primary ml-4" size="1.5em"/></span>
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
             <div class="inflection-container p-2">

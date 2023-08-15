@@ -228,8 +228,8 @@ if (process.client) {
           @keydown="keys"
           :aria-expanded="store.show_autocomplete || 'false'" 
           :aria-owns="selected_option >= 0 ? 'autocomplete-dropdown' : null"/>
-          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25rem"/></button>
-          <button v-if="route.name != 'search'" class="appended-button" type="submit" v-bind:class="{'sr-only': route.name == 'search'}" :aria-label="$t('search')"><Icon name="bi:search" size="1.25rem"/></button>
+          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
+          <button v-if="route.name != 'search'" class="appended-button" type="submit" v-bind:class="{'sr-only': route.name == 'search'}" :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 
   </div>
