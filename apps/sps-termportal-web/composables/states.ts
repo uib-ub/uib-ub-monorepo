@@ -24,7 +24,7 @@ export interface SearchInterface {
   term: string | null;
   language: LangCode | "all";
   translate: LangCode | "none";
-  domain: string[];
+  domain: Object;
   termbase: Samling | "all";
   useDomain: boolean;
 }
@@ -58,8 +58,8 @@ export const useSearchInterface = () =>
     language: "all",
     translate: "none",
     termbase: "all",
-    domain: ["all"],
-    useDomain: true
+    domain: {},
+    useDomain: true,
   }));
 
 export const useAllowSearchFetch = () =>

@@ -13,8 +13,8 @@ export default function (situation: string, options?: SearchOptions) {
     language: [searchInterface.value.language],
     translate: searchInterface.value.translate,
     termbase: [searchInterface.value.termbase],
-    domain: searchInterface.value.domain,
-    inDomain: searchInterface.value.inDomain,
+    domain: Object.keys(searchInterface.value.domain)[0], // TODO
+    useDomain: searchInterface.value.useDomain,
     // default data
     predicate: searchOptionsInfo.predicate.default,
     matching: searchOptionsInfo.matching.default,
