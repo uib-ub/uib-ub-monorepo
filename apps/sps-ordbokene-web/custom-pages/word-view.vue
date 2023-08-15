@@ -15,7 +15,7 @@
             </NuxtErrorBoundary>
           </component>
         </component>
-          <Suggest v-if="store.q" :dict="dict"/>
+          <client-only><Suggest v-if="store.q" :dict="dict"/></client-only>
       </section>
   </div>
   </div>

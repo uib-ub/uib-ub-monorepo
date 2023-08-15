@@ -5,7 +5,6 @@
     </SuggestResults>
     <SuggestResults v-if="!pending && similar" :suggestions="similar">
         <component :is="props.dict=='bm,nn'? 'h2' : 'h3'">{{$t('notifications.similar')}}</component>
-
     </SuggestResults>
   </div>
 
