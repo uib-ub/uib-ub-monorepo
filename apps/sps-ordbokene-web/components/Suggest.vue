@@ -14,7 +14,9 @@ const { pending, data } = await useFetch(() =>  `${store.endpoint}api/suggest?&q
 
 const inflect = computed(() => {
     return data.value.a.inflect ? data.value.a.inflect.filter(item => 
-                                item[0] != route.query.orig && item[0] != store.q) : []
+                                item[0] != route.query.orig && item[0] != store.q
+                                && item[0][0] != '-'
+                                && item[0].slice(-1) != '-' ) : []
                             
 })
 
