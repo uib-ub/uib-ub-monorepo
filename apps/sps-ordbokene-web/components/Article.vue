@@ -1,5 +1,5 @@
 <template>
-    <div class="list-view-item" v-if="listView && !welcome">
+    <div class="list-view-item" v-if="list && !welcome">
         <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/>here<div class="skeleton skeleton-content w-50"/></span>
         <NuxtLink v-else class="result-list-item" :to="link_to_self()">
 
@@ -114,7 +114,8 @@ const props = defineProps({
     article_id: Number,
     dict: String,
     welcome: Boolean,
-    single: Boolean
+    single: Boolean,
+    list: Boolean
 })
 
 const listView = computed(() => {
