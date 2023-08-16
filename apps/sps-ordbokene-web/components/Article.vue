@@ -118,9 +118,6 @@ const props = defineProps({
     list: Boolean
 })
 
-const listView = computed(() => {
-  return store.q && !props.single &&  (route.name == 'search' ? settings.listView : settings.simpleListView && route.name == 'word')
-})
 
 const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
                                                                                         {
