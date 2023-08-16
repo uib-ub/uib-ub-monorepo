@@ -35,16 +35,10 @@
   </script>
   
   <style scoped>
-  
-  
   form {
       @apply md:mx-10;
     }
-  
   .welcome form {
     @apply md:mx-0;
   }
-  
-    
-  
   </style>
