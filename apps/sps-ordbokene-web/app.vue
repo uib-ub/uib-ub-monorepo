@@ -6,7 +6,7 @@
 <NuxtLink v-else to="/"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('home')}}</NuxtLink>
 </div>
     <NuxtPage @click="menu_expanded=false"
-              v-bind:class="{'welcome': !store.q && route.name == 'welcome'}"/>
+              v-bind:class="{'welcome': route.name == 'welcome'}"/>
 <Footer/>
 </template>
 
