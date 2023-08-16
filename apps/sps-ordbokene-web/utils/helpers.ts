@@ -2,6 +2,10 @@ export const specialSymbols = (q) => {
     return /[?_*%|]/.test(q)
   }
 
+  export const advancedSpecialSymbols = (q) => {
+    return /[?_*%]/.test(q) || q.split("|").length > 2
+  }
+
 
 
 export const filterSuggestions = (items, q, stop) => {

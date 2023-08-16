@@ -15,7 +15,10 @@
             </NuxtErrorBoundary>
           </component>
         </component>
-          <client-only><Suggest v-if="store.q" :dict="dict"/></client-only>
+          <client-only v-if="store.q && !specialSymbols(store.q)">
+            <Suggest :dict="dict"/>
+          </client-only>
+         
       </section>
   </div>
   </div>

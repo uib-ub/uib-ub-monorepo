@@ -12,7 +12,7 @@ definePageMeta({
       function (to, from) { // Sync store with routing
       const store = useStore()
         if (to.query.q) {
-          if (specialSymbols(to.query.q)) {
+          if (advancedSpecialSymbols(to.query.q)) {
             return `/search?q=${to.query.q}&dict=${to.params.dict}&scope=${store.scope}`
           }
           return `/${to.params.dict}/${to.query.q}`

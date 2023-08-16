@@ -22,12 +22,19 @@ async function fetchAutocomplete(q) {
       return
     }
 
-    const pattern = specialSymbols(q)
+    const pattern = advancedSpecialSymbols(q)
+    const hasOr = q.includes("|")
     const time = Date.now()
     if (pattern && (!store.autocomplete[0] || store.autocomplete[0].time < time)) {
       store.autocomplete = [{q, time, type: "pattern"}]
+      store.show_autocomplete = true;
+    }
+    else if (hasOr) {
+      store.autocomplete = []
+      store.show_autocomplete = false;
     }
     
+       
 
 
     // Intercept queries containing too many words or characters
@@ -45,7 +52,7 @@ async function fetchAutocomplete(q) {
       }
     }
 
-    if (!pattern) {
+    if (!pattern && !hasOr) {
 
       let response = ref([])
       let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name != 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
