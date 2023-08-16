@@ -3,11 +3,11 @@
     <div class="ord-container p-3 pt-10 md:pt-4">
       <div class="flex flex-col xl:flex-row items-center xl:items-start">
         <div class="flex flex-col md:flex-row m-1 lg:mr-4 items-center">
-          <img class="w-[156px] h-[28px] m-1" src="../assets/images/Sprakradet_logo_neg.png" alt="Språkrådet, logo" />
-        <img class="w-[80px] h-[80px]mx-4 my-4 lg:my-0 " src="../assets/images/uib-logo.svg" alt="Universitetet i Bergen, logo" />
+          <img class="w-[156px] h-[28px] m-1 mr-6" src="../assets/images/Sprakradet_logo_neg.png" alt="Språkrådet, logo" />
+          <img class="w-[80px] h-[80px]mx-4 my-4 lg:my-0 " src="../assets/images/uib-logo.svg" alt="Universitetet i Bergen, logo" />
         </div>
         <span></span>
-        <div class="p-4 md:px-16 text-center xl:text-left">
+        <div class="p-4 md:px-16 text-center xl:text-left xl:ml-2.5 ml-2 mr-2">
           <em>Bokmålsordboka</em>{{$t('and')}}<em>Nynorskordboka</em>{{$t('footer_description')}}
         </div>
       </div>
