@@ -53,15 +53,7 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                                     }
                                     
                                 }
-                                else if (inflect && inflect[0][0] != store.q) {
-                                    if (store.dict=='bm,nn' && props.articles_meta[props.dict].total == 0 && props.articles_meta.bm.total + props.articles_meta.nn.total > 0) {
-                                        translated.value = inflect[0][0]
-                                    }
-                                    if (!suggest.value.includes(inflect[0][0]) && !store.lemmas[props.dict].has(inflect[0][0])) {
-                                        suggest.value.unshift(inflect[0])
-                                    }
 
-                                }
                             }
                         })
                     }
