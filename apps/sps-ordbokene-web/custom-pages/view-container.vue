@@ -14,7 +14,6 @@
   <NuxtErrorBoundary @error="content_error">
     <NuxtPage/>
   </NuxtErrorBoundary>
-  <Suggest v-if="false && store.q"/>
     </div>
   </section>
 
@@ -28,9 +27,10 @@ const route = useRoute()
 
 
 watch(() => route.query.q, () => {
-  console.log("NAVIGATING")
   if (route.query.q) {
     store.q = route.query.q
+    store.lemmas.bm = new Set()
+    store.lemmas.nn = new Set()
     navigateTo(store.dict + "/" + route.query.q)
   }
 })
@@ -43,6 +43,8 @@ definePageMeta({
         let query = to.params.q || to.query.q
         if (query) {
           store.q = query
+          store.lemmas.bm = new Set()
+          store.lemmas.nn = new Set()
           store.input = to.query.orig || query
           store.searchUrl = to.fullPath
         }

@@ -16,7 +16,7 @@
           </component>
         </component>
           <client-only v-if="store.q && !specialSymbols(store.q)">
-            <Suggest :dict="dict"/>
+            <Suggest :dict="dict" :articles_meta="articles.meta"/>
           </client-only>
          
       </section>

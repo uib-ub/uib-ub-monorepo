@@ -20,6 +20,9 @@
           <span><span v-if="(articles.meta.bm.total > 1)" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
           <span v-else-if="articles.meta.bm.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
           <div v-if="listView" class="inline-block lg:hidden"><h2>Bokmålsordboka</h2></div>
+        <client-only>
+          <MinimalSuggest v-if="articles.meta.bm.total == 0" dict="bm"/>
+        </client-only>
         <component :is="listView ? 'ol' : 'div'" class="article-column">
           <component v-for="(article_id, idx) in bm_articles" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'bm')">
@@ -33,6 +36,9 @@
           <span><span v-if="articles.meta.nn.total>1" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
           <span v-else-if="articles.meta.nn.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
           <div  v-if="listView" class="inline-block lg:hidden"><h2>Nynorskordboka</h2></div>
+        <client-only>
+          <MinimalSuggest v-if="articles.meta.nn.total == 0" dict="nn"/>
+        </client-only>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
           <component v-for="(article_id, idx) in nn_articles" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'nn')">
@@ -49,6 +55,9 @@
         <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span v-if="(articles.meta.bm.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
         </div>
+        <client-only>
+          <MinimalSuggest v-if="articles.meta.bm.total == 0" dict="bm"/>
+        </client-only>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
           <component v-for="(article_id, idx) in bm_articles" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'bm')">
@@ -61,6 +70,9 @@
         <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span v-if="(articles.meta.nn.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
         </div>
+        <client-only>
+          <MinimalSuggest v-if="articles.meta.nn.total == 0" dict="nn"/>
+        </client-only>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
           <component v-for="(article_id, idx) in nn_articles" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'nn')">
@@ -87,13 +99,7 @@
   <div v-if="error" aria-live="">
     ERROR: {{error}}
   </div> 
-  <client-only>
-    <div class="my-10">
-  <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar"><h2>{{$t('notifications.similar')}}</h2></SuggestResults>
-    </div>
-  </client-only>
-
-
+  
 </div>
 
 
@@ -108,7 +114,6 @@ const settings = useSettingsStore()
 const store = useStore()
 const route = useRoute()
 
-const suggestions = ref({similar: []})
 const error_message = ref()
 const per_page = 10
 const page = ref(parseInt(route.query.page || "1"))
@@ -126,24 +131,11 @@ const listView = computed(() => {
 })
 
 
-const get_suggestions = async () => {
-  if (process.client && !specialSymbols(store.q)) {
-  const query = `${store.endpoint}api/suggest?&q=${route.query.q}&dict=${route.query.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=es`
-  const response = await $fetch(query)                                
-  suggestions.value = filterSuggestions(response, store.q, store.q)
-  }
-  else {
-    suggestions.value = {similar: []}
-  } 
-}
 const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
           baseURL: store.endpoint,
           onResponseError(conf) {
             console.log("RESPONSE ERROR")
-          },
-          onResponse({ request, options, response }) {
-            get_suggestions()
-          },
+          }
         })
 
 
@@ -166,10 +158,6 @@ const slice_results = () => {
 }
 
 
-onMounted(() => {
-    get_suggestions()    
-})
-
   watch(() => route.query.page, () => {
   page.value = route.query.page || 1
   slice_results()
@@ -181,7 +169,6 @@ watch(articles, (newArticles) => {
     let total_nn = newArticles.meta.nn ? newArticles.meta.nn.total : 0
     console.log(Math.max(total_bm, total_nn))
     pages.value = Math.ceil(Math.max(total_bm, total_nn) / per_page)
-    if (total_bm + total_nn == 0) get_suggestions()
     slice_results()
   }
 }, {

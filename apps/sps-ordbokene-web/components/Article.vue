@@ -131,6 +131,21 @@ const { pending, data, error } = await useAsyncData('article_'+props.dict+props.
                                                                                             }
                                                                                         }))
 
+
+  if (route.name != 'welcome' && route.name != 'search')
+  data.value.lemmas.forEach(lemma => {
+      store.lemmas[props.dict].add(lemma.lemma)
+      lemma.paradigm_info.forEach(paradigm => {
+        paradigm.inflection.forEach(inflection => {
+          if (inflection.tags[0] == "Inf") {
+            store.lemmas[props.dict].add(inflection.word_form)
+          }
+        })
+
+      })
+
+})
+
 const body_error = (error) => {
     console.log("BODY_ERROR", error)
 }

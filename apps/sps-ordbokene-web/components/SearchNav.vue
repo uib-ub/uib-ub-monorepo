@@ -39,6 +39,8 @@ const props = defineProps({
 
 const dict_click = (dict) => {
       store.dict = dict
+      store.lemmas.bm = new Set()
+      store.lemmas.nn = new Set()
       if (store.q != store.input) {
         store.input = route.query.orig || store.q
       }
