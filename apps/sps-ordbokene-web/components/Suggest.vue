@@ -53,7 +53,12 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                                     }
                                     
                                 }
+                                else if (inflect && inflect[0][0] != store.q) {
+                                    if (!suggest.value.includes(inflect[0][0]) && !store.lemmas[props.dict].has(inflect[0][0]) && !inflect.value.includes(inflect[0])) {
+                                        suggest.value.unshift(inflect[0])
+                                    }
 
+                                }
                             }
                         })
                     }
