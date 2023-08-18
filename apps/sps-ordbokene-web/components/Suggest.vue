@@ -65,7 +65,7 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                     }).catch(error => { console.log("Apertium not available", error)}),
                     $fetch(suggestQuery).then(response => {
                         if (response.a) {
-                            store.suggest = response.a
+                            store.suggest = response.a // reuse the response in the redirect notification
                             if (response.a.inflect) {
                                 response.a.inflect.forEach(item => {
                                     if (!suggest.value.includes(item) &&
