@@ -1,8 +1,21 @@
 <template>
   <component :is="(level==1 || level == 9) ? 'div' : 'li'" :class="['definition', 'level'+level, {hilite: highlighted}]" :id="level != 9 && store.view == 'article' ? 'def' + body.id : ''"><component :is="level <= 2 ? 'div' : 'span'">
-    <span class="explanations" v-if="explanations.length">
-  <DefElement :body="explanation" :dict="dict" :has_article_ref=has_article_ref(explanation) v-for="(explanation, index) in explanations" :semicolon="might_need_semicolon(explanations, index)" :key="index" v-on:link-click="link_click" :content_locale="content_locale" :welcome="welcome"/>
-</span>
+  <span class="explanations" v-if="explanations.length">
+    <!-- i-808 -->
+    <div v-for="(explanation, index) in explanations" :key="index">
+      <DefElement
+        :body="explanation"
+        :dict="dict"
+        :has_article_ref="has_article_ref(explanation)"
+        :semicolon="might_need_semicolon(explanations, index)"
+        v-on:link-click="link_click"
+        :content_locale="content_locale"
+        :welcome="welcome"
+      />
+      <br v-if="might_need_semicolon(explanations, index)" />
+    </div>
+    <!-- i/s -->
+  </span>
 <div v-if="examples.length && !welcome">
   <h5 v-if="level <3 && !body.sub_definition">{{$t('article.headings.examples', 1, { locale: content_locale})}}</h5>
   <ul class="examples">
