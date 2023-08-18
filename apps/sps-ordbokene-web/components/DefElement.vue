@@ -1,21 +1,21 @@
 <template>
-  <component :is="tag" :class="body.type_">
- <component :is="item.tag || 'span'" v-for="(item, index) in assemble_text"
+  <component :is="tag" :class="body.type_"><!--
+ --><component :is="item.tag || 'span'" v-for="(item, index) in assemble_text"
           :class="item.type + (item.tag == 'em' ? ' notranslate' : '')"
           :key="index"
-           v-bind="item.props">
-          {{item.html}}
-       <NuxtLink class="article_ref notranslate" v-if="!welcome && item.type == 'article_ref'" :to="item.ref" v-on:click="link_click" :key="index">
-       <DefElement tag='span' v-if="item.link_text.type_" :dict="dict" :key="item.id+'_sub'" :body='item.link_text' :content_locale="content_locale"/><span v-else>{{item.link_text}}</span>
-       <span class="homograph" v-if="item.lemmas[0].hgno" :aria-label="`${dict=='bm'? 'Betydning': 'Tyding'} ${item.lemmas[0].hgno}`" :title="`${dict=='bm'? 'Betydning': 'Tyding'} ${item.lemmas[0].hgno}`" :key="index">
-         ({{roman_hgno(item.lemmas[0])}}{{item.definition_order ? '': ')'}}</span>
+           v-bind="item.props"><!--
+          -->{{item.html}}<!--
+       --><NuxtLink class="article_ref notranslate" v-if="!welcome && item.type == 'article_ref'" :to="item.ref" v-on:click="link_click" :key="index"><!--
+       --><DefElement tag='span' v-if="item.link_text.type_" :dict="dict" :key="item.id+'_sub'" :body='item.link_text' :content_locale="content_locale"/><span v-else>{{item.link_text}}</span><!--
+       --><span class="homograph" v-if="item.lemmas[0].hgno" :aria-label="`${dict=='bm'? 'Betydning': 'Tyding'} ${item.lemmas[0].hgno}`" :title="`${dict=='bm'? 'Betydning': 'Tyding'} ${item.lemmas[0].hgno}`" :key="index"><!--
+        --> ({{roman_hgno(item.lemmas[0])}}{{item.definition_order ? '': ')'}}</span>
         <span class="def_order" v-if="item.definition_order" :aria-label="'definisjon '+item.definition_order">{{item.lemmas[0].hgno ? ', ': ' ('}}{{item.definition_order}})</span>
       </NuxtLink><span v-else>{{item.link_text}}</span>
-       
-       <span class="numerator" v-if="item.type == 'fraction'">{{item.num}}</span>
-       {{item.type == 'fraction' ? '⁄' : ''}}
-       <span class="denominator" v-if="item.type == 'fraction'">{{item.denom}}</span>
- </component><span v-if="semicolon && no_preceeding_punctuation">; </span><span v-if="comma && no_preceeding_punctuation">, </span></component>
+       <!--
+       --><span class="numerator" v-if="item.type == 'fraction'">{{item.num}}</span><!--
+       -->{{item.type == 'fraction' ? '⁄' : ''}}<!--
+       --><span class="denominator" v-if="item.type == 'fraction'">{{item.denom}}</span><!--
+ --></component><span v-if="semicolon && no_preceeding_punctuation">; </span><span v-if="comma && no_preceeding_punctuation">, </span></component>
 </template>
 
 
@@ -73,11 +73,11 @@ const unparsed = computed(() => {
                     }
                 } 
             else if (item.type_ == 'pronunciation') return {type: item.type_, html: item.string}
-            else if (item.type_ == 'pronunciation_guide') return {type: item.type_, body: item, html: '', tag: 'DefElement', props: {body: item, tag: 'em', dict: props.dict}}
+            else if (item.type_ == 'pronunciation_guide') return {type: item.type_, body: item, html: '', tag: 'DefElement', props: {body: item, tag: 'i', dict: props.dict}}
             else if (item.type_ == 'superscript') return {type: item.type_, html: item.text, tag: 'sup'}
             else if (item.type_ == 'subscript') return {type: item.type_, html: item.text, tag: 'sub'}
-            else if (item.type_ == 'quote_inset') return {type: item.type_, body: item, html: '', tag: 'DefElement', props: {body: item, tag: 'em', dict: props.dict}}
-            else if (item.type_ == 'fraction') return helpers.fraction(item.numerator, item.denominator)
+            else if (item.type_ == 'quote_inset') return {type: item.type_, body: item, html: '', tag: 'DefElement', props: {body: item, tag: 'i', dict: props.dict}}
+            else if (item.type_ == 'fraction') return fraction(item.numerator, item.denominator)
             else if (item.id) return {type: item.type_, html:  ({"nn":store.concepts_nn, "bm":store.concepts_bm}[props.dict][item.id] || {})['expansion'] || item.id}
             else return {type: item.type_ || 'plain', html: item}
             }

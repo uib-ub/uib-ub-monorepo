@@ -71,7 +71,7 @@
           </section>
           <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
               <h4>{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h4>
-              <DefElement v-for="(element, index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
+              <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section class="definitions" v-if="has_content">
