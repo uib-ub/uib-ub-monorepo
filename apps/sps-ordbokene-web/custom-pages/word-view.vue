@@ -1,8 +1,16 @@
 <template>
     <div v-bind:class="{'list': listView}">     
-    <Spinner v-if="pending"/>
+    <Spinner v-if="pending"/>    
     <div ref="results" v-if="!pending && !error && articles && articles.meta" >
-      <client-only><div class ="callout" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong></div></client-only>
+      <client-only><div class ="callout" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
+      
+      <div v-if="additionalSuggest">
+          <span v-for="(item, idx) in additionalSuggest" :key="idx">
+            Se også: <NuxtLink noPrefetch class="suggest-link p-3 md:py-0 w-full" :to="item[0]"><Icon name="bi:search" class="mr-3 mb-1"/><span class="link-content">{{item[0]}}</span></NuxtLink>
+        </span>
+      </div>
+        </div>
+      </client-only>
     <div v-bind:class="{'gap-3 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
       <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-label="$t('dicts.'+dict)">
         <div class="py-2 px-1"><h2 class="lg:inline-block">{{$t('dicts.'+dict)}}</h2>
@@ -37,6 +45,7 @@
 import { useStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 
 const settings = useSettingsStore()
 const store = useStore()
@@ -66,6 +75,18 @@ const title = computed(()=> {
 const dicts = computed(()=> {
   let currentDict = route.params.dict || route.query.dict
   return currentDict == 'bm,nn' ? ["bm", "nn"] : [currentDict]
+})
+
+
+const additionalSuggest = computed(() => {
+  if (route.query.orig && store.suggest.inflect) {
+    return store.suggest.inflect.filter(item => item[0] != store.q)
+
+  }
+  else {
+    return []
+  }
+  
 })
 
 
