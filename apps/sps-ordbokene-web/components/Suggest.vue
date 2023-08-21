@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 
-const suggestQuery = `${store.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=2&dform=int&meta=n&include=eis`
+const suggestQuery = `${store.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eis`
 const apertiumQuery = `https://apertium.org/apy/translate?langpair=${store.dict == 'bm,nn' ? {bm: 'nno|nob', nn: 'nob|nno'}[props.dict] : {bm: 'nno|nob', nn: 'nob|nno'}[props.dict]}&q=${store.q}`
 
 const translated = ref()
@@ -64,6 +64,7 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                     }
                     }).catch(error => { console.log("Apertium not available", error)}),
                     $fetch(suggestQuery).then(response => {
+                        console.log("RESPONSEW", response.a)
                         if (response.a) {
                             store.suggest = response.a // reuse the response in the redirect notification
                             if (response.a.inflect) {
