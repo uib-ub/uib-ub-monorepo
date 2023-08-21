@@ -50,8 +50,22 @@
 
         <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict"/>
       
+      <div v-if="data.lemmas[0].split_inf" class="mt-2 mb-3">
+        <div class="flex gap-2 align-middle">{{$t('split_inf.title')}}: -a
+        <button :aria-expanded="split_inf_expanded" aria-controls="split-inf-explanation" @click="split_inf_expanded = !split_inf_expanded" class="rounded leading-none !p-0 !text-primary hover:bg-primary-lighten bg-primary  border-primary-lighten">
+          <Icon :name="split_inf_expanded? 'bi:dash' : 'bi:plus'" class="text-white !m-0 !p-0" size="1.5em"/>
+        </button>
+        </div>
+        
+        <div class="mb-4 my-2" id="split-inf-explanation" v-if="split_inf_expanded">
+          {{$t('split_inf.content[0]', content_locale)}} <em>-a</em> {{$t('split_inf.content[1]', content_locale)}}
+          <a target="_blank" 
+             href="https://www.sprakradet.no/svardatabase/sporsmal-og-svar/kloyvd-infinitiv-/">{{$t('split_inf.content[2]', content_locale)}}</a>
+        </div>
+        </div>
+
       <button v-if="!settings.inflectionExpanded && inflected && !welcome" class="btn btn-primary my-1 !pr-2" @click="inflection_expanded = !inflection_expanded" type="button" :aria-expanded="inflection_expanded" :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
-             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:plus" class="text-primary ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:dash" class="text-primary ml-4" size="1.5em"/></span>
+             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:plus" class="ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:dash" class="ml-4" size="1.5em"/></span>
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
             <div class="inflection-container p-2">
@@ -107,6 +121,7 @@ const { t } = useI18n()
 const i18n = useI18n()
 const store = useStore()
 const inflection_expanded = ref(false)
+const split_inf_expanded = ref(false)
 const settings = useSettingsStore()
 const route = useRoute()
 
