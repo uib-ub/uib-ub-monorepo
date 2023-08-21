@@ -21,12 +21,13 @@
     "clsx": "^1.2.1",
     "framer-motion": "^10.12.0r",
     "next": "^13.3.0",
-    "nextra": "^2.4.0",
-    "nextra-theme-docs": "^2.4.0",
+    "nextra": "^2.11.0",
+    "nextra-theme-docs": "^2.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remark-mermaid-nextra": "^0.0.4",
-    "tailwind-ui": "*"
+    "tailwind-ui": "*",
+    "ui-react": "^0.0.0"
   },
   "devDependencies": {
     "@napi-rs/simple-git": "^0.1.8",
