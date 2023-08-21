@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-container px-2 pt-8">
+  <div class="nav-container px-2">
     <nav :aria-label="$t('label.dict_nav')" class="md:flex md:justify-center !my-2">
   <ul id="searchNavContent b-2" class="flex gap-2 md:gap-3 ">
   <li>

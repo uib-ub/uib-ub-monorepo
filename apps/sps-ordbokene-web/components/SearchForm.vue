@@ -36,7 +36,7 @@
   
   <style scoped>
   form {
-      @apply md:mx-10;
+      @apply md:mx-10 mx-1;
     }
   .welcome form {
     @apply md:mx-0;

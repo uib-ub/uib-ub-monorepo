@@ -29,7 +29,7 @@
 
   </NuxtLink>
 </div>
-  <div class="article lg:pt-1 m-4" v-else-if="!error">
+  <div class="article lg:pt-1 m-1 lg:m-4" v-else-if="!error">
       <div v-if="pending" class="skeleton-container">
           <div class="skeleton mt-4 skeleton-heading"/>
       <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
@@ -139,7 +139,7 @@ const inflection_error = (error) => {
 }
 
 const content_locale = computed(() => {
-  return i18n.locale == 'nn' ? 'nno' : {eng: 'eng'}[props.dict]
+  return i18n.locale.value == 'eng' ? 'eng' : {bm: 'nob', nn: 'nno'}[props.dict]
 })
 
 
@@ -443,7 +443,7 @@ padding-left: 0px;
 }
 
 ul li.definition {
-list-style: disc;
+list-style:disc;
 }
 
 

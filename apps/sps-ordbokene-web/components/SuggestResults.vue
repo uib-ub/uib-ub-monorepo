@@ -3,7 +3,7 @@
         <h2><slot/></h2>
         <ul class="nav nav-pills flex-column md:flex md:flex-wrap md:gap-8 pt-4 md:py-8">
             <li class="nav-item flex" v-for="(item, idx) in suggestions" :key="idx">
-                <NuxtLink class="suggest-link py-3 my-2 md:py-0 px-3 shadow-lg rounded" :to="suggest_link(item[0])"><Icon name="bi:search" class="mr-3 mb-1"/><span class="link-content">{{item[0]}}</span></NuxtLink>
+                <NuxtLink class="suggest-link py-3 md:py-0 w-full" :to="suggest_link(item[0])"><Icon name="bi:search" class="mr-3 mb-1"/><span class="link-content">{{item[0]}}</span></NuxtLink>
             </li>
         </ul>
     </div>
@@ -40,20 +40,22 @@
     <style scoped>
     
     a {
-        @apply text-lg tracking-widest border border-primary-lighten;
+        font-size: 1.17rem;
+        letter-spacing: .1rem;
+        border: none;
+        @apply md:shadow-md md:p-2 md:rounded;
     }
     
     .suggest-link:hover .link-content {
-        /* border: solid 2px var(--link-decoration); */
+        border-bottom: solid 2px var(--link-decoration);
     }
     
     li:not(:last-child) {
-        /* border: solid 1px theme('colors.gray.300') */
+        border-bottom: solid 1px theme('colors.gray.300')
     
     
     }
     
-
     @media screen(md) {
         li {
             border: none !important; 
@@ -62,4 +64,3 @@
     
     
     </style>
-    

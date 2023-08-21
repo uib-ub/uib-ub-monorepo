@@ -15,7 +15,10 @@
        --><span class="numerator" v-if="item.type == 'fraction'">{{item.num}}</span><!--
        -->{{item.type == 'fraction' ? '⁄' : ''}}<!--
        --><span class="denominator" v-if="item.type == 'fraction'">{{item.denom}}</span><!--
- --></component><span v-if="semicolon && no_preceeding_punctuation">; </span><span v-if="comma && no_preceeding_punctuation">, </span></component>
+ --></component>
+ <span v-if="semicolon && no_preceeding_punctuation">; </span>
+ <span v-if="comma && no_preceeding_punctuation">, </span>
+ </component>
 </template>
 
 
