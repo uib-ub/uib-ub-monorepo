@@ -170,7 +170,7 @@ const inflection_error = (error) => {
 }
 
 const content_locale = computed(() => {
-    return i18n.locale == 'eng' ? 'eng' : {bm: 'nob', nn: 'nno'}[props.dict]
+    return i18n.locale.value == 'eng' ? 'eng' : {bm: 'nob', nn: 'nno'}[props.dict]
 })
 
 
