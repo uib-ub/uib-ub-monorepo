@@ -19,7 +19,8 @@ const { data, pending } = useFetch(query, {key: query,
                                     transform: response => {
                                         console.log("RESPONSE", response)
                                         if (response.a && response.a.similar) {
-                                            return response.a.similar
+                                            return response.a.similar.filter(item => item[0] != "-"
+                                                                                    && item[0].slice(-1) != '-' )
                                         }
                                         else {
                                             return []
