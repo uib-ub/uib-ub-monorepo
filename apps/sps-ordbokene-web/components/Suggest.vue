@@ -64,7 +64,6 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                     }
                     }).catch(error => { console.log("Apertium not available", error)}),
                     $fetch(suggestQuery).then(response => {
-                        console.log("RESPONSEW", response.a)
                         if (response.a) {
                             store.suggest = response.a // reuse the response in the redirect notification
                             if (response.a.inflect) {
@@ -88,7 +87,6 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                                         && !suggest.value.includes(item)
                                         && (item[0].length <= store.q.length
                                             || (item[0].slice(0, store.q.length) !=store.q && item[0].slice(0, store.q.length) != store.q && item[0] != "å " + store.q && item[0] != "å " + store.q))) {
-                                                console.log("ADD EXACT", item)
                                                 suggest.value.unshift(item)
                                         }
 

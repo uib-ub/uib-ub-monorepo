@@ -17,7 +17,6 @@ const props = defineProps({
 const query = `${store.endpoint}api/suggest?&q=${route.query.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
 const { data, pending } = useFetch(query, {key: query,
                                     transform: response => {
-                                        console.log("RESPONSE", response)
                                         if (response.a && response.a.similar) {
                                             return response.a.similar.filter(item => item[0] != "-"
                                                                                     && item[0].slice(-1) != '-' )
