@@ -5,6 +5,7 @@ import { NavLink } from '@/app/[locale]/_components/app-bar/nav-link';
 import LocaleSwitch from '@/app/[locale]/_components/app-bar/locale-switch';
 import { ThemeSwitch } from '@/app/[locale]/_components/app-bar/theme-switch';
 import { UibUbNo } from 'assets';
+import Link from 'next-intl/link';
 
 export default function AppBar({ locale }: { locale: string }) {
   return (
@@ -27,6 +28,7 @@ const Navigation = ({ locale }: { locale: string }) => (
           </NavLink>
         </NavigationMenu.Item>
       ))}
+      <Link href={`/menu`}>Menu</Link>
       <LocaleSwitch locale={locale} />
       <ThemeSwitch />
     </NavigationMenu.List>
