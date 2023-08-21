@@ -339,10 +339,6 @@ const parse_subitems =  (explanation, text) => {
 
               else if (subitem.id) {
                 let expandable = store['concepts_'+props.dict][explanation.items[linkIndex].id]
-                if (!expandable) {
-                    console.log(subitem)
-                    console.log(store.concepts_bm)
-                }
                 new_string += expandable ? expandable.expansion : " [...] "
 
               }

@@ -33,7 +33,6 @@ const props = defineProps({
     id: String
 })
 
-console.log(route.hash, props.id)
 
 const expanded = ref(false) //route.hash == '#'+props.id
 

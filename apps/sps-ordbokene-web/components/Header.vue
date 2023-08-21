@@ -67,7 +67,6 @@ const menu_expanded = ref(false)
 const locale = useCookie('currentLocale')
 
 const escape_menu = (event) => {
-  console.log(event.key)
   if (event.key == "Escape" || event.key == "Esc") {
     menu_expanded.value = false
   }
