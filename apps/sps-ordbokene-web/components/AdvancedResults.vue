@@ -2,7 +2,7 @@
     <div v-bind:class="{'list': listView}">     
     <Spinner v-if="pending"/>
 
-    <div ref="results"  v-if="store.view != 'suggest' && !pending && !error && articles && articles.meta" >
+    <div ref="results"  v-if="!pending && !error && articles && articles.meta" >
     <div tabindex="0" aria-live="polite" role="status" ref="announcement" class="announcement lg:sr-only pb-2 pl-1 text-gray-900 text-md" v-bind:class="{'sr-only': route.name != 'search'}">
     <span v-if="articles.meta.bm"><div></div>{{$t('notifications.results', {count: articles.meta.bm.total})+$t("in")+$t('dicts_inline.bm')}}</span>
     <span v-if="articles.meta.nn && articles.meta.bm"> | </span>
@@ -127,7 +127,7 @@ const bm_articles = ref([])
 const nn_articles = ref([])
 
 const listView = computed(() => {
-  return store.q && store.view != "article" &&  settings.listView && route.name == 'search'
+  return store.q && route.name != "article" &&  settings.listView && route.name == 'search'
 })
 
 
