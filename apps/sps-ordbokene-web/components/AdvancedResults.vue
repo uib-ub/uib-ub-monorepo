@@ -144,16 +144,13 @@ const slice_results = () => {
   offset.value = (page.value-1) * per_page
   if (articles.value.articles.bm) {
     let end_bm = offset.value < articles.value.articles.bm.length ? offset.value + per_page : articles.value.articles.bm.length
-    console.log(offset.value, end_bm)
     bm_articles.value =  articles.value.articles.bm.slice(offset.value, end_bm)
   }
   if (articles.value.articles.nn) {
     let end_nn = offset.value < articles.value.articles.nn.length ? offset.value + per_page : articles.value.articles.nn.length
-    console.log(offset.value, end_nn)
     nn_articles.value =  articles.value.articles.nn.slice(offset.value, end_nn)
   }
 
-  console.log(nn_articles.value)
 
 }
 
@@ -167,7 +164,6 @@ watch(articles, (newArticles) => {
   if (newArticles) {
     let total_bm = newArticles.meta.bm ? newArticles.meta.bm.total : 0
     let total_nn = newArticles.meta.nn ? newArticles.meta.nn.total : 0
-    console.log(Math.max(total_bm, total_nn))
     pages.value = Math.ceil(Math.max(total_bm, total_nn) / per_page)
     slice_results()
   }
