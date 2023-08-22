@@ -119,15 +119,15 @@ export function getRelationData(
 }
 
 /**
- * Create nested dictionary with related ressources.
+ * Create nested dictionary with related ressources of starting entry.
  *
- * @param data - List of dictionaries with concept data
+ * @param data - Nested dictionaries with concept data
  * @param startId - key for starting point in dict
  * @param relation - relation to follow
  * @param newKey - Key to nest related entries under
  */
 export function parseRelationsRecursively(
-  data: any,
+  data: Object,
   startId: string,
   relation: string,
   newKey: string
@@ -142,7 +142,7 @@ export function parseRelationsRecursively(
       }))
     );
   } else {
-    return undefined;
+    return null;
   }
 }
 
@@ -150,9 +150,9 @@ export function deleteValueFromList(
   arr: Array<string | number>,
   value: string | number
 ): boolean {
-  const index = toValue(arr).indexOf(value);
+  const index = arr.indexOf(value);
   if (index > -1) {
-    toValue(arr).splice(index, 1);
+    arr.splice(index, 1);
   }
   return index > -1;
 }
