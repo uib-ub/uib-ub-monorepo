@@ -145,3 +145,14 @@ export function parseRelationsRecursively(
     return undefined;
   }
 }
+
+export function deleteValueFromList(
+  arr: Array<string | number>,
+  value: string | number
+): boolean {
+  const index = toValue(arr).indexOf(value);
+  if (index > -1) {
+    toValue(arr).splice(index, 1);
+  }
+  return index > -1;
+}
