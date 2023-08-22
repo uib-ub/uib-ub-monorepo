@@ -109,6 +109,11 @@ padding-left: 0rem;
 background: theme('colors.tertiary.darken1') !important;
 border-radius: 0.25rem;
 }
-
+/* i-814 */
+.sub_definitions {
+  list-style-type: disc;
+  margin-left: 1rem; 
+}
+/* i/s */
 
 </style>
