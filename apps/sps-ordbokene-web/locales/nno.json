@@ -208,8 +208,8 @@
         "cite_title": "Sitere artikkelen",
         "cite_description": ["Ønskjer du å sitere denne artikkelen i ", ", rår vi deg til å gje opp når artikkelen vart henta (lesen), t.d. slik:"],
         "download": "Last ned RIS-fil",
-        "link_copied": "Lenkja er kopiert til utklippstavla",
-        "citation_copied": "Sitatet er kopiert til utklippstavla",
+        "link_copied": "Lenkja er kopiert",
+        "citation_copied": "Sitatet er kopiert",
         "citation": "«{lemma}». I: <em>{dict}.</em> Språkrådet og Universitetet i Bergen. &lt;<a href='{link}'>{link}</a>&gt; (lesen {dd}.{mm}.{yyyy}).",
         "headings": {
             "etymology": "Opphav",

@@ -1,13 +1,12 @@
 <template>
 <client-only>
 <div class="flex justify-around gap-3 mt-3 flex-wrap">
-    <button class="btn btn-borderless" :id="'copy-link-'+article_id" v-if="showLinkCopy" @click="copy_link">
-      <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/> {{$t("article.copy_link", 1, { locale: content_locale})}}
-    <span aria-live="assertive" class="sr-only" v-if="'copy-citation-'+article_id == store.copied">{{$t('article.link_copied')}}</span></button>
-    
-    <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
+  <button class="btn btn-borderless" :id="'copy-link-'+article_id" v-if="showLinkCopy" @click="copy_link">
+    <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>{{ linkCopied ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }}
+  </button>
+  <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
       <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
-    </button>
+  </button>
     <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
       <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
     </button>
@@ -16,8 +15,10 @@
       <h4>{{$t('article.cite_title')}}</h4>
       <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
       <div id="citation" v-html="$t('article.citation', create_citation())" />
-       <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation"><Icon v-if="copycitation" name="bi:file-earmark-plus" class="mb-1 mr-3 text-primary" /><Icon v-else name="bi:file-earmark-check-fill" class="mb-1 mr-3 text-primary" /> {{$t("article.copy")}}</button>
-       <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
+      <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation">
+        <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
+      </button>
+      <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
 
 </div>
 </client-only>
@@ -36,6 +37,8 @@ const props = defineProps({
 })
 
 const cite_expanded = ref(false)
+const linkCopied = ref(false);
+const citationCopied = ref(false);
 
 
 const create_link = () => {
@@ -58,16 +61,17 @@ const shareViaWebShare = () => {
       })
       };
 
-const copy_link = (event) => {
-      let link = create_link()
-      
-        navigator.clipboard.writeText(link).then(() => {
-          console.log("SUCCESS")
-          store.copied = event.target.id
-         }).catch(err => {
-           console.log("ERROR COPYING:",err)
-         })
-    }
+      const copy_link = (event) => {
+  let link = create_link();
+
+  navigator.clipboard.writeText(link).then(() => {
+    console.log("SUCCESS");
+    store.copied = event.target.id;
+    linkCopied.value = true; // Set the linkCopied value to true
+  }).catch(err => {
+    console.log("ERROR COPYING:", err);
+  });
+};
 
 const get_citation_info = () => {
       let date = new Date();
@@ -102,16 +106,12 @@ const download_ris = () => {
 
 const copycitation = ref(true);
 
-const copy_citation=()=>{
-
-          let citation = document.getElementById("citation").textContent;
-          navigator.clipboard.writeText(citation)
-          copycitation.value = !copycitation.value;
-
-          // this.citation_dialog = false
-          // this.what_copied = this.$t("article.citation_copied")
-          // this.copy_popup = true
-          }
+const copy_citation = () => {
+  let citation = document.getElementById("citation").textContent;
+  navigator.clipboard.writeText(citation);
+  copycitation.value = !copycitation.value;
+  citationCopied.value = !citationCopied.value; // Toggle the citationCopied value
+};
 
 
 </script>

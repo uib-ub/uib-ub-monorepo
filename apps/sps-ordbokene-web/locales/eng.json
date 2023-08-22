@@ -205,8 +205,8 @@
     "cite_description": ["If you want to cite this article in the ", " we recommend that you state when the article was retrieved (read), e. g. as follows:"],
     "download": "Download RIS file",
     "copy": "Copy",
-    "link_copied": "Link copied to the clipboard",
-    "citation_copied": "Citation copied to the clipboard",
+    "link_copied": "Link copied",
+    "citation_copied": "Citation copied",
     "citation": "« {lemma} ». In: <em> {dict}. </em> Språkrådet & Universitetet i Bergen. &lt;<a href='{link}'> {link} </a>&gt; ( retrieved {dd}. {mm}. {yyyy}). ",
     "headings": {
       "etymology": "Etymology",
