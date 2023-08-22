@@ -4,7 +4,7 @@
         <AdvancedSearchForm class="ord-container"/>
       </NuxtErrorBoundary>
       <NuxtErrorBoundary @error="content_error">  
-    <AdvancedResults v-if="store.q" class="ord-container"/>
+    <AdvancedResults v-if="store.q" class="ord-container mb-10"/>
       </NuxtErrorBoundary>
 
 
