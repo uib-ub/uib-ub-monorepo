@@ -282,6 +282,9 @@
       }
 
 
+      .tooltip:hover .popover, .tooltip:focus-within .popover {
+        @apply not-sr-only bg-black text-white py-1 px-4 rounded pointer-events-none transition-opacity duration-300 transform absolute transform -translate-x-1/2 -translate-y-7
+      }
 
 
 
