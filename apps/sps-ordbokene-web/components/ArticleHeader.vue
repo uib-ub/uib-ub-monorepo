@@ -35,7 +35,6 @@ const props = defineProps({
     secondary_header_text: String,
     dict: String,
     article_id: Number,
-    title_id: String,
     content_locale: String
 })
 
