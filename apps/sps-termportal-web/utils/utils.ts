@@ -156,3 +156,16 @@ export function deleteValueFromList(
   }
   return index > -1;
 }
+
+export function getAllKeys(obj: Object): string[] {
+  if (obj === null || typeof obj !== "object") {
+    return [];
+  }
+  return Object.keys(obj).reduce((res: string[], key: string) => {
+    const value = obj[key];
+    if (typeof value === "object") {
+      return [key, ...res, ...getAllKeys(value)];
+    }
+    return [key];
+  }, []);
+}

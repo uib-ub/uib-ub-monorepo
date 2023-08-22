@@ -4,6 +4,7 @@ import {
   intersectUnique,
   parseRelationsRecursively,
   deleteValueFromList,
+  getAllKeys,
 } from "../utils";
 
 describe("sum", () => {
@@ -113,5 +114,41 @@ describe("deleteValueFromList", () => {
     const result = deleteValueFromList(arr, value);
     expect(arr).toEqual(["apple", "banana", "cherry"]);
     expect(result).toBe(false);
+  });
+});
+
+describe("getAllKeys", () => {
+  test("should return an array of all keys in the object and its nested objects", () => {
+    const obj = {
+      a: 1,
+      b: {
+        c: 2,
+        d: {
+          e: 3,
+        },
+      },
+      f: {
+        g: {
+          h: 4,
+        },
+      },
+    };
+
+    const result = getAllKeys(obj);
+    expect(result).toEqual(["f", "b", "a", "d", "c", "e", "g", "h"]);
+  });
+
+  test("should return an empty array if the input is not an object", () => {
+    const obj = "not an object";
+
+    const result = getAllKeys(obj);
+    expect(result).toEqual([]);
+  });
+
+  test("should return an empty array if the input object is null", () => {
+    const obj = null;
+
+    const result = getAllKeys(obj);
+    expect(result).toEqual([]);
   });
 });
