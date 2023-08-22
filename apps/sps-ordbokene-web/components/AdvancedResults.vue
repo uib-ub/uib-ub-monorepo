@@ -1,5 +1,5 @@
 <template>
-    <div v-bind:class="{'list': listView}">     
+    <div v-bind:class="{'list': settings.listView}">     
     <Spinner v-if="pending"/>
 
     <div ref="results"  v-if="!pending && !error && articles && articles.meta" >
@@ -7,7 +7,7 @@
     <span v-if="articles.meta.bm"><div></div>{{$t('notifications.results', {count: articles.meta.bm.total})+$t("in")+$t('dicts_inline.bm')}}</span>
     <span v-if="articles.meta.nn && articles.meta.bm"> | </span>
     <span v-if="articles.meta.nn">{{$t('notifications.results', {count: articles.meta.nn.total})+$t("in")+$t('dicts_inline.nn')}}</span>
-    <div class="sr-only" v-if="listView"> Søkeresultatene ligger i en liste med lenker du kan nå med tabulatortasten.</div>
+    <div class="sr-only" v-if="settings.listView"> Søkeresultatene ligger i en liste med lenker du kan nå med tabulatortasten.</div>
     <div class="sr-only" v-else> Søkeresultatene ligger nå i et hierarki av overskrifter du ikke kan nå med tabulatortasten.</div>
     
     <div class="hidden snackbar-search">Trykk Shift + 7 for å gå til søkefeltet</div>
@@ -19,14 +19,14 @@
         <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span><span v-if="(articles.meta.bm.total > 1)" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
           <span v-else-if="articles.meta.bm.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
-          <div v-if="listView" class="inline-block lg:hidden"><h2>Bokmålsordboka</h2></div>
+          <div v-if="settings.listView" class="inline-block lg:hidden"><h2>Bokmålsordboka</h2></div>
         <client-only>
           <MinimalSuggest v-if="articles.meta.bm.total == 0" dict="bm"/>
         </client-only>
-        <component :is="listView ? 'ol' : 'div'" class="article-column">
-          <component v-for="(article_id, idx) in bm_articles" :key="article_id" :is="listView ? 'li' : 'div'">
+        <component :is="settings.listView ? 'ol' : 'div'" class="article-column">
+          <component v-for="(article_id, idx) in bm_articles" :key="article_id" :is="settings.listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'bm')">
-              <Article :article_id="article_id" dict="bm" :idx="idx"/>
+              <Article :article_id="article_id" dict="bm" :idx="idx" :list="settings.listView"/>
             </NuxtErrorBoundary>
           </component>
         </component>
@@ -35,14 +35,14 @@
         <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span><span v-if="articles.meta.nn.total>1" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
           <span v-else-if="articles.meta.nn.total == 0" aria-hidden="true" class="result-count">  | {{$t('notifications.no_results')}}</span></span></div>
-          <div  v-if="listView" class="inline-block lg:hidden"><h2>Nynorskordboka</h2></div>
+          <div  v-if="settings.listView" class="inline-block lg:hidden"><h2>Nynorskordboka</h2></div>
         <client-only>
           <MinimalSuggest v-if="articles.meta.nn.total == 0" dict="nn"/>
         </client-only>
-        <component class="article-column" :is="listView ? 'ol' : 'div'">
-          <component v-for="(article_id, idx) in nn_articles" :key="article_id" :is="listView ? 'li' : 'div'">
+        <component class="article-column" :is="settings.listView ? 'ol' : 'div'">
+          <component v-for="(article_id, idx) in nn_articles" :key="article_id" :is="settings.listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'nn')">
-              <Article :article_id="article_id" dict="nn" :idx="idx"/>
+              <Article :article_id="article_id" dict="nn" :idx="idx" :list="settings.listView"/>
             </NuxtErrorBoundary>
           </component>
         </component>
@@ -58,10 +58,10 @@
         <client-only>
           <MinimalSuggest v-if="articles.meta.bm.total == 0" dict="bm"/>
         </client-only>
-        <component class="article-column" :is="listView ? 'ol' : 'div'">
-          <component v-for="(article_id, idx) in bm_articles" :key="article_id" :is="listView ? 'li' : 'div'">
+        <component class="article-column" :is="settings.listView ? 'ol' : 'div'">
+          <component v-for="(article_id, idx) in bm_articles" :key="article_id" :is="settings.listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'bm')">
-              <Article :article_id="article_id" dict="bm" :idx="idx"/>
+              <Article :article_id="article_id" dict="bm" :idx="idx" :list="settings.listView"/>
             </NuxtErrorBoundary>
           </component>
         </component>
@@ -73,10 +73,10 @@
         <client-only>
           <MinimalSuggest v-if="articles.meta.nn.total == 0" dict="nn"/>
         </client-only>
-        <component class="article-column" :is="listView ? 'ol' : 'div'">
-          <component v-for="(article_id, idx) in nn_articles" :key="article_id" :is="listView ? 'li' : 'div'">
+        <component class="article-column" :is="settings.listView ? 'ol' : 'div'">
+          <component v-for="(article_id, idx) in nn_articles" :key="article_id" :is="settings.listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, 'nn')">
-              <Article :article_id="article_id" dict="nn" :idx="idx"/>
+              <Article :article_id="article_id" dict="nn" :idx="idx" :list="settings.listView"/>
             </NuxtErrorBoundary>
           </component>
         </component>
@@ -125,10 +125,6 @@ const announcement = useState('announcement')
 
 const bm_articles = ref([])
 const nn_articles = ref([])
-
-const listView = computed(() => {
-  return store.q && route.name != "article" &&  settings.listView && route.name == 'search'
-})
 
 
 const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
