@@ -1,8 +1,31 @@
 import { SearchOptions } from "~~/utils/vars";
 
+function getActivationStatus(data, hierarchy) {
+  const result = [];
+
+  function traverse(entry, hierarchy, parentStatus) {
+    const status = data[entry] ?? parentStatus;
+    if (status) {
+      result.push(entry);
+    }
+    if (hierarchy?.subdomains) {
+      Object.keys(hierarchy.subdomains).forEach((child) => {
+        traverse(child, hierarchy.subdomains[child], status);
+      });
+    }
+  }
+
+  Object.keys(hierarchy).forEach((topdomain) => {
+    traverse(topdomain, hierarchy[topdomain], false);
+  });
+
+  return result;
+}
+
 export default function (situation: string, options?: SearchOptions) {
   const searchInterface = useSearchInterface();
   const searchFilterData = useSearchFilterData();
+  const domainData = useDomainData();
 
   const newOptions: SearchOptions = {
     type: "search",
@@ -13,7 +36,7 @@ export default function (situation: string, options?: SearchOptions) {
     language: [searchInterface.value.language],
     translate: searchInterface.value.translate,
     termbase: [searchInterface.value.termbase],
-    domain: Object.keys(searchInterface.value.domain)[0], // TODO
+    domain: [Object.keys(searchInterface.value.domain)[0]], // TODO domain
     useDomain: searchInterface.value.useDomain,
     // default data
     predicate: searchOptionsInfo.predicate.default,
@@ -24,6 +47,14 @@ export default function (situation: string, options?: SearchOptions) {
 
   if (newOptions.term.length === 0) {
     newOptions.matching = [["all"]];
+  }
+
+  if (newOptions.useDomain) {
+    const domainLst = getActivationStatus(
+      searchInterface.value.domain,
+      domainData.value
+    );
+    console.log(domainLst);
   }
 
   if (situation === "filter" || situation === "further") {
