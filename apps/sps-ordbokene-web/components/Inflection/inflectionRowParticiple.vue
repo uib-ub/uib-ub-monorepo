@@ -26,33 +26,33 @@
     // needed for hiliting
     
     
-    import { inflectedForm, indefArticle, posName
+    import { inflectedForm, indefArticle
            } from './mixins/ordbankUtils.js' 
     
     export default {
         name: 'inflectionRowParticiple',
-        props: ['paradigm','hasPerfPart','language',' locLang','part','lemmaId', 'context'],
+        props: ['paradigm','hasPerfPart','language','part','lemmaId', 'context'],
         data: function () {
             return { rows: [
                 this.hasPerfPart && this.part!=4 ?
                     this.inflForm(['Adj','Masc/Fem'],
                                   this.context ? indefArticle(['Masc/Fem'], this.language) : null,
-                                  this.context ? '+' + this.posName('NOUN') : null,
+                                  this.context ? '+ substantiv' : null,
                                   'PerfPart Masc') : null,
                 this.hasPerfPart && this.part!=4 ?
                     this.inflForm(['Adj','Neuter'],
                                   this.context ? indefArticle(['Neuter'], this.language) : null,
-                                  this.context ? '+' + this.posName('NOUN') : null,
+                                  this.context ? '+ substantiv' : null,
                                   'PerfPart Neuter') : null,
                 this.hasPerfPart && this.part!=4 ?
                     this.inflForm(['Adj','Def'],
                                   this.context ? 'den/det' : null,
-                                  this.context ? '+ ' + this.posName('NOUN') : null,
+                                  this.context ? '+ substantiv' : null,
                                   'PerfPart Def') : null,
                 this.hasPerfPart && this.part!=3 ?
                     this.inflForm(['Adj','Plur'],
                                   null,
-                                  this.context ? '+' + this.posName('NOUN') : null,
+                                  this.context ? '+ substantiv' : null,
                                   'PerfPart Plur') : null,
                 this.part!=3 ? this.inflForm(['Adj','<PresPart>'],
                                              null,
@@ -72,4 +72,3 @@
     }
     
     </script>
-    
