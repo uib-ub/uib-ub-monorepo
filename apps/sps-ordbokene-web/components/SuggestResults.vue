@@ -41,18 +41,17 @@
     
     a {
         font-size: 1.17rem;
-        letter-spacing: .1rem;
+        letter-spacing: .2rem;
         border: none;
-        @apply md:shadow-md md:p-2 md:rounded;
+        @apply md:p-2;
     }
-    
+
     .suggest-link:hover .link-content {
-        border-bottom: solid 2px var(--link-decoration);
+        @apply underline;
     }
     
     li:not(:last-child) {
         border-bottom: solid 1px theme('colors.gray.300')
-    
     
     }
     
