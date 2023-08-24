@@ -156,7 +156,7 @@
     },
     "notifications": {
         "redirect": "Viser tydingar av oppslagsordet",
-        "translation": "Samanlikn med omsetjing foreslått av Apertium:",
+        "translation": "Samanlikn med maskinomsetjing foreslått av Apertium:",
         "inflected": "Andre treff i {dict}:",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",

@@ -168,7 +168,7 @@
   },
   "notifications": {
       "redirect": "Viser betydninger av oppslagsordet",
-      "translation": "Sammenlign med oversettelse foreslått av Apertium:",
+      "translation": "Sammenlign med maskinoversettelse foreslått av Apertium:",
       "inflected": "Andre treff i {dict}:",
       "other_inflected": "«{word}» er også en form av:",
       "did_you_mean": "Mente du:",
