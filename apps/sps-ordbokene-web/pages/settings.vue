@@ -7,6 +7,8 @@ const settings = useSettingsStore()
 
 const resetSettings = (settings) => {
     settings.$patch({
+      simpleListView:true,
+      autoSelect:true,
       submitSelect: false, 
       inflectionExpanded: false, 
       inflectionTableContext: false, 
@@ -18,6 +20,15 @@ const resetSettings = (settings) => {
 useHead({
 title: t('settings.title')
 })
+
+const resetAnimation = ref(false);
+
+const startAnimation = () => {
+  resetAnimation.value = true;
+  setTimeout(() => {
+    resetAnimation.value = false;
+  }, 1500); 
+};
 
 </script>
 
@@ -45,15 +56,17 @@ title: t('settings.title')
 
 
 
-<div class="mt-4">
-  <button class="btn btn-primary" @click="resetSettings(settings)">
-    <Icon name="bi:trash-fill" class="mr-3 mb-1 text-primary"/><span>{{$t('settings.reset')}}</span>
-  </button>
-</div>
+  <div class="mt-4">
+    <button class="btn btn-primary" @click="resetSettings(settings); startAnimation()">
+      <Icon :name="resetAnimation ? 'bi:trash' : 'bi:trash-fill'" class="mr-3 mb-1 text-primary" />
+      <span>{{$t(resetAnimation ? 'settings.reset_done' : 'settings.reset')}}</span>
+    </button>
+  </div>
 </main>
 </template>
 
 <style scoped>
-
-
+.btn{
+ 
+}
 </style>
