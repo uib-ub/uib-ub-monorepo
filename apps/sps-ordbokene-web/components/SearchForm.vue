@@ -1,5 +1,5 @@
 <template>
-<div class="pt-1 pb-2 lg:pb-1">
+<div class="py-1">
 <form  @submit.prevent="submitForm" ref="form" :action="'/' + store.dict || 'bm,nn'">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete v-on:dropdown-submit="submitForm"/>
@@ -58,9 +58,9 @@ const autocomplete_error = (error) => {
 </script>
 
 <style scoped>
-
-
-
+form {
+      @apply md:mx-10 mx-1;
+    }
 
 .welcome form {
   @apply md:mx-0;

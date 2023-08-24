@@ -43,25 +43,25 @@ const suggest_link = (suggestion) => {
 
 a {
     font-size: 1.17rem;
-    letter-spacing: .1rem;
+    letter-spacing: .2rem;
     border: none;
+    @apply md:p-2;
 }
 
-.suggest-link:hover .link-content {
-    border-bottom: solid 2px var(--link-decoration);
-}
-
-li:not(:last-child) {
-    border-bottom: solid 1px theme('colors.gray.300')
-
-
-}
-
-@media screen(md) {
-    li {
-        border: none !important; 
+    .suggest-link:hover .link-content {
+        @apply underline;
     }
-}
-
-
-</style>
+    
+    li:not(:last-child) {
+        border-bottom: solid 1px theme('colors.gray.300')
+    
+    }
+    
+    @media screen(md) {
+        li {
+            border: none !important; 
+        }
+    }
+    
+    
+    </style>

@@ -11,7 +11,24 @@
     "show_articles": "Vis ordforklaringar",
     "show_list": "Vis liste | Vis lister",
     "simple": "Enkelt søk",
-    "about": "Om ordbøkene",
+    "about":{
+        "title":"Om ordbøkene",
+        "items": [
+            {"title": "Kva betyr det om du ikkje finn eit ord i ordboka?", 
+              "text": [""]
+            },
+            {"title": "Kvalitetssikra innhald", "text": ""},
+            {"title": "Sitere ordbøkene", "text": ""},
+            {"title": "Ordbøkene på smarttelefon", "text": ""},
+            {"title": "Opne data", "text": ""},
+            {"title": "Historikk", "text": ""},
+            {"title": "Revisjonsprosjektet", "text": ""},
+            {"title": "Grammatiske kodar i ordbøkene", "text": ""},
+            {"title": "Nyttige språklenkjer", "text": ""},
+            {"title": "Bruk av ordbøkene.no i skulen", "text": ""},
+            {"title": "Personvern", "text": ""}
+      ]
+    },
     "photo": "Foto: Clay Banks (unsplash.com)",
     "background": "Bakgrunnsbilde",
     "monthly": "Smakebit frå ",
@@ -38,7 +55,8 @@
       "main_content": "Gå til hovudinnhald",
       "bm": "Gå til treff i Bokmålsordboka",
       "nn": "Gå til treff i Nynorskordboka",
-      "homograph": "Tyding "
+      "homograph": "Tyding ",
+      "callout": "Viser resultater for oppslagsordet "
     },
     "dicts": {
         "nn": "Nynorskordboka",
@@ -70,6 +88,7 @@
     },
     "pos": "Ordklasse",
     "all_pos": "alle",
+    "gender":"kjønn",
     "tags": {
     "NOUN": "substantiv",
     "VERB": "verb",
@@ -132,7 +151,8 @@
             "always": "Vis berre utdrag",
             "never": "Vis berre fullstendige artiklar"
         },
-        "reset": "Slett lagra innstillingar"
+        "reset": "Slett lagra innstillingar",
+        "reset_done":"Slettet"
     },
     "contact": {
         "title": "Kontakt oss",
@@ -184,11 +204,12 @@
         "share": "Del ordet",
         "copy_link": "Kopier lenkje",
         "cite": "Siter",
+        "copy": "Kopier",
         "cite_title": "Sitere artikkelen",
         "cite_description": ["Ønskjer du å sitere denne artikkelen i ", ", rår vi deg til å gje opp når artikkelen vart henta (lesen), t.d. slik:"],
         "download": "Last ned RIS-fil",
-        "link_copied": "Lenkja er kopiert til utklippstavla",
-        "citation_copied": "Sitatet er kopiert til utklippstavla",
+        "link_copied": "Lenkja er kopiert",
+        "citation_copied": "Sitatet er kopiert",
         "citation": "«{lemma}». I: <em>{dict}.</em> Språkrådet og Universitetet i Bergen. &lt;<a href='{link}'>{link}</a>&gt; (lesen {dd}.{mm}.{yyyy}).",
         "headings": {
             "etymology": "Opphav",

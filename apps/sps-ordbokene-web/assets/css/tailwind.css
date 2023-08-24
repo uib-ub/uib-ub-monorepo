@@ -13,6 +13,7 @@
 
     body {
         overflow-y: scroll;
+        @apply ease-in-out duration-200;
     }
 
 
@@ -102,16 +103,18 @@
         padding-bottom: 0.25rem;
         border-width: 1px;
         font-weight: 600;
+        @apply  duration-200;
       }
       
       .btn:hover {
-        background-color: theme(colors.gray.50)
-      }
+        background-color: theme(colors.canvas.darken)
+      }      
       
       .btn[aria-expanded=true] {
-          @apply bg-tertiary-darken1 hover:bg-tertiary-darken2;
-          box-shadow: 2px 2px 0px theme('colors.gray.500');
-          border: none;
+        @apply bg-canvas hover:bg-canvas-darken;
+        box-shadow: 5px 5px 0px 0px theme('colors.anchor');
+        /* box-shadow: 2px 2px 0px theme('colors.gray.500'); */
+        border: 1px solid #560027;
       }
       
       .btn-borderless {
@@ -247,22 +250,24 @@
       
       
       .article-view .article, .secondary-page {
-          border: solid 1px theme('colors.gray.200') !important;
-          box-shadow: 2px 2px 0px theme('colors.gray.200') !important;
-      
-      }
+          /* border: solid 1px theme('colors.gray.200') !important; */
+          /* box-shadow: 2px 2px 0px theme('colors.gray.500') !important; */
+          @apply !shadow-xl !border-gray-200;
+       }
 
 
-      .welcome .article {
+       .welcome .article {
         box-shadow: none !important;
-        border-radius: 0 !important;
-        border: none;
+        /* border-radius: 0 !important;
+        border: none; */
+        border-radius: 2rem;
         @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none;
       }
       
       .welcome .ord-container {
           @apply md:!px-10 xl:!px-40;
       }
+      
 
 
       .ord-container, .secondary-page {

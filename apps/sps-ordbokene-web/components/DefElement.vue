@@ -15,7 +15,10 @@
        --><span class="numerator" v-if="item.type == 'fraction'">{{item.num}}</span><!--
        -->{{item.type == 'fraction' ? '⁄' : ''}}<!--
        --><span class="denominator" v-if="item.type == 'fraction'">{{item.denom}}</span><!--
- --></component><span v-if="semicolon && no_preceeding_punctuation">; </span><span v-if="comma && no_preceeding_punctuation">, </span></component>
+ --></component>
+ <span v-if="semicolon && no_preceeding_punctuation">; </span>
+ <span v-if="comma && no_preceeding_punctuation">, </span>
+ </component>
 </template>
 
 
@@ -53,7 +56,7 @@ const unparsed = computed(() => {
             if (item.type_ == 'usage') {
               if (item.items) {
                 item.content = item.text
-                return {type: item.type_, html: '', tag: 'DefElement', props: {body: item, tag: 'em', dict: props.dict}}
+                return {type: item.type_, html: item.text, tag: 'DefElement', props: {body: item, tag: 'em', dict: props.dict}}
               }
               else {
                 return {type: item.type_, html: item.text, tag: 'em'}
@@ -122,3 +125,10 @@ const no_preceeding_punctuation = computed(()=> {
 
 
 </script>
+<style scoped>
+.usage {
+  font-style: italic;
+}
+
+
+</style>

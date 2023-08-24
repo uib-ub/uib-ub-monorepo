@@ -8,9 +8,9 @@
       </NuxtErrorBoundary>
 
 
-    </main>
+  </main>
 </template>
-    
+  
 <script setup>
 import { useStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
@@ -21,7 +21,7 @@ const store = useStore()
 const route = useRoute()
 
 useHead({
-  title: t('advanced')
+title: t('advanced')
 })
 
 definePageMeta({
@@ -29,10 +29,10 @@ definePageMeta({
   })
 
 const form_error = (error) => {
-    console.log("FORM ERROR",error)
+  console.log("FORM ERROR",error)
 }
 const content_error = (error) => {
-    console.log("CONTENT ERROR", error)
+  console.log("CONTENT ERROR", error)
 }    
 
 

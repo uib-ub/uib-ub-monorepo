@@ -275,6 +275,7 @@ if (process.client) {
   position: relative;
   left: 50%;
 transform: translateX(-50%);
+  @apply duration-200;
 }
 
 .dropdown-wrapper {
@@ -290,7 +291,7 @@ transform: translateX(-50%);
   border-bottom: 1px solid;   
   box-shadow: 2px 2px 0px theme("colors.primary.DEFAULT");
 
-  @apply border-primary bg-canvas block;
+  @apply border-primary bg-canvas block ;
 }
 
 
@@ -330,7 +331,7 @@ transform: translateX(-50%);
 }
 
 #autocomplete-dropdown .dropdown-item:hover  {
-    @apply bg-gray-100;
+    @apply bg-canvas-darken;
     cursor: pointer;
 }
 

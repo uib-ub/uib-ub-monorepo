@@ -11,7 +11,22 @@
   "show_articles": "Show explanations",
   "show_list": "Show list | Show lists",
   "simple": "Simple search",
-  "about": "About",
+  "about":{
+    "title":"About",
+    "items": [
+        {"title": "What if I cannot find a word in the dictionary?", 
+          "text": ["test"]
+        },
+        {"title": "Quality-Assured Content", "text": ""},
+        {"title": "Citing the dictionaries", "text": ""},
+        {"title": "Adding a shortcut on your smartphone", "text": ""},
+        {"title": "Open Data", "text": ""},
+        {"title": "History", "text": ""},
+        {"title": "Dictionary revision", "text": ""},
+        {"title": "Useful Links to Language Resources", "text": ""},
+        {"title": "Privacy", "text": ""}
+  ]
+},
   "monthly": "Titbit from ",
   "photo": "Photo by Clay Banks on unsplash.com",
   "close": "Close",
@@ -34,7 +49,9 @@
   "footer_description": " show spelling and inflection in line with official Norwegian spelling. The Language Council and the University of Bergen are behind the dictionaries.",
   "accessibility": {
     "menu": "Open top menu",
-    "homograph": "Meaning "
+    "homograph": "Meaning ",
+    "callout": "Showing results for the keyword "
+
   },
   "dicts": {
       "nn": "Nynorsk dictionary",
@@ -64,6 +81,7 @@
   },
   "pos": "Part of speech",
 "all_pos": "all",
+"gender":"gender",
 "tags": {
   "NOUN": "noun",
   "VERB": "verb",
@@ -130,7 +148,8 @@
         "always": "Show exerpts of articles",
         "never": "Show complete articles"
     },
-    "reset": "Delete stored settings"
+    "reset": "Delete stored settings",
+    "reset_done":"Deleted"
 },
 "contact": {
   "title": "Contact us",
@@ -186,8 +205,9 @@
     "cite_title": "Cite the article",
     "cite_description": ["If you want to cite this article in the ", " we recommend that you state when the article was retrieved (read), e. g. as follows:"],
     "download": "Download RIS file",
-    "link_copied": "Link copied to the clipboard",
-    "citation_copied": "Citation copied to the clipboard",
+    "copy": "Copy",
+    "link_copied": "Link copied",
+    "citation_copied": "Citation copied",
     "citation": "« {lemma} ». In: <em> {dict}. </em> Språkrådet & Universitetet i Bergen. &lt;<a href='{link}'> {link} </a>&gt; ( retrieved {dd}. {mm}. {yyyy}). ",
     "headings": {
       "etymology": "Etymology",

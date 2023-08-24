@@ -47,7 +47,7 @@ const id = props.id
 <style scoped>
 
 button {
-    @apply text-text pt-2 pb-3;
+    @apply text-text pt-2 pb-3 duration-200 ease-in-out;
     font-size: 1.17em;
 
 }

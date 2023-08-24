@@ -1,7 +1,7 @@
 <template>
   <div class="nav-container px-2">
-    <nav :aria-label="$t('label.dict_nav')" class="md:flex md:justify-center !my-1">
-  <ul id="searchNavContent" class="flex gap-2 md:gap-3">
+    <nav :aria-label="$t('label.dict_nav')" class="md:flex md:justify-center !my-2">
+  <ul id="searchNavContent b-2" class="flex gap-2 md:gap-3 ">
   <li>
     <NuxtLink class="inline-block"
               :aria-current="route.params.dict =='bm,nn' ? 'true' : 'false'"
@@ -89,7 +89,7 @@ border-radius: 2rem;
 }
 
 a[aria-current=true] {
-  @apply bg-primary-lighten text-tertiary
+  @apply bg-primary-lighten text-tertiary;
 }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
