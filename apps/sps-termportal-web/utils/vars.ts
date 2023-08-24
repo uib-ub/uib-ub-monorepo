@@ -62,6 +62,7 @@ export interface SearchOptions {
   language: (LangCode | "all")[];
   translate: LangCode | "none";
   termbase: Samling[];
+  useDomain: boolean;
   domain: (Domains | "all")[];
   predicate: LabelPredicate[];
   matching: (Matching | "all")[] | Matching[][];
