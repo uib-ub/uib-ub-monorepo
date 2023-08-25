@@ -7,8 +7,8 @@ const settings = useSettingsStore()
 
 const resetSettings = (settings) => {
     settings.$patch({
-      simpleListView:true,
-      autoSelect:true,
+      simpleListView:false,
+      autoSelect:false,
       submitSelect: false, 
       inflectionExpanded: false, 
       inflectionTableContext: false, 
