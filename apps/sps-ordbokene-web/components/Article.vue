@@ -570,9 +570,6 @@ span.lemma-group {
   
 }
   
-.article:hover{
- @apply shadow-xl;
-}
 
 
 
