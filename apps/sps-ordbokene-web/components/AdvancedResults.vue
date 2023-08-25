@@ -7,10 +7,6 @@
     <span v-if="articles.meta.bm"><div></div>{{$t('notifications.results', {count: articles.meta.bm.total})+$t("in")+$t('dicts_inline.bm')}}</span>
     <span v-if="articles.meta.nn && articles.meta.bm"> | </span>
     <span v-if="articles.meta.nn">{{$t('notifications.results', {count: articles.meta.nn.total})+$t("in")+$t('dicts_inline.nn')}}</span>
-    <div class="sr-only" v-if="settings.listView"> Søkeresultatene ligger i en liste med lenker du kan nå med tabulatortasten.</div>
-    <div class="sr-only" v-else> Søkeresultatene ligger nå i et hierarki av overskrifter du ikke kan nå med tabulatortasten.</div>
-    
-    <div class="hidden snackbar-search">Trykk Shift + 7 for å gå til søkefeltet</div>
     </div>
 
 
