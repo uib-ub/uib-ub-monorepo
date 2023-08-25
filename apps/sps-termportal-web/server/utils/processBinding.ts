@@ -11,7 +11,7 @@ import { Samling, termbaseUriPatterns } from "~~/utils/vars-termbase";
  */
 export default function (binding: { [key: string]: any }): SearchDataEntry {
   const runtimeConfig = useRuntimeConfig();
-  const samling = binding.samling.value as Samling;
+  const samling = binding.samling.value.split("-3A")[0] as Samling;
 
   const predicate = binding.predicate.value.replace(
     "http://www.w3.org/2008/05/skos-xl#",
@@ -40,6 +40,7 @@ export default function (binding: { [key: string]: any }): SearchDataEntry {
     link,
     lang: binding.lang.value.split(","),
     samling,
+    context: binding.context.value,
     matching: binding.matching.value,
     score: binding.score.value,
     translate: binding?.translate?.value || "",
