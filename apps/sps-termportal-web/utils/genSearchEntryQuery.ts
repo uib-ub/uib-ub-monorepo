@@ -61,29 +61,29 @@ export function getPredicateValues(predicates: LabelPredicate[]): string {
   return predicates.map((p) => `skosxl:${p}`).join("|");
 }
 
-export function genSearchEntryQuery(searchOptions: SearchOptions): string {
-  const runtimeConfig = useRuntimeConfig();
-  const termData = getTermData(searchOptions.term);
-  const language = getLanguageData(searchOptions.language);
-  const predFilter = getPredicateValues(searchOptions.predicate);
-
-  const context = () => {
-    const pred = searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf";
-    const lst = searchOptions.useDomain
-      ? searchOptions.domain
-      : searchOptions.termbase;
+export function getContextFilter(searchOptions) {
+  const pred = searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf";
+  const lst = searchOptions.useDomain
+    ? searchOptions.domain
+    : searchOptions.termbase;
+  if (lst.length !== 0 && lst[0] !== "all") {
     const values = lst
       .map((d: string) => {
         return `base:${d}`;
       })
       .join(", ");
+    return [`FILTER ( ?con IN ( ${values} ) )`, pred];
+  } else {
+    return ["", pred];
+  }
+}
 
-    if (lst.length !== 0) {
-      return [`FILTER ( ?con IN ( ${values} ) )`, pred];
-    } else {
-      return ["", pred];
-    }
-  };
+export function genSearchEntryQuery(searchOptions: SearchOptions): string {
+  const runtimeConfig = useRuntimeConfig();
+  const termData = getTermData(searchOptions.term);
+  const language = getLanguageData(searchOptions.language);
+  const predFilter = getPredicateValues(searchOptions.predicate);
+  const context = getContextFilter(searchOptions);
 
   const subqueries = (subEntry: string) => {
     const content = {
@@ -149,8 +149,8 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
                 ${where}
                 ${subqueries(match)?.filter}
                 ?uri ${predFilter} ?label ;
-                     ${context()[1]} ?con .
-                ${context()[0]}
+                     ${context[1]} ?con .
+                ${context[0]}
                 ${translateOptional}
               }
               ORDER BY DESC(?score) lcase(?literal)
