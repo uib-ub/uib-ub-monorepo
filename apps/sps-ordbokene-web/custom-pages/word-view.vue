@@ -122,38 +122,3 @@ const article_error = (error, article, dict) => {
 }
 
 </script>
-<style scoped>
-
-.result-count-text {
-  font-variant: normal;
-  font-size: .75rem;
-
-  border-radius: 2rem;
-  @apply bg-white text-black !leading-none px-1.5 py-0.5 align-middle shadow-md
-
-}
-
-
-ol.article-column {
-  margin: 0px;
-  padding: 0px;
-}
-
-ol.article-column  {
-    border: solid 1px rgba(0,0,0, .5);
-    @apply bg-white;
-    box-shadow: 2px 2px 0px rgba(0,0,0, .5);
-    padding: 0rem;
-    width: 100%;
-}
-
-.article-column {
-  @apply !mb-8;
-}
-
-div.article-column {
-  @apply flex flex-col gap-4 md:gap-6;
-}
-
-
-</style>

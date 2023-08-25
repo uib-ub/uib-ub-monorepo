@@ -3,20 +3,16 @@
   <SearchNav v-if="route.name != 'search'"/>
     <NuxtErrorBoundary @error="form_error">
     <SearchForm v-if="route.name != 'search'" class="ord-container"/>
-    <div v-if="route.name == 'article' && store.searchUrl" class="ord-container back-to-search justify-start my-2">
+    <div v-if="route.name == 'article' && store.searchUrl" class="ord-container back-to-search justify-start mt-2">
       <NuxtLink :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
     </div>
   </NuxtErrorBoundary>
 
-  
-  <section class="dict-content md:pt-2">
-    <div class="ord-container">
+    <div class="ord-container" v-bind:class="{'md:pt-4': route.name != 'article'}">
   <NuxtErrorBoundary @error="content_error">
     <NuxtPage/>
   </NuxtErrorBoundary>
     </div>
-  </section>
-
 </main>
 </template>
 
