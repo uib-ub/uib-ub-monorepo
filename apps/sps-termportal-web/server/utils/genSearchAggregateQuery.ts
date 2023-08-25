@@ -98,7 +98,6 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
   const language = getLanguageData(searchOptions.language);
   const predFilter = getPredicateValues(searchOptions.predicate);
   const context = getContextFilter(searchOptions);
-  console.log(context)
 
   const aggregateCategories = ["?lang", "?context", "?predicate", "?matching"];
   const subqueries = (
