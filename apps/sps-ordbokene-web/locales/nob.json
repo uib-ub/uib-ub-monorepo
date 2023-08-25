@@ -198,6 +198,7 @@
         "no_results": "Ingen treff",
         "not_a_word": " er ikke et oppslagsord i ",
         "results": "Ingen treff | Ett treff| {count} treff",
+        "keywords": "oppslagsord",
         "ignored_words": "Søket ble ingorert fordi vi begrenser forespørsler til 20 ord.",
         "ignored_chars": "Søket ble ignorert fordi vi ikke tillater ord med flere enn 40 tegn.",
         "no_pos_results": " i søk på {pos}",

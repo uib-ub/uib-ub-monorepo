@@ -185,6 +185,7 @@
     "no_results": "No results",
     "not_a_word": " is not a word in ",
     "results": "No results | One result | {count} results",
+    "keywords": "entries",
     "ignored_words": "The search was ignored because we limit queries to 20 words.",
     "ignored_chars": "The search was ignored because we do not accept words with more than 40 characters.",
     "no_pos_results": " (no matching {pos})",

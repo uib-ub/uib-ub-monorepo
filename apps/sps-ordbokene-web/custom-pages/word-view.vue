@@ -12,10 +12,13 @@
         </div>
       </client-only>
     <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
-      <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-label="$t('dicts.'+dict)">
-        <div class="py-2 px-1"><h2 class="lg:inline-block">{{$t('dicts.'+dict)}}</h2>
-          <span><span v-if="(articles.meta[dict].total > 1)" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta[dict].total})}}</span>
-          </span></div>
+      <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labeledby="dict+'_heading'">
+        <div class="py-2 px-2">
+          <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
+            <span class="result-count-text">{{articles.meta[dict].total}}</span>
+            <span class="sr-only">{{$t('notifications.keywords')}}</span>
+          </h2>
+        </div>
         <component v-if="articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
           <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
@@ -120,8 +123,14 @@ const article_error = (error, article, dict) => {
 
 </script>
 <style scoped>
-.result-count {
-    font-size: 1rem;
+
+.result-count-text {
+  font-variant: normal;
+  font-size: .75rem;
+
+  border-radius: 2rem;
+  @apply bg-white text-black !leading-none px-1.5 py-0.5 align-middle shadow-md
+
 }
 
 
