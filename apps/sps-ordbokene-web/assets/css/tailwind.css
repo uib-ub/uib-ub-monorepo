@@ -27,6 +27,7 @@
 
     main {
         flex: 1;
+        @apply lg:pt-4 px-1 md:px-4
     }
 
     h1 {
