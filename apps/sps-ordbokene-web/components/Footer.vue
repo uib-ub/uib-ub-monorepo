@@ -20,7 +20,7 @@
             <NuxtLink :aria-current="$route.name == 'help' && 'page'" class="nav-link" to="/help">{{$t('help')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'about' && 'page'" class="nav-link" to="/about">{{$t('about')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'about' && 'page'" class="nav-link" to="/about">{{$t('about.title')}}</NuxtLink>
           </li>
         <li>
             <NuxtLink :aria-current="$route.name == 'settings' && 'page'" class="nav-link" to="/settings">{{$t('settings.title')}}</NuxtLink>

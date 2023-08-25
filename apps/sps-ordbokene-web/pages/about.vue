@@ -1263,7 +1263,7 @@
   const { t } = useI18n()
   
   useHead({
-    title: t('about')
+    title: t('about.title')
     })
   </script>
   
