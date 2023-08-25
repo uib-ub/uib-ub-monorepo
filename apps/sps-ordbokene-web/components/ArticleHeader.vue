@@ -56,7 +56,6 @@ const props = defineProps({
 
 .hgno {
   color: rgba(0,0,0,.6) !important;
-  background: white;
   font-family: unset;
   font-size: 1rem;
   cursor: help;
