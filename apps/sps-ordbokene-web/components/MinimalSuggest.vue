@@ -15,7 +15,7 @@ const props = defineProps({
 })
 
 const query = `${store.endpoint}api/suggest?&q=${route.query.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
-const { data, pending } = useFetch(query, {key: query,
+const { data, error, pending } = useFetch(query, {key: query,
                                     transform: response => {
                                         if (response.a && response.a.similar) {
                                             return response.a.similar.filter(item => item[0] != "-"
@@ -25,5 +25,12 @@ const { data, pending } = useFetch(query, {key: query,
                                             return []
                                         }
                                     }})
+
+
+if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
+  store.endpoint = `https://odd.uib.no/opal/prod/`
+  console.log("ERROR", error.value)
+  refresh()
+}
 
 </script>

@@ -157,6 +157,13 @@ const { pending, data, error } = await useAsyncData('article_'+props.dict+props.
 
 })
 
+
+if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
+  store.endpoint = `https://odd.uib.no/opal/prod/`
+  console.log("ERROR", error.value)
+  refresh()
+}
+
 const body_error = (error) => {
   console.log("BODY_ERROR", error)
 }

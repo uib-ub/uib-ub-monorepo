@@ -65,10 +65,13 @@ const { pending, error, refresh, data: articles } = await useAsyncData("articles
             dict: store.dict,
             scope: 'e',
           },
-          onRequestError({ request, options, error}) {
-            console.log("ERROR")
-          }
         }))
+
+if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
+  store.endpoint = `https://odd.uib.no/opal/prod/`
+  console.log("ERROR", error.value)
+  refresh()
+}
 
 
 const title = computed(()=> {
