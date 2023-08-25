@@ -143,7 +143,7 @@ const { pending, data, error } = await useAsyncData('article_'+props.dict+props.
                                                                                         }))
 
 
-  if (route.name != 'welcome' && route.name != 'search')
+  if (route.name != 'welcome' && route.name != 'search' && data.value)
   data.value.lemmas.forEach(lemma => {
       store.lemmas[props.dict].add(lemma.lemma)
       lemma.paradigm_info.forEach(paradigm => {
