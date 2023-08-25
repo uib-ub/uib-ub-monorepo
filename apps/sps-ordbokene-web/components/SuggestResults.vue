@@ -1,7 +1,7 @@
 <template>
 <section v-if="suggestions && suggestions.length" class="suggestions py-2 px-2">
     <slot/>
-    <ul class="nav nav-pills flex-column md:flex md:flex-wrap md:gap-8 pt-4 md:py-8">
+    <ul class="nav nav-pills flex-column md:flex md:flex-wrap md:gap-8 pt-4 md:py-4">
         <template  v-for="(item, idx) in suggestions" :key="idx">
         <li class="nav-item flex" v-if="minimal || !store.lemmas[dict].has(item[0])">
             <NuxtLink noPrefetch class="suggest-link py-3 md:py-0 w-full" :to="suggest_link(item[0])"><Icon name="bi:search" class="mr-3 mb-1"/><span class="link-content">{{item[0]}}</span></NuxtLink>
