@@ -1,4 +1,4 @@
-import { Matching, LabelPredicate, SearchOptions } from "./vars";
+import { Matching, LabelPredicate, SearchOptions } from "../../utils/vars";
 
 export function sanitizeTerm(term: string) {
   return term
@@ -140,7 +140,7 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   ) => {
     const subquery = `
         {
-          SELECT ?label ?literal ?l ?context (?sc + ${
+          SELECT ?label ?literal ?l ?context ?samling (?sc + ${
             subqueries(match)?.score
           } as ?score) ?uri ?predicate ${translate}
                  ("${match}" as ?matching)
@@ -158,6 +158,8 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
               OFFSET ${searchOptions.offset?.[match as Matching] || 0}
             }
             ?uri ?predicate ?label .
+            ?uri skosp:memberOf ?sam .
+            BIND ( replace( str(?sam), "${runtimeConfig.public.base}", "") as ?samling).
             BIND ( lang(?lit) as ?l ).
             BIND ( str(?lit) as ?literal ).
             BIND ( replace(str(?con), "${
@@ -193,7 +195,7 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
     #log: ${JSON.stringify(searchOptions)}
     ${queryPrefix()}
   
-    SELECT DISTINCT ?uri ?predicate ?literal ?score ?context ${translate}
+    SELECT DISTINCT ?uri ?predicate ?literal ?score ?context ?samling ${translate}
            (group_concat( ?l; separator="," ) as ?lang)
            ?matching
     WHERE {
@@ -202,7 +204,7 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
         }
       }
     }
-    GROUP BY ?uri ?predicate ?literal ?score ?matching ?context ${translate}
+    GROUP BY ?uri ?predicate ?literal ?score ?matching ?context ?samling ${translate}
     ORDER BY DESC(?score) lcase(?literal) DESC(?predicate)
     LIMIT ${searchOptions.limit}`;
 
