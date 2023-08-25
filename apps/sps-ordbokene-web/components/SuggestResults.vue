@@ -43,7 +43,7 @@ const suggest_link = (suggestion) => {
 
 a {
     font-size: 1.17rem;
-    letter-spacing: .2rem;
+    letter-spacing: .1rem;
     border: none;
     @apply md:p-2;
 }
