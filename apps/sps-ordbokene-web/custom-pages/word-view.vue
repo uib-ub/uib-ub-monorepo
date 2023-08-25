@@ -125,12 +125,12 @@ const article_error = (error, article, dict) => {
 }
 
 
-.list ol.article-column {
+ol.article-column {
   margin: 0px;
   padding: 0px;
 }
 
-.list .article-column  {
+ol.article-column  {
     border: solid 1px rgba(0,0,0, .5);
     @apply bg-white;
     box-shadow: 2px 2px 0px rgba(0,0,0, .5);
@@ -139,7 +139,11 @@ const article_error = (error, article, dict) => {
 }
 
 .article-column {
-  margin-bottom: 2rem !important;
+  @apply !mb-8;
+}
+
+div.article-column {
+  @apply flex flex-col gap-4 md:gap-6;
 }
 
 
