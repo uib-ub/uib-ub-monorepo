@@ -191,12 +191,12 @@ ol.article-column>li {
 list-style: none;
 }
 
-.list ol.article-column {
+ol.article-column {
 margin: 0px;
 padding: 0px;
 }
 
-.list .article-column  {
+ol.article-column  {
   border: solid 1px rgba(0,0,0, .5);
   @apply bg-white;
   box-shadow: 2px 2px 0px rgba(0,0,0, .5);
@@ -204,7 +204,7 @@ padding: 0px;
   width: 100%;
 }
 
-.list .article-column:empty  {
+ol.article-column:empty  {
   display: none;
 }
 

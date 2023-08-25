@@ -27,7 +27,7 @@
 
     main {
         flex: 1;
-        @apply lg:pt-4 px-1 md:px-4
+        @apply lg:pt-2 xl:pt-4 px-1 sm:px-8 xl:px-4
     }
 
     h1 {
@@ -259,10 +259,7 @@
 
        .welcome .article {
         box-shadow: none !important;
-        /* border-radius: 0 !important;
-        border: none; */
-        border-radius: 2rem;
-        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none;
+        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6;
       }
       
       .welcome .ord-container {
@@ -276,7 +273,7 @@
       }
 
       .ord-container {
-        @apply px-2 md:px-0
+        @apply px-2 md:px-1;
       }
 
 

@@ -27,7 +27,7 @@
 
     </NuxtLink>
   </div>
-    <div class="article lg:pt-1 m-1 lg:m-4" v-else-if="!error">
+    <div class="article" v-else-if="!error">
         <div v-if="pending && !welcome" class="skeleton-container">
             <div class="skeleton mt-4 skeleton-heading"/>
         <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
@@ -566,7 +566,7 @@ span.lemma-group {
 .article {
   border-radius: 2rem;
     /* border: 1px solid #560027; */
-    @apply p-1 mb-2 md:mb-4 md:p-2 lg:p-4 bg-canvas duration-200 shadow-md; 
+    @apply p-1 md:p-2 lg:p-4 bg-canvas duration-200 shadow-md; 
   
 }
   

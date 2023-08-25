@@ -1,5 +1,5 @@
 <template>
-    <div v-bind:class="{'list': listView}">     
+    <div>     
     <Spinner v-if="pending"/>    
     <div ref="results" v-if="!pending && !error && articles && articles.meta" >
       <client-only><div class ="callout" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
@@ -11,7 +11,7 @@
       </div>
         </div>
       </client-only>
-    <div v-bind:class="{'gap-3 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
+    <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
       <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-label="$t('dicts.'+dict)">
         <div class="py-2 px-1"><h2 class="lg:inline-block">{{$t('dicts.'+dict)}}</h2>
           <span><span v-if="(articles.meta[dict].total > 1)" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta[dict].total})}}</span>

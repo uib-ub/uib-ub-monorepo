@@ -1,5 +1,5 @@
 <template>
-<main id="main" tabindex="-1" class="dict-view simple-search py-1">
+<main id="main" tabindex="-1" class="dict-view simple-search">
   <SearchNav v-if="route.name != 'search'"/>
     <NuxtErrorBoundary @error="form_error">
     <SearchForm v-if="route.name != 'search'" class="ord-container"/>
@@ -9,7 +9,7 @@
   </NuxtErrorBoundary>
 
   
-  <section class="dict-content">
+  <section class="dict-content md:pt-2">
     <div class="ord-container">
   <NuxtErrorBoundary @error="content_error">
     <NuxtPage/>
