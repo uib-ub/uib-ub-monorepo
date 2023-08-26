@@ -85,6 +85,10 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   const predFilter = getPredicateValues(searchOptions.predicate);
   const context = getContextFilter(searchOptions);
 
+  if (termData.sanitized().length === 0) {
+    return genSearchQueryAll(searchOptions, language, predFilter, context);
+  }
+
   const subqueries = (subEntry: string) => {
     const content = {
       "full-cs": {
@@ -159,7 +163,9 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
             }
             ?uri ?predicate ?label .
             ?uri skosp:memberOf ?sam .
-            BIND ( replace( str(?sam), "${runtimeConfig.public.base}", "") as ?samling).
+            BIND ( replace( str(?sam), "${
+              runtimeConfig.public.base
+            }", "") as ?samling).
             BIND ( lang(?lit) as ?l ).
             BIND ( str(?lit) as ?literal ).
             BIND ( replace(str(?con), "${

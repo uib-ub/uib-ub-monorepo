@@ -13,10 +13,9 @@ export default function (binding: { [key: string]: any }): SearchDataEntry {
   const runtimeConfig = useRuntimeConfig();
   const samling = binding.samling.value.split("-3A")[0] as Samling;
 
-  const predicate = binding.predicate.value.replace(
-    "http://www.w3.org/2008/05/skos-xl#",
-    ""
-  );
+  const predicate =
+    binding.predicate.value.replace("http://www.w3.org/2008/05/skos-xl#", "") ||
+    "";
 
   let link;
   if (!Object.keys(termbaseUriPatterns).includes(samling)) {

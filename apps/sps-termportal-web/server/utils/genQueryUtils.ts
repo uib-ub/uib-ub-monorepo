@@ -1,4 +1,4 @@
-import { samlingMapping } from "./genSearchQuery";
+import { samlingMapping } from "./genSearchAggregateQuery";
 import { Samling } from "~/utils/vars-termbase";
 
 export function genTQLangArgument(languages: string[]) {
