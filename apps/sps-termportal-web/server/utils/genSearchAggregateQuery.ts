@@ -8,7 +8,6 @@ import { Samling, Domains, domainNesting } from "../../utils/vars-termbase";
 
 import { getPredicateValues, getContextFilter } from "./genSearchEntryQuery";
 
-
 export const samlingMapping = {
   MRT: 3000,
   UHR: 3004,
@@ -105,15 +104,30 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
     subEntry: string,
     aggregateMatch?: string
   ) => {
+    const aggregatePredFilter = () => {
+      if (searchOptions.matching[0] === "all") {
+        return ""
+      } else {
+        return `?uri ${predFilter} ?label .`
+      }
+    }
     const content = {
       count: {
         all: {
-          where: `{ SELECT ?label ?lit
-                WHERE {
-                  ?label skosxl:literalForm ?lit.
-                {languageFilter}
-                }
-            }`,
+          where: `{ SELECT ?label ?lit ?uri
+                    WHERE {
+                       {
+                        SELECT * 
+                        WHERE {
+                          ?uri ${context[1]} ?con .
+                          ${context[0]}
+                        }
+                      }
+                      ?uri ${predFilter} ?label .
+                      ?label skosxl:literalForm ?lit.
+                      {languageFilter}
+                    }
+                  }`,
           filter: "",
         },
         allPatterns: {
@@ -152,22 +166,22 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
       },
       aggregate: {
         lang: `
-            ?uri ${predFilter} ?label
+                ${aggregatePredFilter()}
                 BIND ( lang(?lit) as ?prop ).`,
         context: `
-            ?uri ${predFilter} ?label;
-                  ${
+        ${aggregatePredFilter()}
+            ?uri ${
                     searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
                   } ?context.
                     BIND (replace(str(?context), "${
                       runtimeConfig.public.base
                     }", "") as ?prop)`,
         predicate: `
-            ?uri ${predFilter} ?label ;
-                 ?predicate ?label .
-                 BIND (replace(str(?predicate), "http://www.w3.org/2008/05/skos-xl#", "") as ?prop)`,
+                ${aggregatePredFilter()}
+                ?uri ?predicate ?label .
+                BIND (replace(str(?predicate), "http://www.w3.org/2008/05/skos-xl#", "") as ?prop)`,
         matching: `
-            ?uri ${predFilter} ?label
+          ${aggregatePredFilter()}
                     BIND ("${aggregateMatch}" as ?prop)`,
       },
     };
@@ -180,6 +194,14 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
     match: Matching | "all" | "allPatterns",
     where: string
   ) => {
+    const contextSubquery = () => {
+      if (match === "all") {
+        return "";
+      } else {
+        return `${context[0] ? "?uri " + context[1] + " ?con ." : ""}
+                ${context[0]}`;
+      }
+    };
     const subquery = `
                 {
                   SELECT ?prop
@@ -187,9 +209,7 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
                     ${where}
                     ${subqueries("count", match)?.filter}
                     ${subqueries("aggregate", category, match)}
-                    ${context[0] ? "?uri " + context[1] + " ?con ." : ""}
-                    ${context[0]}
-
+                    ${contextSubquery()}
                   }
                 }`;
     return subquery;
@@ -214,6 +234,9 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
 
   const categoriesArray: string[] = [];
   for (const category of aggregateCategories) {
+    if (searchOptions.matching[0] === "all" && category === "?matching") {
+      break;
+    }
     const subqueryArray: string[] = [];
     for (const match of searchOptions.matching) {
       const whereArray: string[] = [];
@@ -264,5 +287,6 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
       }
     }`;
 
+  console.log(queryAggregate());
   return queryAggregate();
 }
