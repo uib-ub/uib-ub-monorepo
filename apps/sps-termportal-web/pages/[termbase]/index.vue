@@ -2,13 +2,23 @@
   <main>
     <Head>
       <Title
-        >{{ data?.label[0]["@value"] || data?.label[0] || termbase }} |
-        Termportalen</Title
+        >{{
+          lalo[locale][termbase + "-3A" + termbase] ||
+          data?.label[0]["@value"] ||
+          data?.label[0] ||
+          termbase
+        }}
+        | Termportalen</Title
       >
     </Head>
     <h1 id="main" class="pb-2 pt-5 text-2xl">
       <AppLink to="#main">
-        {{ data?.label[0]["@value"] || data?.label[0] || termbase }}
+        {{
+          lalo[locale][termbase + "-3A" + termbase] ||
+          data?.label[0]["@value"] ||
+          data?.label[0] ||
+          termbase
+        }}
       </AppLink>
     </h1>
     <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
@@ -67,10 +77,13 @@
 
 <script setup lang="ts">
 import { LangCode } from "~/composables/locale";
+import lazyLocales from "~/server/api/lazyLocales";
 
 const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
+const lalo = useLazyLocales();
+const locale = useLocale();
 
 const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
   headers: process.server

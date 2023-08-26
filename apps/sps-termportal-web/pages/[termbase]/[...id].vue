@@ -213,16 +213,14 @@
                 <!--Termbase-->
                 <DataRow
                   v-if="concept?.memberOf"
-                  :data="
-                    $t('global.samling.' + concept.memberOf.split('-3A')[1])
-                  "
+                  :data="lalo[locale][concept.memberOf]"
                   :to="`/${termbase}`"
                   :label="$t('id.collection')"
                 />
                 <!--Domene-->
                 <DataRow
                   v-if="concept?.domene"
-                  :data="concept.domene?.split('-3A').pop()"
+                  :data="lalo[locale][concept.domene]"
                   :label="$t('id.domain')"
                 />
                 <!--Bruksområde-->
@@ -272,7 +270,7 @@ if (process.client) {
       {
         src: "/mathjax-config.js",
         type: "text/javascript",
-        defer: true
+        defer: true,
       },
       {
         id: "MathJax-script",
@@ -290,6 +288,8 @@ const searchScrollBarPos = useSearchScrollBarPos();
 const dataDisplayLanguages = useDataDisplayLanguages();
 const conceptViewToggle = useConceptViewToggle();
 const searchData = useSearchData();
+const lalo = useLazyLocales();
+const locale = useLocale();
 const sidebar = ref(null);
 const main = ref(null);
 const termbase = route.params.termbase as Samling;
