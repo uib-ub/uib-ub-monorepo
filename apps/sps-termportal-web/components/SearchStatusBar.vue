@@ -72,7 +72,7 @@ const count = computed(() => {
     return countSearchEntries(searchData.value);
   }
   try {
-    return sum(Object.values(searchDataStats.value?.matching || []));
+    return sum(Object.values(searchDataStats.value?.lang || []));
   } catch (e) {
     return 0;
   }
