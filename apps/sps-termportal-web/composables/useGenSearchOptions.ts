@@ -54,7 +54,7 @@ export default function (situation: string, options?: SearchOptions) {
       searchInterface.value.domain,
       domainData.value
     );
-    console.log(domainLst);
+    newOptions.domain = domainLst;
   }
 
   if (situation === "filter" || situation === "further") {
