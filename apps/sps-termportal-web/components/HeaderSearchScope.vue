@@ -18,6 +18,8 @@
         />
       </div>
     </button>
+    <HeaderSearchDomains v-if="searchInterface.useDomain" />
+    <HeaderSearchTermbases v-else />
   </div>
 </template>
 
