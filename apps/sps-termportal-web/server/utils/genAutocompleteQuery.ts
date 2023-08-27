@@ -1,5 +1,5 @@
 import { SearchOptions } from "../../utils/vars";
-import { sanitizeTerm } from "./genSearchEntryQuery";
+import { sanitizeTerm, getContextFilter } from "./genSearchEntryQuery";
 import { genTQLangArgument, genTQGraphValue } from "./genQueryUtils";
 
 export function genAutocompleteQuery(
@@ -12,10 +12,18 @@ export function genAutocompleteQuery(
   const multiIndex = sanitizedIndex.split(" ").join(" AND ");
   const lang = genTQLangArgument(searchOptions.language)[0];
   const graph = genTQGraphValue(searchOptions.termbase)[0];
-  const domain =
-    searchOptions.termbase[0] !== "all"
-      ? genDomainTriple(searchOptions.domain)
-      : "";
+  const context = getContextFilter(searchOptions);
+  const contextFilter = () => {
+    if (context[0]) {
+      const data = `
+          ?c skosxl:prefLabel|skosxl:altLabel|skosxl:hiddenLabel ?l .
+          ?c ${context[1]} ?con .
+          ${context[0]}`;
+      return data;
+    } else {
+      return "";
+    }
+  };
 
   /**
    * Relevance
@@ -32,11 +40,11 @@ export function genAutocompleteQuery(
   PREFIX base: <${base}>
 
   SELECT * {
-  GRAPH ${graph} {
+  GRAPH <urn:x-arq:UnionGraph> {
       {
         SELECT DISTINCT ?litstr {
           ( ?l ?sc ?lit ) text:query ( "\\"${sanitizedIndex}\\"" ${lang} ) .
-          ${domain}
+          ${contextFilter()}
           BIND ( str(?lit) as ?litstr )
           FILTER ( ?litstr = "${sanitizedLit}" )
         }
@@ -45,7 +53,7 @@ export function genAutocompleteQuery(
       {
         SELECT DISTINCT ?litstr {
           ( ?l ?sc ?lit ) text:query ("\\"${sanitizedIndex}\\"" ${lang}) .
-          ${domain}
+          ${contextFilter()}
           BIND ( str(?lit) as ?litstr )
           FILTER ( lcase(?litstr) = lcase("${sanitizedLit}")
                    && ?litstr != "${sanitizedLit}"
@@ -56,7 +64,7 @@ export function genAutocompleteQuery(
       {
         SELECT DISTINCT ?litstr {
           ( ?l ?sc ?lit ) text:query ("${multiIndex}*" ${lang}) .
-          ${domain}
+          ${contextFilter()}
           BIND ( str(?lit) as ?litstr )
           FILTER ( strStarts( lcase(?litstr), lcase("${sanitizedLit}") ) &&
                    lcase(?litstr) != lcase("${sanitizedLit}")
@@ -69,7 +77,7 @@ export function genAutocompleteQuery(
       {
         SELECT DISTINCT ?litstr {
           ( ?l ?sc ?lit ) text:query ("${multiIndex}*" ${lang}) .
-          ${domain}
+          ${contextFilter()}
           BIND ( str(?lit) as ?litstr )
           FILTER ( !strStarts( lcase(?litstr), lcase("${sanitizedLit}") )
                    && contains( ?litstr, lcase("${sanitizedLit}") )
@@ -82,6 +90,5 @@ export function genAutocompleteQuery(
   }
   LIMIT 20
 `;
-
   return query;
 }
