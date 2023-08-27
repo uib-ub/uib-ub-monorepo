@@ -148,6 +148,7 @@ watch(
     searchInterface.value.language,
     searchInterface.value.termbase,
     searchInterface.value.translate,
+    searchInterface.value.domain,
   ],
   () => {
     if (allowSearchFetch.value !== null) {
@@ -155,7 +156,9 @@ watch(
     }
     umTrackEvent("Search: Option change");
     considerSearchFetching("options");
-  }
+    usePushSearchOptionsToRoute();
+  },
+  { deep: true }
 );
 
 onMounted(() => {
@@ -180,7 +183,7 @@ onMounted(() => {
         // searchdomain needs to be handled differently because state is a list
         if (key === "domain") {
           const domene = route.query[value.q] as string;
-          searchInterface.value[key] = domene.split(",");
+          searchInterface.value.domain = JSON.parse(domene);
         }
         //
         else {

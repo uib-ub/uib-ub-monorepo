@@ -78,7 +78,7 @@ export const searchOptionsInfo = {
   language: { q: "ss", default: "all" },
   translate: { q: "ms", default: "none" },
   termbase: { q: "tb", default: "all" },
-  domain: { q: "d", default: ["all"] },
+  domain: { q: "d", default: {} },
   predicate: { default: ["prefLabel", "altLabel", "hiddenLabel"] },
   matching: {
     default: [
