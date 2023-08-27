@@ -8,18 +8,11 @@
       >
         <input
           :id="domain"
-          v-model="topdomains"
+          :value="searchInterface.domain[domain]"
           type="checkbox"
-          :value="domain"
           class="peer outline-none"
-          @keydown.space="
-            updateTopdomain(domain),
-              () => {
-                topdomains.includes(domain)
-                  ? deleteValueFromList(topdomains, domain)
-                  : topdomains.push(domain);
-              }
-          "
+          @update="updateTopdomain(domain)"
+          @keydown.space="updateTopdomain(domain)"
         />
         <label
           :for="domain"
@@ -35,7 +28,7 @@
               aria-hidden="true"
             />
             <Icon
-              v-else-if="topdomains.length === 0"
+              v-else-if="Object.keys(searchInterface.domain).length === 0"
               name="mdi:checkbox-intermediate"
               size="1.4em"
               class="text-tpblue-400"
@@ -130,16 +123,16 @@ const deactivatedDomains = computed(() => {
 
 onClickOutside(wrapper, () => (panel.value = false));
 
-function updateTopdomain(domain: string) {
-  if (topdomains.value.includes(domain)) {
-    delete searchInterface.value.domain[domain];
+function updateTopdomain(pdomain: string) {
+  if (searchInterface.value.domain[pdomain]) {
+    delete searchInterface.value.domain[pdomain];
     // delete all subdomain data from interface
-    const subdomains = getAllKeys(domainData.value[domain]);
+    const subdomains = getAllKeys(domainData.value[pdomain]);
     subdomains.forEach((subdomain) => {
       delete searchInterface.value.domain[subdomain];
     });
   } else {
-    searchInterface.value.domain[domain] = true;
+    searchInterface.value.domain[pdomain] = true;
   }
 }
 </script>
