@@ -46,14 +46,14 @@
         class="text-tpblue-400"
         aria-hidden="true"
       />
-      <span class="pl-2">{{ lazyLocales[locale][label] || label }}</span>
+      <span class="pl-2">{{ lalo[locale][label] || label }}</span>
     </label>
   </div>
 </template>
 
 <script setup lang="ts">
 const locale = useLocale();
-const lazyLocales = useLazyLocales();
+const lalo = useLazyLocales();
 
 const props = defineProps({
   modelValue: { type: Object, required: true },

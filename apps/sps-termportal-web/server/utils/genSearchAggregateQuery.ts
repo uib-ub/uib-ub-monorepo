@@ -106,11 +106,11 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
   ) => {
     const aggregatePredFilter = () => {
       if (searchOptions.matching[0] === "all") {
-        return ""
+        return "";
       } else {
-        return `?uri ${predFilter} ?label .`
+        return `?uri ${predFilter} ?label .`;
       }
-    }
+    };
     const content = {
       count: {
         all: {
@@ -171,8 +171,8 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
         context: `
         ${aggregatePredFilter()}
             ?uri ${
-                    searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
-                  } ?context.
+              searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
+            } ?context.
                     BIND (replace(str(?context), "${
                       runtimeConfig.public.base
                     }", "") as ?prop)`,
@@ -287,6 +287,5 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
       }
     }`;
 
-  console.log(queryAggregate());
   return queryAggregate();
 }

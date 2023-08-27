@@ -594,7 +594,6 @@ export default {
       const searchterm = useSearchterm();
 
       if (searchterm.value.length) {
-        console.log("del");
         searchterm.value = "";
       } else {
         if (this.overlayVisible) {
