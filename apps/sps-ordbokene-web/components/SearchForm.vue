@@ -59,11 +59,11 @@ const autocomplete_error = (error) => {
 
 <style scoped>
 form {
-      @apply md:mx-10 mx-1;
+      @apply md:mx-10;
     }
 
 .welcome form {
-  @apply md:mx-0;
+  @apply lg:mx-0;
 }
 
   
