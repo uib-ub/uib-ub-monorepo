@@ -18,6 +18,7 @@ export interface SearchDataStats {
   samling?: { [key in Samling]: number };
   predicate?: { [key in LabelPredicate]: number };
   matching?: { [key in Matching]: number };
+  context?: { string: number };
 }
 
 export interface SearchInterface {
@@ -103,6 +104,7 @@ export const useSearchFilterData = () =>
     samling: [],
     predicate: [],
     matching: [],
+    context: [],
   }));
 export const useSearchFetchLatest = () =>
   useState<number>("searchFetchLatest", () => NaN);
