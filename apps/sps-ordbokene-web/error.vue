@@ -1,5 +1,5 @@
 <template>
-  <div class="error-page flex flex-col items-center justify-center h-screen">
+  <main class="error-page flex flex-col items-center justify-center h-screen">
     <img v-if="error.statusCode == 404" alt="404" src="assets/images/error-illustration.svg"/>
 
     <h1 v-if="error.statusCode == 404" class="mt-10" >{{$t('error.404.title')}}</h1>
@@ -8,12 +8,21 @@
       {{$t(`error.${error.statusCode == 404 && 404 || 'generic'}.description`)}}
     </p>
     <NuxtLink class="m-5" to="/">{{$t('home')}}</NuxtLink>
-    </div>
-
+    </main>
 </template>
 
-<script>
-  export default {
-    props: ['error'],
-  }
+<script setup>
+import { useI18n } from 'vue-i18n'
+const i18n = useI18n()
+const props = defineProps({
+  error: Object
+})
+
+useHead({
+    htmlAttrs: {
+      lang: {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
+    },
+    title: props.error.statusCode + ": " + i18n.t('error.404.title')
+})
+
 </script>
