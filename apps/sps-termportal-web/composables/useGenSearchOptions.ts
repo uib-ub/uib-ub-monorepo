@@ -70,6 +70,14 @@ export default function (situation: string, options?: SearchOptions) {
     if (searchFilterData.value.matching.length > 0) {
       newOptions.matching = searchFilterData.value.matching.map((e) => [e]);
     }
+    if (searchInterface.value.useDomain) {
+      if (searchFilterData.value.context.length > 0) {
+        newOptions.domain = searchFilterData.value.context;
+      }
+    } else if (searchFilterData.value.context.length > 0) {
+      newOptions.termbase = searchFilterData.value.context;
+    }
+
     // Check if flattened array includes "full"
     // Happens when filter is used
     if (newOptions.matching.flat().includes("full")) {
