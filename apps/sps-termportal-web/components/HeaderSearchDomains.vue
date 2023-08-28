@@ -52,7 +52,7 @@
     <div class="">
       <div
         v-if="panel"
-        class="absolute grid w-[53.5em] grid-cols-3 rounded-[7px] border border-gray-300 bg-white shadow-md"
+        class="absolute grid w-[53.5em] grid-cols-3 z-10 rounded-[7px] border border-gray-300 bg-white shadow-md"
       >
         <div
           v-for="topdomain of panelTopdomains"
