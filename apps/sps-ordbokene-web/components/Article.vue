@@ -615,7 +615,7 @@ display: flex;
 }
 
 .article-column>li .result-list-item {
-border-bottom: solid 1px theme('colors.gray.200') ;
+border-bottom: solid 1px theme('colors.gray.100') ;
 }
 
 

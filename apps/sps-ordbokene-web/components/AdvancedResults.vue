@@ -190,31 +190,6 @@ navigateTo({query: {...route.query, ...{page: parseInt(page.value || "1") + chan
 
 <style scoped>
 
-.result-count {
-  font-size: 1rem;
-}
-
-ol.article-column>li {
-list-style: none;
-}
-
-ol.article-column {
-margin: 0px;
-padding: 0px;
-}
-
-ol.article-column  {
-  border: solid 1px rgba(0,0,0, .5);
-  @apply bg-white;
-  box-shadow: 2px 2px 0px rgba(0,0,0, .5);
-  padding: 0rem;
-  width: 100%;
-}
-
-ol.article-column:empty  {
-  display: none;
-}
-
 
 
 button[disabled] {
