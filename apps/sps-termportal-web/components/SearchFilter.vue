@@ -40,7 +40,7 @@
         :key="title"
       >
         <SearchFilterFieldset
-          v-if="data.length > 0"
+          v-if="displaySection(key)"
           :title="title"
           :fkey="key"
           class="pt-1"
@@ -62,4 +62,13 @@
 const showSearchFilter = useShowSearchFilter();
 const searchDataStats = useSearchDataStats();
 const localeLangOrder = useLocaleLangOrder();
+const searchInterface = useSearchInterface();
+
+const displaySection = (key) => {
+  if (key === "lang" && searchInterface.value.language !== "all") {
+    return false;
+  } else {
+    return true;
+  }
+};
 </script>
