@@ -221,7 +221,7 @@
 "error": {
       "article": "An error has occured in article {no} in {dict}",
       "404": {
-          "title": "404: Not Found",
+          "title": "Not Found",
           "description": "The page may have been deleted or moved, or you may have used an invalid link."
       },
       "503": {

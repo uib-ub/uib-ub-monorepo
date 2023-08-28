@@ -223,7 +223,7 @@
     "error": {
           "article": "Det har oppstått ein feil i artikkel {no} i {dict}",
           "404": {
-              "title": "404: Ikkje funne",
+              "title": "Ikkje funne",
               "description": "Sida kan ha blitt sletta eller flytta, eller du kan ha brukt ei ugyldig lenkje."
           },
           "503": {
