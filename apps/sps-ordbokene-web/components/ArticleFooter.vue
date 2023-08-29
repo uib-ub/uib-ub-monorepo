@@ -1,8 +1,8 @@
 <template>
-<div class="flex mt-4 flex-wrap gap-y-4">
+<div class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
   <client-only>
-    <div role="toolbar" class="flex flex gap-2 flex-wrap gap-y-4">
-    <button v-if="($route.name == 'article' || !webShareApiSupported) && showLinkCopy" class="btn btn-borderless px-3" @click="copy_link">
+    <div role="toolbar" class="flex gap-2 flex-wrap gap-y-4">
+    <button v-if="showLinkCopy" class="btn btn-borderless px-3" @click="copy_link">
       <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
       <span>{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
     </button>
@@ -16,8 +16,8 @@
   </client-only>
 
 <span v-if="$route.name != 'article'" class="px-4 pt-1 ml-auto">
-    <NuxtLink class="whitespace-nowrap border-none"  :to="`/${dict}/${article_id}`">
-      <span class="hoverlink">{{$t("article.open", 1, { locale: content_locale})}}</span>  <Icon name="bi:arrow-right" size="1.25em" class="mb-1 text-primary"/>
+    <NuxtLink class="whitespace-nowrap"  :to="`/${dict}/${article_id}`">
+      <span>{{$t("article.open", 1, { locale: content_locale})}}</span>
     </NuxtLink>
     </span>
     
