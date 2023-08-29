@@ -1,27 +1,28 @@
 <template>
-
-<div class="flex mt-6 justify-center sm:justify-between lg:justify-center xl:justify-between flex-wrap gap-y-4">
+<div class="flex justify-between gap-3 gap-y-4 mt-6">
   
-  <client-only role="toolbar" class="flex gap-3">
+  <client-only>
+    <div role="toolbar" class="grid grid-cols-3 gap-3" v-bind:class="{'lg:gap-6 xl:gap-3': store.dict == 'bm,nn'}">
   <button class="btn btn-borderless" :id="'copy-link-'+article_id" v-if="showLinkCopy" @click="copy_link">
     <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="md:mr-3 mb-1 text-primary"/>
-    <span class="sr-only md:not-sr-only">{{ linkCopied ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
+    <span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{ linkCopied ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
   </button>
   <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
-      <Icon name="bi:share-fill" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only">{{$t("article.share", 1, { locale: content_locale})}}</span>
+      <Icon name="bi:share-fill" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.share", 1, { locale: content_locale})}}</span>
   </button>
     <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
-      <Icon name="bi:quote" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only">{{$t("article.cite", 1, { locale: content_locale})}}</span>
+      <Icon name="bi:quote" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.cite", 1, { locale: content_locale})}}</span>
     </button>
-  </client-only>
+  </div></client-only>
 
-    <span class="px-4 pt-1 sm:ml-auto lg:ml-0 xl-ml-auto w-100">
-    <NuxtLink class="border-none whitespace-nowrap" v-if="$route.name != 'article'" :to="`/${dict}/${article_id}`">
-      <span class=" hoverlink">{{$t("article.open", 1, { locale: content_locale})}}</span> <Icon name="bi:arrow-right" size="1.25em" class="mb-1 text-primary"/>
+<span class="px-4 pt-1">
+    <NuxtLink class="whitespace-nowrap" v-if="$route.name != 'article'" :to="`/${dict}/${article_id}`">
+      <span class=" hoverlink">{{$t("article.open", 1, { locale: content_locale})}}</span>
     </NuxtLink>
     </span>
+    
 </div>
-<div class="cite-container p-4 pb-1 pt-2 mt-2" v-if="cite_expanded" :id="'cite-'+article_id">
+  <div class="cite-container p-4 pb-1 pt-2 mt-2" v-if="cite_expanded" :id="'cite-'+article_id">
       <h4>{{$t('article.cite_title')}}</h4>
       <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
       <div id="citation" v-html="$t('article.citation', create_citation())" />
@@ -29,8 +30,9 @@
         <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
       </button>
       <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
-
 </div>
+
+
 </template>
 
 <script setup>
