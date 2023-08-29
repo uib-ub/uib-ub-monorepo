@@ -48,9 +48,6 @@ a {
     @apply md:p-2;
 }
 
-    .suggest-link:hover .link-content {
-        @apply underline;
-    }
     
     li:not(:last-child) {
         border-bottom: solid 1px theme('colors.gray.300')
