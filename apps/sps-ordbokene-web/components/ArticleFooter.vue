@@ -1,7 +1,7 @@
 <template>
 <div class="flex justify-between gap-3 gap-y-4 mt-6">
   <client-only>
-    <div role="toolbar" class="grid grid-cols-3 gap-3" v-bind:class="{'lg:gap-6 xl:gap-3': store.dict == 'bm,nn'}">
+    <div role="toolbar" class="grid grid-cols-3 gap-3" v-bind:class="{'lg:gap-4 xl:gap-1': store.dict == 'bm,nn'}">
     <button class="btn btn-borderless" v-if="showLinkCopy" @click="copy_link">
       <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="md:mr-3 mb-1 text-primary"/>
       <span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
