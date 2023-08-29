@@ -1,19 +1,19 @@
 <template>
 <div class="flex justify-between gap-3 gap-y-4 mt-6">
-  
   <client-only>
     <div role="toolbar" class="grid grid-cols-3 gap-3" v-bind:class="{'lg:gap-6 xl:gap-3': store.dict == 'bm,nn'}">
-  <button class="btn btn-borderless" :id="'copy-link-'+article_id" v-if="showLinkCopy" @click="copy_link">
-    <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="md:mr-3 mb-1 text-primary"/>
-    <span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{ linkCopied ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
-  </button>
-  <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
-      <Icon name="bi:share-fill" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.share", 1, { locale: content_locale})}}</span>
-  </button>
-    <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
-      <Icon name="bi:quote" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.cite", 1, { locale: content_locale})}}</span>
+    <button class="btn btn-borderless" v-if="showLinkCopy" @click="copy_link">
+      <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="md:mr-3 mb-1 text-primary"/>
+      <span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
     </button>
-  </div></client-only>
+    <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
+        <Icon name="bi:share-fill" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.share", 1, { locale: content_locale})}}</span>
+    </button>
+      <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
+        <Icon name="bi:quote" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.cite", 1, { locale: content_locale})}}</span>
+      </button>
+    </div>
+  </client-only>
 
 <span class="px-4 pt-1">
     <NuxtLink class="whitespace-nowrap" v-if="$route.name != 'article'" :to="`/${dict}/${article_id}`">
@@ -48,7 +48,6 @@ const props = defineProps({
 })
 
 const cite_expanded = ref(false)
-const linkCopied = ref(false);
 const citationCopied = ref(false);
 
 
@@ -72,13 +71,11 @@ const shareViaWebShare = () => {
       })
       };
 
-      const copy_link = (event) => {
-  let link = create_link();
 
+const copy_link = (event) => {
+  let link = create_link();
   navigator.clipboard.writeText(link).then(() => {
-    console.log("SUCCESS");
-    store.copied = event.target.id;
-    linkCopied.value = true; // Set the linkCopied value to true
+    store.copied = link;
   }).catch(err => {
     console.log("ERROR COPYING:", err);
   });
