@@ -1,16 +1,16 @@
 <template>
-<div class="flex justify-between gap-3 gap-y-4 mt-6">
+<div class="flex justify-between gap-1 mt-6">
   <client-only>
-    <div role="toolbar" class="grid grid-cols-3 gap-3" v-bind:class="{'lg:gap-4 xl:gap-1': store.dict == 'bm,nn'}">
-    <button class="btn btn-borderless" v-if="showLinkCopy" @click="copy_link">
-      <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="md:mr-3 mb-1 text-primary"/>
-      <span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
+    <div role="toolbar" class="flex gap-6">
+    <button class="btn btn-borderless px-3" v-if="showLinkCopy" @click="copy_link">
+      <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="sm:mr-3 mb-1 text-primary"/>
+      <span class="sr-only sm:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
     </button>
-    <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
-        <Icon name="bi:share-fill" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.share", 1, { locale: content_locale})}}</span>
+    <button class="btn btn-borderless px-3" v-if="webShareApiSupported" @click="shareViaWebShare">
+        <Icon name="bi:share-fill" class="sm:mr-3 mb-1 text-primary"/><span class="sr-only sm:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.share", 1, { locale: content_locale})}}</span>
     </button>
-      <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
-        <Icon name="bi:quote" class="md:mr-3 mb-1 text-primary"/><span class="sr-only md:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.cite", 1, { locale: content_locale})}}</span>
+      <button class="btn btn-borderless px-3" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
+        <Icon name="bi:quote" class="sm:mr-3 mb-1 text-primary"/><span class="sr-only sm:not-sr-only" v-bind:class="{'lg:sr-only xl:not-sr-only': store.dict == 'bm,nn'}">{{$t("article.cite", 1, { locale: content_locale})}}</span>
       </button>
     </div>
   </client-only>
