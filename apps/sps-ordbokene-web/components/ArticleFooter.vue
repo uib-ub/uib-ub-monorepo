@@ -12,6 +12,15 @@
       <button class="btn btn-borderless px-3" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
         <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
       </button>
+      <div class="cite-container p-4 pb-1 pt-2 mt-2" v-if="cite_expanded" :id="'cite-'+article_id">
+      <h4>{{$t('article.cite_title')}}</h4>
+      <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
+      <div id="citation" v-html="$t('article.citation', create_citation())" />
+      <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation">
+        <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
+      </button>
+      <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
+</div>
     </div>
   </client-only>
 
@@ -22,15 +31,7 @@
     </span>
     
 </div>
-  <div class="cite-container p-4 pb-1 pt-2 mt-2" v-if="cite_expanded" :id="'cite-'+article_id">
-      <h4>{{$t('article.cite_title')}}</h4>
-      <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
-      <div id="citation" v-html="$t('article.citation', create_citation())" />
-      <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation">
-        <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
-      </button>
-      <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
-</div>
+  
 
 
 </template>
