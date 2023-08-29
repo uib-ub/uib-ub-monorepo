@@ -1,7 +1,7 @@
 <template>
 
 <div class="flex mt-6 justify-between gap-4 flex-wrap">
-  <div role="toolbar" class="flex justify-around gap-3 flex-wrap">
+  <client-only role="toolbar" class="flex justify-around gap-3 flex-wrap">
   <button class="btn btn-borderless" :id="'copy-link-'+article_id" v-if="showLinkCopy" @click="copy_link">
     <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="sm:mr-3 mb-1 text-primary"/>
     <span class="sr-only sm:not-sr-only">{{ linkCopied ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
@@ -12,7 +12,7 @@
     <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
       <Icon name="bi:quote" class="sm:mr-3 mb-1 text-primary"/><span class="sr-only sm:not-sr-only">{{$t("article.cite", 1, { locale: content_locale})}}</span>
     </button>
-</div>
+  </client-only>
 
     <span class="px-4 pt-1 ml-auto">
     <NuxtLink class="border-none whitespace-nowrap" v-if="$route.name != 'article'" :to="`/${dict}/${article_id}`">
