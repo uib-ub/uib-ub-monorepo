@@ -221,7 +221,7 @@
         "cite_title": "Sitere artikkelen",
         "cite_description": ["Ønsker du å sitere denne artikkelen i ",", anbefaler vi å oppgi når artikkelen ble hentet (lest), f.eks. slik:"],
         "download": "Last ned RIS-fil",
-        "link_copied": "Lenken er kopiert",
+        "link_copied": "Kopiert",
         "citation_copied": "Sitatet er kopiert",
         "citation": "«{lemma}». I: <em>{dict}.</em> Språkrådet og Universitetet i Bergen. &lt;<a href='{link}'>{link}</a>&gt; (hentet {dd}.{mm}.{yyyy}).",
         "headings": {
