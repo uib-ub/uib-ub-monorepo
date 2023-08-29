@@ -103,7 +103,7 @@
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
         border-width: 1px;
-        font-weight: 600;
+
         @apply  duration-200;
       }
       
