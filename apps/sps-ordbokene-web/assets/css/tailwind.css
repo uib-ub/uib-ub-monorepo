@@ -62,7 +62,7 @@
     }
 
       
-    section a, .secondary-page a, .error-page a {
+    section a, .secondary-page a, .error-page a, a:hover .hoverlink {
       border-bottom: 2px solid;
       @apply border-anchor;
     }

@@ -1,15 +1,24 @@
 <template>
-<client-only>
-<div class="flex justify-around gap-3 mt-3 flex-wrap">
+
+<div class="flex mt-6 justify-between gap-4 flex-wrap">
+  <div role="toolbar" class="flex justify-around gap-3 flex-wrap">
   <button class="btn btn-borderless" :id="'copy-link-'+article_id" v-if="showLinkCopy" @click="copy_link">
-    <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>{{ linkCopied ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }}
+    <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="sm:mr-3 mb-1 text-primary"/>
+    <span class="sr-only sm:not-sr-only">{{ linkCopied ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
   </button>
   <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
-      <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
+      <Icon name="bi:share-fill" class="sm:mr-3 mb-1 text-primary"/><span class="sr-only sm:not-sr-only">{{$t("article.share", 1, { locale: content_locale})}}</span>
   </button>
     <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
-      <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
+      <Icon name="bi:quote" class="sm:mr-3 mb-1 text-primary"/><span class="sr-only sm:not-sr-only">{{$t("article.cite", 1, { locale: content_locale})}}</span>
     </button>
+</div>
+
+    <span class="px-4 pt-1 ml-auto">
+    <NuxtLink class="border-none whitespace-nowrap" v-if="$route.name != 'article'" :to="`/${dict}/${article_id}`">
+      <span class=" hoverlink">{{$t("article.open", 1, { locale: content_locale})}}</span> <Icon name="bi:arrow-right" size="1.25em" class="mb-1 text-primary"/>
+    </NuxtLink>
+    </span>
 </div>
 <div class="cite-container p-4 pb-1 pt-2 mt-2" v-if="cite_expanded" :id="'cite-'+article_id">
       <h4>{{$t('article.cite_title')}}</h4>
@@ -21,7 +30,6 @@
       <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
 
 </div>
-</client-only>
 </template>
 
 <script setup>
