@@ -6,7 +6,7 @@
     <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
 
     <div class="flex">
-      <SideBar/>
+      <SideBar />
       <div
         v-if="searchData.length > 0"
         class="hidden flex-col md:flex md:w-60 lg:w-1/3"
