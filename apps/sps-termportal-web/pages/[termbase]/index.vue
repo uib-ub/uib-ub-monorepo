@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <Head>
       <Title
         >{{
@@ -11,68 +11,72 @@
         | Termportalen</Title
       >
     </Head>
-    <h1 id="main" class="pb-2 pt-5 text-2xl">
-      <AppLink to="#main">
-        {{
-          lalo[locale][termbase + "-3A" + termbase] ||
-          data?.label[0]["@value"] ||
-          data?.label[0] ||
-          termbase
-        }}
-      </AppLink>
-    </h1>
-    <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
-      <!--Description-->
-      <div class="basis-GRb space-y-2">
-        <p v-for="p in description" :key="p" v-html="p" />
-      </div>
-      <!--Table-->
-      <aside class="basis-GRs">
-        <table>
-          <tbody>
-            <!--Organisation-->
-            <DataRow
-              v-if="data?.publisher?.label?.['@value']"
-              :data="data?.publisher?.label['@value']"
-              :label="$t('termbase.organisation')"
-            />
-            <!--Organisation number-->
-            <DataRow
-              v-if="data?.publisher?.identifier"
-              :data="data?.publisher?.identifier"
-              :label="$t('termbase.orgnr')"
-            />
-
-            <!--Email-->
-            <DataRow
-              v-if="data?.contactPoint?.hasEmail"
-              :data="data?.contactPoint?.hasEmail.split(':')[1]"
-              :label="$t('termbase.email')"
-              :to="data?.contactPoint?.hasEmail"
-            />
-            <!--Telephone-->
-            <DataRow
-              v-if="data?.contactPoint?.hasTelephone"
-              :data="data?.contactPoint?.hasTelephone"
-              :label="$t('termbase.telephone')"
-            />
-            <!--Languages-->
-            <DataRow
-              v-if="data?.language"
-              :data="intersectUnique(localeLangOrder, data.language).map((lang: LangCode) => $t(`global.lang.${lang}`, 2)) .join(', ')"
-              :label="$t('global.language', 1)"
-            />
-            <!--Starting languages-->
-            <DataRow
-              v-if="data?.opprinneligSpraak"
-              :data="$t('global.lang.' + data.opprinneligSpraak, 2)"
-              :label="$t('termbase.startLang')"
-            />
-          </tbody>
-        </table>
-      </aside>
+    <div class="flex">
+      <SideBar />
+      <main>
+        <h1 id="main" class="pb-2 pt-5 text-2xl">
+          <AppLink to="#main">
+            {{
+              lalo[locale][termbase + "-3A" + termbase] ||
+              data?.label[0]["@value"] ||
+              data?.label[0] ||
+              termbase
+            }}
+          </AppLink>
+        </h1>
+        <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
+          <!--Description-->
+          <div class="basis-GRb space-y-2">
+            <p v-for="p in description" :key="p" v-html="p" />
+          </div>
+          <!--Table-->
+          <aside class="basis-GRs">
+            <table>
+              <tbody>
+                <!--Organisation-->
+                <DataRow
+                  v-if="data?.publisher?.label?.['@value']"
+                  :data="data?.publisher?.label['@value']"
+                  :label="$t('termbase.organisation')"
+                />
+                <!--Organisation number-->
+                <DataRow
+                  v-if="data?.publisher?.identifier"
+                  :data="data?.publisher?.identifier"
+                  :label="$t('termbase.orgnr')"
+                />
+                <!--Email-->
+                <DataRow
+                  v-if="data?.contactPoint?.hasEmail"
+                  :data="data?.contactPoint?.hasEmail.split(':')[1]"
+                  :label="$t('termbase.email')"
+                  :to="data?.contactPoint?.hasEmail"
+                />
+                <!--Telephone-->
+                <DataRow
+                  v-if="data?.contactPoint?.hasTelephone"
+                  :data="data?.contactPoint?.hasTelephone"
+                  :label="$t('termbase.telephone')"
+                />
+                <!--Languages-->
+                <DataRow
+                  v-if="data?.language"
+                  :data="intersectUnique(localeLangOrder, data.language).map((lang: LangCode) => $t(`global.lang.${lang}`, 2)) .join(', ')"
+                  :label="$t('global.language', 1)"
+                />
+                <!--Starting languages-->
+                <DataRow
+                  v-if="data?.opprinneligSpraak"
+                  :data="$t('global.lang.' + data.opprinneligSpraak, 2)"
+                  :label="$t('termbase.startLang')"
+                />
+              </tbody>
+            </table>
+          </aside>
+        </div>
+      </main>
     </div>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">

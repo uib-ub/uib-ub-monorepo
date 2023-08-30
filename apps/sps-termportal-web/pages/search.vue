@@ -3,31 +3,36 @@
     <Head>
       <Title> {{ $t("search.title") }} | {{ $t("index.title") }} </Title>
     </Head>
-    <h1 class="sr-only">{{ $t("search.title") }}</h1>
-    <SearchStatusBar />
-    <div class="xl:flex">
-      <SearchFilter />
-      <main class="grow">
-        <h2 id="main" class="pb-2 pt-3 text-2xl">
-          <AppLink to="#main">
-            {{ $t("searchFilter.results-heading") }}</AppLink
-          >
-        </h2>
-        <ol
-          v-if="searchData.length > 0"
-          ref="scrollComponent"
-          aria-labelledby="main"
-        >
-          <SearchResultListEntry
-            v-for="entry in searchData"
-            :key="entry.link + '_' + entry.label"
-            :entry-data="entry"
-          />
-        </ol>
-        <TransitionOpacity v-if="false" class="flex justify-center p-2">
-          <SpinnerIcon v-if="pending && countFetchedMatches > 30" />
-        </TransitionOpacity>
-      </main>
+    <div class="flex">
+      <SideBar />
+      <div class="flex-1">
+        <h1 class="sr-only">{{ $t("search.title") }}</h1>
+        <SearchStatusBar />
+        <div class="xl:flex">
+          <SearchFilter />
+          <main class="grow">
+            <h2 id="main" class="pb-2 pt-3 text-2xl">
+              <AppLink to="#main">
+                {{ $t("searchFilter.results-heading") }}</AppLink
+              >
+            </h2>
+            <ol
+              v-if="searchData.length > 0"
+              ref="scrollComponent"
+              aria-labelledby="main"
+            >
+              <SearchResultListEntry
+                v-for="entry in searchData"
+                :key="entry.link + '_' + entry.label"
+                :entry-data="entry"
+              />
+            </ol>
+            <TransitionOpacity v-if="false" class="flex justify-center p-2">
+              <SpinnerIcon v-if="pending && countFetchedMatches > 30" />
+            </TransitionOpacity>
+          </main>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -6,13 +6,9 @@
       :class="{ 'items-center justify-center': route.path === '/' }"
     >
       <div
-        v-if="route.path !== '/'"
-        class="w-0 xl:w-[10vw] xl:min-w-[10em] xl:max-w-[13em]"
-      ></div>
-      <div
         class="container flex-1"
         :class="{
-          'max-w-screen-xl px-2 pb-3 pt-2 xs:pb-4 sm:px-3 md:px-4 lg:px-5 xl:pl-0':
+          'max-w-screen-lg px-2 pb-3 pt-2 xs:pb-4 sm:px-3 md:px-4 lg:px-5 xl:pl-0':
             route.path !== '/',
           'mb-[10vh] max-w-5xl p-5': route.path === '/',
         }"
