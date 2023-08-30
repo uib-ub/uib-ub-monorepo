@@ -174,8 +174,8 @@
 "notifications": {
     "redirect": "Showing senses of the dictionary entry",
     "translation": "Compare to machine translation suggested by Apertium:",
-    "inflected": "Other results in {dict}:",
-    "other_inflected": "“{word}” is also a form of:",
+    "translation_title": "Machine translation",
+    "inflected": "Avn inflection of:",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",
     "similar_bm": "Add similar results from Bokmålsordboka: ",

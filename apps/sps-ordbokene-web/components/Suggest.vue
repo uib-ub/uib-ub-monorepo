@@ -1,14 +1,18 @@
 <template>
-   <div class="mb-10">
-    <div v-if="translated" class ="callout"><Icon name="bi:robot" class="mr-3 mb-1 text-primary"/><span id="translation-description">{{$t('notifications.translation')}}</span>{{" "}}
-        <NuxtLink noPrefetch :to="`/bm,nn/${store.q}|${translated}`"><span aria-describedby="translation-description" class="link-content">{{translated}}</span></NuxtLink>
+   <div class="mb-10 mx-2 flex flex-col gap-8 mt-3">
+    <div v-if="inflections.length" class ="callout py-0 my-0">
+        <SuggestResults :suggestions="inflections"  :dict="dict">
+            <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.inflected', {dict: $t('dicts.'+dict)})}}</h3><span id="translation-description"></span>{{" "}}
+        </SuggestResults>
     </div>
-    <SuggestResults v-if="inflections.length" :suggestions="inflections"  :dict="dict">
-        <h3>{{$t('notifications.inflected', {dict: $t('dicts.'+dict)})}}</h3>
-    </SuggestResults>
-    <SuggestResults v-if="suggest.length" :suggestions="suggest" :dict="dict">
-        <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
-    </SuggestResults>
+    <div v-if="translated.length" class ="callout py-0 my-0">
+        <SuggestResults :suggestions="translated"  :dict="dict" icon="bi:book-half">
+                <h3><Icon name="bi:robot" size="1rem" class="mr-3"/>{{$t('notifications.translation_title')}}</h3><p class="pt-2">{{$t('notifications.translation')}}</p>
+        </SuggestResults>
+    </div>
+        <SuggestResults v-if="suggest.length" :suggestions="suggest" :dict="dict">
+            <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
+        </SuggestResults>
     <div v-if="!( articles_meta[dict].total || translated || inflections.length || suggest.length )" class="callout">Ingen treff</div>
   </div>
 
@@ -28,7 +32,7 @@ const props = defineProps({
 const suggestQuery = `${store.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eis`
 const apertiumQuery = `https://apertium.org/apy/translate?langpair=${store.dict == 'bm,nn' ? {bm: 'nno|nob', nn: 'nob|nno'}[props.dict] : {bm: 'nno|nob', nn: 'nob|nno'}[props.dict]}&q=${store.q}`
 
-const translated = ref()
+const translated = ref([])
 const inflections = ref([])
 const suggest = ref([])
 
@@ -46,16 +50,16 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                                 const inflect = suggestResponse.a.inflect
                                 if (exact && exact[0][0].length == translatedText.length && exact[0][0] != store.q) {
                                     if (store.dict=='bm,nn' && props.articles_meta[props.dict].total == 0) {
-                                        translated.value = exact[0][0]
+                                        translated.value.push(exact[0][0])
                                     }
                                     if (!suggest.value.includes(exact[0][0]) && !store.lemmas[props.dict].has(exact[0][0])) {
-                                        suggest.value.unshift(exact[0])
+                                        suggest.value.unshift(exact[0][0])
                                     }
                                     
                                 }
                                 else if (inflect && inflect[0][0] != store.q) {
                                     if (!suggest.value.includes(inflect[0][0]) && !store.lemmas[props.dict].has(inflect[0][0]) && !inflections.value.includes(inflect[0])) {
-                                        suggest.value.unshift(inflect[0])
+                                        suggest.value.unshift(inflect[0][0])
                                     }
 
                                 }
@@ -74,7 +78,7 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                                     && item[0].slice(-1) != '-' 
                                     && !store.lemmas[props.dict].has(item[0])
                                     ) {
-                                        inflections.value.push(item)
+                                        inflections.value.push(item[0])
                                     }
                                 });
                             }
@@ -87,7 +91,7 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                                         && !suggest.value.includes(item)
                                         && (item[0].length <= store.q.length
                                             || (item[0].slice(0, store.q.length) !=store.q && item[0].slice(0, store.q.length) != store.q && item[0] != "å " + store.q && item[0] != "å " + store.q))) {
-                                                suggest.value.unshift(item)
+                                                suggest.value.unshift(item[0])
                                         }
 
                                     }
@@ -100,7 +104,7 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                                         && item[0].slice(-1) != '-'
                                         && !store.lemmas[props.dict].has(item[0])
                                         && !suggest.value.includes(item)) {
-                                        suggest.value.push(item)
+                                        suggest.value.push(item[0])
                                     }
                                 })
                             

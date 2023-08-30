@@ -186,9 +186,9 @@
     },
     "notifications": {
         "redirect": "Viser betydninger av oppslagsordet",
-      "translation": "Sammenlign med maskinoversettelse foreslått av Apertium:",
-        "inflected": "Andre treff i {dict}:",
-        "other_inflected": "«{word}» er også en form av:",
+        "translation": "Sammenlign med maskinoversettelse foreslått av Apertium:",
+        "translation_title": "Maskinoversettelse",
+        "inflected": "Bøyd form av:",
         "did_you_mean": "Mente du:",
         "similar": "Lignende oppslagsord:",
         "similar_bm": "Legg til lignende treff fra Bokmålsordboka: ",

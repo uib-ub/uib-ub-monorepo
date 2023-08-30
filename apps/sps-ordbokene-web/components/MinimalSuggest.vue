@@ -1,5 +1,5 @@
 <template>
-   <div class="mb-10">
+   <div class="mb-10 mx-2">
     <SuggestResults :minimal="true" :dict="dict" v-if="!pending && data.length" :suggestions="data"><h3>{{$t('notifications.similar')}}</h3></SuggestResults>
   </div>
 
@@ -19,7 +19,7 @@ const { data, error, pending } = useFetch(query, {key: query,
                                     transform: response => {
                                         if (response.a && response.a.similar) {
                                             return response.a.similar.filter(item => item[0] != "-"
-                                                                                    && item[0].slice(-1) != '-' )
+                                                                                    && item[0].slice(-1) != '-' ).map(pair => pair[0])
                                         }
                                         else {
                                             return []
