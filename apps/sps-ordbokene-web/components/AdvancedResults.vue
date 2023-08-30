@@ -24,7 +24,7 @@
           </component>
         </component>
       </section>
-      <section class="lg:grid-cols-6" :aria-label="$t('dicts.nn')">
+      <section class="lg:grid-cols-6" aria-labelledby="nn_heading">
         <div class="py-2 px-2">
           <h2 id="nn_heading" class="">{{$t('dicts.nn')}} 
             <span class="result-count-text">{{articles.meta.nn.total}}</span>
@@ -63,8 +63,8 @@
             </NuxtErrorBoundary>
           </component>
         </component>
-      </div>
-      <div v-if="(route.query.dict == 'nn' )  && articles.meta.nn">
+      </section>
+      <section v-if="(route.query.dict == 'nn' )  && articles.meta.nn" aria-labelledby="nn_heading">
         <div class="py-2 px-2">
           <h2 id="nn_heading" class="">{{$t('dicts.nn')}} 
             <span class="result-count-text">{{articles.meta.nn.total}}</span>
@@ -81,7 +81,7 @@
             </NuxtErrorBoundary>
           </component>
         </component>
-      </div>
+      </section>
       
     </div>
     <div v-if="pages > 1" class="p-2 py-6 md:p-8 flex md:flex-wrap justify-center flex md:gap-4">
