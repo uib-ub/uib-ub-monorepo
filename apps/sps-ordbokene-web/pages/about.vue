@@ -204,7 +204,7 @@
             <p><a href="https://www.sprakradet.no/">Språkrådet</a> avgjer korleis ord skal skrivast og bøyast på bokmål og nynorsk. <em>Bokmålsordboka</em> og <em>Nynorskordboka</em>blir løpande oppdaterte i tråd med rettskrivingsvedtak i Språkrådet, så det er her du finn fasiten på kva som er gjeldande og fullstendig rettskriving i bokmål og nynorsk.</p>
             <p>
               Sidan 2016 har det redaksjonelle arbeidet med standardordbøkene blitt utført ved Universitetet i Bergen, der fleire avdelingar er involverte.
-              <a href="https://www.uib.no/en/ub/spesial/161345/about-norwegian-language-collections">Språksamlingane</a> forvaltar ordbøkene og kjeldegrunnlaget dei byggjer på, ordbokredaktørane
+              <a href="https://www.uib.no/ub/spesialsamlingene/160666/om-spr%C3%A5ksamlingane">Språksamlingane</a> forvaltar ordbøkene og kjeldegrunnlaget dei byggjer på, ordbokredaktørane
               er tilsette ved <a href="https://www.uib.no/lle">Institutt for lingvistiske, litterære og estetiske studium</a>, og det datatekniske arbeidet går føre seg ved 
               <a href="https://www.uib.no/it">IT-avdelinga</a>. Innhaldet i ordbøkene er kvalitetssikra av Språkrådet.
             </p>
@@ -754,7 +754,7 @@
   <Collapsible id="quality" is="h3" :header="$t('about.items[1].title')">
             <p><em>Bokmålsordboka</em> og <em>Nynorskordboka</em> er to selvstendige, enspråklige ordbøker for henholdsvis bokmål og nynorsk. Ordbøkene eies av Språkrådet og Universitetet i Bergen i fellesskap.</p>
             <p><a href="https://www.sprakradet.no/">Språkrådet</a> avgjør hvordan ord skal skrives og bøyes på bokmål og nynorsk. <em>Bokmålsordboka</em> og <em>Nynorskordboka</em> blir løpende oppdatert i tråd med rettskrivingsvedtak i Språkrådet, så det er her du finner fasiten på hva som er gjeldende og fullstendig rettskriving i bokmål og nynorsk. </p>
-          <p>Siden 2016 har det redaksjonelle arbeidet med standardordbøkene blitt utført ved Universitetet i Bergen, der flere avdelinger er involvert. <a href="https://www.uib.no/en/ub/spesial/161345/about-norwegian-language-collections">Språksamlingane</a> forvalter ordbøkene og kildegrunnlaget de bygger på, ordbokredaktørene er ansatt ved <a href="https://www.uib.no/lle">Institutt for lingvistiske, litterære og estetiske studium</a>, og det datatekniske arbeidet foregår ved IT-avdelingen. Innholdet i ordbøkene er kvalitetssikret av Språkrådet.</p>
+          <p>Siden 2016 har det redaksjonelle arbeidet med standardordbøkene blitt utført ved Universitetet i Bergen, der flere avdelinger er involvert. <a href="https://www.uib.no/ub/spesialsamlingene/160666/om-spr%C3%A5ksamlingane">Språksamlingane</a> forvalter ordbøkene og kildegrunnlaget de bygger på, ordbokredaktørene er ansatt ved <a href="https://www.uib.no/lle">Institutt for lingvistiske, litterære og estetiske studium</a>, og det datatekniske arbeidet foregår ved IT-avdelingen. Innholdet i ordbøkene er kvalitetssikret av Språkrådet.</p>
   </Collapsible>
   
   <Collapsible id="cite" is="h3" :header="$t('about.items[2].title')">
