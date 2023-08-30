@@ -7,9 +7,7 @@
     <div class="mx-auto flex h-full grow items-center justify-between">
       <div class="grow">
         <div v-if="context !== 'minimal'" class="flex grow items-center">
-          <div
-            class="w-12 px-2 lg:w-40 xl:w-[10vw] xl:min-w-[10rem] xl:max-w-[13rem]"
-          >
+          <div class="tp-sidebar w-12 px-2 lg:w-40">
             <AppLink
               id="anchor"
               to="/"

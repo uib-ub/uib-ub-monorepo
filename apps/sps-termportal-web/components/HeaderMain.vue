@@ -10,7 +10,7 @@
       style="top: -52px"
     />
     <div v-if="context === 'full'" class="flex pl-4 xl:pl-0">
-      <div class="w-0 xl:w-[10vw] xl:min-w-[10rem] xl:max-w-[13rem]"></div>
+      <div class="tp-sidebar w-0"></div>
       <div>
         <HeaderSearchOptions />
         <HeaderSearchScope />
