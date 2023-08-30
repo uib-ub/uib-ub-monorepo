@@ -27,14 +27,14 @@ const submitForm = async (item) => {
     if (advancedSpecialSymbols(store.q)) {
       return navigateTo(`/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`)
     }
-    else  if (store.input.includes("|")) {
+    else  if (store.input.includes("|") || store.dropdown_selected != -1) {
       return navigateTo(`/${route.params.dict}?q=${store.q}`)
     }
-
 
     let { exact, inflect } = store.suggest
     
     if (exact) {
+      
         if (exact[0][0].length == store.q.length) {
             let redirectUrl = `/${store.dict}/${exact[0][0]}`
             if (exact[0][0] != store.q) redirectUrl += `?orig=${store.q}`

@@ -13,6 +13,7 @@ export const useStore = defineStore('store', {
       autocomplete: [],
       lemmas: {bm: new Set(), nn: new Set()},
       show_autocomplete: false,
+      dropdown_selected: -1,
       suggest: {},
       suggestQuery: "",
       articles: {},
