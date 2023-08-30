@@ -129,4 +129,8 @@ body {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 100ms;
 }
+
+.tp-sidebar {
+  @apply xl:w-[14vw] xl:min-w-[14em] xl:max-w-[20rem];
+}
 </style>
