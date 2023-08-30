@@ -22,12 +22,19 @@ async function fetchAutocomplete(q) {
       return
     }
 
-    const pattern = specialSymbols(q)
+    const pattern = advancedSpecialSymbols(q)
+    const hasOr = q.includes("|")
     const time = Date.now()
     if (pattern && (!store.autocomplete[0] || store.autocomplete[0].time < time)) {
       store.autocomplete = [{q, time, type: "pattern"}]
+      store.show_autocomplete = true;
+    }
+    else if (hasOr) {
+      store.autocomplete = []
+      store.show_autocomplete = false;
     }
     
+       
 
 
     // Intercept queries containing too many words or characters
@@ -45,14 +52,15 @@ async function fetchAutocomplete(q) {
       }
     }
 
-    if (!pattern) {
+    if (!pattern && !hasOr) {
 
       let response = ref([])
-      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${store.advanced ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'e'}`
+      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name != 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
       response.value = await $fetch(url)
 
       // prevent suggestions after submit
       if (q == store.input) {
+        store.suggest = response.value.a
         let autocomplete_suggestions = []
         if (store.input.trim() == q && response.value.a.exact) {
           let { exact, inflect, freetext } = response.value.a
@@ -166,7 +174,7 @@ const dropdown_select = (q) => {
   console.log("DROPDOWN: Input from", store.input, "to", q)
   store.input= q
   store.show_autocomplete = false
-  emit('dropdown-submit')
+  emit('dropdown-submit', q)
   console.log("NEXT")
   console.log("AFTER")
 }
@@ -214,6 +222,7 @@ if (process.client) {
           ref="input_element" 
           @input="input_sync"
           role="combobox" 
+          name="q"
           :aria-activedescendant="selected_option >= 0 ? 'autocomplete-item-'+selected_option : null"
           aria-autocomplete="list"
           aria-haspopup="listbox"
@@ -226,8 +235,8 @@ if (process.client) {
           @keydown="keys"
           :aria-expanded="store.show_autocomplete || 'false'" 
           :aria-owns="selected_option >= 0 ? 'autocomplete-dropdown' : null"/>
-          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25rem"/></button>
-          <button v-if=" !store.advanced" class="appended-button" type="submit" v-bind:class="{'sr-only': store.advanced}" :aria-label="$t('search')"><Icon name="bi:search" size="1.25rem"/></button>
+          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
+          <button v-if="route.name != 'search'" class="appended-button" type="submit" v-bind:class="{'sr-only': route.name == 'search'}" :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 
   </div>
@@ -241,7 +250,7 @@ if (process.client) {
         :lang="['bm','nn','no'][item.dict-1]"
         :id="'autocomplete-item-'+idx">
         <div class="dropdown-item w-full" data-dropdown-item tabindex="-1" @click="dropdown_select(item.q)">
-          <span v-if="item.type == 'pattern' && !store.advanced" aria-live="polite" class=" bg-primary text-white p-1 rounded-1xl ml-3">{{$t('to_advanced')}} 
+          <span v-if="item.type == 'pattern' && route.name != 'search'" role="status" aria-live="polite" class=" bg-primary text-white p-1 rounded-1xl ml-3">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right" class="mb-1"/>
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">
@@ -251,7 +260,7 @@ if (process.client) {
         </div>
    </li>
   </ul>
-  <div v-if="store.autocomplete.length > 1" class="font-normal text-primary text-right px-6 pt-2" :key="store.input" aria-live="polite">
+  <div v-if="store.autocomplete.length > 1" class="font-normal text-primary text-right px-6 pt-2" :key="store.input" role="status" aria-live="polite">
     {{store.autocomplete.length}} {{$t('autocomplete_suggestions', 0)}}<span class="text-gray-600" v-if="store.autocomplete.length == 20"> ({{$t('maximum_autocomplete')}})</span></div>
  </div>
   </div>

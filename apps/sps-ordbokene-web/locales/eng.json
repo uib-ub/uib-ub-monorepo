@@ -81,6 +81,7 @@
   },
   "pos": "Part of speech",
 "all_pos": "all",
+"gender":"gender",
 "tags": {
   "NOUN": "noun",
   "VERB": "verb",
@@ -98,7 +99,6 @@
   "SCONJ": "subjunction",
   "INFM": "infinitive particle",
   "COMPPFX": "in compounds",
-  "Gender":"gender",
   "Masc": "masculine",
   "Fem": "feminine",
   "Neuter": "neuter",
@@ -173,7 +173,8 @@
 },
 "notifications": {
     "redirect": "Showing senses of the dictionary entry",
-    "inflected": " is an inflected form of ",
+    "translation": "Compare to machine translation suggested by Apertium:",
+    "inflected": "Other results in {dict}:",
     "other_inflected": "“{word}” is also a form of:",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",
@@ -184,6 +185,7 @@
     "no_results": "No results",
     "not_a_word": " is not a word in ",
     "results": "No results | One result | {count} results",
+    "keywords": "entries",
     "ignored_words": "The search was ignored because we limit queries to 20 words.",
     "ignored_chars": "The search was ignored because we do not accept words with more than 40 characters.",
     "no_pos_results": " (no matching {pos})",
@@ -198,14 +200,15 @@
     "show": "Open article",
     "show_inflection": "Inflection",
     "hide_inflection": "Inflection",
-    "share": "Share the word",
+    "share": "Share",
     "copy_link": "Copy link",
     "cite": "Cite",
+    "open": "Article page",
     "cite_title": "Cite the article",
     "cite_description": ["If you want to cite this article in the ", " we recommend that you state when the article was retrieved (read), e. g. as follows:"],
     "download": "Download RIS file",
     "copy": "Copy",
-    "link_copied": "Link copied",
+    "link_copied": "Copied",
     "citation_copied": "Citation copied",
     "citation": "« {lemma} ». In: <em> {dict}. </em> Språkrådet & Universitetet i Bergen. &lt;<a href='{link}'> {link} </a>&gt; ( retrieved {dd}. {mm}. {yyyy}). ",
     "headings": {
@@ -219,7 +222,7 @@
 "error": {
       "article": "An error has occured in article {no} in {dict}",
       "404": {
-          "title": "404: Not Found",
+          "title": "Not Found",
           "description": "The page may have been deleted or moved, or you may have used an invalid link."
       },
       "503": {

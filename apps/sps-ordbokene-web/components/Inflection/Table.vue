@@ -16,7 +16,7 @@
                     v-if="!nounGender && hasGender"
                     id="Gender"
                     scope="col"
-                    rowspan='2'>{{$t('tags.Gender')}}</th>
+                    rowspan='2'>{{$t('gender')}}</th>
                 <th v-if="hasSing"
                     id="Sing"
                     class="infl-label label-border-top-left" :class="mq" scope="col" colspan='2'>

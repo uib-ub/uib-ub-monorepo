@@ -1,5 +1,5 @@
 <template>
-  <component :is="(level==1 || level == 9) ? 'div' : 'li'" :class="['definition', 'level'+level, {hilite: highlighted}]" :id="level != 9 && store.view == 'article' ? 'def' + body.id : ''"><component :is="level <= 2 ? 'div' : 'span'">
+  <component :is="(level==1 || level == 9) ? 'div' : 'li'" :class="['definition', 'level'+level, {hilite: highlighted}]" :id="level != 9 && route.name == 'article' ? 'def' + body.id : undefined"><component :is="level <= 2 ? 'div' : 'span'">
   <span class="explanations" v-if="explanations.length">
     <!-- i-808 -->
     <div v-for="(explanation, index) in explanations" :key="index">
@@ -54,10 +54,9 @@ const highlighted = ref(false)
 
 
 onMounted(() => {
-console.log('myheader mounted');
-if (route && route.hash && route.hash.slice(1) == 'def' + props.body.id) {
-highlighted.value = true
-}
+  if (route && route.hash && route.hash.slice(1) == 'def' + props.body.id) {
+    highlighted.value = true
+  }
 });
 
 

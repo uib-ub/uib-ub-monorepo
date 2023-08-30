@@ -28,7 +28,7 @@
   
             <p><em>Bokmålsordboka</em> and <em>Nynorskordboka</em> are two independent, monolingual dictionaries for Bokmål and Nynorsk, respectively. The dictionaries are jointly owned by the Language Council and the University of Bergen.</p>
             <p><a href ="https://www.sprakradet.no/">The Norwegian Language Council</a> decides how words are spelled and inflected in Bokmål and Nynorsk. <em>Bokmålsordboka</em> and <em>Nynorskordboka</em> are continuously being updated in line with spelling decisions in the Language Council and is the right place for information on what is current and correct spelling in Bokmål and Nynorsk.</p>
-            <p>Since 2016, the editorial work with the standard dictionaries <em>Bokmålsordboka</em> and <em>Nynorskordboka</em> has been carried out at the University of Bergen, with several departments involved. <a href ="https://www.uib.no/ub/101277/norsk-kulturarv-i-skrift-og-tale">The Norwegian Language Collections</a> manage the dictionaries and the source material on which they are based. The dictionary editors are employed at the <a href="https://www.uib.no/lle">Department of Linguistic, Literary and Aesthetic Studies (LLE)</a>, and the computer technical work takes place at the <a href="https://www.uib.no/it">IT department</a> and the Norwegian Language Collections at the University Library. The content of the dictionaries is quality assured by the Language Council.</p>
+            <p>Since 2016, the editorial work with the standard dictionaries <em>Bokmålsordboka</em> and <em>Nynorskordboka</em> has been carried out at the University of Bergen, with several departments involved. <a href ="https://www.uib.no/en/ub/spesial/161345/about-norwegian-language-collections">The Norwegian Language Collections</a> manage the dictionaries and the source material on which they are based. The dictionary editors are employed at the <a href="https://www.uib.no/lle">Department of Linguistic, Literary and Aesthetic Studies (LLE)</a>, and the computer technical work takes place at the <a href="https://www.uib.no/it">IT department</a> and the Norwegian Language Collections at the University Library. The content of the dictionaries is quality assured by the Language Council.</p>
   
   
   </Collapsible>
@@ -62,7 +62,7 @@
   
   <Collapsible id="open-data" is="h3" :header="$t('about.items[4].title')">
         <p>The contents of <em>Bokmålsordboka</em> and <em>Nynorskordboka</em> are openly available for download, and can be used for any purpose, including commercial, in accordance with the conditions given. <a href="https://www.uib.no/ub/fagressurser/spesialsamlingene/142334/lisens-bokm%C3%A5lsordboka-og-nynorskordboka">Read more about the open license here</a>.</p>
-        <p>Inflection information in Bokmålsordboka and Nynorskordboka is sourced from from Norsk ordbank (Norwegian Word Database). Ordbanken is a lexical database for Bokmål and Nynorsk providing information on word class and standard inflection for far more words than those found in the standard dictionaries. Norsk ordbank is available for download at Språkbanken at the National Library under a CC-BY license.</p>
+        <p>Inflection information in Bokmålsordboka and Nynorskordboka is sourced from Norsk ordbank (Norwegian Word Database). Ordbanken is a lexical database for Bokmål and Nynorsk providing information on word class and standard inflection for far more words than those found in the standard dictionaries. Norsk ordbank is available for download at Språkbanken at the National Library under a CC-BY license.</p>
   
   </Collapsible>
   
@@ -124,7 +124,7 @@
     <p>Norsk ordbank (Norwegian Word Database) is also available for download at <a href="https://www.nb.no/sprakbanken/ressurskatalog/?_search=ordbank">Språkbanken at the National Library</a> under a CC-BY license. The dictionary contains word lists for Bokmål and Nynorsk with information on word class and standard inflection.</p>
     <h4>Other quality-assured and freely available dictionaries</h4>
     <ul>
-      <li><a href="https://alfa.norsk-ordbok.noperl/ordbok/no2014.cgi">Norsk Ordbok</a>: The dictionary of the Norwegian vernacular and written Nynorsk  </li>
+      <li><a href="https://alfa.norsk-ordbok.no">Norsk Ordbok</a>: The dictionary of the Norwegian vernacular and written Nynorsk  </li>
       <li><a href="https://naob.no/">NAOB</a>: The Norwegian Academy's Dictionary: Bokmål and Riksmål from the early 1800s until today </li>
       <li><a href="http://lexin.udir.no/">LEXIN</a>: dictionaries for minority language students in primary, secondary and adult education </li>
       <li><a href="http://www.islex.no/">Islex</a>: A dictionary in Icelandic-Norwegian (Bokmål and Nynorsk), Icelandic-Swedish, Icelandic-Danish, Icelandic-Faroese and Icelandic-Finnish  </li>
@@ -204,7 +204,7 @@
             <p><a href="https://www.sprakradet.no/">Språkrådet</a> avgjer korleis ord skal skrivast og bøyast på bokmål og nynorsk. <em>Bokmålsordboka</em> og <em>Nynorskordboka</em>blir løpande oppdaterte i tråd med rettskrivingsvedtak i Språkrådet, så det er her du finn fasiten på kva som er gjeldande og fullstendig rettskriving i bokmål og nynorsk.</p>
             <p>
               Sidan 2016 har det redaksjonelle arbeidet med standardordbøkene blitt utført ved Universitetet i Bergen, der fleire avdelingar er involverte.
-              <a href="https://www.uib.no/ub/101277/norsk-kulturarv-i-skrift-og-tale">Språksamlingane</a> forvaltar ordbøkene og kjeldegrunnlaget dei byggjer på, ordbokredaktørane
+              <a href="https://www.uib.no/ub/spesialsamlingene/160666/om-spr%C3%A5ksamlingane">Språksamlingane</a> forvaltar ordbøkene og kjeldegrunnlaget dei byggjer på, ordbokredaktørane
               er tilsette ved <a href="https://www.uib.no/lle">Institutt for lingvistiske, litterære og estetiske studium</a>, og det datatekniske arbeidet går føre seg ved 
               <a href="https://www.uib.no/it">IT-avdelinga</a>. Innhaldet i ordbøkene er kvalitetssikra av Språkrådet.
             </p>
@@ -754,7 +754,7 @@
   <Collapsible id="quality" is="h3" :header="$t('about.items[1].title')">
             <p><em>Bokmålsordboka</em> og <em>Nynorskordboka</em> er to selvstendige, enspråklige ordbøker for henholdsvis bokmål og nynorsk. Ordbøkene eies av Språkrådet og Universitetet i Bergen i fellesskap.</p>
             <p><a href="https://www.sprakradet.no/">Språkrådet</a> avgjør hvordan ord skal skrives og bøyes på bokmål og nynorsk. <em>Bokmålsordboka</em> og <em>Nynorskordboka</em> blir løpende oppdatert i tråd med rettskrivingsvedtak i Språkrådet, så det er her du finner fasiten på hva som er gjeldende og fullstendig rettskriving i bokmål og nynorsk. </p>
-          <p>Siden 2016 har det redaksjonelle arbeidet med standardordbøkene blitt utført ved Universitetet i Bergen, der flere avdelinger er involvert. <a href="https://www.uib.no/en/ub/spesial/161345/about-norwegian-language-collections">Språksamlingane</a> forvalter ordbøkene og kildegrunnlaget de bygger på, ordbokredaktørene er ansatt ved <a href="https://www.uib.no/lle">Institutt for lingvistiske, litterære og estetiske studium</a>, og det datatekniske arbeidet foregår ved IT-avdelingen. Innholdet i ordbøkene er kvalitetssikret av Språkrådet.</p>
+          <p>Siden 2016 har det redaksjonelle arbeidet med standardordbøkene blitt utført ved Universitetet i Bergen, der flere avdelinger er involvert. <a href="https://www.uib.no/ub/spesialsamlingene/160666/om-spr%C3%A5ksamlingane">Språksamlingane</a> forvalter ordbøkene og kildegrunnlaget de bygger på, ordbokredaktørene er ansatt ved <a href="https://www.uib.no/lle">Institutt for lingvistiske, litterære og estetiske studium</a>, og det datatekniske arbeidet foregår ved IT-avdelingen. Innholdet i ordbøkene er kvalitetssikret av Språkrådet.</p>
   </Collapsible>
   
   <Collapsible id="cite" is="h3" :header="$t('about.items[2].title')">
@@ -1263,7 +1263,7 @@
   const { t } = useI18n()
   
   useHead({
-    title: t('about')
+    title: t('about.title')
     })
   </script>
   

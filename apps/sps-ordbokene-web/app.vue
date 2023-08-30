@@ -1,12 +1,12 @@
 <template>
   <a ref="skip_link" class="bg-tertiary-darken1 text-center z-1000 text-anchor sr-only text-xl font-semibold underline w-full  !focus-within:p-2 focus:not-sr-only focus:absolute focus:min-w-screen" href="#main"> Til innhold</a>
   <Header/>
-<div class="ord-container back-to-search justify-start my-2" v-if="['article', 'settings', 'about', 'help', 'contact'].includes($route.name)">
+<div class="ord-container justify-start mt-3 mb-2 pl-3" v-if="['settings', 'about', 'help', 'contact'].includes($route.name)">
   <NuxtLink v-if="store.searchUrl" :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
 <NuxtLink v-else to="/"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('home')}}</NuxtLink>
 </div>
-    <NuxtPage @click="menu_expanded=false" 
-              v-bind:class="{'welcome': !store.q && (route.name == 'search' || route.name == 'dict')}"/>
+    <NuxtPage @click="menu_expanded=false"
+              v-bind:class="{'welcome': route.name == 'welcome'}"/>
 <Footer/>
 </template>
 
@@ -25,7 +25,6 @@ const announcement = useState('announcement')
 const skip_link = ref()
 const keyboard_navigation = ref(false)
 
-console.log("CLIENT?",process.client)
 
 const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host +"/"
 
@@ -68,15 +67,15 @@ if (process.client) {
       keyboard_navigation.value = true
     }
   })
-  
+
 
 }
 
 const nuxtApp = useNuxtApp()
 
 nuxtApp.hook("page:finish", () => {
-  
-  if (settings.autoSelect || route.name == "dict") {
+
+  if (settings.autoSelect || route.name == "welcome") {
     input_element.value.select()
   }
   // Handle focus in one place
@@ -91,7 +90,7 @@ nuxtApp.hook("page:finish", () => {
     else {
       input_element.value.select()
     }
-    
+
    }
    else {
     
@@ -100,7 +99,7 @@ nuxtApp.hook("page:finish", () => {
 
 
     }
-    
+
 
    }
    */

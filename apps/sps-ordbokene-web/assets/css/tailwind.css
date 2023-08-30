@@ -27,12 +27,27 @@
 
     main {
         flex: 1;
+        @apply lg:pt-2 xl:pt-4 xl:px-1 sm:px-8 xl:px-4 pb-8;
     }
 
     h1 {
         font-family: Inria Serif;
         font-weight: bold;
     }
+
+    .ord-container h3 {
+      font-family: Inria Serif;
+      @apply text-primary;
+      font-weight:600;
+      margin-bottom: 0rem;
+  
+  }
+
+  .suggestions h3 {
+    font-size: 1.17rem !important;
+  }
+
+
 
     ::selection {
         background-color: theme(colors.secondary.DEFAULT);
@@ -47,7 +62,7 @@
     }
 
       
-    section a, .secondary-page a  {
+    section a, .secondary-page a, .error-page a, a:hover .hoverlink {
       border-bottom: 2px solid;
       @apply border-anchor;
     }
@@ -88,7 +103,7 @@
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
         border-width: 1px;
-        font-weight: 600;
+
         @apply  duration-200;
       }
       
@@ -118,7 +133,7 @@
         letter-spacing: .1rem;
         font-variant-caps: all-small-caps;
         font-weight: 600;
-        font-size: 1.25rem !important;
+        font-size: 1.5rem !important;
       }
 
       
@@ -170,7 +185,7 @@
       }
 
       .secondary-page {
-        @apply bg-white mb-4 p-4 py-8 md:p-12 md:pt-10;
+        @apply bg-white mb-4 p-4 py-8 md:p-12 md:pt-10 mb-8;
         
       }
       
@@ -182,7 +197,7 @@
         }
       
       
-        .secondary-page h2 {
+        .secondary-page h2, .error-page h1 {
           font-family: Inria Serif;
           @apply text-primary;
           font-weight: bold;
@@ -206,10 +221,13 @@
       
       
       .secondary-page h3 button, .secondary-page h3, .dict-view h2 {
-          @apply text-primary;
+          @apply text-primary text-2xl;
           font-weight: 600;
           font-variant: all-small-caps;
-          font-size: 1.75rem;
+        }
+
+        .dict-view h2 {
+          @apply text-2xl md:text-3xl;
         }
       
       .secondary-page h3 button {
@@ -239,10 +257,7 @@
 
        .welcome .article {
         box-shadow: none !important;
-        /* border-radius: 0 !important;
-        border: none; */
-        border-radius: 2rem;
-        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none;
+        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6;
       }
       
       .welcome .ord-container {
@@ -256,7 +271,7 @@
       }
 
       .ord-container {
-        @apply px-2 md:px-0
+        @apply px-2 md:px-1;
       }
 
 
@@ -268,6 +283,41 @@
       }
 
 
+      .tooltip:hover .popover, .tooltip:focus-within .popover {
+        @apply not-sr-only bg-black text-white py-1 px-4 rounded pointer-events-none transition-opacity duration-300 transform absolute transform -translate-x-1/2 -translate-y-7
+      }
+
+
+
+
+      .result-count-text {
+        font-variant: normal;
+        font-size: .75rem;
+        border-radius: 2rem;
+        @apply bg-white text-black !leading-none px-1.5 py-0.5 align-middle shadow-md
+      
+      }
+      
+      
+      ol.article-column {
+        margin: 0px;
+        padding: 0px;
+      }
+      
+      ol.article-column  {
+          
+          @apply bg-white shadow-md;
+          padding: 0rem;
+          width: 100%;
+      }
+      
+      .article-column {
+        @apply !mb-8;
+      }
+      
+      div.article-column {
+        @apply flex flex-col gap-4 md:gap-6;
+      }
 
 
 

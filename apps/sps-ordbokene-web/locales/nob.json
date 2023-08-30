@@ -86,6 +86,7 @@
     },
     "pos": "Ordklasse",
     "all_pos": "alle",
+    "gender": "kjønn",
       "tags": {
           "NOUN": "substantiv",
           "VERB": "verb",
@@ -103,7 +104,6 @@
           "SCONJ": "subjunksjon",
           "INFM": "infinitivsmerke",
           "COMPPFX": "i sammensetting",
-          "Gender":"kjønn",
           "Masc": "hankjønn",
           "Fem": "hunkjønn",
           "Neuter": "intetkjønn",
@@ -186,7 +186,8 @@
     },
     "notifications": {
         "redirect": "Viser betydninger av oppslagsordet",
-        "inflected": " er en bøyd form av ",
+      "translation": "Sammenlign med maskinoversettelse foreslått av Apertium:",
+        "inflected": "Andre treff i {dict}:",
         "other_inflected": "«{word}» er også en form av:",
         "did_you_mean": "Mente du:",
         "similar": "Lignende oppslagsord:",
@@ -197,6 +198,7 @@
         "no_results": "Ingen treff",
         "not_a_word": " er ikke et oppslagsord i ",
         "results": "Ingen treff | Ett treff| {count} treff",
+        "keywords": "oppslagsord",
         "ignored_words": "Søket ble ingorert fordi vi begrenser forespørsler til 20 ord.",
         "ignored_chars": "Søket ble ignorert fordi vi ikke tillater ord med flere enn 40 tegn.",
         "no_pos_results": " i søk på {pos}",
@@ -211,14 +213,15 @@
         "show": "Åpne artikkel",
         "show_inflection": "Vis bøyning",
         "hide_inflection": "Skjul bøyning",
-        "share": "Del ordet",
+        "share": "Del",
         "copy_link": "Kopier lenke",
         "cite": "Siter",
+        "open": "Artikkelside",
         "copy": "Kopier",
         "cite_title": "Sitere artikkelen",
         "cite_description": ["Ønsker du å sitere denne artikkelen i ",", anbefaler vi å oppgi når artikkelen ble hentet (lest), f.eks. slik:"],
         "download": "Last ned RIS-fil",
-        "link_copied": "Lenken er kopiert",
+        "link_copied": "Kopiert",
         "citation_copied": "Sitatet er kopiert",
         "citation": "«{lemma}». I: <em>{dict}.</em> Språkrådet og Universitetet i Bergen. &lt;<a href='{link}'>{link}</a>&gt; (hentet {dd}.{mm}.{yyyy}).",
         "headings": {
@@ -232,7 +235,7 @@
     "error": {
           "article": "Det har oppstått en feil i artikkel {no} i {dict}",
           "404": {
-              "title": "404: Ikke funnet",
+              "title": "Ikke funnet",
               "description": "Siden kan ha blitt slettet eller flyttet, eller du kan ha brukt en ugyldig lenke."
           },
           "503": {

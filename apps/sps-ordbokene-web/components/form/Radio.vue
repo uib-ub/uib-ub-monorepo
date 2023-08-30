@@ -25,7 +25,6 @@
     
 
     const change = (event) => {
-        console.log(event)
         emit('change', props.value)
     }
 

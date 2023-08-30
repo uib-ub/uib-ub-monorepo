@@ -28,6 +28,33 @@ export default defineNuxtConfig({
     }
   },
 
+  hooks: {
+    'pages:extend' (pages) {
+      pages.push({
+        path: '/:dict(bm|nn|bm,nn)',
+        file: '~/custom-pages/view-container.vue',
+        children: [
+          {
+            name: 'article',
+            path: ':article_id(\\d+)/:lemma?',
+            file: '~/custom-pages/article-view.vue'
+          },
+          {
+            name: 'word',
+            path: ':q',
+            file: '~/custom-pages/word-view.vue'
+          },
+          {
+            name: 'welcome',
+            path: '',
+            alias: 'search', //legacy
+            file: '~/custom-pages/welcome-view.vue'
+          }
+        ]
+      })
+    }
+  },
+
   vite: {
     resolve: {
       alias: {

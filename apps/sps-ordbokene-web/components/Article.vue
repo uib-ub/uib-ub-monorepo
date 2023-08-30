@@ -1,22 +1,20 @@
 <template>
-  <div class="list-view-item" v-if="listView">
+  <div class="list-view-item" v-if="list && !welcome">
       <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
       <NuxtLink v-else class="result-list-item" :to="link_to_self()">
 
   <div v-for="(lemma_group, i) in lemma_groups" :key="i">
   <span class="lemma-group">
 
-  <span v-for="(lemma, index) in lemma_group.lemmas"
-        :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
-        <span v-if="lemma.hgno"
-                 :aria-label="$t('accessibility.homograph') + parseInt(lemma.hgno)"
-                 :title="$t('accessibility.homograph')+parseInt(lemma.hgno)"
-                 class="hgno">{{" "+roman_hgno(lemma)}}</span>
-                  <span
-                 class="title_comma"
-                 v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
-                </span>
-  </span>
+    <span v-for="(lemma, index) in lemma_group.lemmas"
+          :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
+          <span v-if="lemma.hgno" :aria-labelledby="`${dict}-${article_id}-${index}`"
+                   class="hgno tooltip"><span :id="`${dict}-${article_id}-${index}`" class="popover sr-only">{{$t('accessibility.homograph') + parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{" "+roman_hgno(lemma)}}</span></span>
+                    <span
+                   class="title_comma"
+                   v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
+                  </span>
+    </span>
 </span>
 <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
   &nbsp;<em v-if="lemma_group.description" class="subheader ">
@@ -27,44 +25,57 @@
   </em>
 </div>{{snippet}}
 
-  </NuxtLink>
-</div>
-  <div class="article lg:pt-1 m-1 lg:m-4" v-else-if="!error">
-      <div v-if="pending" class="skeleton-container">
-          <div class="skeleton mt-4 skeleton-heading"/>
-      <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
-      <div class="skeleton skeleton-content w-50 "/>
-      <div class="skeleton skeleton-content w-25 skeleton-indent"/>
-      <div class="skeleton skeleton-content w-75"/>
-      <div class="skeleton skeleton-content w-25 skeleton-indent"/>
-      <div class="skeleton skeleton-content w-50"/>
-      <div class="skeleton skeleton-content w-75 skeleton-indent"/>
-      <div class="skeleton skeleton-content w-25"/>
-      </div>
-      <div v-else>
-        
-      <h2 v-if="welcome" class="dict-label">{{$t('monthly', 1, { locale: content_locale}) + {"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
-      <h2 v-else-if="store.view != 'article'" class="dict-label lg:hidden d-block">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
-      <h2 v-else-if="store.view == 'article'" class="article-dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
-      <div :class="welcome? 'px-4 pb-6 pt-4' : 'px-4 pt-4 pb-2'">
+    </NuxtLink>
+  </div>
+    <div class="article" v-else-if="!error">
+        <div v-if="pending && !welcome" class="skeleton-container">
+            <div class="skeleton mt-4 skeleton-heading"/>
+        <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
+        <div class="skeleton skeleton-content w-50 "/>
+        <div class="skeleton skeleton-content w-25 skeleton-indent"/>
+        <div class="skeleton skeleton-content w-75"/>
+        <div class="skeleton skeleton-content w-25 skeleton-indent"/>
+        <div class="skeleton skeleton-content w-50"/>
+        <div class="skeleton skeleton-content w-75 skeleton-indent"/>
+        <div class="skeleton skeleton-content w-25"/>
+        </div>
+        <div v-else>
+          
+        <h2 v-if="welcome" class="dict-label">{{$t('monthly', 1, { locale: content_locale}) + {"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
+        <h2 v-else-if="single" class="dict-label article-dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
+        <div :class="welcome? 'px-4 pb-6 pt-4' : 'px-4 pt-4 pb-2'">
 
-      <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict"/>
-    
+        <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict" :article_id="article_id"/>
+      
+      <div v-if="data.lemmas[0].split_inf" class="mt-2 mb-3">
+        <div class="flex gap-2 align-middle">{{$t('split_inf.title')}}: -a
+        <button :aria-expanded="split_inf_expanded" aria-controls="split-inf-explanation" @click="split_inf_expanded = !split_inf_expanded" class="rounded leading-none !p-0 !text-primary hover:bg-primary-lighten bg-primary  border-primary-lighten">
+          <Icon :name="split_inf_expanded? 'bi:dash' : 'bi:plus'" class="text-white !m-0 !p-0" size="1.5em"/>
+        </button>
+        </div>
+        
+        <div class="mb-4 my-2" id="split-inf-explanation" v-if="split_inf_expanded">
+          {{$t('split_inf.content[0]', content_locale)}} <em>-a</em> {{$t('split_inf.content[1]', content_locale)}}
+          <a target="_blank" 
+             href="https://www.sprakradet.no/svardatabase/sporsmal-og-svar/kloyvd-infinitiv-/">{{$t('split_inf.content[2]', content_locale)}}</a>
+        </div>
+        </div>
+
       <button v-if="!settings.inflectionExpanded && inflected && !welcome" class="btn btn-primary my-1 border-primary-darken !pr-2" @click="inflection_expanded = !inflection_expanded" type="button" :aria-expanded="inflection_expanded" :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
-             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="text-primary ml-4" size="1.5rem"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="text-primary ml-4" size="1.5rem"/></span>
-    </button>
-      <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
-          <div class="inflection-container p-2">
-              <NuxtErrorBoundary @error="inflection_error">
-              <InflectionTable :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
-              <InflectionTable :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
-              </NuxtErrorBoundary>
-          </div>
-      </div>
-      <NuxtErrorBoundary @error="body_error">
-      <div class="article_content pt-1" ref="article_content">
-          <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
-              <h4>{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
+             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
+      </button>
+        <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
+            <div class="inflection-container p-2">
+                <NuxtErrorBoundary @error="inflection_error">
+                <InflectionTable :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                <InflectionTable :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                </NuxtErrorBoundary>
+            </div>
+        </div>
+        <NuxtErrorBoundary @error="body_error">
+        <div class="article_content pt-1" ref="article_content">
+            <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
+                <h4>{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
 
               <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
@@ -89,6 +100,7 @@
       </div>
       </NuxtErrorBoundary>
       <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
+        <div v-else class="text-right"><NuxtLink :to="link_to_self()">{{$t('article.show')}}</NuxtLink></div>
 
       
   </div>
@@ -105,30 +117,52 @@ const { t } = useI18n()
 const i18n = useI18n()
 const store = useStore()
 const inflection_expanded = ref(false)
+const split_inf_expanded = ref(false)
 const settings = useSettingsStore()
 const route = useRoute()
 
 const props = defineProps({
-  article_id: Number,
-  dict: String,
-  welcome: Boolean
+    article_id: Number,
+    dict: String,
+    welcome: Boolean,
+    single: Boolean,
+    list: Boolean
 })
 
-const listView = computed(() => {
-return store.q && store.view != 'article' &&  (store.advanced ? settings.listView && route.name == 'search' : settings.simpleListView && route.name == 'dict-slug')
+
+const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
+                                                                                        {
+                                                                                            async onResponseError({ request, response, options }) {
+                                                                                                // TODO: plausible logging, error message if article view
+                                                                                                console.log("RESPONSE ERROR", response.status)
+                                                                                            },
+                                                                                            async onRequestError({ request, response, error }) {
+                                                                                                // TODO: plausible logging, error message if article view
+                                                                                                console.log("REQUEST ERROR", error)
+                                                                                            }
+                                                                                        }))
+
+
+  if (route.name != 'welcome' && route.name != 'search' && data.value)
+  data.value.lemmas.forEach(lemma => {
+      store.lemmas[props.dict].add(lemma.lemma)
+      lemma.paradigm_info.forEach(paradigm => {
+        paradigm.inflection.forEach(inflection => {
+          if (inflection.tags[0] == "Inf") {
+            store.lemmas[props.dict].add(inflection.word_form)
+          }
+        })
+
+      })
+
 })
 
-const { pending, data, error } = useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
-                                                                                      {
-                                                                                          async onResponseError({ request, response, options }) {
-                                                                                              // TODO: plausible logging, error message if article view
-                                                                                              console.log("RESPONSE ERROR", response.status)
-                                                                                          },
-                                                                                          async onRequestError({ request, response, error }) {
-                                                                                              // TODO: plausible logging, error message if article view
-                                                                                              console.log("REQUEST ERROR", error)
-                                                                                          }
-                                                                                      }))
+
+if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
+  store.endpoint = `https://odd.uib.no/opal/prod/`
+  console.log("ERROR", error.value)
+  refresh()
+}
 
 const body_error = (error) => {
   console.log("BODY_ERROR", error)
@@ -139,7 +173,7 @@ const inflection_error = (error) => {
 }
 
 const content_locale = computed(() => {
-  return i18n.locale.value == 'eng' ? 'eng' : {bm: 'nob', nn: 'nno'}[props.dict]
+    return i18n.locale.value == 'eng' ? 'eng' : {bm: 'nob', nn: 'nno'}[props.dict]
 })
 
 
@@ -321,13 +355,9 @@ const parse_subitems =  (explanation, text) => {
               }
             }
 
-            else if (subitem.id) {
-              let expandable = store['concepts_'+props.dict][explanation.items[linkIndex].id]
-              if (!expandable) {
-                  console.log(subitem)
-                  console.log(store.concepts_bm)
-              }
-              new_string += expandable ? expandable.expansion : " [...] "
+              else if (subitem.id) {
+                let expandable = store['concepts_'+props.dict][explanation.items[linkIndex].id]
+                new_string += expandable ? expandable.expansion : " [...] "
 
             }
             else if (subitem.text) {
@@ -395,19 +425,19 @@ return data.value.lemmas[0].lemma
 })
 
 
-if (store.view == 'article') {
-useHead({
-  title: title,
-  meta: [
-    {name: 'description', content: snippet },
-    {property: 'og:title', content: title },
-    {property: 'og:description', content: snippet },
-    {name: 'twitter:description', content: snippet }  
-  ],
-  link: [
-  {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
-]
-});
+if (props.single) {
+  useHead({
+    title: title,
+    meta: [
+      {name: 'description', content: snippet },
+      {property: 'og:title', content: title },
+      {property: 'og:description', content: snippet },
+      {name: 'twitter:description', content: snippet }  
+    ],
+    link: [
+    {rel: "canonical", href: `https://ordbokene.no/${props.dict}/${route.params.article_id}`}
+  ]
+  });
 }
 
 
@@ -543,17 +573,11 @@ span.lemma-group {
 .article {
   border-radius: 2rem;
     /* border: 1px solid #560027; */
-    @apply p-1 mb-2 md:mb-4 md:p-2 lg:p-4 bg-canvas duration-200 shadow-md; 
+    @apply p-1 md:p-2 lg:p-4 bg-canvas duration-200 shadow-md; 
   
 }
   
-.article:hover{
- @apply shadow-xl;
-}
 
-.article .dict_label {
-  @apply text-text
-  }
 
 
 .list-view-item {
@@ -591,7 +615,7 @@ display: flex;
 }
 
 .article-column>li .result-list-item {
-border-bottom: solid 1px theme('colors.gray.200') ;
+border-bottom: solid 1px theme('colors.gray.100') ;
 }
 
 

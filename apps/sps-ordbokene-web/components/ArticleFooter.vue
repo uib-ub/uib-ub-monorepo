@@ -1,27 +1,39 @@
 <template>
-<client-only>
-<div class="flex justify-around gap-3 mt-3 flex-wrap">
-  <button class="btn btn-borderless" :id="'copy-link-'+article_id" v-if="showLinkCopy" @click="copy_link">
-    <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>{{ linkCopied ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }}
-  </button>
-  <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
-      <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
-  </button>
-    <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
-      <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
+<div class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
+  <client-only>
+    <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-4">
+    <button v-if="showLinkCopy && (!webShareApiSupported || $route.name== 'article')" class="btn btn-borderless px-3" @click="copy_link">
+      <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
+      <span>{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
     </button>
-</div>
-<div class="cite-container p-4 pb-1 pt-2 mt-2" v-if="cite_expanded" :id="'cite-'+article_id">
-      <h4>{{$t('article.cite_title')}}</h4>
-      <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
-      <div id="citation" v-html="$t('article.citation', create_citation())" />
-      <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation">
-        <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
+    <button class="btn btn-borderless px-3" v-if="webShareApiSupported" @click="shareViaWebShare">
+        <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
+    </button>
+      <button class="btn btn-borderless px-3" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
+        <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
       </button>
-      <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
+      <div class="cite-container p-4 pb-1 pt-2 mt-2 relative text-1" v-if="cite_expanded" :id="'cite-'+article_id">
+        <h4>{{$t('article.cite_title')}}</h4>
+        <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
+       <div class="my-2 break-all sm:break-words"><div class="bg-tertiary-darken1 px-2 pt-1 pb-3"><div id="citation" v-html="$t('article.citation', create_citation())"/></div></div>
+          <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation">
+            <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
+          </button>
+          <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
+    </div>
+    </div>
+  </client-only>
 
+<span v-if="$route.name != 'article'" class="px-4 pt-1 ml-auto">
+    <NuxtLink class="whitespace-nowrap"  :to="`/${dict}/${article_id}`">
+       <span>{{$t("article.open", 1, { locale: content_locale})}}</span>
+    </NuxtLink>
+    </span>
+    
 </div>
-</client-only>
+  
+
+
 </template>
 
 <script setup>
@@ -37,7 +49,6 @@ const props = defineProps({
 })
 
 const cite_expanded = ref(false)
-const linkCopied = ref(false);
 const citationCopied = ref(false);
 
 
@@ -61,13 +72,11 @@ const shareViaWebShare = () => {
       })
       };
 
-      const copy_link = (event) => {
-  let link = create_link();
 
+const copy_link = (event) => {
+  let link = create_link();
   navigator.clipboard.writeText(link).then(() => {
-    console.log("SUCCESS");
-    store.copied = event.target.id;
-    linkCopied.value = true; // Set the linkCopied value to true
+    store.copied = link;
   }).catch(err => {
     console.log("ERROR COPYING:", err);
   });
@@ -120,11 +129,13 @@ const copy_citation = () => {
 
 .cite-container {
     border-radius: 1.5rem;
-    @apply mt-4 duration-200 break-words border border-gray shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] ;
+    @apply mt-4 duration-200 border border-gray shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] ;
 }
+
 
 h4 {
   @apply text-primary text-2xl font-semibold;
   font-variant: all-small-caps;
   }
+
 </style>
