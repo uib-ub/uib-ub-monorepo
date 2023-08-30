@@ -46,7 +46,7 @@
 
     
     <div v-if="route.query.dict != 'bm,nn' ">
-      <div v-if="route.query.dict == 'bm' && articles.meta.bm">
+      <section v-if="route.query.dict == 'bm' && articles.meta.bm" aria-labelledby="bm_heading">
         <div class="py-2 px-2">
           <h2 id="bm_heading" class="">{{$t('dicts.bm')}} 
             <span class="result-count-text">{{articles.meta.bm.total}}</span>
