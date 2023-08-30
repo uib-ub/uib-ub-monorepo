@@ -4,10 +4,10 @@
         <NuxtLink noPrefetch :to="`/bm,nn/${store.q}|${translated}`"><span aria-describedby="translation-description" class="link-content">{{translated}}</span></NuxtLink>
     </div>
     <SuggestResults v-if="inflections.length" :suggestions="inflections"  :dict="dict">
-        <component :is="props.dict=='bm,nn'? 'h2' : 'h3'">{{$t('notifications.inflected', {dict: $t('dicts.'+dict)})}}</component>
+        <h3>{{$t('notifications.inflected', {dict: $t('dicts.'+dict)})}}</h3>
     </SuggestResults>
     <SuggestResults v-if="suggest.length" :suggestions="suggest" :dict="dict">
-        <component :is="props.dict=='bm,nn'? 'h2' : 'h3'">{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</component>
+        <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
     </SuggestResults>
     <div v-if="!( articles_meta[dict].total || translated || inflections.length || suggest.length )" class="callout">Ingen treff</div>
   </div>
