@@ -1,19 +1,40 @@
 <template>
-  <div class="space-x-3">
+  <div class="group flex">
     <input
       :id="`filter-${ftype}-${fvalue}`"
       v-model="searchFilterData[ftype as keyof SearchDataStats]"
-      class="cursor-pointer"
+      class="peer cursor-pointer outline-none"
       type="checkbox"
       :value="fvalue"
     />
-    <label class="cursor-pointer" :for="`filter-${ftype}-${fvalue}`"
-      >{{ label() }} ({{
-        searchDataStats[ftype as keyof SearchDataStats][
-          fvalue as LangCode | Samling | Matching | LabelPredicate
-        ]
-      }})</label
+    <label
+      class="tp-transition-shadow flex cursor-pointer gap-x-1.5 rounded-[7px] border border-transparent px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+      :for="`filter-${ftype}-${fvalue}`"
     >
+      <div class="-mt-[1px]">
+        <Icon
+          v-if="searchFilterData[ftype].includes(fvalue)"
+          name="mdi:checkbox-marked-outline"
+          size="1.3em"
+          class="text-tpblue-400"
+          aria-hidden="true"
+        />
+        <Icon
+          v-else
+          name="mdi:checkbox-blank-outline"
+          size="1.3em"
+          class="text-tpblue-400"
+          aria-hidden="true"
+        />
+      </div>
+      <div>
+        {{ label() }} ({{
+          searchDataStats[ftype as keyof SearchDataStats][
+            fvalue as LangCode | Samling | Matching | LabelPredicate
+          ]
+        }})
+      </div>
+    </label>
   </div>
 </template>
 
@@ -42,3 +63,15 @@ const label = () => {
   }
 };
 </script>
+
+<style scoped>
+input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+</style>

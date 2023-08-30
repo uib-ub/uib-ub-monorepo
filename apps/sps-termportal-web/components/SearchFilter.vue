@@ -1,8 +1,12 @@
 <template>
-  <section v-if="showSearchFilter" id="filterCard" class="mt-2 xl:pr-5">
+  <section
+    v-if="showSearchFilter"
+    id="filterCard"
+    class="h-full border-r border-gray-300 pr-1 xl:pt-12"
+  >
     <h2 class="pb-2 pt-1 text-2xl">{{ $t("searchFilter.filter") }}</h2>
     <div
-      class="grid grid-cols-1 gap-4 rounded border border-gray-300 p-2 xs:grid-cols-2 md:grid-cols-4 xl:w-[16em] xl:grid-cols-1"
+      class="grid grid-cols-1 gap-4 rounded border-gray-300 xs:grid-cols-2 md:grid-cols-4 xl:grid-cols-1"
     >
       <template
         v-for="{ title, key, data } in [
@@ -43,15 +47,8 @@
           v-if="displaySection(key)"
           :title="title"
           :fkey="key"
-          class="pt-1"
         >
-          <FilterCheckbox
-            v-for="d in data"
-            :key="d"
-            :ftype="key"
-            :fvalue="d"
-            class="pl-2"
-          />
+          <FilterCheckbox v-for="d in data" :key="d" :ftype="key" :fvalue="d" />
         </SearchFilterFieldset>
       </template>
     </div>
