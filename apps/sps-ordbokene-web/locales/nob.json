@@ -82,11 +82,15 @@
         },
     "options": {
         "title": "Søkealternativer",
+        "dict": "Søk i:",
         "scope": {
-            "e": "Kun oppslagsord",
-            "ei": "Inkluder bøyde former",
-            "eif":"Fritekstsøk"
-          },
+            "title": "Søk etter:",
+            "value": {
+                "e": "Kun oppslagsord",
+                "ei": "Inkluder bøyinger",
+                "eif": "Alt innhold"
+                }
+            },
         "pos": "Ordklasse",
         "collapse": "Komprimer artikler"
     },

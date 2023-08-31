@@ -1,44 +1,49 @@
 <template>
   <div class="my-1 md:mt-0 pb-6">
-  <form  @submit.prevent="submitForm" ref="form" class="flex flex-col lg:flex-row flex-wrap my-3 gap-6 justify-between">
-    <div class="flex flex-col sm:flex-row gap-8 sm:gap-3 m-3 sm:m-0">
-    <fieldset class="flex flex-col gap-8 sm:gap-3">
-    <legend class="sr-only">Ordbok</legend>
+  <form  @submit.prevent="submitForm" ref="form" class="lg:flex-row flex-wrap my-3 gap-6 justify-between">
+    <div class="flex flex-wrap  gap-8 sm:gap-3 m-3 sm:m-0">
+    <fieldset class="flex flex-col md:flex-row gap-8 sm:gap-3 border border-1 px-2">
+    <legend>{{$t('options.dict')}}</legend>
       <FormRadio v-for="(item, idx) in dicts" :key="store.dict + idx" :value="item" name="dict" :labelId="'dict-radio-'+idx" :current="store.dict" @submit="update_dict">
         {{$t(`dicts.${item}`)}}
       </FormRadio>
     </fieldset>
   
-  <div class="flex flex-col gap-8 sm:gap-3">
+  <div class="flex gap-8 sm:gap-3">
 
-    <fieldset class="flex flex-col gap-8 sm:gap-3">
-    <legend class="sr-only">Ordbok</legend>
+    <fieldset class="flex flex-col md:flex-row gap-8 sm:gap-3 border border-1 px-2">
+    <legend>{{$t('options.scope.title')}}</legend>
       <FormRadio v-for="(item, idx) in ['e', 'ei', 'eif']" :key="store.scope + idx" :value="item" name="scope" :labelId="'scope-radio-'+idx" :current="store.scope" @submit="update_scope">
-        {{$t(`options.scope.${item}`)}}
+        {{$t(`options.scope.value.${item}`)}}
       </FormRadio>
     </fieldset>  
   
-  <div class="flex flex-row gap-4 sm:gap-2">
-    <label for="pos-select">{{$t('pos')}}:</label>
-    <div class="select-wrapper py-1 px-4 sm:px-2 sm:py-0.5 duration-200 shadow-lg border border-primary" v-bind:class="{not_null: store.pos}">
-    <select id="pos-select" name="pos" class="bg-tertiary focus:outline-none" @change="store.pos = $event.target.value">
+  
+    
+
+  
+  </div>
+  <div>
+    <label class="relative" for="pos-select">{{$t('pos')}}:</label>
+    <div class="select-wrapper !p-2 px-4 sm:px-2 sm:py-0.5 duration-200 border border-1" v-bind:class="{not_null: store.pos}">
+    <select id="pos-select" name="pos" class="bg-tertiary focus:outline-none" @change="update_pos">
       <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
     </select>
     </div>
   </div>
-  
-  </div>
+
+  <button class="btn !py-2 !sm:py-1 !sm:px-2 sm:min-w-[8rem] xl:min-w-[12rem] btn-secondary bg-gray-500 border-gray-600 text-white" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:trash" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
   
   </div>
   
   
   <div class="flex-1">
-  <div class="flex-auto" :class="{activeAutocomplete: store.autocomplete && store.autocomplete.length}">
+    
+  
+    <div class="flex gap-4 mt-3 flex-wrap flex-col sm:flex-row sm:justify-start">
+      <div class="flex-auto" :class="{activeAutocomplete: store.autocomplete && store.autocomplete.length}">
     <Autocomplete  v-on:dropdown-submit="submitForm"/>
   </div>
-    <div class="flex gap-4 mt-3 flex-wrap flex-col sm:justify-start sm:flex-row-reverse">
-    <button class="btn !py-2 !sm:py-1 !sm:px-2 sm:min-w-[8rem] xl:min-w-[12rem] btn-primary bg-primary text-white border-primary-lighten" type="submit"> <Icon name="bi:search" size="1.25em" class="mr-3 m-"/>{{$t('search')}}</button>
-    <button class="btn !py-2 !sm:py-1 !sm:px-2 sm:min-w-[8rem] xl:min-w-[12rem] btn-secondary bg-gray-500 border-gray-600 text-white" v-if="!(store.pos == null &&  store.scope == 'ei' && fulltext_enabled == false && inflection_enabled == true && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:trash" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
     <button class="btn !py-2 !sm:py-1 !sm:px-2 sm:min-w-[8rem] xl:min-w-[12rem] btn-light" type="button" @click="(settings.listView = !settings.listView)" ><Icon :name='settings.listView ? "bi:list" : "bi:file-text"' class="mb-1 mr-2"/>{{settings.listView ? $t('show_articles') : $t('show_list',store.dict==='bm,nn'? 0 : 1)}}</button>
     <button class="btn !py-2 !sm:py-1 !sm:px-2 sm:min-w-[8rem] xl:min-w-[12rem] btn-light" :aria-expanded="mini_help" aria-controls="advanced-info" type="button" @click="mini_help = !mini_help"><Icon :name="mini_help ? 'bi:x-lg' : 'bi:question-lg'" class="mb-1 mr-2"/>{{$t(mini_help ? 'advanced_help_hide' : 'advanced_help')}}</button>
     
@@ -70,6 +75,12 @@ const pos_tags = ['', 'VERB', 'NOUN', 'ADJ', 'PRON', 'DET', 'ADV', 'ADP', 'CCONJ
 
 const mini_help = ref(!store.q)
 
+const update_pos = event => {
+  store.pos = event.target.value
+  submitForm()
+
+}
+
 const update_dict = (value) => {
   store.dict = value
   if (store.q) {
@@ -90,9 +101,12 @@ const update_scope = (value) => {
 const reset = () => {
   store.pos = null
   store.scope = "ei"
-  fulltext_enabled.value = false
-  inflection_enabled.value = true
   store.dict = "bm,nn"
+
+  if (store.q) {
+    submitForm()
+  }
+
 }
 
 
@@ -163,6 +177,12 @@ option.selected {
 
 .btn-secondary:focus {
   @apply bg-secondary-darken;
+}
+
+legend, label {
+  font-variant: all-small-caps;
+  font-size: 1.25rem;
+  letter-spacing: .1rem;
 }
 
   

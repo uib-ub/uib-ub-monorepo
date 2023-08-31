@@ -77,10 +77,14 @@
   },
   "options": {
     "title": "Search options",
+    "dict": "Search in:",
     "scope": {
-      "e": "Dictionary entries only",
-      "ei": "Include inflected forms",
-      "eif":" Full-text search"
+      "title": "Search for:",
+      "value": {
+        "e": "Dictionary entries",
+        "ei": "Entries and inflections",
+        "eif": "All content"
+      }
     },
     "pos": "Part of speech",
     "collapse": "Collapse articles"
