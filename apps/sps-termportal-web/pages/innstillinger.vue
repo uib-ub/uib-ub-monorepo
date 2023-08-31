@@ -3,7 +3,6 @@
     <Head>
       <Title>{{ $t("innstillinger.title") }} | {{ $t("index.title") }}</Title>
     </Head>
-
     <div class="flex">
       <SideBar />
       <main>
