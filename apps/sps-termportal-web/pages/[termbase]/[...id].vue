@@ -4,7 +4,6 @@
       <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
     </Head>
     <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
-
     <div class="flex w-full">
       <SideBar />
       <div class="flex w-full">
@@ -30,14 +29,6 @@
           class="flex flex-col lg:w-3/4"
           :class="{ 'pl-3 lg:pl-6': searchData.length > 0 }"
         >
-          <div class="invisible h-9">
-            <input
-              id="viewToggle"
-              v-model="conceptViewToggle"
-              type="checkbox"
-            />
-            <label for="viewToggle">{{ $t("id.tableview") }}</label>
-          </div>
           <main ref="main" class="h-full">
             <h2 id="main" class="pb-4">
               <AppLink class="text-3xl" to="#main">{{ pagetitle }}</AppLink>
@@ -316,7 +307,7 @@ const displayInfo = computed(() => {
 
 useResizeObserver(main, (e) => {
   if (sidebar.value) {
-    sidebar.value.style.height = `${main.value.offsetHeight - 55}px`;
+    sidebar.value.style.height = `${main.value.offsetHeight - 88}px`;
   }
 });
 
