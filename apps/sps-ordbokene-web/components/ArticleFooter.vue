@@ -1,7 +1,7 @@
 <template>
 <div class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
   <client-only>
-    <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-4">
+    <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-2">
     <button v-if="showLinkCopy && (!webShareApiSupported || $route.name== 'article')" class="btn btn-borderless px-3" @click="copy_link">
       <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
       <span>{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
@@ -12,7 +12,7 @@
       <button class="btn btn-borderless px-3" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
         <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
       </button>
-      <div class="cite-container p-4 pb-1 pt-2 mt-2 relative text-1" v-if="cite_expanded" :id="'cite-'+article_id">
+      <div class="cite-container p-4 pb-1 pt-2 relative text-1 basis-full" v-if="cite_expanded" :id="'cite-'+article_id">
         <h4>{{$t('article.cite_title')}}</h4>
         <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
        <div class="my-2 break-all sm:break-words"><div class="bg-tertiary-darken1 px-2 pt-1 pb-3"><div id="citation" v-html="$t('article.citation', create_citation())"/></div></div>
