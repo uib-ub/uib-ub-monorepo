@@ -179,7 +179,7 @@
     },
     "notifications": {
         "redirect": "Viser tydingar av oppslagsordet",
-        "translation_title": "Maskinomsetjing:",
+        "translation_title": "Maskinomsetjing",
         "translation": "Samanlikn med maskinomsetjing foreslått av Apertium:",
         "inflected": "Bøygde former av:",
         "did_you_mean": "Meinte du:",
