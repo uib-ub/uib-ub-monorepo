@@ -7,12 +7,12 @@
     <div class="mx-auto flex h-full grow items-center justify-between">
       <div class="grow">
         <div v-if="context !== 'minimal'" class="flex grow items-center">
-          <div class="tp-sidebar w-12 px-2 lg:w-40">
+          <div class="tp-sidebar">
             <AppLink
               id="anchor"
               to="/"
               aria-label="Termportalen.no"
-              class="tp-hover-focus flex justify-center border-transparent px-3 py-0.5 text-[1.4em]"
+              class="tp-hover-focus mx-2 flex justify-center border-transparent px-3 py-0.5 text-[1.4em]"
             >
               <span class="font-semibold lg:font-normal" aria-hidden="true"
                 >T</span

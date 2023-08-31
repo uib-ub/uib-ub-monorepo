@@ -9,7 +9,7 @@
       }"
       style="top: -52px"
     />
-    <div v-if="context === 'full'" class="flex pl-4 xl:pl-0">
+    <div v-if="context === 'full'" class="flex pl-4 lg:pl-0">
       <div class="tp-sidebar w-0"></div>
       <div>
         <HeaderSearchOptions />

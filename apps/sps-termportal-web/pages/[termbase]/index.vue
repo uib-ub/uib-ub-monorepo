@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex">
     <Head>
       <Title
         >{{
@@ -14,7 +14,7 @@
     <div class="flex">
       <SideBar />
       <main>
-        <h1 id="main" class="pb-2 pt-5 text-2xl">
+        <h1 id="main" class="pb-3 pt-5 text-2xl">
           <AppLink to="#main">
             {{
               lalo[locale][termbase + "-3A" + termbase] ||
@@ -26,7 +26,7 @@
         </h1>
         <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
           <!--Description-->
-          <div class="basis-GRb space-y-2">
+          <div class="max-w-prose basis-GRb space-y-2">
             <p v-for="p in description" :key="p" v-html="p" />
           </div>
           <!--Table-->
@@ -81,7 +81,6 @@
 
 <script setup lang="ts">
 import { LangCode } from "~/composables/locale";
-import lazyLocales from "~/server/api/lazyLocales";
 
 const route = useRoute();
 const termbase = getTermbaseFromParam();
