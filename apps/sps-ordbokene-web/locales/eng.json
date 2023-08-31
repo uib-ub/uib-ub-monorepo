@@ -77,8 +77,11 @@
   },
   "options": {
     "title": "Search options",
-    "inflected": "Include inflected forms",
-    "fulltext": "Full-text search",
+    "scope": {
+      "e": "Dictionary entries only",
+      "ei": "Include inflected forms",
+      "eif":" Full-text search"
+    },
     "pos": "Part of speech",
     "collapse": "Collapse articles"
   },

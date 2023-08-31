@@ -82,8 +82,11 @@
         },
     "options": {
         "title": "Søkealternativer",
-        "inflected": "Søk i bøyde former",
-        "fulltext": "Søk i ordforklaringer",
+        "scope": {
+            "e": "Kun oppslagsord",
+            "ei": "Inkluder bøyde former",
+            "eif":"Fritekstsøk"
+          },
         "pos": "Ordklasse",
         "collapse": "Komprimer artikler"
     },

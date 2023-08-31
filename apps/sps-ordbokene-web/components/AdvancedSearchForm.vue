@@ -4,19 +4,19 @@
     <div class="flex flex-col sm:flex-row gap-8 sm:gap-3 m-3 sm:m-0">
     <fieldset class="flex flex-col gap-8 sm:gap-3">
     <legend class="sr-only">Ordbok</legend>
-      <FormRadio v-for="(item, idx) in dicts" :key="store.dict + idx" :model="store.dict || 'bm,nn'" @change="dict_radio" :value="item" name="dict" :labelId="'dict-radio-'+idx">
+      <FormRadio v-for="(item, idx) in dicts" :key="store.dict + idx" :value="item" name="dict" :labelId="'dict-radio-'+idx" :current="store.dict" @submit="update_dict">
         {{$t(`dicts.${item}`)}}
       </FormRadio>
     </fieldset>
   
   <div class="flex flex-col gap-8 sm:gap-3">
-  
-  <FormCheckbox labelId="inflectedCheckbox" :checked="inflection_enabled" v-model="inflection_enabled">
-      {{$t('options.inflected')}}
-  </FormCheckbox>
-  <FormCheckbox labelId="fulltextCheckbox" :checked="fulltext_enabled" v-model="fulltext_enabled">
-      {{$t('options.fulltext')}}
-  </FormCheckbox>
+
+    <fieldset class="flex flex-col gap-8 sm:gap-3">
+    <legend class="sr-only">Ordbok</legend>
+      <FormRadio v-for="(item, idx) in ['e', 'ei', 'eif']" :key="store.scope + idx" :value="item" name="scope" :labelId="'scope-radio-'+idx" :current="store.scope" @submit="update_scope">
+        {{$t(`options.scope.${item}`)}}
+      </FormRadio>
+    </fieldset>  
   
   <div class="flex flex-row gap-4 sm:gap-2">
     <label for="pos-select">{{$t('pos')}}:</label>
@@ -54,128 +54,117 @@
   
       </div>
   </div>
-  </template>
+</template>
   
-  <script setup>
-  
-  import { useStore } from '~/stores/searchStore'
-  import { useRoute } from 'vue-router'
-  import {useSettingsStore } from '~/stores/settingsStore'
-  const settings = useSettingsStore()
-  const store = useStore()
-  const route = useRoute()
-  
-  const dicts = ['bm,nn', 'bm', 'nn']
-  const pos_tags = ['', 'VERB', 'NOUN', 'ADJ', 'PRON', 'DET', 'ADV', 'ADP', 'CCONJ', 'SCONJ', 'INTJ']
-  
-  const fulltext_enabled = ref(store.scope.includes('f'))
-  const inflection_enabled = ref(store.scope.includes('i'))
-  
-  const mini_help = ref(!store.q)
-  
-  const dict_radio = (value) => {
-    store.dict = value
-  
+<script setup>
+import { useStore } from '~/stores/searchStore'
+import { useRoute } from 'vue-router'
+import {useSettingsStore } from '~/stores/settingsStore'
+const settings = useSettingsStore()
+const store = useStore()
+const route = useRoute()
+
+const dicts = ['bm,nn', 'bm', 'nn']
+const pos_tags = ['', 'VERB', 'NOUN', 'ADJ', 'PRON', 'DET', 'ADV', 'ADP', 'CCONJ', 'SCONJ', 'INTJ']
+
+
+const mini_help = ref(!store.q)
+
+const update_dict = (value) => {
+  store.dict = value
+  if (store.q) {
+    submitForm()
   }
   
-  
-  const reset = () => {
-    store.pos = null
-    store.scope = "ei"
-    fulltext_enabled.value = false
-    inflection_enabled.value = true
-    store.dict = "bm,nn"
+}
+
+const update_scope = (value) => {
+  console.log(value)
+  store.scope = value
+  if (store.q) {
+    submitForm()
   }
-  
-  watch(fulltext_enabled, () => {
-    if (fulltext_enabled.value) {
-      store.scope = store.scope + "f"
+}
+
+
+const reset = () => {
+  store.pos = null
+  store.scope = "ei"
+  fulltext_enabled.value = false
+  inflection_enabled.value = true
+  store.dict = "bm,nn"
+}
+
+
+const submitForm = async (item) => {
+  if (store.input) {
+    store.q = store.input
+    mini_help.value = false
+    let query = {q: store.input, dict: store.dict, scope: store.scope}
+    if (store.pos) {
+      query.pos = store.pos
     }
-    else {
-      store.scope = store.scope.replace('f', '')
-    }
-  })
-  
-  watch(inflection_enabled, () => {
-    if (inflection_enabled.value) {
-      store.scope = store.scope + "i"
-    }
-    else {
-      store.scope = store.scope.replace('i', '')
-    }
-  })
-  
-  
-  const submitForm = async (item) => {
-    //store.autocomplete = []
-    if (store.input) {
-      store.q = store.input
-      mini_help.value = false
-      let query = {q: store.input, dict: store.dict, scope: store.scope}
-      if (store.pos) {
-        query.pos = store.pos
-      }
-      return navigateTo({query})
-    }
+    return navigateTo({query})
   }
-  
-  </script>
-  
-  <style scoped>
-  
-  .welcome .advanced-search {
-    @apply bg-tertiary border-tertiary-darken2;
-  
-  }
-  
-  option {
-    @apply text-text bg-canvas-darken;
+}
+
+</script>
+
+<style scoped>
+
+.welcome .advanced-search {
+  @apply bg-tertiary border-tertiary-darken2;
+
+}
+
+option {
+  @apply text-text bg-canvas-darken;
 }
 
 option:hover {
-    @apply text-text bg-tertiary;
-  }
-  
-  option.selected {
-    @apply text-white bg-primary;
-  }
-  
-  .select-wrapper:focus-within {
-    box-shadow: 2px 2px 0px theme("colors.primary.DEFAULT");
-  
-  }
-  
-  .select-wrapper.not_null {
-      @apply border-primary border;
-  }
-  
-  
-  .btn-primary i, button.btn-secondary i {
+  @apply text-text bg-tertiary;
+}
+
+option.selected {
+  @apply text-white bg-primary;
+}
+
+.select-wrapper:focus-within {
+  box-shadow: 2px 2px 0px theme("colors.primary.DEFAULT");
+
+}
+
+.select-wrapper.not_null {
+    @apply border-primary border;
+}
+
+
+.btn-primary i, button.btn-secondary i {
+  @apply text-white
+
+}
+
+
+.btn-primary:hover {
+  @apply bg-primary-lighten;
+}
+
+.btn-primary:focus {
+  @apply bg-primary-lighten2;
+}
+
+.btn-primary:focus i {
     @apply text-white
-  
-  }
-  
-  
-  .btn-primary:hover {
-    @apply bg-primary-lighten;
-  }
-  
-  .btn-primary:focus {
-    @apply bg-primary-lighten2;
-  }
-  
-  .btn-primary:focus i {
-      @apply text-white
-  }
-  
-  .btn-secondary:hover {
-    @apply bg-secondary;
-  }
-  
-  .btn-secondary:focus {
-    @apply bg-secondary-darken;
-  }
-  
+}
+
+.btn-secondary:hover {
+  @apply bg-secondary;
+}
+
+.btn-secondary:focus {
+  @apply bg-secondary-darken;
+}
+
   
   </style>
   
