@@ -22,7 +22,7 @@ const props = defineProps({
     dict: String,
     minimal: Boolean,
     icon: String,
-    compare: String
+    compare: Boolean
 })
 
 const suggest_link = (suggestion) => {

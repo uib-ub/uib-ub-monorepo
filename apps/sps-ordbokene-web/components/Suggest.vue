@@ -7,7 +7,7 @@
         </SuggestResults>
     </div>
     <div v-if="translated.length" class ="callout py-0 my-0">
-        <SuggestResults :suggestions="translated"  :dict="dict" icon="bi:book-half">
+        <SuggestResults compare :suggestions="translated"  :dict="dict" icon="bi:book-half">
                 <h3><Icon name="bi:robot" size="1rem" class="mr-3"/>{{$t('notifications.translation_title')}}</h3><p class="pt-2">{{$t('notifications.translation')}}</p>
         </SuggestResults>
     </div>
