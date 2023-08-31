@@ -267,7 +267,7 @@
 
        .welcome .article {
         box-shadow: none !important;
-        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6;
+        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6 !pt-2 !px-3;
       }
       
       .welcome .ord-container {
