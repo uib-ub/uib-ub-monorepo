@@ -20,7 +20,7 @@
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
             <p>{{$t('notifications.fulltext.description')}}</p>
             <div class="flex">
-            <NuxtLink :to="`/search?q=${store.q}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3">{{$t('to_advanced')}} 
+            <NuxtLink :to="`/search?q=${store.q}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right"/>
             </NuxtLink>
             </div>
