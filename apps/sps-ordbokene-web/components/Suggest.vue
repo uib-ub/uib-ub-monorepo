@@ -1,5 +1,6 @@
 <template>
    <div class="mb-10 mx-2 flex flex-col gap-8 mt-3">
+    
     <div v-if="inflections.length" class ="callout py-0 my-0">
         <SuggestResults :suggestions="inflections"  :dict="dict">
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.inflected', {dict: $t('dicts.'+dict)})}}</h3><span id="translation-description"></span>{{" "}}
@@ -10,11 +11,26 @@
                 <h3><Icon name="bi:robot" size="1rem" class="mr-3"/>{{$t('notifications.translation_title')}}</h3><p class="pt-2">{{$t('notifications.translation')}}</p>
         </SuggestResults>
     </div>
-        <SuggestResults v-if="suggest.length" :suggestions="suggest" :dict="dict">
+    <div v-if="suggest.length">
+        <SuggestResults  :suggestions="suggest" :dict="dict">
             <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
         </SuggestResults>
-    <div v-if="!( articles_meta[dict].total || translated || inflections.length || suggest.length )" class="callout">Ingen treff</div>
-  </div>
+    </div>
+    <div v-if="freetext.length && !( articles_meta[dict].total || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
+            <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
+            <p>{{$t('notifications.fulltext.description')}}</p>
+            <div class="flex">
+            <NuxtLink :to="`/search?q=${store.q}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3">{{$t('to_advanced')}} 
+            <Icon name="bi:arrow-right"/>
+            </NuxtLink>
+            </div>
+    </div>
+    <div v-if="!( articles_meta[dict].total || translated.length || inflections.length || suggest.length || freetext.length )" class="callout pt-0 my-0">
+        <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
+        <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)})}}.</p>
+        <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]')}}</p>
+    </div>
+</div>
 
 </template>
 
@@ -29,12 +45,13 @@ const props = defineProps({
 })
 
 
-const suggestQuery = `${store.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eis`
+const suggestQuery = `${store.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifs`
 const apertiumQuery = `https://apertium.org/apy/translate?langpair=${store.dict == 'bm,nn' ? {bm: 'nno|nob', nn: 'nob|nno'}[props.dict] : {bm: 'nno|nob', nn: 'nob|nno'}[props.dict]}&q=${store.q}`
 
 const translated = ref([])
 const inflections = ref([])
 const suggest = ref([])
+const freetext = ref([])
 
 
 await Promise.all([$fetch(apertiumQuery).then(response => {
@@ -108,6 +125,9 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                                     }
                                 })
                             
+                            }
+                            if (response.a.freetext) {
+                                freetext.value = response.a.freetext
                             }
                         }
                     })])
