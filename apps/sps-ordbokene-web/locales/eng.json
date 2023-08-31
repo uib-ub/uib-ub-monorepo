@@ -178,7 +178,7 @@
     "redirect": "Showing senses of the dictionary entry",
     "translation": "Compare to machine translation suggested by Apertium:",
     "translation_title": "Machine translation",
-    "inflected": "Avn inflection of:",
+    "inflected": "An inflection of:",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",
     "similar_bm": "Add similar results from Bokmålsordboka: ",
@@ -197,7 +197,7 @@
     ],
     "fulltext": {
       "title": "Full-text search",
-      "description": "Your query has results in advanced search with full-text search enabled."
+      "description": "Your query yields results in advanced search with full-text search enabled."
     },
     "no_results": {
       "title": "No results",
