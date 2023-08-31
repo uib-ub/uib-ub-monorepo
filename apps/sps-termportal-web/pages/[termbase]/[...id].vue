@@ -46,9 +46,7 @@
                   class="text-lg text-gray-600 underline hover:text-black"
                   :to="'/' + concept?.memberOf.split('-3A')[1]"
                 >
-                  {{
-                    $t("global.samling." + concept?.memberOf.split("-3A")[1])
-                  }}
+                  {{ lalo[locale][concept.memberOf] }}
                 </AppLink>
               </div>
             </h2>
