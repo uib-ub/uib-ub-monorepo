@@ -179,15 +179,15 @@
     },
     "notifications": {
         "redirect": "Viser tydingar av oppslagsordet",
+        "translation_title": "Maskinomsetjing",
         "translation": "Samanlikn med maskinomsetjing foreslått av Apertium:",
-        "inflected": "Andre treff i {dict}:",
+        "inflected": "Bøygde former av:",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",
         "similar_bm": "Legg til liknande treff frå Bokmålsordboka: ",
         "similar_nn": "Legg til liknande treff frå Nynorskordboka: ",
         "search": "Søk i ordbøkene",
         "back": "Tilbake til søkjeresultata",
-        "no_results": "Ingen treff",
         "not_a_word": " er ikkje eit oppslagsord i ",
         "results": "Ingen treff | Eitt treff| {count} treff",
         "keywords": "oppslagsord",
@@ -198,7 +198,14 @@
             "Har du søkt i feil ordbok?",
             "Prøv å søkje i "
         ],
-        "fulltext": "Forslag til fritekstsøk:"
+        "fulltext": {
+            "title": "Fritekstsøk",
+            "description": "Søkjet ditt gir treff i avansert søk med fritekstsøk."
+          },
+          "no_results": {
+            "title": "Ingen treff",
+            "description": ["Søkjet ditt ga ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
+          }
     },
     "article": {
         "definition": "Definisjon",

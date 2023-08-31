@@ -47,6 +47,16 @@
     font-size: 1.17rem !important;
   }
 
+  .callout h3 {
+    font-size: 1.5rem !important;
+    font-variant: all-small-caps;
+    font-family: unset;
+    font-weight: 600;
+    letter-spacing: .1rem;
+
+  }
+  
+
 
 
     ::selection {

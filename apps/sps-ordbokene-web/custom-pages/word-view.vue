@@ -2,13 +2,7 @@
     <div>     
     <Spinner v-if="pending"/>    
     <div ref="results" v-if="!pending && !error && articles && articles.meta" >
-      <client-only><div class ="callout" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
-      
-      <div v-if="additionalSuggest">
-          <span v-for="(item, idx) in additionalSuggest" :key="idx">
-            Se også: <NuxtLink noPrefetch class="suggest-link p-3 md:py-0 w-full" :to="item[0]"><Icon name="bi:search" class="mr-3 mb-1"/><span class="link-content">{{item[0]}}</span></NuxtLink>
-        </span>
-      </div>
+      <client-only><div class ="callout mx-2" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
         </div>
       </client-only>
     <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">

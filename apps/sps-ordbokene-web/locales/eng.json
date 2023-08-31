@@ -177,15 +177,14 @@
 "notifications": {
     "redirect": "Showing senses of the dictionary entry",
     "translation": "Compare to machine translation suggested by Apertium:",
-    "inflected": "Other results in {dict}:",
-    "other_inflected": "“{word}” is also a form of:",
+    "translation_title": "Machine translation",
+    "inflected": "Avn inflection of:",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",
     "similar_bm": "Add similar results from Bokmålsordboka: ",
     "similar_nn": "Add similar results from Nynorskordboka: ",
     "search": "Search",
     "back": "Back to search",
-    "no_results": "No results",
     "not_a_word": " is not a word in ",
     "results": "No results | One result | {count} results",
     "keywords": "entries",
@@ -196,7 +195,15 @@
         "Did you search in the wrong dictionary?",
         "Try searching"
     ],
-    "fulltext": "Suggested full-text searches:"
+    "fulltext": {
+      "title": "Full-text search",
+      "description": "Your query has results in advanced search with full-text search enabled."
+    },
+    "no_results": {
+      "title": "No results",
+      "description": ["Your search yields no results in {dict}", "Note that thera are endless ways of combining words into new compound words in Norwegian, and many such words are therefore not included in the dictionary."]
+    }
+    
 },
 "article": {
     "definition": "Definition",
