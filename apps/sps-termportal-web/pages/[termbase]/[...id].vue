@@ -5,12 +5,12 @@
     </Head>
     <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
 
-    <div class="flex">
+    <div class="flex w-full">
       <SideBar />
-      <div class="flex">
+      <div class="flex w-full">
         <div
           v-if="searchData.length > 0"
-          class="hidden flex-col md:flex md:w-60 lg:w-1/3"
+          class="hidden flex-col md:flex md:w-[28vw] lg:w-[24vw] xl:w-[18vw]"
         >
           <BackToSearch />
           <nav aria-labelledby="sidebarresults">
