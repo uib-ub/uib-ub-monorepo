@@ -12,22 +12,7 @@
           v-if="searchData.length > 0"
           class="hidden flex-col md:flex md:w-60 lg:w-1/3"
         >
-          <div class="flex h-9">
-            <AppLink
-              class="group flex items-center space-x-2 text-lg"
-              to="/search"
-            >
-              <Icon
-                name="ion:return-up-back-sharp"
-                size="1.7em"
-                aria-hidden="true"
-                class="h-7 w-12 rounded bg-tpblue-400 text-white group-hover:bg-blue-700"
-              ></Icon>
-              <div class="group-hover:underline">
-                {{ $t("id.tilbake") }}
-              </div></AppLink
-            >
-          </div>
+          <BackToSearch />
           <nav aria-labelledby="sidebarresults">
             <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
               {{ $t("searchFilter.results-heading") }}
