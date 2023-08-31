@@ -64,9 +64,3 @@ const startAnimation = () => {
   </div>
 </main>
 </template>
-
-<style scoped>
-.btn{
- 
-}
-</style>
