@@ -131,6 +131,6 @@ body {
 }
 
 .tp-sidebar {
-  @apply xl:w-[14vw] xl:min-w-[14em] xl:max-w-[20rem];
+  @apply lg:w-[14vw] lg:min-w-[14em] lg:max-w-[20em];
 }
 </style>
