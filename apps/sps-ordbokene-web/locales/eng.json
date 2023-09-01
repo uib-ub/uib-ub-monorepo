@@ -4,8 +4,7 @@
   "help": "Help",
   "autocomplete_suggestions": "Search suggestion | search suggestions",
   "maximum_autocomplete": "maximum number of suggestions",
-  "advanced_help": "Show help",
-  "advanced_help_hide": "Hide help",
+  "advanced_help": "Help",
   "advanced":{
     "title": "Advanced search",
     "description": "Simple search only shows keyword hits in the results list, and we try to give you the best option if what you're searching for is not a keyword. In advanced search, however, you can show hits on inflected forms and in the definitions (free text search). You can also filter by word class, and truncate and combine the searches with special characters."
@@ -77,12 +76,12 @@
   },
   "options": {
     "title": "Search options",
-    "dict": "Search in:",
+    "dict": "Dictionaries:",
     "scope": {
       "title": "Search for:",
       "value": {
         "e": "Dictionary entries",
-        "ei": "Entries and inflections",
+        "ei": "All words",
         "eif": "All content"
       }
     },

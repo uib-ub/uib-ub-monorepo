@@ -4,8 +4,7 @@
     "help": "Hjelp til søk",
     "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
     "maximum_autocomplete": "maksimalt antall",
-    "advanced_help": "Vis søkehjelp",
-    "advanced_help_hide": "Skjul søkehjelp",
+    "advanced_help": "Søkehjelp",
     "advanced":{
         "title": "Avansert søk",
         "description": "Enkelt søk viser kun treff på oppslagsord i resultatlisten, og vi prøver å gi deg det beste alternativet hvis det du søker etter ikke er et oppslagsord. I avansert søk kan du derimot vise treff på bøyde former og i definisjonene (fritekstsøk). Du kan også filtrere etter ordklasse, og trunkere og kombinere søkene med spesialtegn."
@@ -82,15 +81,15 @@
         },
     "options": {
         "title": "Søkealternativer",
-        "dict": "Søk i:",
+        "dict": "Ordbøker:",
         "scope": {
             "title": "Søk etter:",
             "value": {
-                "e": "Kun oppslagsord",
-                "ei": "Inkluder bøyinger",
-                "eif": "Alt innhold"
-                }
-            },
+                "e": "Oppslagsord",
+                "ei": "Alle ordformer",
+                "eif":"Alt innhold"
+            }
+          },
         "pos": "Ordklasse",
         "collapse": "Komprimer artikler"
     },
