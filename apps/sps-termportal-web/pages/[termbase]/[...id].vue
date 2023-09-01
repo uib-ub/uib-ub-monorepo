@@ -26,7 +26,7 @@
           </nav>
         </div>
         <div
-          class="flex flex-col lg:w-3/4"
+          class="flex flex-col lg:w-3/4 grow"
           :class="{ 'pl-3 lg:pl-6': searchData.length > 0 }"
         >
           <main ref="main" class="h-full">
