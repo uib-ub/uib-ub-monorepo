@@ -1,14 +1,16 @@
 <template>
   <div>
-    <NavBar
-      ref="navBarRef"
-      :context="context"
-      class="tp-transition-slow z-10"
-      :class="{
-        'fixed top-0 drop-shadow-md': fixPosition,
-      }"
-      style="top: -52px"
-    />
+    <div style="height: 52px">
+      <NavBar
+        ref="navBarRef"
+        :context="context"
+        class="tp-transition-slow z-10"
+        :class="{
+          'fixed top-0 drop-shadow-md': fixPosition,
+        }"
+        style="top: -52px"
+      />
+    </div>
     <div v-if="context === 'full'" class="flex pl-4 lg:pl-0">
       <div class="tp-sidebar w-0"></div>
       <div>
