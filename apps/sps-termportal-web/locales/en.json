@@ -79,6 +79,9 @@
     "language": "Display language",
     "navigation": "Navigation"
   },
+  "news": {
+    "heading": "News"
+  },
   "searchBar": {
     "search": "Search",
     "inDomain": "in",
@@ -88,7 +91,11 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Search field",
     "clearTextLabel": "Clear search field",
-    "searchButtonLabel": "Search"
+    "searchButtonLabel": "Search",
+    "expandSubdomains": "", // TODO
+    "closeSubdomains": "", // TODO
+    "expandTermbases": "", // TODO
+    "closeTermbases": "" // TODO
   },
   "searchFilter": {
     "results": "results",
@@ -114,12 +121,15 @@
     "telephone": "Telephone",
     "license": "Licence",
     "languages": "Language(s)",
-    "startLang": "Starting language"
+    "startLang": "Starting language",
+    "contactHeading": "" // TODO
   },
   "id": {
     "topheading": "Concept view",
     "tableview": "Table view",
     "languagedata": "Language data",
+    "equivalence": "", // TODO
+    "equivalenceNote": "", // TODO
     "prefLabel": "Preferred term",
     "altLabel": "Admitted term",
     "hiddenLabel": "Depreciated term",
@@ -129,6 +139,9 @@
     "forkortelse": "Abbreviation",
     "forkortelseAv": "Abbreviation of",
     "forkortelseType": "Abbreviation type",
+    "kortform": "", // TODO
+    "teleskopord": "", // TODO
+    "initialord": "", // TODO
     "kontekst": "Context of",
     "kontekstAv": "Context",
     "general": "General information",
@@ -141,6 +154,9 @@
     "hasPart": "Subordinate concept (partitive)",
     "seeAlso": "See also",
     "related": "Associated concept",
+    "replaces": "", // TODO
+    "replacedBy": "", // TODO
+    "inndelingskriterium": "", // TODO
     "collection": "Termbase",
     "subject": "Subject field",
     "domain": "Domain",

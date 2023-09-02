@@ -81,6 +81,9 @@
     "language": "Visningsspråk",
     "navigation": "Navigasjon" // TODO Check translation
   },
+  "news": {
+    "heading": "Nytt"
+  },
   "searchBar": {
     "search": "Søk",
     "inDomain": "i",
@@ -90,7 +93,11 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
-    "searchButtonLabel": "Søk"
+    "searchButtonLabel": "Søk",
+    "expandSubdomains": "", // TODO
+    "closeSubdomains": "", // TODO
+    "expandTermbases": "", // TODO
+    "closeTermbases": "" // TODO
   },
   "searchFilter": {
     "results": "treff",
@@ -116,12 +123,15 @@
     "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Utgangsspråk"
+    "startLang": "Utgangsspråk",
+    "contactHeading": "" // TODO
   },
   "id": {
     "topheading": "Omgrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
+    "equivalence": "", // TODO
+    "equivalenceNote": "", // TODO
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
@@ -131,6 +141,9 @@
     "forkortelse": "Forkorting",
     "forkortelseAv": "Forkorting av",
     "forkortelseType": "Forkortingstype",
+    "kortform": "", // TODO
+    "teleskopord": "", // TODO
+    "initialord": "", // TODO
     "kontekst": "Kontekst til",
     "kontekstAv": "Kontekst",
     "general": "Generell informasjon",
@@ -143,6 +156,9 @@
     "hasPart": "Underomgrep (partitiv)",
     "seeAlso": "Sjå òg",
     "related": "Assosiert omgrep",
+    "replaces": "", // TODO
+    "replacedBy": "", // TODO
+    "inndelingskriterium": "", // TODO
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",

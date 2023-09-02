@@ -1,7 +1,7 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase",
+    "termbase": "Termbase | termbase | Termbaser",
     "skipLink": "Gå til hovedinnhold",
     "domain": {
       "domain": "Domene | domene",
@@ -79,6 +79,9 @@
     "language": "Visningsspråk",
     "navigation": "Navigasjon" // TODO Check translation
   },
+  "news": {
+    "heading": "Nytt"
+  },
   "searchBar": {
     "search": "Søk",
     "inDomain": "i",
@@ -88,7 +91,11 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
-    "searchButtonLabel": "Søk"
+    "searchButtonLabel": "Søk",
+    "expandSubdomains": "", // TODO
+    "closeSubdomains": "", // TODO
+    "expandTermbases": "", // TODO
+    "closeTermbases": "" // TODO
   },
   "searchFilter": {
     "results": "treff",
@@ -115,12 +122,15 @@
     "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Utgangsspråk"
+    "startLang": "Utgangsspråk",
+    "contactHeading": "" // TODO Used a heading to group telephone, email
   },
   "id": {
     "topheading": "Begrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
+    "equivalence": "", // TODO
+    "equivalenceNote": "", // TODO
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
     "hiddenLabel": "Frarådet term",
@@ -130,8 +140,11 @@
     "forkortelse": "Forkortelse",
     "forkortelseAv": "Forkortelse av",
     "forkortelseType": "Forkortelsestype",
-    "kontekst": "Kontekst til",
-    "kontekstAv": "Kontekst",
+    "kortform": "", // TODO Display of value for abbrev type
+    "teleskopord": "", // TODO Display of value for abbrev type
+    "initialord": "", // TODO Display of value for abbrev type
+    "kontekst": "Kontekst",
+    "kontekstAv": "Kontekst til",
     "general": "Generell informasjon",
     "relasjon": "Begrepsrelasjon",
     "narrower": "Underbegrep",
@@ -142,6 +155,9 @@
     "hasPart": "Underbegrep (partitiv)",
     "seeAlso": "Se også",
     "related": "Assosiert begrep",
+    "replaces": "", // TODO
+    "replacedBy": "", // TODO
+    "inndelingskriterium": "", // TODO
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
