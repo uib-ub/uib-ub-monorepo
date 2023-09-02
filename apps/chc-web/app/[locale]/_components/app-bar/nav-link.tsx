@@ -1,5 +1,5 @@
 'use client'
-import NextLink from 'next/link';
+import Link from 'next-intl/link';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { usePathname } from 'next/navigation';
 
@@ -13,9 +13,9 @@ export const NavLink = ({ href, children, ...props }: { href: string, children: 
       {...props}
       asChild
     >
-      <NextLink href={href}>
+      <Link href={href}>
         {children}
-      </NextLink>
+      </Link>
     </NavigationMenu.Link>
   );
 };

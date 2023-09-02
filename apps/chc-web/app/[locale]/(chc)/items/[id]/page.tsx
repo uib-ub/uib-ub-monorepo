@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslator } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import Subjects from '@/app/[locale]/(chc)/_components/subject';
 import ManifestViewer from '@/app/[locale]/(chc)/_components/iiif/manifest-viewer.client';
@@ -17,12 +17,12 @@ async function getData(id: string) {
 }
 
 export default async function ItemRoute({
-  params
+  params: { locale, id }
 }: {
   params: { locale: string, id: string }
 }) {
-  const t = await getTranslations('Item');
-  const data = await getData(params.id)
+  const t = await getTranslator(locale, 'Item');
+  const data = await getData(id)
   if (!data) {
     notFound();
   }
@@ -30,7 +30,7 @@ export default async function ItemRoute({
   return (
     <>
       <div>
-        <InternationalLabel label={data.label} lang={params.locale} />
+        <InternationalLabel label={data.label} lang={locale} />
         {data.subjectOfManifest ? <ManifestViewer
           id={data.subjectOfManifest}
           options={{
