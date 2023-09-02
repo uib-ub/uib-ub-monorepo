@@ -84,7 +84,7 @@ export function getConceptDisplaytitle(concept): string | null {
  * @returns List of semantic relation of relationtype: [label, link]
  */
 export function getRelationData(
-  data,
+  data: any,
   mainConceptId: string,
   relationType: SemanticRelation
 ): Array<Array<string>> | null {
@@ -119,15 +119,15 @@ export function getRelationData(
 }
 
 /**
- * Create nested dictionary with related ressources.
+ * Create nested dictionary with related ressources of starting entry.
  *
- * @param data - List of dictionaries with concept data
+ * @param data - Nested dictionaries with concept data
  * @param startId - key for starting point in dict
  * @param relation - relation to follow
  * @param newKey - Key to nest related entries under
  */
 export function parseRelationsRecursively(
-  data: any,
+  data: Object,
   startId: string,
   relation: string,
   newKey: string
@@ -142,6 +142,30 @@ export function parseRelationsRecursively(
       }))
     );
   } else {
-    return undefined;
+    return null;
   }
+}
+
+export function deleteValueFromList(
+  arr: Array<string | number>,
+  value: string | number
+): boolean {
+  const index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return index > -1;
+}
+
+export function getAllKeys(obj: Object): string[] {
+  if (obj === null || typeof obj !== "object") {
+    return [];
+  }
+  return Object.keys(obj).reduce((res: string[], key: string) => {
+    const value = obj[key];
+    if (typeof value === "object") {
+      return [key, ...res, ...getAllKeys(value)];
+    }
+    return [key];
+  }, []);
 }

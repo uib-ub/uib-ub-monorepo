@@ -1,16 +1,17 @@
 import React from 'react';
 import Image from 'next/image';
 import { Badge, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, toBase64, shimmer, DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem, Popover, PopoverContent, PopoverTrigger } from 'ui-react';
-import { Info, Link } from "lucide-react"
+import { Info, Link as LinkIcon } from "lucide-react"
+import Link from 'next/link';
 
 const renderHTML = (rawHTML) => React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
 
 export function Hit({ hit }) {
   return (
-    <Card className='break-inside-avoid'>
+    <Card className='break-inside-avoid overflow-hidden'>
       {
         hit.image ? (
-          <div className='w-full rounded-t-lg'>
+          <div className='w-full rounded-t-lg  relative'>
             <a href={`/items/${hit.identifier}`}>
               <Image
                 src={hit.image}
@@ -27,9 +28,9 @@ export function Hit({ hit }) {
       }
       <CardHeader className='p-2'>
         <CardTitle>
-          <a href={`/items/${hit.identifier}`} className='leading-6'>
+          <Link href={`/items/${hit.identifier}`} className='leading-6'>
             {hit.label_none || hit.label?.no || hit.identifier}
-          </a>
+          </Link>
         </CardTitle>
         <CardDescription>
           {hit.maker?.map(m => (
@@ -59,7 +60,7 @@ export function Hit({ hit }) {
           </PopoverContent>
         </Popover>
         <DropdownMenu>
-          <DropdownMenuTrigger className='flex flex-nowrap items-center gap-1'>Links <Link className="h-4 w-4" /></DropdownMenuTrigger>
+          <DropdownMenuTrigger className='flex flex-nowrap items-center gap-1'>Links <LinkIcon className="h-4 w-4" /></DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Open in:</DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -73,7 +74,6 @@ export function Hit({ hit }) {
         </DropdownMenu>
       </CardFooter>
     </Card>
-
   )
 }
 

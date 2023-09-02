@@ -9,7 +9,8 @@
       "DOMENE-3AHumaniora": "Humaniora",
       "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
-      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon"
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon",
+      "DOMENE-3AHelse_og_sosial": "Helse & sosial"
     },
     "lang": {
       "none": "–",
@@ -35,6 +36,7 @@
       "all": "Alle termbasar | alle termbasar",
       "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomi",
+      "BIBINF": "Bibliotek- og informasjonsfag",
       "CMBIOLOGI": "Celle- og molekylærbiologi",
       "EVERTEBRATER": "Evertebratar",
       "FBK": "Felles Begrepskatalog",
@@ -75,7 +77,9 @@
     "om": "Om Termportalen",
     "innstillinger": "Innstillingar",
     "menuButtonShow": "Utvid menyen",
-    "menuButtonHide": "Skjul menyen"
+    "menuButtonHide": "Skjul menyen",
+    "language": "Visningsspråk",
+    "navigation": "Navigasjon" // TODO Check translation
   },
   "searchBar": {
     "search": "Søk",

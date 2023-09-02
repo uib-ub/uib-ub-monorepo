@@ -4,7 +4,7 @@
     <div ref="results"  v-if="store.view != 'suggest' && !pending && !error && articles && articles.meta" >
     <div class="gap-3 lg:gap-8 grid lg:grid-cols-2" v-if="route.params.dict == 'bm,nn' || route.query.dict == 'bm,nn' ">
       <section class="lg:grid-cols-6" :aria-label="$t('dicts.bm')">
-        <div class="hidden lg:inline-block p-2"><h2 class="lg:inline-block">Bokmålsordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span><span v-if="(articles.meta.bm.total > 1)" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
           </span></div>
           <div v-if="listView" class="inline-block lg:hidden"><h2>Bokmålsordboka</h2></div>
@@ -17,7 +17,7 @@
         </component>
       </section>
       <section class="lg:grid-cols-6" :aria-label="$t('dicts.nn')">
-        <div class="hidden lg:inline-block p-2"><h2 class="lg:inline-block">Nynorskordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span><span v-if="articles.meta.nn.total>1" aria-hidden="true" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
           </span>
         </div>
@@ -35,7 +35,7 @@
     
     <div v-if="route.params.dict != 'bm,nn' && route.query.dict != 'bm,nn' ">
       <div v-if="(route.params.dict == 'bm' || route.query.dict == 'bm') && articles.meta.bm">
-        <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Bokmålsordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Bokmålsordboka</h2>
           <span v-if="(articles.meta.bm.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.bm.total})}}</span>
         </div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
@@ -47,7 +47,7 @@
         </component>
       </div>
       <div v-if="(route.params.dict == 'nn' || route.query.dict == 'nn' )  && articles.meta.nn">
-        <div class="hidden lg:inline-block py-2"><h2 class="lg:inline-block">Nynorskordboka</h2>
+        <div class="hidden lg:inline-block py-2 px-1"><h2 class="lg:inline-block">Nynorskordboka</h2>
           <span v-if="(articles.meta.nn.total>1)" class="result-count">  | {{$t('notifications.results', {count: articles.meta.nn.total})}}</span>
         </div>
         <component class="article-column" :is="listView ? 'ol' : 'div'">
@@ -67,8 +67,12 @@
   <div v-if="error" aria-live="">
     ERROR: {{error}}
   </div>
-
-  <SuggestResults v-if="!pending" :suggestions="suggestions"/>
+  <client-only>
+  <div class="my-10">
+  <SuggestResults v-if="!pending && suggestions.inflect" :suggestions="suggestions.inflect">{{$t('notifications.other_inflected', {word: route.query.orig || store.q})}}</SuggestResults>
+  <SuggestResults v-if="!pending && suggestions.similar" :suggestions="suggestions.similar">{{$t('notifications.similar')}}</SuggestResults>
+  </div>
+  </client-only>
 
 
 </div>
@@ -80,23 +84,28 @@
 
 import { useStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
+import { useI18n } from 'vue-i18n'
 
 const settings = useSettingsStore()
 const store = useStore()
 const route = useRoute()
+const { t } = useI18n()
+const i18n = useI18n()
 
-const suggestions = ref()
+const suggestions = ref({inflect: [], similar: []})
 const error_message = ref()
 
-const listView = computed(() => {
-  return store.q && store.view != "article" && settings.simpleListView && route.name == 'dict-slug'
-})
 
 const get_suggestions = async () => {
-  const response = await $fetch(`${store.endpoint}api/suggest?&q=${store.originalInput || store.q}&dict=${store.dict}&n=20&dform=int&meta=n&include=eis`)                                
-  suggestions.value = filterSuggestions(response, store.originalInput || store.q)
-  
+  if (process.client) {
+    const response = await $fetch(`${store.endpoint}api/suggest?&q=${route.query.orig || store.q}&dict=${store.dict}&n=10&dform=int&meta=n&include=eis`)                                
+    suggestions.value = filterSuggestions(response, route.query.orig || store.q, store.q)
+  }
 }
+onMounted(() => {
+    get_suggestions()    
+})
+
 
 const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
       $fetch(store.endpoint + 'api/articles?', {
@@ -114,9 +123,35 @@ const { pending, error, refresh, data: articles } = await useAsyncData("articles
           }
         }))
 
-onMounted(() => {
-    get_suggestions()    
+
+const title = computed(()=> {
+  return store.dict == "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
 })
+
+
+
+useHead({
+  title, 
+  meta: [
+    {property: 'og:title', content: title }, 
+  ],
+  link: [
+    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.slug[0]}`}
+  ]
+})
+
+
+
+
+const listView = computed(() => {
+  return store.q && store.view != "article" && settings.simpleListView && route.name == 'dict-slug'
+})
+
+
+
+
+
+
 
 const article_error = (error, article, dict) => {
   console.log("ARTICLE_ERROR", article, dict)
@@ -129,9 +164,6 @@ const article_error = (error, article, dict) => {
     font-size: 1rem;
 }
 
-ol.article-column>li {
-  list-style: none;
-}
 
 .list ol.article-column {
   margin: 0px;

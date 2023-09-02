@@ -9,7 +9,8 @@
       "DOMENE-3AHumaniora": "Humanities",
       "DOMENE-3ANaturvitenskapTeknologi": "Sciences & Technology",
       "DOMENE-3ASamfunnsfag": "Social Sciences",
-      "DOMENE-3AOkonomiAdministrasjon": "Economy & Administration"
+      "DOMENE-3AOkonomiAdministrasjon": "Economy & Administration",
+      "DOMENE-3AHelse_og_sosial": "Helse & sosial"
     },
     "lang": {
       "none": "–",
@@ -74,7 +75,9 @@
     "om": "About Termportalen",
     "innstillinger": "Settings",
     "menuButtonShow": "Extend menu",
-    "menuButtonHide": "Hide menu"
+    "menuButtonHide": "Hide menu",
+    "language": "Display language",
+    "navigation": "Navigation"
   },
   "searchBar": {
     "search": "Search",

@@ -3,12 +3,12 @@
     class="max-w-full grow"
     role="search"
     :class="{
-      'xs:pt-3 pt-2 sm:pt-4 md:pt-5 lg:pt-6 xl:pt-7': !expandSearchBar,
+      'pt-2 xs:pt-3 sm:pt-4 md:pt-5 lg:pt-6 xl:pt-7': !expandSearchBar,
     }"
   >
     <div
       v-if="expandSearchBar"
-      class="xs:pt-4 pt-2 sm:pt-5 md:pt-7 lg:pt-8 xl:pt-9"
+      class="pt-2 xs:pt-4 sm:pt-5 md:pt-7 lg:pt-8 xl:pt-9"
     >
       <DomainTabs class="hidden md:block" />
       <DomainMenu class="md:hidden" />
@@ -20,7 +20,7 @@
         id="searchfield"
         v-model="searchterm"
         type="search"
-        class="form-control focus:border-tpblue-300 min-w-0 flex-auto rounded border border-white bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-gray-700 transition ease-in-out focus:border focus:bg-white focus:text-gray-700 focus:outline-none"
+        class="form-control min-w-0 flex-auto rounded border border-white bg-white bg-clip-padding px-3 py-1.5 text-base font-normal text-gray-700 transition ease-in-out focus:border focus:border-tpblue-300 focus:bg-white focus:text-gray-700 focus:outline-none"
         :placeholder="
           $t('searchBar.search') +
           (searchInterface.language !== 'all'
@@ -79,7 +79,7 @@
       </button>
       <button
         id="searchbutton"
-        class="bg-tpblue-400 tp-searchbutton-radius inline-block h-full w-24 items-center text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
+        class="tp-searchbutton-radius inline-block h-full w-24 items-center bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
         type="button"
         :aria-label="$t('searchBar.searchButtonLabel')"
         @click="execSearch"
@@ -89,7 +89,7 @@
     </div>
     <div
       v-if="expandSearchBar"
-      class="xs:px-1 flex flex-wrap gap-x-3 pt-2 sm:text-lg"
+      class="flex flex-wrap gap-x-3 pt-2 xs:px-1 sm:text-lg"
     >
       <SearchBarDropdown dropdown="language" dd-width="7.8em">
         <option value="all">
@@ -145,7 +145,6 @@ const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
 const localeLangOrder = useLocaleLangOrder();
 const domainData = useDomainData();
-
 const expandSearchBar = computed(() => {
   if (
     route.path === "/" ||

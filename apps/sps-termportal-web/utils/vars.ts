@@ -62,6 +62,7 @@ export interface SearchOptions {
   language: (LangCode | "all")[];
   translate: LangCode | "none";
   termbase: Samling[];
+  useDomain: boolean;
   domain: (Domains | "all")[];
   predicate: LabelPredicate[];
   matching: (Matching | "all")[] | Matching[][];
@@ -77,7 +78,7 @@ export const searchOptionsInfo = {
   language: { q: "ss", default: "all" },
   translate: { q: "ms", default: "none" },
   termbase: { q: "tb", default: "all" },
-  domain: { q: "d", default: ["all"] },
+  domain: { q: "d", default: {} },
   predicate: { default: ["prefLabel", "altLabel", "hiddenLabel"] },
   matching: {
     default: [

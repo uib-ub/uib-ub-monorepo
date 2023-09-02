@@ -5,11 +5,11 @@
     "skipLink": "Gå til hovedinnhold",
     "domain": {
       "domain": "Domene | domene",
-      "all": "Alle domener",
       "DOMENE-3AHumaniora": "Humaniora",
       "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
-      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon"
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon",
+      "DOMENE-3AHelse_og_sosial": "Helse & sosial"
     },
     "lang": {
       "none": "–",
@@ -35,6 +35,7 @@
       "all": "Alle termbaser",
       "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomi",
+      "BIBINF": "Bibliotek- og informasjonsfag",
       "CMBIOLOGI": "Celle- og molekylærbiologi",
       "EVERTEBRATER": "Evertebrater",
       "FBK": "Felles Begrepskatalog",
@@ -72,9 +73,11 @@
   "domainOverview": { "domainsAndBases": "Domener & termbaser" },
   "navBar": {
     "om": "Om Termportalen",
-    "innstillinger": "Inn­stillinger",
+    "innstillinger": "Innstillinger",
     "menuButtonShow": "Utvid menyen",
-    "menuButtonHide": "Skjul menyen"
+    "menuButtonHide": "Skjul menyen",
+    "language": "Visningsspråk",
+    "navigation": "Navigasjon" // TODO Check translation
   },
   "searchBar": {
     "search": "Søk",

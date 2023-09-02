@@ -7,6 +7,6 @@
   const store = useStore()
   
   definePageMeta({
-    middleware: ['endpoint-middleware', 'dict-middleware']
+    middleware: ['endpoint-middleware', 'search-middleware']
   })
   </script>

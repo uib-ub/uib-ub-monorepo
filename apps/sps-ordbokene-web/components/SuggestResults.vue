@@ -1,9 +1,9 @@
 <template>
-<div v-if="suggestions && suggestions.length" class="suggestions py-2 px-1 mb-4 mt-8">
-    <h2>{{$t('notifications.similar')}}</h2>
-    <ul class="nav nav-pills flex-column md:flex md:flex-wrap md:gap-8 py-6 pt-4 md:py-8">
+<div v-if="suggestions && suggestions.length" class="suggestions py-2 px-1">
+    <h2><slot/></h2>
+    <ul class="nav nav-pills flex-column md:flex md:flex-wrap md:gap-8 pt-4 md:py-8">
         <li class="nav-item flex" v-for="(item, idx) in suggestions" :key="idx">
-            <NuxtLink class="suggest-link py-3 md:py-0 md w-full" :to="suggest_link(item[0])"><Icon name="bi:search" class="mr-3 mb-1"/><span class="link-content">{{item[0]}}</span></NuxtLink>
+            <NuxtLink class="suggest-link py-3 md:py-0 w-full" :to="suggest_link(item[0])"><Icon name="bi:search" class="mr-3 mb-1"/><span class="link-content">{{item[0]}}</span></NuxtLink>
         </li>
     </ul>
 </div>
@@ -13,6 +13,7 @@
 
 import { useStore } from '~/stores/searchStore'
 const store = useStore()
+const route = useRoute()
 
 const props = defineProps({
     suggestions: Object
@@ -20,14 +21,16 @@ const props = defineProps({
 
 const suggest_link = (suggestion) => {
     if (store.advanced) {
-        let url = `/${store.dict}/search?q=${suggestion}&scope=${store.scope}`
+        let url = `search?q=${suggestion}&dict=${store.dict}&scope=${store.scope}`
         if (store.pos) {
             url = url + '&pos=' + store.pos
         }
         return url
     }
     else {
-        return suggestion
+        let url = suggestion + "?orig=" + (route.query.orig || store.q)
+
+        return url
     }
 }
 

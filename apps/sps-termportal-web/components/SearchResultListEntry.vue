@@ -73,7 +73,7 @@
           </div>
         </div>
         <div class="max-w-[20em] lg:w-[20em] lg:pl-2">
-          {{ $t("global.samling." + entryData.samling) }}
+          {{ lalo[locale][entryData.context] }}
         </div>
       </section>
     </AppLink>
@@ -83,6 +83,8 @@
 <script setup lang="ts">
 import { LangCode } from "~/composables/locale";
 const localeLangOrder = useLocaleLangOrder();
+const lalo = useLazyLocales();
+const locale = useLocale();
 
 const searchInterface = useSearchInterface();
 interface Props {

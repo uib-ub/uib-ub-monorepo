@@ -11,14 +11,16 @@ export default <Partial<Config>>{
       flexBasis: { GRb: "61.8%", GRs: "38.2%" },
       colors: {
         tpblue: {
-          100: "#e2efff",
-          200: "#69b9fe",
-          300: "#008aff",
-          400: "#14417b",
+          100: "#e2efff", // rgb(226, 239, 255)
+          200: "#69b9fe", // rgb(105, 185, 254)
+          300: "#008aff", // rgb(0, 138, 255)
+          400: "#14417b", // rgb(20, 65, 123)
         },
+      },
+      boxShadow: {
+        tphalo: "0px 0px 1px 0.18rem rgb(105, 185, 254, 0.5)", // #69b9fe
       },
     },
   },
-
   plugins: [],
 };

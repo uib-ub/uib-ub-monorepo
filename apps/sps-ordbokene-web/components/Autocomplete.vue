@@ -22,10 +22,10 @@ async function fetchAutocomplete(q) {
       return
     }
 
-    const advanced = specialSymbols(q)
+    const pattern = specialSymbols(q)
     const time = Date.now()
-    if (advanced && (!store.autocomplete[0] || store.autocomplete[0].time < time)) {
-      store.autocomplete = [{q, time, type: "advanced"}]
+    if (pattern && (!store.autocomplete[0] || store.autocomplete[0].time < time)) {
+      store.autocomplete = [{q, time, type: "pattern"}]
     }
     
 
@@ -45,7 +45,7 @@ async function fetchAutocomplete(q) {
       }
     }
 
-    if (!advanced) {
+    if (!pattern) {
 
       let response = ref([])
       let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${store.advanced ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'e'}`
@@ -238,9 +238,10 @@ if (process.client) {
         :aria-selected="idx == selected_option"
         role="option"
         tabindex="-1"
+        :lang="['bm','nn','no'][item.dict-1]"
         :id="'autocomplete-item-'+idx">
         <div class="dropdown-item w-full" data-dropdown-item tabindex="-1" @click="dropdown_select(item.q)">
-          <span v-if="item.type == 'advanced' && !store.advanced" aria-live="polite" class=" bg-primary text-white p-1 rounded-1xl ml-3">{{$t('to_advanced')}} 
+          <span v-if="item.type == 'pattern' && !store.advanced" aria-live="polite" class=" bg-primary text-white p-1 rounded-1xl ml-3">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right" class="mb-1"/>
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">

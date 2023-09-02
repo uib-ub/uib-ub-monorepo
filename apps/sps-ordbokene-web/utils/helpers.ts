@@ -4,14 +4,14 @@ export const specialSymbols = (q) => {
 
 
 
-export const filterSuggestions = (items, q) => {
-    let assembled = []
+export const filterSuggestions = (items, q, stop) => {
+    let assembled = {inflect: [], similar: []}
     let seen = new Set()
-    const { inflect, exact, similar} = items.a
+    const { inflect, exact, similar, freetext} = items.a
       if (inflect) {
           inflect.forEach(item => {
-              if (q != item[0]) {
-                  assembled.push(item)
+              if (q != item[0] && stop != item[0]) {
+                  assembled.inflect.push(item)
                   seen.add(item[0])
               }
           })
@@ -20,17 +20,18 @@ export const filterSuggestions = (items, q) => {
           exact.forEach(item => {
               if (!seen.has(item[0])
               && q != item[0]
+              && stop != item[0]
               && (item[0].length <= q.length
               || (item[0].slice(0, q.length) != q && item[0] != "å " + q))) {
-                  assembled.push(item)
+                  assembled.similar.push(item)
                   seen.add(item[0])
               }
           })
       }
       if (similar) {
           similar.forEach(item => {
-                  if (!seen.has(item[0])) {
-                  assembled.push(item)
+                  if (!seen.has(item[0]) && stop != item[0] && item[0][0] != "-" && item[0].slice(-1) != "-") {
+                  assembled.similar.push(item)
                   }
           })
       }
