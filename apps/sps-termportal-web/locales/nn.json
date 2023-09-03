@@ -141,8 +141,8 @@
     "forkortelse": "Forkorting",
     "forkortelseAv": "Forkorting av",
     "forkortelseType": "Forkortingstype",
-    "kortform": "Kortform", // TODO
-    "teleskopord": "Teleskopord", // TODO
+    "kortform": "Kortterm", // TODO
+    "teleskopord": "Akronym", // TODO
     "initialord": "Initialord", // TODO
     "kontekst": "Kontekst til",
     "kontekstAv": "Kontekst",
