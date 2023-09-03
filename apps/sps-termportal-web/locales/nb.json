@@ -70,7 +70,7 @@
       "contains-ci": "inneholder"
     }
   },
-  "domainOverview": { "domainsAndBases": "Domener & termbaser" },
+  "domainOverview": { "domainsAndBases": "Domener og termbaser" },
   "navBar": {
     "om": "Om Termportalen",
     "innstillinger": "Innstillinger",
@@ -92,10 +92,10 @@
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
     "searchButtonLabel": "Søk",
-    "expandSubdomains": "", // TODO
-    "closeSubdomains": "", // TODO
-    "expandTermbases": "", // TODO
-    "closeTermbases": "" // TODO
+    "expandSubdomains": "Vis subdomener", // TODO
+    "closeSubdomains": "Skjul subdomener", // TODO
+    "expandTermbases": "Vis termbaser", // TODO
+    "closeTermbases": "Skjul termbaser" // TODO
   },
   "searchFilter": {
     "results": "treff",
@@ -129,8 +129,8 @@
     "topheading": "Begrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
-    "equivalence": "", // TODO
-    "equivalenceNote": "", // TODO
+    "equivalence": "Ekvivalens", // TODO
+    "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
     "hiddenLabel": "Frarådet term",
@@ -140,9 +140,9 @@
     "forkortelse": "Forkortelse",
     "forkortelseAv": "Forkortelse av",
     "forkortelseType": "Forkortelsestype",
-    "kortform": "", // TODO Display of value for abbrev type
-    "teleskopord": "", // TODO Display of value for abbrev type
-    "initialord": "", // TODO Display of value for abbrev type
+    "kortform": "Kortform", // TODO Display of value for abbrev type
+    "teleskopord": "Teleskopord", // TODO Display of value for abbrev type
+    "initialord": "Initialord", // TODO Display of value for abbrev type
     "kontekst": "Kontekst",
     "kontekstAv": "Kontekst til",
     "general": "Generell informasjon",
@@ -155,9 +155,9 @@
     "hasPart": "Underbegrep (partitiv)",
     "seeAlso": "Se også",
     "related": "Assosiert begrep",
-    "replaces": "", // TODO
-    "replacedBy": "", // TODO
-    "inndelingskriterium": "", // TODO
+    "replaces": "Erstatter", // TODO
+    "replacedBy": "Erstattet av", // TODO
+    "inndelingskriterium": "Inndelingskriterium", // TODO
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
