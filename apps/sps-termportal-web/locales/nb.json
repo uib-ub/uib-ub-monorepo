@@ -80,7 +80,7 @@
     "navigation": "Navigasjon" // TODO Check translation
   },
   "news": {
-    "heading": "Nytt"
+    "heading": "Nyheter"
   },
   "searchBar": {
     "search": "Søk",
@@ -123,7 +123,7 @@
     "license": "Lisens",
     "languages": "Språk",
     "startLang": "Utgangsspråk",
-    "contactHeading": "Om termbasen" // TODO Used a heading to group telephone, email
+    "contactHeading": "Generelt om termbasen" // TODO Used a heading to group telephone, email
   },
   "id": {
     "topheading": "Begrepsvisning",
