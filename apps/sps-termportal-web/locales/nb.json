@@ -123,7 +123,7 @@
     "license": "Lisens",
     "languages": "Språk",
     "startLang": "Utgangsspråk",
-    "contactHeading": "" // TODO Used a heading to group telephone, email
+    "contactHeading": "Om termbasen" // TODO Used a heading to group telephone, email
   },
   "id": {
     "topheading": "Begrepsvisning",
