@@ -92,8 +92,8 @@
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
     "searchButtonLabel": "Søk",
-    "expandSubdomains": "Vis subdomener", // TODO
-    "closeSubdomains": "Skjul subdomener", // TODO
+    "expandSubdomains": "Vis underdomener", // TODO
+    "closeSubdomains": "Skjul underdomener", // TODO
     "expandTermbases": "Vis termbaser", // TODO
     "closeTermbases": "Skjul termbaser" // TODO
   },
