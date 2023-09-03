@@ -7,10 +7,10 @@
       "domain": "Domene | domene",
       "all": "Alle domene",
       "DOMENE-3AHumaniora": "Humaniora",
-      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
+      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
-      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon",
-      "DOMENE-3AHelse_og_sosial": "Helse & sosial"
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi og administrasjon",
+      "DOMENE-3AHelse_og_sosial": "Helse og sosial"
     },
     "lang": {
       "none": "–",
@@ -82,7 +82,7 @@
     "navigation": "Navigasjon" // TODO Check translation
   },
   "news": {
-    "heading": "Nytt"
+    "heading": "Nyhende"
   },
   "searchBar": {
     "search": "Søk",
@@ -94,10 +94,10 @@
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
     "searchButtonLabel": "Søk",
-    "expandSubdomains": "", // TODO
-    "closeSubdomains": "", // TODO
-    "expandTermbases": "", // TODO
-    "closeTermbases": "" // TODO
+    "expandSubdomains": "Vis underdomene", // TODO
+    "closeSubdomains": "Skjul underdomene", // TODO
+    "expandTermbases": "Vis termbasar", // TODO
+    "closeTermbases": "Skjul termbasar" // TODO
   },
   "searchFilter": {
     "results": "treff",
@@ -110,7 +110,7 @@
   },
   "footer": {
     "contact": "Kontakt oss",
-    "accDeclaration": "Tilgjengeligheitserklæring"
+    "accDeclaration": "Tilgjengelegheitserklæring"
   },
   "spinnerIcon": {
     "srText": "Venter på søkeresultater"
@@ -124,14 +124,14 @@
     "license": "Lisens",
     "languages": "Språk",
     "startLang": "Utgangsspråk",
-    "contactHeading": "" // TODO
+    "contactHeading": "Generelt om termbasen" // TODO
   },
   "id": {
     "topheading": "Omgrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
-    "equivalence": "", // TODO
-    "equivalenceNote": "", // TODO
+    "equivalence": "Ekvivalens", // TODO
+    "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
@@ -141,9 +141,9 @@
     "forkortelse": "Forkorting",
     "forkortelseAv": "Forkorting av",
     "forkortelseType": "Forkortingstype",
-    "kortform": "", // TODO
-    "teleskopord": "", // TODO
-    "initialord": "", // TODO
+    "kortform": "Kortform", // TODO
+    "teleskopord": "Teleskopord", // TODO
+    "initialord": "Initialord", // TODO
     "kontekst": "Kontekst til",
     "kontekstAv": "Kontekst",
     "general": "Generell informasjon",
@@ -156,9 +156,9 @@
     "hasPart": "Underomgrep (partitiv)",
     "seeAlso": "Sjå òg",
     "related": "Assosiert omgrep",
-    "replaces": "", // TODO
-    "replacedBy": "", // TODO
-    "inndelingskriterium": "", // TODO
+    "replaces": "Erstattar", // TODO
+    "replacedBy": "Erstatta av", // TODO
+    "inndelingskriterium": "Inndelingskriterium", // TODO
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
