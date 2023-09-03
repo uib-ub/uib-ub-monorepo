@@ -12,7 +12,7 @@
       />
     </div>
     <div v-if="context === 'full'" class="flex pl-4 lg:pl-0">
-      <div class="tp-sidebar w-0"></div>
+      <SideBar class="w-0" />
       <div>
         <HeaderSearchOptions />
         <HeaderSearchScope />

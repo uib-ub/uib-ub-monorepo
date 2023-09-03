@@ -7,7 +7,7 @@
     <div class="mx-auto flex h-full grow items-center justify-between">
       <div class="grow">
         <div v-if="context !== 'minimal'" class="flex grow items-center">
-          <div class="tp-sidebar">
+          <SideBar class="w-12">
             <AppLink
               id="anchor"
               to="/"
@@ -22,7 +22,8 @@
                 >ermportalen</span
               >
             </AppLink>
-          </div>
+          </SideBar>
+
           <SearchField class="max-w-[51em]" />
         </div>
       </div>
