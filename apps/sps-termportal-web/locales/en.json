@@ -7,10 +7,10 @@
       "domain": "Domain | domain",
       "all": "All Domains",
       "DOMENE-3AHumaniora": "Humanities",
-      "DOMENE-3ANaturvitenskapTeknologi": "Sciences & Technology",
+      "DOMENE-3ANaturvitenskapTeknologi": "Sciences and Technology",
       "DOMENE-3ASamfunnsfag": "Social Sciences",
-      "DOMENE-3AOkonomiAdministrasjon": "Economy & Administration",
-      "DOMENE-3AHelse_og_sosial": "Helse & sosial"
+      "DOMENE-3AOkonomiAdministrasjon": "Economy and Administration",
+      "DOMENE-3AHelse_og_sosial": "Helse og sosial"
     },
     "lang": {
       "none": "–",
@@ -92,10 +92,10 @@
     "searchfieldLabel": "Search field",
     "clearTextLabel": "Clear search field",
     "searchButtonLabel": "Search",
-    "expandSubdomains": "", // TODO
-    "closeSubdomains": "", // TODO
-    "expandTermbases": "", // TODO
-    "closeTermbases": "" // TODO
+    "expandSubdomains": "Show subdomains", // TODO
+    "closeSubdomains": "Hide subdomains", // TODO
+    "expandTermbases": "Show termbases", // TODO
+    "closeTermbases": "Hide termbases" // TODO
   },
   "searchFilter": {
     "results": "results",
@@ -120,16 +120,16 @@
     "email": "E-mail",
     "telephone": "Telephone",
     "license": "Licence",
-    "languages": "Language(s)",
+    "languages": "Languages",
     "startLang": "Starting language",
-    "contactHeading": "" // TODO
+    "contactHeading": "General info about the termbase" // TODO
   },
   "id": {
     "topheading": "Concept view",
     "tableview": "Table view",
     "languagedata": "Language data",
-    "equivalence": "", // TODO
-    "equivalenceNote": "", // TODO
+    "equivalence": "Equivalence", // TODO
+    "equivalenceNote": "Equivalence note", // TODO
     "prefLabel": "Preferred term",
     "altLabel": "Admitted term",
     "hiddenLabel": "Depreciated term",
@@ -139,9 +139,9 @@
     "forkortelse": "Abbreviation",
     "forkortelseAv": "Abbreviation of",
     "forkortelseType": "Abbreviation type",
-    "kortform": "", // TODO
-    "teleskopord": "", // TODO
-    "initialord": "", // TODO
+    "kortform": "Clipped term", // TODO
+    "teleskopord": "Acronym", // TODO
+    "initialord": "Initialism", // TODO
     "kontekst": "Context of",
     "kontekstAv": "Context",
     "general": "General information",
@@ -154,9 +154,9 @@
     "hasPart": "Subordinate concept (partitive)",
     "seeAlso": "See also",
     "related": "Associated concept",
-    "replaces": "", // TODO
-    "replacedBy": "", // TODO
-    "inndelingskriterium": "", // TODO
+    "replaces": "Replaces", // TODO
+    "replacedBy": "Replaced by", // TODO
+    "inndelingskriterium": "Criterion of subdivision", // TODO
     "collection": "Termbase",
     "subject": "Subject field",
     "domain": "Domain",
