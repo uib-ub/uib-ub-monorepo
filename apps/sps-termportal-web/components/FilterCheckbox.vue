@@ -8,7 +8,7 @@
       :value="fvalue"
     />
     <label
-      class="tp-transition-shadow flex cursor-pointer gap-x-1.5 rounded-[7px] border border-transparent px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+      class="tp-transition-shadow flex cursor-pointer gap-x-1.5 rounded-[7px] border border-transparent  px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
       :for="`filter-${ftype}-${fvalue}`"
     >
       <div class="-mt-[1px]">
