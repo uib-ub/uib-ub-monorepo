@@ -1,17 +1,17 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslator } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getSamlaIIIFv1CollectionData } from 'lib/samla/samla.client';
 import { pickSegmentFromEndOfUrl } from 'utils';
 import Link from 'next-intl/link';
 
 export default async function CollectionRoute({
-  params
+  params: { locale, id }
 }: {
   params: { locale: string, id: string }
 }) {
-  console.log("🚀 ~ file: page.tsx:12 ~ id:", params.id)
-  const t = await getTranslations('SamlaCollection');
-  const data = await getSamlaIIIFv1CollectionData(params.id.replace('-', '.'));
+  console.log("🚀 ~ file: page.tsx:12 ~ id:", id)
+  const t = await getTranslator(locale, 'SamlaCollection');
+  const data = await getSamlaIIIFv1CollectionData(id.replace('-', '.'));
 
   if (!data) {
     notFound();

@@ -36,6 +36,7 @@
       "all": "All termbases",
       "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomy",
+      "BIBINF": "Bibliotek- og informasjonsfag",
       "CMBIOLOGI": "Cell and molecular biology",
       "EVERTEBRATER": "Invertebrates",
       "FBK": "Felles Begrepskatalog",
@@ -163,7 +164,7 @@
     "modified": "Last modified",
     "note": "Note",
     "tilbake": "To search results",
-    "noteTermbaseIsUnmaintained": "This termbase is no longer updated, but is still useful"
+    "noteTermbaseIsUnmaintained": "This is a historical resource and is not currently being updated"
   },
   "index": { "title": "Termportalen" },
   "search": {
