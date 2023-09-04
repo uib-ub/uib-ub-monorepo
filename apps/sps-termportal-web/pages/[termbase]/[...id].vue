@@ -4,12 +4,12 @@
       <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
     </Head>
     <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
-    <div class="flex w-full">
+    <div class="flex">
       <SideBar />
-      <div class="flex w-full">
+      <div class="flex">
         <div
           v-if="searchData.length > 0"
-          class="hidden flex-col md:flex md:w-[28vw] lg:w-[24vw] xl:w-[18vw]"
+          class="hidden flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw] max-w-[22em] shrink-0"
         >
           <BackToSearch />
           <nav aria-labelledby="sidebarresults">
@@ -26,7 +26,7 @@
           </nav>
         </div>
         <div
-          class="flex flex-col lg:w-3/4 grow"
+          class="flex grow flex-col lg:w-3/4"
           :class="{ 'pl-3 lg:pl-6': searchData.length > 0 }"
         >
           <main ref="main" class="h-full">
@@ -51,124 +51,164 @@
                     $t("global.lang." + lang)
                   }}</AppLink>
                 </h3>
-                <table class="table-auto">
-                  <tbody>
-                    <!--Definisjon-->
-                    <DataRow
-                      v-if="
-                        concept?.definisjon?.[lang] ||
+                <TermSection>
+                  <!--Definition-->
+                  <TermProp
+                    v-if="
+                      concept?.definisjon?.[lang] ||
+                      concept?.betydningsbeskrivelse?.[lang]
+                    "
+                    :label="$t('id.definisjon')"
+                  >
+                    <TermDescription
+                      :data="
+                        concept.definisjon?.[lang] ||
                         concept?.betydningsbeskrivelse?.[lang]
                       "
-                      :key="'definisjon' + lang"
-                      :data="
-                        concept.definisjon?.[lang][0]?.label['@value'] ||
-                        concept?.betydningsbeskrivelse?.[lang][0]?.label[
-                          '@value'
-                        ]
-                      "
-                      :label="$t('id.definisjon')"
+                      prop="definition"
+                      :data-lang="lang"
+                    >
+                    </TermDescription>
+                  </TermProp>
+
+                  <!--Anbefalt term-->
+                  <TermProp
+                    v-if="concept?.prefLabel?.[lang]"
+                    :label="$t('id.prefLabel')"
+                  >
+                    <TermDescription
+                      prop="prefLabel"
+                      :data="concept?.prefLabel[lang]"
+                      :data-lang="lang"
+                    >
+                    </TermDescription>
+                  </TermProp>
+
+                  <!--Tillatt term-->
+                  <TermProp
+                    v-if="concept?.altLabel?.[lang]"
+                    :label="$t('id.altLabel')"
+                  >
+                    <TermDescription
+                      prop="altLabel"
+                      :data="concept?.altLabel[lang]"
+                      :data-lang="lang"
+                    >
+                    </TermDescription>
+                  </TermProp>
+                  <!--Frarådet term-->
+                  <TermProp
+                    v-if="concept?.hiddenLabel?.[lang]"
+                    :label="$t('id.hiddenLabel')"
+                  >
+                    <TermDescription
+                      prop="altLabel"
+                      :data="concept?.hiddenLabel[lang]"
+                      :data-lang="lang"
+                    >
+                    </TermDescription>
+                  </TermProp>
+                  <!--Symbol-->
+                  <!--Kontekst-->
+                  <TermProp
+                    v-if="concept?.hasUsage?.[lang]"
+                    :label="$t('id.kontekst')"
+                  >
+                    <TermDescription
+                      prop="context"
+                      :data="concept?.hasUsage[lang]"
                       :data-lang="lang"
                     />
-                    <!--Anbefalt term-->
-                    <DataRow
-                      v-if="concept?.prefLabel?.[lang]"
-                      :key="'prefLabel_' + lang"
-                      :data="concept?.prefLabel[lang][0]?.literalForm['@value']"
-                      :label="$t('id.prefLabel')"
-                      :data-lang="lang"
-                    />
-                    <!--AltLabel-->
-                    <DataRow
-                      v-for="label in concept?.altLabel?.[lang]"
-                      :key="'altLabel_' + label"
-                      :data="label?.literalForm['@value']"
-                      :label="$t('id.altLabel')"
-                      :data-lang="lang"
-                    />
-                    <!--HiddenLabel-->
-                    <DataRow
-                      v-for="label in concept?.hiddenLabel?.[lang]"
-                      :key="'hiddenLabel_' + label"
-                      :data="label?.literalForm['@value']"
-                      :label="$t('id.hiddenLabel')"
-                      :data-lang="lang"
-                    />
-                  </tbody>
-                </table>
+                  </TermProp>
+                </TermSection>
               </div>
               <div v-if="displayInfo?.semanticRelations">
                 <h3 id="relasjon" class="pb-1 text-xl">
                   <AppLink to="#relasjon"> {{ $t("id.relasjon") }}</AppLink>
                 </h3>
-                <table>
-                  <tbody>
-                    <template v-for="relationType in semanticRelationTypes">
-                      <template
-                        v-if="displayInfo.semanticRelations[relationType]"
-                      >
-                        <DataRow
-                          v-for="relation in displayInfo.semanticRelations[
-                            relationType
-                          ]"
-                          :key="relation"
-                          :data="relation[0]"
-                          :to="relation[1]"
-                          :label="$t('id.' + relationType)"
-                        />
-                      </template>
-                    </template>
-                  </tbody>
-                </table>
+                <TermSection>
+                  <template v-for="relationType in semanticRelationTypes">
+                    <TermProp
+                      v-if="displayInfo.semanticRelations[relationType]"
+                      :key="relationType"
+                      :label="$t('id.' + relationType)"
+                    >
+                      <TermDescription
+                        prop="link"
+                        :data="displayInfo.semanticRelations[relationType]"
+                      />
+                    </TermProp>
+                  </template>
+                </TermSection>
               </div>
               <div>
                 <h3 v-if="data" id="felles" class="pb-1 text-xl">
                   <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
                 </h3>
-                <table>
-                  <tbody>
-                    <!--Termbase-->
-                    <DataRow
-                      v-if="concept?.memberOf"
-                      :data="lalo[locale][concept.memberOf]"
-                      :to="`/${termbase}`"
-                      :label="$t('id.collection')"
+                <TermSection :flex="true">
+                  <TermProp
+                    v-if="lalo[locale][concept?.memberOf]"
+                    :flex="true"
+                    :label="$t('id.collection')"
+                  >
+                    <TermDescription
+                      prop="link"
+                      :flex="true"
+                      :data="[[lalo[locale][concept.memberOf], '/' + termbase]]"
                     />
-                    <!--Domene-->
-                    <DataRow
-                      v-if="concept?.domene"
-                      :data="lalo[locale][concept.domene]"
-                      :label="$t('id.domain')"
+                  </TermProp>
+                  <TermProp
+                    v-if="concept?.domene"
+                    :flex="true"
+                    :label="$t('id.domain')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[lalo[locale][concept.domene]]"
                     />
-                    <!--Bruksområde-->
-                    <DataRow
-                      v-if="displayInfo?.subject"
-                      :data="displayInfo?.subject"
-                      :label="$t('id.subject')"
+                  </TermProp>
+                  <TermProp
+                    v-if="displayInfo?.subject"
+                    :flex="true"
+                    :label="$t('id.subject')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[displayInfo?.subject]"
                     />
-                    <!--Modified-->
-                    <DataRow
-                      v-if="concept?.modified"
-                      :data="concept.modified['@value']"
-                      :label="$t('id.modified')"
+                  </TermProp>
+                  <TermProp
+                    v-if="concept?.modified"
+                    :flex="true"
+                    :label="$t('id.modified')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[modified()]"
                     />
-                    <!--Created-->
-                    <!--Note TODO after export fix-->
-                    <DataRow
-                      v-if="concept?.scopeNote"
-                      :data="concept.scopeNote"
-                      :label="$t('id.note')"
+                  </TermProp>
+                  <TermProp
+                    v-if="concept?.scopeNote"
+                    :flex="true"
+                    :label="$t('id.note')"
+                  >
+                    <TermDescription :flex="true" :data="[concept.scopeNote['@value']]" :data-lang="concept.scopeNote['@language']" />
+                  </TermProp>
+                  <TermProp
+                    v-if="
+                      (route.params.termbase === 'NOT' ||
+                        route.params.termbase === 'RTT') &&
+                      concept
+                    "
+                    :flex="true"
+                    :label="$t('id.note')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[$t('id.noteTermbaseIsUnmaintained')]"
                     />
-                    <!--Note for historical termbases-->
-                    <DataRow
-                      v-if="
-                        route.params.termbase === 'NOT' ||
-                        route.params.termbase === 'RTT'
-                      "
-                      :data="$t('id.noteTermbaseIsUnmaintained')"
-                      :label="$t('id.note')"
-                    />
-                  </tbody>
-                </table>
+                  </TermProp>
+                </TermSection>
               </div>
             </div>
             <div v-if="error" class="p">Error</div>
@@ -181,6 +221,24 @@
 
 <script setup lang="ts">
 import { Samling } from "~~/utils/vars-termbase";
+
+if (process.client) {
+  useHead({
+    script: [
+      {
+        src: "/mathjax-config.js",
+        type: "text/javascript",
+        defer: true,
+      },
+      {
+        id: "MathJax-script",
+        type: "text/javascript",
+        src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+        defer: true,
+      },
+    ],
+  });
+}
 
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute();
@@ -244,6 +302,15 @@ const pagetitle = computed(() => {
   }
 });
 
+const modified = () => {
+const date = new Date(concept.value.modified["@value"]).toLocaleDateString(locale.value)
+const time = new Date(concept.value.modified["@value"]).toLocaleTimeString(locale.value)
+return date + ", " + time
+}
+
+
+new Date(concept.value.modified["@value"]).toLocaleTimeString(locale.value)
+
 const displayInfo = computed(() => {
   if (data?.value?.meta) {
     const conceptLanguages = data.value?.meta?.language;
@@ -303,10 +370,8 @@ onBeforeUnmount(() => {
   }
 });
 onMounted(() => {
-  if (process.client && typeof window?.MathJax !== "undefined") {
-    try {
-      window.MathJax.typesetPromise();
-    } catch (error) {}
+  if (typeof window?.MathJax !== "undefined") {
+    window.MathJax.typesetPromise();
   }
 });
 </script>
