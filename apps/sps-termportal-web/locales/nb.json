@@ -1,15 +1,15 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase",
+    "termbase": "Termbase | termbase | Termbaser",
     "skipLink": "Gå til hovedinnhold",
     "domain": {
       "domain": "Domene | domene",
       "DOMENE-3AHumaniora": "Humaniora",
-      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
+      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
-      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon",
-      "DOMENE-3AHelse_og_sosial": "Helse & sosial"
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi og administrasjon",
+      "DOMENE-3AHelse_og_sosial": "Helse og sosial"
     },
     "lang": {
       "none": "–",
@@ -70,7 +70,7 @@
       "contains-ci": "inneholder"
     }
   },
-  "domainOverview": { "domainsAndBases": "Domener & termbaser" },
+  "domainOverview": { "domainsAndBases": "Domener og termbaser" },
   "navBar": {
     "om": "Om Termportalen",
     "innstillinger": "Innstillinger",
@@ -78,6 +78,9 @@
     "menuButtonHide": "Skjul menyen",
     "language": "Visningsspråk",
     "navigation": "Navigasjon" // TODO Check translation
+  },
+  "news": {
+    "heading": "Nyheter"
   },
   "searchBar": {
     "search": "Søk",
@@ -88,7 +91,11 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
-    "searchButtonLabel": "Søk"
+    "searchButtonLabel": "Søk",
+    "expandSubdomains": "Vis underdomener", // TODO
+    "closeSubdomains": "Skjul underdomener", // TODO
+    "expandTermbases": "Vis termbaser", // TODO
+    "closeTermbases": "Skjul termbaser" // TODO
   },
   "searchFilter": {
     "results": "treff",
@@ -115,23 +122,29 @@
     "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Utgangsspråk"
+    "startLang": "Utgangsspråk",
+    "contactHeading": "Generelt om termbasen" // TODO Used a heading to group telephone, email
   },
   "id": {
     "topheading": "Begrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
+    "equivalence": "Ekvivalens", // TODO
+    "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
     "hiddenLabel": "Frarådet term",
     "definisjon": "Definisjon",
     "referanse": "Referanse",
     "kollokasjon": "Kollokasjon",
-    "forkortelse": "er en forkortelse",
-    "forkortelseAv": "er en forkortelse av",
-    "forkortelseType": "forkortelsestype",
-    "kontekst": "",
-    "kontekstAv": "",
+    "forkortelse": "Forkortelse",
+    "forkortelseAv": "Forkortelse av",
+    "forkortelseType": "Forkortelsestype",
+    "kortform": "Kortterm", // TODO Display of value for abbrev type
+    "teleskopord": "Teleskopterm", // TODO Display of value for abbrev type
+    "initialord": "Initialord", // TODO Display of value for abbrev type
+    "kontekst": "Kontekst",
+    "kontekstAv": "Kontekst til",
     "general": "Generell informasjon",
     "relasjon": "Begrepsrelasjon",
     "narrower": "Underbegrep",
@@ -142,13 +155,16 @@
     "hasPart": "Underbegrep (partitiv)",
     "seeAlso": "Se også",
     "related": "Assosiert begrep",
+    "replaces": "Erstatter", // TODO
+    "replacedBy": "Erstattet av", // TODO
+    "inndelingskriterium": "Inndelingskriterium", // TODO
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
     "modified": "Sist oppdatert",
     "note": "Merknad",
     "tilbake": "Til søkeresultater",
-    "noteTermbaseIsUnmaintained": "Dette er en historisk ressurs som p.t. ikke oppdateres"
+    "noteTermbaseIsUnmaintained": "Denne termbasen blir ikke lenger oppdatert, men har likevel verdi"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -163,7 +179,7 @@
     "global": "Visningsspråk",
     "globalLangComment": "Velg hvilket språk du vil vise Termportalen.no på",
     "conceptview": "Termpost",
-    "dataDispLang": "Visningsspråk",
+    "dataDispLang": "Språk for termpost",
     "dataDispLangComment": "Velg hvilke språk som skal vises i termpostene"
   }
 }
