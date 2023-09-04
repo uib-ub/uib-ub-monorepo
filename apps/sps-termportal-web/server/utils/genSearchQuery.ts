@@ -25,6 +25,7 @@ export const samlingMapping = {
   SDIR: 3018,
   TOLKING: 3022,
   ROMFYS: 3024,
+  SEMANTIKK: 3036,
   TUNDUIA: 3900,
   KLIMA: 3802,
   ASTRONOMI: 3804,
