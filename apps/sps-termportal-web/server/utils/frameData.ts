@@ -28,8 +28,20 @@ export default function (
       modified: "dct:modified",
       identifier: "dct:identifier",
       language: "dct:language",
+      source: "dct:source",
       scopeNote: "skos:scopeNote", // TODO
+      note: "skos:note",
       opprinneligSpraak: "skosp:opprinneligSpraak",
+      isOfAbbreviationType: "skosp:isOfAbbreviationType",
+      isAbbreviationOf: "skosp:isAbbreviationOf",
+      isCollocatedWith: {
+        "@id": "skosp:isCollocatedWith",
+        "@container": "@set",
+      },
+      hasUsage: {
+        "@id": "skosp:hasUsage",
+        "@container": "@set",
+      },
       contactPoint: "dcat:contactPoint",
       hasTelephone: "vcard:hasTelephone",
       hasEmail: { "@id": "vcard:hasEmail", "@type": "@id" },
@@ -84,7 +96,16 @@ export default function (
         "@type": "@id",
         "@container": "@set",
       },
-
+      replaces: {
+        "@id": "dct:replaces",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      replacedBy: {
+        "@id": "dct:replacedBy",
+        "@type": "@id",
+        "@container": "@set",
+      },
       subject: {
         "@id": "dct:subject",
         "@container": "@set",
@@ -123,10 +144,6 @@ export default function (
         "@id": "dct:publisher",
         "@type": "@id",
       },
-      source: {
-        "@id": "dct:source",
-        "@type": "@id",
-      },
     };
   };
 
@@ -145,6 +162,8 @@ export default function (
       generalizes: { "@type": "skos:Concept", "@embed": "@never" },
       hasPart: { "@type": "skos:Concept", "@embed": "@never" },
       seeAlso: { "@type": "skos:Concept", "@embed": "@never" },
+      replaces: { "@type": "skos:Concept", "@embed": "@never" },
+      replacedBy: { "@type": "skos:Concept", "@embed": "@never" },
     });
   } else {
     return frame(data, {
