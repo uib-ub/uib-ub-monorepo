@@ -142,7 +142,7 @@
     "forkortelseAv": "Forkorting av",
     "forkortelseType": "Forkortingstype",
     "kortform": "Kortterm", // TODO
-    "teleskopord": "Akronym", // TODO
+    "teleskopord": "Teleskopterm", // TODO
     "initialord": "Initialord", // TODO
     "kontekst": "Kontekst til",
     "kontekstAv": "Kontekst",
