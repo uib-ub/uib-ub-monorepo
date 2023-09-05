@@ -7,10 +7,10 @@
       "domain": "Domain | domain",
       "all": "All Domains",
       "DOMENE-3AHumaniora": "Humanities",
-      "DOMENE-3ANaturvitenskapTeknologi": "Sciences and Technology",
+      "DOMENE-3ANaturvitenskapTeknologi": "Sciences & Technology",
       "DOMENE-3ASamfunnsfag": "Social Sciences",
-      "DOMENE-3AOkonomiAdministrasjon": "Business Economy and Administration",
-      "DOMENE-3AHelse_og_sosial": "Health and Social Care"
+      "DOMENE-3AOkonomiAdministrasjon": "Business Economy & Administration",
+      "DOMENE-3AHelse_og_sosial": "Health & Social Care"
     },
     "lang": {
       "none": "–",
@@ -71,7 +71,7 @@
       "contains-ci": "Contains"
     }
   },
-  "domainOverview": { "domainsAndBases": "Domains and Termbases" },
+  "domainOverview": { "domainsAndBases": "Domains & Termbases" },
   "navBar": {
     "om": "About Termportalen",
     "innstillinger": "Settings",
