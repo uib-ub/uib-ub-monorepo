@@ -145,9 +145,9 @@
     "forkortelse": "Abbreviation",
     "forkortelseAv": "Abbreviation of",
     "forkortelseType": "Abbreviation type",
-    "kortform": "Clipped term", // TODO
-    "teleskopord": "Blend", // TODO
-    "initialord": "Initialism", // TODO
+    "kortform": "clipped term", // TODO
+    "teleskopord": "blend", // TODO
+    "initialord": "initialism", // TODO
     "kontekst": "Context of",
     "kontekstAv": "Context",
     "general": "General information",
