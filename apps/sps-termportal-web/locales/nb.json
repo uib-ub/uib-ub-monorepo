@@ -130,11 +130,11 @@
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
     "equivalence": "Ekvivalens", // TODO
-    "eqIngen": "ingen",
-    "eqFull": "full",
-    "eqDelvis": "delvis",
-    "eqBredere": "bredere",
-    "eqSmalere": "smalere",
+    "ekvIngen": "ingen",
+    "ekvFull": "full",
+    "ekvDelvis": "delvis",
+    "ekvBredere": "bredere",
+    "ekvSmalere": "smalere",
     "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
