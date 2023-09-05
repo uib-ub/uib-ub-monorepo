@@ -56,18 +56,18 @@
       "DOMENE": "Domene"
     },
     "predicate": {
-      "prefLabel": "Anbefalt term|anbefalt term",
-      "altLabel": "Tillatt term|tillatt term",
-      "hiddenLabel": "Frarådet term|frarådet term"
+      "prefLabel": "Anbefalt term",
+      "altLabel": "Tillatt term",
+      "hiddenLabel": "Frarådet term"
     },
     "matching": {
-      "full": "nøyaktig",
-      "full-cs": "nøyaktig",
-      "full-ci": "nøyaktig",
-      "startsWith-ci": "starter med",
-      "endsWith-ci": "slutter med",
-      "subWord-ci": "underord starter med",
-      "contains-ci": "inneholder"
+      "full": "Nøyaktig",
+      "full-cs": "Nøyaktig",
+      "full-ci": "Nøyaktig",
+      "startsWith-ci": "Starter med",
+      "endsWith-ci": "Slutter med",
+      "subWord-ci": "Underord starter med",
+      "contains-ci": "Inneholder"
     }
   },
   "domainOverview": { "domainsAndBases": "Domener og termbaser" },
