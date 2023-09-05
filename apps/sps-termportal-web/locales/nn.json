@@ -7,7 +7,7 @@
       "domain": "Domene | domene",
       "all": "Alle domene",
       "DOMENE-3AHumaniora": "Humaniora",
-      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap og teknologi",
+      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
       "DOMENE-3AOkonomiAdministrasjon": "Økonomi og administrasjon",
       "DOMENE-3AHelse_og_sosial": "Helse og sosial"
@@ -131,6 +131,11 @@
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
     "equivalence": "Ekvivalens", // TODO
+    "ekvIngen": "ingen",
+    "ekvFull": "full",
+    "ekvDelvis": "delvis",
+    "ekvBredere": "breiare",
+    "ekvSmalere": "smalare",
     "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
