@@ -1,16 +1,16 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase",
+    "termbase": "Termbase | termbase | Termbaser",
     "skipLink": "Gå til hovudinnhald",
     "domain": {
       "domain": "Domene | domene",
       "all": "Alle domene",
       "DOMENE-3AHumaniora": "Humaniora",
-      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap og teknologi",
+      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
-      "DOMENE-3AOkonomiAdministrasjon": "Økonomi og administrasjon",
-      "DOMENE-3AHelse_og_sosial": "Helse og sosial"
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon",
+      "DOMENE-3AHelse_og_sosial": "Helse & sosial"
     },
     "lang": {
       "none": "–",
