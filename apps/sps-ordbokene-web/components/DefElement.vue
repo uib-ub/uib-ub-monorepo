@@ -1,6 +1,6 @@
 <template>
   <component :is="tag" :class="body.type_"><!--
- --><component :is="item.tag || 'span'" v-for="(item, index) in assemble_text"
+ --><component :is="item.tag == 'DefElement' ? DefElement : item.tag || 'span'" v-for="(item, index) in assemble_text"
           :class="item.type + (item.tag == 'em' ? ' notranslate' : '')"
           :key="index"
            v-bind="item.props"><!--
@@ -23,8 +23,10 @@
 
 
 <script setup>
+import DefElement from './DefElement.vue'
 import { useStore } from '~/stores/searchStore'
 const store = useStore()
+
 
 const emit = defineEmits(['error', 'link-click'])
 const link_click = (event) => {
