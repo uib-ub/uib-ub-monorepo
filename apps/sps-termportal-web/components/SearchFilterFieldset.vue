@@ -19,9 +19,9 @@ const props = defineProps({
 const displaytitle = () => {
   if (props.fkey === "context") {
     if (searchInterface.value.useDomain) {
-      return i18n.t("global.domain.domain");
+      return i18n.t("global.domain.domain", 0);
     } else {
-      return i18n.t("global.termbase");
+      return i18n.t("global.termbase", 0);
     }
   } else {
     return props.title;

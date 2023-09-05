@@ -19,7 +19,7 @@
             ),
           },
           {
-            title: $t('global.context'),
+            title: '',
             key: 'context',
             fkey: 'context',
             data: Object.keys(searchDataStats.context || {}).sort(),
