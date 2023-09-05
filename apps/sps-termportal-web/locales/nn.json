@@ -146,9 +146,9 @@
     "forkortelse": "Forkorting",
     "forkortelseAv": "Forkorting av",
     "forkortelseType": "Forkortingstype",
-    "kortform": "Kortterm", // TODO
-    "teleskopord": "Teleskopterm", // TODO
-    "initialord": "Initialord", // TODO
+    "kortform": "kortterm", // TODO
+    "teleskopord": "teleskopterm", // TODO
+    "initialord": "initialord", // TODO
     "kontekst": "Kontekst til",
     "kontekstAv": "Kontekst",
     "general": "Generell informasjon",
