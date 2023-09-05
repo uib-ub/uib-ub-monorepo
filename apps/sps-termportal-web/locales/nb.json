@@ -145,9 +145,9 @@
     "forkortelse": "Forkortelse",
     "forkortelseAv": "Forkortelse av",
     "forkortelseType": "Forkortelsestype",
-    "kortform": "Kortterm", // TODO Display of value for abbrev type
-    "teleskopord": "Teleskopterm", // TODO Display of value for abbrev type
-    "initialord": "Initialord", // TODO Display of value for abbrev type
+    "kortform": "kortterm", // TODO Display of value for abbrev type
+    "teleskopord": "teleskopterm", // TODO Display of value for abbrev type
+    "initialord": "initialord", // TODO Display of value for abbrev type
     "kontekst": "Kontekst",
     "kontekstAv": "Kontekst til",
     "general": "Generell informasjon",
