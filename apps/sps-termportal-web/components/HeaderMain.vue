@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="height: 52px">
+    <div style="height: 48px">
       <NavBar
         ref="navBarRef"
         :context="context"
@@ -11,15 +11,19 @@
         style="top: -52px"
       />
     </div>
-    <div v-if="context === 'full'" class="flex pl-4 lg:pl-0">
-      <div class="tp-sidebar w-0"></div>
+    <div v-if="context === 'full'" class="flex px-4 xl:pl-0">
+      <SideBar class="w-0" />
       <div>
         <HeaderSearchOptions />
         <HeaderSearchScope />
       </div>
     </div>
 
-    <div v-if="context != 'minimal'" class="w-full">
+    <div
+      v-if="context != 'minimal'"
+      class="w-full pt-0"
+      :class="{ 'pt-1': context === 'full' }"
+    >
       <div class="border-x border-b-[1px] border-gray-300 border-x-white"></div>
     </div>
   </div>

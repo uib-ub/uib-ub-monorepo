@@ -27,7 +27,7 @@ const localeLangOrder = useLocaleLangOrder();
 
 const optionsLanguage = computed(() => {
   const filteredLangs = deriveSearchOptions("language", "all");
-  const intersection = intersectUnique(localeLangOrder, filteredLangs);
+  const intersection = intersectUnique(localeLangOrder.value, filteredLangs);
   const options = [
     {
       label: i18n.t("global.lang.all") + ` (${intersection.length})`,
@@ -43,7 +43,7 @@ const optionsLanguage = computed(() => {
 
 const optionsTranslate = computed(() => {
   const filteredTranslate = deriveSearchOptions("translate", "none");
-  const intersection = intersectUnique(localeLangOrder, filteredTranslate);
+  const intersection = intersectUnique(localeLangOrder.value, filteredTranslate);
   const options = [
     {
       label: i18n.t("global.lang.none"),
@@ -121,9 +121,9 @@ function deriveSearchOptions(searchOption, defaultValue) {
       const languages = [
         ...new Set(termbases.map((tb) => termbaseInfo[tb]).flat()),
       ];
-      options = intersectUnique(localeLangOrder, languages);
+      options = intersectUnique(localeLangOrder.value, languages);
     } else {
-      options = localeLangOrder;
+      options = localeLangOrder.value;
     }
   } else {
     options = termbases;

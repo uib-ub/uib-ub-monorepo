@@ -1,7 +1,7 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase",
+    "termbase": "Termbase | termbase | Termbaser",
     "skipLink": "Gå til hovudinnhald",
     "domain": {
       "domain": "Domene | domene",
@@ -9,8 +9,8 @@
       "DOMENE-3AHumaniora": "Humaniora",
       "DOMENE-3ANaturvitenskapTeknologi": "Naturvitskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
-      "DOMENE-3AOkonomiAdministrasjon": "Økonomi og administrasjon",
-      "DOMENE-3AHelse_og_sosial": "Helse og sosial"
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon",
+      "DOMENE-3AHelse_og_sosial": "Helse & sosial"
     },
     "lang": {
       "none": "–",
@@ -94,10 +94,10 @@
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
     "searchButtonLabel": "Søk",
-    "expandSubdomains": "Vis underdomene", // TODO
-    "closeSubdomains": "Skjul underdomene", // TODO
-    "expandTermbases": "Vis termbasar", // TODO
-    "closeTermbases": "Skjul termbasar" // TODO
+    "expandSubdomains": "Vis underdomene",
+    "closeSubdomains": "Skjul underdomene",
+    "expandTermbases": "Vis termbasar",
+    "closeTermbases": "Skjul termbasar"
   },
   "searchFilter": {
     "results": "treff",
@@ -130,13 +130,13 @@
     "topheading": "Omgrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
-    "equivalence": "Ekvivalens", // TODO
+    "equivalence": "Ekvivalens",
     "ekvIngen": "ingen",
     "ekvFull": "full",
     "ekvDelvis": "delvis",
     "ekvBredere": "breiare tyding",
     "ekvSmalere": "smalare tyding",
-    "equivalenceNote": "Ekvivalensmerknad", // TODO
+    "equivalenceNote": "Ekvivalensmerknad",
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
@@ -147,8 +147,8 @@
     "forkortelseAv": "Forkorting av",
     "forkortelseType": "Forkortingstype",
     "kortform": "kortterm", // TODO
-    "teleskopord": "teleskopterm", // TODO
-    "initialord": "initialord", // TODO
+    "teleskopord": "teleskopterm",
+    "initialord": "initialord",
     "kontekst": "Kontekst til",
     "kontekstAv": "Kontekst",
     "general": "Generell informasjon",
@@ -161,9 +161,9 @@
     "hasPart": "Underomgrep (partitiv)",
     "seeAlso": "Sjå òg",
     "related": "Assosiert omgrep",
-    "replaces": "Erstattar", // TODO
-    "replacedBy": "Erstatta av", // TODO
-    "inndelingskriterium": "Inndelingskriterium", // TODO
+    "replaces": "Erstattar",
+    "replacedBy": "Erstatta av",
+    "inndelingskriterium": "Inndelingskriterium",
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",

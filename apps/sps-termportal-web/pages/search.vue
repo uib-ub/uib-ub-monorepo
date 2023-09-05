@@ -156,6 +156,7 @@ watch(
     searchInterface.value.termbase,
     searchInterface.value.translate,
     searchInterface.value.domain,
+    searchInterface.value.useDomain
   ],
   () => {
     if (allowSearchFetch.value !== null) {

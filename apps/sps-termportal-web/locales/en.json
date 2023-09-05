@@ -1,10 +1,10 @@
 {
   "global": {
     "language": "Language | language",
-    "termbase": "Termbase | termbase",
+    "termbase": "Termbase | termbase | Termbases",
     "skipLink": "Go to  main content",
     "domain": {
-      "domain": "Domain | domain",
+      "domain": "Domain | domain | Domains",
       "all": "All Domains",
       "DOMENE-3AHumaniora": "Humanities",
       "DOMENE-3ANaturvitenskapTeknologi": "Sciences & Technology",
@@ -93,10 +93,10 @@
     "searchfieldLabel": "Search field",
     "clearTextLabel": "Clear search field",
     "searchButtonLabel": "Search",
-    "expandSubdomains": "Show subdomains", // TODO
-    "closeSubdomains": "Hide subdomains", // TODO
-    "expandTermbases": "Show termbases", // TODO
-    "closeTermbases": "Hide termbases" // TODO
+    "expandSubdomains": "Show subdomains",
+    "closeSubdomains": "Hide subdomains",
+    "expandTermbases": "Show termbases",
+    "closeTermbases": "Hide termbases"
   },
   "searchFilter": {
     "results": "results",
@@ -129,13 +129,13 @@
     "topheading": "Concept view",
     "tableview": "Table view",
     "languagedata": "Language data",
-    "equivalence": "Equivalence", // TODO
+    "equivalence": "Equivalence",
     "ekvIngen": "none",
     "ekvFull": "full",
     "ekvDelvis": "partial",
     "ekvBredere": "broader meaning",
     "ekvSmalere": "narrower meaning",
-    "equivalenceNote": "Equivalence note", // TODO
+    "equivalenceNote": "Equivalence note",
     "prefLabel": "Preferred term",
     "altLabel": "Admitted term",
     "hiddenLabel": "Depreciated term",
@@ -145,9 +145,9 @@
     "forkortelse": "Abbreviation",
     "forkortelseAv": "Abbreviation of",
     "forkortelseType": "Abbreviation type",
-    "kortform": "clipped term", // TODO
-    "teleskopord": "blend", // TODO
-    "initialord": "initialism", // TODO
+    "kortform": "clipped term",
+    "teleskopord": "blend",
+    "initialord": "initialism",
     "kontekst": "Context of",
     "kontekstAv": "Context",
     "general": "General information",
@@ -160,9 +160,9 @@
     "hasPart": "Subordinate concept (partitive)",
     "seeAlso": "See also",
     "related": "Associated concept",
-    "replaces": "Replaces", // TODO
-    "replacedBy": "Replaced by", // TODO
-    "inndelingskriterium": "Subdivision criterion", // TODO
+    "replaces": "Replaces",
+    "replacedBy": "Replaced by",
+    "inndelingskriterium": "Subdivision criterion",
     "collection": "Termbase",
     "subject": "Subject field",
     "domain": "Domain",

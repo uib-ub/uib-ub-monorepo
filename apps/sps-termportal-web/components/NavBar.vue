@@ -7,7 +7,7 @@
     <div class="mx-auto flex h-full grow items-center justify-between">
       <div class="grow">
         <div v-if="context !== 'minimal'" class="flex grow items-center">
-          <div class="tp-sidebar">
+          <SideBar class="w-12">
             <AppLink
               id="anchor"
               to="/"
@@ -17,12 +17,13 @@
               <span class="font-semibold lg:font-normal" aria-hidden="true"
                 >T</span
               ><span
-                class="hidden font-normal transition lg:inline"
+                class="hidden font-normal transition xl:inline"
                 aria-hidden="true"
                 >ermportalen</span
               >
             </AppLink>
-          </div>
+          </SideBar>
+
           <SearchField class="max-w-[51em]" />
         </div>
       </div>
@@ -50,6 +51,31 @@
               :model="langOptions"
               :popup="true"
             />
+          </div>
+          <div>
+            <button
+              class="tp-hover-focus group border-transparent px-2 py-1 hover:text-black focus:text-black"
+              :aria-label="`${$t('navBar.language')}`"
+              aria-haspopup="menu"
+              aria-controls="termbaseMenu"
+              @click="termbaseMenu.toggle"
+            >
+              {{ $t("global.termbase", 2) }}
+            </button>
+            <Menu
+              id="overlayTermbaseMenu"
+              ref="termbaseMenu"
+              :model="termbaseOptions"
+              :popup="true"
+            >
+              <template #item="{ item }">
+                <NuxtLink class="p-menuitem-link" :href="item.route"
+                  ><span class="p-menuitem-text">
+                    {{ item.label }}
+                  </span>
+                </NuxtLink>
+              </template>
+            </Menu>
           </div>
           <NavBarPageLink to="/om">
             {{ $t("navBar.om") }}
@@ -88,6 +114,8 @@
 import { useI18n } from "vue-i18n";
 
 const i18n = useI18n();
+const locale = useLocale();
+const lalo = useLazyLocales();
 const navMenuExpanded = useNavMenuExpanded();
 const navBar = ref<HTMLElement | null>(null);
 const navPageLinks = ref<HTMLElement | null>(null);
@@ -97,6 +125,7 @@ const menuOptions = computed(() => [
   {
     label: `${i18n.t("navBar.navigation")}`,
     items: [
+      { label: `${i18n.t("global.termbase", 2)}`, to: "/termbaser" },
       { label: `${i18n.t("navBar.om")}`, to: "/om" },
       { label: `${i18n.t("navBar.innstillinger")}`, to: "/innstillinger" },
     ],
@@ -153,6 +182,14 @@ const langOptions = computed(() => [
   },
 ]);
 
+const termbaseMenu = ref();
+const termbaseOptions = computed(() =>
+  termbaseOrder.map((tb) => {
+    const key = `${tb}-3A${tb}`;
+    return { label: `${lalo.value[locale.value][key]}`, route: `/${tb}` };
+  })
+);
+
 defineExpose({ navBar });
 
 const props = defineProps({
@@ -165,3 +202,13 @@ onClickOutside(navPageLinks, () => {
   }
 });
 </script>
+
+<style>
+.p-menu {
+  width: auto;
+}
+
+.p-menuitem-link {
+  padding-top: 2px;
+}
+</style>

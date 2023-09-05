@@ -13,6 +13,7 @@ export function parseConceptData(data: any, mainConceptId: string) {
     "hiddenLabel",
     "definisjon",
     "betydningsbeskrivelse",
+    "hasUsage",
   ];
   let identified: any;
   if (!data["@graph"]) {
@@ -85,7 +86,11 @@ function updateLabel2(data: any, conceptUri: string, labelType: string) {
   const labels = data;
   for (const label of labels) {
     let language;
-    if (labelType === "definisjon" || labelType === "betydningsbeskrivelse") {
+    if (
+      labelType === "definisjon" ||
+      labelType === "betydningsbeskrivelse" ||
+      labelType === "hasUsage"
+    ) {
       language = label.label["@language"];
     } else if (labelType === "description") {
       // TODO deprecated?

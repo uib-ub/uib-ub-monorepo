@@ -41,7 +41,9 @@ export type SemanticRelation =
   | "generalizes"
   | "hasPart"
   | "related"
-  | "seeAlso";
+  | "seeAlso"
+  | "replaces"
+  | "replacedBy";
 
 export const semanticRelationTypes: SemanticRelation[] = [
   "narrower",
@@ -52,6 +54,8 @@ export const semanticRelationTypes: SemanticRelation[] = [
   "hasPart",
   "related",
   "seeAlso",
+  "replaces",
+  "replacedBy"
 ];
 
 export interface SearchOptions {

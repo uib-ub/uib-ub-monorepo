@@ -1,58 +1,79 @@
 <template>
-  <div ref="wrapper" class="px-1">
-    <div class="flex flex-wrap gap-x-1.5 gap-y-1">
-      <div
-        v-for="domain in Object.keys(domainData)"
-        :key="domain"
-        class="group flex flex-nowrap"
-      >
-        <input
-          :id="domain"
-          :value="searchInterface.domain[domain]"
-          type="checkbox"
-          class="peer outline-none"
-          @update="updateTopdomain(domain)"
-          @keydown.space="updateTopdomain(domain)"
-        />
-        <label
-          :for="domain"
-          class="tp-transition-shadow flex cursor-pointer items-center rounded-[7px] border border-gray-300 px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
-          @click="updateTopdomain(domain)"
+  <div ref="wrapper">
+    <div ref="topWrapper" class="flex gap-x-2">
+      <div class="flex flex-nowrap gap-x-1 gap-y-1">
+        <div
+          v-for="domain in Object.keys(domainData)"
+          :key="domain"
+          class="group flex"
         >
-          <div class="w-6">
-            <Icon
-              v-if="Object.keys(searchInterface.domain).includes(domain)"
-              name="mdi:checkbox-marked-outline"
-              size="1.4em"
-              class="text-tpblue-400"
-              aria-hidden="true"
-            />
-            <Icon
-              v-else-if="Object.keys(searchInterface.domain).length === 0"
-              name="mdi:checkbox-intermediate"
-              size="1.4em"
-              class="text-tpblue-400"
-              aria-hidden="true"
-            />
-            <Icon
-              v-else
-              name="mdi:checkbox-blank-outline"
-              size="1.4em"
-              class="text-tpblue-400"
-              aria-hidden="true"
-            />
-          </div>
-          <span class="whitespace-nowrap pl-1.5">{{
-            $t("global.domain." + domain)
-          }}</span>
-        </label>
+          <input
+            :id="domain"
+            :value="searchInterface.domain[domain]"
+            type="checkbox"
+            class="peer outline-none"
+            @update="updateTopdomain(domain)"
+            @keydown.space="updateTopdomain(domain)"
+          />
+          <label
+            :for="domain"
+            class="tp-transition-shadow flex w-fit cursor-pointer items-center rounded-[7px] border border-gray-300 py-1 pl-1.5 pr-2 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+            :class="{
+              'bg-tpblue-400 text-white': Object.keys(
+                searchInterface.domain
+              ).includes(domain),
+            }"
+            @click="updateTopdomain(domain)"
+          >
+            <div class="w-5">
+              <Icon
+                v-if="
+                  Object.keys(searchInterface.domain).includes(domain) ||
+                  noDomain
+                "
+                name="mdi:checkbox-marked-outline"
+                size="1.4em"
+                :class="{
+                  'text-gray-400 group-hover:text-tpblue-400': noDomain,
+                }"
+                aria-hidden="true"
+              />
+              <Icon
+                v-else
+                name="mdi:checkbox-blank-outline"
+                size="1.4em"
+                class="text-tpblue-400"
+                aria-hidden="true"
+              />
+            </div>
+            <span class="pl-1.5">{{ $t("global.domain." + domain) }}</span>
+          </label>
+        </div>
       </div>
-      <button @click="panel = !panel">EXPAND</button>
+      <button
+        class="tp-transition-shadow group h-full rounded-[7px] border border-gray-300 px-2 outline-none focus:border-tpblue-300 focus:shadow-tphalo"
+        :disabled="noDomain"
+        :class="{
+          'hover:border-gray-300': noDomain,
+          'cursor-pointer hover:border-tpblue-300': !noDomain,
+        }"
+        @click="panel = !panel"
+      >
+        <Icon
+          v-if="searchInterface.useDomain"
+          name="mdi:chevron-down"
+          size="2.2em"
+          class="ml-[-8px] mr-[-8px] text-gray-600 group-hover:text-gray-900"
+          :class="{ 'text-gray-400 group-hover:text-gray-400 ': noDomain }"
+          aria-hidden="true"
+        />
+      </button>
     </div>
-    <div class="">
+    <div>
       <div
         v-if="panel"
-        class="absolute grid w-[53.5em] grid-cols-3 z-10 rounded-[7px] border border-gray-300 bg-white shadow-md"
+        class="absolute z-10 grid grid-cols-3 rounded-[7px] border border-gray-300 bg-white shadow-md"
+        :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
         <div
           v-for="topdomain of panelTopdomains"
@@ -98,8 +119,7 @@
 <script setup lang="ts">
 const panel = ref();
 const wrapper = ref(null);
-const topdomains = ref<Array<string>>([]);
-
+const topWrapper = ref(null);
 const searchInterface = useSearchInterface();
 const domainData = useDomainData();
 
@@ -115,6 +135,10 @@ const panelTopdomains = computed(() =>
   intersectUnique(Object.keys(domainData.value), activeDomains.value)
 );
 
+const noDomain = computed(() => {
+  return Object.keys(searchInterface.value.domain).length === 0;
+});
+
 const deactivatedDomains = computed(() => {
   specifiedDomains.value.filter(
     (domain) => !searchInterface.value.domain[domain]
@@ -125,12 +149,17 @@ onClickOutside(wrapper, () => (panel.value = false));
 
 function updateTopdomain(pdomain: string) {
   if (searchInterface.value.domain[pdomain]) {
+    // delete topdomain
     delete searchInterface.value.domain[pdomain];
     // delete all subdomain data from interface
     const subdomains = getAllKeys(domainData.value[pdomain]);
     subdomains.forEach((subdomain) => {
       delete searchInterface.value.domain[subdomain];
     });
+    // hide panel if no topdomain selected
+    if (panel && Object.keys(searchInterface.value.domain).length === 0) {
+      panel.value = false;
+    }
   } else {
     searchInterface.value.domain[pdomain] = true;
   }

@@ -249,9 +249,9 @@ function deriveSearchOptions(searchOption, defaultValue: string) {
       const languages = [
         ...new Set(termbases.map((tb) => termbaseInfo[tb]).flat()),
       ];
-      options = intersectUnique(localeLangOrder, languages);
+      options = intersectUnique(localeLangOrder.value, languages);
     } else {
-      options = localeLangOrder;
+      options = localeLangOrder.value;
     }
   } else {
     options = termbases;

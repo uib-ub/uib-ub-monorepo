@@ -1,5 +1,7 @@
 <template>
-  <div class="tp-sidebar w-0 lg:pr-2.5 lg:pl-5 px-0">
+  <div
+    class="w-0 min-w-0 shrink-0 px-0 xl:w-[15vw] xl:min-w-[14em] xl:max-w-[20em] xl:pl-5 xl:pr-2.5"
+  >
     <slot />
   </div>
 </template>

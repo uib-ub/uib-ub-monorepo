@@ -95,7 +95,7 @@ const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
 });
 const description = computed(() => {
   let description = "";
-  for (const lang of localeLangOrder) {
+  for (const lang of localeLangOrder.value) {
     if (data.value?.description?.[lang]) {
       try {
         description = data.value?.description?.[lang];
