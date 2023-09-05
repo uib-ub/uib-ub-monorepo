@@ -17,7 +17,7 @@
               <span class="font-semibold lg:font-normal" aria-hidden="true"
                 >T</span
               ><span
-                class="hidden font-normal transition lg:inline"
+                class="hidden font-normal transition xl:inline"
                 aria-hidden="true"
                 >ermportalen</span
               >
