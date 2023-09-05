@@ -7,7 +7,7 @@
       "domain": "Domene | domene",
       "all": "Alle domene",
       "DOMENE-3AHumaniora": "Humaniora",
-      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
+      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
       "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon",
       "DOMENE-3AHelse_og_sosial": "Helse & sosial"
@@ -63,16 +63,16 @@
       "hiddenLabel": "Frårådd term"
     },
     "matching": {
-      "full": "nøyaktig",
-      "full-cs": "nøyaktig",
-      "full-ci": "nøyaktig",
-      "startsWith-ci": "startar med",
-      "endsWith-ci": "sluttar med",
-      "subWord-ci": "underord startar med",
-      "contains-ci": "inneheld"
+      "full": "Nøyaktig",
+      "full-cs": "Nøyaktig",
+      "full-ci": "Nøyaktig",
+      "startsWith-ci": "Startar med",
+      "endsWith-ci": "Sluttar med",
+      "subWord-ci": "Underord startar med",
+      "contains-ci": "Inneheld"
     }
   },
-  "domainOverview": { "domainsAndBases": "Domene & termbasar" },
+  "domainOverview": { "domainsAndBases": "Domene og termbasar" },
   "navBar": {
     "om": "Om Termportalen",
     "innstillinger": "Innstillingar",
@@ -94,10 +94,10 @@
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
     "searchButtonLabel": "Søk",
-    "expandSubdomains": "Vis underdomene", // TODO
-    "closeSubdomains": "Skjul underdomene", // TODO
-    "expandTermbases": "Vis termbasar", // TODO
-    "closeTermbases": "Skjul termbasar" // TODO
+    "expandSubdomains": "Vis underdomene",
+    "closeSubdomains": "Skjul underdomene",
+    "expandTermbases": "Vis termbasar",
+    "closeTermbases": "Skjul termbasar"
   },
   "searchFilter": {
     "results": "treff",
@@ -130,8 +130,13 @@
     "topheading": "Omgrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
-    "equivalence": "Ekvivalens", // TODO
-    "equivalenceNote": "Ekvivalensmerknad", // TODO
+    "equivalence": "Ekvivalens",
+    "ekvIngen": "ingen",
+    "ekvFull": "full",
+    "ekvDelvis": "delvis",
+    "ekvBredere": "breiare tyding",
+    "ekvSmalere": "smalare tyding",
+    "equivalenceNote": "Ekvivalensmerknad",
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
@@ -141,9 +146,9 @@
     "forkortelse": "Forkorting",
     "forkortelseAv": "Forkorting av",
     "forkortelseType": "Forkortingstype",
-    "kortform": "Kortterm", // TODO
-    "teleskopord": "Teleskopterm", // TODO
-    "initialord": "Initialord", // TODO
+    "kortform": "kortterm", // TODO
+    "teleskopord": "teleskopterm",
+    "initialord": "initialord",
     "kontekst": "Kontekst til",
     "kontekstAv": "Kontekst",
     "general": "Generell informasjon",
@@ -156,9 +161,9 @@
     "hasPart": "Underomgrep (partitiv)",
     "seeAlso": "Sjå òg",
     "related": "Assosiert omgrep",
-    "replaces": "Erstattar", // TODO
-    "replacedBy": "Erstatta av", // TODO
-    "inndelingskriterium": "Inndelingskriterium", // TODO
+    "replaces": "Erstattar",
+    "replacedBy": "Erstatta av",
+    "inndelingskriterium": "Inndelingskriterium",
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
