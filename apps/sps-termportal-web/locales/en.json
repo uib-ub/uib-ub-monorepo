@@ -57,18 +57,18 @@
       "DOMENE": "Domain"
     },
     "predicate": {
-      "prefLabel": "Preferred term|preferred term",
-      "altLabel": "Admitted term|admittet term",
-      "hiddenLabel": "Deprecated term|deprecated term"
+      "prefLabel": "Preferred term",
+      "altLabel": "Admitted term",
+      "hiddenLabel": "Deprecated term"
     },
     "matching": {
-      "full": "exact",
-      "full-cs": "exact",
-      "full-ci": "exact",
-      "startsWith-ci": "starts with",
-      "endsWith-ci": "ends with",
-      "subWord-ci": "subword starts with",
-      "contains-ci": "contains"
+      "full": "Exact",
+      "full-cs": "Exact",
+      "full-ci": "Exact",
+      "startsWith-ci": "Starts with",
+      "endsWith-ci": "Ends with",
+      "subWord-ci": "Subword starts with",
+      "contains-ci": "Contains"
     }
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
