@@ -51,7 +51,8 @@
         :label="$t('id.referanse')"
       >
         <dd class="max-w-prose">
-          {{ d?.["skosp:dctSource"]?.["skosp:rdfsLabel"] }} {{ d?.source }}
+          {{ d?.["skosp:dctSource"]?.["skosp:rdfsLabel"] }}
+          {{ d?.source?.label?.["@value"] || d?.source }}
         </dd>
       </TermProp>
       <TermProp v-if="d.note" :label="$t('id.note')">
