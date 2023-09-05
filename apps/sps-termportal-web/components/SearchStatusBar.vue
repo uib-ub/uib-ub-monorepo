@@ -3,7 +3,7 @@
     <!--Filter-->
     <div class="flex h-9 justify-between text-lg">
       <button
-        class="flex h-full w-24 items-center justify-center rounded border border-solid border-gray-300 hover:bg-gray-200"
+        class="flex h-full w-24 items-center justify-center rounded-[7px] border border-solid border-gray-300 tp-hover-focus"
         type="button"
         :title="
           showSearchFilter
