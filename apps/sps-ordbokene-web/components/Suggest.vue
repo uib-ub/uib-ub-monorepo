@@ -16,11 +16,11 @@
             <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
         </SuggestResults>
     </div>
-    <div v-if="freetext.length && !( articles_meta[dict].total || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
+    <div v-if="freetext && !( articles_meta[dict].total || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
             <p>{{$t('notifications.fulltext.description')}}</p>
             <div class="flex">
-            <NuxtLink :to="`/search?q=${store.q}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none">{{$t('to_advanced')}} 
+            <NuxtLink :to="`/search?q=${freetext}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right"/>
             </NuxtLink>
             </div>
@@ -127,7 +127,10 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                             
                             }
                             if (response.a.freetext) {
-                                freetext.value = response.a.freetext
+                                if (response.a.freetext[0][0].length == store.q.length) {
+                                    freetext.value = response.a.freetext[0][0]
+                                }
+                                
                             }
                         }
                     })])
