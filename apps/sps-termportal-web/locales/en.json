@@ -123,7 +123,7 @@
     "license": "Licence",
     "languages": "Languages",
     "startLang": "Starting language",
-    "contactHeading": "General info about the termbase" // TODO
+    "contactHeading": "General information about the termbase" // TODO
   },
   "id": {
     "topheading": "Concept view",
@@ -133,8 +133,8 @@
     "ekvIngen": "none",
     "ekvFull": "full",
     "ekvDelvis": "partial",
-    "ekvBredere": "broader",
-    "ekvSmalere": "narrower",
+    "ekvBredere": "broader meaning",
+    "ekvSmalere": "narrower meaning",
     "equivalenceNote": "Equivalence note", // TODO
     "prefLabel": "Preferred term",
     "altLabel": "Admitted term",
@@ -162,7 +162,7 @@
     "related": "Associated concept",
     "replaces": "Replaces", // TODO
     "replacedBy": "Replaced by", // TODO
-    "inndelingskriterium": "Criterion of subdivision", // TODO
+    "inndelingskriterium": "Subdivision criterion", // TODO
     "collection": "Termbase",
     "subject": "Subject field",
     "domain": "Domain",
