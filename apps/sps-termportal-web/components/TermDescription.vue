@@ -19,13 +19,16 @@
     }}</AppLink>
     <dl
       v-if="
+        d?.note ||
         d?.scopeNote ||
         d?.isOfAbbreviationType ||
         d?.isAbbreviationOf ||
         d?.isCollocatedWith ||
-        d?.subject
+        d?.subject ||
+        d?.source ||
+        d?.['skosp:dctSource']
       "
-      class="ml-0 mt-4 flex flex-wrap gap-x-8 gap-y-3"
+      class="ml-0 mt-2 flex flex-wrap gap-x-8 gap-y-3"
     >
       <TermProp v-if="d.isOfAbbreviationType" :label="$t('id.forkortelseType')">
         <dd class="max-w-prose">{{ d.isOfAbbreviationType }}</dd></TermProp
@@ -38,22 +41,27 @@
           {{ d.isCollocatedWith.map((el) => el["@value"]).join(", ") }}
         </dd></TermProp
       >
+      <TermProp v-if="d.subject" :label="$t('id.kontekstAv')">
+        <dd class="max-w-prose">
+          {{ d.subject[0] }}
+        </dd>
+      </TermProp>
       <TermProp
         v-if="d?.['skosp:dctSource'] || d.source"
         :label="$t('id.referanse')"
       >
         <dd class="max-w-prose">
           {{ d?.["skosp:dctSource"]?.["skosp:rdfsLabel"] }} {{ d?.source }}
-        </dd></TermProp
-      >
+        </dd>
+      </TermProp>
+      <TermProp v-if="d.note" :label="$t('id.note')">
+        <dd class="max-w-prose" :lang="d.note?.['@language']">
+          {{ d.note?.["@value"] }}
+        </dd>
+      </TermProp>
       <TermProp v-if="d.scopeNote" :label="$t('id.note')">
         <dd class="max-w-prose" :lang="d.scopeNote?.['@language']">
           {{ d.scopeNote?.["@value"] }}
-        </dd></TermProp
-      >
-      <TermProp v-if="d.subject" :label="$t('id.kontekstAv')">
-        <dd class="max-w-prose">
-          {{ d.subject[0] }}
         </dd>
       </TermProp>
     </dl>
