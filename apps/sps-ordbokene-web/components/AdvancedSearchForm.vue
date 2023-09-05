@@ -40,7 +40,7 @@
           </div>
 
           <div class="col-span-10 lg:col-span-4 xl:col-span-3 grid grid-cols-2 gap-4">
-            <button v-if="store.q" class="btn p-2 px-4 col-span-4 sm:col-span-1" type="button" @click="(settings.listView = !settings.listView)" ><Icon :name='settings.listView ? "bi:list" : "bi:file-text"' class="mb-1 mr-2"/>{{settings.listView ? $t('show_articles') : $t('show_list',store.dict==='bm,nn'? 0 : 1)}}</button>
+            <button v-if="store.q" class="btn p-2 px-4 col-span-4 sm:col-span-1" type="button" @click="(settings.listView = !settings.listView)" ><Icon :name='settings.listView ? "bi:file-text" : "bi:list"' class="mb-1 mr-2"/>{{settings.listView ? $t('show_articles') : $t('show_list',store.dict==='bm,nn'? 0 : 1)}}</button>
             <button class="btn p-2 px-4 col-span-4 sm:col-span-1" :aria-expanded="mini_help" aria-controls="advanced-info" type="button" @click="mini_help = !mini_help"><Icon :name="mini_help ? 'bi:x-lg' : 'bi:question-lg'" class="mb-1 mr-2"/>{{$t('advanced_help')}}</button>
           </div>
         </div>
