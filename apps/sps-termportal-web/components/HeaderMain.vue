@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="height: 52px">
+    <div style="height: 48px">
       <NavBar
         ref="navBarRef"
         :context="context"
@@ -19,7 +19,11 @@
       </div>
     </div>
 
-    <div v-if="context != 'minimal'" class="w-full pt-1">
+    <div
+      v-if="context != 'minimal'"
+      class="w-full pt-0"
+      :class="{ 'pt-1': context === 'full' }"
+    >
       <div class="border-x border-b-[1px] border-gray-300 border-x-white"></div>
     </div>
   </div>
