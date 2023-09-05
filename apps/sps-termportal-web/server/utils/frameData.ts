@@ -29,7 +29,7 @@ export default function (
       identifier: "dct:identifier",
       language: "dct:language",
       source: "dct:source",
-      scopeNote: "skos:scopeNote", // TODO
+      scopeNote: "skos:scopeNote",
       note: "skos:note",
       opprinneligSpraak: "skosp:opprinneligSpraak",
       isOfAbbreviationType: "skosp:isOfAbbreviationType",
