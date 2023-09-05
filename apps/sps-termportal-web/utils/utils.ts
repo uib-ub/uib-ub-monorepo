@@ -58,7 +58,7 @@ export function langRtoL(languageCode: LangCode) {
 export function getConceptDisplaytitle(concept): string | null {
   const localeLangOrder = useLocaleLangOrder();
   let title = null;
-  for (const lang of localeLangOrder) {
+  for (const lang of localeLangOrder.value) {
     for (const label of ["prefLabel", "altLabel"]) {
       if (concept?.[label]) {
         if (concept?.[label][lang]) {

@@ -33,10 +33,11 @@ export const useLocales = () => {
 
 export const useLocaleLangOrder = () => {
   const locale = useLocale();
-  return languageOrder[locale.value];
+  const langOrder = toRef(() => languageOrder[locale.value]);
+  return langOrder as Readonly<Ref<LangCode[]>>;
 };
 
-const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
+export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
   nb: [
     "nb",
     "nn",
