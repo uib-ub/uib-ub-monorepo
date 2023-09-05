@@ -16,6 +16,7 @@ export type Samling =
   | "LINGVISTIKK"
   | "ASTRONOMI"
   | "BIOLOGI"
+  | "SEMANTIKK"
   | "LINGVISTIKK"
   | "CMBIOLOGI"
   | "KJEMI"
@@ -40,12 +41,13 @@ export const termbaseOrder: Samling[] = [
   "KLIMA",
   "LINGVISTIKK",
   "MRT",
-  "SDIR",
   "NHH",
   "NOJU",
   "NOT",
   "ROMFYS",
   "RTT",
+  "SEMANTIKK",
+  "SDIR",
   "TOLKING",
   "UHR",
 ];
@@ -61,6 +63,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   KJEMI: ["nb", "nn", "en", "da"],
   KLIMA: ["nb", "nn", "en"],
   LINGVISTIKK: ["nb", "nn", "en"],
+  SEMANTIKK: ['nb', "nn", "en"],
   MRT: ["nb", "en", "da", "de", "es", "sv"],
   SDIR: ["nb", "nn", "en"],
   NHH: ["nb", "nn", "en"],
@@ -73,7 +76,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
 };
 
 export const domainNesting = {
-  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK"] },
+  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
   "DOMENE-3ANaturvitenskapTeknologi": {
     bases: [
       "NOT",
