@@ -57,9 +57,9 @@
       "DOMENE": "Domain"
     },
     "predicate": {
-      "prefLabel": "Preferred term",
-      "altLabel": "Admitted term",
-      "hiddenLabel": "Deprecated term"
+      "prefLabel": "Preferred term|preferred term",
+      "altLabel": "Admitted term|admittet term",
+      "hiddenLabel": "Deprecated term|deprecated term"
     },
     "matching": {
       "full": "exact",
