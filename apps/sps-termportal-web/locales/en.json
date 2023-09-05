@@ -9,7 +9,7 @@
       "DOMENE-3AHumaniora": "Humanities",
       "DOMENE-3ANaturvitenskapTeknologi": "Sciences and Technology",
       "DOMENE-3ASamfunnsfag": "Social Sciences",
-      "DOMENE-3AOkonomiAdministrasjon": "Economy and Administration",
+      "DOMENE-3AOkonomiAdministrasjon": "Business Economy and Administration",
       "DOMENE-3AHelse_og_sosial": "Health and Social Care"
     },
     "lang": {
@@ -130,6 +130,11 @@
     "tableview": "Table view",
     "languagedata": "Language data",
     "equivalence": "Equivalence", // TODO
+    "ekvIngen": "none",
+    "ekvFull": "full",
+    "ekvDelvis": "partial",
+    "ekvBredere": "broader",
+    "ekvSmalere": "narrower",
     "equivalenceNote": "Equivalence note", // TODO
     "prefLabel": "Preferred term",
     "altLabel": "Admitted term",
