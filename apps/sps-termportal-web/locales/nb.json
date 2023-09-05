@@ -133,8 +133,8 @@
     "ekvIngen": "ingen",
     "ekvFull": "full",
     "ekvDelvis": "delvis",
-    "ekvBredere": "bredere",
-    "ekvSmalere": "smalere",
+    "ekvBredere": "bredere betydning",
+    "ekvSmalere": "smalere betydning",
     "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
