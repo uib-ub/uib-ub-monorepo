@@ -11,7 +11,7 @@
         style="top: -52px"
       />
     </div>
-    <div v-if="context === 'full'" class="flex pl-4 lg:pl-0">
+    <div v-if="context === 'full'" class="flex px-4 xl:pl-0">
       <SideBar class="w-0" />
       <div>
         <HeaderSearchOptions />
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div v-if="context != 'minimal'" class="w-full">
+    <div v-if="context != 'minimal'" class="w-full pt-1">
       <div class="border-x border-b-[1px] border-gray-300 border-x-white"></div>
     </div>
   </div>
