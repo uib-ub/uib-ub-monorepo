@@ -58,18 +58,18 @@
       "DOMENE": "Domene"
     },
     "predicate": {
-      "prefLabel": "Tilrådd term|tilrådd term",
-      "altLabel": "Tillaten term|tillaten term",
-      "hiddenLabel": "Frårådd term|frårådd term"
+      "prefLabel": "Tilrådd term",
+      "altLabel": "Tillaten term",
+      "hiddenLabel": "Frårådd term"
     },
     "matching": {
-      "full": "nøyaktig",
-      "full-cs": "nøyaktig",
-      "full-ci": "nøyaktig",
-      "startsWith-ci": "startar med",
-      "endsWith-ci": "sluttar med",
-      "subWord-ci": "underord startar med",
-      "contains-ci": "inneheld"
+      "full": "Nøyaktig",
+      "full-cs": "Nøyaktig",
+      "full-ci": "Nøyaktig",
+      "startsWith-ci": "Startar med",
+      "endsWith-ci": "Sluttar med",
+      "subWord-ci": "Underord startar med",
+      "contains-ci": "Inneheld"
     }
   },
   "domainOverview": { "domainsAndBases": "Domene & termbasar" },
