@@ -58,9 +58,9 @@
       "DOMENE": "Domene"
     },
     "predicate": {
-      "prefLabel": "Tilrådd term",
-      "altLabel": "Tillaten term",
-      "hiddenLabel": "Frårådd term"
+      "prefLabel": "Tilrådd term|tilrådd term",
+      "altLabel": "Tillaten term|tillaten term",
+      "hiddenLabel": "Frårådd term|frårådd term"
     },
     "matching": {
       "full": "nøyaktig",
