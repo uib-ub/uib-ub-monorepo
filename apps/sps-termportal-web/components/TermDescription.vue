@@ -28,7 +28,7 @@
         d?.source ||
         d?.['skosp:dctSource']
       "
-      class="ml-0 mt-2 flex flex-wrap gap-x-8 gap-y-3"
+      class="grid-col-3 ml-5 mt-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1"
     >
       <TermProp v-if="d.isOfAbbreviationType" :label="$t('id.forkortelseType')">
         <dd class="max-w-prose">{{ d.isOfAbbreviationType }}</dd></TermProp
