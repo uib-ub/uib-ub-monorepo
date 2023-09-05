@@ -7,10 +7,10 @@
       "domain": "Domain | domain | Domains",
       "all": "All Domains",
       "DOMENE-3AHumaniora": "Humanities",
-      "DOMENE-3ANaturvitenskapTeknologi": "Sciences & Technology",
-      "DOMENE-3ASamfunnsfag": "Social Sciences",
-      "DOMENE-3AOkonomiAdministrasjon": "Business Economy & Administration",
-      "DOMENE-3AHelse_og_sosial": "Health & Social Care"
+      "DOMENE-3ANaturvitenskapTeknologi": "Natural sciences & technology",
+      "DOMENE-3ASamfunnsfag": "Social sciences",
+      "DOMENE-3AOkonomiAdministrasjon": "Business economy & administration",
+      "DOMENE-3AHelse_og_sosial": "Health & social care"
     },
     "lang": {
       "none": "–",
