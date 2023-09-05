@@ -134,8 +134,8 @@
     "ekvIngen": "ingen",
     "ekvFull": "full",
     "ekvDelvis": "delvis",
-    "ekvBredere": "breiare",
-    "ekvSmalere": "smalare",
+    "ekvBredere": "breiare tyding",
+    "ekvSmalere": "smalare tyding",
     "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
