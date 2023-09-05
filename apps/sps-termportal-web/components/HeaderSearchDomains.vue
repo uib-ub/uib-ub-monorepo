@@ -91,6 +91,7 @@
                 v-model="searchInterface.domain"
                 :label="k"
                 :parents="[searchInterface.domain[topdomain] || null]"
+                :topdomain="topdomain"
               />
               <ul>
                 <li
