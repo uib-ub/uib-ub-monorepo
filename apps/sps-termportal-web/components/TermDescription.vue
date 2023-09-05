@@ -77,7 +77,6 @@ const props = defineProps({
 });
 
 const mainValue = (data) => {
-  console.log(data);
   switch (props.prop) {
     case "definition":
       return data?.label["@value"];
@@ -90,7 +89,6 @@ const mainValue = (data) => {
     case "context":
       return data?.label["@value"];
     case "link":
-      console.log(data);
       return data;
     default:
       return data;
