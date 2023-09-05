@@ -1,33 +1,33 @@
 <template>
   <div class="my-1 md:mt-0 pb-6">
-    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4">
+    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4 mx-2">
 
-      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
-        <fieldset class="gap-4 lg:col-span-2 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-7">
+        <fieldset class="gap-4 lg:col-span-2 xl:col-span-2 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
           <legend>{{$t('options.dict')}}</legend>
           <FormRadio v-for="(item, idx) in dicts" :key="store.dict + idx" :value="item" name="dict" :labelId="'dict-radio-'+idx" :current="store.dict" @submit="update_dict">
             {{$t(`dicts_short.${item}`)}}
           </FormRadio>
         </fieldset>
         
-        <fieldset class="gap-4 lg:col-span-2 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
+        <fieldset class="gap-4 lg:col-span-2 xl:col-span-3 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
           <legend>{{$t('options.scope.title')}}</legend>
           <FormRadio v-for="(item, idx) in ['e', 'ei', 'eif']" :key="store.scope + idx" :value="item" name="scope" :labelId="'scope-radio-'+idx" :current="store.scope" @submit="update_scope">
             {{$t(`options.scope.value.${item}`)}}
           </FormRadio>
         </fieldset>  
 
-      <div class="grid sm:grid-cols-2 xl:grid-cols-1 xl:grid-rows-3 lg:grid-cols-1 md:col-span-2 lg:col-span-1 gap-2 sm:gap-4 lg:gap-0">
-        <fieldset class="rounded xl:row-span-2">
-          <legend id="pos-legend" class="bg-tertiary ">{{$t('pos')}}:</legend>
-          <div class="!py-3 duration-200 ">
-          <select aria-labelledby="pos-legend" name="pos" class="bg-tertiary w-full border border-1 py-1 px-2 pr-2 mr-2" @change="update_pos" v-bind:class="{not_null: store.pos}">
+      <div class="grid sm:grid-cols-2 xl:grid-cols-2 lg:grid-cols-1 md:col-span-2 lg:col-span-1 xl:col-span-2 gap-2 sm:gap-4 lg:gap-4">
+        <div>
+          <label for="pos-select" class="bg-tertiary">{{$t('pos')}}:</label>
+          <div class="duration-200 ">
+          <select id="pos-select" aria-labelledby="pos-legend" name="pos" class="bg-tertiary w-full border border-1 py-1 px-2 pr-2 mr-2" @change="update_pos" v-bind:class="{not_null: store.pos}">
             <option class="w-full mr-2 pr-2" v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
           </select>
           </div>
-        </fieldset>
+        </div>
 
-          <button class="btn xl:row-span-1 sm:mt-6 lg:mt-0 sm:mb-2 md:mb-0 py-2 md:py-0" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:trash" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
+          <button class="btn sm:mt-6 sm:mb-2 md:mb-0 py-2 xl:self-end lg:py-1 lg:justify-self-end" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:trash" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
           
       </div>
       
