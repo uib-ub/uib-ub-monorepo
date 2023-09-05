@@ -8,7 +8,7 @@
       "all": "All Domains",
       "DOMENE-3AHumaniora": "Humanities",
       "DOMENE-3ANaturvitenskapTeknologi": "Natural sciences & technology",
-      "DOMENE-3ASamfunnsfag": "Social sciences",
+      "DOMENE-3ASamfunnsfag": "Social studies",
       "DOMENE-3AOkonomiAdministrasjon": "Business economy & administration",
       "DOMENE-3AHelse_og_sosial": "Health & social care"
     },
@@ -123,7 +123,7 @@
     "license": "Licence",
     "languages": "Languages",
     "startLang": "Starting language",
-    "contactHeading": "General information about the termbase" // TODO
+    "contactHeading": "Contact"
   },
   "id": {
     "topheading": "Concept view",
