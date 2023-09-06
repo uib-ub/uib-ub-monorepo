@@ -41,7 +41,7 @@
     <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1">
           <Icon name="bi:globe2" size="1.25em" class="mr-2"/>
           <label for="locale-select" class="sr-only">{{$t('settings.locale.title')}}</label>
-          <select id="locale-select" class="bg-primary text-white" v-model="i18n.locale.value" @change="update_locale">
+          <select id="locale-select" class="bg-primary text-white" v-model="i18n.locale.value">
             <option class="text-text text-xl bg-canvas shadow-xl border-2" value="eng">English</option>
             <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nob">Bokmål</option>
             <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nno">Nynorsk</option>
@@ -61,9 +61,10 @@ const store = useStore()
 const route = useRoute()
 const i18n = useI18n()
 
-const locale_expanded = ref(false)
 const menu_expanded = ref(false)
-const locale = useCookie('currentLocale')
+const locale = computed(()=> {
+  return {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
+})
 
 const escape_menu = (event) => {
   console.log(event.key)
@@ -74,26 +75,12 @@ const escape_menu = (event) => {
 
 useHead({
     htmlAttrs: {
-      lang: {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
+      lang: locale
     },
     titleTemplate: (titleChunk) => {
       return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
     }
 })
-
-const update_locale = () => {
-  locale_expanded.value = false
-  locale.value = i18n.locale.value
-  useHead({
-    htmlAttrs: {
-      lang: {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
-    }
-})
-}
-
-  // const showHoverText = () => {
-  //   isHovered.value = true;
-  // };
 
 </script>
 
