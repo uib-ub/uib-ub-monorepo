@@ -57,7 +57,7 @@
                     {{ $t("termbase.email") }}
                   </dt>
                   <dd class="">
-                    <AppLink :to="data?.contactPoint?.hasEmail">{{
+                    <AppLink class="underline hover:decoration-2" :to="data?.contactPoint?.hasEmail">{{
                       data?.contactPoint?.hasEmail.split(":")[1]
                     }}</AppLink>
                   </dd>
