@@ -1,7 +1,7 @@
 {
   "global": {
     "language": "Language | language",
-    "termbase": "Termbase | termbase | Termbases",
+    "termbase": "Termbase | termbase | Termbases | termbases",
     "skipLink": "Go to  main content",
     "domain": {
       "domain": "Domain | domain | Domains",
