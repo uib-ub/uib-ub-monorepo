@@ -35,7 +35,7 @@ export default function (situation: string, options?: SearchOptions) {
     term: searchInterface.value.term || "",
     language: [searchInterface.value.language],
     translate: searchInterface.value.translate,
-    termbase: [searchInterface.value.termbase],
+    termbase: searchInterface.value.termbase,
     domain: [Object.keys(searchInterface.value.domain)[0]], // TODO domain
     useDomain: searchInterface.value.useDomain,
     // default data
