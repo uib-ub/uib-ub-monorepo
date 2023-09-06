@@ -12,7 +12,7 @@
             route.path !== '/',
           'container mb-[10vh] max-w-[73em] p-5': route.path === '/',
           'max-w-[69em]': locale === 'nn',
-          'max-w-[79.5em]': locale === 'en',
+          'max-w-[82em]': locale === 'en',
         }"
       >
         <header>
@@ -20,12 +20,8 @@
             v-if="route.path === '/'"
             class="text-5xl xs:text-6xl sm:text-7xl md:text-8xl"
           >
-            <div class="max-w-lg -ml-6 -mb-6 -mt-4">
-              <img
-                src="/Termportalen_Logo.svg"
-                alt=""
-                class=""
-              />
+            <div class="-mb-6 -ml-6 -mt-4 max-w-lg">
+              <img src="/Termportalen_Logo.svg" alt="" class="" />
             </div>
           </h1>
         </header>
