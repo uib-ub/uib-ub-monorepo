@@ -228,7 +228,7 @@
         "download": "Last ned RIS-fil",
         "link_copied": "Kopiert",
         "citation_copied": "Sitatet er kopiert",
-        "citation": "«{lemma}». I: <em>{dict}.</em> Språkrådet og Universitetet i Bergen. &lt;<a href='{link}'>{link}</a>&gt; (lesen {dd}.{mm}.{yyyy}).",
+        "citation": "«{lemma}». I: {dict} Språkrådet og Universitetet i Bergen. {link} (lesen {dd}.{mm}.{yyyy}).",
         "headings": {
             "etymology": "Opphav",
             "pronunciation": "Uttale",

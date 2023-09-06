@@ -226,7 +226,7 @@
     "copy": "Copy",
     "link_copied": "Copied",
     "citation_copied": "Citation copied",
-    "citation": "« {lemma} ». In: <em> {dict}. </em> Språkrådet & Universitetet i Bergen. &lt;<a href='{link}'> {link} </a>&gt; ( retrieved {dd}. {mm}. {yyyy}). ",
+    "citation": "« {lemma} ». In: {dict}. Språkrådet & Universitetet i Bergen. {link} ( retrieved {dd}. {mm}. {yyyy}). ",
     "headings": {
       "etymology": "Etymology",
       "pronunciation": "Pronunciation",
