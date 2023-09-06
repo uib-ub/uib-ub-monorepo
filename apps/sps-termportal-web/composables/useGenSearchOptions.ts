@@ -75,7 +75,9 @@ export default function (situation: string, options?: SearchOptions) {
         newOptions.domain = searchFilterData.value.context;
       }
     } else if (searchFilterData.value.context.length > 0) {
-      newOptions.termbase = searchFilterData.value.context;
+      newOptions.termbase = searchFilterData.value.context.map((tb) => {
+        return tb.split("-3A")[0];
+      });
     }
 
     // Check if flattened array includes "full"
