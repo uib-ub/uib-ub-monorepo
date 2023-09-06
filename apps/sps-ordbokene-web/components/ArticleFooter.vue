@@ -15,7 +15,28 @@
       <div class="cite-container p-4 pb-1 pt-2 relative text-1 basis-full" v-if="cite_expanded" :id="'cite-'+article_id">
         <h4>{{$t('article.cite_title')}}</h4>
         <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
-       <div class="my-2 break-all sm:break-words"><div class="bg-tertiary-darken1 px-2 pt-1 pb-3"><div id="citation" v-html="$t('article.citation', create_citation())"/></div></div>
+
+        <div class="bg-tertiary-darken1 px-2 pt-1 pb-3 my-2 break-all sm:break-words">
+          <i18n-t keypath="article.citation" tag="div" id="citation">
+            <template v-slot:lemma>{{citation.lemma}}</template>>
+            <template v-slot:link>
+              &lt;<a :href="citation.link">{{citation.link}}</a>&gt;
+            </template>
+            <template v-slot:dict>
+              <em>{{citation.dict}}</em>
+            </template>
+            <template v-slot:dd>
+              {{citation.dd}}
+            </template>
+            <template v-slot:mm>
+              {{citation.mm}}
+            </template>
+            <template v-slot:yyyy>
+              {{citation.yyyy}}
+            </template>
+          </i18n-t>
+
+        </div>
           <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation">
             <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
           </button>
@@ -93,12 +114,12 @@ const get_citation_info = () => {
       return [lemma, dd, mm, yyyy, link, dict]
     }
 
-const create_citation = () => {
+const citation = computed(() => {
       const [lemma, dd, mm, yyyy, link, dict] = get_citation_info()
       let citation = {lemma, link, dd, mm, yyyy, dict}
 
       return citation
-    }
+    })
 
 const download_ris = () => {
       const [lemma, dd, mm, yyyy, link] = get_citation_info()
