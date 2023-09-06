@@ -4,15 +4,14 @@
   "help": "Help",
   "autocomplete_suggestions": "Search suggestion | search suggestions",
   "maximum_autocomplete": "maximum number of suggestions",
-  "advanced_help": "Show help",
-  "advanced_help_hide": "Hide help",
+  "advanced_help": "Help",
   "advanced":{
     "title": "Advanced search",
     "description": "Simple search only shows keyword hits in the results list, and we try to give you the best option if what you're searching for is not a keyword. In advanced search, however, you can show hits on inflected forms and in the definitions (free text search). You can also filter by word class, and truncate and combine the searches with special characters."
   },
   "to_advanced": "Go to advanced search",
-  "show_articles": "Show explanations",
-  "show_list": "Show list | Show lists",
+  "show_articles": "Articles",
+  "show_list": "List | Lists",
   "simple": "Simple search",
   "about":{
     "title":"About",
@@ -77,10 +76,14 @@
   },
   "options": {
     "title": "Search options",
+    "dict": "Dictionaries:",
     "scope": {
-      "e": "Dictionary entries only",
-      "ei": "Include inflected forms",
-      "eif":" Full-text search"
+      "title": "Search for:",
+      "value": {
+        "e": "Headwords",
+        "ei": "All words",
+        "eif": "All content"
+      }
     },
     "pos": "Part of speech",
     "collapse": "Collapse articles"
