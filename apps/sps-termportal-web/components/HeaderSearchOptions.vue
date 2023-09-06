@@ -110,12 +110,14 @@ function deriveSearchOptions(searchOption, defaultValue) {
   }
 
   if (searchOption !== "termbase") {
+    /*
     termbases = filterTermbases(
       termbases,
       [searchInterface.value.termbase],
       "termbase",
       "all"
     );
+    */
 
     if (termbases.length !== termbaseOrder.length) {
       const languages = [
