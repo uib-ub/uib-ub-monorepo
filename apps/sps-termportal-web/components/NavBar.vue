@@ -12,15 +12,14 @@
               id="anchor"
               to="/"
               aria-label="Termportalen.no"
-              class="tp-hover-focus mx-2 flex justify-center border-transparent px-3 py-0.5 text-[1.4em]"
+              class="tp-hover-focus py-1 mx-1 flex justify-center border-transparent"
             >
-              <span class="font-semibold lg:font-normal" aria-hidden="true"
-                >T</span
-              ><span
-                class="hidden font-normal transition xl:inline"
-                aria-hidden="true"
-                >ermportalen</span
-              >
+              <div class="-mt-1.5 -mb-2.5 hidden w-[10.5em] xl:block">
+                <img class="" src="/Termportalen_Logotype.svg" aria-hidden="true" />
+              </div>
+              <div class="-m-3.5 block w-[3.3em] xl:hidden">
+                <img src="/Termportalen_Logosymbol.svg" aria-hidden="true" />
+              </div>
             </AppLink>
           </SideBar>
 
