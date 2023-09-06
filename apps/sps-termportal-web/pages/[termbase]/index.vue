@@ -24,7 +24,7 @@
             }}
           </AppLink>
         </h1>
-        <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
+        <div class="flex flex-col gap-x-5 gap-y-5 lg:flex-row">
           <!--Description-->
           <div class="basis-GRb max-w-prose space-y-2">
             <p v-for="p in description" :key="p" v-html="p" />
