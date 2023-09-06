@@ -94,7 +94,7 @@
           <section v-if="sub_articles.length && !welcome" class="expressions">
               <h4>{{$t('article.headings.expressions', 1, { locale: content_locale})}}</h4>
               <ul>
-              <SubArticle class="p-2" v-for="(subart, idx) in sub_articles" :body="subart" :dict="dict" :key="idx" v-on:link-click="link_click" :content_locale="content_locale"/>
+              <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
               </ul>
             </section>
       </div>
@@ -221,7 +221,7 @@ catch(error) {
 const sub_articles = computed(() => {
   return data.value.body.definitions.reduce((acc, val) => acc.concat(find_sub_articles(val)), []).sort((s1, s2) => {   // Sort æ, ø and å correctly  
     let lemma1 = s1.lemmas[0].toLowerCase()
-    let lemma2 = s1.lemmas[0].toLowerCase()
+    let lemma2 = s2.lemmas[0].toLowerCase()
     let lettermap = {229: 299, 248: 298, 230: 297}
 
     for (var i = 0; i < Math.min(lemma1.length, lemma2.length); i++) {
