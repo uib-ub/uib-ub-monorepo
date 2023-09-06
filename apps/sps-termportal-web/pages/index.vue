@@ -10,7 +10,7 @@
     </div>
     <div class="flex flex-col gap-x-8 gap-y-6 pt-6 lg:flex-row">
       <WelcomeTP class="basis-GRb" />
-      <DomainOverview class="basis-GRs" />
     </div>
+    <CollaboratorsTP class="mt-6"/>
   </main>
 </template>

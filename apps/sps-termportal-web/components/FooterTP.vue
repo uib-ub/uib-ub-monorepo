@@ -1,11 +1,6 @@
 <template>
   <footer class="bg-tpblue-400 text-white">
     <div class="flex flex-wrap items-center justify-center gap-x-6 p-2">
-      <img
-        src="/logo_sprakradet_neg.png"
-        style="width: 180px"
-        alt="logo språkrådet"
-      />
       <img src="/logo_ugle_white.svg" style="width: 100px" alt="logo uib" />
       <div class="flex flex-col space-y-2 text-lg">
         <AppLink
