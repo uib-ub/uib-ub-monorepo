@@ -26,7 +26,7 @@ export interface SearchInterface {
   language: LangCode | "all";
   translate: LangCode | "none";
   domain: Object;
-  termbase: Samling | "all";
+  termbase: Samling[];
   useDomain: boolean;
 }
 
@@ -48,9 +48,9 @@ export const useDomainData = () =>
         "KJEMI",
       ],
     },
+    "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
     "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
     "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING"] },
-    "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK"] },
     "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
   }));
 
@@ -59,7 +59,7 @@ export const useSearchInterface = () =>
     term: null,
     language: "all",
     translate: "none",
-    termbase: "all",
+    termbase: [],
     domain: {},
     useDomain: true,
   }));
