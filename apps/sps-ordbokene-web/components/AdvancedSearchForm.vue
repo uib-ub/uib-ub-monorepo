@@ -27,7 +27,7 @@
           </div>
         </div>
 
-          <button class="btn sm:mt-6 sm:mb-2 md:mb-0 py-2 xl:self-end lg:py-1 lg:justify-self-end" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:trash" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
+          <button class="btn sm:mt-6 sm:mb-2 md:mb-0 py-2 xl:self-end lg:py-4" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:trash" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
           
       </div>
       
