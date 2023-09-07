@@ -173,7 +173,12 @@ const inflection_error = (error) => {
 }
 
 const content_locale = computed(() => {
-    return {bm: 'nob', nn: 'nno'}[props.dict] || i18n.locale.value
+    if (i18n.locale.value == 'nob' || i18n.locale.value == 'nno') {
+      return  {bm: 'nob', nn: 'nno'}[props.dict]
+    }
+    else {
+      return i18n.locale.value
+    }
 })
 
 
