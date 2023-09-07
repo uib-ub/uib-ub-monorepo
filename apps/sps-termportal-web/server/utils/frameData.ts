@@ -31,6 +31,7 @@ export default function (
       source: "dct:source",
       scopeNote: "skos:scopeNote",
       note: "skos:note",
+      license: "dct:license",
       opprinneligSpraak: "skosp:opprinneligSpraak",
       isOfAbbreviationType: "skosp:isOfAbbreviationType",
       isAbbreviationOf: "skosp:isAbbreviationOf",
