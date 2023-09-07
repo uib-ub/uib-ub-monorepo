@@ -14,9 +14,12 @@
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n";
+const i18n = useI18n();
+
 useHead({
   htmlAttrs: {
-    lang: "nb",
+    lang: i18n.locale,
   },
 });
 
@@ -43,9 +46,13 @@ const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
 const skipLink = ref();
 const domainData = useDomainData();
+const lazyLocales = useLazyLocales();
 
 onMounted(() => {
-  $fetch("/api/domain").then((data) => {
+  /*
+  Get subdomains and relations between conceptual domains that are maintained in the CMS.
+  */
+  $fetch("/api/domain", { retry: 1 }).then((data) => {
     for (const domain in domainData.value) {
       domainData.value[domain].subdomains = parseRelationsRecursively(
         data,
@@ -54,6 +61,21 @@ onMounted(() => {
         "subdomains"
       );
     }
+  });
+
+  /*
+   Get localiztion data where data is produced in the CMS.
+   This applies to:
+   - termbase names
+   - conceptual domain names
+   */
+  $fetch("/api/lazyLocales", { retry: 1 }).then((data) => {
+    data.forEach((entry) => {
+      const lang = entry.label["xml:lang"];
+      const pagelst = entry.page.value.split("/");
+      const page = pagelst[pagelst.length - 1];
+      lazyLocales.value[lang][page] = entry.label.value;
+    });
   });
 
   /*
@@ -78,7 +100,6 @@ watch(
 <style>
 body {
   overflow-y: scroll;
-  @apply bg-tpblue-100;
 }
 
 .tp-shighlight {
@@ -115,5 +136,15 @@ body {
   padding: 0.5em;
   border: 1px solid black;
   z-index: 50;
+}
+
+.tp-hover-focus {
+  @apply tp-transition-shadow rounded-[7px] border outline-none hover:cursor-pointer hover:border hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo;
+}
+
+.tp-transition-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
 }
 </style>

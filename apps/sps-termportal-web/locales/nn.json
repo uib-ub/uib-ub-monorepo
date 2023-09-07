@@ -1,15 +1,17 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase",
+    "termbase": "Termbase | termbase | Termbasar  | termbaser",
     "skipLink": "Gå til hovudinnhald",
+    "collaborators": "Samarbeidspartnarane våre",
     "domain": {
       "domain": "Domene | domene",
       "all": "Alle domene",
       "DOMENE-3AHumaniora": "Humaniora",
-      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
+      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
-      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon"
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi og administrasjon",
+      "DOMENE-3AHelse_og_sosial": "Helse og sosial"
     },
     "lang": {
       "none": "–",
@@ -63,21 +65,33 @@
       "hiddenLabel": "Frårådd term"
     },
     "matching": {
-      "full": "nøyaktig",
-      "full-cs": "nøyaktig",
-      "full-ci": "nøyaktig",
-      "startsWith-ci": "startar med",
-      "endsWith-ci": "sluttar med",
-      "subWord-ci": "underord startar med",
-      "contains-ci": "inneheld"
+      "full": "Nøyaktig",
+      "full-cs": "Nøyaktig",
+      "full-ci": "Nøyaktig",
+      "startsWith-ci": "Startar med",
+      "endsWith-ci": "Sluttar med",
+      "subWord-ci": "Underord startar med",
+      "contains-ci": "Inneheld"
+    },
+    "license": {
+      "LISENS-3ANo_Rights_Reserved_-28CC0-29": "CC0",
+      "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED": "Clarin ID-EDU-BY-NC-NORED",
+      "LISENS-3ACC_BY_40": "CC BY 4.0",
+      "LISENS-3ACC_BY-NC_40": "CC BY-NC 4.0",
+      "LISENS-3ACC_BY-NC-ND_40": "CC BY-NC-ND 4.0"
     }
   },
-  "domainOverview": { "domainsAndBases": "Domene & termbasar" },
+  "domainOverview": { "domainsAndBases": "Domene og termbasar" },
   "navBar": {
     "om": "Om Termportalen",
     "innstillinger": "Innstillingar",
     "menuButtonShow": "Utvid menyen",
-    "menuButtonHide": "Skjul menyen"
+    "menuButtonHide": "Skjul menyen",
+    "language": "Visningsspråk",
+    "navigation": "Navigasjon" // TODO Check translation
+  },
+  "news": {
+    "heading": "Nyhende"
   },
   "searchBar": {
     "search": "Søk",
@@ -88,7 +102,11 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
-    "searchButtonLabel": "Søk"
+    "searchButtonLabel": "Søk",
+    "expandSubdomains": "Vis underdomene",
+    "closeSubdomains": "Skjul underdomene",
+    "expandTermbases": "Vis termbasar",
+    "closeTermbases": "Skjul termbasar"
   },
   "searchFilter": {
     "results": "treff",
@@ -101,7 +119,7 @@
   },
   "footer": {
     "contact": "Kontakt oss",
-    "accDeclaration": "Tilgjengeligheitserklæring"
+    "accDeclaration": "Tilgjengelegheitserklæring"
   },
   "spinnerIcon": {
     "srText": "Venter på søkeresultater"
@@ -114,23 +132,34 @@
     "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Utgangsspråk"
+    "startLang": "Utgangsspråk",
+    "contactHeading": "Kontakt"
   },
   "id": {
     "topheading": "Omgrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
+    "equivalence": "Ekvivalens",
+    "ekvIngen": "ingen",
+    "ekvFull": "full",
+    "ekvDelvis": "delvis",
+    "ekvBredere": "breiare tyding",
+    "ekvSmalere": "smalare tyding",
+    "equivalenceNote": "Ekvivalensmerknad",
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
     "definisjon": "Definisjon",
-    "referanse": "",
-    "kollokasjon": "",
-    "forkortelse": "",
-    "forkortelseAv": "",
-    "forkortelseType": "",
-    "kontekst": "",
-    "kontekstAv": "",
+    "referanse": "Referanse",
+    "kollokasjon": "Kollokasjon",
+    "forkortelse": "Forkorting",
+    "forkortelseAv": "Forkorting av",
+    "forkortelseType": "Forkortingstype",
+    "kortform": "kortterm", // TODO
+    "teleskopord": "teleskopterm",
+    "initialord": "initialord",
+    "kontekst": "Kontekst til",
+    "kontekstAv": "Kontekst",
     "general": "Generell informasjon",
     "relasjon": "Omgrepsrelasjon",
     "narrower": "Underomgrep",
@@ -141,13 +170,16 @@
     "hasPart": "Underomgrep (partitiv)",
     "seeAlso": "Sjå òg",
     "related": "Assosiert omgrep",
+    "replaces": "Erstattar",
+    "replacedBy": "Erstatta av",
+    "inndelingskriterium": "Inndelingskriterium",
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
     "modified": "Sist oppdatert",
     "note": "Merknad",
     "tilbake": "Til søkeresultat",
-    "noteTermbaseIsUnmaintained": "Dette er ein historisk ressurs som p.t. ikkje blir oppdatert"
+    "noteTermbaseIsUnmaintained": "Denne termbasen blir ikkje lenger oppdatert, men har likevel verdi"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -156,13 +188,23 @@
     "language": "Språk",
     "termbase": "Termbase"
   },
-  "om": { "title": "Om Termportalen" },
+  "om": {
+    "title": "Om Termportalen",
+    "aboutUs": "Om oss",
+    "history": "Historikk",
+    "kommeiGang": "Korleis kome i gong med terminologiarbeid?",
+    "links": "Nyttige lenkjer",
+    "maritaStilling": "faglig leder og førsteamanuensis i terminologi og fagspråk, UiB",
+    "coordinator": "koordinator",
+    "terminologist": "terminolog",
+    "developer": "systemutvikler"
+  },
   "innstillinger": {
     "title": "Innstillingar",
-    "global": "Vel visningsspråk",
-    "globalLangComment": "",
+    "global": "Visningsspråk",
+    "globalLangComment": "Vel kva språk du vil vise Termportalen.no på",
     "conceptview": "Termpost",
-    "dataDispLang": "Vel språk",
-    "dataDispLangComment": ""
+    "dataDispLang": "Språk for termpost",
+    "dataDispLangComment": "Vel kva språk som skal visast i termpostane"
   }
 }

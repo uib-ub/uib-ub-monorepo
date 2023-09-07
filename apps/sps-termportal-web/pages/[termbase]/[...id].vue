@@ -1,264 +1,220 @@
 <template>
-  <div class="flex h-full" style="height: calc(100% - 128px)">
+  <div class="flex h-full">
     <Head>
       <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
     </Head>
     <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
-
-    <div
-      v-if="searchData.length > 0"
-      class="hidden flex-col md:flex md:w-60 lg:w-1/4"
-    >
-      <div class="flex h-9">
-        <AppLink class="group flex items-center space-x-2 text-lg" to="/search">
-          <Icon
-            name="ion:return-up-back-sharp"
-            size="1.7em"
-            aria-hidden="true"
-            class="h-7 w-12 rounded bg-tpblue-400 text-white group-hover:bg-blue-700"
-          ></Icon>
-          <div class="group-hover:underline">
-            {{ $t("id.tilbake") }}
-          </div></AppLink
+    <div class="flex">
+      <SideBar />
+      <div class="flex">
+        <div
+          v-if="searchData.length > 0"
+          class="hidden flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw] max-w-[22em] shrink-0"
         >
-      </div>
-      <nav aria-labelledby="sidebarresults">
-        <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
-          {{ $t("searchFilter.results-heading") }}
-        </h2>
-        <ol ref="sidebar" class="overflow-y-auto" style="max-height: 0px">
-          <SearchResultListEntryShort
-            v-for="entry in searchData"
-            :key="entry.label + entry.link + entry.lang"
-            :entry-data="entry"
-          />
-        </ol>
-      </nav>
-    </div>
-    <div
-      class="flex flex-col lg:w-3/4"
-      :class="{ 'pl-3 lg:pl-6': searchData.length > 0 }"
-    >
-      <div class="invisible h-9">
-        <input id="viewToggle" v-model="conceptViewToggle" type="checkbox" />
-        <label for="viewToggle">{{ $t("id.tableview") }}</label>
-      </div>
-      <main ref="main" class="h-full">
-        <h2 id="main" class="pb-4">
-          <AppLink class="text-3xl" to="#main">{{ pagetitle }}</AppLink>
-          <div v-if="concept?.memberOf">
-            <AppLink
-              class="text-lg text-gray-600 underline hover:text-black"
-              :to="'/' + concept?.memberOf.split('-3A')[1]"
-            >
-              {{ $t("global.samling." + concept?.memberOf.split("-3A")[1]) }}
-            </AppLink>
-          </div>
-        </h2>
-        <div v-if="conceptViewToggle">
-          <h3>{{ $t("id.languagedata") }}</h3>
-          <table class="table-auto">
-            <!--Header-->
-            <thead>
-              <tr>
-                <th class="" scope=""></th>
-                <th
-                  v-for="lang in displayInfo?.displayLanguages"
-                  :key="'langSection_' + lang"
-                  scope="col"
-                >
-                  {{ $t("global.lang." + lang) }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <!--PrefLabel-->
-              <tr
-                v-for="(e, i) in displayInfo.prefLabelLength"
-                :key="'prefLabel_' + i"
-              >
-                <th scope="row">{{ $t("id.prefLabel") }}</th>
-                <td
-                  v-for="lang in displayInfo?.displayLanguages"
-                  :key="'prefLabel_' + lang + i"
-                >
-                  {{
-                    data[data[procId]?.prefLabel[lang]?.[i]]?.literalForm[
-                      "@value"
-                    ]
-                  }}
-                </td>
-                <!--Kontekst?-->
-              </tr>
-              <!--AltLabel-->
-              <tr
-                v-for="(e, i) in displayInfo.altLabelLength"
-                :key="'altLabel_' + i"
-              >
-                <th scope="row">{{ $t("id.altLabel") }}</th>
-                <td
-                  v-for="lang in displayInfo?.displayLanguages"
-                  :key="'altLabel_' + lang + i"
-                >
-                  {{
-                    data[data[procId]?.altLabel[lang]?.[i]]?.literalForm[
-                      "@value"
-                    ]
-                  }}
-                </td>
-              </tr>
-              <!--HiddenLabel-->
-              <tr
-                v-for="(e, i) in displayInfo.hiddenLabelLength"
-                :key="'hiddenLabel_' + i"
-              >
-                <th scope="row">{{ $t("id.hiddenLabel") }}</th>
-                <td
-                  v-for="lang in displayInfo?.displayLanguages"
-                  :key="'hiddenLabel' + lang + i"
-                >
-                  {{
-                    data[data[procId]?.hiddenLabel[lang]?.[i]]?.literalForm[
-                      "@value"
-                    ]
-                  }}
-                </td>
-              </tr>
-              <!--Definisjon-->
-            </tbody>
-          </table>
+          <BackToSearch />
+          <nav aria-labelledby="sidebarresults">
+            <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
+              {{ $t("searchFilter.results-heading") }}
+            </h2>
+            <ol ref="sidebar" class="overflow-y-auto" style="height: 0px">
+              <SearchResultListEntryShort
+                v-for="entry in searchData"
+                :key="entry.label + entry.link + entry.lang"
+                :entry-data="entry"
+              />
+            </ol>
+          </nav>
         </div>
-        <!--USED-->
-        <div v-else class="grid gap-y-5">
-          <div
-            v-for="lang in displayInfo?.displayLanguages"
-            :key="'disp_' + lang"
-          >
-            <h3 :id="lang" class="pb-1 text-xl">
-              <AppLink :to="`#${lang}`">{{
-                $t("global.lang." + lang)
-              }}</AppLink>
-            </h3>
-            <table class="table-auto">
-              <tbody>
-                <!--Definisjon-->
-                <DataRow
-                  v-if="
-                    concept?.definisjon?.[lang] ||
-                    concept?.betydningsbeskrivelse?.[lang]
-                  "
-                  :key="'definisjon' + lang"
-                  :data="
-                    concept.definisjon?.[lang][0]?.label['@value'] ||
-                    concept?.betydningsbeskrivelse?.[lang][0]?.label['@value']
-                  "
-                  :label="$t('id.definisjon')"
-                  :data-lang="lang"
-                />
-                <!--Anbefalt term-->
-                <DataRow
-                  v-if="concept?.prefLabel?.[lang]"
-                  :key="'prefLabel_' + lang"
-                  :data="concept?.prefLabel[lang][0]?.literalForm['@value']"
-                  :label="$t('id.prefLabel')"
-                  :data-lang="lang"
-                />
-                <!--AltLabel-->
-                <DataRow
-                  v-for="label in concept?.altLabel?.[lang]"
-                  :key="'altLabel_' + label"
-                  :data="label?.literalForm['@value']"
-                  :label="$t('id.altLabel')"
-                  :data-lang="lang"
-                />
-                <!--HiddenLabel-->
-                <DataRow
-                  v-for="label in concept?.hiddenLabel?.[lang]"
-                  :key="'hiddenLabel_' + label"
-                  :data="label?.literalForm['@value']"
-                  :label="$t('id.hiddenLabel')"
-                  :data-lang="lang"
-                />
-              </tbody>
-            </table>
-          </div>
-          <div v-if="displayInfo?.semanticRelations">
-            <h3 id="relasjon" class="pb-1 text-xl">
-              <AppLink to="#relasjon"> {{ $t("id.relasjon") }}</AppLink>
-            </h3>
-            <table>
-              <tbody>
-                <template v-for="relationType in semanticRelationTypes">
-                  <template v-if="displayInfo.semanticRelations[relationType]">
-                    <DataRow
-                      v-for="relation in displayInfo.semanticRelations[
-                        relationType
-                      ]"
-                      :key="relation"
-                      :data="relation[0]"
-                      :to="relation[1]"
-                      :label="$t('id.' + relationType)"
+        <div
+          class="flex grow flex-col lg:w-3/4"
+          :class="{ 'pl-3 lg:pl-6': searchData.length > 0 }"
+        >
+          <main ref="main" class="h-full">
+            <h2 id="main" class="pb-4">
+              <AppLink class="text-3xl" to="#main">{{ pagetitle }}</AppLink>
+              <div v-if="concept?.memberOf">
+                <AppLink
+                  class="text-lg text-gray-600 underline hover:text-black"
+                  :to="'/' + concept?.memberOf.split('-3A')[1]"
+                >
+                  {{ lalo[locale][concept.memberOf] }}
+                </AppLink>
+              </div>
+            </h2>
+            <div class="grid gap-y-5">
+              <div
+                v-for="lang in displayInfo?.displayLanguages"
+                :key="'disp_' + lang"
+              >
+                <h3 :id="lang" class="pb-1 text-xl">
+                  <AppLink :to="`#${lang}`">{{
+                    $t("global.lang." + lang)
+                  }}</AppLink>
+                </h3>
+                <TermSection>
+                  <!--Definition-->
+                  <TermProp
+                    v-if="
+                      concept?.definisjon?.[lang] ||
+                      concept?.betydningsbeskrivelse?.[lang]
+                    "
+                    :label="$t('id.definisjon')"
+                  >
+                    <TermDescription
+                      :data="
+                        concept.definisjon?.[lang] ||
+                        concept?.betydningsbeskrivelse?.[lang]
+                      "
+                      prop="definition"
+                      :data-lang="lang"
+                    >
+                    </TermDescription>
+                  </TermProp>
+
+                  <!--Anbefalt term-->
+                  <TermProp
+                    v-if="concept?.prefLabel?.[lang]"
+                    :label="$t('id.prefLabel')"
+                  >
+                    <TermDescription
+                      prop="prefLabel"
+                      :data="concept?.prefLabel[lang]"
+                      :data-lang="lang"
+                    >
+                    </TermDescription>
+                  </TermProp>
+
+                  <!--Tillatt term-->
+                  <TermProp
+                    v-if="concept?.altLabel?.[lang]"
+                    :label="$t('id.altLabel')"
+                  >
+                    <TermDescription
+                      prop="altLabel"
+                      :data="concept?.altLabel[lang]"
+                      :data-lang="lang"
+                    >
+                    </TermDescription>
+                  </TermProp>
+                  <!--Frarådet term-->
+                  <TermProp
+                    v-if="concept?.hiddenLabel?.[lang]"
+                    :label="$t('id.hiddenLabel')"
+                  >
+                    <TermDescription
+                      prop="altLabel"
+                      :data="concept?.hiddenLabel[lang]"
+                      :data-lang="lang"
+                    >
+                    </TermDescription>
+                  </TermProp>
+                  <!--Symbol-->
+                  <!--Kontekst-->
+                  <TermProp
+                    v-if="concept?.hasUsage?.[lang]"
+                    :label="$t('id.kontekst')"
+                  >
+                    <TermDescription
+                      prop="context"
+                      :data="concept?.hasUsage[lang]"
+                      :data-lang="lang"
                     />
+                  </TermProp>
+                </TermSection>
+              </div>
+              <div v-if="displayInfo?.semanticRelations">
+                <h3 id="relasjon" class="pb-1 text-xl">
+                  <AppLink to="#relasjon"> {{ $t("id.relasjon") }}</AppLink>
+                </h3>
+                <TermSection>
+                  <template v-for="relationType in semanticRelationTypes">
+                    <TermProp
+                      v-if="displayInfo.semanticRelations[relationType]"
+                      :key="relationType"
+                      :label="$t('id.' + relationType)"
+                    >
+                      <TermDescription
+                        prop="link"
+                        :data="displayInfo.semanticRelations[relationType]"
+                      />
+                    </TermProp>
                   </template>
-                </template>
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <h3 v-if="data" id="felles" class="pb-1 text-xl">
-              <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
-            </h3>
-            <table>
-              <tbody>
-                <!--Termbase-->
-                <DataRow
-                  v-if="concept?.memberOf"
-                  :data="
-                    $t('global.samling.' + concept.memberOf.split('-3A')[1])
-                  "
-                  :to="`/${termbase}`"
-                  :label="$t('id.collection')"
-                />
-                <!--Domene-->
-                <DataRow
-                  v-if="concept?.domene"
-                  :data="concept.domene?.split('-3A').pop()"
-                  :label="$t('id.domain')"
-                />
-                <!--Bruksområde-->
-                <DataRow
-                  v-if="displayInfo?.subject"
-                  :data="displayInfo?.subject"
-                  :label="$t('id.subject')"
-                />
-                <!--Modified-->
-                <DataRow
-                  v-if="concept?.modified"
-                  :data="concept.modified['@value']"
-                  :label="$t('id.modified')"
-                />
-                <!--Created-->
-                <!--Note TODO after export fix-->
-                <DataRow
-                  v-if="concept?.scopeNote"
-                  :data="concept.scopeNote"
-                  :label="$t('id.note')"
-                />
-                <!--Note for historical termbases-->
-                <DataRow
-                  v-if="
-                    route.params.termbase === 'NOT' ||
-                    route.params.termbase === 'RTT'
-                  "
-                  :data="$t('id.noteTermbaseIsUnmaintained')"
-                  :label="$t('id.note')"
-                />
-              </tbody>
-            </table>
-          </div>
+                </TermSection>
+              </div>
+              <div>
+                <h3 v-if="data" id="felles" class="pb-1 text-xl">
+                  <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
+                </h3>
+                <TermSection :flex="true">
+                  <TermProp
+                    v-if="lalo[locale][concept?.memberOf]"
+                    :flex="true"
+                    :label="$t('id.collection')"
+                  >
+                    <TermDescription
+                      prop="link"
+                      :flex="true"
+                      :data="[[lalo[locale][concept.memberOf], '/' + termbase]]"
+                    />
+                  </TermProp>
+                  <TermProp
+                    v-if="concept?.domene"
+                    :flex="true"
+                    :label="$t('id.domain')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[lalo[locale][concept.domene]]"
+                    />
+                  </TermProp>
+                  <TermProp
+                    v-if="displayInfo?.subject"
+                    :flex="true"
+                    :label="$t('id.subject')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[displayInfo?.subject]"
+                    />
+                  </TermProp>
+                  <TermProp
+                    v-if="concept?.modified"
+                    :flex="true"
+                    :label="$t('id.modified')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[modified()]"
+                    />
+                  </TermProp>
+                  <TermProp
+                    v-if="concept?.scopeNote"
+                    :flex="true"
+                    :label="$t('id.note')"
+                  >
+                    <TermDescription :flex="true" :data="[concept.scopeNote['@value']]" :data-lang="concept.scopeNote['@language']" />
+                  </TermProp>
+                  <TermProp
+                    v-if="
+                      (route.params.termbase === 'NOT' ||
+                        route.params.termbase === 'RTT') &&
+                      concept
+                    "
+                    :flex="true"
+                    :label="$t('id.note')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[$t('id.noteTermbaseIsUnmaintained')]"
+                    />
+                  </TermProp>
+                </TermSection>
+              </div>
+            </div>
+            <div v-if="error" class="p">Error</div>
+          </main>
         </div>
-        <div v-if="error" class="p">Error</div>
-      </main>
+      </div>
     </div>
   </div>
 </template>
@@ -266,12 +222,32 @@
 <script setup lang="ts">
 import { Samling } from "~~/utils/vars-termbase";
 
+if (process.client) {
+  useHead({
+    script: [
+      {
+        src: "/mathjax-config.js",
+        type: "text/javascript",
+        defer: true,
+      },
+      {
+        id: "MathJax-script",
+        type: "text/javascript",
+        src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+        defer: true,
+      },
+    ],
+  });
+}
+
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute();
 const searchScrollBarPos = useSearchScrollBarPos();
 const dataDisplayLanguages = useDataDisplayLanguages();
 const conceptViewToggle = useConceptViewToggle();
 const searchData = useSearchData();
+const lalo = useLazyLocales();
+const locale = useLocale();
 const sidebar = ref(null);
 const main = ref(null);
 const termbase = route.params.termbase as Samling;
@@ -308,6 +284,7 @@ const { data, error } = await useAsyncData("concept", () =>
       ? { cookie: "session=" + useRuntimeConfig().apiKey }
       : undefined,
     body: { concept: id, base, termbase },
+    retry: 1,
     signal: controller.signal,
   }).then((value) => {
     clearTimeout(timer);
@@ -324,6 +301,15 @@ const pagetitle = computed(() => {
     return getConceptDisplaytitle(concept.value);
   }
 });
+
+const modified = () => {
+const date = new Date(concept.value.modified["@value"]).toLocaleDateString(locale.value)
+const time = new Date(concept.value.modified["@value"]).toLocaleTimeString(locale.value)
+return date + ", " + time
+}
+
+
+new Date(concept.value.modified["@value"]).toLocaleTimeString(locale.value)
 
 const displayInfo = computed(() => {
   if (data?.value?.meta) {
@@ -370,7 +356,7 @@ const displayInfo = computed(() => {
 
 useResizeObserver(main, (e) => {
   if (sidebar.value) {
-    sidebar.value.style.maxHeight = `${main.value.offsetHeight - 95}px`;
+    sidebar.value.style.height = `${main.value.offsetHeight - 88}px`;
   }
 });
 
@@ -384,10 +370,8 @@ onBeforeUnmount(() => {
   }
 });
 onMounted(() => {
-  if (process.client && typeof window?.MathJax !== "undefined") {
-    try {
-      window.MathJax.typesetPromise();
-    } catch (error) {}
+  if (typeof window?.MathJax !== "undefined") {
+    window.MathJax.typesetPromise();
   }
 });
 </script>
