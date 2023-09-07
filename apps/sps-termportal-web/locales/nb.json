@@ -74,7 +74,8 @@
       "LISENS-3ANo_Rights_Reserved_-28CC0-29": "CC0",
       "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED": "Clarin ID-EDU-BY-NC-NORED",
       "LISENS-3ACC_BY_40": "CC BY 4.0",
-      "LISENS-3ACC_BY-NC_40": "CC BY-NC 4.0"
+      "LISENS-3ACC_BY-NC_40": "CC BY-NC 4.0",
+      "LISENS-3ACC_BY-NC-ND_40": "CC BY-NC-ND 4.0"
     }
   },
   "domainOverview": { "domainsAndBases": "Domener og termbaser" },
@@ -185,7 +186,17 @@
     "language": "Språk",
     "termbase": "Termbase"
   },
-  "om": { "title": "Om Termportalen" },
+  "om": {
+    "title": "Om Termportalen",
+    "aboutUs": "Om oss",
+    "history": "Historikk",
+    "kommeiGang": "Hvordan komme i gang med terminologiarbeid?",
+    "links": "Nyttige lenker",
+    "maritaStilling": "faglig leder og førsteamanuensis i terminologi og fagspråk, UiB",
+    "coordinator": "koordinator",
+    "terminologist": "terminolog",
+    "developer": "systemutvikler"
+  },
   "innstillinger": {
     "title": "Innstillinger",
     "global": "Visningsspråk",
