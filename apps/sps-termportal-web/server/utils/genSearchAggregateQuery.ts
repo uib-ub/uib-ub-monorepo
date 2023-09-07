@@ -166,22 +166,31 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
       },
       aggregate: {
         lang: `
-                ${aggregatePredFilter()}
+                 ${aggregatePredFilter()}
+                 ?uri ${
+                   searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
+                 } ?context.
                 BIND ( lang(?lit) as ?prop ).`,
         context: `
-        ${aggregatePredFilter()}
-            ?uri ${
-              searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
-            } ?context.
+             ${aggregatePredFilter()}
+             ?uri ${
+               searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
+             } ?context.
                     BIND (replace(str(?context), "${
                       runtimeConfig.public.base
                     }", "") as ?prop)`,
         predicate: `
                 ${aggregatePredFilter()}
+                ?uri ${
+                  searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
+                } ?context.
                 ?uri ?predicate ?label .
                 BIND (replace(str(?predicate), "http://www.w3.org/2008/05/skos-xl#", "") as ?prop)`,
         matching: `
           ${aggregatePredFilter()}
+          ?uri ${
+            searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
+          } ?context.
                     BIND ("${aggregateMatch}" as ?prop)`,
       },
     };
