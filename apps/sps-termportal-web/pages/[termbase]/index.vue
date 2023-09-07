@@ -26,7 +26,7 @@
         </h1>
         <div class="flex flex-col gap-x-5 gap-y-5 lg:flex-row">
           <!--Description-->
-          <div class="basis-GRb max-w-prose space-y-2">
+          <div class="max-w-prose basis-GRb space-y-2">
             <p v-for="p in description" :key="p" v-html="p" />
           </div>
           <!--deflist-->
@@ -57,9 +57,11 @@
                     {{ $t("termbase.email") }}
                   </dt>
                   <dd class="">
-                    <AppLink class="underline hover:decoration-2" :to="data?.contactPoint?.hasEmail">{{
-                      data?.contactPoint?.hasEmail.split(":")[1]
-                    }}</AppLink>
+                    <AppLink
+                      class="underline hover:decoration-2"
+                      :to="data?.contactPoint?.hasEmail"
+                      >{{ data?.contactPoint?.hasEmail.split(":")[1] }}</AppLink
+                    >
                   </dd>
                 </div>
                 <div v-if="data?.contactPoint?.hasTelephone" class="flex">
@@ -75,6 +77,24 @@
                 {{ $t("global.termbase", 0) }}
               </h2>
               <dl aria-labelledby="tbtermbaseinfo">
+                <div v-if="data?.license" class="flex">
+                  <dt class="w-32 shrink-0 font-semibold">
+                    {{ $t("termbase.license", 1) }}
+                  </dt>
+                  <dd>
+                    <AppLink
+                      v-if="licenseLinks[data?.license['@id']]"
+                      class="underline hover:decoration-2"
+                      :to="licenseLinks[data?.license?.['@id']]"
+                      >{{
+                        $t("global.license." + data?.license["@id"])
+                      }}</AppLink
+                    >
+                    <span v-else class="">
+                      {{ $t("global.license." + data?.license?.["@id"]) }}
+                    </span>
+                  </dd>
+                </div>
                 <div v-if="data?.language" class="flex">
                   <dt class="w-32 shrink-0 font-semibold">
                     {{ $t("global.language", 1) }}

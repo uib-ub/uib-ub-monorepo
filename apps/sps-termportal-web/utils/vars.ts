@@ -55,7 +55,7 @@ export const semanticRelationTypes: SemanticRelation[] = [
   "related",
   "seeAlso",
   "replaces",
-  "replacedBy"
+  "replacedBy",
 ];
 
 export interface SearchOptions {
@@ -106,4 +106,17 @@ export const cookieDefaultOptions = {
 export const cookieLocaleOptions = {
   ...cookieDefaultOptions,
   ...{ httpOnly: false, maxAge: 60 * 60 * 24 * 100 },
+};
+
+export const licenseLinks = {
+  "LISENS-3ANo_Rights_Reserved_-28CC0-29":
+    "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+  "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED":
+    "https://urn.fi/urn:nbn:fi:lb-2019071724",
+  "LISENS-3ACC_BY_40":
+    "https://creativecommons.org/licenses/by/4.0/legalcode.no",
+  "LISENS-3ACC_BY-NC_40":
+    "https://creativecommons.org/licenses/by-nd/4.0/legalcode.no",
+  "LISENS-3ACC_BY-NC-ND_40":
+    "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.no",
 };
