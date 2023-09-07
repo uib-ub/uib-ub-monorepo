@@ -187,7 +187,17 @@
     "language": "Språk",
     "termbase": "Termbase"
   },
-  "om": { "title": "Om Termportalen" },
+  "om": {
+    "title": "Om Termportalen",
+    "aboutUs": "Om oss",
+    "history": "Historikk",
+    "kommeiGang": "Korleis kome i gong med terminologiarbeid?",
+    "links": "Nyttige lenkjer",
+    "maritaStilling": "faglig leder og førsteamanuensis i terminologi og fagspråk, UiB",
+    "coordinator": "koordinator",
+    "terminologist": "terminolog",
+    "developer": "systemutvikler"
+  },
   "innstillinger": {
     "title": "Innstillingar",
     "global": "Visningsspråk",

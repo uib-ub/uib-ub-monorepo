@@ -186,7 +186,17 @@
     "language": "Language",
     "termbase": "Termbase"
   },
-  "om": { "title": "About Termportalen" },
+  "om": {
+    "title": "About Termportalen",
+    "aboutUs": "About us",
+    "history": "History",
+    "kommeiGang": "How to get started with terminology work?",
+    "links": "Useful links",
+    "maritaStilling": "Head of Termportalen, associate professor",
+    "coordinator": "Coordinator",
+    "terminologist": "Terminologist",
+    "developer": "System Developer"
+  },
   "innstillinger": {
     "title": "Settings",
     "global": "Display language",
