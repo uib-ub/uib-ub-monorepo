@@ -18,7 +18,7 @@
     </button>
     <div
       v-if="panel"
-      class="absolute z-10 grid grid-flow-row grid-cols-1 gap-x-8 gap-y-0.5 rounded-[7px] border border-gray-300 bg-white p-2 shadow-md md:grid-cols-2"
+      class="absolute z-10 grid grid-flow-row grid-cols-1 gap-x-8 gap-y-0 rounded-[7px] border border-gray-300 bg-white p-2 shadow-md md:grid-cols-2"
     >
       <div v-for="tb of termbaseOrder" :key="tb" class="flex">
         <input
@@ -30,7 +30,7 @@
         />
         <label
           :for="tb"
-          class="tp-transition-shadow flex w-fit cursor-pointer rounded-[7px] border border-transparent px-2 py-1.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+          class="tp-transition-shadow flex w-fit cursor-pointer rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
           :class="{
             'bg-tpblue-400 text-white': Object.keys(
               searchInterface.termbase
