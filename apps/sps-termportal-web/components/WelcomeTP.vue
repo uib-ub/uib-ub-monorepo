@@ -9,30 +9,33 @@
           Termportalen gir fri tilgang til norsk terminologi på en lang rekke
           fagområder via én felles søkerute. Du kan søke etter termer på tvers
           av domener, termbaser og språk. Termbasene er gruppert i overordnede
-          domener og du kan søke etter termer enten i hele Termportalen.no,
-          innen ett spesifikt domene eller i et utvalg av termbasene.
-          Forhåndsvalg av søkespråk er også mulig. De fleste termbasene har
-          terminologi på bokmål, nynorsk og engelsk, mens en del termbaser også
-          har terminologi på andre språk.
+          domener og du kan søke etter termer enten i hele Termportalen, på ett
+          spesifikt domene eller i et utvalg av termbasene. Forhåndsvalg av
+          søkespråk er også mulig. De fleste termbasene har terminologi på
+          bokmål, nynorsk og engelsk, mens en del termbaser også har terminologi
+          på andre språk.
         </p>
+
         <p>
-          I tillegg til søkesiden til Termportalen er det utviklet en
-          redigeringsapplikasjon som kan brukes fritt til registrering av
-          terminologi. Ta kontakt med oss på
+          Termportalen er en del av Språksamlingene ved Universitetet i Bergen,
+          og arbeidet med terminologi skjer i samråd med Språkrådet.
+          Termportalen er finansiert av Kunnskapsdepartementet og
+          Kulturdepartementet.
+        </p>
+
+        <p>
+          Ønsker du å komme i gang med terminologiarbeid på ditt fagområde eller
+          har du terminologiske ressurser du ønsker å gjøre tilgjengelig i
+          Termportalen? Ta kontakt med oss på
           <AppLink
             class="underline hover:decoration-2"
             to="mailto:termportalen@uib.no"
           >
-            termportalen@uib.no
-          </AppLink>
-          dersom du ønsker å komme i gang med terminologiarbeid på ditt
-          fagområde.
-        </p>
-        <p>
-          Termportalen er en del av Språksamlingene ved Universitetet i Bergen,
-          og arbeidet med terminologi skjer i samråd med Språkrådet.
-          Termportalen er finansiert av Kunnskapsdepartementet og Kultur- og
-          likestillingsdepartementet.
+            termportalen@uib.no</AppLink
+          >. Se også
+          <AppLink class="underline hover:decoration-2" to="/om#kommeiGang">{{
+            $t("om.kommeiGang")
+          }}</AppLink>
         </p>
       </div>
     </template>
@@ -42,32 +45,36 @@
       </h2>
       <div class="space-y-2">
         <p>
-          Termportalen gir fri tilgang til norsk terminologi på ei lang rekke
+          Termportalen gir fri tilgang til norsk terminologi på ei lang rekkje
           fagområde via éi felles søkerute. Du kan søke etter termar på tvers av
-          domene, termbasar og språk. Termbasane er grupperte i overordna domene
-          og du kan søke etter termar enten i heile Termportalen.no, innan eitt
-          spesifikt domene eller i eit utval av termbasane. Du kan òg velje
-          søkespråk på førehand. Dei fleste termbasane har terminologi på
-          bokmål, nynorsk og engelsk, mens ein del termbasar òg har terminologi
+          domene, termbasar og språk. Termbasane er gruppert i overordna domene
+          og du kan søke etter termar enten i heile Termportalen, på eit
+          spesifikt domene eller i einskilde termbasar. Førehandsval av
+          søkjespråk er òg mogleg. Dei fleste termbasane har terminologi på
+          bokmål, nynorsk og engelsk, medan ein del termbasar òg har terminologi
           på andre språk.
         </p>
+
         <p>
-          I tillegg til søkesida til Termportalen har det blitt utvikla ein
-          redigeringsapplikasjon som kan brukast fritt til registrering av
-          terminologi. Ta kontakt med oss på
+          Termportalen er ein del av Språksamlingane ved Universitetet i Bergen,
+          og arbeidet med terminologi skjer i samråd med Språkrådet.
+          Termportalen er finansiert av Kunnskapsdepartementet og
+          Kulturdepartementet.
+        </p>
+
+        <p>
+          Ønskjer du å komme i gong med terminologiarbeid på ditt fagområde
+          eller har du terminologiske ressursar du ønskjer å gjere tilgjengelege
+          i Termportalen? Ta kontakt med oss på
           <AppLink
             class="underline hover:decoration-2"
             to="mailto:termportalen@uib.no"
           >
-            termportalen@uib.no
-          </AppLink>
-          om du ønsker å komme i gang med terminologiarbeid på fagområdet ditt.
-        </p>
-        <p>
-          Termportalen er ein del av Språksamlingane ved Universitetet i Bergen,
-          og arbeidet med terminologi skjer i samråd med Språkrådet.
-          Termportalen er finansiert av Kunnskapsdepartementet og Kultur- og
-          likestillingsdepartementet.
+            termportalen@uib.no </AppLink
+          >. Sjå også
+          <AppLink class="underline hover:decoration-2" to="/om#kommeiGang">{{
+            $t("om.kommeiGang")
+          }}</AppLink>
         </p>
       </div>
     </template>
@@ -77,19 +84,26 @@
       </h2>
       <div class="space-y-2">
         <p>
-          Termportalen provides free access to Norwegian terminology in many
-          different subject fields through one search field. It is possible to
-          search for terms across different domains, termbases and languages.
-          The termbases are grouped into overall domains and you may search for
-          terms in either the whole Termportalen.no, in one specific domain, or
-          in a selection of termbases. You may also choose a search language in
+          Termportalen gives free access to Norwegian terminology in a number of
+          subject fields through one search field. It is possible to search for
+          terms across different domains, termbases or languages. The termbases
+          are grouped into overall domains and you may search for terms in
+          either the whole Termportalen.no, in one specific domain, or in a
+          selection of termbases. You may also choose a search language in
           advance. Most of the termbases contain terminology in Norwegian
           Bokmål, Norwegian Nynorsk and English, while some termbases also
           contain terminology in other languages as well.
         </p>
+
         <p>
-          In addition to Termportalen's search interface, we have developed a
-          terminology management application for registration of terminology.
+          Termportalen is part of the Norwegian Language Collections
+          (Språksamlingane) at the University of Bergen, and our work is done in
+          consultation with the Norwegian language council. Termportalen is
+          funded by the Ministry of Education and Research and the Ministry of
+          Culture and Equality.
+        </p>
+
+        <p>
           Please contact us on
           <AppLink
             class="underline hover:decoration-2"
@@ -97,15 +111,13 @@
           >
             termportalen@uib.no
           </AppLink>
-          if you want to get started with terminology work in your own subject
-          field.
-        </p>
-        <p>
-          Termportalen is a part of the Norwegian Language Collections
-          (Språksamlingane) at the University of Bergen, and the terminology
-          work is done in consultation with the Language Council of Norway.
-          Termportalen is funded by the Ministry of Education and Research and
-          the Ministry of Culture and Equality.
+          if you would like to get started with terminology work in your own
+          subject field or if you have terminology resources that you want to
+          make available in Termportalen. See also
+          <AppLink class="underline hover:decoration-2" to="/om#kommeiGang">{{
+            $t("om.kommeiGang")
+          }}</AppLink>
+          for more information.
         </p>
       </div>
     </template>
