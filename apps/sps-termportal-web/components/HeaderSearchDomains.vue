@@ -60,7 +60,6 @@
         @click="panel = !panel"
       >
         <Icon
-          v-if="searchInterface.useDomain"
           name="mdi:chevron-down"
           size="2.2em"
           class="ml-[-8px] mr-[-8px] text-gray-600 group-hover:text-gray-900"
@@ -91,6 +90,7 @@
                 v-model="searchInterface.domain"
                 :label="k"
                 :parents="[searchInterface.domain[topdomain] || null]"
+                :topdomain="topdomain"
               />
               <ul>
                 <li

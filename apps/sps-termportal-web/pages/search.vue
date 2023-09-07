@@ -187,6 +187,11 @@ onMounted(() => {
         if (key === "term") {
           searchterm.value = route.query[value.q] as string;
         }
+        // search termbases is a list
+        if (key === 'termbase') {
+          const tbs = route.query[value.q] as string;
+          searchInterface.value.termbase = tbs.split(",") as Samling[];
+        }
 
         // searchdomain needs to be handled differently because state is a list
         if (key === "domain") {

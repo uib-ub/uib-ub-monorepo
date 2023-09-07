@@ -1,8 +1,9 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase | Termbasar",
+    "termbase": "Termbase | termbase | Termbasar  | termbaser",
     "skipLink": "Gå til hovudinnhald",
+    "collaborators": "Samarbeidspartnarane våre",
     "domain": {
       "domain": "Domene | domene",
       "all": "Alle domene",
@@ -124,7 +125,7 @@
     "license": "Lisens",
     "languages": "Språk",
     "startLang": "Utgangsspråk",
-    "contactHeading": "Generelt om termbasen" // TODO
+    "contactHeading": "Kontakt"
   },
   "id": {
     "topheading": "Omgrepsvisning",

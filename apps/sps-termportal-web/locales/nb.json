@@ -1,8 +1,9 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase | Termbaser",
+    "termbase": "Termbase | termbase | Termbaser | termbaser",
     "skipLink": "Gå til hovedinnhold",
+    "collaborators": "Våre samarbeidspartnere",
     "domain": {
       "domain": "Domene | domene | Domener",
       "DOMENE-3AHumaniora": "Humaniora",
@@ -123,7 +124,7 @@
     "license": "Lisens",
     "languages": "Språk",
     "startLang": "Utgangsspråk",
-    "contactHeading": "Generelt om termbasen" // TODO Used a heading to group telephone, email
+    "contactHeading": "Kontakt" // TODO Used a heading to group telephone, email
   },
   "id": {
     "topheading": "Begrepsvisning",

@@ -35,7 +35,7 @@ export default function (situation: string, options?: SearchOptions) {
     term: searchInterface.value.term || "",
     language: [searchInterface.value.language],
     translate: searchInterface.value.translate,
-    termbase: [searchInterface.value.termbase],
+    termbase: searchInterface.value.termbase,
     domain: [Object.keys(searchInterface.value.domain)[0]], // TODO domain
     useDomain: searchInterface.value.useDomain,
     // default data
@@ -75,7 +75,9 @@ export default function (situation: string, options?: SearchOptions) {
         newOptions.domain = searchFilterData.value.context;
       }
     } else if (searchFilterData.value.context.length > 0) {
-      newOptions.termbase = searchFilterData.value.context;
+      newOptions.termbase = searchFilterData.value.context.map((tb) => {
+        return tb.split("-3A")[0];
+      });
     }
 
     // Check if flattened array includes "full"

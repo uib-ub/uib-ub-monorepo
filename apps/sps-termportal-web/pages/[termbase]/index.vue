@@ -24,54 +24,79 @@
             }}
           </AppLink>
         </h1>
-        <div class="flex flex-col gap-x-5 gap-y-5 md:flex-row">
+        <div class="flex flex-col gap-x-5 gap-y-5 lg:flex-row">
           <!--Description-->
-          <div class="max-w-prose basis-GRb space-y-2">
+          <div class="basis-GRb max-w-prose space-y-2">
             <p v-for="p in description" :key="p" v-html="p" />
           </div>
-          <!--Table-->
-          <aside class="basis-GRs">
-            <table>
-              <tbody>
-                <!--Organisation-->
-                <DataRow
-                  v-if="data?.publisher?.label?.['@value']"
-                  :data="data?.publisher?.label['@value']"
-                  :label="$t('termbase.organisation')"
-                />
-                <!--Organisation number-->
-                <DataRow
-                  v-if="data?.publisher?.identifier"
-                  :data="data?.publisher?.identifier"
-                  :label="$t('termbase.orgnr')"
-                />
-                <!--Email-->
-                <DataRow
-                  v-if="data?.contactPoint?.hasEmail"
-                  :data="data?.contactPoint?.hasEmail.split(':')[1]"
-                  :label="$t('termbase.email')"
-                  :to="data?.contactPoint?.hasEmail"
-                />
-                <!--Telephone-->
-                <DataRow
-                  v-if="data?.contactPoint?.hasTelephone"
-                  :data="data?.contactPoint?.hasTelephone"
-                  :label="$t('termbase.telephone')"
-                />
-                <!--Languages-->
-                <DataRow
-                  v-if="data?.language"
-                  :data="intersectUnique(localeLangOrder, data.language).map((lang: LangCode) => $t(`global.lang.${lang}`, 2)) .join(', ')"
-                  :label="$t('global.language', 1)"
-                />
-                <!--Starting languages-->
-                <DataRow
-                  v-if="data?.opprinneligSpraak"
-                  :data="$t('global.lang.' + data.opprinneligSpraak, 2)"
-                  :label="$t('termbase.startLang')"
-                />
-              </tbody>
-            </table>
+          <!--deflist-->
+          <aside
+            class="flex h-fit w-fit max-w-[25rem] flex-col gap-y-4 rounded-[7px] border border-gray-300 p-3"
+          >
+            <div>
+              <h2 id="tbcontact" class="text-lg font-semibold">
+                {{ $t("termbase.contactHeading") }}
+              </h2>
+              <dl aria-labelledby="tbcontact">
+                <div v-if="data?.publisher?.label?.['@value']" class="flex">
+                  <dt class="w-32 shrink-0 font-semibold">
+                    {{ $t("termbase.organisation") }}
+                  </dt>
+                  <dd class="col-span-2">
+                    {{ data?.publisher?.label["@value"] }}
+                  </dd>
+                </div>
+                <div v-if="data?.publisher?.identifier" class="flex">
+                  <dt class="w-32 shrink-0 font-semibold">
+                    {{ $t("termbase.orgnr") }}
+                  </dt>
+                  <dd class="">{{ data?.publisher?.identifier }}</dd>
+                </div>
+                <div v-if="data?.contactPoint?.hasEmail" class="flex">
+                  <dt class="w-32 shrink-0 font-semibold">
+                    {{ $t("termbase.email") }}
+                  </dt>
+                  <dd class="">
+                    <AppLink class="underline hover:decoration-2" :to="data?.contactPoint?.hasEmail">{{
+                      data?.contactPoint?.hasEmail.split(":")[1]
+                    }}</AppLink>
+                  </dd>
+                </div>
+                <div v-if="data?.contactPoint?.hasTelephone" class="flex">
+                  <dt class="w-32 font-semibold">
+                    {{ $t("termbase.telephone") }}
+                  </dt>
+                  <dd class="">{{ data?.contactPoint?.hasTelephone }}</dd>
+                </div>
+              </dl>
+            </div>
+            <div>
+              <h2 id="tbtermbaseinfo" class="text-lg font-semibold">
+                {{ $t("global.termbase", 0) }}
+              </h2>
+              <dl aria-labelledby="tbtermbaseinfo">
+                <div v-if="data?.language" class="flex">
+                  <dt class="w-32 shrink-0 font-semibold">
+                    {{ $t("global.language", 1) }}
+                  </dt>
+                  <dd class="">
+                    {{
+                      intersectUnique(localeLangOrder, data.language)
+                        .map((lang: LangCode) => $t(`global.lang.${lang}`, 2))
+                        .join(", ")
+                    }}
+                  </dd>
+                </div>
+                <div v-if="data?.opprinneligSpraak" class="flex">
+                  <dt class="w-32 font-semibold">
+                    {{ $t("termbase.startLang") }}
+                  </dt>
+                  <dd class="">
+                    {{ $t("global.lang." + data.opprinneligSpraak, 2) }}
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </aside>
         </div>
       </main>

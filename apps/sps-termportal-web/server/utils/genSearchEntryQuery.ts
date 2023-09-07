@@ -69,7 +69,11 @@ export function getContextFilter(searchOptions) {
   if (lst.length !== 0 && lst[0] !== "all") {
     const values = lst
       .map((d: string) => {
-        return `base:${d}`;
+        if (searchOptions.useDomain) {
+          return `base:${d}`;
+        } else {
+          return `base:${d}-3A${d}`
+        }
       })
       .join(", ");
     return [`FILTER ( ?con IN ( ${values} ) )`, pred];

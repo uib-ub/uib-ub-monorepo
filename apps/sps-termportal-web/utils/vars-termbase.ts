@@ -16,11 +16,13 @@ export type Samling =
   | "LINGVISTIKK"
   | "ASTRONOMI"
   | "BIOLOGI"
+  | "SEMANTIKK"
   | "LINGVISTIKK"
   | "CMBIOLOGI"
   | "KJEMI"
   | "FBK"
-  | "BIBINF";
+  | "BIBINF"
+  | "UDEUT" ;
 
 export type Domains =
   | "DOMENE-3AHumaniora"
@@ -40,13 +42,15 @@ export const termbaseOrder: Samling[] = [
   "KLIMA",
   "LINGVISTIKK",
   "MRT",
-  "SDIR",
   "NHH",
   "NOJU",
   "NOT",
   "ROMFYS",
   "RTT",
+  "SEMANTIKK",
+  "SDIR",
   "TOLKING",
+  "UDEUT",
   "UHR",
 ];
 
@@ -61,6 +65,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   KJEMI: ["nb", "nn", "en", "da"],
   KLIMA: ["nb", "nn", "en"],
   LINGVISTIKK: ["nb", "nn", "en"],
+  SEMANTIKK: ['nb', "nn", "en"],
   MRT: ["nb", "en", "da", "de", "es", "sv"],
   SDIR: ["nb", "nn", "en"],
   NHH: ["nb", "nn", "en"],
@@ -69,11 +74,12 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   ROMFYS: ["nb", "nn", "en"],
   RTT: ["nb", "nn", "en", "da", "de", "fi", "fr", "it", "ru", "sv"],
   TOLKING: ["nb", "en", "ar", "fr", "pl", "ru", "so", "ti", "fa-af"],
+  UDEUT: ["nb", "nn", "en", "fr"],
   UHR: ["nb", "nn", "en"],
 };
 
 export const domainNesting = {
-  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK"] },
+  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
   "DOMENE-3ANaturvitenskapTeknologi": {
     bases: [
       "NOT",
@@ -90,11 +96,11 @@ export const domainNesting = {
       "KJEMI",
     ],
   },
-  "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING"] },
+  "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING", "UDEUT"] },
   "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
 };
 
-type CollectionUriPatternKey = "bkg" | "nav" | "brreg" | "bufdir" | "fbk";
+type CollectionUriPatternKey = "bkg" | "nav" | "brreg" | "bufdir" | "fbk" | "ex";
 export const termbaseUriPatterns: {
   [key in Samling]?: { [key in CollectionUriPatternKey]: string };
 } = {
@@ -104,5 +110,6 @@ export const termbaseUriPatterns: {
     brreg: "http://data.brreg.no/begrep/",
     bufdir: "https://data.bufdir.no/begrep/",
     fbk: "https://concept-catalog.fellesdatakatalog.digdir.no/collections/",
+    ex: "http://example.com/"
   },
 };

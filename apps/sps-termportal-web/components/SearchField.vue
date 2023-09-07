@@ -50,12 +50,10 @@ const placeholder = computed(() => {
           2
         )}`
       : "") +
-    (searchInterface.value.termbase !== "all"
-      ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t(
-          "global.termbase",
-          2
-        )} ${i18n.t("global.samling." + searchInterface.value.termbase)}`
+    (searchInterface.value.termbase.length !== 0
+      ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t("global.termbase", 2)}`
       : "")
+    // termbases ${i18n.t("global.samling." + searchInterface.value.termbase)}
     //     : searchInterface.value.domain[0] !== "all"
     //     ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t("global.domain.domain", 2)}
     //       ${i18n.t("global.domain." + searchInterface.value.domain.slice(-1))}`
