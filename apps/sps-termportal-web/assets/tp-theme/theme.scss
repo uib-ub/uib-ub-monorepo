@@ -3829,12 +3829,14 @@
 
 .p-accordion .p-accordion-header .p-accordion-header-link {
   padding: 1.25rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid;
+  @apply border-gray-300 ;
   color: #6c757d;
-  background: #f8f9fa;
+  background: white;
   font-weight: 700;
   border-radius: 6px;
   transition: box-shadow 0.2s;
+  height: 2.5em;
 }
 .p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
   margin-right: 0.5rem;
@@ -3850,11 +3852,13 @@
   color: #343a40;
 }
 .p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
-  background: #f8f9fa;
-  border-color: #dee2e6;
+  background: white;
+  @apply border-gray-300 ;
   color: #343a40;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
+  max-width: 48em;
+  height: 2,5em;
 }
 .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link {
   border-color: #dee2e6;
@@ -3871,6 +3875,7 @@
   border-top-left-radius: 0;
   border-bottom-right-radius: 6px;
   border-bottom-left-radius: 6px;
+  max-width: 48em
 }
 .p-accordion .p-accordion-tab {
   margin-bottom: 4px;
