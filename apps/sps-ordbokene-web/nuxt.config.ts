@@ -19,8 +19,8 @@ export default defineNuxtConfig({
       '@pinia/nuxt',
       '@pinia-plugin-persistedstate/nuxt',
       '@nuxtjs/tailwindcss',
-      'nuxt-icon'
-
+      'nuxt-icon',
+      '@nuxt/content'
     ],
 
   piniaPersistedstate: {
@@ -28,7 +28,6 @@ export default defineNuxtConfig({
       sameSite: 'strict',
     }
   },
-
   hooks: {
     'pages:extend' (pages) {
       pages.push({

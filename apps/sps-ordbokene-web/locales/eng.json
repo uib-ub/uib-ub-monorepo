@@ -13,22 +13,7 @@
   "show_articles": "Articles",
   "show_list": "List | Lists",
   "simple": "Simple search",
-  "about":{
-    "title":"About",
-    "items": [
-        {"title": "What if I cannot find a word in the dictionary?", 
-          "text": ["test"]
-        },
-        {"title": "Quality-Assured Content", "text": ""},
-        {"title": "Citing the dictionaries", "text": ""},
-        {"title": "Adding a shortcut on your smartphone", "text": ""},
-        {"title": "Open Data", "text": ""},
-        {"title": "History", "text": ""},
-        {"title": "Dictionary revision", "text": ""},
-        {"title": "Useful Links to Language Resources", "text": ""},
-        {"title": "Privacy", "text": ""}
-  ]
-},
+  "about":"About",
   "monthly": "Titbit from ",
   "photo": "Photo by Clay Banks on unsplash.com",
   "close": "Close",
