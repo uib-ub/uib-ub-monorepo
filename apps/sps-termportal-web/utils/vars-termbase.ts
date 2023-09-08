@@ -23,7 +23,7 @@ export type Samling =
   | "KJEMI"
   | "FBK"
   | "BIBINF"
-  | "UDEUT" ;
+  | "UDEUT";
 
 export type Domains =
   | "DOMENE-3AHumaniora"
@@ -50,7 +50,6 @@ export const termbaseOrder: Samling[] = [
   "SEMANTIKK",
   "SDIR",
   "RTT",
-  "SEMANTIKK",
   "TOLKING",
   "UDEUT",
   "UHR",
@@ -67,7 +66,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   KJEMI: ["nb", "nn", "en", "da"],
   KLIMA: ["nb", "nn", "en"],
   LINGVISTIKK: ["nb", "nn", "en"],
-  SEMANTIKK: ['nb', "nn", "en"],
+  SEMANTIKK: ["nb", "nn", "en"],
   MRT: ["nb", "en", "da", "de", "es", "sv"],
   SDIR: ["nb", "nn", "en"],
   NHH: ["nb", "nn", "en"],
@@ -102,7 +101,13 @@ export const domainNesting = {
   "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
 };
 
-type CollectionUriPatternKey = "bkg" | "nav" | "brreg" | "bufdir" | "fbk" | "ex";
+type CollectionUriPatternKey =
+  | "bkg"
+  | "nav"
+  | "brreg"
+  | "bufdir"
+  | "fbk"
+  | "ex";
 export const termbaseUriPatterns: {
   [key in Samling]?: { [key in CollectionUriPatternKey]: string };
 } = {
@@ -112,6 +117,6 @@ export const termbaseUriPatterns: {
     brreg: "http://data.brreg.no/begrep/",
     bufdir: "https://data.bufdir.no/begrep/",
     fbk: "https://concept-catalog.fellesdatakatalog.digdir.no/collections/",
-    ex: "http://example.com/"
+    ex: "http://example.com/",
   },
 };
