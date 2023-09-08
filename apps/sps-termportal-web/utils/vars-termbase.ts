@@ -75,7 +75,6 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   NOT: ["nb", "nn", "en", "de", "fr", "la"],
   ROMFYS: ["nb", "nn", "en"],
   RTT: ["nb", "nn", "en", "da", "de", "fi", "fr", "it", "ru", "sv"],
-  SEMANTIKK: ["nb", "nn", "en"],
   TOLKING: ["nb", "en", "ar", "fr", "pl", "ru", "so", "ti", "fa-af"],
   UDEUT: ["nb", "nn", "en", "fr"],
   UHR: ["nb", "nn", "en"],
