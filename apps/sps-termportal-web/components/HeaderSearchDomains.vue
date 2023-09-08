@@ -1,7 +1,7 @@
 <template>
   <div ref="wrapper">
-    <div ref="topWrapper" class="flex gap-x-2">
-      <div class="flex flex-nowrap gap-x-1 gap-y-1">
+    <div ref="topWrapper" class="flex gap-x-2 flex-wrap md:flex-nowrap">
+      <div class="flex lg:flex-nowrap flex-wrap gap-x-1 gap-y-1">
         <div
           v-for="domain in Object.keys(domainData)"
           :key="domain"
