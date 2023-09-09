@@ -50,9 +50,23 @@
         v-if="d?.['skosp:dctSource'] || d.source"
         :label="$t('id.referanse')"
       >
-        <dd class="max-w-prose">
+        <dd
+          v-if="
+            typeof d?.source?.label?.['@value'] === 'string' ||
+            typeof d?.source === 'string'
+          "
+          class="max-w-prose"
+        >
           {{ d?.["skosp:dctSource"]?.["skosp:rdfsLabel"] }}
           {{ d?.source?.label?.["@value"] || d?.source }}
+        </dd>
+        <template v-else-if="Array.isArray(d?.source)">
+          <dd v-for="source of d?.source" :lang="source?.['@language']">
+            {{ source?.['@value'] }}
+          </dd>
+        </template>
+        <dd v-else :lang="d?.source?.['@language']">
+          {{ d.source?.["@value"] }}
         </dd>
       </TermProp>
       <TermProp v-if="d.note" :label="$t('id.note')">
