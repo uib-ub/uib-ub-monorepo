@@ -51,7 +51,7 @@ export const useDomainData = () =>
     "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
     "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
     "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING"] },
-    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
+//    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
   }));
 
 export const useSearchInterface = () =>
