@@ -54,7 +54,7 @@ const searchterm = useSearchterm();
 const searchInterface = useSearchInterface();
 const count = computed(() => {
   try {
-    return sum(Object.values(searchDataStats.value?.matching || [])) || 0;
+    return sum(Object.values(searchDataStats.value?.context || [])) || 0;
   } catch (e) {
     return 0;
   }
