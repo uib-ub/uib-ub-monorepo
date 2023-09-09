@@ -65,7 +65,7 @@ const displaySection = (key, data) => {
   if (key === "lang") {
     return searchInterface.value.language === "all"
   } else if (key === "matching") {
-    return !data.length === 0;
+    return data.length !== 0
   } else {
     return true;
   }
