@@ -9,7 +9,7 @@
       <div class="flex">
         <div
           v-if="searchData.length > 0"
-          class="hidden flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw] max-w-[22em] shrink-0"
+          class="hidden max-w-[22em] shrink-0 flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw]"
         >
           <BackToSearch />
           <nav aria-labelledby="sidebarresults">
@@ -182,17 +182,18 @@
                     :flex="true"
                     :label="$t('id.modified')"
                   >
-                    <TermDescription
-                      :flex="true"
-                      :data="[modified()]"
-                    />
+                    <TermDescription :flex="true" :data="[modified()]" />
                   </TermProp>
                   <TermProp
                     v-if="concept?.scopeNote"
                     :flex="true"
                     :label="$t('id.note')"
                   >
-                    <TermDescription :flex="true" :data="[concept.scopeNote['@value']]" :data-lang="concept.scopeNote['@language']" />
+                    <TermDescription
+                      :flex="true"
+                      :data="[concept.scopeNote['@value']]"
+                      :data-lang="concept.scopeNote['@language']"
+                    />
                   </TermProp>
                   <TermProp
                     v-if="
