@@ -303,13 +303,18 @@ const pagetitle = computed(() => {
 });
 
 const modified = () => {
-const date = new Date(concept.value.modified["@value"]).toLocaleDateString(locale.value)
-const time = new Date(concept.value.modified["@value"]).toLocaleTimeString(locale.value)
-return date + ", " + time
-}
-
-
-new Date(concept.value.modified["@value"]).toLocaleTimeString(locale.value)
+  try {
+    const date = new Date(concept.value.modified["@value"]).toLocaleDateString(
+      locale.value
+    );
+    const time = new Date(concept.value.modified["@value"]).toLocaleTimeString(
+      locale.value
+    );
+    return date + ", " + time;
+  } catch (e  ) {
+    return undefined;
+  }
+};
 
 const displayInfo = computed(() => {
   if (data?.value?.meta) {
