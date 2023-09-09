@@ -29,7 +29,7 @@ if (process.client) {
       {
         src: "/mathjax-config.js",
         type: "text/javascript",
-        defer: true
+        defer: true,
       },
       {
         id: "MathJax-script",
@@ -54,12 +54,15 @@ onMounted(() => {
   */
   $fetch("/api/domain", { retry: 1 }).then((data) => {
     for (const domain in domainData.value) {
-      domainData.value[domain].subdomains = parseRelationsRecursively(
-        data,
-        domain,
-        "narrower",
-        "subdomains"
-      );
+      // allow deactivation of topdomains on frontend that are defined in the CMS. See domain states
+      try {
+        domainData.value[domain].subdomains = parseRelationsRecursively(
+          data,
+          domain,
+          "narrower",
+          "subdomains"
+        );
+      } catch (entry) {}
     }
   });
 

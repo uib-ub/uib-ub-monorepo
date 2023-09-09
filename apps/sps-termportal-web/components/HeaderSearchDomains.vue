@@ -1,7 +1,7 @@
 <template>
   <div ref="wrapper">
-    <div ref="topWrapper" class="flex gap-x-2 flex-wrap md:flex-nowrap">
-      <div class="flex lg:flex-nowrap flex-wrap gap-x-1 gap-y-1">
+    <div ref="topWrapper" class="flex flex-wrap gap-x-2 md:flex-nowrap">
+      <div class="flex flex-wrap gap-x-1 gap-y-1 lg:flex-nowrap">
         <div
           v-for="domain in Object.keys(domainData)"
           :key="domain"
@@ -62,8 +62,11 @@
         <Icon
           name="mdi:chevron-down"
           size="2.2em"
-          class="ml-[-8px] mr-[-8px] text-gray-600 group-hover:text-gray-900"
-          :class="{ 'text-gray-400 group-hover:text-gray-400 ': noDomain }"
+          class="ml-[-8px] mr-[-8px] text-gray-600"
+          :class="{
+            'text-gray-400 ': noDomain,
+            'group-hover:text-gray-900': !noDomain,
+          }"
           aria-hidden="true"
         />
       </button>
