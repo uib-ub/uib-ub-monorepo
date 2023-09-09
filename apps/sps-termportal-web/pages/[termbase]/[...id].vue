@@ -191,8 +191,8 @@
                   >
                     <TermDescription
                       :flex="true"
-                      :data="[concept.scopeNote['@value']]"
-                      :data-lang="concept.scopeNote['@language']"
+                      :data="[concept.scopeNote?.label?.['@value'] || concept.scopeNote['@value']]"
+                      :data-lang="concept.scopeNote?.label?.['@language'] || concept.scopeNote['@language']"
                     />
                   </TermProp>
                   <TermProp
