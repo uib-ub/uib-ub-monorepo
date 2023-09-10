@@ -184,17 +184,37 @@
                   >
                     <TermDescription :flex="true" :data="[modified()]" />
                   </TermProp>
-                  <TermProp
-                    v-if="concept?.scopeNote"
-                    :flex="true"
-                    :label="$t('id.note')"
-                  >
-                    <TermDescription
+                  <template v-if="concept?.scopeNote">
+                    <TermProp
+                      v-for="scopeNote in Array.isArray(concept?.scopeNote)
+                        ? concept?.scopeNote
+                        : [concept?.scopeNote]"
+                      :key="scopeNote"
                       :flex="true"
-                      :data="[concept.scopeNote?.label?.['@value'] || concept.scopeNote['@value']]"
-                      :data-lang="concept.scopeNote?.label?.['@language'] || concept.scopeNote['@language']"
-                    />
-                  </TermProp>
+                      :label="$t('id.note')"
+                    >
+                      <div class="block md:flex">
+                        <TermDescription
+                          :flex="true"
+                          :data="[
+                            scopeNote?.label?.['@value'] || scopeNote['@value'],
+                          ]"
+                          :data-lang="
+                            scopeNote?.label?.['@language'] ||
+                            scopeNote['@language']
+                          "
+                        />
+                        <TermDescription
+                          v-if="scopeNote?.source"
+                          :flex="true"
+                          :data="[
+                            `
+                            (${scopeNote.source})`,
+                          ]"
+                        />
+                      </div>
+                    </TermProp>
+                  </template>
                   <TermProp
                     v-if="
                       (route.params.termbase === 'NOT' ||
@@ -312,7 +332,7 @@ const modified = () => {
       locale.value
     );
     return date + ", " + time;
-  } catch (e  ) {
+  } catch (e) {
     return undefined;
   }
 };
