@@ -115,8 +115,8 @@ export const licenseLinks = {
     "https://urn.fi/urn:nbn:fi:lb-2019071724",
   "LISENS-3ACC_BY_40":
     "https://creativecommons.org/licenses/by/4.0/legalcode.no",
-  "LISENS-3ACC_BY-NC_40":
+  "LISENS-3ACC_BY-2DNC_40":
     "https://creativecommons.org/licenses/by-nd/4.0/legalcode.no",
-  "LISENS-3ACC_BY-NC-ND_40":
+  "LISENS-3ACC_BY-2DNC-2DND_40":
     "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.no",
 };

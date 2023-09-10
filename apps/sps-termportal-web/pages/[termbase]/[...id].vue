@@ -9,7 +9,7 @@
       <div class="flex">
         <div
           v-if="searchData.length > 0"
-          class="hidden flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw] max-w-[22em] shrink-0"
+          class="hidden max-w-[22em] shrink-0 flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw]"
         >
           <BackToSearch />
           <nav aria-labelledby="sidebarresults">
@@ -182,18 +182,39 @@
                     :flex="true"
                     :label="$t('id.modified')"
                   >
-                    <TermDescription
+                    <TermDescription :flex="true" :data="[modified()]" />
+                  </TermProp>
+                  <template v-if="concept?.scopeNote">
+                    <TermProp
+                      v-for="scopeNote in Array.isArray(concept?.scopeNote)
+                        ? concept?.scopeNote
+                        : [concept?.scopeNote]"
+                      :key="scopeNote"
                       :flex="true"
-                      :data="[modified()]"
-                    />
-                  </TermProp>
-                  <TermProp
-                    v-if="concept?.scopeNote"
-                    :flex="true"
-                    :label="$t('id.note')"
-                  >
-                    <TermDescription :flex="true" :data="[concept.scopeNote['@value']]" :data-lang="concept.scopeNote['@language']" />
-                  </TermProp>
+                      :label="$t('id.note')"
+                    >
+                      <div class="block md:flex">
+                        <TermDescription
+                          :flex="true"
+                          :data="[
+                            scopeNote?.label?.['@value'] || scopeNote['@value'],
+                          ]"
+                          :data-lang="
+                            scopeNote?.label?.['@language'] ||
+                            scopeNote['@language']
+                          "
+                        />
+                        <TermDescription
+                          v-if="scopeNote?.source"
+                          :flex="true"
+                          :data="[
+                            `
+                            (${scopeNote.source})`,
+                          ]"
+                        />
+                      </div>
+                    </TermProp>
+                  </template>
                   <TermProp
                     v-if="
                       (route.params.termbase === 'NOT' ||
@@ -303,13 +324,18 @@ const pagetitle = computed(() => {
 });
 
 const modified = () => {
-const date = new Date(concept.value.modified["@value"]).toLocaleDateString(locale.value)
-const time = new Date(concept.value.modified["@value"]).toLocaleTimeString(locale.value)
-return date + ", " + time
-}
-
-
-new Date(concept.value.modified["@value"]).toLocaleTimeString(locale.value)
+  try {
+    const date = new Date(concept.value.modified["@value"]).toLocaleDateString(
+      locale.value
+    );
+    const time = new Date(concept.value.modified["@value"]).toLocaleTimeString(
+      locale.value
+    );
+    return date + ", " + time;
+  } catch (e) {
+    return undefined;
+  }
+};
 
 const displayInfo = computed(() => {
   if (data?.value?.meta) {

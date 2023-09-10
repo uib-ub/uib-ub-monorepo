@@ -6,7 +6,7 @@
     <div class="flex">
       <SideBar />
       <main>
-        <template v-if="$i18n.locale === 'nb'">
+        <template v-if="locale === 'nb'">
           <h1 id="main" class="pb-2 pt-5 text-3xl">
             <AppLink to="#main">{{ $t("om.title") }} </AppLink>
           </h1>
@@ -31,7 +31,7 @@
             </p>
           </div>
         </template>
-        <template v-if="$i18n.locale === 'nn'">
+        <template v-else-if="locale === 'nn'">
           <Head>
             <Title>{{ $t("om.title") }} | {{ $t("index.title") }}</Title>
           </Head>
@@ -60,7 +60,7 @@
             </p>
           </div>
         </template>
-        <template v-if="$i18n.locale === 'en'">
+        <template v-else-if="locale === 'en'">
           <Head>
             <Title>{{ $t("om.title") }} | {{ $t("index.title") }}</Title>
           </Head>
@@ -113,7 +113,7 @@
                 <AppLink
                   class="underline hover:decoration-2"
                   to="https://www.uib.no/personer/Jan.Ole.Bangen"
-                  >Jan Ole Bangen, {{ $t("om.terminologist") }}</AppLink
+                  >Jan Ole Bangen, {{ $t("om.developer") }}</AppLink
                 >
               </li>
               <li>
@@ -434,7 +434,7 @@
                 </li>
               </ul>
             </div>
-            <div v-if="locale === 'nn'" class="space-y-2">
+            <div v-else-if="locale === 'nn'" class="space-y-2">
               <p>
                 Som ein del av Termportalen sin digitale infrastruktur, har me
                 utvikla ein
@@ -639,7 +639,7 @@
                 >.
               </p>
             </div>
-            <div v-if="locale === 'nb'" class="space-y-2">
+            <div v-else-if="locale === 'nn'" class="space-y-2">
               <p>
                 Om du ønskjer å kome i gang med terminologiarbeid, er det òg
                 nyttig å setje seg nærare inn i terminologisk metode:
