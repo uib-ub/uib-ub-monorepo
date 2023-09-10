@@ -28,7 +28,7 @@
         d?.source ||
         d?.['skosp:dctSource']
       "
-      class="grid-col-3 ml-5 mt-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1"
+      class="grid-col-3 ml-2 md:ml-5 mt-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1"
     >
       <TermProp v-if="d.isOfAbbreviationType" :label="$t('id.forkortelseType')">
         <dd class="max-w-prose">{{ d.isOfAbbreviationType }}</dd></TermProp
@@ -53,7 +53,7 @@
         <dd
           v-if="
             typeof d?.source?.label?.['@value'] === 'string' ||
-            typeof d?.source === 'string'
+            typeof d?.source === 'string' || typeof d?.['skosp:dctSource']?.['skosp:rdfsLabel']  === 'string'
           "
           class="max-w-prose"
         >
@@ -62,7 +62,7 @@
         </dd>
         <template v-else-if="Array.isArray(d?.source)">
           <dd v-for="source of d?.source" :lang="source?.['@language']">
-            {{ source?.['@value'] }}
+            {{ source?.["@value"] }}
           </dd>
         </template>
         <dd v-else :lang="d?.source?.['@language']">
@@ -73,11 +73,13 @@
         <dd class="max-w-prose" :lang="d.note?.['@language']">
           {{ d.note?.["@value"] }}
         </dd>
+        <dd v-if="d.note?.source">({{ d.note?.source }})</dd>
       </TermProp>
       <TermProp v-if="d.scopeNote" :label="$t('id.note')">
         <dd class="max-w-prose" :lang="d.scopeNote?.['@language']">
           {{ d.scopeNote?.["@value"] }}
         </dd>
+        <dd v-if="d.scopeNote?.source">({{ d.scopeNote?.source }})</dd>
       </TermProp>
     </dl>
   </dd>
