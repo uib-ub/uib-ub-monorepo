@@ -1,10 +1,11 @@
 <template>
   <a ref="skip_link" class="bg-tertiary-darken1 text-center z-1000 text-anchor sr-only text-xl font-semibold underline w-full  !focus-within:p-2 focus:not-sr-only focus:absolute focus:min-w-screen" href="#main"> Til innhold</a>
   <Header/>
-<div class="ord-container justify-start mt-3 mb-2 pl-3" v-if="['settings', 'about', 'help', 'contact'].includes($route.name)">
+<nav :aria-label="$t('breadcrumbs')" class="ord-container justify-start mt-3 mb-2 pl-3 flex gap-4" v-if="!['welcome', 'search', 'article', 'word'].includes($route.name)">
   <NuxtLink v-if="store.searchUrl" :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
-<NuxtLink v-else to="/"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('home')}}</NuxtLink>
-</div>
+  <NuxtLink v-else to="/"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('home')}}</NuxtLink>
+  <NuxtLink v-if="$route.params.slug"  :to="$route.matched[0].path"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t($route.matched[0].children[1].name)}}</NuxtLink>
+</nav>
     <NuxtPage @click="menu_expanded=false"
               v-bind:class="{'welcome': route.name == 'welcome'}"/>
 <Footer/>
@@ -27,6 +28,8 @@ const keyboard_navigation = ref(false)
 
 
 const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host +"/"
+
+
 
 useHead({
     titleTemplate: (titleChunk) => {

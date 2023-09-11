@@ -15,7 +15,7 @@
             <p>No content found.</p>
           </template>
           
-        </ContentRenderer>
+      </ContentRenderer>
 </div>
 </template>
 
@@ -24,14 +24,13 @@ import { useI18n } from 'vue-i18n'
 
 const i18n = useI18n()
 
-const path = `${i18n.locale.value}/about/`
 
-const { data } = await useAsyncData(`content-${path}`, async () => {
+const { data } = await useAsyncData(`content-${i18n.locale.value}/about/`, async () => {
   return {
     intro: await queryContent(i18n.locale.value, "about").findOne(),
     sections: await queryContent(i18n.locale.value, "about").skip(1).find()
   };
-});
+}, {watch: i18n.locale});
 
 
 useHead({
