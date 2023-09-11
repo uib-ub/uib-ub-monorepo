@@ -39,14 +39,14 @@
             <Autocomplete  v-on:dropdown-submit="submitForm"/>
           </div>
 
-          <div class="col-span-10 lg:col-span-4 xl:col-span-3 grid grid-cols-2 gap-4">
+          <div class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-4">
             
             
            <div class="flex justify-center items-center"> <FormCheckbox labelId="toggle-list-view" v-model="settings.$state.listView" :checked="settings.listView">
-              {{$t('settings.simple_search_list')}}
+              {{$t('show_list')}}
               </FormCheckbox>
            </div>
-            <div class="flex justify-center items-center col-span-4 sm:col-span-1"><NuxtLink to="/help/advanced"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
+            <div class="flex justify-center items-center"><NuxtLink to="/help/advanced"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
           </div>
         </div>
       
