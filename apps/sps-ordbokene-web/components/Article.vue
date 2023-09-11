@@ -300,7 +300,7 @@ const lemma_groups = computed(() => {
             if (genera.size == 3) {
               genus_description +=  t('tags.Masc') + ', ' +  t('tags.Fem', 1, { locale: content_locale}) +  t('or') +  t('tags.Neuter', 1, { locale: content_locale})
             } else {
-              genus_description += Array.from(genera).map(code =>  t('tags.'+code, 1, { locale: content_locale})).sort().join(t('or'))
+              genus_description += Array.from(genera).map(code =>  t('tags.'+code, 1, { locale: content_locale.value})).sort().join(t('or'))
             }
             if (genus_map[genus_description]) {
               genus_map[genus_description].push(lemma)

@@ -15,12 +15,12 @@
     </span>
 </h3>
 <h3 v-if="secondary_header_text">{{secondary_header_text}}</h3>  
-    <span v-if="lemma_group.description" class="subheader">
+  <em v-if="lemma_group.description" class="subheader ">
     <span class="header_group_list">{{lemma_group.description}}</span>
           {{lemma_group.pos_group}}
     <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
 
-    </span>
+  </em>
   </div>
   </div>
 </template>
@@ -36,6 +36,7 @@ const props = defineProps({
     dict: String,
     article_id: Number,
     content_locale: String
+
 })
 
 </script>
