@@ -47,10 +47,9 @@
       
     </form>
   <div v-if="mini_help" id="advanced-info" class="secondary-page container !mb-0 mt-4">
-        <h2>{{$t('advanced.title')}}</h2>
-        <p>{{$t('advanced.description')}}</p>
+
   
-        <AdvancedHelp/>
+        <ContentDoc :path="$i18n.locale + '/help/advanced'"/>
   
   
       </div>

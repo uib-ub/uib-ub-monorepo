@@ -7,8 +7,6 @@
           </template>
           
       </ContentRenderer>
-      <aside>
-      </aside>
 </div>
 </template>
 
@@ -19,12 +17,12 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 
-const { data } = await useAsyncData(`subcontent-${i18n.locale.value}/about/${route.params.slug}`, () => queryContent(`${i18n.locale.value}/about/${route.params.slug}`).findOne(),
+const { data } = await useAsyncData('subpage-' + i18n.locale.value + route.fullPath, () => queryContent(i18n.locale.value + route.fullPath).findOne(),
         {watch: i18n.locale})
 
 
 useHead({
-    title: i18n.t('about') + ": " + data.value.body.children[0].children[0].value
+    title: i18n.t(route.matched[0].name) + ": " + data.value.body.children[0].children[0].value
 })
 
 </script>

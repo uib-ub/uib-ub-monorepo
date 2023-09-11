@@ -21,20 +21,21 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-
 const i18n = useI18n()
+import { useRoute } from 'vue-router'
+const route = useRoute()
 
 
-const { data } = await useAsyncData(`content-${i18n.locale.value}/about/`, async () => {
+const { data } = await useAsyncData('content-' + i18n.locale.value + route.fullPath, async () => {
   return {
-    intro: await queryContent(i18n.locale.value, "about").findOne(),
-    sections: await queryContent(i18n.locale.value, "about").skip(1).find()
+    intro: await queryContent(i18n.locale.value, route.name).findOne(),
+    sections: await queryContent(i18n.locale.value, route.name).skip(1).find()
   };
 }, {watch: i18n.locale});
 
 
 useHead({
-    title: i18n.t('about')
+    title: i18n.t(route.name)
 })
 
 </script>

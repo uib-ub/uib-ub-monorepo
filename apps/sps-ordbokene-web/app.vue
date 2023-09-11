@@ -4,7 +4,7 @@
 <nav :aria-label="$t('breadcrumbs')" class="ord-container justify-start mt-3 mb-2 pl-3 flex gap-4" v-if="!['welcome', 'search', 'article', 'word'].includes($route.name)">
   <NuxtLink v-if="store.searchUrl" :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
   <NuxtLink v-else to="/"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('home')}}</NuxtLink>
-  <NuxtLink v-if="$route.params.slug"  :to="$route.matched[0].path"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t($route.matched[0].children[1].name)}}</NuxtLink>
+  <NuxtLink v-if="$route.params.slug"  :to="$route.matched[0].path"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t($route.matched[0].children[0].name)}}</NuxtLink>
 </nav>
     <NuxtPage @click="menu_expanded=false"
               v-bind:class="{'welcome': route.name == 'welcome'}"/>
