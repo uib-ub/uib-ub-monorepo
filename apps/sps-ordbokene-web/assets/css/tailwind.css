@@ -64,12 +64,6 @@
         @apply text-white bg-secondary;
       }
 
-    @-moz-document url-prefix() {
-        /* Styles for Firefox only */
-        *:focus {
-          outline: 3px solid theme("colors.secondary.DEFAULT");
-        }
-    }
 
       
     section a, .secondary-page a, .error-page a, a:hover .hoverlink {
