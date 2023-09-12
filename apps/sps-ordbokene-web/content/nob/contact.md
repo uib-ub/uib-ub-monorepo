@@ -1,9 +1,9 @@
 # Kontakt oss
 ## Innholdet i ordbøkene
-Spørsmål og tilbakemeldinger angående ord, bøyningsformer og annet innhold i ordbøkene: ordbok@uib.no
+Spørsmål og tilbakemeldinger angående ord, bøyningsformer og annet innhold i ordbøkene: [ordbok@uib.no](mailto:ordbok@uib.no)
 
 ## Funksjonalitet og tekniske feil
-Rapporter tekniske feil eller kom med tilbakemeldinger på brukergrensesnittet: ordbok-teknisk@uib.no
+Rapporter tekniske feil eller kom med tilbakemeldinger på brukergrensesnittet: [ordbok-teknisk@uib.no](mailto:ordbok-teknisk@uib.no)
 
 ## Ofte stilte spørsmål:
 -   ### Hvorfor mangler noen ord i ordbøkene?
@@ -13,4 +13,4 @@ Rapporter tekniske feil eller kom med tilbakemeldinger på brukergrensesnittet: 
     Du kan velge å vise bøyningskodene i innstillingene, som du finner nederst på siden og i menyen øverst til høyre på siden. [Les mer på informasjonssiden](about/grammatic-codes)
 
 -   ### Kan jeg slippe å trykke «vis bøyning» og «vis artikkel»?
-    Ja, du kan endre dette i innstillingene, som du finner nederst på siden og i menyen øverst til høyre på siden. Velg «Vis alltid bøyningstabellene i fullstendige artikler» og «Vis bare fullstendige artikler» hvis du ønsker minst mulig klikking.
+    Ja, du kan endre dette i [innstillingene](settings), som du finner nederst på siden og i menyen øverst til høyre på siden. Velg «Vis alltid bøyningstabellene i fullstendige artikler» og «Vis bare fullstendige artikler» hvis du ønsker minst mulig klikking.
