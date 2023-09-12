@@ -13,6 +13,12 @@ const announcement = useState('announcement')
 
 const top_option = ref()
 
+const close_dropdown = () => {
+  store.dropdown_selected = -1
+  store.show_autocomplete = false
+
+}
+
 async function fetchAutocomplete(q) {
 
   q = q.trim()
@@ -132,8 +138,7 @@ const keys = (event) => {
     event.preventDefault()
   }
   else if (event.key == "Escape" || event.key == "Esc") {
-    store.dropdown_selected = -1
-    store.show_autocomplete = false
+    close_dropdown()
   }
   else if (event.key == "Home" && store.dropdown_selected > -1) {
     store.dropdown_selected = 0
@@ -218,6 +223,7 @@ if (process.client) {
           id="input-element"
           ref="input_element" 
           @input="input_sync"
+          @blur="close_dropdown"
           role="combobox" 
           name="q"
           :aria-activedescendant="store.dropdown_selected >= 0 ? 'autocomplete-item-'+store.dropdown_selected : null"
