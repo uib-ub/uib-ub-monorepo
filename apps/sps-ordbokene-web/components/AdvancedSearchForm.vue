@@ -67,6 +67,7 @@ const route = useRoute()
 
 const dicts = ['bm,nn', 'bm', 'nn']
 const pos_tags = ['', 'VERB', 'NOUN', 'ADJ', 'PRON', 'DET', 'ADV', 'ADP', 'CCONJ', 'SCONJ', 'INTJ']
+const input_element = useState('input_element')
 
 
 const mini_help = ref(!store.q)
@@ -108,6 +109,7 @@ const reset = () => {
 
 const submitForm = async (item) => {
   if (store.input) {
+    input_element.value.blur()
     store.q = store.input
     mini_help.value = false
     let query = {q: store.input, dict: store.dict, scope: store.scope}
