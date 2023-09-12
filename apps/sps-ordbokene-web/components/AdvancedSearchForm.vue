@@ -108,8 +108,14 @@ const reset = () => {
 
 
 const submitForm = async (item) => {
-  if (store.input) {
-    input_element.value.blur()
+  if (store.input && input_element.value) {
+    if (settings.autoSelect) {
+      input_element.value.select()
+    }
+    else {
+      input_element.value.blur()
+    }
+    
     store.q = store.input
     mini_help.value = false
     let query = {q: store.input, dict: store.dict, scope: store.scope}
