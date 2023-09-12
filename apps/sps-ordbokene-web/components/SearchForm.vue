@@ -12,14 +12,33 @@
 <script setup>
 import { useStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
+import {useSettingsStore } from '~/stores/settingsStore'
 const store = useStore()
 const route = useRoute()
+const settings = useSettingsStore()
+
+const input_element = useState('input_element')
 
 const submitForm = async (item) => {
+  
   if (typeof item === 'string') {
+    if (settings.auto_select) {
+      input_element.value.select()
+    }
+    else {
+      input_element.value.blur()
+    }
     return navigateTo(`/${route.params.dict}?q=${item}`)
   }
+  
   if (store.input) {
+    if (settings.auto_select) {
+      input_element.value.select()
+    }
+    else {
+      input_element.value.blur()
+    }
+    
     store.show_autocomplete = false
     store.q = store.input
 

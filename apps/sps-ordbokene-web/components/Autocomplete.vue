@@ -8,8 +8,6 @@ const route = useRoute()
 const settings = useSettingsStore()
 
 const input_element = useState('input_element')
-const announcement = useState('announcement')
-
 
 const top_option = ref()
 

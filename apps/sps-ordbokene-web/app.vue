@@ -1,5 +1,5 @@
 <template>
-  <a ref="skip_link" class="bg-tertiary-darken1 text-center z-1000 text-anchor sr-only text-xl font-semibold underline w-full  !focus-within:p-2 focus:not-sr-only focus:absolute focus:min-w-screen" href="#main"> Til innhold</a>
+  <a class="bg-tertiary-darken1 text-center z-1000 text-anchor sr-only text-xl font-semibold underline w-full  !focus-within:p-10 focus:not-sr-only focus:absolute focus:min-w-screen" href="#main">Til innhold</a>
   <Header/>
 <div class="ord-container justify-start mt-3 mb-2 pl-3" v-if="['settings', 'about', 'help', 'contact'].includes($route.name)">
   <NuxtLink v-if="store.searchUrl" :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
@@ -21,10 +21,7 @@ const settings = useSettingsStore()
 const route = useRoute()
 
 const input_element = useState('input_element')
-const announcement = useState('announcement')
-const skip_link = ref()
 const keyboard_navigation = ref(false)
-
 
 const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host +"/"
 
@@ -74,36 +71,9 @@ if (process.client) {
 const nuxtApp = useNuxtApp()
 
 nuxtApp.hook("page:finish", () => {
-
-  if (settings.autoSelect || route.name == "welcome") {
+  if (input_element.value && settings.autoSelect || route.name == "welcome") {
     input_element.value.select()
   }
-  // Handle focus in one place
-/*
-   window.scrollTo(0, 0)
-   if (input_element.value) {
-    if (!settings.autoSelect && store.view != 'article') {
-      if (announcement.value) {
-        announcement.focus()
-      }
-    }
-    else {
-      input_element.value.select()
-    }
-
-   }
-   else {
-    
-    if (keyboard_navigation.value) {
-      skip_link.value.focus()
-
-
-    }
-
-
-   }
-   */
-
 })
 
 
