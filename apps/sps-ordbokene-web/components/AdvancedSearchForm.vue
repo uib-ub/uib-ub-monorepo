@@ -21,7 +21,7 @@
         <div>
           <label for="pos-select" class="bg-tertiary">{{$t('pos')}}:</label>
           <div class="duration-200 ">
-          <select id="pos-select" aria-labelledby="pos-legend" name="pos" class="bg-tertiary w-full border border-1 py-1 px-2 pr-2 mr-2" @change="update_pos" v-bind:class="{not_null: store.pos}">
+          <select id="pos-select" name="pos" class="bg-tertiary w-full border border-1 py-1 px-2 pr-2 mr-2" @change="update_pos" v-bind:class="{not_null: store.pos}">
             <option class="w-full mr-2 pr-2" v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
           </select>
           </div>
@@ -189,14 +189,5 @@ legend, label {
   letter-spacing: .1rem;
 }
 
-
-#pos-legend{
-    margin:-.75rem 0;
-
-    }
-
-
-
-  
-  </style>
+</style>
   

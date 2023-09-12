@@ -84,7 +84,8 @@
       </section>
       
     </div>
-    <div v-if="true || pages > 1" class="p-2 py-6 md:p-8 flex md:flex-wrap justify-center flex md:gap-4">
+    <div class ="flex flex-col">
+    <div v-if="pages > 1" class="p-2 py-6 md:p-8 flex md:flex-wrap justify-center flex md:gap-4">
     <NuxtLink :to="{query: {...route.query, ...{page: page - 1}}}" @click="page -= 1"><button :disabled="page == 1" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
       <Icon name="bi:chevron-left" class="md:mr-0.75em mb-0.125em"/><span class="sr-only md:not-sr-only">{{$t('previous-page') }}</span>
     </button></NuxtLink>
@@ -93,9 +94,12 @@
       <span class="sr-only md:not-sr-only">{{$t('next-page')}}</span><Icon name="bi:chevron-right" class="md:ml-0.75em mb-0.125em"/>
     </button></NuxtLink>
     </div>
-
-    <select v-model="perPage" @change="update_perPage">
+    <div class="block self-center">
+    <label class="px-3" for="perPage-select">{{$t('per_page')}}</label>
+    <select id="perPage-select" name="pos" class="bg-tertiary border border-1 py-1 px-2 pr-2 mr-2" v-model="perPage" @change="update_perPage">
       <option v-for="num in [10, 20, 50, 100]" :key="num" :value="num" :selected="settings.perPage">{{num}}</option></select>
+    </div>
+    </div>
   </div>
   <div v-if="error_message">
     {{error_message}}
@@ -169,8 +173,8 @@ const update_perPage = (event) => {
 
 
 const article_error = (error, article, dict) => {
-console.log("ARTICLE_ERROR", article, dict)
-console.log(error)
+  console.log("ARTICLE_ERROR", article, dict)
+  console.log(error)
 }
 
 
