@@ -86,13 +86,17 @@
     </div>
     <div class ="flex flex-col">
     <div v-if="pages > 1" class="p-2 py-6 md:p-8 flex md:flex-wrap justify-center flex md:gap-4">
-    <NuxtLink :to="{query: {...route.query, ...{page: page - 1}}}" @click="page -= 1"><button :disabled="page == 1" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
-      <Icon name="bi:chevron-left" class="md:mr-0.75em mb-0.125em"/><span class="sr-only md:not-sr-only">{{$t('previous-page') }}</span>
-    </button></NuxtLink>
+      <NuxtLink :to="{query: {...route.query, ...{page: page -1 }}}">
+        <button :disabled="page == 1" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
+          <Icon name="bi:chevron-left" class="md:mr-0.75em mb-0.125em"/><span class="sr-only md:not-sr-only">{{$t('previous-page') }}</span>
+        </button>
+      </NuxtLink>
     <div class="text-center self-center align-middle mx-4 md:mx-8 text-lg h-full">{{$t('pageof', {page, pages})}}</div>
-    <NuxtLink :to="{query: {...route.query, ...{page: page + 1 }}}" @click="page += 1"><button :disabled="page == pages" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
-      <span class="sr-only md:not-sr-only">{{$t('next-page')}}</span><Icon name="bi:chevron-right" class="md:ml-0.75em mb-0.125em"/>
-    </button></NuxtLink>
+    <NuxtLink :to="{query: {...route.query, ...{page: page + 1 }}}">
+      <button :disabled="page == pages" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
+        <span class="sr-only md:not-sr-only">{{$t('next-page')}}</span><Icon name="bi:chevron-right" class="md:ml-0.75em mb-0.125em"/>
+      </button>
+    </NuxtLink>
     </div>
     <div class="block self-center">
     <label class="px-3" for="perPage-select">{{$t('per_page')}}</label>
@@ -125,7 +129,10 @@ const route = useRoute()
 
 const error_message = ref()
 
-const page = ref(parseInt(parseInt(route.query.page) || 1))
+const page = computed(() => {
+  return parseInt(route.query.page) || 1
+})
+
 const perPage = ref(parseInt(route.query.perPage) || settings.perPage)
 
 const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
@@ -141,7 +148,6 @@ if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
   refresh()
 }
 
-console.log(articles.value)
 
 const pages = computed(() => {
     let total_bm = articles.value.meta.bm ? articles.value.meta.bm.total : 0
@@ -158,8 +164,8 @@ const offset = computed(() => {
 
 const sliced_articles = computed(() => {
   return {
-    bm: articles.value.articles.bm ? articles.value.articles.bm.slice(offset, perPage.value) : [],
-    nn: articles.value.articles.nn ? articles.value.articles.nn.slice(offset, perPage.value) : []
+    bm: articles.value.articles.bm ? articles.value.articles.bm.slice(offset.value, offset.value + perPage.value) : [],
+    nn: articles.value.articles.nn ? articles.value.articles.nn.slice(offset.value, offset.value + perPage.value) : []
   }
 })
 
@@ -169,6 +175,12 @@ const update_perPage = (event) => {
   settings.perPage = perPage
   page.value = 1
   return navigateTo({query: {...route.query, ...{perPage: event.target.value, page: 1}}})
+}
+
+const update_page = value => {
+  page.value += value
+  return navigateTo({query: {...route.query, ...{page: page.value}}})
+
 }
 
 
