@@ -1,7 +1,7 @@
 {
     "name": "Bokmål",
     "sub_title": "Bokmålsordboka og Nynorskordboka",
-    "help": "Hjelp til søk",
+    "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
     "maximum_autocomplete": "maksimalt antall",
     "advanced_help": "Om avansert søk",
@@ -62,7 +62,7 @@
     "menu": {
         "title": "Meny",
         "search_pages": "Søkesider",
-        "help": "Hjelp til søk",
+        "help": "Hjelp",
         "about": "Om ordbøkene"
         },
     "options": {

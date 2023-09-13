@@ -329,6 +329,10 @@
         @apply shadow-md bg-tertiary-darken1 text-base border-4 border-tertiary-darken1;  
       }
 
+      blockquote {
+        @apply bg-canvas-darken px-2 pt-1 pb-3 my-2
+      }
+
 
 
 }
