@@ -58,7 +58,7 @@ async function fetchAutocomplete(q) {
     if (!pattern && !hasOr) {
 
       let response = ref([])
-      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name != 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'e'}`
+      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name == 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'e'}`
       response.value = await $fetch(url)
 
       // prevent suggestions after submit
