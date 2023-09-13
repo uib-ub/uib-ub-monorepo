@@ -232,7 +232,7 @@
                   id="Masc"
                   scope="col"
                   :class="mq">
-                <span class="nobr">hankjønn&nbsp;/</span><br/>{{tagToName('Fem')}}</th>
+                <span class="nobr">{{tagToName('Masc')}}&nbsp;/</span><br/>{{tagToName('Fem')}}</th>
               <th v-if="hasFem"
                   class="infl-label sub label-border-bottom"
                   id="Fem"

@@ -21,7 +21,7 @@
         <div>
           <label for="pos-select" class="bg-tertiary">{{$t('pos')}}:</label>
           <div class="duration-200 ">
-          <select id="pos-select" aria-labelledby="pos-legend" name="pos" class="bg-tertiary w-full border border-1 py-1 px-2 pr-2 mr-2" @change="update_pos" v-bind:class="{not_null: store.pos}">
+          <select id="pos-select" name="pos" class="bg-tertiary w-full border border-1 py-1 px-2 pr-2 mr-2" @change="update_pos" v-bind:class="{not_null: store.pos}">
             <option class="w-full mr-2 pr-2" v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
           </select>
           </div>
@@ -71,6 +71,7 @@ const route = useRoute()
 
 const dicts = ['bm,nn', 'bm', 'nn']
 const pos_tags = ['', 'VERB', 'NOUN', 'ADJ', 'PRON', 'DET', 'ADV', 'ADP', 'CCONJ', 'SCONJ', 'INTJ']
+const input_element = useState('input_element')
 
 
 const mini_help = ref(!store.q)
@@ -111,7 +112,14 @@ const reset = () => {
 
 
 const submitForm = async (item) => {
-  if (store.input) {
+  if (store.input && input_element.value) {
+    if (settings.autoSelect) {
+      input_element.value.select()
+    }
+    else {
+      input_element.value.blur()
+    }
+    
     store.q = store.input
     mini_help.value = false
     let query = {q: store.input, dict: store.dict, scope: store.scope}
@@ -185,14 +193,5 @@ legend, label {
   letter-spacing: .1rem;
 }
 
-
-#pos-legend{
-    margin:-.75rem 0;
-
-    }
-
-
-
-  
-  </style>
+</style>
   
