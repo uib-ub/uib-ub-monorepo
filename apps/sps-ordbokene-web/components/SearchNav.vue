@@ -48,7 +48,13 @@ const dict_click = (dict) => {
     
     
     const advanced_link = computed(() => {
-       return  `/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`
+       if (store.q) {
+        return  `/search?q=${store.q}&dict=${store.dict || 'bm,nn'}&scope=${store.scope || 'ei'}`
+       }
+       else {
+        return "/search"
+       }
+       
       
       
     })
