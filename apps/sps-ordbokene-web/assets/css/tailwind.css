@@ -76,13 +76,26 @@
       @apply text-primary
       
     }
-      
-
-    
 
 }
 
 @layer components {
+
+  a[href^="http"]:after {
+
+    content: "";
+    display: inline-block;
+    height:1em;
+    width: 1em;
+    background-size: 1em 1em;
+    background-image: url(assets/icons/BiBoxArrowUpRight.svg);
+    margin-left: .2em;
+    
+  }
+
+  blockquote a:after {
+    content: none !important;
+  }
 
     .callout {
         border-left: solid 4px theme("colors.primary.DEFAULT");
