@@ -38,7 +38,7 @@
       </button>
     </NuxtLink>
     </div>
-    <div class="block self-center">
+    <div class="block self-center" v-if="articles.meta.bm && articles.meta.bm.total > 10 || articles.meta.nn && articles.meta.nn.total > 10">
     <label class="px-3" for="perPage-select">{{$t('per_page')}}</label>
     <select id="perPage-select" name="pos" class="bg-tertiary border border-1 py-1 px-2 pr-2 mr-2" v-model="perPage" @change="update_perPage">
       <option v-for="num in [10, 20, 50, 100]" :key="num" :value="num" :selected="settings.perPage">{{num}}</option></select>
