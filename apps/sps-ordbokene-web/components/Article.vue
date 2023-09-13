@@ -28,7 +28,7 @@
     </NuxtLink>
   </div>
     <div class="article" v-else-if="!error">
-        <div v-if="pending && !welcome" class="skeleton-container">
+        <div v-if="false && pending && !welcome" class="skeleton-container">
             <div class="skeleton mt-4 skeleton-heading"/>
         <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
         <div class="skeleton skeleton-content w-50 "/>

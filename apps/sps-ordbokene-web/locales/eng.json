@@ -5,10 +5,7 @@
   "autocomplete_suggestions": "Search suggestion | search suggestions",
   "maximum_autocomplete": "maximum number of suggestions",
   "advanced_help": "Help",
-  "advanced":{
-    "title": "Advanced search",
-    "description": "Simple search only shows keyword hits in the results list, and we try to give you the best option if what you're searching for is not a keyword. In advanced search, however, you can show hits on inflected forms and in the definitions (free text search). You can also filter by word class, and truncate and combine the searches with special characters."
-  },
+  "advanced": "Advanced search",
   "to_advanced": "Go to advanced search",
   "show_articles": "Articles",
   "show_list": "Listevisning",
@@ -146,26 +143,7 @@
     "reset": "Delete stored settings",
     "reset_done":"Deleted"
 },
-"contact": {
-  "title": "Contact us",
-  "content": [    
-      "The content of the dictionaries",
-      "Functionality and bug reports",
-      "Feedback and questions regarding words, inflected forms and other content of the dictionaries: ",
-      "Report bugs or give feedback regarding the user interface: "
-  ],
-  "faq": {
-      "title": "Frequently asked questions:",
-      "items": [
-          {"title": "Why are some words missing in the dictionaries?", 
-            "text": [" are not to be regarded as lists of words permitted to use in Norwegian. There are many words – old as well as new – that are not in the dictionaries. But you can use anyway. New words do not need official approval before they can be used. It is the language users who jointly decide which words are commonly used in Norwegian. Normally, new words do not enter the dictionaries until they have been in use for some time and are well-established in the language. The dictionary editors decide which words are to be included based on surveys of large text corpora, and the Norwegian Language Council decides how the words are to be spelled and inflected. ", 
-                     "Read more in the About-page"]
-          },
-          {"title": "Where are the inflection codes from the printed dictionaries?", "text": "You can toggle this feature in settings, which is located at the bottom of the page and in the navigation menu."},
-          {"title": "Can I avoid having to click “show inflection” and “show article”?", "text": "Yes, you can change this in settings, which is located at the bottom of the page and in the navigation menu. Choose “Always show inflection tables” if you want to reduce the number of clicks to a minimum."}
-    ]
-  }
-},
+"contact": "Contact us",
 "notifications": {
     "redirect": "Showing senses of the dictionary entry",
     "translation": "Compare to machine translation suggested by Apertium:",

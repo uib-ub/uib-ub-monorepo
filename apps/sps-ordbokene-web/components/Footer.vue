@@ -26,7 +26,7 @@
             <NuxtLink :aria-current="$route.name == 'settings' && 'page'" class="nav-link" to="/settings">{{$t('settings.title')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" to="/contact">{{$t('contact.title')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" to="/contact">{{$t('contact')}}</NuxtLink>
           </li>
       </ul>
     </nav>

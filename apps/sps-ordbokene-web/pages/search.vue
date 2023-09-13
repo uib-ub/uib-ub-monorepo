@@ -21,7 +21,7 @@ const store = useStore()
 const route = useRoute()
 
 useHead({
-title: t('advanced.title')
+title: t('advanced')
 })
 
 definePageMeta({

@@ -5,10 +5,7 @@
     "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
     "maximum_autocomplete": "maksimalt antall",
     "advanced_help": "Om avansert søk",
-    "advanced":{
-        "title": "Avansert søk",
-        "description": "Enkelt søk viser kun treff på oppslagsord i resultatlisten, og vi prøver å gi deg det beste alternativet hvis det du søker etter ikke er et oppslagsord. I avansert søk kan du derimot vise treff på bøyde former og i definisjonene (fritekstsøk). Du kan også filtrere etter ordklasse, og trunkere og kombinere søkene med spesialtegn."
-      },
+    "advanced": "Avansert søk",
     "to_advanced": "Gå til avansert søk",
     "show_articles": "Artikler",
     "show_list": "Listevisning",
@@ -159,26 +156,7 @@
         "reset": "Slett lagrede innstillinger",
         "reset_done":"Slettet"
     },
-    "contact": {
-        "title": "Kontakt oss",
-        "content": [
-            "Innholdet i ordbøkene",
-            "Funksjonalitet og tekniske feil",
-            "Spørsmål og tilbakemeldinger angående ord, bøyningsformer og annet innhold i ordbøkene: ",
-            "Rapporter tekniske feil eller kom med tilbakemeldinger på brukergrensesnittet: "
-        ],
-        "faq": {
-            "title": "Ofte stilte spørsmål:",
-            "items": [
-                {"title": "Hvorfor mangler noen ord i ordbøkene?", 
-                  "text": [" er ikke å betrakte som lister over hvilke ord som er tillatt å bruke på norsk. Det finnes mange ord, både gamle og nye, som ikke er med i ordbøkene, men som du gjerne kan bruke likevel. Det er heller ikke slik at nye ord må godkjennes før de kan tas i bruk, det er språkbrukerne som i fellesskap avgjør hvilke ord som er gangbare i norsk. Normalt kommer ikke nye ord inn i ordbøkene før de har vært i bruk en stund og er etablert i språket. Ordbokredaksjonen avgjør hvilke ord som skal være med basert på undersøkelser av store tekstsamlinger, og Språkrådet bestemmer hvordan ordene skal staves og bøyes. ", 
-                           "Les mer på informasjonssiden"]
-                },
-                {"title": "Hvor er bøyningskodene fra de trykte ordbøkene?", "text": "Du kan velge å vise bøyningskodene i innstillingene, som du finner nederst på siden og i menyen øverst til høyre på siden."},
-                {"title": "Kan jeg slippe å trykke «vis bøyning» og «vis artikkel»?", "text": "Ja, du kan endre dette i innstillingene, som du finner nederst på siden og i menyen øverst til høyre på siden. Velg «Vis alltid bøyningstabellene hvis du ønsker minst mulig klikking."}
-          ]
-        }
-    },
+    "contact": "Kontakt oss",
     "notifications": {
         "redirect": "Viser betydninger av oppslagsordet",
         "translation": "Sammenlign med maskinoversettelse foreslått av Apertium:",
