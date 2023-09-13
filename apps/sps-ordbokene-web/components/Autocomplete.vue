@@ -407,7 +407,7 @@ transform: translateX(-50%);
 
   
 .appended-button:hover, .appended-button:active {
-    @apply bg-gray-200;
+  @apply bg-primary text-canvas duration-200;
   }
 
 
