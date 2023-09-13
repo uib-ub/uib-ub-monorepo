@@ -64,12 +64,6 @@
         @apply text-white bg-secondary;
       }
 
-    @-moz-document url-prefix() {
-        /* Styles for Firefox only */
-        *:focus {
-          outline: 3px solid theme("colors.secondary.DEFAULT");
-        }
-    }
 
       
     section a, .secondary-page a, .error-page a, a:hover .hoverlink {
@@ -327,6 +321,16 @@
       
       div.article-column {
         @apply flex flex-col gap-4 md:gap-6;
+      }
+
+
+      kbd{
+        border-radius: 5px !important;
+        @apply shadow-md bg-tertiary-darken1 text-base border-4 border-tertiary-darken1;  
+      }
+
+      blockquote {
+        @apply bg-canvas-darken px-2 pt-1 pb-3 my-2
       }
 
 

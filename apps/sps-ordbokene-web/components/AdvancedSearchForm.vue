@@ -39,18 +39,22 @@
             <Autocomplete  v-on:dropdown-submit="submitForm"/>
           </div>
 
-          <div class="col-span-10 lg:col-span-4 xl:col-span-3 grid grid-cols-2 gap-4">
-            <button v-if="store.q" class="btn p-2 px-4 col-span-4 sm:col-span-1" type="button" @click="(settings.listView = !settings.listView)" ><Icon :name='settings.listView ? "bi:file-text" : "bi:list"' class="mb-1 mr-2"/>{{settings.listView ? $t('show_articles') : $t('show_list',store.dict==='bm,nn'? 0 : 1)}}</button>
-            <button class="btn p-2 px-4 col-span-4 sm:col-span-1" :aria-expanded="mini_help" aria-controls="advanced-info" type="button" @click="mini_help = !mini_help"><Icon :name="mini_help ? 'bi:x-lg' : 'bi:question-lg'" class="mb-1 mr-2"/>{{$t('advanced_help')}}</button>
+          <div class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-4">
+            
+            
+           <div class="flex justify-center items-center"> <FormCheckbox labelId="toggle-list-view" v-model="settings.$state.listView" :checked="settings.listView">
+              {{$t('show_list')}}
+              </FormCheckbox>
+           </div>
+            <div class="flex justify-center items-center"><NuxtLink to="/help/advanced"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
           </div>
         </div>
       
     </form>
   <div v-if="mini_help" id="advanced-info" class="secondary-page container !mb-0 mt-4">
-        <h2>{{$t('advanced.title')}}</h2>
-        <p>{{$t('advanced.description')}}</p>
+
   
-        <AdvancedHelp/>
+        <ContentDoc :path="$i18n.locale + '/help/advanced'"/>
   
   
       </div>

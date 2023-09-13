@@ -1,34 +1,20 @@
 {
     "name": "Bokmål",
     "sub_title": "Bokmålsordboka og Nynorskordboka",
-    "help": "Hjelp til søk",
+    "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
     "maximum_autocomplete": "maksimalt antall",
-    "advanced_help": "Søkehjelp",
+    "advanced_help": "Om avansert søk",
     "advanced":{
         "title": "Avansert søk",
         "description": "Enkelt søk viser kun treff på oppslagsord i resultatlisten, og vi prøver å gi deg det beste alternativet hvis det du søker etter ikke er et oppslagsord. I avansert søk kan du derimot vise treff på bøyde former og i definisjonene (fritekstsøk). Du kan også filtrere etter ordklasse, og trunkere og kombinere søkene med spesialtegn."
       },
     "to_advanced": "Gå til avansert søk",
     "show_articles": "Artikler",
-    "show_list": "Liste|Lister",
+    "show_list": "Listevisning",
     "simple": "Enkelt søk",
-    "about":{
-        "title":"Om ordbøkene",
-        "items": [
-            {"title": "Hva betyr det om du ikke finner et ord i ordboka?", "text":""},
-            {"title": "Kvalitetssikra", "text": ""},
-            {"title": "Sitere ordbøkene", "text": ""},
-            {"title": "Ordbøkene på smarttelefon", "text": ""},
-            {"title": "Åpne data", "text": ""},
-            {"title": "Historikk", "text": ""},
-            {"title": "Revisjonsprosjektet", "text": ""},
-            {"title": "Grammatiske koder i ordbøkene", "text": ""},
-            {"title": "Nyttige språklenker", "text": ""},
-            {"title": "Bruk av ordbøkene.no i skolen", "text": ""},
-            {"title": "Personvern", "text": ""}
-      ]
-    },
+    "about":"Om ordbøkene",
+    "breadcrumbs": "Brødsmulesti",
     "photo": "Foto: Clay Banks (unsplash.com)",
     "background": "Bakgrunnsbilde",
     "monthly": "Smakebit fra ",
@@ -76,7 +62,7 @@
     "menu": {
         "title": "Meny",
         "search_pages": "Søkesider",
-        "help": "Hjelp til søk",
+        "help": "Hjelp",
         "about": "Om ordbøkene"
         },
     "options": {

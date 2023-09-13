@@ -1,7 +1,7 @@
 {
     "name": "Nynorsk",
     "sub_title": "Bokmålsordboka og Nynorskordboka",
-    "help": "Hjelp til søk",
+    "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
     "maximum_autocomplete": "maksimalt antall",
     "advanced_help": "Søkjehjelp",
@@ -11,26 +11,10 @@
       },
     "to_advanced": "Gå til avansert søk",
     "show_articles": "Artiklar",
-    "show_list": "Liste |Lister",
+    "show_list": "Listevisning",
     "simple": "Enkelt søk",
-    "about":{
-        "title":"Om ordbøkene",
-        "items": [
-            {"title": "Kva betyr det om du ikkje finn eit ord i ordboka?", 
-              "text": [""]
-            },
-            {"title": "Kvalitetssikra innhald", "text": ""},
-            {"title": "Sitere ordbøkene", "text": ""},
-            {"title": "Ordbøkene på smarttelefon", "text": ""},
-            {"title": "Opne data", "text": ""},
-            {"title": "Historikk", "text": ""},
-            {"title": "Revisjonsprosjektet", "text": ""},
-            {"title": "Grammatiske kodar i ordbøkene", "text": ""},
-            {"title": "Nyttige språklenkjer", "text": ""},
-            {"title": "Bruk av ordbøkene.no i skulen", "text": ""},
-            {"title": "Personvern", "text": ""}
-      ]
-    },
+    "about":"Om ordbøkene",
+    "breadcrumbs": "Brødsmulesti",
     "photo": "Foto: Clay Banks (unsplash.com)",
     "background": "Bakgrunnsbilde",
     "monthly": "Smakebit frå ",
@@ -78,7 +62,7 @@
     "menu": {
         "title": "Meny",
         "search_pages": "Søkjesider",
-        "help": "Hjelp til søk",
+        "help": "Hjelp",
         "about": "Om ordbøkene"
         },
     "options": {

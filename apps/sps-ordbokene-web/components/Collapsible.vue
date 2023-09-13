@@ -3,7 +3,7 @@
     <component :id="id" :is="is || 'div'"><button class="p-2 mt-4 text-left w-full"
                                                @click="expanded = !expanded" 
                                                :aria-expanded="expanded"
-                                               :aria-controls="expanded ? id + '-content': undefined">
+                                               :aria-controls="props.id + '-content'">
                                                <Icon class="mr-4 ml-1 text-gray-700" :name="expanded ? 'bi:chevron-up' : 'bi:chevron-down'"/>{{header}}
                                         </button></component>
 
@@ -11,13 +11,9 @@
     
 
   
-        <div  :hidden="expanded ? null : 'until-found'" :id="id  " class="expanding" v-bind:class="{'mb-8': expanded}">
+        <div  :hidden="expanded ? null : 'until-found'" :id="id+ '-content'" class="expanding" v-bind:class="{'mb-8': expanded}">
       <slot></slot>
     </div>
-
-
-
-
     </div>
 </template>
 
@@ -37,8 +33,6 @@ const props = defineProps({
 const expanded = ref(false) //route.hash == '#'+props.id
 
 
-
-const id = props.id
 
 
 </script>

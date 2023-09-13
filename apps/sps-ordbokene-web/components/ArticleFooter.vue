@@ -16,7 +16,7 @@
         <h4>{{$t('article.cite_title')}}</h4>
         <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
 
-        <div class="bg-canvas-darken px-2 pt-1 pb-3 my-2 break-all sm:break-keep">
+        <blockquote class="break-all sm:break-keep">
           <i18n-t keypath="article.citation" tag="div" id="citation">
             <template v-slot:lemma>{{citation.lemma}}</template>>
             <template v-slot:link>
@@ -36,7 +36,7 @@
             </template>
           </i18n-t>
 
-        </div>
+        </blockquote>
           <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation">
             <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
           </button>

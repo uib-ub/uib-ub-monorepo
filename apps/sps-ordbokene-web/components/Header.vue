@@ -27,7 +27,7 @@
         </li>
 
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'about' && 'page'" to="/about">{{$t('about.title')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name.slice(0,5) == 'about' && 'page'" to="/about">{{$t('about')}}</NuxtLink>
         </li>
                 <li class="nav-item">
           <NuxtLink @click="menu_expanded=false" class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" to="/settings">{{$t('settings.title')}}</NuxtLink>
