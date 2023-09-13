@@ -135,7 +135,7 @@ const keys = (event) => {
     //event.stopPropagation()
     event.preventDefault()
   }
-  else if (event.key == "Escape" || event.key == "Esc") {
+  else if (event.key == "Escape" || event.key == "Esc" || event.key == "Tab") {
     close_dropdown()
   }
   else if (event.key == "Home" && store.dropdown_selected > -1) {
@@ -221,7 +221,6 @@ if (process.client) {
           id="input-element"
           ref="input_element" 
           @input="input_sync"
-          @blur="close_dropdown"
           role="combobox" 
           name="q"
           :aria-activedescendant="store.dropdown_selected >= 0 ? 'autocomplete-item-'+store.dropdown_selected : null"
