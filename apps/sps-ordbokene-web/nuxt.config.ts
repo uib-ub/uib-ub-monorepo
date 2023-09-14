@@ -4,6 +4,11 @@ import VueI18nVitePlugin from '@intlify/unplugin-vue-i18n/vite'
 import { ProseH2 } from '.nuxt/components'
 
 export default defineNuxtConfig({
+  routeRules: {
+    "/about/**": {prerender: true},
+    "/help/**": {prerender: true},
+    "/contact": {prerender: true}
+  },
   css: ['~/assets/fonts/fonts.css'],
 
   nitro: {
