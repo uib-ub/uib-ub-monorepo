@@ -468,9 +468,9 @@ if (props.single) {
     /* box-shadow: 5px 5px 0px 0px #880E4F; */
     /* border-color: theme("colors.gray.500") !important; */
     /* border: solid 1px; */
-    border-radius: 1.5rem;
+    /* border-radius: 0rem; */
     display: inline-flex;
-    @apply border-primary overflow-auto;
+    @apply border-primary overflow-auto md:max-w-full;
 }
 
 li:only-child.level1 > ol {
