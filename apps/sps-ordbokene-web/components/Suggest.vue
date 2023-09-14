@@ -1,6 +1,5 @@
 <template>
    <div class="mb-10 mx-2 flex flex-col gap-8 mt-3">
-    
     <div v-if="inflections.length" class ="callout py-0 my-0">
         <SuggestResults :suggestions="inflections"  :dict="dict">
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.inflected', {dict: $t('dicts.'+dict)})}}</h3><span id="translation-description"></span>{{" "}}
@@ -16,7 +15,7 @@
             <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
         </SuggestResults>
     </div>
-    <div v-if="freetext && !( articles_meta[dict].total || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
+    <div v-if="freetext.length && !( articles_meta[dict].total || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
             <p>{{$t('notifications.fulltext.description')}}</p>
             <div class="flex">
