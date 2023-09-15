@@ -18,16 +18,14 @@
         </fieldset>  
 
       <div class="grid sm:grid-cols-2 xl:grid-cols-2 lg:grid-cols-1 md:col-span-2 lg:col-span-1 xl:col-span-2 gap-2 sm:gap-4 lg:gap-4">
-        <div>
-          <label for="pos-select" class="bg-tertiary">{{$t('pos')}}:</label>
-          <div class="duration-200 ">
-          <select id="pos-select" name="pos" class="bg-tertiary w-full border border-1 py-1 px-2 pr-2 mr-2" @change="update_pos" v-bind:class="{not_null: store.pos}">
-            <option class="w-full mr-2 pr-2" v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
-          </select>
-          </div>
+        <div class="relative mt-5"> 
+            <label for="pos-select" class="absolute left-2 top-0 transform -translate-y-1/2 bg-tertiary px-1 mb-4">{{ $t('pos') }}:</label>
+            <select id="pos-select" name="pos" @change="update_pos" class="w-full border border-1 bg-tertiary py-4 pl-6 pr-2 focus:border-blue-400 focus:outline-none" v-bind:class="{not_null: store.pos}">
+                <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
+            </select>
         </div>
 
-          <button class="btn sm:mt-6 sm:mb-2 md:mb-0 py-2 xl:self-end lg:py-4" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:trash" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
+          <button class="btn sm:mt-4 sm:mb-2 md:mb-0 py-2 lg:py-4" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
           
       </div>
       
@@ -42,10 +40,11 @@
           <div class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-4">
             
             
-           <div class="flex justify-center items-center"> <FormCheckbox labelId="toggle-list-view" v-model="settings.$state.listView" :checked="settings.listView">
-              {{$t('show_list')}}
-              </FormCheckbox>
-           </div>
+            <div class="flex justify-center items-center">
+        <FormCheckbox labelId="toggle-list-view" v-model="settings.$state.listView" :checked="settings.listView" class="text-blue-700 font-semibold">
+            {{$t('show_list')}}
+        </FormCheckbox>
+    </div>
             <div class="flex justify-center items-center"><NuxtLink to="/help/advanced"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
           </div>
         </div>
