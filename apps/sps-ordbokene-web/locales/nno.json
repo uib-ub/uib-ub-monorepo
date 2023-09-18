@@ -1,17 +1,17 @@
 {
     "name": "Nynorsk",
     "sub_title": "Bokmålsordboka og Nynorskordboka",
-    "help": "Hjelp til søk",
+    "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
     "maximum_autocomplete": "maksimalt antall",
-    "advanced_help": "Vis søkehjelp",
-    "advanced_help_hide": "Skjul søkehjelp",
+    "advanced_help": "Søkjehjelp",
     "advanced": "Avansert søk",
     "to_advanced": "Gå til avansert søk",
-    "show_articles": "Vis ordforklaringar",
-    "show_list": "Vis liste | Vis lister",
+    "show_articles": "Artiklar",
+    "show_list": "Listevisning",
     "simple": "Enkelt søk",
-    "about": "Om ordbøkene",
+    "about":"Om ordbøkene",
+    "breadcrumbs": "Brødsmulesti",
     "photo": "Foto: Clay Banks (unsplash.com)",
     "background": "Bakgrunnsbilde",
     "monthly": "Smakebit frå ",
@@ -38,7 +38,8 @@
       "main_content": "Gå til hovudinnhald",
       "bm": "Gå til treff i Bokmålsordboka",
       "nn": "Gå til treff i Nynorskordboka",
-      "homograph": "Tyding "
+      "homograph": "Tyding ",
+      "callout": "Viser resultater for oppslagsordet "
     },
     "dicts": {
         "nn": "Nynorskordboka",
@@ -58,18 +59,26 @@
     "menu": {
         "title": "Meny",
         "search_pages": "Søkjesider",
-        "help": "Hjelp til søk",
+        "help": "Hjelp",
         "about": "Om ordbøkene"
         },
     "options": {
         "title": "Søkjealternativ",
-        "inflected": "Søk i bøygde former",
-        "fulltext": "Søk i ordforklaringer",
+        "dict": "Ordbøker:",
+        "scope": {
+            "title": "Søk etter:",
+            "value": {
+                "e": "Oppslagsord",
+                "ei": "Alle ordformer",
+                "eif": "Alt innhald"
+                }
+            },
         "pos": "Ordklasse",
         "collapse": "Komprimer artiklar"
     },
     "pos": "Ordklasse",
     "all_pos": "alle",
+    "gender":"kjønn",
     "tags": {
     "NOUN": "substantiv",
     "VERB": "verb",
@@ -132,41 +141,24 @@
             "always": "Vis berre utdrag",
             "never": "Vis berre fullstendige artiklar"
         },
-        "reset": "Slett lagra innstillingar"
+        "reset": "Slett lagra innstillingar",
+        "reset_done":"Slettet"
     },
-    "contact": {
-        "title": "Kontakt oss",
-        "content": [
-            "Innhaldet i ordbøkene",
-            "Funksjonalitet og tekniske feil",
-            "Spørsmål og tilbakemeldingar med omsyn til ord, bøyingsformer og anna innhald i ordbøkene: ",
-            "Rapporter tekniske feil og gje tilbakemeldingar på brukargrensesnittet: "
-        ],
-        "faq": {
-            "title": "Ofte stilte spørsmål:",
-            "items": [
-                {"title": "Kvifor manglar somme ord i ordbøkene?", 
-                  "text": [" er ikkje å rekne som lister over kva ord som er tillatne å bruke på norsk. Det finst mange ord, både gamle og nye, som ikkje er med i ordbøkene, men som du gjerne kan bruke likevel. Det er heller ikkje slik at nye ord må godkjennast før dei kan takast i bruk, det er språkbrukarane som i fellesskap avgjer kva ord som er gangbare i norsk. Normalt kjem ikkje nye ord inn i ordbøkene før dei har vore i bruk ei stund og er etablerte i språket. Ordbokredaksjonen avgjer kva ord som skal vere med basert på undersøkingar av store tekstsamlingar, og Språkrådet avgjer korleis orda skal stavast og bøyast. ", 
-                           "Les meir på informasjonssida"]
-                },
-                {"title": "Kvar er bøyingskodane frå dei trykte ordbøkene?", "text": "Du kan hake av for «Vis bøyingskodane frå dei trykte ordbøkene» i innstillingane, som du finn nedst på sida og i menyen øvst til høgre på sida."},
-                {"title": "Kan eg sleppe å trykkje «vis bøying» og «vis artikkel»?", "text": "Ja, du kan endre dette i innstillingane, som du finn nedst på sida og i menyen øvst til høgre på sida. Hak av for «Vis alltid bøyingstabellane» dersom du ønskjer minst mogleg klikking."}
-          ]
-        }
-    },
+    "contact":  "Kontakt oss",
     "notifications": {
         "redirect": "Viser tydingar av oppslagsordet",
-        "inflected": " er ei bøygd form av ",
-        "other_inflected": "«{word}» er òg ei form av:",
+        "translation_title": "Maskinomsetjing",
+        "translation": "Samanlikn med maskinomsetjing foreslått av Apertium:",
+        "inflected": "Bøygde former av:",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",
         "similar_bm": "Legg til liknande treff frå Bokmålsordboka: ",
         "similar_nn": "Legg til liknande treff frå Nynorskordboka: ",
         "search": "Søk i ordbøkene",
         "back": "Tilbake til søkjeresultata",
-        "no_results": "Ingen treff",
         "not_a_word": " er ikkje eit oppslagsord i ",
         "results": "Ingen treff | Eitt treff| {count} treff",
+        "keywords": "oppslagsord",
         "ignored_words": "Søket vart ignorert fordi vi avgrensar talet på førespurnader til 20 ord.",
         "ignored_chars": "Søket vart ignorert fordi vi ikkje tillèt søkjeord med meir enn 40 teikn.",
         "no_pos_results": " i søk på {pos}",
@@ -174,22 +166,31 @@
             "Har du søkt i feil ordbok?",
             "Prøv å søkje i "
         ],
-        "fulltext": "Forslag til fritekstsøk:"
+        "fulltext": {
+            "title": "Fritekstsøk",
+            "description": "Søkjet ditt gir treff i avansert søk med fritekstsøk."
+          },
+          "no_results": {
+            "title": "Ingen treff",
+            "description": ["Søkjet ditt ga ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
+          }
     },
     "article": {
         "definition": "Definisjon",
         "show": "Opne artikkel",
         "show_inflection": "Vis bøying",
         "hide_inflection": "Skjul bøying",
-        "share": "Del ordet",
+        "share": "Del",
         "copy_link": "Kopier lenkje",
         "cite": "Siter",
+        "open": "Artikkelside",
+        "copy": "Kopier",
         "cite_title": "Sitere artikkelen",
         "cite_description": ["Ønskjer du å sitere denne artikkelen i ", ", rår vi deg til å gje opp når artikkelen vart henta (lesen), t.d. slik:"],
         "download": "Last ned RIS-fil",
-        "link_copied": "Lenkja er kopiert til utklippstavla",
-        "citation_copied": "Sitatet er kopiert til utklippstavla",
-        "citation": "«{lemma}». I: <em>{dict}.</em> Språkrådet og Universitetet i Bergen. &lt;<a href='{link}'>{link}</a>&gt; (lesen {dd}.{mm}.{yyyy}).",
+        "link_copied": "Kopiert",
+        "citation_copied": "Sitatet er kopiert",
+        "citation": "«{lemma}». I: {dict} Språkrådet og Universitetet i Bergen. {link} (lesen {dd}.{mm}.{yyyy}).",
         "headings": {
             "etymology": "Opphav",
             "pronunciation": "Uttale",
@@ -201,7 +202,7 @@
     "error": {
           "article": "Det har oppstått ein feil i artikkel {no} i {dict}",
           "404": {
-              "title": "404: Ikkje funne",
+              "title": "Ikkje funne",
               "description": "Sida kan ha blitt sletta eller flytta, eller du kan ha brukt ei ugyldig lenkje."
           },
           "503": {
