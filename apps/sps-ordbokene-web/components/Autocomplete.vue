@@ -296,9 +296,8 @@ transform: translateX(-50%);
 
 
 #autocomplete-dropdown {
-  overflow-y: auto;
   max-height: 50vh;
-  @apply px-0 mx-0 flex flex-col;
+  @apply px-0 mx-0 flex flex-col overflow-y-auto;
 }
 
 
@@ -310,7 +309,7 @@ transform: translateX(-50%);
 
 #autocomplete-dropdown .dropdown-item {
   text-align: left;
-  @apply p-2 mx-2;
+  @apply p-4 mx-2 duration-200;
 
 
 }
@@ -321,8 +320,7 @@ transform: translateX(-50%);
 }
 
 #autocomplete-dropdown li:not(:last-child) .dropdown-item {
-  border-bottom: solid 1px;
-  @apply border-gray-300;
+  @apply border-gray-300 border-b border-gray-700;
 
 }
 
@@ -331,14 +329,13 @@ transform: translateX(-50%);
 }
 
 #autocomplete-dropdown .dropdown-item:hover  {
-    @apply bg-canvas-darken;
-    cursor: pointer;
+    @apply bg-canvas-darken cursor-pointer shadow-lg;
 }
 
 
 .dict-parentheses {
     font-size: 85%;
-    font-weight: 400;
+    @apply font-normal 
 }
 
 .input-wrapper {
@@ -395,11 +392,10 @@ transform: translateX(-50%);
 
 
 .appended-button, .appended-button-disabled {
-  @apply text-primary m-0 p-2 self-center;
+  @apply text-primary m-0 p-2 self-center flex;
   border: none;
   border-radius: 2rem; 
   background: unset;
-  display: flex;
 
 }
 
@@ -411,7 +407,7 @@ transform: translateX(-50%);
 
 
 .advanced-search .appended-button  {
-  font-size: 1.25rem;
+  @apply text-xl;
 }
 
 
