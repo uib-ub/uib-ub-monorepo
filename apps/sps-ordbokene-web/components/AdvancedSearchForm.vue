@@ -2,22 +2,22 @@
   <div class="my-1 md:mt-0 pb-6">
     <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4 mx-2">
 
-      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-7">
-        <fieldset class="gap-4 lg:col-span-2 xl:col-span-2 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-10">
+        <fieldset class="gap-4 lg:col-span-2 xl:col-span-3 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
           <legend>{{$t('options.dict')}}</legend>
           <FormRadio v-for="(item, idx) in dicts" :key="store.dict + idx" :value="item" name="dict" :labelId="'dict-radio-'+idx" :current="store.dict" @submit="update_dict">
             {{$t(`dicts_short.${item}`)}}
           </FormRadio>
         </fieldset>
         
-        <fieldset class="gap-4 lg:col-span-2 xl:col-span-3 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
+        <fieldset class="gap-4 lg:col-span-2 xl:col-span-4 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
           <legend>{{$t('options.scope.title')}}</legend>
           <FormRadio v-for="(item, idx) in ['e', 'ei', 'eif']" :key="store.scope + idx" :value="item" name="scope" :labelId="'scope-radio-'+idx" :current="store.scope" @submit="update_scope">
             {{$t(`options.scope.value.${item}`)}}
           </FormRadio>
         </fieldset>  
 
-      <div class="grid sm:grid-cols-2 xl:grid-cols-2 lg:grid-cols-1 md:col-span-2 lg:col-span-1 xl:col-span-2 gap-2 sm:gap-4 lg:gap-4">
+      <div class="grid sm:grid-cols-2 xl:grid-cols-2 lg:grid-cols-1 md:col-span-2 lg:col-span-1 xl:col-span-2 gap-2 sm:gap-4 lg:gap-4 xl:col-span-3">
         <div class="relative mt-5"> 
             <label for="pos-select" class="absolute left-2 top-0 transform -translate-y-1/2 bg-tertiary px-1 mb-4">{{ $t('pos') }}:</label>
             <select id="pos-select" name="pos" @change="update_pos" class="w-full border border-1 bg-tertiary py-4 pl-6 pr-2 focus:border-blue-400 focus:outline-none" v-bind:class="{not_null: store.pos}">
