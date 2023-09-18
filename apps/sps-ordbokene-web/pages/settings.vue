@@ -35,22 +35,22 @@ const startAnimation = () => {
 <template>
 <main id="main" tabindex="-1" class="secondary-page flex flex-col gap-2">
   <h2>{{$t('settings.title')}}</h2>
-  <FormCheckbox labelId="toggle-simple-list-view" v-model="settings.$state.simpleListView" :checked="settings.simpleListView">
+  <FormCheckbox v-model="settings.$state.simpleListView" :checked="settings.simpleListView">
       {{$t('settings.simple_search_list')}}
     </FormCheckbox>
-    <FormCheckbox labelId="toggle-auto-select" v-model="settings.$state.autoSelect" :checked="settings.autoSelect">
+    <FormCheckbox v-model="settings.$state.autoSelect" :checked="settings.autoSelect">
       {{$t('settings.auto_select')}}
     </FormCheckbox>
-  <FormCheckbox v-if="false" labelId="toggle-submit-select" v-model="settings.$state.submitSelect" :checked="settings.submitSelect">
+  <FormCheckbox v-if="false" v-model="settings.$state.submitSelect" :checked="settings.submitSelect">
       {{$t('settings.submit_select')}}
     </FormCheckbox>
-<FormCheckbox labelId="toggle-inflection-expanded" v-model="settings.$state.inflectionExpanded" :checked="settings.inflectionExpanded">
+<FormCheckbox v-model="settings.$state.inflectionExpanded" :checked="settings.inflectionExpanded">
       {{$t('settings.inflection_expanded')}}
     </FormCheckbox>
-    <FormCheckbox labelId="toggle-inflection-no" v-model="settings.$state.inflectionNo" :checked="settings.inflectionNo">
+    <FormCheckbox v-model="settings.$state.inflectionNo" :checked="settings.inflectionNo">
       {{$t('settings.inflection_no')}}
     </FormCheckbox>
-    <FormCheckbox labelId="toggle-inflection-context" v-model="settings.$state.inflectionTableContext" :checked="settings.inflectionTableContext">
+    <FormCheckbox v-model="settings.$state.inflectionTableContext" :checked="settings.inflectionTableContext">
       {{$t('settings.inflection_table_context')}}
     </FormCheckbox>
 

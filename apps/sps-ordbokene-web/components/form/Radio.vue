@@ -11,7 +11,6 @@
 <script setup>
     
   const props = defineProps({
-      labelId: String,
       name: String,
       value: String,
       current: String

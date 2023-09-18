@@ -13,7 +13,6 @@
 const emit= defineEmits(['update:modelValue'])
 
 const props = defineProps({
-    labelId: String,
     checked: {
         type: Boolean,
         default: false
