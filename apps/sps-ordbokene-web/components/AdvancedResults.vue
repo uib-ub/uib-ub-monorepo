@@ -83,8 +83,14 @@ const { pending, error, refresh, data: articles } = await useFetch(() => `api/ar
         })
 
 const dicts = computed(()=> {
-  let currentDict = route.query.dict
-  return currentDict == 'bm,nn' ? ["bm", "nn"] : [currentDict]
+  let currentDict = route.query.dict 
+  if (currentDict == "bm") {
+    return ["bm"]
+  }
+  if (currentDict == "nn") {
+    return ["nn"]
+  }
+  return ["bm", "nn"]
 })
 
 

@@ -74,7 +74,13 @@ const title = computed(()=> {
 
 const dicts = computed(()=> {
   let currentDict = route.params.dict || route.query.dict
-  return currentDict == 'bm,nn' ? ["bm", "nn"] : [currentDict]
+  if (currentDict == "bm") {
+    return ["bm"]
+  }
+  if (currentDict == "nn") {
+    return ["nn"]
+  }
+  return ["bm", "nn"]
 })
 
 
