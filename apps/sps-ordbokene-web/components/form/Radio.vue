@@ -1,10 +1,7 @@
 <template>
     <span class="radiobox-container" @click="submit">
-      <Icon name="mdi:radiobox-marked" aria-hidden="true" class="text-primary absolute pointer-events-none w-6 h-6" v-if="current == value"/>
-      <Icon name="mdi:radiobox-blank"  aria-hidden="true" class="text-gray-700 absolute pointer-events-none w-6 h-6" v-else/>
-      
-      <input  class="sr-only" type="radio" :id="labelId" :name="name" :value="value" @keyup="submit">
-      <label class="pl-8" :for="props.labelId">
+      <label class="grid">
+        <input  class="" type="radio" :name="name" :value="value" :checked="current == value" @keyup="submit">
         <slot></slot>
       </label>
     </span>
@@ -35,33 +32,25 @@
     <style scoped>
     
     input {
-      position: absolute;
-    }
-    
-    input + label {
-      display: block;
-      position: relative;
-    }
-    
-    input + label::before {
-      content: '';
-
+      accent-color: theme('colors.primary.DEFAULT');
     }
 
-    .radiobox-container:focus-within svg { 
-  outline: solid 2px theme('colors.secondary.DEFAULT');
-  border-radius: 1rem;
-
-}
-
+    input:checked:hover {
+      accent-color: theme('colors.secondary.DEFAULT') !important;
+    }
 
     
-    
 
-    
-input:checked + label::after {
-    content: '';
-}
-    
+    *,
+    *:before,
+    *:after {
+      box-sizing: border-box;
+    }
+
+    label {
+        display: grid;
+        grid-template-columns: 1em auto;
+        gap: 0.5em;
+    }
 
     </style>
