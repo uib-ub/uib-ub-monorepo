@@ -7,9 +7,7 @@ export const useStore = defineStore('store', {
       selected: {},
       scope: "ei",
       pos: "",
-      advanced: false,
       dict: "bm,nn",
-      autocompletePending: false,
       autocomplete: [],
       lemmas: {bm: new Set(), nn: new Set()},
       show_autocomplete: false,
@@ -18,11 +16,9 @@ export const useStore = defineStore('store', {
       suggestQuery: "",
       articles: {},
       searchUrl: null,
-      view: null,
       concepts_bm: [],
       concepts_nn: [],
       endpoint: "",
       copied: "",
-      focus: null
     }),
   })
