@@ -25,7 +25,7 @@
             </select>
         </div>
 
-          <button class="btn sm:mt-4 sm:mb-2 md:mb-0 py-2 lg:py-4" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3" />{{$t('reset')}}</button>
+          <button class="btn sm:mt-4 sm:mb-2 md:mb-0 py-2 lg:py-4" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
           
       </div>
       
