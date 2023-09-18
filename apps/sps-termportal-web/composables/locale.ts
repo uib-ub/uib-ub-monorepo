@@ -24,7 +24,7 @@ export type LangCode =
 
 export const useLocale = () => {
   const i18n = useI18n();
-  return i18n.locale.value as LocalLangCode;
+  return i18n.locale as Ref<LocalLangCode>;
 };
 
 export const useLocales = () => {
@@ -33,10 +33,11 @@ export const useLocales = () => {
 
 export const useLocaleLangOrder = () => {
   const locale = useLocale();
-  return languageOrder[locale];
+  const langOrder = toRef(() => languageOrder[locale.value]);
+  return langOrder as Readonly<Ref<LangCode[]>>;
 };
 
-const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
+export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
   nb: [
     "nb",
     "nn",

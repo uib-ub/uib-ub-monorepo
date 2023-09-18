@@ -1,5 +1,5 @@
 'use client'
-import { InstantSearch, SearchBox, Hits, Stats, CurrentRefinements, Pagination, RefinementList } from "react-instantsearch-hooks-web";
+import { InstantSearch, SearchBox, Hits, Stats, CurrentRefinements, Pagination, RefinementList } from "react-instantsearch";
 import { Hit } from '@/app/[locale]/search/_components/hit'
 import createClient from "@searchkit/instantsearch-client";
 import 'instantsearch.css/themes/reset-min.css';

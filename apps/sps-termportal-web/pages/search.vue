@@ -3,27 +3,39 @@
     <Head>
       <Title> {{ $t("search.title") }} | {{ $t("index.title") }} </Title>
     </Head>
-    <h1 class="sr-only">{{ $t("search.title") }}</h1>
-    <SearchFilter />
-    <main>
-      <h2 id="main" class="pb-2 pt-3 text-2xl">
-        <AppLink to="#main"> {{ $t("searchFilter.results-heading") }}</AppLink>
-      </h2>
-      <ol
-        v-if="searchData.length > 0"
-        ref="scrollComponent"
-        aria-labelledby="resultsheading"
-      >
-        <SearchResultListEntry
-          v-for="entry in searchData"
-          :key="entry.link + '_' + entry.label"
-          :entry-data="entry"
-        />
-      </ol>
-      <TransitionOpacity v-if="false" class="flex justify-center p-2">
-        <SpinnerIcon v-if="pending && countFetchedMatches > 30" />
-      </TransitionOpacity>
-    </main>
+    <div class="flex">
+      <SideBar>
+        <SearchFilter class="hidden xl:block" />
+      </SideBar>
+      <div class="flex-1">
+        <h1 class="sr-only">{{ $t("search.title") }}</h1>
+        <SearchStatusBar />
+        <div class="xl:flex">
+          <SearchFilter class="xl:hidden block" />
+          <main class="grow">
+            <h2 id="main" class="pb-2 pt-3 text-2xl">
+              <AppLink to="#main">
+                {{ $t("searchFilter.results-heading") }}</AppLink
+              >
+            </h2>
+            <ol
+              v-if="searchData.length > 0"
+              ref="scrollComponent"
+              aria-labelledby="main"
+            >
+              <SearchResultListEntry
+                v-for="entry in searchData"
+                :key="entry.link + '_' + entry.label"
+                :entry-data="entry"
+              />
+            </ol>
+            <TransitionOpacity v-if="false" class="flex justify-center p-2">
+              <SpinnerIcon v-if="pending && countFetchedMatches > 30" />
+            </TransitionOpacity>
+          </main>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -42,7 +54,7 @@ const searchterm = useSearchterm();
 const searchInterface = useSearchInterface();
 const count = computed(() => {
   try {
-    return sum(Object.values(searchDataStats.value?.matching || [])) || 0;
+    return sum(Object.values(searchDataStats.value?.context || [])) || 0;
   } catch (e) {
     return 0;
   }
@@ -143,6 +155,8 @@ watch(
     searchInterface.value.language,
     searchInterface.value.termbase,
     searchInterface.value.translate,
+    searchInterface.value.domain,
+    searchInterface.value.useDomain
   ],
   () => {
     if (allowSearchFetch.value !== null) {
@@ -150,7 +164,9 @@ watch(
     }
     umTrackEvent("Search: Option change");
     considerSearchFetching("options");
-  }
+    usePushSearchOptionsToRoute();
+  },
+  { deep: true }
 );
 
 onMounted(() => {
@@ -171,11 +187,16 @@ onMounted(() => {
         if (key === "term") {
           searchterm.value = route.query[value.q] as string;
         }
+        // search termbases is a list
+        if (key === 'termbase') {
+          const tbs = route.query[value.q] as string;
+          searchInterface.value.termbase = tbs.split(",") as Samling[];
+        }
 
         // searchdomain needs to be handled differently because state is a list
         if (key === "domain") {
           const domene = route.query[value.q] as string;
-          searchInterface.value[key] = domene.split(",");
+          searchInterface.value.domain = JSON.parse(domene);
         }
         //
         else {

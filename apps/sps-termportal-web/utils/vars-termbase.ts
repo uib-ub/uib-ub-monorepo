@@ -16,10 +16,14 @@ export type Samling =
   | "LINGVISTIKK"
   | "ASTRONOMI"
   | "BIOLOGI"
+  | "SEMANTIKK"
   | "LINGVISTIKK"
+  | "SEMANTIKK"
   | "CMBIOLOGI"
   | "KJEMI"
-  | "FBK";
+  | "FBK"
+  | "BIBINF"
+  | "UDEUT";
 
 export type Domains =
   | "DOMENE-3AHumaniora"
@@ -30,27 +34,31 @@ export type Domains =
 export const termbaseOrder: Samling[] = [
   "ARTSDB",
   "ASTRONOMI",
+  "BIBINF",
   // "BIOLOGI",
-  // "CMBIOLOGI",
+  "CMBIOLOGI",
   "EVERTEBRATER",
   "FBK",
   "KJEMI",
   "KLIMA",
   "LINGVISTIKK",
   "MRT",
-  "SDIR",
   "NHH",
   "NOJU",
   "NOT",
   "ROMFYS",
+  "SEMANTIKK",
+  "SDIR",
   "RTT",
   "TOLKING",
+  "UDEUT",
   "UHR",
 ];
 
 export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   ARTSDB: ["nb", "nn", "en", "la"],
   ASTRONOMI: ["nb", "nn", "en"],
+  BIBINF: ["nb", "nn", "en", "da"],
   BIOLOGI: [],
   CMBIOLOGI: ["nb", "nn", "en"],
   EVERTEBRATER: ["nb", "la"],
@@ -58,7 +66,8 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   KJEMI: ["nb", "nn", "en", "da"],
   KLIMA: ["nb", "nn", "en"],
   LINGVISTIKK: ["nb", "nn", "en"],
-  MRT: ["nb", "en", "ar", "da", "de", "es", "sv"],
+  SEMANTIKK: ["nb", "nn", "en"],
+  MRT: ["nb", "en", "da", "de", "es", "sv"],
   SDIR: ["nb", "nn", "en"],
   NHH: ["nb", "nn", "en"],
   NOJU: ["nb", "de"],
@@ -66,11 +75,12 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   ROMFYS: ["nb", "nn", "en"],
   RTT: ["nb", "nn", "en", "da", "de", "fi", "fr", "it", "ru", "sv"],
   TOLKING: ["nb", "en", "ar", "fr", "pl", "ru", "so", "ti", "fa-af"],
+  UDEUT: ["nb", "nn", "en", "fr"],
   UHR: ["nb", "nn", "en"],
 };
 
 export const domainNesting = {
-  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK"] },
+  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
   "DOMENE-3ANaturvitenskapTeknologi": {
     bases: [
       "NOT",
@@ -83,20 +93,30 @@ export const domainNesting = {
       "KLIMA",
       "ASTRONOMI",
       // "BIOLOGI",
-      // "CMBIOLOGI",
+      "CMBIOLOGI",
       "KJEMI",
     ],
   },
-  "DOMENE-3ASamfunnsfag": { bases: ["NOJU", "TOLKING"] },
+  "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING", "UDEUT"] },
   "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
 };
 
-export const termbaseUriPatterns = {
+type CollectionUriPatternKey =
+  | "bkg"
+  | "nav"
+  | "brreg"
+  | "bufdir"
+  | "fbk"
+  | "ex";
+export const termbaseUriPatterns: {
+  [key in Samling]?: { [key in CollectionUriPatternKey]: string };
+} = {
   FBK: {
     bkg: "http://begrepskatalogen/begrep/",
     nav: "https://data.nav.no/begrep/",
     brreg: "http://data.brreg.no/begrep/",
     bufdir: "https://data.bufdir.no/begrep/",
     fbk: "https://concept-catalog.fellesdatakatalog.digdir.no/collections/",
+    ex: "http://example.com/",
   },
 };
