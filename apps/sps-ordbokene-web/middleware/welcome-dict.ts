@@ -3,9 +3,14 @@ const store = useStore()
 
 export default defineNuxtRouteMiddleware((to) => {
     store.$reset()
-    if (to.params.locale) {
-      return '/'+ to.params.locale+ '/' + store.dict
-    
+    let locale = to.params.locale
+    if (!locale) {
+      try {
+        locale = useCookie("currentLocale", {default: () => new Date().getDate() % 2 ? 'nno' : 'nob'}).value
+      } catch (error) {
+        console.log(error)
+        locale = (new Date().getDate() % 2 ? 'nno' : 'nob')
+      }
     }
-    return '/'+store.dict
+    return '/'+ locale + '/' + store.dict
   })
