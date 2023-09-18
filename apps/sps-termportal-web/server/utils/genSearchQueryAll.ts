@@ -2,10 +2,12 @@ import { SearchOptions } from "~/utils/vars";
 
 export function genSearchQueryAll(
   searchOptions: SearchOptions,
-  graph,
   language,
-  predFilter
+  predFilter,
+  context
 ) {
+  const runtimeConfig = useRuntimeConfig();
+
   let languageFilter: string;
   if (language[0] === "") {
     languageFilter = "";
@@ -25,16 +27,19 @@ export function genSearchQueryAll(
       : "";
 
   const innerQuery = `
-      { SELECT ?uri ?predicate ?label ?lit (0 as ?sc) ?s ${translate}
+      { SELECT ?uri ?label ?lit (0 as ?sc) ?con ${translate}
         WHERE {
-          GRAPH ${graph[1]} {
-            ?label skosxl:literalForm ?lit.
-            ${languageFilter}
-            ${predFilter}
-            ?uri ?predicate ?label;
-                 skosp:memberOf ?s.
-            ${translateOptional}
+          { 
+            SELECT *
+            WHERE {
+              ?uri ${context[1]} ?con .
+              ${context[0]}
+            }
           }
+          ?uri ${predFilter} ?label .
+          ?label skosxl:literalForm ?lit .
+          ${languageFilter}
+          ${translateOptional}
         }
         ORDER BY lcase(str(?lit))
         LIMIT ${searchOptions.limit}
@@ -45,29 +50,35 @@ export function genSearchQueryAll(
   #log: ${JSON.stringify(searchOptions)}
   PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
   PREFIX skosp: <http://www.data.ub.uib.no/ns/spraksamlingene/skos#>
-  PREFIX text: <http://jena.apache.org/text#>
+  PREFIX base: <${runtimeConfig.public.base}>
   PREFIX ns: <http://spraksamlingane.no/terminlogi/named/>
 
-  SELECT DISTINCT ?uri ?predicate ?literal ?samling (0 as ?score)
+  SELECT DISTINCT ?uri ?predicate ?literal ?samling ?context (0 as ?score)
          (group_concat( ?l; separator="," ) as ?lang)
-         ("all" as ?matching) ${translate}
-  ${graph[0]}
+         ${translate}
+         ("all" as ?matching)
+
   WHERE {
-      { SELECT ?label ?literal ?l ?uri ?predicate ?samling ${translate}
+    GRAPH <urn:x-arq:UnionGraph> {
+      { SELECT ?label ?literal ?l ?uri ?predicate ?samling ?context ${translate}
         WHERE {
           ${innerQuery}
-          BIND ( replace(str(?s), "http://.*wiki.terminologi.no/index.php/Special:URIResolver/.*-3A", "") as ?samling).
+          ?uri skosp:memberOf ?s .
+          ?uri ?predicate ?label .
+          BIND ( replace(str(?s), "${
+            runtimeConfig.public.base
+          }", "") as ?samling).
+          BIND ( replace(str(?con), "${
+            runtimeConfig.public.base
+          }", "") as ?context).
           BIND ( lang(?lit) as ?l)
           Bind ( str(?lit) as ?literal)
         }
-        ORDER BY lcase(?literal)
-        LIMIT ${searchOptions.limit}
     }
+   }
   }
-  GROUP BY ?uri ?predicate ?literal ?samling ?score ?lang ?matching ${translate}
+  GROUP BY ?uri ?predicate ?literal ?samling ?score ?lang ?context ?matching ${translate}
   ORDER BY lcase(?literal) DESC(?predicate)
-  LIMIT ${searchOptions.limit}
   `;
-
   return outerQuery;
 }

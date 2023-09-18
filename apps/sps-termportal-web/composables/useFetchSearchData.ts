@@ -77,6 +77,7 @@ export async function useFetchSearchData(options: SearchOptions) {
       samling: [],
       predicate: [],
       matching: [],
+      context: [],
     };
   }
 

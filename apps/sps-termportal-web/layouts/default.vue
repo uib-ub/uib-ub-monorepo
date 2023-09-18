@@ -1,17 +1,32 @@
 <template>
-  <div class="flex h-screen flex-col">
-    <NavBar />
+  <div class="flex min-h-screen flex-col">
+    <HeaderMain />
     <div
-      class="xs:pb-4 xs:px-4 container mx-auto max-w-screen-xl flex-1 bg-white px-2 pb-2 sm:px-5 sm:pb-5 md:px-7 md:pb-7 lg:px-9 lg:pb-9 xl:px-10 xl:pb-10"
+      class="flex grow"
+      :class="{ 'items-center justify-center': route.path === '/' }"
     >
-      <h1
-        v-if="route.path === '/'"
-        class="xs:text-6xl pt-[0.2em] text-5xl font-light tracking-tight text-black/75 antialiased sm:text-7xl md:text-8xl"
+      <div
+        class="flex-1"
+        :class="{
+          'max-w-screen-2xl px-2 pb-3 pt-2 xs:pb-4 sm:px-3 md:px-4 lg:px-5 xl:pl-0':
+            route.path !== '/',
+          'container mb-[10vh] max-w-[73em] p-5': route.path === '/',
+          'max-w-[69em]': locale === 'nn',
+          'max-w-[82em]': locale === 'en',
+        }"
       >
-        Termportalen
-      </h1>
-      <SearchBar />
-      <slot />
+        <header>
+          <h1
+            v-if="route.path === '/'"
+            class="text-5xl xs:text-6xl sm:text-7xl md:text-8xl"
+          >
+            <div class="-mb-6 -ml-6 -mt-4 max-w-lg">
+              <img src="/Termportalen_Logo.svg" alt="" class="" />
+            </div>
+          </h1>
+        </header>
+        <slot />
+      </div>
     </div>
     <ButtonScrollTop />
     <FooterTP />
@@ -20,4 +35,5 @@
 
 <script setup>
 const route = useRoute();
+const locale = useLocale();
 </script>
