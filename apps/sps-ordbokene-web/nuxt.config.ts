@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   css: ['~/assets/fonts/fonts.css'],
 
   nitro: {
+    preset: 'vercel',
     compressPublicAssets: true,
   },
   runtimeConfig: {
