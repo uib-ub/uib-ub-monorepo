@@ -31,6 +31,6 @@ jobs:
         npm install --package-lock-only
         npm ci
     - name: Build
-      run: npm run build
+      run: npm run build -w sps-termportal-web
     - name: Run tests
       run: npm run test
