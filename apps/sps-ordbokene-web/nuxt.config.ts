@@ -9,13 +9,6 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
     compressPublicAssets: true,
-    prerender: {
-      routes: [
-        "nob/help", "nob/about", "nob/contact",
-        "nno/help", "nno/about", "nno/contact",
-        "eng/help", "eng/about", "eng/contact"
-      ]
-    }
   },
   runtimeConfig: {
     public: {
