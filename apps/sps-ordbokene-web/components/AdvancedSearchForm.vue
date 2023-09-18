@@ -5,14 +5,14 @@
       <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-10">
         <fieldset class="gap-4 lg:col-span-2 xl:col-span-3 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
           <legend>{{$t('options.dict')}}</legend>
-          <FormRadio v-for="(item, idx) in dicts" :key="store.dict + idx" :value="item" name="dict" :labelId="'dict-radio-'+idx" :current="store.dict" @submit="update_dict">
+          <FormRadio v-for="(item, idx) in dicts" :key="store.dict + idx" :value="item" name="dict" :current="store.dict" @submit="update_dict">
             {{$t(`dicts_short.${item}`)}}
           </FormRadio>
         </fieldset>
         
         <fieldset class="gap-4 lg:col-span-2 xl:col-span-4 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded">
           <legend>{{$t('options.scope.title')}}</legend>
-          <FormRadio v-for="(item, idx) in ['e', 'ei', 'eif']" :key="store.scope + idx" :value="item" name="scope" :labelId="'scope-radio-'+idx" :current="store.scope" @submit="update_scope">
+          <FormRadio v-for="(item, idx) in ['e', 'ei', 'eif']" :key="store.scope + idx" :value="item" name="scope" :current="store.scope" @submit="update_scope">
             {{$t(`options.scope.value.${item}`)}}
           </FormRadio>
         </fieldset>  
@@ -41,7 +41,7 @@
             
             
             <div class="flex justify-center items-center">
-        <FormCheckbox labelId="toggle-list-view" v-model="settings.$state.listView" :checked="settings.listView" class="text-blue-700 font-semibold">
+        <FormCheckbox v-model="settings.$state.listView" :checked="settings.listView" class="text-blue-700 font-semibold">
             {{$t('show_list')}}
         </FormCheckbox>
     </div>

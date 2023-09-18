@@ -75,7 +75,24 @@ const page = computed(() => {
 
 const perPage = ref(parseInt(route.query.perPage) || settings.perPage)
 
-const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?w=${route.query.q}&dict=${route.query.dict}&scope=${route.query.scope}&wc=${route.query.pos||''}`, {
+
+
+const query = computed(() => {
+  const params = {
+    w: route.query.q,
+    dict: route.query.dict || 'bm,nn',
+  }
+  if (route.query.scope) {
+    params.scope = route.query.scope
+  }
+  if (route.query.pos) {
+    params.wc = store.pos
+  }
+  return params
+})
+
+const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?`, {
+          query,
           baseURL: store.endpoint,
           onResponseError(conf) {
             console.log("RESPONSE ERROR")
@@ -83,8 +100,14 @@ const { pending, error, refresh, data: articles } = await useFetch(() => `api/ar
         })
 
 const dicts = computed(()=> {
-  let currentDict = route.query.dict
-  return currentDict == 'bm,nn' ? ["bm", "nn"] : [currentDict]
+  let currentDict = route.query.dict 
+  if (currentDict == "bm") {
+    return ["bm"]
+  }
+  if (currentDict == "nn") {
+    return ["nn"]
+  }
+  return ["bm", "nn"]
 })
 
 
