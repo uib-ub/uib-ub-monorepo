@@ -15,7 +15,6 @@
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
-import Settings from './pages/settings.vue'
 import { useSettingsStore } from './stores/settingsStore'
 const store = useStore()
 const settings = useSettingsStore()
