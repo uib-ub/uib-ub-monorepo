@@ -1,5 +1,5 @@
 <template>
-    <main id="main" tabindex="-1" class="dict-view">
+    <main id="main" tabindex="-1">
       <NuxtErrorBoundary @error="form_error">
         <AdvancedSearchForm class="ord-container"/>
       </NuxtErrorBoundary>

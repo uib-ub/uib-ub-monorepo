@@ -17,16 +17,16 @@
             <NuxtLink :aria-current="$route.name == 'welcome' && 'page'" class="nav-link" to="/">{{$t('home')}}</NuxtLink>
         </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'help' && 'page'" class="nav-link" to="/help">{{$t('help')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'help' && 'page'" class="nav-link" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name.slice(0,5) == 'about' && 'page'" class="nav-link" to="/about">{{$t('about')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name.slice(0,5) == 'about' && 'page'" class="nav-link" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'settings' && 'page'" class="nav-link" to="/settings">{{$t('settings.title')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'settings' && 'page'" class="nav-link" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" to="/contact">{{$t('contact')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
           </li>
       </ul>
     </nav>

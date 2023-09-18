@@ -3,15 +3,20 @@ import eng from '../locales/eng.json'
 import nno from '../locales/nno.json'
 import nob from '../locales/nob.json'
 
-
 export default defineNuxtPlugin(({ vueApp }) => {
-  let current_locale = ""
-  try {
-    current_locale = useCookie("currentLocale", {default: () => new Date().getDate() % 2 ? 'nno' : 'nob'}).value
-  } catch (error) {
-    console.log(error)
-    current_locale = (new Date().getDate() % 2 ? 'nno' : 'nob')
+  const route = useRoute()
+  let current_locale = route.params.locale
+  if (!current_locale) {
+    try {
+      current_locale = useCookie("currentLocale", {default: () => new Date().getDate() % 2 ? 'nno' : 'nob'}).value
+    } catch (error) {
+      console.log(error)
+      current_locale = (new Date().getDate() % 2 ? 'nno' : 'nob')
+    }
+
   }
+  
+  
 
   const i18n = createI18n({
     legacy: false,

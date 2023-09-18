@@ -23,17 +23,17 @@
       <nav class="lg:mr-4">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" to="/help">{{$t('help')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
         </li>
 
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name.slice(0,5) == 'about' && 'page'" to="/about">{{$t('about')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name.slice(0,5) == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" to="/settings">{{$t('settings.title')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'contact' && 'page'" to="/contact">{{$t('contact')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'contact' && 'page'" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
         </li>
 
       </ul>
@@ -75,9 +75,12 @@ const escape_menu = (event) => {
   }
 }
 
-const update_lang = () => {
+const update_lang = (event) => {
   locale_cookie.value = i18n.locale.value
-  console.log(locale_cookie.value)
+  if (route.params.locale) {
+    event.preventDefault()
+    return navigateTo("/" + i18n.locale.value + route.fullPath.slice(4, route.fullPath.length))
+  }
   
 }
 

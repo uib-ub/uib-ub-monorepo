@@ -1,5 +1,5 @@
 <template>
-<main id="main" tabindex="-1" class="dict-view simple-search">
+<main id="main" tabindex="-1" class="simple-search">
   <SearchNav v-if="route.name != 'search'"/>
     <NuxtErrorBoundary @error="form_error">
     <SearchForm v-if="route.name != 'search'" class="ord-container"/>
