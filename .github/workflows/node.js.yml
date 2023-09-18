@@ -33,4 +33,4 @@ jobs:
     - name: Build
       run: npm run build -w sps-termportal-web
     - name: Run tests
-      run: npm run test
+      run: npm run test -w sps-termportal-web
