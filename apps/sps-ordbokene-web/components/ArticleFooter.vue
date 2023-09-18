@@ -12,7 +12,7 @@
       <button class="btn btn-borderless px-3" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
         <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
       </button>
-      <div class="cite-container p-4 pb-1 pt-2 relative text-1 basis-full" v-if="cite_expanded" :id="'cite-'+article_id">
+      <div class="cite-container p-4 pb-1 pt-2 text-1 basis-full" v-if="cite_expanded" :id="'cite-'+article_id">
         <h4>{{$t('article.cite_title')}}</h4>
         <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
 
