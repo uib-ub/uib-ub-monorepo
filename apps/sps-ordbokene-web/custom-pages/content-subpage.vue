@@ -17,7 +17,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 
-const { data } = await useAsyncData('subpage-' + i18n.locale.value + route.fullPath, () => queryContent(i18n.locale.value + route.fullPath).findOne(),
+const { data } = await useAsyncData('subpage-' + route.fullPath, () => queryContent(route.fullPath).findOne(),
         {watch: i18n.locale})
 
 

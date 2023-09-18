@@ -73,15 +73,16 @@ export default defineNuxtConfig({
         file: '~/custom-pages/content-container.vue',
         children: [
           {
-            name: 'about',
-            path: '',
-            file: '~/custom-pages/content-accordions.vue'
-          },
-          {
             name: 'about-slug',
             path: ':slug',
             file: '~/custom-pages/content-subpage.vue'
+          },
+          {
+            name: 'about',
+            path: '',
+            file: '~/custom-pages/content-accordions.vue'
           }
+          
 
         ]
       })
@@ -91,18 +92,18 @@ export default defineNuxtConfig({
         file: '~/custom-pages/content-container.vue',
         children: [
           {
-            name: 'help',
-            path: '',
-            file: '~/custom-pages/content-accordions.vue'
-          },
-          {
             name: 'help-slug',
             path: ':slug',
             file: '~/custom-pages/content-subpage.vue'
+          },
+          {
+            name: 'help',
+            path: '',
+            file: '~/custom-pages/content-accordions.vue'
           }
-
         ]
         })
+
         pages.push({
           name: 'contact',
           path: locales + '/contact',
@@ -115,12 +116,14 @@ export default defineNuxtConfig({
             }
           ]
       })
+
       pages.push(
       {
         name: 'settings',
         path: locales + '/settings',
         file: '~/custom-pages/settings.vue',
       })
+
       pages.push({
         name: 'search',
         path: locales +'/search',

@@ -26,7 +26,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 
-const { data } = await useAsyncData('content-' + i18n.locale.value + route.fullPath, async () => {
+const { data } = await useAsyncData('content-' + route.fullPath, async () => {
   return {
     intro: await queryContent(i18n.locale.value, route.name).findOne(),
     sections: await queryContent(i18n.locale.value, route.name).skip(1).find()
