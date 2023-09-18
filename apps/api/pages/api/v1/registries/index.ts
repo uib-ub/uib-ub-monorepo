@@ -24,7 +24,9 @@ async function getObject(): Promise<any> {
       {
         ?id a skos:ConceptScheme . 
         ?id ?p ?o .
-        ?c skos:inScheme ?id .
+        OPTIONAL {
+          ?c skos:inScheme ?id .
+        }
         OPTIONAL { 
           ?o a ?oClass ; 
             dct:title|skos:prefLabel|rdfs:label|foaf:name ?o2 .
@@ -39,7 +41,9 @@ async function getObject(): Promise<any> {
     SERVICE <https://sparql.ub.uib.no/skeivtarkiv/query> { 
       ?id a skos:ConceptScheme . 
       ?id ?p ?o .
-      ?c skos:inScheme ?id .
+      OPTIONAL {
+        ?c skos:inScheme ?id .
+      }
       OPTIONAL { 
         ?o a ?oClass ; 
           dct:title|skos:prefLabel|rdfs:label|foaf:name ?o2 .
