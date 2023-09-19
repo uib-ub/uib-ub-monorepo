@@ -42,7 +42,7 @@ jobs:
         npm ci
 
     - name: Build
-      run: npm run build -w sps-termportal-web
+      run: npm run build
 
     - name: Run tests
-      run: npm run test -w sps-termportal-web
+      run: npm run test
