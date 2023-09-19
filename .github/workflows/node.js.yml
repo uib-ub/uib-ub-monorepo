@@ -21,17 +21,24 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Check out code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+
+    - name: Use Node.js ${{ matrix.node-version }} env
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: install dependencies
+
+    - name: Install dependencies
       run: |
         npm install --package-lock-only
         npm ci
+
     - name: Build
       run: npm run build -w sps-termportal-web
+
     - name: Run tests
       run: npm run test -w sps-termportal-web
