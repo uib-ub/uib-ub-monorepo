@@ -2,6 +2,7 @@ import { useStore } from '~/stores/searchStore'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const store = useStore()
+
     //console.log("MIDDLEWARE\nFROM: ", from, "\nTO: ", to, "\nREDIRECTED FROM:",to.redirectedFrom)
     
     const get_concepts = async (server, env) => {

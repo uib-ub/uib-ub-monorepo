@@ -1,33 +1,28 @@
 <template>
-    <span class="radiobox-container">
-      <Icon name="mdi:radiobox-marked" aria-hidden="true" class="text-primary absolute pointer-events-none w-6 h-6" v-if="value == model"/>
-      <Icon name="mdi:radiobox-blank"  aria-hidden="true" class="text-gray-700 absolute pointer-events-none w-6 h-6" v-else/>
-      
-      <input  class="sr-only" type="radio" :id="labelId" :name="name" :checked="props.value==props.model" :value="props.value" @change="change">
-      <label class="pl-8" :for="props.labelId">
+    <span class="radiobox-container" @click="submit">
+      <label class="grid">
+        <input  class="" type="radio" :name="name" :value="value" :checked="current == value" @keyup="submit">
         <slot></slot>
       </label>
     </span>
     
-    </template>
+</template>
     
-    <script setup>
+<script setup>
     
-    
-    const props = defineProps({
-        labelId: String,
-        name: String,
-        value: String,
-        model: String
-    })
+  const props = defineProps({
+      name: String,
+      value: String,
+      current: String
+  })
 
-    const emit = defineEmits(['change'])
+  const emit = defineEmits(['submit'])
     
-
-    const change = (event) => {
-        console.log(event)
-        emit('change', props.value)
+  const submit = event => {
+    if (event.code == "Space" || event.type === 'click' && event.clientX !== 0 && event.clientY !== 0) {
+      emit('submit', props.value)
     }
+  }
 
     
     </script>
@@ -36,31 +31,25 @@
     <style scoped>
     
     input {
-      position: absolute;
-    }
-    
-    input + label {
-      display: block;
-      position: relative;
-    }
-    
-    input + label::before {
-      content: '';
-
+      accent-color: theme('colors.primary.DEFAULT');
     }
 
-    .radiobox-container:focus-within svg { 
-  outline: solid 2px theme('colors.secondary.DEFAULT');
-  border-radius: 1rem;
-
-}
-    
-    
+    input:checked:hover {
+      accent-color: theme('colors.secondary.DEFAULT') !important;
+    }
 
     
-input:checked + label::after {
-    content: '';
-}
-    
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: border-box;
+    }
+
+    label {
+        display: grid;
+        grid-template-columns: 1em auto;
+        gap: 0.5em;
+    }
 
     </style>

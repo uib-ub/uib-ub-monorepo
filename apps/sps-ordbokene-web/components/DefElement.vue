@@ -15,13 +15,18 @@
        --><span class="numerator" v-if="item.type == 'fraction'">{{item.num}}</span><!--
        -->{{item.type == 'fraction' ? '⁄' : ''}}<!--
        --><span class="denominator" v-if="item.type == 'fraction'">{{item.denom}}</span><!--
- --></component><span v-if="semicolon && no_preceeding_punctuation">; </span><span v-if="comma && no_preceeding_punctuation">, </span></component>
+ --></component>
+ <span v-if="semicolon && no_preceeding_punctuation">; </span>
+ <span v-if="comma && no_preceeding_punctuation">, </span>
+ </component>
 </template>
 
 
 <script setup>
+import DefElement from './DefElement.vue'
 import { useStore } from '~/stores/searchStore'
 const store = useStore()
+
 
 const emit = defineEmits(['error', 'link-click'])
 const link_click = (event) => {
@@ -53,7 +58,7 @@ const unparsed = computed(() => {
             if (item.type_ == 'usage') {
               if (item.items) {
                 item.content = item.text
-                return {type: item.type_, html: '', tag: 'DefElement', props: {body: item, tag: 'em', dict: props.dict}}
+                return {type: item.type_, html: item.text, tag: DefElement, props: {body: item, tag: 'em', dict: props.dict}}
               }
               else {
                 return {type: item.type_, html: item.text, tag: 'em'}
@@ -73,10 +78,10 @@ const unparsed = computed(() => {
                     }
                 } 
             else if (item.type_ == 'pronunciation') return {type: item.type_, html: item.string}
-            else if (item.type_ == 'pronunciation_guide') return {type: item.type_, body: item, html: '', tag: 'DefElement', props: {body: item, tag: 'i', dict: props.dict}}
+            else if (item.type_ == 'pronunciation_guide') return {type: item.type_, body: item, html: '', tag: DefElement, props: {body: item, tag: 'em', dict: props.dict}}
             else if (item.type_ == 'superscript') return {type: item.type_, html: item.text, tag: 'sup'}
             else if (item.type_ == 'subscript') return {type: item.type_, html: item.text, tag: 'sub'}
-            else if (item.type_ == 'quote_inset') return {type: item.type_, body: item, html: '', tag: 'DefElement', props: {body: item, tag: 'i', dict: props.dict}}
+            else if (item.type_ == 'quote_inset') return {type: item.type_, body: item, html: '', tag: DefElement, props: {body: item, tag: 'em', dict: props.dict}}
             else if (item.type_ == 'fraction') return fraction(item.numerator, item.denominator)
             else if (item.id) return {type: item.type_, html:  ({"nn":store.concepts_nn, "bm":store.concepts_bm}[props.dict][item.id] || {})['expansion'] || item.id}
             else return {type: item.type_ || 'plain', html: item}
@@ -122,3 +127,10 @@ const no_preceeding_punctuation = computed(()=> {
 
 
 </script>
+<style scoped>
+.usage {
+  font-style: italic;
+}
+
+
+</style>

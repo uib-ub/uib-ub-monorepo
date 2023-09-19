@@ -1,3 +1,62 @@
+<template>
+<div class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
+  <client-only>
+    <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-2">
+    <button v-if="showLinkCopy" class="btn btn-borderless px-3" @click="copy_link" v-bind:class="{'hidden xl:block': store.dict == 'bm,nn' && $route.name!= 'article', 'hidden md:block': store.dict != 'bm,nn' && $route.name != 'article'}">
+      <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
+      <span>{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
+    </button>
+    <button class="btn btn-borderless px-3" v-if="webShareApiSupported" @click="shareViaWebShare">
+        <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
+    </button>
+      <button class="btn btn-borderless px-3" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
+        <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
+      </button>
+      <div class="cite-container p-4 pb-1 pt-2 text-1 basis-full" v-if="cite_expanded" :id="'cite-'+article_id">
+        <h4>{{$t('article.cite_title')}}</h4>
+        <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
+
+        <blockquote class="break-all sm:break-keep">
+          <i18n-t keypath="article.citation" tag="div" id="citation">
+            <template v-slot:lemma>{{citation.lemma}}</template>>
+            <template v-slot:link>
+              &lt;<a :href="citation.link">{{citation.link}}</a>&gt;
+            </template>
+            <template v-slot:dict>
+              <em>{{citation.dict}}</em>
+            </template>
+            <template v-slot:dd>
+              {{citation.dd}}
+            </template>
+            <template v-slot:mm>
+              {{citation.mm}}
+            </template>
+            <template v-slot:yyyy>
+              {{citation.yyyy}}
+            </template>
+          </i18n-t>
+
+        </blockquote>
+          <button class="mt-4 mb-2 btn btn-borderless" @click="copy_citation">
+            <Icon :name="copycitation ? 'bi:file-earmark-plus' : 'bi:file-earmark-check-fill'" class="mb-1 mr-3 text-primary" />{{ citationCopied ? $t('article.citation_copied') : $t('article.copy') }}
+          </button>
+          <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
+    </div>
+    </div>
+  </client-only>
+
+<span v-if="$route.name != 'article'" class="px-4 pt-1 ml-auto">
+    <NuxtLink class="whitespace-nowrap"  :to="`/${dict}/${article_id}`">
+       <span>{{$t("article.open", 1, { locale: content_locale})}}</span>
+    </NuxtLink>
+    </span>
+    
+</div>
+  
+
+
+</template>
+
 <script setup>
 
 import { useStore } from '~/stores/searchStore'
@@ -11,6 +70,7 @@ const props = defineProps({
 })
 
 const cite_expanded = ref(false)
+const citationCopied = ref(false);
 
 
 const create_link = () => {
@@ -33,16 +93,15 @@ const shareViaWebShare = () => {
       })
       };
 
+
 const copy_link = (event) => {
-      let link = create_link()
-      
-        navigator.clipboard.writeText(link).then(() => {
-          console.log("SUCCESS")
-          store.copied = event.target.id
-         }).catch(err => {
-           console.log("ERROR COPYING:",err)
-         })
-    }
+  let link = create_link();
+  navigator.clipboard.writeText(link).then(() => {
+    store.copied = link;
+  }).catch(err => {
+    console.log("ERROR COPYING:", err);
+  });
+};
 
 const get_citation_info = () => {
       let date = new Date();
@@ -55,12 +114,12 @@ const get_citation_info = () => {
       return [lemma, dd, mm, yyyy, link, dict]
     }
 
-const create_citation = () => {
+const citation = computed(() => {
       const [lemma, dd, mm, yyyy, link, dict] = get_citation_info()
       let citation = {lemma, link, dd, mm, yyyy, dict}
 
       return citation
-    }
+    })
 
 const download_ris = () => {
       const [lemma, dd, mm, yyyy, link] = get_citation_info()
@@ -74,47 +133,30 @@ const download_ris = () => {
       a.click()
       document.body.removeChild(a)
     }
+
+const copycitation = ref(true);
+
+const copy_citation = () => {
+  let citation = document.getElementById("citation").textContent;
+  navigator.clipboard.writeText(citation);
+  copycitation.value = !copycitation.value;
+  citationCopied.value = !citationCopied.value; // Toggle the citationCopied value
+};
+
+
 </script>
-
-<template>
-<client-only>
-<div class="flex justify-around gap-3 mt-3 flex-wrap">
-    <button class="btn btn-borderless" :id="'copy-link-'+article_id" v-if="showLinkCopy" @click="copy_link">
-      <Icon :name="store.copied == 'copy-link-'+article_id ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/> {{$t("article.copy_link", 1, { locale: content_locale})}}
-    <span aria-live="assertive" class="sr-only" v-if="'copy-citation-'+article_id == store.copied">{{$t('article.link_copied')}}</span></button>
-    
-    <button class="btn btn-borderless" v-if="webShareApiSupported" @click="shareViaWebShare">
-      <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
-    </button>
-    <button class="btn btn-borderless" type="button" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
-      <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
-    </button>
-</div>
-<div class="cite-container p-4 pb-1 pt-2 mt-2" v-if="cite_expanded" :id="'cite-'+article_id">
-      <h4>{{$t('article.cite_title')}}</h4>
-      <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
-      <div id="citation" v-html="$t('article.citation', create_citation())" />
-       <button class="mt-4 mb-2 btn btn-borderless" @click="download_ris"><Icon name="bi:download" class="mb-1 mr-3 text-primary" /> {{$t("article.download")}}</button>
-
-</div>
-</client-only>
-</template>
 
 <style scoped>
 
 .cite-container {
-    box-shadow: 1px 1px 1px theme("colors.gray.500");
-    border: solid 1px theme("colors.gray.500");
     border-radius: 1.5rem;
-    word-break: break-word;
-    
+    @apply mt-4 duration-200 border border-gray shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] ;
 }
+
 
 h4 {
-  font-size: 1.5rem;
-  @apply text-primary;
+  @apply text-primary text-2xl font-semibold;
   font-variant: all-small-caps;
-  font-weight: 600;
+  }
 
-}
 </style>
