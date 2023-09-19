@@ -191,6 +191,7 @@
     "title": "About Termportalen",
     "aboutUs": "About us",
     "history": "History",
+    "publications": "Relevant Publications",
     "kommeiGang": "How to get started with terminology work?",
     "links": "Useful links",
     "maritaStilling": "Head of Termportalen, associate professor",
@@ -201,7 +202,7 @@
   "innstillinger": {
     "title": "Settings",
     "global": "Display language",
-    "globalLangComment": "Choose which language you want to display Termportalen.no in",
+    "globalLangComment": "Here you may change the language of headings, buttons, messages, and menus. This will not affect the content in the various term entries, such as definitions, terms and notes.",
     "conceptview": "Term entry",
     "dataDispLang": "Term entry languages",
     "dataDispLangComment": "Choose the language(s) you want to see in the term entry"

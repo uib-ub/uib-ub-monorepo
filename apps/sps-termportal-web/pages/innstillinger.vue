@@ -5,7 +5,7 @@
     </Head>
     <div class="flex">
       <SideBar />
-      <main>
+      <main class="max-w-[37em]">
         <h1 id="main" class="pb-3 pt-6">
           <AppLink
             to="#main"
