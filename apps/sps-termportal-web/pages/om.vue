@@ -355,6 +355,72 @@
                 Termportalen.
               </p>
             </div>
+            <h3 class="pb-2 pt-6 font-semibold">{{ $t("om.publications") }}</h3>
+            <PublicationList>
+              <PublicationEntry
+                to="http://www.nordterm.net/filer/publikationer/rapporter/Nordterm22.pdf#page=69"
+                link-desc="Nordterm"
+                >Andersen, Gisle, Peder Gammeltoft og Kjetil Gundersen. 2021.
+                Termportalen – fra forprosjekt til fast finansiering. I
+                <i>Nordterm</i> 22:
+                <i>Begreppsarbete och informationshandetering</i>, 65–76,
+              </PublicationEntry>
+              <PublicationEntry
+                to="http://www.nordterm.net/filer/publikationer/rapporter/Nordterm16_Samlede_indlaeg.pdf#page=210"
+                link-desc="Nordterm"
+                >Andersen, Gisle og Marita Kristiansen. 2009. Terminor og
+                Termportalen – nye initiativer for norsk terminologisk
+                infrastruktur. I <i>Nordterm</i> 16:
+                <i>Ontologier og taksonomier</i>, 209–222,
+              </PublicationEntry>
+              <PublicationEntry
+                to="https://openaccess.nhh.no/nhh-xmlui/bitstream/handle/11250/2394872/Innselset_Brekke_2004_15_KBN%20%28KunnskapsBank%20for%20Norsk%20%c3%b8konomisk-administrativt%20domene_%20presentasjon%20av%20et%20korpusbasert%20terminologiprosjekt.pdf?sequence=1&isAllowed=y"
+              >
+                Brekke, Magnar og Kai Innselset. 2004. KB-N (KunnskapsBank for
+                Norsk økonomisk-administrativt domene): presentasjon av et
+                korpusbasert terminologiprosjekt,
+              </PublicationEntry>
+              <PublicationEntry
+                to="https://www.regjeringen.no/contentassets/1800367dc51846b98a0b33817f03c958/no/pdfs/handlingsplan-fra-ord-til-handling.pdf"
+              >
+                Frå ord til handling. Handlingsplan for norsk fagspråk i
+                akademia. 2023,
+              </PublicationEntry>
+              <PublicationEntry
+                to="https://www.sprakradet.no/globalassets/vi-og-vart/publikasjoner/terminologen-2.pdf#page=52"
+              >
+                Kristiansen, Marita. 2013. Towards a Norwegian infrastructure
+                for terminology. I <i>Terminologen</i> 2:
+                <i> Terminologi – ansvar og bevissthet </i>, 53–59,
+              </PublicationEntry>
+              <PublicationEntry
+                to="https://lovdata.no/dokument/LTI/lov/2021-05-21-42"
+              >
+                Lov om språk (språklova),
+              </PublicationEntry>
+              <PublicationEntry
+                to="https://www.regjeringen.no/no/dokumenter/prop.-126-l-20222023/id2984933/"
+                >Prop. 126 L (2022–2023). Lov om universiteter og høyskoler
+                (universitets- og høyskoleloven),
+              </PublicationEntry>
+              <PublicationEntry
+                to="https://www.regjeringen.no/no/dokumenter/prop.-108-l-20192020/id2701451/?ch=1"
+              >
+                Prop. 108 L (2019–2020) Lov om språk (språklova),
+              </PublicationEntry>
+              <PublicationEntry
+                to="https://www.regjeringen.no/contentassets/50816e814a9c46169bd69dc20dd746a3/nn-no/pdfs/stm200720080035000dddpdfs.pdf"
+              >
+                St.meld.nr. 35 (2007-2008). Mål og meining. Ein heilskapleg
+                norsk språkpolitikk,
+              </PublicationEntry>
+              <PublicationEntry
+                to="https://www.sprakradet.no/upload/9832/norsk_i_hundre.pdf"
+              >
+                Språkrådet 2005. Norsk i hundre! Norsk som nasjonalspråk i
+                globaliseringens tidsalder. Et forslag til strategi,
+              </PublicationEntry>
+            </PublicationList>
           </AccordionTab>
           <AccordionTab>
             <template #header>
