@@ -92,6 +92,9 @@
         ".next/**"
       ]
     },
+    "generate#sps-termportalen-web": {
+      "outputs": ["dist/**"]
+    },
     "test": {
       "outputs": [
         "coverage/**"
