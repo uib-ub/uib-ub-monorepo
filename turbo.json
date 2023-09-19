@@ -92,7 +92,7 @@
         ".next/**"
       ]
     },
-    "generate#sps-termportale-web": {
+    "generate#sps-termportalen-web": {
       "outputs": ["dist/**"]
     },
     "test": {
