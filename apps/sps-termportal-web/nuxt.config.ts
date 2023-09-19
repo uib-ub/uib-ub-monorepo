@@ -42,6 +42,9 @@ export default defineNuxtConfig({
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
   },
+  nitro: {
+    preset: "vercel",
+  },
   vite: {
     plugins: [
       VueI18nVitePlugin({
