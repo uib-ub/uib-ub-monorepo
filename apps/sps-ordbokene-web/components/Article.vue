@@ -614,7 +614,6 @@ display: flex;
 
 
 .list-view-item>a:hover {
-    /* background-color:theme('colors.gray.100'); */
     @apply duration-200 bg-canvas-darken border-2;
     
 }
