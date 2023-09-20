@@ -150,7 +150,7 @@ const copy_citation = () => {
 
 .cite-container {
     border-radius: 1.5rem;
-    @apply mt-4 duration-200 border border-gray shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] ;
+    @apply mt-4  border border-gray shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)] ;
 }
 
 

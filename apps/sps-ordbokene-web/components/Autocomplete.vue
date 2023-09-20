@@ -275,7 +275,6 @@ if (process.client) {
   position: relative;
   left: 50%;
 transform: translateX(-50%);
-  @apply duration-200;
 }
 
 .dropdown-wrapper {
@@ -309,10 +308,12 @@ transform: translateX(-50%);
 
 #autocomplete-dropdown .dropdown-item {
   text-align: left;
-  @apply p-4 mx-2 duration-200;
-
-
+  @apply p-4 mx-2 duration-200 motion-reduce:transition-none;
 }
+#autocomplete-dropdown .dropdown-item:hover  {
+    @apply bg-canvas-darken cursor-pointer shadow-md;
+}
+
 
  #autocomplete-dropdown .word {
     @apply text-primary;
@@ -328,9 +329,6 @@ transform: translateX(-50%);
   @apply bg-gray-50;
 }
 
-#autocomplete-dropdown .dropdown-item:hover  {
-    @apply bg-canvas-darken cursor-pointer shadow-lg;
-}
 
 
 .dict-parentheses {
@@ -392,7 +390,7 @@ transform: translateX(-50%);
 
 
 .appended-button, .appended-button-disabled {
-  @apply text-primary m-0 p-2 self-center flex;
+  @apply text-primary m-0 p-2 self-center flex motion-reduce:transition-none;
   border: none;
   border-radius: 2rem; 
   background: unset;

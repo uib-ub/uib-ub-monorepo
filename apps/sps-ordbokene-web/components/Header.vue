@@ -41,7 +41,7 @@
     <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1">
           <Icon name="bi:globe2" size="1.25em" class="mr-2"/>
           <label for="locale-select" class="sr-only">{{$t('settings.locale.title')}}</label>
-          <select id="locale-select" class="bg-primary text-white focus:outline-none" v-model="i18n.locale.value" @change="update_lang">
+          <select id="locale-select" class="bg-primary text-white" v-model="i18n.locale.value" @change="update_lang">
             <option class="text-text text-xl bg-canvas shadow-xl border-2" value="eng">English</option>
             <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nob">Bokmål</option>
             <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nno">Nynorsk</option>

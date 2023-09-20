@@ -64,7 +64,7 @@
       <button v-if="!settings.inflectionExpanded && inflected && !welcome" class="btn btn-primary my-1 border-primary-darken !pr-2" @click="inflection_expanded = !inflection_expanded" type="button" :aria-expanded="inflection_expanded" :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
              {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
-        <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
+        <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
             <div class="inflection-container p-2">
                 <NuxtErrorBoundary @error="inflection_error">
                 <InflectionTable :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
@@ -578,7 +578,7 @@ span.lemma-group {
 .article {
   border-radius: 2rem;
     /* border: 1px solid #560027; */
-    @apply p-1 md:p-2 lg:p-4 bg-canvas duration-200 shadow-md; 
+    @apply p-1 md:p-2 lg:p-4 bg-canvas shadow-md; 
   
 }
   
@@ -602,7 +602,7 @@ display: flex;
   border: none;
   display: inline-block;
   width: 100%;
-  @apply duration-200;
+  @apply duration-200 motion-reduce:transition-none;
 
 }
 

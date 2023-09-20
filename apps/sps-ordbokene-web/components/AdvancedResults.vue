@@ -176,7 +176,7 @@ bottom: 1rem;
 
 
 .go-top-button{
-@apply text-black font-medium rounded transition duration-200 cursor-pointer px-4 py-2;
+@apply text-black font-medium rounded transition duration-200 cursor-pointer px-4 py-2 motion-reduce:transition-none;
 }
 
 .go-top-button:hover{
