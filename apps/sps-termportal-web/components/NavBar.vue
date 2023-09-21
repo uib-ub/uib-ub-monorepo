@@ -7,18 +7,22 @@
     <div class="mx-auto flex h-full grow items-center justify-between">
       <div class="grow">
         <div v-if="context !== 'minimal'" class="flex grow items-center">
-          <SideBar class="w-12">
+          <SideBar class="w-16">
             <AppLink
               id="anchor"
               to="/"
               aria-label="Termportalen.no"
-              class="tp-hover-focus py-1 mx-1 flex justify-center border-transparent"
+              class="tp-hover-focus mx-1.5 flex h-10 justify-center border-transparent py-1"
             >
-              <div class="-mt-1.5 -mb-2.5 hidden w-[10.5em] xl:block">
-                <img class="" src="/Termportalen_Logotype.svg" aria-hidden="true" />
+              <div class="-mt-[2px] hidden w-[9.5em] xl:block">
+                <img
+                  class=""
+                  src="/logo-wordmark-termportalen.svg"
+                  aria-hidden="true"
+                />
               </div>
-              <div class="-m-3.5 block w-[3.3em] xl:hidden">
-                <img src="/Termportalen_Logosymbol.svg" aria-hidden="true" />
+              <div class="block w-[2.35em] xl:hidden">
+                <img src="/logo-symbol-termportalen.svg" aria-hidden="true" />
               </div>
             </AppLink>
           </SideBar>

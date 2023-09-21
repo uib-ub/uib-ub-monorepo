@@ -32,7 +32,7 @@
                   noDomain
                 "
                 name="mdi:checkbox-marked-outline"
-                size="1.4em"
+                size="1.3em"
                 :class="{
                   'text-gray-400 group-hover:text-tpblue-400': noDomain,
                 }"
@@ -41,7 +41,7 @@
               <Icon
                 v-else
                 name="mdi:checkbox-blank-outline"
-                size="1.4em"
+                size="1.3em"
                 class="text-tpblue-400"
                 aria-hidden="true"
               />
