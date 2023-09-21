@@ -5,7 +5,7 @@
     </Head>
     <div class="flex">
       <SideBar />
-      <main>
+      <main class="max-w-[37em]">
         <h1 id="main" class="pb-3 pt-6">
           <AppLink
             to="#main"
@@ -116,14 +116,14 @@
                   <Icon
                     v-if="dataDisplayLanguages.includes(lang)"
                     name="mdi:checkbox-marked-outline"
-                    size="1.4em"
+                    size="1.3em"
                     class="text-tpblue-400"
                     aria-hidden="true"
                   />
                   <Icon
                     v-else
                     name="mdi:checkbox-blank-outline"
-                    size="1.4em"
+                    size="1.3em"
                     class="text-tpblue-400"
                     aria-hidden="true"
                   />

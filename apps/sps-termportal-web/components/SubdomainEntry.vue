@@ -10,28 +10,30 @@
     />
     <label
       :for="label"
-      class="tp-transition-shadow flex cursor-pointer items-center rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+      class="tp-transition-shadow flex cursor-pointer rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
     >
-      <Icon
-        v-if="
-          modelValue[label] === true ||
-          (modelValue[label] === undefined &&
-            (parents[0] === true ||
-              (parents[0] === undefined && parents[1] === true)))
-        "
-        name="mdi:checkbox-marked-outline"
-        size="1.3em"
-        class="text-tpblue-400"
-        aria-hidden="true"
-      />
-      <Icon
-        v-else
-        name="mdi:checkbox-blank-outline"
-        size="1.3em"
-        class="text-tpblue-400"
-        aria-hidden="true"
-      />
-      <span class="pl-2">{{ lalo[locale][label] || label }}</span>
+      <div class="-mt-[1px]">
+        <Icon
+          v-if="
+            modelValue[label] === true ||
+            (modelValue[label] === undefined &&
+              (parents[0] === true ||
+                (parents[0] === undefined && parents[1] === true)))
+          "
+          name="mdi:checkbox-marked-outline"
+          size="1.2em"
+          class="text-tpblue-400"
+          aria-hidden="true"
+        />
+        <Icon
+          v-else
+          name="mdi:checkbox-blank-outline"
+          size="1.2em"
+          class="text-tpblue-400"
+          aria-hidden="true"
+        />
+      </div>
+      <div class="pl-2">{{ lalo[locale][label] || label }}</div>
     </label>
   </div>
 </template>

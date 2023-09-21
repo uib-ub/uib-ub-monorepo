@@ -5,6 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  app: {
+    head: {
+      link: [{ rel: "icon", type: "image/svg", href: "/favicon.svg" }],
+    },
+  },
   meta: { title: "Termportalen" },
   extends: ["nuxt-umami"],
   css: ["assets/tp-theme/theme.scss"],
@@ -36,6 +41,9 @@ export default defineNuxtConfig({
     public: {
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
+  },
+  nitro: {
+    preset: "vercel",
   },
   vite: {
     plugins: [
