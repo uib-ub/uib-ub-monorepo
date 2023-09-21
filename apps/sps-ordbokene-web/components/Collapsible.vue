@@ -47,7 +47,7 @@ button {
 }
 
 .collapsible-container:not(:last-child) {
-    @apply border-solid border border-gray-100;
+    @apply border-b border-solid border-gray-100;
     
 }
 
