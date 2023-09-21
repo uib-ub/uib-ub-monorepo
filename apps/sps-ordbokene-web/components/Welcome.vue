@@ -30,19 +30,13 @@ const [{ bm_pending, data: welcome_bm },  { nn_pending, data: welcome_nn }] = aw
 
 .monthly-title {
   font-size: 1.17em;
-  display: flex;
-  justify-content: center;
+  @apply justify-center flex;
 }
 
 .monthly-title h2 {
-  @apply bg-primary;
-
-  border-radius: 2rem;
-  text-align: center;
-  letter-spacing: .1rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  @apply text-white;
+  /* border-radius: 2rem; */
+  /* letter-spacing: .1rem; */
+  @apply text-white font-semibold text-xl bg-primary tracking-widest text-center rounded-[32px];
 }
 
 </style>

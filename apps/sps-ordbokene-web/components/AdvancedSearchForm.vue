@@ -20,7 +20,7 @@
       <div class="grid sm:grid-cols-2 xl:grid-cols-2 lg:grid-cols-1 md:col-span-2 lg:col-span-1 xl:col-span-2 gap-2 sm:gap-4 lg:gap-4 xl:col-span-3">
         <div class="relative mt-5"> 
             <label for="pos-select" class="absolute left-2 top-0 transform -translate-y-1/2 bg-tertiary px-1 mb-4 whitespace-nowrap">{{ $t('pos') }}:</label>
-            <select id="pos-select" name="pos" @change="update_pos" class="w-full border border-1 bg-tertiary py-4 pl-6 pr-2 focus:border-blue-400 focus:outline-none" v-bind:class="{not_null: store.pos}">
+            <select id="pos-select" name="pos" @change="update_pos" class="w-full border border-1 bg-tertiary py-4 pl-6 pr-2 focus:border-blue-400" v-bind:class="{not_null: store.pos}">
                 <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
             </select>
         </div>

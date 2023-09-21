@@ -32,7 +32,7 @@ const link_click = (event) => {
 <style scoped>
 
 li.compound_list ul li {
-  display: inline;
+  @apply inline;
 }
 
 li.compound_list li:not(:last-child):not(:first-child):after {
@@ -40,7 +40,7 @@ li.compound_list li:not(:last-child):not(:first-child):after {
 }
 
 ul {
-  padding-left: 0px !important;
+  @apply italic;
 }
 </style>
   

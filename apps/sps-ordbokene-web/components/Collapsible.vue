@@ -47,7 +47,7 @@ button {
 }
 
 .collapsible-container:not(:last-child) {
-    border-bottom: solid 1px theme('colors.gray.100');
+    @apply border-solid border border-gray-100;
     
 }
 
