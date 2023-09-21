@@ -3,7 +3,7 @@
   <Spinner v-if="pending"/>
   <div v-if="!pending && !error && articles && articles.meta" >
   <div  v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
-    <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labeledby="dict+'_heading'">
+    <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
       <div class="py-2 px-2">
         <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
           <span class="result-count-text">{{articles.meta[dict].total}}</span>

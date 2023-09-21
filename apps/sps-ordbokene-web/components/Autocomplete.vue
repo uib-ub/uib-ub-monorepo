@@ -272,9 +272,9 @@ if (process.client) {
 <style scoped>
 
 .search-container {
-  position: relative;
   left: 50%;
 transform: translateX(-50%);
+@apply relative;
 }
 
 .dropdown-wrapper {
