@@ -451,13 +451,8 @@ if (props.single) {
 <style scoped>
 
  h2 {
-    color: theme("colors.gray.700") !important;
-    margin-left: 1rem;
-    margin-bottom: 0rem;
-    letter-spacing: .1rem;
     font-variant-caps: all-small-caps;
-    font-weight: 600;
-    font-size: 1.25rem !important;
+    @apply !text-xl font-semibold tracking-widest mb-0 ml-4 !text-gray-700;
 }
 
 
@@ -469,38 +464,36 @@ if (props.single) {
     /* border-color: theme("colors.gray.500") !important; */
     /* border: solid 1px; */
     /* border-radius: 0rem; */
-    display: inline-flex;
-    @apply border-primary overflow-auto md:max-w-full;
+    @apply border-primary overflow-auto md:max-w-full inline-flex;
 }
 
 li:only-child.level1 > ol {
-padding-left: 0px;
+@apply pl-0;
 }
 
 ul li.definition {
-list-style:disc;
+@apply list-disc;
 }
 
 
 
 .level1>ol {
-padding-left: 1.25rem;
+@apply pl-5;
 }
 
 
 
 section {
-padding-top: .5rem;
-padding-bottom: .5rem;
+@apply py-2;
 }
 
 
 section.etymology > h4, section.pronunciation > h4 {
-display: inline;
+  @apply inline;
 }
 
 section.etymology ul, section.pronunciation ul, section.etymology li, section.pronunciation li {
-display: inline;
+@apply inline;
 }
 
 
@@ -511,7 +504,7 @@ list-style: upper-alpha;
 
 li.level3.definition {
 /* Norsk ordbok skal ha "lower.alpha" her */
-list-style: disc;
+@apply list-disc;
 }
 
 level2.definition {
@@ -520,50 +513,44 @@ list-style: revert !important;
 }
 
 li.sub_article > ul {
-padding-left: 0px;
+@apply pl-0;
 }
 
 li::marker {
-@apply text-primary;
-font-weight: bold;
+@apply text-primary font-bold;
 }
 
 li.level2>div {
-padding-left: 0.5rem;
+@apply pl-2;
 }
 
 ol.sub_definitions {
-padding-left: 1.25rem;
+@apply pl-5;
 }
 
 
 
 .skeleton {
-  background-color: rgba(0,0,0, .1);
-  border-radius: 1rem;
-  margin-left: 1rem;
+  @apply ml-4 rounded-[1rem] bg-black;
 
 }
 .skeleton-heading {
-  height: 2rem;
-  width: 15rem;
+  @apply h-8 w-60;
 }
 
 .skeleton-subheading {
-  height: 1.25rem;
-  width: 10rem;
+  @apply h-5 w-40;
 }
 
 .skeleton-content {
-  height: 1rem;
-  margin: 1rem;
+  @apply h-4 m-4;
 }
 
 .skeleton-container {
-  height: 30rem;
+  @apply h-[30rem]
 }
 .skeleton-indent {
-  margin-left: 2rem;
+  @apply ml-8;
 }
 
 span.lemma {
@@ -571,14 +558,13 @@ span.lemma {
 }
 
 span.lemma-group {
-  font-weight: 600;
+  @apply font-semibold;
 }
 
 
 .article {
-  border-radius: 2rem;
     /* border: 1px solid #560027; */
-    @apply p-1 md:p-2 lg:p-4 bg-canvas shadow-md; 
+    @apply p-1 md:p-2 lg:p-4 bg-canvas shadow-md rounded-[2rem]; 
   
 }
   
@@ -586,29 +572,19 @@ span.lemma-group {
 
 
 .list-view-item {
-display: flex;
+@apply flex;
 
 }
 
 
 .list-view-item>a {
-  padding-bottom: 0.6rem;
-  padding-top: 0.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  
-  border: none;
-  display: inline-block;
-  width: 100%;
-  @apply duration-200 motion-reduce:transition-none;
+  @apply duration-200 motion-reduce:transition-none py-2 px-4 text-ellipsis w-full border-0 inline-block overflow-hidden border-none; 
 
 }
 
 @media screen(lg) {
 .list-view-item>a {
-  white-space: nowrap;
+  @apply whitespace-nowrap;
 }
 }
 

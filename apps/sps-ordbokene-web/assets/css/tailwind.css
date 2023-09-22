@@ -6,19 +6,16 @@
 @layer base {
 
     #__nuxt {
-        display: flex;
-        min-height: 100vh;
-        flex-direction: column;
+        @apply flex-col min-h-screen flex;
     }
 
     body {
-        overflow-y: scroll;
-        @apply ease-in-out duration-200;
+        @apply ease-in-out duration-200 overflow-y-scroll;
     }
 
 
     body, html, main {
-        height: 100% !important;
+        @apply !h-full;
     }
 
     body {
@@ -26,33 +23,28 @@
     }
 
     main {
-        flex: 1;
-        @apply lg:pt-2 xl:pt-4 xl:px-1 sm:px-8 xl:px-4 pb-8;
+        @apply lg:pt-2 xl:pt-4 xl:px-1 sm:px-8 xl:px-4 pb-8 flex-1;
     }
 
     h1 {
         font-family: Inria Serif;
-        font-weight: bold;
+        @apply font-bold;
     }
 
     .ord-container h3 {
       font-family: Inria Serif;
-      @apply text-primary;
-      font-weight:600;
-      margin-bottom: 0rem;
+      @apply mb-0 font-semibold text-primary;
   
   }
 
   .suggestions h3 {
-    font-size: 1.17rem !important;
+    @apply !text-[1.17rem];
   }
 
   .callout h3 {
-    font-size: 1.5rem !important;
     font-variant: all-small-caps;
     font-family: unset;
-    font-weight: 600;
-    letter-spacing: .1rem;
+    @apply font-semibold tracking-widest !text-2xl;
 
   }
   
@@ -60,20 +52,17 @@
 
 
     ::selection {
-        background-color: theme(colors.secondary.DEFAULT);
         @apply text-white bg-secondary;
       }
 
 
       
     section a, .secondary-page a, .error-page a, a:hover .hoverlink {
-      border-bottom: 2px solid;
-      @apply border-anchor;
+      @apply border-anchor border-solid border-b-2;
     }
 
     ::marker {
-      font-weight: bold;
-      @apply text-primary
+      @apply text-primary font-bold;
       
     }
 
@@ -84,12 +73,7 @@
   a[href^="http"]:after {
 
     content: "";
-    display: inline-block;
-    height:1em;
-    width: 1em;
-    background-size: 1em 1em;
-    background-image: url(assets/icons/BiBoxArrowUpRight.svg);
-    margin-left: .2em;
+    @apply bg-[url('assets/icons/BiBoxArrowUpRight.svg')] ml-[.2em] inline-block h-[1em] w-[1em];
     
   }
 
@@ -98,41 +82,27 @@
   }
 
     .callout {
-        border-left: solid 4px theme("colors.primary.DEFAULT");
-      
-         margin-top: 1rem;
-         margin-bottom: 1rem;
-         padding: 1rem;
-         @apply bg-tertiary-darken1;
+         @apply bg-tertiary-darken1 my-4 p-4 border-solid border-l-4 border-primary;
       
       }
       
       .callout i {
-        background-color: theme("colors.primary.DEFAULT");
-        padding-right: 0.5rem;
-        font-size: 1.25rem;
+        /* background-color: theme("colors.primary.DEFAULT"); */
+        @apply text-xl pr-2 bg-primary;
       }
       
       .btn {
-        border-radius: 2rem;
-        padding-right: 1rem;
-        padding-left: 1rem;
-        padding-top: 0.25rem;
-        padding-bottom: 0.25rem;
-        border-width: 1px;
-
-        @apply  duration-200;
+        @apply  duration-200 rounded-[2rem] px-4 py-1 border;
       }
       
       .btn:hover {
-        background-color: theme(colors.canvas.darken)
+        @apply bg-canvas-darken;
       }      
       
       .btn[aria-expanded=true] {
-        @apply bg-canvas hover:bg-canvas-darken;
+        @apply bg-canvas hover:bg-canvas-darken border border-solid border-primary;
         box-shadow: 5px 5px 0px 0px theme('colors.anchor');
         /* box-shadow: 2px 2px 0px theme('colors.gray.500'); */
-        border: 1px solid #560027;
       }
       
       .btn-borderless {
@@ -140,49 +110,36 @@
       }
       
       .rounded-4xl {
-        border-radius: 2rem;
+        @apply rounded-[2rem]
       }
 
       .dict-label {
-        color: theme("colors.gray.700") !important;
-        margin-left: 1rem;
-        margin-bottom: 0rem;
-        letter-spacing: .1rem;
+        /* letter-spacing: .1rem; */
         font-variant-caps: all-small-caps;
-        font-weight: 600;
-        font-size: 1.5rem !important;
+        @apply !text-2xl font-semibold tracking-widest ml-4 mb-0 !text-gray-700;
       }
 
       
       .article h4 {
-        font-size: 1.5rem;
-        @apply text-primary;
+        @apply text-primary text-2xl font-semibold pr-4;
         font-variant: all-small-caps;
-        font-weight: 600;
-        padding-right: 1rem;
-      
       }
       
       .article h5 {
-        @apply text-primary;
-        font-weight: 600;
-        font-size: 1rem;
-        padding-top: 1rem;
+        @apply text-primary font-semibold text-base pt-4;
       }
       
       
       .article li {
-        margin-bottom: 0.25rem;
-        margin-top: 0.25rem;
+        @apply my-1
       }
       
       .article ul {
-        margin-bottom: 1rem !important;
+       @apply !mb-4;
       }
       
        .article ol {
-        margin-bottom: 2rem !important;
-        list-style: decimal;
+        @apply list-decimal !mb-8;
       }
 
 
@@ -194,7 +151,7 @@
       
 
       .article ol li.level3.definition {
-        list-style: disc
+        @apply list-disc;
       }
 
       .article ol div {
@@ -207,29 +164,23 @@
       }
       
        .secondary-page ul {
-          list-style: disc;
           margin-block-start: 1em;
           margin-block-end: 1em;
-          padding-inline-start: 40px;
+          @apply list-disc ps-10; 
         }
       
       
         .secondary-page h2, .error-page h1 {
           font-family: Inria Serif;
-          @apply text-primary;
-          font-weight: bold;
-          font-size: 2rem;
+          @apply text-primary font-bold text-[2rem];
         }
       
         .secondary-page h4 {
-          @apply text-primary;
-          font-weight: 600;
-          font-size: 1.125rem;
-          padding-top: 1rem;
+          @apply pt-4 text-lg font-semibold text-primary;
         }
       
        .secondary-page p {
-          padding-bottom: 1rem;
+          @apply pb-4;
         }
       
       .dict-view h3 {
@@ -238,8 +189,7 @@
       
       
       .secondary-page h3 button, .secondary-page h3, .dict-view h2 {
-          @apply text-primary text-2xl;
-          font-weight: 600;
+          @apply text-primary text-2xl font-semibold;
           font-variant: all-small-caps;
         }
 
@@ -248,7 +198,7 @@
         }
       
       .secondary-page h3 button {
-        font-size: 1.5rem;
+        @apply text-2xl;
       }
       
       
@@ -256,9 +206,7 @@
       
       #advanced-info h2 {
         font-family: Inria Serif;
-        font-variant: normal;
-        @apply text-primary;
-        font-weight: bold;
+        @apply text-primary font-bold;
       }
       
       
@@ -273,8 +221,7 @@
 
 
        .welcome .article {
-        box-shadow: none !important;
-        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6 !pt-2 !px-3;
+        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6 !pt-2 !px-3 !shadow-none;
       }
       
       .welcome .ord-container {
@@ -294,8 +241,7 @@
 
       @media screen(md) {
         .welcome.simple-search {
-          background-image: url(assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp);
-          @apply flex-col;
+          @apply flex-col bg-[url('assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp')];
         }
       }
 
@@ -309,23 +255,19 @@
 
       .result-count-text {
         font-variant: normal;
-        font-size: .75rem;
-        border-radius: 2rem;
-        @apply bg-white text-black !leading-none px-1.5 py-0.5 align-middle shadow-md
+        @apply bg-white text-black text-xs !leading-none px-1.5 py-0.5 align-middle shadow-md rounded-[2rem];
       
       }
       
       
       ol.article-column {
-        margin: 0px;
-        padding: 0px;
+        @apply m-0 p-0;
       }
       
       ol.article-column  {
           
-          @apply bg-white shadow-md;
-          padding: 0rem;
-          width: 100%;
+          @apply bg-white shadow-md w-full p-0;
+
       }
       
       .article-column {
@@ -338,8 +280,7 @@
 
 
       kbd{
-        border-radius: 5px !important;
-        @apply shadow-md bg-tertiary-darken1 text-base border-4 border-tertiary-darken1;  
+        @apply shadow-md bg-tertiary-darken1 text-base border-4 border-tertiary-darken1 !rounded-[5px];  
       }
 
       blockquote {

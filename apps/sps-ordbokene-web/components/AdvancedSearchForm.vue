@@ -188,8 +188,7 @@ option.selected {
 
 legend, label {
   font-variant: all-small-caps;
-  font-size: 1.25rem;
-  letter-spacing: .1rem;
+  @apply tracking-widest text-xl;
 }
 
 </style>

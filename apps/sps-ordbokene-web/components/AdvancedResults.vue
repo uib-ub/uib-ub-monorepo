@@ -164,13 +164,12 @@ window.scrollTo({
 
 
 button[disabled] {
-color: theme('colors.gray.100');
-cursor: default;
+@apply cursor-default bg-gray-100;
 }
 
 .announcement:focus-within .snackbar-search {
-display: absolute !important;
-bottom: 1rem;
+/* display: absolute !important; */
+@apply  bottom-4 !absolute;
 
 }
 
