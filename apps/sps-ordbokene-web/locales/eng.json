@@ -34,9 +34,7 @@
   "footer_description": " show spelling and inflection in line with official Norwegian spelling. The Language Council and the University of Bergen are behind the dictionaries.",
   "accessibility": {
     "menu": "Open top menu",
-    "homograph": "Meaning ",
     "callout": "Showing results for the keyword "
-
   },
   "dicts": {
       "nn": "Nynorsk dictionary",
