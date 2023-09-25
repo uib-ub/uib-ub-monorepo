@@ -28,23 +28,22 @@
         d?.source ||
         d?.['skosp:dctSource']
       "
-      class="grid-col-3 ml-2 md:ml-5 mt-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1"
+      class="grid-col-3 ml-2 mt-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1 md:ml-5"
     >
       <TermProp v-if="d.isOfAbbreviationType" :label="$t('id.forkortelseType')">
-        <dd class="max-w-prose">{{ d.isOfAbbreviationType }}</dd></TermProp
-      >
+        <dd class="max-w-prose" v-html="d.isOfAbbreviationType" />
+      </TermProp>
       <TermProp v-if="d.isAbbreviationOf" :label="$t('id.forkortelseAv')">
-        <dd class="max-w-prose">{{ d.isAbbreviationOf }}</dd></TermProp
-      >
+        <dd class="max-w-prose" v-html="d.isAbbreviationOf" />
+      </TermProp>
       <TermProp v-if="d.isCollocatedWith" :label="$t('id.kollokasjon')">
-        <dd class="max-w-prose">
-          {{ d.isCollocatedWith.map((el) => el["@value"]).join(", ") }}
-        </dd></TermProp
-      >
+        <dd
+          class="max-w-prose"
+          v-html="d.isCollocatedWith.map((el) => el['@value']).join(', ')"
+        />
+      </TermProp>
       <TermProp v-if="d.subject" :label="$t('id.kontekstAv')">
-        <dd class="max-w-prose">
-          {{ d.subject[0] }}
-        </dd>
+        <dd class="max-w-prose" v-html="d.subject[0]" />
       </TermProp>
       <TermProp
         v-if="d?.['skosp:dctSource'] || d.source"
@@ -53,33 +52,46 @@
         <dd
           v-if="
             typeof d?.source?.label?.['@value'] === 'string' ||
-            typeof d?.source === 'string' || typeof d?.['skosp:dctSource']?.['skosp:rdfsLabel']  === 'string'
+            typeof d?.source === 'string' ||
+            typeof d?.['skosp:dctSource']?.['skosp:rdfsLabel'] === 'string'
           "
           class="max-w-prose"
-        >
-          {{ d?.["skosp:dctSource"]?.["skosp:rdfsLabel"] }}
-          {{ d?.source?.label?.["@value"] || d?.source }}
-        </dd>
+          v-html="
+            `
+            ${d?.['skosp:dctSource']?.['skosp:rdfsLabel']}
+              ${d?.source?.label?.['@value'] || d?.source || ''}
+          `
+          "
+        />
         <template v-else-if="Array.isArray(d?.source)">
-          <dd v-for="source of d?.source" :lang="source?.['@language']">
-            {{ source?.["@value"] }}
-          </dd>
+          <dd
+            v-for="source of d?.source"
+            :key="source"
+            :lang="source?.['@language']"
+            v-html="source?.['@value']"
+          />
         </template>
-        <dd v-else :lang="d?.source?.['@language']">
-          {{ d.source?.["@value"] }}
-        </dd>
+        <dd
+          v-else
+          :lang="d?.source?.['@language']"
+          v-html="d.source?.['@value']"
+        />
       </TermProp>
       <TermProp v-if="d.note" :label="$t('id.note')">
-        <dd class="max-w-prose" :lang="d.note?.['@language']">
-          {{ d.note?.["@value"] }}
-        </dd>
-        <dd v-if="d.note?.source">({{ d.note?.source }})</dd>
+        <dd
+          class="max-w-prose"
+          :lang="d.note?.['@language']"
+          v-html="d.note?.['@value']"
+        />
+        <dd v-if="d.note?.source" v-html="`(${d.note?.source})`" />
       </TermProp>
       <TermProp v-if="d.scopeNote" :label="$t('id.note')">
-        <dd class="max-w-prose" :lang="d.scopeNote?.['@language']">
-          {{ d.scopeNote?.["@value"] }}
-        </dd>
-        <dd v-if="d.scopeNote?.source">({{ d.scopeNote?.source }})</dd>
+        <dd
+          class="max-w-prose"
+          :lang="d.scopeNote?.['@language']"
+          v-html="d.scopeNote?.['@value']"
+        />
+        <dd v-if="d.scopeNote?.source" v-html="`(${d.scopeNote?.source})`" />
       </TermProp>
     </dl>
   </dd>
