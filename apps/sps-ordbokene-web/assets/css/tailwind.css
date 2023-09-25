@@ -73,7 +73,8 @@
   a[href^="http"]:after {
 
     content: "";
-    @apply bg-[url('assets/icons/BiBoxArrowUpRight.svg')] ml-[.2em] inline-block h-[1em] w-[1em];
+    background-size: 1em 1em;
+    @apply  bg-[url('assets/icons/BiBoxArrowUpRight.svg')] ml-[.2em] inline-block h-[1em] w-[1em];
     
   }
 
