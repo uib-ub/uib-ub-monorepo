@@ -1,16 +1,18 @@
 <template>
 <NuxtLayout>
     <NuxtPage @click="menu_expanded=false"
-              v-bind:class="{'welcome': route.name == 'welcome'}"/>
+              v-bind:class="{'welcome': route.name == 'welcome' || route.name == 'index'}"/>
 </NuxtLayout>
 </template>
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 import { useSettingsStore } from './stores/settingsStore'
-const store = useStore()
+import { useSessionStore } from './stores/sessionStore'
+const store = useSearchStore()
+const session = useSessionStore()
 const settings = useSettingsStore()
 const route = useRoute()
 
@@ -41,14 +43,14 @@ useHead({
 // Global event listeners
 if (process.client) {
   document.addEventListener('click', () => {
-  store.show_autocomplete = false
+  session.show_autocomplete = false
   })
 }
 
 const nuxtApp = useNuxtApp()
 
 nuxtApp.hook("page:finish", () => {
-  if (input_element.value && ( settings.autoSelect || route.name == "welcome")) {
+  if (input_element.value && ( settings.autoSelect || route.name == "welcome" || route.name == "index")) {
     input_element.value.select()
   }
 })

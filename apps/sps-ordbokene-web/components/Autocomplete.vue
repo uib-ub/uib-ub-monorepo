@@ -1,19 +1,21 @@
 <script setup>
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 import {useSettingsStore } from '~/stores/settingsStore'
+import {useSessionStore } from '~/stores/sessionStore'
 
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
 const settings = useSettingsStore()
+const session = useSessionStore()
 
 const input_element = useState('input_element')
 
 const top_option = ref()
 
 const close_dropdown = () => {
-  store.dropdown_selected = -1
-  store.show_autocomplete = false
+  session.dropdown_selected = -1
+  session.show_autocomplete = false
 
 }
 
@@ -21,7 +23,7 @@ async function fetchAutocomplete(q) {
 
   q = q.trim()
     if (q.length == 0) {
-      store.show_autocomplete = false;
+      session.show_autocomplete = false;
       return
     }
 
@@ -30,11 +32,11 @@ async function fetchAutocomplete(q) {
     const time = Date.now()
     if (pattern && (!store.autocomplete[0] || store.autocomplete[0].time < time)) {
       store.autocomplete = [{q, time, type: "pattern"}]
-      store.show_autocomplete = true;
+      session.show_autocomplete = true;
     }
     else if (hasOr) {
       store.autocomplete = []
-      store.show_autocomplete = false;
+      session.show_autocomplete = false;
     }
     
        
@@ -44,13 +46,13 @@ async function fetchAutocomplete(q) {
     let words = q.split(/ |\|/)
     if (words.length > 20) {
       store.autocomplete = []
-      store.show_autocomplete = false;
+      session.show_autocomplete = false;
       return
     }
     for (let i = 0; i < words.length; i++) {
       if (words[i].length > 40) {
         store.autocomplete = []
-        store.show_autocomplete = false;
+        session.show_autocomplete = false;
         return
       }
     }
@@ -58,7 +60,7 @@ async function fetchAutocomplete(q) {
     if (!pattern && !hasOr) {
 
       let response = ref([])
-      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name == 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
+      let url = `${session.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name == 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
       response.value = await $fetch(url)
 
       // prevent suggestions after submit
@@ -93,10 +95,10 @@ async function fetchAutocomplete(q) {
         if (autocomplete_suggestions.length && store.input.trim() == q && q != store.q) {
 
           store.autocomplete = autocomplete_suggestions
-          store.show_autocomplete = true;
+          session.show_autocomplete = true;
         }
         else {
-          store.show_autocomplete = false
+          session.show_autocomplete = false
         }
 
 
@@ -118,28 +120,28 @@ const clearText = () => {
 
 const keys = (event) => {
   
-  if (store.show_autocomplete) {
+  if (session.show_autocomplete) {
     if (event.key == "ArrowDown" || event.key == "Down") {
     
-    if (store.dropdown_selected <  store.autocomplete.length -1) {
-      store.dropdown_selected += 1;
+    if (session.dropdown_selected <  store.autocomplete.length -1) {
+      session.dropdown_selected += 1;
     }
     else {
-      store.dropdown_selected = 0;      
+      session.dropdown_selected = 0;      
     }
     
-    store.input = store.autocomplete[store.dropdown_selected].q
+    store.input = store.autocomplete[session.dropdown_selected].q
 
     //event.stopPropagation()
     event.preventDefault()
   }
   else if (event.key == "ArrowUp" || event.key == "Up") {
-    if (store.dropdown_selected > -1) {
+    if (session.dropdown_selected > -1) {
     
-    store.dropdown_selected -= 1;
+    session.dropdown_selected -= 1;
 
-    if (store.dropdown_selected > -1) {
-    store.input = store.autocomplete[store.dropdown_selected].q
+    if (session.dropdown_selected > -1) {
+    store.input = store.autocomplete[session.dropdown_selected].q
     
     }
     
@@ -150,25 +152,25 @@ const keys = (event) => {
   else if (event.key == "Escape" || event.key == "Esc" || event.key == "Tab") {
     close_dropdown()
   }
-  else if (event.key == "Home" && store.dropdown_selected > -1) {
-    store.dropdown_selected = 0
+  else if (event.key == "Home" && session.dropdown_selected > -1) {
+    session.dropdown_selected = 0
     event.preventDefault()
 
   }
-  else if (event.key == "End" && store.dropdown_selected > -1) {
-    store.dropdown_selected = store.autocomplete.length - 1
+  else if (event.key == "End" && session.dropdown_selected > -1) {
+    session.dropdown_selected = store.autocomplete.length - 1
     event.preventDefault()
 
   }
   else if (event.key != "Enter") {
-    store.dropdown_selected = -1
+    session.dropdown_selected = -1
   }
 
  
 
     // Scroll if necessary
-    if (process.client && store.dropdown_selected > -1) {
-        document.getElementById('autocomplete-item-'+store.dropdown_selected).scrollIntoView({block: 'nearest'})
+    if (process.client && session.dropdown_selected > -1) {
+        document.getElementById('autocomplete-item-'+session.dropdown_selected).scrollIntoView({block: 'nearest'})
       }
   }
 
@@ -187,14 +189,14 @@ const input_sync = (event) => {
 
 const dropdown_select = (q) => {
   store.input= q
-  store.show_autocomplete = false
+  session.show_autocomplete = false
   emit('dropdown-submit', q)
 }
 
 
 const exit_input = event => {
   if (!(event.relatedTarget && event.relatedTarget.hasAttribute('data-dropdown-item'))) {
-    store.show_autocomplete = false
+    session.show_autocomplete = false
   }
 }
 
@@ -211,8 +213,8 @@ if (process.client) {
     }
 
     if (e.key === "Esc" || e.key == "Escape") {
-      store.show_autocomplete == false 
-      store.dropdown_selected = -1
+      session.show_autocomplete == false 
+      session.dropdown_selected = -1
     }
     
   })
@@ -227,7 +229,7 @@ if (process.client) {
 
 <template>
   <div class="search-container">
-  <div class="input-wrapper h-3.5rem border bg-canvas border-primary flex content-center justify-between pr-2" v-bind="{'data-dropdown-open': store.show_autocomplete}">
+  <div class="input-wrapper h-3.5rem border bg-canvas border-primary flex content-center justify-between pr-2" v-bind="{'data-dropdown-open': session.show_autocomplete}">
    <input class="input-element p-3 pl-6 lg:p-4 lg:px-8"
           :value="store.input"
           id="input-element"
@@ -235,7 +237,7 @@ if (process.client) {
           @input="input_sync"
           role="combobox" 
           name="q"
-          :aria-activedescendant="store.dropdown_selected >= 0 ? 'autocomplete-item-'+store.dropdown_selected : null"
+          :aria-activedescendant="session.dropdown_selected >= 0 ? 'autocomplete-item-'+session.dropdown_selected : null"
           aria-autocomplete="list"
           aria-haspopup="listbox"
           maxlength="200"
@@ -245,18 +247,19 @@ if (process.client) {
           autocomplete="off"
           autocapitalize="none"
           @keydown="keys"
-          :aria-expanded="store.show_autocomplete || 'false'" 
-          :aria-owns="store.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"/>
+          :aria-expanded="session.show_autocomplete || 'false'" 
+          :aria-owns="session.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"/>
           <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
           <button class="appended-button" type="submit" :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 
   </div>
-  <div class="dropdown-wrapper" v-if="store.show_autocomplete">
+  <client-only>
+  <div class="dropdown-wrapper" v-if="session.show_autocomplete">
    <ul id="autocomplete-dropdown" role="listbox" ref="autocomplete_dropdown">
     <li v-for="(item, idx) in store.autocomplete"
         :key="idx" 
-        :aria-selected="idx == store.dropdown_selected"
+        :aria-selected="idx == session.dropdown_selected"
         role="option"
         tabindex="-1"
         :lang="['bm','nn','no'][item.dict-1]"
@@ -275,6 +278,7 @@ if (process.client) {
   <div v-if="store.autocomplete.length > 1" class="font-normal text-primary text-right px-6 pt-2" :key="store.input" role="status" aria-live="polite">
     {{store.autocomplete.length}} {{$t('autocomplete_suggestions', 0)}}<span class="text-gray-600" v-if="store.autocomplete.length == 20"> ({{$t('maximum_autocomplete')}})</span></div>
  </div>
+  </client-only>
   </div>
 
 

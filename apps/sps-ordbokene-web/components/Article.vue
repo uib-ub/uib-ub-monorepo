@@ -108,17 +108,19 @@
 </template>
 
 <script setup>
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useI18n } from 'vue-i18n'
 import {useSettingsStore } from '~/stores/settingsStore'
+import {useSessionStore } from '~/stores/sessionStore'
 
 const { t } = useI18n()
 const i18n = useI18n()
-const store = useStore()
+const store = useSearchStore()
 const inflection_expanded = ref(false)
 const split_inf_expanded = ref(false)
 const settings = useSettingsStore()
 const route = useRoute()
+const session = useSessionStore()
 
 const props = defineProps({
     article_id: Number,
@@ -129,7 +131,7 @@ const props = defineProps({
 })
 
 
-const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${store.endpoint}${props.dict}/article/${props.article_id}.json`,
+const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`,
                                                                                         {
                                                                                             async onResponseError({ request, response, options }) {
                                                                                                 // TODO: plausible logging, error message if article view
@@ -142,7 +144,7 @@ const { pending, data, error } = await useAsyncData('article_'+props.dict+props.
                                                                                         }))
 
 
-  if (route.name != 'welcome' && route.name != 'search' && data.value)
+  if (route.name != 'welcome' && route.name != 'index' && route.name != 'search' && data.value)
   data.value.lemmas.forEach(lemma => {
       store.lemmas[props.dict].add(lemma.lemma)
       lemma.paradigm_info.forEach(paradigm => {
@@ -157,8 +159,8 @@ const { pending, data, error } = await useAsyncData('article_'+props.dict+props.
 })
 
 
-if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
-  store.endpoint = `https://odd.uib.no/opal/prod/`
+if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+  session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()
 }

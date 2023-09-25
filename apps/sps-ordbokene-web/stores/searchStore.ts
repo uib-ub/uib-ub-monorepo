@@ -1,6 +1,6 @@
 // Some values syncronized with routing in middleware
 import { defineStore } from 'pinia'
-export const useStore = defineStore('store', {
+export const useSearchStore = defineStore('store', {
     state: () => ({
       q:"",
       input: "",

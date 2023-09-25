@@ -60,12 +60,14 @@
 <script setup>
 
 import { computed } from 'vue'
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
+import {useSessionStore } from '~/stores/sessionStore'
 
 const settings = useSettingsStore()
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
+const session = useSessionStore()
 
 const error_message = ref()
 
@@ -93,7 +95,7 @@ const query = computed(() => {
 
 const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?`, {
           query,
-          baseURL: store.endpoint,
+          baseURL: session.endpoint,
           onResponseError(conf) {
             console.log("RESPONSE ERROR")
           }
@@ -111,11 +113,11 @@ const dicts = computed(()=> {
 })
 
 
-if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
-  store.endpoint = `https://odd.uib.no/opal/prod/`
+if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+  session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()
-}
+} 
 
 
 const pages = computed(() => {

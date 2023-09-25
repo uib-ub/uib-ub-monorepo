@@ -1,7 +1,7 @@
 <template>
 <header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div class="flex flex-row content-center w-full lg:w-auto">
-  <NuxtLink class="navbar-brand" to="/" :aria-current="$route.name == 'welcome' && 'page'">
+  <NuxtLink class="navbar-brand" to="/" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'">
       <div class="mx-1 md:my-1 lg:my-3 xl:my-4">
       <div><h1 class="text-2xl mt-0.5 mb-0.5">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
       <p class="hidden xl:block brand-subtitle ml-0.5 mb-1">{{$t("sub_title")}}</p>
@@ -27,7 +27,7 @@
         </li>
 
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name.slice(0,5) == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
         </li>
                 <li class="nav-item">
           <NuxtLink @click="menu_expanded=false" class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
@@ -55,9 +55,9 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
 const i18n = useI18n()
 const menu_expanded = ref(false)

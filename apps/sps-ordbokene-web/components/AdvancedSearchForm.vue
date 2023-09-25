@@ -53,11 +53,11 @@
 </template>
   
 <script setup>
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 import {useSettingsStore } from '~/stores/settingsStore'
 const settings = useSettingsStore()
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
 
 const dicts = ['bm,nn', 'bm', 'nn']

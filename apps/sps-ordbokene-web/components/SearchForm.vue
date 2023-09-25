@@ -1,6 +1,6 @@
 <template>
 <div class="py-1">
-<form  @submit.prevent="submitForm" ref="form" :action="'/' + $i18n.locale + '/' + store.dict || 'bm,nn'">
+<form  @submit.prevent="submitForm" ref="form" :action="'/' + store.dict || 'bm,nn'">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete v-on:dropdown-submit="submitForm"/>
 </NuxtErrorBoundary>
@@ -10,13 +10,15 @@
 </template>
 
 <script setup>
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
-import {useSettingsStore } from '~/stores/settingsStore'
+import { useSettingsStore } from '~/stores/settingsStore'
+import { useSessionStore } from '~/stores/sessionStore'
 import { useI18n } from 'vue-i18n'
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
 const settings = useSettingsStore()
+const session = useSessionStore()
 const i18n = useI18n()
 
 const input_element = useState('input_element')
@@ -30,7 +32,7 @@ const submitForm = async (item) => {
     else {
       input_element.value.blur()
     }
-    return navigateTo(`/${route.params.dict}?q=${item}`)
+    return navigateTo(`/${store.dict}?q=${item}`)
   }
   
   if (store.input) {
@@ -41,15 +43,15 @@ const submitForm = async (item) => {
       input_element.value.blur()
     }
     
-    store.show_autocomplete = false
+    session.show_autocomplete = false
     store.q = store.input
 
 
     if (advancedSpecialSymbols(store.q)) {
-      return navigateTo(`/${i18n.locale.value}/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`)
+      return navigateTo(`/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`)
     }
-    else  if (store.input.includes("|") || store.dropdown_selected != -1) {
-      return navigateTo(`/${i18n.locale.value}/${route.params.dict}?q=${store.q}`)
+    else  if (store.input.includes("|") || session.dropdown_selected != -1) {
+      return navigateTo(`/${store.dict}?q=${store.q}`)
     }
 
     let { exact, inflect } = store.suggest
@@ -57,17 +59,17 @@ const submitForm = async (item) => {
     if (exact) {
       
         if (exact[0][0].length == store.q.length) {
-            let redirectUrl = `/${i18n.locale.value}/${store.dict}/${exact[0][0]}`
+            let redirectUrl = `/${store.dict}/${exact[0][0]}`
             if (exact[0][0] != store.q) redirectUrl += `?orig=${store.q}`
             return navigateTo(redirectUrl)
         }
     }
 
     if (inflect && inflect.length == 1 && inflect[0][0] && inflect[0][0][0] != "-" && inflect[0][0].slice(-1) != "-") { // suppress prefixes and suffixes
-        return navigateTo(`/${i18n.locale.value}/${store.dict}/${inflect[0][0]}?orig=${store.q}`)
+        return navigateTo(`/${inflect[0][0]}?orig=${store.q}`)
     }
 
-    return navigateTo(`/${i18n.locale.value}/${route.params.dict}?q=${store.q}`)
+    return navigateTo(`/${store.dict}?q=${store.q}`)
     //navigateTo(`/${route.params.dict}/${store.q}`)
   }
   

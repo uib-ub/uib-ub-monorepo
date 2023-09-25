@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url'
 import VueI18nVitePlugin from '@intlify/unplugin-vue-i18n/vite'
 
 const locales = "/:locale(nob|nno|eng|ukr)?"
+
 export default defineNuxtConfig({
   css: ['~/assets/fonts/fonts.css'],
 
@@ -44,19 +45,21 @@ export default defineNuxtConfig({
   },
   hooks: {
     'pages:extend' (pages) {
+      console.log("DEFAULT", pages)
+      console.log()
       pages.pop()
       pages.push({
-        path: locales + '/:dict(bm|nn|bm,nn)?',
+        path: locales + '/',
         file: '~/pages/index.vue',
         children: [
           {
-            name: 'welcome',
+            name: 'index',
             path: '',
-            alias: 'search', //legacy
             file: '~/components/custom-pages/welcome-view.vue'
           }
         ]
       })
+
       pages.push({
             path: locales + '/:dict(bm|nn|bm,nn)',
             file: '~/pages/index.vue',
@@ -70,7 +73,14 @@ export default defineNuxtConfig({
                 name: 'word',
                 path: ':q',
                 file: '~/components/custom-pages/word-view.vue'
+              },
+              {
+                name: 'welcome',
+                path: '',
+                alias: 'search', //legacy
+                file: '~/components/custom-pages/welcome-view.vue'
               }
+
             ]
           })
       pages.push(
@@ -141,6 +151,8 @@ export default defineNuxtConfig({
         path: locales,
         file: '~/pages/index.vue',
       })
+
+      console.log(pages)
       
     }
   },

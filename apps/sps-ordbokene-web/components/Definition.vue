@@ -35,9 +35,9 @@
 
 
 <script setup>
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
 
 const props = defineProps({

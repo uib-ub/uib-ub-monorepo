@@ -4,17 +4,17 @@
   <ul id="searchNavContent b-2" class="flex gap-2 md:gap-3 mr-2">
   <li>
     <NuxtLink class="inline-block"
-              :aria-current="route.params.dict =='bm,nn' ? 'true' : 'false'"
+              :aria-current="store.dict =='bm,nn' ? 'true' : 'false'"
               @click="dict_click('bm,nn')"
               :to="dict_link('bm,nn')"><span class="max-md:sr-only">{{$t('dicts.bm,nn')}}</span><span aria-hidden="true" class="block md:hidden">{{$t('dicts_short.bm,nn')}}</span></NuxtLink>
   </li>
   <li>
-    <NuxtLink  :aria-current="route.params.dict =='bm' ? 'true' : 'false'"
+    <NuxtLink  :aria-current="store.dict =='bm' ? 'true' : 'false'"
               @click="dict_click('bm')"
               :to="dict_link('bm')"><span class="max-md:sr-only">{{$t('dicts.bm')}}</span><span aria-hidden="true" class="block md:hidden">{{$t('dicts_short.bm')}}</span></NuxtLink>
   </li>
   <li>
-    <NuxtLink :aria-current="route.params.dict =='nn' ? 'true' : 'false'"
+    <NuxtLink :aria-current="store.dict =='nn' ? 'true' : 'false'"
               @click="dict_click('nn')"
               :to="dict_link('nn')"><span class="max-md:sr-only">{{$t('dicts.nn')}}</span><span aria-hidden="true" class="block md:hidden">{{$t('dicts_short.nn')}}</span></NuxtLink>
   </li>
@@ -29,9 +29,9 @@
 
 <script setup>
 
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
 const props = defineProps({
     advanced: Boolean

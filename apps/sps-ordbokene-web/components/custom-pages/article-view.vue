@@ -7,8 +7,8 @@
 </template>
 
 <script setup>
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+const store = useSearchStore()
 const route = useRoute()
 const dict = route.params.dict // prevent reactivity that causes error message when navigating back to search
 </script>

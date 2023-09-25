@@ -12,12 +12,12 @@
 </template>
   
 <script setup>
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
 
 useHead({

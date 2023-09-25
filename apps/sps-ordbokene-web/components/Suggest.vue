@@ -34,8 +34,10 @@
 </template>
 
 <script setup>
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+import { useSessionStore } from '~/stores/sessionStore'
+const store = useSearchStore()
+const session = useSessionStore()
 const route = useRoute()
 
 const props = defineProps({
@@ -44,7 +46,7 @@ const props = defineProps({
 })
 
 
-const suggestQuery = `${store.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifs`
+const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifs`
 const apertiumQuery = `https://apertium.org/apy/translate?langpair=${store.dict == 'bm,nn' ? {bm: 'nno|nob', nn: 'nob|nno'}[props.dict] : {bm: 'nno|nob', nn: 'nob|nno'}[props.dict]}&q=${store.q}`
 
 const translated = ref([])
@@ -59,7 +61,7 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                         return
                     }
                     else {
-                        return $fetch(`${store.endpoint}api/suggest?&q=${translatedText}&dict=${props.dict}&n=1&dform=int&meta=n&include=ei`).then(suggestResponse => {
+                        return $fetch(`${session.endpoint}api/suggest?&q=${translatedText}&dict=${props.dict}&n=1&dform=int&meta=n&include=ei`).then(suggestResponse => {
                             if (suggestResponse.a) {
                                 
                                 const exact = suggestResponse.a.exact

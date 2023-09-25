@@ -1,11 +1,13 @@
 <script setup>
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+import { useSessionStore } from '~/stores/sessionStore'
+const store = useSearchStore()
+const session = useSessionStore()
 
 
 const [{ bm_pending, data: welcome_bm },  { nn_pending, data: welcome_nn }] = await Promise.all([
-    useLazyAsyncData('welcome_bm', () => $fetch(store.endpoint + 'bm/parameters.json')),
-    useLazyAsyncData('welcome_nn', () => $fetch(store.endpoint + '/nn/parameters.json'))
+    useLazyAsyncData('welcome_bm', () => $fetch(session.endpoint + 'bm/parameters.json')),
+    useLazyAsyncData('welcome_nn', () => $fetch(session.endpoint + '/nn/parameters.json'))
   ])
 
 </script>

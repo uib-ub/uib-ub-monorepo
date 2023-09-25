@@ -13,8 +13,8 @@
 
 <script setup>
 
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+const store = useSearchStore()
 const route = useRoute()
 
 const props = defineProps({

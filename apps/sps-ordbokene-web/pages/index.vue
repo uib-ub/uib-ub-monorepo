@@ -17,8 +17,8 @@
 </template>
 
 <script setup>
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+const store = useSearchStore()
 const route = useRoute()
 
 
@@ -27,23 +27,35 @@ watch(() => route.query.q, () => {
     store.q = route.query.q
     store.lemmas.bm = new Set()
     store.lemmas.nn = new Set()
-    navigateTo(store.dict + "/" + route.query.q)
   }
 })
 
 definePageMeta({
     middleware: [
       function (to, from) { // Sync store with routing
-        const store = useStore()
-        store.dict = to.params.dict || 'bm,nn'
+      const store = useSearchStore()
+      console.log("TO", to)
+      console.log("FROM", from )
+      console.log("QUERY", store.q)
+        
         let query = to.params.q || to.query.q
-        if (query) {
-          store.q = query
-          store.lemmas.bm = new Set()
-          store.lemmas.nn = new Set()
-          store.input = to.query.orig || query
-          store.searchUrl = to.fullPath
+        if (to.params.dict)  {
+          store.dict = to.params.dict
+          
+          if (query) {
+            store.q = query
+            store.lemmas.bm = new Set()
+            store.lemmas.nn = new Set()
+            store.input = to.query.orig || query
+            store.searchUrl = to.fullPath
+          }
         }
+        else if (store.q) {
+          console.log("RESET")
+          store.$reset()
+        }
+
+        
       },
     ]
   })
