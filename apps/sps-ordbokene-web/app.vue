@@ -74,7 +74,7 @@ if (process.client) {
 const nuxtApp = useNuxtApp()
 
 nuxtApp.hook("page:finish", () => {
-  if (input_element.value && settings.autoSelect || route.name == "welcome") {
+  if (input_element.value && ( settings.autoSelect || route.name == "welcome")) {
     input_element.value.select()
   }
 })

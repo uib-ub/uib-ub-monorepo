@@ -48,15 +48,7 @@
             <div class="flex justify-center items-center"><NuxtLink to="/help/advanced"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
           </div>
         </div>
-      
     </form>
-  <div v-if="mini_help" id="advanced-info" class="secondary-page container !mb-0 mt-4">
-
-  
-        <ContentDoc :path="$i18n.locale + '/help/advanced'"/>
-  
-  
-      </div>
   </div>
 </template>
   

@@ -58,7 +58,7 @@ async function fetchAutocomplete(q) {
     if (!pattern && !hasOr) {
 
       let response = ref([])
-      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name == 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'e'}`
+      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name == 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
       response.value = await $fetch(url)
 
       // prevent suggestions after submit
@@ -67,14 +67,26 @@ async function fetchAutocomplete(q) {
         let autocomplete_suggestions = []
         if (store.input.trim() == q && response.value.a.exact) {
           let { exact, inflect, freetext } = response.value.a
-          autocomplete_suggestions = exact.map(item => ({q: item[0], time: time, dict: [item[1]], type: "word"}))
+          const seen = new Set()
+          exact.forEach(item => {
+            autocomplete_suggestions.push({q: item[0], time: time, dict: [item[1]], type: "word"})
+            seen.add(item[0])
+          });
           if (inflect) {
-            let inflection_suggestions = response.value.a.inflect.map(item => ({q: item[0], time: time, dict: [item[1]], type: "inflect"}))
-            autocomplete_suggestions = autocomplete_suggestions.concat(inflection_suggestions)
+            inflect.forEach(item => {
+            if (!seen.has(item[0])) {
+              autocomplete_suggestions.push({q: item[0], time: time, dict: [item[1]], type: "inflect"})
+              seen.add(item[0])
+            }
+            });
           }
           if (freetext) {
-            let inflection_suggestions = response.value.a.freetext.map(item => ({q: item[0], time: time, dict: [item[1]], type: "freetext"}))
-            autocomplete_suggestions = autocomplete_suggestions.concat(inflection_suggestions)
+            freetext.forEach(item => {
+            if (!seen.has(item[0])) {
+              autocomplete_suggestions.push({q: item[0], time: time, dict: [item[1]], type: "freetext"})
+              seen.add(item[0])
+            }
+            });
           }
         }
 

@@ -192,6 +192,7 @@
     "title": "Om Termportalen",
     "aboutUs": "Om oss",
     "history": "Historikk",
+    "publications": "Relevante publikasjonar",
     "kommeiGang": "Korleis kome i gong med terminologiarbeid?",
     "links": "Nyttige lenkjer",
     "maritaStilling": "faglig leder og førsteamanuensis i terminologi og fagspråk, UiB",
@@ -202,7 +203,7 @@
   "innstillinger": {
     "title": "Innstillingar",
     "global": "Visningsspråk",
-    "globalLangComment": "Vel kva språk du vil vise Termportalen.no på",
+    "globalLangComment": "Her kan du endre språk på knappar, meldingar og menyar. Dette påverkar ikkje innhaldet i sjølve termpostane, slik som definisjonar, termar og merknader.  ",
     "conceptview": "Termpost",
     "dataDispLang": "Språk for termpost",
     "dataDispLangComment": "Vel kva språk som skal visast i termpostane"

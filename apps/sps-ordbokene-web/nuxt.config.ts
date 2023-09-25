@@ -150,7 +150,8 @@ export default defineNuxtConfig({
         resolve(dirname(fileURLToPath(import.meta.url)), './locales/*.json')
       ]
     })
-  ]
+
+  ],
   },
-  devtools: true
+  devtools: false
 })

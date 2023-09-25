@@ -10,8 +10,8 @@
       </NuxtLink>
       <div class="lg:hidden text-lg ml-auto flex align-center">
 
-      <button class="text-lg p-2 px-3 rounded-4xl active:bg-primary-darken focus:bg-primary-darken" 
-              @keydown="escape_menu" 
+      <button class="text-lg p-2 px-3 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
+              @keydown="escape_menu"
               :aria-expanded="menu_expanded"
               :aria-controls="menu_expanded? 'main_menu' : null"
               @click="menu_expanded = !menu_expanded">
@@ -41,15 +41,15 @@
     <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1">
           <Icon name="bi:globe2" size="1.25em" class="mr-2"/>
           <label for="locale-select" class="sr-only">{{$t('settings.locale.title')}}</label>
-          <select id="locale-select" class="bg-primary text-white" v-model="i18n.locale.value" @change="update_lang">
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="eng">English</option>
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nob">Bokmål</option>
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nno">Nynorsk</option>
-          </select> 
+          <select id="locale-select" class="bg-primary text-white" v-model="$i18n.locale" @change="update_lang">
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nob'" value="nob">Bokmål</option>
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'eng'" value="eng">English</option>
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nno'" value="nno">Nynorsk</option>
+          </select>
       </div>
     </div>
   </header>
-    
+
 </template>
 
 
@@ -60,13 +60,11 @@ import { useRoute } from 'vue-router'
 const store = useStore()
 const route = useRoute()
 const i18n = useI18n()
-
 const menu_expanded = ref(false)
+const locale_cookie = useCookie('currentLocale')
 const locale = computed(()=> {
   return {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
 })
-const locale_cookie = useCookie('currentLocale')
-locale_cookie.value = i18n.locale.value
 
 const escape_menu = (event) => {
   console.log(event.key)
@@ -81,7 +79,7 @@ const update_lang = (event) => {
     event.preventDefault()
     return navigateTo("/" + i18n.locale.value + route.fullPath.slice(4, route.fullPath.length))
   }
-  
+
 }
 
 useHead({
