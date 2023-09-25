@@ -36,17 +36,28 @@
         >
           <div>
             <button
-              class="tp-hover-focus group border-transparent px-1.5 pb-1 pt-0.5"
+              class="tp-hover-focus group border-transparent pb-1.5 pl-2.5 pr-1.5 pt-0.5"
               :aria-label="`${$t('navBar.language')}`"
-              aria-haspopup="menu"
+              aria-haspopup="true"
               aria-controls="overlayLangMenu"
               @click="langMenu.toggle"
             >
-              <Icon
-                class="text-gray-500 group-hover:text-black"
-                name="material-symbols:language"
-                size="1.4em"
-              />
+              <div class="relative">
+                <div class="absolute -bottom-[9px] -left-[8px]">
+                  <span class="rounded-[5px] bg-white text-[0.6em]">
+                    <span
+                      class="h-1 px-[3px] font-semibold uppercase group-hover:text-gray-700 group-focus:text-gray-700"
+                      >{{ locale }}</span
+                    >
+                  </span>
+                </div>
+                <Icon
+                  class="text-gray-500 group-hover:text-gray-700 group-focus:text-gray-700"
+                  name="material-symbols:language"
+                  size="1.4em"
+                  aria-hidden="true"
+                />
+              </div>
             </button>
             <Menu
               id="overlayLangMenu"
@@ -57,7 +68,7 @@
           </div>
           <div>
             <button
-              class="tp-hover-focus group border-transparent px-2 py-1 hover:text-black focus:text-black"
+              class="tp-hover-focus group border-transparent px-2 py-1 hover:text-gray-700 focus:text-gray-700"
               aria-haspopup="menu"
               aria-controls="termbaseMenu"
               @click="termbaseMenu.toggle"
