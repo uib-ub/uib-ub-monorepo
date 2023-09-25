@@ -41,10 +41,10 @@
     <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1">
           <Icon name="bi:globe2" size="1.25em" class="mr-2"/>
           <label for="locale-select" class="sr-only">{{$t('settings.locale.title')}}</label>
-          <select id="locale-select" class="bg-primary text-white" v-model="i18n.locale.value" @change="update_lang">
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="eng">English</option>
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nob">Bokmål</option>
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nno">Nynorsk</option>
+          <select id="locale-select" class="bg-primary text-white" v-model="$i18n.locale" @change="update_lang">
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nob'" value="nob">Bokmål</option>
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'eng'" value="eng">English</option>
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nno'" value="nno">Nynorsk</option>
           </select> 
       </div>
     </div>
@@ -60,13 +60,11 @@ import { useRoute } from 'vue-router'
 const store = useStore()
 const route = useRoute()
 const i18n = useI18n()
-
 const menu_expanded = ref(false)
+const locale_cookie = useCookie('currentLocale')
 const locale = computed(()=> {
   return {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
 })
-const locale_cookie = useCookie('currentLocale')
-locale_cookie.value = i18n.locale.value
 
 const escape_menu = (event) => {
   console.log(event.key)
@@ -77,8 +75,6 @@ const escape_menu = (event) => {
 
 const update_lang = () => {
   locale_cookie.value = i18n.locale.value
-  console.log(locale_cookie.value)
-  
 }
 
 useHead({

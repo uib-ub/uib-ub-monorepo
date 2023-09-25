@@ -8,8 +8,7 @@ const settings = useSettingsStore()
 const resetSettings = (settings) => {
     settings.$patch({
       simpleListView:false,
-      autoSelect:false,
-      submitSelect: false, 
+      autoSelect: true, 
       inflectionExpanded: false, 
       inflectionTableContext: false, 
       inflectionNo: false,
@@ -40,9 +39,6 @@ const startAnimation = () => {
     </FormCheckbox>
     <FormCheckbox v-model="settings.$state.autoSelect" :checked="settings.autoSelect">
       {{$t('settings.auto_select')}}
-    </FormCheckbox>
-  <FormCheckbox v-if="false" v-model="settings.$state.submitSelect" :checked="settings.submitSelect">
-      {{$t('settings.submit_select')}}
     </FormCheckbox>
 <FormCheckbox v-model="settings.$state.inflectionExpanded" :checked="settings.inflectionExpanded">
       {{$t('settings.inflection_expanded')}}
