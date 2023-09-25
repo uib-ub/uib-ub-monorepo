@@ -146,11 +146,6 @@ const dataDisplayLanguages = useDataDisplayLanguages();
 const locales = useLocales();
 const localeLangOrder = useLocaleLangOrder();
 
-watch(i18n.locale, () => {
-  const locale = useCookie("locale", cookieLocaleOptions);
-  locale.value = i18n.locale.value;
-});
-
 function setLocale(language) {
   i18n.locale.value = language;
 }
