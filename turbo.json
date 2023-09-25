@@ -95,6 +95,9 @@
     "generate#sps-termportalen-web": {
       "outputs": ["dist/**"]
     },
+    "generate#sps-ordbokene-web": {
+      "outputs": ["dist/**"]
+    },
     "test": {
       "outputs": [
         "coverage/**"
