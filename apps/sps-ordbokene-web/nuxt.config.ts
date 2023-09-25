@@ -46,23 +46,23 @@ export default defineNuxtConfig({
     'pages:extend' (pages) {
       pages.push({
             path: locales + '/:dict(bm|nn|bm,nn)',
-            file: '~/custom-pages/view-container.vue',
+            file: '~/components/custom-pages/view-container.vue',
             children: [
               {
                 name: 'article',
                 path: ':article_id(\\d+)/:lemma?',
-                file: '~/custom-pages/article-view.vue'
+                file: '~/components/custom-pages/article-view.vue'
               },
               {
                 name: 'word',
                 path: ':q',
-                file: '~/custom-pages/word-view.vue'
+                file: '~/components/custom-pages/word-view.vue'
               },
               {
                 name: 'welcome',
                 path: '',
                 alias: 'search', //legacy
-                file: '~/custom-pages/welcome-view.vue'
+                file: '~/components/custom-pages/welcome-view.vue'
               }
             ]
           })
@@ -70,17 +70,17 @@ export default defineNuxtConfig({
       {
         name: 'about',
         path: locales + '/about',
-        file: '~/custom-pages/content-container.vue',
+        file: '~/components/custom-pages/content-container.vue',
         children: [
           {
             name: 'about-slug',
             path: ':slug',
-            file: '~/custom-pages/content-subpage.vue'
+            file: '~/components/custom-pages/content-subpage.vue'
           },
           {
             name: 'about',
             path: '',
-            file: '~/custom-pages/content-accordions.vue'
+            file: '~/components/custom-pages/content-accordions.vue'
           }
           
 
@@ -89,17 +89,17 @@ export default defineNuxtConfig({
       pages.push({
         name: 'help',
         path: locales + '/help',
-        file: '~/custom-pages/content-container.vue',
+        file: '~/components/custom-pages/content-container.vue',
         children: [
           {
             name: 'help-slug',
             path: ':slug',
-            file: '~/custom-pages/content-subpage.vue'
+            file: '~/components/custom-pages/content-subpage.vue'
           },
           {
             name: 'help',
             path: '',
-            file: '~/custom-pages/content-accordions.vue'
+            file: '~/components/custom-pages/content-accordions.vue'
           }
         ]
         })
@@ -107,12 +107,12 @@ export default defineNuxtConfig({
         pages.push({
           name: 'contact',
           path: locales + '/contact',
-          file: '~/custom-pages/content-container.vue',
+          file: '~/components/custom-pages/content-container.vue',
           children: [
             {
               name: 'contact',
               path: '',
-              file: '~/custom-pages/content-accordions.vue'
+              file: '~/components/custom-pages/content-accordions.vue'
             }
           ]
       })
@@ -121,13 +121,13 @@ export default defineNuxtConfig({
       {
         name: 'settings',
         path: locales + '/settings',
-        file: '~/custom-pages/settings.vue',
+        file: '~/components/custom-pages/settings.vue',
       })
 
       pages.push({
         name: 'search',
         path: locales +'/search',
-        file: '~/custom-pages/search.vue',
+        file: '~/components/custom-pages/search.vue',
       })
 
       pages.push({
