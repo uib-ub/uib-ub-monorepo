@@ -37,7 +37,9 @@
           <div>
             <button
               class="tp-hover-focus group border-transparent pb-1.5 pl-2.5 pr-1.5 pt-0.5"
-              :aria-label="`${$t('navBar.language')}`"
+              :aria-label="`${$t('navBar.language')}: ${$t(
+                'global.lang.' + locale
+              )}`"
               aria-haspopup="true"
               aria-controls="overlayLangMenu"
               @click="langMenu.toggle"
