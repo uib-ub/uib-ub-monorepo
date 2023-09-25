@@ -214,6 +214,11 @@ onClickOutside(navPageLinks, () => {
     navMenuExpanded.value = false;
   }
 });
+
+watch(i18n.locale, () => {
+  const locale = useCookie("locale", cookieLocaleOptions);
+  locale.value = i18n.locale.value;
+});
 </script>
 
 <style>
