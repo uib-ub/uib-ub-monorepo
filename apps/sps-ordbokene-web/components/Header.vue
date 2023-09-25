@@ -65,8 +65,6 @@ const menu_expanded = ref(false)
 const locale = computed(()=> {
   return {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
 })
-const locale_cookie = useCookie('currentLocale')
-locale_cookie.value = i18n.locale.value
 
 const escape_menu = (event) => {
   console.log(event.key)
@@ -76,6 +74,7 @@ const escape_menu = (event) => {
 }
 
 const update_lang = () => {
+  const locale_cookie = useCookie('currentLocale')
   locale_cookie.value = i18n.locale.value
   console.log(locale_cookie.value)
   
