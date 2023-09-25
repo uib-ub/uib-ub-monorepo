@@ -15,11 +15,7 @@ const settings = useSettingsStore()
 const route = useRoute()
 
 const input_element = useState('input_element')
-const keyboard_navigation = ref(false)
-
 const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host +"/"
-
-
 
 useHead({
     titleTemplate: (titleChunk) => {
@@ -47,21 +43,6 @@ if (process.client) {
   document.addEventListener('click', () => {
   store.show_autocomplete = false
   })
-
-
-
-  // Handle mouse vs keyboard navigation
-  document.addEventListener('mouseup', (event) => {
-      keyboard_navigation.value = false;
-  })
-
-  document.addEventListener('keyup', (event) => {
-    if (event.key == "Tab") {
-      keyboard_navigation.value = true
-    }
-  })
-
-
 }
 
 const nuxtApp = useNuxtApp()
