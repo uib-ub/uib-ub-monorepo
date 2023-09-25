@@ -44,9 +44,22 @@ export default defineNuxtConfig({
   },
   hooks: {
     'pages:extend' (pages) {
+      pages.pop()
+      pages.push({
+        path: locales + '/:dict(bm|nn|bm,nn)?',
+        file: '~/pages/index.vue',
+        children: [
+          {
+            name: 'welcome',
+            path: '',
+            alias: 'search', //legacy
+            file: '~/components/custom-pages/welcome-view.vue'
+          }
+        ]
+      })
       pages.push({
             path: locales + '/:dict(bm|nn|bm,nn)',
-            file: '~/components/custom-pages/view-container.vue',
+            file: '~/pages/index.vue',
             children: [
               {
                 name: 'article',
@@ -57,12 +70,6 @@ export default defineNuxtConfig({
                 name: 'word',
                 path: ':q',
                 file: '~/components/custom-pages/word-view.vue'
-              },
-              {
-                name: 'welcome',
-                path: '',
-                alias: 'search', //legacy
-                file: '~/components/custom-pages/welcome-view.vue'
               }
             ]
           })
