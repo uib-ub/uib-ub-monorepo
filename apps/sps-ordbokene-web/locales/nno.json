@@ -197,7 +197,11 @@
             "expressions": "Faste uttrykk",
             "definitions": "Tyding og bruk",
             "examples": "Døme"
-        }
+        },  
+        "update":{
+            "bmo":"Nyleg oppdatert fra Bokmålsordboka",
+            "nno":"Nyleg oppdatert fra Nynorskordboka"
+          }
     },
     "error": {
           "article": "Det har oppstått ein feil i artikkel {no} i {dict}",

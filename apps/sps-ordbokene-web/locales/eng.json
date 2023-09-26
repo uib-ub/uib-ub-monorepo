@@ -197,6 +197,10 @@
       "expressions": "Set phrases",
       "definitions": "Senses and Example Sentences",
       "examples": "Example"
+  },
+  "update":{
+    "bmo":"Recently updated from Bokmålsordboka",
+    "nno":"Recently updated from Nynorskordboka"
   }
 },
 "error": {

@@ -209,7 +209,11 @@
             "expressions": "Faste uttrykk",
             "definitions": "Betydning og bruk",
             "examples": "Eksempel"
-        }
+        },  
+        "update":{
+            "bmo":"Nylig oppdatert fra Bokmålsordboka",
+            "nno":"Nylig oppdatert fra Nynorskordboka"
+          }
     },
     "error": {
           "article": "Det har oppstått en feil i artikkel {no} i {dict}",
