@@ -1,6 +1,6 @@
 <template>
 <div class="py-1">
-<form  @submit.prevent="submitForm" ref="form">
+<form  @submit.prevent="submitForm" ref="form" :action="'/' + store.dict || 'bm,nn'">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete v-on:dropdown-submit="submitForm"/>
 </NuxtErrorBoundary>
@@ -12,18 +12,61 @@
 <script setup>
 import { useStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
+import {useSettingsStore } from '~/stores/settingsStore'
 const store = useStore()
 const route = useRoute()
+const settings = useSettingsStore()
+
+const input_element = useState('input_element')
 
 const submitForm = async (item) => {
+  
+  if (typeof item === 'string') {
+    if (settings.auto_select) {
+      input_element.value.select()
+    }
+    else {
+      input_element.value.blur()
+    }
+    return navigateTo(`/${route.params.dict}?q=${item}`)
+  }
+  
   if (store.input) {
-    console.log("SUBMITTED")
+    if (settings.auto_select) {
+      input_element.value.select()
+    }
+    else {
+      input_element.value.blur()
+    }
+    
     store.show_autocomplete = false
-    let url = '/' + store.dict
-    url += '/search?q='+store.input
     store.q = store.input
 
-    return navigateTo(url)
+
+    if (advancedSpecialSymbols(store.q)) {
+      return navigateTo(`/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`)
+    }
+    else  if (store.input.includes("|") || store.dropdown_selected != -1) {
+      return navigateTo(`/${route.params.dict}?q=${store.q}`)
+    }
+
+    let { exact, inflect } = store.suggest
+    
+    if (exact) {
+      
+        if (exact[0][0].length == store.q.length) {
+            let redirectUrl = `/${store.dict}/${exact[0][0]}`
+            if (exact[0][0] != store.q) redirectUrl += `?orig=${store.q}`
+            return navigateTo(redirectUrl)
+        }
+    }
+
+    if (inflect && inflect.length == 1 && inflect[0][0] && inflect[0][0][0] != "-" && inflect[0][0].slice(-1) != "-") { // suppress prefixes and suffixes
+        return navigateTo(`/${store.dict}/${inflect[0][0]}?orig=${store.q}`)
+    }
+
+    return navigateTo(`/${route.params.dict}?q=${store.q}`)
+    //navigateTo(`/${route.params.dict}/${store.q}`)
   }
   
 }
@@ -35,14 +78,12 @@ const autocomplete_error = (error) => {
 </script>
 
 <style scoped>
-
-
 form {
-    @apply md:mx-10;
-  }
+      @apply md:mx-10;
+    }
 
 .welcome form {
-  @apply md:mx-0;
+  @apply lg:mx-0;
 }
 
   

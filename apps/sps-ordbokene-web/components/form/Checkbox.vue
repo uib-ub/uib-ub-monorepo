@@ -1,9 +1,7 @@
 <template>
 <div class="checkbox-container">
-  <Icon name="mdi:checkbox-marked" aria-hidden="true" class="text-primary absolute pointer-events-none w-[1.5rem] h-[1.5rem]" v-if="checked"/>
-  <Icon name="mdi:checkbox-blank-outline"   aria-hidden="true" class="text-gray-700 absolute pointer-events-none w-[1.5rem] h-[1.5rem]" v-else/>
-<input  class="sr-only" type="checkbox" :id="props.labelId" :checked="props.checked" v-model="model">
-  <label class="pl-8" :for="props.labelId">
+  <label>
+<input  class="" type="checkbox" :checked="props.checked" v-model="model">
     <slot></slot>
   </label>
 </div>
@@ -15,7 +13,6 @@
 const emit= defineEmits(['update:modelValue'])
 
 const props = defineProps({
-    labelId: String,
     checked: {
         type: Boolean,
         default: false
@@ -34,9 +31,20 @@ const model = computed({
 
 </script>
 <style scoped>
-.checkbox-container:focus-within svg { 
-  outline: solid 2px theme('colors.secondary.DEFAULT');
-  border-radius: .125rem;
 
-}
+    input {
+      accent-color: theme('colors.primary.DEFAULT');
+    }
+
+    input:checked:hover {
+      accent-color: theme('colors.secondary.DEFAULT') !important;
+    }
+
+
+    label {
+        display: grid;
+        grid-template-columns: 1em auto;
+        gap: 0.5em;
+    }
+
 </style>

@@ -191,6 +191,133 @@ ORDER BY DESC(?props)
 
 [Run the query](https://sparql.ub.uib.no/dataset.html?tab=query&ds=/sparql#query=PREFIX+ubbont%3A+%3Chttp%3A%2F%2Fdata.ub.uib.no%2Fontology%2F%3E%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dbo%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0APREFIX+dct%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0APREFIX+wgs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2003%2F01%2Fgeo%2Fwgs84_pos%23%3E%0APREFIX+geonames%3A+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23%3E%0APREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX+sc%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+oa%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Foa%23%3E%0APREFIX+iiif_prezi%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fpresentation%2F3%23%3E%0APREFIX+as%3A+%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Factivitystreams%23%3E%0APREFIX+navplace%3A+%3Chttp%3A%2F%2Fiiif.io%2Fapi%2Fextension%2Fnavplace%23%3E%0APREFIX+crm%3A+%3Chttp%3A%2F%2Fwww.cidoc-crm.org%2Fcidoc-crm%2F%3E%0APREFIX+muna%3A+%3Chttp%3A%2F%2Fmuna.zyx%2F%3E%0APREFIX+bibo%3A+%3Chttp%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2F%3E%0APREFIX+event%3A+%3Chttp%3A%2F%2Fpurl.org%2FNET%2Fc4dm%2Fevent.owl%23%3E%0A+%0ASELECT+%3Fid+(COUNT(distinct+%3Fp)+AS+%3Fprops)%0AWHERE+%7B%0A++%3Fid+rdf%3Atype%2F(rdfs%3AsubClassOf)*+bibo%3ADocument+%3B%0A++++%3Fp+%3Fo+.%0A%7D%0AGROUP+BY+%3Fid%0AORDER+BY+DESC(%3Fprops))
 
+### Get all concept schemes
+
+```sparql
+CONSTRUCT {
+  ?id a skos:ConceptScheme . 
+  ?id ?p ?o .
+  ?o ?p2 ?o2 .
+}
+WHERE { 
+  ?id a skos:ConceptScheme . 
+  ?id ?p ?o .
+  ?o ?p2 ?o2 .
+  FILTER(?p2 != ubbont:isSubjectOf && ?p2 != ubbont:cataloguedBy && ?p2 != skos:narrower)
+}
+```
+
+### Get a csv of all concepts
+
+```sparql
+SELECT 
+  ?c 
+  (GROUP_CONCAT(DISTINCT ?prefLabel;separator=", ") AS ?label)
+  (GROUP_CONCAT(DISTINCT ?oType;separator=", ") AS ?type)
+  ?id 
+WHERE {
+  ?c skos:inScheme ?cs .
+  ?c a ?class .
+  ?c skos:prefLabel ?prefLabel .
+  OPTIONAL { 
+    ?c dct:identifier ?id .
+  }
+  ?class rdfs:label ?oClass .
+  BIND(str(?oClass) AS ?oType)
+} 
+GROUP BY ?c ?id 
+```
+
+### Get all authorities
+
+```sparql
+
+```sparql
+SELECT DISTINCT
+  ?id
+  ?url
+  (GROUP_CONCAT(DISTINCT ?classLabel;separator="||") AS ?type)
+  ?identifier
+  (GROUP_CONCAT(DISTINCT ?prefLabelNo0;separator="||") AS ?labelNo)
+  (GROUP_CONCAT(DISTINCT ?prefLabelEn0;separator="||") AS ?labelEn)
+  (GROUP_CONCAT(DISTINCT ?firstName0;separator="||") AS ?firstName)
+  (GROUP_CONCAT(DISTINCT ?familyName0;separator="||") AS ?familyName)
+
+  (GROUP_CONCAT(DISTINCT ?schemaName0;separator="||") AS ?schemaName)
+  (GROUP_CONCAT(DISTINCT ?match0;separator="||") AS ?match)
+  ?existsBroader
+  ?existsNarrower
+  ?available
+  ?modified
+  ?source
+WHERE {{
+  VALUES ?class { skos:Concept foaf:Person ubbont:Building schema:Country <http://vocab.lenka.no/geo-deling#Fylke> lexvo:Language ubbont:Parish ubbont:PhotographicTechnique ubbont:Publisher ubbont:Ship geo:SpatialThing ubbont:Technique ubbont:Vessel }
+  ?id a ?class .
+  OPTIONAL {
+    ?id skos:prefLabel|foaf:name|rdfs:label ?prefLabelNo0 .
+    FILTER((LANG(?prefLabelNo0)) = "" || (LANG(?prefLabelNo0)) = "no" || (LANG(?prefLabelNo0)) = "nn" || (LANG(?prefLabelNo0)) = "nb") 
+  }
+  OPTIONAL {
+    ?id skos:prefLabel|foaf:name|rdfs:label ?prefLabelEn0 .
+    FILTER((LANG(?prefLabelEn0)) = "en") 
+  }
+  OPTIONAL { ?id foaf:familyName ?familyName0 . }
+  OPTIONAL { ?id foaf:firstName ?firstName0 . }
+  OPTIONAL { ?id dct:identifier ?identifier . } 
+  OPTIONAL {
+    ?id skos:inScheme ?inScheme .
+  	?inScheme skos:prefLabel ?csClass .
+    BIND(str(?csClass) AS ?schemaName0)
+  }
+  OPTIONAL { ?id foaf:page/ubbont:hasURI ?match0 }
+  OPTIONAL { ?id dct:available ?available . }
+  OPTIONAL { ?id dct:modified ?modified . }
+  ?class rdfs:label ?classLabel .
+  FILTER(STRLEN(?classLabel) != 0)
+  FILTER(langMatches(lang(?classLabel), "en"))
+  BIND(EXISTS { ?id skos:broader ?broader } as ?existsBroader)
+  BIND(EXISTS { ?id skos:narrower ?narrower } as ?existsNarrower)
+  BIND("marcus" as ?source)
+  BIND(replace(str(?id), "data.ub", "marcus") as ?url0)
+  BIND(iri(?url0) as ?url)
+} UNION {
+  SERVICE <https://sparql.ub.uib.no/skeivtarkiv/query> {
+    VALUES ?class { skos:Concept foaf:Person ubbont:Building schema:Country <http://vocab.lenka.no/geo-deling#Fylke> lexvo:Language ubbont:Parish ubbont:PhotographicTechnique ubbont:Publisher ubbont:Ship geo:SpatialThing ubbont:Technique ubbont:Vessel }
+    ?id a ?class .
+    OPTIONAL {
+      ?id skos:prefLabel|foaf:name|rdfs:label ?prefLabelNo0 .
+      FILTER((LANG(?prefLabelNo0)) = "" || (LANG(?prefLabelNo0)) = "no" || (LANG(?prefLabelNo0)) = "nn" || (LANG(?prefLabelNo0)) = "nb") 
+    }
+    OPTIONAL {
+      ?id skos:prefLabel|foaf:name|rdfs:label ?prefLabelEn0 .
+      FILTER((LANG(?prefLabelEn0)) = "en") 
+    }
+    OPTIONAL { ?id foaf:familyName ?familyName0 . }
+    OPTIONAL { ?id foaf:firstName ?firstName0 . }
+    OPTIONAL { ?id dct:identifier ?identifier . } 
+    OPTIONAL {
+      ?id skos:inScheme ?inScheme .
+      ?inScheme skos:prefLabel ?csClass .
+      BIND(str(?csClass) AS ?schemaName0)
+    }
+    OPTIONAL { ?id foaf:page/ubbont:hasURI ?match0 }
+    OPTIONAL { ?id dct:available ?available . }
+    OPTIONAL { ?id dct:modified ?modified . }
+    ?class rdfs:label ?classLabel .
+    FILTER(STRLEN(?classLabel) != 0)
+    FILTER(langMatches(lang(?classLabel), "en"))
+    BIND(EXISTS { ?id skos:broader ?broader } as ?existsBroader)
+    BIND(EXISTS { ?id skos:narrower ?narrower } as ?existsNarrower)
+    BIND("skeivtarkiv" as ?source)
+    BIND(replace(str(?id), "data.ub.uib", "katalog.skeivtarkiv") as ?url0)
+    BIND(iri(?url0) as ?url)
+  }}
+}
+GROUP BY ?id ?url ?identifier ?type ?schemaName ?match ?existsBroader ?existsNarrower ?available ?modified ?source
+```
+
+
+
 ## Prefixes
 
 ```sparql

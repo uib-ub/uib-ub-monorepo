@@ -1,10 +1,9 @@
 <template>
-<header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center 
-      text-white">
+<header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div class="flex flex-row content-center w-full lg:w-auto">
-  <NuxtLink class="navbar-brand" to="/" :aria-current="$route.name == 'dict' && 'page'">
+  <NuxtLink class="navbar-brand" to="/" :aria-current="$route.name == 'welcome' && 'page'">
       <div class="mx-1 md:my-1 lg:my-3 xl:my-4">
-      <div><h1 class="text-2xl mb-0.5">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
+      <div><h1 class="text-2xl mt-0.5 mb-0.5">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
       <p class="hidden xl:block brand-subtitle ml-0.5 mb-1">{{$t("sub_title")}}</p>
       </div>
     </div>
@@ -28,13 +27,13 @@
         </li>
 
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'about' && 'page'" to="/about">{{$t('about')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name.slice(0,5) == 'about' && 'page'" to="/about">{{$t('about')}}</NuxtLink>
         </li>
                 <li class="nav-item">
           <NuxtLink @click="menu_expanded=false" class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" to="/settings">{{$t('settings.title')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'contact' && 'page'" to="/contact">{{$t('contact.title')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'contact' && 'page'" to="/contact">{{$t('contact')}}</NuxtLink>
         </li>
 
       </ul>
@@ -42,10 +41,10 @@
     <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1">
           <Icon name="bi:globe2" size="1.25em" class="mr-2"/>
           <label for="locale-select" class="sr-only">{{$t('settings.locale.title')}}</label>
-          <select id="locale-select" class="bg-primary text-white" v-model="i18n.locale.value" @change="update_locale">
-            <option class="text-text bg-canvas" value="eng">English</option>
-            <option class="text-text bg-canvas" value="nob">Bokmål</option>
-            <option class="text-text bg-canvas" value="nno">Nynorsk</option>
+          <select id="locale-select" class="bg-primary text-white" v-model="i18n.locale.value" @change="update_lang">
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="eng">English</option>
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nob">Bokmål</option>
+            <option class="text-text text-xl bg-canvas shadow-xl border-2" value="nno">Nynorsk</option>
           </select> 
       </div>
     </div>
@@ -62,9 +61,12 @@ const store = useStore()
 const route = useRoute()
 const i18n = useI18n()
 
-const locale_expanded = ref(false)
 const menu_expanded = ref(false)
-const locale = useCookie('currentLocale')
+const locale = computed(()=> {
+  return {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
+})
+const locale_cookie = useCookie('currentLocale')
+locale_cookie.value = i18n.locale.value
 
 const escape_menu = (event) => {
   console.log(event.key)
@@ -73,25 +75,20 @@ const escape_menu = (event) => {
   }
 }
 
+const update_lang = () => {
+  locale_cookie.value = i18n.locale.value
+  console.log(locale_cookie.value)
+  
+}
+
 useHead({
     htmlAttrs: {
-      lang: {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
+      lang: locale
     },
     titleTemplate: (titleChunk) => {
       return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
     }
 })
-
-const update_locale = () => {
-  locale_expanded.value = false
-  locale.value = i18n.locale.value
-  useHead({
-    htmlAttrs: {
-      lang: {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
-    }
-})
-}
-
 
 </script>
 
@@ -109,8 +106,8 @@ nav .nav-link {
   list-style-type: none;
   padding-top: .5rem;
 }
-    
-    
+
+
 
 nav .nav-link:focus {
   @apply text-white border-white;
@@ -128,6 +125,6 @@ nav .nav-link[aria-current=page] {
       display: flex;
   }
 }
-  
+
 
 </style>

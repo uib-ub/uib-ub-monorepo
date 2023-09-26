@@ -1,15 +1,16 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase",
+    "termbase": "Termbase | termbase | Termbaser | termbaser",
     "skipLink": "Gå til hovedinnhold",
+    "collaborators": "Våre samarbeidspartnere",
     "domain": {
-      "domain": "Domene | domene",
-      "all": "Alle domener",
+      "domain": "Domene | domene | Domener",
       "DOMENE-3AHumaniora": "Humaniora",
-      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap & teknologi",
+      "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
-      "DOMENE-3AOkonomiAdministrasjon": "Økonomi & administrasjon"
+      "DOMENE-3AOkonomiAdministrasjon": "Økonomi og administrasjon",
+      "DOMENE-3AHelse_og_sosial": "Helse og sosial"
     },
     "lang": {
       "none": "–",
@@ -41,6 +42,7 @@
       "FBK": "Felles Begrepskatalog",
       "KLIMA": "Klima",
       "LINGVISTIKK": "Lingvistikk",
+      "SEMANTIKK": "Semantikk",
       "MRT": "Maritim ordbok",
       "NOT": "NOT – Norsk termbanks termdatabase",
       "NHH": "NHHs termbase",
@@ -61,21 +63,33 @@
       "hiddenLabel": "Frarådet term"
     },
     "matching": {
-      "full": "nøyaktig",
-      "full-cs": "nøyaktig",
-      "full-ci": "nøyaktig",
-      "startsWith-ci": "starter med",
-      "endsWith-ci": "slutter med",
-      "subWord-ci": "underord starter med",
-      "contains-ci": "inneholder"
+      "full": "Nøyaktig",
+      "full-cs": "Nøyaktig",
+      "full-ci": "Nøyaktig",
+      "startsWith-ci": "Starter med",
+      "endsWith-ci": "Slutter med",
+      "subWord-ci": "Underord starter med",
+      "contains-ci": "Inneholder"
+    },
+    "license": {
+      "LISENS-3ANo_Rights_Reserved_-28CC0-29": "CC0",
+      "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED": "Clarin ID-EDU-BY-NC-NORED",
+      "LISENS-3ACC_BY_40": "CC BY 4.0",
+      "LISENS-3ACC_BY-2DNC_40": "CC BY-NC 4.0",
+      "LISENS-3ACC_BY-2DNC-2DND_40": "CC BY-NC-ND 4.0"
     }
   },
-  "domainOverview": { "domainsAndBases": "Domener & termbaser" },
+  "domainOverview": { "domainsAndBases": "Domener og termbaser" },
   "navBar": {
     "om": "Om Termportalen",
-    "innstillinger": "Inn­stillinger",
+    "innstillinger": "Innstillinger",
     "menuButtonShow": "Utvid menyen",
-    "menuButtonHide": "Skjul menyen"
+    "menuButtonHide": "Skjul menyen",
+    "language": "Visningsspråk",
+    "navigation": "Navigasjon" // TODO Check translation
+  },
+  "news": {
+    "heading": "Nyheter"
   },
   "searchBar": {
     "search": "Søk",
@@ -86,7 +100,11 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
-    "searchButtonLabel": "Søk"
+    "searchButtonLabel": "Søk",
+    "expandSubdomains": "Vis underdomener", // TODO
+    "closeSubdomains": "Skjul underdomener", // TODO
+    "expandTermbases": "Vis termbaser", // TODO
+    "closeTermbases": "Skjul termbaser" // TODO
   },
   "searchFilter": {
     "results": "treff",
@@ -113,23 +131,34 @@
     "telephone": "Telefon",
     "license": "Lisens",
     "languages": "Språk",
-    "startLang": "Utgangsspråk"
+    "startLang": "Utgangsspråk",
+    "contactHeading": "Kontakt" // TODO Used a heading to group telephone, email
   },
   "id": {
     "topheading": "Begrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
+    "equivalence": "Ekvivalens", // TODO
+    "ekvIngen": "ingen",
+    "ekvFull": "full",
+    "ekvDelvis": "delvis",
+    "ekvBredere": "bredere betydning",
+    "ekvSmalere": "smalere betydning",
+    "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
     "hiddenLabel": "Frarådet term",
     "definisjon": "Definisjon",
-    "referanse": "",
-    "kollokasjon": "",
-    "forkortelse": "",
-    "forkortelseAv": "",
-    "forkortelseType": "",
-    "kontekst": "",
-    "kontekstAv": "",
+    "referanse": "Referanse",
+    "kollokasjon": "Kollokasjon",
+    "forkortelse": "Forkortelse",
+    "forkortelseAv": "Forkortelse av",
+    "forkortelseType": "Forkortelsestype",
+    "kortform": "kortterm", // TODO Display of value for abbrev type
+    "teleskopord": "teleskopterm", // TODO Display of value for abbrev type
+    "initialord": "initialord", // TODO Display of value for abbrev type
+    "kontekst": "Kontekst",
+    "kontekstAv": "Kontekst til",
     "general": "Generell informasjon",
     "relasjon": "Begrepsrelasjon",
     "narrower": "Underbegrep",
@@ -140,13 +169,16 @@
     "hasPart": "Underbegrep (partitiv)",
     "seeAlso": "Se også",
     "related": "Assosiert begrep",
+    "replaces": "Erstatter", // TODO
+    "replacedBy": "Erstattet av", // TODO
+    "inndelingskriterium": "Inndelingskriterium", // TODO
     "collection": "Termbase",
     "subject": "Fagområde",
     "domain": "Domene",
     "modified": "Sist oppdatert",
     "note": "Merknad",
     "tilbake": "Til søkeresultater",
-    "noteTermbaseIsUnmaintained": "Dette er en historisk ressurs som p.t. ikke oppdateres"
+    "noteTermbaseIsUnmaintained": "Denne termbasen blir ikke lenger oppdatert, men har likevel verdi"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -155,13 +187,24 @@
     "language": "Språk",
     "termbase": "Termbase"
   },
-  "om": { "title": "Om Termportalen" },
+  "om": {
+    "title": "Om Termportalen",
+    "aboutUs": "Om oss",
+    "history": "Historikk",
+    "publications": "Relevante publikasjoner",
+    "kommeiGang": "Hvordan komme i gang med terminologiarbeid?",
+    "links": "Nyttige lenker",
+    "maritaStilling": "faglig leder og førsteamanuensis i terminologi og fagspråk, UiB",
+    "coordinator": "koordinator",
+    "terminologist": "terminolog",
+    "developer": "systemutvikler"
+  },
   "innstillinger": {
     "title": "Innstillinger",
-    "global": "Velg visningsspråk",
-    "globalLangComment": "",
+    "global": "Visningsspråk",
+    "globalLangComment": "Her kan du endre språk på knapper, meldinger og menyer. Dette vil ikke påvirke innholdet i selve termpostene, slik som definisjoner, termer og merknader.",
     "conceptview": "Termpost",
-    "dataDispLang": "Velg språk",
-    "dataDispLangComment": ""
+    "dataDispLang": "Språk for termpost",
+    "dataDispLangComment": "Velg hvilke språk som skal vises i termpostene"
   }
 }

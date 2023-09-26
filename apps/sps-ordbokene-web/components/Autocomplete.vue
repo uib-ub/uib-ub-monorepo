@@ -8,11 +8,14 @@ const route = useRoute()
 const settings = useSettingsStore()
 
 const input_element = useState('input_element')
-const announcement = useState('announcement')
 
-
-const selected_option = ref(-1)
 const top_option = ref()
+
+const close_dropdown = () => {
+  store.dropdown_selected = -1
+  store.show_autocomplete = false
+
+}
 
 async function fetchAutocomplete(q) {
 
@@ -22,12 +25,19 @@ async function fetchAutocomplete(q) {
       return
     }
 
-    const pattern = specialSymbols(q)
+    const pattern = advancedSpecialSymbols(q)
+    const hasOr = q.includes("|")
     const time = Date.now()
     if (pattern && (!store.autocomplete[0] || store.autocomplete[0].time < time)) {
       store.autocomplete = [{q, time, type: "pattern"}]
+      store.show_autocomplete = true;
+    }
+    else if (hasOr) {
+      store.autocomplete = []
+      store.show_autocomplete = false;
     }
     
+       
 
 
     // Intercept queries containing too many words or characters
@@ -45,14 +55,15 @@ async function fetchAutocomplete(q) {
       }
     }
 
-    if (!pattern) {
+    if (!pattern && !hasOr) {
 
       let response = ref([])
-      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${store.advanced ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'e'}`
+      let url = `${store.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name == 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'e'}`
       response.value = await $fetch(url)
 
       // prevent suggestions after submit
       if (q == store.input) {
+        store.suggest = response.value.a
         let autocomplete_suggestions = []
         if (store.input.trim() == q && response.value.a.exact) {
           let { exact, inflect, freetext } = response.value.a
@@ -98,25 +109,25 @@ const keys = (event) => {
   if (store.show_autocomplete) {
     if (event.key == "ArrowDown" || event.key == "Down") {
     
-    if (selected_option.value <  store.autocomplete.length -1) {
-      selected_option.value += 1;
+    if (store.dropdown_selected <  store.autocomplete.length -1) {
+      store.dropdown_selected += 1;
     }
     else {
-      selected_option.value = 0;      
+      store.dropdown_selected = 0;      
     }
     
-    store.input = store.autocomplete[selected_option.value].q
+    store.input = store.autocomplete[store.dropdown_selected].q
 
     //event.stopPropagation()
     event.preventDefault()
   }
   else if (event.key == "ArrowUp" || event.key == "Up") {
-    if (selected_option.value > -1) {
+    if (store.dropdown_selected > -1) {
     
-    selected_option.value -= 1;
+    store.dropdown_selected -= 1;
 
-    if (selected_option.value > -1) {
-    store.input = store.autocomplete[selected_option.value].q
+    if (store.dropdown_selected > -1) {
+    store.input = store.autocomplete[store.dropdown_selected].q
     
     }
     
@@ -124,28 +135,28 @@ const keys = (event) => {
     //event.stopPropagation()
     event.preventDefault()
   }
-  else if (event.key == "Escape" || event.key == "Esc") {
-    selected_option.value = -1
-    store.show_autocomplete = false
+  else if (event.key == "Escape" || event.key == "Esc" || event.key == "Tab") {
+    close_dropdown()
   }
-  else if (event.key == "Home" && selected_option.value > -1) {
-    selected_option.value = 0
+  else if (event.key == "Home" && store.dropdown_selected > -1) {
+    store.dropdown_selected = 0
     event.preventDefault()
 
   }
-  else if (event.key == "End" && selected_option.value > -1) {
-    selected_option.value = store.autocomplete.length - 1
+  else if (event.key == "End" && store.dropdown_selected > -1) {
+    store.dropdown_selected = store.autocomplete.length - 1
     event.preventDefault()
 
   }
-  else {
-    selected_option.value = -1
-    
-    }
+  else if (event.key != "Enter") {
+    store.dropdown_selected = -1
+  }
+
+ 
 
     // Scroll if necessary
-    if (process.client && selected_option.value > -1) {
-        document.getElementById('autocomplete-item-'+selected_option.value).scrollIntoView({block: 'nearest'})
+    if (process.client && store.dropdown_selected > -1) {
+        document.getElementById('autocomplete-item-'+store.dropdown_selected).scrollIntoView({block: 'nearest'})
       }
   }
 
@@ -163,12 +174,9 @@ const input_sync = (event) => {
 }
 
 const dropdown_select = (q) => {
-  console.log("DROPDOWN: Input from", store.input, "to", q)
   store.input= q
   store.show_autocomplete = false
-  emit('dropdown-submit')
-  console.log("NEXT")
-  console.log("AFTER")
+  emit('dropdown-submit', q)
 }
 
 
@@ -192,7 +200,7 @@ if (process.client) {
 
     if (e.key === "Esc" || e.key == "Escape") {
       store.show_autocomplete == false 
-      selected_option.value = -1
+      store.dropdown_selected = -1
     }
     
   })
@@ -214,7 +222,8 @@ if (process.client) {
           ref="input_element" 
           @input="input_sync"
           role="combobox" 
-          :aria-activedescendant="selected_option >= 0 ? 'autocomplete-item-'+selected_option : null"
+          name="q"
+          :aria-activedescendant="store.dropdown_selected >= 0 ? 'autocomplete-item-'+store.dropdown_selected : null"
           aria-autocomplete="list"
           aria-haspopup="listbox"
           maxlength="200"
@@ -225,9 +234,9 @@ if (process.client) {
           autocapitalize="none"
           @keydown="keys"
           :aria-expanded="store.show_autocomplete || 'false'" 
-          :aria-owns="selected_option >= 0 ? 'autocomplete-dropdown' : null"/>
-          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25rem"/></button>
-          <button v-if=" !store.advanced" class="appended-button" type="submit" v-bind:class="{'sr-only': store.advanced}" :aria-label="$t('search')"><Icon name="bi:search" size="1.25rem"/></button>
+          :aria-owns="store.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"/>
+          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
+          <button class="appended-button" type="submit" :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 
   </div>
@@ -235,14 +244,14 @@ if (process.client) {
    <ul id="autocomplete-dropdown" role="listbox" ref="autocomplete_dropdown">
     <li v-for="(item, idx) in store.autocomplete"
         :key="idx" 
-        :aria-selected="idx == selected_option"
+        :aria-selected="idx == store.dropdown_selected"
         role="option"
         tabindex="-1"
         :lang="['bm','nn','no'][item.dict-1]"
         :id="'autocomplete-item-'+idx">
         <div class="dropdown-item w-full" data-dropdown-item tabindex="-1" @click="dropdown_select(item.q)">
-          <span v-if="item.type == 'pattern' && !store.advanced" aria-live="polite" class=" bg-primary text-white p-1 rounded-1xl ml-3">{{$t('to_advanced')}} 
-            <Icon name="bi:arrow-right" class="mb-1"/>
+          <span v-if="item.type == 'pattern' && route.name != 'search'" role="status" aria-live="polite" class=" bg-primary text-white p-1 rounded px-3 ml-3">{{$t('to_advanced')}} 
+            <Icon name="bi:arrow-right"/>
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">
             <span v-if="store.autocomplete.length == 1" class="sr-only">{{$t('autocomplete_suggestions', 1)}}: </span>
@@ -251,7 +260,7 @@ if (process.client) {
         </div>
    </li>
   </ul>
-  <div v-if="store.autocomplete.length > 1" class="font-normal text-primary text-right px-6 pt-2" :key="store.input" aria-live="polite">
+  <div v-if="store.autocomplete.length > 1" class="font-normal text-primary text-right px-6 pt-2" :key="store.input" role="status" aria-live="polite">
     {{store.autocomplete.length}} {{$t('autocomplete_suggestions', 0)}}<span class="text-gray-600" v-if="store.autocomplete.length == 20"> ({{$t('maximum_autocomplete')}})</span></div>
  </div>
   </div>
@@ -266,6 +275,7 @@ if (process.client) {
   position: relative;
   left: 50%;
 transform: translateX(-50%);
+  @apply duration-200;
 }
 
 .dropdown-wrapper {
@@ -281,14 +291,13 @@ transform: translateX(-50%);
   border-bottom: 1px solid;   
   box-shadow: 2px 2px 0px theme("colors.primary.DEFAULT");
 
-  @apply border-primary bg-canvas block;
+  @apply border-primary bg-canvas block ;
 }
 
 
 #autocomplete-dropdown {
-  overflow-y: auto;
   max-height: 50vh;
-  @apply px-0 mx-0 flex flex-col;
+  @apply px-0 mx-0 flex flex-col overflow-y-auto;
 }
 
 
@@ -300,7 +309,7 @@ transform: translateX(-50%);
 
 #autocomplete-dropdown .dropdown-item {
   text-align: left;
-  @apply p-2 mx-2;
+  @apply p-4 mx-2 duration-200;
 
 
 }
@@ -311,8 +320,7 @@ transform: translateX(-50%);
 }
 
 #autocomplete-dropdown li:not(:last-child) .dropdown-item {
-  border-bottom: solid 1px;
-  @apply border-gray-300;
+  @apply border-gray-300 border-b border-gray-700;
 
 }
 
@@ -321,14 +329,13 @@ transform: translateX(-50%);
 }
 
 #autocomplete-dropdown .dropdown-item:hover  {
-    @apply bg-gray-100;
-    cursor: pointer;
+    @apply bg-canvas-darken cursor-pointer shadow-lg;
 }
 
 
 .dict-parentheses {
     font-size: 85%;
-    font-weight: 400;
+    @apply font-normal 
 }
 
 .input-wrapper {
@@ -385,23 +392,22 @@ transform: translateX(-50%);
 
 
 .appended-button, .appended-button-disabled {
-  @apply text-primary m-0 p-2 self-center;
+  @apply text-primary m-0 p-2 self-center flex;
   border: none;
   border-radius: 2rem; 
   background: unset;
-  display: flex;
 
 }
 
 
   
 .appended-button:hover, .appended-button:active {
-    @apply bg-gray-200;
+  @apply bg-primary text-canvas duration-200;
   }
 
 
 .advanced-search .appended-button  {
-  font-size: 1.25rem;
+  @apply text-xl;
 }
 
 

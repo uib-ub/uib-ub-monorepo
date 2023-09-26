@@ -18,14 +18,16 @@ export interface SearchDataStats {
   samling?: { [key in Samling]: number };
   predicate?: { [key in LabelPredicate]: number };
   matching?: { [key in Matching]: number };
+  context?: { string: number };
 }
 
 export interface SearchInterface {
   term: string | null;
   language: LangCode | "all";
   translate: LangCode | "none";
-  domain: string[];
-  termbase: Samling | "all";
+  domain: Object;
+  termbase: Samling[];
+  useDomain: boolean;
 }
 
 export const useDomainData = () =>
@@ -46,9 +48,10 @@ export const useDomainData = () =>
         "KJEMI",
       ],
     },
+    "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
     "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
     "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING"] },
-    "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK"] },
+//    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
   }));
 
 export const useSearchInterface = () =>
@@ -56,8 +59,9 @@ export const useSearchInterface = () =>
     term: null,
     language: "all",
     translate: "none",
-    termbase: "all",
-    domain: ["all"],
+    termbase: [],
+    domain: {},
+    useDomain: true,
   }));
 
 export const useAllowSearchFetch = () =>
@@ -85,6 +89,9 @@ export const useSearchDataCount = () => useState("searchDataCount", () => {});
 export const useSearchDataStats = () =>
   useState<SearchDataStats>("searchDataStats", () => ({}));
 
+export const useShowSearchFilter = () =>
+  useState<boolean>("showSearchFilter", () => false);
+
 export interface SearchFilterData {
   lang: LangCode[];
   samling: string[];
@@ -97,6 +104,7 @@ export const useSearchFilterData = () =>
     samling: [],
     predicate: [],
     matching: [],
+    context: [],
   }));
 export const useSearchFetchLatest = () =>
   useState<number>("searchFetchLatest", () => NaN);
@@ -121,3 +129,9 @@ export const useDataDisplayLanguages = () =>
   ]);
 export const useConceptViewToggle = () =>
   useState<boolean>("conceptViewToggle", () => false);
+
+export const useNavMenuExpanded = () =>
+  useState<boolean>("navMenuExpanded", () => false);
+
+export const useLazyLocales = () =>
+  useState<Object>("lazyLocales", () => ({ nb: {}, nn: {}, en: {} }));

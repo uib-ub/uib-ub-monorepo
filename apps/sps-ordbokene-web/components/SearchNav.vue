@@ -1,26 +1,25 @@
 <template>
   <div class="nav-container px-2">
-    <nav :aria-label="$t('label.dict_nav')" class="md:flex md:justify-center !my-1">
-  <ul id="searchNavContent" class="flex gap-2 md:gap-3">
+    <nav :aria-label="$t('label.dict_nav')" class="md:flex inline-block md:justify-center !my-2 box-content pr-1 md:pr-0">
+  <ul id="searchNavContent b-2" class="flex gap-2 md:gap-3 mr-2">
   <li>
     <NuxtLink class="inline-block"
               :aria-current="route.params.dict =='bm,nn' ? 'true' : 'false'"
               @click="dict_click('bm,nn')"
-              :to="dict_link('bm,nn')"><span class="max-sm:sr-only">{{$t('dicts.bm,nn')}}</span><span aria-hidden="true" class="block sm:hidden">{{$t('dicts_short.bm,nn')}}</span></NuxtLink>
+              :to="dict_link('bm,nn')"><span class="max-md:sr-only">{{$t('dicts.bm,nn')}}</span><span aria-hidden="true" class="block md:hidden">{{$t('dicts_short.bm,nn')}}</span></NuxtLink>
   </li>
   <li>
     <NuxtLink  :aria-current="route.params.dict =='bm' ? 'true' : 'false'"
               @click="dict_click('bm')"
-              :to="dict_link('bm')"><span class="max-sm:sr-only">{{$t('dicts.bm')}}</span><span aria-hidden="true" class="block sm:hidden">{{$t('dicts_short.bm')}}</span></NuxtLink>
+              :to="dict_link('bm')"><span class="max-md:sr-only">{{$t('dicts.bm')}}</span><span aria-hidden="true" class="block md:hidden">{{$t('dicts_short.bm')}}</span></NuxtLink>
   </li>
   <li>
     <NuxtLink :aria-current="route.params.dict =='nn' ? 'true' : 'false'"
               @click="dict_click('nn')"
-              :to="dict_link('nn')"><span class="max-sm:sr-only">{{$t('dicts.nn')}}</span><span aria-hidden="true" class="block sm:hidden">{{$t('dicts_short.nn')}}</span></NuxtLink>
+              :to="dict_link('nn')"><span class="max-md:sr-only">{{$t('dicts.nn')}}</span><span aria-hidden="true" class="block md:hidden">{{$t('dicts_short.nn')}}</span></NuxtLink>
   </li>
   <li>
     <NuxtLink :aria-current="advanced ? 'true' : 'false'"
-              @click="store.advanced = true"
               :to="advanced_link">{{$t('advanced')}} <Icon name="bi:arrow-right" size="1.25em" class="ml-1 md:mt-0.5"/></NuxtLink>
   </li>
 </ul>
@@ -39,8 +38,9 @@ const props = defineProps({
 })
 
 const dict_click = (dict) => {
-      store.advanced = false
       store.dict = dict
+      store.lemmas.bm = new Set()
+      store.lemmas.nn = new Set()
       if (store.q != store.input) {
         store.input = route.query.orig || store.q
       }
@@ -48,36 +48,26 @@ const dict_click = (dict) => {
     
     
     const advanced_link = computed(() => {
-      if (route.name == 'search') {
-        return route.fullPath
-      }
-      else {
-        let url = route.fullPath
-        if (route.name == 'dict' || route.name == 'dict-suggest') {
-          return `/search`
-        }
-        else if (route.name == "dict-slug") {
-          return  `/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`
-        }
-        else {
-          return url
-        }
-      }
+       if (store.q) {
+        return  `/search?q=${store.q}&dict=${store.dict || 'bm,nn'}&scope=${store.scope || 'ei'}`
+       }
+       else {
+        return "/search"
+       }
+       
+      
       
     })
     
     const dict_link = ((dict) => {
-      
-      let url = `/${dict}/`
-
-      if (!store.q || specialSymbols(store.q)) {
-        return  url
+      let url = "/" + dict
+      if (route.query.orig) {
+        url += "/" + route.query.orig
       }
-      else {
-        url += `search?q=${route.query.orig || store.q}`
+      else if (store.q) {
+        url += "/" + store.q
       }
-      return url
-      
+        return url
     })
 
 </script>
@@ -105,7 +95,7 @@ border-radius: 2rem;
 }
 
 a[aria-current=true] {
-  @apply bg-primary-lighten text-tertiary
+  @apply bg-primary-lighten text-tertiary;
 }
 
   /* Hide scrollbar for Chrome, Safari and Opera */

@@ -1,15 +1,17 @@
 {
   "global": {
     "language": "Language | language",
-    "termbase": "Termbase | termbase",
+    "termbase": "Termbase | termbase | Termbases | termbases",
     "skipLink": "Go to  main content",
+    "collaborators": "Our collaborators",
     "domain": {
-      "domain": "Domain | domain",
+      "domain": "Domain | domain | Domains",
       "all": "All Domains",
       "DOMENE-3AHumaniora": "Humanities",
-      "DOMENE-3ANaturvitenskapTeknologi": "Sciences & Technology",
-      "DOMENE-3ASamfunnsfag": "Social Sciences",
-      "DOMENE-3AOkonomiAdministrasjon": "Economy & Administration"
+      "DOMENE-3ANaturvitenskapTeknologi": "Natural sciences & technology",
+      "DOMENE-3ASamfunnsfag": "Social studies",
+      "DOMENE-3AOkonomiAdministrasjon": "Business economy & administration",
+      "DOMENE-3AHelse_og_sosial": "Health & social care"
     },
     "lang": {
       "none": "–",
@@ -36,23 +38,24 @@
       "ARTSDB": "Artsdatabanken",
       "ASTRONOMI": "Astronomy",
       "BIBINF": "Bibliotek- og informasjonsfag",
-      "CMBIOLOGI": "Cell and molecular biology",
-      "EVERTEBRATER": "Invertebrates",
+      "CMBIOLOGI": "Celle og molekulærbiologi",
+      "EVERTEBRATER": "Evertebrater",
       "FBK": "Felles Begrepskatalog",
       "KLIMA": "Climate",
       "LINGVISTIKK": "Linguistics",
+      "SEMANTIKK": "Semantics",
       "MRT": "Maritim ordbok",
       "NOT": "NOT – Norsk termbanks termdatabase",
       "NHH": "NHHs termbase",
-      "NOJU": "Norsk-tysk juridisk ordbok (NOJU)",
-      "ROMFYS": "Space physics",
+      "NOJU": "Norsk-tysk juridisk termbase (NOJU)",
+      "ROMFYS": "Romfysikk",
       "RTT": "Rådet for teknisk terminologi (RTT)",
-      "SDIR": "Maritime terminology (Sjøfartsdirektoratet)",
-      "TOLKING": "Interpretation",
+      "SDIR": "Maritim terminologi (Sjøfartsdirektoratet)",
+      "TOLKING": "Termbase for tolkning",
       "UHR": "Universitets- og høgskolerådet",
       "TUNDUIA": "TUNDUIA",
-      "BIOLOGI": "Biology",
-      "KJEMI": "Chemistry",
+      "BIOLOGI": "Biologi",
+      "KJEMI": "Kjemi",
       "DOMENE": "Domain"
     },
     "predicate": {
@@ -61,13 +64,20 @@
       "hiddenLabel": "Deprecated term"
     },
     "matching": {
-      "full": "exact",
-      "full-cs": "exact",
-      "full-ci": "exact",
-      "startsWith-ci": "starts with",
-      "endsWith-ci": "ends with",
-      "subWord-ci": "subword starts with",
-      "contains-ci": "contains"
+      "full": "Exact",
+      "full-cs": "Exact",
+      "full-ci": "Exact",
+      "startsWith-ci": "Starts with",
+      "endsWith-ci": "Ends with",
+      "subWord-ci": "Subword starts with",
+      "contains-ci": "Contains"
+    },
+    "license": {
+      "LISENS-3ANo_Rights_Reserved_-28CC0-29": "CC0",
+      "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED": "Clarin ID-EDU-BY-NC-NORED",
+      "LISENS-3ACC_BY_40": "CC BY 4.0",
+      "LISENS-3ACC_BY-2DNC_40": "CC BY-NC 4.0",
+      "LISENS-3ACC_BY-2DNC-2DND_40": "CC BY-NC-ND 4.0"
     }
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
@@ -75,7 +85,12 @@
     "om": "About Termportalen",
     "innstillinger": "Settings",
     "menuButtonShow": "Extend menu",
-    "menuButtonHide": "Hide menu"
+    "menuButtonHide": "Hide menu",
+    "language": "Display language",
+    "navigation": "Navigation"
+  },
+  "news": {
+    "heading": "News"
   },
   "searchBar": {
     "search": "Search",
@@ -86,7 +101,11 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Search field",
     "clearTextLabel": "Clear search field",
-    "searchButtonLabel": "Search"
+    "searchButtonLabel": "Search",
+    "expandSubdomains": "Show subdomains",
+    "closeSubdomains": "Hide subdomains",
+    "expandTermbases": "Show termbases",
+    "closeTermbases": "Hide termbases"
   },
   "searchFilter": {
     "results": "results",
@@ -111,24 +130,35 @@
     "email": "E-mail",
     "telephone": "Telephone",
     "license": "Licence",
-    "languages": "Language(s)",
-    "startLang": "Starting language"
+    "languages": "Languages",
+    "startLang": "Starting language",
+    "contactHeading": "Contact"
   },
   "id": {
     "topheading": "Concept view",
     "tableview": "Table view",
     "languagedata": "Language data",
+    "equivalence": "Equivalence",
+    "ekvIngen": "none",
+    "ekvFull": "full",
+    "ekvDelvis": "partial",
+    "ekvBredere": "broader meaning",
+    "ekvSmalere": "narrower meaning",
+    "equivalenceNote": "Equivalence note",
     "prefLabel": "Preferred term",
     "altLabel": "Admitted term",
     "hiddenLabel": "Depreciated term",
     "definisjon": "Definition",
-    "referanse": "",
-    "kollokasjon": "",
-    "forkortelse": "",
-    "forkortelseAv": "",
-    "forkortelseType": "",
-    "kontekst": "",
-    "kontekstAv": "",
+    "referanse": "Reference",
+    "kollokasjon": "Collocation",
+    "forkortelse": "Abbreviation",
+    "forkortelseAv": "Abbreviation of",
+    "forkortelseType": "Abbreviation type",
+    "kortform": "clipped term",
+    "teleskopord": "blend",
+    "initialord": "initialism",
+    "kontekst": "Context of",
+    "kontekstAv": "Context",
     "general": "General information",
     "relasjon": "Concept relation",
     "narrower": "Subordinate concept",
@@ -139,6 +169,9 @@
     "hasPart": "Subordinate concept (partitive)",
     "seeAlso": "See also",
     "related": "Associated concept",
+    "replaces": "Replaces",
+    "replacedBy": "Replaced by",
+    "inndelingskriterium": "Subdivision criterion",
     "collection": "Termbase",
     "subject": "Subject field",
     "domain": "Domain",
@@ -154,13 +187,24 @@
     "language": "Language",
     "termbase": "Termbase"
   },
-  "om": { "title": "About Termportalen" },
+  "om": {
+    "title": "About Termportalen",
+    "aboutUs": "About us",
+    "history": "History",
+    "publications": "Relevant Publications",
+    "kommeiGang": "How to get started with terminology work?",
+    "links": "Useful links",
+    "maritaStilling": "Head of Termportalen, associate professor",
+    "coordinator": "Coordinator",
+    "terminologist": "Terminologist",
+    "developer": "System Developer"
+  },
   "innstillinger": {
     "title": "Settings",
-    "global": "Choose display language",
-    "globalLangComment": "",
+    "global": "Display language",
+    "globalLangComment": "Here you may change the language of headings, buttons, messages, and menus. This will not affect the content in the various term entries, such as definitions, terms and notes.",
     "conceptview": "Term entry",
-    "dataDispLang": "Choose language(s)",
-    "dataDispLangComment": ""
+    "dataDispLang": "Term entry languages",
+    "dataDispLangComment": "Choose the language(s) you want to see in the term entry"
   }
 }

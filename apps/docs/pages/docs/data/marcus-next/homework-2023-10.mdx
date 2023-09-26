@@ -1,0 +1,124 @@
+import Image from 'next/image'
+ 
+
+# Oppgave metadata workshop 2023-10
+
+Universitetsbiblioteket i Bergen har kataloger som går tilbake til 1825. Disse har vært grunnlag for dagens Marcus, men har ikke nødvendigvis blitt integrert fullstendig eller konvertert til dagens standarder. Siden Marcus ble lansert med data fra Manuskript- og librarsamingen, har UB fått Skeivt arkiv og Språksamlingene. De har samlinger med register, noen enkle, men andre mer komplekse. 
+
+Et emneregister er liste med konsept, som kan være personer, steder, hendelser, osv. Disse kan være hierarkiske, og kan ha relasjoner til andre konsept. Ordbøkene derimot er lister med ord og deres bruk og opphav. Kanskje kan vi utnytte våre interne datakilder bedre ved å integrere de tettere med hverandre og Marcus?
+
+* Er du kjent med disse nettsidene og/eller registrene? 
+* Hva kan du finne av metadata her?
+* Hvordan tenker du de kan brukes i Marcus?
+* Hvordan utnytter vi våre samlinger bedre?
+
+## Marcus
+
+Alle kjenner Marcus, men kanskje ikke alle vet at det er en egen side for registre? Her kan man klikke seg inn i hierarkiet og se på konseptene. Ikke alle er like vel strukturerte. 
+
+https://marcus.uib.no/conceptschemes
+
+<Image src="/img/marcus.png" alt="" width={500} height={500} className="shadow-xl" />
+
+Er det noe du biter deg merke med her?
+
+## Termportalen
+
+> Termportalen gir fri tilgang til norsk terminologi på en lang rekke fagområder via én felles søkerute. Du kan søke etter termer på tvers av domener, termbaser og språk. 
+
+Termportalen er nettopp lansert! Den inneholder register for spesifikke fagområder.
+
+https://termportalen.no
+
+<Image src="/img/termportalen.png" alt="" width={500} height={500} className="shadow-xl" />
+
+Er det noe her som kan være interessant for Marcus?
+
+## Ordbøkene
+
+Ordbøkene er mye brukt som oppslagsverk, men kan vi bruke de til noe mer? De er ikke tilgjengelig som SKOS, men det er en API.
+
+https://ordbokene.no
+
+<Image src="/img/ordbokene.png" alt="" width={500} height={500} className="shadow-xl" />
+
+## Norske stadnamn
+
+Norske stadnamn er en tjeneste for å finne stedsnavn. Den er utviklet av Språksamlingene ved Universitetsbiblioteket i Bergen. Tjenesten er tilgjengelig for alle.
+
+https://toponymi.spraksamlingane.no/
+
+<Image src="/img/stadnamn.png" alt="" width={500} height={500} className="shadow-xl" />
+
+Kan vi utnytte denne tjenesten bedre?
+
+**NB** Søket mitt etter "Hat" kom av at jeg ikke fant "Hatlestrand" og høvlet av noen bokstaver. Tilfeldig? Ja.
+
+## Kulturnav
+
+KulturNav er en tjeneste for å lage og publisere konsept, navn og mye mer. Tjenesten er utviklet av KulturIT i samarbeid med KulturITs kunder. KulturNav er en del av KulturITs tjenestetilbud og er tilgjengelig for alle.
+
+https://kulturnav.org/
+
+<Image src="/img/kulturnav.png" alt="" width={500} height={500} className="shadow-xl" />
+
+Finner du noe interessant her? SAMLA har et register her.
+
+### Termer 
+
+Kulturnav organiserer konsept etter type og datasett. Her er en liste over alle datasett med konsept i Kulturnav:
+
+https://kulturnav.org/page/class?class=Concept&baseClass=Concept
+
+
+### Emneord for foto (Haugalandmuseene)
+
+Haugalandmuseene har en variant av Billedsamlingens register i Kulturnav, men det er bare halvparten så stort som det som ligger i Marcus.
+
+https://kulturnav.org/aa33ffa0-59c6-43e5-9798-f8e323026919
+
+
+## Unesco
+
+Unesco har et stort register med konsept, som er tilgjengelig som SKOS. Det er oversatt til mange språk.
+
+https://vocabularies.unesco.org/browser/thesaurus/en/
+
+<Image src="/img/unesco.png" alt="" width={500} height={500} className="shadow-xl" />
+
+Tips! Se på https://vocabularies.unesco.org/browser/thesaurus/en/page/?uri=http://vocabularies.unesco.org/thesaurus/mt3.05. De har miniregister for ulike temaer.
+
+## Humord
+
+Humord er et register for humaniora, som er utviklet av Universitetsbiblioteket i Oslo. Det er tilgjengelig som SKOS.
+
+https://www.ub.uio.no/bruk/sok-i-hele-biblioteket/emneord/humord/
+
+https://data.ub.uio.no/skosmos/humord/nb/
+
+<Image src="/img/humord.png" alt="" width={500} height={500} className="shadow-xl" />
+
+Forresten har ub.uio.no flere register: https://data.ub.uio.no/skosmos/nb/
+
+Er disse interessante for oss?
+
+## Getty
+
+Getty har flere store register for konsept, kunstnere og steder. De er tilgjengelig som SKOS. Det er spesielt AAT (Art & Architecture Thesaurus) som er interessant for oss. De har god dekning på teknikker og prosesser, som er viktig for detaljerte beskrivelser av våre samlinger.
+
+http://vocab.getty.edu/
+https://www.getty.edu/research/tools/vocabularies/aat/
+
+<Image src="/img/getty.png" alt="" width={500} height={500} className="shadow-xl" />
+
+
+
+## Nasjonalbiblioteket
+
+Har du sett på Nasjonalbibliotekets register? De har overraskende få.
+
+https://www.nb.no/nbvok/nb/?clang=nn
+
+<Image src="/img/nb.png" alt="" width={500} height={500} className="shadow-xl" />
+
+Passer dette på våre spesialsamlinger?

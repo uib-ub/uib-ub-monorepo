@@ -1,15 +1,18 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslator } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getSamlaIIIFv2RecordData } from 'lib/samla/samla.client';
 import { SamlaRecordPage } from '@/app/[locale]/(chc)/_components/samla-record-page';
 
 export default async function SamlaRecordRoute({
-  params
+  params: {
+    locale,
+    id
+  }
 }: {
   params: { locale: string, id: string }
 }) {
-  const t = await getTranslations('Item');
-  const itemData = await getSamlaIIIFv2RecordData(params.id);
+  const t = await getTranslator(locale, 'Item');
+  const itemData = await getSamlaIIIFv2RecordData(id);
 
   if (!itemData) {
     notFound();
@@ -18,7 +21,7 @@ export default async function SamlaRecordRoute({
   return (
     <div>
       <span className='block text-xs text-right'>{t('greeting')}</span>
-      <SamlaRecordPage data={itemData} locale={params.locale} />
+      <SamlaRecordPage data={itemData} locale={locale} />
     </div>
   );
 }

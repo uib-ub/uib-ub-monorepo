@@ -14,9 +14,9 @@
               <tr>
                 <th class="infl-label sub label-border-top-left" :class="mq"
                     v-if="!nounGender && hasGender"
-                    id="gender"
+                    id="Gender"
                     scope="col"
-                    rowspan='2'>kjønn</th>
+                    rowspan='2'>{{$t('gender')}}</th>
                 <th v-if="hasSing"
                     id="Sing"
                     class="infl-label label-border-top-left" :class="mq" scope="col" colspan='2'>
@@ -232,7 +232,7 @@
                   id="Masc"
                   scope="col"
                   :class="mq">
-                <span class="nobr">hankjønn&nbsp;/</span><br/>{{tagToName('Fem')}}</th>
+                <span class="nobr">{{tagToName('Masc')}}&nbsp;/</span><br/>{{tagToName('Fem')}}</th>
               <th v-if="hasFem"
                   class="infl-label sub label-border-bottom"
                   id="Fem"
@@ -927,6 +927,7 @@ export default {
 .infl-wrapper .sub {
 
     color: theme('colors.gray.700');
+    
 }
 
 .infl-wrapper span.comma:empty {
@@ -953,7 +954,7 @@ export default {
 }
 
 .infl-wrapper td[class="notranslate nfl-cell"] {
-  text-align: center;
+  text-align: left;
 }
 
 .infl-wrapper .context {
@@ -969,22 +970,24 @@ export default {
 }
 
 .infl-wrapper th, td {
-  border: solid 0px theme('colors.gray.200');
+  /* border: solid 0px theme('colors.gray.200'); */
   border-width: 0px 0px 1px 0px;
   padding: 0.5rem;
   font-size: 1rem;
+  @apply border-2 border-gray-50 shadow-md duration-200;
+  
 }
 
 .table-responsive .table-responsive:last-child tr:last-child td, tbody tr:last-child th {
-  border-bottom: none !important;
+  /* border-bottom: none !important; */
 }
 
 .table-responsive .table-responsive:last-child tr:nth-last-child(2) td[rowspan='2']  {
-  border-bottom: none !important;
+  /* border-bottom: none !important; */
 }
 
 .table-responsive .table-responsive:last-child tr:nth-last-child(3) td[rowspan='3']  {
-  border-bottom: none !important;
+  /* border-bottom: none !important; */
 }
 
 .table-responsive .table-responsive:not(:first-child) {
@@ -995,16 +998,18 @@ export default {
   font-variant-caps: all-small-caps;
   font-size: 1rem;
   padding-top: 0.25rem;
+  @apply bg-canvas-darken;
 }
 
 .infl-wrapper .infl-label {
-    text-align: center;
+    text-align: left;
     vertical-align: top;
 }
 
 .infl-wrapper td.hilite {
-    text-align: center;
+    text-align: left;
     background-color: #f7E1EB !important;
+    /* @apply duration-200 ease-in-out; */
 
 }
 

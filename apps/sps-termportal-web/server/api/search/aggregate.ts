@@ -1,10 +1,10 @@
-import { genSearchQuery } from "~~/server/utils/genSearchQuery";
+import { genSearchAggregateQuery } from "~/server/utils/genSearchAggregateQuery";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.endpointUrl;
   const body = await readBody(event);
-  const query = genSearchQuery(body);
+  const query = genSearchAggregateQuery(body);
 
   const data = await $fetch(url, {
     method: "post",
