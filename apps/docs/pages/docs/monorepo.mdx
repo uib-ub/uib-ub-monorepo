@@ -87,6 +87,37 @@ Every app's `package.json` is mirrored in the monorepo's shared `package-lock.js
 - Changes to `package.json` should be executed with the respective `npm` command and the monorepo's `package-lock.json` has to be updated and commited as well.
 - Before creating a new branch (that effects `package-lock.json`) one has to pull from origin. Merging conflicting changes in the shared `package-lock.json` is hard.
 
+### Branch naming
+#### Convention
+Branches should be prefixed with `fix`, `feature`.
+#### Ignored Build Step based on branch name
+Vercel builds every app when a new branch is created. However, it provides a feature to ignore apps based on some logic: [Vercel docs](https://vercel.com/guides/how-do-i-use-the-ignored-build-step-field-on-vercel)
+
+We currently have the following behaviour configured in each app's Vercel settings: `Git>Ignored Build Step>Command`:
+Every app can define tags of the form `#docs` (docs), `#sps`, (group språksamlingane) `#tp` (termportalen) etc.
+Apps that don't include this command are always build.
+```
+if [[ "$VERCEL_GIT_COMMIT_REF" =~ .*#.* ]] && ! [[ "$VERCEL_GIT_COMMIT_REF" =~ .*#(docs).* ]] ;
+then
+	echo "- Tag not matched, build cancelled"; exit 0;
+else
+	echo ""- Build can proceed, calling turbo-ignore""; npx turbo-ignore;
+fi
+```
+Behaviour:
+- If no tag is present, i.e. no `#` is found in the branch name, no build is cancelled at this step
+- If a tag is defined in the branch name, building apps that don't have the tag is cancelled
+- `npx turbo-ignore` is called. See [docs](https://www.npmjs.com/package/turbo-ignore)
+
+Tags currently defined are:
+- api/api-ub: `#api`
+- chc-exh-nt-web/exh-nt: `#exh`
+- chc-web/chc-web: `#chc`
+- docs/docs: `#docs`
+- link-shortener/ub-urls: `#urls`
+- sps-ordbokene-web/ordbokene-web: `#sps` `#ob`
+- sps-termportal-web/termportalen: `#sps` `#tp`
+
 ## Useful Links
 
 Learn more about the power of Turborepo:
