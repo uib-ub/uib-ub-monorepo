@@ -8,5 +8,3 @@ export type { PlaceSchema } from './la-types/place'
 export type { ProvenanceActivitySchema } from './la-types/provenance'
 export type { CollectionSchema } from './la-types/set'
 export type { TextSchema } from './la-types/text'
-
-export * from '@iiif/presentation-3'
