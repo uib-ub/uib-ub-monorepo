@@ -81,6 +81,12 @@ To develop all apps and packages, run the following command:
 npm run dev
 ```
 
+## Best practice
+### Installing packages etc.
+Every app's `package.json` is mirrored in the monorepo's shared `package-lock.json` See ([Turborepo docs](https://turbo.build/repo/docs/handbook/package-installation)). This means:
+- Changes to `package.json` should be executed with the respective `npm` command and the monorepo's `package-lock.json` has to be updated and commited as well.
+- Before creating a new branch (that effects `package-lock.json`) one has to pull from origin. Merging conflicting changes in the shared `package-lock.json` is hard.
+
 ## Useful Links
 
 Learn more about the power of Turborepo:
