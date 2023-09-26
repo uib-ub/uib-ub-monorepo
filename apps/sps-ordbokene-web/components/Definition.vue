@@ -105,7 +105,7 @@ ul.examples {
 }
 
 .hilite {
-@apply rounded !bg-tertiary-darken1;
+@apply shadow !bg-tertiary-darken1;
 }
 
 .single_sub_definition{

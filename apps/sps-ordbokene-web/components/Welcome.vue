@@ -13,7 +13,7 @@
       <div class="grid lg:grid-cols-1 py-3 h-full w-full bg-tertiary rounded">
         <h1 class="text-center text-primary  text-transform: uppercase text-sm font-bold tracking-widest">
           {{$t('article.update.bmo')}}</h1>
-          <section v-for="([id, name], index) in latestArticlesbm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+          <section v-for="([id, name], index) in editedArticlesbm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
           <NuxtLink class="whitespace-nowrap hover:underline" :to="`/bm/${id}`">
             <p class="text-center text-lg text-text">{{ name }}</p>
           </NuxtLink>
@@ -23,7 +23,7 @@
       <div class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded">
         <h1 class="text-center text-primary  text-transform: uppercase text-sm font-bold tracking-widest">
           {{$t('article.update.nno', 1, { locale: content_locale})}}</h1>
-        <section v-for="([id, name], index) in latestArticlesnn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+        <section v-for="([id, name], index) in editedArticlesnn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
           <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
             <p class="text-center text-lg text-text">{{ name }}</p>
           </NuxtLink>
@@ -44,8 +44,8 @@ import { useStore } from '~/stores/searchStore'
 
 const store = useStore()
 
-const latestArticlesbm = ref([])
-const latestArticlesnn = ref([])
+const editedArticlesbm = ref([])
+const editedArticlesnn = ref([])
 
 const fetchAndSortArticles = async (url, refContainer) => {
   try {
@@ -64,8 +64,8 @@ const fetchAndSortArticles = async (url, refContainer) => {
 }
 
 onMounted(() => {
-  fetchAndSortArticles(store.endpoint +'/bm/fil/article.json', latestArticlesbm) //Or:/bm/fil/article100.json
-  fetchAndSortArticles(store.endpoint +'/nn/fil/article.json', latestArticlesnn)
+  fetchAndSortArticles(store.endpoint +'/bm/fil/article.json', editedArticlesbm) //Or:/bm/fil/article100.json
+  fetchAndSortArticles(store.endpoint +'/nn/fil/article.json', editedArticlesnn)
 })
 
 const [{ bm_pending, data: welcome_bm }, { nn_pending, data: welcome_nn }] = await Promise.all([
