@@ -37,22 +37,22 @@
                 this.hasPerfPart && this.part!=4 ?
                     this.inflForm(['Adj','Masc/Fem'],
                                   this.context ? indefArticle(['Masc/Fem'], this.language) : null,
-                                  this.context ? '+ substantiv' : null,
+                                  this.context ? '+'+ this.$t('tags.NOUN') : null,
                                   'PerfPart Masc') : null,
                 this.hasPerfPart && this.part!=4 ?
                     this.inflForm(['Adj','Neuter'],
                                   this.context ? indefArticle(['Neuter'], this.language) : null,
-                                  this.context ? '+ substantiv' : null,
+                                  this.context ? '+'+ this.$t('tags.NOUN') : null,
                                   'PerfPart Neuter') : null,
                 this.hasPerfPart && this.part!=4 ?
                     this.inflForm(['Adj','Def'],
                                   this.context ? 'den/det' : null,
-                                  this.context ? '+ substantiv' : null,
+                                  this.context ? '+'+ this.$t('tags.NOUN') : null,
                                   'PerfPart Def') : null,
                 this.hasPerfPart && this.part!=3 ?
                     this.inflForm(['Adj','Plur'],
                                   null,
-                                  this.context ? '+ substantiv' : null,
+                                  this.context ? '+'+ this.$t('tags.NOUN') : null,
                                   'PerfPart Plur') : null,
                 this.part!=3 ? this.inflForm(['Adj','<PresPart>'],
                                              null,
