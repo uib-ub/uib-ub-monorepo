@@ -55,7 +55,7 @@ export default defineNuxtConfig({
           {
             name: 'index',
             path: '',
-            file: '~/components/custom-pages/welcome-view.vue'
+            file: '~/components/Welcome.vue'
           }
         ]
       })
@@ -78,7 +78,7 @@ export default defineNuxtConfig({
                 name: 'welcome',
                 path: '',
                 alias: 'search', //legacy
-                file: '~/components/custom-pages/welcome-view.vue'
+                file: '~/components/Welcome.vue'
               }
 
             ]
