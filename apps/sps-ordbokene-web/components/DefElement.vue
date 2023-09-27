@@ -26,8 +26,10 @@
 import DefElement from './DefElement.vue'
 import { useSearchStore } from '~/stores/searchStore'
 import { useSessionStore } from '~/stores/SessionStore'
+import { useI18n } from 'vue-i18n'
 const store = useSearchStore()
 const session = useSessionStore()
+const i18n = useI18n()
 
 
 const emit = defineEmits(['error', 'link-click'])
@@ -72,7 +74,7 @@ const unparsed = computed(() => {
                     html: '',
                     lemmas: item.lemmas,
                     link_text: item.word_form || item.lemmas[0].annotated_lemma ||  item.lemmas[0].lemma,
-                    ref: '/' + props.dict + '/' + item.article_id + (item.definition_id ? '#def' + item.definition_id : ''),
+                    ref: `/${i18n.locale.value}/${props.dict}/${item.article_id}${item.definition_id ? '#def' + item.definition_id : ''}`,
                     article_id: item.article_id,
                     definition_id: item.definition_id,
                     definition_order: !item.word_form && item.definition_order,

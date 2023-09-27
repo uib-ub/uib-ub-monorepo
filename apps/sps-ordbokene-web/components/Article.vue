@@ -252,7 +252,7 @@ const link_click = (event) => {
 }
 
 const link_to_self = () => {
-  return `/${props.dict}/${props.article_id}`
+  return `/${i18n.locale.value}/${props.dict}/${props.article_id}`
   }
 
 

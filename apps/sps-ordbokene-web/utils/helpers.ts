@@ -1,3 +1,12 @@
+export const localizeUrl = (url, locale) => {
+  if (/^\/?(nob|nno|eng)(\/|$)/.test(url)) {
+    return url.replace(/^(\/?)(nob|nno|eng?)(\/|$)/, `$1${locale}$3`)
+  }
+  else {
+    return url.replace(/^(\/?)/, `$1${locale}/`)
+  }
+}
+
 export const specialSymbols = (q) => {
     return /[?_*%|]/.test(q)
   }

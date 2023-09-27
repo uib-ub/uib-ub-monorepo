@@ -46,7 +46,7 @@
   </client-only>
 
 <span v-if="$route.name != 'article'" class="px-4 pt-1 ml-auto">
-    <NuxtLink class="whitespace-nowrap"  :to="`/${dict}/${article_id}`">
+    <NuxtLink class="whitespace-nowrap"  :to="`/${$i18n.locale}/${dict}/${article_id}`">
        <span>{{$t("article.open", 1, { locale: content_locale})}}</span>
     </NuxtLink>
     </span>

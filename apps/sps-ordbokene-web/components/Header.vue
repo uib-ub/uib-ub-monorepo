@@ -1,7 +1,7 @@
 <template>
 <header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div class="flex flex-row content-center w-full lg:w-auto">
-  <NuxtLink class="navbar-brand" to="/" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'">
+  <NuxtLink class="navbar-brand" :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'">
       <div class="mx-1 md:my-1 lg:my-3 xl:my-4">
       <div><h1 class="text-2xl mt-0.5 mb-0.5">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
       <p class="hidden xl:block brand-subtitle ml-0.5 mb-1">{{$t("sub_title")}}</p>
@@ -74,11 +74,8 @@ const escape_menu = (event) => {
 }
 
 const update_lang = (event) => {
-  locale_cookie.value = i18n.locale.value
-  if (route.params.locale) {
-    event.preventDefault()
-    return navigateTo("/" + i18n.locale.value + route.fullPath.slice(4, route.fullPath.length))
-  }
+  locale_cookie.value = i18n.locale.value  
+  return navigateTo(localizeUrl(route.fullPath, i18n.locale.value))
 
 }
 

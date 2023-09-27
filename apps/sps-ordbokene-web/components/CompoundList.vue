@@ -6,7 +6,7 @@
         :key="index"
         v-for="(item, index) in body.elements"
         >{{' '}}<NuxtLink v-if="!welcome"
-          :to="'/' + dict + '/' + item.article_id + (item.definition_id ? '#def'+item.definition_id : '')"
+          :to="`/${$i18n.locale}/${dict}/${item.article_id}${item.definition_id ? '#def'+item.definition_id : ''}`"
           @click="link_click(item)"
           >{{item.lemmas[0].lemma}}</NuxtLink><span v-else>{{item.lemmas[0].lemma}}</span>
       </li>

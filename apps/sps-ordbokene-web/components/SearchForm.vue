@@ -32,7 +32,7 @@ const submitForm = async (item) => {
     else {
       input_element.value.blur()
     }
-    return navigateTo(`/${store.dict}?q=${item}`)
+    return navigateTo(`/${i18n.locale.value}/${store.dict}?q=${item}`)
   }
   
   if (store.input) {
@@ -48,10 +48,10 @@ const submitForm = async (item) => {
 
 
     if (advancedSpecialSymbols(store.q)) {
-      return navigateTo(`/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`)
+      return navigateTo(`/${i18n.locale.value}/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`)
     }
     else  if (store.input.includes("|") || session.dropdown_selected != -1) {
-      return navigateTo(`/${store.dict}?q=${store.q}`)
+      return navigateTo(`/${i18n.locale.value}/${store.dict}?q=${store.q}`)
     }
 
     let { exact, inflect } = store.suggest
@@ -59,17 +59,17 @@ const submitForm = async (item) => {
     if (exact) {
       
         if (exact[0][0].length == store.q.length) {
-            let redirectUrl = `/${store.dict}/${exact[0][0]}`
+            let redirectUrl = `/${i18n.locale.value}/${store.dict}/${exact[0][0]}`
             if (exact[0][0] != store.q) redirectUrl += `?orig=${store.q}`
             return navigateTo(redirectUrl)
         }
     }
 
     if (inflect && inflect.length == 1 && inflect[0][0] && inflect[0][0][0] != "-" && inflect[0][0].slice(-1) != "-") { // suppress prefixes and suffixes
-        return navigateTo(`/${inflect[0][0]}?orig=${store.q}`)
+        return navigateTo(`/${i18n.locale.value}/${inflect[0][0]}?orig=${store.q}`)
     }
 
-    return navigateTo(`/${store.dict}?q=${store.q}`)
+    return navigateTo(`/${i18n.locale.value}/${store.dict}?q=${store.q}`)
     //navigateTo(`/${route.params.dict}/${store.q}`)
   }
   

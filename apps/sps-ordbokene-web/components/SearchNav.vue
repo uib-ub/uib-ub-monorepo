@@ -31,6 +31,8 @@
 
 import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+const i18n = useI18n()
 const store = useSearchStore()
 const route = useRoute()
 const props = defineProps({
@@ -49,10 +51,10 @@ const dict_click = (dict) => {
     
     const advanced_link = computed(() => {
        if (store.q) {
-        return  `/search?q=${store.q}&dict=${store.dict || 'bm,nn'}&scope=${store.scope || 'ei'}`
+        return  `/${i18n.locale.value}/search?q=${store.q}&dict=${store.dict || 'bm,nn'}&scope=${store.scope || 'ei'}`
        }
        else {
-        return "/search"
+        return `/${i18n.locale.value}/search`
        }
        
       
@@ -60,7 +62,7 @@ const dict_click = (dict) => {
     })
     
     const dict_link = ((dict) => {
-      let url = "/" + dict
+      let url = `/${i18n.locale.value}/${dict}`
       if (route.query.orig) {
         url += "/" + route.query.orig
       }

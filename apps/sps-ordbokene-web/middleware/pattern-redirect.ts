@@ -4,6 +4,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     store.dict = to.params.dict || 'bm,nn'
     let query = to.params.q || to.query.q
     if (advancedSpecialSymbols(query)) {
-      return navigateTo(`/search?q=${query}&dict=${to.params.dict}&scope=${store.scope || 'ei'}`)
+      return navigateTo(`/${to.params.locale}/search?q=${query}&dict=${to.params.dict}&scope=${store.scope || 'ei'}`)
     }
 })
