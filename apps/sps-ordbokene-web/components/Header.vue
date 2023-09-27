@@ -74,7 +74,7 @@ const escape_menu = (event) => {
 }
 
 const update_lang = (event) => {
-  locale_cookie.value = i18n.locale.value  
+  locale_cookie.value = i18n.locale.value
   return navigateTo(localizeUrl(route.fullPath, i18n.locale.value))
 
 }

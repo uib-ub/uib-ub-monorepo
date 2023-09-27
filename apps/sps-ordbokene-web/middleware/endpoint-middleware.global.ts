@@ -1,9 +1,25 @@
+import { localizeUrl } from '../utils/helpers'
 import { useSessionStore } from '~/stores/sessionStore'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const session = useSessionStore()
 
-    //console.log("MIDDLEWARE\nFROM: ", from, "\nTO: ", to, "\nREDIRECTED FROM:",to.redirectedFrom)
+    const locale_cookie = useCookie('currentLocale')
+    if (locale_cookie.value) {
+      if (to.params.locale && locale_cookie.value != to.params.locale) {
+        return navigateTo(localizeUrl(to.fullPath, locale_cookie.value))
+      }
+    }
+    else if (navigator.language == 'nb' && to.params.locale != 'nob') {
+      return navigateTo(localizeUrl(to.fullPath, 'nob'))
+    }
+    else if (navigator.language == 'nn' && to.params.locale != 'nno') {
+      return navigateTo(localizeUrl(to.fullPath, 'nno'))
+    }
+    else if (navigator.language == 'uk' && to.params.locale != 'ukr') {
+      return navigateTo(localizeUrl(to.fullPath, 'ukr'))
+    }
+  
     
     const get_concepts = async (server, env) => {
       await Promise.all([fetch(`https://${server}.uib.no/opal/${env}/bm/concepts.json`).then(r => r.json()), fetch(`https://${server}.uib.no/opal/${env}/nn/concepts.json`).then(r => r.json())]).then(response => {

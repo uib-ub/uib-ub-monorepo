@@ -5,18 +5,11 @@ import nob from '../locales/nob.json'
 
 export default defineNuxtPlugin(({ vueApp }) => {
   const route = useRoute()
-  let current_locale = route.params.locale
+  const locale_cookie = useCookie('currentLocale')
+  let current_locale = locale_cookie.value
   if (!current_locale) {
-    try {
-      current_locale = useCookie("currentLocale", {default: () => new Date().getDate() % 2 ? 'nno' : 'nob'}).value
-    } catch (error) {
-      console.log(error)
-      current_locale = (new Date().getDate() % 2 ? 'nno' : 'nob')
-    }
-
+    current_locale = route.params.locale || new Date().getDate() % 2 ? 'nno' : 'nob'
   }
-  
-  
 
   const i18n = createI18n({
     legacy: false,
