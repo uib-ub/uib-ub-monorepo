@@ -96,7 +96,10 @@ export function getRelationData(
         try {
           // Pass concept object
           const label = getConceptDisplaytitle(data[target]);
-          const link = "/" + target.replace("-3A", "/");
+          // Slashed are allowed on Pagenames, should be escaped
+          // TODO might break links between concepts of external tbs
+          // Termbase is part of URI (seperated by '-3A')
+          const link = "/" + target.replace("/", "%2F").replace("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
             return [label, link];
