@@ -112,3 +112,10 @@ code.text-\[\.9em\] {
     --ring: 240 3.7% 15.9%;
   }
 }
+
+/* Fix for https://github.com/shuding/nextra/issues/863 */
+ul.nx-mt-6,
+ol.nx-mt-6 {
+  margin-top: 0.6em;
+  margin-bottom: 0.5em;
+}
