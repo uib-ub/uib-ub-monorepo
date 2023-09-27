@@ -2,8 +2,8 @@ export const localizeUrl = (url, locale) => {
   if (url == "/") {
     return locale
   }
-  else if (/^\/?(nob|nno|eng)(\/|$)/.test(url)) {
-    return url.replace(/^(\/?)(nob|nno|eng?)(\/|$)/, `$1${locale}$3`)
+  else if (/^\/?(nob|nno|eng|ukr)(\/|$)/.test(url)) {
+    return url.replace(/^(\/?)(nob|nno|eng|ukr)(\/|$)/, `$1${locale}$3`)
   }
   else {
     return url.replace(/^(\/?)/, `$1${locale}/`)
