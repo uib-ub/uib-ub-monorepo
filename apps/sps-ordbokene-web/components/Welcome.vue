@@ -10,22 +10,38 @@
 
 
 
-      <div class="grid lg:grid-cols-1 py-3 h-full w-full bg-tertiary rounded">
-        <h1 class="text-center text-primary  text-transform: uppercase text-sm font-bold tracking-widest">
-          {{$t('article.update.bmo')}}</h1>
-          <section v-for="([id, name], index) in editedArticlesbm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+      <div class="grid lg:grid-cols-1 py-3 h-full w-auto bg-tertiary rounded-[12px]">
+        <h1>{{ $t('article.update.bmo') }}</h1>
+        <section v-for="([id, name], index) in editedArticlesbm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
           <NuxtLink class="whitespace-nowrap hover:underline" :to="`/bm/${id}`">
-            <p class="text-center text-lg text-text">{{ name }}</p>
+            <p >{{ name }}</p>
           </NuxtLink>
         </section>
       </div>
 
-      <div class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded">
-        <h1 class="text-center text-primary  text-transform: uppercase text-sm font-bold tracking-widest">
-          {{$t('article.update.nno', 1, { locale: content_locale})}}</h1>
+      <div class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
+        <h1>{{ $t('article.update.nno') }}</h1>
         <section v-for="([id, name], index) in editedArticlesnn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
           <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
-            <p class="text-center text-lg text-text">{{ name }}</p>
+            <p >{{ name }}</p>
+          </NuxtLink>
+        </section>
+      </div>
+
+      <div class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
+        <h1>{{ $t('article.added.bmo') }}
+        </h1>
+        <section v-for="([id, name], index) in latestArticlesbm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
+            <p >{{ name }}</p>
+          </NuxtLink>
+        </section>
+      </div>
+      <div class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
+        <h1>{{ $t('article.added.nno') }}</h1>
+        <section v-for="([id, name], index) in latestArticlesnn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
+            <p >{{ name }}</p>
           </NuxtLink>
         </section>
       </div>
@@ -33,7 +49,8 @@
 
     </div>
     <Spinner v-else />
-</div></template>
+  </div>
+</template>
 
 
 
@@ -46,6 +63,9 @@ const store = useStore()
 
 const editedArticlesbm = ref([])
 const editedArticlesnn = ref([])
+const latestArticlesbm = ref([])
+const latestArticlesnn = ref([])
+
 
 const fetchAndSortArticles = async (url, refContainer) => {
   try {
@@ -57,7 +77,7 @@ const fetchAndSortArticles = async (url, refContainer) => {
     
     const data = await response.json()
     data.sort((a, b) => new Date(b[3]) - new Date(a[3]))
-    refContainer.value = data.slice(0, 10)
+    refContainer.value = data.slice(0, 5)
   } catch (error) {
     console.error('Fetch Error:', error)
   }
@@ -66,6 +86,9 @@ const fetchAndSortArticles = async (url, refContainer) => {
 onMounted(() => {
   fetchAndSortArticles(store.endpoint +'/bm/fil/article.json', editedArticlesbm) //Or:/bm/fil/article100.json
   fetchAndSortArticles(store.endpoint +'/nn/fil/article.json', editedArticlesnn)
+  fetchAndSortArticles('https://ord.uib.no/bm/fil/article100new.json', latestArticlesbm) //Only available in Ord.
+  fetchAndSortArticles('https://ord.uib.no/nn/fil/article100new.json', latestArticlesnn)
+
 })
 
 const [{ bm_pending, data: welcome_bm }, { nn_pending, data: welcome_nn }] = await Promise.all([
@@ -78,7 +101,7 @@ const [{ bm_pending, data: welcome_bm }, { nn_pending, data: welcome_nn }] = awa
 
 
 
-<!-- <style scoped>
+ <style scoped>
 
 
 .monthly-title {
@@ -90,5 +113,14 @@ const [{ bm_pending, data: welcome_bm }, { nn_pending, data: welcome_nn }] = awa
   @apply text-white font-semibold text-xl bg-primary tracking-widest text-center rounded-[32px];
 }
 
-</style> -->
-    
+h1 {
+        font-family: Inria Serif;
+        @apply text-center text-primary uppercase text-sm font-bold tracking-widest;
+    }
+p{
+  font-family: Inria Serif;
+  @apply text-center text-lg text-text;
+
+}
+
+</style>

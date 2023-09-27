@@ -201,6 +201,10 @@
   "update":{
     "bmo":"Recently updated from Bokmålsordboka",
     "nno":"Recently updated from Nynorskordboka"
+  },
+  "added":{
+    "bmo":"Recently added from Bokmålsordboka",
+    "nno":"Recently added from Nynorskordboka"
   }
 },
 "error": {
