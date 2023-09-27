@@ -34,9 +34,6 @@ definePageMeta({
     middleware: [
       function (to, from) { // Sync store with routing
       const store = useSearchStore()
-      console.log("TO", to)
-      console.log("FROM", from )
-      console.log("QUERY", store.q)
         
         let query = to.params.q || to.query.q
         if (to.params.dict)  {
