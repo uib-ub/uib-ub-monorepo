@@ -15,7 +15,7 @@
             <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
         </SuggestResults>
     </div>
-    <div v-if="freetext.length && !( articles_meta[dict].total || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
+    <div v-if="freetext.length && !( (articles_meta[dict] && articles_meta[dict].total) || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
             <p>{{$t('notifications.fulltext.description')}}</p>
             <div class="flex">
@@ -24,7 +24,7 @@
             </NuxtLink>
             </div>
     </div>
-    <div v-if="!( articles_meta[dict].total || translated.length || inflections.length || suggest.length || freetext.length )" class="callout pt-0 my-0">
+    <div v-if="!((articles_meta[dict] && articles_meta[dict].total) || translated.length || inflections.length || suggest.length || freetext.length )" class="callout pt-0 my-0">
         <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
         <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)})}}.</p>
         <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]')}}</p>

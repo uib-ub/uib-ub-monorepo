@@ -13,7 +13,7 @@
             <span class="sr-only">{{$t('notifications.keywords')}}</span>
           </h2>
         </div>
-        <component v-if="articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
+        <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
           <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
               <Article :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
