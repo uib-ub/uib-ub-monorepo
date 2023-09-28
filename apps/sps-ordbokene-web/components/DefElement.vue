@@ -25,7 +25,7 @@
 <script setup>
 import DefElement from './DefElement.vue'
 import { useSearchStore } from '~/stores/searchStore'
-import { useSessionStore } from '~/stores/SessionStore'
+import { useSessionStore } from '~/stores/sessionStore'
 import { useI18n } from 'vue-i18n'
 const store = useSearchStore()
 const session = useSessionStore()
