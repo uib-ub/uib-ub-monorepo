@@ -48,7 +48,6 @@ definePageMeta({
           }
         }
         else if (store.q) {
-          console.log("RESET")
           store.$reset()
         }
 

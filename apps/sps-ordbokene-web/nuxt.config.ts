@@ -45,8 +45,6 @@ export default defineNuxtConfig({
   },
   hooks: {
     'pages:extend' (pages) {
-      console.log("DEFAULT", pages)
-      console.log()
       pages.pop()
       pages.push({
         path: locales + '/',
