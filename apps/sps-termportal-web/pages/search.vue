@@ -11,7 +11,7 @@
         <h1 class="sr-only">{{ $t("search.title") }}</h1>
         <SearchStatusBar />
         <div class="xl:flex">
-          <SearchFilter class="xl:hidden block" />
+          <SearchFilter class="block xl:hidden" />
           <main class="grow">
             <h2 id="main" class="pb-2 pt-3 text-2xl">
               <AppLink to="#main">
@@ -156,7 +156,7 @@ watch(
     searchInterface.value.termbase,
     searchInterface.value.translate,
     searchInterface.value.domain,
-    searchInterface.value.useDomain
+    searchInterface.value.useDomain,
   ],
   () => {
     if (allowSearchFetch.value !== null) {
@@ -187,14 +187,18 @@ onMounted(() => {
         if (key === "term") {
           searchterm.value = route.query[value.q] as string;
         }
+
+        // searchInterface settings
+        if (key === "useDomain") {
+          searchInterface.value.useDomain = route.query[value.q] === "true";
+        }
         // search termbases is a list
-        if (key === 'termbase') {
+        else if (key === "termbase") {
           const tbs = route.query[value.q] as string;
           searchInterface.value.termbase = tbs.split(",") as Samling[];
         }
-
         // searchdomain needs to be handled differently because state is a list
-        if (key === "domain") {
+        else if (key === "domain") {
           const domene = route.query[value.q] as string;
           searchInterface.value.domain = JSON.parse(domene);
         }
