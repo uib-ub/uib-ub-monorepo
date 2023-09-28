@@ -186,7 +186,10 @@ onMounted(() => {
         // searchterm needs be to added to searchbar field
         if (key === "term") {
           searchterm.value = route.query[value.q] as string;
-        } else if (key === "useDomain") {
+        }
+
+        // searchInterface settings
+        if (key === "useDomain") {
           searchInterface.value.useDomain = route.query[value.q] === "true";
         }
         // search termbases is a list
