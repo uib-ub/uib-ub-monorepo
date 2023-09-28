@@ -10,6 +10,12 @@ const [{ bm_pending, data: welcome_bm },  { nn_pending, data: welcome_nn }] = aw
     useLazyAsyncData('welcome_nn', () => $fetch(session.endpoint + '/nn/parameters.json'))
   ])
 
+definePageMeta({
+    middleware: [
+      "simple-search"
+    ]
+  })
+
 </script>
 
 <template>

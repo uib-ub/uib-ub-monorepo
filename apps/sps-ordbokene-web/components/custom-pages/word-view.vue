@@ -110,7 +110,7 @@ useHead({
 
 definePageMeta({
     middleware: [
-      "pattern-redirect"
+      "simple-search"
     ]
   })
 
