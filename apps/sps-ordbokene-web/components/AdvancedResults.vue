@@ -59,7 +59,6 @@
 
 <script setup>
 
-import { computed } from 'vue'
 import { useStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 

@@ -42,7 +42,6 @@
 import { useStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
 
 const settings = useSettingsStore()
 const store = useStore()
