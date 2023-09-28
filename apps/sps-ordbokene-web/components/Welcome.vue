@@ -32,7 +32,7 @@
         <h1>{{ $t('article.added.bmo') }}
         </h1>
         <section v-for="([id, name], index) in latestArticlesbm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
+          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/bm/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
         </section>
