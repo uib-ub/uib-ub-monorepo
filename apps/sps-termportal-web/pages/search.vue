@@ -186,15 +186,16 @@ onMounted(() => {
         // searchterm needs be to added to searchbar field
         if (key === "term") {
           searchterm.value = route.query[value.q] as string;
+        } else if (key === "useDomain") {
+          searchInterface.value.useDomain = route.query[value.q] === "true";
         }
         // search termbases is a list
-        if (key === 'termbase') {
+        else if (key === "termbase") {
           const tbs = route.query[value.q] as string;
           searchInterface.value.termbase = tbs.split(",") as Samling[];
         }
-
         // searchdomain needs to be handled differently because state is a list
-        if (key === "domain") {
+        else if (key === "domain") {
           const domene = route.query[value.q] as string;
           searchInterface.value.domain = JSON.parse(domene);
         }
