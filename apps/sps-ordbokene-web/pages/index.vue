@@ -57,11 +57,6 @@ definePageMeta({
     ]
   })
 
-useHead({
-  link: [
-    {rel: "canonical", href: "https://ordbokene.no/" + store.dict}
-  ]
-})
 
 const form_error = (error) => {
   console.log("FORM ERROR",error)
