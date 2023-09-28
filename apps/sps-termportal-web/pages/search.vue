@@ -11,7 +11,7 @@
         <h1 class="sr-only">{{ $t("search.title") }}</h1>
         <SearchStatusBar />
         <div class="xl:flex">
-          <SearchFilter class="xl:hidden block" />
+          <SearchFilter class="block xl:hidden" />
           <main class="grow">
             <h2 id="main" class="pb-2 pt-3 text-2xl">
               <AppLink to="#main">
@@ -156,7 +156,7 @@ watch(
     searchInterface.value.termbase,
     searchInterface.value.translate,
     searchInterface.value.domain,
-    searchInterface.value.useDomain
+    searchInterface.value.useDomain,
   ],
   () => {
     if (allowSearchFetch.value !== null) {
