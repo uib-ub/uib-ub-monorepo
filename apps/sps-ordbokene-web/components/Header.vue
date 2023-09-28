@@ -62,9 +62,6 @@ const route = useRoute()
 const i18n = useI18n()
 const menu_expanded = ref(false)
 const locale_cookie = useCookie('currentLocale')
-const locale = computed(()=> {
-  return {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
-})
 
 const escape_menu = (event) => {
   console.log(event.key)
@@ -78,15 +75,6 @@ const update_lang = (event) => {
   return navigateTo(localizeUrl(route.fullPath, i18n.locale.value))
 
 }
-
-useHead({
-    htmlAttrs: {
-      lang: locale
-    },
-    titleTemplate: (titleChunk) => {
-      return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
-    }
-})
 
 </script>
 
