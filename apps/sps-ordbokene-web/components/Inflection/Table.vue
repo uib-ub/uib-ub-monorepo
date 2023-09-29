@@ -931,7 +931,7 @@ export default {
 }
 
 .infl-wrapper span.comma:empty {
-    display: none;
+    @apply hidden;
 }
 
 .infl-wrapper span.comma:not(:first-child):before {
@@ -943,14 +943,12 @@ export default {
 }
 
 .infl-wrapper td[class="infl-group"] {
-  background-color: #FDF4F5;
-  font-style: italic;
-  text-align: center;
+  @apply text-center italic bg-tertiary;
 }
 
 .infl-wrapper td[class*="infl-label"] {
-  font-style: italic;
-  text-align: left;
+
+  @apply text-left italic; 
 }
 
 .infl-wrapper td[class="notranslate nfl-cell"] {
@@ -958,23 +956,21 @@ export default {
 }
 
 .infl-wrapper .context {
-  color: theme('colors.gray.500') !important;
+  @apply !text-gray-500;
 }
 
 .infl-wrapper div.lemma {
-  display: none;
+  @apply hidden;
 }
 
 .infl-wrapper table {
-  border-collapse: collapse;
+  @apply border-collapse;
 }
 
 .infl-wrapper th, td {
   /* border: solid 0px theme('colors.gray.200'); */
   border-width: 0px 0px 1px 0px;
-  padding: 0.5rem;
-  font-size: 1rem;
-  @apply border-2 border-gray-50 shadow-md duration-200;
+  @apply border-2 border-gray-50 shadow-md duration-200 text-base p-2;
   
 }
 
@@ -991,19 +987,16 @@ export default {
 }
 
 .table-responsive .table-responsive:not(:first-child) {
-  margin-top: 2rem;
+  @apply mt-8;
 }
 
 .infl-wrapper th {
   font-variant-caps: all-small-caps;
-  font-size: 1rem;
-  padding-top: 0.25rem;
-  @apply bg-canvas-darken;
+  @apply bg-canvas-darken pt-1 text-base;
 }
 
 .infl-wrapper .infl-label {
-    text-align: left;
-    vertical-align: top;
+    @apply text-left align-top;
 }
 
 .infl-wrapper td.hilite {

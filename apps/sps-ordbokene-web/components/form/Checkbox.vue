@@ -42,9 +42,8 @@ const model = computed({
 
 
     label {
-        display: grid;
         grid-template-columns: 1em auto;
-        gap: 0.5em;
+        @apply grid gap-2;
     }
 
 </style>

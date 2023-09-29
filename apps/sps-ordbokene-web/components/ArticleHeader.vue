@@ -46,11 +46,11 @@ const props = defineProps({
 .header_group_list {
     font-variant: all-small-caps;
     font-style: normal;
-    font-size: 1.5rem;
+    @apply text-xl;
 }
 
 .subheader {
-  font-size: 1.17rem;
+  @apply text-base;
 
 }
 

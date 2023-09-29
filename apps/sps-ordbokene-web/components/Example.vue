@@ -24,8 +24,7 @@
     <style scoped>
     
     em {
-        font-style: italic !important;
-        display: inline;
+        @apply inline !italic;
     }
     
     

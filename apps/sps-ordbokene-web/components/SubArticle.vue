@@ -28,15 +28,15 @@
   <style scoped>
   
   li.sub_article {
-    padding-top: 8px;
+    @apply pt-2;
   }
   
   li.sub_article ul {
-    padding-top: 0px;
+    @apply pt-0;
   }
   
   ul li {
-    list-style:none;
+    @apply list-none;
   }
   
   

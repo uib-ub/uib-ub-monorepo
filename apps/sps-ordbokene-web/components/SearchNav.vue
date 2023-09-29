@@ -75,13 +75,12 @@ const dict_click = (dict) => {
 <style scoped>
 
 .nav-container {
-  overflow-x: auto;
-  white-space: nowrap;
   scrollbar-width: none;
+  @apply overflow-x-auto whitespace-nowrap;
 }
 
 button {
-  font-weight: 600;
+  @apply font-semibold;
 }
 
 ul {
@@ -100,7 +99,7 @@ a[aria-current=true] {
 
   /* Hide scrollbar for Chrome, Safari and Opera */
 .nav-container::-webkit-scrollbar {
-  display: none;
+  @apply hidden;
 }
 
 

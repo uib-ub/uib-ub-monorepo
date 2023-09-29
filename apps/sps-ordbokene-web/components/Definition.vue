@@ -101,12 +101,11 @@ return item.items.length && item.items[0].type_ == "article_ref" && item.items[0
 <style scoped>
 
 ul.examples {
-padding-left: 0rem;
+@apply pl-0;
 }
 
 .hilite {
-background: theme('colors.tertiary.darken1') !important;
-border-radius: 0.25rem;
+@apply shadow !bg-tertiary-darken1;
 }
 
 .single_sub_definition{

@@ -129,7 +129,7 @@ const no_preceeding_punctuation = computed(()=> {
 </script>
 <style scoped>
 .usage {
-  font-style: italic;
+  @apply italic;
 }
 
 

@@ -91,16 +91,12 @@ useHead({
 <style scoped>
 
 nav #locale-select {
-  letter-spacing: .1rem;
-  font-size: 1rem;
-  cursor: pointer;
+  /* letter-spacing: .1rem; */
+  @apply cursor-pointer text-base tracking-widest;
 }
 nav .nav-link {
   font-variant-caps: all-small-caps;
-  font-size: 1.25rem;
-  letter-spacing: .1rem;
-  list-style-type: none;
-  padding-top: .5rem;
+  @apply pt-2 list-none tracking-widest text-xl;
 }
 
 
@@ -118,7 +114,7 @@ nav .nav-link[aria-current=page] {
 
 @media screen(lg) {
     .nav-buttons.hidden {
-      display: flex;
+      @apply flex;
   }
 }
 
