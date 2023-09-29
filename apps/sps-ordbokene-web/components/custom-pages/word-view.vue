@@ -85,18 +85,6 @@ const dicts = computed(()=> {
 })
 
 
-const additionalSuggest = computed(() => {
-  if (route.query.orig && store.suggest.inflect) {
-    return store.suggest.inflect.filter(item => item[0] != store.q)
-
-  }
-  else {
-    return []
-  }
-  
-})
-
-
 useHead({
   title, 
   meta: [
