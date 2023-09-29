@@ -6,15 +6,23 @@ import nob from '../locales/nob.json'
 export default defineNuxtPlugin(({ vueApp }) => {
   const route = useRoute()
   const locale_cookie = useCookie('currentLocale')
-  let current_locale = locale_cookie.value
-  if (!current_locale) {
-    current_locale = route.params.locale || new Date().getDate() % 2 ? 'nno' : 'nob'
+  const headers = useRequestHeaders(['Accept-Language'])
+  let locale = route.params.locale
+  if (locale_cookie.value) {
+    locale = locale_cookie.value
   }
-
+  else if (process.client && navigator.language) {
+    locale = detectLocale(navigator.language)
+  }
+  else if (!process.client) {
+    locale = detectLocale(headers["accept-language"])
+  }
+  
   const i18n = createI18n({
     legacy: false,
     globalInjection: true,
-    locale: current_locale,
+    locale,
+    fallbackLocale: new Date().getDate() % 2 ? 'nno' : 'nob',
     messages: {
       eng,
       nno,

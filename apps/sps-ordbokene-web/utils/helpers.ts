@@ -10,6 +10,23 @@ export const localizeUrl = (url, locale) => {
   }
 }
 
+export const iso2 = tag => {
+  return {"nb": "nob", "nn": "nno", "en": "eng", "uk": "ukr"}[tag]
+}
+
+export const detectLocale = localestring => {
+  if (localestring) {
+    let locales = localestring.split(",")
+    console.log(locales)
+    for (var i=0; i < locales.length; i++) {
+      let tag = iso2(locales[i].slice(0,2))
+      if (tag && tag != 'eng') {
+        return tag
+      }
+    }
+  }
+}
+
 export const specialSymbols = (q) => {
     return /[?_*%|]/.test(q)
   }
