@@ -52,15 +52,13 @@ const { t } = useI18n()
 const i18n = useI18n()
 const error_message = ref()
 
-const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
-      $fetch('api/articles?', {
+const { pending, error, refresh, data: articles } = await useFetch('api/articles?', {
           baseURL: session.endpoint,
           params: {
             w: store.q,
             dict: store.dict,
             scope: 'e',
-          },
-        }))
+          }})
 
 if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
