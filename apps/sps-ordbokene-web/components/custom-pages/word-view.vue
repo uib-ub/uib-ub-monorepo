@@ -6,7 +6,7 @@
         </div>
       </client-only>
     <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
-      <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labeledby="dict+'_heading'">
+      <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
         <div class="py-2 px-2">
           <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
             <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
@@ -43,7 +43,6 @@ import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import {useSessionStore } from '~/stores/sessionStore'
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
 
 const settings = useSettingsStore()
 const store = useSearchStore()
