@@ -17,45 +17,11 @@
 </template>
 
 <script setup>
+import { useSessionStore } from '~/stores/sessionStore'
 import { useSearchStore } from '~/stores/searchStore'
 const store = useSearchStore()
+const session = useSessionStore()
 const route = useRoute()
-
-
-watch(() => route.query.q, () => {
-  if (route.query.q) {
-    store.q = route.query.q
-    store.lemmas.bm = new Set()
-    store.lemmas.nn = new Set()
-  }
-})
-
-definePageMeta({
-    middleware: [
-      function (to, from) { // Sync store with routing
-      const store = useSearchStore()
-        
-        let query = to.params.q || to.query.q
-        if (to.params.dict)  {
-          store.dict = to.params.dict
-          
-          if (query) {
-            store.q = query
-            store.lemmas.bm = new Set()
-            store.lemmas.nn = new Set()
-            store.input = to.query.orig || query
-            store.searchUrl = to.fullPath
-          }
-        }
-        else if (store.q) {
-          store.$reset()
-        }
-
-        
-      },
-    ]
-  })
-
 
 const form_error = (error) => {
   console.log("FORM ERROR",error)

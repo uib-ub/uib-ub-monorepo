@@ -82,7 +82,7 @@ const { data: latest_nn} = useLazyAsyncData('latest_nn', () => $fetch('https://o
 
 definePageMeta({
     middleware: [
-      "simple-search"
+      "welcome-middleware"
     ]
   })
 

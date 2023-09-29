@@ -97,7 +97,7 @@ useHead({
 
 definePageMeta({
     middleware: [
-      "simple-search"
+      "simple-search-middleware"
     ]
   })
 
