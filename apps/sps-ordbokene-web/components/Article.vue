@@ -362,7 +362,7 @@ const parse_subitems =  (explanation, text) => {
             }
 
               else if (subitem.id) {
-                let expandable = store['concepts_'+props.dict][explanation.items[linkIndex].id]
+                let expandable = session['concepts_'+props.dict][explanation.items[linkIndex].id]
                 new_string += expandable ? expandable.expansion : " [...] "
 
             }
