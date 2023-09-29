@@ -13,8 +13,6 @@ export const useSearchStore = defineStore('store', {
       suggest: {},
       suggestQuery: "",
       articles: {},
-      searchUrl: null,
-      concepts_bm: [],
-      concepts_nn: [],
+      searchUrl: null
     }),
   })
