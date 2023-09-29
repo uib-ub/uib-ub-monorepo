@@ -82,7 +82,6 @@ const update_dict = (value) => {
 }
 
 const update_scope = (value) => {
-  console.log(value)
   store.scope = value
   if (store.q) {
     submitForm()
