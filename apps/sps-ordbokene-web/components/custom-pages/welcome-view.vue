@@ -10,36 +10,36 @@
 
 
 
-      <div class="grid lg:grid-cols-1 py-3 h-full w-auto bg-tertiary rounded-[12px]">
+      <div v-if="edited_bm" class="grid lg:grid-cols-1 py-3 h-full w-auto bg-tertiary rounded-[12px]">
         <h1>{{ $t('article.update.bmo') }}</h1>
-        <section v-for="([id, name], index) in editedArticlesbm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+        <section v-for="([id, name], index) in edited_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
           <NuxtLink class="whitespace-nowrap hover:underline" :to="`/bm/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
         </section>
       </div>
 
-      <div class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
+      <div v-if="edited_nn" class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
         <h1>{{ $t('article.update.nno') }}</h1>
-        <section v-for="([id, name], index) in editedArticlesnn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+        <section v-for="([id, name], index) in edited_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
           <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
         </section>
       </div>
 
-      <div class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
+      <div v-if="latest_bm" class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
         <h1>{{ $t('article.added.bmo') }}
         </h1>
-        <section v-for="([id, name], index) in latestArticlesbm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+        <section v-for="([id, name], index) in latest_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
           <NuxtLink class="whitespace-nowrap hover:underline" :to="`/bm/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
         </section>
       </div>
-      <div class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
+      <div v-if="latest_nn" class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
         <h1>{{ $t('article.added.nno') }}</h1>
-        <section v-for="([id, name], index) in latestArticlesnn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+        <section v-for="([id, name], index) in latest_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
           <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
@@ -61,39 +61,24 @@ import { useSessionStore } from '~/stores/sessionStore'
 const store = useSearchStore()
 const session = useSessionStore()
 
-const editedArticlesbm = ref([])
-const editedArticlesnn = ref([])
-const latestArticlesbm = ref([])
-const latestArticlesnn = ref([])
-
-
-const fetchAndSortArticles = async (url, refContainer) => {
-  try {
-    const response = await fetch(url)
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    data.sort((a, b) => new Date(b[3]) - new Date(a[3]))
-    refContainer.value = data.slice(0, 5)
-  } catch (error) {
-    console.error('Fetch Error:', error)
-  }
+const sortArticles = async (data) => {
+    return data.sort((a, b) => new Date(b[3]) - new Date(a[3])).slice(0, 5)
 }
 
-onMounted(() => {
-  fetchAndSortArticles(session.endpoint +'/bm/fil/article.json', editedArticlesbm) //Or:/bm/fil/article100.json
-  fetchAndSortArticles(session.endpoint +'/nn/fil/article.json', editedArticlesnn)
-  fetchAndSortArticles('https://ord.uib.no/bm/fil/article100new.json', latestArticlesbm) //Only available in Ord.
-  fetchAndSortArticles('https://ord.uib.no/nn/fil/article100new.json', latestArticlesnn)
-})
 
-
-const [{ bm_pending, data: welcome_bm },  { nn_pending, data: welcome_nn }] = await Promise.all([
-    useLazyAsyncData('welcome_bm', () => $fetch(session.endpoint + 'bm/parameters.json')),
-    useLazyAsyncData('welcome_nn', () => $fetch(session.endpoint + '/nn/parameters.json'))
+const [{ data: welcome_bm} ,  
+       { data: welcome_nn },
+       { data: edited_bm },
+       { data: edited_nn },
+       { data: latest_bm },
+       { data: latest_nn }
+       ] = await Promise.all([
+            useLazyAsyncData('welcome_bm', () => $fetch(session.endpoint + 'bm/parameters.json')),
+            useLazyAsyncData('welcome_nn', () => $fetch(session.endpoint + '/nn/parameters.json')),
+            useLazyAsyncData('edited_bm', () => $fetch(session.endpoint +'/bm/fil/article.json').then(response => { return sortArticles(response) })),
+            useLazyAsyncData('edited_nn', () => $fetch(session.endpoint +'/nn/fil/article.json').then(response => { return sortArticles(response) })),
+            useLazyAsyncData('latest_bm', () => $fetch('https://ord.uib.no/bm/fil/article100new.json').then(response => { return sortArticles(response) })),
+            useLazyAsyncData('latest_nn', () => $fetch('https://ord.uib.no/nn/fil/article100new.json').then(response => { return sortArticles(response) }))
   ])
 
 
