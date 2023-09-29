@@ -73,21 +73,12 @@ const sortArticles = async (data) => {
 }
 
 
-const [{ data: welcome_bm} ,  
-       { data: welcome_nn },
-       { data: edited_bm },
-       { data: edited_nn },
-       { data: latest_bm },
-       { data: latest_nn }
-       ] = await Promise.all([
-            useLazyAsyncData('welcome_bm', () => $fetch(session.endpoint + 'bm/parameters.json')),
-            useLazyAsyncData('welcome_nn', () => $fetch(session.endpoint + '/nn/parameters.json')),
-            useLazyAsyncData('edited_bm', () => $fetch(session.endpoint +'/bm/fil/article.json').then(response => { return sortArticles(response) })),
-            useLazyAsyncData('edited_nn', () => $fetch(session.endpoint +'/nn/fil/article.json').then(response => { return sortArticles(response) })),
-            useLazyAsyncData('latest_bm', () => $fetch('https://ord.uib.no/bm/fil/article100new.json').then(response => { return sortArticles(response) })),
-            useLazyAsyncData('latest_nn', () => $fetch('https://ord.uib.no/nn/fil/article100new.json').then(response => { return sortArticles(response) }))
-  ])
-
+const { data: welcome_bm} = useFetch(session.endpoint + 'bm/parameters.json')
+const { data: welcome_nn} = useFetch(session.endpoint + 'nn/parameters.json')
+const { data: edited_bm} = useLazyAsyncData('edited_bm', () => $fetch(session.endpoint +'/bm/fil/article.json').then(response => { return sortArticles(response) }))
+const { data: edited_nn} = useLazyAsyncData('edited_nn', () => $fetch(session.endpoint +'/nn/fil/article.json').then(response => { return sortArticles(response) }))
+const { data: latest_bm} = useLazyAsyncData('latest_bm', () => $fetch('https://ord.uib.no/bm/fil/article100new.json').then(response => { return sortArticles(response) }))
+const { data: latest_nn} = useLazyAsyncData('latest_nn', () => $fetch('https://ord.uib.no/nn/fil/article100new.json').then(response => { return sortArticles(response) }))
 
 definePageMeta({
     middleware: [
