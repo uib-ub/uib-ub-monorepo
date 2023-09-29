@@ -66,7 +66,7 @@ const submitForm = async (item) => {
     }
 
     if (inflect && inflect.length == 1 && inflect[0][0] && inflect[0][0][0] != "-" && inflect[0][0].slice(-1) != "-") { // suppress prefixes and suffixes
-        return navigateTo(`/${i18n.locale.value}/${inflect[0][0]}?orig=${store.q}`)
+        return navigateTo(`/${i18n.locale.value}/${store.dict}/${inflect[0][0]}?orig=${store.q}`)
     }
 
     return navigateTo(`/${i18n.locale.value}/${store.dict}?q=${store.q}`)
