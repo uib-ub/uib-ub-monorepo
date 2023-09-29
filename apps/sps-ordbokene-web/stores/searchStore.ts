@@ -12,7 +12,6 @@ export const useSearchStore = defineStore('store', {
       lemmas: {bm: new Set(), nn: new Set()},
       suggest: {},
       suggestQuery: "",
-      articles: {},
       searchUrl: null
     }),
   })
