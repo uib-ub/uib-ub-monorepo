@@ -7,6 +7,6 @@ export const useSessionStore = defineStore('session', {
       concepts_bm: [],
       concepts_nn: [],
       endpoint: "",
-      copied_ink: "",
+      copied_link: "",
     }),
   })
