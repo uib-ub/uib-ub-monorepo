@@ -7,7 +7,7 @@ export default defineNuxtPlugin(({ vueApp }) => {
   const route = useRoute()
   const locale_cookie = useCookie('currentLocale')
   const headers = useRequestHeaders(['Accept-Language'])
-  let locale = route.params.locale
+  let locale = route.params.locale || new Date().getDate() % 2 ? 'nno' : 'nob'
   if (locale_cookie.value) {
     locale = locale_cookie.value
   }
