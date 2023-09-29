@@ -5,14 +5,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const session = useSessionStore()
 
   // Redirect if cookie or browser language don't match route locale
-  try {
-    const locale_cookie = useCookie('currentLocale')
-    if (locale_cookie.value) {
-      if (to.params.locale && locale_cookie.value != to.params.locale) {
-        return navigateTo(localizeUrl(to.fullPath, locale_cookie.value))
-      }
+  const locale_cookie = useCookie('currentLocale')
+  if (locale_cookie.value) {
+    if (to.params.locale && locale_cookie.value != to.params.locale) {
+      return navigateTo(localizeUrl(to.fullPath, locale_cookie.value))
     }
-    else if (navigator.language == 'nb' && to.params.locale != 'nob') {
+  }
+  else if (process.client) {
+    if (navigator.language == 'nb' && to.params.locale != 'nob') {
       return navigateTo(localizeUrl(to.fullPath, 'nob'))
     }
     else if (navigator.language == 'nn' && to.params.locale != 'nno') {
@@ -21,11 +21,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     else if (navigator.language == 'uk' && to.params.locale != 'ukr') {
       return navigateTo(localizeUrl(to.fullPath, 'ukr'))
     }
+  }
 
-  }
-   catch (exception) {
-    console.log("MIDDLEWARE ERROR", exception)
-  }
 
 
   
