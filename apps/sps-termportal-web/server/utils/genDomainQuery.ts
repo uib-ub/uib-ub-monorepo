@@ -16,9 +16,13 @@ CONSTRUCT  {
 WHERE {
     GRAPH ?GRAPH {
         <${base}DOMENE-3AToppdomene> skos:narrower ?c.
+            FILTER EXISTS { ?c ?p ?o } .
             OPTIONAL { ?c skos:narrower ?c2.
+                FILTER EXISTS { ?c2 ?p ?o } .
                 OPTIONAL { ?c2 skos:narrower ?c3.
-                    OPTIONAL { ?c3 skos:narrower ?c4. }
+                    FILTER EXISTS { ?c3 ?p ?o } .
+                    OPTIONAL { ?c3 skos:narrower ?c4.
+                        FILTER EXISTS { ?c3 ?p ?o } .}
                 }
             }
         }
