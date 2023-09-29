@@ -18,9 +18,12 @@ export const detectLocale = localestring => {
   if (localestring) {
     let locales = localestring.split(",")
     for (var i=0; i < locales.length; i++) {
-      let tag = iso2(locales[i].slice(0,2))
-      if (tag && tag != 'eng') {
-        return tag
+      let tag = locales[i].slice(0,2)
+      if (tag != 'en') {
+        let iso2tag = iso2(tag)
+        if (iso2tag) {
+          return iso2tag
+        }
       }
     }
   }

@@ -12,10 +12,10 @@ export default defineNuxtPlugin(({ vueApp }) => {
     locale = locale_cookie.value
   }
   else if (process.client && navigator.language) {
-    locale = detectLocale(navigator.language)
+    locale = detectLocale(navigator.language) || locale
   }
   else if (!process.client) {
-    locale = detectLocale(headers["accept-language"])
+    locale = detectLocale(headers["accept-language"]) || locale
   }
   
   const i18n = createI18n({
