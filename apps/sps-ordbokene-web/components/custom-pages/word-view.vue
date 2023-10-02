@@ -61,7 +61,10 @@ const { pending, error, refresh, data: articles } = await useFetch('api/articles
           }})
 
 const content_locale = dict => {
-  return {bm: 'nob', nn: 'nno'}[dict] || i18n.locale.value
+  if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {
+    return {bm: 'nob', nn: 'nno'}[dict] 
+  }
+  return i18n.locale.value
 }
 
 if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
