@@ -12,7 +12,7 @@
       <section v-if="edited_bm" class="grid lg:grid-cols-1 py-3 h-full w-auto bg-tertiary rounded-[12px]">
         <h2>{{ $t('article.update.bmo', 1, {locale: content_locale}) }}</h2>
         <div v-for="([id, name], index) in edited_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/bm/${id}`">
+          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/${$i18n.locale}/bm/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
         </div>
@@ -23,7 +23,7 @@
       <section v-if="edited_nn" class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
         <h2>{{ $t('article.update.nno', 1, {locale: content_locale}) }}</h2>
         <div v-for="([id, name], index) in edited_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
+          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/${$i18n.locale}/nn/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
         </div>
@@ -35,7 +35,7 @@
         <h2>{{ $t('article.added.bmo', 1, {locale: content_locale}) }}
         </h2>
         <div v-for="([id, name], index) in latest_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/bm/${id}`">
+          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/${$i18n.locale}/bm/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
         </div>
@@ -46,7 +46,7 @@
       <section v-if="latest_nn" class="grid lg:grid-cols-1 py-3 h-auto w-auto bg-tertiary rounded-[12px]">
         <h2>{{ $t('article.added.nno', 1, {locale: content_locale}) }}</h2>
         <div v-for="([id, name], index) in latest_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/nn/${id}`">
+          <NuxtLink class="whitespace-nowrap hover:underline" :to="`/${$i18n.locale}/nn/${id}`">
             <p >{{ name }}</p>
           </NuxtLink>
         </div>
