@@ -11,7 +11,7 @@
           <em>Bokmålsordboka</em>{{$t('and')}}<em>Nynorskordboka</em>{{$t('footer_description')}}
         </div>
       </div>
-      <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center">
+      <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center site-nav">
         <ul class="flex flex-col md:flex-row gap-3 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center md:text-lg text-center md:gap-10">
         <li>
             <NuxtLink :aria-current="$route.name == 'welcome' && 'page'" class="nav-link" :to="`/${$i18n.locale}`">{{$t('home')}}</NuxtLink>
@@ -30,6 +30,27 @@
           </li>
       </ul>
     </nav>
+
+    <nav :aria-label="$t('settings.locale.title')" class="flex justify-center items-center !text-xs">
+        <ul class="flex flex-col md:flex-row gap-3 mt-6 pt-2 md:pt-0 justify-center md:text-lg text-center md:gap-10">
+        <li  v-if="$i18n.locale != 'nob'">
+          <Icon name="emojione-monotone:flag-for-norway" size="1.25em" class="mr-2"/>
+          <NuxtLink lang="nb" :to="localizeUrl($route.fullPath, 'eng')" @click="change_lang('nob')">Bokmål</NuxtLink>
+        </li>
+        <li  v-if="$i18n.locale != 'nno'">
+          <Icon name="emojione-monotone:flag-for-norway" size="1.25em" class="mr-2"/>
+          <NuxtLink lang="nn" :to="localizeUrl($route.fullPath, 'nno')" @click="change_lang('nno')">Nynorsk</NuxtLink>
+        </li>
+        <li  v-if="$i18n.locale != 'eng'">
+          <Icon name="emojione-monotone:flag-for-united-kingdom" size="1.25em" class="mr-2"/>
+          <NuxtLink lang="en" :to="localizeUrl($route.fullPath, 'eng')" @click="change_lang('eng')">English</NuxtLink>
+        </li>
+         <li  v-if="$i18n.locale != 'ukr'">
+          <Icon name="emojione-monotone:flag-for-ukraine" size="1.25em" class="mr-2"/>
+          <NuxtLink lang="uk" :to="localizeUrl($route.fullPath, 'ukr')" @click="change_lang('ukr')">українська</NuxtLink>
+        </li>
+      </ul>
+    </nav>
     
     </div>
     <div class="float-right px-1 text-gray-300" aria-hidden="true">{{$config.public.versionWatermark}}</div>
@@ -43,11 +64,19 @@ import { useRoute } from 'vue-router'
 
 const i18n = useI18n()
 const route = useRoute()
+
+const change_lang = (lang) => {
+  i18n.locale.value = lang
+  locale_cookie.value = lang
+  return navigateTo(localizeUrl(route.fullPath, lang))
+}
+
+
 </script>
   
   <style scoped>
   
-  nav {
+  .site-nav {
     font-variant: all-small-caps;
     letter-spacing: 0.1rem;
   

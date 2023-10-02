@@ -38,14 +38,14 @@
 
       </ul>
     </nav>
-    <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1">
-          <Icon name="bi:globe2" size="1.25em" class="mr-2"/>
-          <label for="locale-select" class="sr-only">{{$t('settings.locale.title')}}</label>
-          <select id="locale-select" class="bg-primary text-white" v-model="$i18n.locale" @change="update_lang">
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nob'" value="nob">Bokmål</option>
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'eng'" value="eng">English</option>
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nno'" value="nno">Nynorsk</option>
-          </select>
+
+      <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1" v-if="$i18n.locale != 'eng'">
+          <Icon name="emojione-monotone:flag-for-united-kingdom" size="1.25em" class="mr-2"/>
+          <NuxtLink lang="en" :to="localizeUrl($route.fullPath, 'eng')" @click="change_lang('eng')">English</NuxtLink>
+      </div>
+      <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1" v-if="false && $i18n.locale != 'nno' && $i18n.locale != 'nob'">
+          <Icon name="emojione-monotone:flag-for-norway" size="1.25em" class="mr-2"/>
+          <NuxtLink lang="no" :to="localizeUrl($route.fullPath, new Date().getDate() % 2 ? 'nno' : 'nob')" @click="change_lang(new Date().getDate() % 2 ? 'nno' : 'nob')">Norsk</NuxtLink>
       </div>
     </div>
   </header>
@@ -69,10 +69,10 @@ const escape_menu = (event) => {
   }
 }
 
-const update_lang = (event) => {
-  locale_cookie.value = i18n.locale.value
-  return navigateTo(localizeUrl(route.fullPath, i18n.locale.value))
-
+const change_lang = (lang) => {
+  i18n.locale.value = lang
+  locale_cookie.value = lang
+  return navigateTo(localizeUrl(route.fullPath, lang))
 }
 
 </script>
