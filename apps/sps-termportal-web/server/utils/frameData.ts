@@ -16,7 +16,7 @@ export default function (
       skos: "http://www.w3.org/2004/02/skos/core#",
       xkos: "http://rdf-vocabulary.ddialliance.org/xkos#",
       skosxl: "http://www.w3.org/2008/05/skos-xl#",
-      skosno: "https://vokab.norge.no/skosno#",
+      skosno: "https://data.norge.no/vocabulary/skosno#",
       skosno2: "http://difi.no/skosno#",
       skosp: "http://www.data.ub.uib.no/ns/spraksamlingene/skos#",
       dct: "http://purl.org/dc/terms/",
