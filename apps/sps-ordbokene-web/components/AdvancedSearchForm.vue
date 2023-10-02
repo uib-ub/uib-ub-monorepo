@@ -37,15 +37,15 @@
             <Autocomplete  v-on:dropdown-submit="submitForm"/>
           </div>
 
-          <div class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-4">
+          <div class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-8" v-if="store.q">
             
             
-            <div class="flex justify-center items-center">
+            <div class="flex justify-center items-end">
         <FormCheckbox v-model="settings.$state.listView" :checked="settings.listView" class="text-blue-700 font-semibold">
             {{$t('show_list')}}
         </FormCheckbox>
     </div>
-            <div class="flex justify-center items-center"><NuxtLink :to="`/${$i18n.locale}/help/advanced`"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
+            <div class="flex justify-center items-end"><NuxtLink :to="`/${$i18n.locale}/help/advanced`"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
           </div>
         </div>
     </form>
