@@ -1,15 +1,15 @@
 <template>
   <div class="flex justify-center">
-    <div class="flex flex-col md:flex-row xl:px-12" v-if="welcome_bm && welcome_nn">
+    <div class="flex flex-col lg:flex-row xl:px-12 gap-4" v-if="welcome_bm && welcome_nn">
       <div class="flex flex-col gap-4">
       <section>
-        <Article :article_id="parseInt(welcome_bm.front_article.value)" dict="bm" :content_locale="content_locale('bm')" welcome />
+        <Article :article_id="parseInt(welcome_bm.front_article.value)" dict="bm" :content_locale="content_locale()" welcome />
       </section>
 
       <section v-if="edited_bm" class="welcome">
-        <div class="article  !my-0  rounded p-4">
-          <h2 class="dict-label !text-xl">{{ $t('article.update.bmo', 1, {locale: content_locale}) }}</h2>
-          <ul class="flex flex-wrap px-4 pb-3 pt-4">
+        <div class="article rounded !my-0  p-4">
+          <h2 class="dict-label !text-xl">{{ $t('article.update.bmo', 1, {locale: content_locale('bm')}) }}</h2>
+          <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2  gap-2">
           <li v-for="([id, name], index) in edited_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
               <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
           </li>
@@ -17,9 +17,9 @@
         </div>
       </section>
       <section v-if="latest_bm" class="welcome">
-        <div class="article  !my-0  rounded p-4 ">
-          <h2 class="dict-label !text-xl">{{ $t('article.added.bmo', 1, {locale: content_locale}) }}</h2>
-          <ul class="flex flex-wrap px-4 pb-3 pt-4">
+        <div class="article rounded !my-0  p-4 ">
+          <h2 class="dict-label !text-xl">{{ $t('article.added.bmo', 1, {locale: content_locale('')}) }}</h2>
+          <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2  gap-2">
           <li v-for="([id, name], index) in latest_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
               <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
           </li>
@@ -30,16 +30,14 @@
     </div>
     <div class="flex flex-col gap-4">
 
-
       <section class="">
         <Article :article_id="parseInt(welcome_nn.front_article.value)" dict="nn" :content_locale="content_locale('nn')" welcome />
       </section>
 
-      
         <section v-if="edited_nn" class="welcome">
-          <div class="article !my-0 rounded p-4">
+          <div class="article rounded !my-0 p-4">
             <h2 class="dict-label !text-xl">{{ $t('article.update.nno', 1, {locale: content_locale}) }}</h2>
-            <ul class="flex flex-wrap px-4 pb-3 pt-4">
+            <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2 gap-2">
             <li v-for="([id, name], index) in edited_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
                 <NuxtLink vlass="suggest-link" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
             </li>
@@ -48,11 +46,11 @@
         </section>
 
         <section v-if="latest_nn" class="lg:col-auto lg:pr-2.5">
-          <div class="article !my-0  rounded p-4">
+          <div class="article rounded !my-0 p-4">
             <h2 class="dict-label !text-xl">{{ $t('article.added.nno', 1, {locale: content_locale}) }}</h2>
-            <ul class="flex  flex-wrap px-4 pb-3 pt-4">
+            <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2 gap-2">
             <li v-for="([id, name], index) in latest_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-                <NuxtLink :to="`/${$i18n.locale}/nn/${id}`">{{name}}</NuxtLink>
+                <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
             </li>
             </ul>
           </div>
