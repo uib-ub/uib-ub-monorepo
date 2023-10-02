@@ -58,9 +58,8 @@
           class="max-w-prose"
           v-html="
             `
-            ${d?.['skosp:dctSource']?.['skosp:rdfsLabel']}
-              ${d?.source?.label?.['@value'] || d?.source || ''}
-          `
+        ${d?.['skosp:dctSource']?.['skosp:rdfsLabel'] || ''}
+        ${d?.source?.label?.['@value'] || d?.source || ''}`
           "
         />
         <template v-else-if="Array.isArray(d?.source)">
