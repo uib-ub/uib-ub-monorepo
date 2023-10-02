@@ -103,11 +103,11 @@ const { data: latest_nn} = useLazyAsyncData('latest_nn', () => $fetch('https://o
   @apply text-white font-semibold text-xl bg-primary tracking-widest text-center rounded-[32px];
 }
 
-h1 {
+h2 {
         font-family: Inria Serif;
-        @apply text-center text-primary uppercase text-sm font-bold tracking-widest;
+        @apply text-center text-primary uppercase font-bold tracking-widest;
     }
-p{
+p {
   font-family: Inria Serif;
   @apply text-center text-lg text-text;
 
