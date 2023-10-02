@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center">
-    <div class="flex flex-col lg:flex-row xl:px-12 gap-4" v-if="welcome_bm && welcome_nn">
+    <div class="flex flex-col lg:flex-row xl:px-12 gap-4 mt-2 md:mt-0" v-if="welcome_bm && welcome_nn">
       <div class="flex flex-col gap-4">
       <section>
         <Article :article_id="parseInt(welcome_bm.front_article.value)" dict="bm" :content_locale="content_locale()" welcome />
