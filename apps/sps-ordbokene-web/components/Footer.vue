@@ -14,7 +14,7 @@
       <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center">
         <ul class="flex flex-col md:flex-row gap-3 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center md:text-lg text-center md:gap-10">
         <li>
-            <NuxtLink :aria-current="$route.name == 'welcome' && 'page'" class="nav-link" :to="`/${$i18n.locale}`">{{$t('home')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'welcome' && 'page'" class="nav-link" :to="`/${$i18n.locale}`" @click="store.$reset()">{{$t('home')}}</NuxtLink>
         </li>
         <li>
             <NuxtLink :aria-current="$route.name == 'help' && 'page'" class="nav-link" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
@@ -35,14 +35,16 @@
     <div class="float-right px-1 text-gray-300" aria-hidden="true">{{$config.public.versionWatermark}}</div>
     
   </footer>
-  </template>
+</template>
 
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { useSearchStore } from '~/stores/searchStore'
 
 const i18n = useI18n()
 const route = useRoute()
+const store = useSearchStore()
 </script>
   
   <style scoped>
