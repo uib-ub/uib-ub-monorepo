@@ -11,12 +11,6 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
     compressPublicAssets: true,
-    prerender: {
-      routes: locales.map(locale => "/" + locale + "/help").concat(
-        locales.map(locale => "/" + locale + "/about"),
-        locales.map(locale => "/" + locale + "/contact"),
-      )
-    }
   },
   runtimeConfig: {
     public: {
