@@ -16,12 +16,12 @@
         <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
           <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
-              <Article :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
+              <Article :content_locale="content_locale(dict)" :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
             </NuxtErrorBoundary>
           </component>
         </component>
           <client-only v-if="store.q && !specialSymbols(store.q)">
-            <Suggest :dict="dict" :articles_meta="articles.meta"/>
+            <Suggest :content_locale="content_locale(dict)" :dict="dict" :articles_meta="articles.meta"/>
           </client-only>
          
       </section>
@@ -59,6 +59,10 @@ const { pending, error, refresh, data: articles } = await useFetch('api/articles
             dict: store.dict,
             scope: 'e',
           }})
+
+const content_locale = dict => {
+  return {bm: 'nob', nn: 'nno'}[dict] || i18n.locale.value
+}
 
 if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`

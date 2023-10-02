@@ -99,7 +99,7 @@
       </div>
       </NuxtErrorBoundary>
       <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
-        <div v-else class="text-right"><NuxtLink :to="link_to_self()">{{$t('article.show')}}</NuxtLink></div>
+        <div v-else class="text-right"><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
 
       
   </div>
@@ -123,6 +123,7 @@ const route = useRoute()
 const session = useSessionStore()
 
 const props = defineProps({
+    content_locale: String,
     article_id: Number,
     dict: String,
     welcome: Boolean,
@@ -173,15 +174,6 @@ const inflection_error = (error) => {
   console.log("INFLECTION_ERROR", error)
 }
 
-const content_locale = computed(() => {
-    if (i18n.locale.value == 'nob' || i18n.locale.value == 'nno') {
-      return  {bm: 'nob', nn: 'nno'}[props.dict]
-    }
-    else {
-      return i18n.locale.value
-    }
-})
-
 
 const has_content = () => {
   for (const definition of data.value.body.definitions) {
@@ -220,6 +212,7 @@ return sub_art_list
 }
 catch(error) {
   console.log("find_sub_articles", props.article_id, props.dict,  '"'+error.message+'"')
+  console.log(error)
 
   return []
 }
@@ -282,9 +275,9 @@ const lemma_groups = computed(() => {
   let groups = [{lemmas: data.value.lemmas}]
     try {
       if (data.value.lemmas[0].paradigm_info[0].tags[0] == "DET" && data.value.lemmas[0].paradigm_info[0].tags.length > 1) {
-        groups = [{description: t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], {locale: content_locale}), 
+        groups = [{description: t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], {locale: props.content_locale}), 
                    pos_group: ["Quant", "Dem", "Poss"].includes(data.value.lemmas[0].paradigm_info[0].tags[1]) ? 
-                                                                t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: content_locale}) 
+                                                                t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: props.content_locale}) 
                                                                 : '', 
                   lemmas: data.value.lemmas}]
       }
@@ -299,9 +292,9 @@ const lemma_groups = computed(() => {
             })
             let genus_description = ""
             if (genera.size == 3) {
-              genus_description +=  t('tags.Masc') + ', ' +  t('tags.Fem', 1, { locale: content_locale}) +  t('or') +  t('tags.Neuter', 1, { locale: content_locale})
+              genus_description +=  t('tags.Masc') + ', ' +  t('tags.Fem', 1, { locale: props.content_locale}) +  t('or') +  t('tags.Neuter', 1, { locale: props.content_locale})
             } else {
-              genus_description += Array.from(genera).map(code =>  t('tags.'+code, 1, { locale: content_locale.value})).sort().join(t('or'))
+              genus_description += Array.from(genera).map(code =>  t('tags.'+code, 1, { locale: props.content_locale})).sort().join(t('or'))
             }
             if (genus_map[genus_description]) {
               genus_map[genus_description].push(lemma)
@@ -311,13 +304,13 @@ const lemma_groups = computed(() => {
             }
           })
           groups = Object.keys(genus_map).map(key => {
-            return {description:  t('tags.NOUN', 1, { locale: content_locale}), pos_group: key, lemmas: genus_map[key], }
+            return {description:  t('tags.NOUN', 1, { locale: props.content_locale}), pos_group: key, lemmas: genus_map[key], }
           })
 
 
       }
       else if (data.value.lemmas[0].paradigm_info[0].tags[0] != 'EXPR') {
-        groups = [{description:  t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], 1, { locale: content_locale}), lemmas: data.value.lemmas}]
+        groups = [{description:  t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], 1, { locale: props.content_locale}), lemmas: data.value.lemmas}]
       }
 
       groups.forEach((lemma_group, index) => {
@@ -325,6 +318,7 @@ const lemma_groups = computed(() => {
           })
   } catch(error) {
     console.log("lemma_groups",props.article_id, props.dict, '"'+error.message+'"')
+    console.log(error)
   }
     return groups
 

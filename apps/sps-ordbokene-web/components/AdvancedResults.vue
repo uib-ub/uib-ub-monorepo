@@ -11,12 +11,12 @@
         </h2>
       </div>
       <client-only>
-        <MinimalSuggest v-if="articles.meta[dict].total == 0" :dict="dict"/>
+        <MinimalSuggest :content_locale="content_locale(dict)" v-if="articles.meta[dict].total == 0" :dict="dict"/>
       </client-only>
       <component v-if="articles.meta[dict].total > 0" :is="settings.listView ? 'ol' : 'div'" class="article-column">
         <component v-for="(article_id, idx) in articles.articles[dict].slice(offset, offset + perPage)" :key="article_id" :is="settings.listView ? 'li' : 'div'">
           <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
-            <Article :article_id="article_id" :dict="dict" :idx="idx" :list="settings.listView"/>
+            <Article :content_locale="content_locale(dict)" :article_id="article_id" :dict="dict" :idx="idx" :list="settings.listView"/>
           </NuxtErrorBoundary>
         </component>
       </component>
@@ -63,11 +63,13 @@
 import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import {useSessionStore } from '~/stores/sessionStore'
+import { useI18n } from 'vue-i18n'
 
 const settings = useSettingsStore()
 const store = useSearchStore()
 const route = useRoute()
 const session = useSessionStore()
+const i18n = useI18n()
 
 const error_message = ref()
 
@@ -92,6 +94,11 @@ if (route.query.pos) {
 }
 return params
 })
+
+
+const content_locale = dict => {
+  return {bm: 'nob', nn: 'nno'}[dict] || i18n.locale.value
+}
 
 const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?`, {
           query,

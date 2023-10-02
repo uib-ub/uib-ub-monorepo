@@ -210,12 +210,12 @@
             "examples": "Eksempel"
         },  
         "update":{
-            "bmo":"Nylig oppdatert fra Bokmålsordboka",
-            "nno":"Nylig oppdatert fra Nynorskordboka"
+            "bmo":"Nylig oppdatert i Bokmålsordboka",
+            "nno":"Nylig oppdatert i Nynorskordboka"
           },  
           "added":{
-              "bmo":"Nylig lagt til fra Bokmålsordboka",
-              "nno":"Nylig lagt til fra Nynorskordboka"
+              "bmo":"Nylig lagt til i Bokmålsordboka",
+              "nno":"Nylig lagt til i Nynorskordboka"
             }
     },
     "error": {
