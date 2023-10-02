@@ -2,7 +2,8 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'url'
 import VueI18nVitePlugin from '@intlify/unplugin-vue-i18n/vite'
 
-const locales = "/:locale(nob|nno|eng|ukr)?"
+const locales = ["nob", "nno", "eng", "ukr"]
+const optionalLocale = "/:locale(" + locales.join("|") + ")?"
 
 export default defineNuxtConfig({
   css: ['~/assets/fonts/fonts.css'],
@@ -10,6 +11,12 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
     compressPublicAssets: true,
+    prerender: {
+      routes: locales.map(locale => "/" + locale + "/help").concat(
+        locales.map(locale => "/" + locale + "/about"),
+        locales.map(locale => "/" + locale + "/contact"),
+      )
+    }
   },
   runtimeConfig: {
     public: {
@@ -47,7 +54,7 @@ export default defineNuxtConfig({
     'pages:extend' (pages) {
       pages.pop()
       pages.push({
-        path: locales + '/',
+        path: optionalLocale + '/',
         file: '~/pages/index.vue',
         children: [
           {
@@ -59,7 +66,7 @@ export default defineNuxtConfig({
       })
 
       pages.push({
-            path: locales + '/:dict(bm|nn|bm,nn)',
+            path: optionalLocale + '/:dict(bm|nn|bm,nn)',
             file: '~/pages/index.vue',
             children: [
               {
@@ -84,7 +91,7 @@ export default defineNuxtConfig({
       pages.push(
       {
         name: 'about',
-        path: locales + '/about',
+        path: optionalLocale + '/about',
         file: '~/components/custom-pages/content-container.vue',
         children: [
           {
@@ -103,7 +110,7 @@ export default defineNuxtConfig({
       })
       pages.push({
         name: 'help',
-        path: locales + '/help',
+        path: optionalLocale + '/help',
         file: '~/components/custom-pages/content-container.vue',
         children: [
           {
@@ -121,7 +128,7 @@ export default defineNuxtConfig({
 
         pages.push({
           name: 'contact',
-          path: locales + '/contact',
+          path: optionalLocale + '/contact',
           file: '~/components/custom-pages/content-container.vue',
           children: [
             {
@@ -135,23 +142,20 @@ export default defineNuxtConfig({
       pages.push(
       {
         name: 'settings',
-        path: locales + '/settings',
+        path: optionalLocale + '/settings',
         file: '~/components/custom-pages/settings.vue',
       })
 
       pages.push({
         name: 'search',
-        path: locales +'/search',
+        path: optionalLocale +'/search',
         file: '~/components/custom-pages/search.vue',
       })
 
       pages.push({
-        path: locales,
+        path: optionalLocale,
         file: '~/pages/index.vue',
-      })
-
-      console.log(pages)
-      
+      })      
     }
   },
 
