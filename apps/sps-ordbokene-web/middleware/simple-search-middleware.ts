@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const store = useSearchStore()
     // Redirect if javascript is disabled
     if (to.query.q) {
-      return `/${to.params.locale}/${to.params.dict}/${to.query.q}`
+      return navigateTo(`/${to.params.locale}/${to.params.dict}/${to.query.q}`)
     }
 
     store.dict = to.params.dict || 'bm,nn'
