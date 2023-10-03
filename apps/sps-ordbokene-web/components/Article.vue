@@ -26,7 +26,7 @@
 
     </NuxtLink>
   </div>
-    <div class="article" v-else-if="!error">
+    <div class="article flex flex-col justify-between" v-else-if="!error">
       <div v-if="false && pending && !welcome" class="skeleton-container">
             <div class="skeleton mt-4 skeleton-heading"/>
         <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
@@ -102,11 +102,13 @@
           </div>
       </div>
       </NuxtErrorBoundary>
-      <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
-        <div v-else class="text-right"><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
-
       
   </div>
+  
+</div>
+<div class="mx-1">
+<ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
+        <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
 </div>
 </div>
 </template>

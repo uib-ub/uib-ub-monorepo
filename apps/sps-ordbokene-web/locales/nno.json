@@ -198,14 +198,9 @@
             "definitions": "Tyding og bruk",
             "examples": "Døme"
         },  
-        "update":{
-            "bmo":"Nyleg oppdatert i Bokmålsordboka",
-            "nno":"Nyleg oppdatert i Nynorskordboka"
-          },  
-          "added":{
-              "bmo":"Nyleg lagt til i Bokmålsordboka",
-              "nno":"Nyleg lagt til i Nynorskordboka"
-            }
+        "updated": "Nyleg oppdatert",
+        "added": "Nyleg lagt til",
+        "new": "Nytt i {dict}"
     },
     "error": {
           "article": "Det har oppstått ein feil i artikkel {no} i {dict}",

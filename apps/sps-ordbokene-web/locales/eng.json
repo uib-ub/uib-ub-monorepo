@@ -195,15 +195,10 @@
       "expressions": "Set phrases",
       "definitions": "Senses and Example Sentences",
       "examples": "Example"
-  },
-  "update":{
-    "bmo":"Recently updated from Bokmålsordboka",
-    "nno":"Recently updated from Nynorskordboka"
-  },
-  "added":{
-    "bmo":"Recently added from Bokmålsordboka",
-    "nno":"Recently added from Nynorskordboka"
-  }
+    },
+    "updated": "Recently updated",
+    "added": "Recently added",
+    "new": "New in {dict}"
 },
 "error": {
       "article": "An error has occured in article {no} in {dict}",

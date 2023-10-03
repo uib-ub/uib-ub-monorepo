@@ -209,14 +209,9 @@
             "definitions": "Betydning og bruk",
             "examples": "Eksempel"
         },  
-        "update":{
-            "bmo":"Nylig oppdatert i Bokmålsordboka",
-            "nno":"Nylig oppdatert i Nynorskordboka"
-          },  
-          "added":{
-              "bmo":"Nylig lagt til i Bokmålsordboka",
-              "nno":"Nylig lagt til i Nynorskordboka"
-            }
+        "updated": "Nylig oppdatert",
+        "added": "Nylig lagt til",
+        "new": "Nytt i {dict}"
     },
     "error": {
           "article": "Det har oppstått en feil i artikkel {no} i {dict}",

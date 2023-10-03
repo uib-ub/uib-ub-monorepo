@@ -1,70 +1,56 @@
 <template>
-  <div class="flex justify-center">
-    <div class="flex flex-col lg:flex-row xl:px-12 gap-4 mt-2 md:mt-0" v-if="welcome_bm && welcome_nn">
-      <div class="flex flex-col gap-4">
-      <section>
+  <div>
+    <div class="grid lg:grid-cols-2 gap-4 grid-flow-row" v-if="welcome_bm && welcome_nn">
+
+      <section class="grid">
         <Article :article_id="parseInt(welcome_bm.front_article.value)" dict="bm" :content_locale="content_locale()" welcome />
+      </section>
+
+      <section class="grid">
+        <Article :article_id="parseInt(welcome_nn.front_article.value)" dict="nn" :content_locale="content_locale()" welcome />
       </section>
 
       <section v-if="edited_bm" class="welcome">
         <div class="article rounded !my-0  p-4">
-          <h2 class="dict-label !text-xl">{{ $t('article.update.bmo', 1, {locale: content_locale('bm')}) }}</h2>
+          <h2 class="dict-label !text-xl">{{ $t('article.new', {dict: "Bokmålsordboka"}, {locale: content_locale('bm')}) }}</h2>
+          <h3 class="px-5 pt-5 !text-xl">{{ $t('article.updated', 1, {locale: content_locale('bm')}) }}</h3>
           <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2  gap-2">
-          <li v-for="([id, name], index) in edited_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-              <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
-          </li>
-          </ul>
-        </div>
-      </section>
-      <section v-if="latest_bm" class="welcome">
-        <div class="article rounded !my-0  p-4 ">
-          <h2 class="dict-label !text-xl">{{ $t('article.added.bmo', 1, {locale: content_locale('')}) }}</h2>
-          <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2  gap-2">
-          <li v-for="([id, name], index) in latest_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-              <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
-          </li>
-          </ul>
-        </div>
-      </section>
-
-    </div>
-    <div class="flex flex-col gap-4">
-
-      <section class="">
-        <Article :article_id="parseInt(welcome_nn.front_article.value)" dict="nn" :content_locale="content_locale('nn')" welcome />
-      </section>
-
-        <section v-if="edited_nn" class="welcome">
-          <div class="article rounded !my-0 p-4">
-            <h2 class="dict-label !text-xl">{{ $t('article.update.nno', 1, {locale: content_locale}) }}</h2>
-            <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2 gap-2">
-            <li v-for="([id, name], index) in edited_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
-                <NuxtLink vlass="suggest-link" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
+            <li v-for="([id, name], index) in edited_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+                <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
             </li>
-            </ul>
-          </div>
-        </section>
+          </ul>
 
-        <section v-if="latest_nn" class="lg:col-auto lg:pr-2.5">
-          <div class="article rounded !my-0 p-4">
-            <h2 class="dict-label !text-xl">{{ $t('article.added.nno', 1, {locale: content_locale}) }}</h2>
-            <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2 gap-2">
+          <h3 class="px-5 !text-xl">{{ $t('article.added', 1, {locale: content_locale('bm')}) }}</h3>
+          <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2  gap-2">
+            <li v-for="([id, name], index) in latest_bm" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+                <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section v-if="edited_nn" class="welcome">
+        <div class="article rounded !my-0  p-4">
+          <h2 class="dict-label !text-xl">{{ $t('article.new', {dict: "Nynorskordboka"}, {locale: content_locale('nn')}) }}</h2>
+          <h3 class="px-5 pt-5 !text-xl">{{ $t('article.updated', 1, {locale: content_locale('nn')}) }}</h3>
+          <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2  gap-2">
+            <li v-for="([id, name], index) in edited_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
+                <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
+            </li>
+          </ul>
+
+          <h3 class="px-5 !text-xl">{{ $t('article.added', 1, {locale: content_locale('nn')}) }}</h3>
+          <ul class="flex flex-col md:flex-row flex-wrap px-4 py-2  gap-2">
             <li v-for="([id, name], index) in latest_nn" :key="index" class="lg:col-auto lg:pr-2.5 pt-2">
                 <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
             </li>
-            </ul>
-          </div>
-        </section>
-      </div>
-
-      
+          </ul>
+        </div>
+      </section>
     </div>
     <Spinner v-else />
   </div>
 </template>
-
-
-
 
 <script setup>
 import { useI18n } from 'vue-i18n'
