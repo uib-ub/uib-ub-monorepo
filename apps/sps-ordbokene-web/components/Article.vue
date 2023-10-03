@@ -84,7 +84,7 @@
               <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
-          <section class="definitions" v-if="has_content">
+          <section class="definitions" v-if="has_content && !welcome">
               <h4 v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h4>
 
               <Definition v-for="definition in data.body.definitions" :content_locale="content_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
@@ -96,6 +96,10 @@
               <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
               </ul>
             </section>
+
+          <div v-if="welcome">
+            {{snippet}}
+          </div>
       </div>
       </NuxtErrorBoundary>
       <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
@@ -382,15 +386,16 @@ const parse_subitems =  (explanation, text) => {
   }
 
 
-const parse_definitions = (node) => {
+const parse_definitions = (definition_list) => {
   let definitionTexts = []
     try {
-    node.forEach((definition) => {
+    definition_list.forEach((definition) => {
       if (definition.elements) {
       if (definition.elements[0].content) {
         let new_string = parse_subitems(definition.elements[0], definition.elements[0].content)
-        if (new_string.substring(new_string.length, new_string.length - 1) == ":") {
-          new_string = new_string.slice(0, -1)
+        if (new_string.substring(new_string.length, new_string.length - 1) == ":" && definition.elements[1].quote) {
+          new_string += " "+parse_subitems(definition.elements[1].quote, definition.elements[1].quote.content)
+          
         }
         definitionTexts.push(new_string)
 
@@ -398,6 +403,13 @@ const parse_definitions = (node) => {
       else if (definition.elements[0].elements) {
         definitionTexts.push(parse_definitions(definition.elements))
       }
+
+      let subdefs = definition.elements.slice(1, definition.elements.length).filter(item => item.type_ == 'definition')
+
+      if (subdefs.length) {
+        definitionTexts.push(parse_definitions(subdefs))
+      }
+
     }
     })
     } catch(error) {
