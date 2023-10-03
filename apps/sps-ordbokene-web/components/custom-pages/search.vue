@@ -6,8 +6,7 @@
       <NuxtErrorBoundary @error="content_error">  
     <AdvancedResults v-if="store.q" class="ord-container mb-10"/>
       </NuxtErrorBoundary>
-
-
+      <AdvancedHelp v-if="!store.q"/>
   </main>
 </template>
   
@@ -16,17 +15,18 @@ import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
 const store = useSearchStore()
 const route = useRoute()
+const i18n = useI18n()
 
 useHead({
-title: t('advanced')
+title: i18n.t('advanced')
 })
 
 definePageMeta({
     middleware: ['advanced-search-middleware']
   })
+
 
 const form_error = (error) => {
   console.log("FORM ERROR",error)

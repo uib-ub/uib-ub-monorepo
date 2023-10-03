@@ -80,12 +80,6 @@ const { data: edited_nn} = useLazyAsyncData('edited_nn', () => $fetch(session.en
 const { data: latest_bm} = useLazyAsyncData('latest_bm', () => $fetch('https://ord.uib.no/bm/fil/article100new.json').then(response => { return sortArticles(response) }))
 const { data: latest_nn} = useLazyAsyncData('latest_nn', () => $fetch('https://ord.uib.no/nn/fil/article100new.json').then(response => { return sortArticles(response) }))
 
-definePageMeta({
-    middleware: [
-      "welcome-middleware",
-      "simple-search-middleware"
-    ]
-  })
 
 </script>
 

@@ -7,8 +7,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     store.dict = to.params.dict || 'bm,nn'
-    store.q = to.params.q || to.query.q
-    if (store.q) {
+    store.q = to.params.q || to.query.q || store.q
+    if (store.q && to.name != 'article') {
       store.searchUrl = to.fullPath
       store.lemmas.bm = new Set()
       store.lemmas.nn = new Set()

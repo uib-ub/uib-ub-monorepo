@@ -23,6 +23,12 @@ const store = useSearchStore()
 const session = useSessionStore()
 const route = useRoute()
 
+definePageMeta({
+    middleware: [
+      "simple-search-middleware"
+    ]
+  })
+
 const form_error = (error) => {
   console.log("FORM ERROR",error)
 }
