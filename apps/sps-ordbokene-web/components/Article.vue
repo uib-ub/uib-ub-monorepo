@@ -417,7 +417,7 @@ const parse_definitions = (definition_list) => {
       definitionTexts = []
     }
 
-    let snippet = definitionTexts.join("\u00A0•\u00A0")
+    let snippet = definitionTexts.filter(item => item).join("\u00A0•\u00A0")
     return snippet
   
 }
