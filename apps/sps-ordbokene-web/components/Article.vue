@@ -98,7 +98,9 @@
             </section>
 
           <div v-if="welcome">
-            {{snippet}}
+            <WelcomeMarkdown :path="`/welcome/${dict}/${article_id}`">
+              {{snippet}}
+            </WelcomeMarkdown>
           </div>
       </div>
       </NuxtErrorBoundary>
