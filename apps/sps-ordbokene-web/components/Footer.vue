@@ -14,19 +14,19 @@
       <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center">
         <ul class="flex flex-col md:flex-row gap-3 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center md:text-lg text-center md:gap-10">
         <li>
-            <NuxtLink :aria-current="$route.name == 'welcome' && 'page'" class="nav-link" to="/">{{$t('home')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'welcome' && 'page'" class="nav-link" :to="`/${$i18n.locale}`" @click="store.$reset()">{{$t('home')}}</NuxtLink>
         </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'help' && 'page'" class="nav-link" to="/help">{{$t('help')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'help' && 'page'" class="nav-link" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name.slice(0,5) == 'about' && 'page'" class="nav-link" to="/about">{{$t('about')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'about' && 'page'" class="nav-link" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'settings' && 'page'" class="nav-link" to="/settings">{{$t('settings.title')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'settings' && 'page'" class="nav-link" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" to="/contact">{{$t('contact')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
           </li>
       </ul>
     </nav>
@@ -35,14 +35,16 @@
     <div class="float-right px-1 text-gray-300" aria-hidden="true">{{$config.public.versionWatermark}}</div>
     
   </footer>
-  </template>
+</template>
 
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { useSearchStore } from '~/stores/searchStore'
 
 const i18n = useI18n()
 const route = useRoute()
+const store = useSearchStore()
 </script>
   
   <style scoped>

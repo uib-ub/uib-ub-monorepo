@@ -5,7 +5,7 @@
 
 @layer base {
 
-    #__nuxt {
+    #__nuxt > div {
         @apply flex-col min-h-screen flex;
     }
 
@@ -33,6 +33,7 @@
 
     .ord-container h3 {
       font-family: Inria Serif;
+      font-size: calc(1.3rem + .6vw);
       @apply mb-0 font-semibold text-primary;
   
   }
@@ -65,6 +66,7 @@
       @apply text-primary font-bold;
       
     }
+
 
 }
 
@@ -184,17 +186,14 @@
           @apply pb-4;
         }
       
-      .dict-view h3 {
-          font-size: calc(1.3rem + .6vw);
-        }
       
       
-      .secondary-page h3 button, .secondary-page h3, .dict-view h2 {
+      .secondary-page h3 button, .secondary-page h3, .ord-container h2 {
           @apply text-primary text-2xl font-semibold;
           font-variant: all-small-caps;
         }
 
-        .dict-view h2 {
+        .ord-container h2 {
           @apply text-2xl md:text-3xl;
         }
       

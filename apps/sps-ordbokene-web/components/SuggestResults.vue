@@ -13,9 +13,11 @@
 
 <script setup>
 
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useI18n } from 'vue-i18n'
+import { useSearchStore } from '~/stores/searchStore'
+const store = useSearchStore()
 const route = useRoute()
+const i18n = useI18n()
 
 const props = defineProps({
     suggestions: Object,
@@ -27,14 +29,14 @@ const props = defineProps({
 
 const suggest_link = (suggestion) => {
     if (route.name == 'search') {
-        let url = `search?q=${suggestion}&dict=${store.dict}&scope=${store.scope}`
+        let url = `/${i18n.locale.value}/search?q=${suggestion}&dict=${store.dict}&scope=${store.scope}`
         if (store.pos) {
             url = url + '&pos=' + store.pos
         }
         return url
     }
     else {
-        return suggestion
+        return `/${i18n.locale.value}/${store.dict}/${suggestion}` 
     }
 }
 

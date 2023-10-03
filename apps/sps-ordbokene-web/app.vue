@@ -1,32 +1,43 @@
 <template>
-  <a class="bg-tertiary-darken1 text-center z-1000 text-anchor sr-only text-xl font-semibold underline w-full  !focus-within:p-10 focus:not-sr-only focus:absolute focus:min-w-screen" href="#main">Til innhold</a>
-  <Header/>
-<nav :aria-label="$t('breadcrumbs')" class="ord-container justify-start mt-3 mb-2 pl-3 flex gap-4" v-if="!['welcome', 'search', 'article', 'word'].includes($route.name)">
-  <NuxtLink v-if="store.searchUrl" :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
-  <NuxtLink v-else to="/"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('home')}}</NuxtLink>
-  <NuxtLink v-if="$route.params.slug"  :to="$route.matched[0].path"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t($route.matched[0].children[0].name)}}</NuxtLink>
-</nav>
+<Html :lang="locale">
+  <Head>
+    <Link rel="alternate" :href="baseUrl + non_localized" hreflang="x-default"/>
+    <Link rel="alternate" :href="baseUrl + '/nob' + non_localized" hreflang="nb"/>
+    <Link rel="alternate" :href="baseUrl + '/nno' + non_localized" hreflang="nn"/>
+    <Link rel="alternate" :href="baseUrl + '/ukr' + non_localized" hreflang="uk"/>
+  </Head>
+<NuxtLayout>
     <NuxtPage @click="menu_expanded=false"
-              v-bind:class="{'welcome': route.name == 'welcome'}"/>
-<Footer/>
+              v-bind:class="{'welcome': route.name == 'welcome' || route.name == 'index'}"/>
+</NuxtLayout>
+</Html>
 </template>
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
-import Settings from './pages/settings.vue'
 import { useSettingsStore } from './stores/settingsStore'
-const store = useStore()
+import { useSessionStore } from './stores/sessionStore'
+const store = useSearchStore()
+const session = useSessionStore()
 const settings = useSettingsStore()
 const route = useRoute()
+const i18n = useI18n()
 
 const input_element = useState('input_element')
-const keyboard_navigation = ref(false)
+const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host
 
-const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host +"/"
+const locale = computed(()=> {
+  return {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
+})
 
-
+const non_localized = computed (() => {
+  if (route.params.locale) {
+    return route.fullPath.slice(1 + route.params.locale.length, route.fullPath.length)
+  }
+  else return route.fullPath
+})
 
 useHead({
     titleTemplate: (titleChunk) => {
@@ -39,7 +50,7 @@ useHead({
       {property:"og:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
       {property:"og:type" , content:"website"},
       {property:'og:site_name' , content:"ordbokene.no"},
-      {property:'og:image' , content: baseUrl + "logo.png"},
+      {property:'og:image' , content: baseUrl + "/logo.png"},
       {property:"og:image:width" , content:"256px"},
       {property:"og:image:height" , content:"256px"},
       {property:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
@@ -52,29 +63,14 @@ useHead({
 // Global event listeners
 if (process.client) {
   document.addEventListener('click', () => {
-  store.show_autocomplete = false
+  session.show_autocomplete = false
   })
-
-
-
-  // Handle mouse vs keyboard navigation
-  document.addEventListener('mouseup', (event) => {
-      keyboard_navigation.value = false;
-  })
-
-  document.addEventListener('keyup', (event) => {
-    if (event.key == "Tab") {
-      keyboard_navigation.value = true
-    }
-  })
-
-
 }
 
 const nuxtApp = useNuxtApp()
 
 nuxtApp.hook("page:finish", () => {
-  if (input_element.value && ( settings.autoSelect || route.name == "welcome")) {
+  if (input_element.value && ( settings.autoSelect || route.name == "welcome" || route.name == "index")) {
     input_element.value.select()
   }
 })

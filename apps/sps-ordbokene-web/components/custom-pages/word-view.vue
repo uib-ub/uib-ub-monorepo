@@ -9,11 +9,11 @@
       <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
         <div class="py-2 px-2">
           <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
-            <span class="result-count-text">{{articles.meta[dict].total}}</span>
+            <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
             <span class="sr-only">{{$t('notifications.keywords')}}</span>
           </h2>
         </div>
-        <component v-if="articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
+        <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
           <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
             <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
               <Article :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
@@ -39,29 +39,29 @@
 
 <script setup>
 
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
+import {useSessionStore } from '~/stores/sessionStore'
 import { useI18n } from 'vue-i18n'
 
 const settings = useSettingsStore()
-const store = useStore()
+const store = useSearchStore()
+const session = useSessionStore()
 const route = useRoute()
 const { t } = useI18n()
 const i18n = useI18n()
 const error_message = ref()
 
-const { pending, error, refresh, data: articles } = await useAsyncData("articles_"+ store.searchUrl, ()=> 
-      $fetch('api/articles?', {
-          baseURL: store.endpoint,
+const { pending, error, refresh, data: articles } = await useFetch('api/articles?', {
+          baseURL: session.endpoint,
           params: {
             w: store.q,
             dict: store.dict,
             scope: 'e',
-          },
-        }))
+          }})
 
-if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
-  store.endpoint = `https://odd.uib.no/opal/prod/`
+if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+  session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()
 }
@@ -72,7 +72,7 @@ const title = computed(()=> {
 })
 
 const dicts = computed(()=> {
-  let currentDict = route.params.dict || route.query.dict
+  let currentDict = store.dict
   if (currentDict == "bm") {
     return ["bm"]
   }
@@ -80,18 +80,6 @@ const dicts = computed(()=> {
     return ["nn"]
   }
   return ["bm", "nn"]
-})
-
-
-const additionalSuggest = computed(() => {
-  if (route.query.orig && store.suggest.inflect) {
-    return store.suggest.inflect.filter(item => item[0] != store.q)
-
-  }
-  else {
-    return []
-  }
-  
 })
 
 
@@ -107,7 +95,7 @@ useHead({
 
 definePageMeta({
     middleware: [
-      "pattern-redirect"
+      "simple-search-middleware"
     ]
   })
 

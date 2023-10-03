@@ -11,15 +11,17 @@
 </template>
 
 <script setup>
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+import { useSessionStore } from '~/stores/sessionStore'
+const store = useSearchStore()
+const session = useSessionStore()
 const route = useRoute()
 
 const props = defineProps({
     dict: String,
 })
 
-const query = `${store.endpoint}api/suggest?&q=${route.query.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
+const query = `${session.endpoint}api/suggest?&q=${route.query.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
 const { data, error, pending } = useFetch(query, {key: query,
                                     transform: response => {
                                         if (response.a && response.a.similar) {
@@ -32,8 +34,8 @@ const { data, error, pending } = useFetch(query, {key: query,
                                     }})
 
 
-if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
-  store.endpoint = `https://odd.uib.no/opal/prod/`
+if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+  session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()
 }

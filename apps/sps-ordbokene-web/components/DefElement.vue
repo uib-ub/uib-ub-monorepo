@@ -24,8 +24,12 @@
 
 <script setup>
 import DefElement from './DefElement.vue'
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+import { useSessionStore } from '~/stores/sessionStore'
+import { useI18n } from 'vue-i18n'
+const store = useSearchStore()
+const session = useSessionStore()
+const i18n = useI18n()
 
 
 const emit = defineEmits(['error', 'link-click'])
@@ -70,7 +74,7 @@ const unparsed = computed(() => {
                     html: '',
                     lemmas: item.lemmas,
                     link_text: item.word_form || item.lemmas[0].annotated_lemma ||  item.lemmas[0].lemma,
-                    ref: '/' + props.dict + '/' + item.article_id + (item.definition_id ? '#def' + item.definition_id : ''),
+                    ref: `/${i18n.locale.value}/${props.dict}/${item.article_id}${item.definition_id ? '#def' + item.definition_id : ''}`,
                     article_id: item.article_id,
                     definition_id: item.definition_id,
                     definition_order: !item.word_form && item.definition_order,
@@ -83,7 +87,7 @@ const unparsed = computed(() => {
             else if (item.type_ == 'subscript') return {type: item.type_, html: item.text, tag: 'sub'}
             else if (item.type_ == 'quote_inset') return {type: item.type_, body: item, html: '', tag: DefElement, props: {body: item, tag: 'em', dict: props.dict}}
             else if (item.type_ == 'fraction') return fraction(item.numerator, item.denominator)
-            else if (item.id) return {type: item.type_, html:  ({"nn":store.concepts_nn, "bm":store.concepts_bm}[props.dict][item.id] || {})['expansion'] || item.id}
+            else if (item.id) return {type: item.type_, html:  ({"nn":session.concepts_nn, "bm":session.concepts_bm}[props.dict][item.id] || {})['expansion'] || item.id}
             else return {type: item.type_ || 'plain', html: item}
             }
         catch(error) {

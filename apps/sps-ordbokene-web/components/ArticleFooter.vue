@@ -3,8 +3,8 @@
   <client-only>
     <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-2">
     <button v-if="showLinkCopy" class="btn btn-borderless px-3" @click="copy_link" v-bind:class="{'hidden xl:block': store.dict == 'bm,nn' && $route.name!= 'article', 'hidden md:block': store.dict != 'bm,nn' && $route.name != 'article'}">
-      <Icon :name="store.copied == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
-      <span>{{ store.copied == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
+      <Icon :name="session.copied_link == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
+      <span>{{ session.copied_link == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
     </button>
     <button class="btn btn-borderless px-3" v-if="webShareApiSupported" @click="shareViaWebShare">
         <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
@@ -46,7 +46,7 @@
   </client-only>
 
 <span v-if="$route.name != 'article'" class="px-4 pt-1 ml-auto">
-    <NuxtLink class="whitespace-nowrap"  :to="`/${dict}/${article_id}`">
+    <NuxtLink class="whitespace-nowrap"  :to="`/${$i18n.locale}/${dict}/${article_id}`">
        <span>{{$t("article.open", 1, { locale: content_locale})}}</span>
     </NuxtLink>
     </span>
@@ -59,8 +59,10 @@
 
 <script setup>
 
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+import { useSessionStore } from '~/stores/sessionStore'
+const store = useSearchStore()
+const session = useSessionStore()
 
 const props = defineProps({
     lemmas: Array,
@@ -97,7 +99,7 @@ const shareViaWebShare = () => {
 const copy_link = (event) => {
   let link = create_link();
   navigator.clipboard.writeText(link).then(() => {
-    store.copied = link;
+    session.copied_link = link;
   }).catch(err => {
     console.log("ERROR COPYING:", err);
   });

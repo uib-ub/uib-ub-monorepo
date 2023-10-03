@@ -1,7 +1,7 @@
 <template>
 <header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div class="flex flex-row content-center w-full lg:w-auto">
-  <NuxtLink class="navbar-brand" to="/" :aria-current="$route.name == 'welcome' && 'page'">
+  <NuxtLink class="navbar-brand" :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
       <div class="mx-1 md:my-1 lg:my-3 xl:my-4">
       <div><h1 class="text-2xl mt-0.5 mb-0.5">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
       <p class="hidden xl:block brand-subtitle ml-0.5 mb-1">{{$t("sub_title")}}</p>
@@ -10,8 +10,8 @@
       </NuxtLink>
       <div class="lg:hidden text-lg ml-auto flex align-center">
 
-      <button class="text-lg p-2 px-3 rounded-4xl active:bg-primary-darken focus:bg-primary-darken" 
-              @keydown="escape_menu" 
+      <button class="text-lg p-2 px-3 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
+              @keydown="escape_menu"
               :aria-expanded="menu_expanded"
               :aria-controls="menu_expanded? 'main_menu' : null"
               @click="menu_expanded = !menu_expanded">
@@ -23,17 +23,17 @@
       <nav class="lg:mr-4">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" to="/help">{{$t('help')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
         </li>
 
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name.slice(0,5) == 'about' && 'page'" to="/about">{{$t('about')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" to="/settings">{{$t('settings.title')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'contact' && 'page'" to="/contact">{{$t('contact')}}</NuxtLink>
+          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'contact' && 'page'" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
         </li>
 
       </ul>
@@ -45,46 +45,35 @@
             <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nob'" value="nob">Bokmål</option>
             <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'eng'" value="eng">English</option>
             <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nno'" value="nno">Nynorsk</option>
-          </select> 
+          </select>
       </div>
     </div>
   </header>
-    
+
 </template>
 
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
 const i18n = useI18n()
 const menu_expanded = ref(false)
 const locale_cookie = useCookie('currentLocale')
-const locale = computed(()=> {
-  return {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
-})
 
 const escape_menu = (event) => {
-  console.log(event.key)
   if (event.key == "Escape" || event.key == "Esc") {
     menu_expanded.value = false
   }
 }
 
-const update_lang = () => {
+const update_lang = (event) => {
   locale_cookie.value = i18n.locale.value
-}
+  return navigateTo(localizeUrl(route.fullPath, i18n.locale.value))
 
-useHead({
-    htmlAttrs: {
-      lang: locale
-    },
-    titleTemplate: (titleChunk) => {
-      return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
-    }
-})
+}
 
 </script>
 

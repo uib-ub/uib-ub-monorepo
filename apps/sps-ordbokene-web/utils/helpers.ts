@@ -1,3 +1,34 @@
+export const localizeUrl = (url, locale) => {
+  if (url == "/") {
+    return locale
+  }
+  else if (/^\/?(nob|nno|eng|ukr)(\/|$)/.test(url)) {
+    return url.replace(/^(\/?)(nob|nno|eng|ukr)(\/|$)/, `$1${locale}$3`)
+  }
+  else {
+    return url.replace(/^(\/?)/, `$1${locale}/`)
+  }
+}
+
+export const iso2 = tag => {
+  return {"nb": "nob", "nn": "nno", "en": "eng", "uk": "ukr"}[tag]
+}
+
+export const detectLocale = localestring => {
+  if (localestring) {
+    let locales = localestring.split(",")
+    for (var i=0; i < locales.length; i++) {
+      let tag = locales[i].slice(0,2)
+      if (tag != 'en') {
+        let iso2tag = iso2(tag)
+        if (iso2tag) {
+          return iso2tag
+        }
+      }
+    }
+  }
+}
+
 export const specialSymbols = (q) => {
     return /[?_*%|]/.test(q)
   }

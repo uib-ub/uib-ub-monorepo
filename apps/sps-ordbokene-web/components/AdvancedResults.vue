@@ -60,12 +60,14 @@
 
 <script setup>
 
-import { useStore } from '~/stores/searchStore'
+import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
+import {useSessionStore } from '~/stores/sessionStore'
 
 const settings = useSettingsStore()
-const store = useStore()
+const store = useSearchStore()
 const route = useRoute()
+const session = useSessionStore()
 
 const error_message = ref()
 
@@ -92,12 +94,12 @@ return params
 })
 
 const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?`, {
-        query,
-        baseURL: store.endpoint,
-        onResponseError(conf) {
-          console.log("RESPONSE ERROR")
-        }
-      })
+          query,
+          baseURL: session.endpoint,
+          onResponseError(conf) {
+            console.log("RESPONSE ERROR")
+          }
+        })
 
 const dicts = computed(()=> {
 let currentDict = route.query.dict 
@@ -111,11 +113,11 @@ return ["bm", "nn"]
 })
 
 
-if (error.value && store.endpoint == "https://oda.uib.no/opal/prod/`") {
-store.endpoint = `https://odd.uib.no/opal/prod/`
-console.log("ERROR", error.value)
-refresh()
-}
+if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+  session.endpoint = `https://odd.uib.no/opal/prod/`
+  console.log("ERROR", error.value)
+  refresh()
+} 
 
 
 const pages = computed(() => {
@@ -126,27 +128,27 @@ const pages = computed(() => {
 
 
 const offset = computed(() => {
-return perPage.value * (page.value - 1)
+  return perPage.value * (page.value - 1)
 
 })
 
 
 const update_perPage = (event) => {
-settings.perPage = perPage
-page.value = 1
-return navigateTo({query: {...route.query, ...{perPage: event.target.value, page: 1}}})
+  settings.perPage = perPage
+  page.value = 1
+  return navigateTo({query: {...route.query, ...{perPage: event.target.value, page: 1}}})
 }
 
 const update_page = value => {
-page.value += value
-return navigateTo({query: {...route.query, ...{page: page.value}}})
+  page.value += value
+  return navigateTo({query: {...route.query, ...{page: page.value}}})
 
 }
 
 
 const article_error = (error, article, dict) => {
-console.log("ARTICLE_ERROR", article, dict)
-console.log(error)
+  console.log("ARTICLE_ERROR", article, dict)
+  console.log(error)
 }
 
 
@@ -163,21 +165,21 @@ window.scrollTo({
 
 
 button[disabled] {
-@apply cursor-default bg-gray-100;
+  @apply cursor-default bg-gray-100;
 }
 
 .announcement:focus-within .snackbar-search {
-/* display: absolute !important; */
-@apply  bottom-4 !absolute;
+  /* display: absolute !important; */
+  @apply  bottom-4 !absolute;
 
 }
 
 
 .go-top-button{
-@apply text-black font-medium rounded transition duration-200 cursor-pointer px-4 py-2 motion-reduce:transition-none;
+  @apply text-black font-medium rounded transition duration-200 cursor-pointer px-4 py-2 motion-reduce:transition-none;
 }
 
 .go-top-button:hover{
-@apply bg-tertiary-darken1;
+  @apply bg-tertiary-darken1;
 }
 </style>

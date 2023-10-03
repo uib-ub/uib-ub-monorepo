@@ -15,16 +15,16 @@
             <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
         </SuggestResults>
     </div>
-    <div v-if="freetext.length && !( articles_meta[dict].total || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
+    <div v-if="freetext.length && !( (articles_meta[dict] && articles_meta[dict].total) || translated.length || inflections.length )" class ="callout pt-0 pb-4 my-0">
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
             <p>{{$t('notifications.fulltext.description')}}</p>
             <div class="flex">
-            <NuxtLink :to="`/search?q=${freetext}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none">{{$t('to_advanced')}} 
+            <NuxtLink :to="`/${$i18n.locale}/search?q=${freetext}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right"/>
             </NuxtLink>
             </div>
     </div>
-    <div v-if="!( articles_meta[dict].total || translated.length || inflections.length || suggest.length || freetext.length )" class="callout pt-0 my-0">
+    <div v-if="!((articles_meta[dict] && articles_meta[dict].total) || translated.length || inflections.length || suggest.length || freetext.length )" class="callout pt-0 my-0">
         <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
         <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)})}}.</p>
         <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]')}}</p>
@@ -34,8 +34,10 @@
 </template>
 
 <script setup>
-import { useStore } from '~/stores/searchStore'
-const store = useStore()
+import { useSearchStore } from '~/stores/searchStore'
+import { useSessionStore } from '~/stores/sessionStore'
+const store = useSearchStore()
+const session = useSessionStore()
 const route = useRoute()
 
 const props = defineProps({
@@ -44,7 +46,7 @@ const props = defineProps({
 })
 
 
-const suggestQuery = `${store.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifs`
+const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifs`
 const apertiumQuery = `https://apertium.org/apy/translate?langpair=${store.dict == 'bm,nn' ? {bm: 'nno|nob', nn: 'nob|nno'}[props.dict] : {bm: 'nno|nob', nn: 'nob|nno'}[props.dict]}&q=${store.q}`
 
 const translated = ref([])
@@ -59,7 +61,7 @@ await Promise.all([$fetch(apertiumQuery).then(response => {
                         return
                     }
                     else {
-                        return $fetch(`${store.endpoint}api/suggest?&q=${translatedText}&dict=${props.dict}&n=1&dform=int&meta=n&include=ei`).then(suggestResponse => {
+                        return $fetch(`${session.endpoint}api/suggest?&q=${translatedText}&dict=${props.dict}&n=1&dform=int&meta=n&include=ei`).then(suggestResponse => {
                             if (suggestResponse.a) {
                                 
                                 const exact = suggestResponse.a.exact
