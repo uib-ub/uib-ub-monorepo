@@ -38,7 +38,7 @@
       </ul>
     </nav>
     
-      <LinkDropdown id="locale_menu" class="p-6 md:ml-4 self-center">
+      <LinkDropdown id="locale_menu" class="p-6 self-center">
       <template v-slot:button="{ expanded }">
          <Icon name="bi:globe" size="1.25em" class="pointer-events-none"/><Icon :name="expanded? 'bi:chevron-up' : 'bi:chevron-down'" size="1.25em" class="ml-2 pointer-events-none"/>
       </template>
