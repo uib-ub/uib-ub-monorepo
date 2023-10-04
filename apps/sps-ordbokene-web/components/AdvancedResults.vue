@@ -1,7 +1,7 @@
 <template>
   <div v-bind:class="{'list': settings.listView}">     
-  <Spinner v-if="pending"/>
-  <div v-if="!pending && !error && articles && articles.meta" >
+  <Spinner v-if="!error && !articles"/>
+  <div v-if="!error && articles && articles.meta" >
   <div  v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
     <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
       <div class="py-2 px-2">
