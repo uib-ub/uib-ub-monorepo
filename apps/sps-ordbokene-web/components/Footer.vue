@@ -29,29 +29,7 @@
             <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
           </li>
       </ul>
-    </nav>
-
-    <nav :aria-label="$t('settings.locale.title')" class="flex justify-center items-center !text-xs">
-        <ul class="flex flex-col md:flex-row gap-3 mt-6 pt-2 md:pt-0 justify-center md:text-lg text-center md:gap-10">
-        <li  v-if="$i18n.locale != 'nob'">
-          <Icon name="emojione-monotone:flag-for-norway" size="1.25em" class="mr-2"/>
-          <NuxtLink lang="nb" :to="localizeUrl($route.fullPath, 'eng')" @click="change_lang('nob')">Bokmål</NuxtLink>
-        </li>
-        <li  v-if="$i18n.locale != 'nno'">
-          <Icon name="emojione-monotone:flag-for-norway" size="1.25em" class="mr-2"/>
-          <NuxtLink lang="nn" :to="localizeUrl($route.fullPath, 'nno')" @click="change_lang('nno')">Nynorsk</NuxtLink>
-        </li>
-        <li  v-if="$i18n.locale != 'eng'">
-          <Icon name="emojione-monotone:flag-for-united-kingdom" size="1.25em" class="mr-2"/>
-          <NuxtLink lang="en" :to="localizeUrl($route.fullPath, 'eng')" @click="change_lang('eng')">English</NuxtLink>
-        </li>
-         <li  v-if="$i18n.locale != 'ukr'">
-          <Icon name="emojione-monotone:flag-for-ukraine" size="1.25em" class="mr-2"/>
-          <NuxtLink lang="uk" :to="localizeUrl($route.fullPath, 'ukr')" @click="change_lang('ukr')">українська</NuxtLink>
-        </li>
-      </ul>
-    </nav>
-    
+    </nav>    
     </div>
     <div class="float-right px-1 text-gray-300" aria-hidden="true">{{$config.public.versionWatermark}}</div>
     
