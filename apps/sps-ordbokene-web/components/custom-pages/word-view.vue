@@ -20,9 +20,9 @@
             </NuxtErrorBoundary>
           </component>
         </component>
-          <client-only v-if="store.q && !specialSymbols(store.q)">
+          <div v-if="store.q && !specialSymbols(store.q)">
             <Suggest :dict="dict" :articles_meta="articles.meta"/>
-          </client-only>
+          </div>
          
       </section>
   </div>
