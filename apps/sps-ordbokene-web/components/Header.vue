@@ -38,8 +38,9 @@
 
       </ul>
     </nav>
+    
 
-      <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1" v-if="$i18n.locale != 'eng'">
+      <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1" v-if="false && $i18n.locale != 'eng'">
           <Icon name="emojione-monotone:flag-for-united-kingdom" size="1.25em" class="mr-2"/>
           <NuxtLink lang="en" :to="localizeUrl($route.fullPath, 'eng')" @click="change_lang('eng')">English</NuxtLink>
       </div>
@@ -47,7 +48,35 @@
           <Icon name="emojione-monotone:flag-for-norway" size="1.25em" class="mr-2"/>
           <NuxtLink lang="no" :to="localizeUrl($route.fullPath, new Date().getDate() % 2 ? 'nno' : 'nob')" @click="change_lang(new Date().getDate() % 2 ? 'nno' : 'nob')">Norsk</NuxtLink>
       </div>
+
+
+
+      <div class="lg:flex lg:ml-auto  pl-8 mr-1 mt-2 lg:mt-0" @blur="locale_menu_expanded=false" @keydown="escape_menu">
+        <button id="locale_button" aria-controls="locale_select" @click.prevent="locale_menu_expanded = true">
+          <Icon name="bi:globe" size="1.25em"/><Icon :name="locale_menu_expanded? 'bi:chevron-up' : 'bi:chevron-down'" size="1.25em" class="ml-2"/>
+        </button>
+        <div class="relative" v-bind:class="{hidden: !locale_menu_expanded}">
+        <nav id="locale_select" :aria-label="$t('settings.locale.title')" class="absolute right-0 top-[150%] bg-secondary p-4 border-1 border-primary rounded">
+          <ul class="flex flex-col gap-3">
+            <li>
+              <NuxtLink lang="nb" :to="localizeUrl($route.fullPath, 'eng')" @click="change_lang('nob')"><Icon name="emojione-monotone:flag-for-norway" size="1.25em" class="mr-2"/> Bokmål</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink lang="nn" :to="localizeUrl($route.fullPath, 'nno')" @click="change_lang('nno')"><Icon name="emojione-monotone:flag-for-norway" size="1.25em" class="mr-2"/> Nynorsk</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink lang="en" :to="localizeUrl($route.fullPath, 'eng')" @click="change_lang('eng')"><Icon name="emojione-monotone:flag-for-united-kingdom" size="1.25em" class="mr-2"/> English</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink lang="uk" :to="localizeUrl($route.fullPath, 'ukr')" @click="change_lang('ukr')"><Icon name="emojione-monotone:flag-for-ukraine" size="1.25em" class="mr-2"/> українська</NuxtLink>
+            </li>
+          </ul>
+        </nav>
+        </div>
+      </div>
+      
     </div>
+    
   </header>
 
 </template>
@@ -62,16 +91,37 @@ const route = useRoute()
 const i18n = useI18n()
 const menu_expanded = ref(false)
 const locale_cookie = useCookie('currentLocale')
+const locale_menu_expanded = ref(false)
 
 const escape_menu = (event) => {
-  if (event.key == "Escape" || event.key == "Esc") {
-    menu_expanded.value = false
+  
+}
+
+if (process.client) {
+  document.addEventListener('keyup', (e) => {
+    if (e.key == "Escape" || e.key == "Esc") {
+    menu_expanded.value = !menu_expanded.value
+    locale_menu_expanded.value = false
   }
+})
+}
+
+if (process.client) {
+  document.addEventListener('click', (e) => {
+    console.log(e)
+    if (false && e.target.id != 'locale_button') {
+      locale_menu_expanded.value = !locale_menu_expanded.value
+    }
+    //menu_expanded.value = false
+    
+  
+})
 }
 
 const change_lang = (lang) => {
   i18n.locale.value = lang
   locale_cookie.value = lang
+  locale_menu_expanded.value = false
   return navigateTo(localizeUrl(route.fullPath, lang))
 }
 
