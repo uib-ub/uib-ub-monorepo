@@ -1,10 +1,10 @@
 <template>
-      <div @blur="expanded=false">
+      <div @blur="expanded=false" class="float-right">
         <button ref="toggle_ref" aria-controls="locale_select" @click="expanded = !expanded">
           <slot  name="button" :expanded="expanded"/>
         </button>
         <div >
-        <div :id="id"  v-bind:class="{hidden: !expanded}">
+        <div :id="id" class="flex" v-bind:class="{hidden: !expanded}">
           <slot/>
         </div>
       </div>

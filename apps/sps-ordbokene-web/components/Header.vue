@@ -19,7 +19,7 @@
 </div>
       </div>
     <div id="main_menu" class="lg:flex lg:ml-auto text-center nav-buttons flex-wrap lg:flex-row content-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
-      <nav class="lg:mr-4">
+      <nav class="lg:mr-4 self-center">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
           <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
@@ -38,12 +38,12 @@
       </ul>
     </nav>
     
-      <LinkDropdown id="locale_menu" class="lg:flex lg:ml-auto  pl-8 mr-1 mt-2 lg:mt-0">
+      <LinkDropdown id="locale_menu" class="p-6 md:ml-4 self-center">
       <template v-slot:button="{ expanded }">
          <Icon name="bi:globe" size="1.25em" class="pointer-events-none"/><Icon :name="expanded? 'bi:chevron-up' : 'bi:chevron-down'" size="1.25em" class="ml-2 pointer-events-none"/>
       </template>
-      <div class="relative z-50">
-      <nav  :aria-label="$t('settings.locale.title')" class="absolute right-0 top-10 bg-white text-black py-5 px-6 shadow-md border-1 border-primary rounded">
+      <div class="relative inline-block z-50">
+      <nav  :aria-label="$t('settings.locale.title')" class="absolute right-0 top-0 bg-white text-black py-5 px-6 shadow-md border-1 border-primary rounded">
           <ul class="flex flex-col gap-5">
             <li v-for="item in localeConfig"
                 :key="item.locale">
