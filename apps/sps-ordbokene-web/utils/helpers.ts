@@ -1,8 +1,8 @@
 export const localeConfig = [
-  {lang: 'en', locale: 'eng', name: 'English', icon: 'emojione-monotone:flag-for-united-kingdom'},
-  {lang: 'nn', locale: 'nno', name: 'Nynorsk', icon: 'emojione-monotone:flag-for-norway'},
-  {lang: 'nb', locale: 'nob', name: 'Bokmål', icon:'emojione-monotone:flag-for-norway'},
-  {lang: 'uk', locale: 'ukr', name: 'Українська', icon: 'emojione-monotone:flag-for-ukraine'}
+  {lang: 'en', locale: 'eng', label: 'English', icon: 'circle-flags:en'},
+  {lang: 'nn', locale: 'nno', label: 'Nynorsk', icon: 'circle-flags:no'},
+  {lang: 'nb', locale: 'nob', label: 'Bokmål', icon:'circle-flags:no'},
+  {lang: 'uk', locale: 'ukr', label: 'Українська', icon: 'circle-flags:ua'}
 ]
 
 export const lang2locale = Object.fromEntries(localeConfig.map(item => [item.lang, item.locale]))
