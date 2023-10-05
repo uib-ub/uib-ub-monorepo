@@ -37,29 +37,27 @@
 
       </ul>
     </nav>
-    
-      <LinkDropdown id="locale_menu" class="p-6 self-center">
-      <template v-slot:button="{ expanded }">
-         <Icon name="bi:globe" size="1.25em" class="pointer-events-none"/><Icon :name="expanded? 'bi:chevron-up' : 'bi:chevron-down'" size="1.25em" class="ml-2 pointer-events-none"/>
-      </template>
-      <div class="relative inline-block z-50">
-      <nav  :aria-label="$t('settings.locale.title')" class="absolute right-0 top-0 bg-white text-black py-5 px-6 shadow-md border-1 border-primary rounded">
-          <ul class="flex flex-col gap-5">
-            <li v-for="item in localeConfig"
-                :key="item.locale">
-              <NuxtLink class="flex" 
-                        :lang="item.lang" 
-                        :to="localizeUrl($route.fullPath, item.locale)" 
-                        @click="change_locale(item.locale)">
-                        <Icon :name="item.icon" size="1.25em" class="mr-2 text-gray-900"/> {{item.name}} 
+          
+      <div class="">
+      <button type="button" label="Toggle" @click="locale_menu.toggle" aria-haspopup="true" aria-controls="locale_menu">
+        <Icon name="bi:globe" size="1.25em"/>
+      </button>
+      <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true">
+            <template #item="{ item, props }">
+                <NuxtLink v-slot="routerProps" :to="item.route">
+                  <a :href="routerProps.href"
+                          v-bind="props.action"
+                          :lang="item.lang">
+                        <Icon :name="item.icon" size="1.25em" class="mr-2 text-gray-900"/> {{item.label}} 
                         <Icon v-if="$i18n.locale==item.locale" name="bi:check2" size="1.5em" class="ml-2"/>
-              </NuxtLink>
-            </li>
-          </ul>
-        </nav>
+                      </a>
+   
+                </NuxtLink>
+            </template>
+        </Menu>
       </div>
-      </LinkDropdown>
-      
+
+
     </div>
     
   </header>
@@ -77,6 +75,23 @@ const i18n = useI18n()
 const menu_expanded = ref(false)
 const locale_cookie = useCookie('currentLocale')
 
+const change_locale = (lang) => {
+  i18n.locale.value = lang
+  locale_cookie.value = lang
+  return navigateTo(localizeUrl(route.fullPath, lang))
+}
+
+const locale_menu = ref();
+const locales = ref([
+  {
+        label: i18n.t('settings.locale.title'),
+        items: localeConfig.map(item => { return {route: localizeUrl(route.fullPath, item.locale), 
+                                                  command: () => {change_locale(item.locale)}, 
+                                                  ...item}})
+    },
+]);
+
+
 if (process.client) {
   document.addEventListener('keyup', (e) => {
     if (e.key == "Escape" || e.key == "Esc") {
@@ -85,11 +100,7 @@ if (process.client) {
 })
 }
 
-const change_locale = (lang) => {
-  i18n.locale.value = lang
-  locale_cookie.value = lang
-  //return navigateTo(localizeUrl(route.fullPath, lang))
-}
+
 
 </script>
 
