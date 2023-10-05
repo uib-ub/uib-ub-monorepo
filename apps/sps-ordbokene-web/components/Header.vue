@@ -44,15 +44,13 @@
       </button>
       <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true">
             <template #item="{ item, props }">
-                <NuxtLink v-slot="routerProps" :to="item.route">
-                  <a :href="routerProps.href"
+                  <a      :href="item.route"
+                          @click.prevent="change_locale(item.locale)"
                           v-bind="props.action"
                           :lang="item.lang">
                         <Icon :name="item.icon" size="1.25em" class="mr-2 text-gray-900"/> {{item.label}} 
                         <Icon v-if="$i18n.locale==item.locale" name="bi:check2" size="1.5em" class="ml-2"/>
-                      </a>
-   
-                </NuxtLink>
+                  </a>
             </template>
         </Menu>
       </div>
