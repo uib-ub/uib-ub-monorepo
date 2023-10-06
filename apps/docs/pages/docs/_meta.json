@@ -3,6 +3,8 @@
   "monorepo": "Monorepo",
   "platform": "Platform",
   "apis": "APIs",
+  "toolkit": "Toolkit",
+  "troubleshooting": "Troubleshooting",
   "apps": "Apps",
   "data": "Data"
 }
