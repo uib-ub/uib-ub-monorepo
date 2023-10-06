@@ -1,14 +1,13 @@
 {
   "global": {
     "language": "Språk | språk",
-    "termbase": "Termbase | termbase | Termbasar  | termbaser",
+    "termbase": "Termbase | termbase | Termbasar  | termbasar",
     "skipLink": "Gå til hovudinnhald",
     "collaborators": "Samarbeidspartnarane våre",
     "readMore": "Les meir...",
     "readLess": "Les mindre...",
     "domain": {
       "domain": "Domene | domene",
-      "all": "Alle domene",
       "DOMENE-3AHumaniora": "Humaniora",
       "DOMENE-3ANaturvitenskapTeknologi": "Naturvitskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
