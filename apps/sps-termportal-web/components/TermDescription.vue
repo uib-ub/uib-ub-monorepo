@@ -46,7 +46,7 @@
         <dd class="max-w-prose" v-html="d.subject[0]" />
       </TermProp>
       <TermProp
-        v-if="d?.['skosp:dctSource'] || d.source"
+        v-if="d?.['skosp:dctSource'] || d.source?.label"
         :label="$t('id.referanse')"
       >
         <dd
