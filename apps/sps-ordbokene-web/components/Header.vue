@@ -18,7 +18,7 @@
       </button>
 </div>
       </div>
-    <div id="main_menu" class="lg:flex lg:ml-auto text-center nav-buttons flex-wrap lg:flex-row content-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
+    <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
       <nav class="lg:mr-4 self-center">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
@@ -38,9 +38,14 @@
       </ul>
     </nav>
           
-      <div class="">
-      <button type="button" label="Toggle" @click="locale_menu.toggle" aria-haspopup="true" aria-controls="locale_menu">
-        <Icon name="bi:globe" size="1.25em"/>
+      <div class="self-center">
+      <button class="ml-8 text-center" type="button" @click="locale_menu.toggle" aria-haspopup="true" aria-controls="locale_menu">
+        <div class="relative">
+        <div class="absolute text-xs right-2 top-3 bg-primary rounded px-1">{{locale2lang[$i18n.locale].toUpperCase()}}</div> </div><Icon name="bi:globe" size="1.5em"/>
+        <div id="locale-label" class="sr-only">
+          <div lang="no">Nettsidespråk</div>
+          <div v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</div>
+        </div>
       </button>
       <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true">
             <template #item="{ item, props }">

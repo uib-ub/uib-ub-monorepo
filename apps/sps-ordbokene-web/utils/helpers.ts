@@ -1,11 +1,12 @@
 export const localeConfig = [
-  {lang: 'en', locale: 'eng', label: 'English', icon: 'circle-flags:en'},
+  {lang: 'en', locale: 'eng', label: 'English', icon: 'circle-flags:en', button: 'Display language'},
   {lang: 'nn', locale: 'nno', label: 'Nynorsk', icon: 'circle-flags:no'},
   {lang: 'nb', locale: 'nob', label: 'Bokmål', icon:'circle-flags:no'},
-  {lang: 'uk', locale: 'ukr', label: 'Українська', icon: 'circle-flags:ua'}
+  {lang: 'uk', locale: 'ukr', label: 'Українська', icon: 'circle-flags:ua', button: 'Мова'},
 ]
 
 export const lang2locale = Object.fromEntries(localeConfig.map(item => [item.lang, item.locale]))
+export const locale2lang = Object.fromEntries(localeConfig.map(item => [item.locale, item.lang]))
 
 
 export const localizeUrl = (url, locale) => {
