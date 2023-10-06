@@ -26,23 +26,23 @@
                 <th v-if="hasSing"
                     id="SingInd"
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
-                  {{tagToName('Ind')}} form
+                  {{tagToName('Ind')}} {{tagToName('Form')}}
                 </th>
                 <th v-if="hasSing"
                     id="SingDef"
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
-                  {{tagToName('Def')}} form
+                  {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
                 <th class="infl-label sub label-border-bottom"
                     id="PlurInd"
                     scope="col" :class="mq">
-                  {{tagToName('Ind')}} form
+                  {{tagToName('Ind')}} {{tagToName('Form')}}
                 </th>
                 <th v-if="hasDef"
                     class="infl-label sub label-border-bottom"
                     id="PlurDef"
                     scope="col" :class="mq">
-                  {{tagToName('Def')}} form
+                  {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
               </tr>
             </thead>
@@ -138,7 +138,7 @@
                 <th v-if="(j<0 || j==3) && hasPerfPartDef"
                     id="Def"
                     scope="col"
-                    class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Def')}} form</th>
+                    class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Def')}} {{tagToName('Form')}}</th>
                 <th v-if="(j<0 || j==4) && hasPerfPartDef"
                     id="Plur"
                     scope="col"
@@ -242,7 +242,7 @@
                   id="Def"
                   scope="col"
                  :class="mq">
-                {{tagToName('Def')}} form
+                {{tagToName('Def')}} {{tagToName('Form')}}
               </th>
             </tr>
           </thead>
@@ -280,12 +280,12 @@
               <th id="SupInd"
                   scope="col"
                   class="infl-label label-border-bottom">
-                {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Ind')}} form</span>
+                {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Ind')}} {{tagToName('Form')}}</span>
               </th>
               <th id="SupDef"
                   scope="col"
                   class="infl-label label-border-bottom">
-                {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Def')}} form</span>
+                {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Def')}} {{tagToName('Form')}}</span>
               </th>
             </tr>
           </thead>
@@ -470,7 +470,7 @@
               <th class="infl-label sub label-border-bottom" :class="mq" v-if="hasDef"
                   id="Def"
                   scope="col">
-                {{tagToName('Def')}} form
+                {{tagToName('Def')}} {{tagToName('Form')}}
               </th>
             </tr>
           </thead>
