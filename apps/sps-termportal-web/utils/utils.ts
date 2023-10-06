@@ -62,7 +62,7 @@ export function getConceptDisplaytitle(concept): string | null {
     for (const label of ["prefLabel", "altLabel"]) {
       if (concept?.[label]) {
         if (concept?.[label][lang]) {
-          title = concept[label][lang]?.[0]?.literalForm["@value"];
+          title = concept[label][lang]?.[0]?.["@value"];
           break;
         }
       }

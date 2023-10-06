@@ -109,11 +109,11 @@ const mainValue = (data) => {
     case "definition":
       return data?.label["@value"];
     case "prefLabel":
-      return data?.literalForm["@value"];
+      return data?.["@value"];
     case "altLabel":
-      return data?.literalForm["@value"];
+      return data?.["@value"];
     case "hiddenLabel":
-      return data?.literalForm["@value"];
+      return data?.["@value"];
     case "context":
       return data?.label["@value"];
     case "link":

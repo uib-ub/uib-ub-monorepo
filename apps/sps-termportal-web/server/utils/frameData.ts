@@ -23,7 +23,7 @@ export default function (
       dcat: "http://www.w3.org/ns/dcat#",
       xsd: "http://www.w3.org/2001/XMLSchema#",
       vcard: "http://www.w3.org/2006/vcard/ns#",
-      literalForm: { "@id": "skosxl:literalForm" },
+      literalForm: { "@id": "skosxl:literalForm", "@container": "@set" },
       label: "rdfs:label",
       modified: "dct:modified",
       identifier: "dct:identifier",
