@@ -92,25 +92,29 @@ function updateLabel2(data: any, conceptUri: string, labelType: string) {
       labelType === "hasUsage"
     ) {
       language = label.label["@language"];
+      addLabel(newLabels, label, language);
     } else if (labelType === "description") {
       // TODO deprecated?
       language = label["@language"];
+      addLabel(newLabels, label, language);
     } else {
-      language = label.literalForm["@language"];
-      if (!validateLabel(label)) {
-        break;
+      for (const lf of label.literalForm) {
+        addLabel(newLabels, lf, lf["@language"]);
       }
-    }
-    try {
-      // key already exists
-      newLabels[language].push(label);
-    } catch (e) {
-      // key doesn't exist
-      newLabels[language] = [];
-      newLabels[language].push(label);
     }
   }
   return newLabels;
+}
+
+function addLabel(newLabels, label: string, language: string) {
+  try {
+    // key already exists
+    newLabels[language].push(label);
+  } catch (e) {
+    // key doesn't exist
+    newLabels[language] = [];
+    newLabels[language].push(label);
+  }
 }
 
 /**
