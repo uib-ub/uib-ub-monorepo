@@ -117,3 +117,69 @@ This API serves data from <a href="https://marcus.uib.no">Marcus</a> and <a href
     </tr>
   </tbody>
 </table>}
+
+## Items
+
+```
+https://api-ub.vercel.app/items/ubb-ms-0003
+```
+
+<a href="/items/ubb-ms-0003" target={'_blank'} rel='noreferrer'>/items&#123;id&#125; (ubb-ms-0003 as example)</a>
+
+### Manifest
+
+```json
+https://api-ub.vercel.app/items/ubb-ms-0003?as=iiif
+https://api-ub.vercel.app/items/ubb-ms-0003/manifest
+```
+ 
+ <a href="/items/ubb-ms-0003?as=iiif" target={'_blank'} rel='noreferrer'>/items/&#123;id&#125;?as=iiif (ubb-ms-0003 as example)</a>
+
+### RDF Object (defaults to JSON-LD)
+```json
+https://api-ub.vercel.app/items/ubb-ms-0003?as=rdf
+```
+
+<a href="/items/ubb-ms-0003?as=rdf" target={'_blank'} rel='noreferrer'>/items/&#123;id&#125;?as=rdf (ubb-ms-0003 as example)</a>. Default response format is JSON-LD, equalt to <code>&format=json</code>.
+
+### RDF Object as turtle
+
+```json
+https://api-ub.vercel.app/items/ubb-ms-0003?as=rdf&format=turtle
+```
+
+<a href="/items/ubb-ms-0003?as=rdf&format=turtle" target={'_blank'} rel='noreferrer'>/items/&#123;id&#125;?as=rdf&format=turtle (ubb-ms-0003 as example)</a>.
+
+### RDF Object as XML
+
+```json
+https://api-ub.vercel.app/items/ubb-ms-0003?as=rdf&format=xml
+```
+  
+<a href="/items/ubb-ms-0003?as=rdf&format=xml" target={'_blank'} rel='noreferrer'>/items/&#123;id&#125;?as=rdf&format=xml (ubb-ms-0003 as example)</a>.
+
+## Events
+
+```json
+https://api-ub.vercel.app/events
+https://api-ub.vercel.app/events/06432057-3664-4600-b1e7-4a752413ddc7
+```
+  
+## IIIF Collection Manifest
+
+```json
+https://api-ub.vercel.app/collections
+https://api-ub.vercel.app/collections/billedsamlingen
+https://api-ub.vercel.app/collections/search?id=ubb-kk-
+https://api-ub.vercel.app/collections/search?id=ubb-kk-&page=2 
+```
+  
+<a href="/collections" target={'_blank'} rel='noreferrer'>/collections</a>
+
+## Actors
+
+```json
+https://api-ub.vercel.app/actors
+https://api-ub.vercel.app/actors/03f5c6c6-ce72-41b2-9797-034658c7950c
+```
+  

@@ -242,16 +242,43 @@ SELECT DISTINCT
   (GROUP_CONCAT(DISTINCT ?prefLabelEn0;separator="||") AS ?labelEn)
   (GROUP_CONCAT(DISTINCT ?firstName0;separator="||") AS ?firstName)
   (GROUP_CONCAT(DISTINCT ?familyName0;separator="||") AS ?familyName)
-
+  (GROUP_CONCAT(DISTINCT ?birth;separator="||") AS ?birthDate)
+  (GROUP_CONCAT(DISTINCT ?death;separator="||") AS ?deathDate)
+  (GROUP_CONCAT(DISTINCT ?profession0;separator="||") AS ?profession)
   (GROUP_CONCAT(DISTINCT ?schemaName0;separator="||") AS ?schemaName)
   (GROUP_CONCAT(DISTINCT ?match0;separator="||") AS ?match)
   ?existsBroader
   ?existsNarrower
-  ?available
-  ?modified
+  (GROUP_CONCAT(DISTINCT ?available0;separator="||") AS ?available)
+  (GROUP_CONCAT(DISTINCT ?modified0;separator="||") AS ?modified)
   ?source
-WHERE {{
-  VALUES ?class { skos:Concept foaf:Person ubbont:Building schema:Country <http://vocab.lenka.no/geo-deling#Fylke> lexvo:Language ubbont:Parish ubbont:PhotographicTechnique ubbont:Publisher ubbont:Ship geo:SpatialThing ubbont:Technique ubbont:Vessel }
+WHERE {
+  VALUES ?class {
+    <http://purl.org/NET/c4dm/event.owl#Event>
+    <http://data.ub.uib.no/ontology/Cataloguer>
+    <http://dbpedia.org/ontology/Company>
+    <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing>
+    <http://data.ub.uib.no/ontology/Ship>
+    <http://xmlns.com/foaf/0.1/Person>
+    <http://schema.org/Country>
+    <http://lexvo.org/ontology#Language>
+    <http://data.ub.uib.no/ontology/PhotographicTechnique>
+    <http://xmlns.com/foaf/0.1/Organization>
+    <http://data.ub.uib.no/ontology/Vessel>
+    <http://vocab.lenka.no/geo-deling#Grunneiendom>
+    <http://data.ub.uib.no/ontology/Family>
+    <http://data.ub.uib.no/ontology/Location>
+    <http://www.w3.org/2003/01/geo/wgs84_pos#Point>
+    <http://data.ub.uib.no/ontology/Technique>
+    <http://vocab.lenka.no/geo-deling#Kommune>
+    <http://data.ub.uib.no/ontology/Building>
+    <http://vocab.lenka.no/geo-deling#Fylke>
+    <http://data.ub.uib.no/ontology/Publisher>
+    <http://www.w3.org/2004/02/skos/core#Concept>
+    <http://data.ub.uib.no/ontology/Parish>
+    ubbont:Monument
+  }
+  {
   ?id a ?class .
   OPTIONAL {
     ?id skos:prefLabel|foaf:name|rdfs:label ?prefLabelNo0 .
@@ -269,11 +296,14 @@ WHERE {{
   	?inScheme skos:prefLabel ?csClass .
     BIND(str(?csClass) AS ?schemaName0)
   }
+  OPTIONAL {?id dbo:birthDate ?birth }
+  OPTIONAL {?id dbo:deathDate ?death }
+  OPTIONAL {?id dbo:profession ?profession0 }
   OPTIONAL { ?id foaf:page/ubbont:hasURI ?match0 }
-  OPTIONAL { ?id dct:available ?available . }
-  OPTIONAL { ?id dct:modified ?modified . }
-  ?class rdfs:label ?classLabel .
-  FILTER(STRLEN(?classLabel) != 0)
+  OPTIONAL { ?id dct:available ?available0 . }
+  OPTIONAL { ?id dct:modified ?modified0 . }
+  OPTIONAL { ?class rdfs:label ?classLabel . }
+  #FILTER(STRLEN(?classLabel) != 0)
   FILTER(langMatches(lang(?classLabel), "en"))
   BIND(EXISTS { ?id skos:broader ?broader } as ?existsBroader)
   BIND(EXISTS { ?id skos:narrower ?narrower } as ?existsNarrower)
@@ -282,7 +312,6 @@ WHERE {{
   BIND(iri(?url0) as ?url)
 } UNION {
   SERVICE <https://sparql.ub.uib.no/skeivtarkiv/query> {
-    VALUES ?class { skos:Concept foaf:Person ubbont:Building schema:Country <http://vocab.lenka.no/geo-deling#Fylke> lexvo:Language ubbont:Parish ubbont:PhotographicTechnique ubbont:Publisher ubbont:Ship geo:SpatialThing ubbont:Technique ubbont:Vessel }
     ?id a ?class .
     OPTIONAL {
       ?id skos:prefLabel|foaf:name|rdfs:label ?prefLabelNo0 .
@@ -300,11 +329,14 @@ WHERE {{
       ?inScheme skos:prefLabel ?csClass .
       BIND(str(?csClass) AS ?schemaName0)
     }
-    OPTIONAL { ?id foaf:page/ubbont:hasURI ?match0 }
-    OPTIONAL { ?id dct:available ?available . }
-    OPTIONAL { ?id dct:modified ?modified . }
-    ?class rdfs:label ?classLabel .
-    FILTER(STRLEN(?classLabel) != 0)
+    OPTIONAL {?id dbo:birthDate ?birth }
+    OPTIONAL {?id dbo:deathDate ?death }
+    OPTIONAL {?id dbo:profession ?profession0 }
+    OPTIONAL { ?id foaf:page/ubbont:hasURI|ubbont:kulturnavId ?match0 }
+    OPTIONAL { ?id dct:available ?available0 . }
+    OPTIONAL { ?id dct:modified ?modified0 . }
+    OPTIONAL { ?class rdfs:label ?classLabel . }
+    #FILTER(STRLEN(?classLabel) != 0)
     FILTER(langMatches(lang(?classLabel), "en"))
     BIND(EXISTS { ?id skos:broader ?broader } as ?existsBroader)
     BIND(EXISTS { ?id skos:narrower ?narrower } as ?existsNarrower)
