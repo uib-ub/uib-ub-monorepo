@@ -175,6 +175,19 @@
             "description": ["Søkjet ditt ga ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
           }
     },
+    "table": {
+        "caption":{
+          "NOUN": "Bøyningstabell for dette substantivet",
+          "VERB": "Bøyningstabell for dette verbet",
+          "VERBPP": "Bøyningstabell for dette verbet (partisippformer)",
+          "ADJ": "Bøyningstabell for dette adjektivet",
+          "ADJCS": "Bøyningstabell for dette adjektivet (gradbøyning)",
+          "ADV": "Bøyningstabell for dette adverbet",
+          "DET": "Bøyningstabell for dette determinativet",
+          "PRON": "Bøyningstabell for dette pronomenet"
+        }
+        
+        },
     "article": {
         "definition": "Definisjon",
         "show": "Opne artikkel",

@@ -173,6 +173,20 @@
     }
     
 },
+"table": {
+"caption":{
+  "NOUN": "Inflection table for this noun",
+  "VERB": "Inflection table for this verb",
+  "VERBPP": "Inflection table for the participles of this verb",
+  "ADJ": "Inflection table for this adjective",
+  "ADJCS": "Inflection table for this adjective (comparative, superlative)",
+  "ADV": "Inflection table for this adverb",
+  "DET": "Inflection table for this determinative",
+  "PRON": "Inflection table for this pronoun"
+}
+
+},
+
 "article": {
     "definition": "Definition",
     "show": "Open article",
