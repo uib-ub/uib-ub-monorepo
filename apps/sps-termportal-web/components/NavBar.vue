@@ -41,7 +41,7 @@
                 'global.lang.' + locale
               )}`"
               aria-haspopup="true"
-              aria-controls="overlayLangMenu"
+              aria-controls="langMenu"
               @click="langMenu.toggle"
             >
               <div class="relative">
@@ -62,11 +62,38 @@
               </div>
             </button>
             <Menu
-              id="overlayLangMenu"
+              id="langMenu"
               ref="langMenu"
               :model="langOptions"
               :popup="true"
-            />
+            >
+              <template #start>
+                <div class="px-3 pb-3 pt-1 font-semibold">
+                  {{ $t("navBar.language") }}
+                </div>
+              </template>
+              <template #item="{ item, props }">
+                <a
+                  class="p-menuitem-link"
+                  v-bind="props.action"
+                  :aria-current="locale === item.label"
+                >
+                  <div class="p-menuitem-text space-x-2">
+                    <span class="">
+                      {{ $t("global.lang." + item.label) }}
+                    </span>
+                    <span aria-hidden="true">
+                      <Icon
+                        v-if="locale === item.label"
+                        class="-mt-1.5"
+                        name="mdi:check"
+                        size="1.3em"
+                      />
+                    </span>
+                  </div>
+                </a>
+              </template>
+            </Menu>
           </div>
           <div>
             <button
@@ -78,15 +105,18 @@
               {{ $t("global.termbase", 2) }}
             </button>
             <Menu
-              id="overlayTermbaseMenu"
+              id="termbaseMenu"
               ref="termbaseMenu"
               :model="termbaseOptions"
               :popup="true"
             >
-              <template #item="{ item }">
-                <NuxtLink class="p-menuitem-link" :href="item.route"
+              <template #item="{ item, props }">
+                <NuxtLink
+                  class="p-menuitem-link"
+                  :href="item.route"
+                  v-bind="props.action"
                   ><span class="p-menuitem-text">
-                    {{ item.label }}
+                    {{ lalo[locale][item.label] }}
                   </span>
                 </NuxtLink>
               </template>
@@ -119,7 +149,39 @@
         >
           <Icon name="tabler:menu-2" aria-hidden="true" size="2em" />
         </button>
-        <Menu id="overlayMenu" ref="menu" :model="menuOptions" :popup="true" />
+        <Menu id="overlayMenu" ref="menu" :model="menuOptions" :popup="true">
+          <template #item="{ item, props }">
+            <NuxtLink
+              v-if="item.to"
+              class="p-menuitem-link"
+              :to="item.to"
+              v-bind="props.action"
+              ><span class="p-menuitem-text">
+                {{ item.label }}
+              </span>
+            </NuxtLink>
+            <a
+              v-else
+              class="p-menuitem-link"
+              v-bind="props.action"
+              :aria-current="locale === item.label"
+            >
+              <div class="p-menuitem-text space-x-2">
+                <span class="">
+                  {{ $t("global.lang." + item.label) }}
+                </span>
+                <span aria-hidden="true">
+                  <Icon
+                    v-if="locale === item.label"
+                    class="-mt-1.5"
+                    name="mdi:check"
+                    size="1.3em"
+                  />
+                </span>
+              </div>
+            </a>
+          </template>
+        </Menu>
       </div>
     </div>
   </nav>
@@ -130,10 +192,20 @@ import { useI18n } from "vue-i18n";
 
 const i18n = useI18n();
 const locale = useLocale();
+const locales = useLocales();
 const lalo = useLazyLocales();
 const navMenuExpanded = useNavMenuExpanded();
 const navBar = ref<HTMLElement | null>(null);
 const navPageLinks = ref<HTMLElement | null>(null);
+
+const getLangOptions = () => {
+  return locales.map((loc) => ({
+    label: loc,
+    command: () => {
+      i18n.locale.value = loc;
+    },
+  }));
+};
 
 const menu = ref();
 const menuOptions = computed(() => [
@@ -147,67 +219,26 @@ const menuOptions = computed(() => [
   },
   {
     label: `${i18n.t("navBar.language")}`,
-    items: [
-      {
-        label: `${i18n.t("global.lang.nb")}`,
-        command: () => {
-          i18n.locale.value = "nb";
-        },
-      },
-      {
-        label: `${i18n.t("global.lang.nn")}`,
-        command: () => {
-          i18n.locale.value = "nn";
-        },
-      },
-      {
-        label: `${i18n.t("global.lang.en")}`,
-        command: () => {
-          i18n.locale.value = "en";
-        },
-      },
-    ],
+    items: getLangOptions(),
   },
 ]);
 
 const langMenu = ref();
-const langOptions = computed(() => [
-  {
-    label: `${i18n.t("navBar.language")}`,
-    items: [
-      {
-        label: `${i18n.t("global.lang.nb")}`,
-        command: () => {
-          i18n.locale.value = "nb";
-        },
-      },
-      {
-        label: `${i18n.t("global.lang.nn")}`,
-        command: () => {
-          i18n.locale.value = "nn";
-        },
-      },
-      {
-        label: `${i18n.t("global.lang.en")}`,
-        command: () => {
-          i18n.locale.value = "en";
-        },
-      },
-    ],
-  },
-]);
+const langOptions = ref(getLangOptions());
 
 const termbaseMenu = ref();
 const termbaseOptions = computed(() =>
   termbaseOrder.map((tb) => {
-    const key = `${tb}-3A${tb}`;
-    return { label: `${lalo.value[locale.value][key]}`, route: `/${tb}` };
+    return {
+      label: `${tb}-3A${tb}`,
+      route: `/${tb}`,
+    };
   })
 );
 
 defineExpose({ navBar });
 
-const props = defineProps({
+const defProps = defineProps({
   context: { type: String, required: true },
 });
 

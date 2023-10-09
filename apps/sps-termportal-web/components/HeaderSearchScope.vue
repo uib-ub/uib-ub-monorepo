@@ -7,7 +7,7 @@
       >
         <div class="min-w-[5rem]">
           <span v-if="searchInterface.useDomain">{{
-            $t("global.domain.domain", 0)
+            $t("global.domain.domain", 1)
           }}</span>
           <span v-else>{{ $t("global.termbase", 0) }}</span>
         </div>
