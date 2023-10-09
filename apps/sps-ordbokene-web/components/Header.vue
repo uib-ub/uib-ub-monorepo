@@ -38,8 +38,8 @@
       </ul>
     </nav>
           
-      <div class="self-center">
-      <button class="ml-8 text-center" type="button" @click="locale_menu.toggle" aria-haspopup="true" aria-controls="locale_menu">
+      <div class="flex self-center justify-end lg:justify-center pr-4 pb-4 lg:p-0">
+      <button class="ml-8" type="button" @click="locale_menu.toggle" aria-haspopup="true" aria-controls="locale_menu">
         <div class="relative">
         <div class="absolute text-xs right-2 top-3 bg-primary rounded px-1">{{locale2lang[$i18n.locale].toUpperCase()}}</div> </div><Icon name="bi:globe" size="1.5em"/>
         <div id="locale-label" class="sr-only">
