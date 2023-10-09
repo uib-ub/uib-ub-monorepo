@@ -72,6 +72,8 @@
             tagToName: function (tag) {
                 return tagToName(tag, this.language)
             }
+
+
         }
     }
     </script>

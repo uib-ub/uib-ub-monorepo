@@ -7,9 +7,7 @@
            :class="mq">
         <div class="table-responsive">
           <table class="table" :class="mq">
-            <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette substantivet</caption>
-            <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette substantivet</caption>
-            <caption class="sr-only" v-else>Inflection table for this noun</caption>
+            <caption class="sr-only">{{$t('table.caption.NOUN')}}</caption>
             <thead>
               <tr>
                 <th class="infl-label sub label-border-top-left" :class="mq"
@@ -28,23 +26,23 @@
                 <th v-if="hasSing"
                     id="SingInd"
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
-                  {{tagToName('Ind')}} form
+                  {{tagToName('Ind')}} {{tagToName('Form')}}
                 </th>
                 <th v-if="hasSing"
                     id="SingDef"
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
-                  {{tagToName('Def')}} form
+                  {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
                 <th class="infl-label sub label-border-bottom"
                     id="PlurInd"
                     scope="col" :class="mq">
-                  {{tagToName('Ind')}} form
+                  {{tagToName('Ind')}} {{tagToName('Form')}}
                 </th>
                 <th v-if="hasDef"
                     class="infl-label sub label-border-bottom"
                     id="PlurDef"
                     scope="col" :class="mq">
-                  {{tagToName('Def')}} form
+                  {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
               </tr>
             </thead>
@@ -89,9 +87,7 @@
            class="infl-wordclass table-responsive" :class="mq">
       <div v-for="i in mq=='xs' ? [1,2] : [0]" :key="i" class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette verbet</caption>
-          <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette verbet</caption>
-          <caption class="sr-only" v-else>Inflection table for this verb</caption>
+          <caption class="sr-only">{{$t('table.caption.VERB')}}</caption>
           <thead>
             <tr>
               <th v-if="!i || i==1" class="infl-label label-border-top-left" :class="mq">{{tagToName('Inf')}}</th>
@@ -114,9 +110,7 @@
       </div>
       <div v-for="j in mq=='xs' ? [3,4] : [-1]" :key="j" class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette verbet (partisippformer)</caption>
-          <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette verbet (partisippformer)</caption>
-          <caption class="sr-only" v-else>Inflection table for the participles of this verb</caption>
+          <caption class="sr-only">{{$t('table.caption.VERBPP')}}</caption>
           <thead>
             <template v-if="hasPerfPart">
               <tr>
@@ -144,7 +138,7 @@
                 <th v-if="(j<0 || j==3) && hasPerfPartDef"
                     id="Def"
                     scope="col"
-                    class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Def')}} form</th>
+                    class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Def')}} {{tagToName('Form')}}</th>
                 <th v-if="(j<0 || j==4) && hasPerfPartDef"
                     id="Plur"
                     scope="col"
@@ -199,9 +193,7 @@
            :class="mq">
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette adjektivet</caption>
-          <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette adjektivet</caption>
-          <caption class="sr-only" v-else>Inflection table for this adjective</caption>
+          <caption class="sr-only">{{$t('table.caption.ADJ')}}</caption>
           <thead>
             <tr>
               <th v-if="hasSingAdj"
@@ -250,7 +242,7 @@
                   id="Def"
                   scope="col"
                  :class="mq">
-                {{tagToName('Def')}} form
+                {{tagToName('Def')}} {{tagToName('Form')}}
               </th>
             </tr>
           </thead>
@@ -268,9 +260,7 @@
       </div>
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette adjektivet (gradbøying)</caption>
-          <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette adjektivet (gradbøyning)</caption>
-          <caption class="sr-only" v-else>Inflection table for this adjective (comparative, superlative)</caption>
+          <caption class="sr-only">{{$t('table.caption.ADJCS')}}</caption>
           <thead>
             <tr>
               <th class="infl-label label-border-top-left-right"
@@ -290,12 +280,12 @@
               <th id="SupInd"
                   scope="col"
                   class="infl-label label-border-bottom">
-                {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Ind')}} form</span>
+                {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Ind')}} {{tagToName('Form')}}</span>
               </th>
               <th id="SupDef"
                   scope="col"
                   class="infl-label label-border-bottom">
-                {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Def')}} form</span>
+                {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Def')}} {{tagToName('Form')}}</span>
               </th>
             </tr>
           </thead>
@@ -336,9 +326,7 @@
            :class="mq">
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette adverbet</caption>
-          <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette adverbet</caption>
-          <caption class="sr-only" v-else>Inflection table for this adverb</caption>
+          <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
           <thead>
             <tr>
               <th class="infl-label label-border-bottom">
@@ -389,9 +377,7 @@
          :class="mq">
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette pronomenet</caption>
-          <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette pronomenet</caption>
-          <caption class="sr-only" v-else>Inflection table for this pronoun</caption>
+          <caption class="sr-only">{{$t('table.caption.PRON')}}</caption>
           <thead>
             <tr>
               <th v-if="hasNom" class="infl-label sub label-border-top-left">
@@ -446,9 +432,7 @@
          :class="mq">
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette determinativet</caption>
-          <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette determinativet</caption>
-          <caption class="sr-only" v-else>Inflection table for this determinative</caption>
+          <caption class="sr-only">{{$t('table.caption.DET')}}</caption>
           <thead>
             <tr>
               <th v-if="hasSing"
@@ -486,7 +470,7 @@
               <th class="infl-label sub label-border-bottom" :class="mq" v-if="hasDef"
                   id="Def"
                   scope="col">
-                {{tagToName('Def')}} form
+                {{tagToName('Def')}} {{tagToName('Form')}}
               </th>
             </tr>
           </thead>
@@ -529,9 +513,7 @@
     <div class="infl-wordclass table-responsive" :class="mq">
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only" v-if="language=='nob'">Bøyingstabell for dette adverbet</caption>
-          <caption class="sr-only" v-else-if="language=='nno'">Bøyningstabell for dette adverbet</caption>
-          <caption class="sr-only" v-else>Inflection table for this adverb</caption>
+          <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
           <thead>
             <tr>
               <th class="infl-label label-border">{{tagToName('Uninfl')}}</th>
@@ -609,7 +591,7 @@ export default {
                 },
     props: ['lemmaList','mq','context','eng'],
     data: function () {
-        return { language: this.eng ? 'eng' : (this.lemmaList ? this.lemmaList[0].language : null),
+        return { language: this.eng ? 'eng' : (this.ukr ? 'ukr' :  (this.lemmaList ? this.lemmaList[0].language : null)),
                  // initialLexeme: this.lemmaList ? this.lemmaList[0].initial_lexeme : null,
                  hasFem: this.hasInflForm(['Fem']),
                  hasNeuter: this.hasInflForm(['Neuter']),
