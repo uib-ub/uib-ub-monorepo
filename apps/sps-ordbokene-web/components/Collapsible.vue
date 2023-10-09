@@ -11,7 +11,7 @@
     
 
   
-        <div  :hidden="expanded ? null : 'until-found'" :id="id+ '-content'" class="expanding" v-bind:class="{'mb-8': expanded}">
+        <div  v-if="expanded" :id="id+ '-content'" class="expanding" v-bind:class="{'mb-8': expanded}">
       <slot></slot>
     </div>
     </div>
