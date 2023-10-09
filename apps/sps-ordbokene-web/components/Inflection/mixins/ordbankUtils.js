@@ -1,18 +1,21 @@
 
 // functions for calculating and merging inflection table cells
 
-export function calculateStandardParadigms (lemma,edit) {
+export function calculateStandardParadigms (lemma,edit,all) {
     if (lemma.paradigm_info) {
+        // console.log(lemma.paradigm_info)
         let paradigms = mergeParadigms(
             lemma.paradigm_info &&
                 lemma.paradigm_info.filter(paradigm =>
-                                           paradigm.standardisation=='STANDARD' &&
-                                           !paradigm.to && // we assume this is in the past if not null
+                                           (all || (paradigm.standardisation=='STANDARD' &&
+                                                    !paradigm.to)) && // we assume this is in the past if not null
                                            (!edit || !paradigm.exclude)
                                           ))
         paradigms.forEach(p => p.inflection.forEach(i => i.markdown_word_form ?
                                                     i.markdown_word_form = hyphenatedForm(i.markdown_word_form,lemma) :
                                                     i.word_form = hyphenatedForm(i.word_form,lemma)))
+        // console.log(paradigms.map(p=>p.standardisation))
+        // console.log(paradigms)
         return paradigms
     } else {
         return []
@@ -28,11 +31,12 @@ function appendWordForms(wf) {
 }
 
 function appendTwoWordForms (wf1, wf2) {
-    if (!wf1) {
-        return null
-    }
     let res
-    if (wf1 == wf2) {
+    if (!wf1) {
+        res = wf2
+    } else if (!wf2) {
+        res = wf1
+    } else if (wf1 == wf2) {
         res = wf1
     } else if (typeof wf1 == 'string') {
         if (typeof wf2 == 'string') {
@@ -52,10 +56,11 @@ function appendTwoWordForms (wf1, wf2) {
         let res = wf1.map(w => w)
         wf2.forEach(w => { if (!wf1.find(x => x == w)) { res.push(w) } })
     }
+    if (Array.isArray(res)) res = res.sort((a,b) => a.localeCompare(b))
     return res
 }
 
-// check if  infl has all tags in tagList
+// check if infl has all tags in tagList
 export function hasTags (infl, tagList) {
     let found = true
     tagList.forEach(tag => { if (!infl.tags.find(t => t == tag)) { found = false } })
@@ -83,68 +88,58 @@ export function word_formsEqual (s1, s2, tags1, tags2, checkTags) {
 }
 
 // false if equal
-function mergeCells(infl1, infl2, tagList) {
-    let wf1 = null, wf2 = null, mwf1 = null, mwf2 = null
-    for (let i = 0; i < infl1.length; i++) {
-        let mf1 = infl1[i].markdown_word_form
-        let f1 = infl1[i].word_form
-        let mf2 = infl2[i].markdown_word_form
-        let f2 = infl2[i].word_form
-        if (hasTags(infl1[i], tagList)) {
-            if (!word_formsEqual(f1, f2)) {
-                wf1 = f1
-                wf2 = f2
-                mwf1 = mf1
-                mwf2 = mf2
-            }
-        } else if (!word_formsEqual(f1, f2)) { // difference in different tag list
-            return true
-        }
-    }
-    if (wf1) {
-        return [ appendTwoWordForms(wf1,wf2), mwf1 ? appendTwoWordForms(mwf1,mwf2) : null ]
+function mergeCells(infl1, infl2, tagList, exclTagList) {
+    if (!infl1.length || !infl2.length) {
+        return true
     } else {
-        return false
+        let wf1 = null, wf2 = null, mwf1 = null, mwf2 = null
+        for (let i = 0; i < infl1.length; i++) {
+            let mf1 = infl1[i].markdown_word_form
+            let f1 = infl1[i].word_form
+            let mf2 = infl2[i] && infl2[i].markdown_word_form
+            let f2 = infl2[i] && infl2[i].word_form
+            if (hasTags(infl1[i], tagList) && (!exclTagList || !hasTags(infl1[i], exclTagList))) {
+                if (!word_formsEqual(f1, f2)) {
+                    wf1 = f1
+                    wf2 = f2
+                    mwf1 = mf1
+                    mwf2 = mf2
+                }
+            } else if (!word_formsEqual(f1, f2)) { // difference in different tag list
+                return true
+            }
+        }
+        if (wf1) {
+            return [ appendTwoWordForms(wf1,wf2), mwf1 ? appendTwoWordForms(mwf1,mwf2) : null ]
+        } else {
+            return false
+        }
     }
 }
 
-function mergeParadigm(p, tagList, mergedCell) {
+function mergeParadigm (p, tagList, mergedCell, standardisation) {
+    // console.log(p)
     return { exclude: p.exclude,
              from: p.from,
              to: p.to,
+             standardisation: p.standardisation,
              tags: p.tags,
              inflection_group: p.inflection_group,
              inflection: p.inflection.map(infl => {
                  if (!hasTags(infl, tagList)) {
                      return infl
                  } else {
+                     console.log('infl.st: ' + infl.standardisation + ' st: ' + standardisation)
                      return { tags: infl.tags,
                               word_form: mergedCell[0],
                               markdown_word_form: mergedCell[1],
-                              rowspan: infl.rowspan
+                              rowspan: infl.rowspan,
+                              standardisation: infl.standardisation // : p.standardisation
                             }
                  }
              })
            }
 }
-
-// returns true if the paradigms are equal on tagLists
-// OBSOLETE?
-/*
-export function compareParadigms(p1, p2, tagLists) {
-    let equal = true
-    tagLists.map(tagList => {
-        let infl1 = p1.inflection.find(infl => hasTags(infl, tagList))
-        let infl2 = p2.inflection.find(infl => hasTags(infl, tagList))
-        if ((infl1 && !infl2) ||
-            (!infl1 && infl2) ||
-            (infl1 && infl2 && !word_formsEqual(infl1.word_form, infl2.word_form))) {
-            equal = false
-        }
-    })
-    return equal
-}
-*/
 
 function tagsEqual (tl1, tl2) {
     if (tl1.length != tl2.length) {
@@ -164,7 +159,7 @@ function normalizeInflection(paradigm) {
     let infl = paradigm.inflection
     if (paradigm.tags[0] == 'NOUN') { // add extra virtual tag _gender
         infl = [ { tags: ["_gender"],
-                   word_form: paradigm.tags[1] },
+                   word_form: paradigm.tags[1]}, //word_form: paradigm.tags[1] + 'Short' }, i-831
                  ... infl ]
     }
     let res = []
@@ -180,13 +175,15 @@ function normalizeInflection(paradigm) {
             res.push( { tags: tags,
                         word_form: infl[i].word_form,
                         markdown_word_form: infl[i].markdown_word_form,
-                        rowspan: 1
+                        rowspan: 1,
+                        standardisation: paradigm.standardisation
                       } )
         }
     }
     return { exclude: paradigm.exclude,
              from: paradigm.from,
              to: paradigm.to,
+             standardisation: paradigm.standardisation,
              tags: paradigm.tags,
              inflection: res,
              inflection_group: paradigm.inflection_group,
@@ -196,51 +193,80 @@ function normalizeInflection(paradigm) {
 // Iterate through tagList list and merge paradigms that are equal except on tagList,
 // merging their word forms into an array
 function mergeParadigms (paradigmInfo) {
-    paradigmInfo = paradigmInfo.map(paradigm => normalizeInflection(paradigm))
+    paradigmInfo = paradigmInfo.filter(p=> !p.code || p.code.charAt(0) != 'M') // remove Metaordbok paradigms
+        .map(p => normalizeInflection(p))
     let PI = []
-    let tagLists = [ ['Masc/Fem'],
-                     ['Fem'],
-                     ['Neuter'],
-                     ['Pos','Def','Sing'],
-                     ['Pos','Plur'],
-                     ['Pres'],
-                     ['Past'],
-                     ['Imp'],
-                     ['Inf'], // new
-                     ['Plur','Def'],
-                     ['Plur','Ind'],
-                     ['Acc']
+    let tagLists = [ [['Imp'], null],
+                     [['Masc/Fem'], null],
+                     [['Fem'], null],
+                     [['Neuter'], null],
+                     [['Pos','Def','Sing'], null],
+                     [['Pos','Plur'], null],
+                     [['Pres'], null],
+                     [['Past'], null],
+                     [['Inf'], ['Pass']],
+                     [['<PerfPart>', 'Plur'], null],
+                     [['<PresPart>'], null],
+                     [['Plur','Def'], null],
+                     [['Plur','Ind'], null],
+                     [['Acc'], null],
                    ]
     tagLists.map(tagList => {
         paradigmInfo.map(paradigm => {
             let found = false
             let mergedCell = null
             let mergeRow = null
-            PI.forEach((p,i) => {
-                let merged = mergeCells(p.inflection, paradigm.inflection, tagList)
+            let standardisation = null
+            // console.log(paradigm)
+            PI.forEach((p,i) => { // try to merge cells from p and paradigm corresponding to tagList
+                let merged = mergeCells(p.inflection, paradigm.inflection, tagList[0], tagList[1])
                 if (!merged) {
+                    console.log('equal:')
+                    console.log(paradigm)
+                    console.log(p)
+                    console.log(tagList[0] + ' ' + p.standardisation + ' ' + paradigm.standardisation)
+                    p.standardisation == 'STANDARD' || paradigm.standardisation == 'STANDARD' ?
+                        standardisation = 'STANDARD' : standardisation = 'NON-STANDARD'
+                    if (standardisation) {
+                        p.standardisation = standardisation
+                        // todo: has to be spread to inflection!
+                    }
                     found = true // equal one found
                 } else if (merged != true) { // merged cell
                     mergedCell = merged
+                    // console.log(mergedCell)
                     mergeRow = i
+                    // console.log(mergedCell)
+                    console.log(p.standardisation + ' ' + paradigm.standardisation)
+                    p.standardisation == 'STANDARD' || paradigm.standardisation == 'STANDARD' ?
+                        standardisation = 'STANDARD' : standardisation = 'NON-STANDARD'
                 }
             })
-            if (mergedCell) {
-                let p = mergeParadigm(paradigm, tagList, mergedCell)
+            if (mergedCell) { // replace cell by merged cell (by updating word form), update paradigm in PI
+                let p = mergeParadigm(paradigm, tagList[0], mergedCell, standardisation)
+                // console.log(p.standardisation + ' ' + PI[mergeRow].standardisation + ' ' + standardisation)
+                // p.standardisation = standardisation
                 PI[mergeRow] = p
             } else if (!found) {
+                // console.log('paradigm')
                 PI.push(paradigm)
+            } else {
+                null // 
             }
         })
         paradigmInfo = PI
         PI = []
     })
+    // console.log('res')
+    //console.log(paradigmInfo)
     return paradigmInfo
 }
 
 function inflectedForms (paradigm, tagList, exclTagList) {
     let inflection = paradigm.inflection.filter(
-        infl => { let found = infl.markdown_word_form || infl.word_form
+        infl => { let found = infl.markdown_word_form || infl.word_form || '-'
+                  // '-' necessary for non-standard display,
+                  // where PerfPart Fem is lacking in standard paradigms (e.g., ‘ete’)
                   tagList.forEach(tag => {
                       if (typeof tag == 'string') {
                           if (!infl.tags.find(t => t == tag)) {
@@ -260,23 +286,24 @@ function inflectedForms (paradigm, tagList, exclTagList) {
                 })
     return [ inflection[0] && inflection[0].rowspan,
              inflection[0] && inflection[0].index,
-             appendWordForms(inflection.map(i => i.markdown_word_form || i.word_form)),
-             inflection[0] && inflection[0].gender ]
+             appendWordForms(inflection.map(i => i.markdown_word_form || i.word_form || '-')),
+             inflection[0] && inflection[0].gender,
+             inflection[0] && inflection[0].standardisation ]
 }
 
 // Calculate inflection table cell. If cells are vertically merged rowspan is the number of cells merged.
 // noVerticalMerge is used for nouns
-// see inflectionTable.vue for vertical merging
+// see inflectionTable.vue for vertical merging and setting final rowspan
 export function inflectedForm (paradigm, tagList, exclTagList, noVerticalMerge) {
-    let [rowspan, index, forms, gender] = inflectedForms(paradigm,tagList,exclTagList)
+    let [rowspan, index, forms, gender, standardisation] = inflectedForms(paradigm,tagList,exclTagList)
     if (!rowspan && !noVerticalMerge) {
         return null
     } else if (!forms) {
-        return [ rowspan, index, [ '-' ] ]
+        return [ rowspan, index, [ '-' ], null, standardisation ]
     } else if (typeof forms == 'string') {
-        return [ rowspan, index, [ forms ], gender ]
+        return [ rowspan, index, [ forms ], gender, standardisation ]
     } else {
-        return [ rowspan, index, forms, gender ]
+        return [ rowspan, index, forms, gender, standardisation ]
     }
 }
 
@@ -443,8 +470,6 @@ const tagNames_ukr = { Form: "форма",
                        Uninfl: "незмінні"
                      }
 
-
-
 export function tagToName (tag, language) {
     switch (language) {
     case 'nob':
@@ -453,11 +478,9 @@ export function tagToName (tag, language) {
         return tagNames_nno[tag]
     case 'eng':
         return tagNames_eng[tag]
-        case 'ukr':
-            return tagNames_ukr[tag]
-        }
-    
-    
+    case 'ukr':
+        return tagNames_ukr[tag]
+    }
 }
 
 const posNames_nor = { NOUN: "substantiv",
@@ -505,8 +528,6 @@ const posNames_ukr = { NOUN: "іменник",
                        INFM: "інфінітивний маркер"
                      }
 
-
-
 export function posName (pos, language) {
     switch (language) {
     case 'nob':
@@ -516,7 +537,6 @@ export function posName (pos, language) {
         return posNames_eng[pos]
     case 'ukr':
         return posNames_ukr[pos]
-    
     }
 }
 
