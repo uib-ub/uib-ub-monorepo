@@ -38,6 +38,9 @@
         methods: {
             inflForm: function (tagList, headers) {
                 return [inflectedForm(this.paradigm, tagList), headers]
-            }    }
+            }
+        
+
+        }
     }
     </script>
