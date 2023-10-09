@@ -1,7 +1,7 @@
 <template>
 <header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-      <div class="flex flex-row content-center w-full lg:w-auto">
-  <NuxtLink class="navbar-brand" :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
+      <div class="flex flex-row content-center items-center w-full lg:w-auto">
+  <NuxtLink :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
       <div class="mx-1 md:my-1 lg:my-3 xl:my-4">
       <div><h1 class="text-2xl mt-0.5 mb-0.5">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
       <p class="hidden xl:block brand-subtitle ml-0.5 mb-1">{{$t("sub_title")}}</p>
@@ -10,7 +10,7 @@
       </NuxtLink>
       <div class="lg:hidden text-lg ml-auto flex align-center">
 
-      <button class="text-lg p-2 px-3 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
+      <button class="text-lg pb-2 pt-1 px-3 sm:px-4 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
               :aria-expanded="menu_expanded"
               :aria-controls="menu_expanded? 'main_menu' : null"
               @click="menu_expanded = !menu_expanded">
