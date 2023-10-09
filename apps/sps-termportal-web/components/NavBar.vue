@@ -238,7 +238,7 @@ const termbaseOptions = computed(() =>
 
 defineExpose({ navBar });
 
-const props = defineProps({
+const defProps = defineProps({
   context: { type: String, required: true },
 });
 
