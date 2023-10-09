@@ -18,7 +18,7 @@
       </button>
 </div>
       </div>
-    <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
+    <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center text-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
       <nav class="lg:mr-4 self-center">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
@@ -47,7 +47,11 @@
           <div v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</div>
         </div>
       </button>
-      <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true">
+      <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true"
+      :pt="{
+        root: 'md:mt-5 xl:mt-9',
+        menu: ''
+        }">
             <template #item="{ item, props }">
                   <a      :href="item.route"
                           @click.prevent="change_locale(item.locale)"
