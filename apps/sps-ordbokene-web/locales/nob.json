@@ -209,8 +209,6 @@
             "definitions": "Betydning og bruk",
             "examples": "Eksempel"
         },  
-        "updated": "Nylig oppdatert",
-        "added": "Nylig lagt til",
         "new": "Nytt i {dict}"
     },
     "error": {
