@@ -41,7 +41,7 @@
       <div class="flex self-center justify-end lg:justify-center pr-4 pb-4 lg:p-0">
       <button class="ml-8" type="button" @click="locale_menu.toggle" aria-haspopup="true" aria-controls="locale_menu">
         <div class="relative">
-        <div class="absolute text-xs right-2 top-3 bg-primary rounded px-1">{{locale2lang[$i18n.locale].toUpperCase()}}</div> </div><Icon name="bi:globe" size="1.5em"/>
+        <div aria-hidden="true" class="absolute text-xs right-2 top-3 bg-primary rounded px-1 select-none">{{locale2lang[$i18n.locale].toUpperCase()}}</div> </div><Icon name="bi:globe" size="1.5em"/>
         <div id="locale-label" class="sr-only">
           <div lang="no">Nettsidespråk</div>
           <div v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</div>
@@ -49,8 +49,12 @@
       </button>
       <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true"
       :pt="{
-        root: 'md:mt-5 xl:mt-9',
-        menu: ''
+        root: '',
+        menu: 'border-2 border-primary-lighten bg-primary-lighten text-white mt-5 md:mt-5 xl:mt-9',
+        menuitem: 'hover:bg-primary-lighten2',
+        action: ({ props, state, context }) => ({
+            class: (context.focused ? 'bg-primary' : '' ) + ' p-4 px-6 w-[200px] hover:bg-primary-lighten2'
+        })
         }">
             <template #item="{ item, props }">
                   <a      :href="item.route"

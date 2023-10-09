@@ -8,7 +8,6 @@ const optionalLocale = "/:locale(" + locales.join("|") + ")?"
 export default defineNuxtConfig({
   css: [
     '~/assets/fonts/fonts.css',
-    "primevue/resources/themes/lara-light-blue/theme.css"
   ],
   nitro: {
     preset: 'vercel',
