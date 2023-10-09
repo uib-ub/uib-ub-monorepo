@@ -3,11 +3,11 @@
     <div class="grid lg:grid-cols-2 gap-4 grid-flow-row" v-if="welcome_bm && welcome_nn">
 
       <section class="grid">
-        <Article :article_id="parseInt(welcome_bm.front_article.value)" dict="bm" :content_locale="content_locale()" welcome />
+        <Article :article_id="parseInt(welcome_bm.front_article.value)" dict="bm" :content_locale="content_locale('bm')" welcome />
       </section>
 
       <section class="grid">
-        <Article :article_id="parseInt(welcome_nn.front_article.value)" dict="nn" :content_locale="content_locale()" welcome />
+        <Article :article_id="parseInt(welcome_nn.front_article.value)" dict="nn" :content_locale="content_locale('nn')" welcome />
       </section>
 
       <section v-if="latest_bm" class="welcome">
