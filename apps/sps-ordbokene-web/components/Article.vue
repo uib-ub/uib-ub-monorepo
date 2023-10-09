@@ -282,7 +282,7 @@ const lemma_groups = computed(() => {
   let groups = [{lemmas: data.value.lemmas}]
     try {
       if (data.value.lemmas[0].paradigm_info[0].tags[0] == "DET" && data.value.lemmas[0].paradigm_info[0].tags.length > 1) {
-        groups = [{description: t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], {locale: content_locale}), 
+        groups = [{description: t('tags.' + data.value.lemmas[0].paradigm_info[0].tags[0], {locale: content_locale}), 
                    pos_group: ["Quant", "Dem", "Poss"].includes(data.value.lemmas[0].paradigm_info[0].tags[1]) ? 
                                                                 t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: content_locale}) 
                                                                 : '', 
@@ -301,7 +301,7 @@ const lemma_groups = computed(() => {
             if (genera.size == 3) {
               genus_description +=  t('tags.Masc') + ', ' +  t('tags.Fem', 1, { locale: content_locale}) +  t('or') +  t('tags.Neuter', 1, { locale: content_locale})
             } else {
-              genus_description += Array.from(genera).map(code =>  t('tags.'+code, 1, { locale: content_locale.value})).sort().join(t('or'))
+              genus_description += Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: content_locale.value})).sort().join(t('or'))
             }
             if (genus_map[genus_description]) {
               genus_map[genus_description].push(lemma)
@@ -317,7 +317,10 @@ const lemma_groups = computed(() => {
 
       }
       else if (data.value.lemmas[0].paradigm_info[0].tags[0] != 'EXPR') {
-        groups = [{description:  t('tags.'+data.value.lemmas[0].paradigm_info[0].tags[0], 1, { locale: content_locale}), lemmas: data.value.lemmas}]
+        let tag = data.value.lemmas[0].paradigm_info[0].tags[0] 
+        if (tag) { // Workaround to prevent undefined tag if expression is without tag in the database
+          groups = [{description:  t('tags.'+ tag, 1, { locale: content_locale}), lemmas: data.value.lemmas}]
+        }
       }
 
       groups.forEach((lemma_group, index) => {
