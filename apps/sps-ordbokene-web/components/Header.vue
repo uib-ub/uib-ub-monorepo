@@ -89,14 +89,9 @@ const change_locale = (lang) => {
 }
 
 const locale_menu = ref();
-const locales = ref([
-  {
-        label: i18n.t('settings.locale.title'),
-        items: localeConfig.map(item => { return {route: localizeUrl(route.fullPath, item.locale), 
+const locales = ref(localeConfig.map(item => { return {route: localizeUrl(route.fullPath, item.locale), 
                                                   command: () => {change_locale(item.locale)}, 
-                                                  ...item}})
-    },
-]);
+                                                  ...item}}));
 
 
 if (process.client) {
