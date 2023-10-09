@@ -60,7 +60,6 @@ const submitForm = async (item) => {
       
         if (exact[0][0].length == store.q.length) {
             let redirectUrl = `/${i18n.locale.value}/${store.dict}/${exact[0][0]}`
-            if (exact[0][0] != store.q) redirectUrl += `?orig=${store.q}`
             return navigateTo(redirectUrl)
         }
     }
