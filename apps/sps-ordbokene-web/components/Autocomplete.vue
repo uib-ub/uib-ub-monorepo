@@ -273,8 +273,6 @@ if (process.client) {
         </div>
    </li>
   </ul>
-  <div v-if="store.autocomplete.length > 1" class="font-normal text-primary text-right px-6 pt-2" :key="store.input" role="status" aria-live="polite">
-    {{store.autocomplete.length}} {{$t('autocomplete_suggestions', 0)}}<span class="text-gray-600" v-if="store.autocomplete.length == 20"> ({{$t('maximum_autocomplete')}})</span></div>
  </div>
   </client-only>
   </div>
