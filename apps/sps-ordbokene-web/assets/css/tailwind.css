@@ -221,7 +221,7 @@
 
 
        .welcome .article {
-        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6 !pt-2 !pb-4 !px-3 !shadow-none;
+        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-tertiary-darken1 md:!border-2 md:mx-4 md:my-6 !pt-2 !pb-4 !px-3 !shadow-none;
       }
       
 
@@ -237,7 +237,7 @@
 
 
       .wallpaper {
-        @apply md:bg-[url('assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp')] md:mt-5 pb-10 grow bg-cover
+        @apply md:bg-[url('https://ordbokene.no/img/background.a0712185.webp')] md:mt-5 pb-10 grow bg-cover;
       }
 
 
