@@ -1,7 +1,7 @@
 <template>
     <div>     
-    <Spinner v-if="pending"/>    
-    <div ref="results" v-if="!pending && !error && articles && articles.meta" >
+    <Spinner v-if="!error && !articles"/>    
+    <div ref="results" v-if="!error && articles && articles.meta" >
       <client-only><div class ="callout mx-2" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
         </div>
       </client-only>
@@ -20,9 +20,9 @@
             </NuxtErrorBoundary>
           </component>
         </component>
-          <client-only v-if="store.q && !specialSymbols(store.q)">
-            <Suggest :content_locale="content_locale(dict)" :dict="dict" :articles_meta="articles.meta"/>
-          </client-only>
+          <div v-if="store.q && !specialSymbols(store.q)">
+            <Suggest :content_locale="content_locale(dict)"  :dict="dict" :articles_meta="articles.meta"/>
+          </div>
          
       </section>
   </div>

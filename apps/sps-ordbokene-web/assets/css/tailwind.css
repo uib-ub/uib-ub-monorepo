@@ -23,7 +23,7 @@
     }
 
     main {
-        @apply lg:pt-2 xl:pt-4 xl:px-1 sm:px-8 xl:px-4 pb-8 flex-1;
+        @apply lg:pt-2 flex-1;
     }
 
     h1 {
@@ -31,7 +31,7 @@
         @apply font-bold;
     }
 
-    .ord-container h3 {
+    .ord-container h3, .wallpaper h3 {
       font-family: Inria Serif;
       font-size: calc(1.3rem + .6vw);
       @apply mb-0 font-semibold text-primary;
@@ -188,12 +188,12 @@
       
       
       
-      .secondary-page h3 button, .secondary-page h3, .ord-container h2 {
+      .secondary-page h3 button, .secondary-page h3, .ord-container h2, .link-header {
           @apply text-primary text-2xl font-semibold;
           font-variant: all-small-caps;
         }
 
-        .ord-container h2 {
+        .ord-container h2, .walllpaper h2 {
           @apply text-2xl md:text-3xl;
         }
       
@@ -221,17 +221,13 @@
 
 
        .welcome .article {
-        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6 !pt-2 !px-3 !shadow-none;
-      }
-      
-      .welcome .ord-container {
-          @apply md:!px-10 xl:!px-40;
+        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-tertiary-darken1 md:!border-2 md:mx-4 md:my-6 !pt-2 !pb-4 !px-3 !shadow-none;
       }
       
 
 
       .ord-container, .secondary-page {
-        @apply md:mx-auto md:container;
+        @apply mx-2 md:mx-auto md:container;
       }
 
       .ord-container {
@@ -239,16 +235,11 @@
       }
 
 
-      @media screen(md) {
-        .welcome.simple-search {
-          @apply flex-col bg-[url('assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp')];
-        }
+
+      .wallpaper {
+        @apply md:bg-[url('assets/images/background.webp')] md:mt-5 pb-10 grow bg-cover relative z-[-1];
       }
 
-
-      .tooltip:hover .popover, .tooltip:focus-within .popover {
-        @apply not-sr-only bg-black text-white py-1 px-4 rounded pointer-events-none transition-opacity duration-300 transform absolute transform -translate-x-1/2 -translate-y-7
-      }
 
 
 

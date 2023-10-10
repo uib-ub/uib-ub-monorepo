@@ -1,5 +1,5 @@
 <template>
-<main id="main" tabindex="-1" class="simple-search">
+<main id="main" tabindex="-1" class="flex flex-col grow-1">
   <SearchNav v-if="route.name != 'search'"/>
     <NuxtErrorBoundary @error="form_error">
     <SearchForm v-if="route.name != 'search'" class="ord-container"/>
@@ -10,8 +10,7 @@
       <NuxtLink :to="`/${$i18n.locale}/`"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('home')}}</NuxtLink>
     </div>
   </NuxtErrorBoundary>
-
-    <div class="ord-container" v-bind:class="{'md:pt-4': route.name != 'article'}">
+    <div v-bind:class="{'md:pt-4': route.name != 'article', 'wallpaper': route.name == 'welcome' || route.name == 'index', 'ord-container': route.name != 'welcome' && route.name != 'index'}">
   <NuxtErrorBoundary @error="content_error">
     <NuxtPage/>
   </NuxtErrorBoundary>

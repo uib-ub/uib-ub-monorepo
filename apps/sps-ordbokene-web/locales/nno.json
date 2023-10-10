@@ -1,5 +1,4 @@
 {
-    "name": "Nynorsk",
     "sub_title": "Bokmålsordboka og Nynorskordboka",
     "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
@@ -12,7 +11,7 @@
     "simple": "Enkelt søk",
     "about":"Om ordbøkene",
     "breadcrumbs": "Brødsmulesti",
-    "photo": "Foto: Clay Banks (unsplash.com)",
+    "photo": "Foto: Erwan Hesry (unsplash.com)",
     "background": "Bakgrunnsbilde",
     "monthly": "Smakebit frå ",
     "close": "Lukk",
@@ -175,6 +174,19 @@
             "description": ["Søkjet ditt ga ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
           }
     },
+    "table": {
+        "caption":{
+          "NOUN": "Bøyningstabell for dette substantivet",
+          "VERB": "Bøyningstabell for dette verbet",
+          "VERBPP": "Bøyningstabell for dette verbet (partisippformer)",
+          "ADJ": "Bøyningstabell for dette adjektivet",
+          "ADJCS": "Bøyningstabell for dette adjektivet (gradbøyning)",
+          "ADV": "Bøyningstabell for dette adverbet",
+          "DET": "Bøyningstabell for dette determinativet",
+          "PRON": "Bøyningstabell for dette pronomenet"
+        }
+        
+        },
     "article": {
         "definition": "Definisjon",
         "show": "Opne artikkel",
@@ -198,8 +210,6 @@
             "definitions": "Tyding og bruk",
             "examples": "Døme"
         },  
-        "updated": "Nyleg oppdatert",
-        "added": "Nyleg lagt til",
         "new": "Nytt i {dict}"
     },
     "error": {

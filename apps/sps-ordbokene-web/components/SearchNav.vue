@@ -20,7 +20,7 @@
   </li>
   <li>
     <NuxtLink :aria-current="advanced ? 'true' : 'false'"
-              :to="advanced_link">{{$t('advanced')}} <Icon name="bi:arrow-right" size="1.25em" class="ml-1 md:mt-0.5"/></NuxtLink>
+              :to="advanced_link">{{$t('advanced')}} <Icon name="bi:arrow-right" size="1.25em" class="ml-1 self-center"/></NuxtLink>
   </li>
 </ul>
 </nav>

@@ -1,6 +1,6 @@
 <template>
 <div class="py-1">
-<form  @submit.prevent="submitForm" ref="form" :action="`/${$i18n.locale}/${store.dict || 'bm,nn'}`">
+<form class="md:mx-[10%]"  @submit.prevent="submitForm" ref="form" :action="`/${$i18n.locale}/${store.dict || 'bm,nn'}`">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete v-on:dropdown-submit="submitForm"/>
 </NuxtErrorBoundary>
@@ -60,7 +60,6 @@ const submitForm = async (item) => {
       
         if (exact[0][0].length == store.q.length) {
             let redirectUrl = `/${i18n.locale.value}/${store.dict}/${exact[0][0]}`
-            if (exact[0][0] != store.q) redirectUrl += `?orig=${store.q}`
             return navigateTo(redirectUrl)
         }
     }
@@ -80,16 +79,3 @@ const autocomplete_error = (error) => {
 }
 
 </script>
-
-<style scoped>
-form {
-      @apply md:mx-10;
-    }
-
-.welcome form {
-  @apply lg:mx-0;
-}
-
-  
-
-</style>

@@ -6,8 +6,9 @@ const locales = ["nob", "nno", "eng", "ukr"]
 const optionalLocale = "/:locale(" + locales.join("|") + ")?"
 
 export default defineNuxtConfig({
-  css: ['~/assets/fonts/fonts.css'],
-
+  css: [
+    '~/assets/fonts/fonts.css',
+  ],
   nitro: {
     preset: 'vercel',
     compressPublicAssets: true,
@@ -18,6 +19,10 @@ export default defineNuxtConfig({
       versionWatermark: process.env.WATERMARK || 'test'
     }
   },
+
+  build: {
+		transpile: ["primevue"]
+	},
 
   modules: [
       '@pinia/nuxt',
@@ -128,7 +133,7 @@ export default defineNuxtConfig({
             {
               name: 'contact',
               path: '',
-              file: '~/components/custom-pages/content-accordions.vue'
+              file: '~/components/custom-pages/contact-view.vue'
             }
           ]
       })
