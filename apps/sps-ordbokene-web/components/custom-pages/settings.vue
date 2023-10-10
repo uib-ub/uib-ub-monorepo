@@ -29,6 +29,7 @@ const startAnimation = () => {
   }, 1500); 
 };
 
+
 </script>
 
 <template>

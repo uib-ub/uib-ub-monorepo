@@ -132,7 +132,6 @@ const keys = (event) => {
     
     store.input = store.autocomplete[session.dropdown_selected].q
 
-    //event.stopPropagation()
     event.preventDefault()
   }
   else if (event.key == "ArrowUp" || event.key == "Up") {
@@ -146,7 +145,6 @@ const keys = (event) => {
     }
     
     }
-    //event.stopPropagation()
     event.preventDefault()
   }
   else if (event.key == "Escape" || event.key == "Esc" || event.key == "Tab") {
