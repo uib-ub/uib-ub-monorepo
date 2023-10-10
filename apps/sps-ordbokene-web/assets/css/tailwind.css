@@ -221,7 +221,7 @@
 
 
        .welcome .article {
-        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6 !pt-2 !px-3 !shadow-none;
+        @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6 !pt-2 !pb-4 !px-3 !shadow-none;
       }
       
 
