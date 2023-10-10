@@ -31,7 +31,11 @@
       </ul>
     </nav>    
     </div>
-    <div class="float-right px-1 text-gray-300" aria-hidden="true">{{$config.public.versionWatermark}}</div>
+    <div class="flex justify-between pt-10 md:pt-8 lg:pt-2 xl:pt-0">
+      <div class="text-gray-50 px-3 py-2 md:pt-0 text-xs" aria-hidden="true">{{$config.public.versionWatermark}}</div>
+      <div v-if="$route.name == 'index' || $route.name == 'welcome'" class="hidden md:block text-gray-50 px-3 py-2 md:pt-0 text-xs">{{$t('photo')}}</div>
+      
+    </div>
     
   </footer>
 </template>
