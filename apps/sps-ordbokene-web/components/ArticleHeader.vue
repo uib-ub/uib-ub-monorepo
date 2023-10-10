@@ -1,7 +1,7 @@
 <template>
   <div class="mb-2">
     <div class="article-title" v-for="(lemma_group, i) in lemma_groups" :key="i">
-    <h3>
+    <h3 class="notranslate">
                 
    <span v-for="(lemma, index) in lemma_group.lemmas"
           :key="index">
@@ -13,8 +13,8 @@
                   </span>
     </span>
 </h3>
-<h3 v-if="secondary_header_text">{{secondary_header_text}}</h3>  
-  <em v-if="lemma_group.description" class="subheader ">
+<h3 v-if="secondary_header_text" class="notranslate">{{secondary_header_text}}</h3>  
+  <em :lang="locale2lang[content_locale]" v-if="lemma_group.description" class="subheader">
     <span class="header_group_list">{{lemma_group.description}}</span>
           {{lemma_group.pos_group}}
     <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>

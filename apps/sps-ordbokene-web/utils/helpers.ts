@@ -8,6 +8,8 @@ export const localeConfig = [
 export const lang2locale = Object.fromEntries(localeConfig.map(item => [item.lang, item.locale]))
 export const locale2lang = Object.fromEntries(localeConfig.map(item => [item.locale, item.lang]))
 
+export const dictLang = {bm: "nb", nn: "nn"}
+
 
 export const localizeUrl = (url, locale) => {
   if (url == "/") {

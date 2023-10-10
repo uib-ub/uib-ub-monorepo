@@ -1,5 +1,5 @@
 <template>
-  <div class="list-view-item" v-if="list && !welcome">
+  <div class="list-view-item" v-if="list && !welcome" :lang="dictLang[dict]">
       <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
       <NuxtLink v-else class="result-list-item" :to="link_to_self()">
 
@@ -26,7 +26,7 @@
 
     </NuxtLink>
   </div>
-    <div class="article flex flex-col justify-between" v-else-if="!error">
+    <div :lang="dictLang[dict]" class="article flex flex-col justify-between" v-else-if="!error">
       <div v-if="false && pending && !welcome" class="skeleton-container">
             <div class="skeleton mt-4 skeleton-heading"/>
         <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
@@ -60,38 +60,38 @@
         </div>
         </div>
 
-      <button v-if="!settings.inflectionExpanded && inflected && !welcome" class="btn btn-primary my-1 border-primary-darken !pr-2" @click="inflection_expanded = !inflection_expanded" type="button" :aria-expanded="inflection_expanded" :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
+      <button :lang="locale2lang[content_locale]" v-if="!settings.inflectionExpanded && inflected && !welcome" class="btn btn-primary my-1 border-primary-darken !pr-2" @click="inflection_expanded = !inflection_expanded" type="button" :aria-expanded="inflection_expanded" :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
              {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
             <div class="inflection-container p-2">
                 <NuxtErrorBoundary @error="inflection_error">
-                <InflectionTable :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
-                <InflectionTable :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
                 </NuxtErrorBoundary>
             </div>
         </div>
         <NuxtErrorBoundary @error="body_error">
         <div class="article_content pt-1" ref="article_content">
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
-                <h4>{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
+                <h4 :lang="locale2lang[content_locale]">{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
 
               <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
-              <h4>{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h4>
+              <h4 :lang="locale2lang[content_locale]">{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h4>
               <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section class="definitions" v-if="has_content && !welcome">
-              <h4 v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h4>
+              <h4 :lang="locale2lang[content_locale]" v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h4>
 
               <Definition v-for="definition in data.body.definitions" :content_locale="content_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
 
           </section>
           <section v-if="sub_articles.length && !welcome" class="expressions">
-              <h4>{{$t('article.headings.expressions', 1, { locale: content_locale})}}</h4>
+              <h4 :lang="locale2lang[content_locale]">{{$t('article.headings.expressions', 1, { locale: content_locale})}}</h4>
               <ul>
               <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
               </ul>

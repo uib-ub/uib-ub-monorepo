@@ -8,7 +8,7 @@
         <div class="table-responsive">
           <table class="table" :class="mq">
             <caption class="sr-only">{{$t('table.caption.NOUN')}}</caption>
-            <thead>
+            <thead :lang="locale2lang[this.content_locale]">
               <tr>
                 <th class="infl-label sub label-border-top-left" :class="mq"
                     v-if="!nounGender && hasGender"
@@ -46,7 +46,7 @@
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="notranslate">
               <inflectionRowNoun v-for="(paradigm, index) in standardParadigms"
                                  :key="index"
                                  :showGender="!nounGender"
@@ -88,7 +88,7 @@
       <div v-for="i in mq=='xs' ? [1,2] : [0]" :key="i" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.VERB')}}</caption>
-          <thead>
+          <thead :lang="locale2lang[this.content_locale]">
             <tr>
               <th v-if="!i || i==1" class="infl-label label-border-top-left" :class="mq">{{tagToName('Inf')}}</th>
               <th v-if="!i || i==1" class="infl-label label-border-top" :class="mq">{{tagToName('Pres')}}</th>
@@ -97,7 +97,7 @@
               <th v-if="(!i || i==2) && hasImp" class="infl-label label-border-top-right" :class="mq">{{tagToName('Imp')}}</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="notranslate">
             <inflectionRowVerb v-for="(paradigm, index) in standardParadigms"
                                :key="index"
                                :part="i"
@@ -111,7 +111,7 @@
       <div v-for="j in mq=='xs' ? [3,4] : [-1]" :key="j" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.VERBPP')}}</caption>
-          <thead>
+          <thead :lang="locale2lang[this.content_locale]">
             <template v-if="hasPerfPart">
               <tr>
                 <th class="infl-label label-border-top-left"
@@ -152,11 +152,12 @@
               </tr>
             </template>
           </thead>
-          <tbody>
+          <tbody class="notranslate">
             <inflectionRowParticiple v-for="(paradigm, index) in standardParadigms"
                                      :key="index"
                                      :part="j"
                                      :language="language"
+                                     :content_locale="this.content_locale"
                                      :hasPerfPart="hasPerfPart"
                                      :lemmaId="lemma.id"
                                      :paradigm="paradigm"
@@ -194,7 +195,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADJ')}}</caption>
-          <thead>
+          <thead :lang="locale2lang[this.content_locale]">
             <tr>
               <th v-if="hasSingAdj"
                   class="infl-label label-border-top-left"
@@ -246,7 +247,7 @@
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="notranslate">
             <inflectionRowAdj v-for="(paradigm, index) in standardParadigms"
                               :key="index"
                               :hasFem="hasFem"
@@ -261,7 +262,7 @@
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADJCS')}}</caption>
-          <thead>
+          <thead :lang="locale2lang[this.content_locale]">
             <tr>
               <th class="infl-label label-border-top-left-right"
                   v-if="hasDeg"
@@ -289,7 +290,7 @@
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="notranslate">
             <inflectionRowAdjDeg v-for="(paradigm, index) in standardParadigms"
                                  :key="index"
                                  :lemmaId="lemma.id"
@@ -327,7 +328,7 @@
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
-          <thead>
+          <thead :lang="locale2lang[this.content_locale]">
             <tr>
               <th class="infl-label label-border-bottom">
                 {{tagToName('Pos')}}
@@ -340,7 +341,7 @@
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="notranslate">
             <inflectionRowAdjAdv v-for="(paradigm, index) in standardParadigms"
                                  :key="index"
                                  :lemmaId="lemma.id"
@@ -378,7 +379,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.PRON')}}</caption>
-          <thead>
+          <thead :lang="locale2lang[this.content_locale]">
             <tr>
               <th v-if="hasNom" class="infl-label sub label-border-top-left">
                 {{tagToName('Nom')}}
@@ -391,7 +392,7 @@
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="notranslate">
             <inflectionRowPron v-for="(paradigm, index) in standardParadigms"
                                :key="index"
                                :language="language"
@@ -433,7 +434,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.DET')}}</caption>
-          <thead>
+          <thead :lang="locale2lang[this.content_locale]">
             <tr>
               <th v-if="hasSing"
                   class="infl-label label-border-top-left" :class="mq"
@@ -474,7 +475,7 @@
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="notranslate">
             <inflectionRowDet v-for="(paradigm, index) in standardParadigms"
                               :key="index"
                               :language="language"
@@ -514,12 +515,12 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
-          <thead>
+          <thead :lang="locale2lang[this.content_locale]">
             <tr>
               <th class="infl-label label-border">{{tagToName('Uninfl')}}</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="notranslate">
             <tr>
               <td class="notranslate infl-cell label-border">{{lemma.lemma}}</td>
             </tr>
@@ -589,7 +590,7 @@ export default {
                   inflectionRowsPron,
                   inflectionRowsDet
                 },
-    props: ['lemmaList','mq','context','eng'],
+    props: ['lemmaList','mq','context','eng', 'content_locale'],
     data: function () {
         return { language: this.eng ? 'eng' : (this.ukr ? 'ukr' :  (this.lemmaList ? this.lemmaList[0].language : null)),
                  // initialLexeme: this.lemmaList ? this.lemmaList[0].initial_lexeme : null,
@@ -656,7 +657,7 @@ export default {
                                   { block: 'Sing', label: 'Def', tags: ['Def']}
                                 ],
                   highlightedLemma: null,
-                  highlightedRows: []
+                  highlightedRows: [],
                }
     },
     computed: {
