@@ -39,7 +39,7 @@
     </nav>
           
       <div class="flex self-center justify-end lg:justify-center pr-4 pb-4 lg:p-0">
-      <button class="ml-8" type="button" @click="locale_menu.toggle" aria-haspopup="true" aria-controls="locale_menu">
+      <button class="ml-8" type="button" @click="locale_menu.toggle" aria-haspopup="true" :aria-controls="locale_menu ? 'locale_menu' : null">
         <div class="relative">
         <div aria-hidden="true" class="absolute text-xs right-2 top-3 bg-primary rounded px-1 select-none">{{locale2lang[$i18n.locale].toUpperCase()}}</div> </div><Icon name="bi:globe" size="1.5em"/>
         <div id="locale-label" class="sr-only">
@@ -86,13 +86,14 @@ const i18n = useI18n()
 const menu_expanded = ref(false)
 const locale_cookie = useCookie('currentLocale')
 
+const locale_menu = ref();
+
 const change_locale = (lang) => {
   i18n.locale.value = lang
   locale_cookie.value = lang
   return navigateTo(localizeUrl(route.fullPath, lang))
 }
 
-const locale_menu = ref();
 const locales = ref(localeConfig.map(item => { return {route: localizeUrl(route.fullPath, item.locale), 
                                                   command: () => {change_locale(item.locale)}, 
                                                   ...item}}));
