@@ -224,14 +224,10 @@
         @apply !bg-tertiary-darken1 md:!bg-tertiary md:!border-none md:shadow-none md:mx-4 md:my-6 !pt-2 !px-3 !shadow-none;
       }
       
-      .welcome .ord-container {
-          @apply md:!px-10 xl:!px-40;
-      }
-      
 
 
       .ord-container, .secondary-page {
-        @apply md:mx-auto md:container;
+        @apply mx-2 md:mx-auto md:container;
       }
 
       .ord-container {
@@ -241,7 +237,7 @@
 
 
       .wallpaper {
-        @apply md:bg-[url('assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp')] md:mt-10 pb-10 grow
+        @apply md:bg-[url('assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp')] md:mt-5 pb-10 grow
       }
 
 
