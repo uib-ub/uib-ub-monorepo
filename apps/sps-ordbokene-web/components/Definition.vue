@@ -10,23 +10,22 @@
         :semicolon="might_need_semicolon(explanations, index)"
         v-on:link-click="link_click"
         :content_locale="content_locale"
-        :welcome="welcome"
       />
       <br v-if="might_need_semicolon(explanations, index)" />
     </div>
     <!-- i/s -->
   </span>
-<div v-if="examples.length && !welcome">
+<div v-if="examples.length">
   <h5 v-if="level <3 && !body.sub_definition">{{$t('article.headings.examples', 1, { locale: content_locale})}}</h5>
   <ul class="examples">
     <Example :body="example" :dict="dict" v-for="(example, index) in examples" :key="index" v-on:link-click="link_click" :content_locale="content_locale" :semicolon="might_need_semicolon(examples, index)"/>
   </ul>
 </div>
 <ul class="compound_lists" v-if = "compound_lists.length">
-  <CompoundList :dict="dict" v-for="(compound_list, index) in compound_lists" :body="compound_list" :key="index" v-on:link-click="link_click" :content_locale="content_locale" :welcome="welcome"/>
+  <CompoundList :dict="dict" v-for="(compound_list, index) in compound_lists" :body="compound_list" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
 </ul>
 <component :is="level < 3 && (body.elements[0].type_ == 'definition' || !subdefs[0].sub_definition) ? 'ol' : 'ul'" :class="{'sub_definitions': subdefs.length, 'single_sub_definition': subdefs.length === 1}" v-if="subdefs.length">  
-  <Definition :def_number='index+1' :level="level+1" :body="subdef" v-for="(subdef, index) in subdefs"  :dict="dict" :semicolon="might_need_semicolon(subdefs, index)" :key="index" v-on:link-click="link_click" :content_locale="content_locale" :welcome="welcome"/>
+  <Definition :def_number='index+1' :level="level+1" :body="subdef" v-for="(subdef, index) in subdefs"  :dict="dict" :semicolon="might_need_semicolon(subdefs, index)" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
 </component>
 </component>
 </component>
@@ -46,7 +45,6 @@ level: Number,
 dict: String,
 def_number: Number,
 content_locale: String,
-welcome: Boolean
 })
 
 
