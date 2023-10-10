@@ -11,7 +11,7 @@
           <em>Bokmålsordboka</em>{{$t('and')}}<em>Nynorskordboka</em>{{$t('footer_description')}}
         </div>
       </div>
-      <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center">
+      <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center site-nav">
         <ul class="flex flex-col md:flex-row gap-3 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center md:text-lg text-center md:gap-10">
         <li>
             <NuxtLink :aria-current="$route.name == 'welcome' && 'page'" class="nav-link" :to="`/${$i18n.locale}`" @click="store.$reset()">{{$t('home')}}</NuxtLink>
@@ -29,8 +29,7 @@
             <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
           </li>
       </ul>
-    </nav>
-    
+    </nav>    
     </div>
     <div class="float-right px-1 text-gray-300" aria-hidden="true">{{$config.public.versionWatermark}}</div>
     
@@ -45,11 +44,18 @@ import { useSearchStore } from '~/stores/searchStore'
 const i18n = useI18n()
 const route = useRoute()
 const store = useSearchStore()
+
+const change_lang = (lang) => {
+  i18n.locale.value = lang
+  locale_cookie.value = lang
+  return navigateTo(localizeUrl(route.fullPath, lang))
+}
+
 </script>
   
   <style scoped>
   
-  nav {
+  .site-nav {
     font-variant: all-small-caps;
     letter-spacing: 0.1rem;
   
