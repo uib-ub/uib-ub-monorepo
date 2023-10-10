@@ -1,7 +1,7 @@
 <template>
 <header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-      <div class="flex flex-row content-center w-full lg:w-auto">
-  <NuxtLink class="navbar-brand" :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
+      <div class="flex flex-row content-center items-center w-full lg:w-auto">
+  <NuxtLink :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
       <div class="mx-1 md:my-1 lg:my-3 xl:my-4">
       <div><h1 class="text-2xl mt-0.5 mb-0.5">Ordbøkene <span class="sr-only">, {{$t('home')}}</span></h1>
       <p class="hidden xl:block brand-subtitle ml-0.5 mb-1">{{$t("sub_title")}}</p>
@@ -10,8 +10,7 @@
       </NuxtLink>
       <div class="lg:hidden text-lg ml-auto flex align-center">
 
-      <button class="text-lg p-2 px-3 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
-              @keydown="escape_menu"
+      <button class="text-lg pb-2 pt-1 px-3 sm:px-4 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
               :aria-expanded="menu_expanded"
               :aria-controls="menu_expanded? 'main_menu' : null"
               @click="menu_expanded = !menu_expanded">
@@ -19,8 +18,8 @@
       </button>
 </div>
       </div>
-    <div id="main_menu" class="lg:flex lg:ml-auto text-center nav-buttons flex-wrap lg:flex-row content-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
-      <nav class="lg:mr-4">
+    <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center text-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
+      <nav class="lg:mr-4 self-center">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
           <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
@@ -38,16 +37,40 @@
 
       </ul>
     </nav>
-    <div class="relative mb-4 lg:mb-0 lg:ml-4 mt-1">
-          <Icon name="bi:globe2" size="1.25em" class="mr-2"/>
-          <label for="locale-select" class="sr-only">{{$t('settings.locale.title')}}</label>
-          <select id="locale-select" class="bg-primary text-white" v-model="$i18n.locale" @change="update_lang">
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nob'" value="nob">Bokmål</option>
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'eng'" value="eng">English</option>
-            <option class="text-text text-xl bg-canvas shadow-xl border-2" :selected="$i18n.locale == 'nno'" value="nno">Nynorsk</option>
-          </select>
+          
+      <div class="flex self-center justify-end lg:justify-center pr-4 pb-4 lg:p-0">
+      <button class="ml-8" type="button" @click="locale_menu.toggle" aria-haspopup="true" :aria-controls="locale_menu ? 'locale_menu' : null">
+        <div class="relative">
+        <div aria-hidden="true" class="absolute text-xs right-2 top-3 bg-primary rounded px-1 select-none">{{locale2lang[$i18n.locale].toUpperCase()}}</div> </div><Icon name="bi:globe" size="1.5em"/>
+        <div id="locale-label" class="sr-only">
+          <div lang="no">Nettsidespråk</div>
+          <div v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</div>
+        </div>
+      </button>
+      <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true"
+      :pt="{
+        root: '',
+        menu: 'border-2 border-primary-lighten bg-primary-lighten text-white mt-5 md:mt-5 xl:mt-9',
+        menuitem: 'hover:bg-primary-lighten2',
+        action: ({ props, state, context }) => ({
+            class: (context.focused ? 'bg-primary' : '' ) + ' p-4 px-6 w-[200px] hover:bg-primary-lighten2'
+        })
+        }">
+            <template #item="{ item, props }">
+                  <a      :href="item.route"
+                          @click.prevent="change_locale(item.locale)"
+                          v-bind="props.action"
+                          :lang="item.lang">
+                        <Icon :name="item.icon" size="1.25em" class="mr-2 text-gray-900"/> {{item.label}} 
+                        <Icon v-if="$i18n.locale==item.locale" name="bi:check2" size="1.5em" class="ml-2"/>
+                  </a>
+            </template>
+        </Menu>
       </div>
+
+
     </div>
+    
   </header>
 
 </template>
@@ -63,17 +86,28 @@ const i18n = useI18n()
 const menu_expanded = ref(false)
 const locale_cookie = useCookie('currentLocale')
 
-const escape_menu = (event) => {
-  if (event.key == "Escape" || event.key == "Esc") {
-    menu_expanded.value = false
+const locale_menu = ref();
+
+const change_locale = (lang) => {
+  i18n.locale.value = lang
+  locale_cookie.value = lang
+  return navigateTo(localizeUrl(route.fullPath, lang))
+}
+
+const locales = ref(localeConfig.map(item => { return {route: localizeUrl(route.fullPath, item.locale), 
+                                                  command: () => {change_locale(item.locale)}, 
+                                                  ...item}}));
+
+
+if (process.client) {
+  document.addEventListener('keyup', (e) => {
+    if (e.key == "Escape" || e.key == "Esc") {
+      menu_expanded.value = !menu_expanded.value
   }
+})
 }
 
-const update_lang = (event) => {
-  locale_cookie.value = i18n.locale.value
-  return navigateTo(localizeUrl(route.fullPath, i18n.locale.value))
 
-}
 
 </script>
 

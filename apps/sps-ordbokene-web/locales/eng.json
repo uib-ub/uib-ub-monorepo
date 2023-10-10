@@ -1,5 +1,4 @@
 {
-  "name": "English",
   "sub_title": "Bokmålsordboka and Nynorskordboka",
   "help": "Help",
   "autocomplete_suggestions": "Search suggestion | search suggestions",
@@ -209,15 +208,8 @@
       "expressions": "Set phrases",
       "definitions": "Senses and Example Sentences",
       "examples": "Example"
-  },
-  "update":{
-    "bmo":"Recently updated from Bokmålsordboka",
-    "nno":"Recently updated from Nynorskordboka"
-  },
-  "added":{
-    "bmo":"Recently added from Bokmålsordboka",
-    "nno":"Recently added from Nynorskordboka"
-  }
+    },
+    "new": "New in {dict}"
 },
 "error": {
       "article": "An error has occured in article {no} in {dict}",

@@ -1,5 +1,4 @@
 {
-    "name": "Bokmål",
     "sub_title": "Bokmålsordboka og Nynorskordboka",
     "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
@@ -223,14 +222,7 @@
             "definitions": "Betydning og bruk",
             "examples": "Eksempel"
         },  
-        "update":{
-            "bmo":"Nylig oppdatert fra Bokmålsordboka",
-            "nno":"Nylig oppdatert fra Nynorskordboka"
-          },  
-          "added":{
-              "bmo":"Nylig lagt til fra Bokmålsordboka",
-              "nno":"Nylig lagt til fra Nynorskordboka"
-            }
+        "new": "Nytt i {dict}"
     },
     "error": {
           "article": "Det har oppstått en feil i artikkel {no} i {dict}",

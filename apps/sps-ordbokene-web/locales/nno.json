@@ -1,5 +1,4 @@
 {
-    "name": "Nynorsk",
     "sub_title": "Bokmålsordboka og Nynorskordboka",
     "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
@@ -211,14 +210,7 @@
             "definitions": "Tyding og bruk",
             "examples": "Døme"
         },  
-        "update":{
-            "bmo":"Nyleg oppdatert fra Bokmålsordboka",
-            "nno":"Nyleg oppdatert fra Nynorskordboka"
-          },  
-          "added":{
-              "bmo":"Nyleg lagt til fra Bokmålsordboka",
-              "nno":"Nyleg lagt til fra Nynorskordboka"
-            }
+        "new": "Nytt i {dict}"
     },
     "error": {
           "article": "Det har oppstått ein feil i artikkel {no} i {dict}",
