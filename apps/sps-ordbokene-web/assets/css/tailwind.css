@@ -237,7 +237,7 @@
 
 
       .wallpaper {
-        @apply md:bg-[url('assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp')] md:mt-5 pb-10 grow
+        @apply md:bg-[url('assets/images/janko-ferlic-sfL_QOnmy00-unsplash.webp')] md:mt-5 pb-10 grow bg-cover
       }
 
 
