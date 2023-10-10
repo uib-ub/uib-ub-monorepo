@@ -237,7 +237,7 @@
 
 
       .wallpaper {
-        @apply md:bg-[url('https://ordbokene.no/img/background.a0712185.webp')] md:mt-5 pb-10 grow bg-cover;
+        @apply md:bg-[url('assets/images/background.webp')] md:mt-5 pb-10 grow bg-cover relative;
       }
 
 

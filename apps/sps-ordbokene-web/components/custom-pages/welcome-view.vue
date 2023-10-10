@@ -34,6 +34,7 @@
     
     <Spinner v-else />
     </div>
+    <div class="absolute right-0 text-white bottom-0 shadow-sm bg-black p-1 bg-opacity-50 m-1 mx-2">{{$t('photo')}}</div>
 </template>
 
 <script setup>
