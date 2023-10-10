@@ -1,3 +1,14 @@
+export const localeConfig = [
+  {lang: 'en', locale: 'eng', label: 'English', icon: 'circle-flags:en', button: 'Display language'},
+  {lang: 'nn', locale: 'nno', label: 'Nynorsk', icon: 'circle-flags:no'},
+  {lang: 'nb', locale: 'nob', label: 'Bokmål', icon:'circle-flags:no'},
+  {lang: 'uk', locale: 'ukr', label: 'Українська', icon: 'circle-flags:ua', button: 'Мова'},
+]
+
+export const lang2locale = Object.fromEntries(localeConfig.map(item => [item.lang, item.locale]))
+export const locale2lang = Object.fromEntries(localeConfig.map(item => [item.locale, item.lang]))
+
+
 export const localizeUrl = (url, locale) => {
   if (url == "/") {
     return locale
@@ -10,19 +21,16 @@ export const localizeUrl = (url, locale) => {
   }
 }
 
-export const iso2 = tag => {
-  return {"nb": "nob", "nn": "nno", "en": "eng", "uk": "ukr"}[tag]
-}
 
-export const detectLocale = localestring => {
-  if (localestring) {
-    let locales = localestring.split(",")
-    for (var i=0; i < locales.length; i++) {
-      let tag = locales[i].slice(0,2)
-      if (tag != 'en') {
-        let iso2tag = iso2(tag)
-        if (iso2tag) {
-          return iso2tag
+export const detectLocale = langString => {
+  if (langString) {
+    let langs = langString.split(",")
+    for (var i=0; i < langs.length; i++) {
+      let lang = langs[i].slice(0,2)
+      if (lang != 'en') {
+        let locale = lang2locale[lang]
+        if (locale) {
+          return locale
         }
       }
     }
