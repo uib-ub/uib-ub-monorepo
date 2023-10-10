@@ -133,7 +133,7 @@ export default defineNuxtConfig({
             {
               name: 'contact',
               path: '',
-              file: '~/components/custom-pages/content-accordions.vue'
+              file: '~/components/custom-pages/contact-view.vue'
             }
           ]
       })
