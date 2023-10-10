@@ -58,7 +58,6 @@ const props = defineProps({
   color: rgba(0,0,0,.6) !important;
   font-family: unset;
   font-size: 1rem;
-  cursor: help;
 }
 
 div>.article-title:not(:first-child) {
