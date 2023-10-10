@@ -91,7 +91,6 @@ const locale_menu = ref();
 const change_locale = (lang) => {
   i18n.locale.value = lang
   locale_cookie.value = lang
-  console.log(locale_menu.value.overlayVisible)
   return navigateTo(localizeUrl(route.fullPath, lang))
 }
 
