@@ -3,8 +3,8 @@
     <div class="ord-container p-3 pt-10 md:pt-4">
       <div class="flex flex-col xl:flex-row items-center xl:items-start">
         <div class="flex flex-col md:flex-row m-1 lg:mr-4 items-center">
-          <img height="28" width="156" class="m-1 mr-6" src="../assets/images/Sprakradet_logo_neg.png" alt="Språkrådet, logo" />
-          <img height="80" width="80" class="mx-4 my-4 mr-2 lg:my-0 " src="../assets/images/uib-logo.svg" alt="Universitetet i Bergen, logo" />
+          <img height="28px" width="156px" class="m-1 mr-6" src="../assets/images/Sprakradet_logo_neg.svg" alt="Språkrådet, logo" />
+          <img height="80px" width="80px" class="mx-4 my-4 mr-2 lg:my-0 " src="../assets/images/uib-logo.svg" alt="Universitetet i Bergen, logo" />
         </div>
         <span></span>
         <div class="p-4 md:px-16 text-center xl:text-left">
