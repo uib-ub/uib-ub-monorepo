@@ -26,7 +26,7 @@
 
     </NuxtLink>
   </div>
-    <div class="article" v-else-if="!error">
+    <div class="article flex flex-col justify-between" v-else-if="!error">
       <div v-if="false && pending && !welcome" class="skeleton-container">
             <div class="skeleton mt-4 skeleton-heading"/>
         <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
@@ -84,7 +84,7 @@
               <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
-          <section class="definitions" v-if="has_content">
+          <section class="definitions" v-if="has_content && !welcome">
               <h4 v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h4>
 
               <Definition v-for="definition in data.body.definitions" :content_locale="content_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
@@ -96,13 +96,19 @@
               <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
               </ul>
             </section>
+
+          <div v-if="welcome">
+            {{snippet}}
+          </div>
       </div>
       </NuxtErrorBoundary>
-      <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
-        <div v-else class="text-right"><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
 
-      
   </div>
+  
+</div>
+<div class="mx-1">
+<ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
+        <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
 </div>
 </div>
 </template>
@@ -123,6 +129,7 @@ const route = useRoute()
 const session = useSessionStore()
 
 const props = defineProps({
+    content_locale: String,
     article_id: Number,
     dict: String,
     welcome: Boolean,
@@ -173,15 +180,6 @@ const inflection_error = (error) => {
   console.log("INFLECTION_ERROR", error)
 }
 
-const content_locale = computed(() => {
-    if (i18n.locale.value == 'nob' || i18n.locale.value == 'nno') {
-      return  {bm: 'nob', nn: 'nno'}[props.dict]
-    }
-    else {
-      return i18n.locale.value
-    }
-})
-
 
 const has_content = () => {
   for (const definition of data.value.body.definitions) {
@@ -220,6 +218,7 @@ return sub_art_list
 }
 catch(error) {
   console.log("find_sub_articles", props.article_id, props.dict,  '"'+error.message+'"')
+  console.log(error)
 
   return []
 }
@@ -282,9 +281,9 @@ const lemma_groups = computed(() => {
   let groups = [{lemmas: data.value.lemmas}]
     try {
       if (data.value.lemmas[0].paradigm_info[0].tags[0] == "DET" && data.value.lemmas[0].paradigm_info[0].tags.length > 1) {
-        groups = [{description: t('tags.' + data.value.lemmas[0].paradigm_info[0].tags[0], {locale: content_locale}), 
+        groups = [{description: t('tags.' + data.value.lemmas[0].paradigm_info[0].tags[0], {locale: props.content_locale}), 
                    pos_group: ["Quant", "Dem", "Poss"].includes(data.value.lemmas[0].paradigm_info[0].tags[1]) ? 
-                                                                t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: content_locale}) 
+                                                                t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: props.content_locale}) 
                                                                 : '', 
                   lemmas: data.value.lemmas}]
       }
@@ -299,9 +298,9 @@ const lemma_groups = computed(() => {
             })
             let genus_description = ""
             if (genera.size == 3) {
-              genus_description +=  t('tags.Masc') + ', ' +  t('tags.Fem', 1, { locale: content_locale}) +  t('or') +  t('tags.Neuter', 1, { locale: content_locale})
+              genus_description +=  t('tags.Masc') + ', ' +  t('tags.Fem', 1, { locale: props.content_locale}) +  t('or') +  t('tags.Neuter', 1, { locale: props.content_locale})
             } else {
-              genus_description += Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: content_locale.value})).sort().join(t('or'))
+              genus_description += Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: props.content_locale})).sort().join(t('or'))
             }
             if (genus_map[genus_description]) {
               genus_map[genus_description].push(lemma)
@@ -311,7 +310,7 @@ const lemma_groups = computed(() => {
             }
           })
           groups = Object.keys(genus_map).map(key => {
-            return {description:  t('tags.NOUN', 1, { locale: content_locale}), pos_group: key, lemmas: genus_map[key], }
+            return {description:  t('tags.NOUN', 1, { locale: props.content_locale}), pos_group: key, lemmas: genus_map[key], }
           })
 
 
@@ -319,7 +318,7 @@ const lemma_groups = computed(() => {
       else if (data.value.lemmas[0].paradigm_info[0].tags[0] != 'EXPR') {
         let tag = data.value.lemmas[0].paradigm_info[0].tags[0] 
         if (tag) { // Workaround to prevent undefined tag if expression is without tag in the database
-          groups = [{description:  t('tags.'+ tag, 1, { locale: content_locale}), lemmas: data.value.lemmas}]
+          groups = [{description:  t('tags.'+ tag, 1, { locale: props.content_locale}), lemmas: data.value.lemmas}]
         }
       }
 
@@ -328,6 +327,7 @@ const lemma_groups = computed(() => {
           })
   } catch(error) {
     console.log("lemma_groups",props.article_id, props.dict, '"'+error.message+'"')
+    console.log(error)
   }
     return groups
 
@@ -391,15 +391,16 @@ const parse_subitems =  (explanation, text) => {
   }
 
 
-const parse_definitions = (node) => {
+const parse_definitions = (definition_list) => {
   let definitionTexts = []
     try {
-    node.forEach((definition) => {
+    definition_list.forEach((definition) => {
       if (definition.elements) {
       if (definition.elements[0].content) {
         let new_string = parse_subitems(definition.elements[0], definition.elements[0].content)
-        if (new_string.substring(new_string.length, new_string.length - 1) == ":") {
-          new_string = new_string.slice(0, -1)
+        if (new_string.substring(new_string.length, new_string.length - 1) == ":" && definition.elements[1].quote) {
+          new_string += " "+parse_subitems(definition.elements[1].quote, definition.elements[1].quote.content)
+          
         }
         definitionTexts.push(new_string)
 
@@ -407,6 +408,13 @@ const parse_definitions = (node) => {
       else if (definition.elements[0].elements) {
         definitionTexts.push(parse_definitions(definition.elements))
       }
+
+      let subdefs = definition.elements.slice(1, definition.elements.length).filter(item => item.type_ == 'definition')
+
+      if (subdefs.length) {
+        definitionTexts.push(parse_definitions(subdefs))
+      }
+
     }
     })
     } catch(error) {
@@ -414,7 +422,7 @@ const parse_definitions = (node) => {
       definitionTexts = []
     }
 
-    let snippet = definitionTexts.join("\u00A0•\u00A0")
+    let snippet = definitionTexts.filter(item => item).join("\u00A0•\u00A0")
     return snippet
   
 }

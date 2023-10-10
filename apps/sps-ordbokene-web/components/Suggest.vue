@@ -4,22 +4,22 @@
    <div v-if="data" class="mb-10 mx-2 flex flex-col gap-8 mt-3">
     <div v-if="data.inflect.length" class ="callout py-0 my-0">
         <SuggestResults :suggestions="data.inflect"  :dict="dict">
-            <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.inflected', {dict: $t('dicts.'+dict)})}}</h3><span id="translation-description"></span>{{" "}}
+            <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.inflected', 1, {locale: content_locale})}}</h3><span id="translation-description"></span>{{" "}}
         </SuggestResults>
     </div>
     <div v-if="data.translate.length" class ="callout py-0 my-0">
         <SuggestResults compare :suggestions="data.translate"  :dict="dict" icon="bi:book-half">
-                <h3><Icon name="bi:robot" size="1rem" class="mr-3"/>{{$t('notifications.translation_title')}}</h3><p class="pt-2">{{$t('notifications.translation')}}</p>
+                <h3><Icon name="bi:robot" size="1rem" class="mr-3"/>{{$t('notifications.translation_title', 1, {locale: content_locale})}}</h3><p class="pt-2">{{$t('notifications.translation')}}</p>
         </SuggestResults>
     </div>
     <div v-if="data.similar.length">
         <SuggestResults  :suggestions="data.similar" :dict="dict">
-            <h3>{{$t('notifications.similar', {dict: $t('dicts.'+dict)})}}</h3>
+            <h3>{{$t('notifications.similar', 1, {locale: content_locale})}}</h3>
         </SuggestResults>
     </div>
     <div v-if="data.freetext && !( (articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length )" class ="callout pt-0 pb-4 my-0">
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
-            <p>{{$t('notifications.fulltext.description')}}</p>
+            <p>{{$t('notifications.fulltext.description', 1, {locale: content_locale})}}</p>
             <div class="flex">
             <NuxtLink :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right"/>
@@ -28,8 +28,8 @@
     </div>
     <div v-if="!((articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length || data.similar.length || data.freetext )" class="callout pt-0 my-0">
         <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
-        <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)})}}.</p>
-        <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]')}}</p>
+        <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)}, {locale: content_locale})}}.</p>
+        <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: content_locale})}}</p>
     </div>
 </div>
 
@@ -43,6 +43,7 @@ const session = useSessionStore()
 const route = useRoute()
 
 const props = defineProps({
+    content_locale: String,
     dict: String,
     articles_meta: Object
 })
