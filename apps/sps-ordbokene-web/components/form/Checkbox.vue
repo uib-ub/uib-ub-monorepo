@@ -1,14 +1,14 @@
 <template>
 <div class="checkbox-container">
   <label>
-<input type="checkbox" :checked="props.checked" v-model="model">
+<input  v-model="model" type="checkbox" :checked="props.checked">
     <slot></slot>
   </label>
 </div>
 
 </template>
 
-<script setup lang="ts">
+<script setup>
 
 const emit= defineEmits(['update:modelValue'])
 

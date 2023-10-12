@@ -11,9 +11,9 @@
 <script setup>
     
   const props = defineProps({
-      name: String,
-      value: String,
-      current: String
+      name: { type: String, required: true},
+      value: { type: String, required: true},
+      current: { type: String, required: true}
   })
 
   const emit = defineEmits(['submit'])

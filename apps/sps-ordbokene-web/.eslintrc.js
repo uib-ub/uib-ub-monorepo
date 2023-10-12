@@ -4,7 +4,8 @@ module.exports = {
     rules: {
       'tsdoc/syntax': "off",
       "camelcase": "off",
-      "no-console": "off"
+      "no-console": "off",
+      'vue/first-attribute-linebreak': 'off'
     }
 
   };

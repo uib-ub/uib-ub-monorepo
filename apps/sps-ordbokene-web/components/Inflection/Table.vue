@@ -11,8 +11,8 @@
             <thead>
               <tr>
                 <th v-if="!nounGender && hasGender"
-                    class="infl-label sub label-border-top-left" :class="mq"
                     id="Gender"
+                    class="infl-label sub label-border-top-left" :class="mq"
                     scope="col"
                     rowspan='2'>{{$t('gender')}}</th>
                 <th v-if="hasSing"
@@ -33,14 +33,14 @@
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
                   {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
-                <th class="infl-label sub label-border-bottom"
-                    id="PlurInd"
+                <th id="PlurInd"
+                    class="infl-label sub label-border-bottom"
                     scope="col" :class="mq">
                   {{tagToName('Ind')}} {{tagToName('Form')}}
                 </th>
                 <th v-if="hasDef"
-                    class="infl-label sub label-border-bottom"
                     id="PlurDef"
+                    class="infl-label sub label-border-bottom"
                     scope="col" :class="mq">
                   {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
@@ -49,7 +49,7 @@
             <tbody>
               <inflectionRowNoun v-for="(paradigm, index) in standardParadigms"
                                  :key="index"
-                                 :showGender="!nounGender"
+                                 :show-gender="!nounGender"
                                  :language="language"
                                  :lemma="lemma"
                                  :paradigm="paradigm"
@@ -71,7 +71,7 @@
         <table class="table" :class="mq">
           <inflectionRowsNoun v-for="(tags, index) in inflTagsNoun"
                               :key="index"
-                              :showGender="!nounGender"
+                              :show-gender="!nounGender"
                               :tags="tags"
                               :language="language"
                               :lemma="lemma"
@@ -101,7 +101,7 @@
             <inflectionRowVerb v-for="(paradigm, index) in standardParadigms"
                                :key="index"
                                :part="i"
-                               :lemmaId="lemma.id"
+                               :lemma-id="lemma.id"
                                :paradigm="paradigm"
                                @hilite="hilite"
                                @unhilite="unhilite"/>
@@ -114,16 +114,16 @@
           <thead>
             <template v-if="hasPerfPart">
               <tr>
-                <th class="infl-label label-border-top-left"
+                <th id="PerfPart"
+                    class="infl-label label-border-top-left"
                     :class="mq"
-                    id="PerfPart"
                     scope="col"
                     :colspan="hasPerfPartFem ? 5 : (hasPerfPartDef ? (j<0?4:(j==3?3:1)) : 1)">
                   {{tagToName('PerfPart')}}
                 </th>
                 <th v-if="j<0 || j==4"
-                    class="infl-label label-border-top-right" :class="mq"
                     id="PresPart"
+                    class="infl-label label-border-top-right" :class="mq"
                     scope="col"
                     rowspan="2">{{tagToName('PresPart')}}</th>
               </tr>
@@ -165,9 +165,9 @@
                                      :key="index"
                                      :part="j"
                                      :language="language"
-                                     :hasPerfPart="hasPerfPart"
-                                     :hasPerfPartFem="hasPerfPartFem"
-                                     :lemmaId="lemma.id"
+                                     :has-perf-part="hasPerfPart"
+                                     :has-perf-part-fem="hasPerfPartFem"
+                                     :lemma-id="lemma.id"
                                      :paradigm="paradigm"
                                      :context="context"
                                      @hilite="hilite"
@@ -188,7 +188,7 @@
                               :key="index"
                               :tags="tags"
                               :language="language"
-                              :lemmaId="lemma.id"
+                              :lemma-id="lemma.id"
                               :paradigms="standardParadigms"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -206,15 +206,15 @@
           <thead>
             <tr>
               <th v-if="hasSingAdj"
+                  id="Sing"
                   class="infl-label label-border-top-left"
                   :class="mq"
-                  id="Sing"
                   scope="col"
                   :colspan="hasFem ? 4 : 3">
                 {{tagToName('Sing')}}
               </th>
-              <th class="infl-label label-border-top-right" :class="mq"
-                  id="Plur"
+              <th id="Plur"
+                  class="infl-label label-border-top-right" :class="mq"
                   scope="col"
                   :rowspan="hasSingAdj ? 2 : 1">
                 {{tagToName('Plur')}}
@@ -222,33 +222,33 @@
             </tr>
             <tr v-if="hasSingAdj">
               <th v-if="hasFem"
-                  class="infl-label sub label-border-bottom"
                   id="Masc"
+                  class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
                   {{tagToName('Masc')}}
               </th>
               <th v-if="!hasFem"
-                  class="infl-label sub label-border-bottom"
                   id="Masc"
+                  class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
                 <span class="nobr">{{tagToName('Masc')}}&nbsp;/</span><br/>{{tagToName('Fem')}}</th>
               <th v-if="hasFem"
-                  class="infl-label sub label-border-bottom"
                   id="Fem"
+                  class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
                 {{tagToName('Fem')}}
               </th>
-              <th class="infl-label sub label-border-bottom"
-                  id="Neuter"
+              <th id="Neuter"
+                  class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
                 {{tagToName('Neuter')}}
               </th>
-              <th class="infl-label sub label-border-bottom"
-                  id="Def"
+              <th id="Def"
+                  class="infl-label sub label-border-bottom"
                   scope="col"
                  :class="mq">
                 {{tagToName('Def')}} {{tagToName('Form')}}
@@ -258,9 +258,9 @@
           <tbody>
             <inflectionRowAdj v-for="(paradigm, index) in standardParadigms"
                               :key="index"
-                              :hasFem="hasFem"
-                              :hasSing="hasSingAdj"
-                              :lemmaId="lemma.id"
+                              :has-fem="hasFem"
+                              :has-sing="hasSingAdj"
+                              :lemma-id="lemma.id"
                               :paradigm="paradigm"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -273,8 +273,8 @@
           <thead>
             <tr>
               <th v-if="hasDeg"
-                  class="infl-label label-border-top-left-right"
                   id="Deg"
+                  class="infl-label label-border-top-left-right"
                   scope="col"
                   colspan="3">
                 {{tagToName('Deg')}}
@@ -301,7 +301,7 @@
           <tbody>
             <inflectionRowAdjDeg v-for="(paradigm, index) in standardParadigms"
                                  :key="index"
-                                 :lemmaId="lemma.id"
+                                 :lemma-id="lemma.id"
                                  :paradigm="paradigm"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -321,7 +321,7 @@
                              :key="index"
                              :tags="tags"
                              :language="language"
-                             :lemmaId="lemma.id"
+                             :lemma-id="lemma.id"
                              :paradigms="standardParadigms"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -352,7 +352,7 @@
           <tbody>
             <inflectionRowAdjAdv v-for="(paradigm, index) in standardParadigms"
                                  :key="index"
-                                 :lemmaId="lemma.id"
+                                 :lemma-id="lemma.id"
                                  :paradigm="paradigm"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -372,7 +372,7 @@
                              :key="index"
                              :tags="tags"
                              :language="language"
-                             :lemmaId="lemma.id"
+                             :lemma-id="lemma.id"
                              :paradigms="standardParadigms"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -404,7 +404,7 @@
             <inflectionRowPron v-for="(paradigm, index) in standardParadigms"
                                :key="index"
                                :language="language"
-                               :lemmaId="lemma.id"
+                               :lemma-id="lemma.id"
                                :paradigm="paradigm"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -427,7 +427,7 @@
                               :tags="tags"
                               :lemma="lemma.lemma"
                               :language="language"
-                              :lemmaId="lemma.id"
+                              :lemma-id="lemma.id"
                               :paradigms="standardParadigms"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -445,39 +445,41 @@
           <thead>
             <tr>
               <th v-if="hasSing"
-                  class="infl-label label-border-top-left" :class="mq"
                   id="Sing"
+                  class="infl-label label-border-top-left" :class="mq"
                   scope="col"
                   :colspan="DETColspan">
                 {{tagToName('Sing')}}
               </th>
               <th v-if="hasPlur"
-                  class="infl-label label-border-top-right" :class="mq"
                   id="Plur"
+                  class="infl-label label-border-top-right" :class="mq"
                   scope="col"
                   rowspan="1">
                 {{tagToName('Plur')}}
               </th>
             </tr>
             <tr v-if="hasSing">
-              <th class="infl-label sub label-border-bottom" :class="mq"
-                  id="Masc"
+              <th id="Masc"
+                  class="infl-label sub label-border-bottom" :class="mq"
                   scope="col">
                 {{tagToName('Masc')}}
               </th>
-              <th class="infl-label sub label-border-bottom" :class="mq"
-                  id="Fem"
+              <th id="Fem"
+                  class="infl-label sub label-border-bottom" :class="mq"
                   scope="col">
                 {{tagToName('Fem')}}
               </th>
               <th v-if="hasNeuter"
-                  class="infl-label sub label-border-bottom" :class="mq"
                   id="Neuter"
+                  class="infl-label sub label-border-bottom" :class="mq"
                   scope="col">
                 {{tagToName('Neuter')}}
               </th>
-              <th v-if="hasDef" class="infl-label sub label-border-bottom" :class="mq"
+              <th v-if="hasDef" 
                   id="Def"
+                  class="infl-label sub label-border-bottom" 
+                  :class="mq"
                   scope="col">
                 {{tagToName('Def')}} {{tagToName('Form')}}
               </th>
@@ -487,7 +489,7 @@
             <inflectionRowDet v-for="(paradigm, index) in standardParadigms"
                               :key="index"
                               :language="language"
-                              :lemmaId="lemma.id"
+                              :lemma-id="lemma.id"
                               :paradigm="paradigm"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -501,7 +503,7 @@
       <div class="lemma">
         <span class="infl-lemma">{{lemma.lemma}} </span>
         <span class="sub">{{wordClass}}</span>
-        <span class="sub" v-if="nounGender"> {{nounGender}}</span>
+        <span v-if="nounGender" class="sub"> {{nounGender}}</span>
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
@@ -510,7 +512,7 @@
                               :tags="tags"
                               :lemma="lemma.lemma"
                               :language="language"
-                              :lemmaId="lemma.id"
+                              :lemma-id="lemma.id"
                               :paradigms="standardParadigms"
                               @hilite="hilite"
                               @unhilite="unhilite"/>
@@ -598,7 +600,7 @@ export default {
                   inflectionRowsPron,
                   inflectionRowsDet
                 },
-    props: ['lemmaList','mq','context','eng'],
+    props: ['lemma-list','mq','context','eng'],
     data: function () {
         return { language: this.eng ? 'eng' : (this.ukr ? 'ukr' :  (this.lemmaList ? this.lemmaList[0].language : null)),
                  // initialLexeme: this.lemmaList ? this.lemmaList[0].initial_lexeme : null,
@@ -619,8 +621,8 @@ export default {
                  hasNom: this.hasInflForm(['Nom']),
                  hasAcc: this.hasInflForm(['Acc']),
                  isUninflected: this.lemmaList && (!['NOUN','PROPN','ADJ','VERB','PRON','DET']
-                                                   .find(wc=>wc==this.lemmaList[0].word_class) ||
-                                                   this.lemmaList[0].paradigm_info[0].inflection_group == 'DET_simple'
+                                                   .find(wc=>wc === this.lemmaList[0].word_class) ||
+                                                   this.lemmaList[0].paradigm_info[0].inflection_group === 'DET_simple'
                                                   ),
                  show: false,
                  lemma: this.lemmaList && this.lemmaList[0],
@@ -702,7 +704,7 @@ export default {
             return 2 + (this.hasDef ? 1 : 0) + (this.hasNeuter ? 1 : 0)
         },
         isADJ_Adv: function () {
-            return this.lemmaList && this.lemmaList[0].paradigm_info[0].inflection_group == 'ADJ_adv'
+            return this.lemmaList && this.lemmaList[0].paradigm_info[0].inflection_group === 'ADJ_adv'
         },
         inflTagsPron: function () {
             return this.isNeuterPron() ? this.inflTagsPronNeuter : this.inflTagsPronNonNeuter
@@ -713,9 +715,9 @@ export default {
         inflTagsNoun: function () {
             if (this.hasSing) {
                  if (this.hasPlur) {
-                     return this.getGender() == '+' ? this.inflTagsNounG : this.inflTagsNounNG
+                     return this.getGender() === '+' ? this.inflTagsNounG : this.inflTagsNounNG
                  } else {
-                     return this.getGender() == '+' ? this.inflTagsNounSingG : this.inflTagsNounSingNG
+                     return this.getGender() === '+' ? this.inflTagsNounSingG : this.inflTagsNounSingNG
                  }
             } else if (this.hasDef) {
                 return this.inflTagsNounPlur
@@ -758,15 +760,15 @@ export default {
             },
         nounGender: function () {
             this.getGender()
-            return !this.gender || this.gender=='+' ? null : tagToName(this.gender,this.language)
+            return !this.gender || this.gender ==='+' ? null : tagToName(this.gender,this.language)
         },
         edit: function () {
-            return this.lemma.mode == 'edit' || this.lemma.mode == 'new'
+            return this.lemma.mode === 'edit' || this.lemma.mode === 'new'
         }
     },
     methods: {
         highlighted: function(rowindex, lemmaId) {
-          if(lemmaId == this.highlightedLemma)
+          if(lemmaId === this.highlightedLemma)
           for(const item of rowindex) {
             if (this.highlightedRows.includes(item)) {
               return true
@@ -789,19 +791,19 @@ export default {
             return tagToName(tag,this.language)
         },
         hasInflForm: function (tagList) {
-            let info = this.lemmaList &&
+            const info = this.lemmaList &&
                 this.lemmaList[0].paradigm_info &&
                 this.lemmaList[0].paradigm_info.find(
-                    paradigm => paradigm.standardisation == 'STANDARD' &&
+                    paradigm => paradigm.standardisation === 'STANDARD' &&
                         hasInflForm(paradigm, tagList))
             return !!info
         },
         hasSing1: function () {
-            let paradigms = this.getStandardParadigms()
+            const paradigms = this.getStandardParadigms()
             let sing = false
             paradigms.forEach(p => {
                 p.inflection.forEach(infl => {
-                    if (infl.tags.find(t => t == 'Sing')) {
+                    if (infl.tags.find(t => t === 'Sing')) {
                         sing = true
                     }
                 })
@@ -821,19 +823,19 @@ export default {
             if (!paradigms.length) {
                 return []
             }
-            let isNoun = paradigms[0].tags.find(t => t == 'NOUN')
+            const isNoun = paradigms[0].tags.find(t => t === 'NOUN')
 
-            let concat_wordforms = function (infl) {
+            const concat_wordforms = function (infl) {
                 let chain = ''
                 for (let i = 0; i < infl.length; i++) {
-                    let wf = infl[i].word_form
-                    if (wf == 'Masc') { // Masc < Fem < Neuter
+                    const wf = infl[i].word_form
+                    if (wf === 'Masc') { // Masc < Fem < Neuter
                         chain += 'a#'
-                    } else if (wf == 'Fem') {
+                    } else if (wf === 'Fem') {
                         chain += 'b#'
-                    } else if (wf == 'Neuter') {
+                    } else if (wf === 'Neuter') {
                         chain += 'c#'
-                    } else if (typeof wf == 'string') {
+                    } else if (typeof wf === 'string') {
                         chain += wf + '#'
                     } else {
                         chain += wf[0] + '#'
@@ -844,7 +846,7 @@ export default {
             
             paradigms.forEach((p) => {
                 // cases like ‘et nynorsk’, see #406, #510
-                if (isNoun && p.tags.find(t=>t=='Uninfl') && p.inflection.length == 1) {
+                if (isNoun && p.tags.find(t=>t === 'Uninfl') && p.inflection.length === 1) {
                     p.inflection.push({ tags: ['Sing', 'Ind'], word_form: this.lemma.lemma })
                     p.inflection.push({ tags: ['Sing', 'Def'], word_form: '–' })
                     p.inflection.push({ tags: ['Plur', 'Ind'], word_form: '–' })
@@ -853,13 +855,13 @@ export default {
             })
 
             paradigms = paradigms.sort((p1,p2) => {
-                let chain1 = concat_wordforms(p1.inflection)
-                let chain2 = concat_wordforms(p2.inflection)
+                const chain1 = concat_wordforms(p1.inflection)
+                const chain2 = concat_wordforms(p2.inflection)
                 return chain1.localeCompare(chain2)
             })
 
-            let currentTags = paradigms[0].tags
-            let currentInfl = paradigms[0].inflection.map(infl => {
+            const currentTags = paradigms[0].tags
+            const currentInfl = paradigms[0].inflection.map(infl => {
                 infl.rowspan = 0
                 infl.index = []
                 return infl })
@@ -879,8 +881,8 @@ export default {
                         currentInfl[i].index.push(index+1) // remember paradigm row, for hiliting
                         currentInfl[i].rowspan++
                         if (isNoun) {
-                            let gender = p.tags[1]
-                            if (!currentInfl[i].gender.find(g=>g==gender)) {
+                            const gender = p.tags[1]
+                            if (!currentInfl[i].gender.find(g => g === gender)) {
                                 currentInfl[i].gender.push(gender)
                             }
                         }
@@ -891,7 +893,7 @@ export default {
                         currentInfl[i].index.push(index+1) // remember paradigm row, for hiliting
                         currentInfl[i].rowspan = 1
                         if (isNoun) {
-                            let gender = p.tags[1]
+                            const gender = p.tags[1]
                             currentInfl[i].gender = [gender]
                         }
                     }
@@ -900,24 +902,24 @@ export default {
             return paradigms
         },
         isNeuterPron: function () {
-            let paradigms = this.getStandardParadigms()
+            const paradigms = this.getStandardParadigms()
             let neuter = false
             paradigms.forEach(p => {
-                if (p.tags.find(t => t == 'Neuter')) {
+                if (p.tags.find(t => t === 'Neuter')) {
                     neuter = true
                 }
             })
             return neuter
         },
         getGender: function () {
-            let paradigms = this.getStandardParadigms()
-            let isNoun = paradigms[0] ? paradigms[0].tags.find(t => t == 'NOUN') : null
+            const paradigms = this.getStandardParadigms()
+            const isNoun = paradigms[0] ? paradigms[0].tags.find(t => t === 'NOUN') : null
             paradigms.forEach(p => {
                 if (isNoun) {
-                    let gender = p.tags[1]
+                    const gender = p.tags[1]
                     if (!this.gender) {
                         this.gender = gender
-                    } else if (this.gender != gender) {
+                    } else if (this.gender !== gender) {
                         this.gender = '+' // more than one gender
                     }
                 }

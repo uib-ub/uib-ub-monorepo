@@ -5,16 +5,16 @@
       <client-only><div v-if="route.query.orig" class ="callout mx-2"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
         </div>
       </client-only>
-    <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
-      <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
+    <div :class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
+      <section v-for="dict in dicts" :key="dict" class="lg:grid-cols-6" :aria-labelledby="dict+'_heading'">
         <div class="py-2 px-2">
           <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
             <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
             <span class="sr-only">{{$t('notifications.keywords')}}</span>
           </h2>
         </div>
-        <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
-          <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
+        <component :is="listView ? 'ol' : 'div'" v-if="articles.meta[dict] && articles.meta[dict].total" class="article-column">
+          <component :is="listView ? 'li' : 'div'" v-for="(article_id, idx) in articles.articles[dict]" :key="article_id">
             <NuxtErrorBoundary @error="article_error($event, article_id, dict)">
               <Article :content_locale="content_locale(dict)" :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
             </NuxtErrorBoundary>
@@ -61,13 +61,13 @@ const { pending, error, refresh, data: articles } = await useFetch('api/articles
           }})
 
 const content_locale = dict => {
-  if (i18n.locale.value === "nob" || i18n.locale.value == 'nno') {
+  if (i18n.locale.value === "nob" || i18n.locale.value === 'nno') {
     return {bm: 'nob', nn: 'nno'}[dict] 
   }
   return i18n.locale.value
 }
 
-if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+if (error.value && session.endpoint === "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()
@@ -75,15 +75,15 @@ if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
 
 
 const title = computed(()=> {
-  return store.dict == "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
+  return store.dict === "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
 })
 
 const dicts = computed(()=> {
-  let currentDict = store.dict
-  if (currentDict == "bm") {
+  const currentDict = store.dict
+  if (currentDict === "bm") {
     return ["bm"]
   }
-  if (currentDict == "nn") {
+  if (currentDict === "nn") {
     return ["nn"]
   }
   return ["bm", "nn"]
