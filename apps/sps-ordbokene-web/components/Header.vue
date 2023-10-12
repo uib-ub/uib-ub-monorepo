@@ -23,17 +23,17 @@
       <nav class="lg:mr-4 self-center" :aria-label="$t('label.nav')">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
         </li>
 
         <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
+          <NuxtLink class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'contact' && 'page'" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'contact' && 'page'" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
         </li>
 
       </ul>
@@ -91,6 +91,11 @@ const menu_expanded = ref(false)
 const locale_cookie = useCookie('currentLocale')
 
 const locale_menu = ref();
+
+
+  watch(route, value => {
+    menu_expanded.value = false
+  }, {deep: true, immediate: true})
 
 const change_locale = (lang) => {
   i18n.locale.value = lang
