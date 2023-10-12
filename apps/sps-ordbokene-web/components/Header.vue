@@ -10,16 +10,17 @@
       </NuxtLink>
       <div class="lg:hidden text-lg ml-auto flex align-center">
 
-      <button class="text-lg pb-2 pt-1 px-3 sm:px-4 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
+      <button type="button"
+              class="text-lg pb-2 pt-1 px-3 sm:px-4 rounded-4xl active:bg-primary-darken focus:bg-primary-darken"
               :aria-expanded="menu_expanded"
               :aria-controls="menu_expanded? 'main_menu' : null"
               @click="menu_expanded = !menu_expanded">
-        <div class="sr-only sm:inline sm:not-sr-only">{{$t('menu.title')}}</div><Icon :name="menu_expanded ? 'bi:x-lg' : 'bi:list'" class="sm:ml-2"/>
+        <span class="sr-only sm:inline sm:not-sr-only">{{$t('menu.title')}}</span><Icon :name="menu_expanded ? 'bi:x-lg' : 'bi:list'" class="sm:ml-2"/>
       </button>
 </div>
       </div>
-    <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center text-center lg:ml-auto  mr-1 mt-2 lg:mt-0" :aria-label="$t('label.nav')" v-bind:class="{hidden: !menu_expanded}">
-      <nav class="lg:mr-4 self-center">
+    <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center text-center mr-1 mt-2 lg:mt-0"  v-bind:class="{hidden: !menu_expanded}">
+      <nav class="lg:mr-4 self-center" :aria-label="$t('label.nav')">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
           <NuxtLink @click="menu_expanded=false" class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
@@ -39,13 +40,14 @@
     </nav>
           
       <div class="flex self-center justify-end lg:justify-center pr-4 pb-4 lg:p-0">
-      <button class="ml-8" type="button" @click="locale_menu.toggle" aria-haspopup="true" :aria-controls="locale_menu && locale_menu.overlayVisible ? 'locale_menu' : null">
-        <div class="relative">
-        <div aria-hidden="true" class="absolute text-xs right-2 top-3 bg-primary rounded px-1 select-none">{{locale2lang[$i18n.locale].toUpperCase()}}</div> </div><Icon name="bi:globe" size="1.5em"/>
-        <div id="locale-label" class="sr-only">
-          <div lang="no">Nettsidespråk</div>
-          <div v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</div>
-        </div>
+      <button  type="button" class="ml-8" @click="locale_menu.toggle" aria-haspopup="true" :aria-controls="locale_menu && locale_menu.overlayVisible ? 'locale_menu' : null">
+        <span class="relative">
+        <span aria-hidden="true" class="absolute text-xs right-2 top-3 bg-primary rounded px-1 select-none">{{locale2lang[$i18n.locale].toUpperCase()}}</span><Icon name="bi:globe" size="1.5em"/>
+        <span id="locale-label" class="sr-only">
+          <span lang="no">Nettsidespråk</span>
+          <span v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</span>
+        </span>
+        </span>
       </button>
       <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true"
       :pt="{

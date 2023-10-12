@@ -1,6 +1,6 @@
 <template>
   <component :is="(level==1 || level == 9) ? 'div' : 'li'" :class="['definition', 'level'+level, {hilite: highlighted}]" :id="level != 9 && route.name == 'article' ? 'def' + body.id : undefined"><component :is="level <= 2 ? 'div' : 'span'">
-  <span class="explanations" v-if="explanations.length">
+  <div class="explanations" v-if="explanations.length">
     <!-- i-808 -->
     <div v-for="(explanation, index) in explanations" :key="index">
       <DefElement
@@ -14,7 +14,7 @@
       <br v-if="might_need_semicolon(explanations, index)" />
     </div>
     <!-- i/s -->
-  </span>
+  </div>
 <div v-if="examples.length">
   <h5 v-if="level <3 && !body.sub_definition">{{$t('article.headings.examples', 1, { locale: content_locale})}}</h5>
   <ul class="examples">

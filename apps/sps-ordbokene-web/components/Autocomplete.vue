@@ -229,6 +229,7 @@ if (process.client) {
   <div class="search-container">
   <div class="input-wrapper h-3.5rem border bg-canvas border-primary flex content-center justify-between pr-2" v-bind="{'data-dropdown-open': session.show_autocomplete}">
    <input class="input-element p-3 pl-6 lg:p-4 lg:px-8"
+          type="search"
           :value="store.input"
           id="input-element"
           ref="input_element" 
@@ -248,7 +249,7 @@ if (process.client) {
           :aria-expanded="session.show_autocomplete || 'false'" 
           :aria-owns="session.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"/>
           <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
-          <button class="appended-button" type="submit" :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
+          <button type="submit" class="appended-button"  :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 
   </div>

@@ -6,7 +6,7 @@
    <span v-for="(lemma, index) in lemma_group.lemmas"
           :key="index">
           <DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span>
-         <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span :aria-label="parseInt(lemma.hgno)">{{roman_hgno(lemma)}}</span></span>
+         <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
                    <span
                    class="title_comma"
                    v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}

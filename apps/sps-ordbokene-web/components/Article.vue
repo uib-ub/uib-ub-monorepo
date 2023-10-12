@@ -8,7 +8,7 @@
 
     <span v-for="(lemma, index) in lemma_group.lemmas"
           :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
-          <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span :aria-label="parseInt(lemma.hgno)">{{roman_hgno(lemma)}}</span></span>
+          <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
                     <span
                    class="title_comma"
                    v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
@@ -48,7 +48,7 @@
       
       <div v-if="data.lemmas[0].split_inf" class="mt-2 mb-3">
         <div class="flex gap-2 align-middle">{{$t('split_inf.title')}}: -a
-        <button :aria-expanded="split_inf_expanded" aria-controls="split-inf-explanation" @click="split_inf_expanded = !split_inf_expanded" class="rounded leading-none !p-0 !text-primary hover:bg-primary-lighten bg-primary  border-primary-lighten">
+        <button type="button" :aria-expanded="split_inf_expanded" aria-controls="split-inf-explanation" @click="split_inf_expanded = !split_inf_expanded" class="rounded leading-none !p-0 !text-primary hover:bg-primary-lighten bg-primary  border-primary-lighten">
           <Icon :name="split_inf_expanded? 'bi:dash' : 'bi:plus'" class="text-white !m-0 !p-0" size="1.5em"/>
         </button>
         </div>
@@ -60,7 +60,11 @@
         </div>
         </div>
 
-      <button v-if="!settings.inflectionExpanded && inflected && !welcome" class="btn btn-primary my-1 border-primary-darken !pr-2" @click="inflection_expanded = !inflection_expanded" type="button" :aria-expanded="inflection_expanded" :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
+      <button type="button" v-if="!settings.inflectionExpanded && inflected && !welcome" 
+              class="btn btn-primary my-1 border-primary-darken !pr-2" 
+              @click="inflection_expanded = !inflection_expanded" 
+              :aria-expanded="inflection_expanded" 
+              :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
              {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
