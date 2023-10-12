@@ -60,12 +60,12 @@
         }">
             <template #item="{ item, props }">
                   <a      :href="item.route"
-                          class="flex justify-between gap-3"
+                          class="gap-4"
                           :aria-current="$i18n.locale==item.locale"
                           @click.prevent="change_locale(item.locale)"
                           v-bind="props.action"
                           :lang="item.lang">
-                        <span aria-hidden="true" class="bg-primary rounded px-2 select-none">{{item.locale.toUpperCase()}}</span><span>{{item.label}}</span>
+                        <span aria-hidden="true" class="bg-primary rounded px-2 select-none">{{item.lang.toUpperCase()}}</span><span>{{item.label}}</span>
                         <span><Icon v-if="$i18n.locale==item.locale" name="bi:check2" size="1.5rem"/></span>
                   </a>
             </template>
