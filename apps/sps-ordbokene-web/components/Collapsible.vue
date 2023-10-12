@@ -1,6 +1,6 @@
 <template>
     <div class="w-full collapsible-container">
-    <component :id="id" :is="is || 'div'"><button type="button" class="p-2 mt-4 text-left w-full"
+    <component :is="is || 'div'" :id="id"><button type="button" class="p-2 mt-4 text-left w-full"
                                                   @click="expanded = !expanded" 
                                                   :aria-expanded="expanded"
                                                   :aria-controls="props.id + '-content'">
