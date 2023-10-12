@@ -19,7 +19,7 @@
       </button>
 </div>
       </div>
-    <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center text-center mr-1 mt-2 lg:mt-0"  v-bind:class="{hidden: !menu_expanded}">
+    <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center text-center mr-1 mt-6 lg:mt-0"  v-bind:class="{hidden: !menu_expanded}">
       <nav class="lg:mr-4 self-center" :aria-label="$t('label.nav')">
       <ul class="flex flex-col lg:flex-row gap-4 lg:space-x-3 xl:space-x-8 content-center mb-4 lg:mb-0" >
         <li class="nav-item">
