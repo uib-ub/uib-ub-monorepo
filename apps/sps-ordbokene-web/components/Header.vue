@@ -55,16 +55,18 @@
         menu: 'border-2 border-primary-lighten bg-primary-lighten text-white mt-5 md:mt-5 xl:mt-9',
         menuitem: 'hover:bg-primary-lighten2',
         action: ({ props, state, context }) => ({
-            class: (context.focused ? 'bg-primary' : '' ) + ' p-4 px-6 w-[200px] hover:bg-primary-lighten2'
+            class: (context.focused ? 'bg-primary' : '' ) + ' p-4 px-4 w-[200px] hover:bg-primary-lighten2'
         })
         }">
             <template #item="{ item, props }">
                   <a      :href="item.route"
+                          class="flex justify-between gap-3"
+                          :aria-current="$i18n.locale==item.locale"
                           @click.prevent="change_locale(item.locale)"
                           v-bind="props.action"
                           :lang="item.lang">
-                        <Icon :name="item.icon" size="1.25em" class="mr-2 text-gray-900"/> {{item.label}} 
-                        <Icon v-if="$i18n.locale==item.locale" name="bi:check2" size="1.5em" class="ml-2"/>
+                        <span aria-hidden="true" class="bg-primary rounded px-2 select-none">{{item.locale.toUpperCase()}}</span><span>{{item.label}}</span>
+                        <span><Icon v-if="$i18n.locale==item.locale" name="bi:check2" size="1.5rem"/></span>
                   </a>
             </template>
         </Menu>
