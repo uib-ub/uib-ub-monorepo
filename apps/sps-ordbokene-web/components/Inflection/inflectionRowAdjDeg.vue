@@ -7,8 +7,8 @@
           :index="rowindex"
           :headers="headers"
           v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
-            v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
-            v-on:mouseleave="$emit('unhilite')">
+            @mouseover="$emit('hilite', rowindex, lemmaId)"
+            @mouseleave="$emit('unhilite')">
         <span class='comma'
               v-for="form in forms"
               :key="form">

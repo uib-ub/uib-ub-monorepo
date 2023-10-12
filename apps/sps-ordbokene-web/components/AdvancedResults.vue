@@ -13,7 +13,7 @@
         <MinimalSuggest :content_locale="content_locale(dict)"  v-if="articles.meta[dict] && articles.meta[dict].total == 0" :dict="dict"/>
       <component v-if="articles.meta[dict] && articles.meta[dict].total > 0" :is="settings.listView ? 'ol' : 'div'" class="article-column">
         <component v-for="(article_id, idx) in articles.articles[dict].slice(offset, offset + perPage)" :key="article_id" :is="settings.listView ? 'li' : 'div'">
-          <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
+          <NuxtErrorBoundary @error="article_error($event, article_id, dict)">
             <Article :content_locale="content_locale(dict)" :article_id="article_id" :dict="dict" :idx="idx" :list="settings.listView"/>
           </NuxtErrorBoundary>
         </component>

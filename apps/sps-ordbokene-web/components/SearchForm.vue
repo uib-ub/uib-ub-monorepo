@@ -2,7 +2,7 @@
 <div class="py-1">
 <form class="md:mx-[10%]"  @submit.prevent="submitForm" ref="form" :action="`/${$i18n.locale}/${store.dict || 'bm,nn'}`">
 <NuxtErrorBoundary @error="autocomplete_error">
-  <Autocomplete v-on:dropdown-submit="submitForm"/>
+  <Autocomplete @dropdown-submit="submitForm"/>
 </NuxtErrorBoundary>
 
 </form>

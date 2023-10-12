@@ -53,8 +53,8 @@
                                  :language="language"
                                  :lemma="lemma"
                                  :paradigm="paradigm"
-                                 v-on:hilite="hilite"
-                                 v-on:unhilite="unhilite"/>
+                                 @hilite="hilite"
+                                 @unhilite="unhilite"/>
             </tbody>
           </table>
         </div>
@@ -76,8 +76,8 @@
                               :language="language"
                               :lemma="lemma"
                               :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
         </table>
       </div>
     </div>
@@ -103,8 +103,8 @@
                                :part="i"
                                :lemmaId="lemma.id"
                                :paradigm="paradigm"
-                               v-on:hilite="hilite"
-                               v-on:unhilite="unhilite"/>
+                               @hilite="hilite"
+                               @unhilite="unhilite"/>
           </tbody>
         </table>
       </div>
@@ -170,8 +170,8 @@
                                      :lemmaId="lemma.id"
                                      :paradigm="paradigm"
                                      :context="context"
-                                     v-on:hilite="hilite"
-                                     v-on:unhilite="unhilite"/>
+                                     @hilite="hilite"
+                                     @unhilite="unhilite"/>
           </tbody>
         </table>
       </div>
@@ -190,8 +190,8 @@
                               :language="language"
                               :lemmaId="lemma.id"
                               :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
         </table>
       </div>
     </div>
@@ -262,8 +262,8 @@
                               :hasSing="hasSingAdj"
                               :lemmaId="lemma.id"
                               :paradigm="paradigm"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
           </tbody>
         </table>
       </div>
@@ -303,8 +303,8 @@
                                  :key="index"
                                  :lemmaId="lemma.id"
                                  :paradigm="paradigm"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
           </tbody>
         </table>
       </div>
@@ -323,8 +323,8 @@
                              :language="language"
                              :lemmaId="lemma.id"
                              :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
         </table>
       </div>
     </div>
@@ -354,8 +354,8 @@
                                  :key="index"
                                  :lemmaId="lemma.id"
                                  :paradigm="paradigm"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
           </tbody>
         </table>
       </div>
@@ -374,8 +374,8 @@
                              :language="language"
                              :lemmaId="lemma.id"
                              :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
         </table>
       </div>
     </div>
@@ -406,8 +406,8 @@
                                :language="language"
                                :lemmaId="lemma.id"
                                :paradigm="paradigm"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
           </tbody>
         </table>
       </div>
@@ -429,8 +429,8 @@
                               :language="language"
                               :lemmaId="lemma.id"
                               :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
         </table>
       </div>
     </div>
@@ -489,8 +489,8 @@
                               :language="language"
                               :lemmaId="lemma.id"
                               :paradigm="paradigm"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
           </tbody>
         </table>
       </div>
@@ -512,8 +512,8 @@
                               :language="language"
                               :lemmaId="lemma.id"
                               :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
         </table>
       </div>
     </div>

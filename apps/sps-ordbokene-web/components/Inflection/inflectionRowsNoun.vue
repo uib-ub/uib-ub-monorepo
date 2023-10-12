@@ -14,8 +14,8 @@
               :colspan="rowspan"
               :index="rowindex"
               v-bind:class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
-            v-on:mouseover="$emit('hilite', rowindex, lemma.id)"
-            v-on:mouseleave="$emit('unhilite')">
+            @mouseover="$emit('hilite', rowindex, lemma.id)"
+            @mouseleave="$emit('unhilite')">
             <span v-html="formattedForm(tags,forms[0])"/>
           </th>
           <td v-else
@@ -24,8 +24,8 @@
               :index="rowindex"
               :headers="headers"
               v-bind:class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
-            v-on:mouseover="$emit('hilite', rowindex, lemma.id)"
-            v-on:mouseleave="$emit('unhilite')">
+            @mouseover="$emit('hilite', rowindex, lemma.id)"
+            @mouseleave="$emit('unhilite')">
             <span class='comma'
                   v-for="(form, index) in forms"
                   :key="index">

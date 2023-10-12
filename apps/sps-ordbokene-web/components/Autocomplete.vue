@@ -248,7 +248,7 @@ if (process.client) {
           @keydown="keys"
           :aria-expanded="session.show_autocomplete || 'false'" 
           :aria-owns="session.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"/>
-          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
+          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" @click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
           <button type="submit" class="appended-button"  :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 

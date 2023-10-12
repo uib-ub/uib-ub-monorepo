@@ -6,8 +6,8 @@
           :rowspan="rowspan"
           :index="rowindex"
           v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
-            v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
-            v-on:mouseleave="$emit('unhilite')">
+            @mouseover="$emit('hilite', rowindex, lemmaId)"
+            @mouseleave="$emit('unhilite')">
         <span class='comma nobr'
               v-for="(form, index) in forms"
               :key="index">

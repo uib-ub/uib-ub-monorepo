@@ -80,24 +80,24 @@
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
                 <h4>{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
 
-              <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
+              <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' @link-click="link_click"/>
 
           </section>
           <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
               <h4>{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h4>
-              <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
+              <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' @link-click="link_click"/>
 
           </section>
           <section class="definitions" v-if="has_content && !welcome">
               <h4 v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h4>
 
-              <Definition v-for="definition in data.body.definitions" :content_locale="content_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
+              <Definition v-for="definition in data.body.definitions" :content_locale="content_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' @link-click="link_click" :welcome="welcome"/>
 
           </section>
           <section v-if="sub_articles.length && !welcome" class="expressions">
               <h4>{{$t('article.headings.expressions', 1, { locale: content_locale})}}</h4>
               <ul>
-              <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
+              <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" @link-click="link_click" :content_locale="content_locale"/>
               </ul>
             </section>
 

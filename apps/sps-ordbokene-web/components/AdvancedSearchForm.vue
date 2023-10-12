@@ -34,7 +34,7 @@
         <div class="grid grid-cols-10 gap-4 xl:gap-4">
  
           <div class="col-span-10 lg:col-span-6 xl:col-span-7" :class="{activeAutocomplete: store.autocomplete && store.autocomplete.length}">
-            <Autocomplete  v-on:dropdown-submit="submitForm"/>
+            <Autocomplete  @dropdown-submit="submitForm"/>
           </div>
 
           <div class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-8" v-if="store.q">

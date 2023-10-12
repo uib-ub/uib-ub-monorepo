@@ -9,7 +9,7 @@
             :rowspan="rowspan"
             :index="rowindex"
             v-bind:class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
-            v-on:mouseover="$emit('hilite', rowindex, lemma.id)">
+            @mouseover="$emit('hilite', rowindex, lemma.id)">
           <span class='comma'
                 v-for="(form, i) in forms"
                 :key="i">{{tagToName(form)}}</span>
@@ -20,8 +20,8 @@
             :rowspan="rowspan"
             :index="rowindex"
             v-bind:class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
-            v-on:mouseover="$emit('hilite', rowindex, lemma.id)"
-            v-on:mouseleave="$emit('unhilite')">
+            @mouseover="$emit('hilite', rowindex, lemma.id)"
+            @mouseleave="$emit('unhilite')">
           <span class='comma'
                 v-for="(form, i) in forms"
                 :key="i"><em v-if="prefix" class="context">{{prefix}}</em>&nbsp;<span v-html="formattedForm(form)"/></span>
