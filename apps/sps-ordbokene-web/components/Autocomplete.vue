@@ -229,7 +229,7 @@ if (process.client) {
   <div class="search-container">
   <div class="input-wrapper h-3.5rem border bg-canvas border-primary flex content-center justify-between pr-2" v-bind="{'data-dropdown-open': session.show_autocomplete}">
    <input class="input-element p-3 pl-6 lg:p-4 lg:px-8"
-          type="search"
+          type="text"
           :value="store.input"
           id="input-element"
           ref="input_element" 
