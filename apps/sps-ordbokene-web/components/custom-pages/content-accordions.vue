@@ -28,7 +28,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 
 const { data: intro } = await useAsyncData('intro_' + i18n.locale.value, () => queryContent(i18n.locale.value, route.name).findOne())
-const { data: sections } = await useAsyncData('sections_' + i18n.locale.value, () => queryContent(i18n.locale.value, route.name).find())
+const sections =  queryContent(i18n.locale.value, route.name)
 
 useHead({
     title: i18n.t(route.name)
