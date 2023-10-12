@@ -2,9 +2,9 @@
 <header class="bg-primary pl-3 pr-0 lg:px-5 py-1 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div class="flex flex-row content-center items-center w-full lg:w-auto">
   <NuxtLink :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
-      <div class="mx-1 md:my-1 lg:my-3 xl:my-4">
-      <div><h1 class="text-xl md:text-2xl mt-0.5 mb-0.5">ordbøkene.no<span class="sr-only">, {{$t('home')}}</span></h1>
-      <div class="text-xs md:text-sm brand-subtitle ml-0.5 mb-1">{{$t("sub_title")}}</div>
+      <div class="mx-1 my-1 md:my-2 mt-0 xl:my-4">
+      <div><h1 class="text-md xl:text-2xl">ordbøkene.no<span class="sr-only">, {{$t('home')}}</span></h1>
+      <div class="text-xs xl:text-sm">{{$t("sub_title")}}</div>
       </div>
     </div>
       </NuxtLink>
