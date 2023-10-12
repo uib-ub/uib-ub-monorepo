@@ -10,7 +10,7 @@
           <span class="sr-only">{{$t('notifications.keywords')}}</span>
         </h2>
       </div>
-        <MinimalSuggest :content_locale="content_locale(dict)"  v-if="articles.meta[dict] && articles.meta[dict].total == 0" :dict="dict"/>
+        <MinimalSuggest v-if="articles.meta[dict] && articles.meta[dict].total == 0" :content_locale="content_locale(dict)" :dict="dict"/>
       <component v-if="articles.meta[dict] && articles.meta[dict].total > 0" :is="settings.listView ? 'ol' : 'div'" class="article-column">
         <component v-for="(article_id, idx) in articles.articles[dict].slice(offset, offset + perPage)" :key="article_id" :is="settings.listView ? 'li' : 'div'">
           <NuxtErrorBoundary @error="article_error($event, article_id, dict)">
@@ -36,7 +36,7 @@
     </button>
   </NuxtLink>
   </div>
-  <div class="block self-center" v-if="articles.meta.bm && articles.meta.bm.total > 10 || articles.meta.nn && articles.meta.nn.total > 10">
+  <div v-if="articles.meta.bm && articles.meta.bm.total > 10 || articles.meta.nn && articles.meta.nn.total > 10" class="block self-center">
     <button type="button" @click="goToTop" class="go-top-button"><Icon name="bi:arrow-up-circle-fill" size="1.25em" class="mr-3 text-primary" />{{$t('to_top')}}</button>
   <label class="px-3" for="perPage-select">{{$t('per_page')}}</label>
   <select id="perPage-select" name="pos" class="bg-tertiary border border-1 py-1 px-2 pr-2 mr-2" v-model="perPage" @change="update_perPage">

@@ -248,7 +248,7 @@ if (process.client) {
           @keydown="keys"
           :aria-expanded="session.show_autocomplete || 'false'" 
           :aria-owns="session.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"/>
-          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" @click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
+          <button v-if="store.input.length > 0" type="button" :title="$t('clear')" class="appended-button" :aria-label="$t('clear')" @click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
           <button type="submit" class="appended-button"  :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 
@@ -269,7 +269,7 @@ if (process.client) {
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">
             <span v-if="store.autocomplete.length == 1" class="sr-only">{{$t('autocomplete_suggestions', 1)}}: </span>
-            <span :class="item.type">{{ item.q }}</span> <span class="dict-parentheses text-gray-900" v-if="item.dict && store.dict =='bm,nn'">({{["bokmål","nynorsk","bokmål, nynorsk"][item.dict-1]}})</span>
+            <span :class="item.type">{{ item.q }}</span> <span v-if="item.dict && store.dict =='bm,nn'" class="dict-parentheses text-gray-900">({{["bokmål","nynorsk","bokmål, nynorsk"][item.dict-1]}})</span>
           </span>
         </div>
    </li>

@@ -1,5 +1,5 @@
 <template>
-  <div class="list-view-item" v-if="list && !welcome">
+  <div v-if="list && !welcome" class="list-view-item">
       <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
       <NuxtLink v-else class="result-list-item" :to="link_to_self()">
 
@@ -9,9 +9,8 @@
     <span v-for="(lemma, index) in lemma_group.lemmas"
           :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
           <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
-                    <span
-                   class="title_comma"
-                   v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
+                  <span v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1" class="title_comma">
+                      {{", "}}
                   </span>
     </span>
 </span>
@@ -53,18 +52,19 @@
         </button>
         </div>
         
-        <div class="mb-4 my-2" id="split-inf-explanation" v-if="split_inf_expanded">
+        <div v-if="split_inf_expanded" class="mb-4 my-2" id="split-inf-explanation">
           {{$t('split_inf.content[0]', content_locale)}} <em>-a</em> {{$t('split_inf.content[1]', content_locale)}}
           <a target="_blank" 
              href="https://www.sprakradet.no/svardatabase/sporsmal-og-svar/kloyvd-infinitiv-/">{{$t('split_inf.content[2]', content_locale)}}</a>
         </div>
         </div>
 
-      <button type="button" v-if="!settings.inflectionExpanded && inflected && !welcome" 
-              class="btn btn-primary my-1 border-primary-darken !pr-2" 
-              @click="inflection_expanded = !inflection_expanded" 
-              :aria-expanded="inflection_expanded" 
-              :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
+      <button  v-if="!settings.inflectionExpanded && inflected && !welcome"
+               type="button"
+               class="btn btn-primary my-1 border-primary-darken !pr-2" 
+               @click="inflection_expanded = !inflection_expanded" 
+               :aria-expanded="inflection_expanded" 
+               :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
              {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
@@ -88,7 +88,7 @@
               <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' @link-click="link_click"/>
 
           </section>
-          <section class="definitions" v-if="has_content && !welcome">
+          <section v-if="has_content && !welcome" class="definitions">
               <h4 v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h4>
 
               <Definition v-for="definition in data.body.definitions" :content_locale="content_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' @link-click="link_click" :welcome="welcome"/>

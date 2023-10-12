@@ -1,6 +1,6 @@
 <template>
    <div class="mb-10 mx-2">
-    <SuggestResults :minimal="true" :dict="dict" v-if="!pending && data.length" :suggestions="data"><h3>{{$t('notifications.similar')}}</h3></SuggestResults>
+    <SuggestResults v-if="!pending && data.length" :minimal="true" :dict="dict" :suggestions="data"><h3>{{$t('notifications.similar')}}</h3></SuggestResults>
     <div v-if="!pending && !data.length" class="callout pt-0 my-0">
         <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
         <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)})}}.</p>

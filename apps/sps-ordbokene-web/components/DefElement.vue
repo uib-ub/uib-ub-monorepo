@@ -7,14 +7,14 @@
           -->{{item.html}}<!--
        --><NuxtLink class="article_ref notranslate" v-if="item.type == 'article_ref'" :to="item.ref" @click="link_click" :key="index"><!--
        --><DefElement tag='span' v-if="item.link_text.type_" :dict="dict" :key="item.id+'_sub'" :body='item.link_text' :content_locale="content_locale"/><span v-else>{{item.link_text}}</span><!--
-       --><span class="homograph" v-if="item.lemmas[0].hgno" :key="index"><!--
+       --><span v-if="item.lemmas[0].hgno" class="homograph" :key="index"><!--
         --> (<span class="sr-only">{{parseInt(item.lemmas[0].hgno)}}</span><span aria-hidden="true">{{roman_hgno(item.lemmas[0])}}{{item.definition_order ? '': ')'}}</span></span>
         <span class="def_order" v-if="item.definition_order">{{item.lemmas[0].hgno ? ', ': ' ('}}{{item.definition_order}})</span>
       </NuxtLink><span v-else>{{item.link_text}}</span>
        <!--
-       --><span class="numerator" v-if="item.type == 'fraction'">{{item.num}}</span><!--
+       --><span v-if="item.type == 'fraction'" class="numerator">{{item.num}}</span><!--
        -->{{item.type == 'fraction' ? '⁄' : ''}}<!--
-       --><span class="denominator" v-if="item.type == 'fraction'">{{item.denom}}</span><!--
+       --><span v-if="item.type == 'fraction'" class="denominator">{{item.denom}}</span><!--
  --></component>
  <span v-if="semicolon && no_preceeding_punctuation">; </span>
  <span v-if="comma && no_preceeding_punctuation">, </span>

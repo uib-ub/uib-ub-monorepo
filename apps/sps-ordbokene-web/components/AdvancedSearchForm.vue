@@ -25,7 +25,7 @@
             </select>
         </div>
 
-          <button class="btn sm:mt-4 sm:mb-2 md:mb-0 py-2 lg:py-4 border-primary" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
+          <button v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" class="btn sm:mt-4 sm:mb-2 md:mb-0 py-2 lg:py-4 border-primary" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
           
       </div>
       
@@ -37,7 +37,7 @@
             <Autocomplete  @dropdown-submit="submitForm"/>
           </div>
 
-          <div class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-8" v-if="store.q">
+          <div v-if="store.q" class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-8" >
             
             
             <div class="flex justify-center items-end">

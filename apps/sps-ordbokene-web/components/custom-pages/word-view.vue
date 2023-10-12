@@ -1,8 +1,8 @@
 <template>
     <div>     
     <Spinner v-if="!error && !articles"/>    
-    <div ref="results" v-if="!error && articles && articles.meta" >
-      <client-only><div class ="callout mx-2" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
+    <div v-if="!error && articles && articles.meta" ref="results">
+      <client-only><div v-if="route.query.orig" class ="callout mx-2"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
         </div>
       </client-only>
     <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">

@@ -2,7 +2,7 @@
 <div class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
   <client-only>
     <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-2">
-    <button type="button" v-if="showLinkCopy" class="btn btn-borderless px-3" @click="copy_link" v-bind:class="{'hidden xl:block': store.dict == 'bm,nn' && $route.name!= 'article', 'hidden md:block': store.dict != 'bm,nn' && $route.name != 'article'}">
+    <button v-if="showLinkCopy" type="button" class="btn btn-borderless px-3" @click="copy_link" v-bind:class="{'hidden xl:block': store.dict == 'bm,nn' && $route.name!= 'article', 'hidden md:block': store.dict != 'bm,nn' && $route.name != 'article'}">
       <Icon :name="session.copied_link == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
       <span>{{ session.copied_link == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
     </button>
@@ -12,7 +12,7 @@
       <button type="button" class="btn btn-borderless px-3" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
         <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
       </button>
-      <div class="cite-container p-4 pb-1 pt-2 text-1 basis-full" v-if="cite_expanded" :id="'cite-'+article_id">
+      <div v-if="cite_expanded" class="cite-container p-4 pb-1 pt-2 text-1 basis-full" :id="'cite-'+article_id">
         <h4>{{$t('article.cite_title')}}</h4>
         <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
 

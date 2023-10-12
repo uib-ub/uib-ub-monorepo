@@ -10,8 +10,8 @@
             <caption class="sr-only">{{$t('table.caption.NOUN')}}</caption>
             <thead>
               <tr>
-                <th class="infl-label sub label-border-top-left" :class="mq"
-                    v-if="!nounGender && hasGender"
+                <th v-if="!nounGender && hasGender"
+                    class="infl-label sub label-border-top-left" :class="mq"
                     id="Gender"
                     scope="col"
                     rowspan='2'>{{$t('gender')}}</th>
@@ -65,7 +65,7 @@
       <div class="lemma">
         <span class="infl-lemma" v-html="formattedLemma"/>
         <span class="sub"> {{wordClass}}</span>
-        <span class="sub" v-if="nounGender"> {{nounGender}}</span>
+        <span v-if="nounGender" class="sub"> {{nounGender}}</span>
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
@@ -138,10 +138,10 @@
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">
                   {{tagToName('Fem')}}</th>
-                <th id="Neuter"
+                <th v-if="(j<0 || j==3)"
+                    id="Neuter"
                     scope="col"
-                    class="infl-label sub label-border-bottom" :class="mq"
-                    v-if="(j<0 || j==3)">{{tagToName('Neuter')}}</th>
+                    class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Neuter')}}</th>
                 <th v-if="(j<0 || j==3) && hasPerfPartDef"
                     id="Def"
                     scope="col"
@@ -272,8 +272,8 @@
           <caption class="sr-only">{{$t('table.caption.ADJCS')}}</caption>
           <thead>
             <tr>
-              <th class="infl-label label-border-top-left-right"
-                  v-if="hasDeg"
+              <th v-if="hasDeg"
+                  class="infl-label label-border-top-left-right"
                   id="Deg"
                   scope="col"
                   colspan="3">
@@ -418,7 +418,7 @@
       <div class="lemma">
         <span class="infl-lemma">{{lemma.lemma}} </span>
         <span class="sub">{{wordClass}}</span>
-        <span class="sub" v-if="nounGender"> {{nounGender}}</span>
+        <span v-if="nounGender" class="sub"> {{nounGender}}</span>
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
@@ -476,7 +476,7 @@
                   scope="col">
                 {{tagToName('Neuter')}}
               </th>
-              <th class="infl-label sub label-border-bottom" :class="mq" v-if="hasDef"
+              <th v-if="hasDef" class="infl-label sub label-border-bottom" :class="mq"
                   id="Def"
                   scope="col">
                 {{tagToName('Def')}} {{tagToName('Form')}}

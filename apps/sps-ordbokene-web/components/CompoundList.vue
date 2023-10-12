@@ -1,7 +1,7 @@
 <template>
   <li class="compound_list">
     <ul>
-      <DefElement :body="body.intro" v-if="body.intro" :dict="dict" :content_locale="content_locale" />
+      <DefElement v-if="body.intro" :body="body.intro" :dict="dict" :content_locale="content_locale" />
       <li
         :key="index"
         v-for="(item, index) in body.elements"

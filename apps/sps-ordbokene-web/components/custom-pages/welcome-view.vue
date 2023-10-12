@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="md:container mx-auto grid lg:grid-cols-2 gap-4 grid-flow-row px-3 md:px-[10%] py-3 md:py-[2%]" v-if="welcome_bm && welcome_nn">
+    <div v-if="welcome_bm && welcome_nn" class="md:container mx-auto grid lg:grid-cols-2 gap-4 grid-flow-row px-3 md:px-[10%] py-3 md:py-[2%]">
       <section class="grid">
         <Article :article_id="parseInt(welcome_bm.front_article.value)" dict="bm" :content_locale="content_locale('bm')" welcome />
       </section>
