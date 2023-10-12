@@ -12,8 +12,9 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-const i18n = useI18n()
 import { useRoute } from 'vue-router'
+
+const i18n = useI18n()
 const route = useRoute()
 
 

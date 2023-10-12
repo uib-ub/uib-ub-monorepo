@@ -3,7 +3,7 @@
   <Spinner v-if="!error && !articles"/>
   <div v-if="!error && articles && articles.meta" >
   <div  v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
-    <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
+    <section v-for="dict in dicts" :key="dict" class="lg:grid-cols-6" :aria-labelledby="dict+'_heading'">
       <div class="py-2 px-2">
         <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
           <span v-if="articles.meta[dict]" class="result-count-text">{{articles.meta[dict].total}}</span>
@@ -58,10 +58,11 @@
 
 <script setup>
 
+import { useI18n } from 'vue-i18n'
 import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import {useSessionStore } from '~/stores/sessionStore'
-import { useI18n } from 'vue-i18n'
+
 
 const settings = useSettingsStore()
 const store = useSearchStore()
@@ -94,7 +95,7 @@ const query = computed(() => {
 
 
 const content_locale = dict => {
-  if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {
+  if (i18n.locale.value === "nob" || i18n.locale.value === 'nno') {
     return {bm: 'nob', nn: 'nno'}[dict] 
   }
   return i18n.locale.value
@@ -109,18 +110,18 @@ const { pending, error, refresh, data: articles } = await useFetch(() => `api/ar
         })
 
 const dicts = computed(()=> {
-let currentDict = route.query.dict 
-if (currentDict == "bm") {
+const currentDict = route.query.dict 
+if (currentDict === "bm") {
   return ["bm"]
 }
-if (currentDict == "nn") {
+if (currentDict === "nn") {
   return ["nn"]
 }
 return ["bm", "nn"]
 })
 
 
-if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+if (error.value && session.endpoint === "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()
@@ -128,8 +129,8 @@ if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
 
 
 const pages = computed(() => {
-  let total_bm = articles.value.meta.bm ? articles.value.meta.bm.total : 0
-  let total_nn = articles.value.meta.nn ? articles.value.meta.nn.total : 0
+  const total_bm = articles.value.meta.bm ? articles.value.meta.bm.total : 0
+  const total_nn = articles.value.meta.nn ? articles.value.meta.nn.total : 0
   return Math.ceil(Math.max(total_bm, total_nn) / perPage.value)
 })
 

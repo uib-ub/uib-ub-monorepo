@@ -44,12 +44,12 @@ const store = useSearchStore()
 const session = useSessionStore()
 const i18n = useI18n()
 
-const sortArticles = async (data) => {
+const sortArticles = (data) => {
     return data.sort((a, b) => new Date(b[3]) - new Date(a[3])).slice(0, 5)
 }
 
 const content_locale = dict => {
-  if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {
+  if (i18n.locale.value === "nob" || i18n.locale.value === 'nno') {
     return {bm: 'nob', nn: 'nno'}[dict] 
   }
   return i18n.locale.value

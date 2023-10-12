@@ -38,11 +38,11 @@
 </template>
 
 <script setup>
-
+import { useI18n } from 'vue-i18n'
 import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import {useSessionStore } from '~/stores/sessionStore'
-import { useI18n } from 'vue-i18n'
+
 
 const settings = useSettingsStore()
 const store = useSearchStore()
@@ -61,7 +61,7 @@ const { pending, error, refresh, data: articles } = await useFetch('api/articles
           }})
 
 const content_locale = dict => {
-  if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {
+  if (i18n.locale.value === "nob" || i18n.locale.value == 'nno') {
     return {bm: 'nob', nn: 'nno'}[dict] 
   }
   return i18n.locale.value

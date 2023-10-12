@@ -148,13 +148,13 @@ export default defineNuxtConfig({
       {
         name: 'settings',
         path: optionalLocale + '/settings',
-        file: '~/components/custom-pages/settings.vue',
+        file: '~/components/custom-pages/settings-view.vue',
       })
 
       pages.push({
         name: 'search',
         path: optionalLocale +'/search',
-        file: '~/components/custom-pages/search.vue',
+        file: '~/components/custom-pages/search-view.vue',
       })
 
       pages.push({

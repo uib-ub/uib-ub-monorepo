@@ -7,18 +7,17 @@
     <Link rel="alternate" :href="baseUrl + '/ukr' + non_localized" hreflang="uk"/>
   </Head>
 <NuxtLayout>
-    <NuxtPage @click="menu_expanded=false"
-              v-bind:class="{'welcome': route.name == 'welcome' || route.name == 'index'}"/>
+    <NuxtPage v-bind:class="{'welcome': route.name == 'welcome' || route.name == 'index'}" @click="menu_expanded=false"/>
 </NuxtLayout>
 </Html>
 </template>
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 import { useSettingsStore } from './stores/settingsStore'
 import { useSessionStore } from './stores/sessionStore'
+import { useSearchStore } from '~/stores/searchStore'
 const store = useSearchStore()
 const session = useSessionStore()
 const settings = useSettingsStore()
@@ -70,7 +69,7 @@ if (process.client) {
 const nuxtApp = useNuxtApp()
 
 nuxtApp.hook("page:finish", () => {
-  if (input_element.value && ( settings.autoSelect || route.name == "welcome" || route.name == "index")) {
+  if (input_element.value && ( settings.autoSelect || route.name === "welcome" || route.name === "index")) {
     input_element.value.select()
   }
 })

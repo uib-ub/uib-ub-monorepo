@@ -11,9 +11,9 @@
 </template>
   
 <script setup>
-import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useSearchStore } from '~/stores/searchStore'
 
 const store = useSearchStore()
 const route = useRoute()
