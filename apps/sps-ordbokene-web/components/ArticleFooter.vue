@@ -2,36 +2,40 @@
 <div class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
   <client-only>
     <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-2">
-    <button v-if="showLinkCopy" type="button" class="btn btn-borderless px-3" @click="copy_link" v-bind:class="{'hidden xl:block': store.dict == 'bm,nn' && $route.name!= 'article', 'hidden md:block': store.dict != 'bm,nn' && $route.name != 'article'}">
+    <button v-if="showLinkCopy" 
+            type="button" 
+            class="btn btn-borderless px-3"
+            :class="{'hidden xl:block': store.dict == 'bm,nn' && $route.name!= 'article', 'hidden md:block': store.dict != 'bm,nn' && $route.name != 'article'}" 
+            @click="copy_link">
       <Icon :name="session.copied_link == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
       <span>{{ session.copied_link == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
     </button>
-    <button type="button" class="btn btn-borderless px-3" v-if="webShareApiSupported" @click="shareViaWebShare">
+    <button v-if="webShareApiSupported" type="button" class="btn btn-borderless px-3" @click="shareViaWebShare">
         <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
     </button>
       <button type="button" class="btn btn-borderless px-3" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
         <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
       </button>
-      <div v-if="cite_expanded" class="cite-container p-4 pb-1 pt-2 text-1 basis-full" :id="'cite-'+article_id">
+      <div v-if="cite_expanded" :id="'cite-'+article_id" class="cite-container p-4 pb-1 pt-2 text-1 basis-full">
         <h4>{{$t('article.cite_title')}}</h4>
         <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
 
         <blockquote class="break-all sm:break-keep">
-          <i18n-t keypath="article.citation" tag="div" id="citation">
-            <template v-slot:lemma>{{citation.lemma}}</template>>
-            <template v-slot:link>
+          <i18n-t id="citation" keypath="article.citation" tag="div">
+            <template #lemma>{{citation.lemma}}</template>>
+            <template #link>
               &lt;<a :href="citation.link">{{citation.link}}</a>&gt;
             </template>
-            <template v-slot:dict>
+            <template #dict>
               <em>{{citation.dict}}</em>
             </template>
-            <template v-slot:dd>
+            <template #dd>
               {{citation.dd}}
             </template>
-            <template v-slot:mm>
+            <template #mm>
               {{citation.mm}}
             </template>
-            <template v-slot:yyyy>
+            <template #yyyy>
               {{citation.yyyy}}
             </template>
           </i18n-t>
@@ -97,7 +101,7 @@ const shareViaWebShare = () => {
 
 
 const copy_link = (event) => {
-  let link = create_link();
+  const link = create_link();
   navigator.clipboard.writeText(link).then(() => {
     session.copied_link = link;
   }).catch(err => {
@@ -106,19 +110,19 @@ const copy_link = (event) => {
 };
 
 const get_citation_info = () => {
-      let date = new Date();
-      let dd = (date.getDate() < 10? '0' : '') + date.getDate()
-      let mm = (date.getMonth() < 9? '0' : '') + (date.getMonth()+1)
-      let yyyy = date.getFullYear()
-      let link = create_link()
-      let lemma = props.lemmas[0].lemma
-      let dict = {"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[props.dict]
+      const date = new Date();
+      const dd = (date.getDate() < 10? '0' : '') + date.getDate()
+      const mm = (date.getMonth() < 9? '0' : '') + (date.getMonth()+1)
+      const yyyy = date.getFullYear()
+      const link = create_link()
+      const lemma = props.lemmas[0].lemma
+      const dict = {"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[props.dict]
       return [lemma, dd, mm, yyyy, link, dict]
     }
 
 const citation = computed(() => {
       const [lemma, dd, mm, yyyy, link, dict] = get_citation_info()
-      let citation = {lemma, link, dd, mm, yyyy, dict}
+      const citation = {lemma, link, dd, mm, yyyy, dict}
 
       return citation
     })
@@ -139,7 +143,7 @@ const download_ris = () => {
 const copycitation = ref(true);
 
 const copy_citation = () => {
-  let citation = document.getElementById("citation").textContent;
+  const citation = document.getElementById("citation").textContent;
   navigator.clipboard.writeText(citation);
   copycitation.value = !copycitation.value;
   citationCopied.value = !citationCopied.value; // Toggle the citationCopied value

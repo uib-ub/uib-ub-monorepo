@@ -1,8 +1,8 @@
 <template>
-  <div v-bind:class="{'list': settings.listView}">     
+  <div :class="{'list': settings.listView}">     
   <Spinner v-if="!error && !articles"/>
   <div v-if="!error && articles && articles.meta" >
-  <div  v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
+  <div  :class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
     <section v-for="dict in dicts" :key="dict" class="lg:grid-cols-6" :aria-labelledby="dict+'_heading'">
       <div class="py-2 px-2">
         <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
@@ -11,8 +11,8 @@
         </h2>
       </div>
         <MinimalSuggest v-if="articles.meta[dict] && articles.meta[dict].total == 0" :content_locale="content_locale(dict)" :dict="dict"/>
-      <component v-if="articles.meta[dict] && articles.meta[dict].total > 0" :is="settings.listView ? 'ol' : 'div'" class="article-column">
-        <component v-for="(article_id, idx) in articles.articles[dict].slice(offset, offset + perPage)" :key="article_id" :is="settings.listView ? 'li' : 'div'">
+      <component :is="settings.listView ? 'ol' : 'div'" v-if="articles.meta[dict] && articles.meta[dict].total > 0" class="article-column">
+        <component :is="settings.listView ? 'li' : 'div'" v-for="(article_id, idx) in articles.articles[dict].slice(offset, offset + perPage)" :key="article_id">
           <NuxtErrorBoundary @error="article_error($event, article_id, dict)">
             <Article :content_locale="content_locale(dict)" :article_id="article_id" :dict="dict" :idx="idx" :list="settings.listView"/>
           </NuxtErrorBoundary>
@@ -37,9 +37,9 @@
   </NuxtLink>
   </div>
   <div v-if="articles.meta.bm && articles.meta.bm.total > 10 || articles.meta.nn && articles.meta.nn.total > 10" class="block self-center">
-    <button type="button" @click="goToTop" class="go-top-button"><Icon name="bi:arrow-up-circle-fill" size="1.25em" class="mr-3 text-primary" />{{$t('to_top')}}</button>
+    <button class="go-top-button" type="button" @click="goToTop"><Icon name="bi:arrow-up-circle-fill" size="1.25em" class="mr-3 text-primary" />{{$t('to_top')}}</button>
   <label class="px-3" for="perPage-select">{{$t('per_page')}}</label>
-  <select id="perPage-select" name="pos" class="bg-tertiary border border-1 py-1 px-2 pr-2 mr-2" v-model="perPage" @change="update_perPage">
+  <select id="perPage-select" v-model="perPage" name="pos" class="bg-tertiary border border-1 py-1 px-2 pr-2 mr-2" @change="update_perPage">
     <option v-for="num in [10, 20, 50, 100]" :key="num" :value="num" :selected="settings.perPage">{{num}}</option></select>
   </div>
   </div>
