@@ -134,6 +134,7 @@ const lalo = useLazyLocales();
 const locale = useLocale();
 
 const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
+  key: `termbase_${termbase}`,
   headers: process.server
     ? { cookie: "session=" + useRuntimeConfig().apiKey }
     : undefined,

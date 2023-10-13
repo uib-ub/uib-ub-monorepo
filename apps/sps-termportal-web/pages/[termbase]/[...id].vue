@@ -284,7 +284,7 @@ let base: string;
 let id: string;
 let procId: string;
 if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
-  base = runtimeConfig.public.base;
+ // base = runtimeConfig.public.base;
   id = `${termbase}-3A${idArray[0]}`;
   procId = id;
 } else {
@@ -298,19 +298,21 @@ const timer = setTimeout(() => {
   controller.abort();
 }, 6000);
 
-const { data, error } = await useAsyncData("concept", () =>
-  $fetch(`/api/concept`, {
-    method: "POST",
-    headers: process.server
-      ? { cookie: "session=" + useRuntimeConfig().apiKey }
-      : undefined,
-    body: { concept: id, base, termbase },
-    retry: 1,
-    signal: controller.signal,
-  }).then((value) => {
-    clearTimeout(timer);
-    return value;
-  })
+const { data, error } = await useAsyncData(
+  `concept${termbase}${idArray.join("")}`,
+  () =>
+    $fetch(`/api/concept/${termbase}/${encodeURI(idArray.join("/"))}`, {
+      method: "GET",
+      headers: process.server
+        ? { cookie: "session=" + useRuntimeConfig().apiKey }
+        : undefined,
+//      body: { concept: idArray.join("/"), base, termbase },
+      retry: 1,
+      signal: controller.signal,
+    }).then((value) => {
+      clearTimeout(timer);
+      return value;
+    })
 );
 
 const concept = computed(() => {
