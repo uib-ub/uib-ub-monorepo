@@ -1,9 +1,9 @@
 <template>
     <div class="w-full collapsible-container">
-    <component :id="id" :is="is || 'div'"><button class="p-2 mt-4 text-left w-full"
-                                               @click="expanded = !expanded" 
-                                               :aria-expanded="expanded"
-                                               :aria-controls="props.id + '-content'">
+    <component :id="id" :is="is || 'div'"><button type="button" class="p-2 mt-4 text-left w-full"
+                                                  @click="expanded = !expanded" 
+                                                  :aria-expanded="expanded"
+                                                  :aria-controls="props.id + '-content'">
                                                <Icon class="mr-4 ml-1 text-gray-700" :name="expanded ? 'bi:chevron-up' : 'bi:chevron-down'"/>{{header}}
                                         </button></component>
 

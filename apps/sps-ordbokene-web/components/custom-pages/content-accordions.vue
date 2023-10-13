@@ -1,13 +1,13 @@
 <template>
 <div>
-    <ContentRenderer :value="data.intro">
-          <ContentRendererMarkdown :value="data.intro" :components="{h1: 'h2'}" />
+    <ContentRenderer :value="intro">
+          <ContentRendererMarkdown :value="intro" :components="{h1: 'h2'}" />
           <template #empty>
             <p>No content found.</p>
           </template>
         </ContentRenderer>
 
-    <ContentNavigation v-if="$route.name != 'contact'" v-slot="{ navigation }" :query="data.sections" >
+    <ContentNavigation v-if="$route.name != 'contact'" v-slot="{ navigation }" :query="sections" >
         <template v-for="loc in navigation" :key="loc._path" >
           <nav v-if="loc.children[0].children" class="mt-8">
           <ol  class="w-full">
@@ -27,14 +27,8 @@ const i18n = useI18n()
 import { useRoute } from 'vue-router'
 const route = useRoute()
 
-
-const { data } = await useAsyncData('content-' + route.fullPath, async () => {
-  return {
-    intro: await queryContent(i18n.locale.value, route.name).findOne(),
-    sections: await queryContent(i18n.locale.value, route.name)
-  };
-}, {watch: i18n.locale});
-
+const { data: intro } = await useAsyncData('intro_' + i18n.locale.value, () => queryContent(i18n.locale.value, route.name).findOne())
+const sections =  queryContent(i18n.locale.value, route.name)
 
 useHead({
     title: i18n.t(route.name)

@@ -326,7 +326,8 @@ function hyphenatedForm (form, lemma) {
         lemma.word_class == 'NOUN' &&
         lemma.lemma.length > 10 &&
         lemma.initial_lexeme &&
-        form.length >= lemma.initial_lexeme.length && // excludes _gender virtal tag!
+        !tagNames_eng[form] &&
+        // form.length >= lemma.initial_lexeme.length && // excludes _gender virtual tag!
         !lemma.neg_junction) {
         let junction = (lemma.junction && lemma.junction != '-') ? lemma.junction : null
         let il = lemma.initial_lexeme + (junction || '') + '­'

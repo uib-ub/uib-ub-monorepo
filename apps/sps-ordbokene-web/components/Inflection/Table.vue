@@ -118,7 +118,9 @@
                     :class="mq"
                     id="PerfPart"
                     scope="col"
-                    :colspan="hasPerfPartDef ? (j<0?4:(j==3?3:1)) : 1">{{tagToName('PerfPart')}}</th>
+                    :colspan="hasPerfPartFem ? 5 : (hasPerfPartDef ? (j<0?4:(j==3?3:1)) : 1)">
+                  {{tagToName('PerfPart')}}
+                </th>
                 <th v-if="j<0 || j==4"
                     class="infl-label label-border-top-right" :class="mq"
                     id="PresPart"
@@ -130,7 +132,12 @@
                     id="Masc"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">
-                  {{tagToName('Masc')}}&nbsp;/<br/>{{tagToName('Fem')}}</th>
+                  {{tagToName('MascShort')}}&nbsp;/<br/>{{tagToName('Fem')}}</th>
+                <th v-if="(j<0 || j==3) && hasPerfPartFem"
+                    id="Fem"
+                    scope="col"
+                    class="infl-label sub label-border-bottom" :class="mq">
+                  {{tagToName('Fem')}}</th>
                 <th id="Neuter"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq"
@@ -145,6 +152,7 @@
                     class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Plur')}}</th>
               </tr>
             </template>
+
             <template v-else-if="hasPresPart">
               <tr>
                 <th v-if="j<0 || j==4"
@@ -159,6 +167,7 @@
                                      :language="language"
                                      :content_locale="this.content_locale"
                                      :hasPerfPart="hasPerfPart"
+                                     :hasPerfPartFem="hasPerfPartFem"
                                      :lemmaId="lemma.id"
                                      :paradigm="paradigm"
                                      :context="context"
@@ -218,7 +227,7 @@
                   id="Masc"
                   scope="col"
                   :class="mq">
-                hankjønn
+                  {{tagToName('Masc')}}
               </th>
               <th v-if="!hasFem"
                   class="infl-label sub label-border-bottom"
@@ -606,6 +615,7 @@ export default {
                  hasPresPart: this.hasInflForm(['Adj','<PresPart>']),
                  hasPerfPart: this.hasInflForm(['Adj','<PerfPart>']),
                  hasPerfPartDef: this.hasInflForm(['Adj','<PerfPart>','Def']),
+                 hasPerfPartFem: this.hasInflForm(['Adj','<PerfPart>','Fem']),
                  hasImp: this.hasInflForm(['Imp']),
                  hasNom: this.hasInflForm(['Nom']),
                  hasAcc: this.hasInflForm(['Acc']),
@@ -630,6 +640,14 @@ export default {
                                   { title: 'Plur'},
                                   { label: 'Ind', tags: ['Plur','Ind']},
                                   { label: 'Def', tags: ['Plur','Def']}],
+                inflTagsNounSingG: [ { tags: ['_gender'] },
+                                      { title: 'Sing'},
+                                      { label: 'Ind', tags: ['Sing','Ind']},
+                                      { label: 'Def', tags: ['Sing','Def']}],
+                 inflTagsNounSingNG: [ { title: 'Sing'},
+                                       { label: 'Ind', tags: ['Sing','Ind']},
+                                       { label: 'Def', tags: ['Sing','Def']}],
+
                  inflTagsNounPlur: [{ title: 'Plur'},
                                     { label: 'Ind', tags: ['Plur','Ind']},
                                     { label: 'Def', tags: ['Plur','Def']}],
@@ -695,13 +713,18 @@ export default {
         },
         inflTagsNoun: function () {
             if (this.hasSing) {
-                return this.getGender() == '+' ? this.inflTagsNounG : this.inflTagsNounNG
+                 if (this.hasPlur) {
+                     return this.getGender() == '+' ? this.inflTagsNounG : this.inflTagsNounNG
+                 } else {
+                     return this.getGender() == '+' ? this.inflTagsNounSingG : this.inflTagsNounSingNG
+                 }
             } else if (this.hasDef) {
                 return this.inflTagsNounPlur
             } else {
                 return this.inflTagsNounPlurInd
             }
-        }, // hasImp, hasPerfPart, hasPerfPartDef, has
+        },
+ // hasImp, hasPerfPart, hasPerfPartDef, has
         inflTagsVerb: function () {
             return [{ label: 'Inf', tags: ['Inf'], excl: ['Pass'], prefix: 'å' },
                     { label: 'Pres', tags: ['Pres'], excl: ['Pass'] },
@@ -710,6 +733,7 @@ export default {
                     this.hasImp ? { label: 'Imp', tags: ['Imp'], suffix: '!' } : null,
                     this.hasPerfPart ? { title: 'PerfPart' } : null,
                     this.hasPerfPartDef ? { block: 'PerfPart', label: 'MascFem', tags: ['Adj','Masc/Fem']} : null,
+                    this.hasPerfPartFem ? { block: 'PerfPart', label: 'Fem', tags: ['Adj','Fem']} : null,
                     this.hasPerfPart ? { block: 'PerfPart', label: 'Neuter', tags: ['Adj','Neuter']} : null,
                     this.hasPerfPartDef ? { block: 'PerfPart', label: 'Def', tags: ['Adj','Def']} : null,
                     this.hasPerfPartDef ? { block: 'PerfPart', label: 'Plur', tags: ['Adj','Plur']} : null,
@@ -717,6 +741,8 @@ export default {
                     this.hasPresPart ? { block: 'PresPart', tags: ['Adj','<PresPart>'] } : null,
                    ].filter(r => r)
         },
+
+
         inflTagsAdj: function () {
             return [ this.hasSingAdj ? { title: 'Sing' } : null,
                      { block: 'Sing', label: 'MascFem', tags: ['Pos',['Masc/Fem','Masc']] },

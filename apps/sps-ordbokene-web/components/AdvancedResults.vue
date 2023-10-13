@@ -29,19 +29,19 @@
   <div class ="flex flex-col">
   <div v-if="pages > 1" class="p-2 py-6 md:p-8 flex md:flex-wrap justify-center flex md:gap-4">
     <NuxtLink :to="{query: {...route.query, ...{page: page -1 }}}">
-      <button :disabled="page == 1" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
+      <button type="button" :disabled="page == 1" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
         <Icon name="bi:chevron-left" class="md:mr-0.75em mb-0.125em"/><span class="sr-only md:not-sr-only">{{$t('previous-page') }}</span>
       </button>
     </NuxtLink>
   <div class="text-center self-center align-middle mx-4 md:mx-8 text-lg h-full">{{$t('pageof', {page, pages})}}</div>
   <NuxtLink :to="{query: {...route.query, ...{page: page + 1 }}}">
-    <button :disabled="page == pages" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
+    <button type="button" :disabled="page == pages" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
       <span class="sr-only md:not-sr-only">{{$t('next-page')}}</span><Icon name="bi:chevron-right" class="md:ml-0.75em mb-0.125em"/>
     </button>
   </NuxtLink>
   </div>
   <div class="block self-center" v-if="articles.meta.bm && articles.meta.bm.total > 10 || articles.meta.nn && articles.meta.nn.total > 10">
-    <button @click="goToTop" class="go-top-button"><Icon name="bi:arrow-up-circle-fill" size="1.25em" class="mr-3 text-primary" />{{$t('to_top')}}</button>
+    <button type="button" @click="goToTop" class="go-top-button"><Icon name="bi:arrow-up-circle-fill" size="1.25em" class="mr-3 text-primary" />{{$t('to_top')}}</button>
   <label class="px-3" for="perPage-select">{{$t('per_page')}}</label>
   <select id="perPage-select" name="pos" class="bg-tertiary border border-1 py-1 px-2 pr-2 mr-2" v-model="perPage" @change="update_perPage">
     <option v-for="num in [10, 20, 50, 100]" :key="num" :value="num" :selected="settings.perPage">{{num}}</option></select>

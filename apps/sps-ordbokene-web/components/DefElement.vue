@@ -7,9 +7,9 @@
           -->{{item.html}}<!--
        --><NuxtLink class="article_ref notranslate" v-if="item.type == 'article_ref'" :to="item.ref" v-on:click="link_click" :key="index"><!--
        --><DefElement tag='span' v-if="item.link_text.type_" :dict="dict" :key="item.id+'_sub'" :body='item.link_text' :content_locale="content_locale"/><span v-else>{{item.link_text}}</span><!--
-       --><span class="homograph" v-if="item.lemmas[0].hgno" :aria-label="'xa0' + parseInt(item.lemmas[0].hgno)" :key="index"><!--
-        --> ({{roman_hgno(item.lemmas[0])}}{{item.definition_order ? '': ')'}}</span>
-        <span class="def_order" v-if="item.definition_order" :aria-label="'definisjon '+item.definition_order">{{item.lemmas[0].hgno ? ', ': ' ('}}{{item.definition_order}})</span>
+       --><span class="homograph" v-if="item.lemmas[0].hgno" :key="index"><!--
+        --> (<span class="sr-only">{{parseInt(item.lemmas[0].hgno)}}</span><span aria-hidden="true">{{roman_hgno(item.lemmas[0])}}{{item.definition_order ? '': ')'}}</span></span>
+        <span class="def_order" v-if="item.definition_order">{{item.lemmas[0].hgno ? ', ': ' ('}}{{item.definition_order}})</span>
       </NuxtLink><span v-else>{{item.link_text}}</span>
        <!--
        --><span class="numerator" v-if="item.type == 'fraction'">{{item.num}}</span><!--

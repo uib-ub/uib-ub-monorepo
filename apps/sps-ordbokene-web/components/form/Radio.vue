@@ -1,7 +1,7 @@
 <template>
     <span class="radiobox-container" @click="submit">
       <label class="grid">
-        <input  class="" type="radio" :name="name" :value="value" :checked="current == value" @keyup="submit">
+        <input type="radio" :name="name" :value="value" :checked="current == value" @keyup="submit">
         <slot></slot>
       </label>
     </span>

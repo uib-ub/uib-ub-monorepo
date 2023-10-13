@@ -1,7 +1,7 @@
 <template>
 <div class="checkbox-container">
   <label>
-<input  class="" type="checkbox" :checked="props.checked" v-model="model">
+<input type="checkbox" :checked="props.checked" v-model="model">
     <slot></slot>
   </label>
 </div>
