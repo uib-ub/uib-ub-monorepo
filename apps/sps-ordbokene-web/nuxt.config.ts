@@ -12,16 +12,10 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
     compressPublicAssets: true,
-  },
-  content: {
-    sources: {
-      github: {
-        driver: "github",
-        repo: "menthorlabs/courses",
-        prefix: "/",
-        dir: "content",
-      },
+    prerender: {
+      routes: "/nob/help"
     }
+
   },
   runtimeConfig: {
     public: {
@@ -43,6 +37,14 @@ export default defineNuxtConfig({
     ],
   
   content: {
+    sources: {
+      github: {
+        driver: "github",
+        repo: "uib-ub/ordbokene-content",
+        prefix: "/",
+        dir: "content",
+      },
+    },
     markdown: {
       tags: {
         h1: "h2",
