@@ -17,6 +17,11 @@ export default defineEventHandler(async (event) => {
         Accept: "application/ld+json",
       },
     });
+
+    setResponseHeaders(event, {
+      "Cache-Control": "private, max-age=3600",
+    });
+
     return frameData(data, "skos:Collection").then((value) => {
       delete value["@context"];
       return value;
