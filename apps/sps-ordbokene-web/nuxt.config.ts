@@ -13,6 +13,16 @@ export default defineNuxtConfig({
     preset: 'vercel',
     compressPublicAssets: true,
   },
+  content: {
+    sources: {
+      github: {
+        driver: "github",
+        repo: "menthorlabs/courses",
+        prefix: "/",
+        dir: "content",
+      },
+    }
+  },
   runtimeConfig: {
     public: {
       endpointEnv: process.env.ENDPOINT_ENV || 'dev',
