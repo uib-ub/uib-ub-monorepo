@@ -10,9 +10,9 @@
       </section>
 
       <section v-if="latest_bm" class="welcome">
-        <div class="article rounded !my-0  p-4 pb-2">
+        <div class="article new-articles rounded !my-0">
           <h2 class="dict-label !text-xl">{{ $t('article.new', {dict: "Bokmålsordboka"}, {locale: content_locale('bm')}) }}</h2>
-          <ul class="flex flex-col md:flex-row flex-wrap pt-4 px-3 gap-x-4 gap-y-2">
+          <ul class="flex flex-col md:flex-row lg:flex-col xl:flex-row flex-wrap pt-2 px-3 gap-x-2">
             <li v-for="([id, name], index) in latest_bm" :key="index" class="lg:col-auto">
                 <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
             </li>
@@ -21,10 +21,10 @@
       </section>
 
       <section v-if="latest_nn" class="welcome">
-        <div class="article rounded !my-0  p-4 pb-2">
+        <div class="article new-articles rounded !my-0">
           <h2 class="dict-label !text-xl">{{ $t('article.new', {dict: "Nynorskordboka"}, {locale: content_locale('nn')}) }}</h2>
-          <ul class="flex flex-col md:flex-row flex-wrap pt-4 px-3 gap-x-4 gap-y-2">
-            <li v-for="([id, name], index) in latest_nn" :key="index" class="lg:col-auto">
+          <ul class="flex flex-col md:flex-row lg:flex-col xl:flex-row flex-wrap pt-2 px-3 gap-x-2">
+            <li v-for="([id, name], index) in latest_nn" :key="index">
                 <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
             </li>
           </ul>
@@ -63,16 +63,28 @@ const { data: latest_nn} = useLazyAsyncData('latest_nn', () => $fetch('https://o
 
 </script>
 
+<style scoped>
 
-
-
- <style scoped>
 a {
-    font-size: 1.17rem;
-    letter-spacing: .1rem;
     border: 2px;
-    @apply md:p-2;
+}
+
+li:not(:last-child) a:after {
+  @apply md:content-['|'] lg:content-none xl:content-['|'] pl-2 text-gray-500;
+
+
+}
+
+.article.new-articles {
+  @apply !pb-1
 }
 
 
+
+.new-articles li:before {
+  @apply content-['⬥'] md:content-none lg:content-['⬥'] xl:content-none text-gray-500 mr-2
+}
+
 </style>
+
+
