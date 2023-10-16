@@ -159,7 +159,7 @@ function normalizeInflection(paradigm) {
     let infl = paradigm.inflection
     if (paradigm.tags[0] == 'NOUN') { // add extra virtual tag _gender
         infl = [ { tags: ["_gender"],
-                   word_form: paradigm.tags[1]}, //word_form: paradigm.tags[1] + 'Short' }, i-831
+        word_form: paradigm.tags[1] + 'Short' },
                  ... infl ]
     }
     let res = []
