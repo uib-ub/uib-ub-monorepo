@@ -297,10 +297,8 @@ function inflectedForms (paradigm, tagList, exclTagList) {
 // see inflectionTable.vue for vertical merging and setting final rowspan
 export function inflectedForm (paradigm, tagList, exclTagList, noVerticalMerge) {
     let [rowspan, index, forms, gender, standardisation] = inflectedForms(paradigm,tagList,exclTagList)
-    if (rowspan == 0 && !noVerticalMerge) {
-        return null // cell has been merged
-    } else if (!rowspan && !noVerticalMerge) {
-        return [null] // cell is empty
+    if (!rowspan && !noVerticalMerge) {
+        return null
     } else if (!forms) {
         return [ rowspan, index, [ '-' ], null, standardisation ]
     } else if (typeof forms == 'string') {
