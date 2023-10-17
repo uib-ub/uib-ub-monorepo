@@ -1,7 +1,7 @@
 <template>
 <div class="checkbox-container">
   <label>
-  <input type="checkbox" :checked="props.checked" v-model="model" :disabled="!cookies_accepted">
+  <input type="checkbox" :checked="props.checked" v-model="model">
     <slot></slot>
   </label>
 </div>
@@ -10,8 +10,6 @@
 
 <script setup>
 const emit= defineEmits(['update:modelValue'])
-const cookies_accepted = useCookie("cookiesAccepted")
-
 const props = defineProps({
     checked: {
         type: Boolean,
