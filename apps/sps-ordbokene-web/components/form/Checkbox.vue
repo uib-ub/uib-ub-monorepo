@@ -1,16 +1,16 @@
 <template>
 <div class="checkbox-container">
   <label>
-<input type="checkbox" :checked="props.checked" v-model="model">
+  <input type="checkbox" :checked="props.checked" v-model="model" :disabled="!cookies_accepted">
     <slot></slot>
   </label>
 </div>
 
 </template>
 
-<script setup lang="ts">
-
+<script setup>
 const emit= defineEmits(['update:modelValue'])
+const cookies_accepted = useCookie("cookiesAccepted")
 
 const props = defineProps({
     checked: {
@@ -39,6 +39,7 @@ const model = computed({
     input:checked:hover {
       accent-color: theme('colors.secondary.DEFAULT') !important;
     }
+
 
 
     label {

@@ -151,32 +151,6 @@ option.selected {
 }
 
 
-.btn-primary i, button.btn-secondary i {
-  @apply text-white
-
-}
-
-
-.btn-primary:hover {
-  @apply bg-primary-lighten;
-}
-
-.btn-primary:focus {
-  @apply bg-primary-lighten2;
-}
-
-.btn-primary:focus i {
-    @apply text-white
-}
-
-.btn-secondary:hover {
-  @apply bg-secondary;
-}
-
-.btn-secondary:focus {
-  @apply bg-secondary-darken;
-}
-
 legend, label {
   font-variant: all-small-caps;
   @apply tracking-widest text-xl;

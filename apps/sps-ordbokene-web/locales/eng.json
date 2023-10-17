@@ -116,6 +116,8 @@
 },
   "settings": {
       "title": "Settings",
+      "cookie_prompt": "For technical reasons we need to use cookies to store your settings for later. This is only used to enhance your user experience, and we do not use these cookies to track your activity.",
+      "accept_cookies": "Accept cookies",
       "inflection_no": "Show inflection codes",
       "inflection_expanded": "Always show inflection tables",
       "inflection_table_context": "Show context for participle forms in the inflection tables",

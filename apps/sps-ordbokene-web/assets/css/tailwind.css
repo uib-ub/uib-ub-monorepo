@@ -98,7 +98,7 @@
         @apply  duration-200 rounded-[2rem] px-4 py-1 border;
       }
       
-      .btn:hover {
+      .btn:not([disabled]):hover {
         @apply bg-canvas-darken;
       }      
       

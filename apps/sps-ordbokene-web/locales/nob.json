@@ -134,6 +134,8 @@
   },
     "settings": {
         "title": "Innstillinger",
+        "cookie_prompt": "For å lagre innstillingene dine til senere må vi av tekniske årsaker benytte informasjonskapsler (cookier). Dette brukes kun for å forbedre din brukeropplevelse, og vi bruker ikke disse informasjonskapslene til å spore din aktivitet.",
+        "accept_cookies": "Aksepter informasjonskapsler",
         "inflection_no": "Vis bøyningskodene fra de trykte ordbøkene",
         "inflection_expanded": "Vis alltid bøyningstabellene",
         "inflection_table_context": "Vis kontekst for partisippformer i bøyningstabellene",
