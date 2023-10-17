@@ -12,6 +12,11 @@ export default defineEventHandler(async (event) => {
         Accept: "application/json",
       },
     });
+
+    setResponseHeaders(event, {
+      "Cache-Control": "public, max-age=3600",
+    });
+
     return data.results.bindings;
   } catch (e) {
   }
