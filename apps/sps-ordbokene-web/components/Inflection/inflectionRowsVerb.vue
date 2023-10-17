@@ -19,7 +19,7 @@
               v-for="(form, index) in forms"
               :key="index">
           <em v-if="prefix" class="context">{{prefix}}</em>
-          {{form}}<span v-if="suffix!='!'"> </span><em v-if="suffix" class="context nobr">{{suffix}}</em>
+          {{form}}<span v-if="suffix!='!'"> </span><em v-if="suffix" translate="yes" :lang="locale2lang[content_locale]" class="context nobr">{{suffix}}</em>
         </span>
       </td>
     </template>
@@ -43,7 +43,7 @@
   
   export default {
       name: 'inflectionRowsVerb',
-      props: ['paradigms','tags','language','lemmaId'],
+      props: ['paradigms','tags','language','lemmaId', 'content_locale'],
       data: function () {
           return {
               cells: !this.tags.title ?
