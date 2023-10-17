@@ -50,38 +50,6 @@ const lazyLocales = useLazyLocales();
 
 onMounted(() => {
   /*
-  Get subdomains and relations between conceptual domains that are maintained in the CMS.
-  */
-  $fetch("/api/domain", { retry: 1 }).then((data) => {
-    for (const domain in domainData.value) {
-      // allow deactivation of topdomains on frontend that are defined in the CMS. See domain states
-      try {
-        domainData.value[domain].subdomains = parseRelationsRecursively(
-          data,
-          domain,
-          "narrower",
-          "subdomains"
-        );
-      } catch (entry) {}
-    }
-  });
-
-  /*
-   Get localiztion data where data is produced in the CMS.
-   This applies to:
-   - termbase names
-   - conceptual domain names
-   */
-  $fetch("/api/lazyLocales", { retry: 1 }).then((data) => {
-    data.forEach((entry) => {
-      const lang = entry.label["xml:lang"];
-      const pagelst = entry.page.value.split("/");
-      const page = pagelst[pagelst.length - 1];
-      lazyLocales.value[lang][page] = entry.label.value;
-    });
-  });
-
-  /*
   SearchInterface watchers trigger when setting options from route.
   Only watcher for search term should trigger fetch.
   null value is handled by other options watcher to avoid two fetches.
@@ -91,6 +59,7 @@ onMounted(() => {
   }
 });
 
+// TODO Fix when refactoring navbar expansion etc
 watch(
   () => route.path,
   () => {
