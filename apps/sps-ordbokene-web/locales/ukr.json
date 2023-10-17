@@ -1,5 +1,9 @@
 {
     "sub_title": "Cловник букмола та Словник нюношка",
+    "font-size":{
+        "title":"Text size",
+        "description":"To change text size, press Ctrl (Cmd on a Mac) and press + to increase or - to decrease."
+      },
     "photo": "фото: Erwan Hesry (unsplash.com)",
     "background": "Шпалери",
     "monthly": "Фрагменти зі словників",

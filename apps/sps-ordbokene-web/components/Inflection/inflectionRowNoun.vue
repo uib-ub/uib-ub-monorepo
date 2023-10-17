@@ -39,15 +39,16 @@
     
     export default {
         name: 'inflectionRowNoun',
-        props: ['paradigm','language', 'showGender', 'lemma'],
+        props: ['paradigm','language', 'showGender', 'lemma','hasDef', 'hasSing', 'hasPlur'],
         data: function () {
             return {
                 cells: [
                     this.showGender ? this.inflForm(['_gender']) : null, // special gender column
-                    this.inflForm(['Sing','Ind'], this.indefArticle()),
-                    this.inflForm(['Sing','Def']),
-                    this.inflForm(['Plur','Ind']),
-                    this.inflForm(['Plur','Def'])
+                    this.inflForm(['Sing','Ind'], this.hasSing, this.indefArticle()),
+                    this.inflForm(['Sing','Def'], this.hasSing && this.hasDef),
+                    this.inflForm(['Plur','Ind'], this.hasPlur),
+                    this.inflForm(['Plur','Def'], this.hasPlur && this.hasDef)
+
                 ].filter(r => r)
             }
         },
@@ -55,10 +56,12 @@
             indefArticle: function () {
                 return indefArticle(this.paradigm.tags, this.language)
             },
-            inflForm: function (tagList,prefix) {
+            inflForm: function (tagList,display,prefix) {
                 let forms = inflectedForm(this.paradigm, tagList, [])
                 if (!forms) {
                     return null
+                } else if (forms[0] == null) {
+                    return display ? [null, [1,null,['–'],null,'STANDARD'], false, ''] : null
                 } else if (tagList[0]=='_gender') {
                     return [prefix, forms, true, forms[2]]
                 } else {

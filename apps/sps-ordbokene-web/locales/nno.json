@@ -1,5 +1,9 @@
 {
     "sub_title": "Bokmålsordboka og Nynorskordboka",
+    "font-size":{
+        "title":"Skriftstørrelse",
+        "description":"For å endre tekststørrelsen, hold Ctrl-tasten nede (Cmd-tasten på Mac) og trykk på + for å forstørre eller - for å forminske."
+      },
     "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
     "advanced_help": "Søkjehjelp",

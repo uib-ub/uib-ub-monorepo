@@ -14,7 +14,7 @@
               :key="index">
           <em v-if="prefix" class="context">{{prefix}}</em>
           {{form}}
-          <em v-if="suffix" class="context nobr">{{suffix}}</em>
+          <em v-if="suffix" class="context nobr" translate="yes" :lang="locale2lang[content_locale]">{{suffix}}</em>
         </span>
       </td>
       
@@ -31,7 +31,7 @@
     
     export default {
         name: 'inflectionRowParticiple',
-        props: ['paradigm','hasPerfPart','language','part','lemmaId', 'context'],
+        props: ['paradigm','hasPerfPart','language','part','lemmaId', 'context', 'content_locale'],
         data: function () {
             return { rows: [
                 this.hasPerfPart && this.part!=4 ?

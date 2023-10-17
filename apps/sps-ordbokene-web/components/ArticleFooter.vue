@@ -1,5 +1,5 @@
 <template>
-<div class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
+<div :lang="locale2lang[content_locale]" class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
   <client-only>
     <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-2">
     <button type="button" v-if="showLinkCopy" class="btn btn-borderless px-3" @click="copy_link" v-bind:class="{'hidden xl:block': store.dict == 'bm,nn' && $route.name!= 'article', 'hidden md:block': store.dict != 'bm,nn' && $route.name != 'article'}">
