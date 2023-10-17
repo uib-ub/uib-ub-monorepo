@@ -159,7 +159,7 @@ function normalizeInflection(paradigm) {
     let infl = paradigm.inflection
     if (paradigm.tags[0] == 'NOUN') { // add extra virtual tag _gender
         infl = [ { tags: ["_gender"],
-                   word_form: paradigm.tags[1]}, //word_form: paradigm.tags[1] + 'Short' }, i-831
+        word_form: paradigm.tags[1] + 'Short' },
                  ... infl ]
     }
     let res = []
@@ -193,7 +193,8 @@ function normalizeInflection(paradigm) {
 // Iterate through tagList list and merge paradigms that are equal except on tagList,
 // merging their word forms into an array
 function mergeParadigms (paradigmInfo) {
-    paradigmInfo = paradigmInfo.filter(p=> !p.code || p.code.charAt(0) != 'M') // remove Metaordbok paradigms
+    // remove Metaordbok paradigms
+    paradigmInfo = paradigmInfo.filter(p=> !p.code || p.code.charAt(0) != 'M') 
         .map(p => normalizeInflection(p))
     let PI = []
     let tagLists = [ [['Imp'], null],
@@ -296,8 +297,10 @@ function inflectedForms (paradigm, tagList, exclTagList) {
 // see inflectionTable.vue for vertical merging and setting final rowspan
 export function inflectedForm (paradigm, tagList, exclTagList, noVerticalMerge) {
     let [rowspan, index, forms, gender, standardisation] = inflectedForms(paradigm,tagList,exclTagList)
-    if (!rowspan && !noVerticalMerge) {
-        return null
+    if (rowspan == 0 && !noVerticalMerge) {
+        return null // cell has been merged
+    } else if (!rowspan && !noVerticalMerge) {
+        return [null] // cell is empty
     } else if (!forms) {
         return [ rowspan, index, [ '-' ], null, standardisation ]
     } else if (typeof forms == 'string') {
