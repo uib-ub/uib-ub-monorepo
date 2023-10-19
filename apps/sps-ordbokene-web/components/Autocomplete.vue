@@ -269,7 +269,7 @@ if (process.client) {
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">
             <span v-if="store.autocomplete.length == 1" class="sr-only">{{$t('autocomplete_suggestions', 1)}}: </span>
-            <span :class="item.type">{{ item.q }}</span> <span class="dict-parentheses text-gray-900" v-if="item.dict && store.dict =='bm,nn'">({{["bokmål","nynorsk","bokmål, nynorsk"][item.dict-1]}})</span>
+            <span :class="item.type">{{ item.q }}</span> <span class="dict-parentheses text-black" v-if="item.dict && store.dict =='bm,nn'">({{["bokmål","nynorsk","bokmål, nynorsk"][item.dict-1]}})</span>
           </span>
         </div>
    </li>
@@ -323,7 +323,7 @@ transform: translateX(-50%);
   @apply p-4 mx-2 duration-200 motion-reduce:transition-none text-left;
 }
 #autocomplete-dropdown .dropdown-item:hover  {
-    @apply bg-canvas-darken cursor-pointer shadow-md;
+    @apply bg-canvas-darken cursor-pointer;
 }
 
 
@@ -332,7 +332,7 @@ transform: translateX(-50%);
 }
 
 #autocomplete-dropdown li:not(:last-child) .dropdown-item {
-  @apply border-gray-300 border-b border-gray-700;
+  @apply border-gray-300 border-gray-700;
 
 }
 

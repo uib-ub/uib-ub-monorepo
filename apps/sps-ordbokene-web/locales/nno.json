@@ -1,5 +1,9 @@
 {
     "sub_title": "Bokmålsordboka og Nynorskordboka",
+    "font-size":{
+        "title":"Skriftstørrelse",
+        "description":"For å endre tekststørrelsen, hold Ctrl-tasten nede (Cmd-tasten på Mac) og trykk på + for å forstørre eller - for å forminske."
+      },
     "help": "Hjelp",
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
     "advanced_help": "Søkjehjelp",
@@ -123,6 +127,8 @@
 },
     "settings": {
         "title": "Innstillingar",
+        "cookie_prompt": "For å lagra innstillingane dine til seinare må me av tekniske årsaker bruke informasjonskapslar (cookiar). Dette blir berre brukt for å forbetra brukaropplevinga di, og vi bruker ikkje desse informasjonskapslane til å spora aktiviteten din.",
+        "accept_cookies": "Aksepter informasjonskaplslar",
         "inflection_no": "Vis bøyingskodane frå dei trykte ordbøkene",
         "inflection_expanded": "Vis alltid bøyingstabellane",
         "inflection_table_context": "Vis kontekst for partisippformer i bøyingstabellane",

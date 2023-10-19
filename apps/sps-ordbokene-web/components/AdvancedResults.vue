@@ -3,9 +3,13 @@
   <Spinner v-if="!error && !articles"/>
   <div v-if="!error && articles && articles.meta" >
   <div  v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
-    <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
+    <section class="lg:grid-cols-6" 
+             v-for="dict in dicts" 
+             :key="dict" 
+             :aria-labelledby="dict+'_heading'"
+             :lang="locale2lang[content_locale(dict)]">
       <div class="py-2 px-2">
-        <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
+        <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict, 1, {locale: content_locale(dict)})}} 
           <span v-if="articles.meta[dict]" class="result-count-text">{{articles.meta[dict].total}}</span>
           <span class="sr-only">{{$t('notifications.keywords')}}</span>
         </h2>

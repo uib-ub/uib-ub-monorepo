@@ -4,8 +4,10 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const settings = useSettingsStore()
+const stored_settings = useCookie("settings")
 
 const resetSettings = (settings) => {
+  stored_settings.value = null
     settings.$patch({
       simpleListView:false,
       autoSelect: true, 
@@ -41,7 +43,7 @@ const startAnimation = () => {
     <FormCheckbox v-model="settings.$state.autoSelect" :checked="settings.autoSelect">
       {{$t('settings.auto_select')}}
     </FormCheckbox>
-<FormCheckbox v-model="settings.$state.inflectionExpanded" :checked="settings.inflectionExpanded">
+    <FormCheckbox v-model="settings.$state.inflectionExpanded" :checked="settings.inflectionExpanded">
       {{$t('settings.inflection_expanded')}}
     </FormCheckbox>
     <FormCheckbox v-model="settings.$state.inflectionNo" :checked="settings.inflectionNo">
@@ -54,7 +56,7 @@ const startAnimation = () => {
 
 
   <div class="mt-4">
-    <button type="button" class="btn btn-primary" @click="resetSettings(settings); startAnimation()">
+    <button class="btn btn-primary" @click="resetSettings(settings); startAnimation()">
       <Icon :name="resetAnimation ? 'bi:trash' : 'bi:trash-fill'" class="mr-3 mb-1 text-primary" />
       <span>{{$t(resetAnimation ? 'settings.reset_done' : 'settings.reset')}}</span>
     </button>

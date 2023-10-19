@@ -7,7 +7,7 @@
           <img height="80px" width="80px" class="mx-4 my-4 mr-2 lg:my-0 " src="../assets/images/uib-logo.svg" alt="Universitetet i Bergen, logo" />
         </div>
         <span></span>
-        <div class="p-4 md:px-16 text-center xl:text-left">
+        <div class="p-4 md:px-16 md:ml-6 text-center xl:text-left">
           <em>Bokmålsordboka</em>{{$t('and')}}<em>Nynorskordboka</em>{{$t('footer_description')}}
         </div>
       </div>
