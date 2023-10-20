@@ -40,7 +40,7 @@
         </div>
         <div v-else>
           
-        <h2 v-if="welcome" class="dict-label">{{$t('monthly', 1, { locale: content_locale}) + {"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
+        <h2 v-if="welcome" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h2>
         <h2 v-else-if="single" class="dict-label article-dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
         <div :class="welcome? 'px-4 pb-3 pt-4' : 'px-4 pt-4 pb-2'">
 

@@ -3,7 +3,7 @@
       <ContentRenderer :value="intro">
             <ContentRendererMarkdown :value="intro" :components="{h1: 'h2'}" />
             <template #empty>
-              <p>No content found.</p>
+              <p>{{$t('content_not_found')}}</p>
             </template>
           </ContentRenderer>
   

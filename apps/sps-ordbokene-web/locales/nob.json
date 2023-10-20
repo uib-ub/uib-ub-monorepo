@@ -1,6 +1,13 @@
 {
     "sub_title": "Bokmålsordboka og Nynorskordboka",
-    "help": "Hjelp",
+    "menu": {
+        "title": "Meny",
+        "home": "Til forsiden",
+        "help": "Hjelp",
+        "about": "Om ordbøkene",
+        "settings": "Innstillinger",
+        "contact":  "Kontakt oss"
+    },
     "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
     "advanced_help": "Om avansert søk",
     "advanced": "Avansert søk",
@@ -10,9 +17,10 @@
     "simple": "Enkelt søk",
     "about":"Om ordbøkene",
     "breadcrumbs": "Brødsmulesti",
+    "content_not_found": "Innhold ikke tilgjengelig",
     "photo": "Foto: Erwan Hesry (unsplash.com)",
     "background": "Bakgrunnsbilde",
-    "monthly": "Smakebit fra ",
+    "monthly": "Smakebit fra {dict}",
     "close": "Lukk",
     "cancel": "Avbryt",
     "to_top": "Til toppen",
@@ -54,12 +62,6 @@
       "bm": "Bokmål",
       "bm,nn": "Begge"
     },
-    "menu": {
-        "title": "Meny",
-        "search_pages": "Søkesider",
-        "help": "Hjelp",
-        "about": "Om ordbøkene"
-        },
     "options": {
         "title": "Søkealternativer",
         "dict": "Ordbøker:",
@@ -159,7 +161,7 @@
     "contact": "Kontakt oss",
     "notifications": {
         "redirect": "Viser betydninger av oppslagsordet",
-        "translation": "Legg til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
+        "translation": "Klikk på forslagene under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
         "translation_title": "Mulig oversettelse",
         "inflected": "Bøyd form av:",
         "did_you_mean": "Mente du:",

@@ -11,7 +11,7 @@
         <SuggestResults compare :suggestions="data.translate"  :dict="dict" icon="bi:book-half">
                 <h3><Icon name="bi:translate" size="1rem" class="mr-3"/>
                 {{$t('notifications.translation_title', 1, {locale: content_locale})}}</h3><p class="pt-2">
-            <i18n-t keypath="notifications.translation" tag="div" id="citation">
+            <i18n-t keypath="notifications.translation" tag="div" id="citation" :locale="content_locale">
             <template v-slot:adm>
                 <em>Administrativ ordliste</em>
             </template>

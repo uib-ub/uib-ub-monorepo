@@ -1,6 +1,13 @@
 {
     "sub_title": "Bokmålsordboka og Nynorskordboka",
-    "help": "Hjelp",
+    "menu": {
+        "title": "Meny",
+        "home": "Til forsida",
+        "help": "Hjelp",
+        "about": "Om ordbøkene",
+        "settings": "Innstillingar",
+        "contact":  "Kontakt oss"
+    },
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
     "advanced_help": "Søkjehjelp",
     "advanced": "Avansert søk",
@@ -8,15 +15,14 @@
     "show_articles": "Artiklar",
     "show_list": "Listevisning",
     "simple": "Enkelt søk",
-    "about":"Om ordbøkene",
     "breadcrumbs": "Brødsmulesti",
+    "content_not_found": "Innhold ikkje tilgjengeleg",
     "photo": "Foto: Erwan Hesry (unsplash.com)",
     "background": "Bakgrunnsbilde",
-    "monthly": "Smakebit frå ",
+    "monthly": "Smakebit frå {dict}",
     "close": "Lukk",
     "cancel": "Avbryt",
     "to_top": "Til toppen",
-    "home": "Til forsida",
     "per_page": "Resultat per side: ",
     "previous-page": "Forrige side",
     "next-page": "Neste side",
@@ -32,14 +38,6 @@
     "clear": "Tøm",
     "chosen_dict": "Vald ordbok: ",
     "footer_description": " viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
-    "accessibility": {
-      "menu": "Opne toppmeny",
-      "main_content": "Gå til hovudinnhald",
-      "bm": "Gå til treff i Bokmålsordboka",
-      "nn": "Gå til treff i Nynorskordboka",
-      "homograph": "Artikkel nummer ",
-      "callout": "Viser resultater for oppslagsordet "
-    },
     "dicts": {
         "nn": "Nynorskordboka",
         "bm": "Bokmålsordboka",
@@ -55,12 +53,6 @@
       "bm": "Bokmål",
       "bm,nn": "Begge"
     },
-    "menu": {
-        "title": "Meny",
-        "search_pages": "Søkjesider",
-        "help": "Hjelp",
-        "about": "Om ordbøkene"
-        },
     "options": {
         "title": "Søkjealternativ",
         "dict": "Ordbøker:",
@@ -145,11 +137,10 @@
         "reset": "Slett lagra innstillingar",
         "reset_done":"Slettet"
     },
-    "contact":  "Kontakt oss",
     "notifications": {
         "redirect": "Viser tydingar av oppslagsordet",
         "translation_title": "Mogleg omsetjing",
-        "translation": "Legg til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. ",
+        "translation": "Klikk på forslaga under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. ",
         "inflected": "Bøygde former av:",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",
