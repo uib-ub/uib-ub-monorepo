@@ -49,7 +49,7 @@ const store = useSearchStore()
 const session = useSessionStore()
 const route = useRoute()
 
-const no_suggestions = ref(false)
+const no_suggestions = useState('no_suggestions', () => false)
 
 const props = defineProps({
     content_locale: String,

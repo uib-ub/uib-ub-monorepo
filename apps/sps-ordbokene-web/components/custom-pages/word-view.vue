@@ -26,7 +26,7 @@
       </section>
       
   </div>
-  <section class="pt-0 my-4 text-center" aria-labelledby="feedback_title">
+  <section v-if="!no_suggestions" class="pt-0 my-4 text-center" aria-labelledby="feedback_title">
               <h2 id="feedback_title">{{$t('notifications.feedback.title')}}</h2>
               <div v-if="!feedback_given" class="flex gap-4 mt-4 my-6 mb-8 justify-center h-10">
                   <button @click="track_feedback(true)" class="p-2 btn px-5">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
@@ -60,6 +60,7 @@ const route = useRoute()
 const { t } = useI18n()
 const i18n = useI18n()
 const error_message = ref()
+const no_suggestions = useState('no_suggestions', () => false)
 
 const { pending, error, refresh, data: articles } = await useFetch('api/articles?', {
           baseURL: session.endpoint,
