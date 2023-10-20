@@ -151,8 +151,8 @@
     },
     "notifications": {
         "redirect": "Showing senses of the dictionary entry",
-        "translation": "Click the suggestions below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway.",
-        "translation_title": "Possible translation",
+        "translation": "Клацніть пропозиції нижче, щоб додати переклад на основі програмного забезпечення перекладу Apertium і глосарію {adm} від Мовна рада Норвегії",
+        "translation_title": "Потенційний переклад",
         "inflected": "знайдене у відмінюваних формах ",
         "did_you_mean": "Did you mean:",
         "similar": "Пропозиції щодо пошуку",

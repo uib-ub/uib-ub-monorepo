@@ -599,7 +599,7 @@ export default {
                   inflectionRowsPron,
                   inflectionRowsDet
                 },
-    props: ['lemmaList','mq','context','eng', 'content_locale'],
+    props: ['lemmaList','mq','context','eng', 'ukr', 'content_locale'],
     data: function () {
         return { language: this.eng ? 'eng' : (this.ukr ? 'ukr' :  (this.lemmaList ? this.lemmaList[0].language : null)),
                  // initialLexeme: this.lemmaList ? this.lemmaList[0].initial_lexeme : null,
