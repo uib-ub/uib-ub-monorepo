@@ -29,10 +29,9 @@
     <div v-if="!((articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length || data.similar.length || data.freetext )" class="callout pt-0 my-0">
         <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
         <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)}, {locale: content_locale})}}.</p>
-        <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: content_locale})}}</p>
+        <p v-if="store.q.length > 8" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: content_locale})}}</p>
     </div>
 </div>
-
 </template>
 
 <script setup>
@@ -41,6 +40,8 @@ import { useSessionStore } from '~/stores/sessionStore'
 const store = useSearchStore()
 const session = useSessionStore()
 const route = useRoute()
+
+const no_suggestions = ref(false)
 
 const props = defineProps({
     content_locale: String,
@@ -122,16 +123,17 @@ const { data  } = await useFetch(suggestQuery, {
             }
         }
 
-
-
-
-
-
+        if (!( inflect.length || translate.length || similar.length || freetext )) {
+            useTrackEvent('no_suggestions', {props: {query: props.dict + "/" + store.q}})
+            no_suggestions.value = true
+        }
+        else {
+            no_suggestions.value = false
+        }
         return {
             inflect, translate, similar, freetext
         }
-    },
-    server: false
+    }
 })
 
 </script>
