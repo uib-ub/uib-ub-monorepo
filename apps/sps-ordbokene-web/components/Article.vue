@@ -310,11 +310,9 @@ const lemma_groups = computed(() => {
             })
             let genus_description = ""
             const sorted_genera = Array.from(genera).sort((g) => { return {Masc: 1, Fem: 2, Neuter: 3}[g]})
-            console.log(sorted_genera, genera)
             if (sorted_genera.length == 3) {
               genus_description += t('three_genera', {m: t('tags.Masc'), f: t('tags.Fem', { locale: props.content_locale}), n: t('tags.Neuter', { locale: props.content_locale})})
             } else if (sorted_genera.length == 2) {
-              console.log(t('tags.' + sorted_genera[0], 1, { locale: props.content_locale}))
               genus_description += t('two_genera', {a: t('tags.' + sorted_genera[0], { locale: props.content_locale}), b: t('tags.' + sorted_genera[1], { locale: props.content_locale})}) //Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: props.content_locale})).sort().join(t('or'))
             }
             else if (sorted_genera.length == 1) {
