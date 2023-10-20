@@ -1,9 +1,5 @@
 {
   "sub_title": "Bokmålsordboka and Nynorskordboka",
-  "font-size":{
-    "title":"Text size",
-    "description":"To change text size, press Ctrl (Cmd on a Mac) and press + to increase or - to decrease."
-  },
   "help": "Help",
   "autocomplete_suggestions": "Search suggestion | search suggestions",
   "advanced_help": "About advanced search",
