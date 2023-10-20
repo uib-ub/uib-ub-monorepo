@@ -49,7 +49,7 @@ const props = defineProps({
 })
 
 const track_freetext = (query, suggestion) => {
-    useTrackEvent('click_freetext_' + props.dict, {props: {query, suggestion}})
+    useTrackEvent('click_freetext_' + props.dict, {props: {query, suggestion, query_and_suggestion: query + "|" + suggestion}})
 }
 
 const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifst`
