@@ -9,7 +9,15 @@
     </div>
     <div v-if="data.translate.length" class ="callout py-0 my-0">
         <SuggestResults compare :suggestions="data.translate"  :dict="dict" icon="bi:book-half" plausible-goal="click_translate">
-                <h3><Icon name="bi:robot" size="1rem" class="mr-3"/>{{$t('notifications.translation_title', 1, {locale: content_locale})}}</h3><p class="pt-2">{{$t('notifications.translation')}}</p>
+                <h3><Icon name="bi:translate" size="1rem" class="mr-3"/>
+                {{$t('notifications.translation_title', 1, {locale: content_locale})}}</h3>
+            <p class="pt-2">
+                <i18n-t keypath="notifications.translation" tag="div" id="citation" :locale="content_locale">
+                    <template v-slot:adm>
+                        <em>Administrativ ordliste</em>
+                    </template>
+                </i18n-t>
+            </p>
         </SuggestResults>
     </div>
     <div v-if="data.similar.length">
@@ -29,10 +37,9 @@
     <div v-if="!((articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length || data.similar.length || data.freetext )" class="callout pt-0 my-0">
         <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
         <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)}, {locale: content_locale})}}.</p>
-        <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: content_locale})}}</p>
+        <p v-if="store.q.length > 8" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: content_locale})}}</p>
     </div>
 </div>
-
 </template>
 
 <script setup>
@@ -42,14 +49,16 @@ const store = useSearchStore()
 const session = useSessionStore()
 const route = useRoute()
 
+const no_suggestions = useState('no_suggestions', () => false)
+
 const props = defineProps({
     content_locale: String,
     dict: String,
     articles_meta: Object
 })
 
-const track_freetext = (query, suggestion) => {
-    useTrackEvent('click_freetext_' + props.dict, {props: {query, suggestion, query_and_suggestion: query + "|" + suggestion}})
+const track_freetext = (from, to) => {
+    useTrackEvent('click_freetext_' + props.dict, {props: {from, to, combined: from + "|" + to}})
 }
 
 const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifst`
@@ -122,16 +131,17 @@ const { data  } = await useFetch(suggestQuery, {
             }
         }
 
-
-
-
-
-
+        if (!( inflect.length || translate.length || similar.length || freetext )) {
+            useTrackEvent('no_suggestions', {props: {query: props.dict + "/" + store.q}})
+            no_suggestions.value = true
+        }
+        else {
+            no_suggestions.value = false
+        }
         return {
             inflect, translate, similar, freetext
         }
-    },
-    server: false
+    }
 })
 
 </script>

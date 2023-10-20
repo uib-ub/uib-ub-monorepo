@@ -29,9 +29,8 @@ const props = defineProps({
 })
 
 
-const track_suggest = (suggestion) => {
-    console.log(props.plausibleGoal + "_" + props.dict, store.q, suggestion)
-    useTrackEvent(props.plausibleGoal + "_" + props.dict, {props: {query: store.q, suggestion}})
+const track_suggest = (to) => {
+    useTrackEvent(props.plausibleGoal + "_" + props.dict, {props: {from: store.q, to, combined: store.q + "|" + to}})
 
 }
 

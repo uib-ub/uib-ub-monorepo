@@ -5,7 +5,7 @@
           :key="index"
            v-bind="item.props"><!--
           -->{{item.html}}<!--
-       --><NuxtLink class="article_ref notranslate" v-if="item.type == 'article_ref'" :to="item.ref" v-on:click="link_click" :key="index"><!--
+       --><NuxtLink class="article_ref notranslate" v-if="item.type == 'article_ref'" :to="item.ref" v-on:click="link_click(item.ref)" :key="index"><!--
        --><DefElement tag='span' v-if="item.link_text.type_" :dict="dict" :key="item.id+'_sub'" :body='item.link_text' :content_locale="content_locale"/><span v-else>{{item.link_text}}</span><!--
        --><span class="homograph" v-if="item.lemmas[0].hgno" :key="index"><!--
         --> (<span class="sr-only">{{parseInt(item.lemmas[0].hgno)}}</span><span aria-hidden="true">{{roman_hgno(item.lemmas[0])}}{{item.definition_order ? '': ')'}}</span></span>
@@ -33,8 +33,8 @@ const i18n = useI18n()
 
 
 const emit = defineEmits(['error', 'link-click'])
-const link_click = (event) => {
-    emit('link-click', event)
+const link_click = (itemref) => {
+    emit('link-click', itemref)
 }
 
 const props = defineProps({

@@ -29,7 +29,9 @@ const { data, error, pending } = useFetch(query, {key: query,
                                                                                     && item[0].slice(-1) != '-' ).map(pair => pair[0])
                                         }
                                         else {
+                                            useTrackEvent('no_suggestions_advanced', {props: {query: props.dict + "/" + route.query.q}})
                                             return []
+                                            
                                         }
                                     }})
 
