@@ -258,8 +258,8 @@ const sub_articles = computed(() => {
 })
 
 
-const link_click = (event) => {
-  console.log("ARTICLE CLICKED", event)
+const link_click = (itemref) => {
+  useTrackEvent('article_clicked', {props: {from: props.dict + "/" + props.article_id, to: itemref, combined: props.dict + "/" + props.article_id + " => " + itemref}})
 }
 
 const link_to_self = () => {
