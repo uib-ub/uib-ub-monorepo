@@ -62,7 +62,7 @@
 
       <button type="button" v-if="!settings.inflectionExpanded && inflected && !welcome" 
               class="btn btn-primary my-1 border-primary-darken !pr-2" 
-              @click="inflection_expanded = !inflection_expanded" 
+              @click="expand_inflection" 
               :lang="locale2lang[content_locale]"
               :aria-expanded="inflection_expanded" 
               :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
@@ -171,6 +171,11 @@ const { pending, data, error } = await useAsyncData('article_'+props.dict+props.
       })
 
 })
+
+const expand_inflection = () => {
+  useTrackEvent('expand_inflection', {props: {article: props.dict + "/" + props.article_id}})
+  inflection_expanded.value = !inflection_expanded.value
+}
 
 
 if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {

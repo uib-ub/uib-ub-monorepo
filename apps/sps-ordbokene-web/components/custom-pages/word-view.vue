@@ -23,9 +23,18 @@
           <div v-if="store.q && !specialSymbols(store.q)">
             <Suggest :content_locale="content_locale(dict)"  :dict="dict" :articles_meta="articles.meta"/>
           </div>
-         
       </section>
+      
   </div>
+  <section class="pt-0 my-4 text-center" aria-labelledby="feedback_title">
+              <h2 id="feedback_title">{{$t('notifications.feedback.title')}}</h2>
+              <div v-if="!feedback_given" class="flex gap-4 mt-4 my-6 mb-8 justify-center h-10">
+                  <button @click="track_feedback(true)" class="p-2 btn px-5">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
+                  <button @click="track_feedback(false)" class="p-2 btn px-5">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
+                  <p v-else class="mt-4 my-6 mb-8 justify-center h-10">
+                  {{$t('notifications.feedback.thanks')}}
+              </p>
+        </section>
   </div>
   <div v-if="error_message">
     {{error_message}}
@@ -59,6 +68,14 @@ const { pending, error, refresh, data: articles } = await useFetch('api/articles
             dict: store.dict,
             scope: 'e',
           }})
+
+const feedback_given = ref(false)
+
+const track_feedback = (value) => {
+    feedback_given.value = true
+    useTrackEvent(value ? 'feedback_positive' : 'feedback_negative', {props: {query: store.dict + "/" + store.q}})
+
+}
 
 const content_locale = dict => {
   if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {

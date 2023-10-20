@@ -3,12 +3,12 @@
 </div>
    <div v-if="data" class="mb-10 mx-2 flex flex-col gap-8 mt-3">
     <div v-if="data.inflect.length" class ="callout py-0 my-0">
-        <SuggestResults :suggestions="data.inflect"  :dict="dict">
+        <SuggestResults :suggestions="data.inflect"  :dict="dict" plausible-goal="click_inflect">
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.inflected', 1, {locale: content_locale})}}</h3><span id="translation-description"></span>{{" "}}
         </SuggestResults>
     </div>
     <div v-if="data.translate.length" class ="callout py-0 my-0">
-        <SuggestResults compare :suggestions="data.translate"  :dict="dict" icon="bi:book-half">
+        <SuggestResults compare :suggestions="data.translate"  :dict="dict" icon="bi:book-half" plausible-goal="click_translate">
                 <h3><Icon name="bi:translate" size="1rem" class="mr-3"/>
                 {{$t('notifications.translation_title', 1, {locale: content_locale})}}</h3><p class="pt-2">
             <i18n-t keypath="notifications.translation" tag="div" id="citation" :locale="content_locale">
@@ -17,10 +17,9 @@
             </template>
           </i18n-t>
                     </p>
-        </SuggestResults>
     </div>
     <div v-if="data.similar.length">
-        <SuggestResults  :suggestions="data.similar" :dict="dict">
+        <SuggestResults  :suggestions="data.similar" :dict="dict" plausible-goal="click_similar">
             <h3>{{$t('notifications.similar', 1, {locale: content_locale})}}</h3>
         </SuggestResults>
     </div>
@@ -28,7 +27,7 @@
             <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
             <p>{{$t('notifications.fulltext.description', 1, {locale: content_locale})}}</p>
             <div class="flex">
-            <NuxtLink :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none">{{$t('to_advanced')}} 
+            <NuxtLink :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" @click="track_freetext(store.q, data.freetext)" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right"/>
             </NuxtLink>
             </div>
@@ -54,6 +53,10 @@ const props = defineProps({
     dict: String,
     articles_meta: Object
 })
+
+const track_freetext = (query, suggestion) => {
+    useTrackEvent('click_freetext_' + props.dict, {props: {query, suggestion, query_and_suggestion: query + "|" + suggestion}})
+}
 
 const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifst`
 const { data  } = await useFetch(suggestQuery, {

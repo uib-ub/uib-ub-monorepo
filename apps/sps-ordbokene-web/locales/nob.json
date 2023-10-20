@@ -183,11 +183,17 @@
         "fulltext": {
             "title": "Fritekstsøk",
             "description": "Søket ditt gir treff i avansert søk med fritekstsøk."
-          },
-          "no_results": {
+        },
+        "no_results": {
             "title": "Ingen treff",
             "description": ["Søket ditt ga ingen treff i {dict}", "Merk at det er talløse kombinasjonsmuligheter av sammensatte ord på norsk, og mange slike ord er derfor ikke tatt med i ordbøkene."]
-          }
+        },
+        "feedback": {
+            "title": "Fant du ordet du lette etter?",
+            "yes": "Ja",
+            "no": "Nei",
+            "thanks": "Takk for tilbakemeldingen!"
+        }
     },
     "table": {
         "caption":{

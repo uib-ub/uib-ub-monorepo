@@ -29,9 +29,12 @@ export default defineNuxtConfig({
       '@pinia-plugin-persistedstate/nuxt',
       '@nuxtjs/tailwindcss',
       'nuxt-icon',
-      '@nuxt/content'
+      '@nuxt/content',
+      '@nuxtjs/plausible',
     ],
-  
+  plausible: {
+    domain: 'test.ordbokene.no',
+  },
   content: {
     sources: {
       github: {
