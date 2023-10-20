@@ -145,8 +145,8 @@
 "contact": "Contact us",
 "notifications": {
     "redirect": "Showing senses of the dictionary entry",
-    "translation": "Compare to machine translation suggested by Apertium:",
-    "translation_title": "Machine translation",
+    "translation": "Add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway.",
+    "translation_title": "Possible translation",
     "inflected": "An inflection of:",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",

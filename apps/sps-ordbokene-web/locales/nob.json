@@ -159,8 +159,8 @@
     "contact": "Kontakt oss",
     "notifications": {
         "redirect": "Viser betydninger av oppslagsordet",
-        "translation": "Sammenlign med maskinoversettelse foreslått av Apertium:",
-        "translation_title": "Maskinoversettelse",
+        "translation": "Legg til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
+        "translation_title": "Mulig oversettelse",
         "inflected": "Bøyd form av:",
         "did_you_mean": "Mente du:",
         "similar": "Lignende oppslagsord:",

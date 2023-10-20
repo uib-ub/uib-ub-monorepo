@@ -148,8 +148,8 @@
     "contact":  "Kontakt oss",
     "notifications": {
         "redirect": "Viser tydingar av oppslagsordet",
-        "translation_title": "Maskinomsetjing",
-        "translation": "Samanlikn med maskinomsetjing foreslått av Apertium:",
+        "translation_title": "Mogleg omsetjing",
+        "translation": "Legg til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. ",
         "inflected": "Bøygde former av:",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",
