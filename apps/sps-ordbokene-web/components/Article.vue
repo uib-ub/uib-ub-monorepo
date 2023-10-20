@@ -40,7 +40,7 @@
         </div>
         <div v-else>
           
-        <h2 v-if="welcome" class="dict-label">{{$t('monthly', 1, { locale: content_locale}) + {"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
+        <h2 v-if="welcome" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h2>
         <h2 v-else-if="single" class="dict-label article-dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
         <div :class="welcome? 'px-4 pb-3 pt-4' : 'px-4 pt-4 pb-2'">
 
@@ -71,8 +71,8 @@
         <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
             <div class="inflection-container p-2">
                 <NuxtErrorBoundary @error="inflection_error">
-                <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
-                <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
                 </NuxtErrorBoundary>
             </div>
         </div>
@@ -309,10 +309,16 @@ const lemma_groups = computed(() => {
               }
             })
             let genus_description = ""
-            if (genera.size == 3) {
-              genus_description +=  t('tags.Masc') + ', ' +  t('tags.Fem', 1, { locale: props.content_locale}) +  t('or') +  t('tags.Neuter', 1, { locale: props.content_locale})
-            } else {
-              genus_description += Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: props.content_locale})).sort().join(t('or'))
+            const sorted_genera = Array.from(genera).sort((g) => { return {Masc: 1, Fem: 2, Neuter: 3}[g]})
+            console.log(sorted_genera, genera)
+            if (sorted_genera.length == 3) {
+              genus_description += t('three_genera', {m: t('tags.Masc'), f: t('tags.Fem', { locale: props.content_locale}), n: t('tags.Neuter', { locale: props.content_locale})})
+            } else if (sorted_genera.length == 2) {
+              console.log(t('tags.' + sorted_genera[0], 1, { locale: props.content_locale}))
+              genus_description += t('two_genera', {a: t('tags.' + sorted_genera[0], { locale: props.content_locale}), b: t('tags.' + sorted_genera[1], { locale: props.content_locale})}) //Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: props.content_locale})).sort().join(t('or'))
+            }
+            else if (sorted_genera.length == 1) {
+              genus_description += t('tags.' + sorted_genera[0], 1, { locale: props.content_locale})
             }
             if (genus_map[genus_description]) {
               genus_map[genus_description].push(lemma)

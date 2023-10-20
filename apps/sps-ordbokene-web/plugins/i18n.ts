@@ -2,6 +2,7 @@ import { createI18n } from 'vue-i18n'
 import eng from '../locales/eng.json'
 import nno from '../locales/nno.json'
 import nob from '../locales/nob.json'
+import ukr from '../locales/ukr.json'
 
 export default defineNuxtPlugin(({ vueApp }) => {
   const route = useRoute()
@@ -26,7 +27,8 @@ export default defineNuxtPlugin(({ vueApp }) => {
     messages: {
       eng,
       nno,
-      nob
+      nob,
+      ukr
     }
   })
 

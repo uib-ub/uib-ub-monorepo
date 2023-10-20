@@ -9,7 +9,15 @@
     </div>
     <div v-if="data.translate.length" class ="callout py-0 my-0">
         <SuggestResults compare :suggestions="data.translate"  :dict="dict" icon="bi:book-half" plausible-goal="click_translate">
-                <h3><Icon name="bi:robot" size="1rem" class="mr-3"/>{{$t('notifications.translation_title', 1, {locale: content_locale})}}</h3><p class="pt-2">{{$t('notifications.translation')}}</p>
+                <h3><Icon name="bi:translate" size="1rem" class="mr-3"/>
+                {{$t('notifications.translation_title', 1, {locale: content_locale})}}</h3>
+            <p class="pt-2">
+                <i18n-t keypath="notifications.translation" tag="div" id="citation" :locale="content_locale">
+                    <template v-slot:adm>
+                        <em>Administrativ ordliste</em>
+                    </template>
+                </i18n-t>
+            </p>
         </SuggestResults>
     </div>
     <div v-if="data.similar.length">

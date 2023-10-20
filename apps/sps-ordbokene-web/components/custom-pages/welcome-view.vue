@@ -11,7 +11,7 @@
 
       <section v-if="latest_bm" class="welcome">
         <div class="article new-articles rounded !my-0">
-          <h2 class="dict-label !text-xl">{{ $t('article.new', {dict: "Bokmålsordboka"}, {locale: content_locale('bm')}) }}</h2>
+          <h2 class="dict-label !text-xl">{{ $t('article.new', {dict: $t('dicts_inline.bm')}, {locale: content_locale('bm')}) }}</h2>
           <ul class="flex flex-col md:flex-row lg:flex-col xl:flex-row flex-wrap pt-2 px-3 gap-x-2">
             <li v-for="([id, name], index) in latest_bm" :key="index" class="lg:col-auto">
                 <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
@@ -22,7 +22,7 @@
 
       <section v-if="latest_nn" class="welcome">
         <div class="article new-articles rounded !my-0">
-          <h2 class="dict-label !text-xl">{{ $t('article.new', {dict: "Nynorskordboka"}, {locale: content_locale('nn')}) }}</h2>
+          <h2 class="dict-label !text-xl">{{ $t('article.new', {dict: $t('dicts_inline.nn')}, {locale: content_locale('nn')}) }}</h2>
           <ul class="flex flex-col md:flex-row lg:flex-col xl:flex-row flex-wrap pt-2 px-3 gap-x-2">
             <li v-for="([id, name], index) in latest_nn" :key="index">
                 <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>

@@ -1,10 +1,13 @@
 {
   "sub_title": "Bokmålsordboka and Nynorskordboka",
-  "font-size":{
-    "title":"Text size",
-    "description":"To change text size, press Ctrl (Cmd on a Mac) and press + to increase or - to decrease."
+  "menu": {
+    "title": "Menu",
+    "home": "Home",
+    "help": "Help",
+    "about":"About",
+    "contact": "Contact us",
+    "settings": "Settings"
   },
-  "help": "Help",
   "autocomplete_suggestions": "Search suggestion | search suggestions",
   "advanced_help": "About advanced search",
   "advanced": "Advanced search",
@@ -12,18 +15,18 @@
   "show_articles": "Articles",
   "show_list": "List view",
   "simple": "Simple search",
-  "about":"About",
   "breadcrumbs": "Breadcrumbs",
-  "monthly": "Titbit from ",
+  "content_not_found": "Content not available",
+  "monthly": "Titbit from {dict}",
   "photo": "Photo by Erwan Hesry on unsplash.com",
   "close": "Close",
   "cancel": "Cancel",
-  "or": " or ",
+  "three_genera": "{m}, {f} or {n}",
+  "two_genera": "{a} or {b}",
   "in": " in ",
   "and": " and ",
   "from": "from",
   "to_top": "Back to top",
-  "home": "Home",
   "per_page": "Results per page: ",
   "previous-page": "Previous page",
   "next-page": "Next page",
@@ -52,10 +55,6 @@
     "nn": "Nynorsk",
     "bm": "Bokmål",
     "bm,nn": "Both"
-  },
-  "menu": {
-    "title": "Menu",
-    "search_pages": "Search pages"
   },
   "options": {
     "title": "Search options",
@@ -145,11 +144,10 @@
     "reset": "Delete stored settings",
     "reset_done":"Deleted"
 },
-"contact": "Contact us",
 "notifications": {
     "redirect": "Showing senses of the dictionary entry",
-    "translation": "Compare to machine translation suggested by Apertium:",
-    "translation_title": "Machine translation",
+    "translation": "Click the suggestions below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway.",
+    "translation_title": "Possible translation",
     "inflected": "An inflection of:",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",
