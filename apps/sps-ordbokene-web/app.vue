@@ -5,6 +5,7 @@
     <Link rel="alternate" :href="baseUrl + '/nob' + non_localized" hreflang="nb"/>
     <Link rel="alternate" :href="baseUrl + '/nno' + non_localized" hreflang="nn"/>
     <Link rel="alternate" :href="baseUrl + '/ukr' + non_localized" hreflang="uk"/>
+    <Meta name="robots" content="noindex, nofollow"/>
   </Head>
 <NuxtLayout>
     <NuxtPage @click="menu_expanded=false"
