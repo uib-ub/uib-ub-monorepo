@@ -33,7 +33,7 @@ export default defineNuxtConfig({
       '@nuxtjs/plausible',
     ],
   plausible: {
-    domain: 'example.com',
+    domain: 'test.ordbokene.no',
   },
   content: {
     sources: {
