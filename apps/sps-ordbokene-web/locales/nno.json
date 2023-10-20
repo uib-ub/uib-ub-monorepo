@@ -179,7 +179,7 @@
             "description": ["Søkjet ditt ga ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
           },
           "feedback": {
-            "title": "Fann du det du leita etter?",
+            "title": "Fann du ordet du leita etter?",
             "yes": "Ja",
             "no": "Nei",
             "thanks": "Takk for tilbakemeldinga!"
