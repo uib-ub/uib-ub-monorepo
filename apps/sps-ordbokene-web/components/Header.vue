@@ -26,17 +26,17 @@
           <span class="nav-link" v-tooltip.right="{ value: `<h4 class='bg-black text-canvas-darken p-4 text-3xl'>${$t('font-size.description')}</h4>`, escape: true}" >{{$t('font-size.title')}}</span>
         </li> -->
         <li class="nav-item">
-          <NuxtLink class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('menu.help')}}</NuxtLink>
         </li>
 
         <li class="nav-item">
-          <NuxtLink class="nav-link" :aria-current="$route.name == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('menu.about')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
+          <NuxtLink class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('menu.settings')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink class="nav-link" :aria-current="$route.name == 'contact' && 'page'" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'contact' && 'page'" :to="`/${$i18n.locale}/contact`">{{$t('menu.contact')}}</NuxtLink>
         </li>
 
       </ul>

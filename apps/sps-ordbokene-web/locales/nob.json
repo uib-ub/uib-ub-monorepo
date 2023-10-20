@@ -1,10 +1,13 @@
 {
     "sub_title": "Bokmålsordboka og Nynorskordboka",
-    "font-size":{
-        "title":"Skriftstørrelse",
-        "description":"For å endre tekststørrelsen, hold Ctrl-tasten nede (Cmd-tasten på Mac) og trykk på + for å forstørre eller - for å forminske."
-      },
-    "help": "Hjelp",
+    "menu": {
+        "title": "Meny",
+        "home": "Til forsiden",
+        "help": "Hjelp",
+        "about": "Om ordbøkene",
+        "settings": "Innstillinger",
+        "contact":  "Kontakt oss"
+    },
     "autocomplete_suggestions": "Søkjeforslag | søkeforslag",
     "advanced_help": "Om avansert søk",
     "advanced": "Avansert søk",
@@ -14,9 +17,10 @@
     "simple": "Enkelt søk",
     "about":"Om ordbøkene",
     "breadcrumbs": "Brødsmulesti",
+    "content_not_found": "Innhold ikke tilgjengelig",
     "photo": "Foto: Erwan Hesry (unsplash.com)",
     "background": "Bakgrunnsbilde",
-    "monthly": "Smakebit fra ",
+    "monthly": "Smakebit fra {dict}",
     "close": "Lukk",
     "cancel": "Avbryt",
     "to_top": "Til toppen",
@@ -25,7 +29,8 @@
     "previous-page": "Forrige side",
     "next-page": "Neste side",
     "pageof": "Side {page} av {pages}",
-    "or": " eller ",
+    "three_genera": "{m}, {f} eller {n}",
+    "two_genera": "{a} eller {b}",
     "in": " i ",
     "and": " og ",
     "from": "fra",
@@ -57,12 +62,6 @@
       "bm": "Bokmål",
       "bm,nn": "Begge"
     },
-    "menu": {
-        "title": "Meny",
-        "search_pages": "Søkesider",
-        "help": "Hjelp",
-        "about": "Om ordbøkene"
-        },
     "options": {
         "title": "Søkealternativer",
         "dict": "Ordbøker:",
@@ -162,8 +161,8 @@
     "contact": "Kontakt oss",
     "notifications": {
         "redirect": "Viser betydninger av oppslagsordet",
-        "translation": "Sammenlign med maskinoversettelse foreslått av Apertium:",
-        "translation_title": "Maskinoversettelse",
+        "translation": "Klikk på forslagene under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
+        "translation_title": "Mulig oversettelse",
         "inflected": "Bøyd form av:",
         "did_you_mean": "Mente du:",
         "similar": "Lignende oppslagsord:",

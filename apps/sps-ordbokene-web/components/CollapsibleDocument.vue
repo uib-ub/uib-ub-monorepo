@@ -2,7 +2,7 @@
             <ContentRenderer :value="data">
           <ContentRendererMarkdown :value="{...data, body: {...data.body, children: data.body.children.slice(1)}}" :components="{h2: 'h3'}"/>
           <template #empty>
-            <p>No content found.</p>
+            <p>{{$t('content_not_found')}}</p>
           </template>
           
       </ContentRenderer>
