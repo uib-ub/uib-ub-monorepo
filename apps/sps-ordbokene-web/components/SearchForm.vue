@@ -26,7 +26,7 @@ const input_element = useState('input_element')
 const submitForm = async (item) => {
   
   if (typeof item === 'string') {
-    if (settings.auto_select) {
+    if (settings.auto_select && !isMobileDevice()) {
       input_element.value.select()
     }
     else {
@@ -36,7 +36,7 @@ const submitForm = async (item) => {
   }
   
   if (store.input) {
-    if (settings.auto_select) {
+    if (settings.auto_select && !isMobileDevice()) {
       input_element.value.select()
     }
     else {

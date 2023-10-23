@@ -71,7 +71,7 @@ if (process.client) {
 const nuxtApp = useNuxtApp()
 
 nuxtApp.hook("page:finish", () => {
-  if (input_element.value && ( settings.autoSelect || route.name == "welcome" || route.name == "index")) {
+  if (input_element.value && settings.autoSelect && !isMobileDevice()) {
     input_element.value.select()
   }
 })

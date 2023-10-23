@@ -24,6 +24,13 @@ export const localizeUrl = (url, locale) => {
 }
 
 
+export const isMobileDevice =  () => {
+  if (process.client) {
+    return navigator.userAgentData ? navigator.userAgentData.mobile : !window.matchMedia('(pointer: fine)').matches
+  }
+}
+
+
 export const detectLocale = langString => {
   if (langString) {
     let langs = langString.split(",")
