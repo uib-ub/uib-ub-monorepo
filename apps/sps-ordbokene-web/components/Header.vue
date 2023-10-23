@@ -15,7 +15,7 @@
               :aria-expanded="menu_expanded"
               :aria-controls="menu_expanded? 'main_menu' : null"
               @click="menu_expanded = !menu_expanded">
-        <span class="sr-only sm:inline sm:not-sr-only">{{$t('menu.title')}}</span><Icon :name="menu_expanded ? 'bi:x-lg' : 'bi:list'" class="sm:ml-2"/>
+        <span class="sr-only sm:inline sm:not-sr-only">{{$t('menu')}}</span><Icon :name="menu_expanded ? 'bi:x-lg' : 'bi:list'" class="sm:ml-2"/>
       </button>
 </div>
       </div>
@@ -26,17 +26,17 @@
           <span class="nav-link" v-tooltip.right="{ value: `<h4 class='bg-black text-canvas-darken p-4 text-3xl'>${$t('font-size.description')}</h4>`, escape: true}" >{{$t('font-size.title')}}</span>
         </li> -->
         <li class="nav-item">
-          <NuxtLink class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('menu.help')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
         </li>
 
         <li class="nav-item">
-          <NuxtLink class="nav-link" :aria-current="$route.name == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('menu.about')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'about' && 'page'" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('menu.settings')}}</NuxtLink>
+          <NuxtLink class="nav-link"  :aria-current="$route.name == 'settings' && 'page'" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
         </li>
                 <li class="nav-item">
-          <NuxtLink class="nav-link" :aria-current="$route.name == 'contact' && 'page'" :to="`/${$i18n.locale}/contact`">{{$t('menu.contact')}}</NuxtLink>
+          <NuxtLink class="nav-link" :aria-current="$route.name == 'contact' && 'page'" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
         </li>
 
       </ul>
