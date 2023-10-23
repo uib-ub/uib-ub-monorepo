@@ -1,13 +1,10 @@
 {
   "sub_title": "Bokmålsordboka and Nynorskordboka",
-  "menu": {
-    "title": "Menu",
-    "home": "Home",
-    "help": "Help",
-    "about":"About",
-    "contact": "Contact us",
-    "settings": "Settings"
-  },
+  "home": "Home",
+  "menu": "Menu",
+  "help": "Help",
+  "about":"About",
+  "contact": "Contact us",
   "autocomplete_suggestions": "Search suggestion | search suggestions",
   "advanced_help": "About advanced search",
   "advanced": "Advanced search",

@@ -1,13 +1,10 @@
 {
     "sub_title": "Bokmålsordboka og Nynorskordboka",
-    "menu": {
-        "title": "Meny",
-        "home": "Til forsida",
-        "help": "Hjelp",
-        "about": "Om ordbøkene",
-        "settings": "Innstillingar",
-        "contact":  "Kontakt oss"
-    },
+    "home": "Til forsida",
+    "menu": "Meny",
+    "help": "Hjelp",
+    "about": "Om ordbøkene",
+    "contact":  "Kontakt oss",
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
     "advanced_help": "Søkjehjelp",
     "advanced": "Avansert søk",

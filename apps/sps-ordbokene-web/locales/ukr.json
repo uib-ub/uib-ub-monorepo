@@ -1,14 +1,10 @@
 {
     "sub_title": "Cловник букмола та Словник нюношка",
-    
-    "menu": {
-        "title": "Меню",
-        "home": "На головну сторінку",
-        "help": "Допомога в пошуку",
-        "about": "Про словник",
-        "settings": "Налаштування",
-        "contact": "Зв’язатися з нами",
-    },
+    "home": "На головну сторінку",
+    "menu": "Меню",
+    "help": "Допомога в пошуку",
+    "about": "Про словник",
+    "contact": "Зв’язатися з нами",
     "autocomplete_suggestions": "Search suggestion | search suggestions",
     "advanced_help": "About advanced search",
     "advanced": "Про розширений пошук",

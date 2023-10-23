@@ -14,19 +14,19 @@
       <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center site-nav">
         <ul class="flex flex-col md:flex-row gap-3 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center md:text-lg text-center md:gap-10">
         <li>
-            <NuxtLink :aria-current="$route.name == 'index' && 'page'" class="nav-link" :to="`/${$i18n.locale}`" @click="store.$reset()">{{$t('menu.home')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'index' && 'page'" class="nav-link" :to="`/${$i18n.locale}`" @click="store.$reset()">{{$t('home')}}</NuxtLink>
         </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'help' && 'page'" class="nav-link" :to="`/${$i18n.locale}/help`">{{$t('menu.help')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'help' && 'page'" class="nav-link" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'about' && 'page'" class="nav-link" :to="`/${$i18n.locale}/about`">{{$t('menu.about')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'about' && 'page'" class="nav-link" :to="`/${$i18n.locale}/about`">{{$t('about')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'settings' && 'page'" class="nav-link" :to="`/${$i18n.locale}/settings`">{{$t('menu.settings')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'settings' && 'page'" class="nav-link" :to="`/${$i18n.locale}/settings`">{{$t('settings.title')}}</NuxtLink>
           </li>
         <li>
-            <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" :to="`/${$i18n.locale}/contact`">{{$t('menu.contact')}}</NuxtLink>
+            <NuxtLink :aria-current="$route.name == 'contact' && 'page'" class="nav-link" :to="`/${$i18n.locale}/contact`">{{$t('contact')}}</NuxtLink>
           </li>
       </ul>
     </nav>    
