@@ -189,7 +189,7 @@
       
       
       .secondary-page h3 button, .secondary-page h3, .ord-container h2, .link-header {
-          @apply text-primary text-2xl font-semibold;
+          @apply text-primary text-3xl font-semibold;
           font-variant: all-small-caps;
         }
 

@@ -103,7 +103,7 @@ const reset = () => {
 
 const submitForm = async (item) => {
   if (store.input && input_element.value) {
-    if (settings.autoSelect) {
+    if (settings.autoSelect && !isMobileDevice()) {
       input_element.value.select()
     }
     else {
