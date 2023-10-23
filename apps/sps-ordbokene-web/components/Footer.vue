@@ -12,7 +12,7 @@
         </div>
       </div>
       <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center site-nav">
-        <ul class="flex flex-col md:flex-row gap-3 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center md:text-lg text-center md:gap-10">
+        <ul class="flex flex-col md:flex-row gap-3 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center md:text-lg text-center md:gap-10 !text-sm">
         <li>
             <NuxtLink :aria-current="$route.name == 'index' && 'page'" class="nav-link" :to="`/${$i18n.locale}`" @click="store.$reset()">{{$t('home')}}</NuxtLink>
         </li>
@@ -60,9 +60,7 @@ const change_lang = (lang) => {
   <style scoped>
   
   .site-nav {
-    font-variant: all-small-caps;
     letter-spacing: 0.1rem;
-  
   
   }
   

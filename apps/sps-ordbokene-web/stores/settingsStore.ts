@@ -12,7 +12,12 @@ export const useSettingsStore = defineStore('settings', {
             perPage: 10
         }
     },
-    persist: true,
+    persist: {
+        storage: persistedState.cookiesWithOptions({
+            sameSite: 'strict',
+            maxAge: 31536000
+          }),
+    },
   })
 
 

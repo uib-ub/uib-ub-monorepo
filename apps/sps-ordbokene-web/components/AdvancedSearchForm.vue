@@ -152,8 +152,8 @@ option.selected {
 
 
 legend, label {
-  font-variant: all-small-caps;
-  @apply tracking-widest text-xl;
+
+  @apply tracking-widest text-lg;
 }
 
 </style>
