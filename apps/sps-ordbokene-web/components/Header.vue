@@ -91,7 +91,7 @@ const store = useSearchStore()
 const route = useRoute()
 const i18n = useI18n()
 const menu_expanded = ref(false)
-const locale_cookie = useCookie('currentLocale')
+const locale_cookie = useCookie('currentLocale', {maxAge: 31536000})
 
 const locale_menu = ref();
 
