@@ -130,8 +130,7 @@ nav #locale-select {
   @apply cursor-pointer text-base tracking-widest;
 }
 nav .nav-link {
-  font-variant-caps: all-small-caps;
-  @apply pt-2 list-none tracking-widest text-xl;
+  @apply pt-2 list-none tracking-widest;
 }
 
 
