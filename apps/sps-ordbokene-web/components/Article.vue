@@ -428,10 +428,7 @@ if (props.single && data.value) {
       {property: 'og:title', content: title },
       {property: 'og:description', content: snippet },
       {name: 'twitter:description', content: snippet }  
-    ],
-    link: [
-    {rel: "canonical", href: `https://ordbokene.no/${props.dict}/${route.params.article_id}`}
-  ]
+    ]
   });
 }
 
