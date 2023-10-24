@@ -230,7 +230,7 @@
       }
 
       .ord-container {
-        @apply px-2 md:px-1;
+        @apply px-2 md:px-4;
       }
 
 

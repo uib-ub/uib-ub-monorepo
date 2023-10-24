@@ -3,10 +3,10 @@
   <SearchNav v-if="route.name != 'search'"/>
     <NuxtErrorBoundary @error="form_error">
     <SearchForm v-if="route.name != 'search'" class="ord-container"/>
-    <div v-if="route.name == 'article' && store.searchUrl" class="ord-container justify-start mt-2 pl-1 md:pl-0">
+    <div v-if="route.name == 'article' && store.searchUrl" class="ord-container justify-start mt-2">
       <NuxtLink :to="store.searchUrl"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.back')}}</NuxtLink>
     </div>
-    <div v-else-if="route.name == 'article'" class="ord-container justify-start mt-2 pl-1 md:pl-0">
+    <div v-else-if="route.name == 'article'" class="ord-container justify-start mt-2">
       <NuxtLink :to="`/${$i18n.locale}/`"> <Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('home')}}</NuxtLink>
     </div>
   </NuxtErrorBoundary>

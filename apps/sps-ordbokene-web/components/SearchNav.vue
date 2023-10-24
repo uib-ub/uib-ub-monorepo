@@ -1,6 +1,6 @@
 <template>
   <div class="nav-container px-2">
-    <nav :aria-label="$t('label.dict_nav')" class="md:flex inline-block md:justify-center !my-2 box-content pr-1 md:pr-0">
+    <nav :aria-label="$t('label.dict_nav')" class="md:flex inline-block md:justify-center !my-2 box-content px-2 md:pr-0">
   <ul class="flex gap-2 md:gap-3 mr-2">
   <li>
     <NuxtLink class="inline-block"

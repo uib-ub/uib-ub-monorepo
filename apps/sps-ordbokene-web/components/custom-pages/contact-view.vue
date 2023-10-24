@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="secondary-page">
     <ContentRenderer :value="contact">
           <ContentRendererMarkdown :value="contact" :components="{h1: 'h2'}" />
           <template #empty>
