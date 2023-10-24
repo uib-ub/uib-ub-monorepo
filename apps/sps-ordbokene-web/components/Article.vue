@@ -1,45 +1,29 @@
 <template>
   <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
-  <div class="list-view-item" v-else-if="list && !welcome" :lang="dictLang[dict]">
-      <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
-      <NuxtLink v-else class="result-list-item" :to="link_to_self()">
-
-  <div v-for="(lemma_group, i) in lemma_groups" :key="i">
-  <span class="lemma-group">
-
-    <span v-for="(lemma, index) in lemma_group.lemmas"
-          :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
-          <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
-                    <span
-                   class="title_comma"
-                   v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
-                  </span>
+  <div v-else-if="list && !welcome" class="list-view-item" :lang="dictLang[dict]">
+    <NuxtLink class="result-list-item" :to="link_to_self()">
+      <div v-for="(lemma_group, i) in lemma_groups" :key="i">
+      <span class="lemma-group">
+        <span v-for="(lemma, index) in lemma_group.lemmas"
+              :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
+              <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
+                        <span
+                      class="title_comma"
+                      v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
+                      </span>
+        </span>
     </span>
-</span>
-<span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
-  &nbsp;<em v-if="lemma_group.description" class="subheader ">
-  <span class="header_group_list">{{lemma_group.description}}</span>
-        {{lemma_group.pos_group}}
-  <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
-
-  </em>
-</div>{{snippet}}
-    </NuxtLink>
+    <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
+      &nbsp;<em v-if="lemma_group.description" class="subheader ">
+      <span class="header_group_list">{{lemma_group.description}}</span>
+            {{lemma_group.pos_group}}
+      <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
+      </em>
+    </div>{{snippet}}
+  </NuxtLink>
 </div>
-  <div :lang="dictLang[dict]" class="article flex flex-col justify-between" v-else>
-      <div v-if="false && pending && !welcome" class="skeleton-container">
-            <div class="skeleton mt-4 skeleton-heading"/>
-        <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
-        <div class="skeleton skeleton-content w-50 "/>
-        <div class="skeleton skeleton-content w-25 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-75"/>
-        <div class="skeleton skeleton-content w-25 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-50"/>
-        <div class="skeleton skeleton-content w-75 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-25"/>
-        </div>
-        <div v-else>
-          
+<div v-else :lang="dictLang[dict]" class="article flex flex-col justify-between">
+      <div>
         <h2 v-if="welcome" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h2>
         <h2 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
         <div :class="welcome? 'px-4 pb-3 pt-4' : 'px-4 pt-4 pb-2'">
@@ -534,30 +518,6 @@ ol.sub_definitions {
 @apply pl-5;
 }
 
-
-
-.skeleton {
-  @apply ml-4 rounded-[1rem] bg-black;
-
-}
-.skeleton-heading {
-  @apply h-8 w-60;
-}
-
-.skeleton-subheading {
-  @apply h-5 w-40;
-}
-
-.skeleton-content {
-  @apply h-4 m-4;
-}
-
-.skeleton-container {
-  @apply h-[30rem]
-}
-.skeleton-indent {
-  @apply ml-8;
-}
 
 span.lemma {
   @apply text-primary;
