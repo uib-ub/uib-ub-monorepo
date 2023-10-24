@@ -218,7 +218,7 @@
     "new": "New in {dict}"
 },
 "error": {
-      "article": "An error has occured in article {no} in {dict}",
+      "article": "Could not fetch article {article_id} in {dict}",
       "articles": "Cound not fetch search results",
       "status": "Status code: {code}",
       "404": {

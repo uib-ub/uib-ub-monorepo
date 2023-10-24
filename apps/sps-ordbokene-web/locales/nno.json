@@ -209,7 +209,7 @@
         "new": "Nytt i {dict}"
     },
     "error": {
-          "article": "Det har oppstått ein feil i artikkel {no} i {dict}",
+          "article": "Kunne ikkje hente artikkel {article_id} i {dict}",
           "articles": "Kunne ikkje hente søkjeresultat",
           "status": "Statuskode: {code}",
           "404": {

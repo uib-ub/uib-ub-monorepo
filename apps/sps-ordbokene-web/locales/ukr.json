@@ -228,7 +228,7 @@
         "new": "Нове в словнику {dict}"
     },
     "error": {
-        "article": "У статті сталася помилка {no} i {dict}",
+        "article": "Could not fetch article {article_id} in {dict}",
         "articles": "Cound not fetch search results",
         "status": "Status code: {code}",
         "404": {

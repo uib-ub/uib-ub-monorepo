@@ -1,6 +1,6 @@
 <template>
   <div class="callout pt-1">
-  <h2 class="pb-2"><Icon name="bi:exclamation-triangle-fill" class="mr-3 mb-1"/>{{$t(title)}}</h2>
+  <h2 class="pb-2"><Icon name="bi:exclamation-triangle-fill" class="mr-3 mb-1"/>{{title}}</h2>
   <p>{{description}}</p>
   <p class="pt-2">{{$t('error.status', {code: error.statusCode})}}</p>
 </div>
@@ -24,7 +24,7 @@ if (props.error.statusCode === 503) {
 
 }
 else if (props.error.statusCode === 404) {
-    description.value = i18n.t('error.503.description', )
+    description.value = i18n.t('error.404.description', )
 
 }
 else if (props.error.statusCode && props.error.statusCode > 499) {
@@ -37,7 +37,7 @@ else if (props.error.statusCode && props.error.statusCode > 399) {
 }
 else {
     description.value = i18n.t('error.generic.description')
-    }
+}
 
 
 

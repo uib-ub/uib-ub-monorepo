@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="list-view-item" v-if="list && !welcome" :lang="dictLang[dict]">
       <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
       <NuxtLink v-else class="result-list-item" :to="link_to_self()">
@@ -113,6 +114,8 @@
         <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
 </div>
 </div>
+<ErrorMessage v-if="error && single" :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/>
+</div>
 </template>
 
 <script setup>
@@ -140,10 +143,11 @@ const props = defineProps({
 })
 
 
-const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`))
+
+const { pending, data, error } = await useAsyncData('article_' + props.dict + props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`))
 
 
-  if (route.name != 'welcome' && route.name != 'index' && route.name != 'search' && data.value)
+if (route.name != 'welcome' && route.name != 'index' && route.name != 'search' && data.value)
   data.value.lemmas.forEach(lemma => {
       store.lemmas[props.dict].add(lemma.lemma)
       lemma.paradigm_info.forEach(paradigm => {
@@ -154,8 +158,8 @@ const { pending, data, error } = await useAsyncData('article_'+props.dict+props.
         })
 
       })
-
 })
+
 
 const expand_inflection = () => {
   useTrackEvent('expand_inflection', {props: {article: props.dict + "/" + props.article_id}})
@@ -435,7 +439,7 @@ return data.value.lemmas[0].lemma
 })
 
 
-if (props.single) {
+if (props.single && data.value) {
   useHead({
     title: title,
     meta: [
