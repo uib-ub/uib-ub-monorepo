@@ -396,7 +396,8 @@ const parse_definitions = (definition_list) => {
     }
     })
     } catch(error) {
-      console.log("snippet", error.message)
+      console.log("SNIPPET ERROR", error)
+      useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": " + error.toString()}})
       definitionTexts = []
     }
 
@@ -410,7 +411,8 @@ if (data.value) {
   return parse_definitions(data.value.body.definitions)
 }
 else {
-  console.log('No article body')
+  console.log('NO ARTICLE BODY')
+  useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": No article body"}})
 }
 
 })
