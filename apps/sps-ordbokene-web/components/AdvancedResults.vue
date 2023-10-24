@@ -158,7 +158,7 @@ const update_page = value => {
 
 
 const article_error = (error, article, dict) => {
-  console.log("ARTICLE_ERROR", article, dict)
+  useTrackEvent("article_error", {props: {article: dict + "/" + article, message: dict + "/" + article + " " + error.toString()}})
   console.log(error)
 }
 
