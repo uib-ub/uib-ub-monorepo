@@ -68,7 +68,8 @@ const { pending, error, refresh, data: articles } = await useFetch('api/articles
             w: store.q,
             dict: store.dict,
             scope: 'e',
-          }})
+          }          
+          })
 
 const feedback_given = ref(false)
 
@@ -87,7 +88,6 @@ const content_locale = dict => {
 
 if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
-  console.log("ERROR", error.value)
   refresh()
 }
 
