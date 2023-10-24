@@ -36,13 +36,7 @@
               </p>
         </section>
   </div>
-  <div v-if="error_message">
-    {{error_message}}
-  </div>
-  <div v-if="error" aria-live="">
-    ERROR: {{error}}
-  </div>
-
+  <ErrorMessage v-if="error" :error="error" title="error.articles"/>
 </div>
 </template>
 

@@ -140,17 +140,7 @@ const props = defineProps({
 })
 
 
-const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`,
-                                                                                        {
-                                                                                            async onResponseError({ request, response, options }) {
-                                                                                                // TODO: plausible logging, error message if article view
-                                                                                                console.log("RESPONSE ERROR", response.status)
-                                                                                            },
-                                                                                            async onRequestError({ request, response, error }) {
-                                                                                                // TODO: plausible logging, error message if article view
-                                                                                                console.log("REQUEST ERROR", error)
-                                                                                            }
-                                                                                        }))
+const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`))
 
 
   if (route.name != 'welcome' && route.name != 'index' && route.name != 'search' && data.value)

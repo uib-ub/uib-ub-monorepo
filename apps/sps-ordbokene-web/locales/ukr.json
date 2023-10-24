@@ -229,6 +229,8 @@
     },
     "error": {
         "article": "У статті сталася помилка {no} i {dict}",
+        "articles": "Cound not fetch search results",
+        "status": "Status code: {code}",
         "404": {
             "title": "Not Found",
             "description": "The page may have been deleted or moved, or you may have used an invalid link."
@@ -239,11 +241,11 @@
         },
         "server": {
             "title": "Server Error",
-            "description": "Something went wrong on the server side (status code: {code})"
+            "description": "Something went wrong on the server side."
         },
         "generic_code": {
             "title": "Error",
-            "description": "An unexpected error occurred while communicating with the server (status code: {code})"
+            "description": "An unexpected error occurred while communicating with the server."
         },
         "network": {
             "title": "Connection Error",

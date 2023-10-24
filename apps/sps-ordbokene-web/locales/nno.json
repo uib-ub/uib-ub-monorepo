@@ -210,6 +210,8 @@
     },
     "error": {
           "article": "Det har oppstått ein feil i artikkel {no} i {dict}",
+          "articles": "Kunne ikkje hente søkjeresultat",
+          "status": "Statuskode: {code}",
           "404": {
               "title": "Ikkje funne",
               "description": "Sida kan ha blitt sletta eller flytta, eller du kan ha brukt ei ugyldig lenkje."
@@ -220,10 +222,10 @@
           },
           "server": {
               "title": "Feil på server",
-              "description": "Noko gjekk gale på serversida (statuskode: {code})"},
+              "description": "Noko gjekk gale på serversida."},
           "generic_code": {
               "title": "Feil",
-              "description": "Det har oppstått ein uventa feil i kommunikasjonen med serveren (statuskode: {code})"},
+              "description": "Det har oppstått ein uventa feil i kommunikasjonen med serveren."},
           "network": {
               "title":"Tilkoplingsfeil",
               "description": "Eit nettverksproblem hindra lasting av sida. Prøv å laste sida på nytt, eller sjekk om du er kopla til internett."},

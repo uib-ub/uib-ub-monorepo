@@ -48,13 +48,7 @@
   </div>
   </div>
 </div>
-<div v-if="error_message">
-  {{error_message}}
-</div>
-<div v-if="error" aria-live="">
-  ERROR: {{error}}
-</div> 
-
+<ErrorMessage v-if="error" :error="error" title="error.articles"/>
 </div>
 
 
@@ -106,10 +100,7 @@ const content_locale = dict => {
 
 const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?`, {
           query,
-          baseURL: session.endpoint,
-          onResponseError(conf) {
-            console.log("RESPONSE ERROR")
-          }
+          baseURL: session.endpoint
         })
 
 const dicts = computed(()=> {
