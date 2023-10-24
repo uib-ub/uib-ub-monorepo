@@ -8,7 +8,7 @@
              :key="dict" 
              :aria-labelledby="dict+'_heading'"
              :lang="locale2lang[content_locale(dict)]">
-      <div class="py-2 px-2">
+      <div class="pt-0 pb-3 px-2">
         <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict, 1, {locale: content_locale(dict)})}} 
           <span v-if="articles.meta[dict]" class="result-count-text">{{articles.meta[dict].total}}</span>
           <span class="sr-only">{{$t('notifications.keywords')}}</span>
