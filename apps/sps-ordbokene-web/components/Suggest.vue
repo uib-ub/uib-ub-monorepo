@@ -12,7 +12,7 @@
                 <h3><Icon name="bi:translate" size="1.25rem" class="mr-3 mb-1"/>
                 {{$t('notifications.translation_title', 1, {locale: content_locale})}}</h3>
             <p class="pt-2">
-                <i18n-t keypath="notifications.translation" tag="div" id="citation" :locale="content_locale">
+                <i18n-t keypath="notifications.translation" tag="div" id="citation" :locale="content_locale" :plural="data.translate.length > 1 ? 2 : 1">
                     <template v-slot:adm>
                         <em>Administrativ ordliste</em>
                     </template>

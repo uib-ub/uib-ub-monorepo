@@ -155,7 +155,7 @@
     },
     "notifications": {
         "redirect": "Viser betydninger av oppslagsordet",
-        "translation": "Klikk på forslagene under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
+        "translation": "Klikk på forslaget under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}. | Klikk på forslagene under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
         "translation_title": "Mulig oversettelse",
         "inflected": "Bøyd form av:",
         "did_you_mean": "Mente du:",

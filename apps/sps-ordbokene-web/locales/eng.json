@@ -143,7 +143,7 @@
 },
 "notifications": {
     "redirect": "Showing senses of the dictionary entry",
-    "translation": "Click the suggestions below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway.",
+    "translation": "Click the suggestion below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway. | Click the suggestions below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway.",
     "translation_title": "Possible translation",
     "inflected": "An inflection of:",
     "did_you_mean": "Did you mean:",
