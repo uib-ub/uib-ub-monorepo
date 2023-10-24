@@ -1,7 +1,7 @@
 <template>
     <div>     
     <Spinner v-if="!error && !articles"/>    
-    <div ref="results" v-if="!error && articles && articles.meta" >
+    <div ref="results" v-if="!error && !pending && articles && articles.meta && $route.name != 'index'" >
       <client-only><div class ="callout mx-2" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
         </div>
       </client-only>
