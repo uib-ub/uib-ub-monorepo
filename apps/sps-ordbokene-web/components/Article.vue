@@ -1,6 +1,6 @@
 <template>
-  <div>
-  <div class="list-view-item" v-if="list && !welcome" :lang="dictLang[dict]">
+  <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
+  <div class="list-view-item" v-else-if="list && !welcome" :lang="dictLang[dict]">
       <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
       <NuxtLink v-else class="result-list-item" :to="link_to_self()">
 
@@ -24,10 +24,9 @@
 
   </em>
 </div>{{snippet}}
-
     </NuxtLink>
-  </div>
-    <div :lang="dictLang[dict]" class="article flex flex-col justify-between" v-else-if="!error">
+</div>
+  <div :lang="dictLang[dict]" class="article flex flex-col justify-between" v-else>
       <div v-if="false && pending && !welcome" class="skeleton-container">
             <div class="skeleton mt-4 skeleton-heading"/>
         <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
@@ -113,8 +112,6 @@
 <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
         <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
 </div>
-</div>
-<ErrorMessage v-if="error && single" :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/>
 </div>
 </template>
 
