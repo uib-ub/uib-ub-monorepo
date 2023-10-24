@@ -82,7 +82,7 @@ li:not(:last-child) a:after {
 
 
 .new-articles li:before {
-  @apply content-['⬥'] md:content-none lg:content-['⬥'] xl:content-none text-gray-500 mr-2;
+  @apply content-['⬥'] md:content-none lg:content-['⬥'] xl:content-none text-primary mr-2;
 }
 
 </style>
