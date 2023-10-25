@@ -172,3 +172,17 @@ export function getAllKeys(obj: Object): string[] {
     return [key];
   }, []);
 }
+
+/**
+ * Lazy Localization function with fallback based on localized language order.
+ *
+ * @param key key to localize
+ * @returns Localized label or key if not label present
+ */
+export function lalof(key: string): string {
+  const lazyLocales = useLazyLocales();
+  const label = Object.keys(languageOrder)
+    .map((lc) => lazyLocales.value?.[lc]?.[key])
+    .find((value) => value !== undefined);
+  return label ?? key;
+}

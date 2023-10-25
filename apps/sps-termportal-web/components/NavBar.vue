@@ -116,7 +116,7 @@
                   :href="item.route"
                   v-bind="props.action"
                   ><span class="p-menuitem-text">
-                    {{ lalo[locale][item.label] }}
+                    {{ lalof(item.label) }}
                   </span>
                 </NuxtLink>
               </template>
@@ -193,7 +193,6 @@ import { useI18n } from "vue-i18n";
 const i18n = useI18n();
 const locale = useLocale();
 const locales = useLocales();
-const lalo = useLazyLocales();
 const navMenuExpanded = useNavMenuExpanded();
 const navBar = ref<HTMLElement | null>(null);
 const navPageLinks = ref<HTMLElement | null>(null);

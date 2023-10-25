@@ -30,14 +30,14 @@
         />
         <label
           :for="tb"
-          class="tp-transition-shadow flex w-fit cursor-pointer rounded-[7px] border border-transparent px-2 py-1  group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+          class="tp-transition-shadow flex w-fit cursor-pointer rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
           :class="{
             'bg-tpblue-400 text-white': Object.keys(
               searchInterface.termbase
             ).includes(tb),
           }"
         >
-          <div class="w-6 -mt-[1px]">
+          <div class="-mt-[1px] w-6">
             <Icon
               v-if="searchInterface.termbase.includes(tb)"
               name="mdi:checkbox-marked-outline"
@@ -54,7 +54,7 @@
             />
           </div>
           <div class="flex-wrap pl-1.5">
-            {{ lalo[locale][`${tb}-3A${tb}`] }}
+            {{ lalof(`${tb}-3A${tb}`) }}
           </div>
         </label>
       </div>
@@ -68,19 +68,17 @@ const searchInterface = useSearchInterface();
 const i18n = useI18n();
 const panel = ref();
 const wrapper = ref(null);
-const locale = useLocale();
-const lalo = useLazyLocales();
 
 const termbaseLabel = computed(() => {
   const tbs = searchInterface.value.termbase;
   if (tbs.length === 0) {
     return i18n.t("global.samling.all");
   } else if (tbs.length === 1) {
-    return lalo.value[locale.value][`${tbs[0]}-3A${tbs[0]}`];
+    return lalof(`${tbs[0]}-3A${tbs[0]}`);
   } else {
     const tbvals = tbs
       .map((tb) => {
-        return lalo.value[locale.value][`${tb}-3A${tb}`];
+        return lalof(`${tb}-3A${tb}`);
       })
       .join(", ");
     return `${tbs.length} ${i18n.t("global.termbase", 4)}: ${tbvals}`;

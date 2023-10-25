@@ -8,7 +8,7 @@
       :value="fvalue"
     />
     <label
-      class="tp-transition-shadow flex cursor-pointer gap-x-1.5 rounded-[7px] border border-transparent  px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+      class="tp-transition-shadow flex cursor-pointer gap-x-1.5 rounded-[7px] border border-transparent px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
       :for="`filter-${ftype}-${fvalue}`"
     >
       <div class="-mt-[1px]">
@@ -48,8 +48,6 @@ import { Samling } from "~~/utils/vars-termbase";
 const i18n = useI18n();
 const searchFilterData = useSearchFilterData();
 const searchDataStats = useSearchDataStats();
-const locale = useLocale();
-const lalo = useLazyLocales();
 const props = defineProps({
   ftype: { type: String, required: true },
   fvalue: { type: String, required: true },
@@ -57,7 +55,7 @@ const props = defineProps({
 
 const label = () => {
   if (props.ftype === "context") {
-    return lalo.value[locale.value][props.fvalue];
+    return lalof(props.fvalue);
   } else {
     return i18n.t(`global.${props.ftype}.${props.fvalue}`);
   }

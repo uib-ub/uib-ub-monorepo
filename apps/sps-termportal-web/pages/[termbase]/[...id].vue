@@ -37,7 +37,7 @@
                   class="text-lg text-gray-600 underline hover:text-black"
                   :to="'/' + concept?.memberOf.split('-3A')[1]"
                 >
-                  {{ lalo[locale][concept.memberOf] }}
+                  {{ lalof(concept.memberOf) }}
                 </AppLink>
               </div>
             </h2>
@@ -147,14 +147,14 @@
                 </h3>
                 <TermSection :flex="true">
                   <TermProp
-                    v-if="lalo[locale][concept?.memberOf]"
+                    v-if="lalof(concept?.memberOf)"
                     :flex="true"
                     :label="$t('id.collection')"
                   >
                     <TermDescription
                       prop="link"
                       :flex="true"
-                      :data="[[lalo[locale][concept.memberOf], '/' + termbase]]"
+                      :data="[[lalof(concept.memberOf), '/' + termbase]]"
                     />
                   </TermProp>
                   <TermProp
@@ -164,7 +164,7 @@
                   >
                     <TermDescription
                       :flex="true"
-                      :data="[lalo[locale][concept.domene]]"
+                      :data="[lalof(concept.domene)]"
                     />
                   </TermProp>
                   <TermProp
@@ -260,14 +260,10 @@ if (process.client) {
     ],
   });
 }
-
-const runtimeConfig = useRuntimeConfig();
 const route = useRoute();
 const searchScrollBarPos = useSearchScrollBarPos();
 const dataDisplayLanguages = useDataDisplayLanguages();
-const conceptViewToggle = useConceptViewToggle();
 const searchData = useSearchData();
-const lalo = useLazyLocales();
 const locale = useLocale();
 const sidebar = ref(null);
 const main = ref(null);
@@ -284,7 +280,7 @@ let base: string;
 let id: string;
 let procId: string;
 if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
- // base = runtimeConfig.public.base;
+  // base = runtimeConfig.public.base;
   id = `${termbase}-3A${idArray[0]}`;
   procId = id;
 } else {
@@ -306,7 +302,7 @@ const { data, error } = await useAsyncData(
       headers: process.server
         ? { cookie: "session=" + useRuntimeConfig().apiKey }
         : undefined,
-//      body: { concept: idArray.join("/"), base, termbase },
+      //      body: { concept: idArray.join("/"), base, termbase },
       retry: 1,
       signal: controller.signal,
     }).then((value) => {

@@ -17,7 +17,7 @@
             ><div
               class="tp-focus-hover rounded-[7px] border border-gray-300 px-2.5 py-1.5"
             >
-              {{ lalo[locale][`${tb}-3A${tb}`] }}
+              {{ lalof(`${tb}-3A${tb}`) }}
             </div>
           </AppLink>
         </li>
@@ -28,5 +28,4 @@
 
 <script setup lang="ts">
 const locale = useLocale();
-const lalo = useLazyLocales();
 </script>
