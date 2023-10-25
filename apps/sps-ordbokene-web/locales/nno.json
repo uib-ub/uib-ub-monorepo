@@ -34,7 +34,7 @@
     "reset": "Nullstill",
     "clear": "Tøm",
     "chosen_dict": "Vald ordbok: ",
-    "footer_description": " viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
+    "footer_description": "{bm} og {nn} viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
     "dicts": {
         "nn": "Nynorskordboka",
         "bm": "Bokmålsordboka",

@@ -34,7 +34,7 @@
     "reset": "Nullstill",
     "clear": "Tøm",
     "chosen_dict": "Valgt ordbok: ",
-    "footer_description": " viser skrivemåte og bøyning i tråd med norsk rettskrivning. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
+    "footer_description": "{bm} og {nn} viser skrivemåte og bøyning i tråd med norsk rettskrivning. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
     "accessibility": {
       "menu": "Åpne toppmeny",
       "main_content": "Gå til hovedinnhold",
