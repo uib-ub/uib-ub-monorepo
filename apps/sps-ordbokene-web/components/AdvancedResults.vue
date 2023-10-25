@@ -2,6 +2,7 @@
   <div v-bind:class="{'list': settings.listView}">     
   <Spinner v-if="!error && !articles"/>
   <div v-if="!error && articles && articles.meta" >
+  <div class="sr-only" role="status" aria-live="polite">{{$t('notifications.results', total, {count: total})}}</div>
   <div  v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
     <section class="lg:grid-cols-6" 
              v-for="dict in dicts" 
@@ -120,6 +121,11 @@ if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
   console.log("ERROR", error.value)
   refresh()
 } 
+
+
+const total = computed(() => {
+  return (articles.value.meta.bm && articles.value.meta.bm.total) + (articles.value.meta.nn && articles.value.meta.nn.total)
+})
 
 
 const pages = computed(() => {
