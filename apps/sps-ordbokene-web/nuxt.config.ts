@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       endpointEnv: process.env.ENDPOINT_ENV || 'dev',
-      versionWatermark: process.env.WATERMARK || 'test'
+      versionWatermark: process.env.VERCEL_GIT_COMMIT_SHA || 'local'
     }
   },
 
