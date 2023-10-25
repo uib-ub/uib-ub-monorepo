@@ -2,9 +2,6 @@
     <div>     
     <Spinner v-if="!error && !articles"/>    
     <div ref="results" v-if="!error && !pending && articles && articles.meta && $route.name != 'index'" >
-      <client-only><div class ="callout mx-2" v-if="route.query.orig"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
-        </div>
-      </client-only>
     <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
       <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
         <div class="pt-0 pb-3 px-2">

@@ -135,7 +135,6 @@
         "reset_done":"Slettet"
     },
     "notifications": {
-        "redirect": "Viser tydingar av oppslagsordet",
         "translation_title": "Mogleg omsetjing",
         "translation": "Klikk på forslaget under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. | Klikk på forslaga under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. ",
         "inflected": "Bøygde former av:",
