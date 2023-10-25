@@ -1,5 +1,5 @@
 <template>
-  <div class="callout pt-1">
+  <div class="callout pt-1" role="alert">
   <h2 class="pb-2"><Icon name="bi:exclamation-triangle-fill" class="mr-3 mb-1"/>{{title}}</h2>
   <p>{{description}}</p>
   <p class="pt-2">{{$t('error.status', {code: error.statusCode})}}</p>
