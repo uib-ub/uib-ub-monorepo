@@ -40,22 +40,26 @@ const non_localized = computed (() => {
   else return route.fullPath
 })
 
+const description = computed(() => {
+  return i18n.t('footer_description', {bm: "Bokmålsordboka", nn: "Nynorskordboka"})
+})
+
 useHead({
     titleTemplate: (titleChunk) => {
       return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
     },
     meta: [
-      {name: "description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
+      {name: "description" , content: description},
       {name:"twitter:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
       {name:"twitter:image" , content:"logo.png"},
-      {name:"twitter:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
+      {name:"twitter:description" , content: description},
       {property:"og:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
       {property:"og:type" , content:"website"},
       {property:'og:site_name' , content:"ordbokene.no"},
       {property:'og:image' , content: baseUrl + "/logo.png"},
       {property:"og:image:width" , content:"256px"},
       {property:"og:image:height" , content:"256px"},
-      {property:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."}
+      {property:"og:description" , content: description}
       ]
 })
 
