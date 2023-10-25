@@ -8,5 +8,6 @@ export const useSessionStore = defineStore('session', {
       concepts_nn: [],
       endpoint: undefined,
       copied_link: "",
+      error: undefined
     }),
   })

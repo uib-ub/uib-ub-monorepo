@@ -34,7 +34,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   
   // Load concepts for definition expansion
   const get_concepts = async (server, env) => {
-    await Promise.all([fetch(`https://${server}.uib.no/opal/${env}/bm/concepts.json`).then(r => r.json()), fetch(`https://${server}.uib.no/opal/${env}/nn/concepts.json`).then(r => r.json())]).then(response => {
+    await Promise.all([
+      fetch(`https://${server}.uib.no/opal/${env}/bm/concepts.json`).then(r => r.json()), 
+      fetch(`https://${server}.uib.no/opal/${env}/nn/concepts.json`).then(r => r.json())
+    
+    ]).then(response => {
+      session.error = null
       session.concepts_bm = response[0].concepts
       session.concepts_nn = response[1].concepts
       session.endpoint = `https://${server}.uib.no/opal/${env}/`
@@ -46,7 +51,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       await get_concepts('odd', env)
       }
       else {
-        console.log("Uncaught")
+        session.error = "generic_code"
   
       }
     })
