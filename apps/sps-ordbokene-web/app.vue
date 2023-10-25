@@ -1,11 +1,24 @@
 <template>
 <Html :lang="locale">
   <Head>
+    <Title v-if="$route.params.dict == 'nn'">Nynorskordboka</Title>
+    <Title v-if="$route.params.dict == 'bm'">Bokmålsordboka</Title>
+    <Meta name="robots" content="noindex,nofollow"/>
     <Link rel="alternate" :href="baseUrl + non_localized" hreflang="x-default"/>
     <Link rel="alternate" :href="baseUrl + '/nob' + non_localized" hreflang="nb"/>
     <Link rel="alternate" :href="baseUrl + '/nno' + non_localized" hreflang="nn"/>
     <Link rel="alternate" :href="baseUrl + '/ukr' + non_localized" hreflang="uk"/>
-    <Meta name="robots" content="noindex,nofollow"/>
+    <Meta name="description" :content="description"/>
+    <Meta name="twitter:description" :content="description"/>
+    <Meta property="og:description" :content="description"/>
+    <Meta name="twitter:title" :content="metaTitle"/>
+    <Meta property="og:title" :content="metaTitle"/>
+    <Meta name="twitter:image" :content="baseUrl +'/logo.png'"/>
+    <Meta property="og:type" content="website"/>
+    <Meta property="og:site_name" content="ordbøkene.no"/>
+    <Meta property="og:image" :content="baseUrl +'/logo.png'"/>
+    <Meta property="og:image:width" content="256px"/>
+    <Meta property="og:image:height" content="256px"/>
   </Head>
 <NuxtLayout>
     <NuxtPage @click="menu_expanded=false"
@@ -44,25 +57,15 @@ const description = computed(() => {
   return i18n.t('footer_description', {bm: "Bokmålsordboka", nn: "Nynorskordboka"})
 })
 
+const metaTitle = computed(() => {
+  return 'ordbøkene.no - ' + ({bm: "Bokmålsordboka", nn: "Nynorskordboka"}[route.params.dict] || i18n.t('sub_title'))
+})
+
 useHead({
     titleTemplate: (titleChunk) => {
       return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
-    },
-    meta: [
-      {name: "description" , content: description},
-      {name:"twitter:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
-      {name:"twitter:image" , content:"logo.png"},
-      {name:"twitter:description" , content: description},
-      {property:"og:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
-      {property:"og:type" , content:"website"},
-      {property:'og:site_name' , content:"ordbokene.no"},
-      {property:'og:image' , content: baseUrl + "/logo.png"},
-      {property:"og:image:width" , content:"256px"},
-      {property:"og:image:height" , content:"256px"},
-      {property:"og:description" , content: description}
-      ]
+    }
 })
-
 
 
 // Global event listeners
