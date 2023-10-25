@@ -45,6 +45,7 @@ useHead({
       return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
     },
     meta: [
+      {name: "description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
       {name:"twitter:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
       {name:"twitter:image" , content:"logo.png"},
       {name:"twitter:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
@@ -54,8 +55,7 @@ useHead({
       {property:'og:image' , content: baseUrl + "/logo.png"},
       {property:"og:image:width" , content:"256px"},
       {property:"og:image:height" , content:"256px"},
-      {property:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
-      {name:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."}
+      {property:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."}
       ]
 })
 
