@@ -441,9 +441,10 @@ if (props.single && data.value) {
     title: title,
     meta: [
       {name: 'description', content: snippet },
+      {name: 'twitter:title', content: title },
+      {name: 'twitter:description', content: snippet },
       {property: 'og:title', content: title },
       {property: 'og:description', content: snippet },
-      {name: 'twitter:description', content: snippet }  
     ]
   });
 }
