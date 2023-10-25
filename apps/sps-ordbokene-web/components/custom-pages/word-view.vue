@@ -106,9 +106,7 @@ useHead({
   title, 
   meta: [
     {property: 'og:title', content: title }, 
-  ],
-  link: [
-    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.q}`}
+    {name: 'twitter:title', content: title },
   ]
 })
 
