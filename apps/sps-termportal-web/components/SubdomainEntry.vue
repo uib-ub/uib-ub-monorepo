@@ -33,14 +33,12 @@
           aria-hidden="true"
         />
       </div>
-      <div class="pl-2">{{ lalo[locale][label] || label }}</div>
+      <div class="pl-2">{{ lalof(label) }}</div>
     </label>
   </div>
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
-const lalo = useLazyLocales();
 const domainData = useDomainData();
 
 const props = defineProps({

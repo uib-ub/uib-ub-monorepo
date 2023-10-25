@@ -1,27 +1,14 @@
 <template>
   <div class="flex">
     <Head>
-      <Title
-        >{{
-          lalo[locale][termbase + "-3A" + termbase] ||
-          data?.label[0]["@value"] ||
-          data?.label[0] ||
-          termbase
-        }}
-        | Termportalen</Title
-      >
+      <Title>{{ lalof(termbase + "-3A" + termbase) }} | Termportalen</Title>
     </Head>
     <div class="flex">
       <SideBar />
       <main>
         <h1 id="main" class="pb-3 pt-5 text-2xl">
           <AppLink to="#main">
-            {{
-              lalo[locale][termbase + "-3A" + termbase] ||
-              data?.label[0]["@value"] ||
-              data?.label[0] ||
-              termbase
-            }}
+            {{ lalof(termbase + "-3A" + termbase) }}
           </AppLink>
         </h1>
         <div class="flex flex-col gap-x-5 gap-y-5 lg:flex-row">
