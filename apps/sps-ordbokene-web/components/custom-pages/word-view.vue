@@ -64,6 +64,8 @@ const { pending, error, refresh, data: articles } = await useFetch('api/articles
 
 const feedback_given = ref(false)
 
+const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host
+
 const track_feedback = (value) => {
     feedback_given.value = true
     useTrackEvent(value ? 'feedback_positive' : 'feedback_negative', {props: {query: store.dict + "/" + store.q}})
@@ -106,6 +108,15 @@ useHead({
     {name: 'twitter:title', content: title },
   ]
 })
+
+
+if (route.query.orig) {
+  useHead({
+  link: [
+      {rel: 'canonical', href: baseUrl + route.path }
+    ]
+})
+}
 
 definePageMeta({
     middleware: [
