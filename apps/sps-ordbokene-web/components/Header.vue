@@ -4,7 +4,7 @@
   <NuxtLink :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
       <div class="mx-1 my-1 md:my-2 mt-0 xl:my-4">
       <div><h1 class="text-md xl:text-2xl">ordbøkene.no<span class="sr-only">, {{$t('home')}}</span></h1>
-      <div class="text-xs xl:text-sm">{{$t("sub_title")}}</div>
+      <div class="text-xs xl:text-sm sr-only sm:not-sr-only">{{$t("sub_title")}}</div>
       </div>
     </div>
       </NuxtLink>
