@@ -56,9 +56,7 @@
 
       </ul>
     </nav>
-          
-      <div class="flex self-center justify-end lg:justify-center pr-4 pb-4 lg:p-0">
-      <button  type="button" class="ml-8" @click="locale_menu.toggle" aria-haspopup="true" :aria-controls="locale_menu && locale_menu.overlayVisible ? 'locale_menu' : null">
+    <button  type="button" class="ml-6 hidden lg:flex" @click="locale_menu.toggle" aria-haspopup="true" :aria-controls="locale_menu && locale_menu.overlayVisible ? 'locale_menu' : null">
         <span class="relative">
         <span aria-hidden="true" class="absolute text-xs right-2 top-3 bg-primary rounded px-1 select-none">{{locale2lang[$i18n.locale].toUpperCase()}}</span><Icon name="bi:globe" size="1.5em"/>
         <span id="locale-label" class="sr-only">
@@ -66,11 +64,12 @@
           <span v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</span>
         </span>
         </span>
-      </button>
+      </button> 
+      <div class="flex self-center justify-end pr-4 pb-4 lg:p-0">
       <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true"
       :pt="{
         root: '',
-        menu: 'border-2 border-primary-lighten bg-primary-lighten text-white mt-5 md:mt-5 xl:mt-9',
+        menu: 'border-2 border-primary-lighten bg-primary-lighten text-white',
         menuitem: 'hover:bg-primary-lighten2',
         action: ({ props, state, context }) => ({
             class: (context.focused ? 'bg-primary' : '' ) + ' p-4 px-4 w-[200px] hover:bg-primary-lighten2'
