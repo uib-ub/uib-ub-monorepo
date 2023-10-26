@@ -96,7 +96,7 @@ border-radius: 2rem;
 }
 
 a[aria-current=true] {
-  @apply bg-primary-lighten text-tertiary;
+  @apply bg-gray-700 border-gray-700 text-white;
 }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
