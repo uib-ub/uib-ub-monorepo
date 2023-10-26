@@ -88,18 +88,5 @@ nuxtApp.hook("page:finish", () => {
 })
 
 
-
-
-/*
-
-console.log(api)
-
-const { data: concepts_bm } = useFetch(`${api}bm/concepts.json`)
-const { data: concepts_nn } = useFetch(`${api}nn/concepts.json`)
-session.concepts_bm = concepts_bm.value.concepts
-session.concepts_nn = concepts_nn.value.concepts
-console.log(session.concepts_bm)
-*/
-
 </script>
 
