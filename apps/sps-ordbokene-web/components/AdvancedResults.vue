@@ -79,7 +79,7 @@ const perPage = ref(parseInt(route.query.perPage) || settings.perPage)
 
 const query = computed(() => {
   const params = {
-    w: route.query.q,
+    w: store.q,
     dict: route.query.dict || 'bm,nn',
   }
   if (route.query.scope) {

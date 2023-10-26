@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     store.dict = to.params.dict || 'bm,nn'
-    store.q = to.params.q || to.query.q || store.q
+    store.q = (to.params.q && decodeURI(to.params.q)) || (to.query.q && decodeURI(to.query.q)) || store.q
     if (store.q && to.name != 'article') {
       store.searchUrl = to.fullPath
       store.lemmas.bm = new Set()
@@ -18,7 +18,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         return navigateTo(`/${to.params.locale}/search?q=${store.q}&dict=${to.params.dict}&scope=${store.scope || 'ei'}`)
       }
 
-      store.input = to.query.orig || store.q
+      store.input = (to.query.orig && decodeURI(to.query.orig)) || store.q
       
 
     }
