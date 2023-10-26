@@ -41,7 +41,7 @@
 
   .callout h3 {
     font-family: unset;
-    @apply tracking-widest align-middle text-lg pt-2;
+    @apply align-middle text-lg pt-2;
 
   }
   
@@ -89,7 +89,7 @@
       }
 
       .suggestions h3 {
-          @apply text-2xl
+          @apply text-xl
       }
     
       .callout h3 {
@@ -189,7 +189,7 @@
       
       
       .secondary-page h3, .ord-container h2 {
-        @apply text-primary text-2xl mt-4;
+        @apply text-primary text-2xl  mt-4 font-semibold;
       }
 
       .link-header {
