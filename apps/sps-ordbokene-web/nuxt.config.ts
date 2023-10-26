@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      api: 'https://oda.uib.no/oppal/prod/',
+      api: 'https://oda.uib.no/opal/prod/',
       apiFallback: 'https://odd.uib.no/opal/prod/',
       apiDev: 'https://oda.uib.no/opal/dev/',
       apiDevFallback:  'https://odd.uib.no/opal/dev/',
