@@ -16,14 +16,10 @@ const i18n = useI18n()
 import { useRoute } from 'vue-router'
 const route = useRoute()
 
-console.log("FULLPATH", route.fullPath)
-console.log(i18n.locale)
 
 const { data } = await useAsyncData('subpage-data', () => {
-  console.log("FETCHING", route.fullPath)
   return queryContent(route.params.locale ? route.fullPath : '/' + i18n.locale.value + route.fullPath ).findOne()})
 
-console.log("DATA", data.value)
 
 useHead({
     title: i18n.t(route.matched[0].name) + ": " + data.value.body.children[0].children[0].value
