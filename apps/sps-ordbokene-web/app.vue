@@ -57,14 +57,18 @@ const description = computed(() => {
   return i18n.t('footer_description', {bm: "Bokmålsordboka", nn: "Nynorskordboka"})
 })
 
+
+const titleTemplate = (titleChunk) => {
+  return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
+
+}
+
 const metaTitle = computed(() => {
-  return 'ordbøkene.no - ' + ({bm: "Bokmålsordboka", nn: "Nynorskordboka"}[route.params.dict] || i18n.t('sub_title'))
+  return titleTemplate({bm: "Bokmålsordboka", nn: "Nynorskordboka"}[route.params.dict] || i18n.t('sub_title'))
 })
 
 useHead({
-    titleTemplate: (titleChunk) => {
-      return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
-    }
+    titleTemplate
 })
 
 
