@@ -63,10 +63,6 @@ const change_lang = (lang) => {
   
   <style scoped>
   
-  .site-nav {
-    letter-spacing: 0.1rem;
-  
-  }
   
 /* li {
   @apply pb-1;

@@ -153,7 +153,7 @@ option.selected {
 
 legend, label {
 
-  @apply tracking-widest text-lg;
+  @apply px-2 text-lg whitespace-nowrap;
 }
 
 </style>

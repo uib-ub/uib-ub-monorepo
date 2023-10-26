@@ -125,12 +125,9 @@ if (process.client) {
 
 <style scoped>
 
-nav #locale-select {
-  /* letter-spacing: .1rem; */
-  @apply cursor-pointer text-base tracking-widest;
-}
+
 nav .nav-link {
-  @apply pt-2 list-none tracking-widest;
+  @apply pt-2 list-none;
 }
 
 
