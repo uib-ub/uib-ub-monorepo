@@ -2,36 +2,37 @@
     <div>     
     <Spinner v-if="!error && !articles"/>    
     <div ref="results" v-if="!error && !pending && articles && articles.meta && $route.name != 'index'" >
-    <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
-      <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
-        <div class="pt-0 pb-3 px-2">
-          <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
-            <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
-            <span class="sr-only">{{$t('notifications.keywords')}}</span>
-          </h2>
-        </div>
-        <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
-          <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
-            <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
-              <Article :content_locale="content_locale(dict)" :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
-            </NuxtErrorBoundary>
-          </component>
-        </component>
-          <div v-if="store.q && !specialSymbols(store.q)">
-            <Suggest :content_locale="content_locale(dict)"  :dict="dict" :articles_meta="articles.meta"/>
+      <div v-if="total" class="sr-only" role="status" aria-live="polite">{{$t('notifications.results', total, {count: total})}}</div>
+      <div v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
+        <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
+          <div class="pt-0 pb-3 px-2">
+            <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
+              <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
+              <span class="sr-only">{{$t('notifications.keywords')}}</span>
+            </h2>
           </div>
-      </section>
-      
-  </div>
-  <section v-if="!no_suggestions" class="pt-0 mb-12 mt-12 px-2" :class="{'text-center': store.dict == 'bm,nn'}" aria-labelledby="feedback_title">
-              <h2 id="feedback_title">{{$t('notifications.feedback.title')}}</h2>
-              <div v-if="!feedback_given" class="flex gap-4 mt-4 my-6 mb-8 h-10" :class="{'justify-center': store.dict == 'bm,nn'}">
-                  <button @click="track_feedback(true)" class="p-2 btn px-5">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
-                  <button @click="track_feedback(false)" class="p-2 btn px-5">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
-                  <p v-else class="mt-4 my-6 mb-8 justify-center h-10">
-                  {{$t('notifications.feedback.thanks')}}
-              </p>
+          <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
+            <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
+              <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
+                <Article :content_locale="content_locale(dict)" :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
+              </NuxtErrorBoundary>
+            </component>
+          </component>
+            <div v-if="store.q && !specialSymbols(store.q)">
+              <Suggest :content_locale="content_locale(dict)"  :dict="dict" :articles_meta="articles.meta"/>
+            </div>
         </section>
+        
+    </div>
+    <section v-if="!no_suggestions" class="pt-0 mb-12 mt-12 px-2" :class="{'text-center': store.dict == 'bm,nn'}" aria-labelledby="feedback_title">
+                <h2 id="feedback_title">{{$t('notifications.feedback.title')}}</h2>
+                <div v-if="!feedback_given" class="flex gap-4 mt-4 my-6 mb-8 h-10" :class="{'justify-center': store.dict == 'bm,nn'}">
+                    <button @click="track_feedback(true)" class="p-2 btn px-5">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
+                    <button @click="track_feedback(false)" class="p-2 btn px-5">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
+                    <p v-else class="mt-4 my-6 mb-8 justify-center h-10">
+                    {{$t('notifications.feedback.thanks')}}
+                </p>
+    </section>
   </div>
   <ErrorMessage v-if="error" :error="error" :title="$t('error.articles')"/>
 </div>
@@ -127,6 +128,10 @@ definePageMeta({
 
 const listView = computed(() => {
   return store.q && settings.simpleListView
+})
+
+const total = computed(() => {
+  return (articles.value.meta.bm && articles.value.meta.bm.total) + (articles.value.meta.nn && articles.value.meta.nn.total)
 })
 
 
