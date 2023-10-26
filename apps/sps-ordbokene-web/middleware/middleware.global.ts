@@ -8,12 +8,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const locale_cookie = useCookie('currentLocale')
   if (locale_cookie.value) {
     if (to.params.locale && locale_cookie.value != to.params.locale) {
+      console.log("COOKIE REDIRECTING LOCALE")
       return navigateTo(localizeUrl(to.fullPath, locale_cookie.value), {replace: true})
     }
   }
   else if (process.client) {
     try {
       if (navigator.language == 'nb' && to.params.locale != 'nob') {
+        console.log("NAVIGATOR REDIRECTING LOCALE")
         return navigateTo(localizeUrl(to.fullPath, 'nob'), {replace: true})
       }
       else if (navigator.language == 'nn' && to.params.locale != 'nno') {

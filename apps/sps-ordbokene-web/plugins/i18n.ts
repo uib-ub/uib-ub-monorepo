@@ -10,12 +10,15 @@ export default defineNuxtPlugin(({ vueApp }) => {
   const headers = useRequestHeaders(['Accept-Language'])
   let locale = route.params.locale || new Date().getDate() % 2 ? 'nno' : 'nob'
   if (locale_cookie.value) {
+    console.log("INIT COOKIE LOCALE")
     locale = locale_cookie.value
   }
   else if (process.client && navigator.language) {
+    console.log("INIT NAVIGATOR LOCALE")
     locale = detectLocale(navigator.language) || locale
   }
   else if (!process.client) {
+    console.log("INIT HEADER LANGUAGE")
     locale = detectLocale(headers["accept-language"]) || locale
   }
   
