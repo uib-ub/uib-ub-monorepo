@@ -20,7 +20,7 @@ export default defineNuxtConfig({
       apiDev: 'https://oda.uib.no/opal/dev/',
       apiDevFallback:  'https://odd.uib.no/opal/dev/',
       env: process.env.VERCEL_ENV || 'local',
-      commit: process.env.VERCEL_GIT_COMMIT_SHA || 'commit SHA not available'
+      commit: process.env.VERCEL_GIT_COMMIT_SHA
     }
   },
 
