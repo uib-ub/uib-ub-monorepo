@@ -176,12 +176,14 @@ export function getAllKeys(obj: Object): string[] {
 /**
  * Lazy Localization function with fallback based on localized language order.
  *
- * @param key key to localize
+ * @param key - key to localize
  * @returns Localized label or key if not label present
  */
 export function lalof(key: string): string {
   const lazyLocales = useLazyLocales();
-  const label = Object.keys(languageOrder)
+  const locale = useLocale();
+  const localeLen = Object.keys(languageOrder).length;
+  const label = languageOrder[locale.value].slice(0, localeLen)
     .map((lc) => lazyLocales.value?.[lc]?.[key])
     .find((value) => value !== undefined);
   return label ?? key;
