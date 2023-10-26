@@ -39,6 +39,9 @@ const settings = useSettingsStore()
 const route = useRoute()
 const i18n = useI18n()
 
+const { api, apiFallback, apiDev, apiDevFallback } = useRuntimeConfig().public
+
+
 const input_element = useState('input_element')
 const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host
 
@@ -86,6 +89,29 @@ nuxtApp.hook("page:finish", () => {
     input_element.value.select()
   }
 })
+
+
+const { data: concepts, error, refresh} = await useAsyncData('concepts', async () => {
+  const [concepts_bm, concepts_nn] = await Promise.all([$fetch(`${session.endpoint}bm/concepts.json`), $fetch(`${session.endpoint}bm/concepts.json`)])
+
+  return {
+    concepts_bm,
+    concepts_nn
+  }
+})
+
+if (error.value && session.endpoint == api) {
+  session.endpoint = apiFallback
+  await refresh()
+}
+
+if (error.value && session.endpoint == apiDev) {
+  session.endpoint = apiDevFallback
+  await refresh()
+}
+
+session.concepts_bm = concepts.value.concepts_bm.concepts
+session.concepts_nn = concepts.value.concepts_nn.concepts
 
 
 </script>

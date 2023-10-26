@@ -29,42 +29,11 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     
   }
 
-
-
   
-  // Load concepts for definition expansion
-  const get_concepts = async (server, env) => {
-    await Promise.all([
-      fetch(`https://${server}.uib.no/opal/${env}/bm/concepts.json`).then(r => r.json()), 
-      fetch(`https://${server}.uib.no/opal/${env}/nn/concepts.json`).then(r => r.json())
-    
-    ]).then(response => {
-      session.error = null
-      session.concepts_bm = response[0].concepts
-      session.concepts_nn = response[1].concepts
-      session.endpoint = `https://${server}.uib.no/opal/${env}/`
-      console.log("ENDPOINT:", session.endpoint)
+  if (!session.endpoint) {
+    session.endpoint = useRuntimeConfig().public.api
+  }
   
-  }).catch(async err => {
-    if (server == 'oda') {
-      console.log("Fallback to odd.uib.no")
-      await get_concepts('odd', env)
-      }
-      else {
-        session.error = "generic_code"
-  
-      }
-    })
-  }
 
-  // More flexible api switching for testing purposes
-  if (to.query && to.query.api) {
-    session.endpoint = {'odd_dev': 'dev', 'oda_dev': 'dev', 'odd_prod': 'prod', 'oda_prod': 'prod'}[String(to.query.api)] || 'oda_dev'
-    await get_concepts({'odd_dev': 'odd', 'oda_dev': 'oda', 'odd_prod': 'odd', 'oda_prod': 'oda'}[String(to.query.api)], session.endpoint)
-
-  }
-  else if (!session.endpoint) {
-      await get_concepts(process.env.NODE_ENV == 'production' ? 'oda' : 'odd', 'prod')
-  }
   
 })

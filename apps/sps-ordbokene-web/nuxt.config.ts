@@ -15,8 +15,12 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      endpointEnv: process.env.ENDPOINT_ENV || 'dev',
-      versionWatermark: process.env.VERCEL_GIT_COMMIT_SHA || 'local'
+      api: 'https://oda.uib.no/oppal/prod/',
+      apiFallback: 'https://odd.uib.no/opal/prod/',
+      apiDev: 'https://oda.uib.no/opal/dev/',
+      apiDevFallback:  'https://odd.uib.no/opal/dev/',
+      env: process.env.VERCEL_ENV || 'local',
+      commit: process.env.VERCEL_GIT_COMMIT_SHA || 'commit SHA not available'
     }
   },
 
