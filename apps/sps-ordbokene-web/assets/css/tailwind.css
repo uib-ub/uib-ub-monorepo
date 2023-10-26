@@ -121,7 +121,7 @@
       .dict-label {
         /* letter-spacing: .1rem; */
         font-variant-caps: all-small-caps;
-        @apply !text-lg sm:!text-xl xl:!text-2xl font-semibold tracking-widest ml-4 mb-0 !text-gray-700 !mt-0;
+        @apply text-lg sm:!text-xl xl:!text-2xl font-semibold tracking-widest ml-4 mb-0 !text-gray-700 !mt-0;
       }
 
       
