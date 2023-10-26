@@ -21,7 +21,7 @@ console.log(i18n.locale)
 
 const { data } = await useAsyncData('subpage-data', () => {
   console.log("FETCHING", route.fullPath)
-  return queryContent(route.fullPath).findOne()})
+  return queryContent(route.params.locale ? route.fullPath : '/' + i18n.locale.value + route.fullPath ).findOne()})
 
 console.log("DATA", data.value)
 
