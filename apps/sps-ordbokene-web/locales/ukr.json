@@ -3,7 +3,7 @@
     "home": "На головну сторінку",
     "menu": "Меню",
     "help": "Допомога в пошуку",
-    "about": "Про словник",
+    "about": "Про словники",
     "contact": "Зв’язатися з нами",
     "autocomplete_suggestions": "Search suggestion | search suggestions",
     "advanced_help": "About advanced search",
@@ -55,7 +55,7 @@
     },
     "options": {
         "title": "Параметри пошуку",
-        "dict": "словники::",
+        "dict": "Словники:",
         "scope": {
             "title": "Search for:",
             "value": {
@@ -224,7 +224,7 @@
             "definitions": "Senses and Example Sentences",
             "examples": "Example"
         },
-        "new": "Нове в словнику {dict}"
+        "new": "Нове в {dict}"
     },
     "error": {
         "article": "Could not fetch article {article_id} in {dict}",
