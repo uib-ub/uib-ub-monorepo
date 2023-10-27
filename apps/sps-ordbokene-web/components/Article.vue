@@ -433,6 +433,11 @@ const snippet = computed(() => {
 
 })
 
+
+const metaSnippet = computed(() => {
+  return lemma_groups.value.map(item => item.description + " — ") + snippet.value
+})
+
 const title = computed(() => {
 return data.value.lemmas[0].lemma
 })
@@ -442,11 +447,11 @@ if (props.single && data.value) {
   useHead({
     title: title,
     meta: [
-      {name: 'description', content: snippet },
+      {name: 'description', content: metaSnippet },
       {name: 'twitter:title', content: title },
-      {name: 'twitter:description', content: snippet },
+      {name: 'twitter:description', content: metaSnippet },
       {property: 'og:title', content: title },
-      {property: 'og:description', content: snippet },
+      {property: 'og:description', content: metaSnippet },
     ]
   });
 }
