@@ -54,7 +54,7 @@
         "title": "Søkjealternativ",
         "dict": "Ordbøker:",
         "scope": {
-            "title": "Søk etter:",
+            "title": "Søk etter",
             "value": {
                 "e": "Oppslagsord",
                 "ei": "Alle ordformer",
