@@ -12,7 +12,7 @@
         <div class="whitespace-nowrap shadow-md p-1 bg-white flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
           
             <label for="dict-select">{{ $t('options.dict') }} </label>
-            <select id="dict-select" name="dict" @change="update_dict" :class="{not_null: store.dict != 'bm,nn'}">
+            <select id="dict-select" name="dict" @change="update_dict" class="py-1 sm:py-0">
                 <option v-for="(dict, idx) in  dicts" :key="idx" :value="dict" :selected="store.dict == dict" v-bind:class="{selected: store.dict == dict}">{{$t("dicts." + dict)}}</option>
             </select>
 
@@ -21,7 +21,7 @@
 
         <div class="whitespace-nowrap shadow-md p-1 bg-white  flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
             <label for="scope-select">{{ $t('options.scope.title') }}</label>
-            <select id="scope-select" name="scope" @change="update_scope" :class="{not_null: store.scope != 'ei'}">
+            <select id="scope-select" name="scope" @change="update_scope"  class="py-1 sm:py-0">
                 <option v-for="(scope, idx) in  ['e', 'ei', 'eif']" :key="idx" :value="scope" :selected="store.scope == scope" v-bind:class="{selected: store.scope == scope}">{{$t("options.scope.value." + scope)}}</option>
             </select>
         </div>
@@ -29,7 +29,7 @@
 
         <div class="whitespace-nowrap shadow-md p-1 bg-white  flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
             <label for="pos-select">{{ $t('pos') }}</label>
-            <select id="pos-select" name="pos" @change="update_pos" :class="{not_null: store.pos}">
+            <select id="pos-select" name="pos" @change="update_pos" class="py-1 sm:py-0">
                 <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
             </select>
         </div>
