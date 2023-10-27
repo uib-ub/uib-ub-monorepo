@@ -55,9 +55,9 @@
   },
   "options": {
     "title": "Search options",
-    "dict": "Dictionaries:",
+    "dict": "Dictionaries",
     "scope": {
-      "title": "Search for:",
+      "title": "Search for",
       "value": {
         "e": "Headwords",
         "ei": "All words",
@@ -151,6 +151,7 @@
     "similar_nn": "Add similar results from Nynorskordboka: ",
     "search": "Search",
     "back": "Back to search",
+    "simple": "Standard search",
     "not_a_word": " is not a word in ",
     "results": "No results | One result | {count} results",
     "results_dict": "No results in {dict}|One result in {dict}|{count} results in {dict}",

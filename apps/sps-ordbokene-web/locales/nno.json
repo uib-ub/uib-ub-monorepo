@@ -144,6 +144,7 @@
         "similar_nn": "Legg til liknande treff frå Nynorskordboka: ",
         "search": "Søk i ordbøkene",
         "back": "Tilbake til søkjeresultata",
+        "simple": "Vanleg søk",
         "not_a_word": " er ikkje eit oppslagsord i ",
         "results": "Ingen treff | Eitt treff| {count} treff",
         "results_dict": "Ingen treff i {dict}|Eitt treff i {dict}|{count} treff i {dict}",

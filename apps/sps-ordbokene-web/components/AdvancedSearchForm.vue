@@ -1,51 +1,57 @@
 <template>
-  <div class="my-1 md:mt-0 pb-6">
-    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4 mx-2">
+  <div class="pb-2">
+    
+    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4 mt-2">
+        <div class="flex flex-col sm:flex-row sm:flex-wrap w-full gap-3">
 
-      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-10">
-        <fieldset class="gap-4 lg:col-span-2 xl:col-span-3 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded border-primary">
-          <legend>{{$t('options.dict')}}</legend>
-          <FormRadio v-for="(item, idx) in dicts" :key="store.dict + idx" :value="item" name="dict" :current="store.dict" @submit="update_dict">
-            {{$t(`dicts_short.${item}`)}}
-          </FormRadio>
-        </fieldset>
-        
-        <fieldset class="gap-4 lg:col-span-2 xl:col-span-4 grid xl:grid-cols-3 sm:gap-3 border border-1 px-6 pb-4 pt-2 rounded border-primary">
-          <legend>{{$t('options.scope.title')}}</legend>
-          <FormRadio v-for="(item, idx) in ['e', 'ei', 'eif']" :key="store.scope + idx" :value="item" name="scope" :current="store.scope" @submit="update_scope">
-            {{$t(`options.scope.value.${item}`)}}
-          </FormRadio>
-        </fieldset>  
+        <div class="whitespace-nowrap xl:self-center">
+            <NuxtLink :to="`/${$i18n.locale}/${store.dict}/${store.q}`"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.simple')}} </NuxtLink>
+        </div>
 
-      <div class="grid sm:grid-cols-2 xl:grid-cols-2 lg:grid-cols-1 md:col-span-2 lg:col-span-1 xl:col-span-2 gap-2 sm:gap-4 lg:gap-4 xl:col-span-3">
-        <div class="relative mt-5"> 
-            <label for="pos-select" class="absolute left-2 top-0 transform -translate-y-1/2 bg-tertiary px-1 mb-4 whitespace-nowrap ">{{ $t('pos') }}:</label>
-            <select id="pos-select" name="pos" @change="update_pos" class="border-primary w-full border border-1 bg-tertiary py-4 pl-6 pr-2 focus:border-blue-400" v-bind:class="{not_null: store.pos}">
-                <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
+
+        <div class="whitespace-nowrap shadow-md p-1 bg-white flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
+          
+            <label for="dict-select">{{ $t('options.dict') }} </label>
+            <select id="dict-select" name="dict" @change="update_dict" :class="{not_null: store.dict != 'bm,nn'}">
+                <option v-for="(dict, idx) in  dicts" :key="idx" :value="dict" :selected="store.dict == dict" v-bind:class="{selected: store.dict == dict}">{{$t("dicts." + dict)}}</option>
+            </select>
+
+        </div>
+
+
+        <div class="whitespace-nowrap shadow-md p-1 bg-white  flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
+            <label for="scope-select">{{ $t('options.scope.title') }}</label>
+            <select id="scope-select" name="scope" @change="update_scope" :class="{not_null: store.scope != 'ei'}">
+                <option v-for="(scope, idx) in  ['e', 'ei', 'eif']" :key="idx" :value="scope" :selected="store.scope == scope" v-bind:class="{selected: store.scope == scope}">{{$t("options.scope.value." + scope)}}</option>
             </select>
         </div>
 
-          <button class="btn sm:mt-4 sm:mb-2 md:mb-0 py-2 lg:py-4 border-primary" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
-          
-      </div>
+
+        <div class="whitespace-nowrap shadow-md p-1 bg-white  flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
+            <label for="pos-select">{{ $t('pos') }}</label>
+            <select id="pos-select" name="pos" @change="update_pos" :class="{not_null: store.pos}">
+                <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
+            </select>
+        </div>
+        <div class="flex flex-grow md:w-[128px] md:min-w-[128px] md:max-w-[128px]">
+            <button class="btn w-full" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
+          </div>
+
+        </div>
       
-    </div>
-      
-        <div class="grid grid-cols-10 gap-4 xl:gap-4">
- 
-          <div class="col-span-10 lg:col-span-6 xl:col-span-7" :class="{activeAutocomplete: store.autocomplete && store.autocomplete.length}">
+
+        <div class="flex flex-col lg:flex-row lg:flex-wrap w-full gap-x-6 gap-y-3">
+          <div class="flex-grow" :class="{activeAutocomplete: store.autocomplete && store.autocomplete.length}">
             <Autocomplete  v-on:dropdown-submit="submitForm"/>
           </div>
 
-          <div class="col-span-10 lg:col-span-4 xl:col-span-3 flex flex-wrap justify-evenly gap-8" v-if="store.q">
-            
-            
-            <div class="flex justify-center items-end">
-        <FormCheckbox v-model="settings.$state.listView" :checked="settings.listView" class="text-blue-700 font-semibold">
-            {{$t('show_list')}}
-        </FormCheckbox>
-    </div>
-            <div class="flex justify-center items-end"><NuxtLink :to="`/${$i18n.locale}/help/advanced`"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
+          <div class="flex gap-6" v-if="store.q">
+            <div class="flex justify-center items-center">
+              <FormCheckbox v-model="settings.$state.listView" :checked="settings.listView" class="text-blue-700 font-semibold">
+                  {{$t('show_list')}}
+              </FormCheckbox>
+            </div>
+            <div class="flex justify-center items-center"><NuxtLink :to="`/${$i18n.locale}/help/advanced`"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
           </div>
         </div>
     </form>
@@ -73,16 +79,16 @@ const update_pos = event => {
 
 }
 
-const update_dict = (value) => {
-  store.dict = value
+const update_dict = (event) => {
+  store.dict = event.target.value
   if (store.q) {
     submitForm()
   }
   
 }
 
-const update_scope = (value) => {
-  store.scope = value
+const update_scope = (event) => {
+  store.scope = event.target.value
   if (store.q) {
     submitForm()
   }
@@ -146,14 +152,9 @@ option.selected {
 
 }
 
-.select-wrapper.not_null {
-    @apply !bg-primary text-white;
-}
 
-
-legend, label {
-
-  @apply px-2 text-lg whitespace-nowrap;
+label {
+  @apply px-1 whitespace-nowrap font-semibold;
 }
 
 </style>

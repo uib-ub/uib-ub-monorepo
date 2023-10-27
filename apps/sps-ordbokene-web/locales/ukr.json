@@ -55,9 +55,9 @@
     },
     "options": {
         "title": "Параметри пошуку",
-        "dict": "Словники:",
+        "dict": "Словники",
         "scope": {
-            "title": "Search for:",
+            "title": "Search for",
             "value": {
                 "e": "Заголовні слова",
                 "ei": "всі слова",
@@ -155,6 +155,7 @@
         "similar_nn": "Додайте подібні збіги зі Словника Нюношка: ",
         "search": "Шукайте в словнику",
         "back": "Повернутися до результатів пошуку",
+        "simple": "Standard search",
         "results": "No results | One result | {count} results",
         "results_dict": "No results in {dict}|One result in {dict}|{count} results in {dict}",
         "more": "Показати більше",
