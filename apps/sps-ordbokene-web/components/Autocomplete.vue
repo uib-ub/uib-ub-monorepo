@@ -320,7 +320,7 @@ transform: translateX(-50%);
 
 
 #autocomplete-dropdown .dropdown-item {
-  @apply p-4 mx-2 duration-200 motion-reduce:transition-none text-left;
+  @apply py-2 px-2 md:py-3 md:px-4 mx-2 duration-200 motion-reduce:transition-none text-left;
 }
 #autocomplete-dropdown .dropdown-item:hover  {
     @apply bg-canvas-darken cursor-pointer;
