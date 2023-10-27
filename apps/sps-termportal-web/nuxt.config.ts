@@ -49,7 +49,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "vercel",
-    compressPublicAssets: true,
+    // compressPublicAssets: true,
   },
   vite: {
     plugins: [
