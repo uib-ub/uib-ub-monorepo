@@ -5,7 +5,7 @@
         <div class="flex flex-col sm:flex-row sm:flex-wrap w-full gap-3 xl:items-end">
 
         <div class="whitespace-nowrap xl:self-center mt-4 sm:mt-2">
-            <NuxtLink :to="`/${$i18n.locale}/${store.dict}/${store.q}`"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.simple')}} </NuxtLink>
+            <NuxtLink :to="`/${$i18n.locale}/${store.dict}/${store.q}`"><Icon name="bi:arrow-left-short" size="1.5rem" class="mb-1 text-primary"/>{{$t('notifications.simple')}} </NuxtLink>
         </div>
 
 

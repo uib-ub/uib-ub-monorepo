@@ -29,8 +29,8 @@
             <h3><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-3 mb-1"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
             <p>{{$t('notifications.fulltext.description', 1, {locale: content_locale})}}</p>
             <div class="flex">
-            <NuxtLink :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" @click="track_freetext(store.q, data.freetext)" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none">{{$t('to_advanced')}} 
-            <Icon name="bi:arrow-right"/>
+            <NuxtLink :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" @click="track_freetext(store.q, data.freetext)" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none pr-1">{{$t('to_advanced')}} 
+            <Icon name="bi:arrow-right-short" size="1.5rem"/>
             </NuxtLink>
             </div>
     </div>
