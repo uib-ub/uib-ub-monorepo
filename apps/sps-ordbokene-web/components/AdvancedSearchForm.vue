@@ -1,40 +1,40 @@
 <template>
   <div class="pb-2">
     
-    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4 mt-2">
-        <div class="flex flex-col sm:flex-row sm:flex-wrap w-full gap-3">
+    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4">
+        <div class="flex flex-col sm:flex-row sm:flex-wrap w-full gap-3 xl:items-end">
 
-        <div class="whitespace-nowrap xl:self-center">
+        <div class="whitespace-nowrap xl:self-center mt-4 sm:mt-2">
             <NuxtLink :to="`/${$i18n.locale}/${store.dict}/${store.q}`"><Icon name="bi:arrow-left" size="1.25em" class="mb-1 mr-1 text-primary"/>{{$t('notifications.simple')}} </NuxtLink>
         </div>
 
 
-        <div class="whitespace-nowrap shadow-md p-1 bg-white flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
+        <div class="whitespace-nowrap shadow-md p-1 bg-white xl:bg-tertiary xl:shadow-none flex flex-col xl:flex-row flex-grow xl:flex-grow-0 mt-2"> 
           
             <label for="dict-select">{{ $t('options.dict') }} </label>
-            <select id="dict-select" name="dict" @change="update_dict" class="py-1 sm:py-0">
+            <select id="dict-select" name="dict" @change="update_dict" class="py-1 sm:py-0 xl:bg-tertiary">
                 <option v-for="(dict, idx) in  dicts" :key="idx" :value="dict" :selected="store.dict == dict" v-bind:class="{selected: store.dict == dict}">{{$t("dicts." + dict)}}</option>
             </select>
 
         </div>
 
 
-        <div class="whitespace-nowrap shadow-md p-1 bg-white  flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
+        <div class="whitespace-nowrap shadow-md p-1 bg-white xl:bg-tertiary xl:shadow-none  flex flex-col xl:flex-row flex-grow xl:flex-grow-0 mt-2"> 
             <label for="scope-select">{{ $t('options.scope.title') }}</label>
-            <select id="scope-select" name="scope" @change="update_scope"  class="py-1 sm:py-0">
+            <select id="scope-select" name="scope" @change="update_scope"  class="py-1 sm:py-0 xl:bg-tertiary">
                 <option v-for="(scope, idx) in  ['e', 'ei', 'eif']" :key="idx" :value="scope" :selected="store.scope == scope" v-bind:class="{selected: store.scope == scope}">{{$t("options.scope.value." + scope)}}</option>
             </select>
         </div>
 
 
-        <div class="whitespace-nowrap shadow-md p-1 bg-white  flex flex-col xl:flex-row flex-grow xl:flex-grow-0 align-middle"> 
+        <div class="whitespace-nowrap shadow-md p-1 bg-white xl:bg-tertiary xl:shadow-none  flex flex-col xl:flex-row flex-grow xl:flex-grow-0 mt-2"> 
             <label for="pos-select">{{ $t('pos') }}</label>
-            <select id="pos-select" name="pos" @change="update_pos" class="py-1 sm:py-0">
+            <select id="pos-select" name="pos" @change="update_pos" class="py-1 sm:py-0 xl:bg-tertiary">
                 <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
             </select>
         </div>
-        <div class="flex flex-grow md:w-[128px] md:min-w-[128px] md:max-w-[128px]" :class="{'hidden lg:flex': store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn'}">
-            <button class="btn" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
+        <div class="flex flex-grow md:w-[128px] md:min-w-[128px] md:max-w-[128px] !py-0 !my-0" :class="{'hidden lg:flex': store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn'}">
+            <button class="btn box-border" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
           </div>
 
         </div>
