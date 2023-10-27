@@ -3,7 +3,7 @@
   <div class="flex">
   <div class="flex flex-grow py-1 items-center md:py-3 flex-auto !box-content">
   <NuxtLink :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
-      <div><h1 class="text-xl xl:text-2xl">ordbøkene.no<span class="sr-only">, {{$t('home')}}</span></h1>
+      <div><h1 class="text-2xl xl:text-3xl">ordbøkene.no<span class="sr-only">, {{$t('home')}}</span></h1>
       <div class="text-xs xl:text-sm sr-only sm:not-sr-only">{{$t("sub_title")}}</div>
     </div>
   </NuxtLink>
