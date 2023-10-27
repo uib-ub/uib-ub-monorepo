@@ -52,7 +52,7 @@
     },
     "options": {
         "title": "Søkjealternativ",
-        "dict": "Ordbøker:",
+        "dict": "Ordbøker",
         "scope": {
             "title": "Søk etter",
             "value": {
