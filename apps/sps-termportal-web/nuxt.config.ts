@@ -16,7 +16,12 @@ export default defineNuxtConfig({
   build: {
     transpile: ["primevue"],
   },
-  modules: ["@nuxtjs/tailwindcss", "nuxt-icon", "@vueuse/nuxt"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "nuxt-icon",
+    "@vueuse/nuxt",
+    "@nuxt/content",
+  ],
   buildModules: ["@nuxtjs/html-validator", "@unlighthouse/nuxt"],
   content: {
     // https://content.nuxtjs.org/api/configuration
@@ -44,6 +49,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "vercel",
+    compressPublicAssets: true,
   },
   vite: {
     plugins: [
