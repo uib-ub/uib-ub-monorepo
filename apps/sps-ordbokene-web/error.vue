@@ -18,11 +18,22 @@ const props = defineProps({
   error: Object
 })
 
+const title = computed(()=> {
+  if (props.error.statusCode === 404) {
+    return props.error.statusCode + ": " + i18n.t('error.404.title')
+
+  }
+  else {
+    return props.error.statusCode
+  }
+
+})
+
 useHead({
     htmlAttrs: {
       lang: {nob: 'nb', nno: 'nn', eng: 'en'}[i18n.locale.value]
     },
-    title: props.error.statusCode + ": " + i18n.t('error.404.title')
+    title
 })
 
 </script>

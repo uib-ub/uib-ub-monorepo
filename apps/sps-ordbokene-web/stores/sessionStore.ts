@@ -4,9 +4,10 @@ export const useSessionStore = defineStore('session', {
     state: () => ({
       show_autocomplete: false,
       dropdown_selected: -1,
-      concepts_bm: [],
-      concepts_nn: [],
+      concepts_bm: undefined,
+      concepts_nn: undefined,
       endpoint: undefined,
       copied_link: "",
+      error: undefined
     }),
   })

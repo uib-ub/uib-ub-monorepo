@@ -264,8 +264,9 @@ if (process.client) {
         :lang="['bm','nn','no'][item.dict-1]"
         :id="'autocomplete-item-'+idx">
         <div class="dropdown-item w-full" data-dropdown-item tabindex="-1" @click="dropdown_select(item.q)">
-          <span v-if="item.type == 'pattern' && route.name != 'search'" role="status" aria-live="polite" class=" bg-primary text-white p-1 rounded px-3 ml-3">{{$t('to_advanced')}} 
-            <Icon name="bi:arrow-right"/>
+          <span v-if="item.type == 'pattern' && route.name != 'search'" role="status" aria-live="polite" class=" bg-primary text-white p-1 rounded px-3 pr-1">
+            {{$t('to_advanced')}} 
+            <Icon name="bi:arrow-right-short" size="1.5rem" class=""/>
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">
             <span v-if="store.autocomplete.length == 1" class="sr-only">{{$t('autocomplete_suggestions', 1)}}: </span>
@@ -320,7 +321,7 @@ transform: translateX(-50%);
 
 
 #autocomplete-dropdown .dropdown-item {
-  @apply p-4 mx-2 duration-200 motion-reduce:transition-none text-left;
+  @apply py-2 px-2 md:py-3 md:px-4 mx-2 duration-200 motion-reduce:transition-none text-left;
 }
 #autocomplete-dropdown .dropdown-item:hover  {
     @apply bg-canvas-darken cursor-pointer;

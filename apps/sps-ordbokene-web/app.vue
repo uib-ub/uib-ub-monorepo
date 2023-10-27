@@ -1,11 +1,24 @@
 <template>
 <Html :lang="locale">
   <Head>
+    <Title v-if="$route.params.dict == 'nn'">Nynorskordboka</Title>
+    <Title v-if="$route.params.dict == 'bm'">Bokmålsordboka</Title>
+    <Meta name="robots" content="noindex,nofollow"/>
     <Link rel="alternate" :href="baseUrl + non_localized" hreflang="x-default"/>
     <Link rel="alternate" :href="baseUrl + '/nob' + non_localized" hreflang="nb"/>
     <Link rel="alternate" :href="baseUrl + '/nno' + non_localized" hreflang="nn"/>
     <Link rel="alternate" :href="baseUrl + '/ukr' + non_localized" hreflang="uk"/>
-    <Meta name="robots" content="noindex,nofollow"/>
+    <Meta name="description" :content="description"/>
+    <Meta name="twitter:description" :content="description"/>
+    <Meta property="og:description" :content="description"/>
+    <Meta name="twitter:title" :content="metaTitle"/>
+    <Meta property="og:title" :content="metaTitle"/>
+    <Meta name="twitter:image" :content="baseUrl +'/logo.png'"/>
+    <Meta property="og:type" content="website"/>
+    <Meta property="og:site_name" content="ordbøkene.no"/>
+    <Meta property="og:image" :content="baseUrl +'/logo.png'"/>
+    <Meta property="og:image:width" content="256px"/>
+    <Meta property="og:image:height" content="256px"/>
   </Head>
 <NuxtLayout>
     <NuxtPage @click="menu_expanded=false"
@@ -26,6 +39,9 @@ const settings = useSettingsStore()
 const route = useRoute()
 const i18n = useI18n()
 
+const { api, apiFallback, apiDev, apiDevFallback } = useRuntimeConfig().public
+
+
 const input_element = useState('input_element')
 const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host
 
@@ -40,25 +56,23 @@ const non_localized = computed (() => {
   else return route.fullPath
 })
 
-useHead({
-    titleTemplate: (titleChunk) => {
-      return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
-    },
-    meta: [
-      {name:"twitter:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
-      {name:"twitter:image" , content:"logo.png"},
-      {name:"twitter:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
-      {property:"og:title" , content:"Ordbøkene.no - Bokmålsordboka og Nynorskordboka"},
-      {property:"og:type" , content:"website"},
-      {property:'og:site_name' , content:"ordbokene.no"},
-      {property:'og:image' , content: baseUrl + "/logo.png"},
-      {property:"og:image:width" , content:"256px"},
-      {property:"og:image:height" , content:"256px"},
-      {property:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."},
-      {name:"og:description" , content:"Bokmålsordboka og Nynorskordboka viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene."}
-      ]
+const description = computed(() => {
+  return i18n.t('footer_description', {bm: "Bokmålsordboka", nn: "Nynorskordboka"})
 })
 
+
+const titleTemplate = (titleChunk) => {
+  return titleChunk ? `${titleChunk} - ordbøkene.no` : 'ordbøkene.no';
+
+}
+
+const metaTitle = computed(() => {
+  return titleTemplate({bm: "Bokmålsordboka", nn: "Nynorskordboka"}[route.params.dict] || i18n.t('sub_title'))
+})
+
+useHead({
+    titleTemplate
+})
 
 
 // Global event listeners
@@ -75,6 +89,29 @@ nuxtApp.hook("page:finish", () => {
     input_element.value.select()
   }
 })
+
+
+const { data: concepts, error, refresh} = await useAsyncData('concepts', async () => {
+  const [concepts_bm, concepts_nn] = await Promise.all([$fetch(`${session.endpoint}bm/concepts.json`), $fetch(`${session.endpoint}bm/concepts.json`)])
+
+  return {
+    concepts_bm,
+    concepts_nn
+  }
+})
+
+if (error.value && session.endpoint == api) {
+  session.endpoint = apiFallback
+  await refresh()
+}
+
+if (error.value && session.endpoint == apiDev) {
+  session.endpoint = apiDevFallback
+  await refresh()
+}
+
+session.concepts_bm = concepts.value.concepts_bm.concepts
+session.concepts_nn = concepts.value.concepts_nn.concepts
 
 
 </script>

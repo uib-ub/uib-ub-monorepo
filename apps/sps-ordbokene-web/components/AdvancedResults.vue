@@ -2,13 +2,14 @@
   <div v-bind:class="{'list': settings.listView}">     
   <Spinner v-if="!error && !articles"/>
   <div v-if="!error && articles && articles.meta" >
+  <div class="sr-only" role="status" aria-live="polite">{{$t('notifications.results', total, {count: total})}}</div>
   <div  v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
     <section class="lg:grid-cols-6" 
              v-for="dict in dicts" 
              :key="dict" 
              :aria-labelledby="dict+'_heading'"
              :lang="locale2lang[content_locale(dict)]">
-      <div class="py-2 px-2">
+      <div class="pt-0 pb-3 px-2">
         <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict, 1, {locale: content_locale(dict)})}} 
           <span v-if="articles.meta[dict]" class="result-count-text">{{articles.meta[dict].total}}</span>
           <span class="sr-only">{{$t('notifications.keywords')}}</span>
@@ -48,13 +49,7 @@
   </div>
   </div>
 </div>
-<div v-if="error_message">
-  {{error_message}}
-</div>
-<div v-if="error" aria-live="">
-  ERROR: {{error}}
-</div> 
-
+<ErrorMessage v-if="error" :error="error" :title="$t('error.articles')"/>
 </div>
 
 
@@ -84,7 +79,7 @@ const perPage = ref(parseInt(route.query.perPage) || settings.perPage)
 
 const query = computed(() => {
   const params = {
-    w: route.query.q,
+    w: store.q,
     dict: route.query.dict || 'bm,nn',
   }
   if (route.query.scope) {
@@ -106,10 +101,7 @@ const content_locale = dict => {
 
 const { pending, error, refresh, data: articles } = await useFetch(() => `api/articles?`, {
           query,
-          baseURL: session.endpoint,
-          onResponseError(conf) {
-            console.log("RESPONSE ERROR")
-          }
+          baseURL: session.endpoint
         })
 
 const dicts = computed(()=> {
@@ -129,6 +121,11 @@ if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
   console.log("ERROR", error.value)
   refresh()
 } 
+
+
+const total = computed(() => {
+  return (articles.value.meta.bm && articles.value.meta.bm.total) + (articles.value.meta.nn && articles.value.meta.nn.total)
+})
 
 
 const pages = computed(() => {
@@ -158,7 +155,7 @@ const update_page = value => {
 
 
 const article_error = (error, article, dict) => {
-  console.log("ARTICLE_ERROR", article, dict)
+  useTrackEvent("article_error", {props: {article: dict + "/" + article, message: dict + "/" + article + " " + error.toString()}})
   console.log(error)
 }
 

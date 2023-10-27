@@ -34,7 +34,7 @@
     "reset": "Nullstill",
     "clear": "Tøm",
     "chosen_dict": "Valgt ordbok: ",
-    "footer_description": " viser skrivemåte og bøyning i tråd med norsk rettskrivning. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
+    "footer_description": "{bm} og {nn} viser skrivemåte og bøyning i tråd med norsk rettskrivning. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
     "accessibility": {
       "menu": "Åpne toppmeny",
       "main_content": "Gå til hovedinnhold",
@@ -59,9 +59,9 @@
     },
     "options": {
         "title": "Søkealternativer",
-        "dict": "Ordbøker:",
+        "dict": "Ordbøker",
         "scope": {
-            "title": "Søk etter:",
+            "title": "Søk etter",
             "value": {
                 "e": "Oppslagsord",
                 "ei": "Alle ordformer",
@@ -154,8 +154,7 @@
         "reset_done":"Slettet"
     },
     "notifications": {
-        "redirect": "Viser betydninger av oppslagsordet",
-        "translation": "Klikk på forslagene under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
+        "translation": "Klikk på forslaget under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}. | Klikk på forslagene under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
         "translation_title": "Mulig oversettelse",
         "inflected": "Bøyd form av:",
         "did_you_mean": "Mente du:",
@@ -164,8 +163,10 @@
         "similar_nn": "Legg til lignende treff fra Nynorskordboka: ",
         "search": "Søk i ordbøkene",
         "back": "Tilbake til søkeresultatene",
+        "simple": "Vanlig søk",
         "not_a_word": " er ikke et oppslagsord i ",
         "results": "Ingen treff | Ett treff| {count} treff",
+        "results_dict": "Ingen treff i {dict}|Ett treff i {dict}|{count} treff i {dict}",
         "keywords": "oppslagsord",
         "ignored_words": "Søket ble ingorert fordi vi begrenser forespørsler til 20 ord.",
         "ignored_chars": "Søket ble ignorert fordi vi ikke tillater ord med flere enn 40 tegn.",
@@ -229,7 +230,9 @@
         "new": "Nytt i {dict}"
     },
     "error": {
-          "article": "Det har oppstått en feil i artikkel {no} i {dict}",
+          "article": "Kunne ikke hente artikkel {article_id} i {dict}",
+          "articles": "Kunne ikke hente søkeresultater",
+          "status": "Statuskode: {code}",
           "404": {
               "title": "Ikke funnet",
               "description": "Siden kan ha blitt slettet eller flyttet, eller du kan ha brukt en ugyldig lenke."
@@ -240,10 +243,10 @@
           },
           "server": {
               "title": "Feil på server",
-              "description": "Noe gikk galt på serversiden (statuskode: {code})"},
+              "description": "Noe gikk galt på serversiden."},
           "generic_code": {
               "title": "Feil",
-              "description": "Det har oppstått en uventet feil i kommunikasjonen med serveren (statuskode: {code})"},
+              "description": "Det har oppstått en uventet feil i kommunikasjonen med serveren."},
           "network": {
               "title":"Tilkoblingsfeil",
               "description": "Et nettverksproblem hindret lasting av siden. Prøv å laste siden på nytt, eller sjekk om du er koblet til internett."},

@@ -3,7 +3,7 @@
     "home": "На головну сторінку",
     "menu": "Меню",
     "help": "Допомога в пошуку",
-    "about": "Про словник",
+    "about": "Про словники",
     "contact": "Зв’язатися з нами",
     "autocomplete_suggestions": "Search suggestion | search suggestions",
     "advanced_help": "About advanced search",
@@ -33,7 +33,7 @@
     "reset": "Reset",
     "clear": "Clear",
     "chosen_dict": "Chosen dictionary: ",
-    "footer_description": " показує написання та відмінювання, відповідно до норвезької орфографії. За розробкою словників стоять Мовна рада і Бергенський університет.",
+    "footer_description": "{bm} і {nn} показує написання та відмінювання, відповідно до норвезької орфографії. За розробкою словників стоять Мовна рада і Бергенський університет.",
     "accessibility": {
         "menu": "Відкрити верхнє меню",
         "callout": "Showing results for the keyword "
@@ -55,9 +55,9 @@
     },
     "options": {
         "title": "Параметри пошуку",
-        "dict": "словники::",
+        "dict": "Словники",
         "scope": {
-            "title": "Search for:",
+            "title": "Search for",
             "value": {
                 "e": "Заголовні слова",
                 "ei": "всі слова",
@@ -146,8 +146,7 @@
         "reset_done": "Deleted"
     },
     "notifications": {
-        "redirect": "Showing senses of the dictionary entry",
-        "translation": "Клацніть пропозиції нижче, щоб додати переклад на основі програмного забезпечення перекладу Apertium і глосарію {adm} від Мовна рада Норвегії",
+        "translation": "Клацніть пропозицію нижче, щоб додати переклад на основі програмного забезпечення для перекладу Apertium і глосарію {adm} від Мовна рада Норвегії. | Клацніть пропозиції нижче, щоб додати переклад на основі програмного забезпечення перекладу Apertium і глосарію {adm} від Мовна рада Норвегії.",
         "translation_title": "Потенційний переклад",
         "inflected": "знайдене у відмінюваних формах ",
         "did_you_mean": "Did you mean:",
@@ -156,7 +155,9 @@
         "similar_nn": "Додайте подібні збіги зі Словника Нюношка: ",
         "search": "Шукайте в словнику",
         "back": "Повернутися до результатів пошуку",
-        "results": "знайдено",
+        "simple": "Standard search",
+        "results": "No results | One result | {count} results",
+        "results_dict": "No results in {dict}|One result in {dict}|{count} results in {dict}",
         "more": "Показати більше",
         "less": "Показати менше",
         "fuzzy": "Схожі ключові слова",
@@ -225,10 +226,12 @@
             "definitions": "Senses and Example Sentences",
             "examples": "Example"
         },
-        "new": "Нове в словнику {dict}"
+        "new": "Нове в {dict}"
     },
     "error": {
-        "article": "У статті сталася помилка {no} i {dict}",
+        "article": "Could not fetch article {article_id} in {dict}",
+        "articles": "Cound not fetch search results",
+        "status": "Status code: {code}",
         "404": {
             "title": "Not Found",
             "description": "The page may have been deleted or moved, or you may have used an invalid link."
@@ -239,11 +242,11 @@
         },
         "server": {
             "title": "Server Error",
-            "description": "Something went wrong on the server side (status code: {code})"
+            "description": "Something went wrong on the server side."
         },
         "generic_code": {
             "title": "Error",
-            "description": "An unexpected error occurred while communicating with the server (status code: {code})"
+            "description": "An unexpected error occurred while communicating with the server."
         },
         "network": {
             "title": "Connection Error",

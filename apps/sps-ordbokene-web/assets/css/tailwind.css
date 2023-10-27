@@ -41,7 +41,7 @@
 
   .callout h3 {
     font-family: unset;
-    @apply tracking-widest align-middle text-lg pt-2;
+    @apply align-middle text-lg pt-2;
 
   }
   
@@ -66,7 +66,7 @@
 
 @layer components {
 
-  .secondary-page a[href^="http"]:after, .split-inf-explanation a:after {
+  .secondary-page a[href^="http"]:not(a[href^="https://ordbokene"]):after, .split-inf-explanation a:after {
 
     content: "";
     background-size: 1em 1em;
@@ -89,7 +89,7 @@
       }
 
       .suggestions h3 {
-          @apply text-2xl
+          @apply text-xl
       }
     
       .callout h3 {
@@ -121,7 +121,7 @@
       .dict-label {
         /* letter-spacing: .1rem; */
         font-variant-caps: all-small-caps;
-        @apply !text-2xl font-semibold tracking-widest ml-4 mb-0 !text-gray-700;
+        @apply text-lg sm:!text-xl xl:!text-2xl font-semibold tracking-widest ml-4 mb-0 !text-gray-700 !mt-0;
       }
 
       
@@ -189,7 +189,7 @@
       
       
       .secondary-page h3, .ord-container h2 {
-        @apply text-primary text-2xl mt-4;
+        @apply text-primary text-2xl  mt-4 font-semibold;
       }
 
       .link-header {
@@ -230,7 +230,7 @@
       }
 
       .ord-container {
-        @apply px-2 md:px-1;
+        @apply px-2 md:px-4;
       }
 
 

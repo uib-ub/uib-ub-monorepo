@@ -21,7 +21,7 @@ const props = defineProps({
     dict: String,
 })
 
-const query = `${session.endpoint}api/suggest?&q=${route.query.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
+const query = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
 const { data, error, pending } = useFetch(query, {key: query,
                                     transform: response => {
                                         if (response.a && response.a.similar) {
@@ -29,7 +29,7 @@ const { data, error, pending } = useFetch(query, {key: query,
                                                                                     && item[0].slice(-1) != '-' ).map(pair => pair[0])
                                         }
                                         else {
-                                            useTrackEvent('no_suggestions_advanced', {props: {query: props.dict + "/" + route.query.q}})
+                                            useTrackEvent('no_suggestions_advanced', {props: {query: props.dict + "/" + store.q}})
                                             return []
                                             
                                         }

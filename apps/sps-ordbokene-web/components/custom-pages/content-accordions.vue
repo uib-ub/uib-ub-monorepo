@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="secondary-page">
       <ContentRenderer :value="intro">
             <ContentRendererMarkdown :value="intro" :components="{h1: 'h2'}" />
             <template #empty>
@@ -19,28 +19,28 @@
           </template>
       </ContentNavigation>
   </div>
-  </template>
+</template>
   
-  <script setup>
-  import { useI18n } from 'vue-i18n'
-  const i18n = useI18n()
-  import { useRoute } from 'vue-router'
-  const route = useRoute()
-  
-  const { data: intro } = await useAsyncData('intro_' + i18n.locale.value, () => queryContent(i18n.locale.value, route.name).findOne())
-  const sections =  queryContent(i18n.locale.value, route.name)
-  
-  useHead({
-      title: i18n.t(route.name)
-  })
-  
-  </script>
-  
-  
-  <style scoped>
-  
-  .content-linkt-item:not(:last-child) {
-            @apply !border-b border-solid border-gray-100;
-            
-        }
-  </style>
+<script setup>
+import { useI18n } from 'vue-i18n'
+const i18n = useI18n()
+import { useRoute } from 'vue-router'
+const route = useRoute()
+
+const { data: intro } = await useAsyncData('content-accordion', () => queryContent(i18n.locale.value, route.name).findOne())
+const sections =  queryContent(i18n.locale.value, route.name)
+
+useHead({
+    title: i18n.t(route.name)
+})
+
+</script>
+
+
+<style scoped>
+
+.content-linkt-item:not(:last-child) {
+          @apply !border-b border-solid border-gray-100;
+          
+      }
+</style>

@@ -1,46 +1,30 @@
 <template>
-  <div class="list-view-item" v-if="list && !welcome" :lang="dictLang[dict]">
-      <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
-      <NuxtLink v-else class="result-list-item" :to="link_to_self()">
-
-  <div v-for="(lemma_group, i) in lemma_groups" :key="i">
-  <span class="lemma-group">
-
-    <span v-for="(lemma, index) in lemma_group.lemmas"
-          :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
-          <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
-                    <span
-                   class="title_comma"
-                   v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
-                  </span>
+  <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
+  <div v-else-if="list && !welcome" class="list-view-item" :lang="dictLang[dict]">
+    <NuxtLink class="result-list-item" :to="link_to_self()">
+      <div v-for="(lemma_group, i) in lemma_groups" :key="i">
+      <span class="lemma-group">
+        <span v-for="(lemma, index) in lemma_group.lemmas"
+              :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
+              <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
+                        <span
+                      class="title_comma"
+                      v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
+                      </span>
+        </span>
     </span>
-</span>
-<span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
-  &nbsp;<em v-if="lemma_group.description" class="subheader ">
-  <span class="header_group_list">{{lemma_group.description}}</span>
-        {{lemma_group.pos_group}}
-  <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
-
-  </em>
-</div>{{snippet}}
-
-    </NuxtLink>
-  </div>
-    <div :lang="dictLang[dict]" class="article flex flex-col justify-between" v-else-if="!error">
-      <div v-if="false && pending && !welcome" class="skeleton-container">
-            <div class="skeleton mt-4 skeleton-heading"/>
-        <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
-        <div class="skeleton skeleton-content w-50 "/>
-        <div class="skeleton skeleton-content w-25 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-75"/>
-        <div class="skeleton skeleton-content w-25 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-50"/>
-        <div class="skeleton skeleton-content w-75 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-25"/>
-        </div>
-        <div v-else>
-          
-        <h2 v-if="welcome" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h2>
+    <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
+      &nbsp;<em v-if="lemma_group.description" class="subheader ">
+      <span class="header_group_list">{{lemma_group.description}}</span>
+            {{lemma_group.pos_group}}
+      <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
+      </em>
+    </div>{{snippet}}
+  </NuxtLink>
+</div>
+<div v-else :lang="dictLang[dict]" class="article flex flex-col justify-between">
+      <div>
+        <h2 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h2>
         <h2 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
         <div :class="welcome? 'px-4 pb-3 pt-4' : 'px-4 pt-4 pb-2'">
 
@@ -66,17 +50,14 @@
               :lang="locale2lang[content_locale]"
               :aria-expanded="inflection_expanded" 
               :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
-             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
+             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
             <div class="inflection-container p-2">
-                <NuxtErrorBoundary @error="inflection_error">
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
-                </NuxtErrorBoundary>
             </div>
         </div>
-        <NuxtErrorBoundary @error="body_error">
         <div class="article_content pt-1" ref="article_content">
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
                 <h4 :lang="locale2lang[content_locale]">{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
@@ -108,8 +89,6 @@
             </WelcomeMarkdown>
           </div>
       </div>
-      </NuxtErrorBoundary>
-
   </div>
   
 </div>
@@ -145,20 +124,11 @@ const props = defineProps({
 })
 
 
-const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`,
-                                                                                        {
-                                                                                            async onResponseError({ request, response, options }) {
-                                                                                                // TODO: plausible logging, error message if article view
-                                                                                                console.log("RESPONSE ERROR", response.status)
-                                                                                            },
-                                                                                            async onRequestError({ request, response, error }) {
-                                                                                                // TODO: plausible logging, error message if article view
-                                                                                                console.log("REQUEST ERROR", error)
-                                                                                            }
-                                                                                        }))
+
+const { pending, data, error } = await useAsyncData('article_' + props.dict + props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`))
 
 
-  if (route.name != 'welcome' && route.name != 'index' && route.name != 'search' && data.value)
+if (route.name != 'welcome' && route.name != 'index' && route.name != 'search' && data.value)
   data.value.lemmas.forEach(lemma => {
       store.lemmas[props.dict].add(lemma.lemma)
       lemma.paradigm_info.forEach(paradigm => {
@@ -169,8 +139,8 @@ const { pending, data, error } = await useAsyncData('article_'+props.dict+props.
         })
 
       })
-
 })
+
 
 const expand_inflection = () => {
   useTrackEvent('expand_inflection', {props: {article: props.dict + "/" + props.article_id}})
@@ -182,14 +152,6 @@ if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()
-}
-
-const body_error = (error) => {
-  console.log("BODY_ERROR", error)
-}
-
-const inflection_error = (error) => {
-  console.log("INFLECTION_ERROR", error)
 }
 
 
@@ -407,50 +369,73 @@ const parse_subitems =  (explanation, text) => {
   }
 
 
-const parse_definitions = (definition_list) => {
+const parse_definitions = (definition_list, shorten) => {
   let definitionTexts = []
     try {
     definition_list.forEach((definition) => {
       if (definition.elements) {
-      if (definition.elements[0].content) {
-        let new_string = parse_subitems(definition.elements[0], definition.elements[0].content)
-        if (new_string.substring(new_string.length, new_string.length - 1) == ":" && definition.elements[1].quote) {
-          new_string += " "+parse_subitems(definition.elements[1].quote, definition.elements[1].quote.content)
-          
+        for (let i = 0; i < definition.elements.length; i++) {
+          let item = definition.elements[i]
+
+          if (item.content) {
+              let new_string = parse_subitems(item, item.content)
+
+              if (!shorten || new_string.length && new_string[new_string.length -1] !== ":") { // prevent
+                definitionTexts.push(new_string)
+              }
+            }
+          else if (item.elements && item.type_ != 'definition' && !shorten) {
+            definitionTexts.push(parse_definitions(item.elements, shorten))
+          }
+          else if (item.quote && !shorten ) { 
+            let prev = definitionTexts[definitionTexts.length-1]
+            if (prev && prev[prev.length -1] == ":") {
+              definitionTexts[definitionTexts.length -1] += (" " + parse_subitems(item.quote, item.quote.content))
+
+            }
+            else if (definition.elements[i-1] && definition.elements[i-1].quote ) {
+
+                definitionTexts[definitionTexts.length -1] += ("; " + parse_subitems(item.quote, item.quote.content))
+              
+            }
+            else {
+              definitionTexts[definitionTexts.length -1] += (".\u00A0" + {bm: "Eksempel: ", nn: "Døme: "}[props.dict] + parse_subitems(item.quote, item.quote.content))
+            }
+          }
+
         }
-        definitionTexts.push(new_string)
-
-      }
-      else if (definition.elements[0].elements) {
-        definitionTexts.push(parse_definitions(definition.elements))
-      }
-
-      let subdefs = definition.elements.slice(1, definition.elements.length).filter(item => item.type_ == 'definition')
-
-      if (subdefs.length) {
-        definitionTexts.push(parse_definitions(subdefs))
-      }
-
+        let subdefs = definition.elements.slice(1, definition.elements.length).filter(item => item.type_ == 'definition')
+        if (subdefs.length) {
+          definitionTexts.push(parse_definitions(subdefs, shorten))
+        }
     }
     })
-    } catch(error) {
-      console.log("snippet", error.message)
+    } catch(error) {      
+      useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": " + error.toString()}})
       definitionTexts = []
     }
 
-    let snippet = definitionTexts.filter(item => item).join("\u00A0•\u00A0")
+    let snippet = definitionTexts.filter(item => item).join(";\u00A0")
     return snippet
   
 }
 
 const snippet = computed(() => {
-if (data.value) {
-  return parse_definitions(data.value.body.definitions)
-}
-else {
-  console.log('No article body')
-}
+  
+  if (data.value) {
+    let shorten =  data.value.body.definitions[0] && data.value.body.definitions[0].elements.length > 5   
+    return parse_definitions(data.value.body.definitions, shorten)
+  }
+  else {
+    useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": No article body"}})
+    return ""
+  }
 
+})
+
+
+const metaSnippet = computed(() => {
+  return lemma_groups.value.map(item => item.description + " — ") + snippet.value
 })
 
 const title = computed(() => {
@@ -458,18 +443,16 @@ return data.value.lemmas[0].lemma
 })
 
 
-if (props.single) {
+if (props.single && data.value) {
   useHead({
     title: title,
     meta: [
-      {name: 'description', content: snippet },
+      {name: 'description', content: metaSnippet },
+      {name: 'twitter:title', content: title },
+      {name: 'twitter:description', content: metaSnippet },
       {property: 'og:title', content: title },
-      {property: 'og:description', content: snippet },
-      {name: 'twitter:description', content: snippet }  
-    ],
-    link: [
-    {rel: "canonical", href: `https://ordbokene.no/${props.dict}/${route.params.article_id}`}
-  ]
+      {property: 'og:description', content: metaSnippet },
+    ]
   });
 }
 
@@ -556,30 +539,6 @@ ol.sub_definitions {
 @apply pl-5;
 }
 
-
-
-.skeleton {
-  @apply ml-4 rounded-[1rem] bg-black;
-
-}
-.skeleton-heading {
-  @apply h-8 w-60;
-}
-
-.skeleton-subheading {
-  @apply h-5 w-40;
-}
-
-.skeleton-content {
-  @apply h-4 m-4;
-}
-
-.skeleton-container {
-  @apply h-[30rem]
-}
-.skeleton-indent {
-  @apply ml-8;
-}
 
 span.lemma {
   @apply text-primary;

@@ -34,7 +34,7 @@
     "reset": "Nullstill",
     "clear": "Tøm",
     "chosen_dict": "Vald ordbok: ",
-    "footer_description": " viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
+    "footer_description": "{bm} og {nn} viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
     "dicts": {
         "nn": "Nynorskordboka",
         "bm": "Bokmålsordboka",
@@ -52,9 +52,9 @@
     },
     "options": {
         "title": "Søkjealternativ",
-        "dict": "Ordbøker:",
+        "dict": "Ordbøker",
         "scope": {
-            "title": "Søk etter:",
+            "title": "Søk etter",
             "value": {
                 "e": "Oppslagsord",
                 "ei": "Alle ordformer",
@@ -135,9 +135,8 @@
         "reset_done":"Slettet"
     },
     "notifications": {
-        "redirect": "Viser tydingar av oppslagsordet",
         "translation_title": "Mogleg omsetjing",
-        "translation": "Klikk på forslaga under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. ",
+        "translation": "Klikk på forslaget under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. | Klikk på forslaga under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. ",
         "inflected": "Bøygde former av:",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",
@@ -145,8 +144,10 @@
         "similar_nn": "Legg til liknande treff frå Nynorskordboka: ",
         "search": "Søk i ordbøkene",
         "back": "Tilbake til søkjeresultata",
+        "simple": "Vanleg søk",
         "not_a_word": " er ikkje eit oppslagsord i ",
         "results": "Ingen treff | Eitt treff| {count} treff",
+        "results_dict": "Ingen treff i {dict}|Eitt treff i {dict}|{count} treff i {dict}",
         "keywords": "oppslagsord",
         "ignored_words": "Søket vart ignorert fordi vi avgrensar talet på førespurnader til 20 ord.",
         "ignored_chars": "Søket vart ignorert fordi vi ikkje tillèt søkjeord med meir enn 40 teikn.",
@@ -209,7 +210,9 @@
         "new": "Nytt i {dict}"
     },
     "error": {
-          "article": "Det har oppstått ein feil i artikkel {no} i {dict}",
+          "article": "Kunne ikkje hente artikkel {article_id} i {dict}",
+          "articles": "Kunne ikkje hente søkjeresultat",
+          "status": "Statuskode: {code}",
           "404": {
               "title": "Ikkje funne",
               "description": "Sida kan ha blitt sletta eller flytta, eller du kan ha brukt ei ugyldig lenkje."
@@ -220,10 +223,10 @@
           },
           "server": {
               "title": "Feil på server",
-              "description": "Noko gjekk gale på serversida (statuskode: {code})"},
+              "description": "Noko gjekk gale på serversida."},
           "generic_code": {
               "title": "Feil",
-              "description": "Det har oppstått ein uventa feil i kommunikasjonen med serveren (statuskode: {code})"},
+              "description": "Det har oppstått ein uventa feil i kommunikasjonen med serveren."},
           "network": {
               "title":"Tilkoplingsfeil",
               "description": "Eit nettverksproblem hindra lasting av sida. Prøv å laste sida på nytt, eller sjekk om du er kopla til internett."},
