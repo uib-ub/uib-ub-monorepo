@@ -27,8 +27,8 @@
     <section v-if="!no_suggestions" class="pt-0 mb-12 mt-12 px-2" :class="{'text-center': store.dict == 'bm,nn'}" aria-labelledby="feedback_title">
                 <h2 id="feedback_title">{{$t('notifications.feedback.title')}}</h2>
                 <div v-if="!feedback_given" class="flex gap-4 mt-4 my-6 mb-8 h-10" :class="{'justify-center': store.dict == 'bm,nn'}">
-                    <button @click="track_feedback(true)" class="p-2 btn px-5">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
-                    <button @click="track_feedback(false)" class="p-2 btn px-5">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
+                    <button @click="track_feedback(true)" class="btn w-[96px]">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
+                    <button @click="track_feedback(false)" class="btn w-[96px]">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
                     <p v-else class="mt-4 my-6 mb-8 justify-center h-10">
                     {{$t('notifications.feedback.thanks')}}
                 </p>
