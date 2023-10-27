@@ -637,6 +637,8 @@ export default {
         originalEvent: event,
         target: this.$el,
       });
+      // FIX: Search on click
+      this.$emit("execSearch");
     },
     onOverlayKeyDown(event) {
       switch (event.code) {
