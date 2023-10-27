@@ -369,7 +369,7 @@ const parse_subitems =  (explanation, text) => {
   }
 
 
-const parse_definitions = (definition_list) => {
+const parse_definitions = (definition_list, shorten) => {
   let definitionTexts = []
     try {
     definition_list.forEach((definition) => {
