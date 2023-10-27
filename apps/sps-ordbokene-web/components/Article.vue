@@ -379,38 +379,38 @@ const parse_definitions = (definition_list) => {
 
           if (item.content) {
               let new_string = parse_subitems(item, item.content)
-              definitionTexts.push(new_string)
 
+              if (!shorten || new_string.length && new_string[new_string.length -1] !== ":") { // prevent
+                definitionTexts.push(new_string)
+              }
             }
-          else if (item.elements) {
-            definitionTexts.push(parse_definitions(definition.elements))
+          else if (item.elements && item.type_ != 'definition' && !shorten) {
+            definitionTexts.push(parse_definitions(item.elements, shorten))
           }
-          else if (item.quote) {
+          else if (item.quote && !shorten ) { 
             let prev = definitionTexts[definitionTexts.length-1]
-            if (prev[prev.length -1] == ":") {
+            if (prev && prev[prev.length -1] == ":") {
               definitionTexts[definitionTexts.length -1] += (" " + parse_subitems(item.quote, item.quote.content))
 
             }
-            else if (definition.elements[i-1].quote) {
-              definitionTexts[definitionTexts.length -1] += ("; " + parse_subitems(item.quote, item.quote.content))
+            else if (definition.elements[i-1] && definition.elements[i-1].quote ) {
+
+                definitionTexts[definitionTexts.length -1] += ("; " + parse_subitems(item.quote, item.quote.content))
+              
             }
             else {
               definitionTexts[definitionTexts.length -1] += (".\u00A0" + {bm: "Eksempel: ", nn: "Døme: "}[props.dict] + parse_subitems(item.quote, item.quote.content))
             }
           }
 
-        let subdefs = definition.elements.slice(1, definition.elements.length).filter(item => item.type_ == 'definition')
-
-        if (subdefs.length) {
-          definitionTexts.push(parse_definitions(subdefs))
         }
-
-        
+        let subdefs = definition.elements.slice(1, definition.elements.length).filter(item => item.type_ == 'definition')
+        if (subdefs.length) {
+          definitionTexts.push(parse_definitions(subdefs, shorten))
         }
     }
     })
-    } catch(error) {
-      console.log("SNIPPET ERROR", error)
+    } catch(error) {      
       useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": " + error.toString()}})
       definitionTexts = []
     }
@@ -421,13 +421,15 @@ const parse_definitions = (definition_list) => {
 }
 
 const snippet = computed(() => {
-if (data.value) {
-  return parse_definitions(data.value.body.definitions)
-}
-else {
-  console.log('NO ARTICLE BODY')
-  useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": No article body"}})
-}
+  
+  if (data.value) {
+    let shorten =  data.value.body.definitions[0] && data.value.body.definitions[0].elements.length > 5   
+    return parse_definitions(data.value.body.definitions, shorten)
+  }
+  else {
+    useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": No article body"}})
+    return ""
+  }
 
 })
 
