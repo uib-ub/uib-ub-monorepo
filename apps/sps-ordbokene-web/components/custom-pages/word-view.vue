@@ -101,12 +101,18 @@ const dicts = computed(()=> {
   return ["bm", "nn"]
 })
 
+const metaDescription = computed(() => {
+    return dicts.value.map(dict => i18n.t('notifications.results_dict', {dict: i18n.t('dicts_inline.'+dict), count: articles.value.meta[dict] && articles.value.meta[dict].total})).join(". ")
+})
 
 useHead({
   title, 
   meta: [
     {property: 'og:title', content: title }, 
     {name: 'twitter:title', content: title },
+    {name: 'description', content: metaDescription },
+    {property: 'og:description', content: metaDescription },
+    {name: 'twitter:description', content: metaDescription },
   ]
 })
 
