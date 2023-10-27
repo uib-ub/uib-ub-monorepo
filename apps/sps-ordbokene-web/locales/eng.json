@@ -153,6 +153,7 @@
     "back": "Back to search",
     "not_a_word": " is not a word in ",
     "results": "No results | One result | {count} results",
+    "results_dict": "No results in {dict}|One result in {dict}|{count} results in {dict}",
     "keywords": "entries",
     "ignored_words": "The search was ignored because we limit queries to 20 words.",
     "ignored_chars": "The search was ignored because we do not accept words with more than 40 characters.",

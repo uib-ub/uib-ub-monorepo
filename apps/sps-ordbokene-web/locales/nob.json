@@ -165,6 +165,7 @@
         "back": "Tilbake til søkeresultatene",
         "not_a_word": " er ikke et oppslagsord i ",
         "results": "Ingen treff | Ett treff| {count} treff",
+        "results_dict": "Ingen treff i {dict}|Ett treff i {dict}|{count} treff i {dict}",
         "keywords": "oppslagsord",
         "ignored_words": "Søket ble ingorert fordi vi begrenser forespørsler til 20 ord.",
         "ignored_chars": "Søket ble ignorert fordi vi ikke tillater ord med flere enn 40 tegn.",
