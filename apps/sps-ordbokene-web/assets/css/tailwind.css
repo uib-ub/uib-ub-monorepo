@@ -171,7 +171,13 @@
       .secondary-page ul {
         margin-block-start: 1em;
         margin-block-end: 1em;
-        @apply list-disc ps-10; 
+        @apply list-disc ps-5; 
+      }
+
+      .secondary-page ol {
+        margin-block-start: .25em;
+        margin-block-end: .5em;
+        @apply list-decimal ps-5; 
       }
     
     
