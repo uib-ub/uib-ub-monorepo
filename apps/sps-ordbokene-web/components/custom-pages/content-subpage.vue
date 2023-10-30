@@ -22,7 +22,7 @@ const { data } = await useAsyncData('subpage-data', () => {
 
 
 useHead({
-    title: i18n.t(route.matched[0].name) + ": " + data.value.title,
+    title: data.value.title,
     meta: [
       {property: 'og:title', content:  data.value.title},
       {name: 'twitter:title', content:  data.value.title },
