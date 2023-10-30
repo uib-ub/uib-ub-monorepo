@@ -50,7 +50,7 @@
               :lang="locale2lang[content_locale]"
               :aria-expanded="inflection_expanded" 
               :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
-             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
+             {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
             <div class="inflection-container p-2">
