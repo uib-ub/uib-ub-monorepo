@@ -159,7 +159,7 @@
         @apply list-disc;
       }
 
-      .article ol div {
+      .article li > div {
         @apply pl-2
       }
 
