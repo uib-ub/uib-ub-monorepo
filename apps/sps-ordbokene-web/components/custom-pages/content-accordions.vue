@@ -31,7 +31,14 @@ const { data: intro } = await useAsyncData('content-accordion', () => queryConte
 const sections =  queryContent(i18n.locale.value, route.name)
 
 useHead({
-    title: i18n.t(route.name)
+    title: intro.value.title,
+    meta: [
+      {property: 'og:title', content: intro.value.title },
+      {name: 'twitter:title', content: intro.value.title },
+      {name: 'description', content: intro.value.description },
+      {name: 'twitter:description', content: intro.value.description },
+      {property: 'og:description', content: intro.value.description }
+    ]
 })
 
 </script>
