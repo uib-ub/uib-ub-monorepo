@@ -15,7 +15,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
       // Redirect to advanced search if special symbols
       if (advancedSpecialSymbols(store.q)) {
-        return navigateTo(`/${to.params.locale}/search?q=${store.q}&dict=${to.params.dict}&scope=${store.scope || 'ei'}`)
+        if (from.name == 'search') {
+          store.q = ""
+          return
+        }
+        else {
+          return navigateTo(`/${to.params.locale}/search?q=${store.q}&dict=${to.params.dict}&scope=${store.scope || 'ei'}`)
+        }
+
+        
       }
 
       store.input = to.query.orig || store.q
