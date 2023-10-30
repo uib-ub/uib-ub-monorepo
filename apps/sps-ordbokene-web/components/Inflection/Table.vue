@@ -1026,7 +1026,7 @@ export default {
 }
 
 .table-responsive .table-responsive:not(:first-child) {
-  @apply mt-8;
+  @apply mt-2;
 }
 
 .infl-wrapper th {
