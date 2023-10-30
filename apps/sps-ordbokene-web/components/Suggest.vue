@@ -4,7 +4,8 @@
    <div v-if="data" class="mb-10 mx-2 flex flex-col gap-8 mt-3">
     <div v-if="data.inflect.length" class ="callout py-0 my-0">
         <SuggestResults :suggestions="data.inflect"  :dict="dict" plausible-goal="click_inflect">
-            <h3><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-3 mb-1"/>{{$t('notifications.inflected', 1, {locale: content_locale})}}</h3><span id="translation-description"></span>{{" "}}
+            <h3><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-3 mb-1"/>
+            {{$t(articles_meta[dict] && articles_meta[dict].total ? 'notifications.also_inflected':'notifications.inflected', data.inflect.length, {locale: content_locale})}}</h3>
         </SuggestResults>
     </div>
     <div v-if="data.translate.length" class ="callout py-0 my-0">

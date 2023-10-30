@@ -137,7 +137,8 @@
     "notifications": {
         "translation_title": "Mogleg omsetjing",
         "translation": "Klikk på forslaget under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. | Klikk på forslaga under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. ",
-        "inflected": "Bøygde former av:",
+        "inflected": "Bøygd form av:|Bøygde former av:",
+        "also_inflected": "Også bøygd form av:|Også bøygde former av",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",
         "similar_bm": "Legg til liknande treff frå Bokmålsordboka: ",
