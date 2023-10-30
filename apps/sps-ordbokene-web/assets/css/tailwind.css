@@ -189,7 +189,7 @@
       
       
       .secondary-page h3, .ord-container h2 {
-        @apply text-primary text-2xl  mt-4 font-semibold;
+        @apply text-primary text-xl md:text-2xl  mt-4 font-semibold;
       }
 
       .link-header {
@@ -197,7 +197,7 @@
       }
 
       .secondary-page h4 {
-        @apply text-primary text-xl font-semibold mt-2;
+        @apply text-primary text-base md:text-xl font-semibold mt-2;
       }
 
       
