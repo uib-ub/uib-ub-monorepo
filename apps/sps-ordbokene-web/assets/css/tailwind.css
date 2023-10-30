@@ -67,11 +67,17 @@
 @layer components {
 
   .secondary-page a[href^="http"]:not(a[href^="https://ordbokene"]):after, .split-inf-explanation a:after {
-
     content: "";
+    display: inline-block;
+    margin-right: -1em;
     background-size: 1em 1em;
     @apply  bg-[url('assets/icons/BiBoxArrowUpRight.svg')] ml-[.2em] inline-block h-[1em] w-[1em];
     
+  }
+
+  .secondary-page a[href^="http"]:not(a[href^="https://ordbokene"]), .split-inf-explanation a {
+    display: inline-block;
+    padding-right: 1em;
   }
 
   blockquote a:after {
