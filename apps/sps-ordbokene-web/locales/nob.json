@@ -156,7 +156,9 @@
     "notifications": {
         "translation": "Klikk på forslaget under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}. | Klikk på forslagene under for å legge til oversettelse basert på oversettelsesprogrammet Apertium og Språkrådets {adm}.",
         "translation_title": "Mulig oversettelse",
-        "inflected": "Bøyd form av:",
+        "inflected": "{word} er en bøyd form av:|{word} er bøyde former av:",
+        "also_inflected": "{word} er også en bøyd form av:|{word} er også bøyde former av:",
+        "inflected_title": "Bøyde former",
         "did_you_mean": "Mente du:",
         "similar": "Lignende oppslagsord:",
         "similar_bm": "Legg til lignende treff fra Bokmålsordboka: ",

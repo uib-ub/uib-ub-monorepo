@@ -67,11 +67,17 @@
 @layer components {
 
   .secondary-page a[href^="http"]:not(a[href^="https://ordbokene"]):after, .split-inf-explanation a:after {
-
     content: "";
+    display: inline-block;
+    margin-right: -1em;
     background-size: 1em 1em;
     @apply  bg-[url('assets/icons/BiBoxArrowUpRight.svg')] ml-[.2em] inline-block h-[1em] w-[1em];
     
+  }
+
+  .secondary-page a[href^="http"]:not(a[href^="https://ordbokene"]), .split-inf-explanation a {
+    display: inline-block;
+    padding-right: 1em;
   }
 
   blockquote a:after {
@@ -159,7 +165,7 @@
         @apply list-disc;
       }
 
-      .article ol div {
+      .article li > div {
         @apply pl-2
       }
 
@@ -171,7 +177,13 @@
       .secondary-page ul {
         margin-block-start: 1em;
         margin-block-end: 1em;
-        @apply list-disc ps-10; 
+        @apply list-disc ps-5; 
+      }
+
+      .secondary-page ol {
+        margin-block-start: .25em;
+        margin-block-end: .5em;
+        @apply list-decimal ps-5; 
       }
     
     
@@ -189,7 +201,7 @@
       
       
       .secondary-page h3, .ord-container h2 {
-        @apply text-primary text-2xl  mt-4 font-semibold;
+        @apply text-primary text-xl md:text-2xl  mt-4 font-semibold;
       }
 
       .link-header {
@@ -197,7 +209,7 @@
       }
 
       .secondary-page h4 {
-        @apply text-primary text-xl font-semibold mt-2;
+        @apply text-primary text-base md:text-xl font-semibold mt-2;
       }
 
       
