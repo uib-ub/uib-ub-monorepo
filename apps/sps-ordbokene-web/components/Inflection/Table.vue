@@ -888,7 +888,7 @@ export default {
             paradigms = paradigms.sort((p1,p2) => {
                 let chain1 = concat_wordforms(p1.inflection)
                 let chain2 = concat_wordforms(p2.inflection)
-                return chain1.localeCompare(chain2)
+                return chain1.localeCompare(chain2, 'no')
             })
 
             let currentTags = paradigms[0].tags
