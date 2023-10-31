@@ -60,10 +60,10 @@
               @click="expand_inflection" 
               :lang="locale2lang[content_locale]"
               :aria-expanded="inflection_expanded" 
-              :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
+              :aria-controls="inflection_expanded ? `${dict}_${article_id}_inflection` : null">
              {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection', 1, {locale: content_locale})}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
-        <div v-if="inflected && !welcome && (inflection_expanded || single || list)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out overflow-auto" :id="'inflection-'+article_id" ref="inflection_table">
+        <div v-if="inflected && !welcome && (inflection_expanded || single || list)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="`${dict}_${article_id}_inflection`" ref="inflection_table">
             <div class="inflection-container p-2 overflow-auto">
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
