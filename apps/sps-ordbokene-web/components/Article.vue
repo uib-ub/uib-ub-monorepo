@@ -10,15 +10,15 @@
       <span class="self-center"><Icon :name="expanded ? 'bi:chevron-up' : 'bi:chevron-down'" size = "1.25rem"/></span>
       <span class="flex flex-col  overflow-hidden">
         <span class="flex">
-      <span v-for="(lemma_group, i) in lemma_groups" :key="i" class="flex gap-1">
-      <span class="lemma-group lemma">
+      <span v-for="(lemma_group, i) in lemma_groups" :key="i" class="block">
+      <span class="lemma-group">
         <span v-for="(lemma, index) in lemma_group.lemmas.slice(0, 1)"
               class="whitespace-nowrap"
               :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
               <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
         </span>
     </span>
-    <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
+    <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group text-primary">{{secondary_header_text}}</span></span>
       &nbsp;<span v-if="lemma_group.description" class="subheader">
       <span class="header-group-list text-2xl">{{lemma_group.description}}</span>
             
