@@ -88,7 +88,7 @@
       <div v-for="i in mq=='xs' ? [1,2] : [0]" :key="i" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.VERB')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th v-if="!i || i==1" class="infl-label label-border-top-left" :class="mq">{{tagToName('Inf')}}</th>
               <th v-if="!i || i==1" class="infl-label label-border-top" :class="mq">{{tagToName('Pres')}}</th>
@@ -165,7 +165,7 @@
                                      :key="index"
                                      :part="j"
                                      :language="language"
-                                     :content_locale="this.content_locale"
+                                     :content_locale="content_locale"
                                      :hasPerfPart="hasPerfPart"
                                      :hasPerfPartFem="hasPerfPartFem"
                                      :lemmaId="lemma.id"
@@ -337,7 +337,7 @@
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th class="infl-label label-border-bottom">
                 {{tagToName('Pos')}}
@@ -443,7 +443,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.DET')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th v-if="hasSing"
                   class="infl-label label-border-top-left" :class="mq"
