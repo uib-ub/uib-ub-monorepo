@@ -69,7 +69,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <tbody class="notranslate">
+          <tbody>
           <inflectionRowsNoun v-for="(tags, index) in inflTagsNoun"
                               :key="index"
                               :showGender="!nounGender"
@@ -187,14 +187,16 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq" >
-          <inflectionRowsVerb v-for="(tags, index) in inflTagsVerb"
-                              :key="index"
-                              :tags="tags"
-                              :language="language"
-                              :lemmaId="lemma.id"
-                              :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+          <tbody>
+            <inflectionRowsVerb v-for="(tags, index) in inflTagsVerb"
+                                :key="index"
+                                :tags="tags"
+                                :language="language"
+                                :lemmaId="lemma.id"
+                                :paradigms="standardParadigms"
+                                v-on:hilite="hilite"
+                                v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
@@ -320,6 +322,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq" >
+          <tbody>
           <inflectionRowsAdj v-for="(tags, index) in inflTagsAdj"
                              :key="index"
                              :tags="tags"
@@ -328,6 +331,7 @@
                              :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
@@ -371,6 +375,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq" >
+          <tbody>
           <inflectionRowsAdj v-for="(tags, index) in inflTagsAdjAdv"
                              :key="index"
                              :tags="tags"
@@ -379,6 +384,7 @@
                              :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+        </tbody>
         </table>
       </div>
     </div>
@@ -425,6 +431,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
+          <tbody>
           <inflectionRowsPron v-for="(tags, index) in inflTagsPron"
                               :key="index"
                               :tags="tags"
@@ -434,6 +441,7 @@
                               :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
@@ -508,6 +516,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
+          <tbody>
           <inflectionRowsDet v-for="(tags, index) in inflTagsDet"
                               :key="index"
                               :tags="tags"
@@ -517,6 +526,7 @@
                               :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
