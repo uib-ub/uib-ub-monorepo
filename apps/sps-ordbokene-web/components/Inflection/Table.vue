@@ -69,6 +69,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
+          <tbody class="notranslate">
           <inflectionRowsNoun v-for="(tags, index) in inflTagsNoun"
                               :key="index"
                               :showGender="!nounGender"
@@ -78,6 +79,7 @@
                               :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
