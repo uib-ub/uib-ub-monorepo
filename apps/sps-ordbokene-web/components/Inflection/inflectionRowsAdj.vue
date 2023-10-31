@@ -10,7 +10,6 @@
           v-for="([rowspan,rowindex,forms], index) in cells"
           :key="index"
           :colspan="rowspan"
-          :index="rowindex"
           :headers="tags.block + ' ' + (tags.label || '')"
           v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
           v-on:mouseover="$emit('hilite', rowindex, lemmaId)"

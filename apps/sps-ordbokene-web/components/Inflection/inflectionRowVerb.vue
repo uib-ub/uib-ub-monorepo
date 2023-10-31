@@ -4,7 +4,6 @@
           v-for="([prefix, [rowspan,rowindex,forms], suffix], index) in rows"
           :key="index"
           :rowspan="rowspan"
-          :index="rowindex"
           v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
             v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
             v-on:mouseleave="$emit('unhilite')">

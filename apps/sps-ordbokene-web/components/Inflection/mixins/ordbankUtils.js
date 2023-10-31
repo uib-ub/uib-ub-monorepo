@@ -56,7 +56,7 @@ function appendTwoWordForms (wf1, wf2) {
         let res = wf1.map(w => w)
         wf2.forEach(w => { if (!wf1.find(x => x == w)) { res.push(w) } })
     }
-    if (Array.isArray(res)) res = res.sort((a,b) => a.localeCompare(b))
+    if (Array.isArray(res)) res = res.sort((a,b) => a.localeCompare(b, 'no'))
     return res
 }
 

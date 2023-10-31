@@ -7,7 +7,6 @@
             scope="row"
             headers="gender"
             :rowspan="rowspan"
-            :index="rowindex"
             v-bind:class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
             v-on:mouseover="$emit('hilite', rowindex, lemma.id)">
           <span class='comma'
@@ -18,7 +17,6 @@
             class="notranslate infl-cell"
             :headers="colref"
             :rowspan="rowspan"
-            :index="rowindex"
             v-bind:class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
             v-on:mouseover="$emit('hilite', rowindex, lemma.id)"
             v-on:mouseleave="$emit('unhilite')">

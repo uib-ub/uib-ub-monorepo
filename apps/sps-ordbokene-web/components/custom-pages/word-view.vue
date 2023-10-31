@@ -18,9 +18,11 @@
               </NuxtErrorBoundary>
             </component>
           </component>
+          <client-only>
             <div v-if="store.q && !specialSymbols(store.q)">
               <Suggest :content_locale="content_locale(dict)"  :dict="dict" :articles_meta="articles.meta"/>
             </div>
+          </client-only>
         </section>
         
     </div>

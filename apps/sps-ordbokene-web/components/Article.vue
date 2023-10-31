@@ -42,8 +42,8 @@
         <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict" :article_id="article_id"/>
       
       <div v-if="data.lemmas[0].split_inf" class="mt-2 mb-3">
-        <div class="flex gap-2 align-middle">{{$t('split_inf.title')}}: -a
-        <button type="button" :aria-expanded="split_inf_expanded" aria-controls="split-inf-explanation" @click="split_inf_expanded = !split_inf_expanded" class="rounded leading-none !p-0 !text-primary hover:bg-primary-lighten bg-primary  border-primary-lighten">
+        <div class="flex gap-2 align-middle"><span :id="`${dict}_${article_id}_split_inf_label`">{{$t('split_inf.title')}}: -a</span>
+        <button type="button" :aria-expanded="split_inf_expanded" :aria-label="`${dict}_${article_id}_split_inf_label`" aria-controls="split-inf-explanation" @click="split_inf_expanded = !split_inf_expanded" class="rounded leading-none !p-0 !text-primary hover:bg-primary-lighten bg-primary  border-primary-lighten">
           <Icon :name="split_inf_expanded? 'bi:dash' : 'bi:plus'" class="text-white !m-0 !p-0" size="1.5em"/>
         </button>
         </div>
@@ -55,7 +55,7 @@
         </div>
         </div>
 
-      <button type="button" v-if="!list && !settings.inflectionExpanded && inflected && !welcome" 
+      <button type="button" v-if="inflected && !welcome && !single && !list" 
               class="btn btn-primary my-1 border-primary-darken !pr-2" 
               @click="expand_inflection" 
               :lang="locale2lang[content_locale]"
@@ -63,8 +63,8 @@
               :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
              {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection', 1, {locale: content_locale})}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
-        <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded || list)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="'inflection-'+article_id" ref="inflection_table">
-            <div class="inflection-container p-2">
+        <div v-if="inflected && !welcome && (inflection_expanded || single || list)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out overflow-auto" :id="'inflection-'+article_id" ref="inflection_table">
+            <div class="inflection-container p-2 overflow-auto">
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
             </div>
@@ -120,12 +120,13 @@ import {useSessionStore } from '~/stores/sessionStore'
 const { t } = useI18n()
 const i18n = useI18n()
 const store = useSearchStore()
-const inflection_expanded = ref(false)
 const split_inf_expanded = ref(false)
 const settings = useSettingsStore()
 const route = useRoute()
 const session = useSessionStore()
 const expanded = ref(false)
+const inflection_expanded = ref(settings.inflectionExpanded || false)
+
 
 const props = defineProps({
     content_locale: String,
