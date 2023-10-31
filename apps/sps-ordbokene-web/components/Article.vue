@@ -44,7 +44,7 @@
         </div>
         </div>
 
-      <button type="button" v-if="inflected && !welcome" 
+      <button type="button" v-if="inflected && !welcome && !single" 
               class="btn btn-primary my-1 border-primary-darken !pr-2" 
               @click="expand_inflection" 
               :lang="locale2lang[content_locale]"
@@ -52,12 +52,10 @@
               :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
              {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection', 1, {locale: content_locale})}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
-        <div v-if="inflected && !welcome && inflection_expanded" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out overflow-auto" :id="'inflection-'+article_id" ref="inflection_table">
+        <div v-if="inflected && !welcome && (inflection_expanded || single)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out overflow-auto" :id="'inflection-'+article_id" ref="inflection_table">
             <div class="inflection-container p-2 overflow-auto">
-              <client-only>
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
-           </client-only>
             </div>
         </div>
         <div class="article_content pt-1" ref="article_content">
