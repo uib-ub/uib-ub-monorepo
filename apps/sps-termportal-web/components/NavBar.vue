@@ -14,16 +14,14 @@
               aria-label="Termportalen.no"
               class="tp-hover-focus mx-1.5 flex h-10 justify-center border-transparent py-1"
             >
-              <div class="-mt-[2px] hidden w-[9.5em] xl:block">
-                <img
-                  class=""
-                  src="/logo-wordmark-termportalen.svg"
-                  aria-hidden="true"
-                />
-              </div>
-              <div class="block w-[2.35em] xl:hidden">
-                <img src="/logo-symbol-termportalen.svg" aria-hidden="true" />
-              </div>
+              <LogoTermportalen
+                class="-mt-[2px] hidden w-[9.5em] xl:block"
+                logo-type="wordmark"
+              />
+              <LogoTermportalen
+                class="block w-[2.35em] xl:hidden"
+                logo-type="symbol"
+              />
             </AppLink>
           </SideBar>
 

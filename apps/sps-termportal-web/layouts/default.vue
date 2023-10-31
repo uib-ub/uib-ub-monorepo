@@ -20,9 +20,9 @@
             v-if="route.path === '/'"
             class="text-5xl xs:text-6xl sm:text-7xl md:text-8xl"
           >
-            <div class="mb-6 ml-2 mr-14 max-w-[25rem] sm:mb-8 md:mb-11 md:ml-7">
-              <img src="/logo-termportalen.svg" alt="" class="" />
-            </div>
+            <LogoTermportalen
+              class="mb-6 ml-2 mr-14 max-w-[25rem] sm:mb-8 md:mb-11 md:ml-7"
+            />
           </h1>
         </header>
         <slot />
