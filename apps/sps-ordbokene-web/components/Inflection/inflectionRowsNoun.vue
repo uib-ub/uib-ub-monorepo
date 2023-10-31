@@ -12,7 +12,6 @@
               :id="forms[0]"
               scope="row"
               :colspan="rowspan"
-              :index="rowindex"
               v-bind:class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
             v-on:mouseover="$emit('hilite', rowindex, lemma.id)"
             v-on:mouseleave="$emit('unhilite')">
@@ -21,7 +20,6 @@
           <td v-else
               class="notranslate nfl-cell"
               :colspan="rowspan"
-              :index="rowindex"
               :headers="headers"
               v-bind:class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
             v-on:mouseover="$emit('hilite', rowindex, lemma.id)"

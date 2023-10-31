@@ -4,7 +4,6 @@
           v-for="([[rowspan,rowindex,forms],headers], index) in cells"
           :key="index"
           :rowspan="rowspan"
-          :index="rowindex"
           :headers="headers"
           v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
             v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
