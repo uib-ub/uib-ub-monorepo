@@ -2,7 +2,7 @@
   <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
   <div v-else :class="list && 'list-view-item flex-col' || 'article flex flex-col justify-between'">
   <div v-if="list && !welcome"  :lang="dictLang[dict]" class="flex flex-col">
-    <button class="list-item-header !flex gap-3 !py-3 text-lg" 
+    <button class="list-item-header !flex gap-3 !py-3 text-lg items-center justify-start" 
             :href="link_to_self()" 
             @click="expanded = !expanded" 
             :aria-expanded="expanded"
@@ -24,14 +24,14 @@
         </span>
     </span>
     <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
-      &nbsp;<em v-if="lemma_group.description" class="subheader ">
-      <span class="header_group_list">{{lemma_group.description}}</span>
-            {{lemma_group.pos_group}}
+      &nbsp;<span v-if="lemma_group.description" class="subheader ">
+      <span class="header-group-list text-2xl">{{lemma_group.description}}</span>
+            
       <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
-      </em>
+      </span>
     </span>  
     </button>
-    <span :id="`${dict}_${article_id}_snippet`" class="text-gray-800 px-5" :class="{'sr-only': expanded}">{{snippet}}</span>
+    <span :id="`${dict}_${article_id}_snippet`" class="text-gray-700 line-clamp-1 px-5" :class="{'sr-only': expanded}">{{snippet}}</span>
 </div>
 <div v-if="!list || expanded" :lang="dictLang[dict]" :class="{'article !rounded-none !shadow-none': list}" :id="`${dict}_${article_id}_body`">
       <div>
