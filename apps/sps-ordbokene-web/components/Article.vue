@@ -1,39 +1,38 @@
 <template>
   <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
-  <div v-else :class="list && 'list-view-item flex-col' || 'article flex flex-col justify-between'">
-  <div v-if="list && !welcome"  :lang="dictLang[dict]" class="flex flex-col">
-    <button class="list-item-header !flex gap-3 !py-3 text-lg items-center justify-start" 
+  <div v-else :class="list && 'list-view-item flex-col' || 'article flex flex-col'">
+  <div v-if="list && !welcome"  :lang="dictLang[dict]">
+    <button class="list-view-button !flex !gap-4 px-4 justify-start !py-2 text-lg truncate w-full" 
             :href="link_to_self()" 
             @click="expanded = !expanded" 
             :aria-expanded="expanded"
-            :aria-controls="expanded ? `${dict}_${article_id}_snippet` : undefined"
-            :aria-describedby="`${dict}_${article_id}_snippet`">
-      <Icon :name="expanded ? 'bi:chevron-up' : 'bi:chevron-down'" size = "1.5rem"/>
-      <span v-for="(lemma_group, i) in lemma_groups" :key="i">
-      <span class="lemma-group">
-        <span v-for="(lemma, index) in lemma_group.lemmas.slice(0,3)"
+            :aria-controls="expanded ? `${dict}_${article_id}_snippet` : undefined">
+      <span class="self-center"><Icon :name="expanded ? 'bi:chevron-up' : 'bi:chevron-down'" size = "1.25rem"/></span>
+      <span class="flex flex-col  overflow-hidden">
+        <span class="flex">
+      <span v-for="(lemma_group, i) in lemma_groups" :key="i" class="flex gap-1">
+      <span class="lemma-group lemma">
+        <span v-for="(lemma, index) in lemma_group.lemmas.slice(0, 1)"
+              class="whitespace-nowrap"
               :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
               <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
-                        <span
-                      class="title_comma"
-                      v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1 && index < 2 ">{{", "}}
-                      </span>
-                      <span
-                      v-if="lemma_group.lemmas[1] && index == 2 && lemma_group.lemmas.length > 3">{{"..."}}
-                      </span>
         </span>
     </span>
     <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
-      &nbsp;<span v-if="lemma_group.description" class="subheader ">
+      &nbsp;<span v-if="lemma_group.description" class="subheader">
       <span class="header-group-list text-2xl">{{lemma_group.description}}</span>
             
       <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
       </span>
-    </span>  
+      </span>
+      
+        </span>
+    <span :id="`${dict}_${article_id}_snippet`" class="text-start truncate ">{{snippet}}</span>
+    </span> 
+    
     </button>
-    <span :id="`${dict}_${article_id}_snippet`" class="text-gray-700 line-clamp-1 px-5" :class="{'sr-only': expanded}">{{snippet}}</span>
 </div>
-<div v-if="!list || expanded" :lang="dictLang[dict]" :class="{'article !rounded-none !shadow-none': list}" :id="`${dict}_${article_id}_body`">
+<div v-if="!list || expanded" :lang="dictLang[dict]" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
       <div>
         <h2 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h2>
         <h2 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
@@ -561,14 +560,11 @@ span.lemma-group {
 
 
 
-.list-view-item {
-@apply flex w-full;
 
-}
 
 
 .list-item-header {
-  @apply duration-200 motion-reduce:transition-none py-2 px-4 text-ellipsis border-0 inline-block overflow-hidden border-none; 
+  @apply duration-200 motion-reduce:transition-none py-2 px-4 text-ellipsis border-0 border-none; 
 
 }
 
@@ -579,20 +575,31 @@ span.lemma-group {
 }
 
 
-.list-item-header:hover {
-    @apply duration-200 bg-canvas-darken border-2;
-    
-}
 
-.article-column>li .list-view-item {
-  @apply pb-3;
+
+.list-view-button[aria-expanded=false], .expanded-article {
   border-bottom: solid 1px theme('colors.gray.400') ;
 }
 
+.list-view-button:hover {
+    @apply  bg-canvas-darken;
+}
+
+.list-view-button[aria-expanded=true] {
+    @apply  bg-gray-50 !text-black;
+}
 
 
-.article-column>li:last-child .list-view-item {
+
+.article-column>li:last-child .list-view-button {
 border-bottom: none;
+}
+
+.expanded-article {
+  @apply article !shadow-none;
+  border-radius: 0px;
+  padding-bottom: 3rem;
+
 }
 
 
