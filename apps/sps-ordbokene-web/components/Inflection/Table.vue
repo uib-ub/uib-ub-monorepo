@@ -8,7 +8,7 @@
         <div class="table-responsive">
           <table class="table" :class="mq">
             <caption class="sr-only">{{$t('table.caption.NOUN')}}</caption>
-            <thead :lang="locale2lang[this.content_locale]">
+            <thead :lang="locale2lang[content_locale]">
               <tr>
                 <th class="infl-label sub label-border-top-left" :class="mq"
                     v-if="!nounGender && hasGender"
@@ -69,6 +69,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
+          <tbody>
           <inflectionRowsNoun v-for="(tags, index) in inflTagsNoun"
                               :key="index"
                               :showGender="!nounGender"
@@ -78,6 +79,7 @@
                               :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
@@ -88,7 +90,7 @@
       <div v-for="i in mq=='xs' ? [1,2] : [0]" :key="i" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.VERB')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th v-if="!i || i==1" class="infl-label label-border-top-left" :class="mq">{{tagToName('Inf')}}</th>
               <th v-if="!i || i==1" class="infl-label label-border-top" :class="mq">{{tagToName('Pres')}}</th>
@@ -111,7 +113,7 @@
       <div v-for="j in mq=='xs' ? [3,4] : [-1]" :key="j" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.VERBPP')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <template v-if="hasPerfPart">
               <tr>
                 <th class="infl-label label-border-top-left"
@@ -165,7 +167,7 @@
                                      :key="index"
                                      :part="j"
                                      :language="language"
-                                     :content_locale="this.content_locale"
+                                     :content_locale="content_locale"
                                      :hasPerfPart="hasPerfPart"
                                      :hasPerfPartFem="hasPerfPartFem"
                                      :lemmaId="lemma.id"
@@ -185,14 +187,16 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq" >
-          <inflectionRowsVerb v-for="(tags, index) in inflTagsVerb"
-                              :key="index"
-                              :tags="tags"
-                              :language="language"
-                              :lemmaId="lemma.id"
-                              :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+          <tbody>
+            <inflectionRowsVerb v-for="(tags, index) in inflTagsVerb"
+                                :key="index"
+                                :tags="tags"
+                                :language="language"
+                                :lemmaId="lemma.id"
+                                :paradigms="standardParadigms"
+                                v-on:hilite="hilite"
+                                v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
@@ -204,7 +208,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADJ')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th v-if="hasSingAdj"
                   class="infl-label label-border-top-left"
@@ -271,7 +275,7 @@
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADJCS')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th class="infl-label label-border-top-left-right"
                   v-if="hasDeg"
@@ -318,6 +322,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq" >
+          <tbody>
           <inflectionRowsAdj v-for="(tags, index) in inflTagsAdj"
                              :key="index"
                              :tags="tags"
@@ -326,6 +331,7 @@
                              :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
@@ -337,7 +343,7 @@
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th class="infl-label label-border-bottom">
                 {{tagToName('Pos')}}
@@ -369,6 +375,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq" >
+          <tbody>
           <inflectionRowsAdj v-for="(tags, index) in inflTagsAdjAdv"
                              :key="index"
                              :tags="tags"
@@ -377,6 +384,7 @@
                              :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+        </tbody>
         </table>
       </div>
     </div>
@@ -388,7 +396,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.PRON')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th v-if="hasNom" class="infl-label sub label-border-top-left">
                 {{tagToName('Nom')}}
@@ -423,6 +431,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
+          <tbody>
           <inflectionRowsPron v-for="(tags, index) in inflTagsPron"
                               :key="index"
                               :tags="tags"
@@ -432,6 +441,7 @@
                               :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
@@ -443,7 +453,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.DET')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th v-if="hasSing"
                   class="infl-label label-border-top-left" :class="mq"
@@ -506,6 +516,7 @@
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
+          <tbody>
           <inflectionRowsDet v-for="(tags, index) in inflTagsDet"
                               :key="index"
                               :tags="tags"
@@ -515,6 +526,7 @@
                               :paradigms="standardParadigms"
                               v-on:hilite="hilite"
                               v-on:unhilite="unhilite"/>
+          </tbody>
         </table>
       </div>
     </div>
@@ -524,7 +536,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
-          <thead :lang="locale2lang[this.content_locale]">
+          <thead :lang="locale2lang[content_locale]">
             <tr>
               <th class="infl-label label-border">{{tagToName('Uninfl')}}</th>
             </tr>
@@ -886,7 +898,7 @@ export default {
             paradigms = paradigms.sort((p1,p2) => {
                 let chain1 = concat_wordforms(p1.inflection)
                 let chain2 = concat_wordforms(p2.inflection)
-                return chain1.localeCompare(chain2)
+                return chain1.localeCompare(chain2, 'no')
             })
 
             let currentTags = paradigms[0].tags
@@ -1025,8 +1037,8 @@ export default {
   /* border-bottom: none !important; */
 }
 
-.table-responsive .table-responsive:not(:first-child) {
-  @apply mt-2;
+.table-responsive.sm .table-responsive:not(:first-child) {
+  @apply mt-6;
 }
 
 .infl-wrapper th {

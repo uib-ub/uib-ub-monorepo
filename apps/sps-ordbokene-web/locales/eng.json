@@ -34,10 +34,12 @@
   "clear": "Clear",
   "chosen_dict": "Chosen dictionary: ",
   "footer_description": "{bm} and {nn} show spelling and inflection in line with official Norwegian spelling. The Language Council and the University of Bergen are behind the dictionaries.",
+  "privacy": "Privacy",
   "accessibility": {
-    "menu": "Open top menu",
-    "callout": "Showing results for the keyword "
-  },
+    "page": "Accessibility",
+    "main_content": "Skip to main content",
+    "statement": "Accessibility statement"
+},
   "dicts": {
       "nn": "Nynorsk dictionary",
       "bm": "Bokmål dictionary",
@@ -138,7 +140,8 @@
         "always": "Show exerpts of articles",
         "never": "Show complete articles"
     },
-    "reset": "Delete stored settings",
+    "reset": "Reset settings",
+    "clear_cookies": "Clear cookies",
     "reset_done":"Deleted"
 },
 "notifications": {

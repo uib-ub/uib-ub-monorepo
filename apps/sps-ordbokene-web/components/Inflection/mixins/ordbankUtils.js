@@ -56,7 +56,7 @@ function appendTwoWordForms (wf1, wf2) {
         let res = wf1.map(w => w)
         wf2.forEach(w => { if (!wf1.find(x => x == w)) { res.push(w) } })
     }
-    if (Array.isArray(res)) res = res.sort((a,b) => a.localeCompare(b))
+    if (Array.isArray(res)) res = res.sort((a,b) => a.localeCompare(b, 'no'))
     return res
 }
 
@@ -129,7 +129,7 @@ function mergeParadigm (p, tagList, mergedCell, standardisation) {
                  if (!hasTags(infl, tagList)) {
                      return infl
                  } else {
-                     console.log('infl.st: ' + infl.standardisation + ' st: ' + standardisation)
+                     //console.log('infl.st: ' + infl.standardisation + ' st: ' + standardisation)
                      return { tags: infl.tags,
                               word_form: mergedCell[0],
                               markdown_word_form: mergedCell[1],
@@ -222,10 +222,10 @@ function mergeParadigms (paradigmInfo) {
             PI.forEach((p,i) => { // try to merge cells from p and paradigm corresponding to tagList
                 let merged = mergeCells(p.inflection, paradigm.inflection, tagList[0], tagList[1])
                 if (!merged) {
-                    console.log('equal:')
-                    console.log(paradigm)
-                    console.log(p)
-                    console.log(tagList[0] + ' ' + p.standardisation + ' ' + paradigm.standardisation)
+                    //console.log('equal:')
+                    //console.log(paradigm)
+                    //console.log(p)
+                    //console.log(tagList[0] + ' ' + p.standardisation + ' ' + paradigm.standardisation)
                     p.standardisation == 'STANDARD' || paradigm.standardisation == 'STANDARD' ?
                         standardisation = 'STANDARD' : standardisation = 'NON-STANDARD'
                     if (standardisation) {
@@ -238,7 +238,7 @@ function mergeParadigms (paradigmInfo) {
                     // console.log(mergedCell)
                     mergeRow = i
                     // console.log(mergedCell)
-                    console.log(p.standardisation + ' ' + paradigm.standardisation)
+                    //console.log(p.standardisation + ' ' + paradigm.standardisation)
                     p.standardisation == 'STANDARD' || paradigm.standardisation == 'STANDARD' ?
                         standardisation = 'STANDARD' : standardisation = 'NON-STANDARD'
                 }

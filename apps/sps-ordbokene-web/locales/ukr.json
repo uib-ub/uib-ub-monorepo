@@ -34,9 +34,11 @@
     "clear": "Clear",
     "chosen_dict": "Chosen dictionary: ",
     "footer_description": "{bm} і {nn} показує написання та відмінювання, відповідно до норвезької орфографії. За розробкою словників стоять Мовна рада і Бергенський університет.",
+    "privacy": "Privacy",
     "accessibility": {
-        "menu": "Відкрити верхнє меню",
-        "callout": "Showing results for the keyword "
+        "page": "Accessibility",
+        "main_content": "Skip to main content",
+        "statement": "Accessibility statement"
     },
     "dicts": {
         "nn": "Словник нюношка",
@@ -142,7 +144,8 @@
             "always": "Show exerpts of articles",
             "never": "Show complete articles"
         },
-        "reset": "Видалити збережені налаштування",
+        "reset": "Видалити налаштування",
+        "clear_cookies": "Clear cookies",
         "reset_done": "Deleted"
     },
     "notifications": {

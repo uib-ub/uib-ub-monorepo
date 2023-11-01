@@ -1,7 +1,7 @@
 <template>
-<div class="secondary-page">
+<div class="secondary-page overflow-auto">
         <ContentRenderer :value="data">
-          <ContentRendererMarkdown :value="data" :components="{h1: 'h2', h2: 'h3'}"/>
+          <ContentRendererMarkdown :value="data"/>
           <template #empty>
             <p>{{$t('content_not_found')}}</p>
           </template>
@@ -22,7 +22,7 @@ const { data } = await useAsyncData('subpage-data', () => {
 
 
 useHead({
-    title: i18n.t(route.matched[0].name) + ": " + data.value.title,
+    title: data.value.title,
     meta: [
       {property: 'og:title', content:  data.value.title},
       {name: 'twitter:title', content:  data.value.title },

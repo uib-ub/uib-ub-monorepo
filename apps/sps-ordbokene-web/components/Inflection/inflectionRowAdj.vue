@@ -5,7 +5,6 @@
           :key="index"
           :headers="headers"
           :rowspan="rowspan"
-          :index="rowindex"
           v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
             v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
             v-on:mouseleave="$emit('unhilite')">

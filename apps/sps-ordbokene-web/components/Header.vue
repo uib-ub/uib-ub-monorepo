@@ -3,7 +3,7 @@
   <div class="flex">
   <div class="flex flex-grow py-1 items-center md:py-3 flex-auto !box-content">
   <NuxtLink :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
-      <div><h1 class="text-2xl xl:text-3xl">ordbøkene.no<span class="sr-only">, {{$t('home')}}</span></h1>
+      <div> <span class="text-2xl xl:text-3xl logo-text">ordbøkene.no<span class="sr-only">, {{$t('home')}}</span></span>
       <div class="text-xs xl:text-sm sr-only sm:not-sr-only">{{$t("sub_title")}}</div>
     </div>
   </NuxtLink>
@@ -36,9 +36,9 @@
       </div>
     <div id="main_menu" class="lg:flex lg:ml-auto nav-buttons flex-wrap lg:flex-row content-center text-center"  v-bind:class="{hidden: !menu_expanded}">
       <nav class="lg:mr-4 self-center" :aria-label="$t('label.nav')">
-      <ul class="flex flex-col lg:flex-row gap-6 lg:space-x-3 xl:space-x-8 content-center my-6 lg:my-0" >
+      <ul class="flex flex-col lg:flex-row gap-8 lg:gap-6 lg:space-x-3 xl:space-x-8 content-center my-6 lg:my-0 text-lg" >
         <!-- <li class="nav-item invisible lg:visible">
-          <span class="nav-link" v-tooltip.right="{ value: `<h4 class='bg-black text-canvas-darken p-4 text-3xl'>${$t('font-size.description')}</h4>`, escape: true}" >{{$t('font-size.title')}}</span>
+          <span class="nav-link" v-tooltip.right="{ value: `<h3 class='bg-black text-canvas-darken p-4 text-3xl'>${$t('font-size.description')}</h3>`, escape: true}" >{{$t('font-size.title')}}</span>
         </li> -->
         <li class="nav-item">
           <NuxtLink class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>
@@ -139,6 +139,11 @@ if (process.client) {
 
 <style scoped>
 
+
+.logo-text {
+    font-family: Inria Serif;
+    @apply font-bold;
+}
 
 nav .nav-link {
   @apply pt-2 list-none;

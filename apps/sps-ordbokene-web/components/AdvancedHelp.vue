@@ -1,5 +1,5 @@
 <template>
-<section class="secondary-page">
+<section class="secondary-page mt-4">
          <ContentRenderer :value="data">
       <ContentRendererMarkdown :value="data" />
     </ContentRenderer>
