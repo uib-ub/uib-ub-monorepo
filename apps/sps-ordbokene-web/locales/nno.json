@@ -35,6 +35,11 @@
     "clear": "Tøm",
     "chosen_dict": "Vald ordbok: ",
     "footer_description": "{bm} og {nn} viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
+    "accessibility": {
+        "page": "Tilgjenge",
+        "main_content": "Gå til hovudinnhald",
+        "statement": "Tilgjeerklæring"
+    },
     "dicts": {
         "nn": "Nynorskordboka",
         "bm": "Bokmålsordboka",

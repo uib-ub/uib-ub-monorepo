@@ -36,11 +36,9 @@
     "chosen_dict": "Valgt ordbok: ",
     "footer_description": "{bm} og {nn} viser skrivemåte og bøyning i tråd med norsk rettskrivning. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
     "accessibility": {
-      "menu": "Åpne toppmeny",
+      "page": "Tilgjengelighet",
       "main_content": "Gå til hovedinnhold",
-      "bm": "Gå til treff i Bokmålsordboka",
-      "nn": "Gå til treff i Nynorskordboka",
-      "callout": "Viser resultater for oppslagsordet "
+      "statement": "Tilgjengelighetserklæring"
     },
     "dicts": {
         "nn": "Nynorskordboka",

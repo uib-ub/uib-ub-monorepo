@@ -35,9 +35,10 @@
   "chosen_dict": "Chosen dictionary: ",
   "footer_description": "{bm} and {nn} show spelling and inflection in line with official Norwegian spelling. The Language Council and the University of Bergen are behind the dictionaries.",
   "accessibility": {
-    "menu": "Open top menu",
-    "callout": "Showing results for the keyword "
-  },
+    "page": "Accessibility",
+    "main_content": "Skip to main content",
+    "statement": "Accessibility statement"
+},
   "dicts": {
       "nn": "Nynorsk dictionary",
       "bm": "Bokmål dictionary",
