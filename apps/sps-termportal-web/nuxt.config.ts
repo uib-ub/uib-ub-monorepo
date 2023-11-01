@@ -5,22 +5,20 @@ import { v4 as uuidv4 } from "uuid";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  extends: ["./../sps-termportal-base", "nuxt-umami"],
   app: {
     head: {
+      title: "Termportalen",
       link: [{ rel: "icon", type: "image/svg", href: "/favicon.svg" }],
     },
   },
-  meta: { title: "Termportalen" },
-  extends: ["nuxt-umami"],
-  css: ["assets/tp-theme/theme.scss"],
-  build: {
-    transpile: ["primevue"],
-  },
-  modules: ["@nuxtjs/tailwindcss", "nuxt-icon", "@vueuse/nuxt"],
-  buildModules: ["@nuxtjs/html-validator", "@unlighthouse/nuxt"],
-  content: {
-    // https://content.nuxtjs.org/api/configuration
-  },
+  modules: [
+    // "@nuxtjs/html-validator",
+    // "@unlighthouse/nuxt",
+  ],
+  // content: {
+  // https://content.nuxtjs.org/api/configuration
+  // },
   routeRules: {
     "/api/**": {
       cors: true,
@@ -54,9 +52,9 @@ export default defineNuxtConfig({
       }),
     ],
   },
-  htmlValidator: {
-    usePrettier: true,
-    logLevel: "verbose",
-    failOnError: false,
-  },
+  // htmlValidator: {
+  //  usePrettier: true,
+  //  logLevel: "verbose",
+  //  failOnError: false,
+  // },
 });
