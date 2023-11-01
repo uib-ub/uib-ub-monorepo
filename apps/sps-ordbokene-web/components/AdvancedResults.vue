@@ -3,7 +3,7 @@
   <Spinner v-if="!error && !articles"/>
   <div v-if="!error && articles && articles.meta" >
   <div class="sr-only" role="status" aria-live="polite">{{$t('notifications.results', total, {count: total})}}</div>
-  <div  v-bind:class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
+  <div  v-bind:class="{'gap-2 lg:gap-8 lg:grid lg:grid-cols-2': dicts.length == 2}">
     <section class="lg:grid-cols-6" 
              v-for="dict in dicts" 
              :key="dict" 

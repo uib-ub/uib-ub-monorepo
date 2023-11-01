@@ -1,32 +1,42 @@
 <template>
   <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
-  <div v-else-if="list && !welcome" class="list-view-item" :lang="dictLang[dict]">
-    <NuxtLink class="result-list-item" :to="link_to_self()">
-      <div v-for="(lemma_group, i) in lemma_groups" :key="i">
+  <div v-else :class="list && 'list-view-item flex-col' || 'article flex flex-col'">
+  <div v-if="list && !welcome"  :lang="dictLang[dict]">
+    <button class="list-view-button !flex !gap-4 px-4 justify-start !py-2 text-lg truncate w-full" 
+            :href="link_to_self()" 
+            @click="expanded = !expanded" 
+            :aria-expanded="expanded"
+            :aria-controls="expanded ? `${dict}_${article_id}_snippet` : undefined">
+      <span class="self-center"><Icon :name="expanded ? 'bi:chevron-up' : 'bi:chevron-down'" size = "1.25rem"/></span>
+      <span class="flex flex-col  overflow-hidden">
+        <span class="flex">
+      <span v-for="(lemma_group, i) in lemma_groups" :key="i" class="block">
       <span class="lemma-group">
-        <span v-for="(lemma, index) in lemma_group.lemmas"
+        <span v-for="(lemma, index) in lemma_group.lemmas.slice(0, 1)"
+              class="whitespace-nowrap"
               :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
               <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
-                        <span
-                      class="title_comma"
-                      v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
-                      </span>
         </span>
     </span>
-    <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
-      &nbsp;<em v-if="lemma_group.description" class="subheader ">
-      <span class="header_group_list">{{lemma_group.description}}</span>
-            {{lemma_group.pos_group}}
+    <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group text-primary">{{secondary_header_text}}</span></span>
+      &nbsp;<span v-if="lemma_group.description" class="subheader">
+      <span class="header-group-list text-2xl">{{lemma_group.description}}</span>
+            
       <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
-      </em>
-    </div>{{snippet}}
-  </NuxtLink>
+      </span>
+      </span>
+      
+        </span>
+    <span :id="`${dict}_${article_id}_snippet`" class="text-start truncate ">{{snippet}}</span>
+    </span> 
+    
+    </button>
 </div>
-<div v-else :lang="dictLang[dict]" class="article flex flex-col justify-between">
+<div v-if="!list || expanded" :lang="dictLang[dict]" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
       <div>
         <h1 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h1>
         <h1 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h1>
-        <div :class="welcome? 'px-4 pb-3 pt-4' : 'px-4 pt-4 pb-2'">
+        <div class="px-4 pt-4 pb-2" :class="{'px-4 pb-3 pt-4' : welcome,  '!py-0 !px-3': list}">
 
         <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict" :article_id="article_id"/>
       
@@ -44,16 +54,16 @@
         </div>
         </div>
 
-      <button type="button" v-if="inflected && !welcome && !single" 
+      <button type="button" v-if="inflected && !welcome && !single && !list" 
               class="btn btn-primary my-1 border-primary-darken !pr-2" 
               @click="expand_inflection" 
               :lang="locale2lang[content_locale]"
               :aria-expanded="inflection_expanded" 
-              :aria-controls="inflection_expanded ? 'inflection-'+article_id : null">
+              :aria-controls="inflection_expanded ? `${dict}_${article_id}_inflection` : null">
              {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection', 1, {locale: content_locale})}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
-        <div v-if="inflected && !welcome && (inflection_expanded || single)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out overflow-auto" :id="'inflection-'+article_id" ref="inflection_table">
-            <div class="inflection-container p-2 overflow-auto">
+        <div v-if="inflected && !welcome && (inflection_expanded || single || list)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="`${dict}_${article_id}_inflection`" ref="inflection_table">
+            <div class="overflow-x-auto p-2">
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
                 <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
             </div>
@@ -97,6 +107,7 @@
         <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
 </div>
 </div>
+  </div>
 </template>
 
 <script setup>
@@ -112,7 +123,9 @@ const split_inf_expanded = ref(false)
 const settings = useSettingsStore()
 const route = useRoute()
 const session = useSessionStore()
+const expanded = ref(false)
 const inflection_expanded = ref(settings.inflectionExpanded || false)
+
 
 const props = defineProps({
     content_locale: String,
@@ -467,17 +480,6 @@ if (props.single && data.value) {
 }
 
 
-
-
-.inflection-container {
-    /* box-shadow: 1px 1px 1px theme("colors.gray.500"); */
-    /* box-shadow: 5px 5px 0px 0px #880E4F; */
-    /* border-color: theme("colors.gray.500") !important; */
-    /* border: solid 1px; */
-    /* border-radius: 0rem; */
-    @apply border-primary overflow-auto md:max-w-full inline-flex;
-}
-
 li:only-child.level1 > ol {
 @apply pl-0;
 }
@@ -558,38 +560,46 @@ span.lemma-group {
 
 
 
-.list-view-item {
-@apply flex;
-
-}
 
 
-.list-view-item>a {
-  @apply duration-200 motion-reduce:transition-none py-2 px-4 text-ellipsis w-full border-0 inline-block overflow-hidden border-none; 
+
+.list-item-header {
+  @apply duration-200 motion-reduce:transition-none py-2 px-4 text-ellipsis border-0 border-none; 
 
 }
 
 @media screen(lg) {
-.list-view-item>a {
+.list-item-header{
   @apply whitespace-nowrap !no-underline;
 }
 }
 
 
-.list-view-item>a:hover {
-    @apply duration-200 bg-canvas-darken border-2;
-    
+
+
+.list-view-button[aria-expanded=false], .expanded-article {
+  border-bottom: solid 1px theme('colors.gray.400') ;
 }
 
-.article-column>li .result-list-item {
-border-bottom: solid 1px theme('colors.gray.100') ;
+.list-view-button:hover {
+    @apply  bg-canvas-darken;
+}
+
+.list-view-button[aria-expanded=true] {
+    @apply  bg-gray-50 !text-black;
 }
 
 
 
-
-.article-column>li:last-child .result-list-item {
+.article-column>li:last-child .list-view-button {
 border-bottom: none;
+}
+
+.expanded-article {
+  @apply article !shadow-none;
+  border-radius: 0px;
+  padding-bottom: 3rem;
+
 }
 
 
