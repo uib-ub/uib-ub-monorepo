@@ -45,6 +45,7 @@ level: Number,
 dict: String,
 def_number: Number,
 content_locale: String,
+semicolon: Boolean
 })
 
 
