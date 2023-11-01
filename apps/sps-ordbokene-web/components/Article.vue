@@ -569,9 +569,9 @@ span.lemma-group {
 }
 
 @media screen(lg) {
-.list-item-header{
-  @apply whitespace-nowrap !no-underline;
-}
+  .list-item-header{
+    @apply whitespace-nowrap !no-underline;
+  }
 }
 
 
