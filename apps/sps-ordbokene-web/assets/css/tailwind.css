@@ -28,12 +28,7 @@
         @apply lg:pt-2 flex-1;
     }
 
-    h1 {
-        font-family: Inria Serif;
-        @apply font-bold;
-    }
-
-    .ord-container h3, .wallpaper h3 {
+    .ord-container h2, .wallpaper h2 {
       font-family: Inria Serif;
       font-size: calc(1.3rem + .6vw);
       @apply mb-0 font-semibold text-primary;
@@ -41,7 +36,7 @@
   }
 
 
-  .callout h3 {
+  .callout h2 {
     font-family: unset;
     @apply align-middle text-lg pt-2;
 
@@ -93,11 +88,11 @@
         @apply text-xl pr-2 bg-primary;
       }
 
-      .suggestions h3 {
+      .suggestions h2 {
           @apply text-xl
       }
     
-      .callout h3 {
+      .callout h2 {
           @apply pb-2 text-xl
       }
       
@@ -130,12 +125,12 @@
       }
 
       
-      .article h4 {
+      .article h3 {
         @apply text-primary text-2xl font-semibold pr-4;
         font-variant: all-small-caps;
       }
       
-      .article h5 {
+      .article h4 {
         @apply text-primary font-semibold text-base pt-4;
       }
       
@@ -186,7 +181,7 @@
       }
     
     
-      .secondary-page h2, .error-page h1 {
+      .secondary-page h1, .error-page h1 {
         font-family: Inria Serif;
         @apply text-primary font-bold text-[2rem];
       }
@@ -199,7 +194,7 @@
       
       
       
-      .secondary-page h3, .ord-container h2 {
+      .secondary-page h2, .ord-container h1 {
         @apply text-primary text-xl md:text-2xl  mt-4 font-semibold;
       }
 
@@ -207,14 +202,14 @@
         @apply text-primary text-xl font-semibold;
       }
 
-      .secondary-page h4 {
+      .secondary-page h3 {
         @apply text-primary text-base md:text-xl font-semibold mt-2;
       }
 
       
       
       
-      #advanced-info h2 {
+      #advanced-info h1 {
         font-family: Inria Serif;
         @apply text-primary font-bold;
       }

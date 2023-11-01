@@ -34,7 +34,7 @@ const startAnimation = () => {
 
 <template>
 <main id="main" tabindex="-1" class="secondary-page flex flex-col gap-2">
-  <h2>{{$t('settings.title')}}</h2>
+  <h1>{{$t('settings.title')}}</h1>
   <FormCheckbox v-model="settings.$state.simpleListView" :checked="settings.simpleListView">
       {{$t('settings.simple_search_list')}}
     </FormCheckbox>

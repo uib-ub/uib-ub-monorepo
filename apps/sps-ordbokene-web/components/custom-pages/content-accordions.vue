@@ -1,7 +1,7 @@
 <template>
   <div class="secondary-page">
       <ContentRenderer :value="intro">
-            <ContentRendererMarkdown :value="intro" :components="{h1: 'h2'}" />
+            <ContentRendererMarkdown :value="intro" />
             <template #empty>
               <p>{{$t('content_not_found')}}</p>
             </template>
