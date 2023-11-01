@@ -571,7 +571,7 @@ span.lemma-group {
 
 @media screen(lg) {
 .list-view-item>a {
-  @apply whitespace-nowrap;
+  @apply whitespace-nowrap !no-underline;
 }
 }
 
