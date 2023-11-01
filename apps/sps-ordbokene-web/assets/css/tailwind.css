@@ -53,7 +53,7 @@
 
       
     section a, .secondary-page a, .error-page a, a:hover .hoverlink {
-      @apply border-anchor border-solid border-b-2;
+      @apply decoration-anchor underline decoration-2 underline-offset-4;
     }
 
     ::marker {
@@ -68,16 +68,13 @@
 
   .secondary-page a[href^="http"]:not(a[href^="https://ordbokene"]):after, .split-inf-explanation a:after {
     content: "";
-    display: inline-block;
-    margin-right: -1em;
     background-size: 1em 1em;
-    @apply  bg-[url('assets/icons/BiBoxArrowUpRight.svg')] ml-[.2em] inline-block h-[1em] w-[1em];
+    @apply  inline-block mr-[-1em] bg-[url('assets/icons/BiBoxArrowUpRight.svg')] ml-[.2em] inline-block h-[1em] w-[1em] !underline
     
   }
 
   .secondary-page a[href^="http"]:not(a[href^="https://ordbokene"]), .split-inf-explanation a {
-    display: inline-block;
-    padding-right: 1em;
+    @apply inline-block pr-[1em]
   }
 
   blockquote a:after {
