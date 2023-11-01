@@ -34,6 +34,7 @@
     "clear": "Clear",
     "chosen_dict": "Chosen dictionary: ",
     "footer_description": "{bm} і {nn} показує написання та відмінювання, відповідно до норвезької орфографії. За розробкою словників стоять Мовна рада і Бергенський університет.",
+    "privacy": "Privacy",
     "accessibility": {
         "page": "Accessibility",
         "main_content": "Skip to main content",

@@ -16,7 +16,7 @@
         </i18n-t>
       </div>
       <nav :aria-label="$t('navigation.site')" class="flex justify-center items-center site-nav">
-        <ul class="flex flex-col md:flex-row gap-8 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center !text-lg text-center md:gap-10 !text-sm">
+        <ul class="flex flex-col md:flex-row gap-8 mt-5 pt-2 md:pt-0 md:mt-2 lg:mt-0 justify-center !text-lg text-center md:gap-10">
         <li>
             <NuxtLink :aria-current="$route.name == 'index' && 'page'" class="nav-link" :to="`/${$i18n.locale}`" @click="store.$reset()">{{$t('home')}}</NuxtLink>
         </li>
@@ -34,6 +34,16 @@
           </li>
       </ul>
     </nav>    
+    </div>
+    <div class="flex justify-center mt-4">
+    <ul class="mt-2 flex flex-col lg:flex-row gap-4 text-center">
+        <li>
+            <a href="https://uustatus.no/nb/erklaringer/publisert/b2a6f8d0-3a16-4716-8bc8-46ac3c161935" class="underline">{{$t('accessibility.statement')}}</a>
+        </li>
+        <li>
+            <NuxtLink :to="`/${$i18n.locale}/about/privacy`" class="underline">{{$t('privacy')}}</NuxtLink>
+        </li>
+    </ul>
     </div>
     <div class="flex justify-between pt-10 md:pt-8 lg:pt-2 xl:pt-0">
       <div class="text-gray-50 px-3 py-2 md:pt-0 text-xs" aria-hidden="true" :title="$config.public.commit">{{$config.public.env}}</div>
