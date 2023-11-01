@@ -144,7 +144,8 @@
             "always": "Show exerpts of articles",
             "never": "Show complete articles"
         },
-        "reset": "Видалити збережені налаштування",
+        "reset": "Видалити налаштування",
+        "clear_cookies": "Clear cookies",
         "reset_done": "Deleted"
     },
     "notifications": {

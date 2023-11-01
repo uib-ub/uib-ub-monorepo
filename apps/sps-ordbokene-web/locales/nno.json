@@ -137,7 +137,8 @@
             "always": "Vis berre utdrag",
             "never": "Vis berre fullstendige artiklar"
         },
-        "reset": "Slett lagra innstillingar",
+        "reset": "Nullstill innstillingar",
+        "clear_cookies": "Slett informasjonskaplslar",
         "reset_done":"Slettet"
     },
     "notifications": {

@@ -140,7 +140,8 @@
         "always": "Show exerpts of articles",
         "never": "Show complete articles"
     },
-    "reset": "Delete stored settings",
+    "reset": "Reset settings",
+    "clear_cookies": "Clear cookies",
     "reset_done":"Deleted"
 },
 "notifications": {

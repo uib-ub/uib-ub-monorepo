@@ -149,7 +149,8 @@
             "always": "Vis bare utdrag",
             "never": "Vis bare fullstendige artikler"
         },
-        "reset": "Slett lagrede innstillinger",
+        "reset": "Nullstill innstilinger",
+        "clear_cookies": "Slett informasjonskapsler",
         "reset_done":"Slettet"
     },
     "notifications": {
