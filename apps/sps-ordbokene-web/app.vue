@@ -4,6 +4,8 @@
     <Title v-if="$route.params.dict == 'nn'">Nynorskordboka</Title>
     <Title v-if="$route.params.dict == 'bm'">Bokmålsordboka</Title>
     <Meta name="robots" content="noindex,nofollow"/>
+    <Link v-if="route.name == 'index' || route.name == 'welcome'" rel="canonical" :href="'https://ordbokene.no' + non_localized"/><!-- TODO: remove when whe replace the old site -->
+    <Link v-if="route.name == 'about'" rel="canonical" :href="'https://ordbokene.no/om'"/><!-- TODO: remove when whe replace the old site -->
     <Link rel="alternate" :href="baseUrl + non_localized" hreflang="x-default"/>
     <Link rel="alternate" :href="baseUrl + '/nob' + non_localized" hreflang="nb"/>
     <Link rel="alternate" :href="baseUrl + '/nno' + non_localized" hreflang="nn"/>

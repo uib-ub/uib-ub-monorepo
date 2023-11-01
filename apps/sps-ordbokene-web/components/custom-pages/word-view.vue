@@ -119,13 +119,20 @@ useHead({
 })
 
 
-if (route.query.orig) {
+if (false && route.query.orig) { // TODO: reenable when we replace the old site
   useHead({
   link: [
       {rel: 'canonical', href: baseUrl + route.path }
     ]
 })
 }
+
+useHead({ // TODO: remove when we replace the old site
+  link: [
+      {rel: 'canonical', href: `https://ordbokene.no/${store.dict}/${store.q}` }
+    ]
+})
+
 
 definePageMeta({
     middleware: [

@@ -465,6 +465,9 @@ if (props.single && data.value) {
       {name: 'twitter:description', content: metaSnippet },
       {property: 'og:title', content: title },
       {property: 'og:description', content: metaSnippet },
+    ],
+    link: [ 
+      {rel: 'canonical', href: `https://ordbokene.no/${props.dict}/${props.article_id}` } // TODO: remove when we replace the old site
     ]
   });
 }
