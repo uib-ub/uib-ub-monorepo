@@ -34,8 +34,8 @@
 </div>
 <div v-if="!list || expanded" :lang="dictLang[dict]" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
       <div>
-        <h2 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h2>
-        <h2 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
+        <h1 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h1>
+        <h1 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h1>
         <div class="px-4 pt-4 pb-2" :class="{'px-4 pb-3 pt-4' : welcome,  '!py-0 !px-3': list}">
 
         <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict" :article_id="article_id"/>
@@ -70,24 +70,24 @@
         </div>
         <div class="article_content pt-1" ref="article_content">
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
-                <h4 :lang="locale2lang[content_locale]">{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
+                <h3 :lang="locale2lang[content_locale]">{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h3>
 
               <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
-              <h4 :lang="locale2lang[content_locale]">{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h4>
+              <h3 :lang="locale2lang[content_locale]">{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h3>
               <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section class="definitions" v-if="has_content && !welcome">
-              <h4 :lang="locale2lang[content_locale]" v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h4>
+              <h3 :lang="locale2lang[content_locale]" v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h3>
 
               <Definition v-for="definition in data.body.definitions" :content_locale="content_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
 
           </section>
           <section v-if="sub_articles.length && !welcome" class="expressions">
-              <h4 :lang="locale2lang[content_locale]">{{$t('article.headings.expressions', 1, { locale: content_locale})}}</h4>
+              <h3 :lang="locale2lang[content_locale]">{{$t('article.headings.expressions', 1, { locale: content_locale})}}</h3>
               <ul>
               <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
               </ul>
@@ -474,7 +474,7 @@ if (props.single && data.value) {
 
 <style scoped>
 
- h2 {
+ h1 {
     font-variant-caps: all-small-caps;
     @apply font-semibold tracking-widest mb-0 ml-4 !text-gray-700;
 }
@@ -501,7 +501,7 @@ section {
 }
 
 
-section.etymology > h4, section.pronunciation > h4 {
+section.etymology > h3, section.pronunciation > h3 {
   @apply inline;
 }
 
@@ -570,7 +570,7 @@ span.lemma-group {
 
 @media screen(lg) {
 .list-item-header{
-  @apply whitespace-nowrap;
+  @apply whitespace-nowrap !no-underline;
 }
 }
 

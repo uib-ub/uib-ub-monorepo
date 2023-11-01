@@ -1,6 +1,6 @@
 <!-- <template>
   <div>
-    <h2>Favorite Articles</h2>
+    <h1>Favorite Articles</h1>
     <ul>
       <li v-for="articleId in favoriteArticles" :key="articleId">
         <Article :articleId="articleId" :dict="props.dict" />

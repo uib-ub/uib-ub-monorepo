@@ -6,10 +6,10 @@
       <div v-bind:class="{'gap-2 lg:gap-8 lg:grid lg:grid-cols-2': dicts.length == 2}">
         <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
           <div class="pt-0 pb-3 px-2">
-            <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
+            <h1 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
               <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
               <span class="sr-only">{{$t('notifications.keywords')}}</span>
-            </h2>
+            </h1>
           </div>
           <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
             <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
@@ -27,7 +27,7 @@
         
     </div>
     <section v-if="!no_suggestions" class="pt-0 mb-12 mt-12 px-2" :class="{'text-center': store.dict == 'bm,nn'}" aria-labelledby="feedback_title">
-                <h2 id="feedback_title">{{$t('notifications.feedback.title')}}</h2>
+                <h1 id="feedback_title">{{$t('notifications.feedback.title')}}</h1>
                 <div v-if="!feedback_given" class="flex gap-4 mt-4 my-6 mb-8 h-10" :class="{'justify-center': store.dict == 'bm,nn'}">
                     <button @click="track_feedback(true)" class="btn w-[96px]">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
                     <button @click="track_feedback(false)" class="btn w-[96px]">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
