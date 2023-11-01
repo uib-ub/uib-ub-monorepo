@@ -1,5 +1,5 @@
 <template>
-<div class="secondary-page">
+<div class="secondary-page overflow-auto">
         <ContentRenderer :value="data">
           <ContentRendererMarkdown :value="data" :components="{h1: 'h2', h2: 'h3'}"/>
           <template #empty>
