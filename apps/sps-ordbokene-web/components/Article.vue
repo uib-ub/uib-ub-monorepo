@@ -596,9 +596,8 @@ border-bottom: none;
 }
 
 .expanded-article {
-  @apply article !shadow-none;
+  @apply article !shadow-none !py-4 md:!py-8;
   border-radius: 0px;
-  padding-bottom: 3rem;
 
 }
 
