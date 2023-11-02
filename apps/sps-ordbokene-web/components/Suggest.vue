@@ -68,7 +68,7 @@ const track_freetext = (from, to) => {
     useTrackEvent('click_freetext_' + props.dict, {props: {from, to, combined: from + "|" + to}})
 }
 
-const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=4&dform=int&meta=n&include=eifst`
+const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=8&dform=int&meta=n&include=eifst`
 const { data  } = await useFetch(suggestQuery, {
     transform: response => {
         let inflect = []
