@@ -28,37 +28,39 @@
       </th>
     </template>
   </tr>
-  </template>
+</template>
   
-  <script>
-  
-  
-  
-  import { inflectedForm, tagToName
+<script>
+
+
+
+import { inflectedForm, tagToName
+        } from './mixins/ordbankUtils.js' 
          } from './mixins/ordbankUtils.js' 
-  
-  export default {
-      name: 'inflectionRowsAdj',
-      props: ['paradigms','tags','locLang','lemmaId'],
-      data: function () {
-          return {
-              cells: !this.tags.title ?
-                  this.paradigms.map(
-                      p => this.inflForm(p,
-                                         this.tags.tags,
-                                         this.tags.excl))
-                  .filter(r => r) :
-                  []
-          }
-      },
-      methods: {
-          inflForm: function (paradigm, tagList, exclTagList) {
-              return inflectedForm(paradigm, tagList, exclTagList)
-          },
-          tagToName: function (tag) {
-              return tagToName(tag, this.locLang) || tag
-          }
-      }
-  }
-  </script>
+        } from './mixins/ordbankUtils.js' 
+
+export default {
+    name: 'inflectionRowsAdj',
+    props: ['paradigms','tags','locLang','lemmaId'],
+    data: function () {
+        return {
+            cells: !this.tags.title ?
+                this.paradigms.map(
+                    p => this.inflForm(p,
+                                        this.tags.tags,
+                                        this.tags.excl))
+                .filter(r => r) :
+                []
+        }
+    },
+    methods: {
+        inflForm: function (paradigm, tagList, exclTagList) {
+            return inflectedForm(paradigm, tagList, exclTagList)
+        },
+        tagToName: function (tag) {
+            return tagToName(tag, this.locLang) || tag
+        }
+    }
+}
+</script>
   
