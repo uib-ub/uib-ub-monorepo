@@ -5,7 +5,7 @@
                 
    <span v-for="(lemma, index) in lemma_group.lemmas"
           :key="index">
-          <DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span>
+          <DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :scoped_locale="scoped_locale"/><span v-else>{{lemma.lemma}}</span>
          <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
                    <span
                    class="title_comma"
@@ -14,7 +14,7 @@
     </span>
 </h2>
 <h2 v-if="secondary_header_text" class="notranslate">{{secondary_header_text}}</h2>  
-  <div :lang="locale2lang[content_locale]" v-if="lemma_group.description" class="subheader">
+  <div :lang="locale2lang[scoped_locale]" v-if="lemma_group.description" class="subheader">
     <span class="header-group-list">{{lemma_group.description}}</span>
       <em v-if="lemma_group.pos_group">{{" "+lemma_group.pos_group}}</em>
     <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
@@ -34,7 +34,7 @@ const props = defineProps({
     secondary_header_text: String,
     dict: String,
     article_id: Number,
-    content_locale: String
+    scoped_locale: String
 
 })
 

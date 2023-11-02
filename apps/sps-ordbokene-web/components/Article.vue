@@ -14,7 +14,7 @@
       <span class="lemma-group">
         <span v-for="(lemma, index) in lemma_group.lemmas.slice(0, 1)"
               class="whitespace-nowrap"
-              :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
+              :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :scoped_locale="scoped_locale"/><span v-else>{{lemma.lemma}}</span></span>
               <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
         </span>
     </span>
@@ -34,11 +34,11 @@
 </div>
 <div v-if="!list || expanded" :lang="dictLang[dict]" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
       <div>
-        <h1 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: content_locale})}}</h1>
+        <h1 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: scoped_locale})}}</h1>
         <h1 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h1>
         <div class="px-4 pt-4 pb-2" :class="{'px-4 pb-3 pt-4' : welcome,  '!py-0 !px-3': list}">
 
-        <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict" :article_id="article_id"/>
+        <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :scoped_locale="scoped_locale" :dict="dict" :article_id="article_id"/>
       
       <div v-if="data.lemmas[0].split_inf" class="mt-2 mb-3">
         <div class="flex gap-2 align-middle"><span :id="`${dict}_${article_id}_split_inf_label`">{{$t('split_inf.title')}}: -a</span>
@@ -48,48 +48,48 @@
         </div>
         
         <div class="mb-4 my-2" id="split-inf-explanation" v-if="split_inf_expanded">
-          {{$t('split_inf.content[0]', content_locale)}} <em>-a</em> {{$t('split_inf.content[1]', content_locale)}}
+          {{$t('split_inf.content[0]', scoped_locale)}} <em>-a</em> {{$t('split_inf.content[1]', scoped_locale)}}
           <a target="_blank" 
-             href="https://www.sprakradet.no/svardatabase/sporsmal-og-svar/kloyvd-infinitiv-/">{{$t('split_inf.content[2]', content_locale)}}</a>
+             href="https://www.sprakradet.no/svardatabase/sporsmal-og-svar/kloyvd-infinitiv-/">{{$t('split_inf.content[2]', scoped_locale)}}</a>
         </div>
         </div>
 
       <button type="button" v-if="inflected && !welcome && !single && !list" 
               class="btn btn-primary my-1 border-primary-darken !pr-2" 
               @click="expand_inflection" 
-              :lang="locale2lang[content_locale]"
+              :lang="locale2lang[scoped_locale]"
               :aria-expanded="inflection_expanded" 
               :aria-controls="inflection_expanded ? `${dict}_${article_id}_inflection` : null">
-             {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection', 1, {locale: content_locale})}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
+             {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection', 1, {locale: scoped_locale})}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || single || list)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="`${dict}_${article_id}_inflection`" ref="inflection_table">
             <div class="overflow-x-auto p-2">
-                <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
-                <InflectionTable :content_locale="content_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                <InflectionTable :scoped_locale="scoped_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                <InflectionTable :scoped_locale="scoped_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
             </div>
         </div>
         <div class="article_content pt-1" ref="article_content">
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
-                <h3 :lang="locale2lang[content_locale]">{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h3>
+                <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.pronunciation', 1, { locale: scoped_locale})}}</h3>
 
               <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
-              <h3 :lang="locale2lang[content_locale]">{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h3>
+              <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.etymology', 1, { locale: scoped_locale})}}</h3>
               <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section class="definitions" v-if="has_content && !welcome">
-              <h3 :lang="locale2lang[content_locale]" v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h3>
+              <h3 :lang="locale2lang[scoped_locale]" v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: scoped_locale})}}</h3>
 
-              <Definition v-for="definition in data.body.definitions" :content_locale="content_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
+              <Definition v-for="definition in data.body.definitions" :scoped_locale="scoped_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
 
           </section>
           <section v-if="sub_articles.length && !welcome" class="expressions">
-              <h3 :lang="locale2lang[content_locale]">{{$t('article.headings.expressions', 1, { locale: content_locale})}}</h3>
+              <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.expressions', 1, { locale: scoped_locale})}}</h3>
               <ul>
-              <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :content_locale="content_locale"/>
+              <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :scoped_locale="scoped_locale"/>
               </ul>
             </section>
 
@@ -103,8 +103,8 @@
   
 </div>
 <div class="mx-1">
-<ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
-        <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
+<ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :scoped_locale="scoped_locale" :dict="dict" :article_id="article_id" />
+        <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: scoped_locale})}}</NuxtLink></div>
 </div>
 </div>
   </div>
@@ -128,7 +128,7 @@ const inflection_expanded = ref(settings.inflectionExpanded || false)
 
 
 const props = defineProps({
-    content_locale: String,
+    scoped_locale: String,
     article_id: Number,
     dict: String,
     welcome: Boolean,
@@ -268,9 +268,9 @@ const lemma_groups = computed(() => {
   let groups = [{lemmas: data.value.lemmas}]
     try {
       if (data.value.lemmas[0].paradigm_info[0].tags[0] == "DET" && data.value.lemmas[0].paradigm_info[0].tags.length > 1) {
-        groups = [{description: t('tags.' + data.value.lemmas[0].paradigm_info[0].tags[0], {locale: props.content_locale}), 
+        groups = [{description: t('tags.' + data.value.lemmas[0].paradigm_info[0].tags[0], {locale: props.scoped_locale}), 
                    pos_group: ["Quant", "Dem", "Poss"].includes(data.value.lemmas[0].paradigm_info[0].tags[1]) ? 
-                                                                t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: props.content_locale}) 
+                                                                t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: props.scoped_locale}) 
                                                                 : '', 
                   lemmas: data.value.lemmas}]
       }
@@ -286,12 +286,12 @@ const lemma_groups = computed(() => {
             let genus_description = ""
             const sorted_genera = Array.from(genera).sort((g) => { return {Masc: 1, Fem: 2, Neuter: 3}[g]})
             if (sorted_genera.length == 3) {
-              genus_description += t('three_genera', {m: t('tags.Masc'), f: t('tags.Fem', { locale: props.content_locale}), n: t('tags.Neuter', { locale: props.content_locale})})
+              genus_description += t('three_genera', {m: t('tags.Masc'), f: t('tags.Fem', { locale: props.scoped_locale}), n: t('tags.Neuter', { locale: props.scoped_locale})})
             } else if (sorted_genera.length == 2) {
-              genus_description += t('two_genera', {a: t('tags.' + sorted_genera[0], { locale: props.content_locale}), b: t('tags.' + sorted_genera[1], { locale: props.content_locale})}) //Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: props.content_locale})).sort().join(t('or'))
+              genus_description += t('two_genera', {a: t('tags.' + sorted_genera[0], { locale: props.scoped_locale}), b: t('tags.' + sorted_genera[1], { locale: props.scoped_locale})}) //Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: props.scoped_locale})).sort().join(t('or'))
             }
             else if (sorted_genera.length == 1) {
-              genus_description += t('tags.' + sorted_genera[0], 1, { locale: props.content_locale})
+              genus_description += t('tags.' + sorted_genera[0], 1, { locale: props.scoped_locale})
             }
             if (genus_map[genus_description]) {
               genus_map[genus_description].push(lemma)
@@ -301,7 +301,7 @@ const lemma_groups = computed(() => {
             }
           })
           groups = Object.keys(genus_map).map(key => {
-            return {description:  t('tags.NOUN', 1, { locale: props.content_locale}), pos_group: key, lemmas: genus_map[key], }
+            return {description:  t('tags.NOUN', 1, { locale: props.scoped_locale}), pos_group: key, lemmas: genus_map[key], }
           })
 
 
@@ -309,7 +309,7 @@ const lemma_groups = computed(() => {
       else if (data.value.lemmas[0].paradigm_info[0].tags[0] != 'EXPR') {
         let tag = data.value.lemmas[0].paradigm_info[0].tags[0] 
         if (tag) { // Workaround to prevent undefined tag if expression is without tag in the database
-          groups = [{description:  t('tags.'+ tag, 1, { locale: props.content_locale}), lemmas: data.value.lemmas}]
+          groups = [{description:  t('tags.'+ tag, 1, { locale: props.scoped_locale}), lemmas: data.value.lemmas}]
         }
       }
 

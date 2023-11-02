@@ -1,7 +1,7 @@
 <template>
   <li class="compound_list">
     <ul>
-      <DefElement :body="body.intro" v-if="body.intro" :dict="dict" :content_locale="content_locale" />
+      <DefElement :body="body.intro" v-if="body.intro" :dict="dict" :scoped_locale="scoped_locale" />
       <li
         :key="index"
         v-for="(item, index) in body.elements"
@@ -18,7 +18,7 @@
 const props = defineProps({
   body: Object,
   dict: String,
-  content_locale: String,
+  scoped_locale: String,
 })
 
 const emit = defineEmits(['link-click'])

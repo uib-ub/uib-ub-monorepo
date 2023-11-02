@@ -8,18 +8,18 @@
              v-for="dict in dicts" 
              :key="dict" 
              :aria-labelledby="dict+'_heading'"
-             :lang="locale2lang[content_locale(dict)]">
+             :lang="locale2lang[scoped_locale(dict)]">
       <div class="pt-0 pb-3 px-2">
-        <h1 :id="dict+'_heading'" class="">{{$t('dicts.'+dict, 1, {locale: content_locale(dict)})}} 
+        <h1 :id="dict+'_heading'" class="">{{$t('dicts.'+dict, 1, {locale: scoped_locale(dict)})}} 
           <span v-if="articles.meta[dict]" class="result-count-text">{{articles.meta[dict].total}}</span>
           <span class="sr-only">{{$t('notifications.keywords')}}</span>
         </h1>
       </div>
-        <MinimalSuggest :content_locale="content_locale(dict)"  v-if="articles.meta[dict] && articles.meta[dict].total == 0" :dict="dict"/>
+        <MinimalSuggest :scoped_locale="scoped_locale(dict)"  v-if="articles.meta[dict] && articles.meta[dict].total == 0" :dict="dict"/>
       <component v-if="articles.meta[dict] && articles.meta[dict].total > 0" :is="settings.listView ? 'ol' : 'div'" class="article-column">
         <component v-for="(article_id, idx) in articles.articles[dict].slice(offset, offset + perPage)" :key="article_id" :is="settings.listView ? 'li' : 'div'">
           <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
-            <Article :content_locale="content_locale(dict)" :article_id="article_id" :dict="dict" :idx="idx" :list="settings.listView"/>
+            <Article :scoped_locale="scoped_locale(dict)" :article_id="article_id" :dict="dict" :idx="idx" :list="settings.listView"/>
           </NuxtErrorBoundary>
         </component>
       </component>
@@ -92,7 +92,7 @@ const query = computed(() => {
 })
 
 
-const content_locale = dict => {
+const scoped_locale = dict => {
   if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {
     return {bm: 'nob', nn: 'nno'}[dict] 
   }
