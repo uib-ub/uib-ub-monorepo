@@ -2,11 +2,15 @@
     <div>     
     <Spinner v-if="!error && !articles"/>    
     <div ref="results" v-if="!error && !pending && articles && articles.meta && $route.name != 'index'" >
-      <div v-if="total" class="sr-only" role="status" aria-live="polite">{{$t('notifications.results', total, {count: total})}}</div>
+      <div class="md:sr-only pt-2 md:pt-0 px-2 text-sm" :class="{'sr-only': store.dict != 'bm,nn'}" role="status" aria-live="polite">
+        <strong v-if="total || (no_suggestions_bm && no_suggestions_nn)">{{$t('notifications.results', total, {count: total})}}</strong>
+        <span v-if="!no_suggestions_bm || !no_suggestions_nn"><span v-if="total">. </span>{{$t('notifications.suggestions_available', total == 0 || 2)}}</span>
+      </div>
       <div v-bind:class="{'gap-2 lg:gap-8 lg:grid lg:grid-cols-2': dicts.length == 2}">
         <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
           <div class="pt-0 pb-3 px-2">
-            <h1 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
+            <h1 :id="dict+'_heading'">
+              {{$t('dicts.'+dict)}} 
               <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
               <span class="sr-only">{{$t('notifications.keywords')}}</span>
             </h1>

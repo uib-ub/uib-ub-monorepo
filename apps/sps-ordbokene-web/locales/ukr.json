@@ -163,6 +163,7 @@
         "simple": "Standard search",
         "results": "No results | One result | {count} results",
         "results_dict": "No results in {dict}|One result in {dict}|{count} results in {dict}",
+        "suggestions_available": "Search suggestions available | Additional search suggestions available",
         "more": "Показати більше",
         "less": "Показати менше",
         "fuzzy": "Схожі ключові слова",
