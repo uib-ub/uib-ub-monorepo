@@ -43,7 +43,13 @@
     </div>
     <div v-if="!(articles_meta[dict] && articles_meta[dict].total) && no_suggestions" class="callout pt-0 my-0">
         <h2><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1"/>{{$t('notifications.no_results.title')}}</h2>
-        <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)}, {locale: scoped_locale})}}.</p>
+        <p>
+            <i18n-t keypath="notifications.no_results.description[0]" :locale="scoped_locale">
+                <template v-slot:dict>
+                    <em>{{$t('dicts.'+dict, {locale: scoped_locale})}}</em>.
+                </template>
+            </i18n-t>
+        </p>
         <p v-if="store.q.length > 8" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: scoped_locale})}}</p>
     </div>
 </div>
