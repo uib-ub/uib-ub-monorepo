@@ -18,7 +18,7 @@ const default_settings = {
 
 const not_default = computed(() => {
   for (const item in default_settings) {
-    if (default_settings[item] != settings.$state[item]) {
+    if (default_settings[item] !== settings.$state[item]) {
       return true
     }
   }

@@ -1,9 +1,9 @@
 <template>
   <tr class="infl-row">
     <template v-if="tags.tags && cells.length">
-      <th class="infl-label xs"
-          :id="tags.label"
-          scope="row">
+      <th :id="tags.label"
+           class="infl-label xs"
+           scope="row">
         {{tagToName(tags.label)}}
       </th>
       <td v-for="([rowspan,rowindex,forms], index) in cells"
@@ -14,15 +14,15 @@
           :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
           @mouseover="$emit('hilite', rowindex, lemmaId)"
           @mouseleave="$emit('unhilite')">
-        <span v-for="(form, index) in forms"
-              :key="index"
+        <span v-for="(form, index2) in forms"
+              :key="index2"
               class='comma'
               v-html="formattedForm(form)"/>
       </td>
     </template>
     <template v-if="tags.title">
-      <th class="infl-group"
-          :id="tags.title"
+      <th :id="tags.title"
+          class="infl-group"
           scope="col"
           :colspan="paradigms.length+1">
         {{tagToName(tags.title)}}

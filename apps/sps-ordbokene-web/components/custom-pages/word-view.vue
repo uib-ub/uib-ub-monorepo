@@ -1,13 +1,13 @@
 <template>
     <div>     
     <Spinner v-if="!error && !articles"/>    
-    <div ref="results" v-if="!error && !pending && articles && articles.meta && $route.name != 'index'" >
+    <div v-if="!error && !pending && articles && articles.meta && $route.name != 'index'" ref="results">
       <div class="md:sr-only pt-2 md:pt-0 px-2 text-sm" :class="{'sr-only': store.dict != 'bm,nn'}" role="status" aria-live="polite">
         <strong v-if="total || (no_suggestions_bm && no_suggestions_nn)">{{$t('notifications.results', total, {count: total})}}</strong>
         <span v-if="!no_suggestions_bm || !no_suggestions_nn"><span v-if="total">. </span>{{$t('notifications.suggestions_available', total == 0 || 2)}}</span>
       </div>
-      <div v-bind:class="{'gap-2 lg:gap-8 lg:grid lg:grid-cols-2': dicts.length == 2}">
-        <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
+      <div :class="{'gap-2 lg:gap-8 lg:grid lg:grid-cols-2': dicts.length == 2}">
+        <section v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'" class="lg:grid-cols-6">
           <div class="pt-0 pb-3 px-2">
             <h2 :id="dict+'_heading'">
               {{$t('dicts.'+dict)}} 
@@ -15,9 +15,9 @@
               <span class="sr-only">{{$t('notifications.keywords')}}</span>
             </h2>
           </div>
-          <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
-            <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
-              <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
+          <component :is="listView ? 'ol' : 'div'" v-if="articles.meta[dict] && articles.meta[dict].total"  class="article-column">
+            <component :is="listView ? 'li' : 'div'" v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" >
+              <NuxtErrorBoundary @error="article_error($event, article_id, dict)">
                 <Article :scoped_locale="scoped_locale(dict)" :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
               </NuxtErrorBoundary>
             </component>
@@ -33,8 +33,8 @@
     <section v-if="!(no_suggestions_bm && no_suggestions_nn)" class="pt-0 mb-12 mt-12 px-2" :class="{'text-center': store.dict == 'bm,nn'}" aria-labelledby="feedback_title">
                 <h2 id="feedback_title">{{$t('notifications.feedback.title')}}</h2>
                 <div v-if="!feedback_given" class="flex gap-4 mt-4 my-6 mb-8 h-10" :class="{'justify-center': store.dict == 'bm,nn'}">
-                    <button @click="track_feedback(true)" class="btn w-[96px]">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
-                    <button @click="track_feedback(false)" class="btn w-[96px]">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
+                    <button class="btn w-[96px]" @click="track_feedback(true)" >{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
+                    <button class="btn w-[96px]" @click="track_feedback(false)">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
                     <p v-else class="mt-4 my-6 mb-8 justify-center h-10">
                     {{$t('notifications.feedback.thanks')}}
                 </p>
@@ -45,11 +45,11 @@
 </template>
 
 <script setup>
-
+import { useI18n } from 'vue-i18n'
 import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import {useSessionStore } from '~/stores/sessionStore'
-import { useI18n } from 'vue-i18n'
+
 
 const settings = useSettingsStore()
 const store = useSearchStore()
@@ -81,28 +81,28 @@ const track_feedback = (value) => {
 }
 
 const scoped_locale = dict => {
-  if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {
+  if (i18n.locale.value === "nob" || i18n.locale.value === 'nno') {
     return {bm: 'nob', nn: 'nno'}[dict] 
   }
   return i18n.locale.value
 }
 
-if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+if (error.value && session.endpoint === "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
   refresh()
 }
 
 
 const title = computed(()=> {
-  return store.dict == "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
+  return store.dict === "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
 })
 
 const dicts = computed(()=> {
-  let currentDict = store.dict
-  if (currentDict == "bm") {
+  const currentDict = store.dict
+  if (currentDict === "bm") {
     return ["bm"]
   }
-  if (currentDict == "nn") {
+  if (currentDict === "nn") {
     return ["nn"]
   }
   return ["bm", "nn"]

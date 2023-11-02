@@ -10,9 +10,9 @@
             <caption class="sr-only">{{$t('table.caption.NOUN')}}</caption>
             <thead :lang="locale2lang[scoped_locale]">
               <tr>
-                <th class="infl-label sub label-border-top-left" :class="mq"
-                    v-if="!nounGender && hasGender"
+                <th v-if="!nounGender && hasGender"
                     id="Gender"
+                    class="infl-label sub label-border-top-left" :class="mq"
                     scope="col"
                     rowspan='2'>{{$t('gender')}}</th>
                 <th v-if="hasSing"
@@ -33,14 +33,14 @@
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
                   {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
-                <th class="infl-label sub label-border-bottom"
-                    id="PlurInd"
+                <th id="PlurInd"
+                    class="infl-label sub label-border-bottom"
                     scope="col" :class="mq">
                   {{tagToName('Ind')}} {{tagToName('Form')}}
                 </th>
                 <th v-if="hasDef"
-                    class="infl-label sub label-border-bottom"
                     id="PlurDef"
+                    class="infl-label sub label-border-bottom"
                     scope="col" :class="mq">
                   {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
@@ -53,8 +53,8 @@
                                  :language="language"
                                  :lemma="lemma"
                                  :paradigm="paradigm"
-                                 v-on:hilite="hilite"
-                                 v-on:unhilite="unhilite"/>
+                                 @hilite="hilite"
+                                 @unhilite="unhilite"/>
             </tbody>
           </table>
         </div>
@@ -65,7 +65,7 @@
       <div class="lemma">
         <span class="infl-lemma" v-html="formattedLemma"/>
         <span class="sub"> {{wordClass}}</span>
-        <span class="sub" v-if="nounGender"> {{nounGender}}</span>
+        <span v-if="nounGender" class="sub"> {{nounGender}}</span>
       </div>
       <div class="table-responsive">
         <table class="table" :class="mq">
@@ -77,8 +77,8 @@
                               :language="language"
                               :lemma="lemma"
                               :paradigms="standardParadigms"
-                              v-on:hilite="hilite"
-                              v-on:unhilite="unhilite"/>
+                              @hilite="hilite"
+                              @unhilite="unhilite"/>
           </tbody>
         </table>
       </div>

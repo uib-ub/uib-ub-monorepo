@@ -1,27 +1,27 @@
 <template>
   <tr class="infl-row">
     <template v-if="tags.tags && cells.length">
-      <th class="infl-label xs"
-          :id="tags.label"
+      <th :id="tags.label"
+          class="infl-label xs"
           scope="row">
         {{tagToName(tags.label)}}
       </th>
-      <td class="notranslate infl-cell xs"
-          v-for="([rowspan,rowindex,forms], index) in cells"
+      <td v-for="([rowspan,rowindex,forms], index) in cells"
           :key="index"
+          class="notranslate infl-cell xs"
           :colspan="rowspan"
           :headers="tags.block + ' ' + (tags.label || '')"
-          v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
-          v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
-          v-on:mouseleave="$emit('unhilite')">
-        <span class='comma'
-              v-for="(form, index) in forms"
-              :key="index">{{form}}</span>
+          :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
+          @mouseover="$emit('hilite', rowindex, lemmaId)"
+          @mouseleave="$emit('unhilite')">
+        <span v-for="(form, index2) in forms"
+              :key="index2"
+              class='comma'>{{form}}</span>
       </td>
     </template>
     <template v-if="tags.title">
-      <th class="infl-group"
-          :id="tags.title"
+      <th :id="tags.title"
+          class="infl-group"
           scope="col"
           :colspan="paradigms.length+1">
         {{tagToName(tags.title)}}
@@ -40,6 +40,7 @@ import { inflectedForm, tagToName
 export default {
     name: 'inflectionRowsAdj',
     props: ['paradigms','tags','locLang','lemmaId'],
+    emits: ['hilite', 'unhilite'],
     data: function () {
         return {
             cells: !this.tags.title ?

@@ -7,11 +7,11 @@
           :rowspan="rowspan"
           :headers="headers"
           :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
-            @mouseover="$emit('hilite', rowindex, lemmaId)"
-            @mouseleave="$emit('unhilite')">
-        <span class='comma'
-              v-for="form in forms"
-              :key="form">
+           @mouseover="$emit('hilite', rowindex, lemmaId)"
+           @mouseleave="$emit('unhilite')">
+        <span v-for="form in forms"
+              :key="form"
+               class='comma'>
           {{form}}</span>
       </td>
       
