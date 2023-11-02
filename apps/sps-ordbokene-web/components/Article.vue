@@ -1,6 +1,6 @@
 <template>
   <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
-  <div v-else :class="list && 'list-view-item flex-col' || 'article flex flex-col'">
+  <div v-else :class="list && 'list-view-item flex-col' || 'article flex'">
   <div v-if="list && !welcome"  :lang="dictLang[dict]">
     <button class="list-view-button !flex !gap-4 px-4 justify-start !py-2 text-lg truncate w-full" 
             :href="link_to_self()" 
@@ -32,7 +32,7 @@
     
     </button>
 </div>
-<div v-if="!list || expanded" :lang="dictLang[dict]" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
+<div v-if="!list || expanded" :lang="dictLang[dict]" class="flex flex-col" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
       <div>
         <h1 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: scoped_locale})}}</h1>
         <h1 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h1>
@@ -102,7 +102,7 @@
   </div>
   
 </div>
-<div class="mx-1">
+<div class="mx-1 flex-1 flex items-end justify-end">
 <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :scoped_locale="scoped_locale" :dict="dict" :article_id="article_id" />
         <div v-else class="text-right px-3 py-1"><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: scoped_locale})}}</NuxtLink></div>
 </div>
