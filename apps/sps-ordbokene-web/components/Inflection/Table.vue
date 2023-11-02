@@ -8,7 +8,7 @@
         <div class="table-responsive">
           <table class="table" :class="mq">
             <caption class="sr-only">{{$t('table.caption.NOUN')}}</caption>
-            <thead :lang="locale2lang[content_locale]">
+            <thead :lang="locale2lang[scoped_locale]">
               <tr>
                 <th class="infl-label sub label-border-top-left" :class="mq"
                     v-if="!nounGender && hasGender"
@@ -90,7 +90,7 @@
       <div v-for="i in mq=='xs' ? [1,2] : [0]" :key="i" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.VERB')}}</caption>
-          <thead :lang="locale2lang[content_locale]">
+          <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th v-if="!i || i==1" class="infl-label label-border-top-left" :class="mq">{{tagToName('Inf')}}</th>
               <th v-if="!i || i==1" class="infl-label label-border-top" :class="mq">{{tagToName('Pres')}}</th>
@@ -113,7 +113,7 @@
       <div v-for="j in mq=='xs' ? [3,4] : [-1]" :key="j" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.VERBPP')}}</caption>
-          <thead :lang="locale2lang[content_locale]">
+          <thead :lang="locale2lang[scoped_locale]">
             <template v-if="hasPerfPart">
               <tr>
                 <th class="infl-label label-border-top-left"
@@ -167,7 +167,7 @@
                                      :key="index"
                                      :part="j"
                                      :language="language"
-                                     :content_locale="content_locale"
+                                     :scoped_locale="scoped_locale"
                                      :hasPerfPart="hasPerfPart"
                                      :hasPerfPartFem="hasPerfPartFem"
                                      :lemmaId="lemma.id"
@@ -208,7 +208,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADJ')}}</caption>
-          <thead :lang="locale2lang[content_locale]">
+          <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th v-if="hasSingAdj"
                   class="infl-label label-border-top-left"
@@ -275,7 +275,7 @@
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADJCS')}}</caption>
-          <thead :lang="locale2lang[content_locale]">
+          <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th class="infl-label label-border-top-left-right"
                   v-if="hasDeg"
@@ -343,7 +343,7 @@
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
-          <thead :lang="locale2lang[content_locale]">
+          <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th class="infl-label label-border-bottom">
                 {{tagToName('Pos')}}
@@ -396,7 +396,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.PRON')}}</caption>
-          <thead :lang="locale2lang[content_locale]">
+          <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th v-if="hasNom" class="infl-label sub label-border-top-left">
                 {{tagToName('Nom')}}
@@ -453,7 +453,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.DET')}}</caption>
-          <thead :lang="locale2lang[content_locale]">
+          <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th v-if="hasSing"
                   class="infl-label label-border-top-left" :class="mq"
@@ -536,7 +536,7 @@
       <div class="table-responsive">
         <table class="table" :class="mq">
           <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
-          <thead :lang="locale2lang[content_locale]">
+          <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th class="infl-label label-border">{{tagToName('Uninfl')}}</th>
             </tr>
@@ -611,7 +611,7 @@ export default {
                   inflectionRowsPron,
                   inflectionRowsDet
                 },
-    props: ['lemmaList','mq','context','eng', 'ukr', 'content_locale'],
+    props: ['lemmaList','mq','context','eng', 'ukr', 'scoped_locale'],
     data: function () {
         return { language: this.eng ? 'eng' : (this.ukr ? 'ukr' :  (this.lemmaList ? this.lemmaList[0].language : null)),
                  // initialLexeme: this.lemmaList ? this.lemmaList[0].initial_lexeme : null,

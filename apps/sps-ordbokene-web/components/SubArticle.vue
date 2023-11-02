@@ -4,8 +4,8 @@
       {{body.lemmas[0]}}
       </strong>
       <div>
-      <DefElement :body="body.intro" v-if="body.intro" :dict="dict" @link-click="link_click" :content_locale="content_locale"/>
-      <Definition :level="9" :body="body.article.body.definitions[0]" :dict="dict" @link-click="link_click" :content_locale="content_locale"/>
+      <DefElement :body="body.intro" v-if="body.intro" :dict="dict" @link-click="link_click" :scoped_locale="scoped_locale"/>
+      <Definition :level="9" :body="body.article.body.definitions[0]" :dict="dict" @link-click="link_click" :scoped_locale="scoped_locale"/>
       </div>
   </li>
   </template>
@@ -15,7 +15,7 @@
   const props = defineProps({
       body: Object,
       dict: String,
-      content_locale: String
+      scoped_locale: String
   })
   
   const emit = defineEmits(['link-click'])

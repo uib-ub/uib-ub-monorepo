@@ -1,20 +1,20 @@
 <template>
-<div :lang="locale2lang[content_locale]" class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
+<div :lang="locale2lang[scoped_locale]" class="flex mt-4 mb-4 md:mb-0 flex-wrap gap-y-6">
   <client-only>
     <div role="toolbar" class="flex justify-center sm:justify-normal gap-2 flex-wrap gap-y-2">
     <button type="button" v-if="showLinkCopy" class="btn btn-borderless px-3" @click="copy_link" v-bind:class="{'hidden xl:block': store.dict == 'bm,nn' && $route.name!= 'article', 'hidden md:block': store.dict != 'bm,nn' && $route.name != 'article'}">
       <Icon :name="session.copied_link == create_link() ? 'bi:clipboard-check-fill' : 'bi:clipboard'" class="mr-3 mb-1 text-primary"/>
-      <span>{{ session.copied_link == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: content_locale }) }} </span>
+      <span>{{ session.copied_link == create_link() ? $t('article.link_copied') : $t('article.copy_link', 1, { locale: scoped_locale }) }} </span>
     </button>
     <button type="button" class="btn btn-borderless px-3" v-if="webShareApiSupported" @click="shareViaWebShare">
-        <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: content_locale})}}
+        <Icon name="bi:share-fill" class="mr-3 mb-1 text-primary"/>{{$t("article.share", 1, { locale: scoped_locale})}}
     </button>
       <button type="button" class="btn btn-borderless px-3" :aria-expanded="cite_expanded" :aria-controls="cite_expanded?  'cite-'+article_id : null" @click="cite_expanded = !cite_expanded">
-        <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: content_locale})}}
+        <Icon name="bi:quote" class="mr-3 mb-1 text-primary"/>{{$t("article.cite", 1, { locale: scoped_locale})}}
       </button>
       <div class="cite-container p-4 pb-1 pt-2 text-1 basis-full" v-if="cite_expanded" :id="'cite-'+article_id">
         <h3>{{$t('article.cite_title')}}</h3>
-        <p>{{$t("article.cite_description[0]", 1, { locale: content_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: content_locale})}}</p>
+        <p>{{$t("article.cite_description[0]", 1, { locale: scoped_locale})}}<em>{{$t('dicts.'+$props.dict)}}</em>{{$t("article.cite_description[1]", 1, { locale: scoped_locale})}}</p>
 
         <blockquote class="break-all sm:break-keep">
           <i18n-t keypath="article.citation" tag="div" id="citation">
@@ -47,7 +47,7 @@
 
 <span v-if="$route.name != 'article'" class="px-4 pt-1 ml-auto">
     <NuxtLink class="whitespace-nowrap"  :to="`/${$i18n.locale}/${dict}/${article_id}`">
-       <span>{{$t("article.open", 1, { locale: content_locale})}}</span>
+       <span>{{$t("article.open", 1, { locale: scoped_locale})}}</span>
     </NuxtLink>
     </span>
     
@@ -68,7 +68,7 @@ const props = defineProps({
     lemmas: Array,
     dict: String,
     article_id: Number,
-    content_locale: String
+    scoped_locale: String
 })
 
 const cite_expanded = ref(false)
