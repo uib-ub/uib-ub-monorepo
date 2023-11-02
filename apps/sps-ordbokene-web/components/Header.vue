@@ -38,7 +38,7 @@
       <nav class="lg:mr-4 self-center" :aria-label="$t('label.nav')">
       <ul class="flex flex-col lg:flex-row gap-8 lg:gap-6 lg:space-x-3 xl:space-x-8 content-center my-6 lg:my-0 text-lg" >
         <!-- <li class="nav-item invisible lg:visible">
-          <span class="nav-link" v-tooltip.right="{ value: `<h3 class='bg-black text-canvas-darken p-4 text-3xl'>${$t('font-size.description')}</h3>`, escape: true}" >{{$t('font-size.title')}}</span>
+          <span class="nav-link" v-tooltip.right="{ value: `<h4 class='bg-black text-canvas-darken p-4 text-3xl'>${$t('font-size.description')}</h4>`, escape: true}" >{{$t('font-size.title')}}</span>
         </li> -->
         <li class="nav-item">
           <NuxtLink class="nav-link" :aria-current="$route.name == 'help' && 'page'" :to="`/${$i18n.locale}/help`">{{$t('help')}}</NuxtLink>

@@ -1,8 +1,8 @@
 <template>
    <div class="mb-10 mx-2">
-    <SuggestResults :minimal="true" :dict="dict" v-if="!pending && data.length" :suggestions="data"><h2>{{$t('notifications.similar')}}</h2></SuggestResults>
+    <SuggestResults :minimal="true" :dict="dict" v-if="!pending && data.length" :suggestions="data"><h3>{{$t('notifications.similar')}}</h3></SuggestResults>
     <div v-if="!pending && !data.length" class="callout pt-0 my-0">
-        <h2><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h2>
+        <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
         <p>
             <i18n-t keypath="notifications.no_results.description[0]">
                 <template v-slot:dict>

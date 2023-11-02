@@ -1,5 +1,12 @@
 <template>
-<main id="main" tabindex="-1" class="flex flex-col grow-1">
+<main id="main" tabindex="-1" class="flex flex-col grow-1 relative">
+    <div class="">
+      <h1 class="font-semibold !px-3 text-primary top-0 left-0 text-xl xl:text-2xl sr-only md:not-sr-only !absolute !bg-tertiary-darken">
+        <span v-if="route.name=='word' || route.name == 'index' || route.name == 'welcome'">{{$t('simple')}}</span>
+        <span v-if="route.name=='article'">{{$t('simple')}}</span>
+      </h1>
+    </div>
+
   <SearchNav v-if="route.name != 'search'"/>
     <NuxtErrorBoundary @error="form_error">
     <SearchForm v-if="route.name != 'search'" class="ord-container"/>
@@ -39,3 +46,11 @@ const content_error = (error) => {
 }
 
 </script>
+
+<style scoped>
+
+h1 {
+  font-variant: all-small-caps;
+  letter-spacing: .1rem;
+}
+</style>

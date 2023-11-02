@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class ="py-2 article-view">
+    <div class ="py-2 pb-6 md:pb-8 article-view">
       <NuxtErrorBoundary v-on:error="article_error($event, parseInt($route.params.article_id), dict)">
         <Article single :article_id="parseInt($route.params.article_id)" :dict="dict"/>
       </NuxtErrorBoundary>

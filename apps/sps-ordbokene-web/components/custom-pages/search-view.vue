@@ -1,5 +1,14 @@
 <template>
     <main id="main" tabindex="-1">
+    <div class="relative">
+      <div class="flex justify-between">
+         <div class="whitespace-nowrap pt-2">
+            <NuxtLink class="pl-2" :to="`/${$i18n.locale}/${store.dict}/${advancedSpecialSymbols(store.q) ? '' : store.q}`"><Icon name="bi:arrow-left-short" size="1.5rem" class="mb-1 text-primary"/>{{$t('notifications.simple')}}</NuxtLink>
+        </div>
+    <h1 class="font-semibold pt-0 px-3 text-primary  text-xl xl:text-2xl !bg-tertiary-darken">{{$t('advanced')}}</h1>
+       
+      </div>
+    </div>
       <NuxtErrorBoundary @error="form_error">
         <AdvancedSearchForm class="ord-container"/>
       </NuxtErrorBoundary>
@@ -37,3 +46,12 @@ const content_error = (error) => {
 
 
 </script>
+
+<style scoped>
+
+h1 {
+  font-variant: all-small-caps;
+  letter-spacing: .1rem;
+}
+
+</style>

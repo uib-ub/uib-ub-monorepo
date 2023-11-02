@@ -43,7 +43,7 @@ useHead({
 
 <template>
 <main id="main" tabindex="-1" class="secondary-page flex flex-col gap-4">
-  <h1>{{$t('settings.title')}}</h1>
+  <h2>{{$t('settings.title')}}</h2>
   <client-only>
   <FormCheckbox v-model="settings.$state.simpleListView" :checked="settings.simpleListView">
       {{$t('settings.simple_search_list')}}

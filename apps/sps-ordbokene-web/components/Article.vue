@@ -32,10 +32,10 @@
     
     </button>
 </div>
-<div v-if="!list || expanded" :lang="dictLang[dict]" class="flex flex-col" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
+<div v-if="!list || expanded" :lang="dictLang[dict]" class="flex flex-col grow" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
       <div>
-        <h1 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: scoped_locale})}}</h1>
-        <h1 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h1>
+        <h2 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: scoped_locale})}}</h2>
+        <h2 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
         <div class="px-4 pt-4 pb-2" :class="{'px-4 pb-3 pt-4' : welcome,  '!py-0 !px-3': list}">
 
         <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :scoped_locale="scoped_locale" :dict="dict" :article_id="article_id"/>
@@ -70,24 +70,24 @@
         </div>
         <div class="article_content pt-1" ref="article_content">
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
-                <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.pronunciation', 1, { locale: scoped_locale})}}</h3>
+                <h4 :lang="locale2lang[scoped_locale]">{{$t('article.headings.pronunciation', 1, { locale: scoped_locale})}}</h4>
 
               <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
-              <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.etymology', 1, { locale: scoped_locale})}}</h3>
+              <h4 :lang="locale2lang[scoped_locale]">{{$t('article.headings.etymology', 1, { locale: scoped_locale})}}</h4>
               <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section class="definitions" v-if="has_content && !welcome">
-              <h3 :lang="locale2lang[scoped_locale]" v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: scoped_locale})}}</h3>
+              <h4 :lang="locale2lang[scoped_locale]" v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: scoped_locale})}}</h4>
 
               <Definition v-for="definition in data.body.definitions" :scoped_locale="scoped_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
 
           </section>
           <section v-if="sub_articles.length && !welcome" class="expressions">
-              <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.expressions', 1, { locale: scoped_locale})}}</h3>
+              <h4 :lang="locale2lang[scoped_locale]">{{$t('article.headings.expressions', 1, { locale: scoped_locale})}}</h4>
               <ul>
               <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :scoped_locale="scoped_locale"/>
               </ul>
@@ -102,7 +102,7 @@
   </div>
   
 </div>
-<div class="mx-1 flex-1 flex items-end justify-end">
+<div class="mx-1 flex-1 flex items-end justify-end" :class="{'!justify-start': single}">
 <ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :scoped_locale="scoped_locale" :dict="dict" :article_id="article_id" />
         <div v-else class="text-right px-3 py-1"><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: scoped_locale})}}</NuxtLink></div>
 </div>
@@ -482,7 +482,7 @@ if (props.single && data.value) {
 
 <style scoped>
 
- h1 {
+ h2 {
     font-variant-caps: all-small-caps;
     @apply font-semibold tracking-widest mb-0 ml-4 !text-gray-700;
 }
@@ -509,7 +509,7 @@ section {
 }
 
 
-section.etymology > h3, section.pronunciation > h3 {
+section.etymology > h4, section.pronunciation > h4 {
   @apply inline;
 }
 

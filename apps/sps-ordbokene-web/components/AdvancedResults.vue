@@ -10,10 +10,10 @@
              :aria-labelledby="dict+'_heading'"
              :lang="locale2lang[scoped_locale(dict)]">
       <div class="pt-0 pb-3 px-2">
-        <h1 :id="dict+'_heading'" class="">{{$t('dicts.'+dict, 1, {locale: scoped_locale(dict)})}} 
+        <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict, 1, {locale: scoped_locale(dict)})}} 
           <span v-if="articles.meta[dict]" class="result-count-text">{{articles.meta[dict].total}}</span>
           <span class="sr-only">{{$t('notifications.keywords')}}</span>
-        </h1>
+        </h2>
       </div>
         <MinimalSuggest :scoped_locale="scoped_locale(dict)"  v-if="articles.meta[dict] && articles.meta[dict].total == 0" :dict="dict"/>
       <component v-if="articles.meta[dict] && articles.meta[dict].total > 0" :is="settings.listView ? 'ol' : 'div'" class="article-column">

@@ -25,10 +25,10 @@
     }
 
     main {
-        @apply lg:pt-2 flex-1;
+        @apply flex-1;
     }
 
-    .ord-container h2, .wallpaper h2 {
+    .ord-container h3, .wallpaper h3 {
       font-family: Inria Serif;
       font-size: calc(1.3rem + .6vw);
       @apply mb-0 font-semibold text-primary;
@@ -36,7 +36,7 @@
   }
 
 
-  .callout h2 {
+  .callout h3 {
     font-family: unset;
     @apply align-middle text-lg pt-2;
 
@@ -88,11 +88,11 @@
         @apply text-xl pr-2 bg-primary;
       }
 
-      .suggestions h2 {
+      .suggestions h3 {
           @apply text-xl
       }
     
-      .callout h2 {
+      .callout h3 {
           @apply pb-2 text-xl
       }
       
@@ -125,12 +125,12 @@
       }
 
       
-      .article h3 {
+      .article h4 {
         @apply text-primary text-2xl font-semibold pr-4;
         font-variant: all-small-caps;
       }
       
-      .article h4 {
+      .article h5 {
         @apply text-primary font-semibold text-base pt-4;
       }
       
@@ -194,7 +194,7 @@
       
       
       
-      .secondary-page h2, .ord-container h1 {
+      .secondary-page h2, .ord-container h2 {
         @apply text-primary text-xl md:text-2xl  mt-4 font-semibold;
       }
 
@@ -209,7 +209,7 @@
       
       
       
-      #advanced-info h1 {
+      #advanced-info h2 {
         font-family: Inria Serif;
         @apply text-primary font-bold;
       }

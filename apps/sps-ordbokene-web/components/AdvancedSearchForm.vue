@@ -1,14 +1,6 @@
 <template>
-  <div class="pb-2">
-    
-    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4">
-        <div class="flex flex-col lg:flex-row sm:flex-wrap w-full gap-3 mt-2 lg:mt-0">
-
-        <div class="whitespace-nowrap mr-4 pt-1">
-            <NuxtLink class="" :to="`/${$i18n.locale}/${store.dict}/${advancedSpecialSymbols(store.q) ? '' : store.q}`"><Icon name="bi:arrow-left-short" size="1.5rem" class="mb-1 text-primary"/>{{$t('notifications.simple')}} </NuxtLink>
-        </div>
-
-
+    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4 grow mt-2">
+        <div class="flex flex-col md:flex-row sm:flex-wrap w-full gap-3 mt-2 lg:mt-0">
         <div class="whitespace-nowrap p-1 xl:bg-tertiary xl:shadow-none flex flex-grow-0 items-baseline"> 
           
             <label for="dict-select">{{ $t('options.dict') }} </label>
@@ -40,8 +32,8 @@
         </div>
       
 
-        <div class="flex flex-col lg:flex-row lg:flex-wrap w-full gap-x-6 gap-y-3">
-          <div class="flex-grow" :class="{activeAutocomplete: store.autocomplete && store.autocomplete.length}">
+        <div class="flex flex-col lg:flex-row grow lg:flex-wrap w-full gap-x-6 gap-y-3">
+          <div class="grow" :class="{activeAutocomplete: store.autocomplete && store.autocomplete.length}">
             <Autocomplete  v-on:dropdown-submit="submitForm"/>
           </div>
 
@@ -55,7 +47,6 @@
           </div>
         </div>
     </form>
-  </div>
 </template>
   
 <script setup>
