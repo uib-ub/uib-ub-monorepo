@@ -7,7 +7,7 @@
             <h2><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1"/>
             {{$t('notifications.inflected_title', 1, {locale: content_locale})}}
             </h2>
-            <i18n-t :keypath="articles_meta[dict] && articles_meta[dict].total ? 'notifications.also_inflected':'notifications.inflected'" :locale="content_locale" :plural="data.inflect.length">
+            <i18n-t :keypath="articles_meta[dict] && articles_meta[dict].total ? 'notifications.also_inflected':'notifications.inflected'" :locale="content_locale">
                 <template v-slot:word>
                     <em>{{store.q}}</em>
                 </template>

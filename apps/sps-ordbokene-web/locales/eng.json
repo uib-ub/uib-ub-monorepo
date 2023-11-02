@@ -147,8 +147,8 @@
 "notifications": {
     "translation": "Click the suggestion below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway. | Click the suggestions below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway.",
     "translation_title": "Possible translation",
-    "inflected": "{word} is an inflection of:|{word} is found as inflections of:",
-    "also_inflected": "{word} is also an inflection of:|{word} is also found as inflections of:",
+    "inflected": "{word} is an inflection of:",
+    "also_inflected": "{word} is also an inflection of:",
     "inflected_title": "Inflected forms",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",
