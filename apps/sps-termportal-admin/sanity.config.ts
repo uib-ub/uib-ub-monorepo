@@ -5,10 +5,10 @@ import { schemaTypes } from "./schemas";
 export const sanityConfig = defineConfig({
   plugins: [deskTool()],
   name: "default",
-  title: "Termportalen admin",
+  title: "Studio",
   projectId: "k38biek5",
   dataset: "production",
-  basePath: "/studio", // embmedded in route
+  basePath: "/studio", // embedded in route
   schema: {
     types: schemaTypes,
   },

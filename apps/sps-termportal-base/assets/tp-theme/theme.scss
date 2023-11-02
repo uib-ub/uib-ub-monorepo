@@ -2605,7 +2605,7 @@
 }
 .p-datatable .p-datatable-thead > tr > th {
   text-align: left;
-  padding: 1rem 1rem;
+  padding: 0.5rem 0.75rem;
   border: 1px solid #dee2e6;
   border-width: 0 0 1px 0;
   font-weight: 700;
@@ -2643,18 +2643,22 @@
   color: #343a40;
 }
 .p-datatable .p-sortable-column.p-highlight {
-  background: #EFF6FF;
-  color: #1D4ED8;
+  @apply bg-tpblue-100 text-tpblue-400;
+  /* background: #EFF6FF;*/
+  /* color: #1D4ED8;*/
 }
 .p-datatable .p-sortable-column.p-highlight .p-sortable-column-icon {
-  color: #1D4ED8;
+  @apply text-tpblue-400;
+  /*color: #1D4ED8;*/
 }
 .p-datatable .p-sortable-column.p-highlight:hover {
-  background: #EFF6FF;
-  color: #1D4ED8;
+  @apply bg-tpblue-100 text-tpblue-400;
+  /* background: #EFF6FF;*/
+  /* color: #1D4ED8;*/
 }
 .p-datatable .p-sortable-column.p-highlight:hover .p-sortable-column-icon {
-  color: #1D4ED8;
+  @apply text-tpblue-400;
+  /*color: #1D4ED8;*/
 }
 .p-datatable .p-sortable-column:focus {
   box-shadow: inset 0 0 0 0.15rem #BFDBFE;
@@ -2669,7 +2673,7 @@
   text-align: left;
   border: 1px solid #dee2e6;
   border-width: 0 0 1px 0;
-  padding: 1rem 1rem;
+  padding: 0.35rem 0.75rem;
 }
 .p-datatable .p-datatable-tbody > tr > td .p-row-toggler,
 .p-datatable .p-datatable-tbody > tr > td .p-row-editor-init,

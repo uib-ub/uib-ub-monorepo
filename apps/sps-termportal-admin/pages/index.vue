@@ -1,23 +1,22 @@
 <template>
   <main>
-    <ul class="text-lg space-y-2 ml-6">
-      <li>Overview</li>
-      <li>
-        Insights
-        <ul class="ml-4">
-          <li>Termbase</li>
-          <li>Domains</li>
+    <ul class="font-base ml-6 space-y-[-6px] text-xl text-gray-500">
+      <NavBarLink to="overview">Termbase Overview</NavBarLink>
+      <NavBarLink
+        >Insights
+        <ul class="ml-4 space-y-[-6px]">
+          <NavBarLink>Termbase</NavBarLink>
+          <NavBarLink>Domains</NavBarLink>
         </ul>
-      </li>
-      <li>
-        Explore Data
-        <ul class="ml-4">
-          <li>Termportalen</li>
-          <li>Korpuskel? Term extraction?</li>
+      </NavBarLink>
+      <NavBarLink
+        >Explore
+        <ul class="ml-4 space-y-[-6px]">
+          <NavBarLink>...</NavBarLink>
         </ul>
-      </li>
-      <li>Admin documentation?</li>
-      <li><NuxtLink to="/studio">Studio</NuxtLink></li>
+      </NavBarLink>
+      <NavBarLink to="/docs">Documentation</NavBarLink>
+      <NavBarLink to="/studio">Studio</NavBarLink>
     </ul>
   </main>
 </template>

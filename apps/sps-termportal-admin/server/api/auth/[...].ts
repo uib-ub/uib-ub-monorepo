@@ -2,7 +2,7 @@ import { NuxtAuthHandler } from "#auth";
 const runtimeConfig = useRuntimeConfig();
 
 export default NuxtAuthHandler({
-  secret: useRuntimeConfig().auth.secret,
+  secret: runtimeConfig.auth.secret,
   providers: [
     {
       id: "dataporten",
@@ -16,7 +16,7 @@ export default NuxtAuthHandler({
         return {
           ...profile,
           id: profile.sub,
-          image: profile.picture,
+          // image: profile.picture,
           email: profile.email,
         };
       },
