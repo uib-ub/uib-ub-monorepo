@@ -157,7 +157,7 @@
         "not_a_word": " er ikkje eit oppslagsord i ",
         "results": "Ingen treff | Eitt treff| {count} treff",
         "results_dict": "Ingen treff i {dict}|Eitt treff i {dict}|{count} treff i {dict}",
-        "suggestions_available": "Søkjeforslag tilgjengelege | Ytterlegaere søkeforslag tilgjengelege",
+        "suggestions_available": "Søkjeforslag tilgjengelege | Ytterlegare søkjeforslag tilgjengelege",
         "keywords": "oppslagsord",
         "ignored_words": "Søket vart ignorert fordi vi avgrensar talet på førespurnader til 20 ord.",
         "ignored_chars": "Søket vart ignorert fordi vi ikkje tillèt søkjeord med meir enn 40 teikn.",
