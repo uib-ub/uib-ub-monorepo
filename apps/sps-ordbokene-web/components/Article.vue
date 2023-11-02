@@ -19,7 +19,7 @@
         </span>
     </span>
     <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group text-primary">{{secondary_header_text}}</span></span>
-      &nbsp;<span v-if="lemma_group.description" class="subheader">
+      &nbsp;<span v-if="lemma_group.description" class="subheader" :lang="scoped_lang">
       <span class="header-group-list text-2xl">{{lemma_group.description}}</span>
             
       <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
@@ -57,7 +57,7 @@
       <button type="button" v-if="inflected && !welcome && !single && !list" 
               class="btn btn-primary my-1 border-primary-darken !pr-2" 
               @click="expand_inflection" 
-              :lang="locale2lang[scoped_locale]"
+              :lang="scoped_lang"
               :aria-expanded="inflection_expanded" 
               :aria-controls="inflection_expanded ? `${dict}_${article_id}_inflection` : null">
              {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection', 1, {locale: scoped_locale})}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
@@ -444,6 +444,11 @@ const snippet = computed(() => {
     return ""
   }
 
+})
+
+
+const scoped_lang = computed(() => {
+  return locale2lang[props.scoped_locale]
 })
 
 
