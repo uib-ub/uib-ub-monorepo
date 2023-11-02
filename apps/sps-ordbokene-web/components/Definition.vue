@@ -1,6 +1,6 @@
 <template>
   <component :is="(level==1 || level == 9) ? 'div' : 'li'" :class="['definition', 'level'+level, {hilite: highlighted}]" :id="level != 9 && route.name == 'article' ? 'def' + body.id : undefined"><component :is="level <= 2 ? 'div' : 'span'">
-  <div v-if="explanations.length" class="explanations">
+  <div class="explanations" v-if="explanations.length">
     <!-- i-808 -->
     <div v-for="(explanation, index) in explanations" :key="index">
       <DefElement
@@ -8,24 +8,24 @@
         :dict="dict"
         :has_article_ref="has_article_ref(explanation)"
         :semicolon="might_need_semicolon(explanations, index)"
-        @link-click="link_click"
-        :content_locale="content_locale"
+        v-on:link-click="link_click"
+        :scoped_locale="scoped_locale"
       />
       <br v-if="might_need_semicolon(explanations, index)" />
     </div>
     <!-- i/s -->
   </div>
 <div v-if="examples.length">
-  <h5 v-if="level <3 && !body.sub_definition">{{$t('article.headings.examples', 1, { locale: content_locale})}}</h5>
+  <h4 v-if="level <3 && !body.sub_definition" :lang="locale2lang[scoped_locale]">{{$t('article.headings.examples', 1, { locale: scoped_locale})}}</h4>
   <ul class="examples">
-    <Example :body="example" :dict="dict" v-for="(example, index) in examples" :key="index" @link-click="link_click" :content_locale="content_locale" :semicolon="might_need_semicolon(examples, index)"/>
+    <Example :body="example" :dict="dict" v-for="(example, index) in examples" :key="index" v-on:link-click="link_click" :scoped_locale="scoped_locale" :semicolon="might_need_semicolon(examples, index)"/>
   </ul>
 </div>
 <ul class="compound_lists" v-if = "compound_lists.length">
-  <CompoundList :dict="dict" v-for="(compound_list, index) in compound_lists" :body="compound_list" :key="index" @link-click="link_click" :content_locale="content_locale"/>
+  <CompoundList :dict="dict" v-for="(compound_list, index) in compound_lists" :body="compound_list" :key="index" v-on:link-click="link_click" :scoped_locale="scoped_locale"/>
 </ul>
-<component v-if="subdefs.length" :is="level < 3 && (body.elements[0].type_ == 'definition' || !subdefs[0].sub_definition) ? 'ol' : 'ul'" :class="{'sub_definitions': subdefs.length, 'single_sub_definition': subdefs.length === 1}">  
-  <Definition :def_number='index+1' :level="level+1" :body="subdef" v-for="(subdef, index) in subdefs"  :dict="dict" :semicolon="might_need_semicolon(subdefs, index)" :key="index" @link-click="link_click" :content_locale="content_locale"/>
+<component :is="level < 3 && (body.elements[0].type_ == 'definition' || !subdefs[0].sub_definition) ? 'ol' : 'ul'" :class="{'sub_definitions': subdefs.length, 'single_sub_definition': subdefs.length === 1}" v-if="subdefs.length">  
+  <Definition :def_number='index+1' :level="level+1" :body="subdef" v-for="(subdef, index) in subdefs"  :dict="dict" :semicolon="might_need_semicolon(subdefs, index)" :key="index" v-on:link-click="link_click" :scoped_locale="scoped_locale"/>
 </component>
 </component>
 </component>
@@ -44,7 +44,8 @@ body: Object,
 level: Number,
 dict: String,
 def_number: Number,
-content_locale: String,
+scoped_locale: String,
+semicolon: Boolean
 })
 
 

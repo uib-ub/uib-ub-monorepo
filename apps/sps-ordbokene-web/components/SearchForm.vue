@@ -1,5 +1,5 @@
 <template>
-<div class="py-1">
+<div class="lg:py-1">
 <form class="md:mx-[10%]"  @submit.prevent="submitForm" ref="form" :action="`/${$i18n.locale}/${store.dict || 'bm,nn'}`">
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete @dropdown-submit="submitForm"/>
@@ -26,7 +26,7 @@ const input_element = useState('input_element')
 const submitForm = async (item) => {
   
   if (typeof item === 'string') {
-    if (settings.auto_select) {
+    if (settings.auto_select && !isMobileDevice()) {
       input_element.value.select()
     }
     else {
@@ -36,7 +36,7 @@ const submitForm = async (item) => {
   }
   
   if (store.input) {
-    if (settings.auto_select) {
+    if (settings.auto_select && !isMobileDevice()) {
       input_element.value.select()
     }
     else {

@@ -8,6 +8,8 @@ export const localeConfig = [
 export const lang2locale = Object.fromEntries(localeConfig.map(item => [item.lang, item.locale]))
 export const locale2lang = Object.fromEntries(localeConfig.map(item => [item.locale, item.lang]))
 
+export const dictLang = {bm: "nb", nn: "nn"}
+
 
 export const localizeUrl = (url, locale) => {
   if (url == "/") {
@@ -18,6 +20,13 @@ export const localizeUrl = (url, locale) => {
   }
   else {
     return url.replace(/^(\/?)/, `$1${locale}/`)
+  }
+}
+
+
+export const isMobileDevice =  () => {
+  if (process.client) {
+    return navigator.userAgentData ? navigator.userAgentData.mobile : !window.matchMedia('(pointer: fine)').matches
   }
 }
 

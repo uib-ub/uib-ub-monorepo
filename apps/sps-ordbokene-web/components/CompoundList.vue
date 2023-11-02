@@ -1,13 +1,13 @@
 <template>
   <li class="compound_list">
     <ul>
-      <DefElement v-if="body.intro" :body="body.intro" :dict="dict" :content_locale="content_locale" />
+      <DefElement :body="body.intro" v-if="body.intro" :dict="dict" :scoped_locale="scoped_locale" />
       <li
         :key="index"
         v-for="(item, index) in body.elements"
         >{{' '}}<NuxtLink
           :to="`/${$i18n.locale}/${dict}/${item.article_id}${item.definition_id ? '#def'+item.definition_id : ''}`"
-          @click="link_click(item)"
+          @click="link_click(itemref)"
           >{{item.lemmas[0].lemma}}</NuxtLink>
       </li>
     </ul>
@@ -18,12 +18,12 @@
 const props = defineProps({
   body: Object,
   dict: String,
-  content_locale: String,
+  scoped_locale: String,
 })
 
 const emit = defineEmits(['link-click'])
-const link_click = (event) => {
-  emit('link-click', event)
+const link_click = (itemref) => {
+  emit('link-click', itemref)
 }
 
 </script>

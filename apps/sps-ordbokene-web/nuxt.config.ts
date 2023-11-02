@@ -11,12 +11,16 @@ export default defineNuxtConfig({
   ],
   nitro: {
     preset: 'vercel',
-    compressPublicAssets: true,
+    compressPublicAssets: true
   },
   runtimeConfig: {
     public: {
-      endpointEnv: process.env.ENDPOINT_ENV || 'dev',
-      versionWatermark: process.env.WATERMARK || 'test'
+      api: 'https://oda.uib.no/opal/prod/',
+      apiFallback: 'https://odd.uib.no/opal/prod/',
+      apiDev: 'https://oda.uib.no/opal/dev/',
+      apiDevFallback:  'https://odd.uib.no/opal/dev/',
+      env: process.env.VERCEL_ENV || 'local',
+      commit: process.env.VERCEL_GIT_COMMIT_SHA
     }
   },
 
@@ -30,22 +34,27 @@ export default defineNuxtConfig({
       '@nuxtjs/tailwindcss',
       'nuxt-icon',
       '@nuxt/content',
-      '@nuxtjs/html-validator'
+      '@nuxtjs/html-validator',
+      '@nuxtjs/plausible',
     ],
 
   htmlValidator: {
     usePrettier: true
-
+  },     
+  plausible: {
+    domain: 'test.ordbokene.no',
   },
-  
   content: {
+    sources: {
+      github: {
+        driver: "github",
+        repo: "uib-ub/ordbokene-content",
+        prefix: "/",
+        dir: "content",
+      },
+    },
     markdown: {
-      tags: {
-        h1: "h2",
-        h2: "h3",
-        h3: "h4",
-        h4: "h5",
-      }
+      anchorLinks: false
     }
 
   },

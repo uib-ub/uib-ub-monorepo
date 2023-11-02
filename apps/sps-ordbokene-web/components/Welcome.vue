@@ -14,7 +14,7 @@
           <h1 class="dict-label">{{ $t('article.new', {dict: $t('dicts_inline.bm')}, {locale: scoped_locale('bm')}) }}</h1>
           <ul class="flex flex-col md:flex-row lg:flex-col xl:flex-row flex-wrap pt-2 px-3 gap-x-2">
             <li v-for="([id, name], index) in latest_bm" :key="index" class="lg:col-auto">
-                <NuxtLink class="suggest-link no-underline" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
+                <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/bm/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
             </li>
           </ul>
         </div>
@@ -25,7 +25,7 @@
           <h1 class="dict-label">{{ $t('article.new', {dict: $t('dicts_inline.nn')}, {locale: scoped_locale('nn')}) }}</h1>
           <ul class="flex flex-col md:flex-row lg:flex-col xl:flex-row flex-wrap pt-2 px-3 gap-x-2">
             <li v-for="([id, name], index) in latest_nn" :key="index">
-                <NuxtLink class="suggest-link no-underline" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
+                <NuxtLink class="suggest-link" :to="`/${$i18n.locale}/nn/${id}`"><span class="hoverlink">{{name}}</span></NuxtLink>
             </li>
           </ul>
         </div>

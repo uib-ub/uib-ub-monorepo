@@ -248,7 +248,7 @@ if (process.client) {
           @keydown="keys"
           :aria-expanded="session.show_autocomplete || 'false'" 
           :aria-owns="session.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"/>
-          <button v-if="store.input.length > 0" type="button" :title="$t('clear')" class="appended-button" :aria-label="$t('clear')" @click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
+          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
           <button type="submit" class="appended-button"  :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 
@@ -264,12 +264,13 @@ if (process.client) {
         :lang="['bm','nn','no'][item.dict-1]"
         :id="'autocomplete-item-'+idx">
         <div class="dropdown-item w-full" data-dropdown-item tabindex="-1" @click="dropdown_select(item.q)">
-          <span v-if="item.type == 'pattern' && route.name != 'search'" role="status" aria-live="polite" class=" bg-primary text-white p-1 rounded px-3 ml-3">{{$t('to_advanced')}} 
-            <Icon name="bi:arrow-right"/>
+          <span v-if="item.type == 'pattern' && route.name != 'search'" role="status" aria-live="polite" class=" bg-primary text-white p-1 rounded px-3 pr-1">
+            {{$t('to_advanced')}} 
+            <Icon name="bi:arrow-right-short" size="1.5rem" class=""/>
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">
             <span v-if="store.autocomplete.length == 1" class="sr-only">{{$t('autocomplete_suggestions', 1)}}: </span>
-            <span :class="item.type">{{ item.q }}</span> <span v-if="item.dict && store.dict =='bm,nn'" class="dict-parentheses text-gray-900">({{["bokmål","nynorsk","bokmål, nynorsk"][item.dict-1]}})</span>
+            <span :class="item.type">{{ item.q }}</span> <span class="dict-parentheses text-black" v-if="item.dict && store.dict =='bm,nn'">({{["bokmål","nynorsk","bokmål, nynorsk"][item.dict-1]}})</span>
           </span>
         </div>
    </li>
@@ -320,10 +321,10 @@ transform: translateX(-50%);
 
 
 #autocomplete-dropdown .dropdown-item {
-  @apply p-4 mx-2 duration-200 motion-reduce:transition-none text-left;
+  @apply py-2 px-2 md:py-3 md:px-4 mx-2 duration-200 motion-reduce:transition-none text-left;
 }
 #autocomplete-dropdown .dropdown-item:hover  {
-    @apply bg-canvas-darken cursor-pointer shadow-md;
+    @apply bg-canvas-darken cursor-pointer;
 }
 
 
@@ -332,7 +333,7 @@ transform: translateX(-50%);
 }
 
 #autocomplete-dropdown li:not(:last-child) .dropdown-item {
-  @apply border-gray-300 border-b border-gray-700;
+  @apply border-gray-300 border-gray-700;
 
 }
 

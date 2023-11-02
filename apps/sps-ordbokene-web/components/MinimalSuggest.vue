@@ -1,9 +1,15 @@
 <template>
    <div class="mb-10 mx-2">
-    <SuggestResults v-if="!pending && data.length" :minimal="true" :dict="dict" :suggestions="data"><h3>{{$t('notifications.similar')}}</h3></SuggestResults>
+    <SuggestResults :minimal="true" :dict="dict" v-if="!pending && data.length" :suggestions="data"><h2>{{$t('notifications.similar')}}</h2></SuggestResults>
     <div v-if="!pending && !data.length" class="callout pt-0 my-0">
-        <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
-        <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)})}}.</p>
+        <h2><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h2>
+        <p>
+            <i18n-t keypath="notifications.no_results.description[0]">
+                <template v-slot:dict>
+                    <em>{{$t('dicts.'+dict)}}</em>.
+                </template>
+            </i18n-t>
+        </p>
         <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]')}}</p>
     </div>
   </div>
@@ -21,7 +27,7 @@ const props = defineProps({
     dict: String,
 })
 
-const query = `${session.endpoint}api/suggest?&q=${route.query.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
+const query = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
 const { data, error, pending } = useFetch(query, {key: query,
                                     transform: response => {
                                         if (response.a && response.a.similar) {
@@ -29,7 +35,9 @@ const { data, error, pending } = useFetch(query, {key: query,
                                                                                     && item[0].slice(-1) != '-' ).map(pair => pair[0])
                                         }
                                         else {
+                                            useTrackEvent('no_suggestions_advanced', {props: {query: props.dict + "/" + store.q}})
                                             return []
+                                            
                                         }
                                     }})
 

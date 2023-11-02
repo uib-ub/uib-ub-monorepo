@@ -1,9 +1,9 @@
 <template>
-<div>
+<div class="secondary-page">
     <ContentRenderer :value="contact">
-          <ContentRendererMarkdown :value="contact" :components="{h1: 'h2'}" />
+          <ContentRendererMarkdown :value="contact" :components="{h1: 'h1'}" />
           <template #empty>
-            <p>No content found.</p>
+            <p>{{$t('content_not_found')}}</p>
           </template>
         </ContentRenderer>
 </div>

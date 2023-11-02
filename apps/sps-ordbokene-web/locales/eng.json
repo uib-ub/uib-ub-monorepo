@@ -1,6 +1,10 @@
 {
   "sub_title": "Bokmålsordboka and Nynorskordboka",
+  "home": "Home",
+  "menu": "Menu",
   "help": "Help",
+  "about":"About",
+  "contact": "Contact us",
   "autocomplete_suggestions": "Search suggestion | search suggestions",
   "advanced_help": "About advanced search",
   "advanced": "Advanced search",
@@ -8,18 +12,18 @@
   "show_articles": "Articles",
   "show_list": "List view",
   "simple": "Simple search",
-  "about":"About",
   "breadcrumbs": "Breadcrumbs",
-  "monthly": "Titbit from ",
+  "content_not_found": "Content not available",
+  "monthly": "Titbit from {dict}",
   "photo": "Photo by Erwan Hesry on unsplash.com",
   "close": "Close",
   "cancel": "Cancel",
-  "or": " or ",
+  "three_genera": "{m}, {f} or {n}",
+  "two_genera": "{a} or {b}",
   "in": " in ",
   "and": " and ",
   "from": "from",
   "to_top": "Back to top",
-  "home": "Home",
   "per_page": "Results per page: ",
   "previous-page": "Previous page",
   "next-page": "Next page",
@@ -29,11 +33,13 @@
   "reset": "Reset",
   "clear": "Clear",
   "chosen_dict": "Chosen dictionary: ",
-  "footer_description": " show spelling and inflection in line with official Norwegian spelling. The Language Council and the University of Bergen are behind the dictionaries.",
+  "footer_description": "{bm} and {nn} show spelling and inflection in line with official Norwegian spelling. The Language Council and the University of Bergen are behind the dictionaries.",
+  "privacy": "Privacy",
   "accessibility": {
-    "menu": "Open top menu",
-    "callout": "Showing results for the keyword "
-  },
+    "page": "Accessibility",
+    "main_content": "Skip to main content",
+    "statement": "Accessibility statement"
+},
   "dicts": {
       "nn": "Nynorsk dictionary",
       "bm": "Bokmål dictionary",
@@ -49,15 +55,11 @@
     "bm": "Bokmål",
     "bm,nn": "Both"
   },
-  "menu": {
-    "title": "Menu",
-    "search_pages": "Search pages"
-  },
   "options": {
     "title": "Search options",
-    "dict": "Dictionaries:",
+    "dict": "Dictionaries",
     "scope": {
-      "title": "Search for:",
+      "title": "Search for",
       "value": {
         "e": "Headwords",
         "ei": "All words",
@@ -116,6 +118,8 @@
 },
   "settings": {
       "title": "Settings",
+      "cookie_prompt": "For technical reasons we need to use cookies to store your settings for later. This is only used to enhance your user experience, and we do not use these cookies to track your activity.",
+      "accept_cookies": "Accept cookies",
       "inflection_no": "Show inflection codes",
       "inflection_expanded": "Always show inflection tables",
       "inflection_table_context": "Show context for participle forms in the inflection tables",
@@ -136,23 +140,27 @@
         "always": "Show exerpts of articles",
         "never": "Show complete articles"
     },
-    "reset": "Delete stored settings",
+    "reset": "Reset settings",
+    "clear_cookies": "Clear cookies",
     "reset_done":"Deleted"
 },
-"contact": "Contact us",
 "notifications": {
-    "redirect": "Showing senses of the dictionary entry",
-    "translation": "Compare to machine translation suggested by Apertium:",
-    "translation_title": "Machine translation",
-    "inflected": "An inflection of:",
+    "translation": "Click the suggestion below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway. | Click the suggestions below to add translation based on the translation software Apertium and the glossary {adm} from the The Language Council of Norway.",
+    "translation_title": "Possible translation",
+    "inflected": "{word} is an inflection of:",
+    "also_inflected": "{word} is also an inflection of:",
+    "inflected_title": "Inflected forms",
     "did_you_mean": "Did you mean:",
     "similar": "Similar words:",
     "similar_bm": "Add similar results from Bokmålsordboka: ",
     "similar_nn": "Add similar results from Nynorskordboka: ",
     "search": "Search",
     "back": "Back to search",
+    "simple": "Standard search",
     "not_a_word": " is not a word in ",
     "results": "No results | One result | {count} results",
+    "results_dict": "No results in {dict}|One result in {dict}|{count} results in {dict}",
+    "suggestions_available": "Search suggestions available | Additional search suggestions available",
     "keywords": "entries",
     "ignored_words": "The search was ignored because we limit queries to 20 words.",
     "ignored_chars": "The search was ignored because we do not accept words with more than 40 characters.",
@@ -167,7 +175,13 @@
     },
     "no_results": {
       "title": "No results",
-      "description": ["Your search yields no results in {dict}", "Note that thera are endless ways of combining words into new compound words in Norwegian, and many such words are therefore not included in the dictionary."]
+      "description": ["Your search yields no results in {dict}", "Note that there are endless ways of combining words into new compound words in Norwegian, and many such words are therefore not included in the dictionary."]
+    },
+    "feedback": {
+      "title": "Did you find the word you were looking for?",
+      "yes": "Yes",
+      "no": "No",
+      "thanks": "Thank you for the feedback!"
     }
     
 },
@@ -211,7 +225,9 @@
     "new": "New in {dict}"
 },
 "error": {
-      "article": "An error has occured in article {no} in {dict}",
+      "article": "Could not fetch article {article_id} in {dict}",
+      "articles": "Cound not fetch search results",
+      "status": "Status code: {code}",
       "404": {
           "title": "Not Found",
           "description": "The page may have been deleted or moved, or you may have used an invalid link."
@@ -222,10 +238,10 @@
       },
       "server": {
           "title": "Server Error",
-          "description": "Something went wrong on the server side (status code: {code})"},
+          "description": "Something went wrong on the server side."},
       "generic_code": {
           "title": "Error",
-          "description": "An unexpected error occurred while communicating with the server (status code: {code})"},
+          "description": "An unexpected error occurred while communicating with the server."},
       "network": {
           "title": "Connection Error",
           "description": "A network problem prevented the page from loading. Please try reloading the page or check if you are connected to the internet."},

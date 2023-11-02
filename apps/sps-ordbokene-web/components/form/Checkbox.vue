@@ -1,7 +1,7 @@
 <template>
 <div class="checkbox-container">
   <label>
-<input  v-model="model" type="checkbox" :checked="props.checked">
+  <input type="checkbox" :checked="props.checked" v-model="model">
     <slot></slot>
   </label>
 </div>
@@ -9,9 +9,7 @@
 </template>
 
 <script setup>
-
 const emit= defineEmits(['update:modelValue'])
-
 const props = defineProps({
     checked: {
         type: Boolean,
@@ -39,6 +37,7 @@ const model = computed({
     input:checked:hover {
       accent-color: theme('colors.secondary.DEFAULT') !important;
     }
+
 
 
     label {

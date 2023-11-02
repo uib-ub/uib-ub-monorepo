@@ -6,38 +6,40 @@
           scope="row">
         {{tagToName(tags.label)}}
       </th>
-      <td v-for="([rowspan,rowindex,forms], index) in cells"
+      <td class="notranslate infl-cell xs"
+          v-for="([rowspan,rowindex,forms], index) in cells"
           :key="index"
-          class="notranslate infl-cell xs"
           :colspan="rowspan"
-          :index="rowindex"
           :headers="tags.block + ' ' + (tags.label || '')"
-          :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
-          @mouseover="$emit('hilite', rowindex, lemmaId)"
-          @mouseleave="$emit('unhilite')">
-        <span v-for="(form, index2) in forms"
-              :key="index2"
-              class='comma'>{{form}}</span>
+          v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
+          v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
+          v-on:mouseleave="$emit('unhilite')">
+        <span class='comma'
+              v-for="(form, index) in forms"
+              :key="index">{{form}}</span>
       </td>
     </template>
     <template v-if="tags.title">
-      <th :id="tags.title"
-          class="infl-group"
+      <th class="infl-group"
+          :id="tags.title"
           scope="col"
           :colspan="paradigms.length+1">
         {{tagToName(tags.title)}}
       </th>
     </template>
   </tr>
-  </template>
+</template>
   
 <script>
-import { inflectedForm, tagToName } from './mixins/ordbankUtils.js' 
+
+
+
+import { inflectedForm, tagToName
+        } from './mixins/ordbankUtils.js' 
 
 export default {
     name: 'inflectionRowsAdj',
-    props: ['paradigms','tags','locLang','lemma-id'],
-    emits: ['hilite', 'unhilite'],
+    props: ['paradigms','tags','locLang','lemmaId'],
     data: function () {
         return {
             cells: !this.tags.title ?
@@ -59,3 +61,4 @@ export default {
     }
 }
 </script>
+  

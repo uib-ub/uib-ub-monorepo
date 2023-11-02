@@ -5,16 +5,16 @@
           :key="index"
            v-bind="item.props"><!--
           -->{{item.html}}<!--
-       --><NuxtLink class="article_ref notranslate" v-if="item.type == 'article_ref'" :to="item.ref" @click="link_click" :key="index"><!--
-       --><DefElement tag='span' v-if="item.link_text.type_" :dict="dict" :key="item.id+'_sub'" :body='item.link_text' :content_locale="content_locale"/><span v-else>{{item.link_text}}</span><!--
-       --><span v-if="item.lemmas[0].hgno" class="homograph" :key="index"><!--
+       --><NuxtLink class="article_ref notranslate" v-if="item.type == 'article_ref'" :to="item.ref" v-on:click="link_click(item.ref)" :key="index"><!--
+       --><DefElement tag='span' v-if="item.link_text.type_" :dict="dict" :key="item.id+'_sub'" :body='item.link_text' :scoped_locale="scoped_locale"/><span v-else>{{item.link_text}}</span><!--
+       --><span class="homograph" v-if="item.lemmas[0].hgno" :key="index"><!--
         --> (<span class="sr-only">{{parseInt(item.lemmas[0].hgno)}}</span><span aria-hidden="true">{{roman_hgno(item.lemmas[0])}}{{item.definition_order ? '': ')'}}</span></span>
         <span class="def_order" v-if="item.definition_order">{{item.lemmas[0].hgno ? ', ': ' ('}}{{item.definition_order}})</span>
       </NuxtLink><span v-else>{{item.link_text}}</span>
        <!--
-       --><span v-if="item.type == 'fraction'" class="numerator">{{item.num}}</span><!--
+       --><span class="numerator" v-if="item.type == 'fraction'">{{item.num}}</span><!--
        -->{{item.type == 'fraction' ? '⁄' : ''}}<!--
-       --><span v-if="item.type == 'fraction'" class="denominator">{{item.denom}}</span><!--
+       --><span class="denominator" v-if="item.type == 'fraction'">{{item.denom}}</span><!--
  --></component>
  <span v-if="semicolon && no_preceeding_punctuation">; </span>
  <span v-if="comma && no_preceeding_punctuation">, </span>
@@ -33,8 +33,8 @@ const i18n = useI18n()
 
 
 const emit = defineEmits(['error', 'link-click'])
-const link_click = (event) => {
-    emit('link-click', event)
+const link_click = (itemref) => {
+    emit('link-click', itemref)
 }
 
 const props = defineProps({
@@ -44,7 +44,7 @@ const props = defineProps({
       default: 'span'
     },
     dict: String,
-    content_locale: String,
+    scoped_locale: String,
     semicolon: Boolean,
     comma: Boolean,
     has_article_ref: Boolean

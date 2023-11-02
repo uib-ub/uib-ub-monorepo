@@ -4,7 +4,6 @@
           :key="index"
           class="notranslate infl-cell"
           :rowspan="rowspan"
-          :index="rowindex"
           :headers="headers"
           :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
             @mouseover="$emit('hilite', rowindex, lemmaId)"

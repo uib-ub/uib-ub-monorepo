@@ -10,7 +10,6 @@
           :key="index"
           class="notranslate infl-cell xs"
           :colspan="rowspan"
-          :index="rowindex"
           :headers="tags.block + ' ' + (tags.label || '')"
           :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
           @mouseover="$emit('hilite', rowindex, lemmaId)"

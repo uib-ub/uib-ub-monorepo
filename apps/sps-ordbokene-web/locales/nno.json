@@ -1,6 +1,10 @@
 {
     "sub_title": "Bokmålsordboka og Nynorskordboka",
+    "home": "Til forsida",
+    "menu": "Meny",
     "help": "Hjelp",
+    "about": "Om ordbøkene",
+    "contact":  "Kontakt oss",
     "autocomplete_suggestions": "Søkjeforslag | søkjeforslag",
     "advanced_help": "Søkjehjelp",
     "advanced": "Avansert søk",
@@ -8,20 +12,20 @@
     "show_articles": "Artiklar",
     "show_list": "Listevisning",
     "simple": "Enkelt søk",
-    "about":"Om ordbøkene",
     "breadcrumbs": "Brødsmulesti",
+    "content_not_found": "Innhold ikkje tilgjengeleg",
     "photo": "Foto: Erwan Hesry (unsplash.com)",
     "background": "Bakgrunnsbilde",
-    "monthly": "Smakebit frå ",
+    "monthly": "Smakebit frå {dict}",
     "close": "Lukk",
     "cancel": "Avbryt",
     "to_top": "Til toppen",
-    "home": "Til forsida",
     "per_page": "Resultat per side: ",
     "previous-page": "Forrige side",
     "next-page": "Neste side",
     "pageof": "Side {page} av {pages}",
-    "or": " eller ",
+    "three_genera": "{m}, {f} eller {n}",
+    "two_genera": "{a} eller {b}",
     "in": " i ",
     "and": " og ",
     "from": "frå",
@@ -30,14 +34,12 @@
     "reset": "Nullstill",
     "clear": "Tøm",
     "chosen_dict": "Vald ordbok: ",
-    "footer_description": " viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
+    "footer_description": "{bm} og {nn} viser skrivemåte og bøying i tråd med norsk rettskriving. Språkrådet og Universitetet i Bergen står bak ordbøkene.",
+    "privacy": "Personvern",
     "accessibility": {
-      "menu": "Opne toppmeny",
-      "main_content": "Gå til hovudinnhald",
-      "bm": "Gå til treff i Bokmålsordboka",
-      "nn": "Gå til treff i Nynorskordboka",
-      "homograph": "Artikkel nummer ",
-      "callout": "Viser resultater for oppslagsordet "
+        "page": "Tilgjenge",
+        "main_content": "Gå til hovudinnhald",
+        "statement": "Tilgjeerklæring"
     },
     "dicts": {
         "nn": "Nynorskordboka",
@@ -54,17 +56,11 @@
       "bm": "Bokmål",
       "bm,nn": "Begge"
     },
-    "menu": {
-        "title": "Meny",
-        "search_pages": "Søkjesider",
-        "help": "Hjelp",
-        "about": "Om ordbøkene"
-        },
     "options": {
         "title": "Søkjealternativ",
-        "dict": "Ordbøker:",
+        "dict": "Ordbøker",
         "scope": {
-            "title": "Søk etter:",
+            "title": "Søk etter",
             "value": {
                 "e": "Oppslagsord",
                 "ei": "Alle ordformer",
@@ -123,6 +119,8 @@
 },
     "settings": {
         "title": "Innstillingar",
+        "cookie_prompt": "For å lagra innstillingane dine til seinare må me av tekniske årsaker bruke informasjonskapslar (cookiar). Dette blir berre brukt for å forbetra brukaropplevinga di, og vi bruker ikkje desse informasjonskapslane til å spora aktiviteten din.",
+        "accept_cookies": "Aksepter informasjonskaplslar",
         "inflection_no": "Vis bøyingskodane frå dei trykte ordbøkene",
         "inflection_expanded": "Vis alltid bøyingstabellane",
         "inflection_table_context": "Vis kontekst for partisippformer i bøyingstabellane",
@@ -139,23 +137,27 @@
             "always": "Vis berre utdrag",
             "never": "Vis berre fullstendige artiklar"
         },
-        "reset": "Slett lagra innstillingar",
+        "reset": "Nullstill innstillingar",
+        "clear_cookies": "Slett informasjonskaplslar",
         "reset_done":"Slettet"
     },
-    "contact":  "Kontakt oss",
     "notifications": {
-        "redirect": "Viser tydingar av oppslagsordet",
-        "translation_title": "Maskinomsetjing",
-        "translation": "Samanlikn med maskinomsetjing foreslått av Apertium:",
-        "inflected": "Bøygde former av:",
+        "translation_title": "Mogleg omsetjing",
+        "translation": "Klikk på forslaget under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. | Klikk på forslaga under for å legge til omsetjing basert på omsetjingsprogrammet Apertium og Språkrådets {adm}. ",
+        "inflected": "{word} er ei bøygd form av:",
+        "also_inflected": "{word} er òg ei bøygd form av:",
+        "inflected_title": "Bøygde former",
         "did_you_mean": "Meinte du:",
         "similar": "Liknande oppslagsord:",
         "similar_bm": "Legg til liknande treff frå Bokmålsordboka: ",
         "similar_nn": "Legg til liknande treff frå Nynorskordboka: ",
         "search": "Søk i ordbøkene",
         "back": "Tilbake til søkjeresultata",
+        "simple": "Vanleg søk",
         "not_a_word": " er ikkje eit oppslagsord i ",
         "results": "Ingen treff | Eitt treff| {count} treff",
+        "results_dict": "Ingen treff i {dict}|Eitt treff i {dict}|{count} treff i {dict}",
+        "suggestions_available": "Søkjeforslag tilgjengelege | Ytterlegare søkjeforslag tilgjengelege",
         "keywords": "oppslagsord",
         "ignored_words": "Søket vart ignorert fordi vi avgrensar talet på førespurnader til 20 ord.",
         "ignored_chars": "Søket vart ignorert fordi vi ikkje tillèt søkjeord med meir enn 40 teikn.",
@@ -166,11 +168,17 @@
         ],
         "fulltext": {
             "title": "Fritekstsøk",
-            "description": "Søkjet ditt gir treff i avansert søk med fritekstsøk."
+            "description": "Søket ditt gir treff i avansert søk med fritekstsøk."
           },
           "no_results": {
             "title": "Ingen treff",
-            "description": ["Søkjet ditt ga ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
+            "description": ["Søket ditt gav ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
+          },
+          "feedback": {
+            "title": "Fann du ordet du leita etter?",
+            "yes": "Ja",
+            "no": "Nei",
+            "thanks": "Takk for tilbakemeldinga!"
           }
     },
     "table": {
@@ -212,7 +220,9 @@
         "new": "Nytt i {dict}"
     },
     "error": {
-          "article": "Det har oppstått ein feil i artikkel {no} i {dict}",
+          "article": "Kunne ikkje hente artikkel {article_id} i {dict}",
+          "articles": "Kunne ikkje hente søkjeresultat",
+          "status": "Statuskode: {code}",
           "404": {
               "title": "Ikkje funne",
               "description": "Sida kan ha blitt sletta eller flytta, eller du kan ha brukt ei ugyldig lenkje."
@@ -223,10 +233,10 @@
           },
           "server": {
               "title": "Feil på server",
-              "description": "Noko gjekk gale på serversida (statuskode: {code})"},
+              "description": "Noko gjekk gale på serversida."},
           "generic_code": {
               "title": "Feil",
-              "description": "Det har oppstått ein uventa feil i kommunikasjonen med serveren (statuskode: {code})"},
+              "description": "Det har oppstått ein uventa feil i kommunikasjonen med serveren."},
           "network": {
               "title":"Tilkoplingsfeil",
               "description": "Eit nettverksproblem hindra lasting av sida. Prøv å laste sida på nytt, eller sjekk om du er kopla til internett."},

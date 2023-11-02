@@ -1,9 +1,9 @@
 <template>
-<div>
+<div class="secondary-page overflow-auto">
         <ContentRenderer :value="data">
-          <ContentRendererMarkdown :value="data" :components="{h1: 'h2', h2: 'h3'}"/>
+          <ContentRendererMarkdown :value="data"/>
           <template #empty>
-            <p>No content found.</p>
+            <p>{{$t('content_not_found')}}</p>
           </template>
           
       </ContentRenderer>
@@ -18,12 +18,19 @@ const i18n = useI18n()
 const route = useRoute()
 
 
-const { data } = await useAsyncData('subpage-' + route.fullPath, () => queryContent(route.fullPath).findOne(),
-        {watch: i18n.locale})
+const { data } = await useAsyncData('subpage-data', () => {
+  return queryContent(route.params.locale ? route.fullPath : '/' + i18n.locale.value + route.fullPath ).findOne()})
 
 
 useHead({
-    title: i18n.t(route.matched[0].name) + ": " + data.value.body.children[0].children[0].value
+    title: data.value.title,
+    meta: [
+      {property: 'og:title', content:  data.value.title},
+      {name: 'twitter:title', content:  data.value.title },
+      {name: 'description', content: data.value.description },
+      {name: 'twitter:description', content: data.value.description },
+      {property: 'og:description', content: data.value.description }
+    ]
 })
 
 </script>

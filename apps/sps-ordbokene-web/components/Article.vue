@@ -1,103 +1,95 @@
 <template>
-  <div v-if="list && !welcome" class="list-view-item">
-      <span v-if="pending" class="list-view-item"><div class="skeleton skeleton-content w-25"/><div class="skeleton skeleton-content w-50"/></span>
-      <NuxtLink v-else class="result-list-item" :to="link_to_self()">
-
-  <div v-for="(lemma_group, i) in lemma_groups" :key="i">
-  <span class="lemma-group">
-
-    <span v-for="(lemma, index) in lemma_group.lemmas"
-          :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :content_locale="content_locale"/><span v-else>{{lemma.lemma}}</span></span>
-          <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
-                  <span v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1" class="title_comma">
-                      {{", "}}
-                  </span>
+  <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
+  <div v-else :class="list && 'list-view-item flex-col' || 'article flex flex-col'">
+  <div v-if="list && !welcome"  :lang="dictLang[dict]">
+    <button class="list-view-button !flex !gap-4 px-4 justify-start !py-2 text-lg truncate w-full" 
+            :href="link_to_self()" 
+            @click="expanded = !expanded" 
+            :aria-expanded="expanded"
+            :aria-controls="expanded ? `${dict}_${article_id}_snippet` : undefined">
+      <span class="self-center"><Icon :name="expanded ? 'bi:chevron-up' : 'bi:chevron-down'" size = "1.25rem"/></span>
+      <span class="flex flex-col  overflow-hidden">
+        <span class="flex">
+      <span v-for="(lemma_group, i) in lemma_groups" :key="i" class="block">
+      <span class="lemma-group">
+        <span v-for="(lemma, index) in lemma_group.lemmas.slice(0, 1)"
+              class="whitespace-nowrap"
+              :key="index"><span class="lemma"><DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :scoped_locale="scoped_locale"/><span v-else>{{lemma.lemma}}</span></span>
+              <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
+        </span>
     </span>
-</span>
-<span v-if="secondary_header_text">,&nbsp;<span class="lemma-group lemma">{{secondary_header_text}}</span></span>
-  &nbsp;<em v-if="lemma_group.description" class="subheader ">
-  <span class="header_group_list">{{lemma_group.description}}</span>
-        {{lemma_group.pos_group}}
-  <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
+    <span v-if="secondary_header_text">,&nbsp;<span class="lemma-group text-primary">{{secondary_header_text}}</span></span>
+      &nbsp;<span v-if="lemma_group.description" class="subheader" :lang="scoped_lang">
+      <span class="header-group-list text-2xl">{{lemma_group.description}}</span>
+            
+      <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
+      </span>
+      </span>
+      
+        </span>
+    <span :id="`${dict}_${article_id}_snippet`" class="text-start truncate ">{{snippet}}</span>
+    </span> 
+    
+    </button>
+</div>
+<div v-if="!list || expanded" :lang="dictLang[dict]" :class="{'expanded-article': list}" :id="`${dict}_${article_id}_body`">
+      <div>
+        <h1 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: scoped_locale})}}</h1>
+        <h1 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h1>
+        <div class="px-4 pt-4 pb-2" :class="{'px-4 pb-3 pt-4' : welcome,  '!py-0 !px-3': list}">
 
-  </em>
-</div>{{snippet}}
-
-    </NuxtLink>
-  </div>
-    <div v-else-if="!error" class="article flex flex-col justify-between">
-      <div v-if="false && pending && !welcome" class="skeleton-container">
-            <div class="skeleton mt-4 skeleton-heading"/>
-        <div class="skeleton mt-2 mb-4 skeleton-subheading"/>
-        <div class="skeleton skeleton-content w-50 "/>
-        <div class="skeleton skeleton-content w-25 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-75"/>
-        <div class="skeleton skeleton-content w-25 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-50"/>
-        <div class="skeleton skeleton-content w-75 skeleton-indent"/>
-        <div class="skeleton skeleton-content w-25"/>
-        </div>
-        <div v-else>
-          
-        <h2 v-if="welcome" class="dict-label">{{$t('monthly', 1, { locale: content_locale}) + {"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
-        <h2 v-else-if="single" class="dict-label article-dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
-        <div :class="welcome? 'px-4 pb-3 pt-4' : 'px-4 pt-4 pb-2'">
-
-        <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :content_locale="content_locale" :dict="dict" :article_id="article_id"/>
+        <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :scoped_locale="scoped_locale" :dict="dict" :article_id="article_id"/>
       
       <div v-if="data.lemmas[0].split_inf" class="mt-2 mb-3">
-        <div class="flex gap-2 align-middle">{{$t('split_inf.title')}}: -a
-        <button type="button" :aria-expanded="split_inf_expanded" aria-controls="split-inf-explanation" class="rounded leading-none !p-0 !text-primary hover:bg-primary-lighten bg-primary  border-primary-lighten" @click="split_inf_expanded = !split_inf_expanded">
+        <div class="flex gap-2 align-middle"><span :id="`${dict}_${article_id}_split_inf_label`">{{$t('split_inf.title')}}: -a</span>
+        <button type="button" :aria-expanded="split_inf_expanded" :aria-label="`${dict}_${article_id}_split_inf_label`" aria-controls="split-inf-explanation" @click="split_inf_expanded = !split_inf_expanded" class="rounded leading-none !p-0 !text-primary hover:bg-primary-lighten bg-primary  border-primary-lighten">
           <Icon :name="split_inf_expanded? 'bi:dash' : 'bi:plus'" class="text-white !m-0 !p-0" size="1.5em"/>
         </button>
         </div>
         
-        <div v-if="split_inf_expanded" id="split-inf-explanation" class="mb-4 my-2" >
-          {{$t('split_inf.content[0]', content_locale)}} <em>-a</em> {{$t('split_inf.content[1]', content_locale)}}
+        <div class="mb-4 my-2" id="split-inf-explanation" v-if="split_inf_expanded">
+          {{$t('split_inf.content[0]', scoped_locale)}} <em>-a</em> {{$t('split_inf.content[1]', scoped_locale)}}
           <a target="_blank" 
-             href="https://www.sprakradet.no/svardatabase/sporsmal-og-svar/kloyvd-infinitiv-/">{{$t('split_inf.content[2]', content_locale)}}</a>
+             href="https://www.sprakradet.no/svardatabase/sporsmal-og-svar/kloyvd-infinitiv-/">{{$t('split_inf.content[2]', scoped_locale)}}</a>
         </div>
         </div>
 
-      <button  v-if="!settings.inflectionExpanded && inflected && !welcome"
-               type="button"
-               class="btn btn-primary my-1 border-primary-darken !pr-2"
-               :aria-expanded="inflection_expanded" 
-               :aria-controls="inflection_expanded ? 'inflection-'+article_id : null"
-               @click="inflection_expanded = !inflection_expanded">
-             {{$t('article.show_inflection')}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.5em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
+      <button type="button" v-if="inflected && !welcome && !single && !list" 
+              class="btn btn-primary my-1 border-primary-darken !pr-2" 
+              @click="expand_inflection" 
+              :lang="scoped_lang"
+              :aria-expanded="inflection_expanded" 
+              :aria-controls="inflection_expanded ? `${dict}_${article_id}_inflection` : null">
+             {{ $t(inflection_expanded ? 'article.hide_inflection' : 'article.show_inflection', 1, {locale: scoped_locale})}}<span v-if="!inflection_expanded"><Icon name="bi:chevron-down" class="ml-4" size="1.25em"/></span><span v-if="inflection_expanded"><Icon name="bi:chevron-up" class="ml-4" size="1.5em"/></span>
       </button>
-        <div v-if="inflected && !welcome && (inflection_expanded || settings.inflectionExpanded)" :id="'inflection-'+article_id" ref="inflection_table" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out">
-            <div class="inflection-container p-2">
-                <NuxtErrorBoundary @error="inflection_error">
-                <InflectionTable :key="$i18n.locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :lemma-list="lemmas_with_word_class_and_lang" :context="true" />
-                <InflectionTable :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :lemma-list="lemmas_with_word_class_and_lang" :context="true"/>
-                </NuxtErrorBoundary>
+        <div v-if="inflected && !welcome && (inflection_expanded || single || list)" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out" :id="`${dict}_${article_id}_inflection`" ref="inflection_table">
+            <div class="overflow-x-auto p-2">
+                <InflectionTable :scoped_locale="scoped_locale" :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
+                <InflectionTable :scoped_locale="scoped_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemmaList="lemmas_with_word_class_and_lang" :context="true" :key="$i18n.locale"/>
             </div>
         </div>
-        <NuxtErrorBoundary @error="body_error">
-        <div ref="article_content" class="article_content pt-1">
+        <div class="article_content pt-1" ref="article_content">
             <section v-if="!welcome && data.body.pronunciation && data.body.pronunciation.length" class="pronunciation">
-                <h4>{{$t('article.headings.pronunciation', 1, { locale: content_locale})}}</h4>
+                <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.pronunciation', 1, { locale: scoped_locale})}}</h3>
 
-              <DefElement v-for="(element, index) in data.body.pronunciation" :key="index" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :body='element' @link-click="link_click"/>
+              <DefElement v-for="(element, index) in data.body.pronunciation" :semicolon="index == data.body.pronunciation.length-2" :comma="index < data.body.pronunciation.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
           <section v-if="!welcome && data.body.etymology && data.body.etymology.length" class="etymology">
-              <h4>{{$t('article.headings.etymology', 1, { locale: content_locale})}}</h4>
-              <DefElement v-for="(element,index) in data.body.etymology" :key="index" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict"  :body='element' @link-click="link_click"/>
+              <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.etymology', 1, { locale: scoped_locale})}}</h3>
+              <DefElement v-for="(element,index) in data.body.etymology" :semicolon="index == data.body.etymology.length-2" :comma="index < data.body.etymology.length-2" :dict="dict" :key="index" :body='element' v-on:link-click="link_click"/>
 
           </section>
-          <section v-if="has_content && !welcome" class="definitions">
-              <h4 v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: content_locale})}}</h4>
+          <section class="definitions" v-if="has_content && !welcome">
+              <h3 :lang="locale2lang[scoped_locale]" v-if="!welcome">{{$t('article.headings.definitions', 1, { locale: scoped_locale})}}</h3>
 
-              <Definition v-for="definition in data.body.definitions" :key="definition.id" :content_locale="content_locale" :dict="dict" :level="1" :body='definition' :welcome="welcome" @link-click="link_click"/>
+              <Definition v-for="definition in data.body.definitions" :scoped_locale="scoped_locale" :dict="dict" :level="1" :key="definition.id" :body='definition' v-on:link-click="link_click" :welcome="welcome"/>
 
           </section>
           <section v-if="sub_articles.length && !welcome" class="expressions">
-              <h4>{{$t('article.headings.expressions', 1, { locale: content_locale})}}</h4>
+              <h3 :lang="locale2lang[scoped_locale]">{{$t('article.headings.expressions', 1, { locale: scoped_locale})}}</h3>
               <ul>
-              <SubArticle v-for="(subart, index) in sub_articles" :key="index" class="p-2" :body="subart" :dict="dict" @link-click="link_click" :content_locale="content_locale"/>
+              <SubArticle class="p-2" v-for="(subart, index) in sub_articles" :body="subart" :dict="dict" :key="index" v-on:link-click="link_click" :scoped_locale="scoped_locale"/>
               </ul>
             </section>
 
@@ -107,35 +99,36 @@
             </WelcomeMarkdown>
           </div>
       </div>
-      </NuxtErrorBoundary>
-
   </div>
   
 </div>
 <div class="mx-1">
-<ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :content_locale="content_locale" :dict="dict" :article_id="article_id" />
-        <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: content_locale})}}</NuxtLink></div>
+<ArticleFooter v-if="!welcome" :lemmas="data.lemmas" :scoped_locale="scoped_locale" :dict="dict" :article_id="article_id" />
+        <div v-else class="text-right px-3 py-1 "><NuxtLink :to="link_to_self()">{{$t('article.show', 1, {locale: scoped_locale})}}</NuxtLink></div>
 </div>
 </div>
+  </div>
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
 import { useSearchStore } from '~/stores/searchStore'
+import { useI18n } from 'vue-i18n'
 import {useSettingsStore } from '~/stores/settingsStore'
 import {useSessionStore } from '~/stores/sessionStore'
 
 const { t } = useI18n()
 const i18n = useI18n()
 const store = useSearchStore()
-const inflection_expanded = ref(false)
 const split_inf_expanded = ref(false)
 const settings = useSettingsStore()
 const route = useRoute()
 const session = useSessionStore()
+const expanded = ref(false)
+const inflection_expanded = ref(settings.inflectionExpanded || false)
+
 
 const props = defineProps({
-    content_locale: String,
+    scoped_locale: String,
     article_id: Number,
     dict: String,
     welcome: Boolean,
@@ -144,46 +137,34 @@ const props = defineProps({
 })
 
 
-const { pending, data, error } = await useAsyncData('article_'+props.dict+props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`,
-                                                                                        {
-                                                                                            onResponseError({ request, response, options }) {
-                                                                                                // TODO: plausible logging, error message if article view
-                                                                                                console.log("RESPONSE ERROR", response.status)
-                                                                                            },
-                                                                                            onRequestError({ request, response, error }) {
-                                                                                                // TODO: plausible logging, error message if article view
-                                                                                                console.log("REQUEST ERROR", error)
-                                                                                            }
-                                                                                        }))
+
+const { pending, data, error } = await useAsyncData('article_' + props.dict + props.article_id, () => $fetch(`${session.endpoint}${props.dict}/article/${props.article_id}.json`))
 
 
-  if (route.name !== 'welcome' && route.name !== 'index' && route.name !== 'search' && data.value)
+if (route.name != 'welcome' && route.name != 'index' && route.name != 'search' && data.value)
   data.value.lemmas.forEach(lemma => {
       store.lemmas[props.dict].add(lemma.lemma)
       lemma.paradigm_info.forEach(paradigm => {
         paradigm.inflection.forEach(inflection => {
-          if (inflection.tags[0] === "Inf") {
+          if (inflection.tags[0] == "Inf") {
             store.lemmas[props.dict].add(inflection.word_form)
           }
         })
 
       })
-
 })
 
 
-if (error.value && session.endpoint === "https://oda.uib.no/opal/prod/`") {
+const expand_inflection = () => {
+  useTrackEvent('expand_inflection', {props: {article: props.dict + "/" + props.article_id}})
+  inflection_expanded.value = !inflection_expanded.value
+}
+
+
+if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()
-}
-
-const body_error = (error) => {
-  console.log("BODY_ERROR", error)
-}
-
-const inflection_error = (error) => {
-  console.log("INFLECTION_ERROR", error)
 }
 
 
@@ -204,7 +185,7 @@ const inflected = computed(() => {
 })
 
 const lemmas_with_word_class_and_lang = computed(() => {
-  return data.value.lemmas.map(lemma => Object.assign({language: props.dict === 'bm' ? 'nob' : 'nno',
+  return data.value.lemmas.map(lemma => Object.assign({language: props.dict == 'bm' ? 'nob' : 'nno',
                                                    word_class: lemma.paradigm_info[0].inflection_group.split('_')[0]}, lemma))
 })
 
@@ -212,8 +193,8 @@ const lemmas_with_word_class_and_lang = computed(() => {
 const find_sub_articles = (definition) => {
   let sub_art_list = []
 try {
-  const sub_definitions = definition.elements.filter(el => el.type_ === 'definition')
-  const sub_articles = definition.elements.filter(el => el.type_ === 'sub_article' && el.lemmas)
+  let sub_definitions = definition.elements.filter(el => el.type_ == 'definition')
+  let sub_articles = definition.elements.filter(el => el.type_ == 'sub_article' && el.lemmas)
 
     sub_definitions.forEach((subdef, i) => {
       sub_art_list = sub_art_list.concat(find_sub_articles(subdef))
@@ -231,18 +212,18 @@ catch(error) {
 }
 const sub_articles = computed(() => {
   return data.value.body.definitions.reduce((acc, val) => acc.concat(find_sub_articles(val)), []).sort((s1, s2) => {   // Sort æ, ø and å correctly  
-    const lemma1 = s1.lemmas[0].toLowerCase()
-    const lemma2 = s2.lemmas[0].toLowerCase()
-    const lettermap = {229: 299, 248: 298, 230: 297}
+    let lemma1 = s1.lemmas[0].toLowerCase()
+    let lemma2 = s2.lemmas[0].toLowerCase()
+    let lettermap = {229: 299, 248: 298, 230: 297}
 
-    for (let i = 0; i < Math.min(lemma1.length, lemma2.length); i++) {
+    for (var i = 0; i < Math.min(lemma1.length, lemma2.length); i++) {
       let charcode1 = lemma1.charCodeAt(i)
       let charcode2 = lemma2.charCodeAt(i)
 
       charcode1 = lettermap[charcode1] || charcode1
       charcode2 = lettermap[charcode2] || charcode2
 
-      if (charcode1 !== charcode2) {
+      if (charcode1 != charcode2) {
         return charcode1 - charcode2
       }
     }
@@ -252,8 +233,8 @@ const sub_articles = computed(() => {
 })
 
 
-const link_click = (event) => {
-  console.log("ARTICLE CLICKED", event)
+const link_click = (itemref) => {
+  useTrackEvent('article_clicked', {props: {combined: props.dict + "/" + props.article_id, to: itemref, combined: props.dict + "/" + props.article_id + " => " + itemref}})
 }
 
 const link_to_self = () => {
@@ -262,7 +243,7 @@ const link_to_self = () => {
 
 
 const inflection_classes = (lemmas) => {
-  const inf_classes = new Set()
+  let inf_classes = new Set()
   let ureg = false
   lemmas.forEach((lemma, i) => {
   if (lemma.inflection_class) inf_classes.add(lemma.inflection_class)
@@ -270,7 +251,7 @@ const inflection_classes = (lemmas) => {
   })
   if (inf_classes.size){
 
-  const class_array = Array.from(inf_classes).sort()
+  let class_array = Array.from(inf_classes).sort()
   if (ureg) class_array.push("ureg.")
   let class_list
   if (class_array.length < 3) {
@@ -286,27 +267,31 @@ const inflection_classes = (lemmas) => {
 const lemma_groups = computed(() => {
   let groups = [{lemmas: data.value.lemmas}]
     try {
-      if (data.value.lemmas[0].paradigm_info[0].tags[0] === "DET" && data.value.lemmas[0].paradigm_info[0].tags.length > 1) {
-        groups = [{description: t('tags.' + data.value.lemmas[0].paradigm_info[0].tags[0], {locale: props.content_locale}), 
+      if (data.value.lemmas[0].paradigm_info[0].tags[0] == "DET" && data.value.lemmas[0].paradigm_info[0].tags.length > 1) {
+        groups = [{description: t('tags.' + data.value.lemmas[0].paradigm_info[0].tags[0], {locale: props.scoped_locale}), 
                    pos_group: ["Quant", "Dem", "Poss"].includes(data.value.lemmas[0].paradigm_info[0].tags[1]) ? 
-                                                                t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: props.content_locale}) 
+                                                                t('determiner.' + data.value.lemmas[0].paradigm_info[0].tags[1], {locale: props.scoped_locale}) 
                                                                 : '', 
                   lemmas: data.value.lemmas}]
       }
-      else if (data.value.lemmas[0].paradigm_info[0].tags[0] === 'NOUN') {
-          const genus_map  = {}
+      else if (data.value.lemmas[0].paradigm_info[0].tags[0] == 'NOUN') {
+          let genus_map  = {}
           data.value.lemmas.forEach(lemma =>{
-            const genera = new Set()
+            let genera = new Set()
             lemma.paradigm_info.forEach(paradigm => {
               if (paradigm.tags[1]) {
                 genera.add(paradigm.tags[1])
               }
             })
             let genus_description = ""
-            if (genera.size === 3) {
-              genus_description +=  t('tags.Masc') + ', ' +  t('tags.Fem', 1, { locale: props.content_locale}) +  t('or') +  t('tags.Neuter', 1, { locale: props.content_locale})
-            } else {
-              genus_description += Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: props.content_locale})).sort().join(t('or'))
+            const sorted_genera = Array.from(genera).sort((g) => { return {Masc: 1, Fem: 2, Neuter: 3}[g]})
+            if (sorted_genera.length == 3) {
+              genus_description += t('three_genera', {m: t('tags.Masc'), f: t('tags.Fem', { locale: props.scoped_locale}), n: t('tags.Neuter', { locale: props.scoped_locale})})
+            } else if (sorted_genera.length == 2) {
+              genus_description += t('two_genera', {a: t('tags.' + sorted_genera[0], { locale: props.scoped_locale}), b: t('tags.' + sorted_genera[1], { locale: props.scoped_locale})}) //Array.from(genera).map(code =>  t('tags.' + code, 1, { locale: props.scoped_locale})).sort().join(t('or'))
+            }
+            else if (sorted_genera.length == 1) {
+              genus_description += t('tags.' + sorted_genera[0], 1, { locale: props.scoped_locale})
             }
             if (genus_map[genus_description]) {
               genus_map[genus_description].push(lemma)
@@ -316,20 +301,20 @@ const lemma_groups = computed(() => {
             }
           })
           groups = Object.keys(genus_map).map(key => {
-            return {description:  t('tags.NOUN', 1, { locale: props.content_locale}), pos_group: key, lemmas: genus_map[key], }
+            return {description:  t('tags.NOUN', 1, { locale: props.scoped_locale}), pos_group: key, lemmas: genus_map[key], }
           })
 
 
       }
-      else if (data.value.lemmas[0].paradigm_info[0].tags[0] !== 'EXPR') {
-        const tag = data.value.lemmas[0].paradigm_info[0].tags[0] 
+      else if (data.value.lemmas[0].paradigm_info[0].tags[0] != 'EXPR') {
+        let tag = data.value.lemmas[0].paradigm_info[0].tags[0] 
         if (tag) { // Workaround to prevent undefined tag if expression is without tag in the database
-          groups = [{description:  t('tags.'+ tag, 1, { locale: props.content_locale}), lemmas: data.value.lemmas}]
+          groups = [{description:  t('tags.'+ tag, 1, { locale: props.scoped_locale}), lemmas: data.value.lemmas}]
         }
       }
 
       groups.forEach((lemma_group, index) => {
-            groups[index].inflection_classes = inflection_classes(lemma_group.lemmas)
+            groups[index]['inflection_classes'] = inflection_classes(lemma_group.lemmas)
           })
   } catch(error) {
     console.log("lemma_groups",props.article_id, props.dict, '"'+error.message+'"')
@@ -341,10 +326,10 @@ const lemma_groups = computed(() => {
 })
 
 const secondary_header_text = computed(() => {
-  const a_forms = []
+  let a_forms = []
     data.value.lemmas.forEach((lemma, i) => {
-      if (lemma.paradigm_info[0] && lemma.paradigm_info[0].inflection[1] && lemma.paradigm_info[0].inflection[1].tags[0] === 'Inf') {
-        const inf2 = lemma.paradigm_info[0].inflection[1].word_form
+      if (lemma.paradigm_info[0] && lemma.paradigm_info[0].inflection[1] && lemma.paradigm_info[0].inflection[1].tags[0] == 'Inf') {
+        let inf2 = lemma.paradigm_info[0].inflection[1].word_form
         if (inf2 && inf2.length) {
           a_forms.push(inf2)
         }
@@ -355,23 +340,23 @@ const secondary_header_text = computed(() => {
 
 const parse_subitems =  (explanation, text) => {
         let new_string = ""
-        const old_parts = text.split(/(\$)/)
+        let old_parts = text.split(/(\$)/)
         let linkIndex = 0
 
         old_parts.forEach((item) => {
-          if (item === '$') {
-            const subitem = explanation.items[linkIndex]
+          if (item == '$') {
+            let subitem = explanation.items[linkIndex]
             if (/^\d$/.test(subitem.text)) {
-              if (subitem.type_ === "superscript") {
+              if (subitem.type_ == "superscript") {
               new_string += "⁰¹²³⁴⁵⁶⁷⁸⁹"[parseInt(subitem.text)]
               }
-              else if (subitem.type_ === "subscript") {
+              else if (subitem.type_ == "subscript") {
                 new_string += "₀₁₂₃₄₅₆₇₈₉"[parseInt(subitem.text)]
               }
             }
 
               else if (subitem.id) {
-                const expandable = session['concepts_'+props.dict][explanation.items[linkIndex].id]
+                let expandable = session['concepts_'+props.dict][explanation.items[linkIndex].id]
                 new_string += expandable ? expandable.expansion : " [...] "
 
             }
@@ -381,9 +366,10 @@ const parse_subitems =  (explanation, text) => {
                }
                else new_string += subitem.text
             }
-            else if (explanation.items[linkIndex].lemmas) {
+            else  {
+              if (explanation.items[linkIndex].lemmas) {
               new_string +=  explanation.items[linkIndex].word_form || explanation.items[linkIndex].lemmas[0].lemma
-              
+              }
             }
             linkIndex += 1
           }
@@ -396,50 +382,78 @@ const parse_subitems =  (explanation, text) => {
   }
 
 
-const parse_definitions = (definition_list) => {
+const parse_definitions = (definition_list, shorten) => {
   let definitionTexts = []
     try {
     definition_list.forEach((definition) => {
       if (definition.elements) {
-      if (definition.elements[0].content) {
-        let new_string = parse_subitems(definition.elements[0], definition.elements[0].content)
-        if (new_string.substring(new_string.length, new_string.length - 1) === ":" && definition.elements[1].quote) {
-          new_string += " "+parse_subitems(definition.elements[1].quote, definition.elements[1].quote.content)
-          
+        for (let i = 0; i < definition.elements.length; i++) {
+          let item = definition.elements[i]
+
+          if (item.content) {
+              let new_string = parse_subitems(item, item.content)
+
+              if (!shorten || new_string.length && new_string[new_string.length -1] !== ":") { // prevent
+                definitionTexts.push(new_string)
+              }
+            }
+          else if (item.elements && item.type_ != 'definition' && !shorten) {
+            definitionTexts.push(parse_definitions(item.elements, shorten))
+          }
+          else if (item.quote && !shorten ) { 
+            let prev = definitionTexts[definitionTexts.length-1]
+            if (prev && prev[prev.length -1] == ":") {
+              definitionTexts[definitionTexts.length -1] += (" " + parse_subitems(item.quote, item.quote.content))
+
+            }
+            else if (definition.elements[i-1] && definition.elements[i-1].quote ) {
+
+                definitionTexts[definitionTexts.length -1] += ("; " + parse_subitems(item.quote, item.quote.content))
+              
+            }
+            else {
+              definitionTexts[definitionTexts.length -1] += (".\u00A0" + {bm: "Eksempel: ", nn: "Døme: "}[props.dict] + parse_subitems(item.quote, item.quote.content))
+            }
+          }
+
         }
-        definitionTexts.push(new_string)
-
-      }
-      else if (definition.elements[0].elements) {
-        definitionTexts.push(parse_definitions(definition.elements))
-      }
-
-      const subdefs = definition.elements.slice(1, definition.elements.length).filter(item => item.type_ === 'definition')
-
-      if (subdefs.length) {
-        definitionTexts.push(parse_definitions(subdefs))
-      }
-
+        let subdefs = definition.elements.slice(1, definition.elements.length).filter(item => item.type_ == 'definition')
+        if (subdefs.length) {
+          definitionTexts.push(parse_definitions(subdefs, shorten))
+        }
     }
     })
-    } catch(error) {
-      console.log("snippet", error.message)
+    } catch(error) {      
+      useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": " + error.toString()}})
       definitionTexts = []
     }
 
-    const snippet = definitionTexts.filter(item => item).join("\u00A0•\u00A0")
+    let snippet = definitionTexts.filter(item => item).join(";\u00A0")
     return snippet
   
 }
 
 const snippet = computed(() => {
-if (data.value) {
-  return parse_definitions(data.value.body.definitions)
-}
-else {
-  console.log('No article body')
-}
+  
+  if (data.value) {
+    let shorten =  data.value.body.definitions[0] && data.value.body.definitions[0].elements.length > 5   
+    return parse_definitions(data.value.body.definitions, shorten)
+  }
+  else {
+    useTrackEvent("snippet_error", {article: props.dict + "/" + props.article_id, props: {message: props.dict + "/" + props.article_id + ": No article body"}})
+    return ""
+  }
 
+})
+
+
+const scoped_lang = computed(() => {
+  return locale2lang[props.scoped_locale]
+})
+
+
+const metaSnippet = computed(() => {
+  return lemma_groups.value.map(item => item.description + " — ") + snippet.value
 })
 
 const title = computed(() => {
@@ -447,18 +461,19 @@ return data.value.lemmas[0].lemma
 })
 
 
-if (props.single) {
+if (props.single && data.value) {
   useHead({
-    title,
+    title: title,
     meta: [
-      {name: 'description', content: snippet },
+      {name: 'description', content: metaSnippet },
+      {name: 'twitter:title', content: title },
+      {name: 'twitter:description', content: metaSnippet },
       {property: 'og:title', content: title },
-      {property: 'og:description', content: snippet },
-      {name: 'twitter:description', content: snippet }  
+      {property: 'og:description', content: metaSnippet },
     ],
-    link: [
-    {rel: "canonical", href: `https://ordbokene.no/${props.dict}/${route.params.article_id}`}
-  ]
+    link: [ 
+      {rel: 'canonical', href: `https://ordbokene.no/${props.dict}/${props.article_id}` } // TODO: remove when we replace the old site
+    ]
   });
 }
 
@@ -467,22 +482,11 @@ if (props.single) {
 
 <style scoped>
 
- h2 {
+ h1 {
     font-variant-caps: all-small-caps;
-    @apply !text-xl font-semibold tracking-widest mb-0 ml-4 !text-gray-700;
+    @apply font-semibold tracking-widest mb-0 ml-4 !text-gray-700;
 }
 
-
-
-
-.inflection-container {
-    /* box-shadow: 1px 1px 1px theme("colors.gray.500"); */
-    /* box-shadow: 5px 5px 0px 0px #880E4F; */
-    /* border-color: theme("colors.gray.500") !important; */
-    /* border: solid 1px; */
-    /* border-radius: 0rem; */
-    @apply border-primary overflow-auto md:max-w-full inline-flex;
-}
 
 li:only-child.level1 > ol {
 @apply pl-0;
@@ -505,7 +509,7 @@ section {
 }
 
 
-section.etymology > h4, section.pronunciation > h4 {
+section.etymology > h3, section.pronunciation > h3 {
   @apply inline;
 }
 
@@ -546,30 +550,6 @@ ol.sub_definitions {
 }
 
 
-
-.skeleton {
-  @apply ml-4 rounded-[1rem] bg-black;
-
-}
-.skeleton-heading {
-  @apply h-8 w-60;
-}
-
-.skeleton-subheading {
-  @apply h-5 w-40;
-}
-
-.skeleton-content {
-  @apply h-4 m-4;
-}
-
-.skeleton-container {
-  @apply h-[30rem]
-}
-.skeleton-indent {
-  @apply ml-8;
-}
-
 span.lemma {
   @apply text-primary;
 }
@@ -588,38 +568,45 @@ span.lemma-group {
 
 
 
-.list-view-item {
-@apply flex;
-
-}
 
 
-.list-view-item>a {
-  @apply duration-200 motion-reduce:transition-none py-2 px-4 text-ellipsis w-full border-0 inline-block overflow-hidden border-none; 
+
+.list-item-header {
+  @apply duration-200 motion-reduce:transition-none py-2 px-4 text-ellipsis border-0 border-none; 
 
 }
 
 @media screen(lg) {
-  .list-view-item>a {
-    @apply whitespace-nowrap;
+  .list-item-header{
+    @apply whitespace-nowrap !no-underline;
   }
 }
 
 
-.list-view-item>a:hover {
-    @apply duration-200 bg-canvas-darken border-2;
-    
+
+
+.list-view-button[aria-expanded=false], .expanded-article {
+  border-bottom: solid 1px theme('colors.gray.400') ;
 }
 
-.article-column>li .result-list-item {
-border-bottom: solid 1px theme('colors.gray.100') ;
+.list-view-button:hover {
+    @apply  bg-canvas-darken;
+}
+
+.list-view-button[aria-expanded=true] {
+    @apply  bg-gray-50 !text-black;
 }
 
 
 
-
-.article-column>li:last-child .result-list-item {
+.article-column>li:last-child .list-view-button {
 border-bottom: none;
+}
+
+.expanded-article {
+  @apply article !shadow-none !py-4 md:!py-8;
+  border-radius: 0px;
+
 }
 
 

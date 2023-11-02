@@ -60,11 +60,11 @@ button[aria-expanded=true] {
 
 }
 
-h4 i {
+h3 i {
     @apply text-primary
 }
 
-h3 i {
+h2 i {
     @apply text-gray-700;
 }
 

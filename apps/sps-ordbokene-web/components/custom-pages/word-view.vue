@@ -1,48 +1,55 @@
 <template>
     <div>     
     <Spinner v-if="!error && !articles"/>    
-    <div v-if="!error && articles && articles.meta" ref="results">
-      <client-only><div v-if="route.query.orig" class ="callout mx-2"><Icon name="bi:info-circle-fill" class="mr-3 mb-1 text-primary"/>{{$t('notifications.redirect')}} <strong>{{route.params.q}}.</strong>
-        </div>
-      </client-only>
-    <div :class="{'gap-2 lg:gap-8 grid lg:grid-cols-2': dicts.length == 2}">
-      <section v-for="dict in dicts" :key="dict" class="lg:grid-cols-6" :aria-labelledby="dict+'_heading'">
-        <div class="py-2 px-2">
-          <h2 :id="dict+'_heading'" class="">{{$t('dicts.'+dict)}} 
-            <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
-            <span class="sr-only">{{$t('notifications.keywords')}}</span>
-          </h2>
-        </div>
-        <component :is="listView ? 'ol' : 'div'" v-if="articles.meta[dict] && articles.meta[dict].total" class="article-column">
-          <component :is="listView ? 'li' : 'div'" v-for="(article_id, idx) in articles.articles[dict]" :key="article_id">
-            <NuxtErrorBoundary @error="article_error($event, article_id, dict)">
-              <Article :content_locale="content_locale(dict)" :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
-            </NuxtErrorBoundary>
-          </component>
-        </component>
-          <div v-if="store.q && !specialSymbols(store.q)">
-            <Suggest :content_locale="content_locale(dict)"  :dict="dict" :articles_meta="articles.meta"/>
+    <div ref="results" v-if="!error && !pending && articles && articles.meta && $route.name != 'index'" >
+      <div class="md:sr-only pt-2 md:pt-0 px-2 text-sm" :class="{'sr-only': store.dict != 'bm,nn'}" role="status" aria-live="polite">
+        <strong v-if="total || (no_suggestions_bm && no_suggestions_nn)">{{$t('notifications.results', total, {count: total})}}</strong>
+        <span v-if="!no_suggestions_bm || !no_suggestions_nn"><span v-if="total">. </span>{{$t('notifications.suggestions_available', total == 0 || 2)}}</span>
+      </div>
+      <div v-bind:class="{'gap-2 lg:gap-8 lg:grid lg:grid-cols-2': dicts.length == 2}">
+        <section class="lg:grid-cols-6" v-for="dict in dicts" :key="dict" :aria-labelledby="dict+'_heading'">
+          <div class="pt-0 pb-3 px-2">
+            <h1 :id="dict+'_heading'">
+              {{$t('dicts.'+dict)}} 
+              <span class="result-count-text">{{articles.meta[dict] && articles.meta[dict].total}}</span>
+              <span class="sr-only">{{$t('notifications.keywords')}}</span>
+            </h1>
           </div>
-         
-      </section>
+          <component v-if="articles.meta[dict] && articles.meta[dict].total" :is="listView ? 'ol' : 'div'" class="article-column">
+            <component v-for="(article_id, idx) in articles.articles[dict]" :key="article_id" :is="listView ? 'li' : 'div'">
+              <NuxtErrorBoundary v-on:error="article_error($event, article_id, dict)">
+                <Article :scoped_locale="scoped_locale(dict)" :list="listView" :article_id="article_id" :dict="dict" :idx="idx"/>
+              </NuxtErrorBoundary>
+            </component>
+          </component>
+          <client-only>
+            <div v-if="store.q && !specialSymbols(store.q)">
+              <Suggest :scoped_locale="scoped_locale(dict)"  :dict="dict" :articles_meta="articles.meta"/>
+            </div>
+          </client-only>
+        </section>
+        
+    </div>
+    <section v-if="!(no_suggestions_bm && no_suggestions_nn)" class="pt-0 mb-12 mt-12 px-2" :class="{'text-center': store.dict == 'bm,nn'}" aria-labelledby="feedback_title">
+                <h1 id="feedback_title">{{$t('notifications.feedback.title')}}</h1>
+                <div v-if="!feedback_given" class="flex gap-4 mt-4 my-6 mb-8 h-10" :class="{'justify-center': store.dict == 'bm,nn'}">
+                    <button @click="track_feedback(true)" class="btn w-[96px]">{{$t('notifications.feedback.yes')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-up-fill"/></button>
+                    <button @click="track_feedback(false)" class="btn w-[96px]">{{$t('notifications.feedback.no')}}<Icon class="text-primary ml-3" name="bi:hand-thumbs-down-fill"/></button></div>
+                    <p v-else class="mt-4 my-6 mb-8 justify-center h-10">
+                    {{$t('notifications.feedback.thanks')}}
+                </p>
+    </section>
   </div>
-  </div>
-  <div v-if="error_message">
-    {{error_message}}
-  </div>
-  <div v-if="error" aria-live="">
-    ERROR: {{error}}
-  </div>
-
+  <ErrorMessage v-if="error" :error="error" :title="$t('error.articles')"/>
 </div>
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
+
 import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import {useSessionStore } from '~/stores/sessionStore'
-
+import { useI18n } from 'vue-i18n'
 
 const settings = useSettingsStore()
 const store = useSearchStore()
@@ -51,6 +58,8 @@ const route = useRoute()
 const { t } = useI18n()
 const i18n = useI18n()
 const error_message = ref()
+const no_suggestions_bm = useState('no_suggestions_bm')
+const no_suggestions_nn = useState('no_suggestions_nn')
 
 const { pending, error, refresh, data: articles } = await useFetch('api/articles?', {
           baseURL: session.endpoint,
@@ -58,47 +67,77 @@ const { pending, error, refresh, data: articles } = await useFetch('api/articles
             w: store.q,
             dict: store.dict,
             scope: 'e',
-          }})
+          }          
+          })
 
-const content_locale = dict => {
-  if (i18n.locale.value === "nob" || i18n.locale.value === 'nno') {
+const feedback_given = ref(false)
+
+const baseUrl = useRequestURL().protocol+'//'+useRequestURL().host
+
+const track_feedback = (value) => {
+    feedback_given.value = true
+    useTrackEvent(value ? 'feedback_positive' : 'feedback_negative', {props: {query: store.dict + "/" + store.q}})
+
+}
+
+const scoped_locale = dict => {
+  if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {
     return {bm: 'nob', nn: 'nno'}[dict] 
   }
   return i18n.locale.value
 }
 
-if (error.value && session.endpoint === "https://oda.uib.no/opal/prod/`") {
+if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
-  console.log("ERROR", error.value)
   refresh()
 }
 
 
 const title = computed(()=> {
-  return store.dict === "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
+  return store.dict == "bm,nn" ? store.q : store.q + " | " + t('dicts.'+ store.dict)
 })
 
 const dicts = computed(()=> {
-  const currentDict = store.dict
-  if (currentDict === "bm") {
+  let currentDict = store.dict
+  if (currentDict == "bm") {
     return ["bm"]
   }
-  if (currentDict === "nn") {
+  if (currentDict == "nn") {
     return ["nn"]
   }
   return ["bm", "nn"]
 })
 
+const metaDescription = computed(() => {
+    return dicts.value.map(dict => i18n.t('notifications.results_dict', {dict: i18n.t('dicts_inline.'+dict), count: articles.value.meta[dict] && articles.value.meta[dict].total})).join(". ")
+})
 
 useHead({
   title, 
   meta: [
     {property: 'og:title', content: title }, 
-  ],
-  link: [
-    {rel: "canonical", href: `https://ordbokene.no/${store.dict}/${route.params.q}`}
+    {name: 'twitter:title', content: title },
+    {name: 'description', content: metaDescription },
+    {property: 'og:description', content: metaDescription },
+    {name: 'twitter:description', content: metaDescription },
   ]
 })
+
+
+if (false && route.query.orig) { // TODO: reenable when we replace the old site
+  useHead({
+  link: [
+      {rel: 'canonical', href: baseUrl + route.path }
+    ]
+})
+}
+
+useHead({ // TODO: remove when we replace the old site
+  link: [
+      {rel: 'canonical', href: `https://ordbokene.no/${store.dict}/${store.q}` }
+    ]
+})
+
 
 definePageMeta({
     middleware: [
@@ -111,10 +150,14 @@ const listView = computed(() => {
   return store.q && settings.simpleListView
 })
 
+const total = computed(() => {
+  return (articles.value.meta.bm && articles.value.meta.bm.total || 0) + (articles.value.meta.nn && articles.value.meta.nn.total || 0)
+})
+
 
 
 const article_error = (error, article, dict) => {
-  console.log("ARTICLE_ERROR", article, dict)
+  useTrackEvent("article_error", {props: {article: dict + "/" + article, message: dict + "/" + article + " " + error.toString()}})
   console.log(error)
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="nav-container px-2">
-    <nav :aria-label="$t('label.dict_nav')" class="md:flex inline-block md:justify-center !my-2 box-content pr-1 md:pr-0">
+    <nav :aria-label="$t('label.dict_nav')" class="md:flex inline-block md:justify-center !my-2 box-content px-2 md:pr-0">
   <ul class="flex gap-2 md:gap-3 mr-2">
   <li>
     <NuxtLink class="inline-block"
@@ -20,7 +20,8 @@
   </li>
   <li>
     <NuxtLink :aria-current="advanced ? 'true' : 'false'"
-              :to="advanced_link">{{$t('advanced')}} <Icon name="bi:arrow-right" size="1.25em" class="ml-1 self-center"/></NuxtLink>
+              :to="advanced_link"
+              class="!pr-1">{{$t('advanced')}} <Icon name="bi:arrow-right-short" size="1.5em"/></NuxtLink>
   </li>
 </ul>
 </nav>
@@ -96,7 +97,7 @@ border-radius: 2rem;
 }
 
 a[aria-current=true] {
-  @apply bg-primary-lighten text-tertiary;
+  @apply bg-gray-700 border-gray-700 text-white;
 }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
