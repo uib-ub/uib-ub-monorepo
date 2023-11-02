@@ -44,7 +44,7 @@ const store = useSearchStore()
 const session = useSessionStore()
 const i18n = useI18n()
 
-const sortArticles = async (data) => {
+const sortArticles = (data) => {
     return data.sort((a, b) => new Date(b[3]) - new Date(a[3])).slice(0, 5)
 }
 
