@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   extends: ["./../sps-termportal-base"],
   devtools: { enabled: true },
   modules: ["@sidebase/nuxt-auth"],
+  app: {
+    head: {
+      title: "Termportalen admin",
+      link: [{ rel: "icon", type: "image/svg", href: "/favicon.svg" }],
+    },
+  },
   runtimeConfig: {
     auth: {
       secret: "",

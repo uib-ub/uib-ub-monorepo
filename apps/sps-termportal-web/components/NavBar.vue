@@ -120,12 +120,12 @@
               </template>
             </Menu>
           </div>
-          <NavBarPageLink to="/om">
+          <NavBarLink to="/om">
             {{ $t("navBar.om") }}
-          </NavBarPageLink>
-          <NavBarPageLink to="/innstillinger">
+          </NavBarLink>
+          <NavBarLink to="/innstillinger">
             {{ $t("navBar.innstillinger") }}
-          </NavBarPageLink>
+          </NavBarLink>
         </ul>
       </div>
       <div class="px-3 lg:hidden">
@@ -133,16 +133,8 @@
           class="tp-hover-focus ml-auto mr-0 flex rounded border border-transparent p-1"
           aria-haspopup="true"
           aria-controls="overlayMenu"
-          :aria-label="
-            navMenuExpanded
-              ? $t('navBar.menuButtonHide')
-              : $t('navBar.menuButtonShow')
-          "
-          :title="
-            navMenuExpanded
-              ? $t('navBar.menuButtonHide')
-              : $t('navBar.menuButtonShow')
-          "
+          :aria-label="$t('navBar.menuButtonShow')"
+          :title="$t('navBar.menuButtonShow')"
           @click="menu.toggle"
         >
           <Icon name="tabler:menu-2" aria-hidden="true" size="2em" />
@@ -191,9 +183,7 @@ import { useI18n } from "vue-i18n";
 const i18n = useI18n();
 const locale = useLocale();
 const locales = useLocales();
-const navMenuExpanded = useNavMenuExpanded();
 const navBar = ref<HTMLElement | null>(null);
-const navPageLinks = ref<HTMLElement | null>(null);
 
 const getLangOptions = () => {
   return locales.map((loc) => ({
@@ -237,12 +227,6 @@ defineExpose({ navBar });
 
 const defProps = defineProps({
   context: { type: String, required: true },
-});
-
-onClickOutside(navPageLinks, () => {
-  if (navMenuExpanded.value) {
-    navMenuExpanded.value = false;
-  }
 });
 
 watch(i18n.locale, () => {

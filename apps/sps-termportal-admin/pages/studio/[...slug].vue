@@ -19,7 +19,7 @@ onMounted(() => {
 
 <style>
 #studio {
-  height: 100vh;
+  height: calc(100vh - 52px);
   max-height: 100dvh;
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
