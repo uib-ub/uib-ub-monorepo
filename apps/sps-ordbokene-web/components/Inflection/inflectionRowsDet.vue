@@ -36,8 +36,6 @@
 
 import { inflectedForm, tagToName
         } from './mixins/ordbankUtils.js' 
-         } from './mixins/ordbankUtils.js' 
-        } from './mixins/ordbankUtils.js' 
 
 export default {
     name: 'inflectionRowsAdj',
