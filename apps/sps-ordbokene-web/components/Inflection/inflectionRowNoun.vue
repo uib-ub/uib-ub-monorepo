@@ -34,8 +34,6 @@
 
 import { inflectedForm, tagToName, indefArticle, markdownToHTML
         } from './mixins/ordbankUtils.js' 
-           } from './mixins/ordbankUtils.js' 
-        } from './mixins/ordbankUtils.js' 
 
 export default {
     name: 'inflectionRowNoun',
