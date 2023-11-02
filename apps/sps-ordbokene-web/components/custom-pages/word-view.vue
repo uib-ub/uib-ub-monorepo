@@ -146,7 +146,7 @@ const listView = computed(() => {
 })
 
 const total = computed(() => {
-  return (articles.value.meta.bm && articles.value.meta.bm.total) + (articles.value.meta.nn && articles.value.meta.nn.total)
+  return (articles.value.meta.bm && articles.value.meta.bm.total || 0) + (articles.value.meta.nn && articles.value.meta.nn.total || 0)
 })
 
 
