@@ -168,11 +168,11 @@
         ],
         "fulltext": {
             "title": "Fritekstsøk",
-            "description": "Søkjet ditt gir treff i avansert søk med fritekstsøk."
+            "description": "Søket ditt gir treff i avansert søk med fritekstsøk."
           },
           "no_results": {
             "title": "Ingen treff",
-            "description": ["Søkjet ditt ga ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
+            "description": ["Søket ditt gav ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
           },
           "feedback": {
             "title": "Fann du ordet du leita etter?",
