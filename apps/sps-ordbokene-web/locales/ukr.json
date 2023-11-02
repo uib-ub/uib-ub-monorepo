@@ -151,8 +151,8 @@
     "notifications": {
         "translation": "Клацніть пропозицію нижче, щоб додати переклад на основі програмного забезпечення для перекладу Apertium і глосарію {adm} від Мовна рада Норвегії. | Клацніть пропозиції нижче, щоб додати переклад на основі програмного забезпечення перекладу Apertium і глосарію {adm} від Мовна рада Норвегії.",
         "translation_title": "Потенційний переклад",
-        "inflected": "{word} is an inflection of:|{word} is found as inflections of:",
-        "also_inflected": "{word} is also an inflection of:|{word} is also found as inflections of:",
+        "inflected": "{word} is an inflection of:",
+        "also_inflected": "{word} is also an inflection of:",
         "inflected_title": "Inflected forms",
         "did_you_mean": "Did you mean:",
         "similar": "Пропозиції щодо пошуку",
@@ -163,6 +163,7 @@
         "simple": "Standard search",
         "results": "No results | One result | {count} results",
         "results_dict": "No results in {dict}|One result in {dict}|{count} results in {dict}",
+        "suggestions_available": "Search suggestions available | Additional search suggestions available",
         "more": "Показати більше",
         "less": "Показати менше",
         "fuzzy": "Схожі ключові слова",
