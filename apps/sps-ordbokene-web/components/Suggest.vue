@@ -41,7 +41,7 @@
             </NuxtLink>
             </div>
     </div>
-    <div v-if="!((articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length || data.similar.length || data.freetext )" class="callout pt-0 my-0">
+    <div v-if="!(articles_meta[dict] && articles_meta[dict].total) && no_suggestions" class="callout pt-0 my-0">
         <h2><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1"/>{{$t('notifications.no_results.title')}}</h2>
         <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)}, {locale: content_locale})}}.</p>
         <p v-if="store.q.length > 8" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: content_locale})}}</p>
@@ -56,13 +56,14 @@ const store = useSearchStore()
 const session = useSessionStore()
 const route = useRoute()
 
-const no_suggestions = useState('no_suggestions', () => false)
 
 const props = defineProps({
     content_locale: String,
     dict: String,
     articles_meta: Object
 })
+
+const no_suggestions = useState('no_suggestions_' + props.dict)
 
 const track_freetext = (from, to) => {
     useTrackEvent('click_freetext_' + props.dict, {props: {from, to, combined: from + "|" + to}})
