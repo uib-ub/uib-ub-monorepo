@@ -3,7 +3,13 @@
     <SuggestResults :minimal="true" :dict="dict" v-if="!pending && data.length" :suggestions="data"><h2>{{$t('notifications.similar')}}</h2></SuggestResults>
     <div v-if="!pending && !data.length" class="callout pt-0 my-0">
         <h2><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h2>
-        <p>{{$t('notifications.no_results.description[0]', {dict: $t('dicts.'+dict)})}}.</p>
+        <p>
+            <i18n-t keypath="notifications.no_results.description[0]">
+                <template v-slot:dict>
+                    <em>{{$t('dicts.'+dict)}}</em>.
+                </template>
+            </i18n-t>
+        </p>
         <p v-if="store.q.length > 10" class="my-2">{{$t('notifications.no_results.description[1]')}}</p>
     </div>
   </div>
