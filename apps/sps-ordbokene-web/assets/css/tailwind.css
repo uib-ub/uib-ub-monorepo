@@ -290,4 +290,21 @@
 
 
 
+      input[type='checkbox'] {
+        accent-color: theme('colors.primary.DEFAULT');
+      }
+  
+      input[type='checkbox']:checked:hover {
+        accent-color: theme('colors.secondary.DEFAULT') !important;
+      }
+  
+  
+  
+      .checkbox-label {
+          grid-template-columns: 1em auto;
+          @apply grid gap-2;
+      }
+
+
+
 }
