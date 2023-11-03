@@ -1,5 +1,6 @@
 <template>
     <tr>
+        
       <td v-for="([[rowspan,rowindex,forms], headers], index) in rows"
           :key="index"
           class="notranslate infl-cell"
@@ -10,8 +11,7 @@
            @mouseleave="$emit('unhilite')">
         <span v-for="form in forms"
               :key="form"
-              class='comma'
-              v-html="formattedForm(form)"/>
+              class='comma'>{{formattedForm(form)}}</span>
       </td>
     </tr>
 </template>

@@ -207,6 +207,38 @@
         }
         
         },
+    "infl_table_tags": { 
+        "Form": "form",
+        "Gender": "kjønn",
+        "Sing": "entall",
+        "Plur": "flertall",
+        "Ind": "ubestemt",
+        "Def": "bestemt",
+        "Finite": "finitte former",
+        "Inf": "infinitiv",
+        "Pres": "presens",
+        "Past": "preteritum",
+        "PresPerf": "presens perfektum",
+        "Imp": "imperativ",
+        "PerfPart": "perfektum partisipp",
+        "Fem": "hunkjønn",
+        "FemShort": "hunkjønn",
+        "Masc": "hankjønn",
+        "MascShort": "hankjønn",
+        "MascFem": "hankjønn/ hunkjønn",
+        "Neuter": "intetkjønn",
+        "NeuterShort": "intetkjønn",
+        "PresPart": "presens partisipp",
+        "Deg": "gradbøying",
+        "Pos": "positiv",
+        "Cmp": "komparativ",
+        "Sup": "superlativ",
+        "SupInd": "superlativ ubestemt",
+        "SupDef": "superlativ bestemt",
+        "Nom": "subjektsform",
+        "Acc": "objektsform",
+        "Uninfl": "ubøyelig"
+    },
 
     "article": {
         "definition": "Definisjon",

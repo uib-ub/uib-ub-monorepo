@@ -11,7 +11,7 @@
             @mouseover="$emit('hilite', rowindex, lemma.id)">
           <span v-for="(form, i) in forms"
                 :key="i"
-                class='comma'>{{tagToName(form)}}</span>
+                class='comma'>{{$t('infl_table_tags.'+form)}}</span>
         </th>
         <td v-else
             class="notranslate infl-cell"
@@ -32,12 +32,12 @@
 
 
 
-import { inflectedForm, tagToName, indefArticle, markdownToHTML
+import { inflectedForm, indefArticle, markdownToHTML
         } from './mixins/ordbankUtils.js' 
 
 export default {
     name: 'inflectionRowNoun',
-    props: ['paradigm','language', 'showGender', 'lemma','hasDef', 'hasSing', 'hasPlur'],
+    props: ['paradigm','dict', 'locale', 'showGender', 'lemma','hasDef', 'hasSing', 'hasPlur'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
@@ -53,7 +53,7 @@ export default {
     },
     methods: {
         indefArticle: function () {
-            return indefArticle(this.paradigm.tags, this.language)
+            return indefArticle(this.paradigm.tags, this.dict)
         },
         inflForm: function (tagList,display,prefix) {
             const forms = inflectedForm(this.paradigm, tagList, [])
@@ -70,9 +70,6 @@ export default {
         },
         formattedForm: function (form) {
             return markdownToHTML(form)
-        },
-        tagToName: function (tag) {
-            return tagToName(tag, this.language)
         }
 
 

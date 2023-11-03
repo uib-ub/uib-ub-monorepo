@@ -24,7 +24,7 @@ import { inflectedForm, tagToName
 
 export default {
     name: 'inflectionRowPron',
-    props: ['paradigm','language','lemmaId'],
+    props: ['paradigm','locLang','lemmaId'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
@@ -40,7 +40,7 @@ export default {
             return inflectedForm(this.paradigm, tagList)
         },
         tagToName: function (tag) {
-            return tagToName(tag, this.language)
+            return tagToName(tag, this.locLang)
         }    }
 }
 </script>
