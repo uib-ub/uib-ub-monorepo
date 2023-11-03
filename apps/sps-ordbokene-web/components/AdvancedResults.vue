@@ -28,7 +28,7 @@
 
   
   <div class ="flex flex-col">
-  <div v-if="pages > 1" class="p-2 py-6 md:p-8 flex md:flex-wrap justify-center flex md:gap-4">
+  <div v-if="pages > 1" class="p-2 py-6 md:p-8 flex md:flex-wrap justify-center md:gap-4">
     <NuxtLink :to="{query: {...route.query, ...{page: page -1 }}}">
       <button type="button" :disabled="page == 1" class="bg-primary text-white rounded-4xl p-1 px-2 md:p-3 md:px-8">
         <Icon name="bi:chevron-left" class="md:mr-0.75em mb-0.125em"/><span class="sr-only md:not-sr-only">{{$t('previous-page') }}</span>
