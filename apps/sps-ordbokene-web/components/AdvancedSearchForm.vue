@@ -39,9 +39,10 @@
 
           <div v-if="store.q" class="flex gap-6">
             <div class="flex justify-center items-center">
-              <FormCheckbox v-model="settings.$state.listView" :checked="settings.listView" class="text-blue-700 font-semibold">
+                <label class="checkbox-label">
+                <input  v-model="settings.listView" type="checkbox">
                   {{$t('show_list')}}
-              </FormCheckbox>
+                </label>
             </div>
             <div class="flex justify-center items-center"><NuxtLink :to="`/${$i18n.locale}/help/advanced`"><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1 text-primary"/><span class="hoverlink">{{$t('advanced_help')}}</span></NuxtLink></div>
           </div>
