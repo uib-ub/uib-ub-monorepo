@@ -90,7 +90,7 @@ return n > 1 && n-1 > index
 
 
 const has_article_ref = (item) => {
-return item.items.length && item.items[0].type_ === "article_ref" && item.items[0].definition_id === undefined
+return Boolean(item.items.length && item.items[0].type_ === "article_ref" && item.items[0].definition_id === undefined)
 }
 
 
