@@ -1,11 +1,11 @@
 <template>
-    <form  @submit.prevent="submitForm" ref="form" class="flex flex-col gap-4 grow mt-2">
+    <form  ref="form" class="flex flex-col gap-4 grow mt-2" @submit.prevent="submitForm">
         <div class="flex flex-col md:flex-row sm:flex-wrap w-full gap-3 mt-2 lg:mt-0">
         <div class="whitespace-nowrap p-1 xl:bg-tertiary xl:shadow-none flex flex-grow-0 items-baseline"> 
           
             <label for="dict-select">{{ $t('options.dict') }} </label>
-            <select id="dict-select" name="dict" @change="update_dict" class="bg-tertiary flex-grow md:grow-0 p-2 md:p-0">
-                <option v-for="(dict, idx) in  dicts" :key="idx" :value="dict" :selected="store.dict == dict" v-bind:class="{selected: store.dict == dict}">{{$t("dicts." + dict)}}</option>
+            <select id="dict-select" class="bg-tertiary flex-grow md:grow-0 p-2 md:p-0" name="dict" @change="update_dict">
+                <option v-for="(dict, idx) in  dicts" :key="idx" :value="dict" :selected="store.dict == dict" :class="{selected: store.dict == dict}">{{$t("dicts." + dict)}}</option>
             </select>
 
         </div>
@@ -13,20 +13,20 @@
 
         <div class="whitespace-nowrap p-1 xl:bg-tertiary xl:shadow-none  flex flex-grow-0 items-baseline"> 
             <label for="scope-select">{{ $t('options.scope.title') }}</label>
-            <select id="scope-select" name="scope" @change="update_scope"  class="bg-tertiary flex-grow md:grow-0 p-2 md:p-0">
-                <option v-for="(scope, idx) in  ['e', 'ei', 'eif']" :key="idx" :value="scope" :selected="store.scope == scope" v-bind:class="{selected: store.scope == scope}">{{$t("options.scope.value." + scope)}}</option>
+            <select id="scope-select" name="scope" class="bg-tertiary flex-grow md:grow-0 p-2 md:p-0" @change="update_scope">
+                <option v-for="(scope, idx) in  ['e', 'ei', 'eif']" :key="idx" :value="scope" :selected="store.scope == scope" :class="{selected: store.scope == scope}">{{$t("options.scope.value." + scope)}}</option>
             </select>
         </div>
 
 
         <div class="whitespace-nowrap p-1 xl:bg-tertiary xl:shadow-none flex xl:flex-grow-0 items-baseline"> 
             <label for="pos-select">{{ $t('pos') }}</label>
-            <select id="pos-select" name="pos" @change="update_pos" class="bg-tertiary flex-grow md:grow-0 p-2 md:p-0">
-                <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
+            <select id="pos-select" name="pos" class="bg-tertiary flex-grow md:grow-0 p-2 md:p-0" @change="update_pos">
+                <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" :class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
             </select>
         </div>
         <div class="flex w-full sm:w-[128px] sm:min-w-[128px] sm:max-w-[128px] !py-0" :class="{'hidden lg:flex': store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn'}">
-            <button class="btn w-full py-2 lg:py-0" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
+            <button v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" class="btn w-full py-2 lg:py-0" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
           </div>
 
         </div>
@@ -34,10 +34,10 @@
 
         <div class="flex flex-col lg:flex-row grow lg:flex-wrap w-full gap-x-6 gap-y-3">
           <div class="grow" :class="{activeAutocomplete: store.autocomplete && store.autocomplete.length}">
-            <Autocomplete  v-on:dropdown-submit="submitForm"/>
+            <Autocomplete  @dropdown-submit="submitForm"/>
           </div>
 
-          <div class="flex gap-6" v-if="store.q">
+          <div v-if="store.q" class="flex gap-6">
             <div class="flex justify-center items-center">
               <FormCheckbox v-model="settings.$state.listView" :checked="settings.listView" class="text-blue-700 font-semibold">
                   {{$t('show_list')}}
@@ -50,8 +50,8 @@
 </template>
   
 <script setup>
-import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
+import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 const settings = useSettingsStore()
 const store = useSearchStore()
@@ -109,7 +109,7 @@ const submitForm =  (item) => {
     
     store.q = store.input
     mini_help.value = false
-    let query = {q: store.input, dict: store.dict, scope: store.scope}
+    const query = {q: store.input, dict: store.dict, scope: store.scope}
     if (store.pos) {
       query.pos = store.pos
     }

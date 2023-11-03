@@ -11,7 +11,7 @@
     "to_advanced": "Gå til avansert søk",
     "show_articles": "Artiklar",
     "show_list": "Listevisning",
-    "simple": "Hurtigsøk",
+    "simple": "Standard søk",
     "article_view": "Artikkelside",
     "breadcrumbs": "Brødsmulesti",
     "content_not_found": "Innhold ikkje tilgjengeleg",
@@ -126,7 +126,7 @@
         "inflection_expanded": "Vis alltid bøyingstabellane",
         "inflection_table_context": "Vis kontekst for partisippformer i bøyingstabellane",
         "submit_select": "Merk søkjeteksten når du gjennomfører søket",
-        "simple_search_list": "Listevisning i enkelt søk",
+        "simple_search_list": "Listevisning i Standard søk",
         "auto_select": "Merk søkjeordet automatisk etter søk",
         "locale": {
           "title": "Nettsidespråk",
