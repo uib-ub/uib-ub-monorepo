@@ -94,7 +94,7 @@ nuxtApp.hook("page:finish", () => {
 
 
 const { data: concepts, error, refresh} = await useAsyncData('concepts', async () => {
-  const [concepts_bm, concepts_nn] = await Promise.all([$fetch(`${session.endpoint}bm/concepts.json`), $fetch(`${session.endpoint}bm/concepts.json`)])
+  const [concepts_bm, concepts_nn] = await Promise.all([$fetch(`${session.endpoint}bm/concepts.json`), $fetch(`${session.endpoint}nn/concepts.json`)])
 
   return {
     concepts_bm,
