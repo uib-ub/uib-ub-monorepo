@@ -23,7 +23,7 @@ const i18n = useI18n()
 
 const input_element = useState('input_element')
 
-const submitForm = async (item) => {
+const submitForm = (item) => {
   
   if (typeof item === 'string') {
     if (settings.auto_select && !isMobileDevice()) {
