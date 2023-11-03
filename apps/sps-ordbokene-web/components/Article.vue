@@ -1,6 +1,6 @@
 <template>
   <div  v-if="error && single"><ErrorMessage :error="error" :title="$t('error.article', {dict: $t('dicts_inline.' + dict ), article_id})"/></div>
-  <div v-else :class="list && 'list-view-item flex-col' || 'article flex'">
+  <div v-else :class="list && 'list-view-item flex-col' || 'article flex flex-col'">
   <div v-if="list && !welcome"  :lang="dictLang[dict]">
     <button class="list-view-button !flex !gap-4 px-4 justify-start !py-2 text-lg truncate w-full" 
             :href="link_to_self()" 
