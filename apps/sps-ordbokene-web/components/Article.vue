@@ -64,8 +64,13 @@
       </button>
         <div v-if="inflected && !welcome && (inflection_expanded || single || list)" :id="`${dict}_${article_id}_inflection`" ref="inflection_table" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out">
             <div class="overflow-x-auto p-2">
-                <InflectionTable :key="$i18n.locale" :scoped_locale="scoped_locale"  :class="store.dict == 'bm,nn' ? 'xl:hidden' : 'sm:hidden'" mq="xs" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemma-list="lemmas_with_word_class_and_lang"  :context="true" />
-                <InflectionTable :key="$i18n.locale" :scoped_locale="scoped_locale" :class="store.dict == 'bm,nn' ? 'hidden xl:flex' : 'hidden sm:flex'" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemma-list="lemmas_with_word_class_and_lang" :context="true" />
+                <client-only>
+                  <InflectionTable :scoped_locale="scoped_locale" :mq="inflection_size()" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemma-list="lemmas_with_word_class_and_lang"  :context="true" :dict="dict" :article_id="article_id"/>
+                  <template #fallback>
+                    <InflectionTable v-if="single" :key="$i18n.locale" :scoped_locale="scoped_locale" mq="sm" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemma-list="lemmas_with_word_class_and_lang"  :context="true" :dict="dict" :article_id="article_id"/>
+                  </template>
+                </client-only>
+     
             </div>
         </div>
         <div ref="article_content" class="article_content pt-1">
@@ -241,6 +246,14 @@ const link_to_self = () => {
   return `/${i18n.locale.value}/${props.dict}/${props.article_id}`
   }
 
+const inflection_size = () => {
+    if (store.dict === 'bm,nn' ) {
+      return window.matchMedia('(min-width: 1280px)').matches ? 'sm' : 'xs'
+    }
+    else {
+      return window.matchMedia('(min-width: 1024px)').matches ? 'sm' : 'xs'
+    }
+}
 
 const inflection_classes = (lemmas) => {
   const inf_classes = new Set()
