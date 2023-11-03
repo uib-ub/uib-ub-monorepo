@@ -1,14 +1,14 @@
 <template>
     <main id="main" tabindex="-1">
-    <div class="relative">
-      <div class="flex justify-between">
-         <div class="whitespace-nowrap pt-2">
-            <NuxtLink class="pl-2" :to="`/${$i18n.locale}/${store.dict}/${advancedSpecialSymbols(store.q) ? '' : store.q}`"><Icon name="bi:arrow-left-short" size="1.5rem" class="mb-1 text-primary"/>{{$t('notifications.simple')}}</NuxtLink>
+      <div class="flex">
+
+    <h1 class="font-semibold !px-4 sm:!px-3 text-primary lg:top-0 lg:left-0 text-xl">
+      {{$t('advanced')}} 
+    </h1><div class="whitespace-nowrap pl-2 pt-[4px] text-base ml-auto mr-4 md:ml-0">
+            <NuxtLink :to="`/${$i18n.locale}/${store.dict}/${advancedSpecialSymbols(store.q) ? '' : store.q}`"><Icon name="bi:arrow-left-short" size="1.5rem" class="mb-1 text-primary"/>{{$t('notifications.simple')}}</NuxtLink>
         </div>
-    <h1 class="font-semibold pt-0 px-3 text-primary xl:text-xl !bg-tertiary-darken">{{$t('advanced')}}</h1>
-       
       </div>
-    </div>
+
       <NuxtErrorBoundary @error="form_error">
         <AdvancedSearchForm class="ord-container"/>
       </NuxtErrorBoundary>

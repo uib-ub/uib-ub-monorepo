@@ -6,22 +6,22 @@
     <NuxtLink class="inline-block"
               :aria-current="store.dict =='bm,nn' ? 'true' : 'false'"
               @click="dict_click('bm,nn')"
-              :to="dict_link('bm,nn')"><span class="max-lg:sr-only">{{$t('dicts.bm,nn')}}</span><span aria-hidden="true" class="block lg:hidden">{{$t('dicts_short.bm,nn')}}</span></NuxtLink>
+              :to="dict_link('bm,nn')">{{$t('dicts_short.bm,nn')}}</NuxtLink>
   </li>
   <li>
     <NuxtLink  :aria-current="store.dict =='bm' ? 'true' : 'false'"
               @click="dict_click('bm')"
-              :to="dict_link('bm')"><span class="max-lg:sr-only">{{$t('dicts.bm')}}</span><span aria-hidden="true" class="block lg:hidden">{{$t('dicts_short.bm')}}</span></NuxtLink>
+              :to="dict_link('bm')">{{$t('dicts_short.bm')}}</NuxtLink>
   </li>
   <li>
     <NuxtLink :aria-current="store.dict =='nn' ? 'true' : 'false'"
               @click="dict_click('nn')"
-              :to="dict_link('nn')"><span class="max-lg:sr-only">{{$t('dicts.nn')}}</span><span aria-hidden="true" class="block lg:hidden">{{$t('dicts_short.nn')}}</span></NuxtLink>
+              :to="dict_link('nn')">{{$t('dicts_short.nn')}}</NuxtLink>
   </li>
   <li>
     <NuxtLink :aria-current="advanced ? 'true' : 'false'"
               :to="advanced_link"
-              class="!pr-1">{{$t('advanced')}} <Icon name="bi:arrow-right-short" size="1.5em"/></NuxtLink>
+              class="!pr-1">{{$t('advanced')}} <Icon class="text-primary" name="bi:arrow-right-short" size="1.5em"/></NuxtLink>
   </li>
 </ul>
 </nav>
@@ -91,7 +91,7 @@ ul {
 }
 
 a {
-@apply flex py-1 px-4 md:text-sm text-gray-900 bg-tertiary border-gray-700 md:text-primary border md:border-none whitespace-nowrap;
+@apply flex py-1 px-4 md:text-sm text-gray-900 bg-tertiary border-gray-700 border md:border-none whitespace-nowrap;
 border-radius: 2rem;
 
 }
