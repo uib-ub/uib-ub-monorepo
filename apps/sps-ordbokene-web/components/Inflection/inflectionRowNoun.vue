@@ -26,55 +26,55 @@
         </td>
       </template>
     </tr>
-    </template>
+</template>
     
-    <script>
-    
-    
-    
-    import { inflectedForm, tagToName, indefArticle, markdownToHTML
-           } from './mixins/ordbankUtils.js' 
-    
-    export default {
-        name: 'inflectionRowNoun',
-        props: ['paradigm','language', 'showGender', 'lemma','hasDef', 'hasSing', 'hasPlur'],
-        data: function () {
-            return {
-                cells: [
-                    this.showGender ? this.inflForm(['_gender']) : null, // special gender column
-                    this.inflForm(['Sing','Ind'], this.hasSing, this.indefArticle()),
-                    this.inflForm(['Sing','Def'], this.hasSing && this.hasDef),
-                    this.inflForm(['Plur','Ind'], this.hasPlur),
-                    this.inflForm(['Plur','Def'], this.hasPlur && this.hasDef)
-
-                ].filter(r => r)
-            }
-        },
-        methods: {
-            indefArticle: function () {
-                return indefArticle(this.paradigm.tags, this.language)
-            },
-            inflForm: function (tagList,display,prefix) {
-                let forms = inflectedForm(this.paradigm, tagList, [])
-                if (!forms) {
-                    return null
-                } else if (forms[0] == null) {
-                    return display ? [null, [1,null,['–'],null,'STANDARD'], false, ''] : null
-                } else if (tagList[0]=='_gender') {
-                    return [prefix, forms, true, forms[2]]
-                } else {
-                    let gender = (this.showGender && forms[3]) ? forms[3].join(' ') + ' ' : ''
-                    return [prefix, forms, false, gender + tagList[0] +  ' ' + tagList[0] + tagList[1]]
-                } 
-            },
-            formattedForm: function (form) {
-                return markdownToHTML(form)
-            },
-            tagToName: function (tag) {
-                return tagToName(tag, this.language)
-            }
+<script>
 
 
+
+import { inflectedForm, tagToName, indefArticle, markdownToHTML
+        } from './mixins/ordbankUtils.js' 
+
+export default {
+    name: 'inflectionRowNoun',
+    props: ['paradigm','language', 'showGender', 'lemma','hasDef', 'hasSing', 'hasPlur'],
+    data: function () {
+        return {
+            cells: [
+                this.showGender ? this.inflForm(['_gender']) : null, // special gender column
+                this.inflForm(['Sing','Ind'], this.hasSing, this.indefArticle()),
+                this.inflForm(['Sing','Def'], this.hasSing && this.hasDef),
+                this.inflForm(['Plur','Ind'], this.hasPlur),
+                this.inflForm(['Plur','Def'], this.hasPlur && this.hasDef)
+
+            ].filter(r => r)
         }
+    },
+    methods: {
+        indefArticle: function () {
+            return indefArticle(this.paradigm.tags, this.language)
+        },
+        inflForm: function (tagList,display,prefix) {
+            let forms = inflectedForm(this.paradigm, tagList, [])
+            if (!forms) {
+                return null
+            } else if (forms[0] == null) {
+                return display ? [null, [1,null,['–'],null,'STANDARD'], false, ''] : null
+            } else if (tagList[0]=='_gender') {
+                return [prefix, forms, true, forms[2]]
+            } else {
+                let gender = (this.showGender && forms[3]) ? forms[3].join(' ') + ' ' : ''
+                return [prefix, forms, false, gender + tagList[0] +  ' ' + tagList[0] + tagList[1]]
+            } 
+        },
+        formattedForm: function (form) {
+            return markdownToHTML(form)
+        },
+        tagToName: function (tag) {
+            return tagToName(tag, this.language)
+        }
+
+
     }
-    </script>
+}
+</script>

@@ -14,7 +14,7 @@
     </span>
 </h2>
 <h2 v-if="secondary_header_text" class="notranslate">{{secondary_header_text}}</h2>  
-  <div :lang="locale2lang[scoped_locale]" v-if="lemma_group.description" class="subheader">
+  <div v-if="lemma_group.description" :lang="locale2lang[scoped_locale]"  class="subheader">
     <span class="header-group-list">{{lemma_group.description}}</span>
       <em v-if="lemma_group.pos_group">{{" "+lemma_group.pos_group}}</em>
     <span v-if="settings.inflectionNo" class="inflection_classes">{{lemma_group.inflection_classes}}</span>
