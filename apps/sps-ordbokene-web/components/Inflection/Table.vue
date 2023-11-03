@@ -11,12 +11,12 @@
             <thead :lang="locale2lang[scoped_locale]">
               <tr>
                 <th v-if="!nounGender && hasGender"
-                    id="Gender"
+                    :id="'Gender' + lemma.id"
                     class="infl-label sub label-border-top-left" :class="mq"
                     scope="col"
                     rowspan='2'>{{$t('gender')}}</th>
                 <th v-if="hasSing"
-                    id="Sing"
+                    :id="'Sing' + lemma.id"
                     class="infl-label label-border-top-left" :class="mq" scope="col" colspan='2'>
                   {{tagToName('Sing')}}</th>
                 <th id="Plur" class="infl-label label-border-top-right" :class="mq" scope="col" colspan='2'>
@@ -24,22 +24,22 @@
               </tr>
               <tr>
                 <th v-if="hasSing"
-                    id="SingInd"
+                    :id="'SingInd' + lemma.id"
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
                   {{tagToName('Ind')}} {{tagToName('Form')}}
                 </th>
                 <th v-if="hasDef && hasSing"
-                    id="SingDef"
+                    :id="'SingDef' + lemma.id"
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
                   {{tagToName('Def')}} {{tagToName('Form')}}
                 </th>
-                <th id="PlurInd"
+                <th :id="'PlurInd' + lemma.id"
                     class="infl-label sub label-border-bottom"
                     scope="col" :class="mq">
                   {{tagToName('Ind')}} {{tagToName('Form')}}
                 </th>
                 <th v-if="hasDef"
-                    id="PlurDef"
+                    :id="'PlurDef' + lemma.id"
                     class="infl-label sub label-border-bottom"
                     scope="col" :class="mq">
                   {{tagToName('Def')}} {{tagToName('Form')}}
@@ -116,7 +116,7 @@
           <thead :lang="locale2lang[scoped_locale]">
             <template v-if="hasPerfPart">
               <tr>
-                <th id="PerfPart"
+                <th :id="'PerfPart' + lemma.id"
                     class="infl-label label-border-top-left"
                     :class="mq"
                     scope="col"
@@ -124,32 +124,32 @@
                   {{tagToName('PerfPart')}}
                 </th>
                 <th v-if="j<0 || j==4"
-                    id="PresPart"
+                    :id="'PresPart' + lemma.id"
                     class="infl-label label-border-top-right" :class="mq"
                     scope="col"
                     rowspan="2">{{tagToName('PresPart')}}</th>
               </tr>
               <tr>
                 <th v-if="(j<0 || j==3) && hasPerfPartDef"
-                    id="Masc"
+                    :id="'Masc' + lemma.id"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">
                   {{tagToName('MascShort')}}&nbsp;/<br/>{{tagToName('Fem')}}</th>
                 <th v-if="(j<0 || j==3) && hasPerfPartFem"
-                    id="Fem"
+                    :id="'Fem' + lemma.id"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">
                   {{tagToName('Fem')}}</th>
                 <th v-if="(j<0 || j==3)"
-                    id="Neuter"
+                    :id="'Neuter' + lemma.id"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Neuter')}}</th>
                 <th v-if="(j<0 || j==3) && hasPerfPartDef"
-                    id="Def"
+                    :id="'Def' + lemma.id"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Def')}} {{tagToName('Form')}}</th>
                 <th v-if="(j<0 || j==4) && hasPerfPartDef"
-                    id="Plur"
+                    :id="'Plur' + lemma.id"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">{{tagToName('Plur')}}</th>
               </tr>
@@ -211,7 +211,7 @@
           <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th v-if="hasSingAdj"
-                  id="Sing"
+                  :id="'Sing' + lemma.id"
                   class="infl-label label-border-top-left"
                   :class="mq"
                   scope="col"
@@ -227,32 +227,32 @@
             </tr>
             <tr v-if="hasSingAdj">
               <th v-if="hasFem"
-                  id="Masc"
+                  :id="'Masc' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
                   {{tagToName('Masc')}}
               </th>
               <th v-if="!hasFem"
-                  id="Masc"
+                  :id="'Masc' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
                 <span class="nobr">{{tagToName('Masc')}}&nbsp;/</span><br/>{{tagToName('Fem')}}</th>
               <th v-if="hasFem"
-                  id="Fem"
+                  :id="'Fem' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
                 {{tagToName('Fem')}}
               </th>
-              <th id="Neuter"
+              <th :id="'Neuter' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
                 {{tagToName('Neuter')}}
               </th>
-              <th id="Def"
+              <th :id="'Def' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                  :class="mq">
@@ -278,7 +278,7 @@
           <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th v-if="hasDeg"
-                  id="Deg"
+                  :id="'Deg' + lemma.id"
                   class="infl-label label-border-top-left-right"
                   scope="col"
                   colspan="3">
@@ -286,17 +286,17 @@
               </th>
             </tr>
             <tr>
-              <th id ="Cmp"
+              <th :id ="'Cmp' + lemma.id"
                   scope="col"
                   class="infl-label label-border-bottom">
                 {{tagToName('Cmp')}}
               </th>
-              <th id="SupInd"
+              <th :id="'SupInd' + lemma.id"
                   scope="col"
                   class="infl-label label-border-bottom">
                 {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Ind')}} {{tagToName('Form')}}</span>
               </th>
-              <th id="SupDef"
+              <th :id="'SupDef' + lemma.id"
                   scope="col"
                   class="infl-label label-border-bottom">
                 {{tagToName('Sup')}}<br/><span class="sub">{{tagToName('Def')}} {{tagToName('Form')}}</span>
@@ -456,14 +456,14 @@
           <thead :lang="locale2lang[scoped_locale]">
             <tr>
               <th v-if="hasSing"
-                  id="Sing"
+                  :id="'Sing' + lemma.id"
                   class="infl-label label-border-top-left" :class="mq"
                   scope="col"
                   :colspan="DETColspan">
                 {{tagToName('Sing')}}
               </th>
               <th v-if="hasPlur"
-                  id="Plur"
+                  :id="'Plur' + lemma.id"
                   class="infl-label label-border-top-right" :class="mq"
                   scope="col"
                   rowspan="1">
@@ -471,23 +471,23 @@
               </th>
             </tr>
             <tr v-if="hasSing">
-              <th id="Masc"
+              <th :id="'Masc' + lemma.id"
                   class="infl-label sub label-border-bottom" :class="mq"
                   scope="col">
                 {{tagToName('Masc')}}
               </th>
               <th class="infl-label sub label-border-bottom" :class="mq"
-                  id="Fem"
+                  :id="'Fem' + lemma.id"
                   scope="col">
                 {{tagToName('Fem')}}
               </th>
               <th v-if="hasNeuter"
-                  id="Neuter"
+                  :id="'Neuter' + lemma.id"
                   class="infl-label sub label-border-bottom" :class="mq"
                   scope="col">
                 {{tagToName('Neuter')}}
               </th>
-              <th id="Def"
+              <th :id="'Def' + lemma.id"
                   class="infl-label sub label-border-bottom" :class="mq" v-if="hasDef"
                   scope="col">
                 {{tagToName('Def')}} {{tagToName('Form')}}

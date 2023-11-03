@@ -37,26 +37,26 @@ export default {
                 this.inflForm(['Adj','Masc/Fem'],
                                 this.context ? indefArticle(['Masc/Fem'], this.language) : null,
                                 this.context ? '+'+ this.$t('tags.NOUN') : null,
-                                'PerfPart Masc') : null,
+                                `PerfPart${this.lemmaId} Masc${this.lemmaId}`) : null,
             this.hasPerfPart && this.part !== 4 ?
                 this.inflForm(['Adj','Neuter'],
                                 this.context ? indefArticle(['Neuter'], this.language) : null,
                                 this.context ? '+'+ this.$t('tags.NOUN') : null,
-                                'PerfPart Neuter') : null,
+                                `PerfPart${this.lemmaId} Neuter${this.lemmaId}`) : null,
             this.hasPerfPart && this.part !== 4 ?
                 this.inflForm(['Adj','Def'],
                                 this.context ? 'den/det' : null,
                                 this.context ? '+'+ this.$t('tags.NOUN') : null,
-                                'PerfPart Def') : null,
+                                `PerfPart${this.lemmaId} Def${this.lemmaId}`) : null,
             this.hasPerfPart && this.part !== 3 ?
                 this.inflForm(['Adj','Plur'],
                                 null,
                                 this.context ? '+'+ this.$t('tags.NOUN') : null,
-                                'PerfPart Plur') : null,
+                                `PerfPart${this.lemmaId} Plur${this.lemmaId}`) : null,
             this.part !== 3 ? this.inflForm(['Adj','<PresPart>'],
                                             null,
                                             null,
-                                            'PresPart') : null
+                                            `PresPart${this.lemmaId}`) : null
         ].filter(r => r) }
     },
     methods: {

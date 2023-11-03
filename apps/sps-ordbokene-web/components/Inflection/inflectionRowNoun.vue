@@ -5,7 +5,7 @@
             :id="colref"
             class="infl-label"
             scope="row"
-            headers="gender"
+            :headers="'Gender'+lemma.id"
             :rowspan="rowspan"
             :class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
             @mouseover="$emit('hilite', rowindex, lemma.id)">

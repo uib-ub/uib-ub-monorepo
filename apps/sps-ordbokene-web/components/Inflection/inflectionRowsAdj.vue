@@ -1,7 +1,7 @@
 <template>
   <tr class="infl-row">
     <template v-if="tags.tags && cells.length">
-      <th :id="tags.label"
+      <th :id="tags.label + lemmaId"
            class="infl-label xs"
            scope="row">
         {{tagToName(tags.label)}}
@@ -10,7 +10,7 @@
           :key="index"
           class="notranslate infl-cell xs"
           :colspan="rowspan"
-          :headers="tags.block + ' ' + (tags.label || '')"
+          :headers="tags.block + lemmaId + ' ' + (tags.label ? tags.label + lemmaId : '')"
           :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
           @mouseover="$emit('hilite', rowindex, lemmaId)"
           @mouseleave="$emit('unhilite')">
@@ -40,7 +40,7 @@ import { inflectedForm, markdownToHTML, tagToName
 
 export default {
     name: 'inflectionRowsAdj',
-    props: ['paradigms','tags','language','lemma-id'],
+    props: ['paradigms','tags','language','lemmaId'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {

@@ -29,11 +29,11 @@ export default {
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
-            rows: [ this.hasSing ? this.inflForm(['Pos',['Masc/Fem','Masc']], 'Sing Masc') : null,
-                    this.hasFem && this.hasSing ? this.inflForm(['Pos','Fem'], 'Sing Fem') : null,
-                    this.hasSing ? this.inflForm(['Pos','Neuter'], 'Sing Neuter') : null,
-                    this.hasSing ? this.inflForm(['Pos','Def','Sing'],'Sing Def') : null,
-                    this.inflForm(['Pos','Plur'], 'Plur')
+            rows: [ this.hasSing ? this.inflForm(['Pos',['Masc/Fem','Masc']], `Sing${this.lemmaId} Masc${this.lemmaId}`) : null,
+                    this.hasFem && this.hasSing ? this.inflForm(['Pos','Fem'], `Sing${this.lemmaId} Fem${this.lemmaId}`) : null,
+                    this.hasSing ? this.inflForm(['Pos','Neuter'], `Sing${this.lemmaId} Neuter${this.lemmaId}`) : null,
+                    this.hasSing ? this.inflForm(['Pos','Def','Sing'], `Sing${this.lemmaId} Def${this.lemmaId}`) : null,
+                    this.inflForm(['Pos','Plur'], 'Plur' + this.lemmaId)
                     ].filter(r => r && r[0])
         }
     },
