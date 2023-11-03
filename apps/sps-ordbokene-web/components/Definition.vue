@@ -1,8 +1,8 @@
 <template>
-  <component :is="(level==1 || level == 9) ? 'div' : 'li'" :id="level != 9 && route.name == 'article' ? 'def' + body.id : undefined" :class="['definition', 'level'+level, {hilite: highlighted}]"><component :is="level <= 2 ? 'div' : 'span'">
-  <div v-if="explanations.length" class="explanations">
+  <component :is="(level==1 || level == 9) ? 'div' : 'li'" :id="level != 9 && route.name == 'article' ? 'def' + body.id : undefined" :class="['definition', 'level'+level, {hilite: highlighted}]"><div>
+  <component :is="level <= 2 ? 'div' : 'span'" v-if="explanations.length" class="explanations">
     <!-- i-808 -->
-    <div v-for="(explanation, index) in explanations" :key="index">
+    <component :is="level <= 2 ? 'div' : 'span'" v-for="(explanation, index) in explanations" :key="index">
       <DefElement
         :body="explanation"
         :dict="dict"
@@ -12,9 +12,9 @@
         @link-click="link_click"
       />
       <br v-if="might_need_semicolon(explanations, index)" />
-    </div>
+    </component>
     <!-- i/s -->
-  </div>
+  </component>
 <div v-if="examples.length">
   <h5 v-if="level <3 && !body.sub_definition" :lang="locale2lang[scoped_locale]">{{$t('article.headings.examples', 1, { locale: scoped_locale})}}</h5>
   <ul class="examples">
@@ -27,7 +27,7 @@
 <component :is="level < 3 && (body.elements[0].type_ == 'definition' || !subdefs[0].sub_definition) ? 'ol' : 'ul'" :class="{'sub_definitions': subdefs.length, 'single_sub_definition': subdefs.length === 1}" v-if="subdefs.length">  
   <Definition v-for="(subdef, index) in subdefs" :key="index" :def_number='index+1' :level="level+1" :body="subdef"  :dict="dict" :semicolon="might_need_semicolon(subdefs, index)" :scoped_locale="scoped_locale" @link-click="link_click"/>
 </component>
-</component>
+</div>
 </component>
 
 </template>
