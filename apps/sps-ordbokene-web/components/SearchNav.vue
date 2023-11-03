@@ -5,18 +5,18 @@
   <li>
     <NuxtLink class="inline-block"
               :aria-current="store.dict =='bm,nn' ? 'true' : 'false'"
-              @click="dict_click('bm,nn')"
-              :to="dict_link('bm,nn')">{{$t('dicts_short.bm,nn')}}</NuxtLink>
+              :to="dict_link('bm,nn')"
+              @click="dict_click('bm,nn')">{{$t('dicts_short.bm,nn')}}</NuxtLink>
   </li>
   <li>
     <NuxtLink  :aria-current="store.dict =='bm' ? 'true' : 'false'"
-              @click="dict_click('bm')"
-              :to="dict_link('bm')">{{$t('dicts_short.bm')}}</NuxtLink>
+              :to="dict_link('bm')"
+              @click="dict_click('bm')">{{$t('dicts_short.bm')}}</NuxtLink>
   </li>
   <li>
     <NuxtLink :aria-current="store.dict =='nn' ? 'true' : 'false'"
-              @click="dict_click('nn')"
-              :to="dict_link('nn')">{{$t('dicts_short.nn')}}</NuxtLink>
+              :to="dict_link('nn')"
+              @click="dict_click('nn')">{{$t('dicts_short.nn')}}</NuxtLink>
   </li>
   <li>
     <NuxtLink :aria-current="advanced ? 'true' : 'false'"
@@ -29,10 +29,10 @@
 </template>
 
 <script setup>
-
-import { useSearchStore } from '~/stores/searchStore'
-import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+import { useSearchStore } from '~/stores/searchStore'
+
 const i18n = useI18n()
 const store = useSearchStore()
 const route = useRoute()
@@ -44,7 +44,7 @@ const dict_click = (dict) => {
       store.dict = dict
       store.lemmas.bm = new Set()
       store.lemmas.nn = new Set()
-      if (store.q != store.input) {
+      if (store.q !== store.input) {
         store.input = route.query.orig || store.q
       }
     }

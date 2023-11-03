@@ -13,10 +13,12 @@
     <div class="lg:hidden flex items-center flex-auto flex-grow-0">
       <button  type="button"
                 class="text-center text-lg border-x-2 border-primary-lighten p-3"
-                @click="locale_menu.toggle" aria-haspopup="true" :aria-controls="locale_menu && locale_menu.overlayVisible ? 'locale_menu' : null">
+                aria-haspopup="true" 
+                :aria-controls="locale_menu && locale_menu.overlayVisible ? 'locale_menu' : null"
+                @click="locale_menu.toggle">
         <span class="relative">
         <span aria-hidden="true" class="absolute text-xs right-2 top-3 bg-primary rounded px-1 select-none">{{locale2lang[$i18n.locale].toUpperCase()}}</span><Icon name="bi:globe" size="1.5em"/>
-        <span id="locale-label" class="sr-only">
+        <span class="sr-only">
           <span lang="no">Nettsidespråk</span>
           <span v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</span>
         </span>
@@ -59,14 +61,14 @@
     <button  type="button" class="ml-6 hidden lg:flex" @click="locale_menu.toggle" aria-haspopup="true" :aria-controls="locale_menu && locale_menu.overlayVisible ? 'locale_menu' : null">
         <span class="relative">
         <span aria-hidden="true" class="absolute text-xs right-2 top-3 bg-primary rounded px-1 select-none">{{locale2lang[$i18n.locale].toUpperCase()}}</span><Icon name="bi:globe" size="1.5em"/>
-        <span id="locale-label" class="sr-only">
+        <span class="sr-only">
           <span lang="no">Nettsidespråk</span>
           <span v-for="({button, lang}) in localeConfig.filter(item => item.button)" :key="lang" :lang="lang" class="">{{button}}</span>
         </span>
         </span>
       </button> 
       <div class="flex self-center justify-end pr-4 pb-4 lg:p-0">
-      <Menu ref="locale_menu" id="locale_menu" :model="locales" :popup="true"
+      <Menu id="locale_menu" ref="locale_menu" :model="locales" :popup="true"
       :pt="{
         root: '',
         menu: 'border-2 border-primary-lighten bg-primary-lighten text-white',
@@ -79,9 +81,9 @@
                   <a      :href="item.route"
                           class="gap-4"
                           :aria-current="$i18n.locale==item.locale"
-                          @click.prevent="change_locale(item.locale)"
+                          :lang="item.lang"
                           v-bind="props.action"
-                          :lang="item.lang">
+                          @click.prevent="change_locale(item.locale)">
                         <span aria-hidden="true" class="bg-primary rounded px-2 select-none">{{item.lang.toUpperCase()}}</span><span>{{item.label}}</span>
                         <span><Icon v-if="$i18n.locale==item.locale" name="bi:check2" size="1.5rem"/></span>
                   </a>

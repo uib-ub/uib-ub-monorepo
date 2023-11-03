@@ -633,7 +633,7 @@ export default {
                  hasAcc: this.hasInflForm(['Acc']),
                  isUninflected: this.lemmaList && (!['NOUN','PROPN','ADJ','VERB','PRON','DET']
                                                    .find(wc=>wc === this.lemmaList[0].word_class) ||
-                                                   this.lemmaList[0].paradigm_info[0].inflection_group == 'DET_simple'
+                                                   this.lemmaList[0].paradigm_info[0].inflection_group === 'DET_simple'
                                                   ),
                  show: false,
                  lemma: this.lemmaList && this.lemmaList[0],
@@ -725,7 +725,7 @@ export default {
             return 2 + (this.hasDef ? 1 : 0) + (this.hasNeuter ? 1 : 0)
         },
         isADJ_Adv: function () {
-            return this.lemmaList && this.lemmaList[0].paradigm_info[0].inflection_group == 'ADJ_adv'
+            return this.lemmaList && this.lemmaList[0].paradigm_info[0].inflection_group === 'ADJ_adv'
         },
         inflTagsPron: function () {
             return this.isNeuterPron() ? this.inflTagsPronNeuter : this.inflTagsPronNonNeuter
@@ -832,7 +832,7 @@ export default {
             return info
             },
         hasInflFormOld: function (tagList){
-            let info = this.lemmaList &&
+            const info = this.lemmaList &&
                 this.lemmaList[0].paradigm_info &&
                 this.lemmaList[0].paradigm_info.find(
                     paradigm => paradigm.standardisation === 'STANDARD' &&
@@ -864,12 +864,12 @@ export default {
             if (!paradigms.length) {
                 return []
             }
-            let isNoun = paradigms[0].tags.find(t => t === 'NOUN')
+            const isNoun = paradigms[0].tags.find(t => t === 'NOUN')
 
             const concat_wordforms = function (infl) {
                 let chain = ''
                 for (let i = 0; i < infl.length; i++) {
-                    let wf = infl[i].word_form
+                    const wf = infl[i].word_form
                     if (wf === 'Masc'|| wf === 'MascShort') { // Masc < Fem < Neuter
                         chain += 'a#'
                     } else if (wf === 'Fem'|| wf === 'FemShort') {

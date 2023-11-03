@@ -8,8 +8,8 @@
           <DefElement v-if="lemma.annotated_lemma" :body="lemma.annotated_lemma" tag="span" :scoped_locale="scoped_locale"/><span v-else>{{lemma.lemma}}</span>
          <span v-if="lemma.hgno" class="hgno">{{"\xa0"}}<span class="sr-only">{{parseInt(lemma.hgno)}}</span><span aria-hidden="true">{{roman_hgno(lemma)}}</span></span>
                    <span
-                   class="title_comma"
-                   v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1">{{", "}}
+                   v-if="lemma_group.lemmas[1] && index < lemma_group.lemmas.length-1"
+                   class="title_comma">{{", "}}
                   </span>
     </span>
 </h3>
@@ -30,12 +30,11 @@ import {useSettingsStore } from '~/stores/settingsStore'
 const settings = useSettingsStore()
 
 const props = defineProps({
-    lemma_groups: Array,
+    lemma_groups: {type: Array, required: true},
     secondary_header_text: String,
     dict: String,
-    article_id: Number,
-    scoped_locale: String
-
+    article_id: {type: Number, required: true},
+    scoped_locale: {type: String, required: true}
 })
 
 </script>

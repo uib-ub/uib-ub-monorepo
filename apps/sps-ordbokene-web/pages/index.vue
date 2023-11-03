@@ -14,7 +14,7 @@
       <NuxtLink :to="`/${$i18n.locale}/`"> <Icon name="bi:arrow-left-short" size="1.5rem" class="mb-1 text-primary"/>{{$t('home')}}</NuxtLink>
     </div>
   </NuxtErrorBoundary>
-    <div v-bind:class="{'md:pt-4': route.name != 'article', 'wallpaper': route.name == 'welcome' || route.name == 'index', 'ord-container': route.name != 'welcome' && route.name != 'index'}">
+    <div :class="{'md:pt-4': route.name != 'article', 'wallpaper': route.name == 'welcome' || route.name == 'index', 'ord-container': route.name != 'welcome' && route.name != 'index'}">
   <NuxtErrorBoundary @error="content_error">
     <NuxtPage/>
   </NuxtErrorBoundary>

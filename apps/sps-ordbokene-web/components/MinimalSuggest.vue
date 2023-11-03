@@ -1,11 +1,11 @@
 <template>
    <div class="mb-10 mx-2">
-    <SuggestResults :minimal="true" :dict="dict" v-if="!pending && data.length" :suggestions="data"><h3>{{$t('notifications.similar')}}</h3></SuggestResults>
+    <SuggestResults v-if="!pending && data.length" :minimal="true" :dict="dict" :suggestions="data"><h3>{{$t('notifications.similar')}}</h3></SuggestResults>
     <div v-if="!pending && !data.length" class="callout pt-0 my-0">
         <h3><Icon name="bi:info-circle-fill" size="1rem" class="mr-3"/>{{$t('notifications.no_results.title')}}</h3>
         <p>
             <i18n-t keypath="notifications.no_results.description[0]">
-                <template v-slot:dict>
+                <template #dict>
                     <em>{{$t('dicts.'+dict)}}</em>.
                 </template>
             </i18n-t>
@@ -31,8 +31,8 @@ const query = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}${
 const { data, error, pending } = useFetch(query, {key: query,
                                     transform: response => {
                                         if (response.a && response.a.similar) {
-                                            return response.a.similar.filter(item => item[0] != "-"
-                                                                                    && item[0].slice(-1) != '-' ).map(pair => pair[0])
+                                            return response.a.similar.filter(item => item[0] !== "-"
+                                                                                    && item[0].slice(-1) !== '-' ).map(pair => pair[0])
                                         }
                                         else {
                                             useTrackEvent('no_suggestions_advanced', {props: {query: props.dict + "/" + store.q}})
@@ -42,7 +42,7 @@ const { data, error, pending } = useFetch(query, {key: query,
                                     }})
 
 
-if (error.value && session.endpoint == "https://oda.uib.no/opal/prod/`") {
+if (error.value && session.endpoint === "https://oda.uib.no/opal/prod/`") {
   session.endpoint = `https://odd.uib.no/opal/prod/`
   console.log("ERROR", error.value)
   refresh()

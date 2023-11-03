@@ -7,10 +7,10 @@
           <img height="80px" width="80px" class="mx-4 my-4 mr-2 lg:my-0 " src="../assets/images/uib-logo.svg" alt="Universitetet i Bergen, logo" />
         </div>
         <i18n-t keypath="footer_description" tag="div" class="p-4 md:px-16 md:ml-6 text-center xl:text-left">
-          <template v-slot:bm>
+          <template #bm>
             <em>Bokmålsordboka</em>
           </template>
-          <template v-slot:nn>
+          <template #nn>
             <em>Nynorskordboka</em>
           </template>
         </i18n-t>

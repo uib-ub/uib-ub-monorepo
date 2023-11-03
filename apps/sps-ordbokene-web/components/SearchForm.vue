@@ -1,6 +1,6 @@
 <template>
 <div class="lg:py-1">
-<form class="md:mx-[10%]"  @submit.prevent="submitForm" ref="form" :action="`/${$i18n.locale}/${store.dict || 'bm,nn'}`">
+<form ref="form" class="md:mx-[10%]" :action="`/${$i18n.locale}/${store.dict || 'bm,nn'}`" @submit.prevent="submitForm"  >
 <NuxtErrorBoundary @error="autocomplete_error">
   <Autocomplete @dropdown-submit="submitForm"/>
 </NuxtErrorBoundary>
@@ -10,11 +10,12 @@
 </template>
 
 <script setup>
-import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { useSearchStore } from '~/stores/searchStore'
 import { useSettingsStore } from '~/stores/settingsStore'
 import { useSessionStore } from '~/stores/sessionStore'
-import { useI18n } from 'vue-i18n'
+
 const store = useSearchStore()
 const route = useRoute()
 const settings = useSettingsStore()
@@ -50,26 +51,26 @@ const submitForm = (item) => {
     if (advancedSpecialSymbols(store.q)) {
       return navigateTo(`/${i18n.locale.value}/search?q=${store.q}&dict=${store.dict}&scope=${store.scope}`)
     }
-    else  if (store.input.includes("|") || session.dropdown_selected != -1) {
+    else  if (store.input.includes("|") || session.dropdown_selected !== -1) {
       return navigateTo(`/${i18n.locale.value}/${store.dict}?q=${store.q}`)
     }
 
-    let { exact, inflect } = store.suggest
+    const { exact, inflect } = store.suggest
     
     if (exact) {
       
-        if (exact[0][0].length == store.q.length) {
-            let redirectUrl = `/${i18n.locale.value}/${store.dict}/${exact[0][0]}`
+        if (exact[0][0].length === store.q.length) {
+            const redirectUrl = `/${i18n.locale.value}/${store.dict}/${exact[0][0]}`
             return navigateTo(redirectUrl)
         }
     }
 
-    if (inflect && inflect.length == 1 && inflect[0][0] && inflect[0][0][0] != "-" && inflect[0][0].slice(-1) != "-") { // suppress prefixes and suffixes
+    if (inflect && inflect.length === 1 && inflect[0][0] && inflect[0][0][0] !== "-" && inflect[0][0].slice(-1) !== "-") { // suppress prefixes and suffixes
         return navigateTo(`/${i18n.locale.value}/${store.dict}/${inflect[0][0]}?orig=${store.q}`)
     }
 
     return navigateTo(`/${i18n.locale.value}/${store.dict}?q=${store.q}`)
-    //navigateTo(`/${route.params.dict}/${store.q}`)
+    // navigateTo(`/${route.params.dict}/${store.q}`)
   }
   
 }

@@ -1,6 +1,6 @@
 import { useSearchStore } from '~/stores/searchStore'
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware((to, from) => {
     const store = useSearchStore()
     store.$patch({searchUrl: to.fullPath,
                   q: to.query.q || store.q,

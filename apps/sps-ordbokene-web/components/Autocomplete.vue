@@ -1,6 +1,6 @@
 <script setup>
-import { useSearchStore } from '~/stores/searchStore'
 import { useRoute } from 'vue-router'
+import { useSearchStore } from '~/stores/searchStore'
 import {useSettingsStore } from '~/stores/settingsStore'
 import {useSessionStore } from '~/stores/sessionStore'
 
@@ -22,7 +22,7 @@ const close_dropdown = () => {
 async function fetchAutocomplete(q) {
 
   q = q.trim()
-    if (q.length == 0) {
+    if (q.length === 0) {
       session.show_autocomplete = false;
       return
     }
@@ -43,7 +43,7 @@ async function fetchAutocomplete(q) {
 
 
     // Intercept queries containing too many words or characters
-    let words = q.split(/ |\|/)
+    const words = q.split(/ |\|/)
     if (words.length > 20) {
       store.autocomplete = []
       session.show_autocomplete = false;
@@ -59,25 +59,25 @@ async function fetchAutocomplete(q) {
 
     if (!pattern && !hasOr) {
 
-      let response = ref([])
-      let url = `${session.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name == 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
+      const response = ref([])
+      const url = `${session.endpoint}api/suggest?&q=${q}&dict=${store.dict}&n=20&dform=int&meta=n&include=${route.name === 'search' ? store.scope + (store.pos ? '&wc='+store.pos : '') : 'ei'}`
       response.value = await $fetch(url)
 
       // prevent suggestions after submit
-      if (q == store.input) {
+      if (q === store.input) {
         store.suggest = response.value.a
-        let autocomplete_suggestions = []
-        if (store.input.trim() == q && response.value.a.exact) {
-          let { exact, inflect, freetext } = response.value.a
+        const autocomplete_suggestions = []
+        if (store.input.trim() === q && response.value.a.exact) {
+          const { exact, inflect, freetext } = response.value.a
           const seen = new Set()
           exact.forEach(item => {
-            autocomplete_suggestions.push({q: item[0], time: time, dict: [item[1]], type: "word"})
+            autocomplete_suggestions.push({q: item[0], time, dict: [item[1]], type: "word"})
             seen.add(item[0])
           });
           if (inflect) {
             inflect.forEach(item => {
             if (!seen.has(item[0])) {
-              autocomplete_suggestions.push({q: item[0], time: time, dict: [item[1]], type: "inflect"})
+              autocomplete_suggestions.push({q: item[0], time, dict: [item[1]], type: "inflect"})
               seen.add(item[0])
             }
             });
@@ -85,14 +85,14 @@ async function fetchAutocomplete(q) {
           if (freetext) {
             freetext.forEach(item => {
             if (!seen.has(item[0])) {
-              autocomplete_suggestions.push({q: item[0], time: time, dict: [item[1]], type: "freetext"})
+              autocomplete_suggestions.push({q: item[0], time, dict: [item[1]], type: "freetext"})
               seen.add(item[0])
             }
             });
           }
         }
 
-        if (autocomplete_suggestions.length && store.input.trim() == q && q != store.q) {
+        if (autocomplete_suggestions.length && store.input.trim() === q && q !== store.q) {
 
           store.autocomplete = autocomplete_suggestions
           session.show_autocomplete = true;
@@ -121,7 +121,7 @@ const clearText = () => {
 const keys = (event) => {
   
   if (session.show_autocomplete) {
-    if (event.key == "ArrowDown" || event.key == "Down") {
+    if (event.key === "ArrowDown" || event.key === "Down") {
     
     if (session.dropdown_selected <  store.autocomplete.length -1) {
       session.dropdown_selected += 1;
@@ -134,7 +134,7 @@ const keys = (event) => {
 
     event.preventDefault()
   }
-  else if (event.key == "ArrowUp" || event.key == "Up") {
+  else if (event.key === "ArrowUp" || event.key === "Up") {
     if (session.dropdown_selected > -1) {
     
     session.dropdown_selected -= 1;
@@ -147,20 +147,20 @@ const keys = (event) => {
     }
     event.preventDefault()
   }
-  else if (event.key == "Escape" || event.key == "Esc" || event.key == "Tab") {
+  else if (event.key === "Escape" || event.key === "Esc" || event.key === "Tab") {
     close_dropdown()
   }
-  else if (event.key == "Home" && session.dropdown_selected > -1) {
+  else if (event.key === "Home" && session.dropdown_selected > -1) {
     session.dropdown_selected = 0
     event.preventDefault()
 
   }
-  else if (event.key == "End" && session.dropdown_selected > -1) {
+  else if (event.key === "End" && session.dropdown_selected > -1) {
     session.dropdown_selected = store.autocomplete.length - 1
     event.preventDefault()
 
   }
-  else if (event.key != "Enter") {
+  else if (event.key !== "Enter") {
     session.dropdown_selected = -1
   }
 
@@ -210,8 +210,8 @@ if (process.client) {
     }
     }
 
-    if (e.key === "Esc" || e.key == "Escape") {
-      session.show_autocomplete == false 
+    if (e.key === "Esc" || e.key === "Escape") {
+      session.show_autocomplete = false 
       session.dropdown_selected = -1
     }
     
@@ -228,12 +228,11 @@ if (process.client) {
 <template>
   <div class="search-container">
   <div class="input-wrapper h-3.5rem border bg-canvas border-primary flex content-center justify-between pr-2" v-bind="{'data-dropdown-open': session.show_autocomplete}">
-   <input class="input-element p-3 pl-6 lg:p-4 lg:px-8"
+   <input id="input-element"
+          ref="input_element" 
           type="text"
           :value="store.input"
-          id="input-element"
-          ref="input_element" 
-          @input="input_sync"
+          class="input-element p-3 pl-6 lg:p-4 lg:px-8"
           role="combobox" 
           name="q"
           :aria-activedescendant="session.dropdown_selected >= 0 ? 'autocomplete-item-'+session.dropdown_selected : null"
@@ -245,24 +244,25 @@ if (process.client) {
           :placeholder="$t('search_placeholder') + $t(`dicts_inline.${store.dict}`)"
           autocomplete="off"
           autocapitalize="none"
-          @keydown="keys"
           :aria-expanded="session.show_autocomplete || 'false'" 
-          :aria-owns="session.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"/>
-          <button type="button" :title="$t('clear')" class="appended-button" v-if="store.input.length > 0" :aria-label="$t('clear')" v-on:click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
+          :aria-owns="session.dropdown_selected >= 0 ? 'autocomplete-dropdown' : null"
+          @input="input_sync"
+          @keydown="keys"/>
+          <button v-if="store.input.length > 0" type="button" :title="$t('clear')" class="appended-button" :aria-label="$t('clear')" @click="clearText"><Icon name="bi:x-lg" size="1.25em"/></button>
           <button type="submit" class="appended-button"  :aria-label="$t('search')"><Icon name="bi:search" size="1.25em"/></button>
           
 
   </div>
   <client-only>
-  <div class="dropdown-wrapper" v-if="session.show_autocomplete">
-   <ul id="autocomplete-dropdown" role="listbox" ref="autocomplete_dropdown">
+  <div v-if="session.show_autocomplete" class="dropdown-wrapper">
+   <ul id="autocomplete-dropdown" ref="autocomplete_dropdown" role="listbox">
     <li v-for="(item, idx) in store.autocomplete"
+        :id="'autocomplete-item-'+idx"
         :key="idx" 
         :aria-selected="idx == session.dropdown_selected"
         role="option"
         tabindex="-1"
-        :lang="['bm','nn','no'][item.dict-1]"
-        :id="'autocomplete-item-'+idx">
+        :lang="['bm','nn','no'][item.dict-1]">
         <div class="dropdown-item w-full" data-dropdown-item tabindex="-1" @click="dropdown_select(item.q)">
           <span v-if="item.type == 'pattern' && route.name != 'search'" role="status" aria-live="polite" class=" bg-primary text-white p-1 rounded px-3 pr-1">
             {{$t('to_advanced')}} 
@@ -270,7 +270,7 @@ if (process.client) {
           </span>
           <span v-else :aria-live="store.autocomplete.length == 1? 'polite' : null">
             <span v-if="store.autocomplete.length == 1" class="sr-only">{{$t('autocomplete_suggestions', 1)}}: </span>
-            <span :class="item.type">{{ item.q }}</span> <span class="dict-parentheses text-black" v-if="item.dict && store.dict =='bm,nn'">({{["bokmål","nynorsk","bokmål, nynorsk"][item.dict-1]}})</span>
+            <span :class="item.type">{{ item.q }}</span> <span v-if="item.dict && store.dict =='bm,nn'" class="dict-parentheses text-black">({{["bokmål","nynorsk","bokmål, nynorsk"][item.dict-1]}})</span>
           </span>
         </div>
    </li>

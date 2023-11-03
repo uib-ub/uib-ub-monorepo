@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="md:container mx-auto grid lg:grid-cols-2 gap-4 grid-flow-row px-3 py-3 xl:py-10 xl:px-48" v-if="welcome_bm && welcome_nn">
+    <div v-if="welcome_bm && welcome_nn" class="md:container mx-auto grid lg:grid-cols-2 gap-4 grid-flow-row px-3 py-3 xl:py-10 xl:px-48">
       <section class="grid">
         <Article :article_id="parseInt(welcome_bm.front_article.value)" dict="bm" :scoped_locale="scoped_locale('bm')" welcome />
       </section>
@@ -44,12 +44,12 @@ const store = useSearchStore()
 const session = useSessionStore()
 const i18n = useI18n()
 
-const sortArticles = async (data) => {
+const sortArticles = (data) => {
     return data.sort((a, b) => new Date(b[3]) - new Date(a[3])).slice(0, 5)
 }
 
 const scoped_locale = dict => {
-  if (i18n.locale.value == "nob" || i18n.locale.value == 'nno') {
+  if (i18n.locale.value === "nob" || i18n.locale.value === 'nno') {
     return {bm: 'nob', nn: 'nno'}[dict] 
   }
   return i18n.locale.value

@@ -36,7 +36,7 @@
       <div>
         <h2 v-if="welcome" :class="{'!text-base': $i18n.locale == 'ukr'}" class="dict-label">{{$t('monthly', {dict: $t('dicts_inline.' + dict)}, { locale: scoped_locale})}}</h2>
         <h2 v-else-if="single" class="dict-label">{{{"bm":"Bokmålsordboka", "nn":"Nynorskordboka"}[dict]}}</h2>
-        <div class="px-4 pt-4 pb-2" :class="{'px-4 pb-3 pt-4' : welcome,  '!py-0 !px-3': list}">
+        <div class="px-4 pt-4 pb-2" :class="{'pb-3' : welcome,  '!py-0 !px-3': list}">
 
         <ArticleHeader :lemma_groups="lemma_groups" :secondary_header_text="secondary_header_text" :scoped_locale="scoped_locale" :dict="dict" :article_id="article_id"/>
       

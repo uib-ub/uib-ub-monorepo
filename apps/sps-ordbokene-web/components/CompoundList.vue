@@ -1,11 +1,9 @@
 <template>
   <li class="compound_list">
     <ul>
-      <DefElement :body="body.intro" v-if="body.intro" :dict="dict" :scoped_locale="scoped_locale" />
-      <li
-        :key="index"
-        v-for="(item, index) in body.elements"
-        >{{' '}}<NuxtLink
+      <DefElement v-if="body.intro" :body="body.intro" :dict="dict" :scoped_locale="scoped_locale" />
+      <li v-for="(item, index) in body.elements"
+          :key="index">{{' '}}<NuxtLink
           :to="`/${$i18n.locale}/${dict}/${item.article_id}${item.definition_id ? '#def'+item.definition_id : ''}`"
           @click="link_click(itemref)"
           >{{item.lemmas[0].lemma}}</NuxtLink>

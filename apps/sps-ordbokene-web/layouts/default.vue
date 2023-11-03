@@ -12,7 +12,7 @@
     </div>
     <Header/>
 
-    <nav :aria-label="$t('breadcrumbs')" class=" justify-start mt-2 mb-2 flex !pl-2 gap-4 flex-wrap" v-if="!['welcome', 'index', 'search', 'article', 'word'].includes($route.name)">
+    <nav v-if="!['welcome', 'index', 'search', 'article', 'word'].includes($route.name)" :aria-label="$t('breadcrumbs')" class=" justify-start mt-2 mb-2 flex !pl-2 gap-4 flex-wrap">
         <NuxtLink v-if="store.searchUrl" :to="store.searchUrl"><Icon name="bi:arrow-left-short" size="1.5rem" class="mb-1 text-primary"/>{{$t('notifications.back')}}
         </NuxtLink>
         <NuxtLink v-else :to="'/' + $i18n.locale">
