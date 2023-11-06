@@ -51,6 +51,7 @@
             </i18n-t>
         </p>
         <p v-if="store.q.length > 8" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: scoped_locale})}}</p>
+        <NuxtLink :to="`/${$i18n.locale}/about/missing-word`">{{$t('notifications.no_results.link', 1, {locale: scoped_locale})}}</NuxtLink>
     </div>
 </div>
 </template>
