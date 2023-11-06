@@ -97,7 +97,7 @@ const update_scope = (event) => {
 
 const reset = () => {
   store.pos = null
-  store.scope = "ei"
+  store.scope = "e"
   store.dict = "bm,nn"
 
   if (store.q) {
