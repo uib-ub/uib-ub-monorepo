@@ -33,8 +33,8 @@
                 <option v-for="(tag, idx) in  pos_tags" :key="idx" :value="tag" :selected="store.pos == tag" v-bind:class="{selected: store.pos == tag}">{{tag ? $t("tags." + tag) : $t("all_pos")}}</option>
             </select>
         </div>
-        <div class="flex w-full sm:w-[128px] sm:min-w-[128px] sm:max-w-[128px] !py-0" :class="{'hidden lg:flex': store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn'}">
-            <button class="btn w-full py-2 lg:py-0" v-if="!(store.pos == null &&  store.scope == 'ei' && store.dict == 'bm,nn')" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
+        <div  v-if="!(store.pos == null &&  store.scope == 'e' && store.dict == 'bm,nn')"  class="flex w-full sm:w-[128px] sm:min-w-[128px] sm:max-w-[128px] !py-0">
+            <button class="btn w-full py-2 lg:py-0" type="reset" @click="reset"> <Icon name="bi:arrow-clockwise" size="1.25em" class="mr-3 text-primary" />{{$t('reset')}}</button>
           </div>
 
         </div>
