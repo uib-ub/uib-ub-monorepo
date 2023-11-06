@@ -16,8 +16,10 @@
         </h1>
       </div>
       <template v-if="articles.meta[dict] && articles.meta[dict].total == 0">
-        <Suggest v-if="store.scope=='e'" :dict="dict" :articles_meta="articles.meta"/>
-        <MinimalSuggest v-else  :scoped_locale="scoped_locale(dict)" :dict="dict"/>
+        <client-only>
+          <Suggest v-if="store.scope=='e'" :dict="dict" :articles_meta="articles.meta"/>
+          <MinimalSuggest v-else  :scoped_locale="scoped_locale(dict)" :dict="dict"/>
+        </client-only>
       </template>
       <component v-if="articles.meta[dict] && articles.meta[dict].total > 0" :is="settings.listView ? 'ol' : 'div'" class="article-column">
         <component v-for="(article_id, idx) in articles.articles[dict].slice(offset, offset + perPage)" :key="article_id" :is="settings.listView ? 'li' : 'div'">
