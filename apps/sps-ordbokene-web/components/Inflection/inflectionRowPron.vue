@@ -19,12 +19,12 @@
 
 
 
-import { inflectedForm, tagToName
+import { inflectedForm
         } from './mixins/ordbankUtils.js' 
 
 export default {
     name: 'inflectionRowPron',
-    props: ['paradigm','locLang','lemmaId'],
+    props: ['paradigm', 'lemmaId'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
@@ -38,10 +38,8 @@ export default {
     methods: {
         inflForm: function (tagList) {
             return inflectedForm(this.paradigm, tagList)
-        },
-        tagToName: function (tag) {
-            return tagToName(tag, this.locLang)
-        }    }
+        }
+    }
 }
 </script>
     

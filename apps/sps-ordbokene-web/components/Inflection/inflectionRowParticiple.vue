@@ -13,7 +13,7 @@
               class='comma'>
           <em v-if="prefix" class="context">{{prefix}}</em>
           {{form}}
-          <em v-if="suffix" class="context nobr" translate="yes" :lang="locale2lang[scoped_locale]">{{suffix}}</em>
+          <em v-if="suffix" class="context nobr" translate="yes" :lang="langTag">{{suffix}}</em>
         </span>
       </td>
       
@@ -30,17 +30,17 @@ import { inflectedForm, indefArticle
 
 export default {
     name: 'inflectionRowParticiple',
-    props: ['paradigm','hasPerfPart','language','part','lemmaId', 'context', 'scoped_locale'],
+    props: ['paradigm','hasPerfPart','dict', 'locale', 'langTag', 'part','lemmaId', 'context'],
     data: function () {
         return { rows: [
             this.hasPerfPart && this.part !== 4 ?
                 this.inflForm(['Adj','Masc/Fem'],
-                                this.context ? indefArticle(['Masc/Fem'], this.language) : null,
+                                this.context ? indefArticle(['Masc/Fem'], this.locale) : null,
                                 this.context ? '+'+ this.$t('tags.NOUN') : null,
                                 `PerfPart${this.lemmaId} Masc${this.lemmaId}`) : null,
             this.hasPerfPart && this.part !== 4 ?
                 this.inflForm(['Adj','Neuter'],
-                                this.context ? indefArticle(['Neuter'], this.language) : null,
+                                this.context ? indefArticle(['Neuter'], this.locale) : null,
                                 this.context ? '+'+ this.$t('tags.NOUN') : null,
                                 `PerfPart${this.lemmaId} Neuter${this.lemmaId}`) : null,
             this.hasPerfPart && this.part !== 4 ?

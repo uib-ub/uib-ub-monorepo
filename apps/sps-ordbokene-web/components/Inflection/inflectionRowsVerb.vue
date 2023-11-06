@@ -42,7 +42,7 @@ import { inflectedForm, tagToName
 
 export default {
     name: 'inflectionRowsVerb',
-    props: ['paradigms','tags','language','lemmaId', 'scoped_locale'],
+    props: ['paradigms','tags','locale','lemmaId', 'scoped_locale'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
@@ -69,7 +69,7 @@ export default {
             }
         },
         tagToName: function (tag) {
-            return tagToName(tag, this.language) || tag
+            return tagToName(tag, this.locale) || tag
         }
     }
 }

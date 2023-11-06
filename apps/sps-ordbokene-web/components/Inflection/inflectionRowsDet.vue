@@ -24,7 +24,7 @@
           class="infl-group"
           scope="col"
           :colspan="paradigms.length+1">
-        {{tagToName(tags.title)}}
+        {{tags.title? $t('infl_table_tag' + tags.title, 1, {locale}) : ''}}
       </th>
     </template>
   </tr>
@@ -39,7 +39,7 @@ import { inflectedForm, tagToName
 
 export default {
     name: 'inflectionRowsAdj',
-    props: ['paradigms','tags','locLang','lemmaId'],
+    props: ['paradigms','tags','locale','lemmaId'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
@@ -55,9 +55,6 @@ export default {
     methods: {
         inflForm: function (paradigm, tagList, exclTagList) {
             return inflectedForm(paradigm, tagList, exclTagList)
-        },
-        tagToName: function (tag) {
-            return tagToName(tag, this.locLang) || tag
         }
     }
 }

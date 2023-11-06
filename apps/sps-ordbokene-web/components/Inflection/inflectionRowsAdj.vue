@@ -25,7 +25,7 @@
           class="infl-group"
           scope="col"
           :colspan="paradigms.length+1">
-        {{$t('infl_table_tags.'+tags.title)}}
+        {{tags.title ? $t('infl_table_tags.'+ tags.title, 1, {locale}) : ''}}
       </th>
     </template>
   </tr>
@@ -35,7 +35,7 @@
 
 
 
-import { inflectedForm, markdownToHTML, tagToName
+import { inflectedForm, markdownToHTML
         } from './mixins/ordbankUtils.js' 
 
 export default {

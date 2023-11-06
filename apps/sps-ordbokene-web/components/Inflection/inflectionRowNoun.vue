@@ -11,7 +11,7 @@
             @mouseover="$emit('hilite', rowindex, lemma.id)">
           <span v-for="(form, i) in forms"
                 :key="i"
-                class='comma'>{{$t('infl_table_tags.'+form)}}</span>
+                class='comma'>{{form ? $t('infl_table_tags.'+form, 1, {locale}) : ''}}</span>
         </th>
         <td v-else
             class="notranslate infl-cell"

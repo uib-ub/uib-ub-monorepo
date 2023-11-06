@@ -26,12 +26,12 @@ import { inflectedForm, tagToName
 
 export default {
     name: 'inflectionRowPron',
-    props: ['paradigm','locLang','lemmaId'],
+    props: ['paradigm','locale','lemmaId'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
             cells: [ this.inflForm(['Masc'],`Sing${this.lemmaId} Masc${this.lemmaId}`),
-                        this.inflForm(['Fem'],`Sing${this.lemmaId} Frem${this.lemmaId}`),
+                        this.inflForm(['Fem'],`Sing${this.lemmaId} Fem${this.lemmaId}`),
                         this.inflForm(['Neuter'],`Sing${this.lemmaId} Neuter${this.lemmaId}`),
                         this.inflForm(['Def'],`Sing${this.lemmaId} Def${this.lemmaId}`),
                         this.inflForm([ 'Plur'],`Plur${this.lemmaId}`)
