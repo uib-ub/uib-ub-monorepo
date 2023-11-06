@@ -7,42 +7,42 @@
            :class="mq">
         <div class="table-responsive">
           <table class="table" :class="mq">
-            <caption class="sr-only">{{$t('table.caption.NOUN')}}</caption>
+            <caption class="sr-only" :lang="langTag">{{$t('table.caption.NOUN', 1, {locale})}}</caption>
             <thead :lang="langTag">
               <tr>
                 <th v-if="!nounGender && hasGender"
                     :id="'Gender' + lemma.id"
                     class="infl-label sub label-border-top-left" :class="mq"
                     scope="col"
-                    rowspan='2'>{{$t('gender')}}</th>
+                    rowspan='2'>{{$t('gender', 1, {locale})}}</th>
                 <th v-if="hasSing"
                     :id="'Sing' + lemma.id"
                     class="infl-label label-border-top-left" :class="mq" scope="col" colspan='2'>
-                  {{$t('infl_table_tags.Sing')}}</th>
+                  {{$t('infl_table_tags.Sing', 1, {locale})}}</th>
                 <th id="Plur" class="infl-label label-border-top-right" :class="mq" scope="col" colspan='2'>
-                  {{$t('infl_table_tags.Plur')}}</th>
+                  {{$t('infl_table_tags.Plur', 1, {locale})}}</th>
               </tr>
               <tr>
                 <th v-if="hasSing"
                     :id="'SingInd' + lemma.id"
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
-                  {{$t('infl_table_tags.Ind')}} {{$t('infl_table_tags.Form')}}
+                  {{$t('infl_table_tags.Ind', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}
                 </th>
                 <th v-if="hasDef && hasSing"
                     :id="'SingDef' + lemma.id"
                     class="infl-label sub label-border-bottom" scope="col" :class="mq">
-                  {{$t('infl_table_tags.Def')}} {{$t('infl_table_tags.Form')}}
+                  {{$t('infl_table_tags.Def', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}
                 </th>
                 <th :id="'PlurInd' + lemma.id"
                     class="infl-label sub label-border-bottom"
                     scope="col" :class="mq">
-                  {{$t('infl_table_tags.Ind')}} {{$t('infl_table_tags.Form')}}
+                  {{$t('infl_table_tags.Ind', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}
                 </th>
                 <th v-if="hasDef"
                     :id="'PlurDef' + lemma.id"
                     class="infl-label sub label-border-bottom"
                     scope="col" :class="mq">
-                  {{$t('infl_table_tags.Def')}} {{$t('infl_table_tags.Form')}}
+                  {{$t('infl_table_tags.Def', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}
                 </th>
               </tr>
             </thead>
@@ -75,7 +75,7 @@
                               :key="index"
                               :showGender="!nounGender"
                               :tags="tags"
-                              :language="language"
+                              :locale="locale"
                               :lemma="lemma"
                               :paradigms="standardParadigms"
                               @hilite="hilite"
@@ -90,14 +90,14 @@
            class="infl-wordclass table-responsive" :class="mq">
       <div v-for="i in mq=='xs' ? [1,2] : [0]" :key="i" class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only">{{$t('table.caption.VERB')}}</caption>
+          <caption class="sr-only" :lang="langTag">{{$t('table.caption.VERB', 1, {locale})}}</caption>
           <thead :lang="langTag">
             <tr>
-              <th v-if="!i || i==1" class="infl-label label-border-top-left" :class="mq">{{$t('infl_table_tags.Inf')}}</th>
-              <th v-if="!i || i==1" class="infl-label label-border-top" :class="mq">{{$t('infl_table_tags.Pres')}}</th>
-              <th v-if="!i || i==1" class="infl-label label-border-top" :class="mq">{{$t('infl_table_tags.Past')}}</th>
-              <th v-if="!i || i==2" class="infl-label label-border-top" :class="mq">{{$t('infl_table_tags.PresPerf')}}</th>
-              <th v-if="(!i || i==2) && hasImp" class="infl-label label-border-top-right" :class="mq">{{$t('infl_table_tags.Imp')}}</th>
+              <th v-if="!i || i==1" class="infl-label label-border-top-left" :class="mq">{{$t('infl_table_tags.Inf', 1, {locale})}}</th>
+              <th v-if="!i || i==1" class="infl-label label-border-top" :class="mq">{{$t('infl_table_tags.Pres', 1, {locale})}}</th>
+              <th v-if="!i || i==1" class="infl-label label-border-top" :class="mq">{{$t('infl_table_tags.Past', 1, {locale})}}</th>
+              <th v-if="!i || i==2" class="infl-label label-border-top" :class="mq">{{$t('infl_table_tags.PresPerf', 1, {locale})}}</th>
+              <th v-if="(!i || i==2) && hasImp" class="infl-label label-border-top-right" :class="mq">{{$t('infl_table_tags.Imp', 1, {locale})}}</th>
             </tr>
           </thead>
           <tbody class="notranslate">
@@ -113,7 +113,7 @@
       </div>
       <div v-for="j in mq=='xs' ? [3,4] : [-1]" :key="j" class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only">{{$t('table.caption.VERBPP')}}</caption>
+          <caption class="sr-only" :lang="langTag">{{$t('table.caption.VERBPP', 1, {locale})}}</caption>
           <thead :lang="langTag">
             <template v-if="hasPerfPart">
               <tr>
@@ -122,44 +122,44 @@
                     :class="mq"
                     scope="col"
                     :colspan="hasPerfPartFem ? 5 : (hasPerfPartDef ? (j<0?4:(j==3?3:1)) : 1)">
-                  {{$t('infl_table_tags.PerfPart')}}
+                  {{$t('infl_table_tags.PerfPart', 1, {locale})}}
                 </th>
                 <th v-if="j<0 || j==4"
                     :id="'PresPart' + lemma.id"
                     class="infl-label label-border-top-right" :class="mq"
                     scope="col"
-                    rowspan="2">{{$t('infl_table_tags.PresPart')}}</th>
+                    rowspan="2">{{$t('infl_table_tags.PresPart', 1, {locale})}}</th>
               </tr>
               <tr>
                 <th v-if="(j<0 || j==3) && hasPerfPartDef"
                     :id="'Masc' + lemma.id"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">
-                  {{$t('infl_table_tags.MascShort')}}&nbsp;/<br/>{{$t('infl_table_tags.Fem')}}</th>
+                  {{$t('infl_table_tags.MascShort', 1, {locale})}}&nbsp;/<br/>{{$t('infl_table_tags.Fem', 1, {locale})}}</th>
                 <th v-if="(j<0 || j==3) && hasPerfPartFem"
                     :id="'Fem' + lemma.id"
                     scope="col"
                     class="infl-label sub label-border-bottom" :class="mq">
-                  {{$t('infl_table_tags.Fem')}}</th>
+                  {{$t('infl_table_tags.Fem', 1, {locale})}}</th>
                 <th v-if="(j<0 || j==3)"
                     :id="'Neuter' + lemma.id"
                     scope="col"
-                    class="infl-label sub label-border-bottom" :class="mq">{{$t('infl_table_tags.Neuter')}}</th>
+                    class="infl-label sub label-border-bottom" :class="mq">{{$t('infl_table_tags.Neuter', 1, {locale})}}</th>
                 <th v-if="(j<0 || j==3) && hasPerfPartDef"
                     :id="'Def' + lemma.id"
                     scope="col"
-                    class="infl-label sub label-border-bottom" :class="mq">{{$t('infl_table_tags.Def')}} {{$t('infl_table_tags.Form')}}</th>
+                    class="infl-label sub label-border-bottom" :class="mq">{{$t('infl_table_tags.Def', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}</th>
                 <th v-if="(j<0 || j==4) && hasPerfPartDef"
                     :id="'Plur' + lemma.id"
                     scope="col"
-                    class="infl-label sub label-border-bottom" :class="mq">{{$t('infl_table_tags.Plur')}}</th>
+                    class="infl-label sub label-border-bottom" :class="mq">{{$t('infl_table_tags.Plur', 1, {locale})}}</th>
               </tr>
             </template>
 
             <template v-else-if="hasPresPart">
               <tr>
                 <th v-if="j<0 || j==4"
-                    class="infl-label label-border-top" :class="mq">{{$t('infl_table_tags.PresPart')}}</th>
+                    class="infl-label label-border-top" :class="mq" :lang="langTag">{{$t('infl_table_tags.PresPart', 1, {locale})}}</th>
               </tr>
             </template>
           </thead>
@@ -193,7 +193,9 @@
             <inflectionRowsVerb v-for="(tags, index) in inflTagsVerb"
                                 :key="index"
                                 :tags="tags"
-                                :language="language"
+                                :dict="dict"
+                                :locale="locale"
+                                :langTag="langTag"
                                 :lemmaId="lemma.id"
                                 :paradigms="standardParadigms"
                                 @hilite="hilite"
@@ -209,7 +211,7 @@
            :class="mq">
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only">{{$t('table.caption.ADJ')}}</caption>
+          <caption class="sr-only" :lang="langTag">{{$t('table.caption.ADJ', 1, {locale})}}</caption>
           <thead :lang="langTag">
             <tr>
               <th v-if="hasSingAdj"
@@ -218,13 +220,13 @@
                   :class="mq"
                   scope="col"
                   :colspan="hasFem ? 4 : 3">
-                {{$t('infl_table_tags.Sing')}}
+                {{$t('infl_table_tags.Sing', 1, {locale})}}
               </th>
               <th id="Plur"
                   class="infl-label label-border-top-right" :class="mq"
                   scope="col"
                   :rowspan="hasSingAdj ? 2 : 1">
-                {{$t('infl_table_tags.Plur')}}
+                {{$t('infl_table_tags.Plur', 1, {locale})}}
               </th>
             </tr>
             <tr v-if="hasSingAdj">
@@ -233,32 +235,32 @@
                   class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
-                  {{$t('infl_table_tags.Masc')}}
+                  {{$t('infl_table_tags.Masc', 1, {locale})}}
               </th>
               <th v-if="!hasFem"
                   :id="'Masc' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
-                <span class="nobr">{{$t('infl_table_tags.Masc')}}&nbsp;/</span><br/>{{$t('infl_table_tags.Fem')}}</th>
+                <span class="nobr">{{$t('infl_table_tags.Masc', 1, {locale})}}&nbsp;/</span><br/>{{$t('infl_table_tags.Fem', 1, {locale})}}</th>
               <th v-if="hasFem"
                   :id="'Fem' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
-                {{$t('infl_table_tags.Fem')}}
+                {{$t('infl_table_tags.Fem', 1, {locale})}}
               </th>
               <th :id="'Neuter' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                   :class="mq">
-                {{$t('infl_table_tags.Neuter')}}
+                {{$t('infl_table_tags.Neuter', 1, {locale})}}
               </th>
               <th :id="'Def' + lemma.id"
                   class="infl-label sub label-border-bottom"
                   scope="col"
                  :class="mq">
-                {{$t('infl_table_tags.Def')}} {{$t('infl_table_tags.Form')}}
+                {{$t('infl_table_tags.Def', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}
               </th>
             </tr>
           </thead>
@@ -276,7 +278,7 @@
       </div>
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only">{{$t('table.caption.ADJCS')}}</caption>
+          <caption class="sr-only">{{$t('table.caption.ADJCS', 1, {locale})}}</caption>
           <thead :lang="langTag">
             <tr>
               <th v-if="hasDeg"
@@ -284,24 +286,24 @@
                   class="infl-label label-border-top-left-right"
                   scope="col"
                   colspan="3">
-                {{$t('infl_table_tags.Deg')}}
+                {{$t('infl_table_tags.Deg', 1, {locale})}}
               </th>
             </tr>
             <tr>
               <th :id ="'Cmp' + lemma.id"
                   scope="col"
                   class="infl-label label-border-bottom">
-                {{$t('infl_table_tags.Cmp')}}
+                {{$t('infl_table_tags.Cmp', 1, {locale})}}
               </th>
               <th :id="'SupInd' + lemma.id"
                   scope="col"
                   class="infl-label label-border-bottom">
-                {{$t('infl_table_tags.Sup')}}<br/><span class="sub">{{$t('infl_table_tags.Ind')}} {{$t('infl_table_tags.Form')}}</span>
+                {{$t('infl_table_tags.Sup', 1, {locale})}}<br/><span class="sub">{{$t('infl_table_tags.Ind', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}</span>
               </th>
               <th :id="'SupDef' + lemma.id"
                   scope="col"
                   class="infl-label label-border-bottom">
-                {{$t('infl_table_tags.Sup')}}<br/><span class="sub">{{$t('infl_table_tags.Def')}} {{$t('infl_table_tags.Form')}}</span>
+                {{$t('infl_table_tags.Sup', 1, {locale})}}<br/><span class="sub">{{$t('infl_table_tags.Def', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}</span>
               </th>
             </tr>
           </thead>
@@ -344,17 +346,17 @@
            :class="mq">
       <div v-if="hasDeg" class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
+          <caption class="sr-only" :lang="langTag">{{$t('table.caption.ADV', 1, {locale})}}</caption>
           <thead :lang="langTag">
             <tr>
-              <th class="infl-label label-border-bottom">
-                {{$t('infl_table_tags.Pos')}}
+              <th class="infl-label label-border-bottom" >
+                {{$t('infl_table_tags.Pos', 1, {locale})}}
               </th>
               <th class="infl-label label-border-bottom">
-                {{$t('infl_table_tags.Cmp')}}
+                {{$t('infl_table_tags.Cmp', 1, {locale})}}
               </th>
               <th class="infl-label label-border-bottom">
-                {{$t('infl_table_tags.Sup')}}
+                {{$t('infl_table_tags.Sup', 1, {locale})}}
               </th>
             </tr>
           </thead>
@@ -397,17 +399,17 @@
          :class="mq">
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only">{{$t('table.caption.PRON')}}</caption>
+          <caption class="sr-only" :lang="langTag">{{$t('table.caption.PRON', 1, {locale})}}</caption>
           <thead :lang="langTag">
             <tr>
               <th v-if="hasNom" class="infl-label sub label-border-top-left">
-                {{$t('infl_table_tags.Nom')}}
+                {{$t('infl_table_tags.Nom', 1, {locale})}}
               </th>
               <th v-if="hasAcc" class="infl-label sub label-border-top-right">
-                {{$t('infl_table_tags.Acc')}}
+                {{$t('infl_table_tags.Acc', 1, {locale})}}
               </th>
               <th v-if="hasNeuter" class="infl-label sub label-border-top-right">
-                {{$t('infl_table_tags.Neuter')}}
+                {{$t('infl_table_tags.Neuter', 1, {locale})}}
               </th>
             </tr>
           </thead>
@@ -437,7 +439,7 @@
                               :key="index"
                               :tags="tags"
                               :lemma="lemma.lemma"
-                              :language="language"
+                              :locale="locale"
                               :lemmaId="lemma.id"
                               :paradigms="standardParadigms"
                               @hilite="hilite"
@@ -453,7 +455,7 @@
          :class="mq">
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only">{{$t('table.caption.DET')}}</caption>
+          <caption class="sr-only" :lang="langTag">{{$t('table.caption.DET', 1, {locale})}}</caption>
           <thead :lang="langTag">
             <tr>
               <th v-if="hasSing"
@@ -461,37 +463,37 @@
                   class="infl-label label-border-top-left" :class="mq"
                   scope="col"
                   :colspan="DETColspan">
-                {{$t('infl_table_tags.Sing')}}
+                {{$t('infl_table_tags.Sing', 1, {locale})}}
               </th>
               <th v-if="hasPlur"
                   :id="'Plur' + lemma.id"
                   class="infl-label label-border-top-right" :class="mq"
                   scope="col"
                   rowspan="1">
-                {{$t('infl_table_tags.Plur')}}
+                {{$t('infl_table_tags.Plur', 1, {locale})}}
               </th>
             </tr>
             <tr v-if="hasSing">
               <th :id="'Masc' + lemma.id"
                   class="infl-label sub label-border-bottom" :class="mq"
                   scope="col">
-                {{$t('infl_table_tags.Masc')}}
+                {{$t('infl_table_tags.Masc', 1, {locale})}}
               </th>
               <th class="infl-label sub label-border-bottom" :class="mq"
                   :id="'Fem' + lemma.id"
                   scope="col">
-                {{$t('infl_table_tags.Fem')}}
+                {{$t('infl_table_tags.Fem', 1, {locale})}}
               </th>
               <th v-if="hasNeuter"
                   :id="'Neuter' + lemma.id"
                   class="infl-label sub label-border-bottom" :class="mq"
                   scope="col">
-                {{$t('infl_table_tags.Neuter')}}
+                {{$t('infl_table_tags.Neuter', 1, {locale})}}
               </th>
               <th :id="'Def' + lemma.id"
                   class="infl-label sub label-border-bottom" :class="mq" v-if="hasDef"
                   scope="col">
-                {{$t('infl_table_tags.Def')}} {{$t('infl_table_tags.Form')}}
+                {{$t('infl_table_tags.Def', 1, {locale})}} {{$t('infl_table_tags.Form', 1, {locale})}}
               </th>
             </tr>
           </thead>
@@ -522,7 +524,7 @@
                               :key="index"
                               :tags="tags"
                               :lemma="lemma.lemma"
-                              :language="language"
+                              :locale="locale"
                               :lemmaId="lemma.id"
                               :paradigms="standardParadigms"
                               @hilite="hilite"
@@ -536,10 +538,10 @@
     <div class="infl-wordclass table-responsive" :class="mq">
       <div class="table-responsive">
         <table class="table" :class="mq">
-          <caption class="sr-only">{{$t('table.caption.ADV')}}</caption>
+          <caption class="sr-only" :lang="langTag">{{$t('table.caption.ADV', 1, {locale})}}</caption>
           <thead :lang="langTag">
             <tr>
-              <th class="infl-label label-border">{{$t('infl_table_tags.Uninfl')}}</th>
+              <th class="infl-label label-border">{{$t('infl_table_tags.Uninfl', 1, {locale})}}</th>
             </tr>
           </thead>
           <tbody class="notranslate">
