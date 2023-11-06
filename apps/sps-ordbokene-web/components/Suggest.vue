@@ -32,11 +32,11 @@
             <h2>{{$t('notifications.similar', 1, {locale: scoped_locale})}}</h2>
         </SuggestResults>
     </div>
-    <div v-if="data.freetext && !( (articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length )" class ="callout pt-0 pb-4 my-0">
+    <div v-if="$route.name != 'search' && data.freetext && !( (articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length )" class ="callout pt-0 pb-4 my-0">
             <h2><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h2>
             <p>{{$t('notifications.fulltext.description', 1, {locale: scoped_locale})}}</p>
             <div class="flex">
-            <NuxtLink :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" @click="track_freetext(store.q, data.freetext)" class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none pr-1">{{$t('to_advanced')}} 
+            <NuxtLink :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" @click="track_freetext(store.q, data.freetext)" class=" ml-auto mt-3">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right-short" size="1.5rem"/>
             </NuxtLink>
             </div>
