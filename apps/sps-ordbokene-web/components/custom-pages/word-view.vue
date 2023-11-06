@@ -3,7 +3,7 @@
     <Spinner v-if="!error && !articles"/>    
     <div v-if="!error && !pending && articles && articles.meta && $route.name != 'index'" ref="results">
       <div class="md:sr-only pt-2 md:pt-0 px-2 text-sm" :class="{'sr-only': store.dict != 'bm,nn'}" role="status" aria-live="polite">
-        <strong v-if="total || (no_suggestions_bm && no_suggestions_nn)">{{$t('notifications.results', total, {count: total})}}</strong>
+        <span v-if="total || (no_suggestions_bm && no_suggestions_nn)">{{$t('notifications.results', total, {count: total})}}</span>
         <span v-if="!no_suggestions_bm || !no_suggestions_nn"><span v-if="total">. </span>{{$t('notifications.suggestions_available', total == 0 || 2)}}</span>
       </div>
       <div :class="{'gap-2 lg:gap-8 lg:grid lg:grid-cols-2': dicts.length == 2}">
