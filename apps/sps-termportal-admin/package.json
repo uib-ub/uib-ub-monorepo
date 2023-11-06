@@ -33,6 +33,7 @@
     "primevue": "^3.35.0",
     "sanity": "^3.18.1",
     "sass": "^1.64.1",
+    "termportal-ui": "*",
     "vite": "^4.2.1",
     "vitest": "^0.34.6"
   }

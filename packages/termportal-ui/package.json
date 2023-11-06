@@ -1,0 +1,23 @@
+{
+  "name": "termportal-ui",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "./nuxt.config.ts",
+  "files": [
+    "assets/tpt-theme/theme.scss"
+  ],
+  "scripts": {
+    "clean": "rm -rf node_modules"
+  },
+  "dependencies": {
+    "assets": "*"
+  },
+  "peerDependencies": {
+    "@nuxtjs/tailwindcss": "6.x",
+    "@vueuse/nuxt": "10.x",
+    "nuxt": "3.x",
+    "nuxt-icon": "0.x",
+    "primevue": "3.x"
+  }
+}

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  extends: ["./../sps-termportal-base", "nuxt-umami"],
+  extends: ["termportal-ui", "nuxt-umami"],
   app: {
     head: {
       title: "Termportalen",
