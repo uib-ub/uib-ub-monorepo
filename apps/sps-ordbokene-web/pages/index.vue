@@ -1,6 +1,6 @@
 <template>
 <main id="main" tabindex="-1" class="flex flex-col grow-1 relative">
-  <h1 class="font-semibold !px-4 sm:!px-3 text-primary lg:top-0 lg:left-0 text-xl  lg:absolute">
+  <h1 class="font-semibold !px-4 sm:!px-3 text-primary lg:top-0 lg:left-0 text-xl  xl:absolute">
     <span v-if="route.name=='word' || route.name == 'index' || route.name == 'welcome'">{{$t('simple')}} <span class="text-gray-900 text-base">| <span>{{$t('dicts.' + store.dict)}}</span></span></span>
     <span v-if="route.name=='article'">{{$t('article_view')}}</span>
   </h1>
