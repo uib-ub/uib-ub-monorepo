@@ -17,7 +17,7 @@
       </div>
       <template v-if="articles.meta[dict] && articles.meta[dict].total == 0">
         <client-only>
-          <Suggest v-if="store.scope=='e'" :dict="dict" :articles_meta="articles.meta"/>
+          <Suggest :key="store.searchUrl" v-if="store.scope=='e'" :dict="dict" :articles_meta="articles.meta"/>
           <MinimalSuggest v-else  :scoped_locale="scoped_locale(dict)" :dict="dict"/>
         </client-only>
       </template>
