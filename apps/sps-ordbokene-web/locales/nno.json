@@ -172,7 +172,8 @@
           },
           "no_results": {
             "title": "Ingen treff",
-            "description": ["Søket ditt gav ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."]
+            "description": ["Søket ditt gav ingen treff i {dict}", "Merk at det er tallause kombinasjonsmoglegheiter av samansette ord på norsk, og mange slike ord er derfor ikkje tekne med i ordbøkene."],
+            "link": "Les meir"
           },
           "feedback": {
             "title": "Fann du ordet du leita etter?",

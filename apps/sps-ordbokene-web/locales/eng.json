@@ -175,7 +175,8 @@
     },
     "no_results": {
       "title": "No results",
-      "description": ["Your search yields no results in {dict}", "Note that there are endless ways of combining words into new compound words in Norwegian, and many such words are therefore not included in the dictionary."]
+      "description": ["Your search yields no results in {dict}", "Note that there are endless ways of combining words into new compound words in Norwegian, and many such words are therefore not included in the dictionary."],
+      "link": "Read more"
     },
     "feedback": {
       "title": "Did you find the word you were looking for?",
