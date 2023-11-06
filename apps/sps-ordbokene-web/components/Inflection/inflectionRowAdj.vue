@@ -11,7 +11,8 @@
            @mouseleave="$emit('unhilite')">
         <span v-for="form in forms"
               :key="form"
-              class='comma'>{{formattedForm(form)}}</span>
+              class='comma'
+              v-html="formattedForm(form)"/>
       </td>
     </tr>
 </template>
