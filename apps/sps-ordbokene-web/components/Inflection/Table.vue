@@ -75,7 +75,9 @@
                               :key="index"
                               :showGender="!nounGender"
                               :tags="tags"
+                              :dict="dict"
                               :locale="locale"
+                              :lang-tag="langTag"
                               :lemma="lemma"
                               :paradigms="standardParadigms"
                               @hilite="hilite"
@@ -789,7 +791,7 @@ export default {
             },
         nounGender: function () {
             this.getGender()
-            return !this.gender || this.gender === '+' ? null : tagToName(this.gender,this.locale)
+            return !this.gender || this.gender === '+' ? null : this.$t('infl_table_tags.' + this.gender, 1, {locale: this.locale})
         },
         edit: function () {
             return this.lemma.mode === 'edit' || this.lemma.mode === 'new'

@@ -35,23 +35,23 @@ export default {
         return { rows: [
             this.hasPerfPart && this.part !== 4 ?
                 this.inflForm(['Adj','Masc/Fem'],
-                                this.context ? indefArticle(['Masc/Fem'], this.locale) : null,
-                                this.context ? '+'+ this.$t('tags.NOUN') : null,
+                                this.context ? indefArticle(['Masc/Fem'], this.dict) : null,
+                                this.context ? '+'+ this.$t('tags.NOUN', 1, {locale: this.locale}) : null,
                                 `PerfPart${this.lemmaId} Masc${this.lemmaId}`) : null,
             this.hasPerfPart && this.part !== 4 ?
                 this.inflForm(['Adj','Neuter'],
                                 this.context ? indefArticle(['Neuter'], this.locale) : null,
-                                this.context ? '+'+ this.$t('tags.NOUN') : null,
+                                this.context ? '+'+ this.$t('tags.NOUN', 1, {locale: this.locale}) : null,
                                 `PerfPart${this.lemmaId} Neuter${this.lemmaId}`) : null,
             this.hasPerfPart && this.part !== 4 ?
                 this.inflForm(['Adj','Def'],
                                 this.context ? 'den/det' : null,
-                                this.context ? '+'+ this.$t('tags.NOUN') : null,
+                                this.context ? '+'+ this.$t('tags.NOUN', 1, {locale: this.locale}) : null,
                                 `PerfPart${this.lemmaId} Def${this.lemmaId}`) : null,
             this.hasPerfPart && this.part !== 3 ?
                 this.inflForm(['Adj','Plur'],
                                 null,
-                                this.context ? '+'+ this.$t('tags.NOUN') : null,
+                                this.context ? '+'+ this.$t('tags.NOUN', 1, {locale: this.locale}) : null,
                                 `PerfPart${this.lemmaId} Plur${this.lemmaId}`) : null,
             this.part !== 3 ? this.inflForm(['Adj','<PresPart>'],
                                             null,

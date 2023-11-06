@@ -1,10 +1,11 @@
 <template>
     <tr :id="'lemma'+lemma.id" class="infl-row" >
       <template v-if="tags.tags">
-        <th :id="tags.tags.join('')"
+        <th :id="tags.tags.map(tag => tag + lemma.id).join('')"
             class="infl-label xs"
+            :tag="langTag"
             scope="row">
-          {{tagToName(tags.label)}}
+          {{tags.label? $t('infl_table_tags.'+tags.label, 1, {locale}) : '' }}
         </th>
         <template v-for="([prefix, [rowspan,rowindex,forms], headers], index) in cells" :key="index">
           <th v-if="tags.tags[0]=='_gender'"
@@ -15,7 +16,7 @@
               :class="{hilite: $parent.highlighted(rowindex, lemma.id)}"
               @mouseover="$emit('hilite', rowindex, lemma.id)"
               @mouseleave="$emit('unhilite')">
-            <span v-html="formattedForm(tags,forms[0])"/>
+            <span v-html="formattedForm(tags,forms[0])" :lang="langTag"/>
           </th>
           <td v-else
               class="notranslate nfl-cell"
@@ -28,7 +29,7 @@
                   :key="index1"
                   class='comma'>
               <em v-if="prefix" class="context">{{prefix}}&nbsp;</em>
-              <span v-html="formattedForm(tags,form)"/>
+              <span v-html="formattedForm(tags,form)" :lang="langTag"/>
             </span>
           </td>
         </template>
@@ -37,8 +38,9 @@
         <th :id="tags.title"
             class="infl-group"
             :colspan="paradigms.length+1"
+            :tag="langTag"
             scope="col">
-          {{tagToName(tags.title)}}
+          {{tags.title? $t('infl_table_tags.'+tags.title, 1, {locale}) : '' }}
         </th>
       </template>
     </tr>
@@ -48,12 +50,12 @@
 
 
 
-import { inflectedForm, tagToName, markdownToHTML
+import { inflectedForm, markdownToHTML
         } from './mixins/ordbankUtils.js' 
 
 export default {
     name: 'inflectionRowsNoun',
-    props: ['paradigms','tags','language','lemma', 'showGender'],
+    props: ['paradigms','tags','locale', 'langTag', 'lemma', 'showGender'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
@@ -79,31 +81,27 @@ export default {
             return paradigm.tags.find(tag => tag === 'Neuter')
         },
         indefArticle: function (paradigm) {
-            if (this.isMasc(paradigm) && this.language === 'nob') {
+            if (this.isMasc(paradigm) && this.dict === 'bm') {
                 return "en"
-            } else if (this.isMasc(paradigm) && this.language === 'nno') {
+            } else if (this.isMasc(paradigm) && this.dict === 'nn') {
                 return "ein"
-            } else if (this.isFem(paradigm) && this.language === 'nob') {
+            } else if (this.isFem(paradigm) && this.dict === 'bm') {
                 return "ei/en"
-            } else if (this.isFem(paradigm) && this.language === 'nno') {
+            } else if (this.isFem(paradigm) && this.dict === 'nn') {
                 return "ei"
-            } else if (this.isNeuter(paradigm) && this.language === 'nob') {
+            } else if (this.isNeuter(paradigm) && this.dict === 'bm') {
                 return "et"
-            } else if (this.isNeuter(paradigm) && this.language === 'nno') {
+            } else if (this.isNeuter(paradigm) && this.dict === 'nn') {
                 return "eit"
             }
         },
         genderCat: function (paradigm) {
             if (this.isMasc(paradigm)) {
-                return "hankjønn"
-            } else if (this.isFem(paradigm) && this.language === 'nob') {
-                return "hunkjønn"
-            } else if (this.isFem(paradigm) && this.language === 'nno') {
-                return "hokjønn"
-            } else if (this.isNeuter(paradigm) && this.language === 'nob') {
-                return "intetkjønn"
-            } else if (this.isNeuter(paradigm) && this.language === 'nno') {
-                return "inkjekjønn"
+                return this.$t('infl_table_tags.Masc', 1, {locale: this.locale})
+            } else if (this.isFem(paradigm)) {
+                return this.$t('infl_table_tags.Fem', 1, {locale: this.locale})
+            } else if (this.isNeuter(paradigm)) {
+                return this.$t('infl_table_tags.Neuter', 1, {locale: this.locale})
             }
         },
         inflForm: function (paradigm, tagList, prefix) {
@@ -115,11 +113,8 @@ export default {
                 return [prefix, forms, gender + tagList[0] +  ' ' + tagList[0] + tagList[1]]
             }
         },
-        tagToName: function (tag) {
-            return tagToName(tag, this.language)
-        },
         formattedForm: function (tags,form) {
-            return tags.tags[0] === '_gender' ? this.tagToName(form) : markdownToHTML(form)
+            return tags.tags[0] === '_gender' ? this.$t('infl_table_tags.' + form) : markdownToHTML(form)
         }
     }
 }

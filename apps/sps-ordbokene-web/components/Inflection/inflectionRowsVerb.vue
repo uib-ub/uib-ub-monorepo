@@ -4,7 +4,7 @@
       <th :id="tags.label + lemmaId"
           class="infl-label xs"
           scope="row">
-        {{tagToName(tags.label)}}
+        {{tags.label? $t('infl_table_tags.' + tags.label, 1, {locale}) : ''}}
       </th>
       <td v-for="([prefix, [rowspan,rowindex,forms], suffix], index) in cells"
           :key="index"
@@ -18,7 +18,7 @@
               :key="index2"
               class='comma'>
           <em v-if="prefix" class="context">{{prefix}}</em>
-          {{form}}<span v-if="suffix!='!'"> </span><em v-if="suffix" translate="yes" :lang="locale2lang[scoped_locale]" class="context nobr">{{suffix}}</em>
+          {{form}}<span v-if="suffix!='!'"> </span><em v-if="suffix" translate="yes" :lang="langTag" class="context nobr">{{suffix}}</em>
         </span>
       </td>
     </template>
@@ -26,8 +26,9 @@
       <th :id="tags.title"
            class="infl-group"
            scope="col"
+           :lang="langTag"
            :colspan="paradigms.length+1">
-        {{tagToName(tags.title)}}
+        {{tags.title? $t('infl_table_tags.' + tags.title, 1, {locale}) : ''}}
       </th>
     </template>
   </tr>
@@ -42,7 +43,7 @@ import { inflectedForm, tagToName
 
 export default {
     name: 'inflectionRowsVerb',
-    props: ['paradigms','tags','locale','lemmaId', 'scoped_locale'],
+    props: ['paradigms','tags', 'dict', 'locale', 'langTag', 'lemmaId'],
     emits: ['hilite', 'unhilite'],
     data: function () {
         return {
