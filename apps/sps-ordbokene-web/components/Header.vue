@@ -1,5 +1,5 @@
 <template>
-<header class="bg-primary pl-6 lg:pr-6 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+<header class="bg-primary pl-6 lg:pr-6 flex flex-col lg:flex-row content-center text-white shadow-[rgba(0,_0,_0,_0.24)_0px_2px_8px]">
   <div class="flex">
   <div class="flex flex-grow py-1 items-center md:py-3 flex-auto !box-content">
   <NuxtLink :to="'/'+ i18n.locale.value" :aria-current="($route.name == 'welcome' || $route.name == 'index') && 'page'" @click="store.$reset()">
