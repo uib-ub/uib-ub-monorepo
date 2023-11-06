@@ -30,7 +30,7 @@ const props = defineProps({
     scoped_locale: String
 })
 
-const query = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=10&dform=int&meta=n&include=s`
+const query = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=8&dform=int&meta=n&include=s`
 const { data, error, pending } = useFetch(query, {key: query,
                                     transform: response => {
                                         if (response.a && response.a.similar) {
