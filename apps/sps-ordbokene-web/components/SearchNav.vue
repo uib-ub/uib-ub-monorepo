@@ -6,17 +6,20 @@
     <NuxtLink class="inline-block"
               :aria-current="store.dict =='bm,nn' ? 'true' : 'false'"
               :to="dict_link('bm,nn')"
-              @click="dict_click('bm,nn')">{{$t('dicts_short.bm,nn')}}</NuxtLink>
+              :aria-label="$t('dicts.bm,nn')"
+              @click="dict_click('bm,nn')"><span class="xl:hidden">{{$t('dicts_short.bm,nn')}}</span><span class="hidden xl:block">{{$t('dicts.bm,nn')}}</span></NuxtLink>
   </li>
   <li>
     <NuxtLink  :aria-current="store.dict =='bm' ? 'true' : 'false'"
               :to="dict_link('bm')"
-              @click="dict_click('bm')">{{$t('dicts_short.bm')}}</NuxtLink>
+              :aria-label="$t('dicts.bm')"
+              @click="dict_click('bm')"><span class="xl:hidden">{{$t('dicts_short.bm')}}</span><span class="hidden xl:block">{{$t('dicts.bm')}}</span></NuxtLink>
   </li>
   <li>
     <NuxtLink :aria-current="store.dict =='nn' ? 'true' : 'false'"
               :to="dict_link('nn')"
-              @click="dict_click('nn')">{{$t('dicts_short.nn')}}</NuxtLink>
+              :aria-label="$t('dicts.nn')"
+              @click="dict_click('nn')"><span class="xl:hidden">{{$t('dicts_short.nn')}}</span><span class="hidden xl:block">{{$t('dicts.nn')}}</span></NuxtLink>
   </li>
   <li>
     <NuxtLink :aria-current="advanced ? 'true' : 'false'"
