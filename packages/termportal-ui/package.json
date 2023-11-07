@@ -4,9 +4,6 @@
   "license": "MIT",
   "type": "module",
   "main": "./nuxt.config.ts",
-  "files": [
-    "assets/tpt-theme/theme.scss"
-  ],
   "scripts": {
     "clean": "rm -rf node_modules"
   },
