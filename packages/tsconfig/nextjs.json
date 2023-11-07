@@ -3,7 +3,7 @@
   "display": "Next.js",
   "extends": "./base.json",
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2022",
     "lib": [
       "dom",
       "dom.iterable",
@@ -22,8 +22,16 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./*",
-        "../../packages/ui-react/src/*"
+        "src/*"
+      ],
+      "@/lib": [
+        "lib/*"
+      ],
+      "@/sanity/*": [
+        "sanity/*"
+      ],
+      "@/components/*": [
+        "src/components/*"
       ]
     }
   },

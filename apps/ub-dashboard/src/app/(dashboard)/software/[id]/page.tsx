@@ -3,7 +3,7 @@ import { LiveQuery } from 'next-sanity/preview/live-query'
 import { draftMode } from 'next/headers'
 import Software, { query, SoftwareProps } from '../_components/software'
 import PreviewSingleSoftware from '../_components/preview-single-software'
-import { sanityFetch } from '@/lib/fetch'
+import { sanityFetch } from '@/sanity/lib/fetch'
 
 export default async function ProjectPage({
   params,

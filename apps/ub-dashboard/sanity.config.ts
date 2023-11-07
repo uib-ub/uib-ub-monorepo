@@ -21,7 +21,7 @@ import { table } from '@sanity/table';
 import { schema } from '@/sanity/schema'
 import { deskStructure } from '@/sanity/deskStructure'
 import { dashboardConfig } from '@/sanity/dashboard'
-import { PREVIEWABLE_DOCUMENT_TYPES, PREVIEWABLE_DOCUMENT_TYPES_REQUIRING_SLUGS } from '@/schemas';
+import { PREVIEWABLE_DOCUMENT_TYPES, PREVIEWABLE_DOCUMENT_TYPES_REQUIRING_SLUGS } from '@/sanity/schemas';
 import { defineUrlResolver, PREVIEW_BASE_URL } from '@/sanity/lib/utils';
 
 export const urlResolver = defineUrlResolver({

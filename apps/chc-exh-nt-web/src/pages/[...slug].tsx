@@ -89,7 +89,7 @@ const Page: NextPage = ({ data, preview }: any) => {
   const slug = page?.route[0]?.locale[0] ?? page?.route[0]?.fallback[0]
   const linguisticDocumentBody = page?.route[0]?.locale[0]?.body ?? page?.route[0]?.fallback[0]?.body
 
-  const localeCaption = slug.about?.caption?.filter((i: any) => i.language === locale)[0]?.body
+  const localeCaption = slug?.about?.caption?.filter((i: any) => i.language === locale)[0]?.body
 
   const aboutImage = slug?.about ?
     <SanityImage

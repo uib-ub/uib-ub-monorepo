@@ -3,7 +3,7 @@ import { LiveQuery } from 'next-sanity/preview/live-query'
 import { draftMode } from 'next/headers'
 import Person, { query } from '../_components/person'
 import PreviewPerson from '../_components/preview-person'
-import { sanityFetch } from '@/lib/fetch'
+import { sanityFetch } from '@/sanity/lib/fetch'
 import { PersonProps } from '../_components/person'
 
 export default async function PersonPage({
