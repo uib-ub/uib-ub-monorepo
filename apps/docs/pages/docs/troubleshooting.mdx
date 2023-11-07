@@ -1,5 +1,22 @@
 # Troubleshooting
 
+## Merge conflicts in package-lock.json in Pull Request
+
+If you get merge conflicts in package-lock.json in a Pull Request, you can fix it by running:
+
+```bash
+git checkout main
+git pull origin main
+git checkout <branch with conflicts
+git merge main
+git checkout --theirs package-lock.json
+git add .
+git commit -m "fix: merge conflicts in package-lock.json"
+npm install
+# Commit package-lock.json and push
+# Check that build is ok
+```
+
 ## Vercel looks for missing linux build for some packages
 
 For some reason Vercel does not install linux packages for turbo, esbuild and @napi-rs/simple-git. Solution is to add them to the package-lock.json file, but there are som black magic here...
