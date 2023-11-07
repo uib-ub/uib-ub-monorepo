@@ -1,1 +1,1 @@
-module.exports = require('ui-react/postcss.config');
+module.exports = require("ui-react/postcss.config");

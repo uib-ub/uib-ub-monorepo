@@ -124,7 +124,7 @@ const Id: NextPage = ({ data, preview }: any) => {
   })
 
   // This includes setting the noindex header because static files always return a status 200 but the rendered not found page page should obviously not be indexed
-  if (!isFallback && !data?.page?.item[0]?._id) {
+  if (!isFallback && !data?.page?.item?.[0]?._id) {
     return <>
       <Head>
         <meta name="robots" content="noindex" />
