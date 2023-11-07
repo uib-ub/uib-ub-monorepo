@@ -9,5 +9,5 @@ export default defineNuxtConfig({
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],
-  css: ["/../sps-termportal-base/assets/tp-theme/theme.scss"],
+  css: ["termportal-ui/assets/tp-theme/theme.scss"],
 });
