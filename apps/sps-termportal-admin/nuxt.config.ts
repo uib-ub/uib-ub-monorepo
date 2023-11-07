@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: ["./../sps-termportal-base"],
+  extends: ["termportal-ui"],
   devtools: { enabled: true },
   modules: ["@sidebase/nuxt-auth"],
   app: {
