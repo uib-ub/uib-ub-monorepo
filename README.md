@@ -16,6 +16,7 @@ It includes the following packages/apps:
 - `docs`: the documentation site, a [Nextra](https://nextra.site) app
 - `link-shortener`: WIP, a url redirect service with QR, a [Next.js](https://nextjs.org) app
 - `sps-termportal-web`: Termportalen.no, a [Nuxt.js](https://nuxtjs.org) app
+- `sps-termportal-admin`: termportalen-admin.vercel.app, a [Nuxt.js](https://nuxtjs.org) app
 
 
 ### Packages
@@ -23,6 +24,7 @@ It includes the following packages/apps:
 - `eslint-preset-custom`: ESLint preset
 - `tailwind-config`: shared tailwindcss config
 - `tailwind-ui`: React components with Tailwind CSS.
+- `termportal-ui`: Vue components with Tailwind CSS
 - `tsconfig`: shared tsconfig.jsons used throughout the monorepo
 - `utils`: shared utility functions
 
