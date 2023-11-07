@@ -13,6 +13,7 @@
     "test": "vitest"
   },
   "devDependencies": {
+    "@nuxt/content": "^2.9.0",
     "@nuxt/devtools": "latest",
     "@nuxt/test-utils-edge": "^3.0.1-rc.0-27907907.1406d21",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
