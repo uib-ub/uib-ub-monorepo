@@ -32,11 +32,11 @@
             <h3>{{$t('notifications.similar', 1, {locale: scoped_locale})}}</h3>
         </SuggestResults>
     </div>
-    <div v-if="data.freetext && !( (articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length )" class ="callout pt-0 pb-4 my-0">
-            <h3><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict)})}}</h3>
+    <div v-if="$route.name != 'search' && data.freetext && !( (articles_meta[dict] && articles_meta[dict].total) || data.translate.length || data.inflect.length )" class ="callout pt-0 pb-4 my-0">
+            <h3><Icon name="bi:info-circle-fill" size="1.25rem" class="mr-2 mb-1"/>{{$t('notifications.fulltext.title', {dict: $t('dicts.'+dict), locale: scoped_locale})}}</h3>
             <p>{{$t('notifications.fulltext.description', 1, {locale: scoped_locale})}}</p>
             <div class="flex">
-            <NuxtLink class=" bg-primary text-white ml-auto p-1 rounded px-3 mt-3 border-none pr-1" :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" @click="track_freetext(store.q, data.freetext)">{{$t('to_advanced')}} 
+            <NuxtLink :to="`/${$i18n.locale}/search?q=${data.freetext}&dict=${store.dict}&scope=eif`" class=" ml-auto mt-3" @click="track_freetext(store.q, data.freetext)">{{$t('to_advanced')}} 
             <Icon name="bi:arrow-right-short" size="1.5rem"/>
             </NuxtLink>
             </div>
@@ -51,6 +51,7 @@
             </i18n-t>
         </p>
         <p v-if="store.q.length > 8" class="my-2">{{$t('notifications.no_results.description[1]', 1, {locale: scoped_locale})}}</p>
+        <NuxtLink :to="`/${$i18n.locale}/about/missing-word`">{{$t('notifications.no_results.link', 1, {locale: scoped_locale})}}</NuxtLink>
     </div>
 </div>
 </template>
@@ -75,7 +76,7 @@ const track_freetext = (from, to) => {
     useTrackEvent('click_freetext_' + props.dict, {props: {from, to, combined: from + "|" + to}})
 }
 
-const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}&n=8&dform=int&meta=n&include=eifst`
+const suggestQuery = `${session.endpoint}api/suggest?&q=${store.q}&dict=${props.dict}${route.query.pos ? '&wc=' + route.query.pos : ''}&n=8&dform=int&meta=n&include=eifst`
 const { data  } = await useFetch(suggestQuery, {
     transform: response => {
         const inflect = []

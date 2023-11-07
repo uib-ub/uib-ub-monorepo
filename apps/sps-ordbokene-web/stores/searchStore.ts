@@ -5,7 +5,7 @@ export const useSearchStore = defineStore('store', {
       q:"",
       input: "",
       selected: {},
-      scope: "ei",
+      scope: "e",
       pos: "",
       dict: "bm,nn",
       autocomplete: [],

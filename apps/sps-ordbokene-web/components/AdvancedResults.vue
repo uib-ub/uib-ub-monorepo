@@ -15,7 +15,13 @@
           <span class="sr-only">{{$t('notifications.keywords')}}</span>
         </h2>
       </div>
-        <MinimalSuggest v-if="articles.meta[dict] && articles.meta[dict].total == 0" :scoped_locale="scoped_locale(dict)"   :dict="dict"/>
+
+      <template v-if="articles.meta[dict] && articles.meta[dict].total == 0">
+        <client-only>
+          <Suggest v-if="store.scope=='e'" :key="store.searchUrl" :dict="dict" :articles_meta="articles.meta"/>
+          <MinimalSuggest v-else  :scoped_locale="scoped_locale(dict)" :dict="dict"/>
+        </client-only>
+      </template>
       <component :is="settings.listView ? 'ol' : 'div'" v-if="articles.meta[dict] && articles.meta[dict].total > 0"  class="article-column">
         <component :is="settings.listView ? 'li' : 'div'" v-for="(article_id, idx) in articles.articles[dict].slice(offset, offset + perPage)" :key="article_id">
           <NuxtErrorBoundary @error="article_error($event, article_id, dict)">
