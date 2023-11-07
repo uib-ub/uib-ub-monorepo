@@ -1,30 +1,30 @@
 <template>
   <tr class="infl-row">
     <template v-if="tags.tags && cells.length">
-      <th :id="tags.label"
-          class="infl-label xs"
+      <th class="infl-label xs"
+          :id="tags.label"
           scope="row">
         {{tagToName(tags.label)}}
       </th>
-      <td v-for="([rowspan,rowindex,forms], index) in cells"
+      <td class="notranslate infl-cell xs"
+          v-for="([rowspan,rowindex,forms], index) in cells"
           :key="index"
-          class="notranslate infl-cell xs"
           :colspan="rowspan"
           :headers="tags.block + ' ' + (tags.label || '')"
-          :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
-          @mouseover="$emit('hilite', rowindex, lemmaId)"
-          @mouseleave="$emit('unhilite')">
-        <span v-for="(form, index2) in forms"
-              :key="index2"
-              class='comma'>{{form}}</span>
+          v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
+          v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
+          v-on:mouseleave="$emit('unhilite')">
+        <span class='comma'
+              v-for="(form, index) in forms"
+              :key="index">{{form}}</span>
       </td>
     </template>
     <template v-if="tags.title">
-      <th :id="tags.title"
-          class="infl-group"
+      <th class="infl-group"
+          :id="tags.title"
           scope="col"
           :colspan="paradigms.length+1">
-        {{tags.title? $t('infl_table_tag' + tags.title, 1, {locale}) : ''}}
+        {{tagToName(tags.title)}}
       </th>
     </template>
   </tr>
@@ -39,8 +39,7 @@ import { inflectedForm, tagToName
 
 export default {
     name: 'inflectionRowsAdj',
-    props: ['paradigms','tags','locale','lemmaId'],
-    emits: ['hilite', 'unhilite'],
+    props: ['paradigms','tags','locLang','lemmaId'],
     data: function () {
         return {
             cells: !this.tags.title ?
@@ -55,6 +54,9 @@ export default {
     methods: {
         inflForm: function (paradigm, tagList, exclTagList) {
             return inflectedForm(paradigm, tagList, exclTagList)
+        },
+        tagToName: function (tag) {
+            return tagToName(tag, this.locLang) || tag
         }
     }
 }

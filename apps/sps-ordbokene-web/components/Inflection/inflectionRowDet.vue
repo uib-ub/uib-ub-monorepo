@@ -1,54 +1,52 @@
 <template>
     <tr>
-      <td v-for="([[rowspan,rowindex,forms],headers], index) in cells"
+      <td class="notranslate infl-cell"
+          v-for="([[rowspan,rowindex,forms],headers], index) in cells"
           :key="index"
-          class="notranslate infl-cell"
           :rowspan="rowspan"
           :headers="headers"
-          :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
-          @mouseover="$emit('hilite', rowindex, lemmaId)"
-          @mouseleave="$emit('unhilite')">
-        <span v-for="(form, i) in forms"
-              :key="i"
-              class='comma'
-              >
+          v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
+            v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
+            v-on:mouseleave="$emit('unhilite')">
+        <span class='comma'
+              v-for="(form, i) in forms"
+              :key="i">
         {{form}}</span>
       </td>
     </tr>
-</template>
+    </template>
     
-<script>
+    <script>
     
     
     
-import { inflectedForm, tagToName
-        } from './mixins/ordbankUtils.js' 
-
-export default {
-    name: 'inflectionRowPron',
-    props: ['paradigm','locale','lemmaId'],
-    emits: ['hilite', 'unhilite'],
-    data: function () {
-        return {
-            cells: [ this.inflForm(['Masc'],`Sing${this.lemmaId} Masc${this.lemmaId}`),
-                        this.inflForm(['Fem'],`Sing${this.lemmaId} Fem${this.lemmaId}`),
-                        this.inflForm(['Neuter'],`Sing${this.lemmaId} Neuter${this.lemmaId}`),
-                        this.inflForm(['Def'],`Sing${this.lemmaId} Def${this.lemmaId}`),
-                        this.inflForm([ 'Plur'],`Plur${this.lemmaId}`)
-                    ].filter(r => r[0])
-        }
-    },
-    computed: {
-    },
-    methods: {
-        inflForm: function (tagList, headers) {
-            return [inflectedForm(this.paradigm, tagList), headers]
+    import { inflectedForm, tagToName
+           } from './mixins/ordbankUtils.js' 
+    
+    export default {
+        name: 'inflectionRowPron',
+        props: ['paradigm','language','lemmaId'],
+        data: function () {
+            return {
+                cells: [ this.inflForm(['Masc'],'Sing Masc'),
+                         this.inflForm(['Fem'],'Sing Frem'),
+                         this.inflForm(['Neuter'],'Sing Neuter'),
+                         this.inflForm(['Def'],'Sing Def'),
+                         this.inflForm([ 'Plur'],'Plur')
+                       ].filter(r => r[0])
+            }
         },
-        tagToName: function (tag) {
-            return tagToName(tag, this.language)
+        computed: {
+        },
+        methods: {
+            inflForm: function (tagList, headers) {
+                return [inflectedForm(this.paradigm, tagList), headers]
+            },
+            tagToName: function (tag) {
+                return tagToName(tag, this.language)
+            }
+
+
         }
-
-
     }
-}
-</script>
+    </script>

@@ -66,9 +66,9 @@
         <div v-if="inflected && !welcome && (inflection_expanded || single || list)" :id="`${dict}_${article_id}_inflection`" ref="inflection_table" class="motion-reduce:transition-none border-collapse py-2 transition-all duration-300 ease-in-out">
             <div class="overflow-x-auto p-2">
                 <client-only>
-                  <InflectionTable :locale="scoped_locale" :lang-tag="locale2lang[scoped_locale]" :mq="inflection_size()" :lemma-list="lemmas_with_word_class_and_lang"  :context="true" :dict="dict" :article_id="article_id"/>
+                  <InflectionTable :scoped_locale="scoped_locale" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :mq="inflection_size()" :lemma-list="lemmas_with_word_class_and_lang"  :context="true" :dict="dict" :article_id="article_id"/>
                   <template #fallback>
-                    <InflectionTable v-if="single" :locale="scoped_locale" :lang-tag="locale2lang[scoped_locale]" :lemma-list="lemmas_with_word_class_and_lang"  :context="true" :dict="dict" :article_id="article_id"/>
+                    <InflectionTable v-if="single" :scoped_locale="scoped_locale" :eng="$i18n.locale == 'eng'" :ukr="$i18n.locale == 'ukr'" :lemma-list="lemmas_with_word_class_and_lang"  :context="true" :dict="dict" :article_id="article_id"/>
                   </template>
                 </client-only>
      

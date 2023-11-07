@@ -3,18 +3,19 @@
 
 export function calculateStandardParadigms (lemma,edit,all) {
     if (lemma.paradigm_info) {
+        // console.log(lemma.paradigm_info)
         let paradigms = mergeParadigms(
             lemma.paradigm_info &&
                 lemma.paradigm_info.filter(paradigm =>
-                    (all || (paradigm.standardisation=='STANDARD' &&
-                             paradigm.code[0] != 'M' && 
-                             !paradigm.to)) && // we assume this is in the past if not null
-                        (!edit || !paradigm.exclude)
-                ))
-        paradigms.forEach(p => p.inflection.forEach(i =>
-            i.markdown_word_form ?
-                i.markdown_word_form = hyphenatedForm(i.markdown_word_form,lemma) :
-                i.word_form = hyphenatedForm(i.word_form,lemma)))
+                                           (all || (paradigm.standardisation=='STANDARD' &&
+                                                    !paradigm.to)) && // we assume this is in the past if not null
+                                           (!edit || !paradigm.exclude)
+                                          ))
+        paradigms.forEach(p => p.inflection.forEach(i => i.markdown_word_form ?
+                                                    i.markdown_word_form = hyphenatedForm(i.markdown_word_form,lemma) :
+                                                    i.word_form = hyphenatedForm(i.word_form,lemma)))
+        // console.log(paradigms.map(p=>p.standardisation))
+        // console.log(paradigms)
         return paradigms
     } else {
         return []
@@ -55,7 +56,7 @@ function appendTwoWordForms (wf1, wf2) {
         let res = wf1.map(w => w)
         wf2.forEach(w => { if (!wf1.find(x => x == w)) { res.push(w) } })
     }
-    if (Array.isArray(res)) res = res.sort((a,b) => a.localeCompare(b))
+    if (Array.isArray(res)) res = res.sort((a,b) => a.localeCompare(b, 'no'))
     return res
 }
 
@@ -116,7 +117,8 @@ function mergeCells(infl1, infl2, tagList, exclTagList) {
     }
 }
 
-function mergeParadigm (p, tagList, mergedCell) { // , standardisation) {
+function mergeParadigm (p, tagList, mergedCell, standardisation) {
+    // console.log(p)
     return { exclude: p.exclude,
              from: p.from,
              to: p.to,
@@ -127,6 +129,7 @@ function mergeParadigm (p, tagList, mergedCell) { // , standardisation) {
                  if (!hasTags(infl, tagList)) {
                      return infl
                  } else {
+                     //console.log('infl.st: ' + infl.standardisation + ' st: ' + standardisation)
                      return { tags: infl.tags,
                               word_form: mergedCell[0],
                               markdown_word_form: mergedCell[1],
@@ -156,7 +159,7 @@ function normalizeInflection(paradigm) {
     let infl = paradigm.inflection
     if (paradigm.tags[0] == 'NOUN') { // add extra virtual tag _gender
         infl = [ { tags: ["_gender"],
-                   word_form: paradigm.tags[1] + 'Short' },
+        word_form: paradigm.tags[1] + 'Short' },
                  ... infl ]
     }
     let res = []
@@ -191,7 +194,7 @@ function normalizeInflection(paradigm) {
 // merging their word forms into an array
 function mergeParadigms (paradigmInfo) {
     // remove Metaordbok paradigms
-    paradigmInfo = paradigmInfo.filter(p=> !p.code || p.code.charAt(0) != 'M')
+    paradigmInfo = paradigmInfo.filter(p=> !p.code || p.code.charAt(0) != 'M') 
         .map(p => normalizeInflection(p))
     let PI = []
     let tagLists = [ [['Imp'], null],
@@ -215,9 +218,14 @@ function mergeParadigms (paradigmInfo) {
             let mergedCell = null
             let mergeRow = null
             let standardisation = null
+            // console.log(paradigm)
             PI.forEach((p,i) => { // try to merge cells from p and paradigm corresponding to tagList
                 let merged = mergeCells(p.inflection, paradigm.inflection, tagList[0], tagList[1])
                 if (!merged) {
+                    //console.log('equal:')
+                    //console.log(paradigm)
+                    //console.log(p)
+                    //console.log(tagList[0] + ' ' + p.standardisation + ' ' + paradigm.standardisation)
                     p.standardisation == 'STANDARD' || paradigm.standardisation == 'STANDARD' ?
                         standardisation = 'STANDARD' : standardisation = 'NON-STANDARD'
                     if (standardisation) {
@@ -227,16 +235,21 @@ function mergeParadigms (paradigmInfo) {
                     found = true // equal one found
                 } else if (merged != true) { // merged cell
                     mergedCell = merged
+                    // console.log(mergedCell)
                     mergeRow = i
+                    // console.log(mergedCell)
+                    //console.log(p.standardisation + ' ' + paradigm.standardisation)
                     p.standardisation == 'STANDARD' || paradigm.standardisation == 'STANDARD' ?
                         standardisation = 'STANDARD' : standardisation = 'NON-STANDARD'
                 }
             })
-            if (mergedCell) {
-                // replace cell by merged cell (by updating word form), update paradigm in PI
+            if (mergedCell) { // replace cell by merged cell (by updating word form), update paradigm in PI
                 let p = mergeParadigm(paradigm, tagList[0], mergedCell, standardisation)
+                // console.log(p.standardisation + ' ' + PI[mergeRow].standardisation + ' ' + standardisation)
+                // p.standardisation = standardisation
                 PI[mergeRow] = p
             } else if (!found) {
+                // console.log('paradigm')
                 PI.push(paradigm)
             } else {
                 null // 
@@ -245,13 +258,14 @@ function mergeParadigms (paradigmInfo) {
         paradigmInfo = PI
         PI = []
     })
+    // console.log('res')
+    //console.log(paradigmInfo)
     return paradigmInfo
 }
 
 function inflectedForms (paradigm, tagList, exclTagList) {
     let inflection = paradigm.inflection.filter(
         infl => { let found = infl.markdown_word_form || infl.word_form || '-'
-                  // console.log('infl', infl)
                   // '-' necessary for non-standard display,
                   // where PerfPart Fem is lacking in standard paradigms (e.g., ‘ete’)
                   tagList.forEach(tag => {
@@ -278,16 +292,13 @@ function inflectedForms (paradigm, tagList, exclTagList) {
              inflection[0] && inflection[0].standardisation ]
 }
 
-// Calculate inflection table cell.
-// If cells are vertically merged rowspan is the number of cells merged.
+// Calculate inflection table cell. If cells are vertically merged rowspan is the number of cells merged.
 // noVerticalMerge is used for nouns
 // see inflectionTable.vue for vertical merging and setting final rowspan
 export function inflectedForm (paradigm, tagList, exclTagList, noVerticalMerge) {
     let [rowspan, index, forms, gender, standardisation] = inflectedForms(paradigm,tagList,exclTagList)
-    if (rowspan == 0 && !noVerticalMerge) {
-        return null // cell has been merged
-    } else if (!rowspan && !noVerticalMerge) {
-        return [null] // cell is empty
+    if (!rowspan && !noVerticalMerge) {
+        return null
     } else if (!forms) {
         return [ rowspan, index, [ '-' ], null, standardisation ]
     } else if (typeof forms == 'string') {
@@ -302,15 +313,12 @@ export function hasInflForm (paradigm, tagList) {
         paradigm.inflection_group != "VERB_sPass" && // fix for bug in paradigm def.
         paradigm.inflection.find(
             infl => { let found = infl.word_form // there are empty cells!
-                      if (found) {
-                          tagList.forEach(tag =>
-                              { if (!infl.tags.find(t => t == tag) && // have to include common tags!
-                                    !paradigm.tags.find(t => t == tag)) {
-                                    found = false }
-                              })
-                      }
-                      return found
-                    })
+                      tagList.forEach(tag =>
+                                      { if (!infl.tags.find(t => t == tag) && // have to include common tags!
+                                            !paradigm.tags.find(t => t == tag)) {
+                                          found = false }
+                                      })
+                      return found })
     return !!res
 }
 
@@ -544,12 +552,8 @@ const indefArticle_nno = { Masc: "ein",
                            Fem: "ei",
                            Neuter: "eit" }
 
-export function indefArticle (tagList, dict) {
-    switch (dict) {
-    case 'bm':
-        return indefArticle_nob[tagList[1]]
-    case 'nn':
-        return indefArticle_nno[tagList[1]]
+export function indefArticle (tagList, language) {
+    switch (language) {
     case 'nob':
         return indefArticle_nob[tagList[1]]
     case 'nno':

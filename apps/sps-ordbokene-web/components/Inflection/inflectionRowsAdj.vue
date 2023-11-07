@@ -1,65 +1,67 @@
 <template>
   <tr class="infl-row">
     <template v-if="tags.tags && cells.length">
-      <th :id="tags.label + lemmaId"
-           class="infl-label xs"
-           scope="row">
-        {{tags.label ? $t('infl_table_tags.'+tags.label) : ''}}
+      <th class="infl-label xs"
+          :id="tags.label"
+          scope="row">
+        {{tagToName(tags.label)}}
       </th>
-      <td v-for="([rowspan,rowindex,forms], index) in cells"
+      <td class="notranslate infl-cell xs"
+          v-for="([rowspan,rowindex,forms], index) in cells"
           :key="index"
-          class="notranslate infl-cell xs"
           :colspan="rowspan"
-          :headers="tags.block + lemmaId + ' ' + (tags.label ? tags.label + lemmaId : '')"
-          :class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
-          @mouseover="$emit('hilite', rowindex, lemmaId)"
-          @mouseleave="$emit('unhilite')">
-        <span v-for="(form, index2) in forms"
-              :key="index2"
-              class='comma'
+          :headers="tags.block + ' ' + (tags.label || '')"
+          v-bind:class="{hilite: $parent.highlighted(rowindex, lemmaId)}"
+          v-on:mouseover="$emit('hilite', rowindex, lemmaId)"
+          v-on:mouseleave="$emit('unhilite')">
+        <span class='comma'
+              v-for="(form, index) in forms"
+              :key="index"
               v-html="formattedForm(form)"/>
       </td>
     </template>
     <template v-if="tags.title">
-      <th :id="tags.title"
-          class="infl-group"
+      <th class="infl-group"
+          :id="tags.title"
           scope="col"
           :colspan="paradigms.length+1">
-        {{tags.title ? $t('infl_table_tags.'+ tags.title, 1, {locale}) : ''}}
+        {{tagToName(tags.title)}}
       </th>
     </template>
   </tr>
-</template>
+  </template>
   
-<script>
-
-
-
-import { inflectedForm, markdownToHTML
-        } from './mixins/ordbankUtils.js' 
-
-export default {
-    name: 'inflectionRowsAdj',
-    props: ['paradigms','tags','locale','lemmaId'],
-    emits: ['hilite', 'unhilite'],
-    data: function () {
-        return {
-            cells: !this.tags.title ?
-                this.paradigms.map(
-                    p => this.inflForm(p,
-                                        this.tags.tags,
-                                        this.tags.excl))
-                .filter(r => r) :
-                []
-        }
-    },
-    methods: {
-        inflForm: function (paradigm, tagList, exclTagList) {
-            return inflectedForm(paradigm, tagList, exclTagList)
-        },
-        formattedForm: function (form) {
-            return markdownToHTML(form)
-        }
-    }
-}
-</script>
+  <script>
+  
+  
+  
+  import { inflectedForm, markdownToHTML, tagToName
+         } from './mixins/ordbankUtils.js' 
+  
+  export default {
+      name: 'inflectionRowsAdj',
+      props: ['paradigms','tags','language','lemmaId'],
+      data: function () {
+          return {
+              cells: !this.tags.title ?
+                  this.paradigms.map(
+                      p => this.inflForm(p,
+                                         this.tags.tags,
+                                         this.tags.excl))
+                  .filter(r => r) :
+                  []
+          }
+      },
+      methods: {
+          inflForm: function (paradigm, tagList, exclTagList) {
+              return inflectedForm(paradigm, tagList, exclTagList)
+          },
+          formattedForm: function (form) {
+              return markdownToHTML(form)
+          },
+          tagToName: function (tag) {
+              return tagToName(tag, this.language) || tag
+          }
+      }
+  }
+  </script>
