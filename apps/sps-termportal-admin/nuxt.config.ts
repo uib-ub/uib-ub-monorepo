@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
   devtools: { enabled: true },
-  modules: ["@sidebase/nuxt-auth"],
+  modules: ["@sidebase/nuxt-auth", "@nuxt/content"],
   app: {
     head: {
       title: "Termportalen admin",
@@ -27,5 +27,8 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "vercel",
+  },
+  content: {
+    // ... options
   },
 });
