@@ -2,8 +2,17 @@ import { listenQuery } from 'sanity';
 <template>
   <nav>
     <div class="box-content h-12 w-full bg-white">
-      <div class="flex h-full items-center justify-between">
-        <div class="flex h-full items-center">
+      <div
+        class="flex h-full items-center"
+        :class="{
+          'justify-end': context === 'minimal',
+          'justify-between': context === 'default',
+        }"
+      >
+        <div
+          class="flex h-full items-center"
+          :class="{ hidden: context === 'minimal' }"
+        >
           <SideBar class="flex justify-center">
             <NuxtLink to="/">
               <LogoTermportalen
@@ -32,7 +41,7 @@ import { listenQuery } from 'sanity';
         </div>
         <div class="">
           <button
-            class="flex space-x-2 px-9 text-lg font-semibold text-gray-500 hover:text-gray-700 focus:text-gray-700 items-center"
+            class="flex items-center space-x-2 px-9 text-lg font-semibold text-gray-500 hover:text-gray-700 focus:text-gray-700"
             @click="signOut()"
           >
             <div class="">Sign Out</div>
@@ -41,10 +50,22 @@ import { listenQuery } from 'sanity';
         </div>
       </div>
     </div>
-    <div class="border-x border-b-[1px] border-gray-300 border-x-white" />
+    <div
+      class="border-x border-b-[1px] border-gray-300 border-x-white"
+      :class="{ hidden: context === 'minimal' }"
+    />
   </nav>
 </template>
 
 <script setup lang="ts">
 const { signOut } = useAuth();
+const route = useRoute();
+
+const context = computed(() => {
+  if (route.path === "/") {
+    return "minimal";
+  } else {
+    return "default";
+  }
+});
 </script>
