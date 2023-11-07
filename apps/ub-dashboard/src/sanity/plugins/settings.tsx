@@ -6,7 +6,7 @@ import { type DocumentDefinition } from 'sanity'
 import { type StructureResolver } from 'sanity/desk'
 import { Iframe } from 'sanity-plugin-iframe-pane'
 
-import { iframeOptions } from '../../sanity.config'
+import { iframeOptions } from '../../../sanity.config'
 import { PREVIEWABLE_DOCUMENT_TYPES } from '@/sanity/schemas'
 
 export const singletonPlugin = (types: string[]) => {

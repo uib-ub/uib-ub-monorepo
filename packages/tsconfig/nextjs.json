@@ -23,15 +23,6 @@
     "paths": {
       "@/*": [
         "src/*"
-      ],
-      "@/lib": [
-        "lib/*"
-      ],
-      "@/sanity/*": [
-        "sanity/*"
-      ],
-      "@/components/*": [
-        "src/components/*"
       ]
     }
   },
