@@ -27,7 +27,7 @@
     "react-dom": "^18.2.0",
     "remark-mermaid-nextra": "^0.0.4",
     "tailwind-ui": "*",
-    "ui-react": "^0.0.0"
+    "ui-react": "*"
   },
   "devDependencies": {
     "@napi-rs/simple-git": "^0.1.8",
