@@ -20,5 +20,4 @@ export default defineNuxtRouteMiddleware(async () => {
       return signIn(undefined, signInOptions);
     }
   }
-  return;
 });
