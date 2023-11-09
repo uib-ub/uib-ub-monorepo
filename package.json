@@ -28,5 +28,5 @@
     "prettier": "^3.0.3",
     "turbo": "^1.10.16"
   },
-  "packageManager": "npm@8.15.0"
+  "packageManager": "npm@9.8.1"
 }
