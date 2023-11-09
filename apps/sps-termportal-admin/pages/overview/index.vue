@@ -3,7 +3,7 @@
     <SideBar></SideBar>
     <main class="pt-8">
       <h1 class="mb-6 text-2xl">Termbase Overview</h1>
-      <DataTable :value="products" removableSort tableStyle="min-width: 1rem">
+      <DataTable :value="products" removable-sort table-style="min-width: 1rem">
         <Column
           v-for="col of columns"
           :key="col.field"
