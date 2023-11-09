@@ -18,7 +18,7 @@
             </p>
             <p>
               Nå er det klart at regjeringen følger opp ordene i handlingsplanen
-              med bevilgninger i statsbudsjettet: Regjeringen foreslår å styre
+              med bevilgninger i statsbudsjettet: Regjeringen foreslår å styrke
               bevilgningen til Termportalen med fire millioner kroner.
             </p>
             <template #expand>
