@@ -120,6 +120,17 @@
         ".next/**"
       ]
     },
+    "build#sps-termportal-admin": {
+      "outputs": [
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "NUXT_DATAPORTEN_AUTHORIZED_USERS"
+      ]
+    },
     "generate#sps-termportalen-web": {
       "outputs": [
         "dist/**"
