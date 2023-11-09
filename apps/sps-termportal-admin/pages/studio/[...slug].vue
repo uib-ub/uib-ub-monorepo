@@ -1,5 +1,5 @@
 <template>
-  <div ref="studioref" id="studio"></div>
+  <div id="studio" ref="studioref"></div>
 </template>
 
 <script setup lang="ts">
