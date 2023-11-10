@@ -22,8 +22,6 @@ export const Header = async () => {
       <MainNav className='flex-grow' />
 
       <div className="ml-auto pl-3 flex items-center space-x-2">
-        <ThemeToggle />
-
         {Object.keys(session).length === 0 ? (
           <LoginButton />
         ) : (

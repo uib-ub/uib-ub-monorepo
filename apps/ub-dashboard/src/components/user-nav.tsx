@@ -1,3 +1,4 @@
+"use client";
 import initials from "initials"
 import Link from "next/link"
 import {
@@ -16,13 +17,17 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import LogoutButton from './auth/logout-button'
+import { LogoutButton, LogoutLink } from './auth/logout-button'
+import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
+import { useTheme } from "next-themes"
 
 export function UserNav({ user }: { user?: { name: string, email: string, picture?: string } }) {
+  const { setTheme } = useTheme()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+        <Button variant="ghost" className="relative h-9 w-9 rounded-full bg-zinc-800">
           <Avatar className="h-9 w-9 rounded-none">
             <AvatarImage src={user?.picture} alt={user?.name} />
             <AvatarFallback className='rounded-sm bg-inherit'>{initials(user?.name ?? '?')}</AvatarFallback>
@@ -40,14 +45,29 @@ export function UserNav({ user }: { user?: { name: string, email: string, pictur
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Link href={`/studio`}>Studio</Link>
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          <DropdownMenuItem asChild>
+            <Link href={`/studio`} accessKey="s" target={'_blank'}>Studio <DropdownMenuShortcut>⇧S</DropdownMenuShortcut></Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
+
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LogoutButton />
+
+        <DropdownMenuGroup>
+          <DropdownMenuItem onClick={() => setTheme("light")} className="bg-muted dark:bg-transparent dark:focus:bg-muted focus:bg-muted">
+            <SunIcon className="h-[1.2rem] w-[1.2rem] dark:white rotate-0 scale-100 transition-all mr-2" /> Light
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("dark")} className="dark:bg-muted">
+            <MoonIcon className="h-[1.2rem] w-[1.2rem] dark:white rotate-0 scale-100 transition-all mr-2" /> Dark
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("system")}>
+            System
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem inset={false}>
+          <LogoutLink />
           {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
         </DropdownMenuItem>
       </DropdownMenuContent>
