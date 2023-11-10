@@ -3,17 +3,16 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
-  "main": "./src/index.tsx",
-  "types": "./src/index.tsx",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
-    "lint": "eslint \"**/*.ts*\""
+    "lint": "eslint src/"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.14",
-    "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "postcss": "^8.4.24",
     "react": "^18.2.0",
@@ -33,6 +32,6 @@
     "clsx": "^1.2.1",
     "lucide-react": "^0.244.0",
     "tailwind-merge": "^1.13.2",
-    "tailwindcss-animate": "^1.0.6"
+    "tailwindcss-animate": "^1.0.7"
   }
 }
