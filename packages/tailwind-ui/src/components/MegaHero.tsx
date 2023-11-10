@@ -31,9 +31,7 @@ export const MegaHero: React.FC<MegaHeroProps> = ({ label, creators, image, loca
         </div>
       </div>
 
-      {image && (
-        image
-      )}
+      {image ? image : null}
     </div>
   )
 }
