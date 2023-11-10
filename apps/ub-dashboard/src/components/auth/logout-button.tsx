@@ -21,7 +21,6 @@ export function LogoutLink({ auth }: { auth?: ClientSafeProvider }) {
   return (
     <Button
       variant="ghost"
-      size="md"
       className='p-0 my-0'
       onClick={() => signOut()}
     >
