@@ -1,6 +1,3 @@
-import * as React from 'react';
-
-// Components export
 export * from './components/ui/badge';
 export * from './components/ui/button';
 export * from './components/ui/card';

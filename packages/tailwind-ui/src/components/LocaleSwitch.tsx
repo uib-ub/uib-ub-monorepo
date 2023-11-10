@@ -17,7 +17,7 @@ export const LocaleSwitch: React.FC<LocaleSwitchProps> = ({
   labels
 }) => {
   const router = useRouter()
-  const { locales, locale, defaultLocale, asPath } = useRouter()
+  const { locales, locale, asPath } = useRouter()
   const selected = locales!.find(l => locale === l)
 
   return (
@@ -33,11 +33,11 @@ export const LocaleSwitch: React.FC<LocaleSwitchProps> = ({
           router.push(asPath, asPath, { locale: option.key });
         }}
         selected={{
-          key: selected || '',
+          key: selected ?? '',
           name: (
             <div className="flex items-center gap-2">
               <GlobeAltIcon className="w-4 h-4 dark:text-neutral-100" />
-              <span className={lite ? 'hidden' : ''}>{labels[selected || '']}</span>
+              <span className={lite ? 'hidden' : ''}>{labels[selected ?? '']}</span>
             </div>
           )
         }}

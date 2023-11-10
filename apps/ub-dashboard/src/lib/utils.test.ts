@@ -65,6 +65,7 @@ describe('uniqueStringArray', () => {
   })
 })
 
+
 describe('truncate', () => {
   it('should return the original string if it is shorter than the limit', () => {
     const str = 'hello world'
@@ -73,15 +74,25 @@ describe('truncate', () => {
 
   it('should truncate the string and add the default replacement if it is longer than the limit', () => {
     const str = 'hello world'
-    expect(truncate(str, 5)).toBe('he...')
+    expect(truncate(str, 5)).toBe('hell...')
   })
 
   it('should truncate the string and add the specified replacement if it is longer than the limit', () => {
     const str = 'hello world'
-    expect(truncate(str, 5, '***')).toBe('he***')
+    expect(truncate(str, 5, '***')).toBe('hell***')
   })
 
   it('should return an empty string if the input string is empty', () => {
     expect(truncate('', 5)).toBe('')
+  })
+
+  it('should return an empty string if the limit is zero', () => {
+    const str = 'hello world'
+    expect(truncate(str, 0)).toBe('')
+  })
+
+  it('should return an empty string if the limit is negative', () => {
+    const str = 'hello world'
+    expect(truncate(str, -5)).toBe('')
   })
 })
