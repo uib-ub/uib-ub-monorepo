@@ -27,7 +27,8 @@ export const uniqueStringArray = (a: string[]) => {
  * @returns {string}
  */
 export const truncate = (str: string, n: number, replacement = '...') => {
-  return (str.length > n) ? str.substr(0, n - 1) + replacement : str;
+  if (n <= 0) { return ''; }
+  return (str.length > n) ? (str.substring(0, n - 1) + replacement) : str;
 }
 
 export const path: Record<string, string> = {
