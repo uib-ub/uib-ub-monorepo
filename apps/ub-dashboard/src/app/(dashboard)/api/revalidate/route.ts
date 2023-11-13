@@ -22,6 +22,8 @@
  * 16. Redeploy with `npx vercel --prod` to apply the new environment variable
  */
 
+export const dynamic = 'force-dynamic'
+
 import { revalidateSecret } from '@/sanity/env'
 import { revalidateTag } from 'next/cache'
 import { type NextRequest, NextResponse } from 'next/server'
