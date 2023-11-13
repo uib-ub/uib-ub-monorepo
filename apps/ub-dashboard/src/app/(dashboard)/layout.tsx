@@ -11,6 +11,7 @@ import { PreviewIndicator } from '@/components/preview-indicator'
 import { Suspense } from 'react'
 import { Footer } from '@/components/footer'
 
+
 export const metadata: Metadata = {
   title: 'UB dashboard',
   description: 'Oversikt over UBs personer, grupper, tjenester og systemer',
@@ -20,9 +21,10 @@ const PreviewProvider = dynamic(() => import('@/components/providers/preview-pro
 
 export default async function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
+
   return (
     <ThemeProvider
       attribute="class"
@@ -33,7 +35,9 @@ export default async function RootLayout({
       <SessionProvider>
         {draftMode().isEnabled ? (
           <PreviewProvider token={token}>
-            <Header />
+            <Suspense>
+              <Header />
+            </Suspense>
             <Suspense>
               {children}
             </Suspense>
@@ -42,7 +46,9 @@ export default async function RootLayout({
           <div className='flex flex-col min-h-screen'>
             <Header />
             {children}
-            <Footer />
+            <Suspense fallback={'Loading'}>
+              <Footer />
+            </Suspense>
           </div>
         )}
 

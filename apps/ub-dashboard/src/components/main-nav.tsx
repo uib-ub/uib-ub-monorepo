@@ -21,7 +21,7 @@ const menuItems: MainNavProps[] = [
 
 export function MainNav({
   className,
-}: React.HTMLAttributes<HTMLElement>) {
+}: Readonly<React.HTMLAttributes<HTMLElement>>) {
   const segmentRoot = useSelectedLayoutSegment();
 
   return (

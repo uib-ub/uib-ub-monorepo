@@ -18,7 +18,7 @@ export default function ImageBox({
   height = 2000,
   size = '100vw',
   classesWrapper,
-}: ImageBoxProps) {
+}: Readonly<ImageBoxProps>) {
   const imageUrl =
     image && urlForImage(image)?.height(height).width(width).fit('crop').url()
 
