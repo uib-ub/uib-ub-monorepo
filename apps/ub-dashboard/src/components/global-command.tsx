@@ -51,7 +51,7 @@ export function GlobalCommand({ data }: Readonly<{ data: any[] }>) {
               <CommandItem
                 key={item.id}
                 onSelect={() => {
-                  runCommand(() => router.push(`/${path[item.type]}/${item.id}` as string))
+                  runCommand(() => router.push(`/${path[item.type]}/${item.id}`))
                 }}
                 className='flex justify-between items-center'
               >
