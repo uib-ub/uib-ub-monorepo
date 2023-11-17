@@ -1,5 +1,5 @@
 import { labelSingleton, referredToBy, shortDescription } from "../props";
-import { client } from '../../lib/client'
+import { isUniqueLabel } from '@/sanity/lib/utils';
 
 export const CompetenceType = {
   name: 'CompetenceType',
@@ -11,13 +11,7 @@ export const CompetenceType = {
       ...labelSingleton,
       description: 'Kan ikke være programmeringsspråk, programware, eller format allerede registrert!',
       validation: (Rule) =>
-        Rule.required().custom(async (param) => {
-          const docs = await client.fetch(
-            `*[label == "${param}" && _type in ["ProgrammingLanguage", "EncodingType", "Software", "VolatileSoftware"] && !(_id in path("drafts.**"))] { label }`,
-            { param },
-          )
-          return docs.length > 1 ? 'Kan ikke være programmeringsspråk, programware, eller format allerede registrert!' : true
-        }),
+        Rule.required().custom(isUniqueLabel),
     },
     shortDescription,
     referredToBy

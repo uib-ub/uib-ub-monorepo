@@ -11,7 +11,6 @@ import { PreviewIndicator } from '@/components/preview-indicator'
 import { Suspense } from 'react'
 import { Footer } from '@/components/footer'
 
-
 export const metadata: Metadata = {
   title: 'UB dashboard',
   description: 'Oversikt over UBs personer, grupper, tjenester og systemer',
@@ -35,20 +34,20 @@ export default async function RootLayout({
       <SessionProvider>
         {draftMode().isEnabled ? (
           <PreviewProvider token={token}>
-            <Suspense>
-              <Header />
-            </Suspense>
-            <Suspense>
+            <Header />
+            <Suspense fallback={<div>Loading...</div>}>
               {children}
             </Suspense>
+            <Footer />
           </PreviewProvider>
         ) : (
           <div className='flex flex-col min-h-screen'>
             <Header />
-            {children}
-            <Suspense fallback={'Loading'}>
-              <Footer />
+            <Suspense fallback={<div>Loading...</div>}>
+              {children}
             </Suspense>
+
+            <Footer />
           </div>
         )}
 

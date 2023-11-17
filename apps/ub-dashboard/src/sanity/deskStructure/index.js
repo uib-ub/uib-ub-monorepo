@@ -175,8 +175,6 @@ export const deskStructure = (S) =>
         .icon(icons.dataset),
       S.documentTypeListItem('AccessPoint')
         .icon(icons.accesspoint),
-      S.documentTypeListItem('Endpoint')
-        .icon(icons.accesspoint),
       S.divider(),
       S.listItem()
         .title('Autoriteter')

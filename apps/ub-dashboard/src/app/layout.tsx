@@ -28,9 +28,9 @@ const mono = IBM_Plex_Mono({
 
 export default async function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
     <html lang="no" className={`${mono.variable} ${sans.variable} ${serif.variable}`}>
       <body>

@@ -1,6 +1,8 @@
+import { defineField, defineType } from 'sanity';
 import { labelSingleton, shortDescription } from "./props";
+import { isUniqueValue } from '../lib/utils';
 
-export const AccessPoint = {
+export const AccessPoint = defineType({
   name: 'AccessPoint',
   title: 'Access point',
   type: 'document',
@@ -12,17 +14,33 @@ export const AccessPoint = {
       }
     }, */
   fields: [
-    {
+    defineField({
       name: 'value',
       title: 'Adresse',
       type: 'string',
-      validation: Rule => Rule.required()
-    },
+      validation: Rule => Rule.required().custom(isUniqueValue)
+    }),
     {
       ...labelSingleton,
-      validation: Rule => Rule
+      validation: false
     },
     shortDescription,
+  ],
+  orderings: [
+    {
+      title: 'URL, Å-A',
+      name: 'valueDesc',
+      by: [
+        { field: 'value', direction: 'desc' }
+      ]
+    },
+    {
+      title: 'URL, A-Å',
+      name: 'valueAsc',
+      by: [
+        { field: 'value', direction: 'asc' }
+      ]
+    },
   ],
   preview: {
     select: {
@@ -39,4 +57,4 @@ export const AccessPoint = {
       }
     },
   },
-}
+})

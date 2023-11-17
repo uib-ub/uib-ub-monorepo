@@ -21,7 +21,7 @@ import { LogoutButton } from './auth/logout-button'
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
 import { useTheme } from "next-themes"
 
-export function UserNav({ user }: { user?: { name: string, email: string, picture?: string } }) {
+export function UserNav({ user }: Readonly<{ user?: { name: string, email: string, picture?: string } }>) {
   const { setTheme } = useTheme()
 
   return (
@@ -67,7 +67,7 @@ export function UserNav({ user }: { user?: { name: string, email: string, pictur
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <LogoutButton />
+          <LogoutButton className="w-full justify-start cursor-pointer" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -61,7 +61,8 @@ export const HostingService = {
     {
       name: 'designatedAccessPoint',
       title: 'Service access point',
-      type: 'AccessPoint'
+      type: 'reference',
+      to: [{ type: 'AccessPoint' }]
     },
     {
       name: 'hasPlatformCapability',
@@ -90,8 +91,8 @@ export const HostingService = {
       name: 'accessPoint',
       title: 'Tilgangspunkt',
       description: 'If this is a host, what domain is available?',
-      type: 'array',
-      of: [{ type: 'AccessPoint' }],
+      type: 'reference',
+      to: [{ type: 'AccessPoint' }],
       initialValue: {
         _type: 'AccessPoint',
         hasType: {
