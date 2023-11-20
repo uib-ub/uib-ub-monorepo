@@ -35,3 +35,16 @@ domain hierarchy can be found on the page for the
 Only domains that have associated concept data should be set to
 "published". Empty domains can be created, linked, and described, but
 should remain unpublished for the time being.
+
+### Public endpoint publishing
+Public endpoint to be found here: [sparql.ub.uib.no](sparql.ub.uib.no>).
+
+Publicly available data is limited by:
+- Skiplist
+- List of open licenses
+
+See
+[documentation](https://git.app.uib.no/spraksamlingane/terminologi/terminologi-meta#update-public-sparql-endpoint)
+for more technical information and the [pipeline
+config](https://git.app.uib.no/spraksamlingane/terminologi/terminologi-meta/-/pipeline_schedules)
+for current settings.
