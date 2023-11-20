@@ -7,12 +7,6 @@ export const AccessPoint = defineType({
   title: 'Access point',
   type: 'document',
   liveEdit: true,
-  /*   initialValue: {
-      hasType: {
-        _type: 'reference',
-        _ref: '904829b8-5722-4776-948c-8841a9c5bdd5' // HTTP
-      }
-    }, */
   fields: [
     defineField({
       name: 'value',

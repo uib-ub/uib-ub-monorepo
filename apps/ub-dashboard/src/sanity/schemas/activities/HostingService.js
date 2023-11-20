@@ -93,13 +93,6 @@ export const HostingService = {
       description: 'If this is a host, what domain is available?',
       type: 'reference',
       to: [{ type: 'AccessPoint' }],
-      initialValue: {
-        _type: 'AccessPoint',
-        hasType: {
-          _type: 'reference',
-          _ref: '5431bffa-69eb-450d-9c2f-a614d560b9db'
-        }
-      },
       hidden: ({ parent, value }) => !value && parent?.hasComputingCapability !== true,
     },
     timespanSingleton,
