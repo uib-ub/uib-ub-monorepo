@@ -1,5 +1,4 @@
 import { continued, continuedBy, hasFile, hasMember, hasType, identifiedBy, labelSingleton, logo, referredToBy, shortDescription, subGroupOf, timespanSingleton } from "./props";
-import { client } from '../lib/client'
 
 export const Group = {
   name: 'Group',
@@ -9,14 +8,6 @@ export const Group = {
   fields: [
     {
       ...labelSingleton,
-      validation: (Rule) =>
-        Rule.required().custom(async (param) => {
-          const docs = await client.fetch(
-            `*[label == "${param}" && _type == "Group" && !(_id in path("drafts.**"))] { label }`,
-            { param },
-          )
-          return docs.length > 1 ? 'Value is not unique' : true
-        }),
     },
     {
       ...hasType,

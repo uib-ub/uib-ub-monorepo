@@ -64,7 +64,8 @@ export const SoftwareComputingEService = {
       name: 'designatedAccessPoint',
       title: 'Access points',
       description: 'Tilgangspunkt for den overordnede hosten',
-      type: 'AccessPoint',
+      type: 'reference',
+      to: [{ type: 'AccessPoint' }],
       fieldset: 'core',
       group: 'core',
     },
@@ -94,19 +95,10 @@ export const SoftwareComputingEService = {
       title: 'Tilgangspunkt',
       description: 'Hvilke adresser har tjenesten?',
       type: 'array',
-      of: [{ type: 'AccessPoint' }, {
+      of: [{
         type: 'reference',
-        to: [
-          { type: 'AccessPoint' },
-        ]
+        to: [{ type: 'AccessPoint' }]
       }],
-      initialValue: {
-        _type: 'AccessPoint',
-        hasType: {
-          _type: 'reference',
-          _ref: '904829b8-5722-4776-948c-8841a9c5bdd5' // HTTP
-        }
-      },
     },
     {
       name: 'provisionedBy',

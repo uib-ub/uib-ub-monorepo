@@ -73,7 +73,10 @@ export const VolatileSoftware = {
       title: 'Dokumentasjon',
       fieldset: 'core',
       type: 'array',
-      of: [{ type: 'AccessPoint' }]
+      of: [{ type: 'AccessPoint' }, {
+        type: 'reference',
+        to: [{ type: 'AccessPoint' }]
+      }]
     },
     {
       ...referredToBy,

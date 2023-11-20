@@ -108,7 +108,7 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
           <div className='flex flex-wrap items-center gap-2'>
             {data.hasType.map((t, i) => (
               <Badge variant="secondary" className='grow-0 text-xs' key={i}>
-                {t.label}
+                {t.label ?? 'Mangler navn'}
               </Badge>
             ))}
           </div>

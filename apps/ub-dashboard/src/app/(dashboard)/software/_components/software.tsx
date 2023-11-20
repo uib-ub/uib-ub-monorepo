@@ -71,21 +71,13 @@ export const query = groq`*[_id == $id][0] {
       label,
       logo,
     },
-    "accessPoint": accessPoint[]{
-      _type == 'reference' => @->{
-        "id": _id,
-        "type": _type,
-        label,
-        value,
-      },
-      _type != 'reference' => @{
-        "id": _id,
-        "type": _type,
-        label,
-        value,
-      },
+    accessPoint[]->{
+      "id": _id,
+      "type": _type,
+      label,
+      value,
     },
-    designatedAccessPoint {
+    designatedAccessPoint-> {
       "type": _type,
       value,
     },
@@ -114,13 +106,13 @@ export const query = groq`*[_id == $id][0] {
         label,
         logo,
       },
-      accessPoint[] {
+      accessPoint[]-> {
         "id": _id,
         "type": _type,
         label,
         value,
       },
-      designatedAccessPoint {
+      designatedAccessPoint-> {
         "type": _type,
         value,
       },
@@ -160,13 +152,13 @@ export const query = groq`*[_id == $id][0] {
           label,
           logo,
         },
-        accessPoint[] {
+        accessPoint[]-> {
           "id": _id,
           "type": _type,
           label,
           value,
         },
-        designatedAccessPoint {
+        designatedAccessPoint-> {
           "type": _type,
           value,
         },

@@ -25,7 +25,8 @@ export const SoftwareDeliveryEService = {
     {
       name: 'designatedAccessPoint',
       title: 'Access points',
-      type: 'AccessPoint'
+      type: 'reference',
+      to: [{ type: 'AccessPoint' }]
     },
     /* {
       name: 'hostSoftwareObject',

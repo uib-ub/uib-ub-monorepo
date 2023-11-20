@@ -28,7 +28,7 @@ export const columns: ColumnDef<LinksProps>[] = [
       </Link>
     )
   },
-  {
+  /* {
     accessorKey: "label",
     header: ({ column }) => {
       return (
@@ -42,12 +42,12 @@ export const columns: ColumnDef<LinksProps>[] = [
         </Button>
       )
     },
-  },
+  }, */
   {
     header: "Type",
     accessorKey: "type",
   },
-  {
+  /* {
     header: "Kategori",
     accessorKey: "hasType",
     cell: ({ row }: { row: any }) => (
@@ -79,5 +79,5 @@ export const columns: ColumnDef<LinksProps>[] = [
         {(row.getValue('active') as string) === 'Ukjent' ? <div className='flex gap-1 items-center'><QuestionMarkCircledIcon className='text-amber-500 w-5 h-5' />{row.getValue('active')}</div> : null}
       </div>
     )
-  },
+  }, */
 ]
