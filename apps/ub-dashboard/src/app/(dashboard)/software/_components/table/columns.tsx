@@ -1,7 +1,7 @@
 "use client"
 import { CaretSortIcon, CheckCircledIcon, CheckboxIcon, CrossCircledIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
-import { SoftwareListProps } from './software-list'
+import { SoftwareListProps } from '../software-list'
 import Link from "next/link"
 import { Button } from '@/components/ui/button'
 import { EditIntentButton } from '@/components/edit-intent-button'

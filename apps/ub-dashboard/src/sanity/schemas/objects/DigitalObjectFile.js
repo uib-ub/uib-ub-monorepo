@@ -16,6 +16,7 @@ export const DigitalObjectFile = {
       name: 'accessPoint',
       title: 'Fil',
       type: 'file',
+      validation: Rule => Rule.required(),
     },
   ],
   preview: {

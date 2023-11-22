@@ -17,6 +17,7 @@ const menuItems: MainNavProps[] = [
   { href: "timeline", label: "Tidslinje" },
   { href: "software", label: "Programvare" },
   { href: "links", label: "Lenker" },
+  { href: "qa/validation/marcus", label: "Validering" },
 ]
 
 export function MainNav({
