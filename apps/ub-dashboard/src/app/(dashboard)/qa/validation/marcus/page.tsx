@@ -28,7 +28,7 @@ async function getValidationReport(api: string, file: string): Promise<any> {
         try {
           const json = await JSON.parse(await response.text() ?? '');
           const framed = await jsonld.frame(json, {
-            "@context": ["https://ub-dashboard.vercel.app/context/shacl-context.json"],
+            "@context": ["https://raw.githubusercontent.com/w3c/shacl/master/shacl-jsonld-context/shacl.context.ld.json"],
             "@type": "ValidationReport",
             "@embed": "@always",
           })
