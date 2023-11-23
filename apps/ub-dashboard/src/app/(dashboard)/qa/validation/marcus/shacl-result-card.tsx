@@ -1,72 +1,87 @@
 "use client"
-import { copyTextToClipboard } from '@/lib/utils';
-import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { MdWarningAmber } from 'react-icons/md';
 import Link from 'next/link';
-import { ArrowRightIcon, CopyIcon, ExternalLinkIcon } from '@radix-ui/react-icons';
-import { GrInspect } from 'react-icons/gr';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { ArrowRightIcon, ExternalLinkIcon } from '@radix-ui/react-icons';
+import React from 'react';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+import { Linkify } from '@/components/linkify';
 
-const formatMessage = (message: string) => {
+const formatMessage = (message: string): React.ReactNode => {
   if (message.startsWith('Closed')) {
-    /* message = message.replace('Closed', '')
-    const closedProps = message.split(']')[0]
-    const errorProps = message.split(']')[1].split(' : ')[0]
-    const closedObject = message.split(']')[1].split(' : ')[1]
+    message = message.replace('Closed', '')
+    const closedProps = message.match(/(\[)(.*?)(\])/g)?.[0].replace(/\[|\]/g, '').split(',').map((prop: string) => prop.split('/').pop())
+    const ignoredProps = message.match(/(\[)(.*?)(\])/g)?.[1].replace(/\[|\]/g, '').split(',').map((prop: string) => prop.split('/').pop())
+    const errorProps = message.split('] ')[1].split(' : ')[0]
 
-    return [closedProps + ']', errorProps, closedObject] */
-    return ['Har properties som ikke er definert i skjemaet.']
+    return (
+      <div className='grid md:grid-cols-3 text-xs'>
+        <div>
+          <div className='text-lg font-bold'>Tillatte props:</div>
+          <div className='flex flex-wrap gap-1'>
+            {closedProps?.map((prop: any, i: number) => (
+              <Badge key={i} variant={'default'} className='rounded-none'>{prop}</Badge>
+            ))}
+            {ignoredProps?.map((prop: any, i: number) => (
+              <Badge key={i} variant={'secondary'} className='rounded-none'>{prop}</Badge>
+            ))}
+          </div>
+        </div>
+        <div className='text-red-700'>
+          <div className='text-lg font-bold'>Ulovlig prop:</div>
+          {errorProps.split(' = ').pop()}
+        </div>
+      </div>
+    )
   }
-  return [message]
+  return <Linkify replacePattern={["data.ub", "marcus"]}>{message}</Linkify >
 }
 
 export const ShaclResultCard = ({ data }: { data: any }) => {
-  const [isCopied, setIsCopied] = useState(false);
-
-  const handleCopyClick = (input: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-    // Asynchronously call copyTextToClipboard
-    copyTextToClipboard(input)
-      .then(() => {
-        // If successful, update the isCopied state value
-        setIsCopied(true);
-        setTimeout(() => {
-          setIsCopied(false);
-        }, 1500);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  const MessageComponent = formatMessage(data.resultMessage)
 
   return (
     <div className='font-mono rounded-sm border overflow-hidden w-full'>
-      <div className='flex align-top overflow-hidden'>
-        <Badge className='md:text-lg rounded-none rounded-br-sm'><ArrowRightIcon className='mr-1' /> {data.resultPath}</Badge>
-        <Badge variant={'destructive'} className='md:text-lg rounded-none rounded-bl-sm ml-auto'><MdWarningAmber className='mr-1' /> {data.resultSeverity}</Badge>
+      <div className='flex flex-wrap align-top overflow-hidden'>
+        <Badge variant={'destructive'} className='rounded-none'><MdWarningAmber className='mr-1' /></Badge>
+        {data.resultPath ? <Badge className='rounded-none'><ArrowRightIcon className='mr-1' /> {data.resultPath}</Badge> : null}
+        {data.focusNode ?? data['sh:focusNode'] ? <Badge className='rounded-none'><ArrowRightIcon className='mr-1' /> {data.focusNode ?? data['sh:focusNode']}</Badge> : null}
       </div>
-      <div className='text-sm sm:text-lg px-3 py-1 mt-1'>
-        {formatMessage(data.resultMessage).map((message: string, i: number) => (
-          <p key={i}>{message}</p>
-        ))}
+
+      <div className='text-sm sm:text-md px-3 py-1 mt-1'>
+        {MessageComponent ? MessageComponent : null}
       </div>
-      <div className='px-3 py-1 flex items-baseline gap-2'>
-        <h2 className='font-bold text-sm md:text-md'>
-          <Link className='underline underline-offset-2 flex items-baseline gap-2' href={data.focusNode.replace('data.ub', "marcus")} target='_blank'>{data.focusNode.replace('data.ub', "marcus")} <ExternalLinkIcon /></Link>
-        </h2>
-        <Button size={'sm'} variant={'secondary'} onClick={handleCopyClick(data.focusNode.split('/').pop())}>
-          <CopyIcon className='mr-1' /><span className='block'>{isCopied ? 'id kopiert!' : 'id'}</span>
-        </Button>
-      </div>
+
       <div className="flex pt-4 w-full">
-        <Badge variant={'secondary'} className='rounded-none'><GrInspect className='mr-1 text-red-400' /> {data.sourceConstraintComponent}</Badge>
-        <Badge variant={'secondary'} className='rounded-none ml-auto font-light'>
-          <Link href={`https://sparql.ub.uib.no/#/dataset/sparql/query?query=describe%20%3C${data.focusNode}%3E`} target='_blank' className='flex items-center gap-2'>
-            Sparql query
-            <ExternalLinkIcon />
-          </Link>
-        </Badge>
+        {/* <Badge variant={'secondary'} className='rounded-none'><GrInspect className='mr-1 text-red-400' /> {data.sourceConstraintComponent}</Badge>
+        <Badge variant={'secondary'} className='rounded-none'><GrInspect className='mr-1 text-red-400' /> {data.sourceShape}</Badge> */}
+
+        <div className='flex gap-2 ml-auto'>
+          <HoverCard>
+            <HoverCardTrigger><Badge variant={'secondary'} className='rounded-none font-mono py-1.5 cursor-pointer font-normal'>Shacl report</Badge></HoverCardTrigger>
+            <HoverCardContent className='overflow-hidden'>
+              <pre className='text-xs overflow-scroll'>{JSON.stringify(data, null, 2)}</pre>
+            </HoverCardContent>
+          </HoverCard>
+
+          {data.focusNode?.startsWith('http') && !data.value ? (
+            <Badge variant={'secondary'} className='rounded-none font-light'>
+              <Link href={`https://sparql.ub.uib.no/#/dataset/sparql/query?query=describe%20%3C${data.focusNode}%3E`} target='_blank' className='flex items-center gap-2'>
+                Sparql query
+                <ExternalLinkIcon />
+              </Link>
+            </Badge>
+          ) : null}
+          {data.focusNode?.startsWith('http') && !data.value ? (
+            <Badge className='rounded-none'>
+              <Link className='flex items-baseline gap-2' href={data.focusNode.replace('data.ub', 'marcus')} target='_blank'>Gå til Marcus <ExternalLinkIcon /></Link>
+            </Badge>
+          ) : null}
+        </div>
       </div>
     </div>
   )

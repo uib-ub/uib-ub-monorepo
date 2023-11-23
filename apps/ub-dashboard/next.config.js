@@ -9,8 +9,9 @@ const nextConfig = {
     ],
   },
   logging: {
-    level: 'verbose',
-    fullUrl: true,
+    fetches: {
+      fullUrl: true,
+    },
   },
 }
 

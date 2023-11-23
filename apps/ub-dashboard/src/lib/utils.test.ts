@@ -1,4 +1,4 @@
-import { checkMembership, cn, truncate, uniqueStringArray } from './utils'
+import { checkMembership, cn, truncateFromMiddle, truncate, uniqueStringArray, copyTextToClipboard } from './utils'
 
 describe('checkMembership', () => {
   it('should return false if all members are active', () => {
@@ -96,3 +96,34 @@ describe('truncate', () => {
     expect(truncate(str, -5)).toBe('')
   })
 })
+
+describe('truncateFromMiddle', () => {
+  it('should return the original string if it is shorter than the limit', () => {
+    const str = 'hello world';
+    expect(truncateFromMiddle(str, 20)).toBe(str);
+  });
+
+  it('should truncate the string and add the default middle string if it is longer than the limit', () => {
+    const str = 'hello world';
+    expect(truncateFromMiddle(str, 5)).toBe('h...d');
+  });
+
+  it('should truncate the string and add the specified middle string if it is longer than the limit', () => {
+    const str = 'hello world';
+    expect(truncateFromMiddle(str, 5, '***')).toBe('h***d');
+  });
+
+  it('should return an empty string if the input string is empty', () => {
+    expect(truncateFromMiddle('', 5)).toBe('');
+  });
+
+  it('should return an empty string if the limit is zero', () => {
+    const str = 'hello world';
+    expect(truncateFromMiddle(str, 0)).toBe('');
+  });
+
+  it('should return an empty string if the limit is negative', () => {
+    const str = 'hello world';
+    expect(truncateFromMiddle(str, -5)).toBe('');
+  });
+});
