@@ -38,7 +38,7 @@ const formatMessage = (message: string): React.ReactNode => {
       </div>
     )
   }
-  return <Linkify replacePattern={["data.ub", "marcus"]}>{message}</Linkify >
+  return <Linkify replacePattern={["data.ub", "marcus"]}>{message}</Linkify>
 }
 
 export const ShaclResultCard = ({ data }: { data: any }) => {
