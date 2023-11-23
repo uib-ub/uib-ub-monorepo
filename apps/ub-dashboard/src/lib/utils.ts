@@ -37,3 +37,12 @@ export const path: Record<string, string> = {
   "Project": "projects",
   "Software": "software",
 }
+
+// This is the function we wrote earlier
+export async function copyTextToClipboard(text: string) {
+  if ('clipboard' in navigator) {
+    return await navigator.clipboard.writeText(text);
+  } else {
+    return document.execCommand('copy', true, text);
+  }
+}

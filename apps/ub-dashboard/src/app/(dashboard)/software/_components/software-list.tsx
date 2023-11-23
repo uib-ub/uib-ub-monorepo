@@ -1,6 +1,6 @@
 import { SanityImageAssetDocument, groq } from 'next-sanity'
 import { DataTable } from '@/components/data-table'
-import { columns } from './columns'
+import { columns } from './table/columns'
 
 export interface SoftwareListProps {
   id: string

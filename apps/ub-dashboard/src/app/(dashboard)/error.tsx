@@ -1,5 +1,6 @@
 'use client' // Error components must be Client Components
 
+import { MainNav } from '@/components/main-nav'
 import { useEffect } from 'react'
 
 export default function Error({
@@ -15,7 +16,7 @@ export default function Error({
   }, [error])
 
   return (
-    <div>
+    <MainNav>
       <h2>Something went wrong!</h2>
       <button
         onClick={
@@ -25,6 +26,6 @@ export default function Error({
       >
         Try again
       </button>
-    </div>
+    </MainNav>
   )
 }

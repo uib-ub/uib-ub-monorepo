@@ -40,6 +40,12 @@ export const query = groq`*[_id == $id][0] {
     label,
     logo,
   },
+  "usedIn": *[_type == "Software" && references($id)] {
+    "id": _id,
+    "type": _type,
+    label,
+    logo,
+  },
   currentOrFormerManager[] {
     assignedActor -> {
       "id": _id,
@@ -374,6 +380,33 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                     <CardContent>
                       <div className='flex flex-col gap-3'>
                         {data.uses.map((s: any, i: number) => (
+                          <div key={s.id} className='flex gap-2'>
+                            {s.logo ? (
+                              <div className='w-[25px] h-[25px]'>
+                                <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                              </div>
+                            ) : null}
+                            <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
+                              {s.label}
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : null}
+
+              {data?.usedIn && data?.usedIn.length > 0 ? (
+                <div className='col-span-3 flex flex-col gap-3'>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Benyttet i</CardTitle>
+                      <CardDescription></CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className='flex flex-col gap-3'>
+                        {data.usedIn.map((s: any, i: number) => (
                           <div key={s.id} className='flex gap-2'>
                             {s.logo ? (
                               <div className='w-[25px] h-[25px]'>
