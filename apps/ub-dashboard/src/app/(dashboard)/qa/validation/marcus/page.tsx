@@ -28,7 +28,7 @@ async function getValidationReport(api: string, file: string): Promise<any> {
         try {
           const json = await JSON.parse(await response.text() ?? '');
           const framed = await jsonld.frame(json, {
-            "@context": ["https://raw.githubusercontent.com/w3c/shacl/master/shacl-jsonld-context/shacl.context.ld.json"],
+            "@context": ["https://api-ub.vercel.app/shacl/context.json"],
             "@type": "ValidationReport",
             "@embed": "@always",
           })
@@ -67,7 +67,7 @@ export default async function ShaclPage() {
         <h1>Validering av Marcus datasett</h1>
       </div>
       <div className='flex flex-col items-baseline gap-8 mb-2 overflow-hidden'>
-        {data.result?.map((result: any, i: number) => (
+        {data?.result?.map((result: any, i: number) => (
           <div key={i} className='font-mono rounded-sm border overflow-hidden w-full'>
             <div className='flex align-top overflow-hidden'>
               <Badge variant={'destructive'} className='rounded-none'><MdWarningAmber className='mr-1' /> {result.resultSeverity}</Badge>
@@ -87,7 +87,9 @@ export default async function ShaclPage() {
             </div>
             <div className="flex justify-between pt-2">
               <Badge variant={'secondary'} className='rounded-none ml-auto font-light'>
-                {result.focusNode}
+                <Link href={`https://sparql.ub.uib.no/#/dataset/sparql/query?query=describe%20%3C${result.focusNode}%3E`} target='_blank'>
+                  Sparql query
+                </Link>
               </Badge>
             </div>
           </div>
