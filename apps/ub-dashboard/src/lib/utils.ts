@@ -1,3 +1,4 @@
+import React from 'react'
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -38,11 +39,51 @@ export const path: Record<string, string> = {
   "Software": "software",
 }
 
-// This is the function we wrote earlier
+/**
+ * 
+ * @param text 
+ * @returns void
+ * @example
+ * const [isCopied, setIsCopied] = useState(false);
+ * 
+ * const handleCopyClick = (input: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+ *   // Asynchronously call copyTextToClipboard
+ *   copyTextToClipboard(input)
+ *     .then(() => {
+ *       // If successful, update the isCopied state value
+ *       setIsCopied(true);
+ *       setTimeout(() => {
+ *         setIsCopied(false);
+ *       }, 1500);
+ *     })
+ *     .catch((err) => {
+ *       console.log(err);
+ *     });
+ * }
+ * return <Button size={'sm'} variant={'secondary'} onClick={handleCopyClick(data.focusNode.split('/').pop())}>
+ *   <CopyIcon className='mr-1' /><span className='block'>{isCopied ? 'id kopiert!' : 'id'}</span>
+ * </Button>
+ */
 export async function copyTextToClipboard(text: string) {
   if ('clipboard' in navigator) {
     return await navigator.clipboard.writeText(text);
-  } else {
-    return document.execCommand('copy', true, text);
   }
 }
+
+export const truncateFromMiddle = (
+  fullStr: string = '',
+  strLen: number = 20,
+  middleStr: string = '...',
+): string => {
+  if (strLen <= 0) { return ''; }
+  if (fullStr.length <= strLen) return fullStr;
+  const midLen = middleStr.length;
+  const charsToShow = strLen - midLen;
+  const frontChars = Math.ceil(charsToShow / 2);
+  const backChars = Math.floor(charsToShow / 2);
+  return (
+    fullStr.substring(0, frontChars) +
+    middleStr +
+    fullStr.substring(fullStr.length - backChars)
+  );
+};

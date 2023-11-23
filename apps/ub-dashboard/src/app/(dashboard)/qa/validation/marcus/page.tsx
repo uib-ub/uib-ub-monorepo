@@ -54,7 +54,6 @@ export default async function ShaclPage() {
           <ShaclResultCard key={i} data={result} />
         ))}
       </div>
-      {/* <pre className='text-xs'>{JSON.stringify(data, null, 2)}</pre> */}
     </MainShell >
   );
 }
