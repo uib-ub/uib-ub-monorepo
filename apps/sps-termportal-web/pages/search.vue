@@ -142,9 +142,11 @@ watch(
   () => searchInterface.value.term,
   () => {
     allowSearchFetch.value = true;
+    /*
     umTrackEvent("Search: New term", {
       term: searchInterface.value.term as string,
     });
+    */
     considerSearchFetching("initial");
   }
 );
@@ -162,7 +164,7 @@ watch(
     if (allowSearchFetch.value !== null) {
       allowSearchFetch.value = true;
     }
-    umTrackEvent("Search: Option change");
+    // umTrackEvent("Search: Option change");
     considerSearchFetching("options");
     usePushSearchOptionsToRoute();
   },

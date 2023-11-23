@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  extends: ["termportal-ui", "nuxt-umami"],
+  extends: ["termportal-ui"],
   app: {
     head: {
       title: "Termportalen",
@@ -27,12 +27,7 @@ export default defineNuxtConfig({
       },
     },
   },
-  appConfig: {
-    umami: {
-      version: 2,
-      ignoreLocalhost: true,
-    },
-  },
+  appConfig: {},
   runtimeConfig: {
     apiKey: uuidv4(),
     endpointUrl: "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",
