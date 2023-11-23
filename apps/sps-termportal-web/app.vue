@@ -45,8 +45,6 @@ const route = useRoute();
 const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
 const skipLink = ref();
-const domainData = useDomainData();
-const lazyLocales = useLazyLocales();
 
 onMounted(() => {
   /*
