@@ -1,3 +1,5 @@
+export const dynamic = 'force-static'
+
 import * as jsonld from 'jsonld';
 import { MainShell } from '@/components/main-shell';
 import { ShaclResultCard } from './shacl-result-card';
