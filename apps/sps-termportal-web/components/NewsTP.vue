@@ -3,8 +3,31 @@
     <h2 id="news" class="pb-3 text-2xl">
       <AppLink to="#news">{{ $t("news.heading") }}</AppLink>
     </h2>
-    <div class="flex flex-col space-y-2">
-      <div class="border border-gray-300"></div>
+    <div class="flex flex-col space-y-3">
+      <div class="border border-gray-300" />
+      <dl>
+        <NewsItem
+          title="Seminar 6. desember: norskkompetanse i akademia"
+          date="24.11.2023"
+        >
+          <p>
+            I handlingsplanen for norsk fagspråk i akademia, føreslår regjeringa
+            å forskriftsfesta eit krav om norskkompetanse hos undervisarar, i
+            tillegg til at dei krev at stipendiatar skal få tilbod om
+            norsklæring. Desse krava er tema for seminaret Norskkompetanse i
+            akademia – frå ord til handling, som går av stabelen 6. desember på
+            UiB. Meir informasjon om seminaret, som har påmeldingsfrist
+            28.11.2023, kan finnast på:
+            <AppLinkText
+              to="https://www.uib.no/ledelsen/165352/norskkompetanse-i-akademia-%E2%80%93-fr%C3%A5-ord-til-handling"
+            >
+              Norskkompetanse i akademia – frå ord til handling | Styre og
+              ledelse | UiB
+            </AppLinkText>
+          </p>
+        </NewsItem>
+      </dl>
+      <div class="border border-gray-300" />
       <template v-if="locale === 'nb'">
         <dl class="space-y-0.5">
           <NewsItem
