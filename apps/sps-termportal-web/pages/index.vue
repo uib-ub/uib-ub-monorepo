@@ -9,8 +9,8 @@
       <HeaderSearchScope />
     </div>
     <div class="flex flex-col gap-x-8 gap-y-6 pt-6 lg:flex-row">
-      <WelcomeTP class="basis-GRb" />
-      <NewsTP class="basis-GRs"/>
+      <WelcomeTP class="basis-7/12" />
+      <NewsTP class="basis-5/12"/>
     </div>
     <CollaboratorsTP class="mt-6 xl:mt-8" />
   </main>
