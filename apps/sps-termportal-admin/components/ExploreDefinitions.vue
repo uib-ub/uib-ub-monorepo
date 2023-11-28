@@ -7,6 +7,7 @@
       </li>
     </ul>
     <DataTable
+      ref="datatable"
       :value="definitions"
       paginator
       :rows="15"
@@ -22,12 +23,19 @@
       </Column>
       <Column field="def" header="Definisjon" sortable></Column>
       <Column field="lang" header="Språk" sortable></Column>
+      <template #footer>
+        <div style="text-align: right">
+          <Button label="Eksport" @click="exportCSV($event)" />
+        </div>
+      </template>
     </DataTable>
   </section>
 </template>
 
 <script setup lang="ts">
 const props = defineProps({ termbase: { type: Object, required: true } });
+
+const datatable = ref();
 
 const { data } = useLazyFetch(
   `/api/tb/${props.termbase.id}/exploreDefinitions`
@@ -36,7 +44,11 @@ const { data } = useLazyFetch(
 const definitions = computed(() => {
   return data?.value?.results?.bindings.map((e) => {
     return {
-      concept: e.concept.value.split("/").slice(-1)[0].split("-3A").slice(-1)[0],
+      concept: e.concept.value
+        .split("/")
+        .slice(-1)[0]
+        .split("-3A")
+        .slice(-1)[0],
       link: e.concept.value.split("/").slice(-1)[0].split("-3A").join("/"),
       def: e.defValue.value,
       lang: e.lang.value,
@@ -78,4 +90,8 @@ const stats = computed(() => {
 
   return statEntries;
 });
+
+const exportCSV = () => {
+  datatable.value.exportCSV();
+};
 </script>
