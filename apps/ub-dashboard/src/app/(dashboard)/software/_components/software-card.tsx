@@ -8,7 +8,7 @@ import { SanityImageAssetDocument } from 'next-sanity'
 import { path } from '@/lib/utils'
 
 export const ComputingCard = ({ data }: { data: any }) => {
-  const { id, type, label, designatedAccessPoint, accessPoint, providedBy } = data
+  const { id, type, label, designatedAccessPoint, accessPoint, providedBy, provisionedBy } = data
   return (
     <Card key={id} className='rounded-sm flex flex-col bg-zinc-200 dark:bg-zinc-700'>
       <CardHeader className='p-2'>
@@ -20,16 +20,33 @@ export const ComputingCard = ({ data }: { data: any }) => {
         </CardDescription>
       </CardHeader>
 
-      {accessPoint ? (
-        <CardContent className='flex flex-col flex-grow gap-1 px-2'>
-          {accessPoint?.map((t: { value: any; label: string; }, i: number) => (
-            <div className='text-muted-foreground text-sm flex items-center gap-1' key={i}>
-              <ExternalLinkIcon className='inline-block w-3 h-3' />
-              <a href={t.value} target='_blank' className='whitespace-nowrap overflow-x-scroll'>{t.value}</a>
+      <CardContent className='flex flex-col flex-grow gap-2 px-2'>
+        {accessPoint ? (
+          <div>
+            {accessPoint?.map((t: { value: any; label: string; }, i: number) => (
+              <div className='text-muted-foreground text-sm flex items-center gap-1' key={i}>
+                <ExternalLinkIcon className='inline-block w-3 h-3' />
+                <a href={t.value} target='_blank' className='whitespace-nowrap overflow-x-scroll'>{t.value}</a>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        {provisionedBy?.length > 0 ? (
+          <dl>
+            <div>
+              <dt className='text-muted-foreground'>Provisjonert av</dt>
+              {provisionedBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
+                <dd key={i}>
+                  <Link href={`/${path[r.type]}/${r.id}`} className='underline underline-offset-2'>
+                    {r.label}
+                  </Link>
+                </dd>
+              ))}
             </div>
-          ))}
-        </CardContent>
-      ) : null}
+          </dl>
+        ) : null}
+      </CardContent>
 
       <CardFooter className='flex justify-start gap-2 border-t border-zinc-400 p-2'>
         {providedBy?.logo ? (
@@ -61,13 +78,13 @@ export const HostingSoftwareCard = ({ data }: { data: any }) => {
         </CardDescription>
       </CardHeader>
 
-      {runBy?.length > 0 ? (
-        <CardContent className='px-2 pt-2 flex flex-col flex-grow gap-2'>
-          {runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
+      <CardContent className='px-2 pt-2 flex flex-col flex-grow gap-2'>
+        {runBy?.length > 0 ? (
+          runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
             <ComputingCard key={i} data={r} />
-          ))}
-        </CardContent>
-      ) : null}
+          ))
+        ) : null}
+      </CardContent>
 
       <CardFooter className='flex justify-start gap-2 border-t border-zinc-300 p-2'>
         {componentOf?.logo ? (
