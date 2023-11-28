@@ -128,7 +128,7 @@ export const Software = {
     },
     {
       name: 'runBy',
-      title: 'Deployed by',
+      title: 'Run by',
       fieldset: 'compute',
       group: 'parts',
       type: 'array',

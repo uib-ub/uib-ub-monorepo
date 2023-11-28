@@ -63,7 +63,7 @@ export const VolatileSoftware = {
     },
     {
       name: 'runBy',
-      title: 'Deployed by',
+      title: 'Run by',
       fieldset: 'core',
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'SoftwareComputingEService' }] }]
