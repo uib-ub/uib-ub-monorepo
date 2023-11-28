@@ -38,6 +38,10 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
   },
   {
     header: "Type",
+    accessorKey: "type",
+  },
+  {
+    header: "Kategori",
     accessorKey: "hasType",
     cell: ({ row }) => (
       <div className='flex flex-wrap gap-2'>
@@ -63,6 +67,7 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
     accessorKey: "hostedBy",
     cell: ({ row }) => {
       const hostedBy = uniqueStringArray(row.original.hostedBy)
+      console.log("🚀 ~ file: columns.tsx:70 ~ hostedBy:", hostedBy)
       return (
         <div className='flex flex-wrap gap-2'>
           {hostedBy.map((t: any) => (
@@ -82,6 +87,38 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
       return (
         <div className='flex flex-wrap gap-2'>
           {runBy.map((t: any) => (
+            <Badge variant="secondary" className='grow-0' key={t}>
+              {t}
+            </Badge>
+          ))}
+        </div>
+      )
+    }
+  },
+  {
+    header: "Programmeringsspråk",
+    accessorKey: "programmedWith",
+    cell: ({ row }) => {
+      const programmedWith = uniqueStringArray(row.original.programmedWith)
+      return (
+        <div className='flex flex-wrap gap-2'>
+          {programmedWith.map((t: any) => (
+            <Badge variant="secondary" className='grow-0' key={t}>
+              {t}
+            </Badge>
+          ))}
+        </div>
+      )
+    }
+  },
+  {
+    header: "Benytter",
+    accessorKey: "uses",
+    cell: ({ row }) => {
+      const uses = uniqueStringArray(row.original.uses)
+      return (
+        <div className='flex flex-wrap gap-2'>
+          {uses.map((t: any) => (
             <Badge variant="secondary" className='grow-0' key={t}>
               {t}
             </Badge>

@@ -11,6 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { ComputingCard, SoftwareCard } from './software-card'
 import { path } from '@/lib/utils'
 import Link from 'next/link'
+import { ExternalLinkIcon } from '@radix-ui/react-icons'
 
 export const query = groq`*[_id == $id][0] {
   "id": _id,
@@ -23,6 +24,10 @@ export const query = groq`*[_id == $id][0] {
   shortDescription,
   referredToBy[],
   logo,
+  "websiteUrl": coalesce(
+    websiteUrl,
+    hostedBy[][0]->.designatedAccessPoint->.value,
+  ),
   externalSoftware == null || externalSoftware == false => {
     "madeByUB": true,
   },
@@ -40,7 +45,7 @@ export const query = groq`*[_id == $id][0] {
     label,
     logo,
   },
-  "usedIn": *[$id in uses[]._ref] {
+  "usedIn": *[$id in uses[]._ref || $id in provisionedBy[]._ref] {
     "id": _id,
     "type": _type,
     label,
@@ -138,6 +143,11 @@ export const query = groq`*[_id == $id][0] {
         "type": _type,
         label,
       },
+      provisionedBy[]-> {
+        "id": _id,
+        "type": _type,
+        label,
+      },
     },
     hostedBy[]-> {
       "id": _id,
@@ -175,6 +185,11 @@ export type SoftwareComputingEService = {
   type: string
   label: string
   period: string
+  provisionedBy: {
+    id: string
+    type: string
+    label: string
+  }[]
   providedBy: {
     id: string
     type: string
@@ -242,6 +257,7 @@ export type SoftwareProps = SanityDocument & {
   quote: string
   logo: SanityImageAssetDocument
   shortDescription: string
+  websiteUrl: string
   madeByUB: boolean
   period: string
   referredToBy: {
@@ -310,6 +326,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
       <Tabs orientation='horizontal' defaultValue="general">
         <TabsList className='flex justify-start items-start h-fit mt-2 p-0 bg-transparent border-b w-full'>
           <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Generelt</TabsTrigger>
+          <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
           <EditIntentButton variant={'link'} id={data.id} className='p-0 m-0 pb-1 px-3 ml-auto text-muted-foreground text-sm font-medium' />
         </TabsList>
 
@@ -325,6 +342,17 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                         {data.hasType.map(tag => (
                           <Badge key={tag.id} variant={'secondary'} className=''>{tag.label}</Badge>
                         ))}
+                      </dd>
+                    </div>
+                  ) : null}
+
+                  {data?.websiteUrl ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Nettside</dt>
+                      <dd className='flex flex-wrap gap-3'>
+                        <Link href={data.websiteUrl} target='_blank' className='flex items-baseline gap-1 underline underline-offset-2'>
+                          {data?.websiteUrl} <ExternalLinkIcon />
+                        </Link>
                       </dd>
                     </div>
                   ) : null}
@@ -480,6 +508,10 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
               </div>
             ) : null}
           </div>
+        </TabsContent>
+
+        <TabsContent value="data" className='pt-4'>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
         </TabsContent>
       </Tabs>
     </div >

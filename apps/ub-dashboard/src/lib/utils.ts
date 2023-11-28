@@ -17,7 +17,7 @@ export const checkMembership = (arr: any) => {
 }
 
 export const uniqueStringArray = (a: string[]) => {
-  return [...new Set(a)];
+  return [...new Set(a)].filter(Boolean);
 }
 
 /**
@@ -37,6 +37,7 @@ export const path: Record<string, string> = {
   "Group": "groups",
   "Project": "projects",
   "Software": "software",
+  "VolatileSoftware": "software",
 }
 
 /**
