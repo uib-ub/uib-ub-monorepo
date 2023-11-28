@@ -12,7 +12,7 @@
       <NavBarLink
         >Explore
         <ul class="ml-4 space-y-[-6px]">
-          <NavBarLink>...</NavBarLink>
+          <NavBarLink to="/explore/termbase">Termbase</NavBarLink>
         </ul>
       </NavBarLink>
       <NavBarLink to="/docs">Documentation</NavBarLink>
@@ -20,7 +20,3 @@
     </ul>
   </main>
 </template>
-
-<script setup lang="ts">
-const router = useRouter();
-</script>

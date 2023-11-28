@@ -35,6 +35,8 @@ import { listenQuery } from 'sanity';
             class="flex items-center space-x-4 text-lg font-semibold text-gray-500"
           >
             <NavBarLink to="/overview">Overview</NavBarLink>
+            <NavBarLink to="/insights/termbase">Insights</NavBarLink>
+            <NavBarLink to="/explore/termbase">Explore</NavBarLink>
             <NavBarLink to="/studio">Studio</NavBarLink>
             <NavBarLink to="/docs">Documentation</NavBarLink>
           </ul>

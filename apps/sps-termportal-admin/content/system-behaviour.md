@@ -37,14 +37,16 @@ Only domains that have associated concept data should be set to
 should remain unpublished for the time being.
 
 ### Public endpoint publishing
-Public endpoint to be found here: [sparql.ub.uib.no](sparql.ub.uib.no>).
+
+Public endpoint to be found here: [sparql.ub.uib.no](https://sparql.ub.uib.no){:target="\_blank"}.
 
 Publicly available data is limited by:
+
 - Skiplist
 - List of open licenses
 
 See
-[documentation](https://git.app.uib.no/spraksamlingane/terminologi/terminologi-meta#update-public-sparql-endpoint)
+[documentation](https://git.app.uib.no/spraksamlingane/terminologi/terminologi-meta#update-public-sparql-endpoint){:target="\_blank"}
 for more technical information and the [pipeline
-config](https://git.app.uib.no/spraksamlingane/terminologi/terminologi-meta/-/pipeline_schedules)
+config](https://git.app.uib.no/spraksamlingane/terminologi/terminologi-meta/-/pipeline_schedules){:target="\_blank"}
 for current settings.
