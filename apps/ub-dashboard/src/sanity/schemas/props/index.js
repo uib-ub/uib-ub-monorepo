@@ -954,7 +954,8 @@ export const continued = {
     type: 'reference',
     to: [
       { type: 'Project' },
-      { type: 'Activity' }
+      { type: 'Activity' },
+      { type: 'Group' },
     ]
   }]
 }
@@ -967,7 +968,8 @@ export const continuedBy = {
     type: 'reference',
     to: [
       { type: 'Project' },
-      { type: 'Activity' }
+      { type: 'Activity' },
+      { type: 'Group' },
     ]
   }]
 }
