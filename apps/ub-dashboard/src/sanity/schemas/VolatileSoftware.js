@@ -84,12 +84,10 @@ export const VolatileSoftware = {
     },
     {
       ...programmedWith,
-      fieldset: 'extra',
       description: 'Only use if necessary, prefer to register on source code.'
     },
     {
       ...uses,
-      fieldset: 'extra',
     },
     link,
     /* This feels wrong... {

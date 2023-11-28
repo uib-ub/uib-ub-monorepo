@@ -44,7 +44,7 @@ export const query = groq`*[_id == $id][0] {
     label,
     shortDescription,
   },
-  "hasSubGroup": *[_type == "Group" && ^._id in subGroupOf[]._ref]|order(label){
+  "hasSubGroup": *[_type == "Group" && ^._id in subGroupOf[]._ref && !(defined(timespan.endOfTheEnd))] | order(label){
     "id": _id,
     hasType[]-> {
       "id": _id,

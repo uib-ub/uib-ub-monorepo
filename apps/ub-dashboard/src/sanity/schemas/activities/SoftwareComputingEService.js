@@ -84,11 +84,14 @@ export const SoftwareComputingEService = {
     {
       name: 'runsOnRequest',
       title: 'Kjører software',
-      type: 'reference',
-      to: [
-        { type: 'VolatileSoftware' },
-        { type: 'Software' },
-      ]
+      type: 'array',
+      of: [{
+        type: 'reference',
+        to: [
+          { type: 'VolatileSoftware' },
+          { type: 'Software' },
+        ]
+      }]
     },
     {
       name: 'accessPoint',
@@ -167,7 +170,7 @@ export const SoftwareComputingEService = {
       const { title, providedBy, edtf, media } = selection
       return {
         title: `📡 ${title} ${edtf ?? ''}`,
-        subtitle: providedBy ? `Deployed by ${providedBy}` : 'Deployment',
+        subtitle: providedBy ? `Run by ${providedBy}` : 'Deployment',
         media: media,
       }
     },

@@ -18,9 +18,11 @@ export interface SoftwareListProps {
   active: string
   hostedBy: string[]
   runBy: string[]
+  programmedWith: string[]
+  uses: string[]
 }
 
-export const query = groq`*[_type in ['Software']] | order(label asc)  {
+export const query = groq`*[_type in ['Software', 'VolatileSoftware']] | order(label asc)  {
   ...,
   "id": _id,
   "type": _type,
@@ -48,7 +50,15 @@ export const query = groq`*[_type in ['Software']] | order(label asc)  {
     "active": "Avsluttet" 
   },
   "hostedBy": hasSoftwarePart[]->.hostedBy[]->.componentOf->.label,
-  "runBy": hasSoftwarePart[]->.runBy[]->.providedBy->.label
+  "runBy": hasSoftwarePart[]->.runBy[]->.providedBy->.label,
+  "programmedWith": coalesce(
+    programmedWith[]->.label,
+    hasSoftwarePart[]->.programmedWith[]->.label,
+  ),
+  "uses": coalesce(
+    runs[]->.label,
+    hasSoftwarePart[]->.uses[]->.label,
+  ),
 }`
 
 const SoftwareList = ({ data }: { data: SoftwareListProps[] }) => {
