@@ -189,40 +189,44 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
 
             {data?.hasType ? (
               <Card>
-                <CardHeader>
-                  <CardTitle>Kategorier</CardTitle>
-                </CardHeader>
-                <CardContent>{data.hasType.map(tag => (
-                  <Badge key={tag.id} variant={'secondary'}>{tag.label}</Badge>
-                ))}
-                </CardContent>
-              </Card>
-            ) : null}
+                <CardContent className='mt-4'>
+                  <dl className='flex flex-wrap flex-col md:flex-row gap-4 md:gap-10'>
+                    {data?.hasType && data.hasType.length > 0 ? (
+                      <div>
+                        <dt className='text-muted-foreground'>Type</dt>
+                        <dd className='flex flex-wrap gap-2'>
+                          {data.hasType.map(tag => (
+                            <Badge key={tag.id} variant={'secondary'} className=''>{tag.label}</Badge>
+                          ))}
+                        </dd>
+                      </div>
+                    ) : null}
 
-            {data?.period ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Periode</CardTitle>
-                </CardHeader>
-                <CardContent>{data.period}</CardContent>
-              </Card>
-            ) : null}
+                    {data?.period ? (
+                      <div>
+                        <dt className='text-muted-foreground'>Periode</dt>
+                        <dd className='flex flex-wrap gap-2'>
+                          {data.period}
+                        </dd>
+                      </div>
+                    ) : null}
 
-
-            {data?.connectedToProject ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Knyttet til: <i>{data.connectedToProject.type}</i></CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {data.connectedToProject.logo ? (
-                    <div className='w-[45px] h-[45px]'>
-                      <ImageBox image={data.connectedToProject.logo} width={200} height={200} alt="" classesWrapper='relative aspect-[1/1]' />
-                    </div>
-                  ) : null}
-                  <Link href={`/${path[data.connectedToProject.type]}/${data.connectedToProject.id}`} className='underline underline-offset-2'>
-                    {data.connectedToProject.label}
-                  </Link>
+                    {data?.connectedToProject ? (
+                      <div>
+                        <dt className='text-muted-foreground'>Knyttet til:</dt>
+                        <dd className='flex flex-wrap gap-2'>
+                          {data.connectedToProject.logo ? (
+                            <div className='w-[45px] h-[45px]'>
+                              <ImageBox image={data.connectedToProject.logo} width={200} height={200} alt="" classesWrapper='relative aspect-[1/1]' />
+                            </div>
+                          ) : null}
+                          <Link href={`/${path[data.connectedToProject.type]}/${data.connectedToProject.id}`} className='underline underline-offset-2'>
+                            {data.connectedToProject.label}
+                          </Link>
+                        </dd>
+                      </div>
+                    ) : null}
+                  </dl>
                 </CardContent>
               </Card>
             ) : null}
@@ -257,7 +261,7 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
                     <ul className='mt-2'>
                       {data.subGroupOf.map((group: any) => (
                         <li key={group.id}>
-                          <Link className='underline underline-offset-2' href={`/group/${group.id}`}>
+                          <Link className='underline underline-offset-2' href={`/groups/${group.id}`}>
                             {group.label}
                           </Link>
                         </li>

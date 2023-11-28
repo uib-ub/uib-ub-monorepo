@@ -19,7 +19,11 @@ const formatMessage = (message: string): React.ReactNode => {
     const errorProps = message.split('] ')[1].split(' : ')[0]
 
     return (
-      <div className='grid md:grid-cols-3 text-xs'>
+      <div className='grid md:grid-cols-1 text-xs'>
+        <div className='text-red-700'>
+          <div className='text-lg font-bold'>Ulovlig prop:</div>
+          {errorProps.split(' = ').pop()}
+        </div>
         <div>
           <div className='text-lg font-bold'>Tillatte props:</div>
           <div className='flex flex-wrap gap-1'>
@@ -31,10 +35,6 @@ const formatMessage = (message: string): React.ReactNode => {
             ))}
           </div>
         </div>
-        <div className='text-red-700'>
-          <div className='text-lg font-bold'>Ulovlig prop:</div>
-          {errorProps.split(' = ').pop()}
-        </div>
       </div>
     )
   }
@@ -45,18 +45,18 @@ export const ShaclResultCard = ({ data }: { data: any }) => {
   const MessageComponent = formatMessage(data.resultMessage)
 
   return (
-    <div className='font-mono rounded-sm border overflow-hidden w-full'>
+    <div className='font-mono rounded-sm border overflow-hidden shadow-md flex flex-col self-stretch'>
       <div className='flex flex-wrap align-top overflow-hidden'>
-        <Badge variant={'destructive'} className='rounded-none'><MdWarningAmber className='mr-1' /></Badge>
+        <Badge variant={'destructive'} className='rounded-none px-1.5'><MdWarningAmber /></Badge>
         {data.resultPath ? <Badge className='rounded-none'><ArrowRightIcon className='mr-1' /> {data.resultPath}</Badge> : null}
         {data.focusNode ?? data['sh:focusNode'] ? <Badge className='rounded-none'><ArrowRightIcon className='mr-1' /> {data.focusNode ?? data['sh:focusNode']}</Badge> : null}
       </div>
 
-      <div className='text-sm sm:text-md px-3 py-1 mt-1'>
+      <div className='flex-1 text-sm sm:text-md px-3 py-1 mt-1'>
         {MessageComponent ? MessageComponent : null}
       </div>
 
-      <div className="flex pt-4 w-full">
+      <div className="flex place-items-end  pt-4 w-full">
         {/* <Badge variant={'secondary'} className='rounded-none'><GrInspect className='mr-1 text-red-400' /> {data.sourceConstraintComponent}</Badge>
         <Badge variant={'secondary'} className='rounded-none'><GrInspect className='mr-1 text-red-400' /> {data.sourceShape}</Badge> */}
 
@@ -68,7 +68,7 @@ export const ShaclResultCard = ({ data }: { data: any }) => {
             </HoverCardContent>
           </HoverCard>
 
-          {data.focusNode?.startsWith('http') && !data.value ? (
+          {data.focusNode?.startsWith('http') ? (
             <Badge variant={'secondary'} className='rounded-none font-light'>
               <Link href={`https://sparql.ub.uib.no/#/dataset/sparql/query?query=describe%20%3C${data.focusNode}%3E`} target='_blank' className='flex items-center gap-2'>
                 Sparql query
@@ -76,7 +76,7 @@ export const ShaclResultCard = ({ data }: { data: any }) => {
               </Link>
             </Badge>
           ) : null}
-          {data.focusNode?.startsWith('http') && !data.value ? (
+          {data.focusNode?.startsWith('http') ? (
             <Badge className='rounded-none'>
               <Link className='flex items-baseline gap-2' href={data.focusNode.replace('data.ub', 'marcus')} target='_blank'>Gå til Marcus <ExternalLinkIcon /></Link>
             </Badge>

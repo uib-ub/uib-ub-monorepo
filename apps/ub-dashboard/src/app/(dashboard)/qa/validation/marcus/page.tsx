@@ -51,7 +51,7 @@ export default async function ShaclPage() {
       <div className='flex text-2xl items-baseline gap-4 mb-10'>
         <h1>Validering av Marcus datasett</h1>
       </div>
-      <div className='flex flex-col items-baseline gap-8 mb-2 overflow-hidden'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 auto-rows-auto content-stretch items-baseline gap-8 mb-2 overflow-hidden'>
         {data?.result?.map((result: any, i: number) => (
           <ShaclResultCard key={i} data={result} />
         ))}

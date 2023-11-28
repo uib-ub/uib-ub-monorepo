@@ -40,7 +40,7 @@ export const query = groq`*[_id == $id][0] {
     label,
     logo,
   },
-  "usedIn": *[_type == "Software" && references($id)] {
+  "usedIn": *[$id in uses[]._ref] {
     "id": _id,
     "type": _type,
     label,
@@ -101,6 +101,17 @@ export const query = groq`*[_id == $id][0] {
       "id": _id,
       label,
     },
+    programmedWith[]-> {
+      "id": _id,
+      "type": _type,
+      label
+    },
+    uses[]-> {
+      "id": _id,
+      "type": _type,
+      label,
+      logo,
+    },
     runBy[]-> {
       "id": _id,
       "type": _type,
@@ -143,35 +154,14 @@ export const query = groq`*[_id == $id][0] {
         label,
         "logo": providedBy->.logo,
       },
-      designatedAccessPoint {
+      designatedAccessPoint-> {
         "type": _type,
         value,
       },
-      "runBy": *[_type == 'SoftwareComputingEService' && references(^._id)] {
-        "id": _id,
-        "type": _type,
-        label,
-        "period": timespan.edtf,
-        providedBy-> {
-          "id": _id,
-          "type": _type,
-          label,
-          logo,
-        },
-        accessPoint[]-> {
-          "id": _id,
-          "type": _type,
-          label,
-          value,
-        },
-        designatedAccessPoint-> {
-          "type": _type,
-          value,
-        },
-      },
     },
   },
-  "resultOf": *[resultedIn[][0]._ref == $id][0] {
+  "resultOf": *[$id in resultedIn[]._ref] {
+    ...,
     "id": _id,
     "type": _type,
     "period": timespan.edtf,
@@ -210,7 +200,15 @@ export type VolatileSoftware = {
   hasType: {
     id: string
     label: string
-  }[]
+  }[],
+  programmedWith: {
+    id: string
+    label: string
+  }[],
+  uses: {
+    id: string
+    label: string
+  }[],
   runBy: SoftwareComputingEService[]
   hostedBy: {
     id: string
@@ -230,7 +228,6 @@ export type VolatileSoftware = {
       type: string
       value: string
     }
-    runBy: SoftwareComputingEService[]
   }[]
 }
 
@@ -275,7 +272,14 @@ export type SoftwareProps = SanityDocument & {
     period: string
     active: string
   }[]
-  hasSoftwarePart: VolatileSoftware[]
+  hasSoftwarePart: VolatileSoftware[],
+  resultOf: {
+    id: string
+    type: string
+    label: string
+    logo: SanityImageAssetDocument
+    period: string
+  }[]
 }
 
 const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
@@ -288,15 +292,15 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
             <ImageBox image={data.logo} width={200} height={200} alt="" classesWrapper='relative aspect-[1/1]' />
           </div>
         ) : null}
-        <div className='flex flex-col'>
-          <h1 className='text-5xl mb-2'>{data?.label}</h1>
+        <div className='flex flex-col gap-2'>
+          <h1 className='text-5xl'>{data?.label}</h1>
           {data.madeByUB ? (
             <div>
               <Badge className='text-sm'>Laget av UB</Badge>
             </div>
           ) : (
             <div>
-              <Badge variant={'destructive'} className='text-sm'>Ekstern programvare</Badge>
+              <Badge variant={'secondary'} className='text-sm'>Ekstern programvare</Badge>
             </div>
           )}
           {data?.shortDescription ? (<p>{data.shortDescription}</p>) : null}
@@ -311,74 +315,37 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
 
         <TabsContent value="general" className='pt-4'>
           <div className='grid grid-cols-3 gap-4'>
-            {data?.hasType && data.hasType.length > 0 ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Kategorier</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className='flex gap-2'>
-                    {data.hasType.map(tag => (
-                      <Badge key={tag.id} variant={'secondary'} className='text-lg'>{tag.label}</Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ) : null}
+            <Card className='col-span-3 pt-4'>
+              <CardContent>
+                <dl className='flex flex-wrap flex-col md:flex-row gap-4 md:gap-10'>
+                  {data?.hasType && data.hasType.length > 0 ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Type</dt>
+                      <dd className='flex flex-wrap gap-2'>
+                        {data.hasType.map(tag => (
+                          <Badge key={tag.id} variant={'secondary'} className=''>{tag.label}</Badge>
+                        ))}
+                      </dd>
+                    </div>
+                  ) : null}
 
-            {data?.resultOf ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Resultat av</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className='flex gap-2'>
-                    {data.resultOf?.logo ? (
-                      <div className='w-[50px] h-[50px]'>
-                        <ImageBox image={data.resultOf?.logo} width={50} height={50} alt="" classesWrapper='relative aspect-[1/1]' />
-                      </div>
-                    ) : null}
-                    <Link href={`/${path[data.resultOf?.type]}/${data.resultOf?.id}`} className='underline underline-offset-2'>
-                      {data.resultOf?.label}
-                      <br />
-                      <Badge>{data.resultOf?.type}</Badge>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : null}
-
-            <div className='grid grid-flow-row gap-4'>
-              {data?.programmedWith && data?.programmedWith.length > 0 ? (
-                <div className='col-span-3 flex flex-col gap-3'>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Programmert med</CardTitle>
-                      <CardDescription></CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className='flex flex-col gap-3'>
+                  {data?.programmedWith && data?.programmedWith.length > 0 ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Programmeringsspråk</dt>
+                      <dd className='flex flex-wrap gap-3'>
                         {data.programmedWith.map((s: any, i: number) => (
                           <Link key={s.id} href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
                             {s.label}
                           </Link>
                         ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ) : null}
+                      </dd>
+                    </div>
+                  ) : null}
 
-
-              {data?.uses && data?.uses.length > 0 ? (
-                <div className='col-span-3 flex flex-col gap-3'>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Bruker programvare</CardTitle>
-                      <CardDescription></CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className='flex flex-col gap-3'>
+                  {data?.uses && data?.uses.length > 0 ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Bruker programvare</dt>
+                      <dd className='flex flex-wrap gap-3'>
                         {data.uses.map((s: any, i: number) => (
                           <div key={s.id} className='flex gap-2'>
                             {s.logo ? (
@@ -391,39 +358,65 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                             </Link>
                           </div>
                         ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ) : null}
+                      </dd>
+                    </div>
+                  ) : null}
 
-              {data?.usedIn && data?.usedIn.length > 0 ? (
-                <div className='col-span-3 flex flex-col gap-3'>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Benyttet i</CardTitle>
-                      <CardDescription></CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className='flex flex-col gap-3'>
-                        {data.usedIn.map((s: any, i: number) => (
-                          <div key={s.id} className='flex gap-2'>
-                            {s.logo ? (
-                              <div className='w-[25px] h-[25px]'>
-                                <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+
+                  {data?.resultOf && data?.resultOf?.length > 0 ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Resultat av</dt>
+                      <dd className='flex flex-wrap gap-3'>
+                        {data.resultOf.map((result: any, i: number) => (
+                          <div key={result?.id} className='flex gap-2'>
+                            {result?.logo ? (
+                              <div className='w-[50px] h-[50px]'>
+                                <ImageBox image={result?.logo} width={50} height={50} alt="" classesWrapper='relative aspect-[1/1]' />
                               </div>
                             ) : null}
-                            <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
-                              {s.label}
+                            <Link href={`/${path[result?.type]}/${result?.id}`} className='underline underline-offset-2'>
+                              {result?.label}
+                              <br />
                             </Link>
+                            <Badge variant={'outline'}>{result?.type}</Badge>
                           </div>
                         ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ) : null}
-            </div>
+                      </dd>
+                    </div>
+                  ) : null}
+
+                </dl>
+              </CardContent>
+            </Card>
+
+            {data?.usedIn && data?.usedIn.length > 0 ? (
+              <div className='col-span-3 flex flex-col gap-3'>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Benyttet i</CardTitle>
+
+                  </CardHeader>
+                  <CardContent>
+                    <div className='flex flex-col gap-3'>
+                      {data.usedIn.map((s: any, i: number) => (
+                        <div key={s.id} className='flex gap-2'>
+                          {s.logo ? (
+                            <div className='w-[25px] h-[25px]'>
+                              <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                            </div>
+                          ) : null}
+                          <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
+                            {s.label}
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : null}
+
+
 
             {/* @ts-ignore */}
             {data.referredToBy?.[0]?.body ? (
@@ -441,7 +434,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
             ) : null}
 
             {data?.currentOrFormerManager ? (
-              <Card className='col-span-3'>
+              <Card className='col-span-3 md:col-span-2'>
                 <CardHeader>
                   <CardTitle>Ansvarlige</CardTitle>
                 </CardHeader>
@@ -477,7 +470,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                     <CardDescription>Et stykke programvare kan ha mange deler som har avhengigheter til hverandre</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className='grid grid-cols-cards gap-4'>
+                    <div className='grid auto-flow-dense grid-cols-1 md:grid-cols-2 gap-4'>
                       {data?.hasSoftwarePart.map((s, i) => (
                         <SoftwareCard data={s} key={i} />
                       ))}
