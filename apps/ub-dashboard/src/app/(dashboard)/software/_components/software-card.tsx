@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ExternalLinkIcon } from '@radix-ui/react-icons'
 import ImageBox from '@/components/image-box'
 import { SanityImageAssetDocument } from 'next-sanity'
+import { path } from '@/lib/utils'
 
 export const ComputingCard = ({ data }: { data: any }) => {
   const { id, type, label, designatedAccessPoint, accessPoint, providedBy } = data
@@ -47,7 +48,7 @@ export const ComputingCard = ({ data }: { data: any }) => {
   )
 }
 
-export const VolatileSoftwareCard = ({ data }: { data: any }) => {
+export const HostingSoftwareCard = ({ data }: { data: any }) => {
   const { type, label, designatedAccessPoint, runBy, componentOf } = data
   return (
     <Card className='flex flex-col rounded-sm bg-zinc-100 dark:bg-zinc-800 shadow-md justify-between'>
@@ -59,12 +60,12 @@ export const VolatileSoftwareCard = ({ data }: { data: any }) => {
           {type}
         </CardDescription>
       </CardHeader>
+
       {runBy?.length > 0 ? (
         <CardContent className='px-2 pt-2 flex flex-col flex-grow gap-2'>
           {runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
             <ComputingCard key={i} data={r} />
-          ))
-          }
+          ))}
         </CardContent>
       ) : null}
 
@@ -92,16 +93,60 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
         <CardTitle className='text-md'>
           {data.label}
         </CardTitle>
-        <CardDescription>{data.type}</CardDescription>
+        <CardDescription>
+          {data.type}
+        </CardDescription>
       </CardHeader>
 
-      {data.hostedBy ? (
-        <CardContent className='px-2 pt-2 flex-grow grid grid-flow-col gap-2'>
-          {data.hostedBy?.map((t, i) => (
-            <VolatileSoftwareCard key={i} data={t} />
-          ))}
-        </CardContent>
-      ) : null}
+      <CardContent className='px-2 pt-2 flex-grow grid grid-flow-dense gap-2'>
+        <dl className='w-full'>
+          {data?.programmedWith && data?.programmedWith.length > 0 ? (
+            <div>
+              <dt className='text-muted-foreground'>Programmeringsspråk</dt>
+              <dd className='flex flex-wrap gap-3'>
+                {data.programmedWith.map((s: any, i: number) => (
+                  <>
+                    {s.label}
+                    {/* <Link key={s.id} href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
+                    {s.label}
+                  </Link> */}
+                  </>
+                ))}
+              </dd>
+            </div>
+          ) : null}
+
+          {data?.uses && data?.uses.length > 0 ? (
+            <div>
+              <dt className='text-muted-foreground'>Bruker programvare</dt>
+              <dd className='flex flex-wrap gap-3'>
+                {data.uses.map((s: any, i: number) => (
+                  <div key={s.id} className='flex gap-2'>
+                    {s.logo ? (
+                      <div className='w-[25px] h-[25px]'>
+                        <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                      </div>
+                    ) : null}
+                    <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
+                      {s.label}
+                    </Link>
+                  </div>
+                ))}
+              </dd>
+            </div>
+          ) : null}
+        </dl>
+
+        {data.hostedBy?.map((t, i) => (
+          <HostingSoftwareCard key={i} data={t} />
+        ))}
+
+        {data.runBy && data.runBy.length > 0 ? (
+          data.runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
+            <ComputingCard key={i} data={r} />
+          ))
+        ) : null}
+      </CardContent>
 
       <CardFooter className='flex justify-end border-t p-3'>
         {data.hasType && (
