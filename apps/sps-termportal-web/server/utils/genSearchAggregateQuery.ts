@@ -1,35 +1,10 @@
 import {
   Matching,
-  LabelPredicate,
   SearchOptions,
   SearchQueryType,
 } from "../../utils/vars";
-import { Samling, Domains, domainNesting } from "../../utils/vars-termbase";
 
 import { getPredicateValues, getContextFilter } from "./genSearchEntryQuery";
-
-export const samlingMapping = {
-  MRT: 3000,
-  UHR: 3004,
-  ARTSDB: 3006,
-  EVERTEBRATER: 3008,
-  FBK: 3030,
-  NHH: 3010,
-  NOJU: 3012,
-  NOT: 3014,
-  RTT: 3016,
-  SDIR: 3018,
-  TOLKING: 3022,
-  ROMFYS: 3024,
-  TUNDUIA: 3900,
-  KLIMA: 3802,
-  ASTRONOMI: 3804,
-  BIOLOGI: 3806,
-  LINGVISTIKK: 3808,
-  CMBIOLOGI: 3810,
-  KJEMI: 3812,
-  BIBINF: 3814,
-};
 
 function sanitizeTerm(term: string) {
   return term
