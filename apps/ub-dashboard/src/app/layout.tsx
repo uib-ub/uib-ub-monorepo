@@ -4,7 +4,7 @@ import '@/app/globals.css'
 
 
 export const metadata: Metadata = {
-  title: 'UB dashboard',
+  title: 'UB-dashboard',
   description: 'Oversikt over UBs personer, grupper, tjenester og systemer',
 }
 

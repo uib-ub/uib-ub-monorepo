@@ -35,7 +35,7 @@ export const iframeOptions = {
 } satisfies IframeOptions
 
 export default defineConfig({
-  title: 'UB Dashboard',
+  title: 'UB-dashboard',
   basePath: '/studio',
   projectId,
   dataset,

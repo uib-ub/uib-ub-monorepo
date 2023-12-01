@@ -96,26 +96,7 @@ export const deskStructure = (S) =>
             // Each will pull one of our new singletons
             .items([
               S.listItem()
-                .title('Programvare etter eier')
-                //.icon(FaGlasses)
-                .child(
-                  // List out all categories
-                  S.documentTypeList('Group')
-                    .title('Programvareeiere')
-                    // This should be possible => .filter('_type == "Group" && _id in *[_type in ["Software", "VolatileSoftware"]].maintainedBy[]._ref')
-                    .filter('_type == "Group"')
-                    .child((param) =>
-                      // List out project documents where the _id for the selected
-                      // category appear as a _ref in the project’s categories array
-                      S.documentList()
-                        .schemaType('Software')
-                        .title('Programvare')
-                        .filter('_type in ["Software", "VolatileSoftware"] && $param in maintainedBy[]._ref')
-                        .params({ param }),
-                    ),
-                ),
-              S.listItem()
-                .title('Alle programvarer')
+                .title('Programvare')
                 .child(
                   S.documentTypeList('Software')
                 ),

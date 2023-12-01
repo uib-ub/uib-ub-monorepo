@@ -1,7 +1,7 @@
 import { draftMode } from 'next/headers'
 import { LiveQuery } from 'next-sanity/preview/live-query'
 import Software, { query } from './_components/software-list'
-import PreviewSoftware from './_components/preview-software'
+import PreviewSoftware from './_components/preview-software-list'
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { MainShell } from '@/components/main-shell'
 

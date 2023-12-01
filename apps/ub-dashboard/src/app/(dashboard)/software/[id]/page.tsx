@@ -2,7 +2,7 @@ import { MainShell } from '@/components/main-shell'
 import { LiveQuery } from 'next-sanity/preview/live-query'
 import { draftMode } from 'next/headers'
 import Software, { query, SoftwareProps } from '../_components/software'
-import PreviewSingleSoftware from '../_components/preview-single-software'
+import PreviewSoftware from '../_components/preview-software'
 import { sanityFetch } from '@/sanity/lib/fetch'
 
 export default async function ProjectPage({
@@ -19,7 +19,7 @@ export default async function ProjectPage({
         query={query}
         params={params}
         initialData={data}
-        as={PreviewSingleSoftware}
+        as={PreviewSoftware}
       >
         <Software data={data} />
       </LiveQuery>
