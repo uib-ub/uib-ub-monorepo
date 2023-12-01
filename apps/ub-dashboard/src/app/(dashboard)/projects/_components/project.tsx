@@ -13,7 +13,7 @@ import millify from 'millify'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CustomPortableText } from '@/components/custom-protable-text'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ResultedIn } from '@/components/resulted-in'
+import { path } from '@/lib/utils'
 
 export const query = groq`*[_id == $id][0] {
   "id": _id,
@@ -158,7 +158,7 @@ export interface ProjectProps extends SanityDocument {
     _type: string
     accessState: string
     editorialState: string
-    body: PortableTextBlock[]
+    body: (PortableTextBlock | any)[]
   }[]
   link: {
     _key: string
@@ -313,79 +313,73 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
         </TabsList>
 
         <TabsContent value="general" className='pt-4'>
-          <div className='grid grid-cols-3 gap-4'>
+          <div className='grid grid-cols-6 gap-4'>
+            <Card className='col-span-6'>
+              <CardContent className='mt-4'>
+                <dl className='flex flex-wrap flex-col md:flex-row gap-4 md:gap-10'>
 
+                  {data?.hasType && data.hasType.length > 0 ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Type</dt>
+                      <dd className='flex flex-wrap gap-2'>
+                        {data.hasType.map(tag => (
+                          <Badge key={tag.id} variant={'secondary'} className=''>{tag.label}</Badge>
+                        ))}
+                      </dd>
+                    </div>
+                  ) : null}
 
-            {data?.hasType ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Kategorier</CardTitle>
-                </CardHeader>
-                <CardContent className='p-0'>{data.hasType.map(tag => (
-                  <Badge key={tag.id} variant={'secondary'} className='text-sm'>{tag.label}</Badge>
-                ))}
-                </CardContent>
-              </Card>
-            ) : null}
-            {data?.period ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Periode</CardTitle>
-                </CardHeader>
-                <CardContent>{data.period}</CardContent>
-              </Card>
-            ) : null}
+                  {data?.period ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Periode</dt>
+                      <dd className='flex flex-wrap gap-2'>
+                        {data.period}
+                      </dd>
+                    </div>
+                  ) : null}
 
-            {data?.funding ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Finansiering</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {data.funding.filter((obj: any) => !(obj && Object.keys(obj).length === 0)).map((f: any) => (
-                    <Card key={f.id} className='p-1'>
-                      <CardHeader className='px-3 pt-2 pb-0'>
-                        <CardTitle className='text-sm'>{f.awarder}</CardTitle>
-                      </CardHeader>
-                      <CardContent className='px-3 py-1 font-extrabold text-2xl'>
-                        {f.amount > 999999.99 ? millify(f.amount, { precision: 2, locales: ['no'], space: true, units: ['', '', 'MILL', 'MRD'] }) : f.amount}  {f.currency}
-                      </CardContent>
-                      <CardFooter className='px-3 py-0'>
-                        <p>
-                          {f.period}
-                        </p>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </CardContent>
-              </Card>
-            ) : null}
+                  {data?.funding ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Finansiering</dt>
+                      <dd className='flex flex-wrap gap-2'>
+                        {data.funding.filter((obj: any) => !(obj && Object.keys(obj).length === 0)).map((f: any) => (
+                          <Card key={f.id} className='p-2 rounded-sm'>
+                            <CardHeader className='px-1 pt-0 pb-0'>
+                              <CardTitle className='text-sm'>{f.awarder}</CardTitle>
+                            </CardHeader>
+                            <CardContent className='px-1 py-1 font-extrabold text-2xl'>
+                              {f.amount > 999999.99 ? millify(f.amount, { precision: 2, locales: ['no'], space: true, units: ['', '', 'MILL', 'MRD'] }) : f.amount}  {f.currency}
+                            </CardContent>
+                            <CardFooter className='px-1 py-0 text-muted-foreground text-xs'>
+                              <p>
+                                {f.period}
+                              </p>
+                            </CardFooter>
+                          </Card>
+                        ))}
+                      </dd>
+                    </div>
+                  ) : null}
 
+                  {data?.resultedIn ? (
+                    <div>
+                      <dt className='text-muted-foreground'>Resulterte i</dt>
+                      <dd className='flex flex-wrap gap-2'>
+                        {data.resultedIn.map((row) => (
+                          <Link key={row.id} href={`/${path[row.type]}/${row.id}`} className='underline underline-offset-2'>
+                            {row.label}
+                          </Link>))}
+                      </dd>
+                    </div>
+                  ) : null}
+                </dl>
+              </CardContent>
+            </Card>
 
-            {/* @ts-ignore */}
             {data.referredToBy?.[0]?.body ? (
-              <Card className='row-span-2'>
-                <CardHeader>
-                  <CardTitle>Beskrivelse</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[250px] max-w-prose rounded-md border p-4 mt-2 mb-5">
-                    {/* @ts-ignore */}
-                    <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-            ) : null}
-
-            {data?.resultedIn ? (
-              <Card className='col-span-2'>
-                <CardHeader>
-                  <CardTitle>Resulterte i</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResultedIn data={data.resultedIn} config={{ activeFilter: false }} />
-                </CardContent>
-              </Card>
+              <ScrollArea className="h-[250px] max-w-prose col-span-2 rounded-xl border p-4 mt-2 mb-5">
+                <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
+              </ScrollArea>
             ) : null}
 
             {data?.link ? (
@@ -404,7 +398,7 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
                       {data?.link.map((file: any) => (
                         <TableRow key={file._key}>
                           <TableCell>
-                            <Link href={file.url}>
+                            <Link href={file.url} target='_blank'>
                               {file.label}
                               <ExternalLinkIcon className='inline-block' />
                             </Link>
@@ -419,7 +413,7 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
             ) : null}
 
             {data?.hasFile ? (
-              <Card>
+              <Card className='col-span-2'>
                 <CardHeader>
                   <CardTitle>
                     Filer
@@ -438,7 +432,7 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
                       {data?.hasFile.map((file: any) => (
                         <TableRow key={file._key}>
                           <TableCell>
-                            <Link href={file.url}>
+                            <Link href={file.url} target='_blank'>
                               {file.label}
                               <ExternalLinkIcon className='inline-block' />
                             </Link>

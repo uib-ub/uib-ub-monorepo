@@ -11,6 +11,7 @@ import { CustomPortableText } from '@/components/custom-protable-text'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Timeline from '@/components/timeline'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { PortableTextBlockComponent, PortableTextComponents } from '@portabletext/react'
 
 export const query = groq`*[_id == $id][0] {
   "id": _id,
@@ -123,7 +124,9 @@ export interface PersonProps extends SanityDocument {
   image: SanityImageAssetDocument
   shortDescription: string
   period: string
-  referredToBy: PortableTextBlock[]
+  referredToBy: {
+    body: (PortableTextBlock | any)[]
+  }[]
   hasSkill: {
     label: string
     level: number
@@ -181,9 +184,6 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
           <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
             Generelt
           </TabsTrigger>
-          <TabsTrigger value="skills" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
-            Kompetanse
-          </TabsTrigger>
           <TabsTrigger value="timeline" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
             Tidslinje
           </TabsTrigger>
@@ -192,26 +192,35 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
 
 
         <TabsContent value="general" className='pt-4'>
-          <div className='grid grid-cols-3 gap-4'>
+          <div className='grid grid-cols-6 gap-4'>
 
-            {/* @ts-ignore */}
-            {data.referredToBy?.[0]?.body ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Beskrivelse</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[250px] max-w-prose rounded-md border p-4 mt-2 mb-5">
-                    {/* @ts-ignore */}
-                    <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
-                  </ScrollArea>
-                </CardContent>
-              </Card>
+            {/* {data.referredToBy?.[0]?.body ? (
+              <ScrollArea className="h-[250px] max-w-prose rounded-xl border p-4 col-span-6">
+                <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
+              </ScrollArea>
             ) : (
               null
-            )}
+            )} */}
 
-            <Card className='col-span-2'>
+            <Card className='col-span-6'>
+              <CardHeader>
+                <CardTitle>Medlem av</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MemberOf data={data.memberOf} />
+              </CardContent>
+            </Card>
+
+            <Card className='col-span-6 lg:col-span-3'>
+              <CardHeader>
+                <CardTitle>Kompetanse</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Skills data={data.hasSkill} />
+              </CardContent>
+            </Card>
+
+            <Card className='col-span-6 lg:col-span-3'>
               <CardHeader>
                 <CardTitle>Ansvar for</CardTitle>
               </CardHeader>
@@ -220,29 +229,10 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
               </CardContent>
             </Card>
 
-            <Card className='col-span-3'>
-              <CardHeader>
-                <CardTitle>Medlem av</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <MemberOf data={data.memberOf} />
-              </CardContent>
-            </Card>
           </div>
         </TabsContent>
 
-        <TabsContent value="skills" className='pt-4 grid grid-cols-3'>
-          <Card className='col-span-2'>
-            <CardHeader>
-              <CardTitle>Kompetanse</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Skills data={data.hasSkill} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="timeline" className='pt-4'>
+        <TabsContent value="timeline" className='mt-0'>
           <Card>
             <CardHeader>
               <CardTitle>Tidslinje</CardTitle>

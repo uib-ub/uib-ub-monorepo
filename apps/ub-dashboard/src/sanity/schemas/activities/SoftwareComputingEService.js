@@ -37,6 +37,7 @@ export const SoftwareComputingEService = {
           { title: 'Aktiv', value: 'active' },
           { title: 'Arkivert', value: 'archive' },
           { title: 'Forlatt', value: 'abandoned' },
+          { title: 'Slettet', value: 'deleted' },
         ],
         layout: 'radio',
         direction: 'horizontal',

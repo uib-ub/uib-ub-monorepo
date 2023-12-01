@@ -12,7 +12,7 @@ import { Suspense } from 'react'
 import { Footer } from '@/components/footer'
 
 export const metadata: Metadata = {
-  title: 'UB dashboard',
+  title: 'UB-dashboard',
   description: 'Oversikt over UBs personer, grupper, tjenester og systemer',
 }
 

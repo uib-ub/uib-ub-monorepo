@@ -20,8 +20,8 @@ export const Skills = ({ data = [] }: { data?: SkillListProps[] }) => {
         <div className='flex flex-col mt-2'>
           {data?.map((skill, index) => (
             <div key={index} className='grid grid-cols-2 gap-2 w-fit'>
-              <div className='w-64'>{skill.label}</div>
-              <div className='flex gap-2 w-80'>
+              <div className=''>{skill.label}</div>
+              <div className='flex gap-2 w-64'>
                 <span className='text-zinc-400 dark:text-zinc-300'>1</span>
                 <Slider
                   defaultValue={[skill.level]}
