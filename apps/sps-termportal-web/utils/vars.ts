@@ -109,15 +109,22 @@ export const cookieLocaleOptions = {
   ...{ httpOnly: false, maxAge: 60 * 60 * 24 * 100 },
 };
 
+// TODO get url fro wiki
 export const licenseLinks = {
   "LISENS-3ANo_Rights_Reserved_-28CC0-29":
     "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
-  "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED":
-    "https://urn.fi/urn:nbn:fi:lb-2019071724",
   "LISENS-3ACC_BY_40":
     "https://creativecommons.org/licenses/by/4.0/legalcode.no",
-  "LISENS-3ACC_BY-2DNC_40":
+  "LISENS-3ACC_BY-2DSA_40":
+    "https://creativecommons.org/licenses/by-sa/4.0/legalcode.no",
+  "LISENS-3ACC_BY-2DND_40":
     "https://creativecommons.org/licenses/by-nd/4.0/legalcode.no",
+  "LISENS-3ACC_BY-2DNC_40":
+    "https://creativecommons.org/licenses/by-nc/4.0/legalcode.no",
   "LISENS-3ACC_BY-2DNC-2DND_40":
     "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.no",
+  "LISENS-3ACC_BY-2DNC-2DSA_40":
+    "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.no",
+  "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED":
+    "https://urn.fi/urn:nbn:fi:lb-2019071724",
 };
