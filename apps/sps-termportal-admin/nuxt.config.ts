@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
   devtools: { enabled: true },
-  modules: ["@sidebase/nuxt-auth", "@nuxt/content"],
+  modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity"],
   app: {
     head: {
       title: "Termportalen admin",
@@ -31,4 +31,5 @@ export default defineNuxtConfig({
   content: {
     // ... options
   },
+  sanity: { projectId: "k38biek5", dataset: "production" },
 });

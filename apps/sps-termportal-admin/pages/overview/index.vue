@@ -2,8 +2,15 @@
   <div class="flex">
     <SideBar></SideBar>
     <main class="pt-8">
-      <h1 class="mb-6 text-2xl">Termbase Overview</h1>
-      <DataTable :value="products" removable-sort table-style="min-width: 1rem">
+      <h1 class="mb-6 text-2xl">Overview</h1>
+      <h2 class="mb-6 text-xl">Termbaser</h2>
+      <DataTable
+        :value="termbases"
+        removableSort
+        tableStyle="min-width: 1rem"
+        selectionMode="single"
+        v-model:selection="selectedTermbase"
+      >
         <Column
           v-for="col of columns"
           :key="col.field"
@@ -12,6 +19,10 @@
           sortable
         ></Column>
       </DataTable>
+      <TermgroupMembers
+        :key="selectedTermbase?.id"
+        :termbase="selectedTermbase?.id"
+      />
     </main>
   </div>
 </template>
@@ -19,7 +30,7 @@
 <script setup lang="ts">
 const { data } = await useLazyFetch("/api/overview/fuseki");
 
-const products = computed(() => {
+const termbases = computed(() => {
   return data.value?.results?.bindings.map((e) => {
     return {
       label: e.label.value,
@@ -33,4 +44,6 @@ const columns = [
   { field: "id", header: "ID" },
   { field: "conceptCount", header: "Concepts" },
 ];
+
+const selectedTermbase = ref();
 </script>
