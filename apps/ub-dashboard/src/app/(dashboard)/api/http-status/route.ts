@@ -35,7 +35,7 @@ export async function GET(request: Request) {
   const url = searchParams.get('url')
   if (url === null) {
     // Return an error response or a default value
-    return 'URL parameter is missing'
+    return Response.json('URL parameter is missing')
   }
   const data = await fetchData(url)
   return Response.json(data)
