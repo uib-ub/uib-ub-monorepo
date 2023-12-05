@@ -453,7 +453,7 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
 
 
             {data?.carriedOutBy ? (
-              <Card className='col-span-3'>
+              <Card className='col-span-6'>
                 <CardHeader>
                   <CardTitle>Prosjekteiere</CardTitle>
                 </CardHeader>
@@ -462,8 +462,9 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
                 </CardContent>
               </Card>
             ) : null}
+
             {data?.hadParticipant ? (
-              <Card className='col-span-3'>
+              <Card className='col-span-6'>
                 <CardHeader>
                   <CardTitle>Andre Institusjoner</CardTitle>
                 </CardHeader>
@@ -474,11 +475,11 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
             ) : null}
 
             {data?.hasTeam ? (
-              <Card className='col-span-3'>
+              <Card className='col-span-6'>
                 <CardHeader>
                   <CardTitle>Prosjektgrupper</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className={`grid ${data.hasTeam.length > 1 ? 'grid-cols-2': 'grid-cols-1'} gap-5`}>
                   {data.hasTeam.map((team: any) => (
                     <div key={team.id}>
                       <h3 className='text-lg font-semibold mb-1'>{team.label}</h3>

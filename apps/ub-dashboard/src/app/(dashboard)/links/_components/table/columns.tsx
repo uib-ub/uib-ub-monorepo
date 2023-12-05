@@ -1,11 +1,14 @@
 "use client"
 
-import { CaretSortIcon, ClockIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons"
+import { CaretSortIcon, ClockIcon, TrashIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 import { LinksProps } from '../links'
 import Link from "next/link"
 import { Button } from '@/components/ui/button'
 import { GiFinishLine } from 'react-icons/gi'
+import { CheckHttpStatus } from '@/components/check-http-status'
+import { Suspense } from 'react'
+import { LoadingSpinner } from '@/components/loading-spinner'
 
 export const columns: ColumnDef<LinksProps>[] = [
   {
@@ -23,12 +26,12 @@ export const columns: ColumnDef<LinksProps>[] = [
       )
     },
     cell: ({ row }) => (
-      <Link href={row.getValue('url')} className='font-bold'>
+      <Link href={row.getValue('url')} className={`font-bold ${(row.getValue('status') as string) === 'deleted' ? 'text-muted-foreground' : ''}`} target='_blank'>
         {row.getValue('url')}
       </Link>
     )
   },
-  /* {
+  {
     accessorKey: "label",
     header: ({ column }) => {
       return (
@@ -42,17 +45,17 @@ export const columns: ColumnDef<LinksProps>[] = [
         </Button>
       )
     },
-  }, */
+  },
   {
     header: "Type",
     accessorKey: "type",
   },
-  /* {
-    header: "Kategori",
-    accessorKey: "hasType",
+  {
+    header: "Brukes av",
+    accessorKey: "usedBy",
     cell: ({ row }: { row: any }) => (
       <div className='flex flex-col gap-2'>
-        {row.getValue('hasType')?.map((t: any, i: number) => (
+        {row.getValue('usedBy')?.map((t: any, i: number) => (
           <div key={i}>
             {t.label}
           </div>
@@ -61,23 +64,23 @@ export const columns: ColumnDef<LinksProps>[] = [
     )
   },
   {
-    header: "Periode",
-    accessorKey: "period",
+    header: "Status",
+    accessorKey: "status",
     cell: ({ row }: { row: any }) => (
-      <span className='whitespace-nowrap'>
-        {row.getValue('period')}
-      </span>
+      <div className='flex flex-wrap gap-2'>
+        {(row.getValue('status') as string) === 'active' ? <div className='flex gap-1 items-center'><ClockIcon className='text-blue-500 w-5 h-5' />{row.getValue('status')}</div> : null}
+        {(row.getValue('status') as string) === 'archive' ? <div className='flex gap-1 items-center'><GiFinishLine className='text-green-500 w-5 h-5' />{row.getValue('status')}</div> : null}
+        {(row.getValue('status') as string) === 'deleted' ? <div className='flex gap-1 items-center'><TrashIcon className='text-red-500 w-5 h-5' />{row.getValue('status')}</div> : null}
+      </div>
     )
   },
   {
-    header: "Status",
-    accessorKey: "active",
+    header: "Online?",
+    //accessorKey: "url",
     cell: ({ row }: { row: any }) => (
-      <div className='flex flex-wrap gap-2'>
-        {(row.getValue('active') as string) === 'Aktiv' ? <div className='flex gap-1 items-center'><ClockIcon className='text-blue-500 w-5 h-5' />{row.getValue('active')}</div> : null}
-        {(row.getValue('active') as string) === 'Avsluttet' ? <div className='flex gap-1 items-center'><GiFinishLine className='text-green-500 w-5 h-5' />{row.getValue('active')}</div> : null}
-        {(row.getValue('active') as string) === 'Ukjent' ? <div className='flex gap-1 items-center'><QuestionMarkCircledIcon className='text-amber-500 w-5 h-5' />{row.getValue('active')}</div> : null}
-      </div>
+      <Suspense fallback={<LoadingSpinner />}>
+        <CheckHttpStatus url={row.getValue('url')} />
+      </Suspense>
     )
-  }, */
+  },
 ]
