@@ -6,20 +6,21 @@ export interface LinksProps {
   id: string
   type: string
   label: string
-  hasType: {
+  status: string
+  url: string
+  usedBy: {
     id: string
+    type: string
     label: string
   }[]
-  period: string
-  url: string
-  active: string
 }
 
-export const query = groq`*[_type in [ 'AccessPoint']] | order(value asc) {
+export const query = groq`*[_type in [ 'AccessPoint'] && defined(value)] | order(value asc) {
   "id": _id,
   "type": _type,
   label,
   "url": value,
+  status,
   "usedBy": *[references(^._id)]{
     "id": _id,
     "type": _type,

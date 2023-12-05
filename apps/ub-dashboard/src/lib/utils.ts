@@ -88,3 +88,10 @@ export const truncateFromMiddle = (
     fullStr.substring(fullStr.length - backChars)
   );
 };
+
+export function getBaseUrl(): string {
+  if (typeof window !== 'undefined') return '';
+  const vc = process.env.VERCEL_URL;
+  if (vc) return `https://${vc}`;
+  return 'http://localhost:3002';
+}
