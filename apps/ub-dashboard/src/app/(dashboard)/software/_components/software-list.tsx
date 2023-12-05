@@ -22,7 +22,7 @@ export interface SoftwareListProps {
   uses: string[]
 }
 
-export const query = groq`*[_type in ['Software', 'VolatileSoftware']] | order(label asc)  {
+export const query = groq`*[_type in ['Software']] | order(label asc)  {
   ...,
   "id": _id,
   "type": _type,

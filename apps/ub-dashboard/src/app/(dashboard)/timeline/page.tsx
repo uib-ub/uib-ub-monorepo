@@ -10,7 +10,7 @@ export default async function TimelinePage() {
 
   return (
     <MainShell>
-      <h1>Tidslinje</h1>
+      <h1 className='mb-6'>Tidslinje</h1>
       <LiveQuery
         enabled={draftMode().isEnabled}
         query={query}
