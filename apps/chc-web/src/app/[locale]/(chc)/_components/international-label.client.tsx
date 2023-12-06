@@ -7,21 +7,21 @@ import { omit } from "lodash";
 // eslint-disable-next-line react/display-name
 const AccordionTrigger = React.forwardRef(
   (
-    { children, className, ...props }: Accordion.AccordionTriggerProps,
+    { key, children, className, ...props }: Accordion.AccordionTriggerProps,
     forwardedRef: any
   ) => (
-    <Accordion.Header className="AccordionHeader">
-      <Accordion.Trigger
-        className={`flex content-between items-center`}
-        {...props}
-        ref={forwardedRef}
-      >
-        <span className="font-bold">{children}</span>
 
-        <LanguagesIcon className="ml-3 h-4 w-4" aria-hidden />
-        <ChevronDownIcon className="h-3 w-3" aria-hidden />
-      </Accordion.Trigger>
-    </Accordion.Header>
+    <Accordion.Trigger
+      className={`flex content-between items-center`}
+      {...props}
+      ref={forwardedRef}
+    >
+      <span className="font-bold">{children}</span>
+
+      <LanguagesIcon className="ml-3 h-4 w-4" aria-hidden />
+      <ChevronDownIcon className="h-3 w-3" aria-hidden />
+    </Accordion.Trigger>
+
   )
 );
 
@@ -46,9 +46,11 @@ export const InternationalLabel = ({
     return (
       <Accordion.Root type="single" collapsible className="mb-3">
         <Accordion.Item value="item-1">
-          <AccordionTrigger>
-            <span className="text-4xl">{label[lang]}</span>
-          </AccordionTrigger>
+          <Accordion.Header className="AccordionHeader">
+            <AccordionTrigger>
+              <span className="text-4xl">{label[lang]}</span>
+            </AccordionTrigger>
+          </Accordion.Header>
           <Accordion.Content className="overflow-hidden">
             {rest ? (
               <>
