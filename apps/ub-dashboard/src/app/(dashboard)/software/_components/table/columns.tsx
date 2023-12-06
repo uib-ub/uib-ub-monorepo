@@ -67,7 +67,6 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
     accessorKey: "hostedBy",
     cell: ({ row }) => {
       const hostedBy = uniqueStringArray(row.original.hostedBy)
-      console.log("🚀 ~ file: columns.tsx:70 ~ hostedBy:", hostedBy)
       return (
         <div className='flex flex-wrap gap-2'>
           {hostedBy.map((t: any) => (
