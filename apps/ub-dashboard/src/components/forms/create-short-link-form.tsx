@@ -49,7 +49,7 @@ export function CreateShortLinkForm() {
         <Input type="url" id="originalURL" name="originalURL" autoComplete="off" required />
       </div>
       <div>
-        <Label htmlFor="todo">Title</Label>
+        <Label htmlFor="todo">Tittel</Label>
         <Input type="text" id="title" name="title" autoComplete="off" />
       </div>
       <div>
