@@ -4,7 +4,6 @@ export default {
   title: "Nyhet",
   fields: [
     { name: "date", title: "Dato", type: "date" },
-
     {
       name: "sectionNb",
       title: "Bokmål",
