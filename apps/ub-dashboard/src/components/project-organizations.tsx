@@ -1,6 +1,5 @@
 "use client"
 
-import { DataTable } from '@/components/data-table'
 import { Button } from '@/components/ui/button'
 import { CaretSortIcon, ClockIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
@@ -66,10 +65,22 @@ const columns = [
   },
 ];
 
-export const Participants = ({ data, config = { activeFilter: true } }: { data: ContributionAssignmentProps[], config?: any }) => {
+export const ProjectOrganizations = ({ data }: { data: ContributionAssignmentProps[] }) => {
   return (
     <>
-      {data ? (<DataTable columns={columns} data={data} config={config} />) : <Alert><AlertTitle>Ingen medlemmer registrert</AlertTitle></Alert>}
+      {data ? (
+        <div className='flex flex-col gap-4'>
+          {data.map((item: any, i: number) => (
+            <div key={i}>
+              <Link className='underline underline-offset-2' href={`/groups/${item.assignedActor.id}`}>{item.assignedActor.label}</Link>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <Alert>
+          <AlertTitle>Ingen medlemmer registrert</AlertTitle>
+        </Alert>
+      )}
     </>
   )
 }

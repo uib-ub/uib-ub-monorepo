@@ -1,5 +1,5 @@
 import { coalesceLabel } from "../helpers"
-import { timespanSingleton, totalHours } from "../props"
+import { timespanSingleton } from "../props"
 
 export const ContributionAssignment = {
   name: 'ContributionAssignment',
@@ -21,6 +21,7 @@ export const ContributionAssignment = {
           '@type': '@id'
         }
       },
+      validation: Rule => Rule.required(),
     },
     {
       name: 'assignedRole',

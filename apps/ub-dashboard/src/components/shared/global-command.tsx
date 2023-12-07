@@ -3,9 +3,9 @@
 import { CommandInput, CommandGroup, CommandDialog, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command'
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from 'react'
-import { Badge } from './ui/badge'
+import { Badge } from '../ui/badge'
 import { cn, path } from '@/lib/utils'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 
 export function GlobalCommand({ data }: Readonly<{ data: any[] }>) {
   const router = useRouter()

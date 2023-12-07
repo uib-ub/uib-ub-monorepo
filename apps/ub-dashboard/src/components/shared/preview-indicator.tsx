@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 
 import { MagicWandIcon } from '@radix-ui/react-icons';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 export function PreviewIndicator() {
   return (

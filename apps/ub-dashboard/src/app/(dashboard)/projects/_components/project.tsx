@@ -1,19 +1,19 @@
 import { EditIntentButton } from '@/components/edit-intent-button'
-import ImageBox from '@/components/image-box'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ChevronLeftIcon, ChevronRightIcon, ExternalLinkIcon } from '@radix-ui/react-icons'
+import { ExternalLinkIcon } from '@radix-ui/react-icons'
 import { SanityDocument, SanityImageAssetDocument, groq } from 'next-sanity'
 import { PortableTextBlock } from 'sanity'
 import { Participants } from '@/components/participants'
 import Link from 'next/link'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import millify from 'millify'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CustomPortableText } from '@/components/custom-protable-text'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { path } from '@/lib/utils'
+import { path, pick } from '@/lib/utils'
+import { ProjectOrganizations } from '@/components/project-organizations'
+import { DetailsHeader } from '@/components/shared/details-header'
 
 export const query = groq`*[_id == $id][0] {
   "id": _id,
@@ -75,19 +75,18 @@ export const query = groq`*[_id == $id][0] {
   },
   "funding": activityStream[] -> {
     _type == 'FundingActivity' => {
-    "id": _id,
-    "type": _type,
+      "id": _id,
+      "type": _type,
       label,
       "awarder": awarder -> label,
       "amount": fundingAmount.value,
       "currency": fundingAmount.hasCurrency -> label,
       "period": timespan.edtf,
-    }
+    },
   },
   carriedOutBy[] {
     assignedActor -> {
       "id": _id,
-      "type": _type,
       label,
     },
     assignedRole[] -> {
@@ -106,12 +105,10 @@ export const query = groq`*[_id == $id][0] {
   hadParticipant[] {
     assignedActor -> {
       "id": _id,
-      "type": _type,
       label,
     },
     assignedRole[] -> {
       "id": _id,
-      "type": _type,
       label,
     },
     "period": timespan.edtf,
@@ -198,6 +195,7 @@ export interface ProjectProps extends SanityDocument {
       label: string
     }[]
     timespan: string
+    active: string
   }[]
   hadParticipant: {
     assignedActor: {
@@ -210,6 +208,7 @@ export interface ProjectProps extends SanityDocument {
       label: string
     }[]
     timespan: string
+    active: string
   }[]
   hasTeam: {
     id: string
@@ -251,64 +250,17 @@ export interface ProjectProps extends SanityDocument {
 }
 
 const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
+  const detailsHeaderData = pick(data, 'label', 'shortDescription', 'hasType', 'period', 'logo', 'continued', 'continuedBy')
   return (
     <div>
-      <div className='flex items-center gap-3'>
-        {data?.continued ? (
-          <div>
-            <Popover>
-              <PopoverTrigger><ChevronLeftIcon className='w-10 h-10' /></PopoverTrigger>
-              <PopoverContent>
-                <p className='font-semibold italic'>
-                  Fortsatte
-                </p>
-                {data.continued.map((e: any) => (
-                  <Link key={e.id} href={`/projects/${e.id}`}>
-                    {e.label}
-                  </Link>
-                ))}
-              </PopoverContent>
-            </Popover>
-          </div>
-        ) : null}
-        <div className="flex flex-row gap-3 pb-2 w-full">
-          {data?.logo ? (
-            <div className='w-[100px] h-[100px]'>
-              <ImageBox image={data.logo} width={200} height={200} alt="" classesWrapper='relative aspect-[1/1]' />
-            </div>
-          ) : null}
-          <div className='flex flex-col'>
-            <h1 className='text-5xl mb-2'>{data?.label}</h1>
-            {data?.shortDescription ? (<p>{data.shortDescription}</p>) : null}
-          </div>
-
-        </div>
-        {data?.continuedBy ? (
-          <div className="ml-auto">
-            <Popover>
-              <PopoverTrigger className='aspect-square border'>
-                <ChevronRightIcon className='w-10 h-10' />
-              </PopoverTrigger>
-              <PopoverContent>
-                <p className='font-semibold italic'>
-                  Fortsatt av
-                </p>
-                {data.continuedBy.map((e: any) => (
-                  <Link key={e.id} href={`/projects/${e.id}`}>
-                    {e.label}
-                  </Link>
-                ))}
-              </PopoverContent>
-            </Popover>
-          </div>
-        ) : null}
-      </div>
+      <DetailsHeader data={detailsHeaderData} />
 
       <Tabs orientation='vertical' defaultValue="general">
         <TabsList className='flex justify-start items-start h-fit mt-2 p-0 bg-transparent border-b w-full'>
           <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
             Generelt
           </TabsTrigger>
+          <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
           <EditIntentButton variant={'link'} id={data.id} className='p-0 m-0 pb-1 px-3 ml-auto text-muted-foreground text-sm font-medium' />
         </TabsList>
 
@@ -317,28 +269,7 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
             <Card className='col-span-6'>
               <CardContent className='mt-4'>
                 <dl className='flex flex-wrap flex-col md:flex-row gap-4 md:gap-10'>
-
-                  {data?.hasType && data.hasType.length > 0 ? (
-                    <div>
-                      <dt className='text-muted-foreground'>Type</dt>
-                      <dd className='flex flex-wrap gap-2'>
-                        {data.hasType.map(tag => (
-                          <Badge key={tag.id} variant={'secondary'} className=''>{tag.label}</Badge>
-                        ))}
-                      </dd>
-                    </div>
-                  ) : null}
-
-                  {data?.period ? (
-                    <div>
-                      <dt className='text-muted-foreground'>Periode</dt>
-                      <dd className='flex flex-wrap gap-2'>
-                        {data.period}
-                      </dd>
-                    </div>
-                  ) : null}
-
-                  {data?.funding ? (
+                  {data?.funding?.filter(x => x.type === 'FundingActivity').length ? (
                     <div>
                       <dt className='text-muted-foreground'>Finansiering</dt>
                       <dd className='flex flex-wrap gap-2'>
@@ -450,15 +381,13 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
               </Card>
             ) : null}
 
-
-
             {data?.carriedOutBy ? (
               <Card className='col-span-6'>
                 <CardHeader>
                   <CardTitle>Prosjekteiere</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Participants data={data.carriedOutBy} config={{ activeFilter: false }} />
+                  <ProjectOrganizations data={data.carriedOutBy} />
                 </CardContent>
               </Card>
             ) : null}
@@ -469,7 +398,7 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
                   <CardTitle>Andre Institusjoner</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Participants data={data.hadParticipant} config={{ activeFilter: false }} />
+                  <ProjectOrganizations data={data.hadParticipant} />
                 </CardContent>
               </Card>
             ) : null}
@@ -479,7 +408,7 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
                 <CardHeader>
                   <CardTitle>Prosjektgrupper</CardTitle>
                 </CardHeader>
-                <CardContent className={`grid ${data.hasTeam.length > 1 ? 'grid-cols-2': 'grid-cols-1'} gap-5`}>
+                <CardContent className={`grid ${data.hasTeam.length > 1 ? 'grid-cols-2' : 'grid-cols-1'} gap-5`}>
                   {data.hasTeam.map((team: any) => (
                     <div key={team.id}>
                       <h3 className='text-lg font-semibold mb-1'>{team.label}</h3>
@@ -491,6 +420,10 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
             ) : null}
 
           </div>
+        </TabsContent>
+
+        <TabsContent value="data" className='text-sm pt-4'>
+          <pre className='p-4 border rounded-lg'>{JSON.stringify(data, null, 2)}</pre>
         </TabsContent>
       </Tabs >
     </div >

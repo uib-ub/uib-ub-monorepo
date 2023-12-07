@@ -1,4 +1,4 @@
-import { MainShell } from '@/components/main-shell'
+import { MainShell } from '@/components/shared/main-shell'
 import { LiveQuery } from 'next-sanity/preview/live-query'
 import { draftMode } from 'next/headers'
 import Group, { query, GroupProps } from '../_components/group'

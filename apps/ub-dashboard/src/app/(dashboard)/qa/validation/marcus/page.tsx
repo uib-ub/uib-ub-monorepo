@@ -1,7 +1,7 @@
 export const dynamic = 'force-static'
 
 import * as jsonld from 'jsonld';
-import { MainShell } from '@/components/main-shell';
+import { MainShell } from '@/components/shared/main-shell';
 import { ShaclResultCard } from './shacl-result-card';
 
 const fileUrl = 'https://ubbdev.gitlab.io/ubbont-repository/shacl/marcus.ttl';
