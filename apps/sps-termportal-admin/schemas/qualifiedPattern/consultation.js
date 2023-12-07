@@ -1,18 +1,16 @@
-import { dates } from "../fieldsets";
-import { endedAt, startedAt } from "../props";
+import { timespan } from "../props";
 
 export default {
   name: "consultation",
   type: "object",
-  fieldsets: [dates],
+
   fields: [
     {
       name: "group",
       type: "reference",
       to: [{ type: "group" }],
     },
-    startedAt,
-    endedAt,
+    timespan,
   ],
-  preview: { select: { title: "group.label" } },
+  preview: { select: { title: "group.label", subtitle: "timespan.edtf" } },
 };

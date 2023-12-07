@@ -1,10 +1,9 @@
-import { dates } from "../fieldsets";
-import { endedAt, startedAt } from "../props";
+import { timespan } from "../props";
 
 export default {
   name: "membership",
   type: "object",
-  fieldsets: [dates],
+
   fields: [
     {
       name: "person",
@@ -22,22 +21,20 @@ export default {
         ],
       },
     },
-    startedAt,
-    endedAt,
+    timespan,
   ],
   preview: {
     select: {
       title: "person.label",
       role: "role",
-      startedAt: "startedAt",
-      endedAt: "endedAt",
+      timespan: "timespan.edtf",
     },
     prepare(selection) {
       return {
         title: `${selection.title} ${
           selection.role ? "(" + selection.role + ")" : ""
         }`,
-        subtitle: formatTimespan(selection.startedAt, selection.endedAt),
+        subtitle: selection.timespan,
       };
     },
   },

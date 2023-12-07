@@ -1,7 +1,3 @@
-export const startedAt = { name: "startedAt", type: "date", fieldset: "dates" };
-
-export const endedAt = { name: "endedAt", type: "date", fieldset: "dates" };
-
 export const note = { name: "note", type: "text", rows: 2 };
 
 export const label = { name: "label", type: "string" };
@@ -18,4 +14,8 @@ export const tbstatus = {
       { title: "Planlagt", value: "planned" },
     ],
   },
+};
+export const timespan = {
+  name: "timespan",
+  type: "Timespan",
 };

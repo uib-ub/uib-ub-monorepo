@@ -1,30 +1,20 @@
-import { dates } from "../fieldsets";
-import { endedAt, startedAt } from "../props";
+import { timespan } from "../props";
 
 export default {
   name: "attribution",
   type: "object",
-  fieldsets: [dates],
   fields: [
     {
       name: "group",
       type: "reference",
       to: [{ type: "group" }],
     },
-    startedAt,
-    endedAt,
+    timespan,
   ],
   preview: {
     select: {
       title: "group.label",
-      startedAt: "startedAt",
-      endedAt: "endedAt",
-    },
-    prepare(selection) {
-      return {
-        title: selection.title,
-        subtitle: formatTimespan(selection.startedAt, selection.endedAt),
-      };
+      subtitle: "timespan.edtf",
     },
   },
 };

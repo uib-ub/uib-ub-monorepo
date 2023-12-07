@@ -1,5 +1,4 @@
-import { dates } from "./fieldsets";
-import { endedAt, label, note, startedAt } from "./props";
+import { label, note, timespan } from "./props";
 import communication from "./qualifiedPattern/communication";
 import usage from "./qualifiedPattern/usage";
 
@@ -7,12 +6,10 @@ export default {
   name: "activity",
   type: "document",
   liveEdit: "true",
-  fieldsets: [dates],
   fields: [
     label,
-    startedAt,
-    endedAt,
     note,
+    timespan,
     {
       name: "qualifiedUsage",
       type: "array",
@@ -23,14 +20,7 @@ export default {
   preview: {
     select: {
       title: "label",
-      startedAt: "startedAt",
-      endedAt: "endedAt",
-    },
-    prepare(selection) {
-      return {
-        title: selection.title,
-        subtitle: formatTimespan(selection.startedAt, selection.endedAt),
-      };
+      subtitle: "timespan.edtf",
     },
   },
 };
