@@ -1,4 +1,4 @@
-import { checkMembership, cn, truncateFromMiddle, truncate, uniqueStringArray, copyTextToClipboard } from './utils'
+import { checkMembership, cn, truncateFromMiddle, truncate, uniqueStringArray, pick } from './utils'
 
 describe('checkMembership', () => {
   it('should return false if all members are active', () => {
@@ -125,5 +125,32 @@ describe('truncateFromMiddle', () => {
   it('should return an empty string if the limit is negative', () => {
     const str = 'hello world';
     expect(truncateFromMiddle(str, -5)).toBe('');
+  });
+});
+
+describe('pick', () => {
+  it('should return an object with the specified properties', () => {
+    const obj = { name: 'John', age: 30, city: 'New York' };
+    const result = pick(obj, 'name', 'age');
+    expect(result).toEqual({ name: 'John', age: 30 });
+  });
+
+  it('should return an empty object if no properties are specified', () => {
+    const obj = { name: 'John', age: 30, city: 'New York' };
+    const result = pick(obj);
+    expect(result).toEqual({});
+  });
+
+  it('should return an empty object if the specified properties do not exist in the object', () => {
+    const obj = { name: 'John', age: 30, city: 'New York' };
+    /* @ts-ignore */
+    const result = pick(obj, 'email', 'phone');
+    expect(result).toEqual({});
+  });
+
+  it('should return an object with the specified properties even if some properties are undefined', () => {
+    const obj = { name: 'John', age: 30, city: 'New York', email: undefined };
+    const result = pick(obj, 'name', 'age', 'email');
+    expect(result).toEqual({ name: 'John', age: 30, email: undefined });
   });
 });

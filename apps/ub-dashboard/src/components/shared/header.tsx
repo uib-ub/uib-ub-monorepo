@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { MainNav } from '@/components/main-nav'
+import { MainNav } from '@/components/shared/main-nav'
 import LoginButton from '@/components/auth/login-button'
-import { UserNav } from '@/components/user-nav'
+import { UserNav } from '@/components/shared/user-nav'
 import { getServerSession } from "next-auth";
 import { GlobalCommand } from './global-command';
 import { sanityFetch } from '@/sanity/lib/fetch';

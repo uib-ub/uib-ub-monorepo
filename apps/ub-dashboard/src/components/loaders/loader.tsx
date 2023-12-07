@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { MainShell } from './main-shell'
+import { MainShell } from '../shared/main-shell'
 
 export default function Loader() {
   return (

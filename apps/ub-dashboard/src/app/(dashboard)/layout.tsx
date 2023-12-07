@@ -2,14 +2,14 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import '@/app/globals.css'
 import type { Metadata } from 'next'
 import SessionProvider from '@/components/providers/session-provider'
-import { TailwindIndicator } from '@/components/tailwind-indicator'
+import { TailwindIndicator } from '@/components/shared/tailwind-indicator'
 import dynamic from 'next/dynamic'
 import { draftMode } from 'next/headers'
 import { token } from '@/sanity/lib/fetch'
-import { Header } from '@/components/header'
-import { PreviewIndicator } from '@/components/preview-indicator'
+import { Header } from '@/components/shared/header'
+import { PreviewIndicator } from '@/components/shared/preview-indicator'
 import { Suspense } from 'react'
-import { Footer } from '@/components/footer'
+import { Footer } from '@/components/shared/footer'
 
 export const metadata: Metadata = {
   title: 'UB-dashboard',

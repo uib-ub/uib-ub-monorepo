@@ -2,7 +2,7 @@ export const revalidate = 30;
 
 import { Suspense } from 'react';
 import Links from './links';
-import { MainShell } from '@/components/main-shell';
+import { MainShell } from '@/components/shared/main-shell';
 import { Button } from '@/components/ui/button';
 import { createShortLink } from '@/actions/link-action';
 import { CreateShortLinkForm } from '@/components/forms/create-short-link-form';

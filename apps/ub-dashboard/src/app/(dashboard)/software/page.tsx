@@ -3,7 +3,7 @@ import { LiveQuery } from 'next-sanity/preview/live-query'
 import Software, { query } from './_components/software-list'
 import PreviewSoftware from './_components/preview-software-list'
 import { sanityFetch } from '@/sanity/lib/fetch'
-import { MainShell } from '@/components/main-shell'
+import { MainShell } from '@/components/shared/main-shell'
 
 export default async function SoftwarePage() {
   const data = await sanityFetch<any[]>({ query, revalidate: 7200 })

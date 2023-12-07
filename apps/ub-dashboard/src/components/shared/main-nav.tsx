@@ -3,7 +3,7 @@
 import { useSelectedLayoutSegment } from 'next/navigation'
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from './ui/navigation-menu'
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '../ui/navigation-menu'
 
 export type MainNavProps = {
   href: string
@@ -50,15 +50,15 @@ export function MainNav({
           </NavigationMenuTrigger>
           <NavigationMenuContent className="right:0 absolute left-auto top-full w-auto border bg-zinc-100 dark:bg-zinc-900">
             <ul className="grid w-[300px] gap-3 p-4 md:w-[350px] md:grid-cols-2 lg:w-[400px] ">
-            {toolsItems.map((item) => (
-              <NavigationMenuItem key={item.label}>
-                <Link href={`/${item.href}`} legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), segmentRoot === item.href ? 'active' : '')}>
-                    {item.label}
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            ))}
+              {toolsItems.map((item) => (
+                <NavigationMenuItem key={item.label}>
+                  <Link href={`/${item.href}`} legacyBehavior passHref>
+                    <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), segmentRoot === item.href ? 'active' : '')}>
+                      {item.label}
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

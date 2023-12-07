@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { GiFinishLine } from 'react-icons/gi'
 import { CheckHttpStatus } from '@/components/check-http-status'
 import { Suspense } from 'react'
-import { LoadingSpinner } from '@/components/loading-spinner'
+import { LoadingSpinner } from '@/components/loaders/loading-spinner'
 
 export const columns: ColumnDef<LinksProps>[] = [
   {
