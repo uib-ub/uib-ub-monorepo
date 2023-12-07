@@ -1,9 +1,10 @@
 import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
+import { timespanInput } from "@seidhr/sanity-plugin-timespan-input";
 import { schemaTypes } from "./schemas";
 
 export const sanityConfig = defineConfig({
-  plugins: [deskTool()],
+  plugins: [deskTool(), timespanInput()],
   name: "default",
   title: "Studio",
   projectId: "k38biek5",

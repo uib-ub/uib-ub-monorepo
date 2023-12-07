@@ -32,4 +32,7 @@ export default defineNuxtConfig({
     // ... options
   },
   sanity: { projectId: "k38biek5", dataset: "production" },
+  routeRules: {
+    "/studio/**": { ssr: false },
+  },
 });
