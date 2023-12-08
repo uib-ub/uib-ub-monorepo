@@ -74,7 +74,7 @@ async function getData(url, id) {
 const getItems = (items) => {
   const data = items.map(item => {
     return {
-      "id": `${getBaseUrl()}/items/${item.identifier}/manifest`,
+      "id": `${getBaseUrl()}/items/${item['dct:identifier'] ?? item.identifier}/manifest`,
       "type": "Manifest",
       "label": labelSplitter(item.label),
       "thumbnail": [
