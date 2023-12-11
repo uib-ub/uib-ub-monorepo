@@ -122,12 +122,12 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
               <dt className='text-muted-foreground'>Programmeringsspråk</dt>
               <dd className='flex flex-wrap gap-3'>
                 {data.programmedWith.map((s: any, i: number) => (
-                  <>
+                  <span key={s.id}>
                     {s.label}
                     {/* <Link key={s.id} href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
                     {s.label}
                   </Link> */}
-                  </>
+                  </span>
                 ))}
               </dd>
             </div>

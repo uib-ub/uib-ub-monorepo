@@ -3,7 +3,7 @@ import { LiveQuery } from 'next-sanity/preview/live-query'
 import Persons, { PersonListProps, query } from './_components/persons'
 import PreviewPersons from './_components/preview-persons'
 import { sanityFetch } from '@/sanity/lib/fetch'
-import { MainShell } from '@/components/main-shell'
+import { MainShell } from '@/components/shared/main-shell'
 import { Suspense } from 'react'
 
 export default async function PersonsPage() {

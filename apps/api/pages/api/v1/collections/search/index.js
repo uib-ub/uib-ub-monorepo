@@ -23,7 +23,7 @@ async function getData(url, id, page = 0) {
     ${SPARQL_PREFIXES}
     CONSTRUCT 
       { 
-        ?uri iiif_prezi:summary ?count .
+        ?uri sc:summary ?count .
         ?item a ?itemType ;
           rdfs:label ?itemLabel ;
           dct:identifier ?itemId ;
@@ -77,13 +77,13 @@ const getItems = (items) => {
   const data = items.map(item => {
     return {
       "id": item['@type'] == 'bibo:Collection' ?
-        `${getBaseUrl()}/collections/search?id=${item.identifier}` :
-        `${getBaseUrl()}/items/${item.identifier}/manifest`,
+        `${getBaseUrl()}/collections/search?id=${item['dct:identifier'] ?? item.identifier}` :
+        `${getBaseUrl()}/items/${item['dct:identifier'] ?? item.identifier}/manifest`,
       "type": item['@type'] == 'bibo:Collection' ? "Collection" : "Manifest",
-      "label": labelSplitter(item.label),
+      "label": item['rdfs:label'] ? labelSplitter(item['rdfs:label']) : "Missing title",
       "thumbnail": [
         {
-          id: item.thumbnail.value ?? item.thumbnail,
+          id: item['iiif_prezi:thumbnail']['@value'] ?? item['iiif_prezi:thumbnail'],
           type: "Image",
           format: "image/jpeg",
           width: 250,
@@ -94,7 +94,7 @@ const getItems = (items) => {
         {
           "id": item['@id'].replace("http://data.ub", "https://marcus"),
           "type": "Text",
-          "label": labelSplitter(item.label)
+          "label": labelSplitter(item['rdfs:label'] ?? item.label) ?? "Missing title"
         }
       ]
     }
@@ -151,15 +151,16 @@ export default async function handler(req, res) {
       // Deal with response
       if (response.status >= 200 && response.status <= 299) {
         const result = await response.json()
+        console.log("🚀 ~ file: index.js:154 ~ handler ~ result:", result)
         //res.status(200).json(result)
 
-        if (!result['@graph']?.some(o => o['sc:summary'])) {
+        if (!result['@graph']?.some(o => o['iiif_prezi:summary'])) {
           res.status(200).json({ message: 'No sub-collections' })
           return
         }
 
-        const count = result['@graph'].filter(o => o['sc:summary'])[0]['sc:summary']
-        const filteredItems = result['@graph'].filter(o => !o['sc:summary'])
+        const count = result['@graph'].filter(o => o['iiif_prezi:summary'])[0]['iiif_prezi:summary']['@value']
+        const filteredItems = result['@graph'].filter(o => !o['iiif_prezi:summary'])
         const sortedItems = sortBy(filteredItems, ["identifier"])
         const items = (page || count <= 10) ?
           getItems(sortedItems) :

@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity';
-import { labelSingleton, shortDescription } from "./props";
+import { status, labelSingleton, shortDescription } from "./props";
 import { isUniqueValue } from '../lib/utils';
 
 export const AccessPoint = defineType({
@@ -8,6 +8,20 @@ export const AccessPoint = defineType({
   type: 'document',
   liveEdit: true,
   fields: [
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Aktiv', value: 'active' },
+          { title: 'Arkivert', value: 'archive' },
+          { title: 'Slettet', value: 'deleted' },
+        ],
+        layout: 'radio',
+        direction: 'horizontal',
+      },
+    }),
     defineField({
       name: 'value',
       title: 'Adresse',

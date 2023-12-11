@@ -6,6 +6,7 @@ import { CaretSortIcon, ClockIcon, QuestionMarkCircledIcon } from '@radix-ui/rea
 import Link from 'next/link';
 import { GiFinishLine } from 'react-icons/gi';
 import { Alert, AlertTitle } from './ui/alert';
+import { ContributionAssignmentProps } from '@/types';
 
 const columns = [
   {
@@ -65,8 +66,7 @@ const columns = [
   },
 ];
 
-
-export const Participants = ({ data, config = { activeFilter: true } }: { data: any, config?: any }) => {
+export const Participants = ({ data, config = { activeFilter: true } }: { data: ContributionAssignmentProps[], config?: any }) => {
   return (
     <>
       {data ? (<DataTable columns={columns} data={data} config={config} />) : <Alert><AlertTitle>Ingen medlemmer registrert</AlertTitle></Alert>}

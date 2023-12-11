@@ -1,12 +1,12 @@
-/* the props */
-@import "open-props/style";
-
-/* optional imports that use the props */
-@import "open-props/normalize";
-@import "open-props/buttons";
-
 body{
-  padding: var(--size-3);
+  padding: 2em;
   display: flex;
   justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p {
+  font-size: 1rem;
+  font-weight: 500;
 }

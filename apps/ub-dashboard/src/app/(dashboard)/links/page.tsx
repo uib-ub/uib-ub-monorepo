@@ -2,7 +2,7 @@ import { draftMode } from 'next/headers'
 import { LiveQuery } from 'next-sanity/preview/live-query'
 import Links, { query } from './_components/links'
 import { sanityFetch } from '@/sanity/lib/fetch'
-import { MainShell } from '@/components/main-shell'
+import { MainShell } from '@/components/shared/main-shell'
 import PreviewLinks from './_components/preview-links'
 
 export default async function LinksPage() {

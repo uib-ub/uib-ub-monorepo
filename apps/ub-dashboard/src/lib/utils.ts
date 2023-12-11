@@ -88,3 +88,23 @@ export const truncateFromMiddle = (
     fullStr.substring(fullStr.length - backChars)
   );
 };
+
+export function getBaseUrl(): string {
+  if (typeof window !== 'undefined') return '';
+  const vc = process.env.VERCEL_URL;
+  if (vc) return `https://${vc}`;
+  return 'http://localhost:3002';
+}
+
+/**
+ * 
+ * @param obj object
+ * @param props array of strings
+ * @returns object
+ */
+export function pick<T extends object, K extends keyof T>(obj: T, ...props: K[]): Pick<T, K> {
+  return props.reduce(function (result, prop) {
+    result[prop] = obj[prop];
+    return result;
+  }, {} as Pick<T, K>);
+}
