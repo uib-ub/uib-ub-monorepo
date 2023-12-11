@@ -9,9 +9,10 @@ import { Participants } from '@/components/participants'
 import { CustomPortableText } from '@/components/custom-protable-text'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ComputingCard, SoftwareCard } from './software-card'
-import { path } from '@/lib/utils'
+import { path, pick } from '@/lib/utils'
 import Link from 'next/link'
 import { ExternalLinkIcon } from '@radix-ui/react-icons'
+import { DetailsHeader } from '@/components/shared/details-header'
 
 export const query = groq`*[_id == $id][0] {
   "id": _id,
@@ -299,29 +300,10 @@ export type SoftwareProps = SanityDocument & {
 }
 
 const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
+  const detailsHeaderData = pick(data, 'label', 'shortDescription', 'hasType', 'period', 'logo', 'continued', 'continuedBy')
   return (
     <div>
-      <div className="flex flex-row gap-3 pb-2">
-
-        {data?.logo ? (
-          <div className='w-[100px] h-[100px]'>
-            <ImageBox image={data.logo} width={200} height={200} alt="" classesWrapper='relative aspect-[1/1]' />
-          </div>
-        ) : null}
-        <div className='flex flex-col gap-2'>
-          <h1 className='text-5xl'>{data?.label}</h1>
-          {data.madeByUB ? (
-            <div>
-              <Badge className='text-sm'>Laget av UB</Badge>
-            </div>
-          ) : (
-            <div>
-              <Badge variant={'secondary'} className='text-sm'>Ekstern programvare</Badge>
-            </div>
-          )}
-          {data?.shortDescription ? (<p>{data.shortDescription}</p>) : null}
-        </div>
-      </div>
+      <DetailsHeader data={detailsHeaderData} />
 
       <Tabs orientation='horizontal' defaultValue="general">
         <TabsList className='flex justify-start items-start h-fit mt-2 p-0 bg-transparent border-b w-full'>
@@ -335,17 +317,6 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
             <Card className='col-span-3 pt-4'>
               <CardContent>
                 <dl className='flex flex-wrap flex-col md:flex-row gap-4 md:gap-10'>
-                  {data?.hasType && data.hasType.length > 0 ? (
-                    <div>
-                      <dt className='text-muted-foreground'>Type</dt>
-                      <dd className='flex flex-wrap gap-2'>
-                        {data.hasType.map(tag => (
-                          <Badge key={tag.id} variant={'secondary'} className=''>{tag.label}</Badge>
-                        ))}
-                      </dd>
-                    </div>
-                  ) : null}
-
                   {data?.websiteUrl ? (
                     <div>
                       <dt className='text-muted-foreground'>Nettside</dt>
@@ -510,8 +481,8 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
           </div>
         </TabsContent>
 
-        <TabsContent value="data" className='pt-4'>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
+        <TabsContent value="data" className='text-sm pt-4'>
+          <pre className='p-4 border rounded-lg'>{JSON.stringify(data, null, 2)}</pre>
         </TabsContent>
       </Tabs>
     </div >

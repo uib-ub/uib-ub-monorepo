@@ -29,14 +29,14 @@ export const query = groq`{
         label,
       },
     },
-    ...*[_type in ['VolatileSoftware']] | order(label asc)  {
+    ...*[_type in ['VolatileSoftware'] && (defined(designatedAccessPoint) || defined(uses) || defined(hostedBy) || defined(runBy))] | order(label asc)  {
       "id": _id,
       "data": {
         "type": _type,
         label,
       },
     },
-    ...*[_type in ['SoftwareComputingEService']] | order(label asc)  {
+    ...*[_type in ['SoftwareComputingEService'] && (defined(designatedAccessPoint) || defined(accessPoint))] | order(label asc)  {
       "id": _id,
       "data": {
         "type": _type,

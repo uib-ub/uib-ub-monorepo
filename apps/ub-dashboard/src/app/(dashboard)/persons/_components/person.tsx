@@ -190,7 +190,6 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
           <EditIntentButton variant={'link'} id={data.id} className='p-0 m-0 pb-1 px-3 ml-auto text-muted-foreground text-sm font-medium' />
         </TabsList>
 
-
         <TabsContent value="general" className='pt-4'>
           <div className='grid grid-cols-6 gap-4'>
 

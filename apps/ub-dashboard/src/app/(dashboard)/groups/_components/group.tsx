@@ -3,7 +3,7 @@ import ImageBox from '@/components/image-box'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ExternalLinkIcon, QuoteIcon } from '@radix-ui/react-icons'
+import { ExternalLinkIcon } from '@radix-ui/react-icons'
 import { SanityDocument, SanityImageAssetDocument, groq } from 'next-sanity'
 import { PortableTextBlock } from 'sanity'
 import { Participants } from '../../../../components/participants'
@@ -12,8 +12,9 @@ import { BiSubdirectoryRight } from 'react-icons/bi'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CustomPortableText } from '@/components/custom-protable-text'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { path } from '@/lib/utils'
+import { path, pick } from '@/lib/utils'
 import { Alert, AlertTitle } from '@/components/ui/alert'
+import { DetailsHeader } from '@/components/shared/details-header'
 
 export const query = groq`*[_id == $id][0] {
   "id": _id,
@@ -133,7 +134,7 @@ export interface GroupProps extends SanityDocument {
       id: string
       label: string
     }[]
-    timespan: string
+    period: string
     active: string
   }[]
   hasFile: {
@@ -150,20 +151,10 @@ export interface GroupProps extends SanityDocument {
 }
 
 const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
+  const detailsHeaderData = pick(data, 'label', 'shortDescription', 'hasType', 'period', 'logo', 'continued', 'continuedBy')
   return (
     <div>
-      <div className="flex flex-row gap-3 pb-2 w-full">
-        {data?.image ? (
-          <div className='w-[100px] h-[100px]'>
-            <ImageBox image={data.image} width={200} height={200} alt="" classesWrapper='relative aspect-[1/1]' />
-          </div>
-        ) : null}
-        <div className='flex flex-col'>
-          <h1 className='text-5xl mb-2'>{data?.label}</h1>
-          {data?.shortDescription ? (<p>{data.shortDescription}</p>) : null}
-          {data?.quote ? (<p className='italic'><QuoteIcon className='inline-block' /> {data.quote}</p>) : null}
-        </div>
-      </div>
+      <DetailsHeader data={detailsHeaderData} />
 
       <Tabs orientation='vertical' defaultValue="general">
         <div>
@@ -171,6 +162,7 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
             <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
               Generelt
             </TabsTrigger>
+            <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
             <EditIntentButton variant={'link'} id={data.id} className='p-0 m-0 pb-1 px-3 ml-auto text-muted-foreground text-sm font-medium' />
           </TabsList>
         </div>
@@ -178,39 +170,26 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
         <TabsContent value="general" className='pt-4'>
           <div className='grid grid-cols-3 gap-4'>
 
-            <Card className='col-span-2 row-span-5'>
-              <CardHeader>
-                <CardTitle>Medlemmer</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Participants data={data.hasMember} />
-              </CardContent>
-            </Card>
+            {data.hasMember ? (
+              <Card className='col-span-2 row-span-5'>
+                <CardHeader>
+                  <CardTitle>Medlemmer</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Participants data={data.hasMember} />
+                </CardContent>
+              </Card>) : (
+              <Alert>
+                <AlertTitle>
+                  Ingen medlemmer registrert
+                </AlertTitle>
+              </Alert>
+            )}
 
-            {data?.hasType ? (
+            {data?.connectedToProject ? (
               <Card>
                 <CardContent className='mt-4'>
                   <dl className='flex flex-wrap flex-col md:flex-row gap-4 md:gap-10'>
-                    {data?.hasType && data.hasType.length > 0 ? (
-                      <div>
-                        <dt className='text-muted-foreground'>Type</dt>
-                        <dd className='flex flex-wrap gap-2'>
-                          {data.hasType.map(tag => (
-                            <Badge key={tag.id} variant={'secondary'} className=''>{tag.label}</Badge>
-                          ))}
-                        </dd>
-                      </div>
-                    ) : null}
-
-                    {data?.period ? (
-                      <div>
-                        <dt className='text-muted-foreground'>Periode</dt>
-                        <dd className='flex flex-wrap gap-2'>
-                          {data.period}
-                        </dd>
-                      </div>
-                    ) : null}
-
                     {data?.connectedToProject ? (
                       <div>
                         <dt className='text-muted-foreground'>Knyttet til:</dt>
@@ -348,8 +327,11 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
                 </CardContent>
               </Card>
             )}
-
           </div>
+        </TabsContent>
+
+        <TabsContent value="data" className='text-sm pt-4'>
+          <pre className='p-4 border rounded-lg'>{JSON.stringify(data, null, 2)}</pre>
         </TabsContent>
       </Tabs>
     </div>

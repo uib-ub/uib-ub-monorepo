@@ -4,8 +4,8 @@
       <AppLink to="#news">{{ $t("news.heading") }}</AppLink>
     </h2>
     <div class="flex flex-col space-y-3">
-      <div class="border border-gray-300" />
-      <dl>
+      <div v-if="false" class="border border-gray-300" />
+      <dl v-if="false">
         <NewsItem
           title="Seminar 6. desember: norskkompetanse i akademia"
           date="24.11.2023"

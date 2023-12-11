@@ -2,7 +2,7 @@ import { draftMode } from 'next/headers'
 import { LiveQuery } from 'next-sanity/preview/live-query'
 import GroupsOverview, { query } from '../_components/groups-overview'
 import { sanityFetch } from '@/sanity/lib/fetch'
-import { MainShell } from '@/components/main-shell'
+import { MainShell } from '@/components/shared/main-shell'
 import PreviewGroups from '../_components/preview-groups-overview'
 import Link from 'next/link'
 
