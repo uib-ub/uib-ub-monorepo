@@ -9,6 +9,7 @@ import RadioButton from "primevue/radiobutton";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import TreeTable from "primevue/treetable";
+import InputText from "primevue/inputtext";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(PrimeVue, { ripple: true });
@@ -22,4 +23,5 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component("DataTable", DataTable);
   nuxtApp.vueApp.component("Column", Column);
   nuxtApp.vueApp.component("TreeTable", TreeTable);
+  nuxtApp.vueApp.component("InputText", InputText);
 });
