@@ -24,4 +24,4 @@ export const responsibleStaff = {
   name: "responsibleStaff",
   type: "reference",
   to: [{ type: "person" }],
-},
+};
