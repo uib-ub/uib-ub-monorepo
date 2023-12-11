@@ -38,7 +38,7 @@
         "NEXT_PUBLIC_SANITY_PROJECT_TITLE"
       ]
     },
-    "build#api": {
+    "build#next-api": {
       "outputs": [
         "dist/**",
         ".next/**"
