@@ -14,6 +14,7 @@ export const tbstatus = {
       { title: "Planlagt", value: "planned" },
     ],
   },
+  fieldset: "basics",
 };
 export const timespan = {
   name: "timespan",

@@ -5,15 +5,49 @@ export default {
   name: "termbase",
   type: "document",
   liveEdit: "true",
+  fieldsets: [
+    {
+      name: "status",
+      options: {
+        collapsible: true,
+        collapsed: false,
+        columns: 2,
+      },
+    },
+    {
+      name: "basics",
+      options: {
+        columns: 2,
+      },
+    },
+  ],
   fields: [
     label,
     {
       name: "id",
       type: "string",
+      fieldset: "basics",
     },
     tbstatus,
+    {
+      name: "labelsOk",
+      type: "boolean",
+      initialValue: false,
+      fieldset: "status",
+    },
+    {
+      name: "descriptionsOk",
+      type: "boolean",
+      initialValue: false,
+      fieldset: "status",
+    },
+    {
+      name: "hasLicenseAgreement",
+      type: "boolean",
+      initialValue: false,
+      fieldset: "status",
+    },
     note,
-    { name: "licenseNote", type: "text", rows: 2 },
     responsibleStaff,
     {
       name: "contactPerson",
