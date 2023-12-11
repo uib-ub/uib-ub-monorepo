@@ -60,7 +60,7 @@ export default {
         },
       ],
     },
-    { name: "qualifiedAtribution", type: "array", of: [attribution] },
+    { name: "qualifiedAttribution", type: "array", of: [attribution] },
   ],
   preview: {
     select: {
