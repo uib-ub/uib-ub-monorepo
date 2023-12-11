@@ -1,4 +1,4 @@
-import { label, note, tbstatus } from "./props";
+import { label, note, responsibleStaff, tbstatus } from "./props";
 import attribution from "./qualifiedPattern/attribution";
 
 export default {
@@ -14,11 +14,7 @@ export default {
     tbstatus,
     note,
     { name: "licenseNote", type: "text", rows: 2 },
-    {
-      name: "responsibleStaff",
-      type: "reference",
-      to: [{ type: "person" }],
-    },
+    responsibleStaff,
     {
       name: "contactPerson",
       type: "array",

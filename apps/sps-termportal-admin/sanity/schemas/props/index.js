@@ -19,3 +19,9 @@ export const timespan = {
   name: "timespan",
   type: "Timespan",
 };
+
+export const responsibleStaff = {
+  name: "responsibleStaff",
+  type: "reference",
+  to: [{ type: "person" }],
+},

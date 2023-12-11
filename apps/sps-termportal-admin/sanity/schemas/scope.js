@@ -1,4 +1,4 @@
-import { label, note } from "./props";
+import { label, note, responsibleStaff } from "./props";
 export default {
   name: "scope",
   type: "document",
@@ -12,5 +12,6 @@ export default {
       to: { type: "scope" },
       options: { filter: "isPartOf == undefined" },
     },
+    { name: "responsiblePeople", type: "array", of: [responsibleStaff] },
   ],
 };
