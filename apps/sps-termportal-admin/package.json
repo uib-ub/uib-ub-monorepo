@@ -19,7 +19,7 @@
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/sanity": "^1.8.1",
     "@nuxtjs/tailwindcss": "^6.8.1",
-    "@sanity/client": "^6.7.1",
+    "@sanity/client": "^6.9.3",
     "@seidhr/sanity-plugin-timespan-input": "^3.0.3",
     "@sidebase/nuxt-auth": "^0.6.0-rc.1",
     "@types/jsonld": "^1.5.8",
