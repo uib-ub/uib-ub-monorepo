@@ -9,9 +9,9 @@ export const tbstatus = {
   type: "string",
   options: {
     list: [
-      { title: "Publisert", value: "publisert" },
-      { title: "Opprettet", value: "opprettet" },
       { title: "Planlagt", value: "planlagt" },
+      { title: "Opprettet", value: "opprettet" },
+      { title: "Publisert", value: "publisert" },
     ],
   },
   fieldset: "basics",
