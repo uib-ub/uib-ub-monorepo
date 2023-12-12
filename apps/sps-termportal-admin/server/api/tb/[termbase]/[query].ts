@@ -1,4 +1,5 @@
 import genExploreDefinitionsQuery from "~/server/utils/genExploreDefinitionsQuery";
+import genOverviewQuery from "~/server/utils/genOverviewQuery";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
@@ -11,6 +12,9 @@ export default defineEventHandler(async (event) => {
   switch (queryType) {
     case "exploreDefinitions":
       query = genExploreDefinitionsQuery(termbase);
+      break;
+    case "overview":
+      query = genOverviewQuery();
       break;
     default:
       break;
