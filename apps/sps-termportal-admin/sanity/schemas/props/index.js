@@ -1,4 +1,4 @@
-export const note = { name: "note", type: "text", rows: 2 };
+export const note = { name: "note", type: "text", rows: 4 };
 
 export const label = { name: "label", type: "string" };
 
