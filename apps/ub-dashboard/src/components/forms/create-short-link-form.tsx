@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Form } from '../ui/form'
+import { ArrowDownIcon } from '@radix-ui/react-icons'
 
 const initialState = {
   message: null,
@@ -23,9 +24,10 @@ function SubmitButton() {
     <Button
       type="submit"
       aria-disabled={pending}
-      className={`w-full ${pending ? 'cursor-not-allowed opacity-50' : ''
+      className={`sm:w-[122px] ${pending ? 'cursor-not-allowed opacity-50' : ''
         }`}
     >
+      <ArrowDownIcon className="w-5 h-5 mr-2" />
       Legg til
     </Button>
   )

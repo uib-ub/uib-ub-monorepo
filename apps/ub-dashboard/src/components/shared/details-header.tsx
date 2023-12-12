@@ -37,12 +37,12 @@ export const DetailsHeader = ({ data }: { data: DetailsHeaderProps }) => {
             {data?.shortDescription ? (<p>{data.shortDescription}</p>) : null}
           </div>
 
-          <div>
+          <div className='flex justify-between'>
             {data?.continued ? (
               <div>
                 <Popover>
                   <PopoverTrigger className='flex items-center'><ChevronLeftIcon className='w-10 h-10' /> Fortsatte</PopoverTrigger>
-                  <PopoverContent>
+                  <PopoverContent className='flex flex-col gap-2'>
                     {data.continued.map((e: any) => (
                       <Link key={e.id} href={`/projects/${e.id}`}>
                         {e.label}
@@ -56,8 +56,11 @@ export const DetailsHeader = ({ data }: { data: DetailsHeaderProps }) => {
             {data?.continuedBy ? (
               <div className="ml-auto">
                 <Popover>
-                  <PopoverTrigger className='flex aspect-square border'> <ChevronRightIcon className='w-10 h-10' /> Fortsatt av </PopoverTrigger>
-                  <PopoverContent>
+                  <PopoverTrigger className='flex items-center'>
+                    Fortsatt av
+                    <ChevronRightIcon className='w-10 h-10' />
+                  </PopoverTrigger>
+                  <PopoverContent className='flex flex-col gap-2'>
                     {data.continuedBy.map((e: any) => (
                       <Link key={e.id} href={`/projects/${e.id}`}>
                         {e.label}
