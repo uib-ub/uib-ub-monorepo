@@ -78,7 +78,7 @@ export const query = groq`*[_id == $id][0] {
       "active": "Avsluttet" 
     },
   },
-  "groups": *[_type in ['Group'] && !references('dd4c1492-5e15-4d18-a7f2-0b8b8f95964d')] | order(label asc)  {
+  "groups": *[_type in ['Group'] && references(^._id) && !references('dd4c1492-5e15-4d18-a7f2-0b8b8f95964d')] | order(label asc)  {
     "id": _id,
     "type": _type,
     label,

@@ -8,10 +8,10 @@ import { MemberOf } from './member-of'
 import { EditIntentButton } from '@/components/edit-intent-button'
 import { ResponsibleFor } from './responsibleFor'
 import { CustomPortableText } from '@/components/custom-protable-text'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import Timeline from '@/components/timeline'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PortableTextBlockComponent, PortableTextComponents } from '@portabletext/react'
+import { Alert, AlertTitle } from '@/components/ui/alert'
+import { SkillListProps, TimelineProps } from '@/types'
 
 export const query = groq`*[_id == $id][0] {
   "id": _id,
@@ -34,6 +34,8 @@ export const query = groq`*[_id == $id][0] {
   },
   referredToBy[],
   "hasSkill": hasSkill[] | order(level desc) {
+    "id": competence->._id,
+    "type": competence->._type,
     "label": competence->.label,
     level,
     shortDescription,
@@ -78,6 +80,7 @@ export const query = groq`*[_id == $id][0] {
   "timeline": [
     ...*[_type in ['Event', 'Activity', 'Move', 'Joining', 'Leaving', 'TransferOfMember', 'BeginningOfExistence', 'EndOfExistence', 'Formation', 'Dissolution'] && references($id) && defined(timespan)] {
       "id": _id,
+      "type": _type,
       "label": coalesce(label, 'Uten label'),
       "period": timespan.edtf,
       "timestamp": coalesce(
@@ -96,6 +99,11 @@ export const query = groq`*[_id == $id][0] {
           "label": label + " avsluttes",
           "period": timespan.edtf,
           "timestamp": timespan.endOfTheEnd,
+          "connectedTo": *[_type == 'Project' && ^._id in hasTeam[]._ref] {
+            "id": _id,
+            "type": _type,         
+            label
+          }
         }
       )
     },
@@ -106,6 +114,11 @@ export const query = groq`*[_id == $id][0] {
           "label": label + " starter",
           "period": timespan.edtf,
           "timestamp": timespan.beginOfTheBegin,
+          "connectedTo": *[_type == 'Project' && ^._id in hasTeam[]._ref] {
+            "id": _id,
+            "type": _type,         
+            label
+          }
         }
       )
     }
@@ -127,11 +140,7 @@ export interface PersonProps extends SanityDocument {
   referredToBy: {
     body: (PortableTextBlock | any)[]
   }[]
-  hasSkill: {
-    label: string
-    level: number
-    shortDescription: string
-  }[]
+  hasSkill: SkillListProps[]
   currentOrFormerManagerOf: {
     id: string
     type: string
@@ -161,6 +170,7 @@ export interface PersonProps extends SanityDocument {
     timespan: string
     active: boolean
   }[]
+  timeline: TimelineProps[]
 }
 
 const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
@@ -184,6 +194,9 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
           <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
             Generelt
           </TabsTrigger>
+          <TabsTrigger value="bio" disabled={data.referredToBy?.[0]?.body ? false : true} className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
+            Bio
+          </TabsTrigger>
           <TabsTrigger value="timeline" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
             Tidslinje
           </TabsTrigger>
@@ -192,15 +205,6 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
 
         <TabsContent value="general" className='pt-4'>
           <div className='grid grid-cols-6 gap-4'>
-
-            {/* {data.referredToBy?.[0]?.body ? (
-              <ScrollArea className="h-[250px] max-w-prose rounded-xl border p-4 col-span-6">
-                <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
-              </ScrollArea>
-            ) : (
-              null
-            )} */}
-
             <Card className='col-span-6'>
               <CardHeader>
                 <CardTitle>Medlem av</CardTitle>
@@ -227,18 +231,35 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
                 <ResponsibleFor data={data.currentOrFormerManagerOf} />
               </CardContent>
             </Card>
-
           </div>
         </TabsContent>
 
-        <TabsContent value="timeline" className='mt-0'>
+        <TabsContent value="bio" className='pt-4'>
+          <div className='p-5'>
+            {data.referredToBy?.[0]?.body ? (
+              <div className="max-w-prose m-auto">
+                <h2>Biografi</h2>
+                <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
+              </div>
+            ) : (
+              <Alert>
+                <AlertTitle>Det er ikke registrert noen biografi for denne personen.</AlertTitle>
+              </Alert>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="timeline" className='pt-4'>
           <Card>
             <CardHeader>
               <CardTitle>Tidslinje</CardTitle>
             </CardHeader>
             <CardContent>
-              <Timeline data={data.timeline} />
-
+              {data?.timeline && data?.timeline?.length > 0 ? (<Timeline data={data.timeline} />) : (
+                <Alert>
+                  <AlertTitle>Det er ikke registrert noen hendelser for denne personen.</AlertTitle>
+                </Alert>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

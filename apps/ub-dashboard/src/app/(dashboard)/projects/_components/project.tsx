@@ -266,46 +266,48 @@ const Project = ({ data = {} }: { data: Partial<ProjectProps> }) => {
 
         <TabsContent value="general" className='pt-4'>
           <div className='grid grid-cols-6 gap-4'>
-            <Card className='col-span-6'>
-              <CardContent className='mt-4'>
-                <dl className='flex flex-wrap flex-col md:flex-row gap-4 md:gap-10'>
-                  {data?.funding?.filter(x => x.type === 'FundingActivity').length ? (
-                    <div>
-                      <dt className='text-muted-foreground'>Finansiering</dt>
-                      <dd className='flex flex-wrap gap-2'>
-                        {data.funding.filter((obj: any) => !(obj && Object.keys(obj).length === 0)).map((f: any) => (
-                          <Card key={f.id} className='p-2 rounded-sm'>
-                            <CardHeader className='px-1 pt-0 pb-0'>
-                              <CardTitle className='text-sm'>{f.awarder}</CardTitle>
-                            </CardHeader>
-                            <CardContent className='px-1 py-1 font-extrabold text-2xl'>
-                              {f.amount > 999999.99 ? millify(f.amount, { precision: 2, locales: ['no'], space: true, units: ['', '', 'MILL', 'MRD'] }) : f.amount}  {f.currency}
-                            </CardContent>
-                            <CardFooter className='px-1 py-0 text-muted-foreground text-xs'>
-                              <p>
-                                {f.period}
-                              </p>
-                            </CardFooter>
-                          </Card>
-                        ))}
-                      </dd>
-                    </div>
-                  ) : null}
+            {data?.funding?.filter(x => x.type === 'FundingActivity').length || data.resultedIn ? (
+              <Card className='col-span-6'>
+                <CardContent className='mt-4'>
+                  <dl className='flex flex-wrap flex-col md:flex-row gap-4 md:gap-10'>
+                    {data?.funding?.filter(x => x.type === 'FundingActivity').length ? (
+                      <div>
+                        <dt className='text-muted-foreground'>Finansiering</dt>
+                        <dd className='flex flex-wrap gap-2'>
+                          {data.funding.filter((obj: any) => !(obj && Object.keys(obj).length === 0)).map((f: any) => (
+                            <Card key={f.id} className='p-2 rounded-sm'>
+                              <CardHeader className='px-1 pt-0 pb-0'>
+                                <CardTitle className='text-sm'>{f.awarder}</CardTitle>
+                              </CardHeader>
+                              <CardContent className='px-1 py-1 font-extrabold text-2xl'>
+                                {f.amount > 999999.99 ? millify(f.amount, { precision: 2, locales: ['no'], space: true, units: ['', '', 'MILL', 'MRD'] }) : f.amount}  {f.currency}
+                              </CardContent>
+                              <CardFooter className='px-1 py-0 text-muted-foreground text-xs'>
+                                <p>
+                                  {f.period}
+                                </p>
+                              </CardFooter>
+                            </Card>
+                          ))}
+                        </dd>
+                      </div>
+                    ) : null}
 
-                  {data?.resultedIn ? (
-                    <div>
-                      <dt className='text-muted-foreground'>Resulterte i</dt>
-                      <dd className='flex flex-wrap gap-2'>
-                        {data.resultedIn.map((row) => (
-                          <Link key={row.id} href={`/${path[row.type]}/${row.id}`} className='underline underline-offset-2'>
-                            {row.label}
-                          </Link>))}
-                      </dd>
-                    </div>
-                  ) : null}
-                </dl>
-              </CardContent>
-            </Card>
+                    {data?.resultedIn ? (
+                      <div>
+                        <dt className='text-muted-foreground'>Resulterte i</dt>
+                        <dd className='flex flex-wrap gap-2'>
+                          {data.resultedIn.map((row) => (
+                            <Link key={row.id} href={`/${path[row.type]}/${row.id}`} className='underline underline-offset-2'>
+                              {row.label}
+                            </Link>))}
+                        </dd>
+                      </div>
+                    ) : null}
+                  </dl>
+                </CardContent>
+              </Card>
+            ) : null}
 
             {data.referredToBy?.[0]?.body ? (
               <ScrollArea className="h-[250px] max-w-prose col-span-2 rounded-xl border p-4 mt-2 mb-5">
