@@ -1,87 +1,47 @@
+const languages = [
+  { value: "nb", label: "Bokmål" },
+  { value: "nn", label: "Nynorsk" },
+  { value: "en", label: "Engelsk" },
+];
+
 export default {
   name: "news",
   type: "document",
   title: "Nyhet",
-  fields: [
-    { name: "date", title: "Dato", type: "date" },
+  fieldsets: [
     {
-      name: "sectionNb",
+      name: "nb",
       title: "Bokmål",
-      type: "object",
-      fields: [
-        {
-          name: "titleNb",
-          type: "string",
-          title: "Tittel",
-        },
-        {
-          name: "previewTextNb",
-          title: "Forhåndsvis tekst",
-          type: "array",
-          of: [{ type: "block" }],
-        },
-        {
-          name: "mainTextNb",
-          title: "Hovedtekst",
-          type: "array",
-          of: [{ type: "block" }],
-        },
-      ],
+      options: { collapsible: true, collapsed: false },
     },
     {
-      name: "sectionNn",
+      name: "nn",
       title: "Nynorsk",
-      type: "object",
-      fields: [
-        {
-          name: "titleNn",
-          type: "string",
-          title: "Tittel",
-        },
-        {
-          name: "previewTextNn",
-          title: "Forhåndsvis tekst",
-          type: "array",
-          of: [{ type: "block" }],
-        },
-        {
-          name: "mainTextNn",
-          title: "Hovedtekst",
-          type: "array",
-          of: [{ type: "block" }],
-        },
-      ],
+      options: { collapsible: true, collapsed: false },
     },
     {
-      name: "sectionEn",
+      name: "en",
       title: "Engelsk",
-      type: "object",
-      fields: [
-        {
-          name: "titleEn",
-          type: "string",
-          title: "Tittel",
-        },
-        {
-          name: "previewTextEn",
-          title: "Forhåndsvis tekst",
-          type: "array",
-          of: [{ type: "block" }],
-        },
-        {
-          name: "mainTextEn",
-          title: "Hovedtekst",
-          type: "array",
-          of: [{ type: "block" }],
-        },
-      ],
+      options: { collapsible: true, collapsed: true },
     },
   ],
-
-  preview: {
-    select: {
-      title: "sectionNb.titleNb",
-      date: "dato",
-    },
-  },
+  fields: [{ name: "date", title: "Dato", type: "date" }].concat(
+    languages
+      .map((lang) => [
+        {
+          name: "title" + lang.value,
+          type: "string",
+          title: "Tittel",
+          fieldset: lang.value,
+        },
+        {
+          name: "content" + lang.value,
+          type: "array",
+          title: "Tekst",
+          of: [{ type: "block" }],
+          fieldset: lang.value,
+        },
+      ])
+      .flat()
+  ),
 };
