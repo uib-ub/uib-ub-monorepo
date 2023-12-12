@@ -25,23 +25,24 @@ const Links = async () => {
       {data && data.map((link: LinksRecord) => (
         <div key={link.id} className='flex gap-4 border rounded-lg overflow-hidden'>
           <div className='px-5 py-4'>
-            <div className='font-black text-2xl'>{link.title || link.originalURL}</div>
+            <div className='font-black text:md md:text-2xl break-all'>{link.title || link.originalURL}</div>
             <div className='flex flex-wrap align-baseline gap-2 text-sm'>
-              <a href={`https://${link.domain}/${link.path}`}>
+              <a className='break-all' href={`https://${link.domain}/${link.path}`}>
                 {`https://${link.domain}/${link.path}`}
               </a>
               <span className='font-bold italic'>peker videre til</span>
-              <a href={link.originalURL} target='_blank' rel='noreferrer' className='flex items-baseline'>
+              <a href={link.originalURL} target='_blank' rel='noreferrer' className='flex items-baseline break-all'>
                 {link.originalURL} <ExternalLinkIcon className='' />
               </a>
             </div>
             <p>Besøk: {link.views}</p>
           </div>
-          <div className='ml-auto'>
+
+          <div className='ml-auto flex-shrink-0'>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Image alt='' className='object-contain' width={100} height={100} src={`data:image/svg+xml;utf8,${encodeURIComponent(link.qr)}`} />
+                  <Image alt='' className='object-contain' width={120} height={120} src={`data:image/svg+xml;utf8,${encodeURIComponent(link.qr)}`} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Høyreklikk på QR-koden og lagre det som bilde</p>
