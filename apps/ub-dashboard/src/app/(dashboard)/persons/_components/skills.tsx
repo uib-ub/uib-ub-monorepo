@@ -22,7 +22,7 @@ export const Skills = ({ data = [] }: { data?: SkillListProps[] }) => {
             <div key={index} className='grid grid-cols-2 gap-2 w-full'>
               <div className='w-2/3 flex-grow'>
                 {path[skill.type] !== undefined ? (
-                  <Link className='underline underline-offset-2' href={`/${path[skill.type]}/${skill.id}}`}>{skill.label}</Link>
+                  <Link className='underline underline-offset-2' href={`/${path[skill.type]}/${skill.id}`}>{skill.label}</Link>
                 ) : skill.label}
               </div>
               <div className='flex gap-2 flex-grow'>
