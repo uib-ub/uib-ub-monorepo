@@ -1,4 +1,4 @@
-import { IBM_Plex_Mono, Inter, PT_Serif } from 'next/font/google'
+import { IBM_Plex_Mono, Inter, PT_Serif, MedievalSharp } from 'next/font/google'
 import type { Metadata } from 'next'
 import '@/app/globals.css'
 
@@ -25,6 +25,11 @@ const mono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['500', '700'],
 })
+const fantasy = MedievalSharp({
+  variable: '--font-fantasy',
+  subsets: ['latin'],
+  weight: ['400'],
+})
 
 export default async function RootLayout({
   children,
@@ -32,7 +37,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="no" className={`${mono.variable} ${sans.variable} ${serif.variable}`}>
+    <html lang="no" className={`${mono.variable} ${sans.variable} ${serif.variable} ${fantasy.variable}`}>
       <body>
         {children}
       </body>

@@ -1,5 +1,5 @@
 import ImageBox from '@/components/image-box'
-import { QuoteIcon } from '@radix-ui/react-icons'
+import { QuoteIcon, StarFilledIcon } from '@radix-ui/react-icons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skills } from './skills'
 import { MemberOf } from './member-of'
@@ -124,11 +124,26 @@ export const query = groq`*[_id == $id][0] {
   ]
 }`
 
+const characterSheet = {
+  race: 'Hobbit',
+  class: 'Druid',
+  stats: {
+    ['Health']: 62,
+    ['Armor class']: 'Sarcasm',
+  },
+  abilities: {
+    strength: 10,
+    dexterity: 10,
+    constitution: 17,
+    intelligence: 18,
+    wisdom: 14,
+    charisma: 14,
+  }
+}
 
-
-const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
+const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
   return (
-    <div>
+    <div className='font-fantasy'>
       <div className="flex flex-row gap-3 pb-2">
         {data?.image ? (
           <div className='w-[100px] h-[100px]'>
@@ -158,30 +173,61 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
 
         <TabsContent value="general" className='pt-4'>
           <div className='grid grid-cols-6 gap-4'>
-            <Card className='col-span-6'>
-              <CardHeader>
-                <CardTitle>Medlem av</CardTitle>
+            <Card className='col-span-6 lg:col-span-2'>
+              <CardHeader className='pb-1'>
+                <CardTitle className='m-auto'>Character sheet</CardTitle>
               </CardHeader>
               <CardContent>
-                <MemberOf data={data.memberOf} />
+                <div className='flex flex-col'>
+                  <div className='text-center'>
+                    {characterSheet.race}
+                  </div>
+                  <div className='text-center mb-5'>
+                    Lvl. 6 {characterSheet.class}
+                  </div>
+
+                  {Object.entries(characterSheet.stats).map(([key, value]) => (
+                    <div key={key} className='flex flex-row justify-center gap-5'>
+                      <div className='capitalize'>{key}</div>
+                      <div>{value}</div>
+                    </div>
+                  ))}
+
+                  <h3 className='text-center text-[1.3rem] mt-6'>Abilities</h3>
+                  {Object.entries(characterSheet.abilities).map(([key, value]) => (
+                    <div key={key} className='flex flex-row gap-3'>
+                      <div className='w-8 flex justify-end gap-2'>{value >= 17 ? <StarFilledIcon /> : null} {value}</div>
+                      <div className='w-8 capitalize'>{key}</div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 
-            <Card className='col-span-6 lg:col-span-3'>
+            <Card className='col-span-6 lg:col-span-2'>
               <CardHeader>
-                <CardTitle>Kompetanse</CardTitle>
+                <CardTitle className='m-auto'>Skills</CardTitle>
               </CardHeader>
               <CardContent>
                 <Skills data={data.hasSkill} />
               </CardContent>
             </Card>
 
-            <Card className='col-span-6 lg:col-span-3'>
+            <Card className='col-span-6 lg:col-span-2'>
               <CardHeader>
-                <CardTitle>Ansvar for</CardTitle>
+                <CardTitle className='m-auto'>Inventory</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsibleFor data={data.currentOrFormerManagerOf} />
+              </CardContent>
+            </Card>
+
+            <Card className='col-span-6'>
+              <CardHeader>
+                <CardTitle className='m-auto'>Acolyte of</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MemberOf data={data.memberOf} />
               </CardContent>
             </Card>
           </div>
@@ -203,9 +249,9 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
         </TabsContent>
 
         <TabsContent value="timeline" className='pt-4'>
-          <Card>
+          <Card className='border border-yellow-400'>
             <CardHeader>
-              <CardTitle>Tidslinje</CardTitle>
+              <CardTitle className='m-auto'>Tidslinje</CardTitle>
             </CardHeader>
             <CardContent>
               {data?.timeline && data?.timeline?.length > 0 ? (<Timeline data={data.timeline} />) : (
@@ -221,4 +267,4 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
   )
 }
 
-export default Person
+export default FantasyPerson
