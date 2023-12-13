@@ -11,6 +11,7 @@ module.exports = {
       mono: 'var(--font-mono)',
       sans: 'var(--font-sans)',
       serif: 'var(--font-serif)',
+      fantasy: 'var(--font-fantasy)',
     },
     container: {
       center: true,

@@ -29,23 +29,23 @@ const columns = [
       </div>
     )
   },
-  {
-    header: "Type",
-    accessorKey: "hasType",
-    cell: ({ row }: { row: any }) => (
-      <div className='flex flex-col gap-2'>
-        {row.getValue('hasType')?.map((t: any, i: number) => (
-          <div key={i}>
-            {t.label}
-          </div>
-        ))}
-      </div>
-    )
-  },
-  {
-    header: "Periode",
-    accessorKey: "timespan"
-  },
+  /*   {
+      header: "Type",
+      accessorKey: "hasType",
+      cell: ({ row }: { row: any }) => (
+        <div className='flex flex-col gap-2'>
+          {row.getValue('hasType')?.map((t: any, i: number) => (
+            <div key={i}>
+              {t.label}
+            </div>
+          ))}
+        </div>
+      )
+    },
+    {
+      header: "Periode",
+      accessorKey: "timespan"
+    }, */
   {
     header: "",
     accessorKey: "id",
@@ -65,7 +65,13 @@ export const ResponsibleFor = ({ data }: { data: any }) => {
           </AlertTitle>
         </Alert>
       ) :
-        <DataTable columns={columns} data={data} />
+        <DataTable
+          columns={columns}
+          data={data}
+          config={{
+            activeFilter: false,
+          }}
+        />
       }
     </>
   )
