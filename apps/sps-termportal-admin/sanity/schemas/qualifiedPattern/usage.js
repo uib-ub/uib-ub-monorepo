@@ -49,15 +49,15 @@ export default {
     select: {
       title: "scope.label",
       termbase: "termbase.label",
-      termgroup: "termgroup.label",
+      group: "group.label",
       subscope: "subscope.label",
     },
     prepare(selection) {
       let title = selection?.title;
       if (selection?.termbase) {
         title += ">" + selection?.termbase;
-      } else if (selection.termgroup) {
-        title += " > " + selection?.termgroup;
+      } else if (selection.group) {
+        title += " > " + selection?.group;
       } else if (selection.subscope) {
         title += " > " + selection?.subscope;
       }

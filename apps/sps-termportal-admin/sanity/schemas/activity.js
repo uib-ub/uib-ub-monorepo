@@ -1,4 +1,5 @@
 import { label, note, timespan } from "./props";
+import association from "./qualifiedPattern/association";
 import communication from "./qualifiedPattern/communication";
 import usage from "./qualifiedPattern/usage";
 
@@ -15,6 +16,7 @@ export default {
       type: "array",
       of: [usage],
     },
+    { name: "qualifiedAssociation", type: "array", of: [association] },
     { name: "qualifiedCommunication", type: "array", of: [communication] },
   ],
   preview: {
