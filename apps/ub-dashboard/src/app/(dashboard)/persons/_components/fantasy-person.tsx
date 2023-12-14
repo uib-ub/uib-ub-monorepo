@@ -140,6 +140,7 @@ interface Character {
     wisdom: number;
     charisma: number;
   };
+  proficiencies?: string[];
 }
 
 interface Characters {
@@ -152,7 +153,7 @@ const characters: Characters = {
     class: 'Rogue',
     stats: {
       ['Health']: 56,
-      ['Armor class']: 'Anecdotes',
+      ['Armor class']: 'Surrealism',
     },
     abilities: {
       strength: 12,
@@ -161,7 +162,10 @@ const characters: Characters = {
       intelligence: 14,
       wisdom: 16,
       charisma: 16,
-    }
+    },
+    proficiencies: [
+      'Multiversial defelection',
+    ]
   },
   ['381155bf-fc3b-40b3-bdcc-2cec4975d2f7']: {
     race: 'Hobbit',
@@ -239,7 +243,7 @@ const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
                       </div>
                     ))}
 
-                    <Separator className='my-5 mx-auto w-2/3' />
+                    <Separator className='my-3 mx-auto w-2/3' />
 
                     <h3 className='text-center text-[1.3rem]'>Abilities</h3>
                     <div className='flex flex-col mx-auto'>
@@ -250,9 +254,22 @@ const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
                         </div>
                       ))}
                     </div>
+                    <Separator className='my-3 mx-auto w-2/3' />
+
+                    {characterSheet.proficiencies ? (
+                      <>
+                        <h3 className='text-center text-[1.3rem]'>Proficiencies</h3>
+                        <div className='flex flex-col mx-auto'>
+                          {characterSheet.proficiencies?.map((proficiency, index) => (
+                            <div key={index}>{proficiency}</div>
+                          ))}
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 </CardContent>
-              </Card>) : (
+              </Card>
+            ) : (
               <Alert>
                 <AlertTitle>Det er ikke registrert noen karakter for denne personen.</AlertTitle>
               </Alert>
