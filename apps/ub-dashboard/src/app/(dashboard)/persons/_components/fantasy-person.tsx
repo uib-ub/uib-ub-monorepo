@@ -125,25 +125,65 @@ export const query = groq`*[_id == $id][0] {
   ]
 }`
 
-const characterSheet = {
-  race: 'Hobbit',
-  class: 'Druid',
+interface Character {
+  race: string;
+  class: string;
   stats: {
-    ['Health']: 62,
-    ['Armor class']: 'Sarcasm',
-  },
+    Health: number;
+    'Armor class': string;
+  };
   abilities: {
-    strength: 10,
-    dexterity: 10,
-    constitution: 17,
-    intelligence: 18,
-    wisdom: 14,
-    charisma: 14,
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    intelligence: number;
+    wisdom: number;
+    charisma: number;
+  };
+}
+
+interface Characters {
+  [key: string]: Character;
+}
+
+const characters: Characters = {
+  ['6747ea34-a8f3-43cb-adf0-037c1ab2b6fd']: {
+    race: 'Hobbit',
+    class: 'Rogue',
+    stats: {
+      ['Health']: 56,
+      ['Armor class']: 'Anecdotes',
+    },
+    abilities: {
+      strength: 12,
+      dexterity: 10,
+      constitution: 15,
+      intelligence: 14,
+      wisdom: 16,
+      charisma: 16,
+    }
+  },
+  ['381155bf-fc3b-40b3-bdcc-2cec4975d2f7']: {
+    race: 'Hobbit',
+    class: 'Druid',
+    stats: {
+      ['Health']: 62,
+      ['Armor class']: 'Sarcasm',
+    },
+    abilities: {
+      strength: 10,
+      dexterity: 10,
+      constitution: 17,
+      intelligence: 18,
+      wisdom: 14,
+      charisma: 14,
+    }
   }
 }
 
 const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
-  const level = new Date().getFullYear() - new Date(data.startDate ?? '').getFullYear() + 1
+  const level = new Date().getFullYear() - new Date(data.startDate ?? '').getFullYear()
+  const characterSheet = data.id ? characters[data.id] : null
   return (
     <div className='font-fantasy'>
       <div className="flex flex-row gap-3 pb-2">
@@ -176,42 +216,47 @@ const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
 
         <TabsContent value="general" className='pt-4'>
           <div className='grid grid-cols-6 gap-4'>
-            <Card className='col-span-6 lg:col-span-2'>
-              <CardHeader className='pb-1'>
-                <CardTitle className='m-auto'>Character sheet</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className='flex flex-col'>
-                  <div className='text-center'>
-                    {characterSheet.race}
-                  </div>
-                  <div className='text-center'>
-                    Lvl. <span className='text-2xl text-red-500'>{level}</span> {characterSheet.class}
-                  </div>
-
-                  <Separator className='my-3 mx-auto w-2/3' />
-
-                  {Object.entries(characterSheet.stats).map(([key, value]) => (
-                    <div key={key} className='flex flex-row justify-center gap-5'>
-                      <div className='capitalize'>{key}</div>
-                      <div>{value}</div>
+            {characterSheet ? (
+              <Card className='col-span-6 lg:col-span-2'>
+                <CardHeader className='pb-1'>
+                  <CardTitle className='m-auto'>Character sheet</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className='flex flex-col'>
+                    <div className='text-center'>
+                      {characterSheet.race}
                     </div>
-                  ))}
+                    <div className='text-center'>
+                      Lvl. <span className='text-2xl text-red-500'>{level === 0 ? 1 : level}</span> {characterSheet.class}
+                    </div>
 
-                  <Separator className='my-5 mx-auto w-2/3' />
+                    <Separator className='my-3 mx-auto w-2/3' />
 
-                  <h3 className='text-center text-[1.3rem]'>Abilities</h3>
-                  <div className='flex flex-col mx-auto'>
-                    {Object.entries(characterSheet.abilities).map(([key, value]) => (
-                      <div key={key} className='flex flex-row gap-3'>
-                        <div className='w-10 flex justify-end gap-2'>{value >= 17 ? <StarFilledIcon className='text-yellow-500' /> : null} {value}</div>
+                    {Object.entries(characterSheet.stats).map(([key, value]) => (
+                      <div key={key} className='flex flex-row justify-center gap-5'>
                         <div className='capitalize'>{key}</div>
+                        <div>{value}</div>
                       </div>
                     ))}
+
+                    <Separator className='my-5 mx-auto w-2/3' />
+
+                    <h3 className='text-center text-[1.3rem]'>Abilities</h3>
+                    <div className='flex flex-col mx-auto'>
+                      {Object.entries(characterSheet.abilities).map(([key, value]) => (
+                        <div key={key} className='flex flex-row gap-3'>
+                          <div className='w-10 flex justify-end gap-2'>{value >= 17 ? <StarFilledIcon className='text-yellow-500' /> : null} {value}</div>
+                          <div className='capitalize'>{key}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>) : (
+              <Alert>
+                <AlertTitle>Det er ikke registrert noen karakter for denne personen.</AlertTitle>
+              </Alert>
+            )}
 
             <Card className='col-span-6 lg:col-span-2'>
               <CardHeader>

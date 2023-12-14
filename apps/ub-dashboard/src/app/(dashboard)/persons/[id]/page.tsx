@@ -16,6 +16,8 @@ export default async function PersonPage({
   const session = await getServerSession()
   const data = await sanityFetch<PersonProps>({ query, params: { id: params.id }, tags: [`Actor:${params.id}`] })
 
+  const isFantasyPerson = ['caroline.armitage@uib.no', 'tarje.lavik@uib.no'].includes(session?.user?.email ?? '') && ['381155bf-fc3b-40b3-bdcc-2cec4975d2f7', '6747ea34-a8f3-43cb-adf0-037c1ab2b6fd'].includes(params.id ?? '')
+
   return (
     <MainShell>
       <LiveQuery
@@ -25,7 +27,7 @@ export default async function PersonPage({
         initialData={data}
         as={PreviewPerson}
       >
-        {/* session?.user?.email === 'caroline.armitage@uib.no' &&  */params.id === '381155bf-fc3b-40b3-bdcc-2cec4975d2f7' ? (
+        {isFantasyPerson ? (
           <FantasyPerson data={data} />
         ) : (
           <Person data={data} />
