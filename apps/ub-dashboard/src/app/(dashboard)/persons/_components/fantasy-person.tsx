@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { PersonProps } from '@/types'
 import { groq } from 'next-sanity'
+import { Separator } from '@/components/ui/separator'
 
 export const query = groq`*[_id == $id][0] {
   "id": _id,
@@ -142,6 +143,7 @@ const characterSheet = {
 }
 
 const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
+  const level = new Date().getFullYear() - new Date(data.startDate ?? '').getFullYear() + 1
   return (
     <div className='font-fantasy'>
       <div className="flex flex-row gap-3 pb-2">
@@ -168,6 +170,7 @@ const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
           <TabsTrigger value="timeline" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
             Tidslinje
           </TabsTrigger>
+          <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
           <EditIntentButton variant={'link'} id={data.id} className='p-0 m-0 pb-1 px-3 ml-auto text-muted-foreground text-sm font-medium' />
         </TabsList>
 
@@ -182,9 +185,11 @@ const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
                   <div className='text-center'>
                     {characterSheet.race}
                   </div>
-                  <div className='text-center mb-5'>
-                    Lvl. 6 {characterSheet.class}
+                  <div className='text-center'>
+                    Lvl. <span className='text-2xl text-red-500'>{level}</span> {characterSheet.class}
                   </div>
+
+                  <Separator className='my-3 mx-auto w-2/3' />
 
                   {Object.entries(characterSheet.stats).map(([key, value]) => (
                     <div key={key} className='flex flex-row justify-center gap-5'>
@@ -193,13 +198,17 @@ const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
                     </div>
                   ))}
 
-                  <h3 className='text-center text-[1.3rem] mt-6'>Abilities</h3>
-                  {Object.entries(characterSheet.abilities).map(([key, value]) => (
-                    <div key={key} className='flex flex-row gap-3'>
-                      <div className='w-8 flex justify-end gap-2'>{value >= 17 ? <StarFilledIcon /> : null} {value}</div>
-                      <div className='w-8 capitalize'>{key}</div>
-                    </div>
-                  ))}
+                  <Separator className='my-5 mx-auto w-2/3' />
+
+                  <h3 className='text-center text-[1.3rem]'>Abilities</h3>
+                  <div className='flex flex-col mx-auto'>
+                    {Object.entries(characterSheet.abilities).map(([key, value]) => (
+                      <div key={key} className='flex flex-row gap-3'>
+                        <div className='w-10 flex justify-end gap-2'>{value >= 17 ? <StarFilledIcon className='text-yellow-500' /> : null} {value}</div>
+                        <div className='capitalize'>{key}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -261,6 +270,10 @@ const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="data" className='text-sm pt-4'>
+          <pre className='p-4 border rounded-lg'>{JSON.stringify(data, null, 2)}</pre>
         </TabsContent>
       </Tabs>
     </div>

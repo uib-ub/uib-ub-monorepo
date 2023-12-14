@@ -25,7 +25,7 @@ export default async function PersonPage({
         initialData={data}
         as={PreviewPerson}
       >
-        {session?.user?.email === 'caroline.armitage@uib.no' && params.id === '381155bf-fc3b-40b3-bdcc-2cec4975d2f7' ? (
+        {/* session?.user?.email === 'caroline.armitage@uib.no' &&  */params.id === '381155bf-fc3b-40b3-bdcc-2cec4975d2f7' ? (
           <FantasyPerson data={data} />
         ) : (
           <Person data={data} />
