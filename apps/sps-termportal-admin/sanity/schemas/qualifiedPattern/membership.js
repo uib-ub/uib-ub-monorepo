@@ -21,6 +21,7 @@ export default {
         ],
       },
     },
+    { name: "wikiAccess", type: "boolean", initialValue: false },
     timespan,
   ],
   preview: {
@@ -28,12 +29,13 @@ export default {
       title: "person.label",
       role: "role",
       timespan: "timespan.edtf",
+      wiki: "wikiAccess",
     },
     prepare(selection) {
       return {
         title: `${selection.title} ${
-          selection.role ? "(" + selection.role + ")" : ""
-        }`,
+          selection.role ? "(" + selection.role : ""
+        }, wiki: ${selection.wiki})`,
         subtitle: selection.timespan,
       };
     },

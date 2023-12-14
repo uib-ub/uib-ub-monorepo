@@ -26,6 +26,16 @@ export default {
     {
       name: "id",
       type: "string",
+    },
+    {
+      name: "type",
+      type: "string",
+      options: {
+        list: [
+          { title: "Aktiv", value: "aktiv" },
+          { title: "Historisk", value: "historisk" },
+        ],
+      },
       fieldset: "basics",
     },
     tbstatus,
