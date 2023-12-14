@@ -52,6 +52,7 @@ export interface PersonProps extends SanityDocument {
   image: SanityImageAssetDocument
   shortDescription: string
   period: string
+  startDate: string
   referredToBy: {
     body: (PortableTextBlock | any)[]
   }[]

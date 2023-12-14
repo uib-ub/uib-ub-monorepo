@@ -24,6 +24,7 @@ export const query = groq`*[_id == $id][0] {
   quote,
   image,
   "period": timespan.edtf,
+  "startDate": timespan.beginOfTheBegin,
   "active": "Aktiv",
   !defined(timespan) => {
     "active": "Ukjent" 
@@ -153,6 +154,7 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
           <TabsTrigger value="timeline" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">
             Tidslinje
           </TabsTrigger>
+          <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
           <EditIntentButton variant={'link'} id={data.id} className='p-0 m-0 pb-1 px-3 ml-auto text-muted-foreground text-sm font-medium' />
         </TabsList>
 
@@ -215,6 +217,10 @@ const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="data" className='text-sm pt-4'>
+          <pre className='p-4 border rounded-lg'>{JSON.stringify(data, null, 2)}</pre>
         </TabsContent>
       </Tabs>
     </div>
