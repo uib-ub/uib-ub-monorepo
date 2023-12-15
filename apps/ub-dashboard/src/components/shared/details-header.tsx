@@ -31,10 +31,10 @@ export const DetailsHeader = ({ data }: { data: DetailsHeaderProps }) => {
                 <ImageBox image={data.logo} width={200} height={200} alt="" classesWrapper='relative aspect-[1/1]' />
               </div>
             ) : null}
-          </div>
-          <div>
-            <h1 className='text-5xl mb-2'>{data?.label}</h1>
-            {data?.shortDescription ? (<p>{data.shortDescription}</p>) : null}
+            <div>
+              <h1 className='text-5xl mb-2'>{data?.label}</h1>
+              {data?.shortDescription ? (<p>{data.shortDescription}</p>) : null}
+            </div>
           </div>
 
           <div className='flex justify-between'>

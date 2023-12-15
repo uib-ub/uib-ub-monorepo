@@ -125,8 +125,6 @@ export const query = groq`*[_id == $id][0] {
   ]
 }`
 
-
-
 const Person = ({ data = {} }: { data: Partial<PersonProps> }) => {
   return (
     <div>

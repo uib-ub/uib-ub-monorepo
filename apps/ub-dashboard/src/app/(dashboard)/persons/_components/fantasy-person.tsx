@@ -165,6 +165,7 @@ const characters: Characters = {
     },
     proficiencies: [
       'Multiversial defelection',
+      'Detect invisibility',
     ]
   },
   ['381155bf-fc3b-40b3-bdcc-2cec4975d2f7']: {
@@ -181,7 +182,10 @@ const characters: Characters = {
       intelligence: 18,
       wisdom: 14,
       charisma: 14,
-    }
+    },
+    proficiencies: [
+      'Detect invisibility',
+    ]
   }
 }
 
@@ -259,7 +263,7 @@ const FantasyPerson = ({ data = {} }: { data: Partial<PersonProps> }) => {
                     {characterSheet.proficiencies ? (
                       <>
                         <h3 className='text-center text-[1.3rem]'>Proficiencies</h3>
-                        <div className='flex flex-col mx-auto'>
+                        <div className='flex flex-col items-center mx-auto'>
                           {characterSheet.proficiencies?.map((proficiency, index) => (
                             <div key={index}>{proficiency}</div>
                           ))}
