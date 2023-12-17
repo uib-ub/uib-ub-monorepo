@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ProjectProps } from '../projects'
 import Link from "next/link"
 import { Button } from '@/components/ui/button'
-import { EditIntentButton } from '@/components/edit-intent-button'
+import { ItemContextMenu } from '@/components/edit-intent-button'
 import { Badge } from '@/components/ui/badge'
 import millify from 'millify'
 import ImageBox from '@/components/image-box'
@@ -85,7 +85,7 @@ export const columns: ColumnDef<ProjectProps>[] = [
     header: "",
     accessorKey: "id",
     cell: ({ row }) => (
-      <EditIntentButton size="sm" variant={'secondary'} id={(row.getValue('id') as string)} />
+      <ItemContextMenu size="sm" variant={'secondary'} id={(row.getValue('id') as string)} />
     )
   },
 ]

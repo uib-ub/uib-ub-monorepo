@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { GroupProps } from '../groups'
 import Link from "next/link"
 import { Button } from '@/components/ui/button'
-import { EditIntentButton } from '@/components/edit-intent-button'
+import { ItemContextMenu } from '@/components/edit-intent-button'
 import { GiFinishLine } from 'react-icons/gi'
 
 export const columns: ColumnDef<GroupProps>[] = [
@@ -72,7 +72,7 @@ export const columns: ColumnDef<GroupProps>[] = [
     header: "",
     accessorKey: "id",
     cell: ({ row }) => (
-      <EditIntentButton size="sm" variant={'secondary'} id={(row.getValue('id') as string)} />
+      <ItemContextMenu size="sm" variant={'secondary'} id={(row.getValue('id') as string)} />
     )
   },
 ]

@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { DeprecatedProps } from '../deprecated'
 import Link from "next/link"
 import { Button } from '@/components/ui/button'
-import { EditIntentButton } from '@/components/edit-intent-button'
+import { ItemContextMenu } from '@/components/edit-intent-button'
 
 export const columns: ColumnDef<DeprecatedProps>[] = [
   {
@@ -49,7 +49,7 @@ export const columns: ColumnDef<DeprecatedProps>[] = [
     header: "",
     accessorKey: "id",
     cell: ({ row }: { row: any }) => (
-      <EditIntentButton
+      <ItemContextMenu
         variant={'secondary'}
         className='text-xs px-2 py-0'
         id={row.getValue('id')}
