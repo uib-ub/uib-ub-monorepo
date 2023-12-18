@@ -68,7 +68,7 @@
     "react-hook-form": "^7.48.2",
     "react-icons": "^4.11.0",
     "reactflow": "^11.10.1",
-    "sanity": "^3.19.3",
+    "sanity": "^3.21.3",
     "sanity-plugin-dashboard-widget-document-list": "^1.0.1",
     "sanity-plugin-document-reference-by": "^1.0.1",
     "sanity-plugin-iframe-pane": "^2.6.0",

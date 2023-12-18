@@ -1,7 +1,7 @@
 "use client"
 
 import { DataTable } from '@/components/data-table';
-import { EditIntentButton } from '@/components/edit-intent-button';
+import { ItemContextMenu } from '@/components/edit-intent-button';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { CaretSortIcon } from '@radix-ui/react-icons';
@@ -50,7 +50,7 @@ const columns = [
     header: "",
     accessorKey: "id",
     cell: ({ row }: { row: any }) => (
-      <EditIntentButton size="sm" variant={'secondary'} id={(row.getValue('id') as string)} />
+      <ItemContextMenu size="sm" variant={'secondary'} id={(row.getValue('id') as string)} />
     )
   },
 ];
