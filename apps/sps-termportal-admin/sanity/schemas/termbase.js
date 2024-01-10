@@ -57,6 +57,16 @@ export default {
       initialValue: false,
       fieldset: "status",
     },
+    {
+      name: "actionableNote",
+      type: "array",
+      title: "Actionable Note",
+      of: [
+        {
+          type: "block",
+        },
+      ],
+    },
     note,
     responsibleStaff,
     {
