@@ -1,4 +1,12 @@
-export const note = { name: "note", type: "text", rows: 4 };
+export const note = {
+  name: "note",
+  type: "array",
+  of: [
+    {
+      type: "block",
+    },
+  ],
+};
 
 export const label = { name: "label", type: "string" };
 
@@ -9,8 +17,9 @@ export const tbstatus = {
   type: "string",
   options: {
     list: [
-      { title: "Initialisert", value: "initialisert" },
+      { title: "Kjent", value: "kjent" },
       { title: "Planlagt", value: "planlagt" },
+      { title: "Initialisert", value: "initialisert" },
       { title: "Opprettet", value: "opprettet" },
       { title: "Publisert", value: "publisert" },
     ],
