@@ -3,24 +3,6 @@
     <SideBar></SideBar>
     <main class="space-y-8 py-8">
       <h1 class="text-2xl">Insights</h1>
-      <section class="hidden">
-        <h2 class="mb-4 text-xl">Termbaser</h2>
-        <DataTable
-          v-model:selection="selectedTermbase"
-          :value="termbases"
-          removable-sort
-          table-style="min-width: 1rem"
-          selection-mode="single"
-        >
-          <Column
-            v-for="col of columns"
-            :key="col.field"
-            :field="col.field"
-            :header="col.header"
-            sortable
-          ></Column>
-        </DataTable>
-      </section>
       <InsightInstitutions />
       <InsightPeople />
       <section>
