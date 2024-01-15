@@ -66,7 +66,7 @@ export default {
         {
           name: "person",
           type: "reference",
-          to: [{ type: "person" }],
+          to: [{ type: "person" }, { type: "organization" }],
         },
       ],
     },
