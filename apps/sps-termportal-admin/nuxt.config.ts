@@ -35,4 +35,5 @@ export default defineNuxtConfig({
   routeRules: {
     "/studio/**": { ssr: false },
   },
+  ssr: false,
 });
