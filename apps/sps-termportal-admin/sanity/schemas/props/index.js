@@ -9,8 +9,9 @@ export const tbstatus = {
   type: "string",
   options: {
     list: [
-      { title: "Initialisert", value: "initialisert" },
+      { title: "Kjent", value: "kjent" },
       { title: "Planlagt", value: "planlagt" },
+      { title: "Initialisert", value: "initialisert" },
       { title: "Opprettet", value: "opprettet" },
       { title: "Publisert", value: "publisert" },
     ],

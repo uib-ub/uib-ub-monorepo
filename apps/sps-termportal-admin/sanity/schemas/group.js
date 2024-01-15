@@ -12,8 +12,14 @@ export default {
     {
       name: "qualifiedMembership",
       type: "array",
+      title: "Gruppemedlem",
       of: [membership],
     },
-    { name: "qualifiedConsultation", type: "array", of: [consultation] },
+    {
+      name: "qualifiedConsultation",
+      type: "array",
+      title: "Referansegruppe",
+      of: [consultation],
+    },
   ],
 };

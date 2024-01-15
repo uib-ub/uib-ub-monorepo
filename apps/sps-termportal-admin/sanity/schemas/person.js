@@ -12,6 +12,7 @@ export default {
     {
       name: "qualifiedDelegation",
       type: "array",
+      title: "Organisasjon",
       of: [delegation],
     },
   ],

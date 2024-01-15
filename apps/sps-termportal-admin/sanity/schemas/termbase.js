@@ -62,6 +62,7 @@ export default {
     {
       name: "contactPerson",
       type: "array",
+      title: "Kontakt",
       of: [
         {
           name: "person",
@@ -70,7 +71,7 @@ export default {
         },
       ],
     },
-    { name: "qualifiedAttribution", type: "array", of: [attribution] },
+    { name: "qualifiedAttribution", type: "array", title: "Termgruppe", of: [attribution] },
   ],
   preview: {
     select: {
