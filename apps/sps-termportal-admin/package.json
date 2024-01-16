@@ -40,5 +40,8 @@
     "termportal-ui": "*",
     "vite": "^4.2.1",
     "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "sanity-plugin-document-reference-by": "^1.0.1"
   }
 }

@@ -2,13 +2,17 @@ import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
 import { timespanInput } from "@seidhr/sanity-plugin-timespan-input";
 import { schemaTypes } from "./sanity/schemas";
-import { deskStructure } from "./sanity/deskStructure";
+import {
+  deskStructure,
+  defaultDocumentNodeResolver,
+} from "./sanity/deskStructure";
 
 export const sanityConfig = defineConfig({
   plugins: [
     timespanInput(),
     deskTool({
       structure: deskStructure,
+      defaultDocumentNode: defaultDocumentNodeResolver,
     }),
   ],
   name: "default",
