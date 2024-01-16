@@ -12,18 +12,14 @@
       :global-filter-fields="['label', 'termgroup', 'organization']"
     >
       <template #header>
-        <div class="flex">
+        <div class="flex justify-between">
           <InputText v-model="filters['global'].value" placeholder="Søk" />
+          <Button class="h-10" label="Eksport" @click="exportData($event)" />
         </div>
       </template>
       <Column field="label" header="Navn" sortable></Column>
       <Column field="termgroup" header="Termgruppe" sortable></Column>
       <Column field="organization" header="Organisasjon" sortable></Column>
-      <template #footer>
-        <div style="text-align: right">
-          <Button label="Eksport" @click="exportCSV($event)" />
-        </div>
-      </template>
     </DataTable>
   </section>
 </template>
@@ -81,7 +77,7 @@ const procdata = computed(() => {
 });
 
 const datatable = ref();
-const exportCSV = () => {
+const exportData = () => {
   datatable.value.exportCSV();
 };
 const filters = ref({
