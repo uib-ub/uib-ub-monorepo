@@ -2,7 +2,7 @@
   <section class="space-y-6">
     <h1 class="text-2xl">Definisjoner: {{ termbase.label }}</h1>
     <ul>
-      <li v-for="entry in stats">
+      <li v-for="entry in stats" :key="entry[1] + entry[2] + entry[0]">
         {{ entry[1] }}/{{ entry[2] }} {{ entry[0] }}
       </li>
     </ul>
