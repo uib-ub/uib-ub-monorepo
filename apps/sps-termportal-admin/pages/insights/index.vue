@@ -5,10 +5,7 @@
       <h1 class="text-2xl">Insights</h1>
       <InsightInstitutions />
       <InsightPeople />
-      <section>
-        <h2 class="mb-3 text-xl">Reference groups</h2>
-        <div class="">name, number of people, start-end, termgroup</div>
-      </section>
+      <InsightReferenceGroup />
       <section>
         <h2 class="mb-3 text-xl">People participating in reference groups</h2>
         <div class="">
