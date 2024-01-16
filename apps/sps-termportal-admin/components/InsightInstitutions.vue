@@ -9,8 +9,9 @@
       :global-filter-fields="['label']"
     >
       <template #header>
-        <div class="flex">
+        <div class="flex justify-between">
           <InputText v-model="filters['global'].value" placeholder="Søk" />
+          <Button class="h-10" label="Eksport" @click="exportData($event)" />
         </div>
       </template>
       <Column field="label" header="Navn" sortable></Column>
@@ -44,26 +45,32 @@ const query = `
 const { data } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
-  const filtered = data.value?.filter(
-    (group) =>
-      !(
-        (
-          group.members.length <= 0 || // filter out organizations without members
-          group._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
-        ) // filter out termportalen
-      )
-  );
-  const mapped = filtered?.map((group) => {
-    const map = {
-      label: group.label,
-      count: group.members.filter((member) => member.termgroups.length > 0)
-        .length,
-    };
-    return map;
-  });
+  const mapped = data.value
+    ?.filter(
+      (group) =>
+        !(
+          (
+            group.members.length <= 0 || // filter out organizations without members
+            group._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
+          ) // filter out termportalen
+        )
+    )
+    .map((group) => {
+      const map = {
+        label: group.label,
+        count: group.members.filter((member) => member.termgroups.length > 0)
+          .length,
+      };
+      return map;
+    })
+    .filter((group) => group.count > 0);
   return mapped;
 });
 
+const datatable = ref();
+const exportData = () => {
+  datatable.value.exportCSV();
+};
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
