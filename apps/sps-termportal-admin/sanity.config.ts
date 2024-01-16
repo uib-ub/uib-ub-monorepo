@@ -1,6 +1,7 @@
 import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
 import { timespanInput } from "@seidhr/sanity-plugin-timespan-input";
+import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./sanity/schemas";
 import {
   deskStructure,
@@ -14,6 +15,7 @@ export const sanityConfig = defineConfig({
       structure: deskStructure,
       defaultDocumentNode: defaultDocumentNodeResolver,
     }),
+    visionTool(),
   ],
   name: "default",
   title: "Studio",
