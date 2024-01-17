@@ -5,16 +5,8 @@
       <h1 class="text-2xl">Insights</h1>
       <InsightInstitutions />
       <InsightPeople />
-      <section>
-        <h2 class="mb-3 text-xl">Reference groups</h2>
-        <div class="">name, number of people, start-end, termgroup</div>
-      </section>
-      <section>
-        <h2 class="mb-3 text-xl">People participating in reference groups</h2>
-        <div class="">
-          Name, institution, role, start-end, filter for inactive
-        </div>
-      </section>
+      <InsightReferenceGroup />
+      <InsightReferencePeople />
       <section>
         <h2 class="mb-3 text-xl">Number of domains</h2>
         <div class="">Could be displayed as a nested list.</div>

@@ -74,6 +74,24 @@ const merged = computed(() => {
     _id: matchid(cmsdata, e, "_id"),
   }));
 
+  if (enriched) {
+    const ids = dbdata.value?.results?.bindings.map((e) => e.id.value);
+    for (const entry of cmsdata.value) {
+      if (!ids.includes(entry.id)) {
+        const data = {
+          label: entry.label,
+          id: entry.id + "*",
+          status: entry.status,
+          labels: entry.labelsOk,
+          descriptions: entry.descriptionsOk,
+          agreement: entry.hasLicenseAgreement,
+          _id: entry._id,
+        };
+        enriched.push(data);
+      }
+    }
+  }
+
   return enriched;
 });
 
