@@ -21,6 +21,14 @@ export default {
         columns: 2,
       },
     },
+    {
+      name: "unpublished",
+      title: "Planleggingsdata",
+      options: {
+        columns: 2,
+      },
+      hidden: ({ document }) => document?.status === "publisert",
+    },
   ],
   fields: [
     label,
@@ -40,6 +48,7 @@ export default {
       fieldset: "basics",
     },
     tbstatus,
+    { name: "domain", type: "string", fieldset: "unpublished" },
     {
       name: "labelsOk",
       type: "boolean",
