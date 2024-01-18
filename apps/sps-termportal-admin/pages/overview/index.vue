@@ -63,16 +63,18 @@ function matchid(data, entry, key) {
 }
 
 const merged = computed(() => {
-  const enriched = dbdata.value?.results?.bindings.map((e) => ({
-    label: e.label.value,
-    id: e.id.value,
-    conceptCount: e.concepts.value,
-    status: matchid(cmsdata, e, "status"),
-    labels: matchid(cmsdata, e, "labelsOk"),
-    descriptions: matchid(cmsdata, e, "descriptionsOk"),
-    agreement: matchid(cmsdata, e, "hasLicenseAgreement"),
-    _id: matchid(cmsdata, e, "_id"),
-  }));
+  const enriched = dbdata.value?.results?.bindings
+    .map((e) => ({
+      label: e.label.value,
+      id: e.id.value,
+      conceptCount: e.concepts.value,
+      status: matchid(cmsdata, e, "status"),
+      labels: matchid(cmsdata, e, "labelsOk"),
+      descriptions: matchid(cmsdata, e, "descriptionsOk"),
+      agreement: matchid(cmsdata, e, "hasLicenseAgreement"),
+      _id: matchid(cmsdata, e, "_id"),
+    }))
+    .filter((termbase) => termbase.id !== "DOMENE");
 
   if (enriched) {
     const ids = dbdata.value?.results?.bindings.map((e) => e.id.value);
