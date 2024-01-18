@@ -784,7 +784,7 @@ export const separated = {
 
 export const birthOf = {
   name: 'birthOf',
-  title: 'Døden til',
+  title: 'Fødsel til',
   type: 'array',
   of: [
     {

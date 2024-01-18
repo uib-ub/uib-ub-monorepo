@@ -15,10 +15,22 @@ export const TransferOfMember = {
   fields: [
     labelSingleton,
     featured,
-    timespanSingleton,
-    transferred,
-    transferredFrom,
-    transferredTo,
+    {
+      ...timespanSingleton,
+      validation: Rule => Rule.required(),
+    },
+    {
+      ...transferred,
+      validation: Rule => Rule.required(),
+    },
+    {
+      ...transferredFrom,
+      validation: Rule => Rule.required(),
+    },
+    {
+      ...transferredTo,
+      validation: Rule => Rule.required(),
+    },
     as,
     referredToBy,
   ],
@@ -32,8 +44,9 @@ export const TransferOfMember = {
     },
     prepare(selection) {
       const { transferred, transferredFrom, transferredTo, role, edtf } = selection
+      const constructedTitle = `${transferred ?? '???'} overført fra ${transferredFrom ?? '???'} til ${transferredTo ?? '???'}`
       return {
-        title: `${transferred ? transferred + ' ' : ''}overført fra ${transferredFrom ? transferredFrom : ''} til ${transferredTo ? transferredTo : ''}`,
+        title: constructedTitle ?? label,
         subtitle: `${role} ${edtf}`,
       }
     },
