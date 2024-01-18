@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h2 class="mb-3 text-xl">Institutions participating in termgroups</h2>
+    <h2 class="mb-3 text-xl">Institutions responsible for termbases</h2>
     <DataTable
       v-model:filters="filters"
       :value="procdata"
@@ -15,7 +15,7 @@
         </div>
       </template>
       <Column field="label" header="Navn" sortable></Column>
-      <Column field="count" header="Personer" sortable></Column>
+      <Column field="count" header="Terbaser" sortable></Column>
     </DataTable>
   </section>
 </template>
@@ -24,46 +24,25 @@
 import { FilterMatchMode } from "primevue/api";
 
 const query = `
-  *[_type == "organization"]
-  { _id,
-    label,
-    "members":
-      *[_type == "person" && references(^._id)]
-       {
-        _id,
-        label,
-        "termgroups":
-          *[_type == "group" && references(^._id)]
-          {
-            label,
-            qualifiedMembership[]{ timespan }
-          }
-      }
-  }
-
-  `;
+    *[_type == "organization"]
+    { _id,
+      label,
+      "termbases": *[_type == "termbase" && references(^._id)]{}
+    }
+  
+    `;
 const { data } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
   const mapped = data.value
-    ?.filter(
-      (group) =>
-        !(
-          (
-            group.members.length <= 0 || // filter out organizations without members
-            group._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
-          ) // filter out termportalen
-        )
-    )
-    .map((group) => {
+    ?.map((orga) => {
       const map = {
-        label: group.label,
-        count: group.members.filter((member) => member.termgroups.length > 0)
-          .length,
+        label: orga.label,
+        count: orga.termbases.length,
       };
       return map;
     })
-    .filter((group) => group.count > 0);
+    .filter((orga) => orga.count > 0);
   return mapped;
 });
 

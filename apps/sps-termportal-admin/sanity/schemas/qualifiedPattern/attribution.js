@@ -7,7 +7,7 @@ export default {
     {
       name: "group",
       type: "reference",
-      to: [{ type: "group" }],
+      to: [{ type: "group" }, { type: "organization" }],
     },
     timespan,
   ],

@@ -3,36 +3,11 @@
     <SideBar></SideBar>
     <main class="space-y-8 py-8">
       <h1 class="text-2xl">Insights</h1>
-      <section class="hidden">
-        <h2 class="mb-4 text-xl">Termbaser</h2>
-        <DataTable
-          v-model:selection="selectedTermbase"
-          :value="termbases"
-          removable-sort
-          table-style="min-width: 1rem"
-          selection-mode="single"
-        >
-          <Column
-            v-for="col of columns"
-            :key="col.field"
-            :field="col.field"
-            :header="col.header"
-            sortable
-          ></Column>
-        </DataTable>
-      </section>
+      <InsightInstitutionsTbs />
       <InsightInstitutions />
       <InsightPeople />
-      <section>
-        <h2 class="mb-3 text-xl">Reference groups</h2>
-        <div class="">name, number of people, start-end, termgroup</div>
-      </section>
-      <section>
-        <h2 class="mb-3 text-xl">People participating in reference groups</h2>
-        <div class="">
-          Name, institution, role, start-end, filter for inactive
-        </div>
-      </section>
+      <InsightReferenceGroup />
+      <InsightReferencePeople />
       <section>
         <h2 class="mb-3 text-xl">Number of domains</h2>
         <div class="">Could be displayed as a nested list.</div>
@@ -62,10 +37,7 @@
         <div class="">total number of searches</div>
         <div class="">Expand: Visits? time period? comparisons? etc.</div>
       </section>
-      <section>
-        <h2 class="mb-3 text-xl">Planned/unpublished termbases</h2>
-        <div class="">name, domain, ...</div>
-      </section>
+      <InsightPlannedTbs />
     </main>
   </div>
 </template>

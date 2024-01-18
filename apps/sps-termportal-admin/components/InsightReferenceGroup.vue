@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h2 class="mb-3 text-xl">Institutions participating in termgroups</h2>
+    <h2 class="mb-3 text-xl">Referansegrupper</h2>
     <DataTable
       v-model:filters="filters"
       :value="procdata"
@@ -14,8 +14,10 @@
           <Button class="h-10" label="Eksport" @click="exportData($event)" />
         </div>
       </template>
-      <Column field="label" header="Navn" sortable></Column>
-      <Column field="count" header="Personer" sortable></Column>
+      <Column field="label" header="Navn referansegruppe" sortable />
+      <Column field="count" header="Medlemmer" sortable />
+      <Column field="timespan" header="Tidsrom" sortable />
+      <Column field="termgroup" header="Termgruppe" sortable />
     </DataTable>
   </section>
 </template>
@@ -23,47 +25,37 @@
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
 
+// filter out
 const query = `
-  *[_type == "organization"]
-  { _id,
+*[_type == "group" && _id != "18974bab-daa5-4fea-803e-0471eb9e76da"]{
+  _id,
+  label,
+  qualifiedMembership[]{},
+  "termgroups": *[_type == "group" && references(^._id)]{
     label,
-    "members":
-      *[_type == "person" && references(^._id)]
-       {
-        _id,
-        label,
-        "termgroups":
-          *[_type == "group" && references(^._id)]
-          {
-            label,
-            qualifiedMembership[]{ timespan }
-          }
-      }
+    qualifiedConsultation[group._ref == ^.^._id]{
+      timespan{edtf}
+    }
   }
-
-  `;
+}
+`;
 const { data } = useLazySanityQuery(query);
 
+// TODO handle situation where one group consults multiple termgroups
 const procdata = computed(() => {
   const mapped = data.value
-    ?.filter(
-      (group) =>
-        !(
-          (
-            group.members.length <= 0 || // filter out organizations without members
-            group._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
-          ) // filter out termportalen
-        )
-    )
+    ?.filter((group) => group.termgroups.length > 0)
     .map((group) => {
       const map = {
         label: group.label,
-        count: group.members.filter((member) => member.termgroups.length > 0)
-          .length,
+        count: group.qualifiedMembership.length,
+        timespan: group.termgroups[0].qualifiedConsultation[0].timespan.edtf,
+        termgroup: group.termgroups[0].label,
+        // count: group.members.filter((member) => member.termgroups.length > 0)
+        //   .length,
       };
       return map;
-    })
-    .filter((group) => group.count > 0);
+    });
   return mapped;
 });
 

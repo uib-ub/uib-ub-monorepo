@@ -20,6 +20,14 @@ export default {
         columns: 2,
       },
     },
+    {
+      name: "unpublished",
+      title: "Planleggingsdata",
+      options: {
+        columns: 2,
+      },
+      hidden: ({ document }) => document?.status === "publisert",
+    },
   ],
   fields: [
     label,
@@ -39,6 +47,7 @@ export default {
       fieldset: "basics",
     },
     tbstatus,
+    { name: "domain", type: "string", fieldset: "unpublished" },
     {
       name: "labelsOk",
       type: "boolean",
@@ -62,15 +71,21 @@ export default {
     {
       name: "contactPerson",
       type: "array",
+      title: "Kontakt",
       of: [
         {
           name: "person",
           type: "reference",
-          to: [{ type: "person" }],
+          to: [{ type: "person" }, { type: "organization" }],
         },
       ],
     },
-    { name: "qualifiedAttribution", type: "array", of: [attribution] },
+    {
+      name: "qualifiedAttribution",
+      type: "array",
+      title: "Termgruppe eller organisasjon",
+      of: [attribution],
+    },
   ],
   preview: {
     select: {
