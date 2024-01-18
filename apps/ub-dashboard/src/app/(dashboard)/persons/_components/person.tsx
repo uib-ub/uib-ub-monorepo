@@ -13,6 +13,7 @@ import { PersonProps } from '@/types'
 import { groq } from 'next-sanity'
 
 export const query = groq`*[_id == $id][0] {
+  _id,
   "id": _id,
   "type": _type,
   "label": label,
@@ -58,7 +59,7 @@ export const query = groq`*[_id == $id][0] {
       "id": _id,
       label
     },
-    hasMember[assignedActor._ref == $id] {
+    hasMember[assignedActor._ref == ^.^._id] {
       assignedRole[]-> {
         "id": _id,
         label,

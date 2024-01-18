@@ -3,9 +3,9 @@
 import { CommandInput, CommandGroup, CommandDialog, CommandList, CommandEmpty, CommandItem } from '@/components/ui/command'
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from 'react'
-import { Badge } from '../ui/badge'
+import { Badge } from '../../ui/badge'
 import { cn, path } from '@/lib/utils'
-import { Button } from '../ui/button'
+import { Button } from '../../ui/button'
 
 export function GlobalCommand({ data }: Readonly<{ data: any[] }>) {
   const router = useRouter()
@@ -32,12 +32,12 @@ export function GlobalCommand({ data }: Readonly<{ data: any[] }>) {
       <Button
         variant="outline"
         className={cn(
-          "relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-24 lg:w-32"
+          "relative w-min justify-start text-sm text-muted-foreground sm:pr-12 md:w-24 lg:w-32"
         )}
         onClick={() => setOpen(true)}
       >
-        <span className="hidden lg:inline-flex">Søk...</span>
-        <span className="inline-flex lg:hidden">Søk...</span>
+        <span className="hidden lg:inline-flex">Søk</span>
+        <span className="inline-flex lg:hidden">Søk</span>
         <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
