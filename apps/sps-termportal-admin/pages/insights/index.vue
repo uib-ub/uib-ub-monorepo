@@ -3,6 +3,7 @@
     <SideBar></SideBar>
     <main class="space-y-8 py-8">
       <h1 class="text-2xl">Insights</h1>
+      <InsightInstitutionsTbs />
       <InsightInstitutions />
       <InsightPeople />
       <InsightReferenceGroup />
@@ -36,10 +37,7 @@
         <div class="">total number of searches</div>
         <div class="">Expand: Visits? time period? comparisons? etc.</div>
       </section>
-      <section>
-        <h2 class="mb-3 text-xl">Planned/unpublished termbases</h2>
-        <div class="">name, domain, ...</div>
-      </section>
+      <InsightPlannedTbs />
     </main>
   </div>
 </template>

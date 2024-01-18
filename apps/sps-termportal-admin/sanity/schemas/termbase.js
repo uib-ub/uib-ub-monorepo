@@ -1,6 +1,5 @@
 import { label, note, responsibleStaff, tbstatus } from "./props";
 import attribution from "./qualifiedPattern/attribution";
-import attributionOrga from "./qualifiedPattern/attributionOrga";
 
 export default {
   name: "termbase",
@@ -84,14 +83,8 @@ export default {
     {
       name: "qualifiedAttribution",
       type: "array",
-      title: "Termgruppe",
+      title: "Termgruppe eller organisasjon",
       of: [attribution],
-    },
-    {
-      name: "qualifiedOrgaAttribution",
-      type: "array",
-      title: "Organisasjon",
-      of: [attributionOrga],
     },
   ],
   preview: {
