@@ -27,7 +27,9 @@ const query = `
     *[_type == "organization"]
     { _id,
       label,
-      "termbases": *[_type == "termbase" && references(^._id)]{}
+      "termbases": *[_type == "termbase" && references(^._id)]{
+        qualifiedAttribution[group._ref == ^.^._id]{...}
+      }
     }
   
     `;
@@ -38,7 +40,7 @@ const procdata = computed(() => {
     ?.map((orga) => {
       const map = {
         label: orga.label,
-        count: orga.termbases.length,
+        count: orga.termbases.filter((tb) => tb.qualifiedAttribution).length
       };
       return map;
     })
