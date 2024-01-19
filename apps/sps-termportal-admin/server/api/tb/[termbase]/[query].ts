@@ -1,4 +1,5 @@
 import genExploreDefinitionsQuery from "~/server/utils/genExploreDefinitionsQuery";
+import genInsightTermbaseQuery from "~/server/utils/genInsightTermbaseQuery";
 import genOverviewQuery from "~/server/utils/genOverviewQuery";
 
 export default defineEventHandler(async (event) => {
@@ -7,22 +8,23 @@ export default defineEventHandler(async (event) => {
 
   const termbase = event.context.params.termbase;
   const queryType = event.context.params.query;
-  let query;
 
-  switch (queryType) {
-    case "exploreDefinitions":
-      query = genExploreDefinitionsQuery(termbase);
-      break;
-    case "overview":
-      query = genOverviewQuery();
-      break;
-    default:
-      break;
-  }
+  const query = () => {
+    switch (queryType) {
+      case "exploreDefinitions":
+        return genExploreDefinitionsQuery(termbase);
+      case "overview":
+        return genOverviewQuery();
+      case "insightTermbase":
+        return genInsightTermbaseQuery();
+      default:
+        break;
+    }
+  };
 
   const data = await $fetch(url, {
     method: "post",
-    body: query,
+    body: query(),
     headers: {
       "Content-type": "application/sparql-query",
       Referer: "termportalen.no", // TODO Referer problem
