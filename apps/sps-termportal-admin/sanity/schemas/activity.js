@@ -44,4 +44,16 @@ export default {
       subtitle: "timespan.edtf",
     },
   },
+  orderings: [
+    {
+      title: "Beginning of Activity",
+      name: "beginOfTheBegin",
+      by: [{ field: "timespan.beginOfTheBegin", direction: "desc" }],
+    },
+    {
+      title: "End of Activity",
+      name: "beginOfTheBegin",
+      by: [{ field: "timespan.endOfTheEnd", direction: "desc" }],
+    },
+  ],
 };
