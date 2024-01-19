@@ -18,27 +18,21 @@
         <div class="">Include aggregation for inherited etc. data?</div>
       </section>
       <section>
-        <h2 class="mb-3 text-xl">Number of termbases by domain</h2>
-        <div class="">Combine with previous?</div>
-      </section>
-      <section>
         <h2 class="mb-3 text-xl">Subdomain(s) lacking terminology</h2>
         <div class="">Separate entry or combined with previous entries?</div>
       </section>
       <section>
-        <h2 class="mb-3 text-xl">Termbase overview</h2>
-        <div class="">
-          name, concept count, languages defined, languages present
-        </div>
-        <div class="">count of concepts with nb/nn term/definition</div>
-        <InsightTermbaseLangCoverage />
+        <h2 class="mb-3 text-xl">Number of termbases by domain</h2>
+        <div class="">Combine with previous?</div>
       </section>
+      <InsightTermbaseLangCoverage />
+      <InsightPublishedTbsYear />
+      <InsightPlannedTbs />
       <section>
         <h2 class="mb-3 text-xl">Analytics data</h2>
         <div class="">total number of searches</div>
         <div class="">Expand: Visits? time period? comparisons? etc.</div>
       </section>
-      <InsightPlannedTbs />
     </main>
   </div>
 </template>
