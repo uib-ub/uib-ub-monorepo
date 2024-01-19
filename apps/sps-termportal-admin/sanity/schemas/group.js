@@ -5,6 +5,7 @@ import membership from "./qualifiedPattern/membership";
 export default {
   name: "group",
   type: "document",
+  title: "Gruppe",
   liveEdit: "true",
   fields: [
     label,

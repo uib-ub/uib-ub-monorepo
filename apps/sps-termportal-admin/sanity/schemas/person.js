@@ -4,6 +4,7 @@ import delegation from "./qualifiedPattern/delegation";
 export default {
   name: "person",
   type: "document",
+  title: "Person",
   liveEdit: "true",
   fields: [
     label,
