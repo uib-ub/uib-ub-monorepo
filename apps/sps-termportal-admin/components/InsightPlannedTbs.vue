@@ -6,6 +6,8 @@
       v-model:filters="filters"
       :value="procdata"
       removable-sort
+      sort-field="status"
+      :sort-order="-1"
       paginator
       :rows="15"
       table-style="min-width: 1rem"

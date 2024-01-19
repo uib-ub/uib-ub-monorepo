@@ -2,10 +2,12 @@
   <section>
     <h2 class="mb-3 text-xl">Institutions participating in termgroups</h2>
     <DataTable
-    ref="datatable"
+      ref="datatable"
       v-model:filters="filters"
       :value="procdata"
       removable-sort
+      sort-field="count"
+      :sort-order="-1"
       table-style="min-width: 1rem"
       :global-filter-fields="['label']"
     >

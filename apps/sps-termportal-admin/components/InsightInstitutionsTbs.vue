@@ -6,6 +6,8 @@
       v-model:filters="filters"
       :value="procdata"
       removable-sort
+      sort-field="count"
+      :sort-order="-1"
       table-style="min-width: 1rem"
       :global-filter-fields="['label']"
     >
