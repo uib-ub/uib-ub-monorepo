@@ -9,7 +9,6 @@ export default function () {
       ?concept skosp:memberOf ?tb .
       ?tb dct:identifier ?id .
       ?tb rdfs:label ?label .
-      
       FILTER ( lang(?label) = 'nb') .
     }
   }

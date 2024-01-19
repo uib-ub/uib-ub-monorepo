@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h2 class="mb-3 text-xl">Upublisert termbaser</h2>
+    <h2 class="mb-3 text-xl">Upubliserte termbaser</h2>
     <DataTable
       ref="datatable"
       v-model:filters="filters"

@@ -31,6 +31,7 @@
           name, concept count, languages defined, languages present
         </div>
         <div class="">count of concepts with nb/nn term/definition</div>
+        <InsightTermbaseLangCoverage />
       </section>
       <section>
         <h2 class="mb-3 text-xl">Analytics data</h2>
