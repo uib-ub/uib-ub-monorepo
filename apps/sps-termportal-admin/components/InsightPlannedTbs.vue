@@ -6,10 +6,12 @@
       v-model:filters="filters"
       :value="procdata"
       removable-sort
+      sort-field="status"
+      :sort-order="-1"
       paginator
       :rows="15"
       table-style="min-width: 1rem"
-      :global-filter-fields="['label', 'termgroup', 'organization']"
+      :global-filter-fields="['label', 'status', 'domain']"
     >
       <template #header>
         <div class="flex justify-between">
@@ -36,13 +38,6 @@ const query = `
 `;
 
 const { data } = useLazySanityQuery(query);
-
-const statusopt = {
-  kjent: "1. kjent",
-  planlagt: "2. planlagt",
-  initialisert: "3. initialisert",
-  opprettet: "4. opprettet",
-};
 
 const procdata = computed(() => {
   const mapped = data.value?.map((tb) => {

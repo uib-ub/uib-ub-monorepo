@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h2 class="mb-3 text-xl">Termbases: Language coverage</h2>
+    <h2 class="mb-3 text-xl">Termbases: Language coverage [slow query]</h2>
     <DataTable
       ref="datatable"
       v-model:filters="filters"
