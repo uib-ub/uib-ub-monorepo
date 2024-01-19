@@ -1,4 +1,6 @@
+import { defineField } from 'sanity';
 import { imageSingleton, labelSingleton, referredToBy, shortDescription, timespan } from "./props";
+import CreateNewRefInput from '../components/create-new-ref-input';
 
 export const Actor = {
   name: 'Actor',
@@ -27,6 +29,27 @@ export const Actor = {
       type: 'array',
       of: [{ type: 'Skill' }]
     },
+    // TEST: add ref to Actor when creating new Joining document
+    defineField({
+      type: 'reference',
+      name: 'reference',
+      title: 'Alternativ aktivitetsstrøm',
+      description: 'Hendelse og aktiviteter som henviser til denne personen.',
+      to: [
+        { type: 'Joining' },
+        { type: 'TransferOfMember' },
+        { type: 'Leaving' },
+        { type: 'Activity' },
+        { type: 'Birth' },
+        { type: 'Death' },
+      ],
+      components: {
+        input: CreateNewRefInput,
+      },
+      options: {
+        disableNew: true,
+      },
+    }),
     {
       name: 'activityStream',
       title: 'Aktivitetsstrøm',
@@ -39,12 +62,11 @@ export const Actor = {
         {
           type: 'reference',
           to: [
-            { type: 'Birth' },
-            { type: 'Activity' },
-            { type: 'Event' },
             { type: 'Joining' },
             { type: 'TransferOfMember' },
             { type: 'Leaving' },
+            { type: 'Activity' },
+            { type: 'Birth' },
             { type: 'Death' },
           ]
         },

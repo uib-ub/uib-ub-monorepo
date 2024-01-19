@@ -11,22 +11,36 @@ export const Leaving = {
   fields: [
     labelSingleton,
     featured,
+    {
+      ...timespanSingleton,
+      validation: Rule => Rule.required(),
+    },
+    {
+      ...separated,
+      validation: Rule => Rule.required(),
+    },
+    {
+      ...separatedFrom,
+      validation: Rule => Rule.required(),
+    },
+    {
+      ...tookPlaceAt,
+    },
     referredToBy,
-    timespanSingleton,
-    separated,
-    separatedFrom,
-    tookPlaceAt,
   ],
   preview: {
     select: {
       label: 'label',
+      actor: 'separated.0.label',
+      group: 'separatedFrom.label',
       media: 'separated.0.logo',
       edtf: 'timespan.edtf'
     },
     prepare(selection) {
-      const { label, media, edtf } = selection
+      const { label, actor, group, media, edtf } = selection
+      const constructedTitle = `${actor ?? '???'} forlot ${group ?? '???'}`
       return {
-        title: label,
+        title: label ?? constructedTitle,
         subtitle: edtf,
         media: media
       }

@@ -16,12 +16,12 @@ export const Formation = {
   fields: [
     labelSingleton,
     featured,
-    referredToBy,
     timespanSingleton,
     formed,
     formedFrom,
     motivatedBy,
     tookPlaceAt,
+    referredToBy,
   ],
   preview: {
     select: {

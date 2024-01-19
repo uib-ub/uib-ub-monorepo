@@ -1,8 +1,6 @@
 import { carriedOutBy, timespan, tookPlaceAt, referredToBy, labelSingleton, deathOf } from '../props'
 import { defaultFieldsets } from '../fieldsets'
 
-var capitalize = require('capitalize')
-
 export const Death = {
   name: 'Death',
   type: 'document',
@@ -13,14 +11,13 @@ export const Death = {
   fields: [labelSingleton, deathOf, carriedOutBy, timespan, tookPlaceAt, referredToBy],
   preview: {
     select: {
+      actor: 'deathOf.label',
       edtf: 'timespan.edtf',
-      blocks: 'description',
-      type: '_type',
     },
     prepare(selection) {
-      const { type, edtf } = selection
+      const { actor, edtf } = selection
       return {
-        title: `${capitalize(type)}`,
+        title: `${actor ?? '???'} går bort`,
         subtitle: edtf,
       }
     },

@@ -16,9 +16,18 @@ export const Joining = {
   fields: [
     labelSingleton,
     featured,
-    timespanSingleton,
-    joinedWith,
-    joined,
+    {
+      ...timespanSingleton,
+      validation: Rule => Rule.required(),
+    },
+    {
+      ...joinedWith,
+      validation: Rule => Rule.required(),
+    },
+    {
+      ...joined,
+      validation: Rule => Rule.required(),
+    },
     as,
     tookPlaceAt,
     referredToBy,
@@ -26,14 +35,17 @@ export const Joining = {
   preview: {
     select: {
       label: 'label',
+      actor: 'joined.0.label',
+      group: 'joinedWith.label',
       media: 'joined.0.image',
       edtf: 'timespan.edtf',
       role: 'as.label'
     },
     prepare(selection) {
-      const { label, media, edtf, role } = selection
+      const { label, actor, group, media, edtf, role } = selection
+      const constructedTitle = `${actor ?? '???'} startet i ${group ?? '???'}`
       return {
-        title: label,
+        title: label ?? constructedTitle,
         subtitle: `${role ?? ''} ${edtf ?? ''}`,
         media: media
       }
