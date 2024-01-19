@@ -2,6 +2,7 @@
   <section>
     <h2 class="mb-3 text-xl">Institutions responsible for termbases</h2>
     <DataTable
+      ref="datatable"
       v-model:filters="filters"
       :value="procdata"
       removable-sort
@@ -15,7 +16,7 @@
         </div>
       </template>
       <Column field="label" header="Navn" sortable></Column>
-      <Column field="count" header="Terbaser" sortable></Column>
+      <Column field="count" header="Termbaser" sortable></Column>
     </DataTable>
   </section>
 </template>
@@ -40,7 +41,7 @@ const procdata = computed(() => {
     ?.map((orga) => {
       const map = {
         label: orga.label,
-        count: orga.termbases.filter((tb) => tb.qualifiedAttribution).length
+        count: orga.termbases.filter((tb) => tb.qualifiedAttribution).length,
       };
       return map;
     })
