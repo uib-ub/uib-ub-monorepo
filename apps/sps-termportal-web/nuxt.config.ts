@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     },
   },
   modules: [
+    "@nuxt/content",
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],
@@ -46,6 +47,16 @@ export default defineNuxtConfig({
         ],
       }),
     ],
+  },
+  content: {
+    sources: {
+      github: {
+        driver: "github",
+        repo: "uib-ub/terminologi-content",
+        branch: "main",
+        dir: "web",
+      },
+    },
   },
   // htmlValidator: {
   //  usePrettier: true,
