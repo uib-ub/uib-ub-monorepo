@@ -29,7 +29,20 @@ export default defineNuxtConfig({
     preset: "vercel",
   },
   content: {
-    // ... options
+    sources: {
+      //   content: {
+      //     driver: "fs",
+      //     prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
+      //     base: resolve(__dirname, "content"),
+      //   },
+      github: {
+        // prefix: "/remote",
+        driver: "github",
+        repo: "uib-ub/terminologi-content",
+        branch: "main",
+        dir: "admin",
+      },
+    },
   },
   sanity: {
     projectId: "k38biek5",
