@@ -9,7 +9,6 @@
       <HeaderSearchScope />
     </div>
     <div class="flex flex-col gap-x-8 gap-y-6 pt-6 lg:flex-row">
-      <!-- <WelcomeTP class="basis-7/12" /> -->
       <ContentDoc
         :path="`/${locale}/welcome`"
         class="content-page basis-7/12"
@@ -24,15 +23,7 @@ const locale = useLocale();
 </script>
 
 <style>
-.content-page h2 {
-  @apply pb-3 text-2xl;
-}
-
 .content-page p {
   @apply py-1.5;
-}
-
-.content-page p > a {
-  @apply underline hover:decoration-2;
 }
 </style>
