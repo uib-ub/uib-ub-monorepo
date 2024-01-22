@@ -38,6 +38,9 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "vercel",
+    experimental: {
+      asyncContext: false,
+    },
   },
   vite: {
     plugins: [
@@ -47,6 +50,10 @@ export default defineNuxtConfig({
         ],
       }),
     ],
+    // https://github.com/nuxt/nuxt/issues/24901
+    define: {
+      __NUXT_ASYNC_CONTEXT__: false,
+    },
   },
   content: {
     sources: {
