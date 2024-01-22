@@ -34,7 +34,7 @@
     "eslint-plugin-tsdoc": "^0.2.17",
     "jsonld": "^8.1.0",
     "mathjax": "^3.2.2",
-    "nuxt": "^3.9.3",
+    "nuxt": "3.8.0",
     "nuxt-icon": "^0.2.10",
     "pa11y": "^6.2.3",
     "pa11y-ci": "^3.0.1",

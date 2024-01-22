@@ -46,9 +46,9 @@ export default defineNuxtConfig({
       }),
     ],
     // https://github.com/nuxt/nuxt/issues/24901
-    define: {
-      __NUXT_ASYNC_CONTEXT__: false,
-    },
+    // define: {
+    //   __NUXT_ASYNC_CONTEXT__: false,
+    // },
   },
   content: {
     sources: {
