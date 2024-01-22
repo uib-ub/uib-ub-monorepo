@@ -178,7 +178,10 @@
                     />
                   </TermProp>
                   <TermProp
-                    v-if="concept?.modified"
+                    v-if="
+                      concept?.modified &&
+                      !legacyTbs.includes(route.params.termbase)
+                    "
                     :flex="true"
                     :label="$t('id.modified')"
                   >
@@ -216,11 +219,7 @@
                     </TermProp>
                   </template>
                   <TermProp
-                    v-if="
-                      (route.params.termbase === 'NOT' ||
-                        route.params.termbase === 'RTT') &&
-                      concept
-                    "
+                    v-if="legacyTbs.includes(route.params.termbase) && concept"
                     :flex="true"
                     :label="$t('id.note')"
                   >
