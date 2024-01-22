@@ -130,14 +130,6 @@
                   >Tove Bjørneset, {{ $t("om.terminologist") }}</AppLink
                 >
               </li>
-              <li>
-                <AppLink
-                  class="underline hover:decoration-2"
-                  to="https://www.uib.no/personer/Vetle-Einar.Nordg%C3%A5rd.Mikkelsen"
-                  >Vetle-Einar Nordgård Mikkelsen,
-                  {{ $t("om.terminologist") }}</AppLink
-                >
-              </li>
             </ul>
           </AccordionTab>
           <AccordionTab>
