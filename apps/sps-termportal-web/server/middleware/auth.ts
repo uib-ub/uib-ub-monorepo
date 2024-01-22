@@ -27,7 +27,7 @@ export default defineEventHandler((event) => {
   ensureToken(event);
   const runtimeConfig = useRuntimeConfig();
   const pathname = getRequestURL(event).pathname;
-  if (pathname.startsWith("/api/")) {
+  if (pathname.startsWith("/api/") && !pathname.startsWith("/api/content")) {
     if (getCookie(event, "session") !== runtimeConfig.apiKey) {
       throw createError({
         statusCode: 500, // internally used for retry. ofetch defines list of retry codes statically
