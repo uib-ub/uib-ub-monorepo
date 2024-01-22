@@ -1,5 +1,7 @@
 import MaterialSymbolsMap from "./components/icons/map"
 import MaterialSymbolsDataTable from "./components/icons/data-table"
+import UiBLogo from "./components/icons/uib-logo";
+import Link from 'next/link';
 export default function Home() {
   return (
 <main className="flex flex-col gap-24 items-center justify-center pt-4 pb-8 px-4">
@@ -18,7 +20,7 @@ export default function Home() {
   </div>
   </div>
 
-  <div className="flex flex-row items-center gap-6"><img src="uib-logo.svg" alt="UIB Logo" className="text-white fill-current"/>Språksamlingene<br/>Universitetet i Bergen</div>
+  <div className="flex flex-row items-center gap-6 text-slate-800 "><UiBLogo/><div className="flex flex-col gap-1"><span className="">Språksamlingene<br/>Universitetet i Bergen</span><Link href="uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div></div>
 
 
   
