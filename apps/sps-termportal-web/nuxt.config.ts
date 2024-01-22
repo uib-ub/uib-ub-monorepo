@@ -41,6 +41,9 @@ export default defineNuxtConfig({
     experimental: {
       asyncContext: false,
     },
+    prerender: {
+      failOnError: false,
+    },
   },
   vite: {
     plugins: [
