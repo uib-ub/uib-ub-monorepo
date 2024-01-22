@@ -6,20 +6,17 @@ import { v4 as uuidv4 } from "uuid";
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
+  modules: [
+    "@nuxt/content",
+    // "@nuxtjs/html-validator",
+    // "@unlighthouse/nuxt",
+  ],
   app: {
     head: {
       title: "Termportalen",
       link: [{ rel: "icon", type: "image/svg", href: "/favicon.svg" }],
     },
   },
-  modules: [
-    "@nuxt/content",
-    // "@nuxtjs/html-validator",
-    // "@unlighthouse/nuxt",
-  ],
-  // content: {
-  // https://content.nuxtjs.org/api/configuration
-  // },
   routeRules: {
     "/api/**": {
       cors: true,
@@ -38,12 +35,6 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "vercel",
-    experimental: {
-      asyncContext: false,
-    },
-    prerender: {
-      failOnError: false,
-    },
   },
   vite: {
     plugins: [
@@ -68,10 +59,6 @@ export default defineNuxtConfig({
       },
     },
   },
-  // Problem with SSR of nuxt content in 3.7.0
-  // also fails to prerender route
-  // Later versions cause a import problem of micromark
-  ssr: false,
   // htmlValidator: {
   //  usePrettier: true,
   //  logLevel: "verbose",
