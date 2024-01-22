@@ -65,6 +65,10 @@ export default defineNuxtConfig({
       },
     },
   },
+  // Problem with SSR of nuxt content in 3.7.0
+  // also fails to prerender route
+  // Later versions cause a import problem of micromark
+  ssr: false,
   // htmlValidator: {
   //  usePrettier: true,
   //  logLevel: "verbose",
