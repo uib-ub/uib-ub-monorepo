@@ -132,6 +132,15 @@
               </li>
             </ul>
           </AccordionTab>
+          <AccordionTab class="content-page">
+            <template #header>
+              <h2 class="font-semibold">{{ $t("om.fagrad") }}</h2>
+            </template>
+            <div class="content-page">
+              <ContentDoc :path="`/${locale}/om/fagrad`" />
+              <ContentDoc :path="`/${locale}/om/fagrad-mandat`" />
+            </div>
+          </AccordionTab>
           <AccordionTab>
             <template #header>
               <h2 class="font-semibold">{{ $t("om.history") }}</h2>
@@ -825,10 +834,18 @@
 const locale = useLocale();
 </script>
 
-<style scoped>
+<style>
 blockquote {
   display: block;
   margin-left: 2.5em;
   margin-right: 0em;
+}
+
+.content-page ul {
+  @apply list-inside pl-[1.5em];
+}
+
+.content-page ol {
+  @apply list-decimal pl-[1.5em];
 }
 </style>

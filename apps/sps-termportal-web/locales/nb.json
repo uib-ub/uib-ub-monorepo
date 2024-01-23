@@ -175,7 +175,7 @@
     "replacedBy": "Erstattet av", // TODO
     "inndelingskriterium": "Inndelingskriterium", // TODO
     "collection": "Termbase",
-    "subject": "Fagområde",
+    "subject": "Bruksområde",
     "domain": "Domene",
     "modified": "Sist oppdatert",
     "note": "Merknad",
@@ -192,6 +192,7 @@
   "om": {
     "title": "Om Termportalen",
     "aboutUs": "Om oss",
+    "fagrad": "Termportalens fagråd",
     "history": "Historikk",
     "publications": "Relevante publikasjoner",
     "kommeiGang": "Hvordan komme i gang med terminologiarbeid?",

@@ -52,6 +52,11 @@ export default defineNuxtConfig({
   },
   content: {
     sources: {
+      content: {
+        driver: "fs",
+        prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
+        base: resolve(__dirname, "content"),
+      },
       github: {
         driver: "github",
         repo: "uib-ub/terminologi-content",
