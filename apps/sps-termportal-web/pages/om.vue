@@ -134,6 +134,16 @@
           </AccordionTab>
           <AccordionTab>
             <template #header>
+              <h2 class="font-semibold">{{ $t("om.fagrad") }}</h2>
+            </template>
+            <ContentDoc class="content-page" :path="`/${locale}/om/fagrad`" />
+            <ContentDoc
+              class="content-page"
+              :path="`/${locale}/om/fagrad-mandat`"
+            />
+          </AccordionTab>
+          <AccordionTab>
+            <template #header>
               <h2 class="font-semibold">{{ $t("om.history") }}</h2>
             </template>
             <div v-if="locale === 'nb' || locale === 'en'" class="space-y-2">
@@ -830,5 +840,18 @@ blockquote {
   display: block;
   margin-left: 2.5em;
   margin-right: 0em;
+}
+.content-page p {
+  @apply py-1.5;
+}
+
+.content-page ul {
+  text-indent: -1.5em;
+  padding-left: 1.5em;
+  @apply list-inside;
+}
+
+.content-page ol {
+  @apply list-decimal pl-[1.5em];
 }
 </style>
