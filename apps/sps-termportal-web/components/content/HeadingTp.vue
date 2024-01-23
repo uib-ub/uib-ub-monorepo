@@ -4,7 +4,7 @@
   </component>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
   level: {
     type: String,
