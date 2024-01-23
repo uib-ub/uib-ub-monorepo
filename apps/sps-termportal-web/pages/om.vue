@@ -132,15 +132,14 @@
               </li>
             </ul>
           </AccordionTab>
-          <AccordionTab>
+          <AccordionTab class="content-page">
             <template #header>
               <h2 class="font-semibold">{{ $t("om.fagrad") }}</h2>
             </template>
-            <ContentDoc class="content-page" :path="`/${locale}/om/fagrad`" />
-            <ContentDoc
-              class="content-page"
-              :path="`/${locale}/om/fagrad-mandat`"
-            />
+            <div class="content-page">
+              <ContentDoc :path="`/${locale}/om/fagrad`" />
+              <ContentDoc :path="`/${locale}/om/fagrad-mandat`" />
+            </div>
           </AccordionTab>
           <AccordionTab>
             <template #header>
@@ -835,20 +834,15 @@
 const locale = useLocale();
 </script>
 
-<style scoped>
+<style>
 blockquote {
   display: block;
   margin-left: 2.5em;
   margin-right: 0em;
 }
-.content-page p {
-  @apply py-1.5;
-}
 
 .content-page ul {
-  text-indent: -1.5em;
-  padding-left: 1.5em;
-  @apply list-inside;
+  @apply list-inside pl-[1.5em];
 }
 
 .content-page ol {
