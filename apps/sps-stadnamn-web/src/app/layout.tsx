@@ -26,14 +26,6 @@ export default function RootLayout({
           </nav>
         </header>
         {children}
-        <footer className="bg-slate-900  p-3 px-6 text-white text-center">
-        
-          <nav className="flex flex-col md:flex-row gap-3">
-            <Link href="/">Personvern</Link>
-            <Link href="/">Tilgjengelighetserklæring</Link>
-          </nav>
-          
-        </footer>
       </body>
     </html>
   );

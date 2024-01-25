@@ -3,6 +3,7 @@ import { PiMapTrifold, PiDatabase } from 'react-icons/pi';
 import Link from 'next/link';
 export default function Home() {
   return (
+    <>
 <main className="flex flex-col grow-1 gap-24 items-center justify-center  pt-4 pb-8 px-4 my-auto">
   <div className="flex flex-col gap-12 my-2">
   <div className="flex flex-col gap-6 items-center">
@@ -22,5 +23,14 @@ export default function Home() {
   <div className="flex flex-row items-center gap-6 text-slate-800 "><UiBLogo/><div className="flex flex-col gap-1"><span className="">Språksamlingene<br/>Universitetet i Bergen</span><Link href="uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div></div>
 
 </main>
+        <footer className="bg-slate-900  p-3 px-6 text-white text-center">
+        
+        <nav className="flex flex-col md:flex-row gap-3">
+          <Link href="/">Personvern</Link>
+          <Link href="/">Tilgjengelighetserklæring</Link>
+        </nav>
+        
+      </footer>
+      </>
   );
 }

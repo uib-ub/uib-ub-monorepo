@@ -60,8 +60,13 @@ export default function SearchInterface() {
             
       </div>
 
-      <div className="bg-white shadow-md mx-2 p-2 md:w-3/5">
+      <div className='md:w-3/5 flex flex-col gap-4'>
+      <div className="bg-white shadow-md mx-2 p-2 md:h-4/5">
         MAP
+      </div>
+      <div className="bg-white shadow-md mx-2 p-2 md:h-1/5">
+        Info page
+      </div>
       </div>
 
       <div className="bg-white gap-2 flex flex-col shadow-md mx-2 p-2 md:w-1/5">
