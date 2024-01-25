@@ -60,12 +60,18 @@ export default function SearchInterface() {
             
       </div>
 
-      <div className='md:w-3/5 flex flex-col gap-4'>
-      <div className="bg-white shadow-md mx-2 p-2 md:h-4/5">
+      <div className='md:w-3/5 flex flex-col bg-white shadow-md'>
+      <div className="mx-2 p-2 md:h-4/5 m-2 bg-lime-100">
         MAP
       </div>
-      <div className="bg-white shadow-md mx-2 p-2 md:h-1/5">
-        Info page
+      <div className=" mx-2 p-2 md:h-1/5">
+        <h2 className='mb-3 font-semibold'>Info</h2>
+        List with text:
+        <ul>
+          <li>- Info about dataset if no place name selected </li>
+          <li>- Switch to showing image in map card</li>
+        </ul>
+        
       </div>
       </div>
 
