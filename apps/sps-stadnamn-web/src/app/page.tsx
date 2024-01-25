@@ -1,10 +1,9 @@
-import MaterialSymbolsMap from "./components/icons/map"
-import MaterialSymbolsDataTable from "./components/icons/data-table"
-import UiBLogo from "./components/icons/uib-logo";
+import UiBLogo from "@/components/svg/UiBLogo"
+import { PiMapTrifold, PiDatabase } from 'react-icons/pi';
 import Link from 'next/link';
 export default function Home() {
   return (
-<main className="flex flex-col gap-24 items-center justify-center pt-4 pb-8 px-4">
+<main className="flex flex-col grow-1 gap-24 items-center justify-center  pt-4 pb-8 px-4 my-auto">
   <div className="flex flex-col gap-12 my-2">
   <div className="flex flex-col gap-6 items-center">
   <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl font-bold">Stedsnavnsøk</h1>
@@ -15,15 +14,13 @@ export default function Home() {
   </form>
   </div>
   <div className="flex flex-col md:flex-row gap-12 justify-center">
-  <button className="btn aspect-square flex flex-col text-xl"><MaterialSymbolsMap className="text-9xl md:text-8xl"/>Utforsk kartet</button>
-  <button className="btn aspect-square flex flex-col text-xl"><MaterialSymbolsDataTable className="text-9xl md:text-8xl"/>Velg datasett</button>
+  <button className="btn aspect-square flex flex-col text-xl"><PiMapTrifold className="text-9xl md:text-8xl"/>Utforsk kartet</button>
+  <button className="btn aspect-square flex flex-col text-xl"><PiDatabase className="text-9xl md:text-8xl"/>Velg datasett</button>
   </div>
   </div>
 
   <div className="flex flex-row items-center gap-6 text-slate-800 "><UiBLogo/><div className="flex flex-col gap-1"><span className="">Språksamlingene<br/>Universitetet i Bergen</span><Link href="uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div></div>
 
-
-  
 </main>
   );
 }

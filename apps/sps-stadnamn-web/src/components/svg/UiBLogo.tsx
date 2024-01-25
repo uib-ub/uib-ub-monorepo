@@ -3,7 +3,7 @@ import { SVGProps } from 'react';
 
 export default function UiBLogo(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg version="1.1" id="UiBmerke_grayscale" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="70.866px" height="70.866px" viewBox="0 0 70.866 70.866" enable-background="new 0 0 70.866 70.866">
+    <svg version="1.1" id="UiBmerke_grayscale" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="70.866px" height="70.866px" viewBox="0 0 70.866 70.866" enableBackground="new 0 0 70.866 70.866">
 <g>
 	<g>
 		<g>
