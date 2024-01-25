@@ -11,15 +11,23 @@ import { ContentDoc } from '#build/components';
 
 <style>
 .content-page h2 {
-  @apply pb-2 pt-3 text-xl font-semibold;
+  @apply pt-3 text-xl font-semibold;
 }
 
 .content-page h3 {
-  @apply pb-1 pt-3 text-lg font-semibold;
+  @apply pt-6 text-lg font-semibold;
+}
+
+.content-page h4 {
+  @apply pt-5 font-semibold;
+}
+
+.content-page h5 {
+  @apply pt-4 font-semibold;
 }
 
 .content-page p {
-  @apply py-1.5;
+  @apply py-1;
 }
 .content-page ul {
   @apply list-disc;
