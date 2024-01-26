@@ -132,7 +132,7 @@
               </li>
             </ul>
           </AccordionTab>
-          <AccordionTab class="content-page">
+          <AccordionTab>
             <template #header>
               <h2 class="font-semibold">{{ $t("om.fagrad") }}</h2>
             </template>
