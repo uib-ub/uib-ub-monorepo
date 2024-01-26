@@ -18,7 +18,7 @@ const props = defineProps({
       ["h1", "h2", "h3", "h4", "h5", "h6"].includes(value),
   },
   headingId: { type: String, default: undefined },
-  headingClass: { type: String, default: "text-2xl" },
+  headingClass: { type: String, default: undefined },
 });
 
 const tag = computed(() => {
@@ -35,3 +35,13 @@ onMounted(() => {
   headingRef.value.id = elementId.value;
 });
 </script>
+
+<style scoped>
+h1 {
+  @apply text-3xl pt-4;
+}
+
+h2 {
+  @apply text-2xl pb-1;
+}
+</style>
