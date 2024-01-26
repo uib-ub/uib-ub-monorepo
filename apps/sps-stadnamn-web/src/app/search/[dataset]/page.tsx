@@ -1,28 +1,28 @@
 'use client'
 
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
-import { useState, useEffect, useCallback } from "react"
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from "react"
+import Pagination from './pagination'
 
 
 export default function SearchInterface() {  
   const router = useRouter()
   const searchParams = useSearchParams()
   const searchParamsString = searchParams.toString()
-  console.log(searchParams)
+  console.log("PARAMS STRING", searchParamsString)
+  console.log("QUERY", searchParams.get('q'))
 
   const [data, setData] = useState([])
 
   useEffect(() => {
-  
     const getSearchResults = async () => {
       const response = await fetch('/api/search?dataset=hord&'+ searchParamsString)
       const data = await response.json()
-      console.log(data)
+      console.log("DATA", data)
       setData(data)
-      }
-      getSearchResults()
+    }
+    getSearchResults()
 
     }, [searchParamsString])
 
@@ -31,20 +31,8 @@ export default function SearchInterface() {
       event.preventDefault()
       const formData = new FormData(event.target);
       const formParams = [...formData.entries()].map( item => `${encodeURIComponent(item[0])}=${encodeURIComponent(item[1])}`).join('&');
-      console.log(formParams)
       router.push(`/search/hord?${formParams}`)
     }
-
-    const createQueryString = useCallback(
-      (name: string, value: string) => {
-        const params = new URLSearchParams(searchParams.toString())
-        params.set(name, value)
-   
-        return params.toString()
-      },
-      [searchParams]
-    )
-  
 
   return (
 
@@ -76,22 +64,15 @@ export default function SearchInterface() {
       </div>
 
       <div className="bg-white gap-2 flex flex-col shadow-md mx-2 p-2 md:w-1/5">
-      <ul className='flex flex-col flex-grow'>
+      <ul className='flex flex-col mb-auto'>
         {data?.hits?.hits.map(hit => (
-          <li key={hit._id} className="my-2 border p-2 flex-grow"><strong>{hit._source.label}</strong><p>{hit._source.rawData.merknader}</p></li>
+          <li key={hit._id} className="my-2 border p-2 flex-grow"><strong>{hit._source.label}</strong> | {hit._source.rawData.kommuneNamn}</li>
         ))}
       </ul>
     <div className="flex flex-row justify-center gap-2">
-    <Link href={createQueryString('page', (parseInt(searchParams.get('page') || "0") - 1).toString())}>
-    <button className="btn">
-      Forrige
-    </button>
-    </Link>
-    <Link href={createQueryString('page', (parseInt(searchParams.get('page') || "0") + 1).toString())}>
-    <button className="btn">
-      Neste
-    </button>
-    </Link>
+
+    {data?.hits?.total.value > 10 && <Pagination totalPages={Math.ceil(data.hits.total.value / 10)}/>}
+
 
     </div>
 
