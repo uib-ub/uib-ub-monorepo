@@ -833,19 +833,3 @@
 <script setup lang="ts">
 const locale = useLocale();
 </script>
-
-<style>
-blockquote {
-  display: block;
-  margin-left: 2.5em;
-  margin-right: 0em;
-}
-
-.content-page ul {
-  @apply list-inside pl-[1.5em];
-}
-
-.content-page ol {
-  @apply list-decimal pl-[1.5em];
-}
-</style>

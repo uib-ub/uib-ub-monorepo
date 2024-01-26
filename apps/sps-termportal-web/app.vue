@@ -117,4 +117,30 @@ body {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 100ms;
 }
+
+blockquote {
+  display: block;
+  margin-left: 2.5em;
+  margin-right: 0em;
+}
+
+.content-page *:not(.plain-list) ul,
+ol {
+  text-indent: -1em;
+  padding-left: 1.5em;
+  list-style-position: inside;
+  @apply space-y-0.5;
+}
+
+.content-page *:not(.plain-list) ul {
+  list-style-type: disc;
+}
+
+.content-page ol {
+  list-style-type: decimal;
+}
+
+.plain-list ul {
+  @apply space-y-1;
+}
 </style>
