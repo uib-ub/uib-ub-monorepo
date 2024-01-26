@@ -5,133 +5,17 @@
     </Head>
     <div class="flex">
       <SideBar />
-      <main>
-        <template v-if="locale === 'nb'">
-          <h1 id="main" class="pb-2 pt-5 text-3xl">
-            <AppLink to="#main">{{ $t("om.title") }} </AppLink>
-          </h1>
-          <div class="max-w-3xl space-y-2">
-            <p>
-              Dette er nettsiden til Termportalen. Siden er fortsatt under
-              utvikling, så en del funksjoner er ikke på plass ennå. Arbeidet
-              med å videreutvikle og utvide innholdet pågår kontinuerlig, og
-              flere termbaser vil bli gjort tilgjengelig for søk etter hvert som
-              de blir importert eller løsning for høsting er på plass. I tillegg
-              opprettes det stadig termgrupper, noe som gjør at antall domener
-              og mengden terminologi en kan søke i, vil øke jevnt og trutt.
-            </p>
-            <p>
-              Kontakt oss gjerne på
-              <AppLink
-                class="underline hover:decoration-2"
-                to="mailto:termportalen@uib.no"
-                >termportalen@uib.no</AppLink
-              >
-              for spørsmål eller tilbakemeldinger.
-            </p>
-          </div>
-        </template>
-        <template v-else-if="locale === 'nn'">
-          <Head>
-            <Title>{{ $t("om.title") }} | {{ $t("index.title") }}</Title>
-          </Head>
-          <h1 id="main" class="pb-2 pt-5 text-3xl">
-            <AppLink to="#main">{{ $t("om.title") }} </AppLink>
-          </h1>
-          <div class="max-w-3xl space-y-2">
-            <p>
-              Dette er nettsida til Termportalen. Sida er framleis under
-              utvikling, så ein del funksjonar er enno ikkje på plass. Arbeidet
-              med å vidareutvikle og utvide innhaldet går kontinuerleg føre seg,
-              og fleire termbasar blir tilgjengelege for søk etter kvart som dei
-              blir importerte eller ei løysning for hausting kjem på plass. I
-              tillegg blir det stadig oppretta nye termgrupper, derfor vil talet
-              på domene og mengda terminologi ein kan søke i, auke jamnt og
-              trutt.
-            </p>
-            <p>
-              Kontakt oss gjerne på
-              <AppLink
-                class="underline hover:decoration-2"
-                to="mailto:termportalen@uib.no"
-                >termportalen@uib.no</AppLink
-              >
-              for spørsmål eller tilbakemeldingar.
-            </p>
-          </div>
-        </template>
-        <template v-else-if="locale === 'en'">
-          <Head>
-            <Title>{{ $t("om.title") }} | {{ $t("index.title") }}</Title>
-          </Head>
-          <h1 id="main" class="pb-2 pt-5 text-3xl">
-            <AppLink to="#main">{{ $t("om.title") }} </AppLink>
-          </h1>
-          <div class="max-w-3xl space-y-2">
-            <p>
-              This is Termportalen's website. This site is still being developed
-              and some features may not be ready yet. The development and
-              expansion of Termportalen's contents is ongoing, and more
-              termbases will become available and searchable as soon as they are
-              imported or a solution for elicitation is ready. In addition, new
-              term groups are regularly created and the number of searchable
-              domains and terms will therefore be steadily increasing.
-            </p>
-            <p>
-              Please contact us on
-              <AppLink
-                class="underline hover:decoration-2"
-                to="mailto:termportalen@uib.no"
-                >termportalen@uib.no</AppLink
-              >
-              for questions or feedback.
-            </p>
-          </div>
-        </template>
+      <main class="max-w-3xl">
+        <ContentDoc :path="`/${locale}/om/about`" class="content-page" />
         <Accordion multiple class="mt-6">
+          <!-- About us-->
           <AccordionTab>
             <template #header>
               <h2 class="font-semibold">{{ $t("om.aboutUs") }}</h2>
             </template>
-            <ul class="space-y-1.5">
-              <li>
-                <AppLink
-                  class="underline hover:decoration-2"
-                  to="https://www.uib.no/personer/Marita.Kristiansen"
-                >
-                  Marita Kristiansen, {{ $t("om.maritaStilling") }}
-                </AppLink>
-              </li>
-              <li>
-                <AppLink
-                  class="underline hover:decoration-2"
-                  to="https://www.uib.no/personer/Kurdin.Jacob"
-                  >Kurdin Jacob, {{ $t("om.coordinator") }}</AppLink
-                >
-              </li>
-              <li>
-                <AppLink
-                  class="underline hover:decoration-2"
-                  to="https://www.uib.no/personer/Jan.Ole.Bangen"
-                  >Jan Ole Bangen, {{ $t("om.developer") }}</AppLink
-                >
-              </li>
-              <li>
-                <AppLink
-                  class="underline hover:decoration-2"
-                  to="https://www.uib.no/personer/Hilde.Johansen"
-                  >Hilde Johansen, {{ $t("om.terminologist") }}</AppLink
-                >
-              </li>
-              <li>
-                <AppLink
-                  class="underline hover:decoration-2"
-                  to="https://www.uib.no/en/persons/Tove.Bj%C3%B8rneset"
-                  >Tove Bjørneset, {{ $t("om.terminologist") }}</AppLink
-                >
-              </li>
-            </ul>
+            <ContentDoc :path="`/${locale}/om/about-us`" class="content-page" />
           </AccordionTab>
+          <!-- Fagrådet -->
           <AccordionTab>
             <template #header>
               <h2 class="font-semibold">{{ $t("om.fagrad") }}</h2>
