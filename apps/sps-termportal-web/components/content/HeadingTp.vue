@@ -1,15 +1,21 @@
 <template>
-  <component :is="tag" :id="headingId" :class="headingClass">
-    <slot />
+  <component :is="tag" ref="headingRef" :class="headingClass">
+    <AppLink :to="`#${elementId}`">
+      <slot />
+    </AppLink>
   </component>
 </template>
 
 <script setup lang="ts">
+const headingRef = ref();
+const elementId = ref("");
+
 const props = defineProps({
   level: {
     type: String,
     required: true,
-    validator: (value) => ["h1", "h2", "h3", "h4", "h5", "h6"].includes(value),
+    validator: (value: string) =>
+      ["h1", "h2", "h3", "h4", "h5", "h6"].includes(value),
   },
   headingId: { type: String, default: undefined },
   headingClass: { type: String, default: "text-2xl" },
@@ -17,5 +23,15 @@ const props = defineProps({
 
 const tag = computed(() => {
   return props.level;
+});
+
+onMounted(() => {
+  if (props.headingId) {
+    elementId.value = props.headingId;
+  } else {
+    const headingText = headingRef.value.innerText;
+    elementId.value = headingText.toLowerCase().replace(/\s+/g, "-");
+  }
+  headingRef.value.id = elementId.value;
 });
 </script>
