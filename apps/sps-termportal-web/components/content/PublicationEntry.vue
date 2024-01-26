@@ -1,12 +1,13 @@
 <template>
   <li class="hangindent group">
-    <span v-if="to" class="">
+    <span v-if="to">
       <AppLink :to="to">
-        <slot />
+        <ContentSlot :use="$slots.default" unwrap="p" />
+        <span>{{ " " }}</span>
         <span v-if="linkDesc" class="underline group-hover:decoration-2">
           {{ linkDesc }}
         </span>
-        <span v-else class="underline group-hover:decoration-2"> URL</span>
+        <span v-else class="underline group-hover:decoration-2">URL</span>
       </AppLink>
       <span>.</span>
     </span>
@@ -23,7 +24,7 @@ const props = defineProps({
 
 <style scoped>
 .hangindent {
-  padding-left: 1.5em;
-  text-indent: -1.5em;
+  padding-left: 2rem;
+  text-indent: -2rem;
 }
 </style>
