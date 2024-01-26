@@ -1,5 +1,5 @@
 <template>
   <div class="bullet-point">
-    <slot></slot>
+    <ContentSlot :use="$slots.default" unwrap="p" />
   </div>
 </template>

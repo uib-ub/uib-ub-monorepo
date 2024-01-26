@@ -1,7 +1,7 @@
 <template>
   <component :is="tag" ref="headingRef" :class="headingClass">
     <AppLink :to="`#${elementId}`">
-      <slot />
+      <ContentSlot :use="$slots.default" unwrap="p" />
     </AppLink>
   </component>
 </template>
@@ -43,5 +43,9 @@ h1 {
 
 h2 {
   @apply text-2xl pb-1;
+}
+
+h3 {
+  @apply font-semibold pb-1 pt-6;
 }
 </style>
