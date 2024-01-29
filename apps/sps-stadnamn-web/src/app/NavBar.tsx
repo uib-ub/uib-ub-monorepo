@@ -7,8 +7,8 @@ export default function NavBar() {
     const [menuOpen, setMenuOpen] = useState(false)
 
     return (
-        <div className="absolute right-3">
-            <button className="xl:hidden" onClick={() => setMenuOpen(!menuOpen)}><PiList className="text-3xl"/></button>
+        <div className="md:absolute md:right-3">
+            <button className="p-1 xl:hidden rounded-sm" onClick={() => setMenuOpen(!menuOpen)}><PiList className="text-3xl"/></button>
             <nav id="top " className={`flex gap-6 hidden align-text-middle xl:flex`}>
                 <Link href="/om">Om</Link>
                 <Link href="/hjelp">Hjelp</Link>

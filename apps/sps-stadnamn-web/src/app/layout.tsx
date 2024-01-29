@@ -27,9 +27,10 @@ export default function RootLayout({
     <html lang="no" className={`${garamond.variable} h-full`}>
       <body className="flex flex-col h-full">
         <header className="flex flex-col md:flex-row gap-3 p-3 px-3 text-slate-900">
+          <div className="flex justify-between">
           <Link href="/" className="sm:text-xl md:text-2xl font-garamond small-caps">Norske stadnamn</Link>
-
           <NavBar/>
+          </div>
           <SearchBar/> 
                   
           
