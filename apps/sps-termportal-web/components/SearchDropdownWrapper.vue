@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-wrap gap-x-2">
-    <label :for="`${target}Dropdown`" class="py-1">
+    <span :id="`${target}DropdownLabel`" class="py-1">
       {{ $t(`searchBar.${target}`) }}:
-    </label>
+    </span>
     <slot></slot>
   </div>
 </template>
