@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react';
 import Leaflet from 'leaflet';
-import { TileLayer, Marker, MapContainer, Popup} from 'react-leaflet';
+import { TileLayer, Marker, CircleMarker, MapContainer, Popup} from 'react-leaflet';
 import { useSearchParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 
@@ -55,16 +55,7 @@ const Map = () => {
     }
   }, [bounds, nameQuery]);
 
-  useEffect(() => {
-    (async function init() {
-      delete Leaflet.Icon.Default.prototype._getIconUrl;
-      Leaflet.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'leaflet/images/marker-icon-2x.png',
-        iconUrl: 'leaflet/images/marker-icon.png',
-        shadowUrl: 'leaflet/images/marker-shadow.png',
-      });
-    })();
-  }, []);
+
 
   return (
     <MapContainer ref={mapRef} whenReady={onMapLoaded} style={{width: '100%', height: '100%'}}  width="800" height="400" center={DEFAULT_CENTER} zoom={6}>
@@ -73,11 +64,13 @@ const Map = () => {
               attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
             {markers.map((marker, index) => (
-              <Marker key={index} position={[marker._source.location.coordinates[1], marker._source.location.coordinates[0]]}>
+              <CircleMarker pathOptions={{color: 'black'}}
+                            key={index} center={[marker.fields.location[0].coordinates[1], marker.fields.location[0].coordinates[0]]} radius={5}>
                 <Popup>
-                  {marker._source.name}
+                  {marker._source.label}
                 </Popup>
-              </Marker>
+              </CircleMarker>
+                
             ))}
     </MapContainer>
   )

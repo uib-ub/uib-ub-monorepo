@@ -7,6 +7,9 @@ export async function GET(request: Request) {
 
 
   const query = {
+    size: 200,
+    fields: ["label", "location"],
+    _source: true,
     query: {
         bool: {
         must: [
