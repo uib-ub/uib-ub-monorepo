@@ -28,6 +28,7 @@
               class="content-wrapper"
             />
             <ContentDoc
+              :key="`mandat${locale}`"
               :path="`/${locale}/om/fagrad-mandat`"
               class="content-wrapper"
             />
@@ -38,6 +39,7 @@
               <h2 class="font-semibold">{{ $t("om.history") }}</h2>
             </template>
             <ContentDoc
+              :key="`history${locale}`"
               :path="`/${locale}/om/history`"
               class="content-wrapper"
             />
