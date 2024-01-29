@@ -19,7 +19,7 @@ export default function SearchInterface() {
     const getSearchResults = async () => {
       const response = await fetch('/api/search?dataset=hord&'+ searchParamsString)
       const data = await response.json()
-      console.log("DATA", data)
+      console.log("SEARCH DATA", data)
       setData(data)
     }
     getSearchResults()

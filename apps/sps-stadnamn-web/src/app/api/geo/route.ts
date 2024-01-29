@@ -3,7 +3,7 @@ export const runtime = 'edge'
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
 
-  console.log("PARAMS", params);
+  console.log("GEO PARAMS", params);
 
 
   const query = {
@@ -12,48 +12,29 @@ export async function GET(request: Request) {
         must: [
             {
             geo_bounding_box: {
-                "geometry": {
+                "location": {
                 top_left: {
-                    lat: params.topLeftLat, //bounds.getNorthEast().lat,
-                    lon: params.topLeftLng //bounds.getSouthWest().lng
+                    lat: parseFloat(params.topLeftLat), //bounds.getNorthEast().lat,
+                    lon: parseFloat(params.topLeftLng) //bounds.getSouthWest().lng
                 },
                 bottom_right: {
-                    lat: params.bottomRightLat, //bounds.getSouthWest().lat,
-                    lon: params.bottomRightLng//bounds.getNorthEast().lng
+                    lat: parseFloat(params.bottomRightLat), //bounds.getSouthWest().lat,
+                    lon: parseFloat(params.bottomRightLng)//bounds.getNorthEast().lng
                 }
                 }
             }
             },
-            ...params.q ? [{
+            {
                 simple_query_string: {
                 query: params.q,
-                fields: ["name"]            
+                fields: ["label"]            
             }
-            }] : []
+            }
         ]
         }
     }
     }
   
-
-/*
-  const query = {
-    "from": params.page || 0,
-    "size": 200,
-    "query": {
-      ...Object.keys(params).length === 1 && 'dataset' in params ? { "match_all": {} } 
-      : { 
-        ...params.q && {
-          "query_string": {
-            "query": params.q,
-            "default_field": "label"
-          }
-        }
-       }
-    }
-  }
-
-  */
   
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {

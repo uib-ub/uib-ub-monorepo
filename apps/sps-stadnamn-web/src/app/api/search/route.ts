@@ -3,7 +3,7 @@ export const runtime = 'edge'
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
 
-  console.log("PARAMS", params);
+  //console.log("SEARCH PARAMS", params);
 
 
   const query = {

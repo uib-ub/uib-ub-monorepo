@@ -48,7 +48,7 @@ const Map = () => {
       .then(response => response.json())
       .then(data => {
 
-        console.log("DATA", data)
+        console.log("GEO DATA", data)
         
         setMarkers(data.hits.hits)})
       .catch(error => console.error('Error:', error));
@@ -73,7 +73,7 @@ const Map = () => {
               attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
             {markers.map((marker, index) => (
-              <Marker key={index} position={[marker._source.geometry[1], marker._source.geometry[0]]}>
+              <Marker key={index} position={[marker._source.location.coordinates[1], marker._source.location.coordinates[0]]}>
                 <Popup>
                   {marker._source.name}
                 </Popup>
