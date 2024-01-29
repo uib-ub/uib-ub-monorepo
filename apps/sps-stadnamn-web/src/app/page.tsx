@@ -10,7 +10,7 @@ export default function Home() {
   <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl font-bold">Stedsnavnsøk</h1>
   
   <form className="flex items-center justify-center w-full max-w-md mx-auto" action="search/stadnamn">
-    <input className="w-full mr-2 p-2 sm:p-3 md:p-4 lg:p-4 border border-gray-400 text-base sm:text-lg md:text-xl lg:text-2xl" name="q" type="text" placeholder="Search..." />
+    <input className="w-full rounded-sm mr-2 p-2 sm:p-3 md:p-4 lg:p-4 border border-gray-400 text-base sm:text-lg md:text-xl lg:text-2xl" name="q" type="text"/>
     <button className="btn btn-primary p-2 sm:p-3 md:p-4 lg:p-4 text-base sm:text-lg md:text-xl lg:text-2xl" type="submit">Søk</button>
   </form>
   </div>
@@ -20,10 +20,21 @@ export default function Home() {
   </div>
   </div>
 
-  <div className="flex flex-row items-center gap-6 text-slate-800 "><UiBLogo/><div className="flex flex-col gap-1"><span className="">Språksamlingene<br/>Universitetet i Bergen</span><Link href="uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div></div>
+  <div className="flex flex-col items-center gap-6">
+  <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><span className="">UNIVERSITETET I BERGEN</span></div>
+  </div>
+  <div className="flex gap-6 jusitfy-between">
+  <div className="flex flex-col">Språksamlingene
+  <Link href="uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div>
+  <div className="flex flex-col">Digital utvikling
+  <Link href="uib.no/spraksamlingane" className="text-sm">uib.no/digitalutvikling</Link></div>
+
+  </div>
+  </div>
+  
 
 </main>
-        <footer className="bg-slate-900  p-3 px-6 text-white text-center">
+        <footer className="bg-slate-200  p-3 px-6 text-center">
         
         <nav className="flex flex-col md:flex-row gap-3">
           <Link href="/">Personvern</Link>

@@ -37,22 +37,43 @@ export default function SearchInterface() {
   return (
 
 
-    <main className="flex flex-col md:flex-row h-full grow mb-3">
-      <div className="bg-white shadow-md mx-2 p-2 md:w-1/5">
-      <h2 className='text-xl mb-3 font-semibold'>Hordanamn</h2>
-      <form id="search_form" onSubmit={ handleSubmit }>
-        <input type="text" name="q" className='border-2 border-slate-400'/>
-        <button type="submit" className='btn btn-primary p-1 px-2 mx-2'>Search</button>
-      </form>
+    <main className="md:grid md:grid-cols-4 mb-3 mx-2 gap-2 !h-full">
+      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2">
+        <h2 className='text-xl mb-3 font-semibold'>Hordanamn</h2>
+        <form id="search_form" className='w-full flex gap-1' onSubmit={ handleSubmit }>
+          <input type="text" name="q" className='border border-slate-500 w-full rounded-sm'/>
+          <button type="submit" className='btn btn-primary p-1 px-2'>Søk</button>
+
+        </form>
+       
+        <span>{ data?.hits?.total.value || 'Ingen' } treff</span>
+        <section className='md:border md:border-slate-500 md:rounded-sm md:py-1 md:h-[480px] overflow-y-auto'>
+
+        
+        <ul className='flex flex-col gap-1 overflow-auto md:mx-1'>
+          {data?.hits?.hits.map(hit => (
+            <li key={hit._id} className="my-0 border rounded-sm p-2 flex-grow"><strong>{hit._source.label}</strong> | {hit._source.rawData.kommuneNamn}</li>
+          ))}
+        </ul>
+
+        </section>
+    
+      <nav className="center gap-2">
+
+        {data?.hits?.total.value > 10 && <Pagination totalPages={Math.ceil(data.hits.total.value / (Number(searchParams.get('size')) || 10))}/>}
+
+      </nav>
+      
+
 
             
-      </div>
+      </section>
 
-      <div className='md:w-3/5 flex flex-col bg-white shadow-md'>
-      <div className="mx-2 p-2 md:h-4/5 m-2 bg-lime-100">
+      <section className='card grid md:col-span-3 bg-white shadow-md'>
+      <div className="mx-2 p-2 md:row-span-5 m-2 bg-lime-100">
         MAP
       </div>
-      <div className=" mx-2 p-2 md:h-1/5">
+      <div className=" mx-2 p-2 md:row-span-1">
         <h2 className='mb-3 font-semibold'>Info</h2>
         List with text:
         <ul>
@@ -61,22 +82,9 @@ export default function SearchInterface() {
         </ul>
         
       </div>
-      </div>
-
-      <div className="bg-white gap-2 flex flex-col shadow-md mx-2 p-2 md:w-1/5">
-      <ul className='flex flex-col mb-auto'>
-        {data?.hits?.hits.map(hit => (
-          <li key={hit._id} className="my-2 border p-2 flex-grow"><strong>{hit._source.label}</strong> | {hit._source.rawData.kommuneNamn}</li>
-        ))}
-      </ul>
-    <div className="flex flex-row justify-center gap-2">
-
-    {data?.hits?.total.value > 10 && <Pagination totalPages={Math.ceil(data.hits.total.value / 10)}/>}
+      </section>
 
 
-    </div>
-
-      </div>
     </main>
 
 

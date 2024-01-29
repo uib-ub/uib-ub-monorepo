@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} flex flex-col min-h-screen`}>
+    <html lang="en" className="h-full">
+      <body className={`${inter.className} flex flex-col !h-full`}>
         <header className="flex p-3 px-6 text-slate-900">
           <Link href="/" className="sm:text-xl md:text-2xl">Norske stadnamn</Link>
           <nav className="flex gap-6 ml-auto">
