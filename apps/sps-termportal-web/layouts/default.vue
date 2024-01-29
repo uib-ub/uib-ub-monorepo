@@ -16,7 +16,6 @@
         <slot />
       </div>
     </div>
-    <ButtonScrollTop />
     <FooterTP />
   </div>
 </template>
