@@ -3,12 +3,14 @@
     <Head>
       <Title>{{ $t("index.title") }}</Title>
     </Head>
-    <h1 class="text-5xl xs:text-6xl sm:text-7xl md:text-8xl">
-      <LogoTermportalen
-        class="mb-6 ml-2 mr-14 max-w-[25rem] sm:mb-8 md:mb-11 md:ml-7"
-      />
-      <span class="sr-only">Termportalen</span>
-    </h1>
+    <header>
+      <h1 class="text-5xl xs:text-6xl sm:text-7xl md:text-8xl">
+        <LogoTermportalen
+          class="mb-6 ml-2 mr-14 max-w-[25rem] sm:mb-8 md:mb-11 md:ml-7"
+        />
+        <span class="sr-only">Termportalen</span>
+      </h1>
+    </header>
     <main class="container">
       <div class="border-grey my-2 border-b-2 px-2">
         <SearchField />
