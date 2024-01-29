@@ -195,7 +195,7 @@
     >
       <div v-if="searchterm.length">
         <Icon name="ic:sharp-clear" size="1.4em" aria-hidden="true" />
-        <span class="sr-only">{{ $t("clearTextLabel") }}</span>
+        <span class="sr-only">{{ $t("searchBar.clearTextLabel") }}</span>
       </div>
       <div v-else>
         <component
@@ -204,7 +204,7 @@
           v-bind="ptm('dropdownButton')['icon']"
           aria-hidden="true"
         />
-        <span class="sr-only">{{ $t("expandSuggestions") }}</span>
+        <span class="sr-only">{{ $t("searchBar.expandSuggestions") }}</span>
       </div>
     </button>
   </div>
