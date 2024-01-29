@@ -30,7 +30,7 @@
       </div>
       <div class="hidden lg:flex">
         <ul
-          class="flex items-center gap-x-1 px-4 text-lg font-semibold text-gray-500"
+          class="flex items-center gap-x-1 px-4 text-lg font-semibold text-gray-600"
         >
           <div>
             <button
@@ -52,7 +52,7 @@
                   </span>
                 </div>
                 <Icon
-                  class="text-gray-500 group-hover:text-gray-700 group-focus:text-gray-700"
+                  class="text-gray-600 group-hover:text-gray-700 group-focus:text-gray-700"
                   name="material-symbols:language"
                   size="1.4em"
                 />
