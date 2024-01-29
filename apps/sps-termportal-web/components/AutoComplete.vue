@@ -193,19 +193,19 @@
       class="tp-hover-focus flex w-10 items-center justify-center border-transparent text-gray-500 focus:text-gray-800"
       @click="onDropdownClick"
     >
-      <Icon
-        v-if="searchterm.length"
-        name="ic:sharp-clear"
-        size="1.4em"
-        aria-hidden="true"
-      />
-
-      <component
-        :is="dropdownIcon ? 'span' : 'ChevronDownIcon'"
-        v-else
-        :class="dropdownIcon"
-        v-bind="ptm('dropdownButton')['icon']"
-      />
+      <div v-if="searchterm.length">
+        <Icon name="ic:sharp-clear" size="1.4em" aria-hidden="true" />
+        <span class="sr-only">{{ $t("clearTextLabel") }}</span>
+      </div>
+      <div v-else>
+        <component
+          :is="dropdownIcon ? 'span' : 'ChevronDownIcon'"
+          :class="dropdownIcon"
+          v-bind="ptm('dropdownButton')['icon']"
+          aria-hidden="true"
+        />
+        <span class="sr-only">{{ $t("expandSuggestions") }}</span>
+      </div>
     </button>
   </div>
 </template>

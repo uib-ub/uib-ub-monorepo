@@ -102,6 +102,7 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Search field",
     "clearTextLabel": "Clear search field",
+    "expandSuggestions": "Expand suggestions",
     "searchButtonLabel": "Search",
     "expandSubdomains": "Show subdomains",
     "closeSubdomains": "Hide subdomains",
