@@ -1,7 +1,7 @@
 <template>
   <div class="group flex">
     <input
-      :id="`filter-${ftype}-${fvalue}`"
+      :id="`filter-${placement}-${ftype}-${fvalue}`"
       v-model="searchFilterData[ftype as keyof SearchDataStats]"
       class="peer cursor-pointer outline-none"
       type="checkbox"
@@ -9,7 +9,7 @@
     />
     <label
       class="tp-transition-shadow flex cursor-pointer gap-x-1.5 rounded-[7px] border border-transparent px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
-      :for="`filter-${ftype}-${fvalue}`"
+      :for="`filter-${placement}-${ftype}-${fvalue}`"
     >
       <div class="-mt-[1px]">
         <Icon
@@ -51,6 +51,7 @@ const searchDataStats = useSearchDataStats();
 const props = defineProps({
   ftype: { type: String, required: true },
   fvalue: { type: String, required: true },
+  placement: { type: String, default: "default" },
 });
 
 const label = () => {
