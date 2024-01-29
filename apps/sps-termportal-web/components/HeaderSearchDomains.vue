@@ -69,6 +69,7 @@
           }"
           aria-hidden="true"
         />
+        <span class="sr-only">{{ $t("expandSubdomains") }}</span>
       </button>
     </div>
     <div>
