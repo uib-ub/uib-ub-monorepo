@@ -1,7 +1,7 @@
 <template>
   <section
     v-if="showSearchFilter"
-    id="filterCard"
+    :id="`filterCard-${placement}`"
     class="h-full border-gray-300 pr-1 xl:border-r xl:pt-12"
   >
     <h2 class="pb-2 pt-1 text-2xl">{{ $t("searchFilter.filter") }}</h2>
@@ -48,7 +48,13 @@
           :title="title"
           :fkey="key"
         >
-          <FilterCheckbox v-for="d in data" :key="d" :ftype="key" :fvalue="d" />
+          <FilterCheckbox
+            v-for="d in data"
+            :key="d"
+            :ftype="key"
+            :fvalue="d"
+            :placement="placement"
+          />
         </SearchFilterFieldset>
       </template>
     </div>
@@ -60,6 +66,10 @@ const showSearchFilter = useShowSearchFilter();
 const searchDataStats = useSearchDataStats();
 const localeLangOrder = useLocaleLangOrder();
 const searchInterface = useSearchInterface();
+
+const props = defineProps({
+  placement: { type: String, default: "default" },
+});
 
 const displaySection = (key, data) => {
   if (key === "lang") {

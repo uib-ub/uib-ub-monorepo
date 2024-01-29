@@ -5,13 +5,13 @@
     </Head>
     <div class="flex">
       <SideBar>
-        <SearchFilter class="hidden xl:block" />
+        <SearchFilter class="hidden xl:block" placement="sidebar" />
       </SideBar>
       <div class="flex-1">
         <h1 class="sr-only">{{ $t("search.title") }}</h1>
         <SearchStatusBar />
         <div class="xl:flex">
-          <SearchFilter class="block xl:hidden" />
+          <SearchFilter class="block xl:hidden" placement="main" />
           <main class="grow">
             <h2 id="main" class="pb-2 pt-3 text-2xl">
               <AppLink to="#main">
