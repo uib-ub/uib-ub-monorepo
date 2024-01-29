@@ -124,7 +124,11 @@ blockquote {
   margin-right: 0em;
 }
 
-.content-page *:not(.plain-list) ul,
+.content-wrapper {
+  @apply space-y-2;
+}
+
+.content-wrapper ul:not(.plain-list),
 ol {
   text-indent: -1em;
   padding-left: 1.5em;
@@ -132,15 +136,11 @@ ol {
   @apply space-y-0.5;
 }
 
-.content-page *:not(.plain-list) ul {
+.content-wrapper ul:not(.plain-list) {
   list-style-type: disc;
 }
 
-.content-page ol {
+.content-wrapper ol {
   list-style-type: decimal;
-}
-
-.plain-list ul {
-  @apply space-y-1;
 }
 </style>
