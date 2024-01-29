@@ -8,6 +8,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        garamond: ["EB Garamond"]
+
+      },
       colors: {
        primary: {
         50: '#fdf3f3',

@@ -31,51 +31,24 @@ const Map = () => {
     }
   }, [mapRef.current]);
 
+
   useEffect(() => {
     // Check if the bounds are initialized
     if (bounds) {
       // Fetch data based on the new bounds
-      fetch('http://localhost:9200/hordanamn_geojson/_search', {
-        method: 'POST',
+      const query = `/api/geo?dataset=hord&topLeftLat=${bounds.getNorthEast().lat}&topLeftLng=${bounds.getSouthWest().lng}&bottomRightLat=${bounds.getSouthWest().lat}&bottomRightLng=${bounds.getNorthEast().lng}&q=${searchParams.get('q')}`
+      console.log("QUERY", query)
+      fetch(query, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          size: 200,
-          query: {
-            bool: {
-              must: [
-                {
-                  geo_bounding_box: {
-                    "geometry": {
-                      top_left: {
-                        lat: bounds.getNorthEast().lat,
-                        lon: bounds.getSouthWest().lng
-                      },
-                      bottom_right: {
-                        lat: bounds.getSouthWest().lat,
-                        lon: bounds.getNorthEast().lng
-                      }
-                    }
-                  }
-                },
-                ...nameQuery ? [{
-                    simple_query_string: {
-                      query: nameQuery,
-                      fields: ["name"],
-                      default_operator: "and"
-                    
-                  }
-                }] : []
-              ]
-            }
-          }
-        })
+
       })
       .then(response => response.json())
       .then(data => {
 
-        console.log(data)
+        console.log("DATA", data)
         
         setMarkers(data.hits.hits)})
       .catch(error => console.error('Error:', error));
@@ -96,7 +69,7 @@ const Map = () => {
   return (
     <MapContainer ref={mapRef} whenReady={onMapLoaded} style={{width: '100%', height: '100%'}}  width="800" height="400" center={DEFAULT_CENTER} zoom={6}>
                   <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url="https://opencache2.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
               attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             />
             {markers.map((marker, index) => (

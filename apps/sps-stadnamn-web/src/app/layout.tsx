@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import NavBar from "./NavBar";
+import { PT_Sans, EB_Garamond } from 'next/font/google'
+import SearchBar from "./SearchBar"
+ 
+const garamond = EB_Garamond({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-garamond',
+})
+ 
 
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,14 +24,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
-      <body className={`${inter.className} flex flex-col !h-full`}>
-        <header className="flex p-3 px-6 text-slate-900">
-          <Link href="/" className="sm:text-xl md:text-2xl">Norske stadnamn</Link>
-          <nav className="flex gap-6 ml-auto">
-            <Link href="/om">Om</Link>
-            <Link href="/hjelp">Hjelp</Link>
-          </nav>
+    <html lang="no" className={`${garamond.variable} h-full`}>
+      <body className="flex flex-col h-full">
+        <header className="flex flex-col md:flex-row gap-3 p-3 px-3 text-slate-900">
+          <Link href="/" className="sm:text-xl md:text-2xl font-garamond small-caps">Norske stadnamn</Link>
+
+          <NavBar/>
+          <SearchBar/> 
+                  
+          
+
+
         </header>
         {children}
       </body>

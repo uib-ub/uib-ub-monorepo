@@ -7,7 +7,7 @@ export default function Home() {
 <main className="flex flex-col grow-1 gap-24 items-center justify-center  pt-4 pb-8 px-4 my-auto">
   <div className="flex flex-col gap-12 my-2">
   <div className="flex flex-col gap-6 items-center">
-  <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl font-bold">Stedsnavnsøk</h1>
+  <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl">Stedsnavnsøk</h1>
   
   <form className="flex items-center justify-center w-full max-w-md mx-auto" action="search/stadnamn">
     <input className="w-full rounded-sm mr-2 p-2 sm:p-3 md:p-4 lg:p-4 border border-gray-400 text-base sm:text-lg md:text-xl lg:text-2xl" name="q" type="text"/>
@@ -21,7 +21,7 @@ export default function Home() {
   </div>
 
   <div className="flex flex-col items-center gap-6">
-  <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><span className="">UNIVERSITETET I BERGEN</span></div>
+  <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><h2 className="">UNIVERSITETET I BERGEN</h2></div>
   </div>
   <div className="flex gap-6 jusitfy-between">
   <div className="flex flex-col">Språksamlingene

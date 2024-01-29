@@ -13,9 +13,9 @@ export async function GET(request: Request) {
       ...Object.keys(params).length === 1 && 'dataset' in params ? { "match_all": {} } 
       : { 
         ...params.q && {
-          "query_string": {
+          "simple_query_string": {
             "query": params.q,
-            "default_field": "label"
+            "fields": ["label"]
           }
         }
        }
