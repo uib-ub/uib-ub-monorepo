@@ -1,5 +1,5 @@
 <template>
-  <section
+  <nav
     v-if="showSearchFilter"
     :id="`filterCard-${placement}`"
     class="h-full border-gray-300 pr-1 xl:border-r xl:pt-12"
@@ -58,7 +58,7 @@
         </SearchFilterFieldset>
       </template>
     </div>
-  </section>
+  </nav>
 </template>
 
 <script setup lang="ts">
@@ -73,12 +73,11 @@ const props = defineProps({
 
 const displaySection = (key, data) => {
   if (key === "lang") {
-    return searchInterface.value.language === "all"
+    return searchInterface.value.language === "all";
   } else if (key === "matching") {
-    return data.length !== 0
+    return data.length !== 0;
   } else {
     return true;
   }
-
 };
 </script>
