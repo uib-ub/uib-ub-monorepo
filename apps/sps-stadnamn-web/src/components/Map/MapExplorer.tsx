@@ -57,8 +57,8 @@ export default function MapExplorer() {
 
 
   return (
-    <Map mapRef={mapRef} whenReady={onMapLoaded} style={{width: '100%', height: '100%'}} center={DEFAULT_CENTER} zoom={6}>
-            {({ TileLayer, CircleMarker }) => (
+    <Map mapRef={mapRef} whenReady={onMapLoaded} center={DEFAULT_CENTER} zoom={6}>
+            {({ TileLayer, CircleMarker }: {}) => (
                 <>
             <TileLayer
               url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"

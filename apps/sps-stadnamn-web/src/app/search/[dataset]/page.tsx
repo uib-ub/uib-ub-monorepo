@@ -37,14 +37,14 @@ export default function SearchInterface() {
   return (
 
 
-    <main className="md:grid md:grid-cols-4 mb-3 mx-2 gap-2 h-full">
+    <main className="md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2 h-full">
       <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2" aria-label="Filtre">
         <form id="search_form" className='w-full flex gap-1' onSubmit={ handleSubmit }>
 
         </form>
        
         <span>{ data?.hits?.total.value || 'Ingen' } treff</span>
-        <section className='md:border md:border-slate-300 md:rounded-sm md:py-1 md:h-[480px] overflow-y-auto'>
+        <section className='md:border md:border-slate-300 md:rounded-sm md:py-1 md:h-auto overflow-y-auto'>
 
         
         <ul className='flex flex-col gap-1 overflow-auto md:mx-1'>
@@ -66,8 +66,8 @@ export default function SearchInterface() {
             
       </section>
 
-      <section className='card grid md:col-span-3'>
-      <div className="mx-2 md:row-span-5 m-2">
+      <section className='card md:grid md:grid-rows-7 md:col-span-3'>
+      <div className="md:row-span-6 md:m-2">
         <MapExplorer/>
       </div>
       <div className=" mx-2 p-2 md:row-span-1">
