@@ -18,15 +18,18 @@ export default function SearchInterface() {
 
   useEffect(() => {
 
-      fetch('/api/search?dataset=hord&'+ searchParamsString).then(response => response.json()).then(data => {
-        setData(data.hits)
-        setMapBounds([[data.aggregations.viewport.bounds.top_left.lat, 
-                      data.aggregations.viewport.bounds.top_left.lon],
-                      [data.aggregations.viewport.bounds.bottom_right.lat,
-                      data.aggregations.viewport.bounds.bottom_right.lon]])
+      fetch('/api/search?dataset=hord&'+ searchParamsString).then(response => response.json()).then(es_data => {
+        setData(es_data.hits)
+        if (es_data.aggregations) {
+          setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
+            [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
+        }
+        
+
+        console.log("SEARCH DATA", es_data)
 
       })
-      console.log("SEARCH DATA", data)
+      
       
     
 
@@ -75,8 +78,7 @@ export default function SearchInterface() {
 
       <section className='card md:grid md:grid-rows-7 md:col-span-3'>
       <div className="md:row-span-6 md:m-2">
-        <MapExplorer center={data?.aggregations? [data.aggregations.centroid.location.lat, data.aggregations.centroid.location.lon] : undefined}
-                      mapBounds={mapBounds}/>
+        <MapExplorer mapBounds={mapBounds}/>
       </div>
       <div className=" mx-2 p-2 md:row-span-1">
         <h2 className='mb-3 font-semibold'>Info</h2>
