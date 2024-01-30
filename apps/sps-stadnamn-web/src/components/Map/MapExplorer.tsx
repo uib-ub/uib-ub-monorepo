@@ -47,7 +47,7 @@ export default function MapExplorer() {
       .then(response => response.json())
       .then(data => {
 
-        console.log("GEO DATA", data)
+        //console.log("GEO DATA", data)
         
         setMarkers(data.hits.hits)})
       .catch(error => console.error('Error:', error));

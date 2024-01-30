@@ -3,18 +3,31 @@ export const runtime = 'edge'
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
 
-  console.log("GEO PARAMS", params);
+  //console.log("GEO PARAMS", params);
 
 
   const query = {
     size: 200,
     fields: ["label", "location"],
     _source: true,
+    sort: [
+        {
+        "uuid.keyword": {
+            order: "asc"
+        }
+        }
+    ],
     query: {
         bool: {
         must: [
-            {
-            geo_bounding_box: {
+            ...params.q ? [{
+            "simple_query_string": {
+                "query": params.q,
+                "fields": ["label"]
+            }
+        }
+            ] : [],
+            {geo_bounding_box: {
                 "location": {
                 top_left: {
                     lat: parseFloat(params.topLeftLat), //bounds.getNorthEast().lat,
@@ -25,18 +38,15 @@ export async function GET(request: Request) {
                     lon: parseFloat(params.bottomRightLng)//bounds.getNorthEast().lng
                 }
                 }
-            }
-            },
-            {
-                simple_query_string: {
-                query: params.q,
-                fields: ["label"]            
-            }
-            }
-        ]
-        }
+            }}
+        ],
+        
+    },
     }
-    }
+}
+
+
+//console.log("GEO QUERY JSON", JSON.stringify(query))
   
   
 
