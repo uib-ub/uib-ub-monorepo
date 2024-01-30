@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import Pagination from './pagination'
-import Map from '@/components/Map/DynamicMap'
+import MapExplorer from '@/components/Map/MapExplorer'
 
 
 export default function SearchInterface() {  
@@ -68,7 +68,7 @@ export default function SearchInterface() {
 
       <section className='card grid md:col-span-3'>
       <div className="mx-2 md:row-span-5 m-2">
-        <Map/>
+        <MapExplorer/>
       </div>
       <div className=" mx-2 p-2 md:row-span-1">
         <h2 className='mb-3 font-semibold'>Info</h2>

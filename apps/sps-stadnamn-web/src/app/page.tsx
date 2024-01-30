@@ -21,7 +21,7 @@ export default function Home() {
   </div>
 
   <div className="flex flex-col items-center gap-6">
-  <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><h2 className="">UNIVERSITETET I BERGEN</h2></div>
+  <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><h2 className="tracking-widest">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
   <div className="flex gap-6 jusitfy-between">
   <div className="flex flex-col">Språksamlingene
