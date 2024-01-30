@@ -2,13 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
 import NavBar from "./NavBar";
-import { PT_Sans, EB_Garamond } from 'next/font/google'
+import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
 import SearchBar from "./SearchBar"
  
-const garamond = EB_Garamond({
+const garamond = Cormorant_Garamond({
   subsets: ['latin'],
+  weight: ["400", "600", "700"],
   display: 'swap',
   variable: '--font-garamond',
+})
+
+const opensans = Open_Sans({
+  subsets: ['latin'],
+  display: 'swap',
 })
  
 
@@ -24,9 +30,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="no" className={`${garamond.variable} h-full`}>
+    <html lang="no" className={`${garamond.variable} ${opensans.className} h-full`}>
       <body className="flex flex-col h-full">
-        <header className="flex flex-col md:flex-row gap-3 p-3 px-3 text-slate-900">
+        <header className="flex flex-col md:flex-row gap-6 p-3 px-6 text-slate-900">
           <div className="flex justify-between">
           <Link href="/" className="sm:text-xl md:text-2xl font-garamond small-caps">Norske stadnamn</Link>
           <NavBar/>
