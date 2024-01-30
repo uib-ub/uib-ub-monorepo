@@ -9,6 +9,19 @@ export async function GET(request: Request) {
   const query = {
     "from": params.page || 0,
     "size": params.size  || 10,
+    "aggs": {
+      "viewport": {
+        "geo_bounds": {
+          "field": "location",
+          "wrap_longitude": true
+        }
+      },
+      "centroid": {
+        "geo_centroid": {
+          "field": "location"
+        }
+      }
+    },
     "query": {
       ...Object.keys(params).length === 1 && 'dataset' in params ? { "match_all": {} } 
       : { 

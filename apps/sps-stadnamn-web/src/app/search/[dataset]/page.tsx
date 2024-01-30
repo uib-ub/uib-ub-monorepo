@@ -14,15 +14,22 @@ export default function SearchInterface() {
   console.log("QUERY", searchParams.get('q'))
 
   const [data, setData] = useState([])
+  const [mapBounds, setMapBounds] = useState([])
 
   useEffect(() => {
-    const getSearchResults = async () => {
-      const response = await fetch('/api/search?dataset=hord&'+ searchParamsString)
-      const data = await response.json()
+
+      fetch('/api/search?dataset=hord&'+ searchParamsString).then(response => response.json()).then(data => {
+        setData(data.hits)
+        setMapBounds([[data.aggregations.viewport.bounds.top_left.lat, 
+                      data.aggregations.viewport.bounds.top_left.lon],
+                      [data.aggregations.viewport.bounds.bottom_right.lat,
+                      data.aggregations.viewport.bounds.bottom_right.lon]])
+
+      })
       console.log("SEARCH DATA", data)
-      setData(data)
-    }
-    getSearchResults()
+      
+    
+
 
     }, [searchParamsString])
 
@@ -43,12 +50,12 @@ export default function SearchInterface() {
 
         </form>
        
-        <span>{ data?.hits?.total.value || 'Ingen' } treff</span>
+        <span>{ data?.total?.value || 'Ingen' } treff</span>
         <section className='md:border md:border-slate-300 md:rounded-sm md:py-1 md:h-auto overflow-y-auto'>
 
         
         <ul className='flex flex-col gap-1 overflow-auto md:mx-1'>
-          {data?.hits?.hits.map(hit => (
+          {data?.hits?.map(hit => (
             <li key={hit._id} className="my-0 border rounded-sm p-2 flex-grow"><strong>{hit._source.label}</strong> | {hit._source.rawData.kommuneNamn}</li>
           ))}
         </ul>
@@ -57,7 +64,7 @@ export default function SearchInterface() {
     
       <nav className="center gap-2">
 
-        {data?.hits?.total.value > 10 && <Pagination totalPages={Math.ceil(data.hits.total.value / (Number(searchParams.get('size')) || 10))}/>}
+        {data?.total?.value > 10 && <Pagination totalPages={Math.ceil(data.total.value / (Number(searchParams.get('size')) || 10))}/>}
 
       </nav>
       
@@ -68,7 +75,8 @@ export default function SearchInterface() {
 
       <section className='card md:grid md:grid-rows-7 md:col-span-3'>
       <div className="md:row-span-6 md:m-2">
-        <MapExplorer/>
+        <MapExplorer center={data?.aggregations? [data.aggregations.centroid.location.lat, data.aggregations.centroid.location.lon] : undefined}
+                      mapBounds={mapBounds}/>
       </div>
       <div className=" mx-2 p-2 md:row-span-1">
         <h2 className='mb-3 font-semibold'>Info</h2>

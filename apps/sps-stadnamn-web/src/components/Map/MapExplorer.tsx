@@ -5,8 +5,9 @@ import { useSearchParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
+const DEFAULT_ZOOM = 6;
 
-export default function MapExplorer() {
+export default function MapExplorer(props) {
 
   const [markers, setMarkers] = useState([]);
   const mapRef = useRef(null);
@@ -17,6 +18,15 @@ export default function MapExplorer() {
   const onMapLoaded = (mapInstance) => {
     setBounds(mapInstance.target.getBounds());
   };
+
+  useEffect(() => {
+    if (mapRef.current) {
+        if (props.mapBounds.length) {
+            mapRef.current.fitBounds(props.mapBounds, {maxZoom: 8})
+        }
+      //mapRef.current.setView(props.center || DEFAULT_CENTER, props.bounds.length ? mapRef.current.getBoundsZoom(props.bounds) : DEFAULT_ZOOM);
+    }
+  }, [mapRef.current, props.center, props.mapBounds]);
 
   useEffect(() => {
     // Check if the map is initialized
@@ -57,8 +67,8 @@ export default function MapExplorer() {
 
 
   return (
-    <Map mapRef={mapRef} whenReady={onMapLoaded} center={DEFAULT_CENTER} zoom={6}>
-            {({ TileLayer, CircleMarker }: {}) => (
+    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM}>
+            {({ TileLayer, CircleMarker, ChangeView }: {}) => (
                 <>
             <TileLayer
               url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
