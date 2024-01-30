@@ -16,24 +16,23 @@ export async function GET(request: Request) {
           "wrap_longitude": true
         }
       },
-      "centroid": {
-        "geo_centroid": {
-          "field": "location"
-        }
-      }
     },
     "query": {
-      ...Object.keys(params).length === 1 && 'dataset' in params ? { "match_all": {} } 
-      : { 
-        ...params.q && {
-          "simple_query_string": {
-            "query": params.q,
-            "fields": ["label"]
-          }
-        }
+      "bool": {
+        "must": [
+          { "match_all": {} },
+          ...params.q ? [{
+            "simple_query_string": {
+              "query": params.q,
+              "fields": ["label"]
+            }}] : []
+
+        ]
        }
     }
   }
+
+  //console.log("SEARCH QUERY JSON", JSON.stringify(query))
   
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {
