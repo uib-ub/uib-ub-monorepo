@@ -75,9 +75,10 @@ const stats = computed(() => {
   const langCodes = data?.value?.results?.bindings.map((e) => {
     return e.lang.value;
   });
-
-  for (const num of langCodes) {
-    counts[num] = counts[num] ? counts[num] + 1 : 1;
+  if (langCodes) {
+    for (const num of langCodes) {
+      counts[num] = counts[num] ? counts[num] + 1 : 1;
+    }
   }
 
   Object.entries(counts).forEach(([key, value]) => {

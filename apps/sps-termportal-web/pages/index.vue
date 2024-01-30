@@ -9,9 +9,16 @@
       <HeaderSearchScope />
     </div>
     <div class="flex flex-col gap-x-8 gap-y-6 pt-6 lg:flex-row">
-      <WelcomeTP class="basis-7/12" />
-      <NewsTP class="basis-5/12"/>
+      <ContentDoc
+        :key="`welcome${locale}`"
+        :path="`/${locale}/welcome`"
+        class="content-wrapper basis-7/12"
+      />
+      <NewsTP class="basis-5/12" />
     </div>
     <CollaboratorsTP class="mt-6 xl:mt-8" />
   </main>
 </template>
+<script setup lang="ts">
+const locale = useLocale();
+</script>

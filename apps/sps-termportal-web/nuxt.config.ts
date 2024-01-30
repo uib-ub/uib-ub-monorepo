@@ -6,20 +6,20 @@ import { v4 as uuidv4 } from "uuid";
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
+  modules: [
+    "@nuxt/content",
+    // "@nuxtjs/html-validator",
+    // "@unlighthouse/nuxt",
+  ],
   app: {
     head: {
       title: "Termportalen",
       link: [{ rel: "icon", type: "image/svg", href: "/favicon.svg" }],
     },
   },
-  modules: [
-    // "@nuxtjs/html-validator",
-    // "@unlighthouse/nuxt",
-  ],
-  // content: {
-  // https://content.nuxtjs.org/api/configuration
-  // },
   routeRules: {
+    "/": { ssr: false },
+    "/om": { ssr: false },
     "/api/**": {
       cors: true,
       headers: {
@@ -46,6 +46,25 @@ export default defineNuxtConfig({
         ],
       }),
     ],
+    // https://github.com/nuxt/nuxt/issues/24901
+    // define: {
+    //   __NUXT_ASYNC_CONTEXT__: false,
+    // },
+  },
+  content: {
+    sources: {
+      content: {
+        driver: "fs",
+        prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
+        base: resolve(__dirname, "content"),
+      },
+      github: {
+        driver: "github",
+        repo: "uib-ub/terminologi-content",
+        branch: "main",
+        dir: "web",
+      },
+    },
   },
   // htmlValidator: {
   //  usePrettier: true,
