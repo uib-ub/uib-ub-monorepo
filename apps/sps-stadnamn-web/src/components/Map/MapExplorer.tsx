@@ -35,7 +35,7 @@ export default function MapExplorer() {
     // Check if the bounds are initialized
     if (bounds) {
       // Fetch data based on the new bounds
-      const query = `/api/geo?dataset=hord&topLeftLat=${bounds.getNorthEast().lat}&topLeftLng=${bounds.getSouthWest().lng}&bottomRightLat=${bounds.getSouthWest().lat}&bottomRightLng=${bounds.getNorthEast().lng}&q=${searchParams.get('q')}`
+      const query = `/api/geo?dataset=hord&topLeftLat=${bounds.getNorthEast().lat}&topLeftLng=${bounds.getSouthWest().lng}&bottomRightLat=${bounds.getSouthWest().lat}&bottomRightLng=${bounds.getNorthEast().lng}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}`
       console.log("QUERY", query)
       fetch(query, {
         method: 'GET',
