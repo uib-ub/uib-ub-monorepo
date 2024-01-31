@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import Pagination from './pagination'
 import MapExplorer from '@/components/Map/MapExplorer'
+import Spinner from '@/components/svg/Spinner'
 
 
 export default function SearchInterface() {  
@@ -55,7 +56,7 @@ export default function SearchInterface() {
         </form>
        
         { isLoading ? <div className="flex-grow flex items-center justify-center">
-          <div className="ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+        <Spinner className="w-20 h-20"/>
         </div> :
         <>
         <span>{ data?.total?.value || 'Ingen' } treff</span>
