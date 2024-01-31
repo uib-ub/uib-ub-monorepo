@@ -1,8 +1,7 @@
 import UiBLogo from "@/components/svg/UiBLogo"
 import { PiMapTrifold, PiDatabase } from 'react-icons/pi';
 import Link from 'next/link';
-import Image from 'next/image';
-import marker from "/public/marker.svg";
+import { PiMagnifyingGlass } from 'react-icons/pi';
 
 export default function Home() {
   const cards = [
@@ -18,17 +17,18 @@ export default function Home() {
   <div className="flex flex-col gap-6 items-center">
   <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl font-serif">Stedsnavnsøk</h1>
   
-  <form className="flex items-center justify-center w-full max-w-md mx-auto" action="search/stadnamn">
-    <input className="w-full rounded-sm mr-2 p-2 sm:p-3 md:p-4 lg:p-4 border border-gray-400 text-base sm:text-lg md:text-xl lg:text-2xl" name="q" type="text"/>
-    <button className="btn btn-primary p-2 sm:p-3 md:p-4 lg:p-4 text-base sm:text-lg md:text-xl lg:text-2xl" type="submit">Søk</button>
+  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center max-w-2xl mx-auto gap-2" action="search/stadnamn">
+
+    <input className="col-span-4 rounded-sm h-full border border-gray-400 text-base" name="q" type="text"/>
+    <button className="btn btn-primary h-full col-span-1 text-base" type="submit" aria-label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></button>
+    <button className="btn text-base col-span-5 md:col-span-2 whitespace-nowrap"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</button>
   </form>
-  </div>
-  <div className="flex flex-col md:flex-row gap-12 justify-center">
-  <button className="btn aspect-square flex flex-col text-xl"><PiMapTrifold className="text-9xl md:text-8xl"/>Utforsk kartet</button>
-  </div>
+  
   </div>
 
-  <div className="flex items-center gap-12">
+  </div>
+
+  <div className="flex items-center flex-col lg:flex-row gap-12">
   <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
   <div className="flex gap-6 jusitfy-between">
@@ -44,7 +44,7 @@ export default function Home() {
   </div>
   <section className="flex flex-col items-center gap-6">
     <h2 className="font-serif text-3xl">Datasett</h2>
-    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <ul className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex">
           <img src={card.img}  alt="Image description" className="w-64 h-64 object-cover m-2"/>
