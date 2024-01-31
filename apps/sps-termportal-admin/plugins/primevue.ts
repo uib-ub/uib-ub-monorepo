@@ -10,6 +10,7 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import TreeTable from "primevue/treetable";
 import InputText from "primevue/inputtext";
+import TriStateCheckbox from "primevue/tristatecheckbox";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(PrimeVue, { ripple: true });
@@ -24,4 +25,5 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component("Column", Column);
   nuxtApp.vueApp.component("TreeTable", TreeTable);
   nuxtApp.vueApp.component("InputText", InputText);
+  nuxtApp.vueApp.component("TriStateCheckbox", TriStateCheckbox);
 });
