@@ -68,7 +68,7 @@ export default function MapExplorer(props) {
 
   return (
     <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER}>
-            {({ TileLayer, CircleMarker, ChangeView }: {}) => (
+            {({ TileLayer, CircleMarker, ChangeView }) => (
                 <>
             <TileLayer
               url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
