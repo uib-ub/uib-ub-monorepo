@@ -6,6 +6,21 @@ import Pagination from './pagination'
 import MapExplorer from '@/components/Map/MapExplorer'
 import Spinner from '@/components/svg/Spinner'
 
+interface DataType {
+  total: {
+    value: number;
+  };
+  hits: Array<{
+    _id: string;
+    _source: {
+      label: string;
+      rawData: {
+        kommuneNamn: string;
+      };
+    };
+  }>;
+}
+
 
 export default function SearchInterface() {  
   const router = useRouter()
@@ -14,9 +29,9 @@ export default function SearchInterface() {
   console.log("PARAMS STRING", searchParamsString)
   console.log("QUERY", searchParams.get('q'))
 
-  const [data, setData] = useState([])
+  const [data, setData] = useState<DataType | null>(null);
   const [isLoading, setIsLoading] = useState(true)
-  const [mapBounds, setMapBounds] = useState([])
+  const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
 
   useEffect(() => {
 
@@ -40,22 +55,20 @@ export default function SearchInterface() {
     }, [searchParamsString])
 
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: any) => {
       event.preventDefault()
       const formData = new FormData(event.target);
-      const formParams = [...formData.entries()].map( item => `${encodeURIComponent(item[0])}=${encodeURIComponent(item[1])}`).join('&');
+      const formParams = Array.from(formData.entries()).map(item => `${encodeURIComponent(item[0])}=${encodeURIComponent(item[1] as string)}`).join('&');
       router.push(`/search/hord?${formParams}`)
     }
 
   return (
-
-
     <main className="md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2 h-full">
       <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2" aria-label="Filtre">
         <form id="search_form" className='w-full flex gap-1' onSubmit={ handleSubmit }>
         </form>
        
-        { isLoading ? <div className="flex-grow flex items-center justify-center">
+        { !data || isLoading ? <div className="flex-grow flex items-center justify-center">
         <Spinner className="w-20 h-20"/>
         </div> :
         <>
@@ -64,24 +77,22 @@ export default function SearchInterface() {
 
         
         <ul className='flex flex-col gap-1 overflow-auto md:mx-1'>
-          {data?.hits?.map(hit => (
+          {data.hits.map(hit => (
             <li key={hit._id} className="my-0 border rounded-sm p-2 flex-grow"><strong>{hit._source.label}</strong> | {hit._source.rawData.kommuneNamn}</li>
           ))}
         </ul>
 
 
         </section>
+
+        <nav className="center gap-2">
+
+          {data.total.value > 10 && <Pagination totalPages={Math.ceil(data.total.value / (Number(searchParams.get('size')) || 10))}/>}
+
+        </nav>
         </>
+
       }
-    
-      <nav className="center gap-2">
-
-        {data?.total?.value > 10 && <Pagination totalPages={Math.ceil(data.total.value / (Number(searchParams.get('size')) || 10))}/>}
-
-      </nav>
-      
-
-
             
       </section>
 

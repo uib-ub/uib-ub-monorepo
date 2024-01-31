@@ -8,13 +8,13 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
   const router = useRouter();
   const currentPage = Number(searchParams.get('page')) || 1;
 
-  const paginationUrl = (page) => {
+  const paginationUrl = (page: number) => {
     const params = new URLSearchParams(searchParams)
     params.set('page', String(page))
     return pathname + "?" + params.toString()
   }
 
-  const perPageUrl = (size) => {
+  const perPageUrl = (size: string) => {
     const params = new URLSearchParams(searchParams)
     params.set('size', String(size))
     return pathname + "?" + params.toString()
