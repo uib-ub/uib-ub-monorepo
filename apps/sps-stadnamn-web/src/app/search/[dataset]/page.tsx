@@ -14,13 +14,15 @@ export default function SearchInterface() {
   console.log("QUERY", searchParams.get('q'))
 
   const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const [mapBounds, setMapBounds] = useState([])
 
   useEffect(() => {
 
       fetch('/api/search?dataset=hord&'+ searchParamsString).then(response => response.json()).then(es_data => {
         setData(es_data.hits)
-        if (es_data.aggregations) {
+        if (es_data.aggregations?.viewport?.bounds) {
+          //console.log("AGGREGATIONS", es_data.aggregations)
           setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
             [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
         }
@@ -28,7 +30,7 @@ export default function SearchInterface() {
 
         console.log("SEARCH DATA", es_data)
 
-      })
+      }).then(() => setIsLoading(false))
       
       
     
@@ -50,9 +52,12 @@ export default function SearchInterface() {
     <main className="md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2 h-full">
       <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2" aria-label="Filtre">
         <form id="search_form" className='w-full flex gap-1' onSubmit={ handleSubmit }>
-
         </form>
        
+        { isLoading ? <div className="flex-grow flex items-center justify-center">
+          <div className="ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+        </div> :
+        <>
         <span>{ data?.total?.value || 'Ingen' } treff</span>
         <section className='md:border md:border-slate-300 md:rounded-sm md:py-1 md:h-auto overflow-y-auto'>
 
@@ -63,7 +68,10 @@ export default function SearchInterface() {
           ))}
         </ul>
 
+
         </section>
+        </>
+      }
     
       <nav className="center gap-2">
 
