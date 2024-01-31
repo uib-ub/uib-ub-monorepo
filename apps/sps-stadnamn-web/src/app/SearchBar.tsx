@@ -6,8 +6,7 @@ import { PiMagnifyingGlass, PiCaretDown } from 'react-icons/pi';
 
 export default function SearchBar() {
     const pathname = usePathname()
-    console.log(pathname)
-
+    if (pathname.slice(0, 7) != '/search') return (<></>)
     return (
         <div className="flex flex-wrap md:flex-nowrap gap-1">
         <button className="btn flex-grow">Hordanamn <PiCaretDown/></button>
