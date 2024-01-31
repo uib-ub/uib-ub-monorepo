@@ -10,8 +10,9 @@
           selection-mode="single"
           :value="merged"
           removable-sort
+          filter-display="row"
           table-style="min-width: 1rem"
-          :global-filter-fields="['label', 'id', 'conceptCount', 'status']"
+          :global-filter-fields="['label', 'id', 'conceptCount']"
         >
           <template #header>
             <div class="flex">
@@ -25,9 +26,55 @@
           <Column sortable field="id" header="ID" />
           <Column sortable field="conceptCount" header="Concepts" />
           <Column sortable field="status" header="Status" />
-          <Column sortable field="labels" header="Labels" />
-          <Column sortable field="descriptions" header="Descriptions" />
-          <Column sortable field="agreement" header="Agreement" />
+          <Column sortable field="labels" header="Labels" data-type="boolean">
+            <template #body="{ data }">
+              <div class="flex align-items-center gap-2">
+                <span>{{ data.labels ? "Ja" : "Nei" }}</span>
+              </div>
+            </template>
+            <template #filter="{ filterModel, filterCallback }">
+              <TriStateCheckbox
+                v-model="filterModel.value"
+                @change="filterCallback()"
+              />
+            </template>
+          </Column>
+          <Column
+            sortable
+            field="descriptions"
+            header="Descriptions"
+            data-type="boolean"
+          >
+            <template #body="{ data }">
+              <div class="flex align-items-center gap-2">
+                <span>{{ data.descriptions ? "Ja" : "Nei" }}</span>
+              </div>
+            </template>
+            <template #filter="{ filterModel, filterCallback }">
+              <TriStateCheckbox
+                v-model="filterModel.value"
+                @change="filterCallback()"
+              />
+            </template>
+          </Column>
+          <Column
+            sortable
+            field="agreement"
+            header="Agreement"
+            data-type="boolean"
+          >
+            <template #body="{ data }">
+              <div class="flex align-items-center gap-2">
+                <span>{{ data.agreement ? "Ja" : "Nei" }}</span>
+              </div>
+            </template>
+            <template #filter="{ filterModel, filterCallback }">
+              <TriStateCheckbox
+                v-model="filterModel.value"
+                @change="filterCallback()"
+              />
+            </template>
+          </Column>
           <Column header="">
             <template #body="slotProps">
               <NuxtLink
@@ -100,5 +147,8 @@ const merged = computed(() => {
 const selectedTermbase = ref();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  agreement: { value: null, matchMode: FilterMatchMode.EQUALS },
+  descriptions: { value: null, matchMode: FilterMatchMode.EQUALS },
+  labels: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 </script>
