@@ -1,7 +1,7 @@
 <template>
-  <section
+  <nav
     v-if="showSearchFilter"
-    id="filterCard"
+    :id="`filterCard-${placement}`"
     class="h-full border-gray-300 pr-1 xl:border-r xl:pt-12"
   >
     <h2 class="pb-2 pt-1 text-2xl">{{ $t("searchFilter.filter") }}</h2>
@@ -48,11 +48,17 @@
           :title="title"
           :fkey="key"
         >
-          <FilterCheckbox v-for="d in data" :key="d" :ftype="key" :fvalue="d" />
+          <FilterCheckbox
+            v-for="d in data"
+            :key="d"
+            :ftype="key"
+            :fvalue="d"
+            :placement="placement"
+          />
         </SearchFilterFieldset>
       </template>
     </div>
-  </section>
+  </nav>
 </template>
 
 <script setup lang="ts">
@@ -61,14 +67,17 @@ const searchDataStats = useSearchDataStats();
 const localeLangOrder = useLocaleLangOrder();
 const searchInterface = useSearchInterface();
 
+const props = defineProps({
+  placement: { type: String, default: "default" },
+});
+
 const displaySection = (key, data) => {
   if (key === "lang") {
-    return searchInterface.value.language === "all"
+    return searchInterface.value.language === "all";
   } else if (key === "matching") {
-    return data.length !== 0
+    return data.length !== 0;
   } else {
     return true;
   }
-
 };
 </script>

@@ -30,7 +30,7 @@
       </div>
       <div class="hidden lg:flex">
         <ul
-          class="flex items-center gap-x-1 px-4 text-lg font-semibold text-gray-500"
+          class="flex items-center gap-x-1 px-4 text-lg font-semibold text-gray-600"
         >
           <div>
             <button
@@ -42,20 +42,19 @@
               aria-controls="langMenu"
               @click="langMenu.toggle"
             >
-              <div class="relative">
+              <div class="relative" aria-hidden="true">
                 <div class="absolute -bottom-[9px] -left-[8px]">
                   <span class="rounded-[5px] bg-white text-[0.6em]">
                     <span
-                      class="h-1 px-[3px] font-semibold uppercase group-hover:text-gray-700 group-focus:text-gray-700"
+                      class="h-1 text-small px-[3px] font-semibold uppercase group-hover:text-gray-700 group-focus:text-gray-700"
                       >{{ locale }}</span
                     >
                   </span>
                 </div>
                 <Icon
-                  class="text-gray-500 group-hover:text-gray-700 group-focus:text-gray-700"
+                  class="text-gray-600 group-hover:text-gray-700 group-focus:text-gray-700"
                   name="material-symbols:language"
                   size="1.4em"
-                  aria-hidden="true"
                 />
               </div>
             </button>

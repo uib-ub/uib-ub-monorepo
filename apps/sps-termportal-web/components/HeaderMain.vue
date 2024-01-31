@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <header>
     <div style="height: 48px">
       <NavBar
         ref="navBarRef"
@@ -26,7 +26,7 @@
     >
       <div class="border-x border-b-[1px] border-gray-300 border-x-white"></div>
     </div>
-  </div>
+  </header>
 </template>
 
 <script setup lang="ts">
