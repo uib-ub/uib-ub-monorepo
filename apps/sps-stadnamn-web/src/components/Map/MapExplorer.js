@@ -71,8 +71,13 @@ export default function MapExplorer(props) {
             {({ TileLayer, CircleMarker, ChangeView }) => (
                 <>
             <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors &copy; <a href='https://carto.com/attributions'>CARTO</a>"
+              subdomains={['a', 'b', 'c', 'd']}
+            />
+            <TileLayer
               url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
-              attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+              attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
               subdomains={['', '2', '3']} 
             />
             
