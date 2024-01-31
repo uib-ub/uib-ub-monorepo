@@ -2,25 +2,10 @@
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
-import Pagination from './pagination'
 import MapExplorer from '@/components/Map/MapExplorer'
 import Spinner from '@/components/svg/Spinner'
-
-interface DataType {
-  total: {
-    value: number;
-  };
-  hits: Array<{
-    _id: string;
-    _source: {
-      label: string;
-      rawData: {
-        kommuneNamn: string;
-      };
-    };
-  }>;
-}
-
+import Results from './results'
+import { ResultData } from './types'
 
 export default function SearchInterface() {  
   const router = useRouter()
@@ -29,14 +14,14 @@ export default function SearchInterface() {
   console.log("PARAMS STRING", searchParamsString)
   console.log("QUERY", searchParams.get('q'))
 
-  const [data, setData] = useState<DataType | null>(null);
+  const [resultData, setResultData] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true)
   const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
 
   useEffect(() => {
 
       fetch('/api/search?dataset=hord&'+ searchParamsString).then(response => response.json()).then(es_data => {
-        setData(es_data.hits)
+        setResultData(es_data.hits)
         if (es_data.aggregations?.viewport?.bounds) {
           //console.log("AGGREGATIONS", es_data.aggregations)
           setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
@@ -68,29 +53,9 @@ export default function SearchInterface() {
         <form id="search_form" className='w-full flex gap-1' onSubmit={ handleSubmit }>
         </form>
        
-        { !data || isLoading ? <div className="flex-grow flex items-center justify-center">
+        { !resultData || isLoading ? <div className="flex-grow flex items-center justify-center">
         <Spinner className="w-20 h-20"/>
-        </div> :
-        <>
-        <span>{ data?.total?.value || 'Ingen' } treff</span>
-        <section className='md:border md:border-slate-300 md:rounded-sm md:py-1 md:h-auto overflow-y-auto'>
-
-        
-        <ul className='flex flex-col gap-1 overflow-auto md:mx-1'>
-          {data.hits.map(hit => (
-            <li key={hit._id} className="my-0 border rounded-sm p-2 flex-grow"><strong>{hit._source.label}</strong> | {hit._source.rawData.kommuneNamn}</li>
-          ))}
-        </ul>
-
-
-        </section>
-
-        <nav className="center gap-2">
-
-          {data.total.value > 10 && <Pagination totalPages={Math.ceil(data.total.value / (Number(searchParams.get('size')) || 10))}/>}
-
-        </nav>
-        </>
+        </div> : <Results resultData={resultData}/>
 
       }
             
