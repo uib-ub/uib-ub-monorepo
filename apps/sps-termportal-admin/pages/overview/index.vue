@@ -25,7 +25,36 @@
           <Column sortable field="label" header="Label" />
           <Column sortable field="id" header="ID" />
           <Column sortable field="conceptCount" header="Concepts" />
-          <Column sortable field="status" header="Status" />
+          <Column
+            sortable
+            header="Status"
+            filter-field="status"
+            :show-filter-menu="false"
+          >
+            <template #body="{ data }">
+              <div class="flex align-items-center gap-2">
+                <span>{{ data.status }}</span>
+              </div>
+            </template>
+            <template #filter="{ filterModel, filterCallback }">
+              <MultiSelect
+                v-model="filterModel.value"
+                :options="statuses"
+                option-label="name"
+                placeholder="Any"
+                class="p-column-filter"
+                style="min-width: 11rem"
+                :max-selected-labels="0"
+                @change="filterCallback()"
+              >
+                <template #option="slotProps">
+                  <div class="flex align-items-center gap-2">
+                    <span>{{ slotProps.option }}</span>
+                  </div>
+                </template>
+              </MultiSelect>
+            </template>
+          </Column>
           <Column sortable field="labels" header="Labels" data-type="boolean">
             <template #body="{ data }">
               <div class="flex align-items-center gap-2">
@@ -115,7 +144,7 @@ const merged = computed(() => {
       label: e.label.value,
       id: e.id.value,
       conceptCount: e.concepts.value,
-      status: matchid(cmsdata, e, "status"),
+      status: numberStatus(matchid(cmsdata, e, "status")),
       labels: matchid(cmsdata, e, "labelsOk"),
       descriptions: matchid(cmsdata, e, "descriptionsOk"),
       agreement: matchid(cmsdata, e, "hasLicenseAgreement"),
@@ -130,7 +159,7 @@ const merged = computed(() => {
         const data = {
           label: entry.label,
           id: entry.id + "*",
-          status: entry.status,
+          status: numberStatus(entry.status),
           labels: entry.labelsOk,
           descriptions: entry.descriptionsOk,
           agreement: entry.hasLicenseAgreement,
@@ -144,11 +173,20 @@ const merged = computed(() => {
   return enriched;
 });
 
+const statuses = computed(() => {
+  const statusArray = merged.value?.map((tb) => {
+    return tb.status;
+  });
+
+  return [...new Set(statusArray)].sort();
+});
+
 const selectedTermbase = ref();
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   agreement: { value: null, matchMode: FilterMatchMode.EQUALS },
   descriptions: { value: null, matchMode: FilterMatchMode.EQUALS },
   labels: { value: null, matchMode: FilterMatchMode.EQUALS },
+  status: { value: null, matchMode: FilterMatchMode.IN },
 });
 </script>
