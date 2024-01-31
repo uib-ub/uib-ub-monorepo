@@ -68,18 +68,17 @@ export default function MapExplorer(props) {
 
   return (
     <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER}>
-            {({ TileLayer, CircleMarker, ChangeView }) => (
+            {({ TileLayer, CircleMarker }) => (
                 <>
+          
             <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-              attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors &copy; <a href='https://carto.com/attributions'>CARTO</a>"
-              subdomains={['a', 'b', 'c', 'd']}
-            />
-            <TileLayer
+              key="map_topo4"
               url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
               attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
               subdomains={['', '2', '3']} 
             />
+          
+            
             
             {markers.map((marker, index) => (
               <CircleMarker pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
