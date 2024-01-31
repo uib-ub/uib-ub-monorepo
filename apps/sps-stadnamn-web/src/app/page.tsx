@@ -5,8 +5,12 @@ import { PiMagnifyingGlass } from 'react-icons/pi';
 
 export default function Home() {
   const cards = [
-    { img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Prof_oluf_rygh.jpg", title: "Oluf Rygh: Norske Gaardnavne", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Matrikkelen 1886", description: "Description" },
+    { img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Prof_oluf_rygh.jpg", title: "Oluf Rygh: Norske Gaardnavne", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+    { img: "https://via.placeholder.com/150", title: "Matrikkelen 1886", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
+    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
+    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
+    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
     { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
   ];
 
@@ -29,12 +33,12 @@ export default function Home() {
   </div>
 
   <div className="flex items-center flex-col lg:flex-row gap-12">
-  <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
+  <div className="flex flex-col md:flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
-  <div className="flex gap-6 jusitfy-between">
-  <div className="flex flex-col">Språksamlingene
+  <div className="flex flex-col md:flex-row gap-6 jusitfy-between text-center">
+  <div className="flex flex-col"><span className="font-semibold">Språksamlingene</span>
   <Link href="https://uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div>
-  <div className="flex flex-col">Digital utvikling
+  <div className="flex flex-col"><span className="font-semibold">Digital utvikling</span>
   <Link href="https://uib.no/digitalutvikling" className="text-sm">uib.no/digitalutvikling</Link></div>
 
   </div>
@@ -44,10 +48,11 @@ export default function Home() {
   </div>
   <section className="flex flex-col items-center gap-6">
     <h2 className="font-serif text-3xl">Datasett</h2>
+    Filtre her
     <ul className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex">
-          <img src={card.img}  alt="Image description" className="w-64 h-64 object-cover m-2"/>
+          <img src={card.img}  alt="Image description" className="w-24 h-24 md:w-48 md:h-48 object-cover m-2"/>
           <div className="content p-4 w-128">
             <h3 className="text-lg font-semibold">{card.title}</h3>
             <p>{card.description}</p>
