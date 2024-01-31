@@ -1,8 +1,7 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
-import MapExplorer from '@/components/Map/MapExplorer'
+import ContentViwer from './content-viewer'
 import Spinner from '@/components/svg/Spinner'
 import Results from './results'
 import { ResultData } from './types'
@@ -10,9 +9,9 @@ import { ResultData } from './types'
 export default function SearchInterface() {  
   const router = useRouter()
   const searchParams = useSearchParams()
-  const searchParamsString = searchParams.toString()
-  console.log("PARAMS STRING", searchParamsString)
-  console.log("QUERY", searchParams.get('q'))
+  const searchParamsArray = Array.from(searchParams.entries());
+  const filteredSearchParams = searchParamsArray.filter(([key]) => key !== 'document');
+  const filteredSearchParamsString = new URLSearchParams(filteredSearchParams).toString();
 
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true)
@@ -20,7 +19,7 @@ export default function SearchInterface() {
 
   useEffect(() => {
 
-      fetch('/api/search?dataset=hord&'+ searchParamsString).then(response => response.json()).then(es_data => {
+      fetch('/api/search?dataset=hord&'+ filteredSearchParamsString).then(response => response.json()).then(es_data => {
         setResultData(es_data.hits)
         if (es_data.aggregations?.viewport?.bounds) {
           //console.log("AGGREGATIONS", es_data.aggregations)
@@ -37,7 +36,7 @@ export default function SearchInterface() {
     
 
 
-    }, [searchParamsString])
+    }, [filteredSearchParamsString])
 
 
     const handleSubmit = async (event: any) => {
@@ -62,18 +61,7 @@ export default function SearchInterface() {
       </section>
 
       <section className='card md:grid md:grid-rows-7 md:col-span-3'>
-      <div className="md:row-span-6 md:m-2">
-        <MapExplorer mapBounds={mapBounds}/>
-      </div>
-      <div className=" mx-2 p-2 md:row-span-1">
-        <h2 className='mb-3 font-semibold'>Info</h2>
-        List with text:
-        <ul>
-          <li>- Info about dataset if no place name selected </li>
-          <li>- Switch to showing image in map card</li>
-        </ul>
-        
-      </div>
+      <ContentViwer mapBounds={mapBounds}/>
       </section>
 
 

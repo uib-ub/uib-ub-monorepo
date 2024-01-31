@@ -9,7 +9,6 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
         garamond: ["EB Garamond"]
 
       },
@@ -41,11 +40,6 @@ const config: Config = {
         950: '#282524',
     },
     },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(circle, rose-500, rose-900)",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, rose-500, rose-900)",
-      },
     },
   },
   plugins: [],

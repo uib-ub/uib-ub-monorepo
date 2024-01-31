@@ -7,7 +7,7 @@ export default function Home() {
 <main className="flex flex-col grow-1 gap-24 items-center justify-center  pt-4 pb-8 px-4 my-auto">
   <div className="flex flex-col gap-12 my-2">
   <div className="flex flex-col gap-6 items-center">
-  <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl">Stedsnavnsøk</h1>
+  <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl font-serif">Stedsnavnsøk</h1>
   
   <form className="flex items-center justify-center w-full max-w-md mx-auto" action="search/stadnamn">
     <input className="w-full rounded-sm mr-2 p-2 sm:p-3 md:p-4 lg:p-4 border border-gray-400 text-base sm:text-lg md:text-xl lg:text-2xl" name="q" type="text"/>
@@ -21,13 +21,13 @@ export default function Home() {
   </div>
 
   <div className="flex flex-col items-center gap-6">
-  <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><h2 className="tracking-widest">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
+  <div className="flex flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
   <div className="flex gap-6 jusitfy-between">
   <div className="flex flex-col">Språksamlingene
-  <Link href="uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div>
+  <Link href="https://uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div>
   <div className="flex flex-col">Digital utvikling
-  <Link href="uib.no/spraksamlingane" className="text-sm">uib.no/digitalutvikling</Link></div>
+  <Link href="https://uib.no/digitalutvikling" className="text-sm">uib.no/digitalutvikling</Link></div>
 
   </div>
   </div>

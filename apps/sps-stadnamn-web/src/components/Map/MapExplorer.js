@@ -77,8 +77,6 @@ export default function MapExplorer(props) {
               attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
               subdomains={['', '2', '3']} 
             />
-          
-            
             
             {markers.map((marker, index) => (
               <CircleMarker pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
@@ -87,6 +85,10 @@ export default function MapExplorer(props) {
               </CircleMarker>
                 
             ))}
+            {props.doc?.location ? <CircleMarker pathOptions={{color:'red', weight: 2, opacity: 1, fillColor: 'red', fillOpacity: 1}}
+                            key={props.doc._id} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]} radius={7}>
+
+              </CircleMarker> : null}
             </>
             )}
     </Map>
