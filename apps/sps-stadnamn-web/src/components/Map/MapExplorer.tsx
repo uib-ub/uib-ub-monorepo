@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
-const DEFAULT_ZOOM = 6;
+const DEFAULT_ZOOM = 5;
 
 export default function MapExplorer(props) {
 
@@ -67,7 +67,7 @@ export default function MapExplorer(props) {
 
 
   return (
-    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM}>
+    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER}>
             {({ TileLayer, CircleMarker, ChangeView }: {}) => (
                 <>
             <TileLayer
