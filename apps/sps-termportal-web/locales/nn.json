@@ -103,6 +103,7 @@
     "termbase": "Termbase",
     "searchfieldLabel": "Søkefelt",
     "clearTextLabel": "Tøm søkefeltet",
+    "expandSuggestions": "Vis forslag",
     "searchButtonLabel": "Søk",
     "expandSubdomains": "Vis underdomene",
     "closeSubdomains": "Skjul underdomene",

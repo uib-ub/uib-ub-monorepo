@@ -2,8 +2,8 @@
   <div class="flex flex-wrap gap-x-6 gap-y-2 py-1">
     <SearchDropdownWrapper target="language">
       <DropdownPV
-        :id="`languageDropdown`"
         v-model="searchInterface.language"
+        aria-labelledby="languageDropdownLabel"
         :options="optionsLanguage"
         class="min-w-[11rem]"
       />
@@ -43,7 +43,10 @@ const optionsLanguage = computed(() => {
 
 const optionsTranslate = computed(() => {
   const filteredTranslate = deriveSearchOptions("translate", "none");
-  const intersection = intersectUnique(localeLangOrder.value, filteredTranslate);
+  const intersection = intersectUnique(
+    localeLangOrder.value,
+    filteredTranslate
+  );
   const options = [
     {
       label: i18n.t("global.lang.none"),

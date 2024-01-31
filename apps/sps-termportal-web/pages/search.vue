@@ -4,14 +4,16 @@
       <Title> {{ $t("search.title") }} | {{ $t("index.title") }} </Title>
     </Head>
     <div class="flex">
+      <h1 class="hidden">{{ $t("search.title") }}</h1>
       <SideBar>
-        <SearchFilter class="hidden xl:block" />
+        <SearchFilter class="hidden xl:block" placement="sidebar" />
       </SideBar>
       <div class="flex-1">
-        <h1 class="sr-only">{{ $t("search.title") }}</h1>
-        <SearchStatusBar />
+        <section>
+          <SearchStatusBar />
+        </section>
         <div class="xl:flex">
-          <SearchFilter class="block xl:hidden" />
+          <SearchFilter class="block xl:hidden" placement="main" />
           <main class="grow">
             <h2 id="main" class="pb-2 pt-3 text-2xl">
               <AppLink to="#main">
