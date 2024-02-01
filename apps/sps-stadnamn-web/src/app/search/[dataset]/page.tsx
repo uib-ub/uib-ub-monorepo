@@ -48,7 +48,7 @@ export default function SearchInterface() {
 
   return (
     <main className="md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2 h-full">
-      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2" aria-label="Filtre">
+      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2 px-4" aria-label="Filtre">
         <form id="search_form" className='w-full flex gap-1' onSubmit={ handleSubmit }>
         </form>
        
