@@ -48,13 +48,15 @@ export default function SearchInterface() {
 
   return (
     <main className="search-view md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2">
-      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2 px-4 overflow-y-auto" aria-label="Filtre">
-        <div className='flex flex-col'>
+      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2 px-4 overflow-y-auto h-full" aria-label="Filtre">
+        <div className='flex flex-col h-full'>
         <form id="search_form" className='flex gap-1' onSubmit={ handleSubmit }>
         </form>
        
-        { !resultData || isLoading ? <div className="flex-grow flex items-center justify-center">
+        { !resultData || isLoading ? <div className="flex h-full items-center justify-center">
+          <div>
         <Spinner className="w-20 h-20"/>
+        </div>
         </div> : <Results resultData={resultData}/>
 
       }
