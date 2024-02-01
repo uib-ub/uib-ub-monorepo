@@ -16,14 +16,14 @@ export default function Home() {
 
   return (
     <>
-<main className="flex flex-col grow-1 gap-24 items-center justify-center  pt-4 pb-8 px-4 my-auto">
+<main className="flex flex-col grow-1 gap-24 items-center justify-center pb-8 lg:pt-32  lg:pb-16 px-4 my-auto">
   <div className="flex flex-col gap-12 my-2">
   <div className="flex flex-col gap-6 items-center">
   <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl font-serif">Stedsnavnsøk</h1>
   
   <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center max-w-2xl mx-auto gap-2" action="search/stadnamn">
 
-    <input className="col-span-4 rounded-sm h-full border border-gray-400 text-base" name="q" type="text"/>
+    <input className="col-span-4 rounded-sm h-full border border-gray-400 text-base px-4" name="q" type="text"/>
     <button className="btn btn-primary h-full col-span-1 text-base" type="submit" aria-label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></button>
     <button className="btn text-base col-span-5 md:col-span-2 whitespace-nowrap"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</button>
   </form>

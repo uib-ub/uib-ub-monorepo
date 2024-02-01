@@ -28,7 +28,7 @@ export default function SearchInterface() {
         }
         
 
-        console.log("SEARCH DATA", es_data)
+        //console.log("SEARCH DATA", es_data)
 
       }).then(() => setIsLoading(false))
       
