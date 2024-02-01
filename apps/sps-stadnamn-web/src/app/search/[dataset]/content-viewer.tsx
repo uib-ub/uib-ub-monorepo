@@ -3,7 +3,7 @@ import MapExplorer from '@/components/Map/MapExplorer'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 
-function renderData(data: any, prefix = '') {
+function renderData(data: any, prefix = ''): any {
   return Object.keys(data).map((key) => {
     const value = data[key];
     const newKey = prefix ? `${prefix}.${key}` : key;
