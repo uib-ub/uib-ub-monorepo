@@ -7,9 +7,11 @@
         <DataTable
           v-model:filters="filters"
           v-model:selection="selectedTermbase"
-          selection-mode="single"
+          selection-mode="multiple"
           :value="merged"
           removable-sort
+          paginator
+          :rows="15"
           filter-display="row"
           table-style="min-width: 1rem"
           :global-filter-fields="['label', 'id', 'conceptCount']"
@@ -22,12 +24,14 @@
               />
             </div>
           </template>
+          <Column selection-mode="multiple" header-style="width: 3rem"></Column>
           <Column sortable field="label" header="Label" />
           <Column sortable field="id" header="ID" />
           <Column sortable field="conceptCount" header="Concepts" />
           <Column
             sortable
             header="Status"
+            field="status"
             filter-field="status"
             :show-filter-menu="false"
           >
@@ -43,6 +47,7 @@
                 option-label="name"
                 placeholder="Any"
                 class="p-column-filter"
+                style="min-width: 10rem"
                 :max-selected-labels="0"
                 @change="filterCallback()"
               >
@@ -106,20 +111,38 @@
           <Column header="">
             <template #body="slotProps">
               <NuxtLink
+                v-if="
+                  ['4. opprettet', '5. publisert'].includes(
+                    slotProps.data.status
+                  )
+                "
+                :to="`https://wiki.terminologi.no/index.php?title=${slotProps.data.id.replace(
+                  '*',
+                  ''
+                )}:${slotProps.data.id.replace('*', '')}`"
+                target="_blank"
+              >
+                Wiki
+              </NuxtLink>
+            </template>
+          </Column>
+          <Column header="">
+            <template #body="slotProps">
+              <NuxtLink
                 v-if="slotProps.data._id"
                 :to="`/studio/desk/termbase;${slotProps.data._id}`"
                 target="_blank"
               >
-                Rediger
+                Studio
               </NuxtLink>
             </template>
           </Column>
         </DataTable>
       </section>
       <TermgroupMembers
-        v-if="selectedTermbase?.id"
-        :key="selectedTermbase?.id"
-        :termbase="selectedTermbase?.id"
+        v-if="selectedTermbase.length > 0"
+        :key="selectedTermbase"
+        :termbases="selectedTermbase.map((tb) => tb._id)"
       />
     </main>
   </div>
@@ -177,10 +200,10 @@ const statuses = computed(() => {
     return tb.status;
   });
 
-  return [...new Set(statusArray)].sort();
+  return [...new Set(statusArray)].sort().reverse();
 });
 
-const selectedTermbase = ref();
+const selectedTermbase = ref([]);
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   agreement: { value: null, matchMode: FilterMatchMode.EQUALS },
