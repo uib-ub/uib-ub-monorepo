@@ -9,7 +9,6 @@ import { ResultData } from './types'
 export default function Results({ resultData }: ResultsProps) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
-    const router = useRouter();
     const documentUrl = (uuid: string) => {
         const params = new URLSearchParams(searchParams)
         params.set('document', String(uuid))

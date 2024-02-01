@@ -47,9 +47,10 @@ export default function SearchInterface() {
     }
 
   return (
-    <main className="md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2 h-full">
-      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2 px-4" aria-label="Filtre">
-        <form id="search_form" className='w-full flex gap-1' onSubmit={ handleSubmit }>
+    <main className="search-view md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2">
+      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2 px-4 overflow-y-auto" aria-label="Filtre">
+        <div className='flex flex-col'>
+        <form id="search_form" className='flex gap-1' onSubmit={ handleSubmit }>
         </form>
        
         { !resultData || isLoading ? <div className="flex-grow flex items-center justify-center">
@@ -57,10 +58,10 @@ export default function SearchInterface() {
         </div> : <Results resultData={resultData}/>
 
       }
-            
+        </div>
       </section>
 
-      <section className='card md:grid md:grid-rows-7 md:col-span-3'>
+      <section className='card flex flex-col md:col-span-3 h-full overflow-hidden'>
       <ContentViwer mapBounds={mapBounds}/>
       </section>
 

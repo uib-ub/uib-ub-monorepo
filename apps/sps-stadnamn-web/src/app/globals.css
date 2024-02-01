@@ -10,6 +10,11 @@
     @apply bg-slate-50
   }
 
+  html:has(.search-view), body:has(.search-view), main.search-view {
+    @apply h-full overflow-hidden;
+  }
+
+
   a {
     @apply underline decoration-2 decoration-primary-600 underline-offset-4;
 
@@ -20,6 +25,11 @@
     font-variant: all-small-caps;
   }
 
+
+  * {
+    scrollbar-color:  #8e8580 transparent;
+    scrollbar-width: thin;
+  }
 
 }
 
