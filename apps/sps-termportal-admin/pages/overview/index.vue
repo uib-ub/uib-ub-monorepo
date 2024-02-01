@@ -43,7 +43,6 @@
                 option-label="name"
                 placeholder="Any"
                 class="p-column-filter"
-                style="min-width: 11rem"
                 :max-selected-labels="0"
                 @change="filterCallback()"
               >
