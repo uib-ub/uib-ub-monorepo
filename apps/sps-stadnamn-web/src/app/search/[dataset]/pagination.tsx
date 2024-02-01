@@ -46,7 +46,10 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
       {value}
     </option>
   ))}
+  
 </select>
-    </div>
+</div>
+</>
+    
   )
 }
