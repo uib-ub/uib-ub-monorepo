@@ -5,7 +5,7 @@ export default {
   name: "person",
   type: "document",
   title: "Person",
-  liveEdit: "true",
+  liveEdit: true,
   fields: [
     label,
     email,

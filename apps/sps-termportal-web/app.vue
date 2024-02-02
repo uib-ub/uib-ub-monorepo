@@ -129,7 +129,7 @@ blockquote {
 }
 
 .content-wrapper ul:not(.plain-list),
-ol {
+.content-wrapper ol {
   text-indent: -1em;
   padding-left: 1.5em;
   list-style-position: inside;

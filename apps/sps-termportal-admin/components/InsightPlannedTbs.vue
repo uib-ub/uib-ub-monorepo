@@ -41,21 +41,9 @@ const { data } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
   const mapped = data.value?.map((tb) => {
-    const status = () => {
-      switch (tb.status) {
-        case "kjent":
-          return `1. ${tb.status}`;
-        case "planlagt":
-          return `2. ${tb.status}`;
-        case "initialisert":
-          return `3. ${tb.status}`;
-        case "opprettet":
-          return `4. ${tb.status}`;
-      }
-    };
     const map = {
       label: tb.label,
-      status: status(),
+      status: numberStatus(tb.status),
       domain: tb.domain,
     };
     return map;

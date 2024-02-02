@@ -7,10 +7,19 @@ export default {
   name: "activity",
   type: "document",
   title: "Aktivitet",
-  liveEdit: "true",
+  liveEdit: true,
   fields: [
     label,
-    note,
+    {
+      name: "note",
+      type: "array",
+      title: "Merknad",
+      of: [
+        {
+          type: "block",
+        },
+      ],
+    },
     timespan,
     {
       name: "qualifiedUsage",
