@@ -11,7 +11,7 @@
   }
 
   html:has(.search-view), body:has(.search-view), main.search-view {
-    @apply h-full overflow-hidden;
+    @apply md:h-full md:overflow-hidden;
   }
 
 
