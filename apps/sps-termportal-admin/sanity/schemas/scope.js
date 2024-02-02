@@ -2,7 +2,7 @@ import { label, note, responsibleStaff } from "./props";
 export default {
   name: "scope",
   type: "document",
-  liveEdit: "true",
+  liveEdit: true,
   fields: [
     label,
     note,

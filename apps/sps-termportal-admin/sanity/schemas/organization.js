@@ -4,7 +4,7 @@ export default {
   name: "organization",
   type: "document",
   title: "Organisasjon",
-  liveEdit: "true",
+  liveEdit: true,
   fields: [label, { name: "orgnr", type: "string" }, note],
   preview: {
     select: { title: "label" },

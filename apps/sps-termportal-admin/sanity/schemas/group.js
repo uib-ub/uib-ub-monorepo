@@ -6,7 +6,7 @@ export default {
   name: "group",
   type: "document",
   title: "Gruppe",
-  liveEdit: "true",
+  liveEdit: true,
   fields: [
     label,
     note,
