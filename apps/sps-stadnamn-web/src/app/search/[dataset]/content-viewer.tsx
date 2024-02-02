@@ -42,7 +42,7 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
       <div className=" md:m-1 h-[75%]">
       <MapExplorer mapBounds={mapBounds} doc={doc}/>
       </div>
-      <div className="mx-2 p-2 h-[25%] overflow-y-auto">
+      <div className="mx-2 p-2 h-[25%] md:overflow-y-auto">
         { doc ?
         <>
         <h2 className='mb-3 font-semibold text-lg'>

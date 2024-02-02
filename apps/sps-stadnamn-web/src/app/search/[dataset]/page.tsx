@@ -49,7 +49,7 @@ export default function SearchInterface() {
 
   return (
     <main className="search-view md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2">
-      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2 px-4 overflow-y-auto h-full" aria-label="Filtre">
+      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2 px-4 md:overflow-y-auto h-full" aria-label="Filtre">
         <div className='flex flex-col h-full gap-4'>
           { !resultData || isLoading ?          
             <div className="flex h-full items-center justify-center">
@@ -71,7 +71,7 @@ export default function SearchInterface() {
         </div>
       </section>
 
-      <section className='card flex flex-col md:col-span-3 h-full overflow-hidden'>
+      <section className='card flex flex-col md:col-span-3 md:h-full md:overflow-hidden'>
       <ContentViwer mapBounds={mapBounds}/>
       </section>
 

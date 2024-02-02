@@ -8,7 +8,7 @@ const { MapContainer } = ReactLeaflet;
 const DynamicMap = ({ children, className, width, height, mapRef, onMapLoaded, ...rest }) => {
 
   return (
-    <MapContainer ref={mapRef} whenReady={onMapLoaded} className='w-full h-full' {...rest}>
+    <MapContainer ref={mapRef} whenReady={onMapLoaded} className='w-full aspect-square md:aspec-auto md:h-full' {...rest}>
       {children(ReactLeaflet, Leaflet)}
     </MapContainer>
   )
