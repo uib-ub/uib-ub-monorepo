@@ -10,7 +10,16 @@ export default {
   liveEdit: "true",
   fields: [
     label,
-    note,
+    {
+      name: "note",
+      type: "array",
+      title: "Merknad",
+      of: [
+        {
+          type: "block",
+        },
+      ],
+    },
     timespan,
     {
       name: "qualifiedUsage",

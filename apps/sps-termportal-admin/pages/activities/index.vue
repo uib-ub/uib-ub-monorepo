@@ -55,7 +55,8 @@
 
             <div v-if="slotProps.data.note">
               <h2 class="text-lg py-1">Merknad</h2>
-              <div>{{ slotProps.data.note }}</div>
+
+              <SanityContent :blocks="slotProps.data.note" />
             </div>
           </div>
         </template>
