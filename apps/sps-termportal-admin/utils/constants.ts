@@ -5,3 +5,9 @@ export const statusOrder = [
   "opprettet",
   "publisert",
 ];
+
+export const activityTypes = {
+  termbasePublisering: "Termbase opprettelse",
+  termbaseImportering: "Termbase importering",
+  termbaseOpprettelse: "Termbase publisering",
+};
