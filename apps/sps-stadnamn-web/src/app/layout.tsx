@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="no" className={`${garamond.variable} ${opensans.className}`}>
       <body className="flex flex-col">
-        <header className="flex flex-col md:flex-row gap-6 p-3 px-6 text-slate-900 align-middle">
+        <header className="flex flex-col md:flex-row gap-6 p-3 px-6 text-neutral-900 align-middle">
           <div className="flex justify-between align-middle h-full">
           <Link href="/" className="sm:text-xl md:text-2xl font-serif small-caps">Norske stadnamn</Link>
           <NavBar/>

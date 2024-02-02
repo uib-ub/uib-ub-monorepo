@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import ContentViwer from './content-viewer'
 import Spinner from '@/components/svg/Spinner'
 import Results from './results'
+import AdmFacet from './adm-facet'
 import { ResultData } from './types'
 
 export default function SearchInterface() {  
@@ -20,7 +21,7 @@ export default function SearchInterface() {
   useEffect(() => {
 
       fetch('/api/search?dataset=hord&'+ filteredSearchParamsString).then(response => response.json()).then(es_data => {
-        setResultData(es_data.hits)
+        setResultData(es_data)
         if (es_data.aggregations?.viewport?.bounds) {
           //console.log("AGGREGATIONS", es_data.aggregations)
           setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
@@ -28,7 +29,7 @@ export default function SearchInterface() {
         }
         
 
-        //console.log("SEARCH DATA", es_data)
+        console.log("SEARCH DATA", es_data)
 
       }).then(() => setIsLoading(false))
       
@@ -49,17 +50,24 @@ export default function SearchInterface() {
   return (
     <main className="search-view md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2">
       <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2 px-4 overflow-y-auto h-full" aria-label="Filtre">
-        <div className='flex flex-col h-full'>
-        <form id="search_form" className='flex gap-1' onSubmit={ handleSubmit }>
-        </form>
-       
-        { !resultData || isLoading ? <div className="flex h-full items-center justify-center">
-          <div>
-        <Spinner className="w-20 h-20"/>
-        </div>
-        </div> : <Results resultData={resultData}/>
+        <div className='flex flex-col h-full gap-4'>
+          { !resultData || isLoading ?          
+            <div className="flex h-full items-center justify-center">
+              <div>
+                <Spinner className="w-20 h-20"/>
+              </div>
+            </div> 
+          : 
+          <>
+          <form id="search_form" className='flex gap-1' onSubmit={ handleSubmit }>
+            <AdmFacet facet={resultData.aggregations?.adm1}/>
+          </form>
+            
+            <Results hits={resultData.hits}/>
+          </>
+          
 
-      }
+          }
         </div>
       </section>
 

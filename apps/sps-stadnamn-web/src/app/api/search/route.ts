@@ -14,8 +14,24 @@ export async function GET(request: Request) {
         "geo_bounds": {
           "field": "location",
           "wrap_longitude": true
+        },
+
+      },
+      "adm1": {
+        "terms": {
+          "field": "rawData.fylkesNamn.keyword",
+          "size": 30
+        },
+        "aggs": {
+          "adm2": {
+            "terms": {
+              "field": "rawData.kommuneNamn.keyword",
+              "size": 100
+            }
+          }
         }
       },
+      
     },
     "query": {
       "bool": {

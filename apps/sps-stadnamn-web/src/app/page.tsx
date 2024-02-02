@@ -19,7 +19,7 @@ export default function Home() {
 <main className="flex flex-col grow-1 gap-24 items-center justify-center pb-8 lg:pt-32  lg:pb-16 px-4 my-auto">
   <div className="flex flex-col gap-12 my-2">
   <div className="flex flex-col gap-6 items-center">
-  <h1 className="text-2xl sm:text-3xl text-slate-900 md:text-4xl lg:text-5xl font-serif">Stedsnavnsøk</h1>
+  <h1 className="text-2xl sm:text-3xl text-neutral-900 md:text-4xl lg:text-5xl font-serif">Stedsnavnsøk</h1>
   
   <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center max-w-2xl mx-auto gap-2" action="search/stadnamn">
 
@@ -33,7 +33,7 @@ export default function Home() {
   </div>
 
   <div className="flex items-center flex-col lg:flex-row gap-12">
-  <div className="flex flex-col md:flex-row items-center gap-6 text-slate-950 "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
+  <div className="flex flex-col md:flex-row items-center gap-6 text-neutral-950 "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
   <div className="flex flex-col md:flex-row gap-6 jusitfy-between text-center">
   <div className="flex flex-col"><span className="font-semibold">Språksamlingene</span>
@@ -64,7 +64,7 @@ export default function Home() {
   
 
 </main>
-        <footer className="bg-slate-200  p-6 text-center">
+        <footer className="bg-neutral-200  p-6 text-center">
         
         <nav className="flex flex-col md:flex-row gap-3">
           <Link href="/">Personvern</Link>
