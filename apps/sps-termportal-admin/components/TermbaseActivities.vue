@@ -38,7 +38,7 @@ const query = `
   label,
   type,
   timespan,
-  qualifiedUsage[scope._ref == 'eb281dfd-073c-4a9e-b2a0-95a6e25f3516' &&
+  qualifiedUsage[ scope._ref == 'eb281dfd-073c-4a9e-b2a0-95a6e25f3516' &&
                   termbase._ref in [${tbString}] ]{
                     termbase
                   }
