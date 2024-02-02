@@ -94,9 +94,10 @@ const procdata = computed(() => {
           .map((group) =>
             group.qualifiedMembership.map(
               (membership) =>
-                membership.timespan?.endOfTheEnd?.substring(0, 10) || ""
+                membership.timespan?.endOfTheEnd?.substring(0, 10) || undefined
             )
           )
+          .filter((end) => !end)
           .join(", "),
         get active() {
           return !this.end;
