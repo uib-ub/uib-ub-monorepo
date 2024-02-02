@@ -7,7 +7,7 @@ export const statusOrder = [
 ];
 
 export const activityTypes = {
-  termbasePublisering: "Termbase opprettelse",
+  termbasePublisering: "Termbase publisering",
+  termbaseOpprettelse: "Termbase opprettelse",
   termbaseImportering: "Termbase importering",
-  termbaseOpprettelse: "Termbase publisering",
 };
