@@ -5,8 +5,9 @@ import { useSearchParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
+const DEFAULT_ZOOM = 5;
 
-export default function MapExplorer() {
+export default function MapExplorer(props) {
 
   const [markers, setMarkers] = useState([]);
   const mapRef = useRef(null);
@@ -17,6 +18,15 @@ export default function MapExplorer() {
   const onMapLoaded = (mapInstance) => {
     setBounds(mapInstance.target.getBounds());
   };
+
+  useEffect(() => {
+    if (mapRef.current) {
+        if (props.mapBounds.length) {
+            mapRef.current.fitBounds(props.mapBounds, {maxZoom: 8})
+        }
+      //mapRef.current.setView(props.center || DEFAULT_CENTER, props.bounds.length ? mapRef.current.getBoundsZoom(props.bounds) : DEFAULT_ZOOM);
+    }
+  }, [mapRef.current, props.center, props.mapBounds]);
 
   useEffect(() => {
     // Check if the map is initialized
@@ -57,14 +67,18 @@ export default function MapExplorer() {
 
 
   return (
-    <Map mapRef={mapRef} whenReady={onMapLoaded} style={{width: '100%', height: '100%'}} center={DEFAULT_CENTER} zoom={6}>
+    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER}>
             {({ TileLayer, CircleMarker }) => (
                 <>
+          
             <TileLayer
+              key="map_topo4"
               url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
-              attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+              attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
               subdomains={['', '2', '3']} 
             />
+          
+            
             
             {markers.map((marker, index) => (
               <CircleMarker pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}

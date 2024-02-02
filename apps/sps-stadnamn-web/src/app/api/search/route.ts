@@ -9,18 +9,30 @@ export async function GET(request: Request) {
   const query = {
     "from": params.page || 0,
     "size": params.size  || 10,
-    "query": {
-      ...Object.keys(params).length === 1 && 'dataset' in params ? { "match_all": {} } 
-      : { 
-        ...params.q && {
-          "simple_query_string": {
-            "query": params.q,
-            "fields": ["label"]
-          }
+    "aggs": {
+      "viewport": {
+        "geo_bounds": {
+          "field": "location",
+          "wrap_longitude": true
         }
+      },
+    },
+    "query": {
+      "bool": {
+        "must": [
+          { "match_all": {} },
+          ...params.q ? [{
+            "simple_query_string": {
+              "query": params.q,
+              "fields": ["label"]
+            }}] : []
+
+        ]
        }
     }
   }
+
+  //console.log("SEARCH QUERY JSON", JSON.stringify(query))
   
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {
