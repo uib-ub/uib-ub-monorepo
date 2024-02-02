@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 
 export default function AdmFacet({ facet }: { facet: any }) {
   const [sortMethod, setSortMethod] = useState('doc_count');
   const [filter, setFilter] = useState('');
+  const [expanded, setExpanded] = useState(false);
 
   const sortBuckets = (buckets: any) => {
     return [...buckets].sort((a, b) => {
@@ -16,8 +18,13 @@ export default function AdmFacet({ facet }: { facet: any }) {
 
   return (
     <div className='flex flex-col w-full gap-2'>
-    <h2 className='text-lg'>Område</h2>
-    <div className='flex gap-2 flex-wrap'><input onChange={(e) => setFilter(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
+    <h2 className='text-lg'>
+      <button onClick={() => setExpanded(!expanded)} className='flex w-full items-center justify-between'>Områdefilter { expanded ? <PiCaretUp/> : <PiCaretDown/>}</button>
+    </h2>
+    { expanded && 
+    <>
+    <div className='flex gap-2 flex-wrap'>
+      <input onChange={(e) => setFilter(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
         <option value="doc_count">antall treff</option>
         <option value="alphabetical">alfabetisk</option>
@@ -47,6 +54,8 @@ export default function AdmFacet({ facet }: { facet: any }) {
       ))}
 
     </ul>
+    </>}
+
     </div>
   )
 
