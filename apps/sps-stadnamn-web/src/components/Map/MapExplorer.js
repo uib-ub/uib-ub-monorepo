@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import Map from './Map'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
+import { queryStringWithout } from '@/lib/search-params'
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
 const DEFAULT_ZOOM = 5;
@@ -15,7 +16,8 @@ export default function MapExplorer(props) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter();
-  const nameQuery = searchParams.get('q')
+  const mapQueryString = queryStringWithout(["document", "perpage", "page"])
+  console.log("MAPQUERYSTRING", mapQueryString)
 
   const documentUrl = (uuid) => {
     const params = new URLSearchParams(searchParams)
@@ -53,8 +55,19 @@ export default function MapExplorer(props) {
     // Check if the bounds are initialized
     if (bounds) {
       // Fetch data based on the new bounds
-      const query = `/api/geo?dataset=hord&topLeftLat=${bounds.getNorthEast().lat}&topLeftLng=${bounds.getSouthWest().lng}&bottomRightLat=${bounds.getSouthWest().lat}&bottomRightLng=${bounds.getNorthEast().lng}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}`
-      //console.log("QUERY", query)
+      const params = mapQueryString
+      const query = `/api/geo?dataset=hord&${ params? 
+                                             params + "&" : "" 
+                                            }topLeftLat=${
+                                              bounds.getNorthEast().lat
+                                            }&topLeftLng=${
+                                              bounds.getSouthWest().lng
+                                            }&bottomRightLat=${
+                                              bounds.getSouthWest().lat
+                                            }&bottomRightLng=${
+                                              bounds.getNorthEast().lng
+                                            }`
+
       fetch(query, {
         method: 'GET',
         headers: {
@@ -65,12 +78,11 @@ export default function MapExplorer(props) {
       .then(response => response.json())
       .then(data => {
 
-        //console.log("GEO DATA", data)
-        
         setMarkers(data.hits.hits)})
+
       .catch(error => console.error('Error:', error));
     }
-  }, [bounds, nameQuery]);
+  }, [bounds, mapQueryString]);
 
 
 

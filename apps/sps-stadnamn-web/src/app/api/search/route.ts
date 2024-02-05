@@ -1,10 +1,25 @@
 //export const runtime = 'edge'
 export const runtime = 'edge'
 export async function GET(request: Request) {
-  const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
+  const urlParams = new URL(request.url).searchParams;
+  const params: { [key: string]: string | null } = {};
+  const filters: { [key: string]: string[] } = {};
 
-  //console.log("SEARCH PARAMS", params);
-
+  for (const [key, value] of urlParams.entries()) {
+    switch (key) {
+      case 'q':
+      case 'dataset':
+      case 'page':
+      case 'size':
+        params[key] = urlParams.get(key);
+        break;
+      default:
+        if (!filters[key]) {
+          filters[key] = [];
+        }
+        filters[key].push(value);
+    }
+  }
 
   const query = {
     "from": params.page || 0,
@@ -16,40 +31,44 @@ export async function GET(request: Request) {
           "wrap_longitude": true
         },
 
-      },
-      "adm1": {
-        "terms": {
-          "field": "rawData.fylkesNamn.keyword",
-          "size": 30
-        },
-        "aggs": {
-          "adm2": {
-            "terms": {
-              "field": "rawData.kommuneNamn.keyword",
-              "size": 100
-            }
-          }
-        }
-      },
-      
-    },
-    "query": {
-      "bool": {
-        "must": [
-          { "match_all": {} },
-          ...params.q ? [{
-            "simple_query_string": {
-              "query": params.q,
-              "fields": ["label"]
-            }}] : []
-
-        ]
-       }
+      }
     }
   }
 
-  //console.log("SEARCH QUERY JSON", JSON.stringify(query))
-  
+  const simple_query_string = params.q ? {
+          "simple_query_string": {
+            "query": params.q,
+            "fields": ["label"]
+          }} : null
+
+
+  const term_filters = Object.keys(filters).length > 0 ? {
+    ...filters.adm1 ? {"bool": {"should": filters.adm2.map((value: string) => ({ "term":  { "rawData.kommuneNamn.keyword": value }})), 
+                                "minimum_should_match": 1}} : {},
+    ...filters.adm2 ? {"bool": {"should": filters.adm2.map((value: string) => ({ "term":  { "rawData.kommuneNamn.keyword": value }})), 
+                                "minimum_should_match": 1}} : {}
+  } : null
+
+
+  if (simple_query_string && term_filters) {
+    query.query = {
+      "bool": {
+        "must": simple_query_string,
+        "filter": term_filters
+      }
+    }
+  }
+  else if (simple_query_string) {
+    query.query = simple_query_string
+  }
+  else if (term_filters) {
+    query.query = term_filters
+  }
+
+
+
+  console.log("SEARCH QUERY", JSON.stringify(query))
+
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {
     method: 'POST',

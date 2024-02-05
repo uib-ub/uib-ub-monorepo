@@ -20,7 +20,7 @@ function renderData(data: any, prefix = ''): any {
   });
 }
 
-export default function ContentViewer({ mapBounds }: { mapBounds: [number, number][] }) {
+export default function ContentViewer({ mapBounds, searchQuery }: { mapBounds: [number, number][] }) {
 
     const searchParams = useSearchParams()
     const doc_uuid = searchParams.get('document')
@@ -29,7 +29,6 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
     useEffect(() => {
         if (doc_uuid) {
             fetch('/api/doc?dataset=hord&doc=' + doc_uuid).then(response => response.json()).then(es_data => {
-                console.log("DOC DATA", es_data)
                 setDoc(es_data._source)
             })
         }
@@ -40,7 +39,7 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
     return (
       <>
       <div className=" md:m-1 h-[75%]">
-      <MapExplorer mapBounds={mapBounds} doc={doc}/>
+      <MapExplorer mapBounds={mapBounds} doc={doc} searchQuery={searchQuery}/>
       </div>
       <div className="mx-2 p-2 h-[25%] md:overflow-y-auto">
         { doc ?

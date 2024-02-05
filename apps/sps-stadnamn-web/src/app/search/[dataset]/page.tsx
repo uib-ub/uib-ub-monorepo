@@ -4,15 +4,13 @@ import { useState, useEffect } from "react"
 import ContentViwer from './content-viewer'
 import Spinner from '@/components/svg/Spinner'
 import Results from './results'
-import AdmFacet from './adm-facet'
+import Filters from './filters'
+import { queryStringWithout } from '@/lib/search-params'
 import { ResultData } from './types'
 
 export default function SearchInterface() {  
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const searchParamsArray = Array.from(searchParams.entries());
-  const filteredSearchParams = searchParamsArray.filter(([key]) => key !== 'document');
-  const filteredSearchParamsString = new URLSearchParams(filteredSearchParams).toString();
+  const searchQueryString = queryStringWithout(["document"])
 
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true)
@@ -20,16 +18,12 @@ export default function SearchInterface() {
 
   useEffect(() => {
 
-      fetch('/api/search?dataset=hord&'+ filteredSearchParamsString).then(response => response.json()).then(es_data => {
+      fetch('/api/search?dataset=hord&'+ searchQueryString).then(response => response.json()).then(es_data => {
         setResultData(es_data)
         if (es_data.aggregations?.viewport?.bounds) {
-          //console.log("AGGREGATIONS", es_data.aggregations)
           setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
             [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
         }
-        
-
-        console.log("SEARCH DATA", es_data)
 
       }).then(() => setIsLoading(false))
       
@@ -37,7 +31,7 @@ export default function SearchInterface() {
     
 
 
-    }, [filteredSearchParamsString])
+    }, [searchQueryString])
 
 
     const handleSubmit = async (event: any) => {
@@ -60,7 +54,7 @@ export default function SearchInterface() {
           : 
           <>
           <form id="search_form" className='flex gap-1' onSubmit={ handleSubmit }>
-            <AdmFacet facet={resultData.aggregations?.adm1}/>
+            <Filters/>
           </form>
             
             <Results hits={resultData.hits}/>
