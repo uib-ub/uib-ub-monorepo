@@ -116,6 +116,8 @@ const mainValue = (data) => {
       return data?.["@value"];
     case "context":
       return data?.label["@value"];
+    case "nonLingusticLabel":
+      return data?.nonLingusticLabel;
     case "link":
       return data;
     default:
