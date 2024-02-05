@@ -17,7 +17,7 @@ export default function Facets() {
       setExpanded({...expanded, [filterName]: !expanded[filterName]});
     }
 
-    const removeFilter = (name, value) => {      
+    const removeFilter = (name: string, value: string) => {      
       const updatedParams = new URLSearchParams(searchQuery.filter(item => item[0] != name || item[1] != value)).toString()
       router.push(pathname + "?" + updatedParams)
     }

@@ -20,7 +20,7 @@ function renderData(data: any, prefix = ''): any {
   });
 }
 
-export default function ContentViewer({ mapBounds, searchQuery }: { mapBounds: [number, number][] }) {
+export default function ContentViewer({ mapBounds }: { mapBounds: [number, number][] }) {
 
     const searchParams = useSearchParams()
     const doc_uuid = searchParams.get('document')
@@ -39,7 +39,7 @@ export default function ContentViewer({ mapBounds, searchQuery }: { mapBounds: [
     return (
       <>
       <div className=" md:m-1 h-[75%]">
-      <MapExplorer mapBounds={mapBounds} doc={doc} searchQuery={searchQuery}/>
+      <MapExplorer mapBounds={mapBounds} doc={doc}/>
       </div>
       <div className="mx-2 p-2 h-[25%] md:overflow-y-auto">
         { doc ?
