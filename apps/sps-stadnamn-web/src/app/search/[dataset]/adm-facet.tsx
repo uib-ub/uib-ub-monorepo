@@ -32,7 +32,7 @@ export default function AdmFacet({ facet }: { facet: any }) {
     </div>
 
     <ul className='w-full'>
-      {sortBuckets(facet.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm2.buckets.some(subitem => subitem.key.toLowerCase().includes(filter))).map((item, index) => (
+      {sortBuckets(facet.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((item, index) => (
         <li key={index} className='w-full mb-2'>
           <label>
             <input type="checkbox" name="adm1" value={item.key} className='mr-2'/>
