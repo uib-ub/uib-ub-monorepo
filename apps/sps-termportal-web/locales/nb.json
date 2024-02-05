@@ -162,6 +162,7 @@
     "initialord": "initialord", // TODO Display of value for abbrev type
     "kontekst": "Kontekst",
     "kontekstAv": "Kontekst til",
+    "symbol": "Symbol",
     "general": "Generell informasjon",
     "relasjon": "Begrepsrelasjon",
     "narrower": "Underbegrep",
