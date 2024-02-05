@@ -17,8 +17,8 @@ export default function Results({ hits }: ResultsProps) {
 
 
   return (
-    <>
-    <h2 className='text-lg'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
+    <section className='flex flex-col gap-2'>
+    <h2 className='text-xl font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
     <section className='md:rounded-sm md:py-1'>
 
     <ul className='flex flex-col gap-1 mb-2'>
@@ -36,6 +36,6 @@ export default function Results({ hits }: ResultsProps) {
       {hits.total.value > 10 && <Pagination totalPages={Math.ceil(hits.total.value / (Number(searchParams.get('size')) || 10))}/>}
 
     </nav>
-    </>
+    </section>
     )
 }

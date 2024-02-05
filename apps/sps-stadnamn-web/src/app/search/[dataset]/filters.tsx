@@ -23,7 +23,7 @@ export default function Facets() {
     }
 
   return (
-    <div className='flex flex-col w-full gap-2'>
+    <section className='flex flex-col w-full gap-3'>
     <h2 className='text-xl font-semibold'>Filtre</h2>
     <ul className='flex flex-wrap gap-2'>
         {activeFilters.map((filter, index) => (
@@ -39,7 +39,7 @@ export default function Facets() {
     </h3>
     { expanded.adm && <AdmFacet/>}
 
-    </div>
+    </section>
   )
 
 }
