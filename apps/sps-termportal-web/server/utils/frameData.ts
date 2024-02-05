@@ -35,8 +35,13 @@ export default function (
       opprinneligSpraak: "skosp:opprinneligSpraak",
       isOfAbbreviationType: "skosp:isOfAbbreviationType",
       isAbbreviationOf: "skosp:isAbbreviationOf",
+      nonLingusticLabel: "skosp:nonLinguisticLabel",
       isCollocatedWith: {
         "@id": "skosp:isCollocatedWith",
+        "@container": "@set",
+      },
+      notation: {
+        "@id": "skos:notation",
         "@container": "@set",
       },
       hasUsage: {
