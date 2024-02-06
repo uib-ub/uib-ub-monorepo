@@ -16,7 +16,7 @@ export default function MapExplorer(props) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter();
-  const mapQueryString = queryStringWithout(["document", "perpage", "page"])
+  const mapQueryString = queryStringWithout(["document", "size", "page"])
 
   const documentUrl = (uuid) => {
     const params = new URLSearchParams(searchParams)

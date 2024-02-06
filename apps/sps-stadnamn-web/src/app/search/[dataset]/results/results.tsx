@@ -1,7 +1,7 @@
 import Pagination from './pagination'
 import Link from 'next/link'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { Hits } from './types'
+import { Hits } from '../types'
   interface ResultsProps {
     hits: Hits;
   }

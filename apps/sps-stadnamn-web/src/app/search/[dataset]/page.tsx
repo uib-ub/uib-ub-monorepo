@@ -3,8 +3,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import ContentViwer from './content-viewer'
 import Spinner from '@/components/svg/Spinner'
-import Results from './results'
-import Filters from './filters'
+import Results from './results/results'
+import Filters from './filters/filters'
 import { queryStringWithout } from '@/lib/search-params'
 import { ResultData } from './types'
 
