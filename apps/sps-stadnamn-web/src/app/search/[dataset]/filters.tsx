@@ -9,10 +9,8 @@ export default function Facets() {
     const router = useRouter()
     const pathname = usePathname()
     const [expanded, setExpanded] = useState<Record<string,boolean>>({adm: false})
-
     const searchQuery = queryWithout(['document'])
-
-    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'perPage')
+    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'size')
     const toggleExpanded = (filterName: string) => {
       setExpanded({...expanded, [filterName]: !expanded[filterName]});
     }

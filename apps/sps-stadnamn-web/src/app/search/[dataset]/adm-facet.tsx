@@ -7,7 +7,7 @@ export default function AdmFacet() {
   const pathname = usePathname()
   const [sortMethod, setSortMethod] = useState('doc_count');
   const [filter, setFilter] = useState('');
-  const facetQuery = queryStringWithout(['document', 'adm1', 'adm2', 'page', 'perPage']);
+  const facetQuery = queryStringWithout(['document', 'adm1', 'adm2', 'page', 'size']);
   const searchParams = queryWithout(['document'])
   const [facetAggregation, setFacetAggregation] = useState(null);
 
