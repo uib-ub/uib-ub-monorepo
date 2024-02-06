@@ -1,38 +1,35 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { queryWithout } from '@/lib/search-params';
+import { queryWithout, queryStringWithout } from '@/lib/search-params';
 
 export default function AdmFacet() {
   const router = useRouter()
   const pathname = usePathname()
   const [sortMethod, setSortMethod] = useState('doc_count');
   const [filter, setFilter] = useState('');
-  const facetParams = queryWithout(['document', 'adm1', 'adm2', 'page', 'perPage']);
-  const searchQuery = queryWithout(['document'])
-  const facetParamsString = new URLSearchParams(facetParams).toString();
+  const facetQuery = queryStringWithout(['document', 'adm1', 'adm2', 'page', 'perPage']);
+  const searchParams = queryWithout(['document'])
   const [facetAggregation, setFacetAggregation] = useState(null);
 
-  
-  
 
   useEffect(() => {
 
-    fetch('/api/facet?dataset=hord&'+ facetParamsString).then(response => response.json()).then(es_data => {
+    fetch('/api/facet?dataset=hord&'+ facetQuery).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.adm1)
     })
-    }, [facetParamsString])
+    }, [facetQuery])
 
 
 
   const toggleFilter = (checked: boolean, name: string, value: string) => {
 
     if (checked) {
-      const updatedParams = new URLSearchParams([...searchQuery, [name, value]]).toString()
+      const updatedParams = new URLSearchParams([...searchParams, [name, value]]).toString()
       router.push(pathname + "?" + updatedParams)
 
     }
     else {
-      const updatedParams = new URLSearchParams(searchQuery.filter(item => item[0] != name || item[1] != value)).toString()
+      const updatedParams = new URLSearchParams(searchParams.filter(item => item[0] != name || item[1] != value)).toString()
       router.push(pathname + "?" + updatedParams)
 
     }
