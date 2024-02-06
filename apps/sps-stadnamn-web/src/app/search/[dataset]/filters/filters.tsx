@@ -39,7 +39,7 @@ export default function Facets() {
       </ul>
     <h3 className='text-lg'>
       <button type="button" onClick={() => toggleExpanded('adm')}  className='flex w-full items-center justify-between'>Område 
-      {filterStatus.adm === 'loading' ? <Spinner className='w-4 h-4'/> : (filterStatus.adm === 'expanded' ? <PiCaretUp/> : <PiCaretDown/>)}
+      {filterStatus.adm === 'loading' ? <Spinner className='w-5 h-5'/> : (filterStatus.adm === 'expanded' ? <PiCaretUp/> : <PiCaretDown/>)}
       </button>
     </h3>
     { filterStatus.adm !== 'collapsed' && <AdmFacet setFilterStatus={(status: any) => setFilterStatus({...filterStatus, adm: status})}/>}
