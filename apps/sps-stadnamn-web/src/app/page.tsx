@@ -2,6 +2,7 @@ import UiBLogo from "@/components/svg/UiBLogo"
 import { PiMapTrifold } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
+import Image from 'next/image';
 
 export default function Home() {
   const cards = [
@@ -52,7 +53,7 @@ export default function Home() {
     <ul className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex">
-          <img src={card.img}  alt="Image description" className="w-24 h-24 md:w-48 md:h-48 object-cover m-2"/>
+          <Image src={card.img}  alt="Image description" className="w-24 h-24 md:w-48 md:h-48 object-cover m-2"/>
           <div className="content p-4 w-128">
             <h3 className="text-lg font-semibold">{card.title}</h3>
             <p>{card.description}</p>

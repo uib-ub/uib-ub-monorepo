@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const query = {
+  const query: Record<string,any> = {
     "from": params.page || 0,
     "size": params.size  || 10,
     "aggs": {

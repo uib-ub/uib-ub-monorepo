@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   }
 
 
-  const query = {
+  const query: Record<string,any> = {
     size: 200,
     fields: ["label", "location"],
     _source: false,
@@ -35,21 +35,21 @@ export async function GET(request: Request) {
             order: "asc"
         }
         }
-    ]
+    ],
 }
 
 const geo_query = {geo_bounding_box: {
-    "location": {
-    top_left: {
-        lat: parseFloat(params.topLeftLat), //bounds.getNorthEast().lat,
-        lon: parseFloat(params.topLeftLng) //bounds.getSouthWest().lng
-    },
-    bottom_right: {
-        lat: parseFloat(params.bottomRightLat), //bounds.getSouthWest().lat,
-        lon: parseFloat(params.bottomRightLng)//bounds.getNorthEast().lng
-    }
-    }
-}}
+    location: {
+        top_left: {
+          lat: params.topLeftLat ? parseFloat(params.topLeftLat) : 0,
+          lon: params.topLeftLng ? parseFloat(params.topLeftLng) : 0,
+        },
+        bottom_right: {
+          lat: params.bottomRightLat ? parseFloat(params.bottomRightLat) : 0,
+          lon: params.bottomRightLng ? parseFloat(params.bottomRightLng) : 0,
+        },
+    }}
+}
 
 const simple_query_string = params.q ? {
     "simple_query_string": {
@@ -85,9 +85,6 @@ else {
 }
 
 //console.log("GEO QUERY", JSON.stringify(query))
-
-
-
 
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {
