@@ -4,6 +4,7 @@ import Link from "next/link";
 import NavBar from "./NavBar";
 import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
 import SearchBar from "./SearchBar"
+import { Suspense } from "react";
  
 const garamond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -37,11 +38,9 @@ export default function RootLayout({
           <Link href="/" className="sm:text-xl md:text-2xl font-serif small-caps">Norske stadnamn</Link>
           <NavBar/>
           </div>
-          <SearchBar/> 
-                  
-          
-
-
+          <Suspense>
+            <SearchBar/> 
+          </Suspense>
         </header>
         {children}
       </body>

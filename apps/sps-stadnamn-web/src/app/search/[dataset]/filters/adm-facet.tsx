@@ -2,6 +2,19 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 
+interface BucketItem {
+  key: string;
+  adm2: {
+    buckets: Array<BucketItem>;
+  };
+  doc_count: number;
+}
+
+interface FacetAggregation {
+  buckets: Array<BucketItem>;
+}
+
+
 export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status: string) => void }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -10,7 +23,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const facetQuery = useQueryStringWithout(['document', 'view', 'adm1', 'adm2', 'page', 'size']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['document', 'view'])
-  const [facetAggregation, setFacetAggregation] = useState(null);
+  const [facetAggregation, setFacetAggregation] = useState<FacetAggregation | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
 
