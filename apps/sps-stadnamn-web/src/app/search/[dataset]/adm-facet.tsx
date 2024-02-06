@@ -36,12 +36,6 @@ export default function AdmFacet() {
       router.push(pathname + "?" + updatedParams)
 
     }
-
-
-
-    
-
-
   }
 
 
@@ -57,7 +51,7 @@ export default function AdmFacet() {
 
   return (
     <>
-    <div className='flex gap-2 flex-wrap'>
+    <div className='flex gap-2'>
       <input onChange={(e) => setFilter(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
         <option value="doc_count">antall treff</option>
@@ -65,16 +59,16 @@ export default function AdmFacet() {
     </select>
     </div>
     { facetAggregation?.buckets ?
-    <ul className='w-full'>
+    <ul className='flex flex-wrap'>
       {sortBuckets(facetAggregation?.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((item, index) => (
-        <li key={index} className='w-full mb-2'>
+        <li key={index} className='mb-2'>
           <label>
             <input type="checkbox" value={item.key} className='mr-2'/>
             {item.key} ({item.doc_count})
             
             <ul>
               {sortBuckets(item.adm2.buckets).filter(subitem => subitem.key.toLowerCase().includes(filter)).map((subitem, subindex) => (
-                <li key={subindex} className="ml-4 mt-1 my-1 w-full">
+                <li key={subindex} className="ml-6 mt-1 my-1">
                   <label>
                     <input type="checkbox" value={subitem.key} onChange={(e) => { toggleFilter(e.target.checked, 'adm2', subitem.key)}} className='mr-2' />
                     {subitem.key} ({subitem.doc_count})
