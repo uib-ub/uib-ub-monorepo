@@ -28,6 +28,12 @@
           <SearchField class="max-w-[51em]" />
         </div>
       </div>
+      <div class="">
+        <select id="previewVersionSel" v-model="previewVersion">
+          <option value="0">0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
       <div class="hidden lg:flex">
         <ul
           class="flex items-center gap-x-1 px-4 text-lg font-semibold text-gray-600"
@@ -232,6 +238,8 @@ watch(i18n.locale, () => {
   const locale = useCookie("locale", cookieLocaleOptions);
   locale.value = i18n.locale.value;
 });
+
+const previewVersion = usePreviewVersion();
 </script>
 
 <style>
