@@ -42,8 +42,8 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
       <>
       
         { doc && view === 'info' ?
-      <div className="mx-2 p-2 md:overflow-y-auto">
-        {doc.location && <div className='md:float-right'>
+      <div className="mx-2 p-2 lg:overflow-y-auto">
+        {doc.location && <div className='lg:float-right'>
         <MapView doc={doc}/>
         </div>}
         <h2 className='mb-3 font-semibold text-lg'>

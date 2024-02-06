@@ -9,7 +9,7 @@ export default function SearchBar() {
     const searchParams = useSearchParams()
     if (pathname.slice(0, 7) != '/search') return (<></>)
     return (
-        <div className="flex flex-wrap md:flex-nowrap gap-1">
+        <div className="flex flex-wrap lg:flex-nowrap gap-1">
         <button className="btn flex-grow">Hordanamn <PiCaretDown className="text-lg"/></button>
         <div className="flex gap-1 flex-grow min-h-[2rem]">
         <input type="text" form="search_form" name="q" defaultValue={searchParams.get('q') || ''} className='border border-neutral-500 w-full rounded-sm px-2'/>

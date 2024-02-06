@@ -21,7 +21,7 @@ export default function Results({ hits }: { hits: any }) {
   return (
     <section className='flex flex-col gap-2'>
     <h2 className='text-xl font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
-    <section className='md:rounded-sm md:py-1'>
+    <section className='lg:rounded-sm lg:py-1'>
 
     <ul className='flex flex-col gap-1 mb-2'>
       {hits.hits.map((hit: any) => (

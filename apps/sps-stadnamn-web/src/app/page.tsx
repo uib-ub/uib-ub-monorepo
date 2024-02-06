@@ -67,7 +67,7 @@ export default function Home() {
 </main>
         <footer className="bg-neutral-200  p-6 text-center">
         
-        <nav className="flex flex-col md:flex-row gap-3">
+        <nav className="flex flex-col lg:flex-row gap-3">
           <Link href="/">Personvern</Link>
           <Link href="/">Tilgjengelighetserklæring</Link>
         </nav>

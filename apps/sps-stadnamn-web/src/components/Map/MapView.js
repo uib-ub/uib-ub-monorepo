@@ -17,7 +17,7 @@ export default function MapExplorer(props) {
 
 
   return (
-    <Map mapRef={mapRef} zoom={8} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]} className="w-full aspect-square md:w-[480px]">
+    <Map mapRef={mapRef} zoom={8} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]} className="w-full aspect-square lg-w-[480px]">
             {({ TileLayer, Marker }, leaflet) => (
                 <>
           
