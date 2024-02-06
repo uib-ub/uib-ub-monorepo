@@ -31,4 +31,6 @@
 </template>
 <script setup lang="ts">
 const locale = useLocale();
+
+const previewVersion = usePreviewVersion();
 </script>
