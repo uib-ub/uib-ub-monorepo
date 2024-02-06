@@ -7,6 +7,7 @@
       <h1 class="text-5xl xs:text-6xl sm:text-7xl md:text-8xl">
         <LogoTermportalen
           class="mb-6 ml-2 mr-14 max-w-[25rem] sm:mb-8 md:mb-11 md:ml-7"
+          :class="{ 'mt-12 xl:mt-9': previewVersion == 2 }"
         />
         <span class="sr-only">Termportalen</span>
       </h1>
