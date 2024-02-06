@@ -47,7 +47,7 @@ export default function AdmFacet() {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
     <div className='flex gap-2'>
       <input onChange={(e) => setFilter(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
@@ -56,7 +56,7 @@ export default function AdmFacet() {
     </select>
     </div>
     { facetAggregation?.buckets ?
-    <ul className='flex flex-wrap'>
+    <ul className='flex flex-wrap gap-x-10'>
       {sortBuckets(facetAggregation?.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((item, index) => (
         <li key={index} className='mb-2'>
           <label>
@@ -81,7 +81,7 @@ export default function AdmFacet() {
     </ul>
     : <>AGGREGATION: {facetAggregation}</>
     }
-    </>
+    </div>
   )
 
 }
