@@ -37,7 +37,7 @@ export default function Home() {
   </div>
   <div className="flex flex-col md:flex-row gap-6 jusitfy-between text-center">
   <div className="flex flex-col"><span className="font-semibold">Språksamlingene</span>
-  <Link href="https://uib.no/spraksamlingane" className="text-sm">uib.no/spraksamlingane</Link></div>
+  <Link href="https://spraksamlingane.no" className="text-sm">spraksamlingane.no</Link></div>
   <div className="flex flex-col"><span className="font-semibold">Digital utvikling</span>
   <Link href="https://uib.no/digitalutvikling" className="text-sm">uib.no/digitalutvikling</Link></div>
 
