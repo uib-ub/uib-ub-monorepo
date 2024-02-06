@@ -4,7 +4,7 @@
 
 <script setup>
 const props = defineProps({
-  imgStyle: { type: String, default: "" },
+  imgStyle: { type: String, default: undefined },
   logoType: { type: String, default: "symbol" },
   logoNegative: { type: Boolean, default: false },
   logoLanguage: { type: String, default: "no" },
@@ -13,7 +13,11 @@ const props = defineProps({
 const imgSrc = computed(() => {
   switch (props.logoType) {
     case "symbol":
-      return `/uib-symbol-${props.logoNegative ? "pos" : "neg"}.svg`;
+      return `/uib-symbol-${props.logoNegative ? "neg" : "pos"}.svg`;
+    case "2lines":
+      return `/uib-2lines-${props.logoNegative ? "neg" : "pos"}-${
+        props.logoLanguage
+      }.png`;
     default:
       return "/uib-symbol-pos.svg";
   }
