@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { queryWithout, queryStringWithout } from '@/lib/search-params';
 
-export default function AdmFacet() {
+export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status: string) => void }) {
   const router = useRouter()
   const pathname = usePathname()
   const [sortMethod, setSortMethod] = useState('doc_count');
@@ -10,14 +10,20 @@ export default function AdmFacet() {
   const facetQuery = queryStringWithout(['document', 'adm1', 'adm2', 'page', 'size']);
   const searchParams = queryWithout(['document'])
   const [facetAggregation, setFacetAggregation] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
-
+    setFilterStatus('loading');
     fetch('/api/facet?dataset=hord&'+ facetQuery).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.adm1)
+      setTimeout(() => {
+        setFilterStatus('expanded');
+      }, 200);
+      setIsLoading(false);
     })
-    }, [facetQuery])
+    }, [facetQuery]
+    )
 
 
 
@@ -47,6 +53,8 @@ export default function AdmFacet() {
   };
 
   return (
+    <>
+    { !isLoading &&
     <div className="flex flex-col gap-2">
     <div className='flex gap-2'>
       <input onChange={(e) => setFilter(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
@@ -79,9 +87,9 @@ export default function AdmFacet() {
       ))}
 
     </ul>
-    : <>AGGREGATION: {facetAggregation}</>
+    : <></>
     }
     </div>
-  )
+  } </>)
 
 }

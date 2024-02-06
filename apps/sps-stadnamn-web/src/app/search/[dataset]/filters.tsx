@@ -3,17 +3,22 @@ import AdmFacet from './adm-facet';
 import { PiCaretDown, PiCaretUp, PiX } from 'react-icons/pi';
 import { useRouter, usePathname } from 'next/navigation';
 import { queryWithout } from '@/lib/search-params';
+import Spinner from '@/components/svg/Spinner'
 
 
 export default function Facets() {
     const router = useRouter()
     const pathname = usePathname()
-    const [expanded, setExpanded] = useState<Record<string,boolean>>({adm: false})
+    const [filterStatus, setFilterStatus] = useState<Record<string, string>>({adm: 'collapsed'})
     const searchQuery = queryWithout(['document'])
     const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'size')
+    
     const toggleExpanded = (filterName: string) => {
-      setExpanded({...expanded, [filterName]: !expanded[filterName]});
-    }
+      setFilterStatus({
+          ...filterStatus,
+          [filterName]: filterStatus[filterName] === 'expanded' ? 'collapsed' : 'expanded'
+      });
+  }
 
     const removeFilter = (name: string, value: string) => {      
       const updatedParams = new URLSearchParams(searchQuery.filter(item => item[0] != name || item[1] != value)).toString()
@@ -33,9 +38,11 @@ export default function Facets() {
         ))}
       </ul>
     <h3 className='text-lg'>
-      <button type="button" onClick={() => toggleExpanded('adm')}  className='flex w-full items-center justify-between'>Område { expanded.adm ? <PiCaretUp/> : <PiCaretDown/>}</button>
+      <button type="button" onClick={() => toggleExpanded('adm')}  className='flex w-full items-center justify-between'>Område 
+      {filterStatus.adm === 'loading' ? <Spinner className='w-4 h-4'/> : (filterStatus.adm === 'expanded' ? <PiCaretUp/> : <PiCaretDown/>)}
+      </button>
     </h3>
-    { expanded.adm && <AdmFacet/>}
+    { filterStatus.adm !== 'collapsed' && <AdmFacet setFilterStatus={(status: any) => setFilterStatus({...filterStatus, adm: status})}/>}
 
     </section>
   )
