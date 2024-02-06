@@ -1,9 +1,7 @@
 'use client'
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Map from './Map'
-import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
-import { queryStringWithout } from '@/lib/search-params'
 
 export default function MapExplorer(props) {
 
@@ -19,7 +17,7 @@ export default function MapExplorer(props) {
 
 
   return (
-    <Map mapRef={mapRef} zoom={8} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]} className="w-[480px] h-[480px]">
+    <Map mapRef={mapRef} zoom={8} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]} className="w-full aspect-square md:w-[480px]">
             {({ TileLayer, Marker }, leaflet) => (
                 <>
           

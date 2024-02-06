@@ -3,11 +3,9 @@ import Link from 'next/link'
 import { useSearchParams, usePathname } from 'next/navigation';
 import { PiMapPinFill, PiInfoFill } from 'react-icons/pi';
 import AudioButton from './audioButton';
-  interface ResultsProps {
-    hits: Hits;
-  }
 
-export default function Results({ hits }: ResultsProps) {
+
+export default function Results({ hits }: { hits: any }) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
 
@@ -26,7 +24,7 @@ export default function Results({ hits }: ResultsProps) {
     <section className='md:rounded-sm md:py-1'>
 
     <ul className='flex flex-col gap-1 mb-2'>
-      {hits.hits.map(hit => (
+      {hits.hits.map((hit: any) => (
         <li key={hit._id} className="my-0 rounded-sm py-2 flex-grow border-t last:border-b border-neutral-400"><span className="no-underline font-semibold">{hit._source.label}</span> | {hit._source.rawData.kommuneNamn}
         <div className='flex gap-1 float-right ml-2'>
         

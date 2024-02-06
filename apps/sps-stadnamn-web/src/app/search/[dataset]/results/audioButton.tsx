@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { PiPlayCircleFill, PiPauseCircleFill } from 'react-icons/pi';
 
-export default function AudioButton({ audioFile, className }) {
+export default function AudioButton({ audioFile, className }: { audioFile: string, className: string }) {
   const [playing, setPlaying] = useState(false);
-  const audio = useRef(null);
+  const audio = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = () => {
 
