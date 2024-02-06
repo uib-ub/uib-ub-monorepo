@@ -1,5 +1,5 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiMapTrifold, PiDatabase } from 'react-icons/pi';
+import { PiMapTrifold } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 

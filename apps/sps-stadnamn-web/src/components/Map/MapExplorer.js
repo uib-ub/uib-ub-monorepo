@@ -86,7 +86,7 @@ export default function MapExplorer(props) {
 
 
   return (
-    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER}>
+    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER} className='w-full aspect-square md:aspec-auto md:h-full'>
             {({ TileLayer, CircleMarker, Marker }, leaflet) => (
                 <>
           

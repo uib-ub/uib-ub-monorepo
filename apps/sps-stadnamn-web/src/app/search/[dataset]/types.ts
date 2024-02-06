@@ -1,20 +1,4 @@
 
-export interface Hits {
-  total: {
-    value: number;
-  };
-  hits: Array<{
-    _id: string;
-    _source: {
-      label: string;
-      rawData: {
-        kommuneNamn: string;
-      };
-    };
-  }>;
-}
-
-
 export interface ResultData {
     total: {
       value: number;
@@ -45,5 +29,5 @@ export interface ResultData {
         }>;
       };
     };
-    hits: Hits;
+    hits: any;
   }

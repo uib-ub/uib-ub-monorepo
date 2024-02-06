@@ -10,7 +10,7 @@ import { ResultData } from './types'
 
 export default function SearchInterface() {  
   const router = useRouter()
-  const searchQueryString = queryStringWithout(["document"])
+  const searchQueryString = queryStringWithout(["document", "view"])
 
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true)

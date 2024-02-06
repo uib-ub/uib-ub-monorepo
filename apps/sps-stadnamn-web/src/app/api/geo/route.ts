@@ -84,7 +84,7 @@ else {
     query.query = geo_query
 }
 
-console.log("GEO QUERY", JSON.stringify(query))
+//console.log("GEO QUERY", JSON.stringify(query))
 
 
 

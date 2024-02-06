@@ -1,5 +1,6 @@
 
 import MapExplorer from '@/components/Map/MapExplorer'
+import MapView from '@/components/Map/MapView'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 
@@ -24,6 +25,7 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
 
     const searchParams = useSearchParams()
     const doc_uuid = searchParams.get('document')
+    const view = searchParams.get('view')
     const [doc, setDoc] = useState<any>(null)
 
     useEffect(() => {
@@ -38,12 +40,12 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
 
     return (
       <>
-      <div className="h-full">
-      <MapExplorer mapBounds={mapBounds} doc={doc}/>
-      </div>
-      { false &&<div className="mx-2 p-2 md:overflow-y-auto">
-        { doc ?
-        <>
+      
+        { doc && view === 'info' ?
+      <div className="mx-2 p-2 md:overflow-y-auto">
+        {doc.location && <div className='float-right'>
+        <MapView className="" doc={doc}/>
+        </div>}
         <h2 className='mb-3 font-semibold text-lg'>
           {doc.label}</h2>
           {doc.audio ? <audio controls src={'https://iiif.test.ubbe.no/iiif/audio/hord/' + doc.audio.file}></audio> : null}
@@ -51,23 +53,16 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
           {renderData(doc.rawData)}
           
         </ul>
-        </>
-        :
-          <>
-          <h2 className='mb-3 font-semibold'>Info</h2>
-        List with text:
-        <ul>
-          <li>- Info about dataset if no place name selected </li>
-          <li>- Switch to showing image in map card</li>
-        </ul>
-        </>
-        }
         
-      </div> }
-    </>
+        </div>
+        :
+        <div className="h-full p-1 card">
+      <MapExplorer mapBounds={mapBounds} doc={doc}/>
+      </div>
+        }
 
+      </>
     )
+  }
+        
 
-
-
-}

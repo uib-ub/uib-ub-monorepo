@@ -5,10 +5,10 @@ import 'leaflet/dist/leaflet.css';
 
 const { MapContainer } = ReactLeaflet;
 
-const DynamicMap = ({ children, className, width, height, mapRef, onMapLoaded, ...rest }) => {
+const DynamicMap = ({ children, width, height, mapRef, onMapLoaded, ...rest }) => {
 
   return (
-    <MapContainer ref={mapRef} whenReady={onMapLoaded} className='w-full aspect-square md:aspec-auto md:h-full' {...rest}>
+    <MapContainer ref={mapRef} whenReady={onMapLoaded} {...rest}>
       {children(ReactLeaflet, Leaflet)}
     </MapContainer>
   )
