@@ -2,7 +2,7 @@ import { useState } from 'react';
 import AdmFacet from './adm-facet';
 import { PiCaretDown, PiCaretUp, PiX } from 'react-icons/pi';
 import { useRouter, usePathname } from 'next/navigation';
-import { queryWithout } from '@/lib/search-params';
+import { useQueryWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 
 
@@ -10,7 +10,7 @@ export default function Facets() {
     const router = useRouter()
     const pathname = usePathname()
     const [filterStatus, setFilterStatus] = useState<Record<string, string>>({adm: 'collapsed'})
-    const searchQuery = queryWithout(['document', 'view'])
+    const searchQuery = useQueryWithout(['document', 'view'])
     const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'size')
     
     const toggleExpanded = (filterName: string) => {

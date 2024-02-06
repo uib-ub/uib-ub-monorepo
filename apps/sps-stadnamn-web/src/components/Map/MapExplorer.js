@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import Map from './Map'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
-import { queryStringWithout } from '@/lib/search-params'
+import { useQueryStringWithout } from '@/lib/search-params'
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
 const DEFAULT_ZOOM = 5;
@@ -16,7 +16,7 @@ export default function MapExplorer(props) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter();
-  const mapQueryString = queryStringWithout(["document", "size", "page"])
+  const mapQueryString = useQueryStringWithout(["document", "size", "page"])
 
   const documentUrl = (uuid) => {
     const params = new URLSearchParams(searchParams)

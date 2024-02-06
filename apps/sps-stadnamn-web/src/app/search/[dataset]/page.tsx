@@ -5,12 +5,12 @@ import ContentViwer from './content-viewer'
 import Spinner from '@/components/svg/Spinner'
 import Results from './results/results'
 import Filters from './filters/filters'
-import { queryStringWithout } from '@/lib/search-params'
+import { useQueryStringWithout } from '@/lib/search-params'
 import { ResultData } from './types'
 
 export default function SearchInterface() {  
   const router = useRouter()
-  const searchQueryString = queryStringWithout(["document", "view"])
+  const searchQueryString = useQueryStringWithout(["document", "view"])
 
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true)

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { queryWithout, queryStringWithout } from '@/lib/search-params';
+import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 
 export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status: string) => void }) {
   const router = useRouter()
   const pathname = usePathname()
   const [sortMethod, setSortMethod] = useState('doc_count');
   const [filter, setFilter] = useState('');
-  const facetQuery = queryStringWithout(['document', 'view', 'adm1', 'adm2', 'page', 'size']);
+  const facetQuery = useQueryStringWithout(['document', 'view', 'adm1', 'adm2', 'page', 'size']);
   const paramLookup = useSearchParams()
-  const searchParams = queryWithout(['document', 'view'])
+  const searchParams = useQueryWithout(['document', 'view'])
   const [facetAggregation, setFacetAggregation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
