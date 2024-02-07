@@ -25,15 +25,23 @@ export default function Facets() {
       router.push(pathname + "?" + updatedParams)
     }
 
+    const getLabel = (name: string, value: string) => {
+      if (name === 'adm2') {
+        return value.split('_')[1]
+      }
+      return value
+
+    }
+
   return (
     <section className='flex flex-col w-full gap-3'>
     <h2 className='text-xl font-semibold'>Filtre</h2>
     <ul className='flex flex-wrap gap-2'>
-        {activeFilters.map((filter, index) => (
+        {activeFilters.map(([name, value], index) => (
           <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border p-1 px-2 rounded-sm'>
-            <span>{filter[0]}: {filter[1]}</span>
-            <input type="hidden" name={filter[0]} value={filter[1]} />
-            <button type="button" onClick={() => removeFilter(filter[0], filter[1])} aria-label="Fjern filter"><PiX className="text-lg"/></button>
+            <span>{name}: {getLabel(name, value)}</span>
+            <input type="hidden" name={name} value={value} />
+            <button type="button" onClick={() => removeFilter(name, value)} aria-label="Fjern filter"><PiX className="text-lg"/></button>
           </li>
         ))}
       </ul>

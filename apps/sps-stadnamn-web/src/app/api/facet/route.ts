@@ -4,6 +4,7 @@ export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
 
   const query = {
+    "size": 0,
     "aggs": {
       "adm1": {
         "terms": {
@@ -13,8 +14,22 @@ export async function GET(request: Request) {
         "aggs": {
           "adm2": {
             "terms": {
-              "field": "rawData.kommuneNamn.keyword",
+              "field": "adm2.id.keyword",
               "size": 100
+            },
+            "aggs": {
+              "label": {
+                "terms": {
+                  "field": "adm2.label.keyword",
+                  "size": 1
+                }
+              },
+              "adm3": {
+                "terms": {
+                  "field": "adm3.keyword",
+                  "size": 100
+                }
+              }
             }
           }
         }

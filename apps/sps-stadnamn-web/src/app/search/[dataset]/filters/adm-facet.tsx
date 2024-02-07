@@ -18,7 +18,7 @@ interface FacetAggregation {
 export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status: string) => void }) {
   const router = useRouter()
   const pathname = usePathname()
-  const [sortMethod, setSortMethod] = useState('doc_count');
+  const [sortMethod, setSortMethod] = useState('key');
   const [filter, setFilter] = useState('');
   const facetQuery = useQueryStringWithout(['document', 'view', 'adm1', 'adm2', 'page', 'size']);
   const paramLookup = useSearchParams()
@@ -59,12 +59,19 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const sortBuckets = (buckets: any) => {
     return [...buckets].sort((a, b) => {
       if (sortMethod === 'doc_count') {
-        return b.doc_count - a.doc_count;
+        return parseInt(b.doc_count) - parseInt(a.doc_count);
       } else {
+        if (a.label && b.label) {
+          return a.label.buckets[0].key.localeCompare(b.label.buckets[0].key, 'nb');
+        }  
         return a.key.localeCompare(b.key, 'nb');
       }
     });
   };
+
+  const admIdentifier = (subitem: any) => {
+    return subitem.key + "_" + subitem.label?.buckets[0].key
+  }
 
   return (
     <>
@@ -73,8 +80,9 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     <div className='flex gap-2'>
       <input onChange={(e) => setFilter(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
+        <option value="key">alfabetisk</option>
         <option value="doc_count">antall treff</option>
-        <option value="alphabetical">alfabetisk</option>
+        
     </select>
     </div>
     { facetAggregation?.buckets ?
@@ -87,13 +95,21 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
           </label>
             
             <ul>
-              {sortBuckets(item.adm2.buckets).filter(subitem => subitem.key.toLowerCase().includes(filter)).map((subitem, subindex) => (
+            {sortBuckets(item.adm2.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm3?.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((subitem, subindex) => (
                 <li key={subindex} className="ml-6 mt-1 my-1">
-                  <label>
-                    <input type="checkbox" checked={paramLookup.has('adm2', subitem.key) || paramLookup.has('adm1', item.key)} value={subitem.key} onChange={(e) => { toggleFilter(e.target.checked, 'adm2', subitem.key)}} className='mr-2' />
-                    {subitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subitem.doc_count}</span>
+                 <label>
+                    <input type="checkbox" checked={paramLookup.has('adm2', admIdentifier(subitem)) || paramLookup.has('adm1', item.key)} value={subitem.key} onChange={(e) => { toggleFilter(e.target.checked, 'adm2', admIdentifier(subitem))}} className='mr-2' />
+                    {subitem.label?.buckets[0].key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subitem.doc_count}</span>
                     
                   </label>
+                  {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filter)).map((subsubitem, subsubindex) => (
+                    <li key={subsubindex} className="ml-6 mt-1 my-1">
+                      <label>
+                        <input type="checkbox" checked={paramLookup.has('adm3', subsubitem.key)} value={subsubitem.key} onChange={(e) => { toggleFilter(e.target.checked, 'adm3', subsubitem.key)}} className='mr-2' />
+                        {subsubitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subsubitem.doc_count}</span>
+                      </label>
+                    </li>
+                  ))}
                 </li>
               ))}
             </ul>

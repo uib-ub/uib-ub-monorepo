@@ -20,6 +20,15 @@ export async function GET(request: Request) {
         if (!filters[key]) {
           filters[key] = [];
         }
+
+        if (key == 'adm2') {
+          let key_value = value.split('_');
+          if (key_value.length == 2) {
+            filters[key].push(key_value[0]);
+            break;
+          }
+        }
+        
         filters[key].push(value);
     }
   }
@@ -58,12 +67,14 @@ const simple_query_string = params.q ? {
     }} : null
 
 
-const term_filters = Object.keys(filters).length > 0 ? {
-...filters.adm1 ? {"bool": {"should": filters.adm2.map((value: string) => ({ "term":  { "rawData.kommuneNamn.keyword": value }})), 
-                          "minimum_should_match": 1}} : {},
-...filters.adm2 ? {"bool": {"should": filters.adm2.map((value: string) => ({ "term":  { "rawData.kommuneNamn.keyword": value }})), 
-                          "minimum_should_match": 1}} : {}
-} : null
+    const term_filters = Object.keys(filters).length > 0 ? {
+      ...filters.adm1 ? {"bool": {"should": filters.adm1.map((value: string) => ({ "term":  { "adm1": value }})), 
+                                  "minimum_should_match": 1}} : {},
+      ...filters.adm2 ? {"bool": {"should": filters.adm2.map((value: string) => ({ "term":  { "adm2.id": value }})), 
+                                  "minimum_should_match": 1}} : {},
+      ...filters.adm3 ? {"bool": {"should": filters.adm3.map((value: string) => ({ "term":  { "adm3": value }})), 
+                                  "minimum_should_match": 1}} : {}
+    } : null
 
 
 
