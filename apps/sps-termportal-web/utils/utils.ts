@@ -62,7 +62,7 @@ export function getConceptDisplaytitle(concept): string | null {
     for (const label of ["prefLabel", "altLabel"]) {
       if (concept?.[label]) {
         if (concept?.[label][lang]) {
-          title = concept[label][lang]?.[0]?.["@value"];
+          title = concept[label][lang]?.[0]?.literalForm["@value"];
           break;
         }
       }
@@ -183,7 +183,8 @@ export function lalof(key: string): string {
   const lazyLocales = useLazyLocales();
   const locale = useLocale();
   const localeLen = Object.keys(languageOrder).length;
-  const label = languageOrder[locale.value].slice(0, localeLen)
+  const label = languageOrder[locale.value]
+    .slice(0, localeLen)
     .map((lc) => lazyLocales.value?.[lc]?.[key])
     .find((value) => value !== undefined);
   return label ?? key;
