@@ -91,15 +91,28 @@ function updateLabel2(data: any, conceptUri: string, labelType: string) {
       labelType === "betydningsbeskrivelse" ||
       labelType === "hasUsage"
     ) {
-      language = label.label["@language"];
-      addLabel(newLabels, label, language);
+      // FBK sometimes stored multiple definition strings in the same definition object.
+      // Go through all entries and reinsert merknad etc. that might be shared
+      if (Array.isArray(label?.label)) {
+        for (const currentLabel of label.label) {
+          const fullLabel = { label: currentLabel };
+          addLabel(
+            newLabels,
+            { ...label, ...fullLabel },
+            currentLabel["@language"]
+          );
+        }
+      } else {
+        addLabel(newLabels, label, label.label["@language"]);
+      }
     } else if (labelType === "description") {
       // TODO deprecated?
       language = label["@language"];
       addLabel(newLabels, label, language);
     } else {
       for (const lf of label.literalForm) {
-        addLabel(newLabels, lf, lf["@language"]);
+        const fullLabel = { literalForm: lf };
+        addLabel(newLabels, { ...label, ...fullLabel }, lf["@language"]);
       }
     }
   }

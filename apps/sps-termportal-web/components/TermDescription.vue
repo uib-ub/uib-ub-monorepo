@@ -113,11 +113,11 @@ const mainValue = (data) => {
     case "definition":
       return data?.label["@value"];
     case "prefLabel":
-      return data?.["@value"];
+      return data?.literalForm["@value"];
     case "altLabel":
-      return data?.["@value"];
+      return data?.literalForm["@value"];
     case "hiddenLabel":
-      return data?.["@value"];
+      return data?.literalForm["@value"];
     case "context":
       return data?.label["@value"];
     case "nonLingusticLabel":
