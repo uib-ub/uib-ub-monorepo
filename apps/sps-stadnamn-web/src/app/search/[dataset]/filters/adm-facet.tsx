@@ -41,7 +41,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
 
 
 
-  const toggleFilter = (checked: boolean, value: string) => {
+  const toggleFilter = (checked: boolean, value: string, level: number) => {
 
     if (checked) {
       const updatedParams = new URLSearchParams([...searchParams, ['adm', value]]).toString()
@@ -49,7 +49,14 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
 
     }
     else {
-      const updatedParams = new URLSearchParams(searchParams.filter(item => item[1] != value)).toString()
+      const updatedParams = new URLSearchParams(searchParams.filter(item => {
+        if (item[1] == value) return
+        let subitems = item[1].split('_')
+        if (level == 1 && subitems.length > 1 && subitems[subitems.length - 1] == value) return
+        if (level == 2 && subitems.length > 2 && subitems.slice(1).join("_") == value) return
+        return true
+
+      })).toString()
       router.push(pathname + "?" + updatedParams)
 
     }
@@ -88,14 +95,14 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       {sortBuckets(facetAggregation?.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((item, index) => (
         <li key={index} className='mb-2'>
           <label>
-            <input type="checkbox" className='mr-2'/>
+            <input type="checkbox" className='mr-2' checked={paramLookup.has('adm', item.key)} onChange={(e) => { toggleFilter(e.target.checked, item.key, 1)}} />
             {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
           </label>
           {item.adm2 && <ul>
             {sortBuckets(item.adm2.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm3?.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((subitem, subindex) => (
                 <li key={subindex} className="ml-6 mt-1 my-1">
                  <label>
-                    <input type="checkbox" checked={paramLookup.has('adm', subitem.key) || paramLookup.has('adm', item.key)} value={subitem.key} onChange={(e) => { toggleFilter(e.target.checked, subitem.key + "_" + item.key)}} className='mr-2' />
+                    <input type="checkbox" checked={paramLookup.has('adm', subitem.key + "_" + item.key) || paramLookup.has('adm', item.key)} onChange={(e) => { toggleFilter(e.target.checked, subitem.key + "_" + item.key, 2)}} className='mr-2' />
                     {subitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subitem.doc_count}</span>
                     
                   </label>
@@ -103,7 +110,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
                   {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filter)).map((subsubitem, subsubindex) => (
                     <li key={subsubindex} className="ml-6 mt-1 my-1">
                       <label>
-                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key) || paramLookup.has('adm', subitem.key) || paramLookup.has(item.key)}  value={subsubitem.key} onChange={(e) => { toggleFilter(e.target.checked, subsubitem.key + "_" + subitem.key + "_" +item.key)}} className='mr-2' />
+                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key) || paramLookup.has('adm', subitem.key + "_" + item.key) || paramLookup.has(item.key)} onChange={(e) => { toggleFilter(e.target.checked, subsubitem.key + "_" + subitem.key + "_" +item.key, 3)}} className='mr-2' />
                         {subsubitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subsubitem.doc_count}</span>
                       </label>
                     </li>
