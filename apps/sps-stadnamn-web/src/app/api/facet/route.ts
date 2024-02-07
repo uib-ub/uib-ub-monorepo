@@ -8,22 +8,16 @@ export async function GET(request: Request) {
     "aggs": {
       "adm1": {
         "terms": {
-          "field": "rawData.fylkesNamn.keyword",
+          "field": "adm1.keyword",
           "size": 30
         },
         "aggs": {
           "adm2": {
             "terms": {
-              "field": "adm2.id.keyword",
+              "field": "adm2.keyword",
               "size": 100
             },
             "aggs": {
-              "label": {
-                "terms": {
-                  "field": "adm2.label.keyword",
-                  "size": 1
-                }
-              },
               "adm3": {
                 "terms": {
                   "field": "adm3.keyword",

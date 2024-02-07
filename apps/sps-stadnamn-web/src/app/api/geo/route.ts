@@ -67,18 +67,29 @@ const simple_query_string = params.q ? {
     }} : null
 
 
-    const term_filters = Object.keys(filters).length > 0 ? {
-      ...filters.adm1 ? {"bool": {"should": filters.adm1.map((value: string) => ({ "term":  { "adm1": value }})), 
-                                  "minimum_should_match": 1}} : {},
-      ...filters.adm2 ? {"bool": {"should": filters.adm2.map((value: string) => ({ "term":  { "adm2.id": value }})), 
-                                  "minimum_should_match": 1}} : {},
-      ...filters.adm3 ? {"bool": {"should": filters.adm3.map((value: string) => ({ "term":  { "adm3": value }})), 
-                                  "minimum_should_match": 1}} : {}
-    } : null
+    const term_filters = []
+    if (Object.keys(filters).length > 0 ) {
+      if (filters.adm) {
+        term_filters.push({
+          "bool": {
+            "should": filters.adm.map((value: string) => ({ 
+              "bool": {
+                "filter": value.split("_").reverse().map((value: string, index: number) => ({
+                    
+                    "term":  { [`adm${index+1}.keyword`]: value }
+                }))
+              }
+            })),
+            "minimum_should_match": 1
+          }
+  
+        })
+  
+      }
+    }
 
 
-
-if (simple_query_string || term_filters) {
+if (simple_query_string || term_filters.length) {
     query.query = {
         "bool": {
             "must": [geo_query],
@@ -87,7 +98,7 @@ if (simple_query_string || term_filters) {
     if (simple_query_string) {
         query.query.bool.must.push(simple_query_string)
     }
-    if (term_filters) {
+    if (term_filters.length) {
         query.query.bool.filter = term_filters
     }
 }

@@ -41,15 +41,15 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
 
 
 
-  const toggleFilter = (checked: boolean, name: string, value: string) => {
+  const toggleFilter = (checked: boolean, value: string) => {
 
     if (checked) {
-      const updatedParams = new URLSearchParams([...searchParams, [name, value]]).toString()
+      const updatedParams = new URLSearchParams([...searchParams, ['adm', value]]).toString()
       router.push(pathname + "?" + updatedParams)
 
     }
     else {
-      const updatedParams = new URLSearchParams(searchParams.filter(item => item[0] != name || item[1] != value)).toString()
+      const updatedParams = new URLSearchParams(searchParams.filter(item => item[1] != value)).toString()
       router.push(pathname + "?" + updatedParams)
 
     }
@@ -69,9 +69,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     });
   };
 
-  const admIdentifier = (subitem: any) => {
-    return subitem.key + "_" + subitem.label?.buckets[0].key
-  }
+
 
   return (
     <>
@@ -93,26 +91,27 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
             <input type="checkbox" className='mr-2'/>
             {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
           </label>
-            
-            <ul>
+          {item.adm2 && <ul>
             {sortBuckets(item.adm2.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm3?.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((subitem, subindex) => (
                 <li key={subindex} className="ml-6 mt-1 my-1">
                  <label>
-                    <input type="checkbox" checked={paramLookup.has('adm2', admIdentifier(subitem)) || paramLookup.has('adm1', item.key)} value={subitem.key} onChange={(e) => { toggleFilter(e.target.checked, 'adm2', admIdentifier(subitem))}} className='mr-2' />
-                    {subitem.label?.buckets[0].key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subitem.doc_count}</span>
+                    <input type="checkbox" checked={paramLookup.has('adm', subitem.key) || paramLookup.has('adm', item.key)} value={subitem.key} onChange={(e) => { toggleFilter(e.target.checked, subitem.key + "_" + item.key)}} className='mr-2' />
+                    {subitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subitem.doc_count}</span>
                     
                   </label>
+                  {subitem.adm3 && <ul>
                   {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filter)).map((subsubitem, subsubindex) => (
                     <li key={subsubindex} className="ml-6 mt-1 my-1">
                       <label>
-                        <input type="checkbox" checked={paramLookup.has('adm3', subsubitem.key)} value={subsubitem.key} onChange={(e) => { toggleFilter(e.target.checked, 'adm3', subsubitem.key)}} className='mr-2' />
+                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key) || paramLookup.has('adm', subitem.key) || paramLookup.has(item.key)}  value={subsubitem.key} onChange={(e) => { toggleFilter(e.target.checked, subsubitem.key + "_" + subitem.key + "_" +item.key)}} className='mr-2' />
                         {subsubitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subsubitem.doc_count}</span>
                       </label>
                     </li>
                   ))}
+                  </ul> }
                 </li>
               ))}
-            </ul>
+            </ul> }
           
         </li>
       ))}
