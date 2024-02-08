@@ -19,7 +19,7 @@ export default function Results({ hits }: { hits: any }) {
 
 
   return (
-    <section className='flex flex-col gap-2'>
+    <section className='flex flex-col gap-2' aria-live="polite">
     <h2 className='text-xl font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
     <section className='lg:rounded-sm lg:py-1'>
 
