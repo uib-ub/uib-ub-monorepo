@@ -110,7 +110,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
                   {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filter)).map((subsubitem, subsubindex) => (
                     <li key={subsubindex} className="ml-6 mt-1 my-1">
                       <label>
-                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key) || paramLookup.has('adm', subitem.key + "_" + item.key) || paramLookup.has(item.key)} onChange={(e) => { toggleFilter(e.target.checked, subsubitem.key + "_" + subitem.key + "_" +item.key, 3)}} className='mr-2' />
+                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key) || paramLookup.has('adm', subitem.key + "_" + item.key) || paramLookup.has('adm', item.key)} onChange={(e) => { toggleFilter(e.target.checked, subsubitem.key + "_" + subitem.key + "_" +item.key, 3)}} className='mr-2' />
                         {subsubitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subsubitem.doc_count}</span>
                       </label>
                     </li>
