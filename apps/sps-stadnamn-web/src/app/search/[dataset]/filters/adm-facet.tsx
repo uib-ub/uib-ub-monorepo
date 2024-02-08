@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
+import { waitForDebugger } from 'inspector';
 
 interface BucketItem {
   key: string;
-  adm2: {
+  adm2?: {
+    buckets: Array<BucketItem>;
+  };
+  adm3?: {
     buckets: Array<BucketItem>;
   };
   doc_count: number;
@@ -41,22 +45,105 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
 
 
 
+
   const toggleFilter = (checked: boolean, value: string, level: number) => {
+    const newParams: string[][] = []
+    const ownSubitems = value.split('_')
 
     if (checked) {
-      const updatedParams = new URLSearchParams([...searchParams, ['adm', value]]).toString()
+      // TODO: check parent if all children are checked
+      
+      // uncheck children
+      let filteredParams = searchParams.filter(item => {
+          if (level == 1 && item[1].split("_").slice(-1)[0] == value) return
+          if (level == 2 && item[1].split("_").slice(-2).join("_") == value) return
+        return true
+      }
+      
+      )
+
+
+      const updatedParams = new URLSearchParams([...filteredParams, ['adm', value]]).toString()
       router.push(pathname + "?" + updatedParams)
 
     }
     else {
-      const updatedParams = new URLSearchParams(searchParams.filter(item => {
+      const newParams: string[][] = []
+      const ownSubitems = value.split('_')
+      const parent = ownSubitems.slice(1).join('_')
+      
+      // Add sibling filters if parent checked
+      if (level == 2 ) {
+        if (paramLookup.has('adm', parent)) {
+          let adm1 = facetAggregation?.buckets.find(item => item.key == ownSubitems[ownSubitems.length - 1])
+          if (adm1 && adm1.adm2) {
+            adm1.adm2?.buckets.forEach(item => {
+              if (item.key != ownSubitems[0]) {
+                newParams.push(['adm', item.key + "_" + ownSubitems[1]])
+              }
+            })
+          }
+        }
+      }
+      if (level == 3) {
+        const grandparent = ownSubitems.slice(2).join('_')
+      }
+
+
+
+
+
+
+      /*
+      const newParams: string[][] = []
+      const ownSubitems = value.split('_')
+      const parent = ownSubitems.slice(1).join('_')
+      const grandparent = ownSubitems.slice(2).join('_')
+
+
+
+
+
+
+      
+      if (level > 1 && paramLookup.has('adm', parent) || paramLookup.has('adm', grandparent)) {
+        // Find parent in facetAggregation.buckets
+        let adm1 = facetAggregation?.buckets.find(item => item.key == ownSubitems[ownSubitems.length - 1])
+        if (adm1 && adm1.adm2) {
+          adm1.adm2?.buckets.forEach(item => {
+            if (item.key != ownSubitems[0] && (level == 2 || paramLookup.has('adm', grandparent))) {
+              console.log("item.key", item.key)
+              console.log(ownSubitems)
+              newParams.push(['adm', item.key + "_" + ownSubitems[1]])
+            }
+            if (level == 3 && item.adm3) {
+              item.adm3.buckets.forEach((subitem: { key: string; }) => {
+                if (subitem.key != ownSubitems[0]) {
+                  newParams.push(['adm', subitem.key + "_" + item.key + "_" + ownSubitems[1]])
+                }
+              
+              })
+            }
+            
+          })
+        }
+      }
+        
+      */
+
+      // Remove filters
+      const updatedParams = new URLSearchParams([...newParams, ...searchParams.filter(item => {
         if (item[1] == value) return
         let subitems = item[1].split('_')
+        
         if (level == 1 && subitems.length > 1 && subitems[subitems.length - 1] == value) return
         if (level == 2 && subitems.length > 2 && subitems.slice(1).join("_") == value) return
+        if (level == 2 && subitems[0] == ownSubitems[1]) return // remove parent
+        if (level == 3 && subitems.length > 3 && subitems.slice(2).join("_") == value) return
+        //if (level == 3 && subitems[0] == ownSubitems[2]) return // remove parents
         return true
 
-      })).toString()
+      })]).toString()
       router.push(pathname + "?" + updatedParams)
 
     }
