@@ -24,7 +24,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
     <>
     <div className='flex grow gap-2 mb-2'>
     {currentPage > 1 && <><button className='btn btn-primary btn-compact' onClick={() => { router.push(paginationUrl(currentPage - 1))}}><PiCaretLeft/></button>
-                        {totalPages != 3 || currentPage == 3 &&  <button className='btn btn-compact' onClick={() => { router.push(paginationUrl(1))}}>1</button> } </>}
+                        {(totalPages != 3 || currentPage == 3) &&  <button className='btn btn-compact' onClick={() => { router.push(paginationUrl(1))}}>1</button> } </>}
     {currentPage == totalPages && totalPages > 3 && <button className='btn btn-compact' onClick={() => { router.push(paginationUrl(totalPages-2))}}>{totalPages-2}</button>}
     {currentPage > totalPages-2 && totalPages > 2 && <button className='btn btn-compact' onClick={() => { router.push(paginationUrl(currentPage-1))}}>{currentPage-1}</button>}
     <span className='px-3 py-1 border-2 rounded-sm border-neutral-400'>{currentPage}</span>
