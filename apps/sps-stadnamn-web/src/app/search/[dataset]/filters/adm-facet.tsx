@@ -42,7 +42,8 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       }, 200);
       setIsLoading(false);
     })
-    }, [facetQuery, setFilterStatus]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [facetQuery]
     )
 
   const useClearFilter = () => {
