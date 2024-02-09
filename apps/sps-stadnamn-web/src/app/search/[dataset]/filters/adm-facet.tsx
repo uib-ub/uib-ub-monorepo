@@ -24,10 +24,9 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const pathname = usePathname()
   const [sortMethod, setSortMethod] = useState('key');
   const [filterSearch, setFilterSearch] = useState('');
-  const facetQuery = useQueryStringWithout(['document', 'view', 'adm1', 'adm2', 'page', 'size']);
+  const facetQuery = useQueryStringWithout(['document', 'view', 'adm', 'page', 'size', 'sort']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['document', 'view'])
-  const clearedQuery = useQueryStringWithout(['adm1', 'adm2', 'page', 'size'])
   const [facetAggregation, setFacetAggregation] = useState<FacetAggregation | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -90,8 +89,6 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
             newParams.push(['adm', aggregation.key + "_" + parent])
           }
         })
-              
-
       }
 
     }
@@ -133,9 +130,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       })
     }
     router.push(pathname + "?" + new URLSearchParams(newParams).toString())
-  
   }
-  
 
 
   const sortBuckets = (buckets: any) => {
@@ -145,7 +140,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       } else {
         if (a.label && b.label) {
           return a.label.buckets[0].key.localeCompare(b.label.buckets[0].key, 'nb');
-        }  
+        }
         return a.key.localeCompare(b.key, 'nb');
       }
     });
@@ -162,12 +157,11 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     <select onChange={(e) => setSortMethod(e.target.value)}>
         <option value="key">alfabetisk</option>
         <option value="doc_count">antall treff</option>
-        
     </select>
-    {false ? 
-    <button type="button" aria-label="Fjern alle filtre" onClick={clearFilter} className="icon-button ml-auto">
+    {paramLookup.get('adm') ?
+    <button type="button" aria-label="Fjern alle filtre" onClick={useClearFilter} className="icon-button ml-auto">
       <PiTrashFill className="text-xl" aria-hidden="true"/>
-    </button> 
+    </button>
     : null
     }
     </div>

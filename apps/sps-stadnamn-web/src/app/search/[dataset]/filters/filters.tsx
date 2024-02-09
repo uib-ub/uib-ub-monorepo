@@ -11,11 +11,11 @@ export default function Facets() {
     const pathname = usePathname()
     const [filterStatus, setFilterStatus] = useState<Record<string, string>>({adm: 'collapsed'})
     const searchQuery = useQueryWithout(['document', 'view'])
-    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'size')
+    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'size')
     const [chipsExpanded, setChipsExpanded] = useState(false);
 
     const filterNames = Array.from(new Set(activeFilters.map(item => item[0])))
-    const clearedParams = useQueryStringWithout(filterNames)
+    const clearedParams = useQueryStringWithout([...filterNames, 'page', 'sort'])
     
     const toggleExpanded = (filterName: string) => {
       setFilterStatus({
