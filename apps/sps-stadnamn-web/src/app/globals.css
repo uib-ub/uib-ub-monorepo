@@ -63,6 +63,10 @@
     @apply bg-transparent text-neutral-900 hover:text-white border border-neutral-700 hover:border-neutral-800;
   }
 
+  .icon-button {
+    @apply p-1 flex gap-1 shadow-none items-center text-neutral-900 hover:text-primary-700;
+  }
+
 
   .btn-compact {
     @apply px-3 py-1
