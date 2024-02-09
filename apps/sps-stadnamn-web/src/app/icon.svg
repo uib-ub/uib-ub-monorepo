@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="192"
+   height="192"
+   viewBox="0 0 50.799999 50.800001"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="icon.svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#606664"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     showgrid="false"
+     units="px"
+     width="192px"/>
+  <defs
+     id="defs2" />
+  <g id="layer1">
+    <path
+       id="path28141"
+       style="fill:#ad2a28;fill-opacity:1;stroke:#ffffff;stroke-width:1.88022;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 25.4,0.94012918 A 19.899001,19.899001 0 0 0 5.5009985,20.839131 19.899001,19.899001 0 0 0 21.191866,40.28098 L 25.4,48.697733 29.608134,40.28098 A 19.899001,19.899001 0 0 0 45.299002,20.839131 19.899001,19.899001 0 0 0 25.4,0.94012918 Z" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.650306;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path28141-9"
+       cx="25.4"
+       cy="20.83913"
+       r="7.6007962" />
+  </g>
+</svg>

@@ -1,18 +1,16 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
-import MapExplorer from '@/components/Map/MapExplorer'
+import ContentViwer from './content-viewer'
 import Spinner from '@/components/svg/Spinner'
-import Results from './results'
+import Results from './results/results'
+import Filters from './filters/filters'
+import { useQueryStringWithout } from '@/lib/search-params'
 import { ResultData } from './types'
 
 export default function SearchInterface() {  
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const searchParamsString = searchParams.toString()
-  console.log("PARAMS STRING", searchParamsString)
-  console.log("QUERY", searchParams.get('q'))
+  const searchQueryString = useQueryStringWithout(["document", "view"])
 
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true)
@@ -20,16 +18,12 @@ export default function SearchInterface() {
 
   useEffect(() => {
 
-      fetch('/api/search?dataset=hord&'+ searchParamsString).then(response => response.json()).then(es_data => {
-        setResultData(es_data.hits)
+      fetch('/api/search?dataset=hord&'+ searchQueryString).then(response => response.json()).then(es_data => {
+        setResultData(es_data)
         if (es_data.aggregations?.viewport?.bounds) {
-          //console.log("AGGREGATIONS", es_data.aggregations)
           setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
             [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
         }
-        
-
-        console.log("SEARCH DATA", es_data)
 
       }).then(() => setIsLoading(false))
       
@@ -37,7 +31,7 @@ export default function SearchInterface() {
     
 
 
-    }, [searchParamsString])
+    }, [searchQueryString])
 
 
     const handleSubmit = async (event: any) => {
@@ -48,32 +42,31 @@ export default function SearchInterface() {
     }
 
   return (
-    <main className="md:grid md:grid-cols-4 mb-3 md:mx-2 gap-2 h-full">
-      <section className="flex flex-col md:col-span-1 card gap-3 bg-white shadow-md p-2" aria-label="Filtre">
-        <form id="search_form" className='w-full flex gap-1' onSubmit={ handleSubmit }>
-        </form>
-       
-        { !resultData || isLoading ? <div className="flex-grow flex items-center justify-center">
-        <Spinner className="w-20 h-20"/>
-        </div> : <Results resultData={resultData}/>
-
-      }
+    <main className="search-view lg:grid lg:grid-cols-3 mb-3 lg:mx-2 gap-2">
+      <section className="flex flex-col lg:col-span-1 card gap-3 bg-white shadow-md p-2 px-4 lg:overflow-y-auto h-full" aria-label="Filtre">
+        <div className='flex flex-col h-full gap-6'>
+          { !resultData || isLoading ?          
+            <div className="flex h-full items-center justify-center">
+              <div>
+                <Spinner className="w-20 h-20"/>
+              </div>
+            </div> 
+          : 
+          <>
+          <form id="search_form" onSubmit={ handleSubmit }>
+            <Filters/>
+          </form>
             
+            <Results hits={resultData.hits}/>
+          </>
+          
+
+          }
+        </div>
       </section>
 
-      <section className='card md:grid md:grid-rows-7 md:col-span-3'>
-      <div className="md:row-span-6 md:m-2">
-        <MapExplorer mapBounds={mapBounds}/>
-      </div>
-      <div className=" mx-2 p-2 md:row-span-1">
-        <h2 className='mb-3 font-semibold'>Info</h2>
-        List with text:
-        <ul>
-          <li>- Info about dataset if no place name selected </li>
-          <li>- Switch to showing image in map card</li>
-        </ul>
-        
-      </div>
+      <section className='card flex flex-col lg:col-span-2 lg:h-full lg:overflow-hidden'>
+      <ContentViwer mapBounds={mapBounds}/>
       </section>
 
 

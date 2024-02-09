@@ -9,7 +9,6 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
         garamond: ["EB Garamond"]
 
       },
@@ -27,7 +26,20 @@ const config: Config = {
         900: '#772625',
         950: '#40100f',
       },
-      slate: {
+      accent: {
+        50: '#eff8ff',
+        100: '#def0ff',
+        200: '#b6e2ff',
+        300: '#75cdff',
+        400: '#2cb5ff',
+        500: '#009ffe',
+        600: '#007bd4',
+        700: '#0061ab',
+        800: '#00528d',
+        900: '#064574',
+        950: '#042b4d',
+    },
+      neutral: {
         50: '#f6f5f4',
         100: '#eae6e1',
         200: '#d7d3d1',
@@ -41,11 +53,6 @@ const config: Config = {
         950: '#282524',
     },
     },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(circle, rose-500, rose-900)",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, rose-500, rose-900)",
-      },
     },
   },
   plugins: [],

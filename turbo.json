@@ -12,6 +12,18 @@
         "^build"
       ]
     },
+    "build#sps-stadnamn-web": {
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "ES_TOKEN"
+      ]
+    },
     "build#chc-web": {
       "outputs": [
         "dist/**",

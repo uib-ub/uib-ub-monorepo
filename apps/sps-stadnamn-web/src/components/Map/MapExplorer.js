@@ -1,8 +1,9 @@
 'use client'
 import { useEffect, useState, useRef } from 'react';
 import Map from './Map'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
+import { useQueryStringWithout } from '@/lib/search-params'
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
 const DEFAULT_ZOOM = 5;
@@ -13,7 +14,15 @@ export default function MapExplorer(props) {
   const mapRef = useRef(null);
   const [bounds, setBounds] = useState(null);
   const searchParams = useSearchParams()
-  const nameQuery = searchParams.get('q')
+  const pathname = usePathname()
+  const router = useRouter();
+  const mapQueryString = useQueryStringWithout(["document", "size", "page"])
+
+  const documentUrl = (uuid) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('document', String(uuid))
+    return pathname + "?" + params.toString()
+  }
 
   const onMapLoaded = (mapInstance) => {
     setBounds(mapInstance.target.getBounds());
@@ -45,8 +54,19 @@ export default function MapExplorer(props) {
     // Check if the bounds are initialized
     if (bounds) {
       // Fetch data based on the new bounds
-      const query = `/api/geo?dataset=hord&topLeftLat=${bounds.getNorthEast().lat}&topLeftLng=${bounds.getSouthWest().lng}&bottomRightLat=${bounds.getSouthWest().lat}&bottomRightLng=${bounds.getNorthEast().lng}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}`
-      console.log("QUERY", query)
+      const params = mapQueryString
+      const query = `/api/geo?dataset=hord&${ params? 
+                                             params + "&" : "" 
+                                            }topLeftLat=${
+                                              bounds.getNorthEast().lat
+                                            }&topLeftLng=${
+                                              bounds.getSouthWest().lng
+                                            }&bottomRightLat=${
+                                              bounds.getSouthWest().lat
+                                            }&bottomRightLng=${
+                                              bounds.getNorthEast().lng
+                                            }`
+
       fetch(query, {
         method: 'GET',
         headers: {
@@ -57,18 +77,17 @@ export default function MapExplorer(props) {
       .then(response => response.json())
       .then(data => {
 
-        //console.log("GEO DATA", data)
-        
         setMarkers(data.hits.hits)})
+
       .catch(error => console.error('Error:', error));
     }
-  }, [bounds, nameQuery]);
+  }, [bounds, mapQueryString]);
 
 
 
   return (
-    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER}>
-            {({ TileLayer, CircleMarker }) => (
+    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER} className='w-full aspect-square lg:aspect-auto lg:h-full'>
+            {({ TileLayer, CircleMarker, Marker }, leaflet) => (
                 <>
           
             <TileLayer
@@ -77,16 +96,23 @@ export default function MapExplorer(props) {
               attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
               subdomains={['', '2', '3']} 
             />
-          
-            
             
             {markers.map((marker, index) => (
-              <CircleMarker pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
+              <CircleMarker role="button" circleClick={() => {
+                console.log("CLICKED")
+                router.push(documentUrl(props.doc._id))
+
+              } } pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
                             key={index} center={[marker.fields.location[0].coordinates[1], marker.fields.location[0].coordinates[0]]} radius={7}>
+
 
               </CircleMarker>
                 
             ))}
+            {props.doc?.location ? <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
+                            key={props.doc._id} position={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]}>
+
+              </Marker> : null}
             </>
             )}
     </Map>
