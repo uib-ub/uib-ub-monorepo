@@ -30,7 +30,7 @@ export async function GET(request: Request) {
   }
 
   const query: Record<string,any> = {
-    "from": params.page || 0,
+    "from": params.page ? (parseInt(params.page) - 1) * parseInt(params.size || '10') : 0,
     "size": params.size  || 10,
     "aggs": {
       "viewport": {
