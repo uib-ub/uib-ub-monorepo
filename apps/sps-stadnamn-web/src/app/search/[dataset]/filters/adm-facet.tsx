@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
-import { PiTrashFill } from 'react-icons/pi';
+import { PiTrashFill, PiSortAscending, PiSortDescending } from 'react-icons/pi';
 
 interface BucketItem {
   key: string;
@@ -29,6 +29,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const searchParams = useQueryWithout(['document', 'view'])
   const [facetAggregation, setFacetAggregation] = useState<FacetAggregation | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const clearedFilters = useQueryStringWithout(['adm', 'page'])
 
@@ -48,6 +49,10 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const useClearFilter = () => {
     router.push(pathname + '?' + clearedFilters)
   }
+
+  const handleSortOrderChange = () => {
+    setSortOrder(prevSortOrder => prevSortOrder === 'asc' ? 'desc' : 'asc');
+  };
 
 
 
@@ -134,14 +139,19 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
 
 
   const sortBuckets = (buckets: any) => {
+    const orderCompare = (a: string, b: string) => {
+    return sortOrder === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
+    }
     return [...buckets].sort((a, b) => {
       if (sortMethod === 'doc_count') {
-        return parseInt(b.doc_count) - parseInt(a.doc_count);
+        const difference = parseInt(b.doc_count) - parseInt(a.doc_count)
+        return sortOrder === 'asc' ? difference : -difference
       } else {
         if (a.label && b.label) {
-          return a.label.buckets[0].key.localeCompare(b.label.buckets[0].key, 'nb');
+          return orderCompare(a.label.buckets[0].key, b.label.buckets[0].key);
+
         }
-        return a.key.localeCompare(b.key, 'nb');
+        return orderCompare(a.key, b.key);
       }
     });
   };
@@ -158,6 +168,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
         <option value="key">alfabetisk</option>
         <option value="doc_count">antall treff</option>
     </select>
+    <button className="ml-auto text-xl" onClick={handleSortOrderChange}>{sortOrder == 'asc' ? <PiSortDescending/>: <PiSortAscending/> }</button>
     {paramLookup.get('adm') ?
     <button type="button" aria-label="Fjern alle filtre" onClick={useClearFilter} className="icon-button ml-auto">
       <PiTrashFill className="text-xl" aria-hidden="true"/>
