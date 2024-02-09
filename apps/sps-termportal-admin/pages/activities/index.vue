@@ -39,7 +39,7 @@
         <Column header="">
           <template #body="slotProps">
             <NuxtLink
-              :to="`/studio/desk/activity;${slotProps.data.id}`"
+              :to="`${studioBaseRoute}/activity;${slotProps.data.id}`"
               target="_blank"
             >
               Rediger
@@ -55,7 +55,6 @@
 
             <div v-if="slotProps.data.note">
               <h2 class="text-lg py-1">Merknad</h2>
-
               <SanityContent :blocks="slotProps.data.note" />
             </div>
           </div>

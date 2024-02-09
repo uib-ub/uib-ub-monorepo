@@ -11,3 +11,6 @@ export const activityTypes = {
   termbaseOpprettelse: "Termbase opprettelse",
   termbaseImportering: "Termbase importering",
 };
+
+export const studioBaseRoute = "/studio/structure";
+export const wikiPageLink = "https://wiki.terminologi.no/index.php?title="

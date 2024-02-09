@@ -116,7 +116,7 @@
                     slotProps.data.status
                   )
                 "
-                :to="`https://wiki.terminologi.no/index.php?title=${slotProps.data.id.replace(
+                :to="`${wikiPageLink}${slotProps.data.id.replace(
                   '*',
                   ''
                 )}:${slotProps.data.id.replace('*', '')}`"
@@ -130,7 +130,7 @@
             <template #body="slotProps">
               <NuxtLink
                 v-if="slotProps.data._id"
-                :to="`/studio/desk/termbase;${slotProps.data._id}`"
+                :to="`${studioBaseRoute}/termbase;${slotProps.data._id}`"
                 target="_blank"
               >
                 Studio
@@ -181,7 +181,7 @@ const merged = computed(() => {
     }))
     .filter((termbase) => termbase.id !== "DOMENE");
 
-  if (enriched) {
+  if (enriched && cmsdata.value) {
     const ids = dbdata.value?.results?.bindings.map((e) => e.id.value);
     for (const entry of cmsdata.value) {
       if (!ids.includes(entry.id)) {
