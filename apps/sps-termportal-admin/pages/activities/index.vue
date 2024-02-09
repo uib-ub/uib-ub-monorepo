@@ -48,14 +48,16 @@
         </Column>
         <template #expansion="slotProps">
           <div class="p-4 space-y-3">
-            <DataTable :value="slotProps.data.scope">
-              <Column field="scope" header="Scope" sortable />
-              <Column field="subscope" header="Subscope" sortable />
-            </DataTable>
-
             <div v-if="slotProps.data.note">
-              <h2 class="text-lg py-1">Merknad</h2>
+              <h2 class="text-lg py-1 font-semibold">Merknad</h2>
               <SanityContent :blocks="slotProps.data.note" />
+            </div>
+            <div v-if="slotProps.data.scope">
+              <h2 class="text-lg py-1 font-semibold">Scope</h2>
+              <DataTable :value="slotProps.data.scope">
+                <Column field="scope" header="Scope" sortable />
+                <Column field="subscope" header="Subscope" sortable />
+              </DataTable>
             </div>
           </div>
         </template>
