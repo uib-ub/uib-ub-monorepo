@@ -31,6 +31,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const [facetAggregation, setFacetAggregation] = useState<FacetAggregation | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
+  const clearedFilters = useQueryStringWithout(['adm', 'page'])
 
   useEffect(() => {
     setFilterStatus('loading');
@@ -44,8 +45,8 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     }, [facetQuery, setFilterStatus]
     )
 
-  const clearFilter = () => {
-    router.push(pathname + '?' + useQueryStringWithout(['adm1', 'adm2', 'page', 'size']));
+  const useClearFilter = () => {
+    router.push(pathname + '?' + clearedFilters)
   }
 
 
