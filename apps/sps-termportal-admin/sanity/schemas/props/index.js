@@ -1,4 +1,13 @@
-export const note = { name: "note", type: "text", rows: 4 };
+export const note = {
+  name: "note",
+  type: "array",
+  title: "Merknad",
+  of: [
+    {
+      type: "block",
+    },
+  ],
+};
 
 export const label = { name: "label", type: "string" };
 

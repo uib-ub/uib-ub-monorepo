@@ -48,6 +48,7 @@ export default defineNuxtConfig({
     projectId: "k38biek5",
     dataset: "production",
     apiVersion: "2023-10-09",
+    token: process.env.SANITY_API_TOKEN,
   },
   routeRules: {
     "/studio/**": { ssr: false },

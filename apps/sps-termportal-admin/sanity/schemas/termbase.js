@@ -4,7 +4,7 @@ import attribution from "./qualifiedPattern/attribution";
 export default {
   name: "termbase",
   type: "document",
-  liveEdit: "true",
+  liveEdit: true,
   fieldsets: [
     {
       name: "status",

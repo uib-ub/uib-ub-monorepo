@@ -8,15 +8,19 @@
         !flex,
     }"
   >
+    <!-- Links are passed as Arrays -->
     <div
       v-if="!Array.isArray(mainValue(d))"
       :lang="dataLang"
       class="max-w-prose"
       v-html="mainValue(d)"
-    ></div>
-    <AppLink v-else class="underline hover:decoration-2" :to="d[1]">{{
-      d[0]
-    }}</AppLink>
+    />
+    <AppLink
+      v-else
+      class="underline hover:decoration-2 max-w-prose"
+      :to="d[1]"
+      >{{ d[0] }}</AppLink
+    >
     <dl
       v-if="
         d?.note ||
@@ -109,13 +113,15 @@ const mainValue = (data) => {
     case "definition":
       return data?.label["@value"];
     case "prefLabel":
-      return data?.["@value"];
+      return data?.literalForm["@value"];
     case "altLabel":
-      return data?.["@value"];
+      return data?.literalForm["@value"];
     case "hiddenLabel":
-      return data?.["@value"];
+      return data?.literalForm["@value"];
     case "context":
       return data?.label["@value"];
+    case "nonLingusticLabel":
+      return data?.nonLingusticLabel;
     case "link":
       return data;
     default:

@@ -9,6 +9,7 @@
           <NavBarLink to="/explore/termbase">Termbase</NavBarLink>
         </ul>
       </NavBarLink>
+      <NavBarLink to="/activities">Activities</NavBarLink>
       <NavBarLink to="/docs">Documentation</NavBarLink>
       <NavBarLink to="/studio">Studio</NavBarLink>
     </ul>

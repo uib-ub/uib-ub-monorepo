@@ -140,7 +140,8 @@
         "^build"
       ],
       "env": [
-        "NUXT_DATAPORTEN_AUTHORIZED_USERS"
+        "NUXT_DATAPORTEN_AUTHORIZED_USERS",
+        "SANITY_API_TOKEN,"
       ]
     },
     "generate#sps-termportalen-web": {

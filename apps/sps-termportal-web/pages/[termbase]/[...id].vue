@@ -7,6 +7,7 @@
     <div class="flex">
       <SideBar />
       <div class="flex">
+        <!-- Search results -->
         <div
           v-if="searchData.length > 0"
           class="hidden max-w-[22em] shrink-0 flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw]"
@@ -108,7 +109,6 @@
                     >
                     </TermDescription>
                   </TermProp>
-                  <!--Symbol-->
                   <!--Kontekst-->
                   <TermProp
                     v-if="concept?.hasUsage?.[lang]"
@@ -119,6 +119,20 @@
                       :data="concept?.hasUsage[lang]"
                       :data-lang="lang"
                     />
+                  </TermProp>
+                </TermSection>
+              </div>
+              <div v-if="displayInfo?.symbol">
+                <h3 class="pb-1 text-xl">
+                  <AppLink to="#symbol"> {{ $t("id.symbol") }}</AppLink>
+                </h3>
+                <TermSection>
+                  <TermProp label="">
+                    <TermDescription
+                      :data="displayInfo?.symbol"
+                      prop="nonLingusticLabel"
+                    >
+                    </TermDescription>
                   </TermProp>
                 </TermSection>
               </div>
@@ -346,7 +360,7 @@ const displayInfo = computed(() => {
       altLabelLength: data.value.meta.maxLen.altLabel,
       hiddenLabelLength: data.value.meta.maxLen.hiddenLabel,
     };
-
+    // semantic relations
     for (const relationType of semanticRelationTypes) {
       const relData = getRelationData(data.value.concept, procId, relationType);
       if (relData) {
@@ -358,6 +372,7 @@ const displayInfo = computed(() => {
         }
       }
     }
+    // subjects
     if (data.value?.concept?.[procId]?.subject) {
       const subj = data.value?.concept[procId].subject;
       let subjectlist;
@@ -369,6 +384,19 @@ const displayInfo = computed(() => {
         });
       }
       info.subject = subjectlist.join(", ");
+    }
+
+    // notation: symbols and images
+    if (data.value?.concept?.[procId]?.notation) {
+      const notation = data.value?.concept?.[procId]?.notation;
+      info.symbol = notation.filter((notation) =>
+        notation?.type.includes("skosxl:Label")
+      );
+      info.image = notation.filter((notation) =>
+        notation?.type.includes(
+          "http://wiki.terminologi.no/index.php/Special:URIResolver/Category-3ADct-3AImage"
+        )
+      );
     }
 
     return info;
