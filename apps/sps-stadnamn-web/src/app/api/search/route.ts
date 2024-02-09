@@ -10,6 +10,7 @@ export async function GET(request: Request) {
       case 'q':
       case 'dataset':
       case 'page':
+      case 'sort':
       case 'size':
         params[key] = urlParams.get(key);
         break;
@@ -40,7 +41,14 @@ export async function GET(request: Request) {
         },
 
       }
-    }
+    },
+    "sort": [
+      {
+        "label.keyword": {
+        "order": params.sort == 'desc' ? 'desc' : 'asc'
+        }
+      }
+    ]
   }
 
   const simple_query_string = params.q ? {

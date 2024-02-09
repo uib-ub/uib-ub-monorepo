@@ -1,14 +1,26 @@
 import Pagination from './pagination'
 import Link from 'next/link'
-import { useSearchParams, usePathname } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill } from 'react-icons/pi';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending} from 'react-icons/pi';
 import AudioButton from './audioButton';
 
 
 export default function Results({ hits }: { hits: any }) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
+    const router = useRouter()
 
+    const sortResults = () => {
+      const params = new URLSearchParams(searchParams)
+      if (searchParams.get('sort') == 'desc') {
+        params.delete('sort')
+      } else {
+        params.set('sort', 'desc')
+      }
+      params.delete('page')
+        
+      router.push(pathname + "?" + params.toString())
+    }
 
     const viewUrl = (uuid: string, view: string) => {
       const params = new URLSearchParams(searchParams)
@@ -19,8 +31,11 @@ export default function Results({ hits }: { hits: any }) {
 
 
   return (
-    <section className='flex flex-col gap-2'>
-    <h2 id="result_heading" aria-live="polite" className='text-xl font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
+    <section className='flex flex-col gap-2' aria-labelledby='result_heading'>
+    <span className="flex">
+      <h2 id="result_heading" aria-live="polite" className='text-xl font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
+      <button className="ml-auto text-xl" onClick={sortResults}>{searchParams.get('sort') == 'desc'? <PiSortDescending/> : <PiSortAscending/> }</button>
+    </span>
     <section className='lg:rounded-sm lg:py-1'>
 
     <ul className='flex flex-col gap-1 mb-2'>
