@@ -27,6 +27,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const facetQuery = useQueryStringWithout(['document', 'view', 'adm1', 'adm2', 'page', 'size']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['document', 'view'])
+  const clearedQuery = useQueryStringWithout(['adm1', 'adm2', 'page', 'size'])
   const [facetAggregation, setFacetAggregation] = useState<FacetAggregation | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,7 +41,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       }, 200);
       setIsLoading(false);
     })
-    }, [facetQuery]
+    }, [facetQuery, setFilterStatus]
     )
 
   const clearFilter = () => {
