@@ -19,8 +19,8 @@ export default function Results({ hits }: { hits: any }) {
 
 
   return (
-    <section className='flex flex-col gap-2' aria-live="polite">
-    <h2 className='text-xl font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
+    <section className='flex flex-col gap-2'>
+    <h2 id="result_heading" aria-live="polite" className='text-xl font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
     <section className='lg:rounded-sm lg:py-1'>
 
     <ul className='flex flex-col gap-1 mb-2'>
