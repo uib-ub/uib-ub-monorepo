@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
-import { waitForDebugger } from 'inspector';
+import { PiTrashFill } from 'react-icons/pi';
 
 interface BucketItem {
   key: string;
@@ -23,7 +23,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const router = useRouter()
   const pathname = usePathname()
   const [sortMethod, setSortMethod] = useState('key');
-  const [filter, setFilter] = useState('');
+  const [filterSearch, setFilterSearch] = useState('');
   const facetQuery = useQueryStringWithout(['document', 'view', 'adm1', 'adm2', 'page', 'size']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['document', 'view'])
@@ -42,6 +42,10 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     })
     }, [facetQuery]
     )
+
+  const clearFilter = () => {
+    router.push(pathname + '?' + useQueryStringWithout(['adm1', 'adm2', 'page', 'size']));
+  }
 
 
 
@@ -120,7 +124,6 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       // add siblings
       const parentName = parent.split('_')[0]
       grandparentAggs?.buckets.find(item => item.key == parentName)?.adm3?.buckets.forEach(aggregation => {
-        console.log("HEI", aggregation.key + "_" + parent + "_" + grandparent)
         if (aggregation.key + "_" + parent != value) {
           newParams.push(['adm', aggregation.key + "_" + parent])
         }
@@ -152,23 +155,29 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     { !isLoading &&
     <div className="flex flex-col gap-2">
     <div className='flex gap-2'>
-      <input onChange={(e) => setFilter(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
+      <input onChange={(e) => setFilterSearch(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
         <option value="key">alfabetisk</option>
         <option value="doc_count">antall treff</option>
         
     </select>
+    {false ? 
+    <button type="button" aria-label="Fjern alle filtre" onClick={clearFilter} className="icon-button ml-auto">
+      <PiTrashFill className="text-xl" aria-hidden="true"/>
+    </button> 
+    : null
+    }
     </div>
     { facetAggregation?.buckets ?
     <ul className='flex flex-wrap gap-x-10'>
-      {sortBuckets(facetAggregation?.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((item, index) => (
+      {sortBuckets(facetAggregation?.buckets).filter(item => item.key.toLowerCase().includes(filterSearch) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filterSearch))).map((item, index) => (
         <li key={index} className='mb-2'>
           <label>
             <input type="checkbox" className='mr-2' checked={paramLookup.has('adm', item.key)} onChange={(e) => { toggleAdm1(e.target.checked, item.key)}} />
             {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
           </label>
           {item.adm2 && <ul>
-            {sortBuckets(item.adm2.buckets).filter(item => item.key.toLowerCase().includes(filter) || item.adm3?.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filter))).map((subitem, subindex) => (
+            {sortBuckets(item.adm2.buckets).filter(item => item.key.toLowerCase().includes(filterSearch) || item.adm3?.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filterSearch))).map((subitem, subindex) => (
                 <li key={subindex} className="ml-6 mt-1 my-1">
                  <label>
                     <input type="checkbox" checked={paramLookup.has('adm', subitem.key + "_" + item.key) || paramLookup.has('adm', item.key)} onChange={(e) => { toggleAdm2(e.target.checked, subitem.key + "_" + item.key)}} className='mr-2' />
@@ -176,7 +185,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
                     
                   </label>
                   {subitem.adm3 && <ul>
-                  {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filter)).map((subsubitem, subsubindex) => (
+                  {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filterSearch)).map((subsubitem, subsubindex) => (
                     <li key={subsubindex} className="ml-6 mt-1 my-1">
                       <label>
                         <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key) || paramLookup.has('adm', subitem.key + "_" + item.key) || paramLookup.has('adm', item.key)} onChange={(e) => { toggleAdm3(e.target.checked, subsubitem.key + "_" + subitem.key + "_" +item.key)}} className='mr-2' />
