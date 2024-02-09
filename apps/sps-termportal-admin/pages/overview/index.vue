@@ -181,7 +181,7 @@ const merged = computed(() => {
     }))
     .filter((termbase) => termbase.id !== "DOMENE");
 
-  if (enriched) {
+  if (enriched && cmsdata.value) {
     const ids = dbdata.value?.results?.bindings.map((e) => e.id.value);
     for (const entry of cmsdata.value) {
       if (!ids.includes(entry.id)) {
