@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import { PiTrashFill, PiSortAscending, PiSortDescending } from 'react-icons/pi';
+import IconButton from '@/components/ui/icon-button';
 
 interface BucketItem {
   key: string;
@@ -161,18 +162,18 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 px-4 py-2">
     <div className='flex gap-2'>
       <input onChange={(e) => setFilterSearch(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
         <option value="key">alfabetisk</option>
         <option value="doc_count">antall treff</option>
     </select>
-    <button className="ml-auto text-xl" onClick={handleSortOrderChange}>{sortOrder == 'asc' ? <PiSortDescending/>: <PiSortAscending/> }</button>
+    <IconButton className="text-xl" label={sortOrder == 'asc' ? 'Sorter stigende': 'Sorter synkende'} onClick={handleSortOrderChange}>{sortOrder == 'asc' ? <PiSortDescending/>: <PiSortAscending/> }</IconButton>
     {paramLookup.get('adm') ?
-    <button type="button" aria-label="Fjern alle filtre" onClick={useClearFilter} className="icon-button ml-auto">
+    <IconButton type="button" label="Fjern områdefiltre" onClick={useClearFilter} className="icon-button ml-auto">
       <PiTrashFill className="text-xl" aria-hidden="true"/>
-    </button>
+    </IconButton>
     : null
     }
     </div>

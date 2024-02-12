@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { PiPlayCircleFill, PiPauseCircleFill } from 'react-icons/pi';
+import IconButton from '@/components/ui/icon-button';
 
 export default function AudioButton({ audioFile, className }: { audioFile: string, className: string }) {
   const [playing, setPlaying] = useState(false);
@@ -24,9 +25,9 @@ export default function AudioButton({ audioFile, className }: { audioFile: strin
   return (
     <>
     <audio ref={audio} src={audioFile} onEnded={() => setPlaying(false)}/>
-    <button onClick={togglePlay}>
+    <IconButton onClick={togglePlay} label={playing? "Pause" : "Spill av lyd"}>
       {playing ? <PiPauseCircleFill className={className} /> : <PiPlayCircleFill className={className} />}
-    </button>
+    </IconButton>
     </>
   );
 };

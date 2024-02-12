@@ -2,7 +2,7 @@ import UiBLogo from "@/components/svg/UiBLogo"
 import { PiMapTrifold } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
-import Image from 'next/image';
+import IconButton from '@/components/ui/icon-button';
 
 export default function Home() {
   const cards = [
@@ -25,7 +25,7 @@ export default function Home() {
   <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center max-w-2xl mx-auto gap-2" action="search/stadnamn">
 
     <input className="col-span-4 rounded-sm h-full border border-gray-400 text-base px-2" name="q" type="text"/>
-    <button className="btn btn-primary h-full col-span-1 text-base" type="submit" aria-label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></button>
+    <IconButton className="btn btn-primary h-full col-span-1 text-base" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></IconButton>
     <button className="btn text-base col-span-5 md:col-span-2 whitespace-nowrap"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</button>
   </form>
   

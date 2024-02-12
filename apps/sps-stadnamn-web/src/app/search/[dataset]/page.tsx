@@ -43,7 +43,7 @@ export default function SearchInterface() {
 
   return (
     <main className="search-view lg:grid lg:grid-cols-3 mb-3 lg:mx-2 gap-2">
-      <section className="flex flex-col lg:col-span-1 card gap-3 bg-white shadow-md p-2 px-4 lg:overflow-y-auto h-full" aria-label="Filtre">
+      <section className="flex flex-col lg:col-span-1 card gap-3 bg-white shadow-md py-2 lg:overflow-y-auto h-full" aria-label="Filtre">
         <div className='flex flex-col h-full gap-6'>
           { !resultData || isLoading ?          
             <div className="flex h-full items-center justify-center">
