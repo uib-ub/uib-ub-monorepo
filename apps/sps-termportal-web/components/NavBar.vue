@@ -32,7 +32,7 @@
             class="mt-6 md:mt-7 pl-1 md:pl-3"
             img-style="max-width: 250px"
             logo-type="2lines"
-            logo-language="no"
+            :logo-language="locale == 'en' ? 'en' : 'no'"
           />
         </div>
       </div>
