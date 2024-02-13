@@ -27,7 +27,7 @@
 
           <SearchField class="max-w-[51em]" />
         </div>
-        <div v-if="context === 'minimal' && previewVersion == 2">
+        <div v-if="context === 'minimal'">
           <LogoUiB
             class="mt-6 md:mt-7 pl-1 md:pl-3"
             img-style="max-width: 250px"
@@ -35,15 +35,6 @@
             logo-language="no"
           />
         </div>
-      </div>
-      <div class="">
-        <select id="previewVersionSel" v-model="previewVersion">
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
       </div>
       <div class="hidden lg:flex">
         <ul
@@ -249,8 +240,6 @@ watch(i18n.locale, () => {
   const locale = useCookie("locale", cookieLocaleOptions);
   locale.value = i18n.locale.value;
 });
-
-const previewVersion = usePreviewVersion();
 </script>
 
 <style>

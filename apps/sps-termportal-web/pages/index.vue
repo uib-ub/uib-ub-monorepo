@@ -7,22 +7,9 @@
       <h1 class="text-5xl xs:text-6xl sm:text-7xl md:text-8xl">
         <LogoTermportalen
           class="mb-6 ml-2 mr-14 max-w-[25rem] sm:mb-8 md:mb-11 md:ml-7"
-          :class="{ 'mt-12 xl:mt-9': previewVersion == 2 }"
         />
         <span class="sr-only">Termportalen</span>
       </h1>
-      <div
-        v-if="previewVersion == 3"
-        class="text-xl ml-[3.5rem] mt-[-1.5rem] mb-[3rem]"
-      >
-        Universitet i Bergen
-      </div>
-      <div
-        v-if="previewVersion == 4"
-        class="text-xl ml-[9rem] mt-[-1.75em] mb-[2rem]"
-      >
-        Universitet i Bergen
-      </div>
     </header>
     <main class="container">
       <div class="border-grey my-2 border-b-2 px-2">
@@ -44,6 +31,4 @@
 </template>
 <script setup lang="ts">
 const locale = useLocale();
-
-const previewVersion = usePreviewVersion();
 </script>

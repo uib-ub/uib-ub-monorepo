@@ -135,6 +135,3 @@ export const useNavMenuExpanded = () =>
 
 export const useLazyLocales = () =>
   useState<Object>("lazyLocales", () => ({ nb: {}, nn: {}, en: {} }));
-
-export const usePreviewVersion = () =>
-  useState<number>("previewVersion", () => 0);

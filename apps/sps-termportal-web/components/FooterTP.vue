@@ -1,8 +1,5 @@
 <template>
-  <footer
-    class="bg-tpblue-400 text-white"
-    :class="{ 'fixed-footer': previewVersion == 1 }"
-  >
+  <footer class="bg-tpblue-400 text-white">
     <div class="flex flex-wrap items-center justify-center gap-x-6 p-2">
       <LogoUiB
         img-style="width: 100px"
@@ -28,12 +25,3 @@
     </div>
   </footer>
 </template>
-<script setup>
-const previewVersion = usePreviewVersion();
-</script>
-
-<style scoped>
-.fixed-footer {
-  @apply lg:fixed lg:bottom-0 lg:left-0 lg:w-full lg:z-50;
-}
-</style>
