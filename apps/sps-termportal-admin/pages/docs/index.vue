@@ -1,4 +1,3 @@
-import { ContentDoc } from '#build/components';
 <template>
   <div class="flex">
     <SideBar></SideBar>
