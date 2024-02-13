@@ -1,11 +1,14 @@
 import { ContentDoc } from '#build/components';
 <template>
-  <div class="content-page flex">
+  <div class="flex">
     <SideBar></SideBar>
-    <main class="max-w-3xl pt-8">
-      <h1 class="mb-2 text-2xl">Documentation</h1>
-      <ContentDoc path="system-behaviour" />
+    <main class="content-page max-w-3xl pt-8 flex">
+      <section>
+        <h1 class="mb-2 text-2xl">Documentation</h1>
+        <ContentDoc id="content" path="system-behaviour" />
+      </section>
     </main>
+    <ToC class="ml-10 mt-[5rem]" content-selector="#content" />
   </div>
 </template>
 
