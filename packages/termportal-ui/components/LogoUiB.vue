@@ -5,7 +5,7 @@
 <script setup>
 const props = defineProps({
   imgStyle: { type: String, default: undefined },
-  logoType: { type: String, default: "symbol" },
+  logoType: { type: String, default: undefined },
   logoNegative: { type: Boolean, default: false },
   logoLanguage: { type: String, default: "no" },
 });
