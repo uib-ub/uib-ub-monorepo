@@ -1,5 +1,5 @@
 <template>
-  <AppLink class="underline hover:decoration-2" :to="to">
+  <AppLink class="underline hover:decoration-2 underline-offset-2" :to="to">
     <slot />
   </AppLink>
 </template>
