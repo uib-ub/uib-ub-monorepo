@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import { PiTrashFill, PiSortAscending, PiSortDescending } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
@@ -23,6 +23,7 @@ interface FacetAggregation {
 export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status: string) => void }) {
   const router = useRouter()
   const pathname = usePathname()
+  const params = useParams()
   const [sortMethod, setSortMethod] = useState('key');
   const [filterSearch, setFilterSearch] = useState('');
   const facetQuery = useQueryStringWithout(['document', 'view', 'adm', 'page', 'size', 'sort']);
@@ -36,7 +37,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
 
   useEffect(() => {
     setFilterStatus('loading');
-    fetch('/api/facet?dataset=hord&'+ facetQuery).then(response => response.json()).then(es_data => {
+    fetch(`/api/facet?dataset=${params.dataset}&${facetQuery}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.adm1)
       setTimeout(() => {
         setFilterStatus('expanded');
@@ -44,7 +45,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       setIsLoading(false);
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [facetQuery]
+    }, [facetQuery, params.dataset]
     )
 
   const useClearFilter = () => {

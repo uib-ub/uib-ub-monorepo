@@ -1,7 +1,7 @@
 
 import MapExplorer from '@/components/Map/MapExplorer'
 import MapView from '@/components/Map/MapView'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 
 function renderData(data: any, prefix = ''): any {
@@ -24,17 +24,18 @@ function renderData(data: any, prefix = ''): any {
 export default function ContentViewer({ mapBounds }: { mapBounds: [number, number][] }) {
 
     const searchParams = useSearchParams()
+    const params = useParams()
     const doc_uuid = searchParams.get('document')
     const view = searchParams.get('view')
     const [doc, setDoc] = useState<any>(null)
 
     useEffect(() => {
         if (doc_uuid) {
-            fetch('/api/doc?dataset=hord&doc=' + doc_uuid).then(response => response.json()).then(es_data => {
+            fetch(`/api/doc?dataset=${params.dataset}&doc=${doc_uuid}`).then(response => response.json()).then(es_data => {
                 setDoc(es_data._source)
             })
         }
-    }, [doc_uuid])
+    }, [doc_uuid, params.dataset])
 
     
 
@@ -48,11 +49,12 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
         </div>}
         <h2 className='mb-3 font-semibold text-lg'>
           {doc.label}</h2>
-          {doc.audio ? <audio controls src={'https://iiif.test.ubbe.no/iiif/audio/hord/' + doc.audio.file}></audio> : null}
-        <ul className="grid grid-cols-3 gap-x-4 list-none p-0">
+          {doc.audio ? <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${doc.audio.file}`}></audio> : null}
+        {doc.rawData ? <ul className="grid grid-cols-3 gap-x-4 list-none p-0">
           {renderData(doc.rawData)}
           
         </ul>
+        : null}
         
         </div>
         :

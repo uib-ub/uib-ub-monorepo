@@ -1,5 +1,5 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import ContentViwer from './content-viewer'
 import Spinner from '@/components/svg/Spinner'
@@ -10,6 +10,7 @@ import { ResultData } from './types'
 
 export default function SearchInterface() {  
   const router = useRouter()
+  const params = useParams()
   const searchQueryString = useQueryStringWithout(["document", "view"])
 
   const [resultData, setResultData] = useState<ResultData | null>(null);
@@ -18,7 +19,7 @@ export default function SearchInterface() {
 
   useEffect(() => {
 
-      fetch('/api/search?dataset=hord&'+ searchQueryString).then(response => response.json()).then(es_data => {
+      fetch(`/api/search?dataset=${params.dataset}&${searchQueryString}`).then(response => response.json()).then(es_data => {
         setResultData(es_data)
         if (es_data.aggregations?.viewport?.bounds) {
           setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
@@ -26,19 +27,14 @@ export default function SearchInterface() {
         }
 
       }).then(() => setIsLoading(false))
-      
-      
-    
-
-
-    }, [searchQueryString])
+    }, [searchQueryString, params.dataset])
 
 
     const handleSubmit = async (event: any) => {
       event.preventDefault()
       const formData = new FormData(event.target);
       const formParams = Array.from(formData.entries()).map(item => `${encodeURIComponent(item[0])}=${encodeURIComponent(item[1] as string)}`).join('&');
-      router.push(`/search/hord?${formParams}`)
+      router.push(`/search/${params.dataset}?${formParams}`)
     }
 
   return (

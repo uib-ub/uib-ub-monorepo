@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react';
 import Map from './Map'
-import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
 
@@ -14,6 +14,7 @@ export default function MapExplorer(props) {
   const mapRef = useRef(null);
   const [bounds, setBounds] = useState(null);
   const searchParams = useSearchParams()
+  const params = useParams()
   const pathname = usePathname()
   const router = useRouter();
   const mapQueryString = useQueryStringWithout(["document", "size", "page", "sort"])
@@ -54,9 +55,9 @@ export default function MapExplorer(props) {
     // Check if the bounds are initialized
     if (bounds) {
       // Fetch data based on the new bounds
-      const params = mapQueryString
-      const query = `/api/geo?dataset=hord&${ params? 
-                                             params + "&" : "" 
+      const queryParams = mapQueryString
+      const query = `/api/geo?dataset=${params.dataset}&${ queryParams? 
+                                            queryParams + "&" : "" 
                                             }topLeftLat=${
                                               bounds.getNorthEast().lat
                                             }&topLeftLng=${
@@ -81,7 +82,7 @@ export default function MapExplorer(props) {
 
       .catch(error => console.error('Error:', error));
     }
-  }, [bounds, mapQueryString]);
+  }, [bounds, mapQueryString, params.dataset]);
 
 
 

@@ -1,6 +1,5 @@
 import Pagination from './pagination'
-import Link from 'next/link'
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
 import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending} from 'react-icons/pi';
 import AudioButton from './audioButton';
 import IconButton from '@/components/ui/icon-button';
@@ -10,6 +9,7 @@ export default function Results({ hits }: { hits: any }) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const router = useRouter()
+    const params = useParams()
 
     const sortResults = () => {
       const params = new URLSearchParams(searchParams)
@@ -52,11 +52,11 @@ export default function Results({ hits }: { hits: any }) {
 
     <ul className='flex flex-col gap-1 mb-2'>
       {hits.hits.map((hit: any) => (
-        <li key={hit._id} className="my-0 rounded-sm py-2 px-4 flex-grow border-t last:border-b border-neutral-400"><span className="no-underline font-semibold">{hit._source.label}</span> | {hit._source.rawData.kommuneNamn}
+        <li key={hit._id} className="my-0 rounded-sm py-2 px-4 flex-grow border-t last:border-b border-neutral-400"><span className="no-underline font-semibold">{hit._source.label}</span> | {hit._source.adm2}
         <div className='flex gap-1 float-right ml-2'>
         
         {hit._source.audio && 
-          <AudioButton audioFile={'https://iiif.test.ubbe.no/iiif/audio/hord/' + hit._source.audio.file } className="text-xl xl:text-3xl text-neutral-700"/> 
+          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${hit._source.audio.file}` } className="text-xl xl:text-3xl text-neutral-700"/> 
         }
         {hit._source.location && 
           <IconButton onClick={() => goToView(hit._id, 'map')} label="Vis i kart" className="p-1"><PiMapPinFill className="text-xl xl:text-3xl text-neutral-600"/></IconButton> 
@@ -64,7 +64,7 @@ export default function Results({ hits }: { hits: any }) {
         <IconButton onClick={() => goToView(hit._id, 'info')} label="Vis infoside" className="p-1"><PiInfoFill className="text-xl xl:text-3xl text-primary-600"/></IconButton>
         </div>
         <p>
-          {hit._source.rawData.merknader}
+          {hit._source.rawData?.merknader}
         </p>
         
         </li>
