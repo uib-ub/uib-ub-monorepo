@@ -40,6 +40,6 @@
 }
 
 .content-page a {
-  @apply underline;
+  @apply underline underline-offset-4 hover:decoration-2;
 }
 </style>
