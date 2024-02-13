@@ -10,6 +10,7 @@ export async function GET(request: Request) {
       case 'q':
       case 'dataset':
       case 'page':
+      case 'sort':
       case 'size':
         params[key] = urlParams.get(key);
         break;
@@ -30,7 +31,7 @@ export async function GET(request: Request) {
   }
 
   const query: Record<string,any> = {
-    "from": params.page || 0,
+    "from": params.page ? (parseInt(params.page) - 1) * parseInt(params.size || '10') : 0,
     "size": params.size  || 10,
     "aggs": {
       "viewport": {
@@ -40,7 +41,14 @@ export async function GET(request: Request) {
         },
 
       }
-    }
+    },
+    "sort": [
+      {
+        "label.keyword": {
+        "order": params.sort == 'desc' ? 'desc' : 'asc'
+        }
+      }
+    ]
   }
 
   const simple_query_string = params.q ? {

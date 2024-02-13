@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
-import { PiTrashFill } from 'react-icons/pi';
+import { PiTrashFill, PiSortAscending, PiSortDescending } from 'react-icons/pi';
+import IconButton from '@/components/ui/icon-button';
 
 interface BucketItem {
   key: string;
@@ -24,12 +25,14 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const pathname = usePathname()
   const [sortMethod, setSortMethod] = useState('key');
   const [filterSearch, setFilterSearch] = useState('');
-  const facetQuery = useQueryStringWithout(['document', 'view', 'adm1', 'adm2', 'page', 'size']);
+  const facetQuery = useQueryStringWithout(['document', 'view', 'adm', 'page', 'size', 'sort']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['document', 'view'])
   const [facetAggregation, setFacetAggregation] = useState<FacetAggregation | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
+  const clearedFilters = useQueryStringWithout(['adm', 'page'])
 
   useEffect(() => {
     setFilterStatus('loading');
@@ -40,12 +43,17 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       }, 200);
       setIsLoading(false);
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [facetQuery]
     )
 
-  const clearFilter = () => {
-    router.push(pathname + '?' + useQueryStringWithout(['adm1', 'adm2', 'page', 'size']));
+  const useClearFilter = () => {
+    router.push(pathname + '?' + clearedFilters)
   }
+
+  const handleSortOrderChange = () => {
+    setSortOrder(prevSortOrder => prevSortOrder === 'asc' ? 'desc' : 'asc');
+  };
 
 
 
@@ -87,8 +95,6 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
             newParams.push(['adm', aggregation.key + "_" + parent])
           }
         })
-              
-
       }
 
     }
@@ -130,20 +136,23 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       })
     }
     router.push(pathname + "?" + new URLSearchParams(newParams).toString())
-  
   }
-  
 
 
   const sortBuckets = (buckets: any) => {
+    const orderCompare = (a: string, b: string) => {
+    return sortOrder === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
+    }
     return [...buckets].sort((a, b) => {
       if (sortMethod === 'doc_count') {
-        return parseInt(b.doc_count) - parseInt(a.doc_count);
+        const difference = parseInt(b.doc_count) - parseInt(a.doc_count)
+        return sortOrder === 'asc' ? difference : -difference
       } else {
         if (a.label && b.label) {
-          return a.label.buckets[0].key.localeCompare(b.label.buckets[0].key, 'nb');
-        }  
-        return a.key.localeCompare(b.key, 'nb');
+          return orderCompare(a.label.buckets[0].key, b.label.buckets[0].key);
+
+        }
+        return orderCompare(a.key, b.key);
       }
     });
   };
@@ -153,18 +162,18 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 px-4 py-2">
     <div className='flex gap-2'>
       <input onChange={(e) => setFilterSearch(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
         <option value="key">alfabetisk</option>
         <option value="doc_count">antall treff</option>
-        
     </select>
-    {false ? 
-    <button type="button" aria-label="Fjern alle filtre" onClick={clearFilter} className="icon-button ml-auto">
+    <IconButton className="text-xl" label={sortOrder == 'asc' ? 'Sorter stigende': 'Sorter synkende'} onClick={handleSortOrderChange}>{sortOrder == 'asc' ? <PiSortDescending/>: <PiSortAscending/> }</IconButton>
+    {paramLookup.get('adm') ?
+    <IconButton type="button" label="Fjern områdefiltre" onClick={useClearFilter} className="icon-button ml-auto">
       <PiTrashFill className="text-xl" aria-hidden="true"/>
-    </button> 
+    </IconButton>
     : null
     }
     </div>
