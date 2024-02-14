@@ -26,7 +26,7 @@ export default function MapExplorer(props) {
   }
 
   const onMapLoaded = (mapInstance) => {
-    setBounds(mapInstance.target.getBounds());
+    setBounds(mapInstance.target?.getBounds());
   };
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function MapExplorer(props) {
       
       // Update the bounds state when the map's view changes
       mapRef.current.on('moveend', () => {
-        const newBounds = mapRef.current.getBounds();
+        const newBounds = mapRef.current?.getBounds();
         setBounds(newBounds);
       });
     }
