@@ -9,18 +9,46 @@ function renderData(data: any, prefix = ''): any {
     const value = data[key];
     const newKey = prefix ? `${prefix}.${key}` : key;
 
-    if (typeof value === 'object' && value !== null) {
-      return renderData(value, newKey);
-    } else {
+    if (Array.isArray(value)) {
       return (
-        <li key={newKey}>
-          <strong>{newKey}:</strong> {value}
+        <>
+        
+            {value.map((item, index) => (
+              <li key={newKey + index} className='text-nowrap'>
+          <strong>{key}:</strong>
+                {typeof item === 'object' ? 
+                  <ul className="ml-4">
+                  {renderData(item, newKey)}
+                  </ul>
+                   : 
+                  <span className='text-nowrap'> {item}</span>}
+
+            </li>
+            ))}
+            </>
+
+
+      );
+    }
+    else if (typeof value === 'object' && value !== null) {
+      return (
+      <li key={newKey} className="list">
+        <strong>{key}:</strong>
+        <ul className="pl-5 className='text-nowrap">
+          {renderData(value, newKey)}
+        </ul>
+        </li> 
+        )
+        
+      } else {
+      return (
+        <li key={newKey} className='text-nowrap'>
+          <strong>{key}:</strong> {value}
         </li>
       );
     }
   });
 }
-
 export default function ContentViewer({ mapBounds }: { mapBounds: [number, number][] }) {
 
     const searchParams = useSearchParams()
