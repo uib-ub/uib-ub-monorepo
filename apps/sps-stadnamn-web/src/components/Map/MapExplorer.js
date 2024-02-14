@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Map from './Map'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
@@ -11,7 +11,16 @@ const DEFAULT_ZOOM = 5;
 export default function MapExplorer(props) {
 
   const [markers, setMarkers] = useState([]);
-  const mapRef = useRef(null);
+  const [mapInstance, setMapInstance] = useState(null);
+  const mapRef = useCallback(node => {
+    if (node !== null) {
+      node.on('moveend', () => {
+        setBounds(node.getBounds());
+      });
+      setMapInstance(node);
+      setBounds(node.getBounds());
+    }
+  }, []);
   const [bounds, setBounds] = useState(null);
   const searchParams = useSearchParams()
   const params = useParams()
@@ -25,30 +34,11 @@ export default function MapExplorer(props) {
     return pathname + "?" + params.toString()
   }
 
-  const onMapLoaded = (mapInstance) => {
-    setBounds(mapInstance.target?.getBounds());
-  };
-
   useEffect(() => {
-    if (mapRef.current) {
-        if (props.mapBounds.length) {
-            mapRef.current.fitBounds(props.mapBounds, {maxZoom: 8})
-        }
-      //mapRef.current.setView(props.center || DEFAULT_CENTER, props.bounds.length ? mapRef.current.getBoundsZoom(props.bounds) : DEFAULT_ZOOM);
+    if (mapInstance && props.mapBounds.length) {
+      mapInstance.fitBounds(props.mapBounds, {maxZoom: 8})
     }
-  }, [mapRef.current, props.center, props.mapBounds]);
-
-  useEffect(() => {
-    // Check if the map is initialized
-    if (mapRef.current) {
-      
-      // Update the bounds state when the map's view changes
-      mapRef.current.on('moveend', () => {
-        const newBounds = mapRef.current?.getBounds();
-        setBounds(newBounds);
-      });
-    }
-  }, [mapRef.current]);
+  }, [props.mapBounds, props.center, mapInstance]);
 
 
   useEffect(() => {
@@ -87,7 +77,7 @@ export default function MapExplorer(props) {
 
 
   return (
-    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER} className='w-full aspect-square lg:aspect-auto lg:h-full'>
+    <Map mapRef={mapRef} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER} className='w-full aspect-square lg:aspect-auto lg:h-full'>
             {({ TileLayer, CircleMarker, Marker }, leaflet) => (
                 <>
           
