@@ -78,10 +78,11 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
         <h2 className='mb-3 font-semibold text-lg'>
           {doc.label}</h2>
           {doc.audio ? <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${doc.audio.file}`}></audio> : null}
-        {doc.rawData ? <ul className="grid grid-cols-3 gap-x-4 list-none p-0">
+        {doc.rawData ? <><h3>Opprinnelige data</h3><ul className="flex flex-col gap-x-4 list-none p-0">
           {renderData(doc.rawData)}
           
         </ul>
+        </>
         : null}
         
         </div>

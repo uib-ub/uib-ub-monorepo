@@ -100,7 +100,7 @@ export async function GET(request: Request) {
 
 
 
-  console.log("SEARCH QUERY", JSON.stringify(query))
+  //console.log("SEARCH QUERY", JSON.stringify(query))
 
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {

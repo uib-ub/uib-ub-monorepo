@@ -6,12 +6,10 @@ import IconButton from '@/components/ui/icon-button';
 
 export default function Home() {
   const cards = [
-    { img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Prof_oluf_rygh.jpg", title: "Oluf Rygh: Norske Gaardnavne", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-    { img: "https://via.placeholder.com/150", title: "Matrikkelen 1886", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
+    { img: "https://via.placeholder.com/150", title: "Bustadnavn", code: 'bsn', description: "Description" },
+    { img: "https://via.placeholder.com/150", title: "Hordanamn", code: 'hord', description: "Description" },
+    { img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Prof_oluf_rygh.jpg", alt: "Oluf Rygh, portrettfoto", title: "Oluf Rygh: Norske Gaardnavne", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+    { img: "https://via.placeholder.com/150", title: "Den nasjonale stadnamnbasen", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
   ];
 
   return (
@@ -46,17 +44,21 @@ export default function Home() {
 
 
   </div>
-  <section className="flex flex-col items-center gap-6">
-    <h2 className="font-serif text-3xl">Datasett</h2>
-    Filtre her
-    <ul className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
+  <section className="flex flex-col items-center gap-6" aria-labelledby="dataset_showcase">
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalgte datasett</h2>
+    <ul className="grid grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
-        <li key={index} className="card flex">
-          <img src={card.img} alt="Oluf Rygh, portrettfoto" className="w-24 h-24 md:w-48 md:h-48 object-cover m-2"/>
-          <div className="content p-4 w-128">
+        <li key={index} className="card flex md:h-64">
+          <Link href={'search/' + card.code} className="flex h-full w-full no-underline">
+          <div className="h-32 w-32 md:h-64 md:w-64  lg:p-1 overflow-hidden flex-none">
+          <img src={card.img} alt={card.alt} className="object-cover w-full h-full"/>
+        </div>
+          <div className="content p-4 w-128 flex flex-col">
             <h3 className="text-lg font-semibold">{card.title}</h3>
             <p>{card.description}</p>
+            
           </div>
+          </Link>
         </li>
       ))}
     </ul>
@@ -64,7 +66,7 @@ export default function Home() {
   
 
 </main>
-        <footer className="bg-neutral-200  p-6 text-center">
+        <footer className="bg-neutral-200 p-6 text-center">
         
         <nav className="flex flex-col lg:flex-row gap-3">
           <Link href="/">Personvern</Link>
