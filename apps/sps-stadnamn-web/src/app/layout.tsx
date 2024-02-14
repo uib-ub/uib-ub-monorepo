@@ -4,8 +4,6 @@ import Link from "next/link";
 import Menu from "./Menu";
 import NavBar from "./NavBar";
 import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
-import SearchBar from "./SearchBar"
-import { Suspense } from "react";
  
 const garamond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -41,9 +39,6 @@ export default function RootLayout({
           <Menu/>
           
           </div>
-          <Suspense>
-            <SearchBar/> 
-          </Suspense>
           <NavBar className={`hidden text-lg xl:text-2xl mx-4 align-text-middle lg:flex gap-4 small-caps font-semibold ml-auto`}/>
         </header>
         {children}

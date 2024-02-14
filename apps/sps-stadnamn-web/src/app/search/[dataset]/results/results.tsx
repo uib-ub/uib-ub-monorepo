@@ -34,7 +34,7 @@ export default function Results({ hits }: { hits: any }) {
   return (
     <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
     <span className="flex px-4">
-      <h2 id="result_heading" aria-live="polite" className='text-xl font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
+      <h2 id="result_heading" aria-live="polite" className='text-2xl small-caps font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
       <span className="ml-auto">
       <label>Sorter etter: </label>
       <select name="orderBy">

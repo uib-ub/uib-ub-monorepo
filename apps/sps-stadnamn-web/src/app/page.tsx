@@ -12,7 +12,6 @@ export default function Home() {
     { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
     { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
     { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
   ];
 
   return (

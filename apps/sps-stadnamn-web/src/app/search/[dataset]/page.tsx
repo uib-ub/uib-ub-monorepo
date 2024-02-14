@@ -7,6 +7,10 @@ import Results from './results/results'
 import Filters from './filters/filters'
 import { useQueryStringWithout } from '@/lib/search-params'
 import { ResultData } from './types'
+import SearchBar from './SearchBar'
+import { PiCaretRightFill, PiInfoFill } from 'react-icons/pi'
+import IconButton from '@/components/ui/icon-button'
+import Link from 'next/link'
 
 export default function SearchInterface() {  
   const router = useRouter()
@@ -39,7 +43,11 @@ export default function SearchInterface() {
 
   return (
     <main className="search-view lg:grid lg:grid-cols-3 mb-3 lg:mx-2 gap-2">
-      <section className="flex flex-col lg:col-span-1 card gap-3 bg-white shadow-md py-2 lg:overflow-y-auto h-full" aria-label="Filtre">
+      <section className="flex flex-col lg:col-span-1 card gap-3 bg-white shadow-md py-2 lg:overflow-y-auto h-full" ria-labelledby='dataset_heading'>
+        <div className='px-4'><h1 id="dataset_heading" className='text-xl font-semibold'>Hordanamn <IconButton label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h1>
+        <Link href="/#Datasett">Flere datasett<PiCaretRightFill/></Link>
+        </div>
+        <SearchBar/>
         <div className='flex flex-col h-full gap-6'>
           { !resultData || isLoading ?          
             <div className="flex h-full items-center justify-center">
