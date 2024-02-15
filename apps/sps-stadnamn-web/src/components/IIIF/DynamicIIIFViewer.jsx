@@ -78,10 +78,10 @@ const DynamicIIIFViewer = ({ manifestId }) => {
       }
     <div className='absolute bottom-0 flex z-[1000]'>
       <div className='flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 my-2 mx-4 text-neutral-700'>
-      <IconButton id="zoom-in-button-id" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
-        <IconButton id="zoom-out-button-id"label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
-        <IconButton id="home-button-id" label="Nullstill zoom"><PiHouseFill/></IconButton>
-        <IconButton id="full-screen-button-id" label="Fullskjerm"><PiCornersOut/></IconButton>
+      <IconButton id="zoom-in-button-id" title="" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
+        <IconButton id="zoom-out-button-id" title="" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
+        <IconButton id="home-button-id" title="" label="Nullstill zoom"><PiHouseFill/></IconButton>
+        <IconButton id="full-screen-button-id" title="" label="Fullskjerm"><PiCornersOut/></IconButton>
 
       </div>
 
