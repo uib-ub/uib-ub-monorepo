@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiInfoFill, PiInfo, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut} from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 //import Viewer from "@samvera/clover-iiif/viewer";
@@ -87,11 +87,11 @@ const DynamicIIIFViewer = ({ manifestId }) => {
 
       <div className='flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 m-2 text-neutral-700'>
       <IconButton 
-          label="info" 
+          label={isCollapsed ? "Skjul info" : "Vis info"}
           aria-controls="iiif_info" 
           aria-expanded={isCollapsed} 
           onClick={() => toggleCollapse(!isCollapsed)}>
-            <span className='relative'>{isCollapsed ? <><PiX className='absolute'/> <PiInfo/></>: <PiInfoFill/>}</span>
+            <span className='relative'>{isCollapsed ? <><PiXCircleFill className='text-neutral-700'/></>: <PiInfoFill/>}</span>
         </IconButton>
       </div>
 
