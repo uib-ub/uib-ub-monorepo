@@ -17,6 +17,7 @@ const DynamicIIIFViewer = ({ manifestId }) => {
 
   useEffect(() => {
     const fetchManifestAndInitializeViewer = async () => {
+      setIsLoading(true);
       const response = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
       const manifest = await response.json();
       setManifest(manifest);
@@ -58,6 +59,10 @@ const DynamicIIIFViewer = ({ manifestId }) => {
   return (
     <div className='h-full w-full flex flex-col'>
     <div className='h-full w-full relative'>
+    {isLoading || !viewerRef.current? 
+    <div className='absolute top-0 left-0 w-full h-full bg-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner className='w-20 h-20'/></div>
+      : null
+      }
     <div className='absolute bottom-0 flex z-[1000]'>
       <div className='flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 my-2 mx-4 text-neutral-700'>
       <IconButton id="zoom-in-button-id" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
