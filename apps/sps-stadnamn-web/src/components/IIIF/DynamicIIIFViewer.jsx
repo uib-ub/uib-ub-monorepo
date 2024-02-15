@@ -1,8 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill } from 'react-icons/pi';
-import { PiMagnifyingGlassMinusFill } from 'react-icons/pi';
-import { PiHouseFill } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiInfoFill, PiInfo, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut} from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 //import Viewer from "@samvera/clover-iiif/viewer";
 
@@ -10,6 +8,12 @@ const DynamicIIIFViewer = ({ manifestId }) => {
   const viewerRef = useRef();
   const viewer = useRef();
   const [manifest, setManifest] = useState(null);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+
+  const toggleCollapse = (value) => {
+    setIsCollapsed(value);
+    viewer.current.viewport.goHome()
+  }
 
   useEffect(() => {
     const fetchManifestAndInitializeViewer = async () => {
@@ -39,6 +43,7 @@ const DynamicIIIFViewer = ({ manifestId }) => {
           zoomInButton: "zoom-in-button-id",
           zoomOutButton: "zoom-out-button-id",
           homeButton: "home-button-id",
+          fullPageButton: "full-screen-button-id",
           tileSources
         });
       } else {
@@ -51,14 +56,45 @@ const DynamicIIIFViewer = ({ manifestId }) => {
   }, [manifestId]);
 
   return (
-
+    <div className='h-full w-full flex flex-col'>
     <div className='h-full w-full relative'>
-    <div className='absolute bottom-0 left-[50%] flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 m-2 text-neutral-700 z-[1000]'>
-        <IconButton id="zoom-in-button-id" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
+    <div className='absolute bottom-0 flex z-[1000]'>
+      <div className='flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 my-2 mx-4 text-neutral-700'>
+      <IconButton id="zoom-in-button-id" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
         <IconButton id="zoom-out-button-id"label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
         <IconButton id="home-button-id" label="Nullstill zoom"><PiHouseFill/></IconButton>
+        <IconButton id="full-screen-button-id" label="Fullskjerm"><PiCornersOut/></IconButton>
+
+      </div>
+
+      <div className='flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 m-2 text-neutral-700'>
+      <IconButton 
+          label="info" 
+          aria-controls="iiif_info" 
+          aria-expanded={isCollapsed} 
+          onClick={() => toggleCollapse(!isCollapsed)}>
+            <span className='relative'>{isCollapsed ? <><PiX className='absolute'/> <PiInfo/></>: <PiInfoFill/>}</span>
+        </IconButton>
+      </div>
+
     </div>
       <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}></div>
+    </div>
+    { manifest && isCollapsed ?
+
+        <aside id="iiif_info" className='space-y-2 text-sm text-gray-800 p-4'>
+          <div className="flex justify-between pb-2"><h2 className='text-xl font-bold'> Seddel: {manifest.label?.none[0]}</h2>
+          <IconButton label="Lukk" className='right-0 top-0 text-2xl' onClick={() => toggleCollapse(false)}><PiX/></IconButton>
+          </div>
+        {manifest.metadata.map((item, index) => (
+          <p key={index} className='flex justify-between'>
+            <span className='font-semibold'>{item.label?.no?.[0] || item.label?.nb?.[0]}:</span>
+            <span>{item.value?.none?.[0]}</span>
+          </p>
+        ))}
+      </aside>
+    : null
+    }
     </div>
     
   );

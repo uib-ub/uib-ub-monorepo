@@ -35,11 +35,9 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
           {
           manifest ?
           <IIIFViewer manifestId={manifest} />
-        
           :  
-          <div className="h-full p-1 card">
           <MapExplorer mapBounds={mapBounds} doc={doc}/>
-          </div>
+
        
         }
         </div>

@@ -40,7 +40,7 @@ export default function Facets() {
     <span className="flex px-4"><h2 className='text-2xl small-caps font-semibold'>Filtre</h2>
     {activeFilters.length ? 
     <IconButton type="button" label="Fjern alle filtre" onClick={clearFilters} className="icon-button ml-auto">
-      <PiTrashFill className="text-xl" aria-hidden="true"/>
+      <PiTrashFill className="text-xl text-neutral-800" aria-hidden="true"/>
     </IconButton> 
     : null
     }
@@ -50,7 +50,7 @@ export default function Facets() {
       ))}
     <ul className='flex flex-wrap gap-2 px-4'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, 10)).map(([name, value], index) => (
-        <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border p-1 px-2 rounded-sm'>
+        <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border p-1 pr-2 pl-3 rounded-full'>
           <span>{name}: { value.split('_')[0] }</span>
           <IconButton type="button" onClick={() => removeFilter(name, value)} label="Fjern filter"><PiX className="text-lg"/></IconButton>
         </li>

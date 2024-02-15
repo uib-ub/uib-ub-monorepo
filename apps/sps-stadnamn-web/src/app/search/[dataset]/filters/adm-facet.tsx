@@ -173,7 +173,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     <IconButton className="text-xl" label={sortOrder == 'asc' ? 'Sorter stigende': 'Sorter synkende'} onClick={handleSortOrderChange}>{sortOrder == 'asc' ? <PiSortDescending/>: <PiSortAscending/> }</IconButton>
     {paramLookup.get('adm') ?
     <IconButton type="button" label="Fjern områdefiltre" onClick={useClearFilter} className="icon-button ml-auto">
-      <PiTrashFill className="text-xl" aria-hidden="true"/>
+      <PiTrashFill className="text-xl text-neutral-800" aria-hidden="true"/>
     </IconButton>
     : null
     }
