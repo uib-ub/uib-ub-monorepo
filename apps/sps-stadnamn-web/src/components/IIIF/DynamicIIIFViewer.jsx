@@ -2,6 +2,7 @@ import React, { Suspense, useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
 import { PiMagnifyingGlassPlusFill, PiInfoFill, PiInfo, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut} from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
+import Spinner from '@/components/svg/Spinner';
 //import Viewer from "@samvera/clover-iiif/viewer";
 
 const DynamicIIIFViewer = ({ manifestId }) => {
@@ -9,6 +10,7 @@ const DynamicIIIFViewer = ({ manifestId }) => {
   const viewer = useRef();
   const [manifest, setManifest] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleCollapse = (value) => {
     setIsCollapsed(value);
@@ -47,6 +49,17 @@ const DynamicIIIFViewer = ({ manifestId }) => {
           fullPageButton: "full-screen-button-id",
           tileSources
         });
+
+        viewer.current.addHandler('open', function() {
+          viewer.current.addHandler('tile-drawing', function() {
+            let tilesLoaded = 0;
+            tilesLoaded++;
+            if (tilesLoaded === 1) {
+              setIsLoading(false);
+            }
+          });
+      });
+
       } else {
         viewer.current.open(tileSources);
         viewer.current.viewport.goHome();
