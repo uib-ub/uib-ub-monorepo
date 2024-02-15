@@ -25,6 +25,9 @@
     font-variant: all-small-caps;
   }
 
+  .stable-scrollbar {
+    scrollbar-gutter: stable;
+  }
 
   * {
     scrollbar-color:  #8e8580 transparent;

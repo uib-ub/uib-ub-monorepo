@@ -37,7 +37,7 @@ export default function Facets() {
 
   return (
     <section className='flex flex-col w-full gap-3'>
-    <span className="flex px-4"><h2 className='text-2xl small-caps font-semibold'>Filtre</h2>
+    <span className="flex px-2"><h2 className='text-2xl small-caps font-semibold'>Filtre</h2>
     {activeFilters.length ? 
     <IconButton type="button" label="Fjern alle filtre" onClick={clearFilters} className="icon-button ml-auto">
       <PiTrashFill className="text-xl text-neutral-800" aria-hidden="true"/>
@@ -48,7 +48,7 @@ export default function Facets() {
     {activeFilters.map(([name, value], index) => (
       <input type="hidden" name={name} value={value} key={index}/>
       ))}
-    <ul className='flex flex-wrap gap-2 px-4'>
+    <ul className='flex flex-wrap gap-2 px-2'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, 10)).map(([name, value], index) => (
         <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border p-1 pr-2 pl-3 rounded-full'>
           <span>{name}: { value.split('_')[0] }</span>
@@ -65,7 +65,7 @@ export default function Facets() {
       
     </ul>
 
-    <h3 className='text-lg px-4 py-2 border-y border-y-neutral-300'>
+    <h3 className='text-lg p-2 border-y border-y-neutral-300'>
       <button type="button" onClick={() => toggleExpanded('adm')}  className='flex w-full items-center justify-between'>Område 
       {filterStatus.adm === 'loading' ? <Spinner className='w-5 h-5'/> : (filterStatus.adm === 'expanded' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>)}
       </button>

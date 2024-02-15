@@ -42,7 +42,7 @@ export default function Results({ hits }: { hits: any }) {
 
   return (
     <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
-    <span className="flex px-4">
+    <span className="flex px-2">
       <h2 id="result_heading" aria-live="polite" className='text-2xl small-caps font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
       <span className="ml-auto">
       <label>Sorter etter: </label>
@@ -61,7 +61,7 @@ export default function Results({ hits }: { hits: any }) {
 
     <ul className='flex flex-col gap-1 mb-2'>
       {hits.hits.map((hit: any) => (
-        <li key={hit._id} className="my-0 rounded-sm py-2 px-4 flex-grow border-t last:border-b border-neutral-400"><span className="no-underline font-semibold">{hit._source.label}</span> | {hit._source.adm2}
+        <li key={hit._id} className="my-0 rounded-sm py-2 px-2 flex-grow border-t last:border-b border-neutral-400"><span className="no-underline font-semibold">{hit._source.label}</span> | {hit._source.adm2}
         <div className='flex gap-1 float-right ml-2'>
 
         {hit._source.image && 

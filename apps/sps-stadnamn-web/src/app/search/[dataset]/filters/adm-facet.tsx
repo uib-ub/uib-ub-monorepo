@@ -163,7 +163,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-2 px-4 py-2">
+    <div className="flex flex-col gap-2 p-2">
     <div className='flex gap-2'>
       <input onChange={(e) => setFilterSearch(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>

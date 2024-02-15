@@ -31,7 +31,7 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
        doc && view == "info"?
         <DocumentView doc={doc} />
         :
-        <div className="h-full p-1 card">
+        <div className="h-full p-1">
           {
           manifest ?
           <IIIFViewer manifestId={manifest} />
