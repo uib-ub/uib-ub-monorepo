@@ -15,7 +15,7 @@ import Link from 'next/link'
 export default function SearchInterface() {  
   const router = useRouter()
   const params = useParams()
-  const searchQueryString = useQueryStringWithout(["document", "view"])
+  const searchQueryString = useQueryStringWithout(["document", "view", "manifest"])
 
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [isLoading, setIsLoading] = useState(true)

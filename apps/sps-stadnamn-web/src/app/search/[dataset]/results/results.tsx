@@ -1,6 +1,6 @@
 import Pagination from './pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending} from 'react-icons/pi';
+import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill} from 'react-icons/pi';
 import AudioButton from './audioButton';
 import IconButton from '@/components/ui/icon-button';
 
@@ -27,8 +27,17 @@ export default function Results({ hits }: { hits: any }) {
       const params = new URLSearchParams(searchParams)
       params.set('document', String(uuid))
       params.set('view', String(view))
+      params.delete('manifest')
       router.push(pathname + "?" + params.toString())
   }
+
+  const goToIIIF = (manifest: string, view: string) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('manifest', String(manifest))
+    params.delete('document')
+    params.delete('view')
+    router.push(pathname + "?" + params.toString())
+}
 
 
   return (
@@ -54,6 +63,10 @@ export default function Results({ hits }: { hits: any }) {
       {hits.hits.map((hit: any) => (
         <li key={hit._id} className="my-0 rounded-sm py-2 px-4 flex-grow border-t last:border-b border-neutral-400"><span className="no-underline font-semibold">{hit._source.label}</span> | {hit._source.adm2}
         <div className='flex gap-1 float-right ml-2'>
+
+        {hit._source.image && 
+          <IconButton onClick={() => goToIIIF(hit._source.image.manifest, 'map')} label="Vis seddel" className="p-1"><PiArticleFill className="text-xl xl:text-3xl text-neutral-600"/></IconButton> 
+        }
         
         {hit._source.audio && 
           <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${hit._source.audio.file}` } className="text-xl xl:text-3xl text-neutral-700"/> 

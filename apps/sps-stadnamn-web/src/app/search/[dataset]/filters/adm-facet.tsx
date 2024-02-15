@@ -26,9 +26,9 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const params = useParams()
   const [sortMethod, setSortMethod] = useState('key');
   const [filterSearch, setFilterSearch] = useState('');
-  const facetQuery = useQueryStringWithout(['document', 'view', 'adm', 'page', 'size', 'sort']);
+  const facetQuery = useQueryStringWithout(['document', 'view', 'manifest', 'adm', 'page', 'size', 'sort']);
   const paramLookup = useSearchParams()
-  const searchParams = useQueryWithout(['document', 'view', 'page'])
+  const searchParams = useQueryWithout(['document', 'view', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<FacetAggregation | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');

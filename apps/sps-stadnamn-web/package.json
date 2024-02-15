@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@samvera/clover-iiif": "^2.3.2",
     "@searchkit/api": "^4.11.0",
     "@searchkit/instantsearch-client": "^4.12.0",
     "leaflet": "^1.9.4",
     "next": "14.1.0",
+    "openseadragon": "^4.1.0",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.0.1",
