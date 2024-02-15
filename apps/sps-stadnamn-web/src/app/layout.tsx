@@ -32,14 +32,14 @@ export default function RootLayout({
   return (
     <html lang="no" className={`${garamond.variable} ${opensans.className}`}>
       <body className="flex flex-col">
-        <header className="flex flex-col lg:flex-row lg:gap-6 pb-2 px-1 lg:p-3 lg:px-4 text-neutral-900 align-middle">
+        <header className="flex flex-col lg:flex-row lg:gap-6 py-2 px-1 lg:p-3 lg:px-4 text-neutral-900 align-middle">
           <div className="flex flex-wrap pl-3 justify-between align-middle h-full">
           
           <Link href="/" className="sm:text-xl lg:text-2xl font-serif small-caps h-full pt-1 lg:pt-0">Norske stadnamn</Link>
           <Menu/>
           
           </div>
-          <NavBar className={`hidden text-lg xl:text-2xl mx-4 align-text-middle lg:flex gap-4 small-caps font-semibold ml-auto`}/>
+          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex gap-4 small-caps font-semibold ml-auto`}/>
         </header>
         {children}
       </body>
