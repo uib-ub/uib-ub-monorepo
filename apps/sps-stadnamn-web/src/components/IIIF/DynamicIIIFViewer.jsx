@@ -51,14 +51,13 @@ const DynamicIIIFViewer = ({ manifestId }) => {
   }, [manifestId]);
 
   return (
-    
+
     <div className='h-full w-full relative'>
-    <div className='absolute bottom-0 left-[50%] flex gap-4 text-2xl bg-white border rounded-sm border-neutral-400 p-2 px-4 m-1 text-primary-600 z-[1000]'>
+    <div className='absolute bottom-0 left-[50%] flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 m-2 text-neutral-700 z-[1000]'>
         <IconButton id="zoom-in-button-id" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
         <IconButton id="zoom-out-button-id"label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
         <IconButton id="home-button-id" label="Nullstill zoom"><PiHouseFill/></IconButton>
     </div>
-
       <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}></div>
     </div>
     
