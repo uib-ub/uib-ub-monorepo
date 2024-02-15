@@ -44,7 +44,7 @@ export default function Home() {
 
 
   </div>
-  <section className="flex flex-col items-center gap-6" aria-labelledby="dataset_showcase">
+  <section className="flex flex-col items-center gap-8" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalgte datasett</h2>
     <ul className="grid grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
