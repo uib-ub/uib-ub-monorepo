@@ -12,7 +12,6 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
     const params = useParams()
     const doc_uuid = searchParams.get('document')
     const view = searchParams.get('view')
-    const manifest = searchParams.get('manifest')
     const [doc, setDoc] = useState<any>(null)
 
     useEffect(() => {
@@ -33,8 +32,8 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
         :
         <div className="h-full p-1">
           {
-          manifest ?
-          <ImageViewer manifestId={manifest} />
+          view == 'image' ?
+          <ImageViewer  />
           :  
           <MapExplorer mapBounds={mapBounds} doc={doc}/>
 

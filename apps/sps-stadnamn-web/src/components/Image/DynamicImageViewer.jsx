@@ -3,9 +3,10 @@ import OpenSeadragon from 'openseadragon';
 import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
+import { useSearchParams } from 'next/navigation';
 //import Viewer from "@samvera/clover-iiif/viewer";
 
-const DynamicImageViewer = ({ manifestId }) => {
+const DynamicImageViewer = () => {
   const viewerRef = useRef();
   const viewer = useRef();
   const [manifest, setManifest] = useState(null);
@@ -13,6 +14,7 @@ const DynamicImageViewer = ({ manifestId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const manifestId = useSearchParams().get('manifest');
   
 
   const toggleCollapse = (value) => {
@@ -24,10 +26,10 @@ const DynamicImageViewer = ({ manifestId }) => {
     const fetchManifestAndInitializeViewer = async () => {
       setIsLoading(true);
       const response = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
-      const manifest = await response.json();
-      setManifest(manifest);
+      const manifestBody = await response.json();
+      setManifest(manifestBody);
 
-      const tileSources = manifest.items.map(item => {
+      const tileSources = manifestBody.items.map(item => {
         const imageService = item.items[0].items[0].body;
         return {
           "@context": "http://iiif.io/api/image/2/context.json",
@@ -72,9 +74,8 @@ const DynamicImageViewer = ({ manifestId }) => {
       });
 
       } else {
-        viewer.current.open(tileSources);
+        viewer.current.open(tileSources, 1);
         viewer.current.viewport.goHome();
-        viewer.current.goToPage(0);
       }
     };
 

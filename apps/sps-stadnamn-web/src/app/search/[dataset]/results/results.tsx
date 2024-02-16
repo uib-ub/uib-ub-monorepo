@@ -3,6 +3,7 @@ import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigat
 import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill} from 'react-icons/pi';
 import AudioButton from './audioButton';
 import IconButton from '@/components/ui/icon-button';
+import Link from 'next/link';
 
 
 export default function Results({ hits }: { hits: any }) {
@@ -23,21 +24,15 @@ export default function Results({ hits }: { hits: any }) {
       router.push(pathname + "?" + params.toString())
     }
 
-    const goToView = (uuid: string, view: string) => {
+    const goToView = (uuid: string, view: string, manifest?: string) => {
       const params = new URLSearchParams(searchParams)
       params.set('document', String(uuid))
       params.set('view', String(view))
-      params.delete('manifest')
+      if (manifest) {
+        params.set('manifest', String(manifest))
+      }
       router.push(pathname + "?" + params.toString())
   }
-
-  const goToIIIF = (manifest: string, view: string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('manifest', String(manifest))
-    params.delete('document')
-    params.delete('view')
-    router.push(pathname + "?" + params.toString())
-}
 
 
   return (
@@ -61,14 +56,19 @@ export default function Results({ hits }: { hits: any }) {
 
     <ul className='flex flex-col gap-1 mb-2'>
       {hits.hits.map((hit: any) => (
-        <li key={hit._id} className="my-0 rounded-sm py-2 px-2 flex-grow border-t last:border-b border-neutral-400"><span className="no-underline font-semibold">{hit._source.label}</span> | {hit._source.adm2}
-        <div className='flex gap-1 float-right ml-2'>
+        <li key={hit._id} className="my-0 rounded-sm py-2 px-2 flex flex-grow border-t last:border-b border-neutral-400">
+        <div className=''><Link href="/" className="no-underline font-semibold">{hit._source.label}</Link> | {hit._source.adm2} 
+        <p>
+          {hit._source.rawData?.merknader || hit._source.rawData?.komm }
+        </p>
+        </div>
+        <div className='flex gap-1 ml-auto items-end'>
 
         {hit._source.image && 
           <IconButton 
-            onClick={() => goToIIIF(hit._source.image.manifest, 'map')} 
+            onClick={() => goToView(hit._id, 'image', hit._source.image.manifest)} 
             label="Vis seddel" 
-            aria-current={searchParams.get('manifest') == hit._source.image.manifest ? 'page': undefined}
+            aria-current={searchParams.get('document') == hit._id && searchParams.get('view') == 'image' ? 'page': undefined}
             className="p-1 text-neutral-700">
               <PiArticleFill className="text-xl xl:text-3xl"/></IconButton> 
         }
@@ -81,20 +81,17 @@ export default function Results({ hits }: { hits: any }) {
           <IconButton 
             onClick={() => goToView(hit._id, 'map')} 
             label="Vis i kart" 
-            aria-current={searchParams.get('view') == 'map' && searchParams.get('document') == hit._id ? 'page': undefined} 
+            aria-current={searchParams.get('document') == hit._id && searchParams.get('view') == 'map' ? 'page': undefined} 
             className="p-1 text-neutral-700">
               <PiMapPinFill className="text-xl xl:text-3xl"/></IconButton> 
         }
         <IconButton 
           onClick={() => goToView(hit._id, 'info')} 
           label="Vis infoside" 
-          aria-current={searchParams.get('view') == 'info' && searchParams.get('document') == hit._id ? 'page': undefined} 
+          aria-current={searchParams.get('document') == hit._id && searchParams.get('view') == 'info' ? 'page': undefined} 
           className="p-1 text-primary-600">
             <PiInfoFill className="text-xl xl:text-3xl"/></IconButton>
         </div>
-        <p>
-          {hit._source.rawData?.merknader}
-        </p>
         </li>
       ))}
     </ul>
