@@ -5,6 +5,7 @@
       <section>
         <h1 class="mb-2 text-2xl">Documentation</h1>
         <ContentDoc id="content" path="system-behaviour" />
+        <ContentDoc id="content" path="arbeidsflyter" />
       </section>
     </main>
     <ToC class="ml-10 mt-[5rem]" content-selector="#content" />
