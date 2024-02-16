@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 //import Viewer from "@samvera/clover-iiif/viewer";
@@ -11,6 +11,9 @@ const DynamicIIIFViewer = ({ manifestId }) => {
   const [manifest, setManifest] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [numberOfPages, setNumberOfPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  
 
   const toggleCollapse = (value) => {
     setIsCollapsed(value);
@@ -24,19 +27,23 @@ const DynamicIIIFViewer = ({ manifestId }) => {
       const manifest = await response.json();
       setManifest(manifest);
 
-      const firstImageService = manifest.items[0].items[0].items[0].body;
-      const tileSources = {
-        "@context": "http://iiif.io/api/image/2/context.json",
-        "@id": firstImageService.id,
-        "height": firstImageService.height,
-        "width": firstImageService.width,
-        "profile": [ "http://iiif.io/api/image/2/level2.json" ],
-        "protocol": "http://iiif.io/api/image",
-        "tiles": [{
-          "scaleFactors": [ 1, 2, 4, 8, 16, 32 ],
-          "width": 1024
-        }]
-      }
+      const tileSources = manifest.items.map(item => {
+        const imageService = item.items[0].items[0].body;
+        return {
+          "@context": "http://iiif.io/api/image/2/context.json",
+          "@id": imageService.id,
+          "height": imageService.height,
+          "width": imageService.width,
+          "profile": [ "http://iiif.io/api/image/2/level2.json" ],
+          "protocol": "http://iiif.io/api/image",
+          "tiles": [{
+            "scaleFactors": [ 1, 2, 4, 8, 16, 32 ],
+            "width": 1024
+          }]
+        };
+      });
+
+      setNumberOfPages(tileSources.length);
 
       if (!viewer.current) {
         viewer.current = OpenSeadragon({
@@ -51,6 +58,8 @@ const DynamicIIIFViewer = ({ manifestId }) => {
         });
 
         viewer.current.addHandler('open', function() {
+          setCurrentPage(viewer.current.currentPage());
+
           viewer.current.addHandler('tile-drawing', function() {
             let tilesLoaded = 0;
             tilesLoaded++;
@@ -73,37 +82,67 @@ const DynamicIIIFViewer = ({ manifestId }) => {
     <div className='h-full w-full flex flex-col'>
     <div className='h-full w-full relative'>
     {isLoading || !viewerRef.current? 
-    <div className='absolute top-0 left-0 w-full h-full bg-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner className='w-20 h-20'/></div>
+    <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner className='w-20 h-20'/></div>
       : null
       }
-    <div className='absolute bottom-0 flex z-[1000]'>
-      <div className='flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 my-2 mx-4 text-neutral-700'>
-      <IconButton id="zoom-in-button-id" title="" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
-        <IconButton id="zoom-out-button-id" title="" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
-        <IconButton id="home-button-id" title="" label="Nullstill zoom"><PiHouseFill/></IconButton>
-        <IconButton id="full-screen-button-id" title="" label="Fullskjerm"><PiCornersOut/></IconButton>
+    <div className='absolute bottom-0 flex z-[1000] flex gap-2 text-xl p-2 text-white w-full'>
 
-      </div>
+      <IconButton id="zoom-in-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
+        <IconButton id="zoom-out-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
+        <IconButton id="home-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Nullstill zoom"><PiHouseFill/></IconButton>
+        <IconButton id="full-screen-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Fullskjerm"><PiCornersOut/></IconButton>
 
-      <div className='flex gap-4 text-2xl bg-white border rounded-full border-neutral-400 p-2 px-4 m-2 text-neutral-700'>
-      <IconButton 
+ 
+
+    <div className="rounded-full border-white border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2 absolute left-1/2 transform -translate-x-1/2">
+        {numberOfPages > 1 && (
+          
+    <IconButton 
+      id="previous-button-id"
+      label="Forrige"
+      onClick={() => {
+        if (currentPage > 0) {
+          viewer.current.goToPage(currentPage - 1);
+        }
+      }}>
+        <span className='relative'><PiCaretLeftFill/></span>
+    </IconButton>
+  )}
+
+  <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
+
+  {numberOfPages > 1 && (
+    <IconButton 
+      id="next-button-id"
+      label="Neste"
+      onClick={() => {
+        if (currentPage < numberOfPages - 1) {
+          viewer.current.goToPage(currentPage + 1);
+        }
+      }}>
+        <span className='relative'><PiCaretRightFill/></span>
+    </IconButton>
+  )}
+  </div>
+  <IconButton 
           label={isCollapsed ? "Skjul info" : "Vis info"}
+          textClass="text-base"
+          className="pl-3 pr-2 rounded-full border-white border bg-neutral-900 shadow-sm ml-auto flex gap-2 items-center"
           aria-controls="iiif_info" 
           aria-expanded={isCollapsed} 
           onClick={() => toggleCollapse(!isCollapsed)}>
-            <span className='relative'>{isCollapsed ? <><PiXCircleFill className='text-neutral-700'/></>: <PiInfoFill/>}</span>
-        </IconButton>
-      </div>
-
+            {isCollapsed ? <PiXCircleFill/>: <PiInfoFill/>}
+  </IconButton>
+  
     </div>
       <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}></div>
     </div>
     { manifest && isCollapsed ?
 
         <aside id="iiif_info" className='space-y-2 text-sm text-gray-800 p-4'>
-          <div className="flex justify-between pb-2"><h2 className='text-xl font-bold'> Seddel: {manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h2>
-          <IconButton label="Lukk" className='right-0 top-0 text-2xl' onClick={() => toggleCollapse(false)}><PiX/></IconButton>
-          </div>
+          <h2 className='text-xl font-bold'> Seddel: {manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h2>
+
+
         {manifest.metadata.map((item, index) => (
           <p key={index} className='flex justify-between'>
             <span className='font-semibold'>{item.label?.no?.[0] || item.label?.nb?.[0]}:</span>

@@ -6,12 +6,13 @@ import {
   } from "@/components/ui/tooltip"
 
 
-export default function TooltipButton({ children, className, label, ...rest }: { children: React.ReactNode, className?: string, label: string, [x: string]: any }) {
+export default function TooltipButton({ children, className, textClass, label, ...rest }: { children: React.ReactNode, className?: string, textClass?: string, label: string, [x: string]: any }) {
     return (
 
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger className={className} aria-label={label} {...rest}>
+                    {textClass ? <span className={textClass}>{label}</span> : null}
                     <i  aria-hidden='true'>
                         {children}
                     </i>
