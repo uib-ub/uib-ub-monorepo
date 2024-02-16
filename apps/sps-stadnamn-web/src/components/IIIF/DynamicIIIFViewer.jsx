@@ -101,7 +101,7 @@ const DynamicIIIFViewer = ({ manifestId }) => {
     { manifest && isCollapsed ?
 
         <aside id="iiif_info" className='space-y-2 text-sm text-gray-800 p-4'>
-          <div className="flex justify-between pb-2"><h2 className='text-xl font-bold'> Seddel: {manifest.label?.none?.[0] || manifest.label?.nb?.[0]}</h2>
+          <div className="flex justify-between pb-2"><h2 className='text-xl font-bold'> Seddel: {manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h2>
           <IconButton label="Lukk" className='right-0 top-0 text-2xl' onClick={() => toggleCollapse(false)}><PiX/></IconButton>
           </div>
         {manifest.metadata.map((item, index) => (
