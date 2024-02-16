@@ -102,7 +102,7 @@ const DynamicImageViewer = ({ manifestId }) => {
           
     <IconButton 
       id="previous-button-id"
-      label="Forrige"
+      label="Forrige side"
       disabled={currentPage === 0}
       onClick={() => {
         if (currentPage > 0) {
@@ -119,7 +119,7 @@ const DynamicImageViewer = ({ manifestId }) => {
     <IconButton 
       id="next-button-id"
       disabled={currentPage === numberOfPages - 1}
-      label="Neste"
+      label="Neste side"
       onClick={() => {
         if (currentPage < numberOfPages - 1) {
           viewer.current.goToNextPage();
