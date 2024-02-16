@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no" className={`${garamond.variable} ${opensans.className}`}>
-      <body className="flex flex-col">
+      <body className="flex flex-col min-h-screen">
         <header className="flex flex-col lg:flex-row lg:gap-6 py-2 px-1 lg:p-3 lg:px-4 text-neutral-900 align-middle">
           <div className="flex flex-wrap pl-3 justify-between align-middle h-full">
           
