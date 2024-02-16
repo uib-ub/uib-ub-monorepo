@@ -74,6 +74,16 @@ export default function MapExplorer(props) {
     }
   }, [bounds, mapQueryString, params.dataset]);
 
+  useEffect(() => {
+    if (props.doc?.location && mapInstance) {
+      const { coordinates } = props.doc.location;
+      const latLng = L.latLng(coordinates[1], coordinates[0]);
+      if (!mapInstance.getBounds().contains(latLng)) {
+        mapInstance.setView(latLng, 8);
+      }
+    }
+  }, [props.doc?.location, mapInstance]);
+
 
 
   return (
