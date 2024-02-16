@@ -87,8 +87,9 @@
     @apply text-gray-400;
   }
 
-  
-
+  button[aria-current='page'] i {
+    @apply text-accent-800;
+  }
 
 }
 

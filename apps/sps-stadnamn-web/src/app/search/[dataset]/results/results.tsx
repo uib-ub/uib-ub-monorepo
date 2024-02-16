@@ -65,21 +65,36 @@ export default function Results({ hits }: { hits: any }) {
         <div className='flex gap-1 float-right ml-2'>
 
         {hit._source.image && 
-          <IconButton onClick={() => goToIIIF(hit._source.image.manifest, 'map')} label="Vis seddel" className="p-1"><PiArticleFill className="text-xl xl:text-3xl text-neutral-700"/></IconButton> 
+          <IconButton 
+            onClick={() => goToIIIF(hit._source.image.manifest, 'map')} 
+            label="Vis seddel" 
+            aria-current={searchParams.get('manifest') == hit._source.image.manifest ? 'page': undefined}
+            className="p-1 text-neutral-700">
+              <PiArticleFill className="text-xl xl:text-3xl"/></IconButton> 
         }
         
         {hit._source.audio && 
-          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${hit._source.audio.file}` } className="text-xl xl:text-3xl text-neutral-700"/> 
+          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${hit._source.audio.file}` } 
+                       className="text-xl xl:text-3xl text-neutral-700"/> 
         }
         {hit._source.location && 
-          <IconButton onClick={() => goToView(hit._id, 'map')} label="Vis i kart" className="p-1"><PiMapPinFill className="text-xl xl:text-3xl text-neutral-700"/></IconButton> 
+          <IconButton 
+            onClick={() => goToView(hit._id, 'map')} 
+            label="Vis i kart" 
+            aria-current={searchParams.get('view') == 'map' && searchParams.get('document') == hit._id ? 'page': undefined} 
+            className="p-1 text-neutral-700">
+              <PiMapPinFill className="text-xl xl:text-3xl"/></IconButton> 
         }
-        <IconButton onClick={() => goToView(hit._id, 'info')} label="Vis infoside" className="p-1"><PiInfoFill className="text-xl xl:text-3xl text-primary-600"/></IconButton>
+        <IconButton 
+          onClick={() => goToView(hit._id, 'info')} 
+          label="Vis infoside" 
+          aria-current={searchParams.get('view') == 'info' && searchParams.get('document') == hit._id ? 'page': undefined} 
+          className="p-1 text-primary-600">
+            <PiInfoFill className="text-xl xl:text-3xl"/></IconButton>
         </div>
         <p>
           {hit._source.rawData?.merknader}
         </p>
-        
         </li>
       ))}
     </ul>
