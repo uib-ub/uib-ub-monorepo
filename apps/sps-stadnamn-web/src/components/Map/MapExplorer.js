@@ -9,7 +9,6 @@ const DEFAULT_CENTER = [60.3913, 5.3221];
 const DEFAULT_ZOOM = 5;
 
 export default function MapExplorer(props) {
-
   const [markers, setMarkers] = useState([]);
   const [mapInstance, setMapInstance] = useState(null);
   const mapRef = useCallback(node => {
@@ -25,8 +24,27 @@ export default function MapExplorer(props) {
   const searchParams = useSearchParams()
   const params = useParams()
   const pathname = usePathname()
-  const router = useRouter();
   const mapQueryString = useQueryStringWithout(["document", "view", "manifest", "size", "page", "sort"])
+
+
+  function groupMarkers(markers) {
+    const grouped = {};
+
+    markers.forEach(marker => {
+      const lat = marker.fields.location[0].coordinates[1];
+      const lon = marker.fields.location[0].coordinates[0];
+      const key = `${lat},${lon}`;
+
+      if (!grouped[key]) {
+        grouped[key] = { lat, lon, hits: [] };
+      }
+      grouped[key].hits.push({id: marker._id, label: marker.fields.label});
+    });
+  
+    return Object.values(grouped);
+  }
+
+
 
   const documentUrl = (uuid) => {
     const params = new URLSearchParams(searchParams)
@@ -67,8 +85,10 @@ export default function MapExplorer(props) {
       })
       .then(response => response.json())
       .then(data => {
-
-        setMarkers(data.hits.hits)})
+        
+        const markers = groupMarkers(data.hits.hits);
+        setMarkers(markers)})
+        
 
       .catch(error => console.error('Error:', error));
     }
@@ -88,7 +108,7 @@ export default function MapExplorer(props) {
 
   return (
     <Map mapRef={mapRef} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER} className='w-full aspect-square lg:aspect-auto lg:h-full'>
-            {({ TileLayer, CircleMarker, Marker }, leaflet) => (
+            {({ TileLayer, CircleMarker, Marker, Popup }, leaflet) => (
                 <>
           
             <TileLayer
@@ -99,14 +119,23 @@ export default function MapExplorer(props) {
             />
             
             {markers.map((marker, index) => (
-              <CircleMarker role="button" circleClick={() => {
-                console.log("CLICKED")
-                router.push(documentUrl(props.doc._id))
+              <CircleMarker role="button" 
+                            pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
+                            key={index} 
+                            center={[marker.lat, marker.lon]} 
+                            radius={marker.hits.length == 1 ? 7 : marker.hits.length == 1 && 8 || marker.hits.length < 4 && 9 || marker.hits.length >= 4 && 11}>
 
-              } } pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
-                            key={index} center={[marker.fields.location[0].coordinates[1], marker.fields.location[0].coordinates[0]]} radius={7}>
+                  <Popup>
+                    {marker.hits.length > 1 ?
+                      <ul>
+                        {marker.hits.map((hit, index) => (
+                          <li key={index}><a href={documentUrl(hit.id)}>{hit.label}</a></li>
+                        ))}
+                      </ul>
+                      : <a href={documentUrl(marker.hits[0].id)}>{marker.hits[0].label}</a>
+                    }
 
-
+                  </Popup>
               </CircleMarker>
                 
             ))}
