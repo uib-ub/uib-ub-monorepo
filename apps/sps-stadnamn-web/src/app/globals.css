@@ -83,6 +83,10 @@
     @apply no-underline;
   }
 
+  button[disabled] i {
+    @apply text-gray-400;
+  }
+
   
 
 

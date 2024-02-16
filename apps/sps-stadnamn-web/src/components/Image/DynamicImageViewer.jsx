@@ -5,7 +5,7 @@ import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 //import Viewer from "@samvera/clover-iiif/viewer";
 
-const DynamicIIIFViewer = ({ manifestId }) => {
+const DynamicImageViewer = ({ manifestId }) => {
   const viewerRef = useRef();
   const viewer = useRef();
   const [manifest, setManifest] = useState(null);
@@ -54,6 +54,7 @@ const DynamicIIIFViewer = ({ manifestId }) => {
           zoomOutButton: "zoom-out-button-id",
           homeButton: "home-button-id",
           fullPageButton: "full-screen-button-id",
+          fullscreenOverlay: true,
           tileSources
         });
 
@@ -72,6 +73,7 @@ const DynamicIIIFViewer = ({ manifestId }) => {
       } else {
         viewer.current.open(tileSources);
         viewer.current.viewport.goHome();
+        viewer.current.goToPage(0);
       }
     };
 
@@ -100,12 +102,13 @@ const DynamicIIIFViewer = ({ manifestId }) => {
     <IconButton 
       id="previous-button-id"
       label="Forrige"
+      disabled={currentPage === 0}
       onClick={() => {
         if (currentPage > 0) {
           viewer.current.goToPage(currentPage - 1);
         }
       }}>
-        <span className='relative'><PiCaretLeftFill/></span>
+        <PiCaretLeftFill/>
     </IconButton>
   )}
 
@@ -114,13 +117,14 @@ const DynamicIIIFViewer = ({ manifestId }) => {
   {numberOfPages > 1 && (
     <IconButton 
       id="next-button-id"
+      disabled={currentPage === numberOfPages - 1}
       label="Neste"
       onClick={() => {
         if (currentPage < numberOfPages - 1) {
           viewer.current.goToPage(currentPage + 1);
         }
       }}>
-        <span className='relative'><PiCaretRightFill/></span>
+        <PiCaretRightFill/>
     </IconButton>
   )}
   </div>
@@ -157,5 +161,5 @@ const DynamicIIIFViewer = ({ manifestId }) => {
   );
 };
 
-export default DynamicIIIFViewer;
+export default DynamicImageViewer;
 

@@ -3,7 +3,7 @@ import MapExplorer from '@/components/Map/MapExplorer'
 
 import { useSearchParams, useParams } from 'next/navigation'
 import { useState, useEffect } from "react"
-import IIIFViewer from '@/components/IIIF/IIIFViewer'
+import ImageViewer from '@/components/Image/ImageViewer'
 import DocumentView from './views/document-view'
 
 export default function ContentViewer({ mapBounds }: { mapBounds: [number, number][] }) {
@@ -34,7 +34,7 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
         <div className="h-full p-1">
           {
           manifest ?
-          <IIIFViewer manifestId={manifest} />
+          <ImageViewer manifestId={manifest} />
           :  
           <MapExplorer mapBounds={mapBounds} doc={doc}/>
 
