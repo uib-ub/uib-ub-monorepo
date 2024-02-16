@@ -118,10 +118,10 @@ export default function MapExplorer(props) {
               subdomains={['', '2', '3']} 
             />
             
-            {markers.map((marker, index) => (
+            {markers.map(marker => (
               <CircleMarker role="button" 
                             pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
-                            key={index} 
+                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}`} 
                             center={[marker.lat, marker.lon]} 
                             radius={marker.hits.length == 1 ? 7 : marker.hits.length == 1 && 8 || marker.hits.length < 4 && 9 || marker.hits.length >= 4 && 11}>
 
