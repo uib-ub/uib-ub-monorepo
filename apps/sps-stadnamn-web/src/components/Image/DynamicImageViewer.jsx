@@ -59,6 +59,7 @@ const DynamicImageViewer = ({ manifestId }) => {
         });
 
         viewer.current.addHandler('open', function() {
+          // Synchronize state with the viewer
           setCurrentPage(viewer.current.currentPage());
 
           viewer.current.addHandler('tile-drawing', function() {
@@ -105,7 +106,7 @@ const DynamicImageViewer = ({ manifestId }) => {
       disabled={currentPage === 0}
       onClick={() => {
         if (currentPage > 0) {
-          viewer.current.goToPage(currentPage - 1);
+          viewer.current.goToPreviousPage();
         }
       }}>
         <PiCaretLeftFill/>
@@ -121,7 +122,7 @@ const DynamicImageViewer = ({ manifestId }) => {
       label="Neste"
       onClick={() => {
         if (currentPage < numberOfPages - 1) {
-          viewer.current.goToPage(currentPage + 1);
+          viewer.current.goToNextPage();
         }
       }}>
         <PiCaretRightFill/>
