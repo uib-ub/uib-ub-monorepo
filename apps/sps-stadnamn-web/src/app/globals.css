@@ -14,6 +14,10 @@
     @apply lg:h-full lg:overflow-hidden;
   }
 
+  ::selection {
+    @apply bg-accent-600 text-white;
+  }
+
 
   a {
     @apply underline decoration-2 decoration-primary-600 underline-offset-4;
