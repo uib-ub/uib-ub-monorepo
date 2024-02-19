@@ -71,7 +71,7 @@ export default function SearchInterface() {
         </div>
       </section>
 
-      <section className='card flex flex-col lg:col-span-2 lg:h-full lg:overflow-hidden'>
+      <section className='card flex flex-col lg:flex-none w-full aspect-square lg:col-span-2 lg:h-full lg:overflow-hidden'>
       <ContentViwer mapBounds={mapBounds}/>
       </section>
 
