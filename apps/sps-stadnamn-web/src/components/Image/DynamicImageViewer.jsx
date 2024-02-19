@@ -28,6 +28,7 @@ const DynamicImageViewer = () => {
       const response = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
       const manifestBody = await response.json();
       setManifest(manifestBody);
+      setCurrentPage(0)
 
       const tileSources = manifestBody.items.map(item => {
         const imageService = item.items[0].items[0].body;
@@ -55,26 +56,26 @@ const DynamicImageViewer = () => {
           zoomInButton: "zoom-in-button-id",
           zoomOutButton: "zoom-out-button-id",
           homeButton: "home-button-id",
+          sequenceMode: true,
+          nextButton: "next-button",
+          previousButton: "previous-button",
           fullPageButton: "full-screen-button-id",
           fullscreenOverlay: true,
           tileSources
         });
 
-        viewer.current.addHandler('open', function() {
-          // Synchronize state with the viewer
-          setCurrentPage(viewer.current.currentPage());
+        viewer.current.addHandler('page', function(event) {
+          setCurrentPage(event.page);
+        });
 
+        viewer.current.addHandler('open', function() {
           viewer.current.addHandler('tile-drawing', function() {
-            let tilesLoaded = 0;
-            tilesLoaded++;
-            if (tilesLoaded === 1) {
-              setIsLoading(false);
-            }
+            setIsLoading(false);
           });
       });
 
       } else {
-        viewer.current.open(tileSources, 1);
+        viewer.current.open(tileSources);
         viewer.current.viewport.goHome();
       }
     };
@@ -99,36 +100,24 @@ const DynamicImageViewer = () => {
  
 
     <div className="rounded-full border-white border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2 absolute left-1/2 transform -translate-x-1/2">
-        {numberOfPages > 1 && (
+        
           
     <IconButton 
-      id="previous-button-id"
-      label="Forrige side"
-      disabled={currentPage === 0}
-      onClick={() => {
-        if (currentPage > 0) {
-          viewer.current.goToPreviousPage();
-        }
-      }}>
+      id="previous-button"
+      label="Forrige side">
         <PiCaretLeftFill/>
     </IconButton>
-  )}
+  
 
   <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
 
-  {numberOfPages > 1 && (
+  
     <IconButton 
-      id="next-button-id"
-      disabled={currentPage === numberOfPages - 1}
-      label="Neste side"
-      onClick={() => {
-        if (currentPage < numberOfPages - 1) {
-          viewer.current.goToNextPage();
-        }
-      }}>
+      id="next-button"
+      label="Neste side">
         <PiCaretRightFill/>
     </IconButton>
-  )}
+  
   </div>
   <IconButton 
           label={isCollapsed ? "Skjul info" : "Vis info"}
