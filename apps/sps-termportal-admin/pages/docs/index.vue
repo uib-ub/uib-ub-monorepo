@@ -2,13 +2,13 @@
   <div class="flex">
     <SideBar></SideBar>
     <main class="content-page max-w-3xl pt-8 flex">
-      <section>
+      <section id="content">
         <h1 class="mb-2 text-2xl">Documentation</h1>
-        <ContentDoc id="content" path="system-behaviour" />
-        <ContentDoc id="content" path="arbeidsflyter" />
+        <ContentDoc path="arbeidsflyter" />
+        <ContentDoc path="system-behaviour" />
       </section>
     </main>
-    <ToC class="ml-10 mt-[5rem]" content-selector="#content" />
+    <ToC class="ml-10 mt-[5rem] hidden lg:block" content-selector="#content" />
   </div>
 </template>
 
