@@ -48,7 +48,7 @@
         </Column>
         <template #expansion="slotProps">
           <div class="p-4 space-y-3">
-            <div v-if="slotProps.data.note">
+            <div v-if="slotProps.data.note" class="content-page">
               <h2 class="text-lg py-1 font-semibold">Merknad</h2>
               <SanityContent :blocks="slotProps.data.note" />
             </div>
