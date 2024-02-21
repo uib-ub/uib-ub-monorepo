@@ -72,7 +72,7 @@ export default function SearchInterface() {
       </section>
 
       <section className='card flex flex-col w-full aspect-square lg:col-span-2 lg:h-full lg:overflow-hidden'>
-      <ContentViwer mapBounds={mapBounds}/>
+      <ContentViwer mapBounds={mapBounds} resultCount={resultData?.hits?.total.value}/>
       </section>
 
 
