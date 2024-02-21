@@ -62,7 +62,7 @@ export default function Results({ hits }: { hits: any }) {
           {hit._source.rawData?.merknader || hit._source.rawData?.komm }
         </p>
         </div>
-        <div className='flex gap-1 ml-auto items-end'>
+        <div className='flex gap-1 ml-auto self-end'>
 
         {hit._source.image && 
           <IconButton 
