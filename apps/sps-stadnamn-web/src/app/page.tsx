@@ -15,7 +15,8 @@ export default function Home() {
     I tillegg inneholder basen 3 700 originale innsamlingskart.` },
     { img: "https://lokalhistoriewiki.no/thumb.php?f=No-nb_digibok_2014010838007_0180_1.jpg&width=946", title: "Matrikkelen av 1886", "code": "m1886", description: "Matrikkelen av 1886 er en oversikt over jordeiendommer i hele landet, angitt med navn, matrikkelnummer og verdi. Som noe nytt ble gardsnummer og bruksnummer tatt i bruk. Alle landets fylker, untatt Finnmark er dekket, og for hvert bruksnummer er angitt gards- og bruksnavn, i alt nesten 208 000 matrikler. Matrikelen regnes for å være den første moderne matrikkel, fastsatt etter det systemet vi kjenner i dag." },
     { img: "https://kartverket.no/historiske/6/6541_inndeling_s_1950_560px.jpg", title: "Matrikkelutkastet av 1950", description: "Matrikkelutkastet av 1950 var forberedelsen til en ny matrikkel for hele Norge, men oppgaven ble aldri fullført, og man brukte i stedet kommunale eiendomsregistre. Utkastet dekker samlet sett over 767 000 matrikler fra landkommunene i alle fylker unntatt Finnmark. Hver matrikkel er angitt med gards- og bruksnavn, matrikkelnummer og verdi." },
-    { img: "https://lokalhistoriewiki.no/images/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg?20141118165710", title: "Matrikkelen av 1838", description: "Matrikkelen av 1838 er et landsomfattende register over jordeiendommer og deres navn og verdi. Dette var den første nye matrikkel siden 1665. Registeret omfatter nesten 43 000 garder og 110 000 bruk, alle angitt navn, matrikkel- og løpenummer. Matrikkelen er landets første helnorske matrikkel og dekker hele landet unntatt Finnmark, der ikke ble matrikulert før enn godt 150 år senere." }
+    { img: "https://lokalhistoriewiki.no/images/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg?20141118165710", title: "Matrikkelen av 1838", description: "Matrikkelen av 1838 er et landsomfattende register over jordeiendommer og deres navn og verdi. Dette var den første nye matrikkel siden 1665. Registeret omfatter nesten 43 000 garder og 110 000 bruk, alle angitt navn, matrikkel- og løpenummer. Matrikkelen er landets første helnorske matrikkel og dekker hele landet unntatt Finnmark, der ikke ble matrikulert før enn godt 150 år senere." },
+    { img: "https://krydder.bib.no/0042/1212153.bilde.1299775473.x.jpg", title: "Norsk stadnamnleksikon", description: "Norsk stadnamnleksikon er ein digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997." }
   ];
 
   return (
@@ -53,7 +54,7 @@ export default function Home() {
 
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalgte datasett</h2>
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalgte kilder</h2>
     <ul className="sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 my-6 sm:my-0">
@@ -70,7 +71,7 @@ export default function Home() {
         </li>
       ))}
     </ul>
-    <button className="btn btn-outline text-xl flex gap-2"><PiMagnifyingGlass className="text-2xl"/>Finn flere datasett</button>
+    <button className="btn btn-outline text-xl flex gap-2"><PiMagnifyingGlass className="text-2xl"/>Finn flere kilder</button>
     </section>
   
 
