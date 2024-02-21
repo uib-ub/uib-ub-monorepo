@@ -11,20 +11,25 @@ const DEFAULT_ZOOM = 5;
 export default function MapExplorer(props) {
   const [markers, setMarkers] = useState([]);
   const [mapInstance, setMapInstance] = useState(null);
-  const mapRef = useCallback(node => {
-    if (node !== null) {
-      node.on('moveend', () => {
-        setBounds(node.getBounds());
-      });
-      setMapInstance(node);
-      setBounds(node.getBounds());
-    }
-  }, []);
   const [bounds, setBounds] = useState(null);
+  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const searchParams = useSearchParams()
   const params = useParams()
   const pathname = usePathname()
   const mapQueryString = useQueryStringWithout(["document", "view", "manifest", "size", "page", "sort"])
+  const mapRef = useCallback(node => {
+    if (node !== null) {
+      node.on('moveend', () => {
+        setBounds(node.getBounds());
+        setZoom(node.getZoom());
+
+      });
+      setMapInstance(node);
+      setBounds(node.getBounds());
+      setZoom(node.getZoom());
+    }
+  }, []);
+  
 
 
   function groupMarkers(markers) {
@@ -108,7 +113,7 @@ export default function MapExplorer(props) {
 
   return (
     <Map mapRef={mapRef} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER} className='w-full aspect-square lg:aspect-auto lg:h-full'>
-            {({ TileLayer, CircleMarker, Marker, Popup }, leaflet) => (
+            {({ TileLayer, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
                 <>
           
             <TileLayer
@@ -121,10 +126,19 @@ export default function MapExplorer(props) {
             {markers.map(marker => (
               <CircleMarker role="button" 
                             pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
-                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}`} 
+                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}${markers.length < 100  && (zoom > 15 || props.resultCount < 20) && markers.length < 100  && marker.hits.length === 1 ? 'labeled' : ''}`} 
                             center={[marker.lat, marker.lon]} 
                             radius={marker.hits.length == 1 ? 7 : marker.hits.length == 1 && 8 || marker.hits.length < 4 && 9 || marker.hits.length >= 4 && 11}>
+                  
+                    {  (zoom > 15 || props.resultCount < 20) && markers.length < 100  && marker.hits.length === 1 ? <Tooltip className="!text-black !text-lg !border-0 !shadow-none !bg-white !bg-opacity-80 !rounded-full !px-3 !pt-0 !pb-0 !mt-3 before:hidden" direction="bottom" permanent={true}>
+                      {marker.hits.length === 0 ? marker.hits[0].label : <ul>{
+                        marker.hits.map((hit, index) => (
+                          <li key={index}>{hit.label}</li>
+                        ))
+                      }</ul>}
 
+                      </Tooltip>  : null}
+                  
                   <Popup>
                     {marker.hits.length > 1 ?
                       <ul>

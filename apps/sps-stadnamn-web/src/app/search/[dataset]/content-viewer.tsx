@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 import ImageViewer from '@/components/Image/ImageViewer'
 import DocumentView from './views/document-view'
 
-export default function ContentViewer({ mapBounds }: { mapBounds: [number, number][] }) {
+export default function ContentViewer({ mapBounds, resultCount }: { mapBounds: [number, number][], resultCount: number }) {
 
     const searchParams = useSearchParams()
     const params = useParams()
@@ -35,7 +35,7 @@ export default function ContentViewer({ mapBounds }: { mapBounds: [number, numbe
           view == 'image' ?
           <ImageViewer  />
           :  
-          <MapExplorer mapBounds={mapBounds} doc={doc}/>
+          <MapExplorer mapBounds={mapBounds} doc={doc} resultCount={resultCount}/>
 
        
         }
