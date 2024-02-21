@@ -1,6 +1,6 @@
 import Pagination from './pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill} from 'react-icons/pi';
+import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold} from 'react-icons/pi';
 import AudioButton from './audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
@@ -84,6 +84,15 @@ export default function Results({ hits }: { hits: any }) {
             aria-current={searchParams.get('document') == hit._id && searchParams.get('view') == 'map' ? 'page': undefined} 
             className="p-1 text-neutral-700">
               <PiMapPinFill className="text-xl xl:text-3xl"/></IconButton> 
+        }
+        {hit._source.link &&
+        <Link href={hit._source.link} className="no-underline" target="_blank">
+          <IconButton 
+            label="Ekstern ressurs"
+            className="p-1 text-neutral-700 xl:text-xl">
+               <PiLinkBold className="text-xl xl:text-3xl"/>
+          </IconButton> 
+        </Link>
         }
         <IconButton 
           onClick={() => goToView(hit._id, 'info')} 
