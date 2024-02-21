@@ -50,12 +50,12 @@ export async function GET(request: Request) {
 const geo_query = {geo_bounding_box: {
     location: {
         top_left: {
-          lat: params.topLeftLat ? parseFloat(params.topLeftLat) : 0,
-          lon: params.topLeftLng ? parseFloat(params.topLeftLng) : 0,
+          lat: params.topLeftLat ? parseFloat(params.topLeftLat) : 90,
+          lon: params.topLeftLng ? parseFloat(params.topLeftLng) : -180,
         },
         bottom_right: {
-          lat: params.bottomRightLat ? parseFloat(params.bottomRightLat) : 0,
-          lon: params.bottomRightLng ? parseFloat(params.bottomRightLng) : 0,
+          lat: params.bottomRightLat ? parseFloat(params.bottomRightLat) : -90,
+          lon: params.bottomRightLng ? parseFloat(params.bottomRightLng) : 180,
         },
     }}
 }
