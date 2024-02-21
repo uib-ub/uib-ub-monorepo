@@ -126,11 +126,11 @@ export default function MapExplorer(props) {
             {markers.map(marker => (
               <CircleMarker role="button" 
                             pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
-                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}${markers.length < 100  && (zoom > 15 || props.resultCount < 20) && markers.length < 100  && marker.hits.length === 1 ? 'labeled' : ''}`} 
+                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}${markers.length < 100  && (zoom > 14 || props.resultCount < 20) && markers.length < 100  && marker.hits.length === 1 ? 'labeled' : ''}`} 
                             center={[marker.lat, marker.lon]} 
-                            radius={marker.hits.length == 1 ? 7 : marker.hits.length == 1 && 8 || marker.hits.length < 4 && 9 || marker.hits.length >= 4 && 11}>
+                            radius={marker.hits.length == 1 ? 8 : marker.hits.length == 1 && 9 || marker.hits.length < 4 && 10 || marker.hits.length >= 4 && 12}>
                   
-                    {  (zoom > 15 || props.resultCount < 20) && markers.length < 100  && marker.hits.length === 1 ? <Tooltip className="!text-black !text-lg !border-0 !shadow-none !bg-white !bg-opacity-80 !rounded-full !px-3 !pt-0 !pb-0 !mt-3 before:hidden" direction="bottom" permanent={true}>
+                    {  (zoom > 14 || props.resultCount < 20) && markers.length < 100  && marker.hits.length === 1 ? <Tooltip className="!text-black !text-lg !border-0 !shadow-none !bg-white !font-semibold !bg-opacity-50 !rounded-full !px-3 !pt-0 !pb-0 !mt-3 before:hidden" direction="bottom" permanent={true}>
                       {marker.hits.length === 0 ? marker.hits[0].label : <ul>{
                         marker.hits.map((hit, index) => (
                           <li key={index}>{hit.label}</li>
