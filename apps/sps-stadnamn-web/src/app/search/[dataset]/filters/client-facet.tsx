@@ -4,36 +4,22 @@ import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import { PiTrashFill, PiSortAscending, PiSortDescending } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 
-interface BucketItem {
-  key: string;
-  doc_count: number;
-  adm2?: {
-    buckets: Array<BucketItem>;
-  };
-  adm3?: {
-    buckets: Array<BucketItem>;
-  };
-}
-
-interface FacetAggregation {
-  buckets: Array<BucketItem>;
-}
 
 
-export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status: string) => void }) {
+export default function ClientFacet({ setFilterStatus, facetName }: { setFilterStatus: (status: string) => void, facetName: string}) {
   const router = useRouter()
   const pathname = usePathname()
   const params = useParams()
   const [sortMethod, setSortMethod] = useState('key');
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
-  const facetQuery = useQueryStringWithout(['document', 'view', 'manifest', 'adm', 'page', 'size', 'sort']);
+  const facetQuery = useQueryStringWithout(['document', 'view', 'manifest', facetName, 'page', 'size', 'sort']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['document', 'view', 'manifest', 'page'])
-  const [facetAggregation, setFacetAggregation] = useState<FacetAggregation | undefined>(undefined);
+  const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const clearedFilters = useQueryStringWithout(['adm', 'page'])
+  const clearedFilters = useQueryStringWithout([facetName, 'page'])
 
   useEffect(() => {
     setFilterStatus('loading');
@@ -57,7 +43,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   };
 
   const isChecked = (paramName: string, ownPath: string[]) => {
-    if (paramLookup.has('adm', ownPath.join("_"))) return true
+    if (paramLookup.has(facetName, ownPath.join("_"))) return true
     for (const [key, otherValue] of paramLookup) {
       if (key != paramName) continue
 
@@ -176,7 +162,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
         <option value="doc_count">antall treff</option>
     </select>
     <IconButton className="text-xl" label={sortOrder == 'asc' ? 'Sorter stigende': 'Sorter synkende'} onClick={handleSortOrderChange}>{sortOrder == 'asc' ? <PiSortDescending/>: <PiSortAscending/> }</IconButton>
-    {paramLookup.get('adm') ?
+    {paramLookup.get(facetName) ?
     <IconButton type="button" label="Fjern områdefiltre" onClick={useClearFilter} className="icon-button ml-auto">
       <PiTrashFill className="text-xl text-neutral-800" aria-hidden="true"/>
     </IconButton>
@@ -185,8 +171,8 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     </div>
     { facetAggregation?.buckets ?
     <ul className='flex flex-col mx-2 gap-2'>
-      {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, 'adm', 1)).map((item, index) => (
-        listItem(item, index, 'adm', [item.key], false)
+      {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
+        listItem(item, index, facetName, [item.key], false)
       ))}
 
     </ul>
