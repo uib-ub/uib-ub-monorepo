@@ -17,7 +17,7 @@
     "@nuxt/devtools": "latest",
     "@nuxt/test-utils-edge": "^3.0.1-rc.0-27907907.1406d21",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
-    "@nuxtjs/sanity": "^1.8.1",
+    "@nuxtjs/sanity": "^1.8.3",
     "@nuxtjs/tailwindcss": "^6.8.1",
     "@sanity/client": "^6.9.3",
     "@sanity/vision": "^3.24.1",
