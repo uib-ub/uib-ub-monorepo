@@ -81,12 +81,10 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       // remove parents
       if (urlPath.length < chosenPath.length && chosenPath.slice(1).every((value, index) => value == urlPath[index])) return false
       
-      if (!beingChecked) {
-        // remove children
-        if (urlPath.length > chosenPath.length && urlPath.slice(1).every((value, index) => value == chosenPath[index])) {
-          return false
-        }
-
+      if (!beingChecked) { // When unchecked
+        // remove descendants
+        if (chosenPath.length < urlPath.length && urlPath.slice(-chosenPath.length).every((value, index) => value == chosenPath[index])) return false
+        
       // check if sibling is checked
         if (!hasSibling 
             && urlPath.length >= chosenPath.length 
