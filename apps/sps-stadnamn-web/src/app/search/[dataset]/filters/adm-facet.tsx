@@ -57,87 +57,40 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   };
 
 
+  const toggleAdm = (checked: boolean, paramName: string, chosenValue: string) => {
+    const chosenPath = chosenValue.split('_')
+    let hasSibling = false
+    const newParams = searchParams.filter(urlParam => {
+      if (urlParam[0] != paramName) return true // Ignore other params
+      if (urlParam[1] == chosenValue) return false // remove self
+      const urlPath = urlParam[1].split('_')
 
+      // remove parents
+      if (urlPath.length < chosenPath.length && chosenPath.slice(1).every((value, index) => value == urlPath[index])) return false
+      
+      if (!checked) {
+        // remove children
+        if (urlPath.length > chosenPath.length && urlParam.slice(1).every((value, index) => value == chosenPath[index])) return false
 
-  const toggleAdm1 = (checked: boolean, value: string) => {
-    const newParams = searchParams.filter(item=> {
-      if (item[0] != 'adm') return true // Ignore other params
-      if (item[1] == value) return false // remove self
-      const path = item[1].split('_')
-      if (path.length > 1 && path.slice(-1)[0] == value) return false // remove children (will still appear as checked if parent is checked)
-      return true
-    })
-    if (checked) {
-      newParams.push(['adm', value]) // add self
-    }
-    router.push(pathname + "?" + new URLSearchParams(newParams).toString())
-  }
-
-
-
-  const toggleAdm2 = (checked: boolean, value: string) => {
-    const ownItems = value.split('_')
-    const parent = ownItems.slice(-1)[0]
-    const newParams = searchParams.filter(param => {
-      if (param[0] != 'adm') return true // Ignore other params
-      if (param[1] == value) return false // remove self
-      const path = param[1].split('_')
-      if (path.length == 3 && path.slice(1).join('_') == value) return false // remove children (will still appear as checked if parent is checked)
-      if (parent == param[1]) return false // remove parent
-      return true
-    })
-    if (checked) {
-      newParams.push(['adm', value]) // add self
-    }
-    else {
-      if (paramLookup.has('adm', parent)) {
-        facetAggregation?.buckets.find(item => item.key == parent)?.adm2?.buckets.forEach(aggregation => {
-          if (aggregation.key + "_" + parent != value) {
-            newParams.push(['adm', aggregation.key + "_" + parent])
-          }
-        })
-      }
-
-    }
-    router.push(pathname + "?" + new URLSearchParams(newParams).toString())
-  }
-
-  const toggleAdm3 = (checked: boolean, value: string) => {
-    const ownItems = value.split('_')
-    const parent = ownItems.slice(1).join('_')
-    const grandparent = ownItems.slice(-1)[0]
-    const newParams = searchParams.filter(param=> {
-      if (param[0] != 'adm') return true // Ignore other params
-      if (param[1] == value) return false // remove self
-      if (parent == param[1]) return false // remove parent
-      if (grandparent == param[1]) return false // remove grandparent
-      return true
-    })
-
-    if (checked) {
-      newParams.push(['adm', value]) // add self
-    }
-    else if (paramLookup.has('adm', parent) || paramLookup.has('adm', grandparent)) {
-      const grandparentAggs = facetAggregation?.buckets.find(item => item.key == grandparent)?.adm2
-      // add siblings of parent
-      if (paramLookup.has('adm', grandparent)) {
-        grandparentAggs?.buckets.forEach(aggregation => {
-          if (aggregation.key + "_" + grandparent != parent) {
-            newParams.push(['adm', aggregation.key + "_" + grandparent])
-          }
-        })
-      }
-
-      // add siblings
-      const parentName = parent.split('_')[0]
-      grandparentAggs?.buckets.find(item => item.key == parentName)?.adm3?.buckets.forEach(aggregation => {
-        if (aggregation.key + "_" + parent != value) {
-          newParams.push(['adm', aggregation.key + "_" + parent])
+      // check if sibling is checked
+        if (!hasSibling 
+            && urlPath.length >= chosenPath.length 
+            && chosenPath.slice(1).every((value, index) => value == urlPath[urlPath.length - chosenPath.length + 1 + index])) {
+          hasSibling = true
         }
-      })
+      }
+      return true
+    })
+    if (checked) {
+      newParams.push([paramName, chosenValue]) // add self
     }
+    else if (chosenPath.length > 1 && !hasSibling) { // add parent if no siblings checked
+      newParams.push([paramName, chosenPath.slice(1).join('_')])
+    }
+
     router.push(pathname + "?" + new URLSearchParams(newParams).toString())
   }
+
 
 
   const sortBuckets = (buckets: any) => {
@@ -183,14 +136,14 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       {sortBuckets(facetAggregation?.buckets).filter(item => item.key.toLowerCase().includes(filterSearch) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filterSearch))).map((item, index) => (
         <li key={index} className='mb-2'>
           <label>
-            <input type="checkbox" className='mr-2' checked={paramLookup.has('adm', item.key)} onChange={(e) => { toggleAdm1(e.target.checked, item.key)}} />
+            <input type="checkbox" className='mr-2' checked={paramLookup.has('adm', item.key) || item.adm2?.buckets.some((a2: any) => paramLookup.has('adm', a2.key + "_" + item.key))} onChange={(e) => { toggleAdm(e.target.checked, 'adm', item.key)}} />
             {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
           </label>
-          {item.adm2 && <ul>
+          {item.adm2 && (paramLookup.has('adm', item.key) || item.adm2?.buckets.some((a2: any) => paramLookup.has('adm', a2.key + "_" + item.key))) && <ul>
             {sortBuckets(item.adm2.buckets).filter(item => item.key.toLowerCase().includes(filterSearch) || item.adm3?.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filterSearch))).map((subitem, subindex) => (
                 <li key={subindex} className="ml-6 mt-1 my-1">
                  <label>
-                    <input type="checkbox" checked={paramLookup.has('adm', subitem.key + "_" + item.key) || paramLookup.has('adm', item.key)} onChange={(e) => { toggleAdm2(e.target.checked, subitem.key + "_" + item.key)}} className='mr-2' />
+                    <input type="checkbox" checked={paramLookup.has('adm', subitem.key + "_" + item.key)} onChange={(e) => { toggleAdm(e.target.checked, 'adm', subitem.key + "_" + item.key)}} className='mr-2' />
                     {subitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subitem.doc_count}</span>
                     
                   </label>
@@ -198,7 +151,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
                   {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filterSearch)).map((subsubitem, subsubindex) => (
                     <li key={subsubindex} className="ml-6 mt-1 my-1">
                       <label>
-                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key) || paramLookup.has('adm', subitem.key + "_" + item.key) || paramLookup.has('adm', item.key)} onChange={(e) => { toggleAdm3(e.target.checked, subsubitem.key + "_" + subitem.key + "_" +item.key)}} className='mr-2' />
+                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key)} onChange={(e) => { toggleAdm(e.target.checked, 'adm', subsubitem.key + "_" + subitem.key + "_" +item.key)}} className='mr-2' />
                         {subsubitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subsubitem.doc_count}</span>
                       </label>
                     </li>
