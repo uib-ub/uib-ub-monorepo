@@ -70,8 +70,8 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   }
 
 
-  const toggleAdm = (checked: boolean, paramName: string, chosenValue: string) => {
-    const chosenPath = chosenValue.split('_')
+  const toggleAdm = (beingChecked: boolean, paramName: string, chosenPath: string[]) => {
+    const chosenValue = chosenPath.join('_')
     let hasSibling = false
     const newParams = searchParams.filter(urlParam => {
       if (urlParam[0] != paramName) return true // Ignore other params
@@ -81,9 +81,11 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       // remove parents
       if (urlPath.length < chosenPath.length && chosenPath.slice(1).every((value, index) => value == urlPath[index])) return false
       
-      if (!checked) {
+      if (!beingChecked) {
         // remove children
-        if (urlPath.length > chosenPath.length && urlParam.slice(1).every((value, index) => value == chosenPath[index])) return false
+        if (urlPath.length > chosenPath.length && urlPath.slice(1).every((value, index) => value == chosenPath[index])) {
+          return false
+        }
 
       // check if sibling is checked
         if (!hasSibling 
@@ -94,7 +96,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       }
       return true
     })
-    if (checked) {
+    if (beingChecked) {
       newParams.push([paramName, chosenValue]) // add self
     }
     else if (chosenPath.length > 1 && !hasSibling) { // add parent if no siblings checked
@@ -149,7 +151,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
       {sortBuckets(facetAggregation?.buckets).filter(item => item.key.toLowerCase().includes(filterSearch) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filterSearch))).map((item, index) => (
         <li key={index} className='mb-2'>
           <label>
-            <input type="checkbox" className='mr-2' checked={isChecked('adm', [item.key])} onChange={(e) => { toggleAdm(e.target.checked, 'adm', item.key)}} />
+            <input type="checkbox" className='mr-2' checked={isChecked('adm', [item.key])} onChange={(e) => { toggleAdm(e.target.checked, 'adm', [item.key])}} />
             {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
           </label>
           {item.adm2 && isChecked('adm', [item.key])
@@ -157,7 +159,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
             {sortBuckets(item.adm2.buckets).filter(item => item.key.toLowerCase().includes(filterSearch) || item.adm3?.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filterSearch))).map((subitem, subindex) => (
                 <li key={subindex} className="ml-6 mt-1 my-1">
                  <label>
-                    <input type="checkbox" checked={isChecked('adm', [subitem.key, item.key])} onChange={(e) => { toggleAdm(e.target.checked, 'adm', subitem.key + "_" + item.key)}} className='mr-2' />
+                    <input type="checkbox" checked={isChecked('adm', [subitem.key, item.key])} onChange={(e) => { toggleAdm(e.target.checked, 'adm', [subitem.key, item.key])}} className='mr-2' />
                     {subitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subitem.doc_count}</span>
                     
                   </label>
@@ -165,7 +167,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
                   {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filterSearch)).map((subsubitem, subsubindex) => (
                     <li key={subsubindex} className="ml-6 mt-1 my-1">
                       <label>
-                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key)} onChange={(e) => { toggleAdm(e.target.checked, 'adm', subsubitem.key + "_" + subitem.key + "_" +item.key)}} className='mr-2' />
+                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key)} onChange={(e) => { toggleAdm(e.target.checked, 'adm', [subsubitem.key, subitem.key, item.key])}} className='mr-2' />
                         {subsubitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subsubitem.doc_count}</span>
                       </label>
                     </li>
