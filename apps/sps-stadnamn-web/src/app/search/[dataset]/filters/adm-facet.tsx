@@ -125,11 +125,42 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   };
 
 
+  const includesFilter = (bucket: any): boolean => {
+    if (bucket.key.toLowerCase().includes(filterSearch)) return true;
+    if (bucket.adm2?.buckets.some(includesFilter)) return true;
+    if (bucket.adm3?.buckets.some(includesFilter)) return true;
+    return false;
+  };
+
+  const listItem = (item: any, index: number, paramName: string, path: string[], parentChecked: boolean) => {
+
+    const childAggregation = paramName + (path.length + 1);
+    const checked = isChecked(paramName, path);
+
+
+    return (
+      <li key={index} className="my-0">
+        <label>
+          <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, paramName, path)}} className='mr-2' />
+          {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+        </label>
+
+      {checked && item[childAggregation]?.buckets.length ? <ul className="flex flex-col ml-6 my-2 gap-2">  {sortBuckets(item[childAggregation]?.buckets).map((subitem, subindex) => {
+        return listItem(subitem, subindex, paramName, [subitem.key, ...path], checked || parentChecked)
+
+      })} </ul> : null}
+      
+      </li>
+
+    )
+  }
+
+
 
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-4 p-2">
     <div className='flex gap-2'>
       <input onChange={(e) => setFilterSearch(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
@@ -145,37 +176,9 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     }
     </div>
     { facetAggregation?.buckets ?
-    <ul className='flex flex-wrap gap-x-10'>
-      {sortBuckets(facetAggregation?.buckets).filter(item => item.key.toLowerCase().includes(filterSearch) || item.adm2.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filterSearch))).map((item, index) => (
-        <li key={index} className='mb-2'>
-          <label>
-            <input type="checkbox" className='mr-2' checked={isChecked('adm', [item.key])} onChange={(e) => { toggleAdm(e.target.checked, 'adm', [item.key])}} />
-            {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
-          </label>
-          {item.adm2 && isChecked('adm', [item.key])
-           && <ul>
-            {sortBuckets(item.adm2.buckets).filter(item => item.key.toLowerCase().includes(filterSearch) || item.adm3?.buckets.some((subitem: { key: string; }) => subitem.key.toLowerCase().includes(filterSearch))).map((subitem, subindex) => (
-                <li key={subindex} className="ml-6 mt-1 my-1">
-                 <label>
-                    <input type="checkbox" checked={isChecked('adm', [subitem.key, item.key])} onChange={(e) => { toggleAdm(e.target.checked, 'adm', [subitem.key, item.key])}} className='mr-2' />
-                    {subitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subitem.doc_count}</span>
-                    
-                  </label>
-                  {subitem.adm3 && isChecked('adm', [subitem.key, item.key])  && <ul>
-                  {sortBuckets(subitem.adm3?.buckets).filter(item => item.key.toLowerCase().includes(filterSearch)).map((subsubitem, subsubindex) => (
-                    <li key={subsubindex} className="ml-6 mt-1 my-1">
-                      <label>
-                        <input type="checkbox" checked={paramLookup.has('adm', subsubitem.key + "_" + subitem.key + "_" + item.key)} onChange={(e) => { toggleAdm(e.target.checked, 'adm', [subsubitem.key, subitem.key, item.key])}} className='mr-2' />
-                        {subsubitem.key} <span className="bg-neutral-50 text-xs px-2 py-[1px]  rounded-full">{subsubitem.doc_count}</span>
-                      </label>
-                    </li>
-                  ))}
-                  </ul> }
-                </li>
-              ))}
-            </ul> }
-          
-        </li>
+    <ul className='flex flex-col mx-2'>
+      {sortBuckets(facetAggregation?.buckets).filter(includesFilter).map((item, index) => (
+        listItem(item, index, 'adm', [item.key], false)
       ))}
 
     </ul>
