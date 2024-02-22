@@ -25,7 +25,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   const pathname = usePathname()
   const params = useParams()
   const [sortMethod, setSortMethod] = useState('key');
-  const [filterSearch, setFilterSearch] = useState('');
+  const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const facetQuery = useQueryStringWithout(['document', 'view', 'manifest', 'adm', 'page', 'size', 'sort']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['document', 'view', 'manifest', 'page'])
@@ -125,30 +125,38 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
   };
 
 
-  const includesFilter = (bucket: any): boolean => {
-    if (bucket.key.toLowerCase().includes(filterSearch)) return true;
-    if (bucket.adm2?.buckets.some(includesFilter)) return true;
-    if (bucket.adm3?.buckets.some(includesFilter)) return true;
-    return false;
+  const facetSearch = (item: any, baseName: string, level: number): boolean => {
+    if (!facetSearchQuery && level == 1) return true
+    if (facetSearchQuery && item.key.toLowerCase().includes(facetSearchQuery)) return true
+    const childLevel = level +1
+    if (item[baseName + childLevel]?.buckets.some((subitem: any) => facetSearch(subitem, baseName, childLevel))) {
+      return true
+    } 
+    return false
+    
   };
 
-  const listItem = (item: any, index: number, paramName: string, path: string[], parentChecked: boolean) => {
 
-    const childAggregation = paramName + (path.length + 1);
-    const checked = isChecked(paramName, path);
-
+  const listItem = (item: any, index: number, baseName: string, path: string[], parentChecked: boolean) => {
+    const childAggregation = baseName + (path.length + 1);
+    const checked = isChecked(baseName, path);
+    const children = item[childAggregation]?.buckets
+    const filteredChildren = facetSearchQuery && children?.filter((subitem: any) => facetSearch(subitem, baseName, path.length +1))
 
     return (
       <li key={index} className="my-0">
         <label>
-          <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, paramName, path)}} className='mr-2' />
+          <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, baseName, path)}} className='mr-2' />
           {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
 
-      {checked && item[childAggregation]?.buckets.length ? <ul className="flex flex-col ml-6 my-2 gap-2">  {sortBuckets(item[childAggregation]?.buckets).map((subitem, subindex) => {
-        return listItem(subitem, subindex, paramName, [subitem.key, ...path], checked || parentChecked)
-
-      })} </ul> : null}
+      {children?.length && (checked || filteredChildren) ? 
+      <ul className="flex flex-col ml-6 my-2 gap-2">
+        {sortBuckets(filteredChildren || children).map((subitem, subindex) => {
+          return listItem(subitem, subindex, baseName, [subitem.key, ...path], checked || parentChecked)
+        })} 
+      </ul> 
+      : null}
       
       </li>
 
