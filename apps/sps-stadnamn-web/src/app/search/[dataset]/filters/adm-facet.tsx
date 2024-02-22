@@ -170,7 +170,7 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     { !isLoading &&
     <div className="flex flex-col gap-4 p-2">
     <div className='flex gap-2'>
-      <input onChange={(e) => setFilterSearch(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
+      <input onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
         <option value="key">alfabetisk</option>
         <option value="doc_count">antall treff</option>
@@ -184,8 +184,8 @@ export default function AdmFacet({ setFilterStatus }: { setFilterStatus: (status
     }
     </div>
     { facetAggregation?.buckets ?
-    <ul className='flex flex-col mx-2'>
-      {sortBuckets(facetAggregation?.buckets).filter(includesFilter).map((item, index) => (
+    <ul className='flex flex-col mx-2 gap-2'>
+      {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, 'adm', 1)).map((item, index) => (
         listItem(item, index, 'adm', [item.key], false)
       ))}
 
