@@ -31,7 +31,7 @@ export default {
     },
     {
       name: "qualifiedAssociation",
-      title: "Henrettet av agenten",
+      title: "Utført av",
       type: "array",
       of: [association],
     },
