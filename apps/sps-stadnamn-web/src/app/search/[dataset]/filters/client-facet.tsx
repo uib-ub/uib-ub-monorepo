@@ -21,6 +21,16 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
 
   const clearedFilters = useQueryStringWithout([facetName, 'page'])
 
+  // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
+  const expandedFacets = new Set<string>();
+  for (const [key, value] of paramLookup) {
+    if (key != facetName) continue
+    const path = value.split('_')
+    for (let i = 0; i < path.length; i++) {
+      expandedFacets.add(path.slice(i).join('_'))
+    }
+  }
+
   useEffect(() => {
     setFilterStatus('loading');
     fetch(`/api/facet?dataset=${params.dataset}&${facetQuery}`).then(response => response.json()).then(es_data => {
@@ -44,14 +54,8 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
 
   const isChecked = (paramName: string, ownPath: string[]) => {
     if (paramLookup.has(facetName, ownPath.join("_"))) return true
-    for (const [key, otherValue] of paramLookup) {
-      if (key != paramName) continue
-
-      const otherPath = otherValue.split('_')
-      if (ownPath.length < otherPath.length && otherPath.slice(-ownPath.length).every((value, index) => value == ownPath[index])) return true
-
-
-    }
+    // Check if in expandedFacets
+    if (expandedFacets.has(ownPath.join("_"))) return true
     return false
   }
 
