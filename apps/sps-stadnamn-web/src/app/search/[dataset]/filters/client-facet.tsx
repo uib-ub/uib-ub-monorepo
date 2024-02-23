@@ -130,7 +130,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
     const filteredChildren = facetSearchQuery && children?.filter((subitem: any) => facetSearch(subitem, baseName, path.length +1))
 
     return (
-      <li key={index} className="my-0">
+      <li key={item.key} className="my-0">
         <label>
           <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, baseName, path)}} className='mr-2' />
           {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
