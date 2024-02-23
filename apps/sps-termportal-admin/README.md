@@ -1,4 +1,4 @@
-o# Termportalen admin app
+# Termportalen admin app
 
 ## Use of react components in admin app
 The app is a nuxt 3 app with an embedded Sanity studio which is a
