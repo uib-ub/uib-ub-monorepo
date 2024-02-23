@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import AdmFacet from './adm-facet';
+import ClientFacet from './client-facet';
 import { PiCaretDownFill, PiCaretUpFill, PiX, PiTrashFill } from 'react-icons/pi';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
@@ -70,7 +70,7 @@ export default function Facets() {
       {filterStatus.adm === 'loading' ? <Spinner className='w-5 h-5'/> : (filterStatus.adm === 'expanded' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>)}
       </button>
     </h3>
-    { filterStatus.adm !== 'collapsed' && <AdmFacet setFilterStatus={(status: any) => setFilterStatus({...filterStatus, adm: status})}/>}
+    { filterStatus.adm !== 'collapsed' && <ClientFacet facetName="adm" setFilterStatus={(status: any) => setFilterStatus({...filterStatus, adm: status})}/>}
 
     </section>
   )
