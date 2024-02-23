@@ -21,8 +21,17 @@ export default function SearchInterface() {
   const [isLoading, setIsLoading] = useState(true)
   const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
 
-  const dataset = {bsn: "Bustadnavnregisteret", rygh: "Norske Gaardnavne", m1886: "Matrikkelen 1886", m1838: "Matrikkelen 1838", mu1850: "Matrikkelutkastet 1950", hord: "Hordanamn", "*": "Stedsnavnsøk"}[params.dataset as string]
+  const dataset = {bsn: "Bustadnavnregisteret", 
+                   rygh: "Norske Gaardnavne", 
+                   m1886: "Matrikkelen 1886", 
+                   m1838: "Matrikkelen 1838", 
+                   mu1950: "Matrikkelutkastet 1950", 
+                   hord: "Hordanamn", "*": "Stedsnavnsøk",
+                   skul: "Skulebarnsoppskriftene"
+                  }[params.dataset as string]
+                   
 
+1
   useEffect(() => {
 
       fetch(`/api/search?dataset=${params.dataset}&${searchQueryString}`).then(response => response.json()).then(es_data => {
