@@ -67,7 +67,9 @@ export default function Home() {
           <div className="content p-4 w-128 flex flex-col">
             <h3 className="text-lg font-semibold">{card.title}</h3>
             <p>{card.description}</p>
-            
+            {card.imageAttribution && 
+            <small className="text-neutral-600 text-xs mt-2">Illustrasjon: {card.imageAttribution}</small>
+          }
           </div>
           </Link>
         </li>
