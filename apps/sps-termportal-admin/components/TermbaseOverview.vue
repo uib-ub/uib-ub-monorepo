@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h1 class="mb-6 text-2xl">Termbase Overview</h1>
+    <h1 class="mb-6 text-2xl">Termbase oversikt</h1>
     <DataTable
       v-model:filters="filters"
       v-model:selection="selectedTermbase"
@@ -17,14 +17,14 @@
         <div class="flex">
           <InputText
             v-model="filters['global'].value"
-            placeholder="Keyword Search"
+            placeholder="Søk"
           />
         </div>
       </template>
       <Column selection-mode="multiple" header-style="width: 3rem"></Column>
-      <Column sortable field="label" header="Label" />
+      <Column sortable field="label" header="Navn" />
       <Column sortable field="id" header="ID" />
-      <Column sortable field="conceptCount" header="Concepts" />
+      <Column sortable field="conceptCount" header="Begreper" />
       <Column
         sortable
         header="Status"
@@ -56,7 +56,7 @@
           </MultiSelect>
         </template>
       </Column>
-      <Column sortable field="labels" header="Labels" data-type="boolean">
+      <Column sortable field="labels" header="Navn." data-type="boolean">
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.labels ? "Ja" : "Nei" }}</span>
@@ -72,7 +72,7 @@
       <Column
         sortable
         field="descriptions"
-        header="Descriptions"
+        header="Beskr."
         data-type="boolean"
       >
         <template #body="{ data }">
@@ -87,7 +87,7 @@
           />
         </template>
       </Column>
-      <Column sortable field="agreement" header="Agreement" data-type="boolean">
+      <Column sortable field="agreement" header="Avtale" data-type="boolean">
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.agreement ? "Ja" : "Nei" }}</span>
