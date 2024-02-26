@@ -100,6 +100,31 @@
           />
         </template>
       </Column>
+      <Column sortable field="staff" header="Ansatt" :show-filter-menu="false">
+        <template #body="{ data }">
+          <div class="flex align-items-center gap-2">
+            <span>{{ data.staff }}</span>
+          </div>
+        </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <MultiSelect
+            v-model="filterModel.value"
+            :options="staffMembers"
+            option-label="name"
+            placeholder="Any"
+            class="p-column-filter"
+            style="min-width: 10rem"
+            :max-selected-labels="0"
+            @change="filterCallback()"
+          >
+            <template #option="slotProps">
+              <div class="flex align-items-center gap-2">
+                <span>{{ slotProps.option }}</span>
+              </div>
+            </template>
+          </MultiSelect>
+        </template>
+      </Column>
       <Column header="">
         <template #body="slotProps">
           <NuxtLink
@@ -146,7 +171,11 @@ watch(selectedTermbase, () => {
 
 const { data: dbdata } = await useLazyFetch("/api/tb/all/overview");
 
-const query = `*[_type == "termbase"]`;
+const query = `*[_type == "termbase"]{
+  ...,
+  "responsibleStaff": responsibleStaff->label
+}`;
+
 const { data: cmsdata } = useLazySanityQuery(query);
 
 function matchid(data, entry, key) {
@@ -163,6 +192,7 @@ const merged = computed(() => {
       labels: matchid(cmsdata, e, "labelsOk"),
       descriptions: matchid(cmsdata, e, "descriptionsOk"),
       agreement: matchid(cmsdata, e, "hasLicenseAgreement"),
+      staff: matchid(cmsdata, e, "responsibleStaff"),
       _id: matchid(cmsdata, e, "_id"),
     }))
     .filter((termbase) => termbase.id !== "DOMENE");
@@ -178,6 +208,7 @@ const merged = computed(() => {
           labels: entry.labelsOk,
           descriptions: entry.descriptionsOk,
           agreement: entry.hasLicenseAgreement,
+          staff: entry.responsibleStaff,
           _id: entry._id,
         };
         enriched.push(data);
@@ -196,11 +227,20 @@ const statuses = computed(() => {
   return [...new Set(statusArray)].sort().reverse();
 });
 
+const staffMembers = computed(() => {
+  const staffArray = merged.value?.map((tb) => {
+    return tb.staff;
+  });
+
+  return [...new Set(staffArray)].sort().reverse();
+});
+
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   agreement: { value: null, matchMode: FilterMatchMode.EQUALS },
   descriptions: { value: null, matchMode: FilterMatchMode.EQUALS },
   labels: { value: null, matchMode: FilterMatchMode.EQUALS },
   status: { value: null, matchMode: FilterMatchMode.IN },
+  staff: { value: null, matchMode: FilterMatchMode.IN },
 });
 </script>
