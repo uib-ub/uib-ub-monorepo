@@ -74,7 +74,7 @@ export default {
         list: [
           { title: "Ingen", value: "ingen" },
           { title: "Avklart", value: "avklart" },
-          { title: "Signer", value: "signert" },
+          { title: "Signert", value: "signert" },
         ],
       },
     },
