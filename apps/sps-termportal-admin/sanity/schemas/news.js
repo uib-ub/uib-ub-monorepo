@@ -44,4 +44,15 @@ export default {
       ])
       .flat()
   ),
+  preview: {
+    select: {
+      nb: "titlenb",
+      nn: "titlenn",
+      en: "titleen",
+    },
+    prepare(selection) {
+      const { nb, nn, en } = selection;
+      return { title: nb || nn || en };
+    },
+  },
 };
