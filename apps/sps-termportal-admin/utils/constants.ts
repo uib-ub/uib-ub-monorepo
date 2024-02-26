@@ -13,4 +13,4 @@ export const activityTypes = {
 };
 
 export const studioBaseRoute = "/studio/structure";
-export const wikiPageLink = "https://wiki.terminologi.no/index.php?title="
+export const wikiPageLink = "https://wiki.terminologi.no/index.php?title=";

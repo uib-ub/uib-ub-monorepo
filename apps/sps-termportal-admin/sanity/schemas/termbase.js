@@ -62,11 +62,6 @@ export default {
       fieldset: "status",
     },
     {
-      name: "hasLicenseAgreement",
-      type: "boolean",
-      initialValue: false,
-    },
-    {
       name: "licenseAgreementStatus",
       type: "string",
       fieldset: "status",
@@ -74,7 +69,7 @@ export default {
         list: [
           { title: "Ingen", value: "ingen" },
           { title: "Avklart", value: "avklart" },
-          { title: "Signer", value: "signert" },
+          { title: "Signert", value: "signert" },
         ],
       },
     },

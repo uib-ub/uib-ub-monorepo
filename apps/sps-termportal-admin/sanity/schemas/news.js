@@ -1,3 +1,5 @@
+import { blockContent } from "./props";
+
 const languages = [
   { value: "nb", label: "Bokmål" },
   { value: "nn", label: "Nynorsk" },
@@ -38,10 +40,29 @@ export default {
           name: "content" + lang.value,
           type: "array",
           title: "Tekst",
-          of: [{ type: "block" }],
+          of: [blockContent],
           fieldset: lang.value,
         },
       ])
       .flat()
   ),
+  preview: {
+    select: {
+      nb: "titlenb",
+      nn: "titlenn",
+      en: "titleen",
+      date: "date",
+    },
+    prepare(selection) {
+      const { nb, nn, en, date } = selection;
+      return { title: nb || nn || en, subtitle: date };
+    },
+  },
+  orderings: [
+    {
+      title: "Date",
+      name: "date",
+      by: [{ field: "date", direction: "desc" }],
+    },
+  ],
 };
