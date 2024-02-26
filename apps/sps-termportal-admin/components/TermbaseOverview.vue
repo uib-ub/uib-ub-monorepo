@@ -15,15 +15,12 @@
     >
       <template #header>
         <div class="flex">
-          <InputText
-            v-model="filters['global'].value"
-            placeholder="Søk"
-          />
+          <InputText v-model="filters['global'].value" placeholder="Søk" />
         </div>
       </template>
       <Column selection-mode="multiple" header-style="width: 3rem"></Column>
       <Column sortable field="label" header="Navn" />
-      <Column sortable field="id" header="ID" />
+      <!-- <Column sortable field="id" header="ID" /> -->
       <Column sortable field="conceptCount" header="Begreper" />
       <Column
         sortable
@@ -42,7 +39,7 @@
             v-model="filterModel.value"
             :options="statuses"
             option-label="name"
-            placeholder="Any"
+            placeholder="Alle"
             class="p-column-filter"
             style="min-width: 10rem"
             :max-selected-labels="0"
@@ -56,7 +53,7 @@
           </MultiSelect>
         </template>
       </Column>
-      <Column sortable field="labels" header="Navn." data-type="boolean">
+      <Column field="labels" header="Navn." data-type="boolean">
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.labels ? "Ja" : "Nei" }}</span>
@@ -69,12 +66,7 @@
           />
         </template>
       </Column>
-      <Column
-        sortable
-        field="descriptions"
-        header="Beskr."
-        data-type="boolean"
-      >
+      <Column field="descriptions" header="Beskr." data-type="boolean">
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.descriptions ? "Ja" : "Nei" }}</span>
@@ -85,6 +77,36 @@
             v-model="filterModel.value"
             @change="filterCallback()"
           />
+        </template>
+      </Column>
+      <Column
+        sortable
+        field="license"
+        header="Lisens"
+        :show-filter-menu="false"
+      >
+        <template #body="{ data }">
+          <div class="flex align-items-center gap-2">
+            <span>{{ data.license }}</span>
+          </div>
+        </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <MultiSelect
+            v-model="filterModel.value"
+            :options="licenses"
+            option-label="name"
+            placeholder="Alle"
+            class="p-column-filter"
+            style="min-width: 10rem"
+            :max-selected-labels="0"
+            @change="filterCallback()"
+          >
+            <template #option="slotProps">
+              <div class="flex align-items-center gap-2">
+                <span>{{ slotProps.option }}</span>
+              </div>
+            </template>
+          </MultiSelect>
         </template>
       </Column>
       <Column sortable field="agreement" header="Avtale" data-type="boolean">
@@ -111,7 +133,7 @@
             v-model="filterModel.value"
             :options="staffMembers"
             option-label="name"
-            placeholder="Any"
+            placeholder="Alle"
             class="p-column-filter"
             style="min-width: 10rem"
             :max-selected-labels="0"
@@ -159,6 +181,8 @@
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
 
+const runtimeConfig = useRuntimeConfig();
+
 const selectedTermbase = ref([]);
 const props = defineProps({
   modelValue: { type: Array, required: true },
@@ -191,6 +215,9 @@ const merged = computed(() => {
       status: numberStatus(matchid(cmsdata, e, "status")),
       labels: matchid(cmsdata, e, "labelsOk"),
       descriptions: matchid(cmsdata, e, "descriptionsOk"),
+      license: e.license
+        ? licenseLabels[e.license.value.replace(runtimeConfig.public.base, "")]
+        : "",
       agreement: matchid(cmsdata, e, "hasLicenseAgreement"),
       staff: matchid(cmsdata, e, "responsibleStaff"),
       _id: matchid(cmsdata, e, "_id"),
@@ -227,6 +254,14 @@ const statuses = computed(() => {
   return [...new Set(statusArray)].sort().reverse();
 });
 
+const licenses = computed(() => {
+  const licenseArray = merged.value?.map((tb) => {
+    return tb.license;
+  });
+
+  return [...new Set(licenseArray)].sort().reverse();
+});
+
 const staffMembers = computed(() => {
   const staffArray = merged.value?.map((tb) => {
     return tb.staff;
@@ -241,6 +276,7 @@ const filters = ref({
   descriptions: { value: null, matchMode: FilterMatchMode.EQUALS },
   labels: { value: null, matchMode: FilterMatchMode.EQUALS },
   status: { value: null, matchMode: FilterMatchMode.IN },
+  license: { value: null, matchMode: FilterMatchMode.IN },
   staff: { value: null, matchMode: FilterMatchMode.IN },
 });
 </script>
