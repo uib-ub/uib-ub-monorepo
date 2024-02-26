@@ -6,8 +6,8 @@ export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.endpointUrl;
 
-  const termbase = event.context.params.termbase;
-  const queryType = event.context.params.query;
+  const termbase = event.context.params?.termbase;
+  const queryType = event.context.params?.query;
 
   const query = () => {
     switch (queryType) {
