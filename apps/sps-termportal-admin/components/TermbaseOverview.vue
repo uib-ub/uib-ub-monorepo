@@ -109,17 +109,34 @@
           </MultiSelect>
         </template>
       </Column>
-      <Column sortable field="agreement" header="Avtale" data-type="boolean">
+      <Column
+        sortable
+        field="agreement"
+        header="Avtale"
+        :show-filter-menu="false"
+      >
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
-            <span>{{ data.agreement ? "Ja" : "Nei" }}</span>
+            <span>{{ data.agreement }}</span>
           </div>
         </template>
         <template #filter="{ filterModel, filterCallback }">
-          <TriStateCheckbox
+          <MultiSelect
             v-model="filterModel.value"
+            :options="agreementStatuses"
+            option-label="name"
+            placeholder="Alle"
+            class="p-column-filter"
+            style="min-width: 10rem"
+            :max-selected-labels="0"
             @change="filterCallback()"
-          />
+          >
+            <template #option="slotProps">
+              <div class="flex align-items-center gap-2">
+                <span>{{ slotProps.option }}</span>
+              </div>
+            </template>
+          </MultiSelect>
         </template>
       </Column>
       <Column sortable field="staff" header="Ansatt" :show-filter-menu="false">
@@ -218,7 +235,7 @@ const merged = computed(() => {
       license: e.license
         ? licenseLabels[e.license.value.replace(runtimeConfig.public.base, "")]
         : "",
-      agreement: matchid(cmsdata, e, "hasLicenseAgreement"),
+      agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
       staff: matchid(cmsdata, e, "responsibleStaff"),
       _id: matchid(cmsdata, e, "_id"),
     }))
@@ -234,7 +251,7 @@ const merged = computed(() => {
           status: numberStatus(entry.status),
           labels: entry.labelsOk,
           descriptions: entry.descriptionsOk,
-          agreement: entry.hasLicenseAgreement,
+          agreement: entry.licenseAgreementStatus,
           staff: entry.responsibleStaff,
           _id: entry._id,
         };
@@ -262,6 +279,14 @@ const licenses = computed(() => {
   return [...new Set(licenseArray)].sort().reverse();
 });
 
+const agreementStatuses = computed(() => {
+  const statusArray = merged.value?.map((tb) => {
+    return tb.agreement;
+  });
+
+  return [...new Set(statusArray)].sort().reverse();
+});
+
 const staffMembers = computed(() => {
   const staffArray = merged.value?.map((tb) => {
     return tb.staff;
@@ -272,11 +297,11 @@ const staffMembers = computed(() => {
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  agreement: { value: null, matchMode: FilterMatchMode.EQUALS },
   descriptions: { value: null, matchMode: FilterMatchMode.EQUALS },
   labels: { value: null, matchMode: FilterMatchMode.EQUALS },
   status: { value: null, matchMode: FilterMatchMode.IN },
   license: { value: null, matchMode: FilterMatchMode.IN },
+  agreement: { value: null, matchMode: FilterMatchMode.IN },
   staff: { value: null, matchMode: FilterMatchMode.IN },
 });
 </script>

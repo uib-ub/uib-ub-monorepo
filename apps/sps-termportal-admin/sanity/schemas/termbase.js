@@ -62,11 +62,6 @@ export default {
       fieldset: "status",
     },
     {
-      name: "hasLicenseAgreement",
-      type: "boolean",
-      initialValue: false,
-    },
-    {
       name: "licenseAgreementStatus",
       type: "string",
       fieldset: "status",
