@@ -15,16 +15,15 @@ export default function ContentViewer({ mapBounds, resultCount }: { mapBounds: [
     const [docs, setDocs] = useState<any>(null)
 
     useEffect(() => {
-        if (doc_uuid?.length == 36) {
-            fetch(`/api/doc?dataset=${params.dataset}&doc=${doc_uuid}`).then(response => response.json()).then(es_data => {
-                setDocs([es_data])
-            })
-        }
-        else if (doc_uuid?.includes(',')) {
+
+        if (doc_uuid) {
             fetch(`/api/docs?dataset=${params.dataset}&docs=${doc_uuid}`).then(response => response.json()).then(es_data => {
                 setDocs(es_data.hits.hits)
             })
         }
+
+        
+        
     }, [doc_uuid, params.dataset])
 
 
