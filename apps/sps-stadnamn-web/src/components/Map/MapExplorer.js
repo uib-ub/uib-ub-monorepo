@@ -15,14 +15,14 @@ export default function MapExplorer(props) {
   const [mapInstance, setMapInstance] = useState(null);
   const [bounds, setBounds] = useState(null);
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
-
-  
   const searchParams = useSearchParams()
   const params = useParams()
   const router = useRouter()
   const pathname = usePathname()
   const mapQueryString = useQueryStringWithout(["docs", "view", "manifest", "size", "page", "sort"])
   const controllerRef = useRef(new AbortController());
+  const openPopup = useRef(false);
+  const selectedMarker = useRef(null);
 
   const mapRef = useCallback(node => {
     if (node !== null) {
