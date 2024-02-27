@@ -1,6 +1,7 @@
 import genExploreDefinitionsQuery from "~/server/utils/genExploreDefinitionsQuery";
 import genInsightTermbaseQuery from "~/server/utils/genInsightTermbaseQuery";
 import genOverviewQuery from "~/server/utils/genOverviewQuery";
+import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticRelationsQuery";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
@@ -11,6 +12,8 @@ export default defineEventHandler(async (event) => {
 
   const query = () => {
     switch (queryType) {
+      case "qualitySemanticRelations":
+        return genQualitySemanticRelationsQuery(termbase);
       case "exploreDefinitions":
         return genExploreDefinitionsQuery(termbase);
       case "overview":
