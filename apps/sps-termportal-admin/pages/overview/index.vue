@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <SideBar></SideBar>
+    <SideBar />
     <main class="pt-8">
       <TermbaseOverview v-model:modelValue="selectedTermbase" />
       <TermgroupMembers
