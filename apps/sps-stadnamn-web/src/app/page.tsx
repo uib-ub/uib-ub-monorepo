@@ -27,12 +27,12 @@ export default function Home() {
 <main className="flex flex-col grow-1 gap-48 items-center justify-center pb-8 lg:pt-32 md:pt-16 sm:pt-8  lg:pb-16 px-4 w-full flex-grow">
   <div className="flex flex-col gap-24 w-full">
   <div className="flex flex-col gap-12 w-full">
-  <div className="flex flex-col gap-6 md:items-center">
-  <h1 className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Stedsnavnsøk</h1>
+  <div className="flex flex-col gap-8 ">
+  <h1 className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Stadnamnportalen</h1>
   
   <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-2" action="search/*">
-
-    <input className="col-span-4 rounded-sm h-full border border-gray-400 text-base px-2" name="q" type="text"/>
+    <label htmlFor="search_input" className="sr-only">Søk i alle kilder</label>
+    <input id="search_input" className="col-span-4 rounded-sm h-full border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary h-full col-span-1 text-base" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></IconButton>
     <button className="btn text-base col-span-5 md:col-span-2 whitespace-nowrap"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</button>
   </form>
@@ -65,11 +65,11 @@ export default function Home() {
           <div className="w-full aspect-square sm:h-32 sm:w-32 sm:md:h-64 sm:md:w-64  lg:p-1 overflow-hidden sm:flex-none">
           <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%]"/>
         </div>
-          <div className="content p-4 pb-1 w-128 flex flex-col">
+          <div className="content p-4 pb-2 w-128 flex flex-col">
             <h3 className="text-lg font-semibold">{card.title}</h3>
             <p>{card.description}</p>
             {card.imageAttribution && 
-            <small className="text-neutral-600 text-xs mt-auto">Illustrasjon: {card.imageAttribution}</small>
+            <small className="text-neutral-700 text-xs mt-auto">Illustrasjon: {card.imageAttribution}</small>
           }
           </div>
           </Link>

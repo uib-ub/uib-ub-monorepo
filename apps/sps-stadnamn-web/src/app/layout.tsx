@@ -20,7 +20,7 @@ const opensans = Open_Sans({
 
 
 export const metadata: Metadata = {
-  title: "Norske stadnamn",
+  title: "Stadnamnportalen",
   description: "Søketjeneste for norske stedstnavn",
 };
 
@@ -32,10 +32,10 @@ export default function RootLayout({
   return (
     <html lang="no" className={`${garamond.variable} ${opensans.className}`}>
       <body className="flex flex-col min-h-screen">
-        <header className="flex flex-col lg:flex-row lg:gap-6 py-2 px-1 lg:p-3 lg:px-4 text-neutral-900 align-middle">
-          <div className="flex flex-wrap pl-3 justify-between align-middle h-full">
+        <header className="flex flex-col lg:flex-row lg:gap-6 py-2 px-1 lg:p-3 lg:px-4 text-neutral-900">
+          <div className="flex flex-wrap pl-3 md:justify-between h-full items-center">
           
-          <Link href="/" className="text-lg sm:text-xl lg:text-2xl font-serif small-caps h-full pt-1 lg:pt-0">Norske stadnamn</Link>
+          <Link href="/" className="text-base sm:text-xl lg:text-2xl small-caps font-serif h-full lg:pt-0">Stadnamnportalen</Link>
           <Menu/>
           
           </div>
