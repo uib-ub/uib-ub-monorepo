@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Map from './Map'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
@@ -93,6 +93,7 @@ export default function MapExplorer(props) {
                                             }`
 
       fetch(query, {
+        signal: controllerRef.current.signal,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -106,7 +107,13 @@ export default function MapExplorer(props) {
         setMarkers(markers)})
         
 
-      .catch(error => console.error('Error:', error));
+        .catch(error => {
+          if (error.name !== 'AbortError') {
+            console.error('Fetch request failed:', error);
+          }
+        }
+      );
+        
     }
   }, [bounds, mapQueryString, params.dataset]);
 
@@ -169,7 +176,7 @@ export default function MapExplorer(props) {
                             key={props.docs[0]._id} position={[props.docs[0]._source.location.coordinates[1], props.docs[0]._source.location.coordinates[0]]}>
 
 
-              <Popup minWidth={256} maxWidth={300} keepInView={true}>
+              <Popup minWidth={256} maxWidth={300}>
                                     
               <ul className="flex flex-col">
 
