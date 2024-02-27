@@ -32,7 +32,7 @@ export default function ContentViewer({ mapBounds, resultCount }: { mapBounds: [
     return (
 
        docs && view == "info"?
-        <DocumentView doc={docs[0]} />
+        <DocumentView doc={docs[0]._source} />
         :
         <div className="h-full p-1">
           {
