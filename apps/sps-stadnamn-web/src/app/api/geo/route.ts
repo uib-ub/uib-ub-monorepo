@@ -106,19 +106,25 @@ else {
     query.query = geo_query
 }
 
-console.log("GEO QUERY", JSON.stringify(query))
-
-
-  const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {
+let res
+try {
+  res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {
     method: 'POST',
     body: JSON.stringify(query),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `ApiKey ${process.env.ES_TOKEN}`,
     }
-  })
+  });
 
-  const data = await res.json()
+  if (!res.ok) {
+    return new Response(`Request failed with status ${res.status}`, { status: res.status });
+  }
+  } catch (error) {
+    return new Response(`Request failed with error: ${error}`, { status: 500 });
+  }
+
+  const data = await res?.json()
 
   return Response.json(data);
 }

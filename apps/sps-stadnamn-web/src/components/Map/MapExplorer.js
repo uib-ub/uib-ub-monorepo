@@ -22,9 +22,14 @@ export default function MapExplorer(props) {
   const router = useRouter()
   const pathname = usePathname()
   const mapQueryString = useQueryStringWithout(["docs", "view", "manifest", "size", "page", "sort"])
+  const controllerRef = useRef(new AbortController());
+
   const mapRef = useCallback(node => {
     if (node !== null) {
       node.on('moveend', () => {
+        controllerRef.current.abort();
+        controllerRef.current = new AbortController();
+
         setBounds(node.getBounds());
         setZoom(node.getZoom());
 
