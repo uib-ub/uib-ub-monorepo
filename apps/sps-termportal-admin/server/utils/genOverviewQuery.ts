@@ -10,7 +10,9 @@ export default function () {
       ?concept skosp:memberOf ?tb .
       ?tb dct:identifier ?id .
       ?tb rdfs:label ?label .
-      ?tb dct:license ?license .
+      OPTIONAL {
+        ?tb dct:license ?license .
+      }
       FILTER ( lang(?label) = 'nb') .
     }
   }
