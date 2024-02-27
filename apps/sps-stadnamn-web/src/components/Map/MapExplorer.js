@@ -16,7 +16,6 @@ export default function MapExplorer(props) {
   const [bounds, setBounds] = useState(null);
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
 
-  console.log(props.docs)
   
   const searchParams = useSearchParams()
   const params = useParams()
