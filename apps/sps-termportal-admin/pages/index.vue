@@ -5,6 +5,7 @@
       <ul class="font-base space-y-[-6px] text-xl text-gray-500">
         <NavBarLink to="overview">Termbase Overview</NavBarLink>
         <NavBarLink to="/insights">Insights</NavBarLink>
+        <NavBarLink to="/quality/termbase">Quality</NavBarLink>
         <NavBarLink
           >Explore
           <ul class="ml-4 space-y-[-6px]">
