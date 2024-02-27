@@ -1,8 +1,11 @@
 <template>
   <div class="flex">
     <SideBar />
-    <main class="space-y-4">
-      <SimpleOverview v-model:modelValue="selectedTermbase" />
+    <main class="space-y-4 pt-8">
+      <section>
+        <h1 class="mb-6 text-2xl">Termbase Exploration</h1>
+        <SimpleOverview v-model:modelValue="selectedTermbase" />
+      </section>
       <ExploreDefinitions
         v-if="selectedTermbase?.id"
         :key="`exploredef${selectedTermbase?.id}`"
