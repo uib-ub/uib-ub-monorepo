@@ -27,7 +27,8 @@ export default function SearchInterface() {
                    m1838: "Matrikkelen 1838", 
                    mu1950: "Matrikkelutkastet 1950", 
                    hord: "Hordanamn", "*": "Stedsnavnsøk",
-                   skul: "Skulebarnsoppskriftene"
+                   skul: "Skulebarnsoppskriftene",
+                   leks: "Norsk stadnamnleksikon"
                   }[params.dataset as string]
                    
 
