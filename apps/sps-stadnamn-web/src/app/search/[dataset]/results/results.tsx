@@ -1,6 +1,7 @@
 import Pagination from './pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold} from 'react-icons/pi';
+import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUpFill, PiCaretDownFill } from 'react-icons/pi';
+import { useState } from 'react';
 import AudioButton from './audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
@@ -11,6 +12,7 @@ export default function Results({ hits }: { hits: any }) {
     const pathname = usePathname()
     const router = useRouter()
     const params = useParams()
+    const [isOpen, setIsOpen] = useState(false)
 
     const sortResults = () => {
       const params = new URLSearchParams(searchParams)
@@ -37,8 +39,17 @@ export default function Results({ hits }: { hits: any }) {
 
   return (
     <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
-    <span className="flex px-2">
-      <h2 id="result_heading" aria-live="polite" className='text-2xl small-caps font-semibold'>Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</h2>
+    <span className="flex px-2 gap-2 flex-wrap">
+      <h2 id="result_heading" aria-live="polite" className='text-xl small-caps font-semibold'>
+        <button type="button" className="flex gap-2 items-center flex-nowrap" onClick={() => setIsOpen(!isOpen)} aria-controls="result_list" aria-expanded={isOpen}>
+          { isOpen? 
+            <PiCaretUpFill aria-hidden={true} className="text-primary-600 md:hidden"/>
+            :
+            <PiCaretDownFill aria-hidden={true} className="text-primary-600 md:hidden"/> }
+        Treff: { (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}
+
+        </button>
+      </h2>
       <span className="ml-auto">
       <label>Sorter etter: </label>
       <select name="orderBy">
@@ -52,7 +63,7 @@ export default function Results({ hits }: { hits: any }) {
       }
     </span>
     </span>
-    <section className='lg:rounded-sm lg:py-1'>
+    <section id="result_list" className={`lg:rounded-sm lg:py-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
 
     <ul className='flex flex-col gap-1 mb-2'>
       {hits.hits.map((hit: any) => (
@@ -106,13 +117,11 @@ export default function Results({ hits }: { hits: any }) {
     </ul>
 
 
-    </section>
-
     <nav className="center gap-2">
-
       {hits.total.value > 10 && <Pagination totalPages={Math.ceil(hits.total.value / (Number(searchParams.get('size')) || 10))}/>}
-
     </nav>
+
+    </section>
     </section>
     )
 }
