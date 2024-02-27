@@ -172,7 +172,9 @@ export default function MapExplorer(props) {
             ))}
             
            
-            {props.docs?.[0]?._source?.location ? ( <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
+            {props.docs?.[0]?._source?.location ?
+            
+            ( <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
                             key={props.docs[0]._id} position={[props.docs[0]._source.location.coordinates[1], props.docs[0]._source.location.coordinates[0]]}>
 
 
