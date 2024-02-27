@@ -75,6 +75,28 @@ export default function MapExplorer(props) {
   }, [props.mapBounds, props.center, mapInstance]);
 
 
+  
+
+  useEffect(() => {
+    // This code will run whenever the marker's position is changed
+    if (props.docs?.[0]?._source?.location) {
+
+      if (openPopup.current) {
+        console.log("Opening popup")
+        selectedMarker.current.openPopup();
+        openPopup.current = false;
+      }
+      else {
+        selectedMarker.current?.closePopup();
+      }
+      
+      //console.log("Marker position changed", selectedMarker.current, props.docs);
+    }
+  }, [props.docs]);
+
+  
+
+
   useEffect(() => {
     // Check if the bounds are initialized
     if (bounds) {
@@ -117,25 +139,18 @@ export default function MapExplorer(props) {
     }
   }, [bounds, mapQueryString, params.dataset]);
 
+
+  
   useEffect(() => {
-    if (props.docs?.[0].location && mapInstance) {
-      const { coordinates } = props.docs[0].location;
+    if (props.docs?.[0]._source.location && mapInstance) {
+      const { coordinates } = props.docs[0]._source.location;
       const latLng = L.latLng(coordinates[1], coordinates[0]);
       if (!mapInstance.getBounds().contains(latLng)) {
-        mapInstance.setView(latLng, 8);
+        mapInstance.setView(latLng, 10);
       }
     }
   }, [props.docs, mapInstance]);
 
-  /*
-   <Popup minWidth={256} maxWidth={300}>
-                    
-              <PopupInfo uuids={marker.hits.map(item => item.id)} />
-                  
-
-            </Popup>
-
-  */
 
 
   return (
@@ -157,7 +172,9 @@ export default function MapExplorer(props) {
                             center={[marker.lat, marker.lon]} 
                             radius={marker.hits.length == 1 ? 8 : marker.hits.length == 1 && 9 || marker.hits.length < 4 && 10 || marker.hits.length >= 4 && 12}
                             eventHandlers={{click: () => {
-                              router.push(documentUrl(marker.hits.map(item => item.id).join(",")))
+                              const uuids = marker.hits.map(item => item.id).join(",")
+                              openPopup.current = true
+                              router.push(documentUrl(uuids))
                             },
                                     }}>
                   
@@ -174,11 +191,11 @@ export default function MapExplorer(props) {
            
             {props.docs?.[0]?._source?.location ?
             
-            ( <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
-                            key={props.docs[0]._id} position={[props.docs[0]._source.location.coordinates[1], props.docs[0]._source.location.coordinates[0]]}>
+            ( <Marker ref={selectedMarker} className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
+                             position={[props.docs[0]._source.location.coordinates[1], props.docs[0]._source.location.coordinates[0]]}>
 
 
-              <Popup minWidth={256} maxWidth={300}>
+              <Popup minWidth={256} maxWidth={300} autoPan={false}>
                                     
               <ul className="flex flex-col">
 
