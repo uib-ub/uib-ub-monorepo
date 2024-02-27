@@ -11,7 +11,7 @@ export default function Facets() {
     const router = useRouter()
     const pathname = usePathname()
     const [filterStatus, setFilterStatus] = useState<Record<string, string>>({adm: 'collapsed'})
-    const searchQuery = useQueryWithout(['document', 'view', 'manifest'])
+    const searchQuery = useQueryWithout(['docs', 'view', 'manifest'])
     const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'size')
     const [chipsExpanded, setChipsExpanded] = useState(false);
 

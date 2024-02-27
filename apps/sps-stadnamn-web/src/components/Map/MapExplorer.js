@@ -4,6 +4,8 @@ import Map from './Map'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
+import IconButton  from '@/components/ui/icon-button'
+import { PiInfoFill } from 'react-icons/pi'
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
 const DEFAULT_ZOOM = 5;
@@ -13,10 +15,14 @@ export default function MapExplorer(props) {
   const [mapInstance, setMapInstance] = useState(null);
   const [bounds, setBounds] = useState(null);
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
+
+  console.log(props.docs)
+  
   const searchParams = useSearchParams()
   const params = useParams()
+  const router = useRouter()
   const pathname = usePathname()
-  const mapQueryString = useQueryStringWithout(["document", "view", "manifest", "size", "page", "sort"])
+  const mapQueryString = useQueryStringWithout(["docs", "view", "manifest", "size", "page", "sort"])
   const mapRef = useCallback(node => {
     if (node !== null) {
       node.on('moveend', () => {
@@ -53,9 +59,10 @@ export default function MapExplorer(props) {
 
   const documentUrl = (uuid) => {
     const params = new URLSearchParams(searchParams)
-    params.set('document', String(uuid))
+    params.set('docs', String(uuid))
     return pathname + "?" + params.toString()
   }
+
 
   useEffect(() => {
     if (mapInstance && props.mapBounds.length) {
@@ -100,15 +107,24 @@ export default function MapExplorer(props) {
   }, [bounds, mapQueryString, params.dataset]);
 
   useEffect(() => {
-    if (props.doc?.location && mapInstance) {
-      const { coordinates } = props.doc.location;
+    if (props.docs?.[0].location && mapInstance) {
+      const { coordinates } = props.docs[0].location;
       const latLng = L.latLng(coordinates[1], coordinates[0]);
       if (!mapInstance.getBounds().contains(latLng)) {
         mapInstance.setView(latLng, 8);
       }
     }
-  }, [props.doc?.location, mapInstance]);
+  }, [props.docs, mapInstance]);
 
+  /*
+   <Popup minWidth={256} maxWidth={300}>
+                    
+              <PopupInfo uuids={marker.hits.map(item => item.id)} />
+                  
+
+            </Popup>
+
+  */
 
 
   return (
@@ -128,31 +144,52 @@ export default function MapExplorer(props) {
                             pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
                             key={`${marker.lat} ${marker.lon} ${marker.hits.length}${(zoom > 14 || props.resultCount < 20) && markers.length < 100  ? 'labeled' : ''}`} 
                             center={[marker.lat, marker.lon]} 
-                            radius={marker.hits.length == 1 ? 8 : marker.hits.length == 1 && 9 || marker.hits.length < 4 && 10 || marker.hits.length >= 4 && 12}>
+                            radius={marker.hits.length == 1 ? 8 : marker.hits.length == 1 && 9 || marker.hits.length < 4 && 10 || marker.hits.length >= 4 && 12}
+                            eventHandlers={{click: () => {
+                              router.push(documentUrl(marker.hits.map(item => item.id).join(",")))
+                            },
+                                    }}>
                   
                     {  (zoom > 14 || props.resultCount < 20) && markers.length < 100 ? <Tooltip className="!text-black !text-lg !border-0 !shadow-none !bg-white !font-semibold !bg-opacity-75 !rounded-full !px-3 !pt-0 !pb-0 !mt-3 before:hidden" direction="bottom" permanent={true}>
                       {marker.hits[0].label}{marker.hits.length > 1 ? `...` : ''}
 
                       </Tooltip>  : null}
+
                   
-                  <Popup>
-                    {marker.hits.length > 1 ?
-                      <ul>
-                        {marker.hits.map((hit, index) => (
-                          <li key={index}><a href={documentUrl(hit.id)}>{hit.label}</a></li>
-                        ))}
-                      </ul>
-                      : <a href={documentUrl(marker.hits[0].id)}>{marker.hits[0].label}</a>
-                    }
 
-                  </Popup>
               </CircleMarker>
-                
             ))}
-            {props.doc?.location ? <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
-                            key={props.doc._id} position={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]}>
+            
+           
+            {props.docs?.[0]?._source?.location ? ( <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
+                            key={props.docs[0]._id} position={[props.docs[0]._source.location.coordinates[1], props.docs[0]._source.location.coordinates[0]]}>
 
-              </Marker> : null}
+
+              <Popup minWidth={256} maxWidth={300} keepInView={true}>
+                                    
+              <ul className="flex flex-col">
+
+                {  props.docs.map(doc => (
+                    <li key={doc._id} className='flex text-lg justify-between align-middle'>
+                        <strong className="">{doc._source.label}</strong>
+                        <span>
+                        <IconButton label="Infoside"><PiInfoFill className='text-2xl text-primary-600'/></IconButton>
+                        </span>
+
+                    </li>
+                    
+                    )) }
+                    
+                    
+                    
+                </ul>
+                    
+              </Popup>
+
+              </Marker> )
+              : null}
+              
+              
             </>
             )}
     </Map>

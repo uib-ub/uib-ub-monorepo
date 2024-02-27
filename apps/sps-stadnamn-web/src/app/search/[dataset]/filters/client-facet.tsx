@@ -12,9 +12,9 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
   const params = useParams()
   const [sortMethod, setSortMethod] = useState('key');
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
-  const facetQuery = useQueryStringWithout(['document', 'view', 'manifest', facetName, 'page', 'size', 'sort']);
+  const facetQuery = useQueryStringWithout(['docs', 'view', 'manifest', facetName, 'page', 'size', 'sort']);
   const paramLookup = useSearchParams()
-  const searchParams = useQueryWithout(['document', 'view', 'manifest', 'page'])
+  const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');

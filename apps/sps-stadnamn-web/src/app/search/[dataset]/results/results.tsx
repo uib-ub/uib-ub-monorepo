@@ -26,7 +26,7 @@ export default function Results({ hits }: { hits: any }) {
 
     const goToView = (uuid: string, view: string, manifest?: string) => {
       const params = new URLSearchParams(searchParams)
-      params.set('document', String(uuid))
+      params.set('docs', String(uuid))
       params.set('view', String(view))
       if (manifest) {
         params.set('manifest', String(manifest))
@@ -68,7 +68,7 @@ export default function Results({ hits }: { hits: any }) {
           <IconButton 
             onClick={() => goToView(hit._id, 'image', hit._source.image.manifest)} 
             label="Vis seddel" 
-            aria-current={searchParams.get('document') == hit._id && searchParams.get('view') == 'image' ? 'page': undefined}
+            aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'image' ? 'page': undefined}
             className="p-1 text-neutral-700">
               <PiArticleFill className="text-xl xl:text-3xl"/></IconButton> 
         }
@@ -81,7 +81,7 @@ export default function Results({ hits }: { hits: any }) {
           <IconButton 
             onClick={() => goToView(hit._id, 'map')} 
             label="Vis i kart" 
-            aria-current={searchParams.get('document') == hit._id && searchParams.get('view') == 'map' ? 'page': undefined} 
+            aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'map' ? 'page': undefined} 
             className="p-1 text-neutral-700">
               <PiMapPinFill className="text-xl xl:text-3xl"/></IconButton> 
         }
@@ -97,7 +97,7 @@ export default function Results({ hits }: { hits: any }) {
         <IconButton 
           onClick={() => goToView(hit._id, 'info')} 
           label="Vis infoside" 
-          aria-current={searchParams.get('document') == hit._id && searchParams.get('view') == 'info' ? 'page': undefined} 
+          aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'info' ? 'page': undefined} 
           className="p-1 text-primary-600">
             <PiInfoFill className="text-xl xl:text-3xl"/></IconButton>
         </div>
