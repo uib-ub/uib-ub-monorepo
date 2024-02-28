@@ -31,7 +31,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/ubb-spr-bp-0001_sm.jpg",
         alt: "En kvinnelig arkivar eller kontorist sitter ved et skrivebord foran en stor rekke arkivskuffer.",
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
-        description: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivseddler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig."
+        description: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig."
       },
       hord: {
         img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
@@ -82,6 +82,24 @@ export const datasetPresentation: DatasetPresentation = {
         description: "Norsk stadnamnleksikon er ein digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997."
       },
 
+}
+
+
+
+export const datasetFeatures = {
+  bsn: {
+    "image": [{"text": "Seddelarkiv"}]
+  },
+  hord: {
+    "audio": [{"text": "Uttale"}],
+    "coordinates": [{"text": ""}]
+  },
+  rygh: ["external"],
+  nbas: ["image"],
+  m1838: ["external"],
+  m1886: ["external"],
+  mu1950: ["external"],
+  skul: ["image"],
 }
 
 
