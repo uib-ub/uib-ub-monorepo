@@ -5,6 +5,7 @@ import { useSearchParams, useParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import ImageViewer from '@/components/Image/ImageViewer'
 import DocumentView from './views/document-view'
+import DatasetInfoView from '@/components/DatasetInfo/DatasetInfoView'
 
 export default function ContentViewer({ mapBounds, resultCount }: { mapBounds: [number, number][], resultCount: number }) {
 
@@ -13,6 +14,10 @@ export default function ContentViewer({ mapBounds, resultCount }: { mapBounds: [
     const doc_uuid = searchParams.get('docs')
     const view = searchParams.get('view')
     const [docs, setDocs] = useState<any>(null)
+
+    if (Array.isArray(params.dataset)) {
+        throw new Error('Expected "dataset" to be a string, but received an array');
+      }
 
     useEffect(() => {
 
@@ -31,7 +36,7 @@ export default function ContentViewer({ mapBounds, resultCount }: { mapBounds: [
 
     return (
 
-       docs && view == "info"?
+       doc_uuid && docs && view == "info"?
         <DocumentView doc={docs[0]._source} />
         :
         <div className="h-full p-1">
@@ -39,7 +44,11 @@ export default function ContentViewer({ mapBounds, resultCount }: { mapBounds: [
           view == 'image' ?
           <ImageViewer  />
           :  
+          view == "info" && !doc_uuid ?
+          <DatasetInfoView dataset={params.dataset}/>
+            :
           <MapExplorer mapBounds={mapBounds} docs={docs} resultCount={resultCount}/>
+
 
        
         }

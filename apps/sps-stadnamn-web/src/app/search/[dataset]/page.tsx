@@ -49,7 +49,10 @@ export default function SearchInterface() {
   return (
     <main className="search-view flex flex-col lg:grid lg:grid-cols-3 mb-3 lg:mx-2 gap-2">
       <section className="flex stable-scrollbar pl-2 flex-col lg:col-span-1 card gap-3 bg-white shadow-md py-2 pt-4 lg:overflow-y-auto h-full" ria-labelledby='dataset_heading'>
-        <div className='px-2 flex'><h1 id="dataset_heading" className='text-xl font-semibold'>{dataset} <IconButton className='align-middle mb-1' label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h1>
+        <div className='px-2 flex'><h1 id="dataset_heading" className='text-xl font-semibold'>{dataset}
+        <IconButton className='align-middle mb-1' 
+                    onClick={() => router.push(`/search/${params.dataset}?view=info`)}
+                    label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h1>
         <Link href="/datasets" className='ml-auto no-underline flex gap-1 items-center'>Andre datasett<PiCaretRightFill/></Link>
         </div>
         <SearchBar/>

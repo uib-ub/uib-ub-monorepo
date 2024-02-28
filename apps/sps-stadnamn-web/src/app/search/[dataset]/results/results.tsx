@@ -107,7 +107,7 @@ export default function Results({ hits }: { hits: any }) {
         }
         <IconButton 
           onClick={() => goToView(hit._id, 'info')} 
-          label="Vis infoside" 
+          label="Infoside" 
           aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'info' ? 'page': undefined} 
           className="p-1 text-primary-600">
             <PiInfoFill className="text-xl xl:text-3xl"/></IconButton>
