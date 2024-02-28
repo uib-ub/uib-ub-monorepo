@@ -7,6 +7,7 @@ import { useQueryStringWithout } from '@/lib/search-params'
 import PopupList from './PopupList'
 import { indexToCode } from '@/lib/datasets';
 import { datasetTitles } from '@/config/datasets';
+import Link from 'next/link';
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
 const DEFAULT_ZOOM = 5;
@@ -217,7 +218,7 @@ export default function MapExplorer(props) {
               <ul className="flex flex-col gap-1">
                 {Object.entries(groupByIndex(props.docs)).map(([index, docs]) => (
                   <li key={index}>
-                    <h3 className="text-lg flex justify-between"><span>{datasetTitles[indexToCode(index)]}</span></h3>
+                    <h3 className="text-lg flex  justify-between"><Link className="!text-black" href={'/search/' + indexToCode(index)}>{datasetTitles[indexToCode(index)]}</Link></h3>
                       <PopupList docs={props.docs} dataset={params.dataset} />
                   </li>
                 ))}
