@@ -11,6 +11,7 @@ import SearchBar from './SearchBar'
 import { PiCaretRightFill, PiInfoFill } from 'react-icons/pi'
 import IconButton from '@/components/ui/icon-button'
 import Link from 'next/link'
+import { datasetTitles } from '@/config/datasets'
 
 export default function SearchInterface() {  
   const router = useRouter()
@@ -21,15 +22,7 @@ export default function SearchInterface() {
   const [isLoading, setIsLoading] = useState(true)
   const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
 
-  const dataset = {bsn: "Bustadnavnregisteret", 
-                   rygh: "Norske Gaardnavne", 
-                   m1886: "Matrikkelen 1886", 
-                   m1838: "Matrikkelen 1838", 
-                   mu1950: "Matrikkelutkastet 1950", 
-                   hord: "Hordanamn", "*": "Stedsnavnsøk",
-                   skul: "Skulebarnsoppskriftene",
-                   leks: "Norsk stadnamnleksikon"
-                  }[params.dataset as string]
+  const dataset = datasetTitles[params.dataset as string]
                    
 
 
