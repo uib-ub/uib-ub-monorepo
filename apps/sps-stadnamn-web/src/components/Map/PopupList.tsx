@@ -20,9 +20,9 @@ export default function PopupList({ docs, dataset }: { docs: any[], dataset: str
     return (
         <ul>
         {docs.map(doc => (
-            <li key={doc._id} className='flex text-lg justify-between align-middle'>
+            <li key={doc._id} className='flex text-lg justify-between align-middle hover:bg-neutral-100'>
               <div>
-                <strong className="">{doc._source.label}</strong>
+                <strong>{doc._source.label}</strong>
               </div>
               <span className='flex gap-1'>
                 {doc._source.image && 
