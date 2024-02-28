@@ -45,7 +45,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
     )
 
   const useClearFilter = () => {
-    router.push(pathname + '?' + clearedFilters)
+    router.push(pathname + '?' + clearedFilters, { scroll: false})
   }
 
   const handleSortOrderChange = () => {

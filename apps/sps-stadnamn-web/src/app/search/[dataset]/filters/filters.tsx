@@ -27,11 +27,11 @@ export default function Facets() {
 
     const removeFilter = (name: string, value: string) => {      
       const updatedParams = new URLSearchParams(searchQuery.filter(item => item[0] != name || item[1] != value)).toString()
-      router.push(pathname + "?" + updatedParams)
+      router.push(pathname + "?" + updatedParams, { scroll: false})
     }
 
     const clearFilters = () => {
-      router.push(pathname + '?' + clearedParams);
+      router.push(pathname + '?' + clearedParams, { scroll: false});
     }
 
 
