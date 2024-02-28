@@ -231,8 +231,6 @@ GROUP BY ?c ?id
 ### Get all authorities
 
 ```sparql
-
-```sparql
 SELECT DISTINCT
   ?id
   ?url
@@ -348,7 +346,17 @@ WHERE {
 GROUP BY ?id ?url ?identifier ?type ?schemaName ?match ?existsBroader ?existsNarrower ?available ?modified ?source
 ```
 
+### Find all datatypes per property
 
+```sparql
+SELECT ?p (COUNT(?o) AS ?dTypeCount) (MAX(?datatype) AS ?dtype)
+{
+  ?s ?p ?o. 
+ BIND (datatype(?o) AS ?datatype) 
+FILTER (isLiteral(?o)) 
+} 
+GROUP BY datatype(?o) ?p
+```
 
 ## Prefixes
 
@@ -415,3 +423,4 @@ PREFIX locah: <http://data.archiveshub.ac.uk/def/>
 PREFIX lexvo: <http://lexvo.org/ontology#>
 PREFIX cc: <http://creativecommons.org/ns#>
 PREFIX iiif_prezi: <http://iiif.io/api/presentation/3#>
+```
