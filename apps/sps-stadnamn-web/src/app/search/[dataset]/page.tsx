@@ -32,7 +32,7 @@ export default function SearchInterface() {
                   }[params.dataset as string]
                    
 
-1
+
   useEffect(() => {
 
       fetch(`/api/search?dataset=${params.dataset}&${searchQueryString}`).then(response => response.json()).then(es_data => {

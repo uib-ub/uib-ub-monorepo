@@ -4,8 +4,7 @@ import Map from './Map'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
-import IconButton  from '@/components/ui/icon-button'
-import { PiInfoFill } from 'react-icons/pi'
+import PopupList from './PopupList'
 
 const DEFAULT_CENTER = [60.3913, 5.3221];
 const DEFAULT_ZOOM = 5;
@@ -58,6 +57,17 @@ export default function MapExplorer(props) {
   
     return Object.values(grouped);
   }
+
+  const groupByIndex = (docs) => {
+    return docs.reduce((grouped, doc) => {
+      const key = doc._index;
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+      grouped[key].push(doc);
+      return grouped;
+    }, {});
+  };
 
 
 
@@ -139,7 +149,6 @@ export default function MapExplorer(props) {
     }
   }, [bounds, mapQueryString, params.dataset]);
 
-
   
   useEffect(() => {
     if (props.docs?.[0]._source.location && mapInstance) {
@@ -174,11 +183,17 @@ export default function MapExplorer(props) {
                             eventHandlers={{click: () => {
                               const uuids = marker.hits.map(item => item.id).join(",")
                               openPopup.current = true
-                              router.push(documentUrl(uuids))
-                            },
-                                    }}>
+                              router.push(documentUrl(uuids), { scroll: false})
+                            }}}>
                   
-                    {  (zoom > 14 || props.resultCount < 20) && markers.length < 100 ? <Tooltip className="!text-black !text-lg !border-0 !shadow-none !bg-white !font-semibold !bg-opacity-75 !rounded-full !px-3 !pt-0 !pb-0 !mt-3 before:hidden" direction="bottom" permanent={true}>
+                    {  (zoom > 14 || props.resultCount < 20) && markers.length < 100 ? 
+                    
+                    <Tooltip className="!text-black !text-lg !border-0 !shadow-none !bg-white !font-semibold !bg-opacity-75 !rounded-full !px-3 !pt-0 !pb-0 !mt-3 before:hidden" 
+                             direction="bottom" 
+                             permanent={true}
+                             eventHandlers={{click: () => {
+                              // TOODO: open popup
+                            }}}>
                       {marker.hits[0].label}{marker.hits.length > 1 ? `...` : ''}
 
                       </Tooltip>  : null}
@@ -197,22 +212,14 @@ export default function MapExplorer(props) {
 
               <Popup minWidth={256} maxWidth={300} autoPan={false}>
                                     
-              <ul className="flex flex-col">
-
-                {  props.docs.map(doc => (
-                    <li key={doc._id} className='flex text-lg justify-between align-middle'>
-                        <strong className="">{doc._source.label}</strong>
-                        <span>
-                        <IconButton label="Infoside"><PiInfoFill className='text-2xl text-primary-600'/></IconButton>
-                        </span>
-
-                    </li>
-                    
-                    )) }
-                    
-                    
-                    
-                </ul>
+              <ul className="flex flex-col gap-1">
+                {Object.entries(groupByIndex(props.docs)).map(([index, docs]) => (
+                  <li key={index}>
+                    <h3 className="text-lg">{index}</h3>
+                      <PopupList docs={props.docs} dataset={params.dataset} />
+                  </li>
+                ))}
+              </ul>
                     
               </Popup>
 
