@@ -152,10 +152,14 @@ export default function Datasets() {
                 <Link href={'/search/' + dataset} className="no-underline btn btn-outline">
                 Utforsk {datasetTitles[dataset]}
               </Link>
-              {datasetPresentation[dataset].subindices?.map((subindex) => (
-                <Link key={subindex} href={'/search/' + dataset + '/' + subindex} className="no-underline btn btn-outline">
-                Søkevisning for {datasetTitles[subindex]}
-              </Link>
+              {Object.keys(datasetPresentation[dataset].subindices || {}).map((subindexKey) => (
+                <Link 
+                  key={subindexKey} 
+                  href={'/search/' + subindexKey} 
+                  className="no-underline btn btn-outline"
+                >
+                  Søkevisning for {datasetTitles[subindexKey]}
+                </Link>
               ))}
               </div>
               </div>

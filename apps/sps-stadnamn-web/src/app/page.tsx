@@ -11,7 +11,7 @@ export default function Home() {
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
-    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: info.description, subindices: info.subindices }
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: info.description, subindices: info.subindices, initPage: info.initPage }
   }
   )
 
@@ -55,7 +55,7 @@ export default function Home() {
     <ul className="sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 my-6 sm:my-0">
-          <Link href={'search/' + card.code + (card.subindices?.length ? '?view=info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
+          <Link href={'search/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '?view=info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
           <div className="w-full aspect-square sm:h-32 sm:w-32 sm:md:h-64 sm:md:w-64  lg:p-1 overflow-hidden sm:flex-none">
           <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%]"/>
         </div>

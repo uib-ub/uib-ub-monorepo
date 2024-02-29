@@ -53,7 +53,7 @@ export default function SearchInterface() {
         <IconButton className='align-middle mb-1' 
                     onClick={() => router.push(`/search/${params.dataset}?view=info`)}
                     label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h1>
-        <Link href="/datasets" className='ml-auto no-underline flex gap-1 items-center'>Andre søk<PiCaretRightFill/></Link>
+        <Link href="/datasets" className='ml-auto no-underline flex gap-1 items-center'>Andre søkevisninger<PiCaretRightFill/></Link>
         </div>
         <SearchBar/>
         <div className='flex flex-col h-full gap-6'>
