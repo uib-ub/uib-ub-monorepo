@@ -2,13 +2,24 @@ interface DatasetTitles {
   [key: string]: string;
 }
 
+interface SubindexPresentation {
+  [key: string]: {
+    img?: string;
+    alt?: string;
+    imageAttribution?: string;
+    description?: string;
+    initPage?: string;
+  }
+}
+
 interface DatasetPresentation {
   [key: string]: {
     img: string;
     alt: string;
     imageAttribution: string;
     description: string;
-    subindices?: string[];
+    subindices?: SubindexPresentation;
+    initPage?: string;
   }
 }
 
@@ -24,7 +35,7 @@ export const datasetTitles: DatasetTitles = {
     "*": "Stedsnavnsøk",
     skul: "Skulebarnsoppskriftene",
     leks: "Norsk stadnamnleksikon",
-    leks_g: "grunnord",
+    leks_g: "Norsk stadnamnleksikon - grunnord",
 }
 
 
@@ -53,7 +64,11 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "Vincent Botta, Unsplash.com",
         alt: "Harddisk",
         description: "Den nasjonale stedsnavnbasen inneholder om lag 700 000 navn totalt (fordelte på kortsamlinger fra herredsregistret, seternavnregisteret, en del enkeltsamlinger, og stedsnavnsamlingen ved Universitetet i Bergen. Hvert navnekort inneholder navneform, uttale og informasjon om tilhørighet til kommune og fylke. I mange tilfelder er også gardsnummer oppgitt. I tillegg inneholder basen 3 700 originale innsamlingskart.",
-        subindices: ["nbas_k"]
+        subindices: {
+          nbas_k: {
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          }
+        },
       },
       m1838: {
         img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
@@ -84,7 +99,11 @@ export const datasetPresentation: DatasetPresentation = {
         alt: "Forside til Norsk stadnamnleksikon 1997",
         imageAttribution: "Språksamlingane",
         description: "Norsk stadnamnleksikon er ein digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
-        subindices: ["leks_g"],
+        initPage: "info",
+        subindices: {
+          leks_g: {
+            initPage: "info",
+        }},
       },
 }
 
