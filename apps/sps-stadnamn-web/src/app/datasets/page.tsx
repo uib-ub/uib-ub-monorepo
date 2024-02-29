@@ -54,7 +54,7 @@ export default function Datasets() {
     <>
       <main className="flex flex-col grow-1 gap-48 items-center pb-8 lg:pt-32 md:pt-16 sm:pt-8  lg:pb-16 px-4 w-full flex-grow">
         <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
-          <h1 id="dataset_showcase" className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Finn kilde</h1>
+          <h1 id="dataset_showcase" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Finn kilde</h1>
           <div className='flex flex-col lg:grid lg:grid-cols-3 justify-between gap-12 w-full'>
           <div className='flex flex-col md gap-4'>
           <h2 className='text-xl'>Tittel</h2>
@@ -66,7 +66,7 @@ export default function Datasets() {
             />
 
           </div>
-          <div className='flex flex-col gap-4'>
+          <div className='space-y-4'>
             <h2 className='text-xl'>Datasettype</h2>
             
             <ul className="grid grid-cols-2 gap-x-4 gap-y-2 justify-between">
@@ -74,7 +74,7 @@ export default function Datasets() {
                 const resultCount = filteredDatasets.filter(dataset => (datasetTypes as {[key: string]: string[]})[dataset]?.includes(type)).length;
                 if (resultCount > 0) {
                 return (
-                    <li key={type} className='col-span-1'>
+                    <li key={type} className='col-span-1 space-x-1'>
                     <input
                         type="checkbox"
                         id={type}
@@ -89,7 +89,7 @@ export default function Datasets() {
                 )}
             </ul>
           </div>
-          <div className='flex flex-col gap-4'>
+          <div className='space-y-4'>
             <h2 className='text-xl'>Ressurser</h2>
             
             <ul className="grid grid-cols-2 gap-x-4 gap-y-2 justify-between">
@@ -97,7 +97,7 @@ export default function Datasets() {
                 const resultCount = filteredDatasets.filter(dataset => (datasetFeatures as {[key: string]: string[]})[dataset]?.includes(feature)).length;
                 if (resultCount > 0) {
                 return (
-                    <li key={feature} className='col-span-1'>
+                    <li key={feature} className='col-span-1 space-x-1'>
                     <input
                         type="checkbox"
                         id={feature}
