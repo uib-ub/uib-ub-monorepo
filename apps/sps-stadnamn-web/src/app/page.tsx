@@ -39,7 +39,7 @@ export default function Home() {
   <div className="flex flex-col md:flex-row items-center gap-6 text-neutral-950 "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
   <div className="flex flex-col md:flex-row gap-6 jusitfy-between text-center">
-  <div className="flex flex-col"><span className="font-semibold">Språksamlingene</span>
+  <div className="flex flex-col"><span className="font-semibold">Språksamlingane</span>
   <Link href="https://spraksamlingane.no" className="text-sm">spraksamlingane.no</Link></div>
   <div className="flex flex-col"><span className="font-semibold">Digital utvikling</span>
   <Link href="https://uib.no/digitalutvikling" className="text-sm">uib.no/digitalutvikling</Link></div>
