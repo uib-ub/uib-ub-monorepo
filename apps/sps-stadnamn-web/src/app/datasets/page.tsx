@@ -15,14 +15,14 @@ export default function Datasets() {
       
       <ul className="flex flex-col gap-6">
         {Object.keys(datasetPresentation).map((dataset) => (
-          <li key={dataset} className="card flex flex-col sm:flex-row h-full my-6 sm:my-0 w-full">
+          <li key={dataset} className="card flex flex-col sm:flex-row h-full my-6 sm:my-0 w-full sm:grid sm:grid-cols-4">
             
-              <div className='flex flex-col w-[1024px]'>
+              <div className='flex flex-col sm:col-span-1'>
               <Image src={datasetPresentation[dataset].img} alt={datasetPresentation[dataset].alt || ''} width="512" height="512" className="object-cover aspect-square sepia-[25%] grayscale-[50%]"/>
               <small className="text-neutral-700 text-xs mt-auto">Illustrasjon: {datasetPresentation[dataset].imageAttribution}</small>
               </div>
               
-              <div className="p-4 pb-2 flex flex-col">
+              <div className="p-4 pb-2 flex flex-col sm:col-span-3">
                 <h3 className="text-lg font-semibold">{datasetTitles[dataset]}</h3>
                 <p>{datasetPresentation[dataset].description}</p>
                 <Link href={'/search/' + dataset} className="no-underline">
