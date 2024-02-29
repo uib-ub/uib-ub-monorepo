@@ -4,7 +4,7 @@ import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, data
 import Image from 'next/image'
 import Link from 'next/link'
 import Footer from '../Footer';
-import { PiArchive, PiArchiveFill, PiArticleFill, PiBooksFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill } from 'react-icons/pi';
+import { PiArchiveFill, PiArticleFill, PiBooksFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
 
 export default function Datasets() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -21,6 +21,8 @@ export default function Datasets() {
     "coordinates": <PiMapPinLineFill />,
     "link": <PiLinkSimpleFill />,
     "maps": <PiMapTrifoldFill />,
+    "base": <PiWallFill />,
+
     "collection": <PiArchiveFill />,
     "encyclopedia": <PiBooksFill />,
     "database": <PiDatabaseFill />,
@@ -146,10 +148,15 @@ export default function Datasets() {
                 ))}
                 </ul>
                 </div>
-                <div className='mt-10'>
+                <div className='mt-10 space-x-2'>
                 <Link href={'/search/' + dataset} className="no-underline btn btn-outline">
                 Utforsk {datasetTitles[dataset]}
               </Link>
+              {datasetPresentation[dataset].subindices?.map((subindex) => (
+                <Link key={subindex} href={'/search/' + dataset + '/' + subindex} className="no-underline btn btn-outline">
+                Søkevisning for {datasetTitles[subindex]}
+              </Link>
+              ))}
               </div>
               </div>
               </div>

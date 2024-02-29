@@ -8,6 +8,7 @@ interface DatasetPresentation {
     alt: string;
     imageAttribution: string;
     description: string;
+    subindices?: string[];
   }
 }
 
@@ -16,12 +17,14 @@ export const datasetTitles: DatasetTitles = {
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
     nbas: "Den nasjonale stadnamnbasen",
+    nbas_k: "innsamlingskart",
     m1838: "Matrikkelen 1838", 
     m1886: "Matrikkelen av 1886",
     mu1950: "Matrikkelutkastet 1950", 
     "*": "Stedsnavnsøk",
     skul: "Skulebarnsoppskriftene",
-    leks: "Norsk stadnamnleksikon"
+    leks: "Norsk stadnamnleksikon",
+    leks_g: "grunnord",
 }
 
 
@@ -37,7 +40,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
         alt: "Utsnitt av kart over Hordaland og Sogn og Fjordane",
         imageAttribution: "Kartverket: Generalkart VII, L. Arentz 1929",
-        description: "Hordanamn er en samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er at finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig at se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg at lytte til den lokale uttalen."
+        description: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er at finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig at se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg at lytte til den lokale uttalen."
       },
       rygh: {
         img: "/datasets/Prof_oluf_rygh.jpg",
@@ -49,7 +52,8 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/vincent-botta-wYD_wfifJVs-unsplash.jpg",
         imageAttribution: "Vincent Botta, Unsplash.com",
         alt: "Harddisk",
-        description: "Den nasjonale stedsnavnbasen inneholder om lag 700 000 navn totalt (fordelte på kortsamlinger fra herredsregistret, seternavnregisteret, en del enkeltsamlinger, og stedsnavnsamlingen ved Universitetet i Bergen. Hvert navnekort inneholder navneform, uttale og informasjon om tilhørighet til kommune og fylke. I mange tilfelder er også gardsnummer oppgitt. I tillegg inneholder basen 3 700 originale innsamlingskart."
+        description: "Den nasjonale stedsnavnbasen inneholder om lag 700 000 navn totalt (fordelte på kortsamlinger fra herredsregistret, seternavnregisteret, en del enkeltsamlinger, og stedsnavnsamlingen ved Universitetet i Bergen. Hvert navnekort inneholder navneform, uttale og informasjon om tilhørighet til kommune og fylke. I mange tilfelder er også gardsnummer oppgitt. I tillegg inneholder basen 3 700 originale innsamlingskart.",
+        subindices: ["nbas_k"]
       },
       m1838: {
         img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
@@ -76,12 +80,12 @@ export const datasetPresentation: DatasetPresentation = {
         description: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms."
       },
       leks: {
-        img: "/datasets/gustavo-boaron-P0NuBF6nA7A-unsplash.jpg",
-        alt: "Antikke bøker bundet sammen med tråd",
-        imageAttribution: "Gustavo Boaron, unsplash.com",
-        description: "Norsk stadnamnleksikon er ein digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997."
+        img: "/datasets/leks2.png",
+        alt: "Forside til Norsk stadnamnleksikon 1997",
+        imageAttribution: "Språksamlingane",
+        description: "Norsk stadnamnleksikon er ein digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
+        subindices: ["leks_g"],
       },
-
 }
 
 export const featureNames: Record<string, string> = {
@@ -91,6 +95,7 @@ export const featureNames: Record<string, string> = {
   "coordinates": "Koordinater",
   "link": "Lenker",
   "maps": "Skannede kart",
+  "base": "Grunnord",
 }
 
 export const typeNames: Record<string, string> = {
@@ -110,9 +115,9 @@ export const datasetFeatures: Record<string, string[]> = {
   nbas: ["image", "maps"],
   m1838: ["link"],
   m1886: ["link"],
-  mu1950: [],
+  mu1950: ["link"],
   skul: ["image"],
-  leks: []
+  leks: ["phonetic", "base"],
 }
 
 export const datasetTypes: Record<string, string[]> = {
@@ -122,9 +127,9 @@ export const datasetTypes: Record<string, string[]> = {
   nbas: ["collection", "database"],
   m1838: ["public"],
   m1886: ["public"],
-  mu1950: ["public"],
+  mu1950: ["public", "collection"],
   skul: ["collection"],
-  leks: ["encyclopedia"]
+  leks: ["encyclopedia"],
 }
 
 
