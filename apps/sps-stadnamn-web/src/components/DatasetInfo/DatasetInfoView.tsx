@@ -1,4 +1,4 @@
-import { datasetPresentation, datasetTitles } from '@/config/datasets'
+import { datasetPresentation, datasetTitles } from '@/config/client-config'
 import Image from 'next/image'
 
 export default function DatasetInfoView({ dataset }: { dataset: string}) {

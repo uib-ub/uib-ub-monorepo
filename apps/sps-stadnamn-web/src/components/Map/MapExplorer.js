@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
 import PopupList from './PopupList'
 import { indexToCode } from '@/lib/datasets';
-import { datasetTitles } from '@/config/datasets';
+import { datasetTitles } from '@/config/client-config';
 import Link from 'next/link';
 
 const DEFAULT_CENTER = [60.3913, 5.3221];

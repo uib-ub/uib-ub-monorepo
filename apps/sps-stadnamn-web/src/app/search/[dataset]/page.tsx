@@ -11,7 +11,7 @@ import SearchBar from './SearchBar'
 import { PiCaretRightFill, PiInfoFill } from 'react-icons/pi'
 import IconButton from '@/components/ui/icon-button'
 import Link from 'next/link'
-import { datasetTitles } from '@/config/datasets'
+import { datasetTitles } from '@/config/client-config'
 
 export default function SearchInterface() {  
   const router = useRouter()

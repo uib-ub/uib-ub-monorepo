@@ -84,24 +84,28 @@ export const datasetPresentation: DatasetPresentation = {
 
 }
 
+export const featureNames = {
+  "image": "Sedler",
+  "audio": "Lydopptak",
+  "phonetic": "Lydskrift",
+  "coordinates": "Koordinater",
+  "external": "Eksterne ressurser",
+  "cadastre": "Matrikkel",
+  "maps": "Skannede kart"
+}
+
 
 
 export const datasetFeatures = {
-  bsn: {
-    "image": [{"text": "Seddelarkiv"}]
-  },
-  hord: {
-    "audio": [{"text": "Uttale"}],
-    "coordinates": [{"text": ""}]
-  },
-  rygh: ["external"],
-  nbas: ["image"],
-  m1838: ["external"],
-  m1886: ["external"],
-  mu1950: ["external"],
-  skul: ["image"],
+  bsn: ["image"],
+  hord: ["audio", "coordinates"],
+  rygh: ["external", "phonetic"],
+  nbas: ["image", "maps"],
+  m1838: ["external", "cadastre"],
+  m1886: ["external", "cadastre"],
+  mu1950: ["cadastre"],
+  skul: ["image"]
 }
-
 
 
 
