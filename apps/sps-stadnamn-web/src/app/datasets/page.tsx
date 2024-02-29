@@ -120,11 +120,11 @@ export default function Datasets() {
             
               <div className='flex flex-col sm:col-span-1'>
               <Image src={datasetPresentation[dataset].img} alt={datasetPresentation[dataset].alt || ''} width="512" height="512" className="object-cover aspect-square sepia-[25%] grayscale-[50%]"/>
-              <small className="text-neutral-700 text-xs mt-auto">Illustrasjon: {datasetPresentation[dataset].imageAttribution}</small>
+              <small className="text-neutral-700 text-xs p-1">{datasetPresentation[dataset].alt} | {datasetPresentation[dataset].imageAttribution}</small>
               </div>
               
               <div className="p-4 pb-2 flex flex-col sm:col-span-3">
-                <h3 className="text-lg font-semibold">{datasetTitles[dataset]}</h3>
+                <h3 className="text-2xl font-semibold">{datasetTitles[dataset]}</h3>
                 <ul className='flex gap-2 my-2 text-neutral-900'>
                 {datasetTypes[dataset].map((type) => (
                     <div key={type} className="flex items-center gap-1">

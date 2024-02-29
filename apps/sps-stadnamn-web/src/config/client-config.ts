@@ -77,7 +77,7 @@ export const datasetPresentation: DatasetPresentation = {
       },
       leks: {
         img: "/datasets/gustavo-boaron-P0NuBF6nA7A-unsplash.jpg",
-        alt: "Bøker bundet sammen med tråd",
+        alt: "Antikke bøker bundet sammen med tråd",
         imageAttribution: "Gustavo Boaron, unsplash.com",
         description: "Norsk stadnamnleksikon er ein digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997."
       },
