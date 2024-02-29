@@ -149,18 +149,23 @@ export default function Datasets() {
                 </ul>
                 </div>
                 <div className='mt-10 flex gap-2 flex-wrap'>
-                <Link href={'/search/' + dataset} className="no-underline btn btn-outline">
+                <Link href={'/search/' + dataset + (datasetPresentation[dataset].initPage ? `?view=${datasetPresentation[dataset].initPage}` : '')} className="no-underline btn btn-outline">
                 Utforsk {datasetTitles[dataset]}
               </Link>
-              {Object.keys(datasetPresentation[dataset].subindices || {}).map((subindexKey) => (
+              {Object.keys(datasetPresentation[dataset].subindices || {}).map((subindexKey) => {
+                const subindexConfig = datasetPresentation[dataset].subindices?.[subindexKey] 
+                const initPage = subindexConfig?.initPage || datasetPresentation[dataset].initPage
+                
+                
+                return (
                 <Link 
                   key={subindexKey} 
-                  href={'/search/' + subindexKey} 
+                  href={'/search/' + subindexKey + (initPage ? '?view=' + initPage : '')} 
                   className="no-underline btn btn-outline"
                 >
                   Søkevisning for {datasetTitles[subindexKey]}
                 </Link>
-              ))}
+              )})}
               </div>
               </div>
               </div>
