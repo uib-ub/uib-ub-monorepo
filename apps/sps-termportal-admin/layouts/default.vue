@@ -1,10 +1,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <NavBar />
-    <div
-      class="flex grow"
-      :class="{ 'items-center justify-center': route.path === '/' }"
-    >
+    <div class="flex grow" :class="{ '': route.path === '/' }">
       <div
         class="flex-1"
         :class="{
@@ -13,14 +10,6 @@
           'container mb-[10vh] max-w-[60em] p-9': route.path === '/',
         }"
       >
-        <header>
-          <h1 v-if="route.path === '/'" class="pb-9">
-            <LogoTermportalen img-style="width: 450px" />
-            <div class="font-base ml-[133px] mt-[-25px] text-xl text-gray-500">
-              admin
-            </div>
-          </h1>
-        </header>
         <slot />
       </div>
     </div>
