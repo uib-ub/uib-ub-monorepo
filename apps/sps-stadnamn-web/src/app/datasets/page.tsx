@@ -148,7 +148,7 @@ export default function Datasets() {
                 ))}
                 </ul>
                 </div>
-                <div className='mt-10 space-x-2'>
+                <div className='mt-10 flex gap-2 flex-wrap'>
                 <Link href={'/search/' + dataset} className="no-underline btn btn-outline">
                 Utforsk {datasetTitles[dataset]}
               </Link>
