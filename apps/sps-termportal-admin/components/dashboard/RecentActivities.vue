@@ -1,5 +1,5 @@
 <template>
-  <section class="">
+  <section>
     <h2 class="text-lg font-semibold pb-3 text-gray-800">Nylige aktiviteter</h2>
     <ol class="space-y-0.5 text-lg ml-1">
       <li
@@ -8,14 +8,14 @@
         class="flex space-x-4 hover:bg-gray-100 p-1"
       >
         <AppLink
-          class="space-x-4 flex"
+          class="space-x-3 flex"
           :to="`/studio/structure/activity;${activity.id}`"
           target="_blank"
         >
           <div class="w-[25rem]">{{ activity.label }}</div>
           <div>{{ activity.time }}</div>
           <div
-            class="w-7 h-7 rounded-2xl"
+            class="w-7 h-7 rounded-2xl shrink-0"
             :style="`background-color: ${activity.colorCoding}`"
           />
         </AppLink>
