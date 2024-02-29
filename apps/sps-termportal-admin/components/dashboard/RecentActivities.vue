@@ -1,21 +1,27 @@
 <template>
-  <div class="">
-    <h2 class="text-lg font-semibold pb-3 text-gray-800">Recent Activities</h2>
+  <section class="">
+    <h2 class="text-lg font-semibold pb-3 text-gray-800">Nylige aktiviteter</h2>
     <ol class="space-y-0.5 text-lg ml-1">
       <li
         v-for="activity in procdata"
         :key="activity.label + activity.end"
         class="flex space-x-4 hover:bg-gray-100 p-1"
       >
-        <div class="w-[25rem]">{{ activity.label }}</div>
-        <div>{{ activity.time }}</div>
-        <div
-          class="w-7 h-7 rounded-2xl"
-          :style="`background-color: ${activity.colorCoding}`"
-        />
+        <AppLink
+          class="space-x-4 flex"
+          :to="`/studio/structure/activity;${activity.id}`"
+          target="_blank"
+        >
+          <div class="w-[25rem]">{{ activity.label }}</div>
+          <div>{{ activity.time }}</div>
+          <div
+            class="w-7 h-7 rounded-2xl"
+            :style="`background-color: ${activity.colorCoding}`"
+          />
+        </AppLink>
       </li>
     </ol>
-  </div>
+  </section>
 </template>
 
 <script setup>
@@ -23,6 +29,7 @@ const query = `
 *[_type == "activity"
   && defined(timespan.endOfTheEnd)
   && dateTime(timespan.endOfTheEnd) < dateTime(now())]{
+  _id,
   label,
   "start": timespan.beginOfTheBegin,
   "end": timespan.endOfTheEnd,
@@ -33,6 +40,7 @@ const { data } = useLazySanityQuery(query);
 const procdata = computed(() =>
   data.value?.map((a) => {
     const tmp = {
+      id: a._id,
       label: a.label,
       get time() {
         const start = a.start?.substring(0, 10);
