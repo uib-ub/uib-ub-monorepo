@@ -84,27 +84,47 @@ export const datasetPresentation: DatasetPresentation = {
 
 }
 
-export const featureNames = {
+export const featureNames: Record<string, string> = {
   "image": "Sedler",
   "audio": "Lydopptak",
   "phonetic": "Lydskrift",
   "coordinates": "Koordinater",
-  "external": "Eksterne ressurser",
-  "cadastre": "Matrikkel",
-  "maps": "Skannede kart"
+  "link": "Lenker",
+  "maps": "Skannede kart",
+}
+
+export const typeNames: Record<string, string> = {
+  "collection": "Språksamlingenes arkiv",
+  "encyclopedia": "Oppslagsverk",
+  "database": "Database",
+  "public": "Offentlig register",
 }
 
 
 
-export const datasetFeatures = {
+
+export const datasetFeatures: Record<string, string[]> = {
   bsn: ["image"],
-  hord: ["audio", "coordinates"],
-  rygh: ["external", "phonetic"],
+  hord: ["audio", "coordinates", "phonetic"],
+  rygh: ["phonetic"],
   nbas: ["image", "maps"],
-  m1838: ["external", "cadastre"],
-  m1886: ["external", "cadastre"],
-  mu1950: ["cadastre"],
-  skul: ["image"]
+  m1838: ["link"],
+  m1886: ["link"],
+  mu1950: [],
+  skul: ["image"],
+  leks: []
+}
+
+export const datasetTypes: Record<string, string[]> = {
+  bsn: ["collection"],
+  hord: ["collection", "database"],
+  rygh: ["encyclopedia"],
+  nbas: ["collection", "database"],
+  m1838: ["public"],
+  m1886: ["public"],
+  mu1950: ["public"],
+  skul: ["collection"],
+  leks: ["encyclopedia"]
 }
 
 
