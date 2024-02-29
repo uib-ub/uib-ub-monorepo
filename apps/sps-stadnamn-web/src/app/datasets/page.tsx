@@ -4,7 +4,7 @@ import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, data
 import Image from 'next/image'
 import Link from 'next/link'
 import Footer from '../Footer';
-import { PiArchive, PiArticleFill, PiBooksFill, PiDatabase, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiHouseLine, PiLinkBold, PiLinkSimpleFill, PiList, PiMapPinLine, PiMapTrifoldFill } from 'react-icons/pi';
+import { PiArchive, PiArchiveFill, PiArticleFill, PiBooksFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill } from 'react-icons/pi';
 
 export default function Datasets() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -18,10 +18,10 @@ export default function Datasets() {
     "image": <PiArticleFill/>,
     "audio": <PiFileAudioFill />,
     "phonetic": <PiEarFill />,
-    "coordinates": <PiMapPinLine />,
+    "coordinates": <PiMapPinLineFill />,
     "link": <PiLinkSimpleFill />,
     "maps": <PiMapTrifoldFill />,
-    "collection": <PiArchive />,
+    "collection": <PiArchiveFill />,
     "encyclopedia": <PiBooksFill />,
     "database": <PiDatabaseFill />,
     "public": <PiGavelFill />,
@@ -125,7 +125,7 @@ export default function Datasets() {
               
               <div className="p-4 pb-2 flex flex-col sm:col-span-3">
                 <h3 className="text-lg font-semibold">{datasetTitles[dataset]}</h3>
-                <ul className='flex gap-2'>
+                <ul className='flex gap-2 my-2 text-neutral-900'>
                 {datasetTypes[dataset].map((type) => (
                     <div key={type} className="flex items-center gap-1">
                     {icons[type]}
@@ -137,7 +137,7 @@ export default function Datasets() {
                 <p>{datasetPresentation[dataset].description}</p>
                 <div className="space-y-2">
                 <h4 className='font-semibold'>Ressurser</h4>
-                <ul className='flex gap-2'>
+                <ul className='flex gap-2 text-neutral-900'>
                 {datasetFeatures[dataset].map((feature) => (
                     <div key={feature} className="flex items-center gap-1">
                     {icons[feature]}
