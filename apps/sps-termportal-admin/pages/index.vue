@@ -17,6 +17,6 @@
         <NavBarLink to="/studio">Studio</NavBarLink>
       </ul>
     </section>
-    <RecentActivities />
+    <DashboardRecentActivities />
   </main>
 </template>

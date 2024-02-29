@@ -20,7 +20,9 @@
 
 <script setup>
 const query = `
-*[_type == "activity"]{
+*[_type == "activity"
+  && defined(timespan.endOfTheEnd)
+  && dateTime(timespan.endOfTheEnd) < dateTime(now())]{
   label,
   "start": timespan.beginOfTheBegin,
   "end": timespan.endOfTheEnd,
