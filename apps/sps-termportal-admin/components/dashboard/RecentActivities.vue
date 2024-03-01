@@ -25,10 +25,13 @@
 </template>
 
 <script setup>
+// 86400 is a hack to display todays events.
+// timespan.begiOfTheEnd is not available in groq
+// timespan.endOfTheEnd defaults to ...T23:59:59.999Z for undefined times
 const query = `
 *[_type == "activity"
   && defined(timespan.endOfTheEnd)
-  && dateTime(timespan.endOfTheEnd) < dateTime(now())]{
+  && dateTime(timespan.endOfTheEnd) < (dateTime(now()) + 86400)]{
   _id,
   label,
   "start": timespan.beginOfTheBegin,
