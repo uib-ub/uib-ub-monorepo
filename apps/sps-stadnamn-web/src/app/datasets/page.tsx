@@ -55,8 +55,8 @@ export default function Datasets() {
   return (
     <>
       <main className="flex flex-col grow-1 gap-48 items-center pb-8 lg:pt-32 md:pt-16 sm:pt-8  lg:pb-16 px-4 w-full flex-grow">
-        <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
-          <h1 id="dataset_showcase" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Finn kilde</h1>
+        <section className="flex flex-col items-center gap-12 container" aria-labelledby="page_heading">
+          <h1 id="page_heading" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Finn kilde</h1>
           <div className='flex flex-col lg:grid lg:grid-cols-3 justify-between gap-12 w-full'>
           <div className='flex flex-col md gap-4'>
           <h2 className='text-xl'>Tittel</h2>
