@@ -27,7 +27,7 @@ export default {
       options: { collapsible: true, collapsed: true },
     },
   ],
-  fields: [{ name: "date", title: "Dato", type: "date" }].concat(
+  fields: [{ name: "date", title: "Dato", type: "datetime" }].concat(
     languages
       .map((lang) => [
         {
