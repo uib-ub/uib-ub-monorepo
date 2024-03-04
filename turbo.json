@@ -132,6 +132,23 @@
         ".next/**"
       ]
     },
+    "build#sps-termportal-web": {
+      "outputs": [
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "SANITY_API_TOKEN",
+        "SANITY_PROJECT_ID"
+      ]
+    },
+    "generate#sps-termportalen-web": {
+      "outputs": [
+        "dist/**"
+      ]
+    },
     "build#sps-termportal-admin": {
       "outputs": [
         "dist/**"
@@ -141,12 +158,8 @@
       ],
       "env": [
         "NUXT_DATAPORTEN_AUTHORIZED_USERS",
-        "SANITY_API_TOKEN,"
-      ]
-    },
-    "generate#sps-termportalen-web": {
-      "outputs": [
-        "dist/**"
+        "SANITY_API_TOKEN",
+        "SANITY_PROJECT_ID"
       ]
     },
     "test": {
