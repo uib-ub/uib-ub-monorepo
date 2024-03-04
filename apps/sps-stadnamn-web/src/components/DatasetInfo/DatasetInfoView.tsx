@@ -15,7 +15,7 @@ export default function DatasetInfoView({ dataset }: { dataset: string}) {
 
     return (
         <div className="p-8 flex flex-col gap-2 !overflow-y-auto">
-            <h1 className="text-2xl font-bold">{datasetTitles[dataset]}</h1>
+            <h1>{datasetTitles[dataset]}</h1>
             <div className='flex flex-col md:flex-row'>
                 <div className='md:w-1/2'>
                     <p>{info['description']}</p>
