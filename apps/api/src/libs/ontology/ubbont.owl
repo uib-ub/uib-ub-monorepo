@@ -1,0 +1,3368 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+    xmlns:org="http://www.w3.org/ns/org#"
+    xmlns:ubbont="http://data.ub.uib.no/ontology/"
+    xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
+    xmlns:schema="http://schema.org/"
+    xmlns:geo-deling="http://vocab.lenka.no/geo-deling#"
+    xmlns:ecrm="http://erlangen-crm.org/current/"
+    xmlns:bio="http://purl.org/vocab/bio/0.1/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:nie="http://www.semanticdesktop.org/ontologies/nie/#"
+    xmlns:bibo="http://purl.org/ontology/bibo/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:dct="http://purl.org/dc/terms/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:dcmitype="http://purl.org/dc/dcmitype/"
+    xmlns:mo="http://purl.org/ontology/mo/"
+    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:locah="http://data.archiveshub.ac.uk/def/"
+    xmlns:exif="http://www.w3.org/2003/12/exif/ns#"
+    xmlns:event="http://purl.org/NET/c4dm/event.owl#"
+    xmlns:ubbwf="http://data.ub.uib.no/ontology/workflow/"
+    xmlns:xsp="http://www.owl-ontologies.com/2005/08/07/xsp.owl#"
+    xmlns:edm="http://www.europeana.eu/schemas/edm/"
+    xmlns:dce="http://purl.org/dc/elements/1.1/"
+    xmlns:gn="http://www.geonames.org/ontology#"
+    xmlns:frbr="http://vocab.org/frbr/core#"
+    xmlns:cc="http://creativecommons.org/ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:ore="http://www.openarchives.org/ore/terms/"
+    xmlns:fabio="http://purl.org/spar/fabio/"
+    xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+    xmlns:db-onto="http://dbpedia.org/ontology/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://data.ub.uib.no/ontology/ubbont.owl">
+  <owl:Ontology rdf:about=""/>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Trash">
+      <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Søppelkasse</rdfs:label>
+      <rdfs:label xml:lang="en">Trash</rdfs:label>
+      <ubbont:displayLabel xml:lang="no">Søppelkasse</ubbont:displayLabel>
+</owl:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/SaleDeed">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Salgsskjøte</rdfs:label>
+    <rdfs:label xml:lang="en">Sale deed</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Deed"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Circulaire">
+    <rdfs:label xml:lang="fr">Circulaire</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Circularie</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Telegram">
+    <rdfs:label xml:lang="en">Telegram</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Telegram</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Periodical">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Periodical</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Periodika</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Clause">
+    <rdfs:label xml:lang="en">Clause</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Klausul</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/MultiVolumeBook">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Note">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Notat</rdfs:label>
+    <rdfs:label xml:lang="en">Note</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Report">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Rapport</rdfs:label>
+    <rdfs:label xml:lang="en">Report</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://vocab.lenka.no/geo-deling#Fylke">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">County</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fylke</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Samling</rdfs:label>
+    <rdfs:label xml:lang="en">Collection</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;p style="margin-top: 0"&gt;
+      En samling inneholder dokument eller andre samlinger
+    &lt;/p&gt;</rdfs:comment>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Fragment">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Fragment</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fragment</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Cataloguer">
+    <rdfs:label xml:lang="en">Cataloguer</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Katalogisator</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Person"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/ExLibris">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Ex libris</rdfs:label>
+    <rdfs:label xml:lang="en">Ex Libris</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Attachment"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Album">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Album</rdfs:label>
+    <rdfs:label xml:lang="en">Album</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Furniture">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Room"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Furniture</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Møbel</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://vocab.lenka.no/geo-deling#Kommune">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Municipality</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kommune</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Diary">
+    <rdfs:label xml:lang="en">Diary</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Dagbok</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Mark">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bumerke</rdfs:label>
+    <rdfs:label xml:lang="en">Mark</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bumerke, kjennetegn og eiermerke som fra gammel tid og til de f&amp;#248;rste &amp;#229;r av 1900-tallet, ble anbrakt p&amp;#229; hus, redskaper, bruksting og dyr (femerker), b&amp;#229;de i Norge og i andre land. Bumerket var personlig, men kunne ogs&amp;#229; f&amp;#248;lge en g&amp;#229;rd eller en slekt gjennom noen generasjoner, og da oftest med stadig nye sm&amp;#229;endringer i merkets utseende. Bumerkene er dannet av enkle streker uten faste farger. Bumerker kan best&amp;#229; av runer, bokstaver, tall, internasjonale figurer som kors og stjerner, konturene til enkle geometriske figurer eller redskaper m.m. Bumerker ble ogs&amp;#229; brukt som underskrift av folk som ikke kunne skrive.</rdfs:comment>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Attachment"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Bill">
+    <rdfs:label xml:lang="en">Bill</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Regning</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/ShareCertificate">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Aksjebrev</rdfs:label>
+    <rdfs:label xml:lang="en">Share certificate</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/mo/Lyrics">
+    <rdfs:label xml:lang="en">Lyrics</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Sangtekst</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://dbpedia.org/ontology/MusicalWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Poster">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/dc/terms/Image"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Poster</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Plakat</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Memorandum">
+    <rdfs:label xml:lang="en">Memorandum</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Promemoria</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Minutes">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Møtereferat</rdfs:label>
+    <rdfs:label xml:lang="en">Minute</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Supplication">
+    <rdfs:label xml:lang="en">Supplication</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Supplikk</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >B&amp;#248;nneskrift</rdfs:comment>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DegreeCertificate">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vitnemål</rdfs:label>
+    <rdfs:label xml:lang="en">Degree certificate</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/BachelorThesis">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bacheloroppgave</rdfs:label>
+    <rdfs:label xml:lang="en">Bachelor thesis</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Newspaper">
+    <rdfs:subClassOf rdf:resource="http://purl.org/ontology/bibo/Periodical"/>
+    <rdfs:label xml:lang="en">Newspaper</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Avis</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Journal">
+    <rdfs:subClassOf rdf:resource="http://purl.org/ontology/bibo/Periodical"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brukt for akademiske tidsskrift.</rdfs:comment>
+    <rdfs:label xml:lang="en">Journal</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Tidsskrift</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Room">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Building"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Rom</rdfs:label>
+    <rdfs:label xml:lang="en">Room</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#Point">
+    <rdfs:label xml:lang="en">Point</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Punkt</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Person">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en"></rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Person</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/MasterThesis">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Mastergrad</rdfs:label>
+    <rdfs:label xml:lang="en">Master thesis</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Series">
+    <rdfs:label xml:lang="en">Series</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Serie</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/ontology/bibo/Collection"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/ShipsLog">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Skipslogg</rdfs:label>
+    <rdfs:label xml:lang="en">Skip's log</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/PressClipping">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Presseklipp</rdfs:label>
+    <rdfs:label xml:lang="en">Press Clipping</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Written work</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Tekst</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://dbpedia.org/ontology/Company">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Selskap</rdfs:label>
+    <rdfs:label xml:lang="en">Company</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Organization"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Advertisement">
+    <rdfs:label xml:lang="en">Advertisement</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Annonse</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Parish">
+    <rdfs:label xml:lang="en">Parish</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kirkesogn</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Brochure">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brosjyre</rdfs:label>
+    <rdfs:label xml:lang="en">Brochure</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/CopyBook">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Protocol"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Copy book</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kopibok</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Receipt">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kvittering</rdfs:label>
+    <rdfs:label xml:lang="en">Receipt</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/PrayerBook">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bønnebok</rdfs:label>
+    <rdfs:label xml:lang="en">Prayer book</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://dbpedia.org/ontology/MusicalWork">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://vocab.org/frbr/core#Work"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Musikkverk</rdfs:label>
+    <rdfs:label xml:lang="en">Musical work</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/BookOfMinutes">
+    <rdfs:label xml:lang="en">Book of minutes</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Forhandlingsprotokoll</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Protocol"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Programme">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Program</rdfs:label>
+    <rdfs:label xml:lang="en">Programme</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/FurnitureSubSection">
+    <rdfs:label xml:lang="en">Furniture sub section</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fag</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/FurnitureSection"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Translation">
+    <rdfs:label xml:lang="en">Translation</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Oversettelse</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Article">
+    <rdfs:label xml:lang="en">Article</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Artikkel</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/CashBook">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">Cash book</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kassebok</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Manuscript">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Manuskript</rdfs:label>
+    <rdfs:label xml:lang="en">Manuscript</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition">
+    <rdfs:label xml:lang="en">Exhibition</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Utstilling</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Technique">
+    <rdfs:label xml:lang="en">Technique</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Teknikk</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Protocol">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">Protocol</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Protokoll</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://schema.org/Country">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Country</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Land</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DigitalResource">
+    <rdfs:label xml:lang="en">Digital resource</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Digital ressurs</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/FurnitureSubSubSection">
+    <rdfs:label xml:lang="en">Furniture sub-sub section</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Hylle/skuff</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/FurnitureSubSection"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Proceedings">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Book"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Proceedings</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Konferanseinnlegg</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Contract">
+    <rdfs:label xml:lang="en">Contract</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kontrakt</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Passport">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Pass</rdfs:label>
+    <rdfs:label xml:lang="en">Passport</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Book">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">Book</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bok</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Will">
+    <rdfs:label xml:lang="en">Will</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Testament</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/CatalogueCard">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Katalogkort</rdfs:label>
+    <rdfs:label xml:lang="en">Catalogue card</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Organization">
+    <rdfs:label xml:lang="en">Organization</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Organisasjon</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Form">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Skjema</rdfs:label>
+    <rdfs:label xml:lang="en">Form</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://erlangen-crm.org/current/E9_Move">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/NET/c4dm/event.owl#Event"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Move</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Flytt</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#Concept">
+    <rdfs:label xml:lang="en">Concept</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Emne</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Deed">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bekjentgjørelse</rdfs:label>
+    <rdfs:label xml:lang="en">Deed</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Booklet">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Hefte</rdfs:label>
+    <rdfs:label xml:lang="en">Booklet</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/dc/terms/Image">
+    <rdfs:label xml:lang="en">Visual media</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Visuelle medier</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/dc/dcmitype/LivingImage">
+    <rdfs:label xml:lang="en">Living image</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Levende bilde</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/dc/terms/Image"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Letter">
+    <rdfs:label xml:lang="en">Letter</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brev</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Sigil">
+    <rdfs:label xml:lang="en">Sigil</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Segl</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Attachment"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Bestallingsbrev">
+    <rdfs:label xml:lang="en">Commission of appointment</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bestallingsbrev</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;p style="margin-top: 0"&gt;
+      Ansettelsesbrev for embetsmenn.
+    &lt;/p&gt;</rdfs:comment>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Charter">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">Charter</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Diplom</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DoctoralThesis">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">Doctoral thesis</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Doktorgrad</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/FurnitureSection">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Møbelseksjon</rdfs:label>
+    <rdfs:label xml:lang="en">Furniture section</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Furniture"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Flyer">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Løpeseddel</rdfs:label>
+    <rdfs:label xml:lang="en">Flyer</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Building">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bygning</rdfs:label>
+    <rdfs:label xml:lang="en">Building</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Attachment">
+    <rdfs:label xml:lang="en">Attachment</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vedheng</rdfs:label>
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Issue">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">Issue</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nummer</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Journal">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brukt for regnskap og lignende</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Journal</rdfs:label>
+    <rdfs:label xml:lang="en">Journal</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Cantata">
+    <rdfs:subClassOf rdf:resource="http://dbpedia.org/ontology/MusicalWork"/>
+    <rdfs:label xml:lang="en">Cantata</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kantate</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/NET/c4dm/event.owl#Event">
+    <rdfs:label xml:lang="en">Event</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Hendelse</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Photograph">
+    <rdfs:subClassOf rdf:resource="http://purl.org/dc/terms/Image"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fotografi</rdfs:label>
+    <rdfs:label xml:lang="en">Photograph</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/GraphicArt">
+    <rdfs:comment xml:lang="no">Grafikk er en fellesbetegnelse på alle reproduksjonsmåter av skrift og tegning. Grafikk betegner både trykketeknikken og selve produktet, det grafiske bladet, samt trykt kunst generelt.</rdfs:comment>
+    <rdfs:label xml:lang="en">Graphic art</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Grafikk</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/dc/terms/Image"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent">
+    <rdfs:label xml:lang="en">Agent</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Aktør</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Transcription">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Copy"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Transkripsjon</rdfs:label>
+    <rdfs:label xml:lang="en">Transcription</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/CircularLetter">
+    <rdfs:label xml:lang="en">Circular letter</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Rundskriv</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/ontology/bibo/Letter"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/MapSet">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">Map set</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kartsett</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Drawing">
+    <rdfs:label xml:lang="en">Drawing</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Tegning</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/dc/terms/Image"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Magazine">
+    <rdfs:label xml:lang="en">Magazine</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Magasin</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/ontology/bibo/Periodical"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Copy">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">Copy</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kopi</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Family">
+    <rdfs:subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label xml:lang="en">Family</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Familie</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Ticket">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Billett</rdfs:label>
+    <rdfs:label xml:lang="en">Ticket</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Publisher">
+    <rdfs:label xml:lang="en">Publisher</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Utgiver</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/MortageDeed">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">Mortage Deed</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Pantebrev</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/JourneyLog">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Diary"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Reisedagbok</rdfs:label>
+    <rdfs:label xml:lang="en">Journey log</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Speech">
+    <rdfs:label xml:lang="en">Speech</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Tale</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition">
+    <rdfs:label xml:lang="en">Acquisition</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Akkvisisjon</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Dokument</rdfs:label>
+    <rdfs:label xml:lang="en">Document</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/AcademicArticle">
+    <rdfs:label xml:lang="en">Academic article</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vitenskapelig artikkel</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/ontology/bibo/Article"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/LandSurvey">
+    <rdfs:label xml:lang="en">Land survey</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Oppmålingsdokument</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://vocab.lenka.no/geo-deling#Grunneiendom">
+    <rdfs:subClassOf>
+      <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Grunneiendom</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Postcard">
+    <rdfs:label xml:lang="en">Postcard</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Postkort</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/dc/terms/Image"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/FinancialStatement">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Regnskap</rdfs:label>
+    <rdfs:label xml:lang="en">Financial statement</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Sted</rdfs:label>
+    <rdfs:label xml:lang="en">Spatial thing</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/ProxyCollection">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Manuskriptsamling</rdfs:label>
+    <rdfs:label xml:lang="en">Collection</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/ontology/bibo/Collection"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Workshop">
+    <rdfs:label xml:lang="en">Workshop</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Workshop</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/NET/c4dm/event.owl#Event"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/EditedBook">
+    <rdfs:label xml:lang="en">Edited book</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Antologi</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Vidisse">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vidisse</rdfs:label>
+    <rdfs:label xml:lang="en">Vidisse</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vidisse, dokumenttype. I l&amp;#248;pet av 1100-tallet utviklet det seg i europeisk diplomatikk en fastere praksis for p&amp;#229;litelig kopiering av eldre eller samtidige dokumenter. Det dokument som forel&amp;#229; til kopiering, ble gjengitt med sin fulle ordlyd i et nytt, bekreftet dokument &amp;#8211; et vidisse &amp;#8211; og p&amp;#229; en slik m&amp;#229;te at det eldre dokumentets ordlyd skilte seg klart fra ordlyden i det nyutferdigede dokumentet. Mange eldre akter av vidtrekkende betydning er bare kjent i denne formen</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Copy"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Thesis">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Oppgave</rdfs:label>
+    <rdfs:label xml:lang="en">Thesis</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Page">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Side</rdfs:label>
+    <rdfs:label xml:lang="en">Page</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://purl.org/ontology/bibo/Document"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Map">
+    <rdfs:subClassOf rdf:resource="http://purl.org/dc/terms/Image"/>
+    <rdfs:label xml:lang="en">Map</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kart</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Painting">
+    <rdfs:subClassOf rdf:resource="http://purl.org/dc/terms/Image"/>
+    <rdfs:label xml:lang="en">Painting</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Maleri</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Conference">
+    <rdfs:subClassOf rdf:resource="http://purl.org/NET/c4dm/event.owl#Event"/>
+    <rdfs:label xml:lang="en">Conference</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Konferanse</rdfs:label>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WindowDisplay">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Vindusutstilling</rdfs:label>
+    <rdfs:label xml:lang="en">Window display</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Exhibition"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#ConceptScheme">
+    <rdfs:label xml:lang="en">Concept scheme</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Emneregister</rdfs:label>
+  </rdfs:Class>
+  <owl:Class rdf:about="http://www.europeana.eu/schemas/edm/WebResource">
+    <rdfs:label xml:lang="en">Web Resource</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Nettressurs</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.openarchives.org/ore/terms/Aggregation">
+    <rdfs:label xml:lang="en">Aggregation</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Aggregering</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/workflow/Priority">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Prioritet</rdfs:label>
+    <rdfs:label xml:lang="en">Priority</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/T-Shirt">
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/Monument"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/Vessel"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/Button"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+    </rdfs:subClassOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >T-skjorte</rdfs:label>
+    <rdfs:label xml:lang="en">T-Shirt</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/userPlace">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/UserGenereatedContent"/>
+    </rdfs:subClassOf>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/userPoint"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/userTag"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/userDate"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object">
+    <rdfs:label xml:lang="en">Object</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Objekt</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Location">
+    <rdfs:label xml:lang="en">Location</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Plassering</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Plassering sier noe om hvor objektet er, når det var der og hvor og hvorfor det er flyttet.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Box">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Object"/>
+    <rdfs:label xml:lang="en">Box</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Boks</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Boks som har inneholdt eller inneholder objekt eller dokument.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/userDate">
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/userPlace"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/userPoint"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/userTag"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/UserGenereatedContent"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/userTag">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/UserGenereatedContent"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/userPlace"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/userDate"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/userPoint"/>
+    </owl:disjointWith>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/userPoint">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/UserGenereatedContent"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/userPlace"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/userDate"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/userTag"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Ship">
+    <rdfs:label xml:lang="en">Ship</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Skip</rdfs:label>
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/Vessel"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Vessel">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Object"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/T-Shirt"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/Monument"/>
+    </owl:disjointWith>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/Button"/>
+    </owl:disjointWith>
+    <rdfs:label xml:lang="en">Vessel</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fartøy</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Measurement">
+    <rdfs:label xml:lang="en">Measurement</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Mål</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://creativecommons.org/ns#License">
+    <rdfs:label xml:lang="en">License</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lisens</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/PhysicalDescription">
+    <rdfs:label xml:lang="en">Physical description</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fysisk beskrivelse</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://vocab.org/frbr/core#Work">
+    <rdfs:label xml:lang="en">Work</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Verk</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/StorageUnit">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brukes for å beskrive skap, hyller og lignende. Erstattet av (geo:SpatialThing -&gt; ubbont:Building -&gt; ubbont:Room) med underklasser.</rdfs:comment>
+    <rdfs:label xml:lang="en">Storage Unit</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lagringsenhet</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DeprecatedClass"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://lexvo.org/ontology#Language">
+    <rdfs:label xml:lang="en">Language</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Språk</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/BookbindingDescription">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bokinnbindingsbeskrivelse</rdfs:label>
+    <rdfs:label xml:lang="en">Bookbinding description</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Button">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Button</rdfs:label>
+    <rdfs:label xml:lang="en">Button</rdfs:label>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/T-Shirt"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/Vessel"/>
+    <owl:disjointWith>
+      <owl:Class rdf:about="http://data.ub.uib.no/ontology/Monument"/>
+    </owl:disjointWith>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Object"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/ResourceType">
+    <rdfs:label xml:lang="en">Resource type</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Ressurstype</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Monument">
+    <rdfs:label xml:lang="en">Monument</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Monument</rdfs:label>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/T-Shirt"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/Vessel"/>
+    <owl:disjointWith rdf:resource="http://data.ub.uib.no/ontology/Button"/>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Object"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/Reference">
+    <rdfs:label xml:lang="en">Reference</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Referanse</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/workflow/Workflow">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Arbeidsflyt</rdfs:label>
+    <rdfs:label xml:lang="en">Workflow</rdfs:label>
+  </owl:Class>
+  <owl:Class rdf:about="http://data.ub.uib.no/ontology/WorkList">
+    <rdfs:label xml:lang="en">Work list</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Arbeidsliste</rdfs:label>
+    <rdfs:comment xml:lang="no">Arbeidslister er for å lage interne samlinger av objekt for videre arbeid internt.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="http://purl.org/dc/terms/ProvenanceStatement">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Proveniens</rdfs:label>
+    <rdfs:label xml:lang="en">Provenance statement</rdfs:label>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/published">
+    <rdfs:label xml:lang="en">published</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har utgitt</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/publisher"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/tertiarySupport">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >tertiær støtte</rdfs:label>
+    <rdfs:label xml:lang="en">tertiary support</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/sender">
+    <rdfs:label xml:lang="en">sender</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >avsender</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Letter"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P25_moved">
+    <rdfs:domain rdf:resource="http://erlangen-crm.org/current/E9_Move"/>
+    <rdfs:label xml:lang="en">moved</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >flyttet</rdfs:label>
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P25i_moved_by"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasSource">
+    <rdfs:label xml:lang="en">has source</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >kilde</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/isSourceOf"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/relation">
+    <rdfs:label xml:lang="en">relasjon</rdfs:label>
+    <owl:inverseOf rdf:resource="http://purl.org/dc/terms/relation"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/isReferencedBy">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Reference"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/references"/>
+    </owl:inverseOf>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Reference"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <rdfs:label xml:lang="en">is referenced by</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >er referert av</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/acquired">
+    <rdfs:label xml:lang="en">acquired</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >ervervet</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Acquisition"/>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/acquiredIn"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#broader">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >overordnet term</rdfs:label>
+    <rdfs:label xml:lang="en">broader</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#narrower"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/receivedFrom">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/formerOwnerOf"/>
+    </owl:inverseOf>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >mottatt fra</rdfs:label>
+    <rdfs:label xml:lang="en">received from</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/language">
+    <rdfs:range rdf:resource="http://lexvo.org/ontology#Language"/>
+    <rdfs:label xml:lang="en">language</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >språk</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/license">
+    <rdfs:label xml:lang="en">licence</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >lisens</rdfs:label>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DigitalResource"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://creativecommons.org/ns#License"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/formerOwner">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >tidligere eier</rdfs:label>
+    <rdfs:label xml:lang="en">former owner</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/currentTemporaryLocation">
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/StorageUnit"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >nåværende, midlertidig plassering</rdfs:label>
+    <rdfs:label xml:lang="en">current temporary location</rdfs:label>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/secondarySupport">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >sekundær støtte</rdfs:label>
+    <rdfs:label xml:lang="en">secondary support</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.geonames.org/ontology#parentCountry">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >parent Country</rdfs:label>
+    <rdfs:range rdf:resource="http://schema.org/Country"/>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/rightsHolder">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DigitalResource"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/isRightsHolderOf"/>
+    </owl:inverseOf>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label xml:lang="en">rightsholder</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >rettighetshaver</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/isLocationFor">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasLocation"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Location"/>
+    <rdfs:label xml:lang="en">is location for</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >plassering for</rdfs:label>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/technique">
+    <rdfs:label xml:lang="en">technique</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >teknikk</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/techniqueOf"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Technique"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P27i_was_origin_of">
+    <rdfs:label xml:lang="en">was origin of (Move)</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >flyttet fra i</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/FurnitureSection"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P27_moved_from"/>
+    </owl:inverseOf>
+    <rdfs:range rdf:resource="http://erlangen-crm.org/current/E9_Move"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/originalCreator">
+    <rdfs:label xml:lang="en">original creator</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >skaper av relatert verk</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/originalCreatorOf"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P26_moved_to">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >flyttet til</rdfs:label>
+    <rdfs:label xml:lang="en">moved to</rdfs:label>
+    <rdfs:domain rdf:resource="http://erlangen-crm.org/current/E9_Move"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/FurnitureSection"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P26i_was_destination_of"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/formerOwnerOf">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/receivedFrom"/>
+    <rdfs:label xml:lang="en">former owner of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >tidligere eier av</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/resourceType">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >ressurstype</rdfs:label>
+    <rdfs:label xml:lang="en">resource type</rdfs:label>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://www.europeana.eu/schemas/edm/WebResource"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DigitalResource"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/temporaryLocationOf">
+    <rdfs:label xml:lang="en">temporary location of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >midlertidig plassering til</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://data.ub.uib.no/ontology/isLocationFor"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasTemporaryLocation"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/page">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har nettside</rdfs:label>
+    <rdfs:label xml:lang="en">page</rdfs:label>
+    <rdfs:range rdf:resource="http://www.europeana.eu/schemas/edm/WebResource"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/originalCreatorOf">
+    <rdfs:label xml:lang="en">original creator of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har skapt original verk</rdfs:label>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/originalCreator"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#narrower">
+    <owl:inverseOf rdf:resource="http://www.w3.org/2004/02/skos/core#broader"/>
+    <rdfs:label xml:lang="en">narrower</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >underordnet term</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/isRepresentationOf">
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasRepresentation"/>
+    </owl:inverseOf>
+    <rdfs:label xml:lang="en">is rpresentation of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >er representasjon av</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.europeana.eu/schemas/edm/isNextInSequence">
+    <rdfs:label xml:lang="no">neste ressurs i sekvensen</rdfs:label>
+    <rdfs:label xml:lang="en">is next in sequence</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasTranscription">
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/transcriptionOf"/>
+    </owl:inverseOf>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Transcription"/>
+    <rdfs:label xml:lang="en">has transcription</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har transkipsjon</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/based_near">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >omtrentlig tilholdssted</rdfs:label>
+    <rdfs:label xml:lang="en">based near</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/stores">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lagrer</rdfs:label>
+    <rdfs:label xml:lang="en">Stores</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/StorageUnit"/>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Location"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/storedAt"/>
+    </owl:inverseOf>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DeprecatedProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/NET/c4dm/event.owl#product">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >produkt</rdfs:label>
+    <rdfs:label xml:lang="en">product</rdfs:label>
+    <rdfs:domain rdf:resource="http://purl.org/NET/c4dm/event.owl#Event"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/NET/c4dm/event.owl#producedIn"/>
+    </owl:inverseOf>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasPermantentLocation">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >permanent plassering</rdfs:label>
+    <rdfs:label xml:lang="en">permanent location</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/permantentLocationOf"/>
+    </owl:inverseOf>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasLocation"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/depicts">
+    <rdfs:domain rdf:resource="http://purl.org/dc/terms/Image"/>
+    <rdfs:label xml:lang="en">depicts</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >avbilder</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/depiction"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/nextPage">
+    <rdfs:label xml:lang="en">next page</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >neste side</rdfs:label>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Page"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Page"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.europeana.eu/schemas/edm/isShownAt">
+    <rdfs:label xml:lang="en">is shown at</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >vises på</rdfs:label>
+    <rdfs:range rdf:resource="http://www.europeana.eu/schemas/edm/WebResource"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#topConceptOf">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#hasTopConcept"/>
+    </owl:inverseOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >toppkonsept</rdfs:label>
+    <rdfs:label xml:lang="en">top concept of</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
+    <rdfs:domain rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/measurement">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >mål/dimensjon</rdfs:label>
+    <rdfs:label xml:lang="en">measurement/dimension</rdfs:label>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Measurement"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/placeDelivery">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >mottakersted</rdfs:label>
+    <rdfs:label xml:lang="en">place of delivery</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >F.eks. sted i registeret et brev er sendt til.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/maker">
+    <rdfs:label xml:lang="en">maker</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >skapt av</rdfs:label>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/made"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/publisher">
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/published"/>
+    <rdfs:label xml:lang="en">publisher</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >utgiver</rdfs:label>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#location">
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#Point"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/NET/c4dm/event.owl#Event"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Organization"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brukes til å koble ting med geoposisjon, som kan posisjonere et objekt i en gitt tidsperiode.</rdfs:comment>
+    <rdfs:label xml:lang="en">location</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >lokasjon</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://schema.org/knows">
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >kjenner</rdfs:label>
+    <rdfs:label xml:lang="en">knows</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/permantentLocationOf">
+    <rdfs:subPropertyOf rdf:resource="http://data.ub.uib.no/ontology/isLocationFor"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >permanent plassering til</rdfs:label>
+    <rdfs:label xml:lang="en">permantent location of</rdfs:label>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/hasPermantentLocation"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasLocation">
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Location"/>
+    <rdfs:label xml:lang="en">has location</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har plassering</rdfs:label>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/isLocationFor"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/subject">
+    <rdfs:label xml:lang="en">subject</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >emne</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/isSubjectOf"/>
+    </owl:inverseOf>
+    <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/pageIn">
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/dc/terms/Image"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasPage"/>
+    </owl:inverseOf>
+    <rdfs:label xml:lang="en">page in</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >side i</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Page"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasTranscript">
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/ontology/bibo/transcriptOf"/>
+    </owl:inverseOf>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >This original has a transcription.</rdfs:comment>
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:label xml:lang="en">has transcript</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har transkripsjon</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/commissioned">
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/commissionedBy"/>
+    </owl:inverseOf>
+    <rdfs:label xml:lang="en">commissioned</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >oppdragsgiver</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/editorOf">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >redaktør av</rdfs:label>
+    <rdfs:label xml:lang="en">editor of</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/ontology/bibo/editor"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/previousPage">
+    <rdfs:label xml:lang="en">previous page</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >forrige side</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Page"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Page"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P25i_moved_by">
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <owl:inverseOf rdf:resource="http://erlangen-crm.org/current/P25_moved"/>
+    <rdfs:range rdf:resource="http://erlangen-crm.org/current/E9_Move"/>
+    <rdfs:label xml:lang="en">moved by</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >flyttet i</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P55_has_current_location">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >nåværende lokasjon</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >has current location</rdfs:label>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/FurnitureSection"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P55i_currently_holds"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P55i_currently_holds">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >inneholder nå</rdfs:label>
+    <rdfs:label xml:lang="en">currently holds</rdfs:label>
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/FurnitureSection"/>
+    <owl:inverseOf rdf:resource="http://erlangen-crm.org/current/P55_has_current_location"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/storedAt">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Location"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/stores"/>
+    <rdfs:label xml:lang="en">stored at</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >lagret i</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DeprecatedProperty"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/StorageUnit"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#related">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:label xml:lang="en">related concept</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >relatert term</rdfs:label>
+    <owl:inverseOf rdf:resource="http://www.w3.org/2004/02/skos/core#related"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/references">
+    <owl:inverseOf rdf:resource="http://purl.org/dc/terms/isReferencedBy"/>
+    <rdfs:label xml:lang="en">references</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >refererer</rdfs:label>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Reference"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Reference"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/ontology/bibo/recipient">
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label xml:lang="en">recipient</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >mottaker</rdfs:label>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Letter"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/commissionedBy">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har oppdragsgiver</rdfs:label>
+    <rdfs:label xml:lang="en">comissioned by</rdfs:label>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/commissioned"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/ns/org#memberOf">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label xml:lang="en">member of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >medlem av</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://www.w3.org/ns/org#hasMember"/>
+    </owl:inverseOf>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Organization"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Family"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/translationOf">
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:label xml:lang="en">translation of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >oversettelse av</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasTranslation"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Translation"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasClause">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Clause"/>
+    <rdfs:label xml:lang="en">clause</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >klausul</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/clauseFor"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/transcriptionOf">
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/hasTranscription"/>
+    <rdfs:label xml:lang="en">transcription of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >transkripsjon av</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Transcription"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#exactMatch">
+    <rdfs:label xml:lang="en">exact match</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >eksakt match</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasTemporaryLocation">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >midlertidig plassering</rdfs:label>
+    <rdfs:label xml:lang="en">temporary location</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://data.ub.uib.no/ontology/hasLocation"/>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/temporaryLocationOf"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/currentPermanentLocation">
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/StorageUnit"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >nåværende, permanent plassering</rdfs:label>
+    <rdfs:label xml:lang="en">current permanent location</rdfs:label>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://schema.org/parent">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://schema.org/children"/>
+    </owl:inverseOf>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >forelder</rdfs:label>
+    <rdfs:label xml:lang="en">parent</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/ns/org#hasMember">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Organization"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Family"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf rdf:resource="http://www.w3.org/ns/org#memberOf"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label xml:lang="en">has member</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har medlem</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.archiveshub.ac.uk/def/accessProvidedBy">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/reproducedBy">
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/reproduced"/>
+    </owl:inverseOf>
+    <rdfs:label xml:lang="en">reproduced by</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >reprodusert av</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.geonames.org/ontology#parentADM1">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >parent ADM1</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:range rdf:resource="http://vocab.lenka.no/geo-deling#Fylke"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/techniqueOf">
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Technique"/>
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/technique"/>
+    <rdfs:label xml:lang="en">technique of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >teknikk brukt på</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://schema.org/relatedTo">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >beslektet til</rdfs:label>
+    <rdfs:label xml:lang="en">related to</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P27_moved_from">
+    <owl:inverseOf rdf:resource="http://erlangen-crm.org/current/P27i_was_origin_of"/>
+    <rdfs:domain rdf:resource="http://erlangen-crm.org/current/E9_Move"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/FurnitureSection"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >flyttet fra</rdfs:label>
+    <rdfs:label xml:lang="en">moved from</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/isSubjectOf">
+    <rdfs:domain rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdfs:label xml:lang="en">is subject of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >emne på</rdfs:label>
+    <owl:inverseOf rdf:resource="http://purl.org/dc/terms/subject"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/ontology/bibo/transcriptOf">
+    <rdfs:label xml:lang="en">transcript of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >transkripsjon av</rdfs:label>
+    <rdfs:range rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/hasTranscript"/>
+    <rdfs:comment xml:lang="en">Relates a document to some transcribed original.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasTranslation">
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/translationOf"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Translation"/>
+    <rdfs:label xml:lang="en">has translation</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har oversettelse</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/ns/org#hasSubOrganization">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+    <rdfs:label xml:lang="en">has suborganization</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har sub-organisasjon</rdfs:label>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://www.w3.org/ns/org#subOrganizationOf"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/isRightsHolderOf">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label xml:lang="en">is rightsholder of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >er rettighetshaver til</rdfs:label>
+    <owl:inverseOf rdf:resource="http://purl.org/dc/terms/rightsHolder"/>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DigitalResource"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/contains">
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >contains</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/containedIn"/>
+    </owl:inverseOf>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://schema.org/spouse">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <owl:inverseOf rdf:resource="http://schema.org/spouse"/>
+    <rdfs:label xml:lang="en">spouse</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >ektefelle</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/ontology/bibo/editor">
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/editorOf"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/cataloguer">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DigitalResource"/>
+          <rdfs:Class rdf:about="http://purl.org/NET/c4dm/event.owl#Event"/>
+          <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#Concept"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Location"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <owl:Class rdf:about="http://purl.org/dc/terms/ProvenanceStatement"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >katalogisator</rdfs:label>
+    <rdfs:label xml:lang="en">cataloguer</rdfs:label>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Cataloguer"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://dbpedia.org/ontology/deathPlace">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >dødssted</rdfs:label>
+    <rdfs:label xml:lang="en">deathplace</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/made">
+    <owl:inverseOf rdf:resource="http://xmlns.com/foaf/0.1/maker"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label xml:lang="en">made</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har skapt</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://erlangen-crm.org/current/P26i_was_destination_of">
+    <owl:inverseOf rdf:resource="http://erlangen-crm.org/current/P26_moved_to"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/FurnitureSection"/>
+    <rdfs:range rdf:resource="http://erlangen-crm.org/current/E9_Move"/>
+    <rdfs:label xml:lang="en">was destination for</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >flyttet til i</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/isReplacedBy">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >erstattet av</rdfs:label>
+    <rdfs:label xml:lang="en">is replaced by</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/replaces"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#inScheme">
+    <rdfs:label xml:lang="en">in scheme</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >del av register</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/NET/c4dm/event.owl#Event"/>
+          <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
+          <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#Concept"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Technique"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent"/>
+          <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/acquiredIn">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/acquired"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Acquisition"/>
+    <rdfs:label xml:lang="en">acquired in</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >ervervet i</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/workflow/workflowAction">
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/workflow/Workflow"/>
+    <rdfs:label xml:lang="en">workflow action</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasPage">
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/Page"/>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/pageIn"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/dc/terms/Image"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/WrittenWork"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:label xml:lang="en">has page(s)</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >side(r)</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/replaces">
+    <owl:inverseOf rdf:resource="http://purl.org/dc/terms/isReplacedBy"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >null</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >erstatter</rdfs:label>
+    <rdfs:label xml:lang="en">replaces</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://schema.org/sibling">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >søsken</rdfs:label>
+    <rdfs:label xml:lang="en">sibling</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://schema.org/children">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >barn</rdfs:label>
+    <rdfs:label xml:lang="en">children</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <owl:inverseOf rdf:resource="http://schema.org/parent"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/ownedBy">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >eies av</rdfs:label>
+    <rdfs:label xml:lang="en">owned by</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/ontology/bibo/owner"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.geonames.org/ontology#parentFeature">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >parent feature</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/clauseFor">
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Clause"/>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/hasClause"/>
+    <rdfs:label xml:lang="en">clause for</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >klausul for</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/locationFor">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >location of</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:range>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Organization"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Location"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:range>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/spatial"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/ontology/bibo/owner">
+    <rdfs:label xml:lang="en">owner</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >eier</rdfs:label>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/ownedBy"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/hasVersion">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    <owl:inverseOf rdf:resource="http://purl.org/dc/terms/hasVersion"/>
+    <rdfs:label xml:lang="en">has version</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har versjon</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/originPlace">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >opprinnelsessted</rdfs:label>
+    <rdfs:label xml:lang="en">origin place</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/NET/c4dm/event.owl#subEvent">
+    <rdfs:range rdf:resource="http://purl.org/NET/c4dm/event.owl#Event"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >underordnet hendelse</rdfs:label>
+    <rdfs:label xml:lang="en">subevent</rdfs:label>
+    <rdfs:domain rdf:resource="http://purl.org/NET/c4dm/event.owl#Event"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/placeOfPublication">
+    <rdfs:label xml:lang="en">place of publication</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >utgivelsessted</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/NET/c4dm/event.owl#producedIn">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <owl:inverseOf rdf:resource="http://purl.org/NET/c4dm/event.owl#product"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >produsert i</rdfs:label>
+    <rdfs:label xml:lang="en">produced in</rdfs:label>
+    <rdfs:range rdf:resource="http://purl.org/NET/c4dm/event.owl#Event"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/2004/02/skos/core#hasTopConcept">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >has top concept</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <owl:inverseOf rdf:resource="http://www.w3.org/2004/02/skos/core#topConceptOf"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/focus">
+    <rdfs:domain rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >focus</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/isSourceOf">
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/hasSource"/>
+    <rdfs:label xml:lang="en">is source of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >er kilde til</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/reproduced">
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/reproducedBy"/>
+    <rdfs:label xml:lang="en">reproduced</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har reprodusert</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/provenance">
+    <rdfs:label xml:lang="en">provenance</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >proveniens</rdfs:label>
+    <rdfs:range rdf:resource="http://purl.org/dc/terms/ProvenanceStatement"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/hasRepresentation">
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/isRepresentationOf"/>
+    <rdfs:label xml:lang="en">has representation</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har representasjon</rdfs:label>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:range rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.w3.org/ns/org#subOrganizationOf">
+    <owl:inverseOf rdf:resource="http://www.w3.org/ns/org#hasSubOrganization"/>
+    <rdfs:range rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+    <rdfs:label xml:lang="en">suborganization of</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >sub-organisasjon av</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://dbpedia.org/ontology/birthPlace">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:label xml:lang="en">birthplace</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fødested</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://www.geonames.org/ontology#parentADM2">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >parent ADM2</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/isPartOf">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >er del av</rdfs:label>
+    <rdfs:label xml:lang="en">is part of</rdfs:label>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/hasPart"/>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/containedIn">
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >contained in</rdfs:label>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/contains"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/NET/c4dm/event.owl#place">
+    <rdfs:domain rdf:resource="http://purl.org/NET/c4dm/event.owl#Event"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >skjedde ved</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DeprecatedProperty"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/depiction">
+    <owl:inverseOf rdf:resource="http://xmlns.com/foaf/0.1/depicts"/>
+    <rdfs:label xml:lang="en">depiction</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >avbildet på</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/hasPart">
+    <rdfs:label xml:lang="en">has part</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har del</rdfs:label>
+    <owl:inverseOf rdf:resource="http://purl.org/dc/terms/isPartOf"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://data.ub.uib.no/ontology/primarySupport">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >primær støtte</rdfs:label>
+    <rdfs:label xml:lang="en">primary support</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://purl.org/dc/terms/spatial">
+    <rdfs:label xml:lang="en">spatial</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >sted</rdfs:label>
+    <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/locationFor"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Object"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Exhibition"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Organization"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Location"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/identifier">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">identifier</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >identifikator</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#lat">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/NET/c4dm/event.owl#Event"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent"/>
+          <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Monument"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:label xml:lang="en">latitude</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >breddegrad</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/ontology/bibo/volume">
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:label xml:lang="en">volume</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >volum</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/internalNote">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">internal note</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >intern note</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://schema.org/streetAddress">
+    <rdfs:label xml:lang="en">street address</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >gateadresse</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/rodeNr">
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://xmlns.com/foaf/0.1/mbox">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label xml:lang="en">email</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >epost-adresse</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://xmlns.com/foaf/0.1/name">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">name</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >navn</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#xResolution">
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >x resolution</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/format">
+    <rdfs:label xml:lang="en">format</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >format</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/ontology/bibo/issue">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Article"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Issue"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:label xml:lang="en">issue</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >nummer</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/rights">
+    <rdfs:label xml:lang="en">rights</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >rettigheter</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/acqusitionType">
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Acquisition"/>
+    <rdfs:range>
+      <owl:DataRange>
+        <owl:oneOf rdf:parseType="Resource">
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >Overtatt</rdf:first>
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Kun filer, digitalisert av UB</rdf:first>
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >Kun filer, digitalisert av eier</rdf:first>
+              <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </rdf:rest>
+          </rdf:rest>
+        </owl:oneOf>
+      </owl:DataRange>
+    </rdfs:range>
+    <rdfs:label xml:lang="en">acqusition type</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >akkvisisjonstype</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/estimatedCollectionSize">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Collection"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/ontology/bibo/pageEnd">
+    <rdfs:label xml:lang="en">last page</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >siste side</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/showWeb">
+    <rdfs:label xml:lang="en">showWeb</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >vis på web</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2004/02/skos/core#altLabel">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">alternativ label</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >alternativt navn</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/clauseStatus">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >klausulstatus</rdfs:label>
+    <rdfs:label xml:lang="en">clause status</rdfs:label>
+    <rdfs:range>
+      <owl:DataRange>
+        <owl:oneOf rdf:parseType="Resource">
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >1=Sperret pga. fysisk tilstand</rdf:first>
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:parseType="Resource">
+                <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >4=Klausulert, adgang gis av selger/giver/deponent</rdf:first>
+                <rdf:rest rdf:parseType="Resource">
+                  <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >5=Klausulert, adgang gis av produsent (i henhold til rettighetsbestemmelser i lovverk)</rdf:first>
+                  <rdf:rest rdf:parseType="Resource">
+                    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                    <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >6=Klausulert, adgang gis av avbildet person</rdf:first>
+                  </rdf:rest>
+                </rdf:rest>
+              </rdf:rest>
+              <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >3=Klausulert, adgang gis av institusjonen</rdf:first>
+            </rdf:rest>
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >2=Taushetsbelagt etter offentlig regelverk</rdf:first>
+          </rdf:rest>
+        </owl:oneOf>
+      </owl:DataRange>
+    </rdfs:range>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Clause"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/invertedName">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label xml:lang="en">inverted name</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >invertert navn</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/internalLocation">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DeprecatedProperty"/>
+    <rdfs:label xml:lang="en">internal location</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >intern plassering</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/featured">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/birthName">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >birth name</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/created">
+    <rdfs:label xml:lang="en">created</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >skapt</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#model">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >model</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/madeBefore">
+    <rdfs:label xml:lang="en">made before</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >laget før</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/temporal">
+    <rdfs:label xml:lang="en">temporal</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >tid</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/sequenceNr">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:label xml:lang="en">sequence nr</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >sekvensnr</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/birthDate">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label xml:lang="en">birthdate</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fødselsdato</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://xmlns.com/foaf/0.1/gender">
+    <rdfs:label xml:lang="en">gender</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >kjønn</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range>
+      <owl:DataRange>
+        <owl:oneOf rdf:parseType="Resource">
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >female</rdf:first>
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+              <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >other</rdf:first>
+            </rdf:rest>
+          </rdf:rest>
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >male</rdf:first>
+        </owl:oneOf>
+      </owl:DataRange>
+    </rdfs:range>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/height"/>
+  <owl:DatatypeProperty rdf:about="http://purl.org/ontology/bibo/issn">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/MultiVolumeBook"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Series"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Periodical"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >issn</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://vocab.lenka.no/geo-deling#gnr">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >grunnnr</rdfs:label>
+    <rdfs:domain rdf:resource="http://vocab.lenka.no/geo-deling#Grunneiendom"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/description">
+    <rdfs:label xml:lang="en">description</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >beskrivelse</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/formLabel">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >label for visning i skjema&#xD;.</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:label xml:lang="en">form label</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >navn for skjema</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#focalLength">
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >focal lenght</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/profession">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">profession</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >yrke</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/bruksnavn">
+    <rdfs:domain rdf:resource="http://vocab.lenka.no/geo-deling#Grunneiendom"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >bruksnavn</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://schema.org/email">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label xml:lang="en">email</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >epostadresse</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://xmlns.com/foaf/0.1/logo">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >logo</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/quality">
+    <rdfs:range>
+      <owl:DataRange>
+        <owl:oneOf rdf:parseType="Resource">
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >High</rdf:first>
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:parseType="Resource">
+                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >Low</rdf:first>
+              </rdf:rest>
+              <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >Medium</rdf:first>
+            </rdf:rest>
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Ultra</rdf:first>
+          </rdf:rest>
+        </owl:oneOf>
+      </owl:DataRange>
+    </rdfs:range>
+    <rdfs:label xml:lang="en">quality</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >kvalitet</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/pseudonym">
+    <rdfs:label xml:lang="en">pseudonym</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >pseudonym</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/formationDate">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:label xml:lang="en">formation date</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >opprettelsesdato</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/typeOfDamage"/>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasMDView">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:subPropertyOf>
+      <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasView"/>
+    </rdfs:subPropertyOf>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasSMView">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://data.ub.uib.no/ontology/hasView"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://schema.org/fileSize">
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+    <rdfs:label xml:lang="en">filesize</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >filstørrelse</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/ontology/bibo/pageStart">
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:label xml:lang="en">page start</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >første side</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasTHView">
+    <rdfs:subPropertyOf rdf:resource="http://data.ub.uib.no/ontology/hasView"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://vocab.lenka.no/geo-deling#fylkenr">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:label xml:lang="en">county id</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fylkesnr</rdfs:label>
+    <rdfs:domain rdf:resource="http://vocab.lenka.no/geo-deling#Fylke"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/previousIdentifier">
+    <rdfs:label xml:lang="en">previous identifier</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >tidligere identifikator</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/uuid">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >uuid</rdfs:label>
+    <rdfs:label xml:lang="en">uuid</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#flash">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >flash</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://xmlns.com/foaf/0.1/firstName">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">first name</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fornavn</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://schema.org/honorificPrefix">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >honorific prefix</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/extinctionYear">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >nedleggelsesår</rdfs:label>
+    <rdfs:label xml:lang="en">extinction year</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/reference">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+    <rdfs:label xml:lang="en">reference</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >referanse</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#alt">
+    <rdfs:label xml:lang="en">altitude</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >høydemeter</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasURI">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >hasURI</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DigitalResource"/>
+          <owl:Class rdf:about="http://www.europeana.eu/schemas/edm/WebResource"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#long">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    <rdfs:label xml:lang="en">longitude</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >lengdegrad</rdfs:label>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/NET/c4dm/event.owl#Event"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent"/>
+          <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <owl:Class rdf:about="http://data.ub.uib.no/ontology/Monument"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/polygon">
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >polygon</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#apertureValue">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >aperture value</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2004/02/skos/core#definition">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >definisjon</rdfs:label>
+    <rdfs:label xml:lang="en">definition</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/ontology/bibo/isbn">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >isbn</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/bibsysID">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >BIBSYS id</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/relation">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Denne er brukt for å indikere en relasjon i form av en tekststreng.</rdfs:comment>
+    <rdfs:label xml:lang="en">relation</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >relasjon</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/sourceFile"/>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/catalogueStatus">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >katalogstatus</rdfs:label>
+    <rdfs:label xml:lang="en">catalogue status</rdfs:label>
+    <rdfs:range>
+      <owl:DataRange>
+        <owl:oneOf rdf:parseType="Resource">
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >Ufullstendig metadata</rdf:first>
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Prioritert</rdf:first>
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+              <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >Må kontrolleres</rdf:first>
+            </rdf:rest>
+          </rdf:rest>
+        </owl:oneOf>
+      </owl:DataRange>
+    </rdfs:range>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/DigitalResource"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+          <rdfs:Class rdf:about="http://data.ub.uib.no/ontology/Acquisition"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://xmlns.com/foaf/0.1/homepage">
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Agent"/>
+    <rdfs:label xml:lang="en">homepage</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >hjemmeside</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/deathDate">
+    <rdfs:label xml:lang="en">death date</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >dødsdato</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2004/02/skos/core#hiddenLabel">
+    <rdfs:label xml:lang="en">hidden label</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >skult navn</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/gabNr">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >&lt;p style="margin-top: 0"&gt;
+      GAB-registeret (av Grunneiendommer, Adresser og Bygninger) var et 
+      offentlig register over grunneiendomer, adresser og bygninger i Norge. 
+      Registeret ble opprettet i forbindelse med innf&amp;#248;ringen av delingsloven 
+      den 1. januar 1980 og ble forvaltet av Statens kartverk, og ajourholdet 
+      foregikk ved &amp;#171;oppm&amp;#229;lingsmyndigheten&amp;#187; i kommunene n&amp;#229;r det gjaldt G- og 
+      A-delen, og &amp;#171;bygningsmyndigheten&amp;#187; n&amp;#229;r det gjaldt B-delen av registeret. 
+      De tre delene i registeret var koblet til hverandre med &amp;#171;pekere&amp;#187;. 
+      GAB-registeret ble sammen med digitalt eiendomskartverk erstattet av 
+      matrikkelen i l&amp;#248;pet av 2007&amp;#8211;2009.
+    &lt;/p&gt;</rdfs:comment>
+    <rdfs:label xml:lang="en">GAB number</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >GAB nummer</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#yResolution">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >y resolution</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2004/02/skos/core#editorialNote">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">editorial note</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >administrativ note</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/deathYear">
+    <rdfs:label xml:lang="en">death year</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >dødsår</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#gYear"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/ontology/bibo/pages">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >sider</rdfs:label>
+    <rdfs:label xml:lang="en">pages</rdfs:label>
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/dateOfAcquisition"/>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/abstract">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">abstract</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >sammendrag</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/WrittenWork"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasXLView">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://data.ub.uib.no/ontology/hasView"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/extinctionDate">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >nedleggelsesdato</rdfs:label>
+    <rdfs:label xml:lang="en">extinction date</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2004/02/skos/core#prefLabel">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">preferred label</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >foretrukket navn</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/madeAfter">
+    <rdfs:label xml:lang="en">made after</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >laget etter</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/dateSubmitted">
+    <rdfs:label xml:lang="en">date submitted</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >levert (dato)</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#shutterSpeedValue">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >shutter speed value</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/vocab/bio/0.1/biography">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >biografi</rdfs:label>
+    <rdfs:label xml:lang="en">biography</rdfs:label>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/createdYear">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >skapelsesår</rdfs:label>
+    <rdfs:label xml:lang="en">created year</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#isoSpeedRatings">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >ISO speed ratings</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2004/02/skos/core#note">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >note</rdfs:label>
+    <rdfs:label xml:lang="en">note</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2004/02/skos/core#scopeNote">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >scope note</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DeprecatedProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
+          <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#Concept"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://vocab.lenka.no/geo-deling#kommunenr">
+    <rdfs:label xml:lang="en">municipality id</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >kommunenr</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:domain rdf:resource="http://vocab.lenka.no/geo-deling#Kommune"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2004/02/skos/core#notation">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >notasjon</rdfs:label>
+    <rdfs:label xml:lang="en">notation</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.semanticdesktop.org/ontologies/nie/#mimeType">
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >mimetype</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasTimeline">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/issued">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >utdelt</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasDZIView">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://data.ub.uib.no/ontology/hasView"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/12/exif/ns#whiteBalance">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >white balance</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/width"/>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/relatedWebPage">
+    <rdfs:label xml:lang="no">relatert nettadresse</rdfs:label>
+    <rdfs:label xml:lang="en">related web page</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/birthYear">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#gYear"/>
+    <rdfs:label xml:lang="en">birth year</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fødselsår</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/available">
+    <rdfs:label xml:lang="en">available</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >tilgjengelig fra</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/date">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >dato</rdfs:label>
+    <rdfs:label xml:lang="en">date</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Brukes for usikre datoer.</rdfs:comment>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/publishedYear">
+    <rdfs:domain rdf:resource="http://purl.org/ontology/bibo/Document"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#gYear"/>
+    <rdfs:label xml:lang="en">year of publication</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >utgivelsesår</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/locationType">
+    <rdfs:label xml:lang="en">location type</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >lokasjonstype</rdfs:label>
+    <rdfs:range>
+      <owl:DataRange>
+        <owl:oneOf rdf:parseType="Resource">
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >valid</rdf:first>
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >invalid</rdf:first>
+            <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+          </rdf:rest>
+        </owl:oneOf>
+      </owl:DataRange>
+    </rdfs:range>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Location"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://dbpedia.org/ontology/formationYear">
+    <rdfs:label xml:lang="en">formation year</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >opprettelsesdato</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/kulturnavId">
+    <rdfs:label xml:lang="en">Kulturnav ID</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Kulturnav ID</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasBeenMergedWith">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Subjektet innholder data fra objektet i dette feltet. Med for sporing og feilsøking. Intern bruk.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >har blitt slått sammen med</rdfs:label>
+    <rdfs:label xml:lang="en">har been merged with</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasThumbnail">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >thumbnail</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/title">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">title</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >tittel</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://schema.org/postalCode">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    <rdfs:label xml:lang="en">postal code</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >postkode</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/dateAccepted">
+    <rdfs:label xml:lang="en">date accepted</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >akseptert (dato)</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/modified">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/physicalDescription">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">physical description</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fysisk beskrivelse</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://schema.org/honorificSuffix">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >honorific suffix</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://xmlns.com/foaf/0.1/familyName">
+    <rdfs:label xml:lang="en">family name</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >etternavn</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/viafID">
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://www.w3.org/2004/02/skos/core#Concept"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://xmlns.com/foaf/0.1/Agent"/>
+          <rdfs:Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >VIAF id</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://schema.org/addressLocality">
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">address locality</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >poststed</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/mainImage">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:domain rdf:resource="http://purl.org/dc/terms/Image"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/hasLGView">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://data.ub.uib.no/ontology/hasView"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/extent">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Omfang</rdfs:label>
+    <rdfs:label xml:lang="en">Extent</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://purl.org/dc/terms/alternative">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label xml:lang="en">alternative title</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >alternativ tittel</rdfs:label>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/utm33">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >utm33</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://data.ub.uib.no/ontology/workflow/priority">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:range>
+      <owl:DataRange>
+        <owl:oneOf rdf:parseType="Resource">
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Lav</rdf:first>
+          </rdf:rest>
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >Høy</rdf:first>
+        </owl:oneOf>
+      </owl:DataRange>
+    </rdfs:range>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >prioritet</rdfs:label>
+    <rdfs:label xml:lang="en">priority</rdfs:label>
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/Acquisition"/>
+  </owl:DatatypeProperty>
+  <owl:FunctionalProperty rdf:about="http://data.ub.uib.no/ontology/end">
+    <rdfs:label xml:lang="en">end</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >slutt</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="http://xmlns.com/foaf/0.1/img">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >img</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="http://data.ub.uib.no/ontology/physicalCondition">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fysisk stand</rdfs:label>
+    <rdfs:label xml:lang="en">physical condition</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Document"/>
+          <rdfs:Class rdf:about="http://purl.org/ontology/bibo/Collection"/>
+        </owl:unionOf>
+      </owl:Class>
+    </rdfs:domain>
+    <rdfs:range>
+      <owl:DataRange>
+        <owl:oneOf rdf:parseType="Resource">
+          <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >0=Svært god</rdf:first>
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:parseType="Resource">
+                <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >3=Dårlig/kritisk</rdf:first>
+                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+              </rdf:rest>
+              <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >2=Tilfredstillende/mindre god</rdf:first>
+            </rdf:rest>
+            <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >1=God</rdf:first>
+          </rdf:rest>
+        </owl:oneOf>
+      </owl:DataRange>
+    </rdfs:range>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="http://data.ub.uib.no/ontology/begin">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label xml:lang="en">begin</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >start</rdfs:label>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="http://data.ub.uib.no/ontology/clause">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:label xml:lang="en">clause</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >klausul</rdfs:label>
+  </owl:FunctionalProperty>
+  <owl:FunctionalProperty rdf:about="http://data.ub.uib.no/ontology/mergeWith">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >slå sammen med</rdfs:label>
+    <rdfs:label xml:lang="en">merge with</rdfs:label>
+  </owl:FunctionalProperty>
+  <ubbont:ResourceType rdf:about="http://data.ub.uib.no/resourcetype/facsimile">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >faksimile</rdfs:label>
+    <rdfs:label xml:lang="en">facsimile</rdfs:label>
+  </ubbont:ResourceType>
+  <ubbont:ResourceType rdf:about="http://data.ub.uib.no/resourcetype/raw-positive">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >råfoto, positiv</rdfs:label>
+    <rdfs:label xml:lang="en">raw, positive</rdfs:label>
+  </ubbont:ResourceType>
+  <ubbont:ResourceType rdf:about="http://data.ub.uib.no/resourcetype/diplomatic">
+    <rdfs:label xml:lang="en">diplomatic</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >diplomatarisk</rdfs:label>
+  </ubbont:ResourceType>
+  <owl:DeprecatedProperty rdf:about="http://data.ub.uib.no/ontology/isShownBy">
+    <rdfs:domain rdf:resource="http://data.ub.uib.no/ontology/DigitalResource"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >is shown by</rdfs:label>
+  </owl:DeprecatedProperty>
+  <owl:DeprecatedClass rdf:about="http://data.ub.uib.no/ontology/PhotographicTechnique">
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Technique"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:label xml:lang="en">Photographic technique</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fotografisk teknikk</rdfs:label>
+  </owl:DeprecatedClass>
+  <ubbont:ResourceType rdf:about="http://data.ub.uib.no/resourcetype/normalized">
+    <rdfs:label xml:lang="en">normalized</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >normalisert</rdfs:label>
+  </ubbont:ResourceType>
+  <ubbont:ResourceType rdf:about="http://data.ub.uib.no/resourcetype/restored">
+    <rdfs:label xml:lang="en">restored</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >restaurert</rdfs:label>
+  </ubbont:ResourceType>
+  <ubbont:ResourceType rdf:about="http://data.ub.uib.no/resourcetype/raw-negative">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >råfoto, negativ</rdfs:label>
+    <rdfs:label xml:lang="en">raw, negative</rdfs:label>
+  </ubbont:ResourceType>
+  <owl:DeprecatedClass rdf:about="http://data.ub.uib.no/ontology/MotifType">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Motivtype</rdfs:label>
+    <rdfs:label xml:lang="en">Motif type</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </owl:DeprecatedClass>
+  <owl:DataRange>
+    <owl:oneOf rdf:parseType="Resource">
+      <rdf:rest rdf:parseType="Resource">
+        <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Løsnet emulsjon</rdf:first>
+        <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+      </rdf:rest>
+      <rdf:first rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+      >Limskader på papirkopi</rdf:first>
+    </owl:oneOf>
+  </owl:DataRange>
+  <owl:DeprecatedClass rdf:about="http://data.ub.uib.no/ontology/Seal">
+    <rdfs:label xml:lang="en">Sigil</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Segl</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://data.ub.uib.no/ontology/Attachment"/>
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </owl:DeprecatedClass>
+  <owl:DeprecatedProperty rdf:about="http://data.ub.uib.no/ontology/motifType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <owl:inverseOf>
+      <owl:DeprecatedProperty rdf:about="http://data.ub.uib.no/ontology/motifTypeOf">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <owl:inverseOf rdf:resource="http://data.ub.uib.no/ontology/motifType"/>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >motiftype of</rdfs:label>
+      </owl:DeprecatedProperty>
+    </owl:inverseOf>
+    <rdfs:label xml:lang="en">motiftype</rdfs:label>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >motivtype</rdfs:label>
+  </owl:DeprecatedProperty>
+</rdf:RDF>
+
+<!-- Created with Protege (with OWL Plugin 3.5, Build 663)  http://protege.stanford.edu -->
