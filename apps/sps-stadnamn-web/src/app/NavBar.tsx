@@ -6,7 +6,7 @@ export default function NavBar(props: any) {
             <Link href="/a11y">Tilgjengelighet</Link>
             <Link href="/datasets">Kilder</Link>
             <Link href="/feedback">Tilbakemelding</Link>
-            <Link href="/om">Info</Link>
+            <Link href="/info">Info</Link>
 
         </nav>
     )
