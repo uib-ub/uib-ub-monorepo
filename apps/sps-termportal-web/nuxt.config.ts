@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   extends: ["termportal-ui"],
   modules: [
     "@nuxt/content",
+    "@nuxtjs/sanity",
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],
