@@ -46,6 +46,11 @@
     accent-color: theme('colors.accent.700') !important;
   }
 
+  h1 {
+    @apply text-xl sm:text-2xl text-neutral-900 md:text-3xl lg:text-4xl font-serif
+  }
+
+
 
 
 }

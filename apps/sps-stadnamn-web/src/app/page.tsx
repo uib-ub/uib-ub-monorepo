@@ -22,7 +22,7 @@ export default function Home() {
   <div className="flex flex-col gap-24 w-full">
   <div className="flex flex-col gap-12 w-full">
   <div className="flex flex-col gap-8 ">
-  <h1 className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Stadnamnportalen</h1>
+  <h1 className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center md:text-4xl lg:text-5xl">Stadnamnportalen</h1>
   
   <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-2" action="search/*">
     <label htmlFor="search_input" className="sr-only">Søk i alle kilder</label>
