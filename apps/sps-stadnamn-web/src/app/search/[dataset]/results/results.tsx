@@ -68,7 +68,7 @@ export default function Results({ hits }: { hits: any }) {
     <ul className='flex flex-col gap-1 mb-2'>
       {hits.hits.map((hit: any) => (
         <li key={hit._id} className="my-0 rounded-sm py-2 px-2 flex flex-grow border-t last:border-b border-neutral-400">
-        <div className=''><Link href="/" className="no-underline font-semibold">{hit._source.label}</Link> | {hit._source.adm2} 
+        <div className='font-semibold">'>{hit._source.label} | {hit._source.adm2} 
         <p>
           {hit._source.rawData?.merknader || hit._source.rawData?.komm }
         </p>
