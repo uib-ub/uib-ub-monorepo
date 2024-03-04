@@ -72,7 +72,7 @@ export default defineNuxtConfig({
     dataset: "production",
     apiVersion: "2023-10-09",
     token: process.env.SANITY_API_TOKEN,
-    useCdn: false,
+    useCdn: true,
   },
   // htmlValidator: {
   //  usePrettier: true,
