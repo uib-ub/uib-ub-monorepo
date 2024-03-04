@@ -23,7 +23,10 @@
           :path="`/${locale}/welcome`"
           class="content-wrapper basis-7/12"
         />
-        <NewsTP class="basis-5/12" />
+        <NewsWrapper
+          :key="`news${locale}`"
+          class="basis-5/12"
+        ></NewsWrapper>
       </div>
       <CollaboratorsTP class="mt-6 xl:mt-8" />
     </main>

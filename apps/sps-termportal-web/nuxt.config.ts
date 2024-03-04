@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   extends: ["termportal-ui"],
   modules: [
     "@nuxt/content",
+    "@nuxtjs/sanity",
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],
@@ -65,6 +66,13 @@ export default defineNuxtConfig({
         dir: "web",
       },
     },
+  },
+  sanity: {
+    projectId: process.env.SANITY_PROJECT_ID,
+    dataset: "production",
+    apiVersion: "2023-10-09",
+    token: process.env.SANITY_API_TOKEN,
+    useCdn: true,
   },
   // htmlValidator: {
   //  usePrettier: true,
