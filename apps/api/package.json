@@ -2,12 +2,10 @@
   "name": "api",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc -p tsconfig.json && mv -f dist/node.js dist/index.js",
-    "dev": "tsx watch src/node.ts",
-    "dev:bun": "bun run --hot src/bun.ts",
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/main.ts",
     "lint": "eslint .",
-    "start": "node dist/index.js",
-    "start:bun": "bun run src/bun.ts",
+    "start": "node dist/main.js",
     "test": "jest",
     "copy-contexts": "cp -r ../../packages/jsonld-contexts/src/* ./src/libs/jsonld-contexts"
   },

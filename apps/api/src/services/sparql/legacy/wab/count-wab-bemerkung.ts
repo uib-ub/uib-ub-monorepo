@@ -1,6 +1,6 @@
-import { dataSources } from '../../../../libs/constants'
+import { DATA_SOURCES } from '../../../../config/constants'
 
-const WAB_API = dataSources.filter((service) => service.name === 'wab')[0].url
+const WAB_API = DATA_SOURCES.filter((service) => service.name === 'wab')[0].url
 
 export async function countWabBemerkung() {
   const query = `
