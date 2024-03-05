@@ -4,7 +4,7 @@
       {{ title }}
     </dt>
     <dd class="text-sm text-gray-600">{{ prettyDate }}</dd>
-    <dd class="space-y-1 pt-2">
+    <dd class="space-y-1 pt-1">
       <slot />
     </dd>
   </div>

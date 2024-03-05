@@ -3,7 +3,7 @@
     <h2 id="news" class="pb-3 text-2xl">
       <AppLink to="#news">{{ $t("news.heading") }}</AppLink>
     </h2>
-    <dl class="news-wrapper space-y-3">
+    <dl class="news-wrapper space-y-4">
       <template v-for="entry in data" :key="entry.date + entry.title">
         <NewsEntry :title="entry.title" :date="entry.date">
           <SanityContentWrapper :blocks="entry.content" />
@@ -13,6 +13,8 @@
   </div>
 </template>
 <script setup lang="ts">
+// behaviour needs to be documented:
+// https://git.app.uib.no/spraksamlingane/terminologi/terminologi-content/-/blob/main/admin/system-behaviour.md
 const langOrder = useLocaleLangOrder();
 
 const query = `
@@ -36,3 +38,13 @@ onMounted(() => {
   });
 });
 </script>
+
+<style>
+.news-wrapper a {
+  @apply underline underline-offset-2 hover:decoration-2;
+}
+
+.news-wrapper div + div {
+  @apply border-t-2 pt-2;
+}
+</style>
