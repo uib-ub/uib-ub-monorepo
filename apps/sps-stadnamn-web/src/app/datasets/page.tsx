@@ -71,12 +71,12 @@ export default function Datasets() {
           <div className='space-y-4'>
             <h2 className='text-xl'>Datasettype</h2>
             
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2 justify-between">
+            <ul className="flex flex-wrap flex-col md:flex-row lg:flex-col xl:flex-row gap-x-6 gap-y-2 justify-equal">
               {allTypes.map(type => {{
                 const resultCount = filteredDatasets.filter(dataset => (datasetTypes as {[key: string]: string[]})[dataset]?.includes(type)).length;
                 if (resultCount > 0) {
                 return (
-                    <li key={type} className='col-span-1 space-x-1'>
+                    <li key={type} className='space-x-1'>
                     <input
                         type="checkbox"
                         id={type}
@@ -94,12 +94,12 @@ export default function Datasets() {
           <div className='space-y-4'>
             <h2 className='text-xl'>Ressurser</h2>
             
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2 justify-between">
+            <ul className="flex flex-wrap flex-col md:flex-row lg:flex-col xl:flex-row gap-x-6 gap-y-2 justify-equal">
               {allFeatures.map(feature => {{
                 const resultCount = filteredDatasets.filter(dataset => (datasetFeatures as {[key: string]: string[]})[dataset]?.includes(feature)).length;
                 if (resultCount > 0) {
                 return (
-                    <li key={feature} className='col-span-1 space-x-1'>
+                    <li key={feature} className='space-x-1'>
                     <input
                         type="checkbox"
                         id={feature}
