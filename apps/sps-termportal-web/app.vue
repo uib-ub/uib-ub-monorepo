@@ -143,8 +143,4 @@ blockquote {
 .content-wrapper ol {
   list-style-type: decimal;
 }
-
-.news-wrapper a {
-  @apply underline underline-offset-2 hover:decoration-2;
-}
 </style>
