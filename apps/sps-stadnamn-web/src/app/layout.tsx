@@ -39,7 +39,7 @@ export default function RootLayout({
           <Menu/>
           
           </div>
-          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex gap-4 small-caps font-semibold ml-auto`}/>
+          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex gap-6 small-caps font-semibold ml-auto`}/>
         </header>
         {children}
       </body>
