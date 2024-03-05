@@ -33,7 +33,7 @@ const { data } = useLazySanityQuery(query);
 
 // Fix for missing serialization with current nuxt/sanity setup
 onMounted(() => {
-  document.querySelectorAll("a").forEach(function (el) {
+  document.querySelectorAll(".news-wrapper a").forEach(function (el) {
     el.setAttribute("target", "_blank");
   });
 });
