@@ -1,6 +1,4 @@
-
 import MapExplorer from '@/components/Map/MapExplorer'
-
 import { useSearchParams, useParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import ImageViewer from '@/components/Image/ImageViewer'
