@@ -24,7 +24,7 @@ export default function Home() {
   <div className="flex flex-col gap-8 ">
   <h1 className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center md:text-4xl lg:text-5xl">Stadnamnportalen</h1>
   
-  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-2" action="search/*">
+  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-2" action="workbench/search">
     <label htmlFor="search_input" className="sr-only">Søk i alle kilder</label>
     <input id="search_input" className="col-span-4 rounded-sm h-full border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary h-full col-span-1 text-base" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></IconButton>
@@ -55,7 +55,7 @@ export default function Home() {
     <ul className="sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 my-6 sm:my-0">
-          <Link href={'search/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '?view=info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
+          <Link href={'workbench/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
           <div className="w-full aspect-square sm:h-32 sm:w-32 sm:md:h-64 sm:md:w-64  lg:p-1 overflow-hidden sm:flex-none">
           <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%]"/>
         </div>

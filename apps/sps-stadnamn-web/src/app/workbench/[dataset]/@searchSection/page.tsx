@@ -48,7 +48,7 @@ export default function SearchSection () {
         <>
         <div className='px-2 flex flex-wrap gap-y-2'><h1 id="dataset_heading" className='text-xl font-sans font-semibold flex gap-1'>{datasetTitles[params.dataset as string]}
         <IconButton className='align-middle' 
-                    onClick={() => router.push(`/search/${params.dataset}?view=info`)}
+                    onClick={() => router.push(`/workbench/${params.dataset}/info`)}
                     label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h1>
         </div>
         <SearchBar/>

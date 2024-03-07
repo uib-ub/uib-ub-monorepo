@@ -160,7 +160,7 @@ export default function Datasets() {
                 return (
                 <Link 
                   key={subindexKey} 
-                  href={'/search/' + subindexKey + (initPage ? '?view=' + initPage : '')} 
+                  href={'/workbench/' + subindexKey + (initPage ? `/${initPage}/` : '')} 
                   className="no-underline btn btn-outline"
                 >
                   Åpne {datasetTitles[subindexKey]}
