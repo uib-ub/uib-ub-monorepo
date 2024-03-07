@@ -82,7 +82,7 @@ export default function MapExplorer(props) {
 
 
   useEffect(() => {
-    if (mapInstance && props.mapBounds.length) {
+    if (mapInstance && props.mapBounds?.length) {
       mapInstance.fitBounds(props.mapBounds, {maxZoom: 8})
     }
   }, [props.mapBounds, props.center, mapInstance]);
@@ -137,7 +137,8 @@ export default function MapExplorer(props) {
       })
       .then(response => response.json())
       .then(data => {
-        
+
+        setResultCount(data.hits.total.value);        
         const markers = groupMarkers(data.hits.hits);
         setMarkers(markers)})
         
@@ -180,7 +181,7 @@ export default function MapExplorer(props) {
             {markers.map(marker => (
               <CircleMarker role="button" 
                             pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
-                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}${(zoom > 14 || props.resultCount < 20) && markers.length < 100  ? 'labeled' : ''}`} 
+                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}${(zoom > 14 || resultCount < 20) && markers.length < 100  ? 'labeled' : ''}`} 
                             center={[marker.lat, marker.lon]} 
                             radius={marker.hits.length == 1 ? 8 : marker.hits.length == 1 && 9 || marker.hits.length < 4 && 10 || marker.hits.length >= 4 && 12}
                             eventHandlers={{click: () => {
@@ -189,9 +190,9 @@ export default function MapExplorer(props) {
                               router.push(documentUrl(uuids), { scroll: false})
                             }}}>
                   
-                    {  (zoom > 14 || props.resultCount < 20) && markers.length < 100 ? 
+                    {  (zoom > 14 || resultCount < 20) && markers.length < 100 ? 
                     
-                    <Tooltip className="!text-black !text-lg !border-0 !shadow-none !bg-white !font-semibold !bg-opacity-75 !rounded-full !px-3 !pt-0 !pb-0 !mt-3 before:hidden" 
+                    <Tooltip className="!text-black !border-0 !shadow-none !bg-white !font-semibold !rounded-full !px-2 !pt-0 !pb-0 !mt-3 before:hidden" 
                              direction="bottom" 
                              permanent={true}
                              eventHandlers={{click: () => {
