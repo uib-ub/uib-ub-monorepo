@@ -2,6 +2,7 @@
 export const runtime = 'edge'
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
+  const dataset = params.dataset == 'search' ? '*' : params.dataset;
 
   const query = {
     "size": 0,
