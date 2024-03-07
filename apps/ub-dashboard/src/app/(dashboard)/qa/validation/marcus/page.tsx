@@ -4,13 +4,14 @@ import * as jsonld from 'jsonld';
 import { MainShell } from '@/components/shared/main-shell';
 import { ShaclResultCard } from './shacl-result-card';
 
-const fileUrl = 'https://ubbdev.gitlab.io/ubbont-repository/shacl/marcus.ttl';
 const apiUrl = 'https://sparql.ub.uib.no/sparql/shacl?graph=union';
+const fileUrl = 'https://ubbdev.gitlab.io/ubbont-repository/shacl/marcus.ttl';
 
 async function getValidationReport(api: string, file: string): Promise<any> {
   'use server'
-  return fetch(file, { next: { revalidate: 3600 } })
-    .then(response => response.blob())
+  return fetch(file, { next: { revalidate: 240 } }) // Fetch the shacl file
+    .then(response => response.blob()) // Get the turtle file from blob()
+    // Post the turtle file to the shacl api
     .then(blob => {
       return fetch(api, {
         method: 'POST',
@@ -52,9 +53,13 @@ export default async function ShaclPage() {
         <h1>Validering av Marcus datasett</h1>
       </div>
       <div className='grid grid-cols-1 lg:grid-cols-2 auto-rows-auto content-stretch items-baseline gap-8 mb-2 overflow-hidden'>
-        {data?.result?.map((result: any, i: number) => (
+        {data?.result.lenght ? data?.result?.map((result: any, i: number) => (
           <ShaclResultCard key={i} data={result} />
-        ))}
+        )) :
+          <span>
+            Ingen valideringsfeil funnet. Datasettet er gyldig, basert på de reglene som er aktive i <a className='border-b-2 dark:border-white' href="https://ubbdev.gitlab.io/ubbont-repository/shacl/marcus.ttl" target="_blank" rel="noreferrer">shacl-filen</a>.
+          </span>
+        }
       </div>
     </MainShell >
   );
