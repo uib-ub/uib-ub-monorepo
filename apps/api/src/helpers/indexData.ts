@@ -1,15 +1,19 @@
 import client from '../config/apis/esClient';
 
-export async function indexData(data: any, indexName: string) {
+interface IndexDataResponse {
+  count: number;
+  errors: string[];
+}
+
+export async function indexData(data: any, indexName: string, pipeline?: string): Promise<IndexDataResponse | string> {
   if (data.length === 0) return `No data to ingest into ${indexName}`;
-  //console.log("🚀 ~ file: ingester.service.ts:305 ~ indexData ~ data:", data)
 
   try {
     // @ts-ignore
     const response: BulkIndexResponse = await client.bulk({
       refresh: true,
       body: data,
-      pipeline: 'cho-demo-pipeline'
+      pipeline: pipeline ?? undefined
     });
 
     const errors = response.items.filter((item: any) => item.index.error).map((item: any) => {
@@ -25,5 +29,6 @@ export async function indexData(data: any, indexName: string) {
   }
   catch (error) {
     console.warn("🚀 ~ file: ingester.js:96 ~ indexData ~ error", error)
+    return error as string;
   }
 }

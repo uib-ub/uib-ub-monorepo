@@ -1,3 +1,9 @@
+/**
+ * Removes non-object items from the specified properties of the input data array.
+ * We have situations where the object in an spo is not in the dataset, and we need to remove it.
+ * @param data - The input data array.
+ * @returns The modified data object with filtered properties.
+ */
 export const removeStringsFromArray = (data: any) => {
   // If the items in the array is not an object we remove it. 
   let { subject, spatial, relation, isPartOf, hasPart } = data;

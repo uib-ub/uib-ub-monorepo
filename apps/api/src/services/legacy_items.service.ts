@@ -1,6 +1,6 @@
-import { SPARQL_PREFIXES } from '../../../config/constants'
-import { cleanJsonld } from '../../../helpers/cleanJsonLd'
-import compactAndFrameNTriples from '../../../helpers/frameJsonLd'
+import { SPARQL_PREFIXES } from '../config/constants'
+import { cleanJsonld } from '../helpers/cleanJsonLd'
+import compactAndFrameNTriples from '../helpers/frameJsonLd'
 
 function getQuery(page = 0, limit = 100) {
   const query = `

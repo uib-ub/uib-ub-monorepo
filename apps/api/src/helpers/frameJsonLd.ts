@@ -24,14 +24,14 @@ const compactAndFrameNTriples = async (data: any, context: string, type?: string
 
   const compacted = await jsonld.compact({
     '@graph': cleaned,
-    '@context': useContext as ContextDefinition
+    ...useContext as ContextDefinition
   },
     useContext as ContextDefinition
   ) // Compact to JSON-LD
 
   if (type) {
     const framed = jsonld.frame(compacted, {
-      '@context': [useContext as ContextDefinition],
+      ...useContext as ContextDefinition,
       '@type': type,
       '@embed': '@always',
     });

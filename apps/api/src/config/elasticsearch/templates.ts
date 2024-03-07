@@ -1,12 +1,12 @@
 import { mappings } from './mappings';
 import { settings } from './settings';
 
-export const choTemplate = {
-  "name": "cho-demo-settings",
+export const chcTemplate = {
+  "name": "chc-demo-settings",
   "index_patterns": ["search-chc-*"],
   "template": {
     "settings": {
-      "index.default_pipeline": "cho-demo-pipeline",
+      "index.default_pipeline": "cho-demo-pipeline", // TODO: change name
       ...settings.chc.settings
     },
     "mappings": {
@@ -14,6 +14,9 @@ export const choTemplate = {
         "enabled": true
       },
       "properties": mappings.chc.properties
+    },
+    "aliases": {
+      "search-chc": {}
     },
   },
   "priority": 500,
@@ -25,7 +28,7 @@ export const choTemplate = {
 
 export const skaTemplate = {
   "name": "ska-demo-settings",
-  "index_patterns": ["search-ska-*"],
+  "index_patterns": ["search-legacy-ska"],
   "template": {
     "settings": {
       "index.default_pipeline": "cho-demo-pipeline",
@@ -47,7 +50,7 @@ export const skaTemplate = {
 
 export const wabTemplate = {
   "name": "wab-demo-settings",
-  "index_patterns": ["search-wab-*"],
+  "index_patterns": ["search-legacy-wab"],
   "template": {
     "settings": {
       "index.default_pipeline": "cho-demo-pipeline",

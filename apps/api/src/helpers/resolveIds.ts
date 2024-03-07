@@ -1,4 +1,4 @@
-import { getItemData } from '../services/sparql/legacy/getItem.service';
+import { getItemData } from '../services/legacy_item.service';
 
 export async function resolveIds(ids: any, source: string, context: string, type: string): Promise<any> {
   try {

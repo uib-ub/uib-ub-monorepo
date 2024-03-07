@@ -14,14 +14,13 @@ export function constructManifest(data: any, API: string, SOURCE: string) {
   // Initiate the builder
   const builder = new IIIFBuilder();
 
-  // When madeObject is a single page we convert items and structures.items to an array of one
   data.items = Array.isArray(data.items) === false
-    ? sortBy([data.items], o => o.label['@none'][0])
-    : sortBy(data.items, o => o.label['@none'][0])
+    ? sortBy([data.items], (i: any) => parseInt(i.id.split("_p")[1]))
+    : sortBy(data.items, (i: any) => parseInt(i.id.split("_p")[1]))
 
   data.structures.items = Array.isArray(data.structures.items) === false
-    ? sortBy([data.structures.items], (i: string) => parseInt(String(i).toString().split("_p")[1]))
-    : sortBy(data.structures.items, (i: string) => parseInt(String(i).toString().split("_p")[1]))
+    ? sortBy([data.structures.items], (i: any) => parseInt(i.id.split("_p")[1]))
+    : sortBy(data.structures.items, (i: any) => parseInt(i.id.split("_p")[1]))
 
   // We assume all @none language tags are really norwegian
   data = JSON.parse(JSON.stringify(data).replaceAll('"@none":', '"no":'))
@@ -38,7 +37,7 @@ export function constructManifest(data: any, API: string, SOURCE: string) {
       items: [
         ...data.structures.items.map((item: any) => {
           return {
-            id: item.id,
+            id: `${data.id}/canvas/${parseInt(String(item.id).toString().split("_p")[1])}`,
             type: "Canvas",
           }
         })
@@ -124,8 +123,8 @@ export function constructManifest(data: any, API: string, SOURCE: string) {
               id: "https://marcus-manifest-api.vercel.app/uib-logo.png",
               type: "Image",
               format: "image/png",
-              width: 200,
-              height: 200,
+              /*  width: 200,
+               height: 200, */
             }
           ]
         }
@@ -142,7 +141,7 @@ export function constructManifest(data: any, API: string, SOURCE: string) {
       });
       manifest.setRights("http://creativecommons.org/licenses/by/4.0/");
       data.items.map((item: any) => {
-        manifest.createCanvas(item.id, (canvas: any) => {
+        manifest.createCanvas(`${data.id}/canvas/${parseInt(String(item.id).toString().split("_p")[1])}`, (canvas: any) => {
           canvas.setLabel(stringifyObject(item.label));
           canvas.setWidth(1024);
           canvas.setHeight(1024);
@@ -150,22 +149,23 @@ export function constructManifest(data: any, API: string, SOURCE: string) {
             id: item.thumbnail,
             type: "Image",
             format: "image/jpeg",
-            width: 200,
-            height: 200
+            /* width: 200,
+            height: 200 */
           });
-          canvas.createAnnotationPage(`${item.items.id}/annotation-page/1`,
+          canvas.createAnnotationPage(`${data.id}/canvas/${parseInt(String(item.id).toString().split("_p")[1])}/annotation-page/1`,
             (page: any) => {
-              const annotationID = `${item.items.id}/annotation/1`;
+              const annotationID = `${data.id}/canvas/${parseInt(String(item.id).toString().split("_p")[1])}/annotation/1`;
               page.createAnnotation({
                 id: annotationID,
                 type: "Annotation",
                 motivation: "painting",
+                target: `${data.id}/canvas/${parseInt(String(item.id).toString().split("_p")[1])}`,
                 body: {
                   id: item.items?.['ubbont:hasXLView'] || item.items?.['ubbont:hasMDView'] || item.items?.['ubbont:hasSMView'],
                   type: "Image",
                   format: "image/jpeg",
-                  width: 1024,
-                  height: 1024,
+                  /* width: 1024,
+                  height: 1024, */
                 },
               });
             });

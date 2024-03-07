@@ -1,8 +1,9 @@
 import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import { getItems } from '../../../services/sparql/legacy/getItems.service'
-import { getItemData } from '../../../services/sparql/legacy/getItem.service'
-import { IdParamsSchema, PaginationParamsSchema, TODO } from '../../../models'
-import { DATA_SOURCES, DOMAIN } from '../../../config/constants'
+import { getItems } from '../../services/legacy_items.service'
+import { getItemData } from '../../services/legacy_item.service'
+import { PaginationParamsSchema, SourceParamsSchema, TODO, LegacyItemSchema } from '../../models'
+import { DOMAIN, DATA_SOURCES } from '../../config/constants'
+import { countItems } from '../../services/legacy_count.service'
 
 const route = new OpenAPIHono()
 
@@ -18,12 +19,40 @@ const ItemsSchema = z.array(
 ).openapi('Items')
 
 const ItemSchema = z.record(z.string()).openapi('Item')
+const CountSchema = z.record(z.number()).openapi('Item')
+
+export const countItemsRoute = createRoute({
+  method: 'get',
+  path: '/{source}/count',
+  request: {
+    params: SourceParamsSchema,
+  },
+  responses: {
+    200: {
+      content: {
+        'application/json': {
+          schema: CountSchema,
+        },
+      },
+      description: 'Returns the number of items in the dataset.',
+    },
+  },
+  description: 'Returns the number of items in the dataset. These are physical or born-digital items in the library collection.',
+  tags: ['legacy'],
+})
+
+route.openapi(countItemsRoute, async (c) => {
+  const source = c.req.param('source')
+  const data = await countItems(source)
+  return c.json(data)
+})
 
 export const getList = createRoute({
   method: 'get',
-  path: '/legacy/ska',
+  path: '/{source}',
   request: {
     query: PaginationParamsSchema,
+    params: SourceParamsSchema,
   },
   responses: {
     200: {
@@ -41,18 +70,20 @@ export const getList = createRoute({
 
 route.openapi(getList, async (c) => {
   const { page = '0', limit = '10' } = c.req.query()
+  const source = c.req.param('source')
   const pageInt = parseInt(page)
   const limitInt = parseInt(limit)
+  const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
   const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
-  const data = await getItems('https://sparql.ub.uib.no/skeivtarkiv?query=', CONTEXT, pageInt, limitInt)
+  const data = await getItems(SERVICE_URL, CONTEXT, pageInt, limitInt)
   return c.json(data)
 })
 
 export const getItem = createRoute({
   method: 'get',
-  path: '/legacy/ska/{id}',
+  path: '/{source}/{id}',
   request: {
-    params: IdParamsSchema,
+    params: LegacyItemSchema,
   },
   responses: {
     200: {
@@ -68,9 +99,9 @@ export const getItem = createRoute({
   tags: ['legacy'],
 })
 
+
 route.openapi(getItem, async (c) => {
-  const id = c.req.param('id')
-  const source = 'ska'
+  const { id, source } = c.req.param()
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
   const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
   try {

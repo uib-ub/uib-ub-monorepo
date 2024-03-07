@@ -1,7 +1,7 @@
 import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import { IdQuerySchema, PaginationParamsSchema } from '../../../models'
-import { getWabBemerkung } from '../../../services/sparql/legacy/wab/get-wab-bemerkung'
-import { listWabBemerkung } from '../../../services/sparql/legacy/wab/list-wab-bemerkung'
+import { IdQuerySchema, PaginationParamsSchema } from '../../models'
+import { getWabBemerkung } from '../../services/sparql/legacy/wab/get-wab-bemerkung'
+import { listWabBemerkung } from '../../services/sparql/legacy/wab/list-wab-bemerkung'
 
 const app = new OpenAPIHono()
 
@@ -20,7 +20,7 @@ const ItemSchema = z.record(z.string()).openapi('Item')
 
 export const getList = createRoute({
   method: 'get',
-  path: '/legacy/wab/list',
+  path: '/wab/list',
   request: {
     query: PaginationParamsSchema,
   },
@@ -46,7 +46,7 @@ app.openapi(getList, async (c) => {
 
 export const getItem = createRoute({
   method: 'get',
-  path: '/legacy/wab',
+  path: '/wab',
   request: {
     query: IdQuerySchema,
   },

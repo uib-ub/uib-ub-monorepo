@@ -17,10 +17,11 @@ import reference from './routes/references.route'
 import lookupId from './routes/lookup.route'
 import ns from './routes/ns.route'
 import es from './routes/admin/es_templates.route'
-import marcus from './routes/admin/legacy/items_marcus.route'
-import wab from './routes/admin/legacy/items_wab.route'
-import ska from './routes/admin/legacy/items_ska.route'
+import marcus from './routes/legacy/items.route'
+import wab from './routes/legacy/items_wab.route'
 import ingest from './routes/admin/ingest.route'
+import ingestLegacySka from './routes/admin/ingest_ska.route'
+import ingestLegacyWab from './routes/admin/ingest_wab.route'
 
 // Create a new Hono instance. We use the OpenAPIHono class to create the app, 
 // because it has the .openapi() method that we need to define the OpenAPI
@@ -52,17 +53,17 @@ server.get('/', (c) => {
     items_url: `${url}/items{?page,limit}`,
   })
 })
+
 server.route('/items', items)
 // The reference route is the OpenAPI documentation UI.
 server.route('/reference', reference)
 server.route('/lookup', lookupId)
 server.route('/admin', es)
-server.route('/admin', marcus)
+server.route('/legacy', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
+server.route('/legacy', marcus)
 server.route('/admin', ingest)
-server.route('/admin', ska)
-//server.route('/admin', ingestSka)
-server.route('/admin', wab)
-//server.route('/admin', ingestWab)
+server.route('/admin', ingestLegacySka)
+server.route('/admin', ingestLegacyWab)
 // The ns route is for the context files.
 server.route('/ns', ns)
 

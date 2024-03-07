@@ -1,8 +1,8 @@
 import { JsonLd } from 'jsonld/jsonld-spec'
-import { SPARQL_PREFIXES } from '../../../config/constants'
-import compactAndFrameNTriples from '../../../helpers/frameJsonLd'
-import fetch from '../../../helpers/fetchRetry'
-import { removeStringsFromArray } from '../../../helpers/removeStringsFromArray'
+import { SPARQL_PREFIXES } from '../config/constants'
+import compactAndFrameNTriples from '../helpers/frameJsonLd'
+import fetch from '../helpers/fetchRetry'
+import { removeStringsFromArray } from '../helpers/removeStringsFromArray'
 
 function getQuery(id: string) {
   const query = `

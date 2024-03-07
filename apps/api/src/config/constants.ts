@@ -37,7 +37,7 @@ PREFIX as: <http://www.w3.org/ns/activitystreams#>
 `
 
 export const DOMAIN = 'https://api.ub.uib.no'
-export const API_URL: string = process.env.NODE_ENV === 'production' ? DOMAIN : 'http://0.0.0.0:3000'
+export const API_URL: string = process.env.NODE_ENV === 'http://localhost:3009' ? DOMAIN : 'http://localhost:3009'
 
 /**
  * This is a list of services that can be used to look up an id.

@@ -8,7 +8,7 @@ export const indexParamsSchema = z.object({
         in: 'path',
         required: true,
       },
-      example: 'group-app',
+      example: 'search-chc-marcus',
     }),
 })
 
@@ -18,11 +18,50 @@ export const esSuccessSchema = z.object({
   index: z.string().optional().openapi({ example: 'search-group-source-timestamp' }),
 }).openapi('ES')
 
+
 export const esFailureSchema = z.object({
   error: z.string()
 }).openapi('ES')
 
+export const FailureSchema = z.object({
+  error: z.boolean(),
+  message: z.string()
+})
+
 export const IdParamsSchema = z.object({
+  id: z.string()
+    .openapi({
+      param: {
+        name: 'id',
+        in: 'path',
+        required: true,
+      },
+      example: 'ubb-bros-00001',
+    })
+})
+
+export const SourceParamsSchema = z.object({
+  source: z.enum(['marcus', 'ska'])
+    .openapi({
+      param: {
+        name: 'source',
+        in: 'path',
+        required: true,
+      },
+      example: 'marcus',
+    })
+})
+
+export const LegacyItemSchema = z.object({
+  source: z.enum(['marcus', 'ska'])
+    .openapi({
+      param: {
+        name: 'source',
+        in: 'path',
+        required: true,
+      },
+      example: 'marcus',
+    }),
   id: z.string()
     .openapi({
       param: {

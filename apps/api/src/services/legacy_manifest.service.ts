@@ -1,8 +1,13 @@
 import { JsonLd } from 'jsonld/jsonld-spec'
-import { DOMAIN, SPARQL_PREFIXES } from '../../../config/constants'
-import compactAndFrameNTriples from '../../../helpers/frameJsonLd'
-import fetch from '../../../helpers/fetchRetry'
-import { constructManifest } from '../../../helpers/constructManifest'
+import { API_URL, SPARQL_PREFIXES } from '../config/constants'
+import compactAndFrameNTriples from '../helpers/frameJsonLd'
+import fetch from '../helpers/fetchRetry'
+import { constructManifest } from '../helpers/constructManifest'
+
+export type TFailure = {
+  error: boolean
+  message: string
+}
 
 function getQuery(id: string) {
   const query = `
@@ -42,6 +47,7 @@ function getQuery(id: string) {
       GRAPH ?g { 
         VALUES ?id { "${id}" }
         ?s dct:identifier ?id ;
+          rdf:type/rdfs:subClassOf* bibo:Document ;
           ubbont:hasRepresentation ?repr ;
           ubbont:hasThumbnail ?thumb .
         OPTIONAL {?s dct:title ?title } .
@@ -68,7 +74,8 @@ function getQuery(id: string) {
           OPTIONAL { ?resource ubbont:hasMDView ?partMD . }
           OPTIONAL { ?resource ubbont:hasXLView ?partXL . }
         }
-        BIND(iri(concat("${DOMAIN}", "/items/", ?id, "/manifest")) AS ?manifestURL)
+        BIND(iri(concat("${API_URL}", "/items/", ?id, "?as=iiif")) AS ?manifestURL)
+        # If we have a single image, we need to create a canvas for it. Multipage have their own canvases.
         BIND(iri(concat("http://data.ub.uib.no/instance/", ?id, "/manifest/range/1")) AS ?rangeURL)
         BIND(iri(concat("http://data.ub.uib.no/instance/page/", ?id, "_p1")) AS ?singleCanvas)
         BIND(iri(replace(str(?s), "data.ub.uib.no", "marcus.uib.no", "i")) AS ?homepage)
@@ -80,19 +87,21 @@ function getQuery(id: string) {
   return query
 }
 
-export async function getManifestData(id: string, source: string, context: string, type: string): Promise<JsonLd> {
+export async function getManifestData(id: string, source: string, context: string, type: string): Promise<JsonLd | TFailure> {
   const url = `${source}${encodeURIComponent(getQuery(id))}&output=nt`
   try {
     const response = await fetch(url)
 
     const results = await response.text()
 
+    if (!results) return { error: true, message: 'Not found' }
+
     let data: any = await compactAndFrameNTriples(
       results,
       context,
       type
     )
-    data = constructManifest(data, DOMAIN, source)
+    data = constructManifest(data, API_URL, source)
 
     return data
   } catch (error) {

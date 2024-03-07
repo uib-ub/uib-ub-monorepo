@@ -1,6 +1,6 @@
 import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
 import client from '../../config/apis/esClient'
-import { choTemplate } from '../../config/elasticsearch/templates'
+import { chcTemplate } from '../../config/elasticsearch/templates'
 import { esFailureSchema, esSuccessSchema, indexParamsSchema } from '../../models'
 
 const route = new OpenAPIHono()
@@ -32,7 +32,7 @@ export const putTemplates = createRoute({
 
 route.openapi(putTemplates, async (c) => {
   try {
-    const response = await client.indices.putIndexTemplate(choTemplate);
+    const response = await client.indices.putIndexTemplate(chcTemplate);
 
     return c.json(response);
   } catch (error) {

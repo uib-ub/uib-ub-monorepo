@@ -1,10 +1,11 @@
 import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import { AsParamsSchema, IdParamsSchema, PaginationParamsSchema, TODO } from '../models'
+import { AsParamsSchema, FailureSchema, IdParamsSchema, PaginationParamsSchema, TODO } from '../models'
 import { DOMAIN, DATA_SOURCES } from '../config/constants'
 import client from '../config/apis/esClient'
-import { getManifestData } from '../services/sparql/legacy/getManifest.service'
+import { TFailure, getManifestData } from '../services/legacy_manifest.service'
+import { JsonLdDocument } from 'jsonld'
 
-const app = new OpenAPIHono()
+const route = new OpenAPIHono()
 
 const ItemsSchema = z.array(
   z.object({
@@ -39,7 +40,7 @@ export const getList = createRoute({
   tags: ['items'],
 })
 
-app.openapi(getList, async (c) => {
+route.openapi(getList, async (c) => {
   const { page = '0', limit = '10' } = c.req.query()
   const pageInt = parseInt(page)
   const limitInt = parseInt(limit)
@@ -72,14 +73,21 @@ export const getItem = createRoute({
       },
       description: 'Retrieve a item.',
     },
+    404: {
+      content: {
+        'application/json': {
+          schema: FailureSchema,
+        },
+      },
+      description: 'Failure message.',
+    },
   },
   tags: ['items'],
 })
 
-app.openapi(getItem, async (c) => {
+route.openapi(getItem, async (c) => {
   const id = c.req.param('id')
   const as = c.req.query('as')
-  const source = 'marcus'
 
   if (as === 'iiif') {
     const SERVICE_URL = DATA_SOURCES.filter(service => service.name === 'marcus')[0].url
@@ -87,9 +95,7 @@ app.openapi(getItem, async (c) => {
 
     try {
       const data: TODO = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')
-
-      // @TODO: figure out how to type the openapi response with JSONLD
-      return c.json(data as any);
+      return c.json(data);
     } catch (error) {
       // Handle the error here
       console.error(error);
@@ -97,22 +103,43 @@ app.openapi(getItem, async (c) => {
     }
   }
 
-  const data: TODO = await client.search({
-    "index": `search-${source}-*`,
-    query: {
-      match: {
-        identifier: id
+  try {
+    const data: TODO = await client.search({
+      index: `search-chc-*`,
+      // TODO: This should use term: identifier.keyword to ensure exact match
+      query: {
+        match_phrase: {
+          "identifier": id
+        },
       }
+    })
+
+    if (data.hits?.total.value === 0) {
+      return c.json({ error: true, message: 'Not found' }, 404)
     }
-  })
-  return c.json(data.hits.hits.map((hit: any) => {
-    return Object.keys(hit._source)
-      .sort()
-      .reduce((acc, key) => ({
-        ...acc, [key]: hit._source[key]
-      }), {})
-  })[0])
+
+    return c.json(data.hits.hits.map((hit: any) => {
+      return Object.keys(hit._source)
+        .sort()
+        .reduce((acc, key) => ({
+          ...acc, [key]: hit._source[key]
+        }), {})
+    })[0])
+  } catch (error) {
+    console.error(error)
+    return c.json({ error: true, message: "Ups, something went wrong!" }, 500)
+  }
 })
+
+/**
+ * Redirect .../:id/manifest to .../:id/manifest.json
+ * because we have old links that does not use the .json extension.
+ */
+route.get('/:id/manifest', (c) => {
+  const id = c.req.param('id')
+  return c.redirect(`/items/${id}/manifest.json`, 301)
+})
+
 
 export const getManifest = createRoute({
   method: 'get',
@@ -129,18 +156,29 @@ export const getManifest = createRoute({
       },
       description: 'Retrieve a item.',
     },
+    404: {
+      content: {
+        'application/json': {
+          schema: FailureSchema,
+        },
+      },
+      description: 'Failure message.',
+    },
   },
   tags: ['items'],
 })
 
-app.openapi(getManifest, async (c) => {
+route.openapi(getManifest, async (c) => {
   const id = c.req.param('id')
   const source = 'marcus'
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
   const CONTEXT = `${DOMAIN}/ns/manifest/context.json`
 
   try {
-    const data: any = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')
+    const data: JsonLdDocument | TFailure = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')
+    if ('error' in data) {
+      return c.json({ error: true, message: 'Not found' }, 404)
+    }
 
     // @TODO: figure out how to type the openapi response with JSONLD
     return c.json(data as any);
@@ -155,10 +193,9 @@ app.openapi(getManifest, async (c) => {
 
 app.openapi(getItem, async (c) => {
   const id = c.req.param('id')
-  const source = 'cho'
 
   const data = await client.search({
-    "index": `${source}-manifests-*`,
+    "index": `search-chc-*-manifests-*`,
     query: {
       match: {
         identifier: id
@@ -171,4 +208,4 @@ app.openapi(getItem, async (c) => {
 })
 
 */
-export default app
+export default route

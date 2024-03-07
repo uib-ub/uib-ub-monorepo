@@ -120,7 +120,6 @@ export async function getWabBemerkung(id: string) {
     // Expand and compact the results using the legacy context
     const expanded = await jsonld.expand(results)
     const compacted = await jsonld.compact(expanded, contexts.wabLegacyContext)
-    console.log("🚀 ~ getWabBemerkung ~ compacted:", compacted)
     delete compacted["@context"]
 
     if (compacted['http://data.ub.uib.no/ontology/existsContainsWord' ?? 'existsContainsWord']) {

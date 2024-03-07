@@ -1,5 +1,5 @@
 import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import { lookupService } from '../services/lookupId.service'
+import { lookupService } from '../services/lookup.service'
 import { IdParamsSchema } from '../models'
 
 /**

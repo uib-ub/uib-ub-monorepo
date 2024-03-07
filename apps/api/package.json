@@ -13,6 +13,7 @@
     "@elastic/elasticsearch": "^8.12.1",
     "@hono/node-server": "^1.4.0",
     "@hono/zod-openapi": "^0.9.6",
+    "@hono/zod-validator": "^0.2.0",
     "@iiif/builder": "^2.0.1",
     "@scalar/hono-api-reference": "^0.3.9",
     "date-fns-tz-v3": "3.0.1",

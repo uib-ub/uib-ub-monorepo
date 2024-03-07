@@ -1,5 +1,5 @@
-import { DATA_SOURCES } from '../../../config/constants'
-import fetch from '../../../helpers/fetchRetry'
+import { DATA_SOURCES } from '../config/constants'
+import fetch from '../helpers/fetchRetry'
 
 const query = `
   PREFIX bibo: <http://purl.org/ontology/bibo/>
