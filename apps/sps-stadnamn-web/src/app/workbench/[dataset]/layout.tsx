@@ -9,7 +9,10 @@ export default function WorkbenchLayout({ children, searchSection }: { children:
                 </section>
           
                 <section className='card flex flex-col w-full aspect-square lg:col-span-2 lg:h-full lg:overflow-hidden'>
+                  <SearchProvider>
                   {children}
+                  </SearchProvider>
+
                 </section>
 
               </main>
