@@ -70,7 +70,7 @@ export default function Home() {
         </li>
       ))}
     </ul>
-    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass className="text-2xl"/>Finn flere kilder</Link>
+    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass className="text-2xl"/>Flere søkevisninger</Link>
     </section>
   
 

@@ -56,7 +56,7 @@ export default function Datasets() {
     <>
       <main className="flex flex-col grow-1 gap-48 items-center pb-8 lg:pt-32 md:pt-16 sm:pt-8  lg:pb-16 px-4 w-full flex-grow">
         <section className="flex flex-col items-center gap-12 container" aria-labelledby="page_heading">
-          <h1 id="page_heading" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Finn kilde</h1>
+          <h1 id="page_heading" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Søkevisninger</h1>
           <div className='flex flex-col lg:grid lg:grid-cols-3 justify-between gap-12 w-full'>
           <div className='flex flex-col md gap-4'>
           <h2 className='text-xl'>Tittel</h2>
@@ -150,7 +150,7 @@ export default function Datasets() {
                 </div>
                 <div className='mt-10 flex gap-2 flex-wrap'>
                 <Link href={'/search/' + dataset + (datasetPresentation[dataset].initPage ? `?view=${datasetPresentation[dataset].initPage}` : '')} className="no-underline btn btn-outline">
-                Søkevisning for {datasetTitles[dataset]}
+                Åpne {datasetTitles[dataset]}
               </Link>
               {Object.keys(datasetPresentation[dataset].subindices || {}).map((subindexKey) => {
                 const subindexConfig = datasetPresentation[dataset].subindices?.[subindexKey] 
@@ -163,7 +163,7 @@ export default function Datasets() {
                   href={'/search/' + subindexKey + (initPage ? '?view=' + initPage : '')} 
                   className="no-underline btn btn-outline"
                 >
-                  Søkevisning for {datasetTitles[subindexKey]}
+                  Åpne {datasetTitles[subindexKey]}
                 </Link>
               )})}
               </div>
