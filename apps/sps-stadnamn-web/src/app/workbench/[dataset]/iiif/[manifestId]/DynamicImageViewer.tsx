@@ -1,25 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
 import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill } from 'react-icons/pi';
-import IconButton from '../ui/icon-button';
+import IconButton from '../../../../../components/ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
-import { useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 //import Viewer from "@samvera/clover-iiif/viewer";
 
 const DynamicImageViewer = () => {
-  const viewerRef = useRef();
-  const viewer = useRef();
-  const [manifest, setManifest] = useState(null);
+  const viewerRef = useRef<HTMLDivElement | null>(null);
+  const viewer = useRef<OpenSeadragon.Viewer | null>(null);
+  const [manifest, setManifest] = useState<any>(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const manifestId = useSearchParams().get('manifest');
+  const manifestId = useParams().manifestId;
   
 
-  const toggleCollapse = (value) => {
+  const toggleCollapse = (value: boolean | ((prevState: boolean) => boolean)) => {
     setIsCollapsed(value);
-    viewer.current.viewport.goHome()
+    if (viewer.current) {
+      viewer.current.viewport.goHome()
+    }
   }
 
   useEffect(() => {
@@ -30,7 +32,7 @@ const DynamicImageViewer = () => {
       setManifest(manifestBody);
       setCurrentPage(0)
 
-      const tileSources = manifestBody.items.map(item => {
+      const tileSources = manifestBody.items.map((item: { items: { items: { body: any; }[]; }[]; }) => {
         const imageService = item.items[0].items[0].body;
         return {
           "@context": "http://iiif.io/api/image/2/context.json",
@@ -60,18 +62,19 @@ const DynamicImageViewer = () => {
           nextButton: "next-button",
           previousButton: "previous-button",
           fullPageButton: "full-screen-button-id",
-          fullscreenOverlay: true,
           tileSources
         });
 
-        viewer.current.addHandler('page', function(event) {
+        viewer.current.addHandler('page', function(event: { page: React.SetStateAction<number>; }) {
           setCurrentPage(event.page);
         });
 
         viewer.current.addHandler('open', function() {
+          if (viewer.current) {
           viewer.current.addHandler('tile-drawing', function() {
             setIsLoading(false);
           });
+          }
       });
 
       } else {
@@ -138,7 +141,7 @@ const DynamicImageViewer = () => {
           <h2 className='text-xl font-bold'> Seddel: {manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h2>
 
 
-        {manifest.metadata.map((item, index) => (
+        {manifest.metadata.map((item: Record<string, any>, index: number) => (
           <p key={index} className='flex justify-between'>
             <span className='font-semibold'>{item.label?.no?.[0] || item.label?.nb?.[0]}:</span>
             <span>{item.value?.none?.[0]}</span>

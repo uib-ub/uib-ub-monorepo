@@ -5,7 +5,7 @@ import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
 import { datasetTitles, datasetPresentation } from '@/config/client-config';
-import Footer from './Footer';
+import Footer from '../components/layout/Footer';
 
 export default function Home() {
 

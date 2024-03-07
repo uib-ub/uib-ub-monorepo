@@ -2,7 +2,7 @@
 import IconButton  from '@/components/ui/icon-button'
 import { useSearchParams } from 'next/navigation'
 import { PiArticleFill, PiInfoFill, PiLinkBold } from 'react-icons/pi'
-import AudioButton from '@/app/search/[dataset]/results/audioButton';
+import AudioButton from '@/components/results/audioButton';
 import Link from 'next/link';
 
 export default function PopupList({ docs, dataset }: { docs: any[], dataset: string} ) {

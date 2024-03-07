@@ -26,15 +26,23 @@ export default function Results({ hits }: { hits: any }) {
       router.push(pathname + "?" + params.toString())
     }
 
-    const goToView = (uuid: string, view: string, manifest?: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set('docs', String(uuid))
-      params.set('view', String(view))
-      if (manifest) {
-        params.set('manifest', String(manifest))
-      }
-      router.push(pathname + "?" + params.toString())
-  }
+    const showInMap = (uuid: string) => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      newSearchParams.set('docs', String(uuid))
+      router.push(`/workbench/${params.dataset}?${newSearchParams.toString()}`)
+    }
+
+    const goToDoc = (uuid: string) => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      newSearchParams.delete('docs')
+      router.push(`/workbench/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
+    }
+
+    const goToIIIF = (uuid: string, manifest: string) => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      newSearchParams.set('docs', String(uuid))
+      router.push(`/workbench/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
+    }
 
 
   return (
@@ -77,7 +85,7 @@ export default function Results({ hits }: { hits: any }) {
 
         {hit._source.image && 
           <IconButton 
-            onClick={() => goToView(hit._id, 'image', hit._source.image.manifest)} 
+            onClick={() => goToIIIF(hit._id, hit._source.image.manifest)} 
             label="Vis seddel" 
             aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'image' ? 'page': undefined}
             className="p-1 text-neutral-700">
@@ -90,7 +98,7 @@ export default function Results({ hits }: { hits: any }) {
         }
         {hit._source.location && 
           <IconButton 
-            onClick={() => goToView(hit._id, 'map')} 
+            onClick={() => showInMap(hit._id)} 
             label="Vis i kart" 
             aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'map' ? 'page': undefined} 
             className="p-1 text-neutral-700">
@@ -106,7 +114,7 @@ export default function Results({ hits }: { hits: any }) {
         </Link>
         }
         <IconButton 
-          onClick={() => goToView(hit._id, 'info')} 
+          onClick={() => goToDoc(hit._id)} 
           label="Infoside" 
           aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'info' ? 'page': undefined} 
           className="p-1 text-primary-600">

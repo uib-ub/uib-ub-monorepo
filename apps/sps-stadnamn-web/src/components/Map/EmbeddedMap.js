@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import Map from './Map'
 import 'leaflet/dist/leaflet.css';
 
-export default function MapExplorer(props) {
+export default function EmbeddedMap(props) {
 
   const mapRef = useRef(null);
 
