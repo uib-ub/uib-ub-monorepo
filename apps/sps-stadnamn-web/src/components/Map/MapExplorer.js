@@ -16,12 +16,13 @@ export default function MapExplorer(props) {
   const [markers, setMarkers] = useState([]);
   const [mapInstance, setMapInstance] = useState(null);
   const [bounds, setBounds] = useState(null);
+  const [resultCount, setResultCount] = useState(null);
   const [zoom, setZoom] = useState(DEFAULT_ZOOM);
   const searchParams = useSearchParams()
   const params = useParams()
   const router = useRouter()
   const pathname = usePathname()
-  const mapQueryString = useQueryStringWithout(["docs", "view", "manifest", "size", "page", "sort"])
+  const mapQueryString = useQueryStringWithout(["docs", "size", "page", "sort"])
   const controllerRef = useRef(new AbortController());
   const openPopup = useRef(false);
   const selectedMarker = useRef(null);
