@@ -87,7 +87,7 @@ export default function Results({ hits }: { hits: any }) {
           <IconButton 
             onClick={() => goToIIIF(hit._id, hit._source.image.manifest)} 
             label="Vis seddel" 
-            aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'image' ? 'page': undefined}
+            aria-current={searchParams.get('docs') == hit._id && pathname.includes('/iiif/') ? 'page': undefined}
             className="p-1 text-neutral-700">
               <PiArticleFill className="text-xl xl:text-3xl"/></IconButton> 
         }
@@ -100,7 +100,7 @@ export default function Results({ hits }: { hits: any }) {
           <IconButton 
             onClick={() => showInMap(hit._id)} 
             label="Vis i kart" 
-            aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'map' ? 'page': undefined} 
+            aria-current={searchParams.get('docs') == hit._id && pathname == `/workbench/${params.dataset}` ? 'page': undefined} 
             className="p-1 text-neutral-700">
               <PiMapPinFill className="text-xl xl:text-3xl"/></IconButton> 
         }
@@ -116,7 +116,7 @@ export default function Results({ hits }: { hits: any }) {
         <IconButton 
           onClick={() => goToDoc(hit._id)} 
           label="Infoside" 
-          aria-current={searchParams.get('docs') == hit._id && searchParams.get('view') == 'info' ? 'page': undefined} 
+          aria-current={params.uuid == hit._id && pathname.includes('/doc/') ? 'page': undefined} 
           className="p-1 text-primary-600">
             <PiInfoFill className="text-xl xl:text-3xl"/></IconButton>
         </div>
