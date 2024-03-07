@@ -9,5 +9,4 @@ export function useQueryWithout(omit : string[]) {
 
 export function useQueryStringWithout(omit : string[]) {
     return new URLSearchParams(useQueryWithout(omit)).toString();
-
 }
