@@ -1,6 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
-import { ResultData } from '../types'
+import { useContext } from 'react';
 import { useParams, useRouter } from 'next/navigation'
 import IconButton from '@/components/ui/icon-button';
 import Spinner from '@/components/svg/Spinner'
@@ -8,31 +7,16 @@ import Results from '@/components/results/results'
 import Filters from './filters'
 import SearchBar from './SearchBar'
 import { PiInfoFill } from 'react-icons/pi'
+import { SearchContext } from '@/app/search-provider'
 
 import { datasetTitles } from '@/config/client-config'
-import { useQueryStringWithout } from '@/lib/search-params';
 
 
 export default function SearchSection () {
-    const [resultData, setResultData] = useState<ResultData | null>(null);
-    const [isLoading, setIsLoading] = useState(false)
     const params = useParams()
     const router = useRouter()
-    const searchParams = useQueryStringWithout(['docs'])
+    const { resultData, isLoading } = useContext(SearchContext)
 
-    useEffect(() => {
-        if (searchParams?.length) {
-            console.log("PARAMS", searchParams)
-            setIsLoading(true)
-            console.log("FETCHING ", `/api/search?dataset=${params.dataset}&${searchParams}`)
-            fetch(`/api/search?dataset=${params.dataset}&${searchParams}`).then(response => response.json()).then(es_data => {
-            setResultData(es_data)
-    
-            }).then(() => setIsLoading(false))
-
-        }
-        
-      }, [searchParams, params.dataset])
 
 
       const handleSubmit = async (event: any) => {
