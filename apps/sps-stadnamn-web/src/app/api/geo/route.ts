@@ -32,6 +32,7 @@ export async function GET(request: Request) {
         filters[key].push(value);
     }
   }
+  const dataset = params.dataset == 'search' ? '*' : params.dataset;
 
 
   const query: Record<string,any> = {
@@ -108,7 +109,7 @@ else {
 
 let res
 try {
-  res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${params.dataset}-demo/_search`, {
+  res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {
     method: 'POST',
     body: JSON.stringify(query),
     headers: {

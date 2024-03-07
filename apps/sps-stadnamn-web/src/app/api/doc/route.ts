@@ -2,7 +2,7 @@
 export const runtime = 'edge'
 export async function GET(request: Request) {
     const doc = new URLSearchParams(new URL(request.url).search).get('doc');
-    const dataset = new URLSearchParams(new URL(request.url).search).get('dataset');
+    let dataset = new URLSearchParams(new URL(request.url).search).get('dataset');
     const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_doc/${doc}`, {
         method: 'GET',
         headers: {

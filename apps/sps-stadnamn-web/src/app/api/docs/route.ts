@@ -2,7 +2,10 @@
 export const runtime = 'edge'
 export async function GET(request: Request) {
     const docs = new URLSearchParams(new URL(request.url).search).get('docs');
-    const dataset = new URLSearchParams(new URL(request.url).search).get('dataset');
+    let dataset = new URLSearchParams(new URL(request.url).search).get('dataset');
+    if (dataset == 'search') {
+      dataset = '*'
+    }
 
 
     if (!docs || !dataset) {
