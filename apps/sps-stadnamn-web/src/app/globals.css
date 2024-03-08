@@ -46,7 +46,7 @@
     accent-color: theme('colors.accent.700') !important;
   }
 
-  h1 {
+  h1, .info-content h2 {
     @apply text-xl sm:text-2xl text-neutral-900 md:text-3xl lg:text-4xl font-serif
   }
 
@@ -58,6 +58,14 @@
 @layer components {
   .card {
     @apply bg-white shadow rounded-sm;
+  }
+
+  .info-content p {
+    @apply py-2;
+  }
+
+  .info-content h3 {
+    @apply text-lg sm:text-xl mt-4 text-neutral-900 font-serif;
   }
 
 

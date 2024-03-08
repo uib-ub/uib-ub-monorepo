@@ -8,6 +8,6 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.js", "**/*.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.js", "**/*.jsx", "next.config.mjs"],
   "exclude": ["node_modules"]
 }
