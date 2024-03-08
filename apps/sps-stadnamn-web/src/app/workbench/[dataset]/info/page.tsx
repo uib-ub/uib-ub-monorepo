@@ -24,7 +24,7 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
                     { subpages[mainIndex]?.length &&
                     <>
                     <h3>Artikler</h3>
-                    <ul className="flex flex-col gap-3 mt-1 !list-none !pl-0">
+                    <ul className="flex flex-col gap-3 mt-1 !list-none !pl-0 mb-4">
                     { subpages[mainIndex]?.map((subpage, index) => {
                         return <li key={index}><Link className="no-underline hover:underline text-pretty" href={`/workbench/${params.dataset}/info/${index + 1}`}>{subpage}<PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/></Link></li>
                     })
