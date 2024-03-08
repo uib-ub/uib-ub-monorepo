@@ -1,6 +1,7 @@
 import { datasetPresentation, datasetTitles, subpages } from '@/config/client-config'
 import Image from 'next/image'
 import Link from 'next/link'
+import { PiArrowRight, PiArrowRightBold, PiCaretRightBold } from 'react-icons/pi'
 
 export default function Subpage( { params }: { params: { dataset: string, subpage: string } }) {
     let [mainIndex, subindex] = params.dataset.split("_")
@@ -22,10 +23,10 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
                     <p>{info['description']}</p>
                     { subpages[mainIndex]?.length &&
                     <>
-                    <h3>Les mer</h3>
-                    <ul className="flex flex-col gap-3 mt-2 list-disc">
+                    <h3>Artikler</h3>
+                    <ul className="flex flex-col gap-3 mt-1 !list-none !pl-0">
                     { subpages[mainIndex]?.map((subpage, index) => {
-                        return <Link key={index} href={`/workbench/${params.dataset}/info/${index + 1}`}>{subpage}</Link>
+                        return <li key={index}><Link className="no-underline hover:underline text-pretty" href={`/workbench/${params.dataset}/info/${index + 1}`}>{subpage}<PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/></Link></li>
                     })
                     }
                     </ul>

@@ -68,6 +68,14 @@
     @apply text-lg sm:text-xl mt-4 text-neutral-900 font-serif;
   }
 
+  .info-content ul {
+    @apply list-disc pl-4 py-2;
+  }
+
+  .info-content li {
+    @apply py-1;
+  }
+
 
 
 

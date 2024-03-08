@@ -108,7 +108,7 @@ export const datasetPresentation: DatasetPresentation = {
 }
 
 export const subpages: Record<string, string[]> = {
-  leks: ["Nokre ord om nemningar, namngjeving og namnegransking", "Område- og bygdenamn"]
+  leks: ["Nokre ord om nemningar, namngjeving og namnegransking", "Område- og bygdenamn", "Gards- og andre bustadnamn", "Elvenamn", "Innsjønamn", "Fjordnamn", "Øynamn", "Fjellnamn", "Seternamn" ]
 }
 
 export const featureNames: Record<string, string> = {
