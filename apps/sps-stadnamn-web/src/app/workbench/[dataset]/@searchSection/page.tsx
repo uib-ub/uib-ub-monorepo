@@ -1,6 +1,6 @@
 'use client'
 import { useContext } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import IconButton from '@/components/ui/icon-button';
 import Spinner from '@/components/svg/Spinner'
 import Results from '@/components/results/results'
@@ -14,10 +14,11 @@ import { useQueryStringWithout } from '@/lib/search-params';
 
 
 export default function SearchSection () {
-    const params = useParams()
+    const params = useParams<{dataset: string}>()
     const router = useRouter()
     const { resultData, isLoading } = useContext(SearchContext)
     const filteredParams = useQueryStringWithout(['docs'])
+    let [mainIndex, subindex] = params.dataset.split("_")
 
       const handleSubmit = async (event: any) => {
         event.preventDefault()
@@ -30,7 +31,8 @@ export default function SearchSection () {
     
     return (
         <>
-        <div className='px-2 flex flex-wrap gap-y-2'><h1 id="dataset_heading" className='text-xl font-sans font-semibold flex gap-1'>{datasetTitles[params.dataset as string]}
+        <div className='px-2 flex flex-wrap gap-y-2'><h1 id="dataset_heading" className='text-xl font-sans font-semibold flex gap-1'>
+          {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
         <IconButton className='align-middle' 
                     onClick={() => router.push(`/workbench/${params.dataset}/info${filteredParams ? '?' + filteredParams : ''}`)}
                     label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h1>

@@ -35,7 +35,7 @@ export const datasetTitles: DatasetTitles = {
     search: "Stedsnavnsøk",
     skul: "Skulebarnsoppskriftene",
     leks: "Norsk stadnamnleksikon",
-    leks_g: "Norsk stadnamnleksikon - grunnord",
+    leks_g: "grunnord",
 }
 
 
