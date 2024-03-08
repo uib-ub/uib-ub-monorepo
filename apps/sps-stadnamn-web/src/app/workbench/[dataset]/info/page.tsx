@@ -37,8 +37,8 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
                     
                 </div>
                 
-                <div className='md:w-1/2 md:ml-4'>
-                    <Image src={info.img} alt={info.alt || ''} width="1024" height="1024" className="object-cover"/>
+                <div className='md:ml-4 md:w-[50%]'>
+                    <img src={info.img} alt={info.alt || ''} className="object-cover"/>
                     <small>{info.alt} | {info.imageAttribution}</small>
                 </div>
             </div>
