@@ -72,6 +72,10 @@
     @apply list-disc pl-4 py-2;
   }
 
+  .info-content ol {
+    @apply list-decimal pl-4 py-2;
+  }
+
   .info-content li {
     @apply py-1;
   }
