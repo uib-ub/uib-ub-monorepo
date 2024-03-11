@@ -28,7 +28,7 @@ export default function Home() {
     <label htmlFor="search_input" className="sr-only">Søk i alle kilder</label>
     <input id="search_input" className="col-span-4 rounded-sm h-full border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary h-full col-span-1 text-base" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></IconButton>
-    <button className="btn text-base col-span-5 md:col-span-2 whitespace-nowrap"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</button>
+    <Link href="/workbench/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
   </form>
   
   </div>
