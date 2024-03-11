@@ -6,7 +6,7 @@ import IconButton from '@/components/ui/icon-button';
 
 
 
-export default function ClientFacet({ setFilterStatus, facetName }: { setFilterStatus: (status: string) => void, facetName: string}) {
+export default function ClientFacet({ setFilterStatus, facetName }: { setFilterStatus: (status: string) => void, facetName: string }) {
   const router = useRouter()
   const pathname = usePathname()
   const params = useParams()
@@ -18,7 +18,6 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-
   const clearedFilters = useQueryStringWithout([facetName, 'page'])
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
@@ -137,7 +136,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
       <li key={item.key} className="my-0">
         <label>
           <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, baseName, path)}} className='mr-2' />
-          {item.key} <span className="bg-neutral-50 text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+          {item.key} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
 
       {children?.length && (checked || filteredChildren) ? 
@@ -158,7 +157,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-4 p-2">
+    <div className="flex flex-col gap-4 p-2 border-b border-neutral-300 pb-4">
     <div className='flex gap-2'>
       <input onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>
@@ -174,7 +173,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
     }
     </div>
     { facetAggregation?.buckets ?
-    <ul className='flex flex-col mx-2 gap-2'>
+    <ul className='flex flex-col gap-2 px-2 py-1 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border  bg-neutral-50 border-neutral-300'>
       {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
         listItem(item, index, facetName, [item.key], false)
       ))}

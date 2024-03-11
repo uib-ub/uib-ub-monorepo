@@ -10,8 +10,8 @@
     @apply bg-neutral-50
   }
 
-  html:has(.search-view), body:has(.search-view), main.search-view {
-    @apply lg:h-full lg:overflow-hidden;
+  html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
+    @apply xl:h-full xl:overflow-hidden;
   }
 
   ::selection {

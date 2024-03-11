@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { useParams, useRouter } from 'next/navigation'
 import IconButton from '@/components/ui/icon-button';
 import Spinner from '@/components/svg/Spinner'
-import Results from '@/components/results/results'
+import Results from '@/app/workbench/[dataset]/@searchSection/results'
 import Filters from './filters'
 import SearchBar from './SearchBar'
 import { PiInfoFill } from 'react-icons/pi'
@@ -38,7 +38,7 @@ export default function SearchSection () {
                     label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h1>
         </div>
         <SearchBar/>
-        <div className='flex flex-col h-full gap-6'>
+        <div className='flex flex-col h-full gap-2'>
           <form id="search_form" onSubmit={ handleSubmit }>
             <Filters/>
           </form>
