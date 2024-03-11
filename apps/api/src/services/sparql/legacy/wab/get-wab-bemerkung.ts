@@ -1,9 +1,9 @@
 import jsonld from 'jsonld'
-import { dataSources } from '../../../../libs/constants';
-import contexts from '../../../../libs/jsonld-contexts/';
+import { DATA_SOURCES } from '../../../../config/constants';
+import contexts from '../../../../config/jsonld-contexts';
 import { describeWabBemerkung } from './describe-wab-bemerkung';
 
-const WAB_API = dataSources.filter((service) => service.name === 'wab')[0].url
+const WAB_API = DATA_SOURCES.filter((service) => service.name === 'wab')[0].url
 
 export async function getWabBemerkung(id: string) {
   const query = `
@@ -120,7 +120,6 @@ export async function getWabBemerkung(id: string) {
     // Expand and compact the results using the legacy context
     const expanded = await jsonld.expand(results)
     const compacted = await jsonld.compact(expanded, contexts.wabLegacyContext)
-    console.log("🚀 ~ getWabBemerkung ~ compacted:", compacted)
     delete compacted["@context"]
 
     if (compacted['http://data.ub.uib.no/ontology/existsContainsWord' ?? 'existsContainsWord']) {

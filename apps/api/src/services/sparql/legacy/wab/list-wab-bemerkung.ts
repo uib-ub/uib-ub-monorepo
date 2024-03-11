@@ -1,7 +1,8 @@
-import { dataSources } from '../../../../libs/constants'
-import { isObjectEmpty } from '../../../../libs/helpers/isObjectEmpty'
+import { DATA_SOURCES } from '../../../../config/constants'
+import { isObjectEmpty } from '../../../../helpers/isObjectEmpty'
 
-const WAB_API = dataSources.filter((service) => service.name === 'wab')[0].url
+const WAB_API = DATA_SOURCES.filter((service) => service.name === 'wab')[0].url
+console.log("🚀 ~ WAB_API:", WAB_API)
 
 export async function listWabBemerkung(page = 0, limit = 100) {
   const query = `

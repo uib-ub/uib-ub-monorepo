@@ -2,12 +2,10 @@
   "name": "api",
   "version": "1.0.0",
   "scripts": {
-    "build": "tsc -p tsconfig.json && mv -f dist/node.js dist/index.js",
-    "dev": "tsx watch src/node.ts",
-    "dev:bun": "bun run --hot src/bun.ts",
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/main.ts",
     "lint": "eslint .",
-    "start": "node dist/index.js",
-    "start:bun": "bun run src/bun.ts",
+    "start": "node dist/main.js",
     "test": "jest",
     "copy-contexts": "cp -r ../../packages/jsonld-contexts/src/* ./src/libs/jsonld-contexts"
   },
@@ -15,6 +13,7 @@
     "@elastic/elasticsearch": "^8.12.1",
     "@hono/node-server": "^1.4.0",
     "@hono/zod-openapi": "^0.9.6",
+    "@hono/zod-validator": "^0.2.0",
     "@iiif/builder": "^2.0.1",
     "@scalar/hono-api-reference": "^0.3.9",
     "date-fns-tz-v3": "3.0.1",
