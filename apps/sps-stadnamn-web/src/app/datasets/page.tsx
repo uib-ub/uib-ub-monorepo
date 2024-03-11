@@ -163,7 +163,7 @@ export default function Datasets() {
                   href={'/workbench/' + subindexKey + (initPage ? `/${initPage}/` : '')} 
                   className="no-underline btn btn-outline"
                 >
-                  Åpne {datasetTitles[subindexKey]}
+                  Søk i {datasetTitles[subindexKey]}
                 </Link>
               )})}
               </div>
