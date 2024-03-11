@@ -61,6 +61,21 @@ const geo_query = {geo_bounding_box: {
     }}
 }
 
+// Fix invalid bounding box - lat larger than 90 is set to 90 etc
+if (geo_query.geo_bounding_box.location.top_left.lat > 90) {
+    geo_query.geo_bounding_box.location.top_left.lat = 90
+}
+if (geo_query.geo_bounding_box.location.bottom_right.lat < -90) {
+    geo_query.geo_bounding_box.location.bottom_right.lat = -90
+}
+if (geo_query.geo_bounding_box.location.bottom_right.lon > 180) {
+    geo_query.geo_bounding_box.location.bottom_right.lon = 180
+}
+if (geo_query.geo_bounding_box.location.top_left.lon < -180) {
+    geo_query.geo_bounding_box.location.top_left.lon = -180
+}
+
+
 const simple_query_string = params.q ? {
     "simple_query_string": {
       "query": params.q,
