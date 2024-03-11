@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'next/navigation'
 import { useState, useEffect, useContext } from "react"
 import MapExplorer from '@/components/Map/MapExplorer'
 import { SearchContext } from '@/app/search-provider'
+import Spinner from '@/components/svg/Spinner'
 
 
 export default function SearchView() {
