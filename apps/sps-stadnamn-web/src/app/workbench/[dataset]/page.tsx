@@ -28,9 +28,16 @@ export default function SearchView() {
     return (
         <>
 
-           { mapBounds?.length || isLoading ? (
+           { mapBounds?.length ? (
             <MapExplorer docs={docs} mapBounds={mapBounds}/>
             )
+            :
+            isLoading ? 
+            <div className="flex h-full items-center justify-center">
+              <div>
+                <Spinner className="w-20 h-20"/>
+              </div>
+            </div> 
             : <div role="status" aria-live="polite" className='flex items-center justify-center my-auto text-xl font-semibold'>Ingen treff i kart</div>
           
           
