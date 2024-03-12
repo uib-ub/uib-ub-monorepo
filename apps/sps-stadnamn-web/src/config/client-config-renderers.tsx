@@ -1,3 +1,5 @@
+import InfoBox from '@/components/ui/infobox';
+
 interface Renderer {
   title: (hit: any) => any;
   details: (hit: any) => any;
@@ -13,6 +15,9 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
   return concatenatedLabels ? ', ' + concatenatedLabels : '';
 }
 
+
+
+
 export const resultRenderers: ResultRenderers = {
   hord: {
     title: (source: any) => {
@@ -22,6 +27,17 @@ export const resultRenderers: ResultRenderers = {
       return  (source.rawData.merknader || '')
     },
 
+  }
+}
+
+
+export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
+  hord: (source: any) => {
+    return <InfoBox items={[
+      {title: 'Kommune', value: source.adm2}, 
+      {title: 'Oppskrivar', value: source.rawData.oppskrivar},
+      {title: 'Oppskrivingstid', value: source.rawData.oppskrivingsTid},
+    ]}/>
   }
 }
 

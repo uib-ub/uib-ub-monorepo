@@ -3,6 +3,7 @@ import EmbeddedMap from '@/components/Map/EmbeddedMap'
 import OriginalData from './original-data'
 import Thumbnail from './thumbnail'
 import Link from 'next/link'
+import { infoPageRenderers } from '@/config/client-config-renderers'
 
 
 export default async function DocumentView({ params }: { params: { dataset: string, uuid: string }}) { 
@@ -30,14 +31,17 @@ export default async function DocumentView({ params }: { params: { dataset: stri
     const doc = await fetchDoc()
     return (
       
-      <div className="mx-2 p-4 lg:p-8 lg:overflow-y-auto space-y-4 info-content">
+      <div className="mx-2 p-4 lg:p-8 lg:overflow-y-auto space-y-6 info-content">
         { doc && <>
       
-      <h2 className=''>
-        {doc._source.label}</h2>
+      <h2>{doc._source.label}</h2>
         {doc._source.audio ? <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${doc._source.audio.file}`}></audio> : null}
+
+      { infoPageRenderers[params.dataset]? infoPageRenderers[params.dataset](doc._source) : null }
       {doc._source.rawData ?
+        <div>
         <OriginalData rawData={doc._source.rawData}/>
+        </div>
       : null}
       {doc._source.image?.manifest && <div>
         <h3>Sedler</h3>
