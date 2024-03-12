@@ -81,7 +81,7 @@ export default function Results({ hits }: { hits: any }) {
         <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow border-t last:border-b border-neutral-400">
         <div className='font-semibold">'>{titleRenderer(hit._source)}
         <p>
-          {hit._source.rawData?.merknader || hit._source.rawData?.komm }
+          { detailsRenderer(hit._source) }
         </p>
         </div>
         <div className='flex gap-1 ml-auto self-end'>
