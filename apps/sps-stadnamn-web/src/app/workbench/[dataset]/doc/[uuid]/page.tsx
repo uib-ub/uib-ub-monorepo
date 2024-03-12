@@ -1,6 +1,8 @@
 
 import EmbeddedMap from '@/components/Map/EmbeddedMap'
 import OriginalData from './original-data'
+import Thumbnail from './thumbnail'
+import Link from 'next/link'
 
 
 export default async function DocumentView({ params }: { params: { dataset: string, uuid: string }}) { 
@@ -37,6 +39,12 @@ export default async function DocumentView({ params }: { params: { dataset: stri
       {doc._source.rawData ?
         <OriginalData rawData={doc._source.rawData}/>
       : null}
+      {doc._source.image.manifest && <div>
+        <h3>Sedler</h3>
+        <Link href={`/workbench/${params.dataset}/iiif/${doc._source.image.manifest}`}><Thumbnail manifestId={doc._source.image.manifest}/></Link>
+
+
+        </div>}
       {doc._source.location && <div><h3>Kart</h3><EmbeddedMap doc={doc._source}/> </div> }
       </>}
       </div>
