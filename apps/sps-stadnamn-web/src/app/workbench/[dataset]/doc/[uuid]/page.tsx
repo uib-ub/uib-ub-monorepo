@@ -45,7 +45,7 @@ export default async function DocumentView({ params }: { params: { dataset: stri
 
 
         </div>}
-      {doc._source.location && <div><h3>Kart</h3><EmbeddedMap doc={doc._source}/> </div> }
+      {doc._source.location && <div><h3>Koordinater</h3><EmbeddedMap doc={doc._source}/> </div> }
       </>}
       </div>
     )
