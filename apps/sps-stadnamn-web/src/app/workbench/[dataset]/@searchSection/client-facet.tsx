@@ -173,7 +173,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
     }
     </div>
     { facetAggregation?.buckets ?
-    <ul className='flex flex-col gap-2 px-2 py-1 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border  bg-neutral-50 border-neutral-300'>
+    <ul className='flex flex-col gap-2 px-2 py-1 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border rounded-sm bg-neutral-50 border-neutral-300'>
       {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
         listItem(item, index, facetName, [item.key], false)
       ))}
