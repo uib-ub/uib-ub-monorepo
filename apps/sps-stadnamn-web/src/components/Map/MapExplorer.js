@@ -9,9 +9,6 @@ import { indexToCode } from '@/lib/datasets';
 import { datasetTitles } from '@/config/client-config';
 import Link from 'next/link';
 
-const DEFAULT_CENTER = [60.3913, 5.3221];
-const DEFAULT_ZOOM = 5;
-
 export default function MapExplorer(props) {
   const [markers, setMarkers] = useState([]);
   const [mapInstance, setMapInstance] = useState(null);
