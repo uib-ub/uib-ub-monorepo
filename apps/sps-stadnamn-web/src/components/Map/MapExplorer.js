@@ -15,9 +15,9 @@ const DEFAULT_ZOOM = 5;
 export default function MapExplorer(props) {
   const [markers, setMarkers] = useState([]);
   const [mapInstance, setMapInstance] = useState(null);
-  const [bounds, setBounds] = useState(null);
+  const [leafletBounds, setLeafletBounds] = useState(null);
   const [resultCount, setResultCount] = useState(null);
-  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
+  const [zoom, setZoom] = useState(null);
   const searchParams = useSearchParams()
   const params = useParams()
   const router = useRouter()
@@ -29,18 +29,16 @@ export default function MapExplorer(props) {
 
   const mapRef = useCallback(node => {
     if (node !== null) {
+      setMapInstance(node);
       node.on('moveend', () => {
         controllerRef.current.abort();
         controllerRef.current = new AbortController();
 
-        setBounds(node.getBounds());
+        setLeafletBounds(node.getBounds());
         setZoom(node.getZoom());
-
       });
-      setMapInstance(node);
-      setBounds(node.getBounds());
-      setZoom(node.getZoom());
     }
+    
   }, []);
   
 
@@ -81,14 +79,6 @@ export default function MapExplorer(props) {
     return pathname + "?" + params.toString()
   }
 
-
-  useEffect(() => {
-    if (mapInstance && props.mapBounds?.length && !props.isLoading) {
-      mapInstance.fitBounds(props.mapBounds, {maxZoom: 8})
-    }
-  }, [props.mapBounds, props.center, mapInstance, props.isLoading]);
-
-
   
 
   useEffect(() => {
@@ -108,24 +98,28 @@ export default function MapExplorer(props) {
     }
   }, [props.docs]);
 
-  
 
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (bounds && !props.isLoading) {
+    if (!props.isLoading) {
+      const topLeftLat = leafletBounds ? leafletBounds.getNorthEast().lat : props.mapBounds[0][0];
+      const topLeftLng = leafletBounds ? leafletBounds.getSouthWest().lng : props.mapBounds[0][1];
+      const bottomRightLat = leafletBounds ? leafletBounds.getSouthWest().lat : props.mapBounds[1][0];
+      const bottomRightLng = leafletBounds ? leafletBounds.getNorthEast().lng : props.mapBounds[1][1];
+
       // Fetch data based on the new bounds
       const queryParams = mapQueryString
       const query = `/api/geo?dataset=${params.dataset}&${ queryParams? 
                                             queryParams + "&" : "" 
                                             }topLeftLat=${
-                                              bounds.getNorthEast().lat
+                                             topLeftLat
                                             }&topLeftLng=${
-                                              bounds.getSouthWest().lng
+                                              topLeftLng
                                             }&bottomRightLat=${
-                                              bounds.getSouthWest().lat
+                                              bottomRightLat
                                             }&bottomRightLng=${
-                                              bounds.getNorthEast().lng
+                                              bottomRightLng
                                             }`
 
       fetch(query, {
@@ -152,9 +146,17 @@ export default function MapExplorer(props) {
       );
         
     }
-  }, [bounds, mapQueryString, params.dataset, props.isLoading]);
+  }, [props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading]);
 
+  // Fit map to bounds when searching
+  useEffect(() => {
+    if (mapInstance && props.mapBounds?.length && !props.isLoading) {
+      mapInstance.fitBounds(props.mapBounds, {maxZoom: 8})
+    }
+  }, [props.mapBounds, mapInstance, props.isLoading]);
   
+  
+  // Move view to selected marker if it is not in view
   useEffect(() => {
     if (props.docs?.[0]._source.location && mapInstance) {
       const { coordinates } = props.docs[0]._source.location;
