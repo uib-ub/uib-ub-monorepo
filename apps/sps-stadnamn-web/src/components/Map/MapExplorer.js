@@ -83,10 +83,10 @@ export default function MapExplorer(props) {
 
 
   useEffect(() => {
-    if (mapInstance && props.mapBounds?.length) {
+    if (mapInstance && props.mapBounds?.length && !props.isLoading) {
       mapInstance.fitBounds(props.mapBounds, {maxZoom: 8})
     }
-  }, [props.mapBounds, props.center, mapInstance]);
+  }, [props.mapBounds, props.center, mapInstance, props.isLoading]);
 
 
   
@@ -113,7 +113,7 @@ export default function MapExplorer(props) {
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (bounds) {
+    if (bounds && !props.isLoading) {
       // Fetch data based on the new bounds
       const queryParams = mapQueryString
       const query = `/api/geo?dataset=${params.dataset}&${ queryParams? 

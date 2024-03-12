@@ -30,7 +30,7 @@ export default function SearchView() {
         <>
 
            { mapBounds?.length ? (
-            <MapExplorer docs={docs} mapBounds={mapBounds}/>
+            <MapExplorer docs={docs} mapBounds={mapBounds} isLoading={isLoading}/>
             )
             :
             isLoading ? 
