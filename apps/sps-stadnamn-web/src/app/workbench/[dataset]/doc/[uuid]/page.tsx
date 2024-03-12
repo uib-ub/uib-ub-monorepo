@@ -35,8 +35,6 @@ export default async function DocumentView({ params }: { params: { dataset: stri
         { doc && <>
       
       <h2>{doc._source.label}</h2>
-        {doc._source.audio ? <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${doc._source.audio.file}`}></audio> : null}
-
       { infoPageRenderers[params.dataset]? infoPageRenderers[params.dataset](doc._source) : null }
       {doc._source.rawData ?
         <div>

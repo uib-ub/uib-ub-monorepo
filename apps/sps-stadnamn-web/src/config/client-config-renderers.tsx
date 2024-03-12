@@ -11,8 +11,7 @@ interface ResultRenderers {
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
   const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
-  const concatenatedLabels = [...new Set(altLabels)].join(', ')
-  return concatenatedLabels ? ', ' + concatenatedLabels : '';
+  return [...new Set(altLabels)].join(', ')
 }
 
 
@@ -21,7 +20,8 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 export const resultRenderers: ResultRenderers = {
   hord: {
     title: (source: any) => {
-      return <><strong>{source.label}</strong>{getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])}{source.adm2 ? ' | ' + source.adm2 + ' kommune' : ''}</> 
+      const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
+      return <><strong>{source.label}</strong>{altLabels ? ', ' + altLabels : ''}{source.adm2 ? ' | ' + source.adm2 + ' kommune' : ''}</> 
     },
     details: (source: any) => {
       return  (source.rawData.merknader || '')
@@ -33,11 +33,21 @@ export const resultRenderers: ResultRenderers = {
 
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   hord: (source: any) => {
-    return <InfoBox items={[
-      {title: 'Kommune', value: source.adm2}, 
+    const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
+    return <>
+    <div className='space-y-2'>
+    { altLabels && <div><strong className="text-neutral-900">Andre navneformer (inkl. uttale): </strong>{altLabels}</div>}
+    {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
+    </div>
+    {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
+    <InfoBox items={[
+      {title: 'Kommune', value: source.rawData.kommuneNamn}, 
+      {title: 'Kommunenummer', value: source.rawData.kommuneNr}, 
+      {title: 'Gardsnummer', value: source.rawData.bruka?.bruk?.gardsNr},
       {title: 'Oppskrivar', value: source.rawData.oppskrivar},
       {title: 'Oppskrivingstid', value: source.rawData.oppskrivingsTid},
     ]}/>
+    </>
   }
 }
 
