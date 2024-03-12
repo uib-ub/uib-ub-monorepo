@@ -152,7 +152,7 @@ export default function MapExplorer(props) {
       );
         
     }
-  }, [bounds, mapQueryString, params.dataset]);
+  }, [bounds, mapQueryString, params.dataset, props.isLoading]);
 
   
   useEffect(() => {
