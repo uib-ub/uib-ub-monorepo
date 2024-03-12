@@ -11,9 +11,10 @@ import Link from 'next/link';
 
 export default function MapExplorer(props) {
   const [markers, setMarkers] = useState([]);
-  const [mapInstance, setMapInstance] = useState(null);
+  const mapInstance = useRef(null);
   const [leafletBounds, setLeafletBounds] = useState(null);
   const [resultCount, setResultCount] = useState(null);
+  const initialRender = useRef(true);
   const [zoom, setZoom] = useState(null);
   const searchParams = useSearchParams()
   const params = useParams()
@@ -26,7 +27,7 @@ export default function MapExplorer(props) {
 
   const mapRef = useCallback(node => {
     if (node !== null) {
-      setMapInstance(node);
+      mapInstance.current = node;
       node.on('moveend', () => {
         controllerRef.current.abort();
         controllerRef.current = new AbortController();
@@ -100,6 +101,7 @@ export default function MapExplorer(props) {
   useEffect(() => {
     // Check if the bounds are initialized
     if (!props.isLoading) {
+      //console.log("Fetching geodata", props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading)
       const topLeftLat = leafletBounds ? leafletBounds.getNorthEast().lat : props.mapBounds[0][0];
       const topLeftLng = leafletBounds ? leafletBounds.getSouthWest().lng : props.mapBounds[0][1];
       const bottomRightLat = leafletBounds ? leafletBounds.getSouthWest().lat : props.mapBounds[1][0];
@@ -147,22 +149,25 @@ export default function MapExplorer(props) {
 
   // Fit map to bounds when searching
   useEffect(() => {
-    if (mapInstance && props.mapBounds?.length && !props.isLoading) {
-      mapInstance.fitBounds(props.mapBounds, {maxZoom: 8})
+    if (initialRender.current) {
+      initialRender.current = false;
     }
-  }, [props.mapBounds, mapInstance, props.isLoading]);
+    else if (mapInstance.current && props.mapBounds?.length && !props.isLoading) {
+      mapInstance.current.fitBounds(props.mapBounds, {maxZoom: 8})
+    }
+  }, [props.mapBounds, props.isLoading]);
   
   
   // Move view to selected marker if it is not in view
   useEffect(() => {
-    if (props.docs?.[0]._source.location && mapInstance) {
+    if (props.docs?.[0]._source.location && mapInstance.current) {
       const { coordinates } = props.docs[0]._source.location;
       const latLng = L.latLng(coordinates[1], coordinates[0]);
-      if (!mapInstance.getBounds().contains(latLng)) {
-        mapInstance.setView(latLng, 10);
+      if (!mapInstance.current.getBounds().contains(latLng)) {
+        mapInstance.current.setView(latLng, 10);
       }
     }
-  }, [props.docs, mapInstance]);
+  }, [props.docs]);
 
 
 
