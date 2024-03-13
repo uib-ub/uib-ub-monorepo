@@ -71,8 +71,8 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     </select>
     <input onChange={(e) => setFacetSearch(e.target.value)} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     </div>
-    { facetAggregation?.buckets ?
-    <ul className='flex flex-col gap-2 px-2 py-1 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border rounded-sm bg-neutral-50 border-neutral-300'>
+    { facetAggregation?.buckets.length ?
+    <ul role="status" aria-live="polite" className='flex flex-col gap-2 px-2 py-1 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border rounded-sm bg-neutral-50 border-neutral-300'>
       {facetAggregation?.buckets.map((item: any, index: number) => (
         <li key={index}>
         <input type="checkbox" checked={paramLookup.getAll(selectedFacet).includes(item.key) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
@@ -81,7 +81,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
         ))}
 
     </ul>
-    : <></>
+    : <div role="status" aria-live="polite" className='px-2 py-1 rounded-sm bg-neutral-50 border border-neutral-300'>Ingen treff</div>
     }
     </div>
   } </>)
