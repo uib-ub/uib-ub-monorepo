@@ -3,42 +3,34 @@ export const runtime = 'edge'
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
   const dataset = params.dataset == 'search' ? '*' : params.dataset;
+  const facets = params.facets.split(',')
+
+
+  let aggs = {};
+  for (let i = facets.length - 1; i >= 0; i--) {
+    aggs = {
+      [facets[i]]: {
+        terms: {
+          field: `${facets[i]}.keyword`,
+          size: 30
+        },
+        ...(i < facets.length - 1 ? { aggs } : {})
+      }
+    };
+  }
+
 
   const query = {
-    "size": 0,
-    "aggs": {
-      "adm1": {
-        "terms": {
-          "field": "adm1.keyword",
-          "size": 30
-        },
-        "aggs": {
-          "adm2": {
-            "terms": {
-              "field": "adm2.keyword",
-              "size": 100
-            },
-            "aggs": {
-              "adm3": {
-                "terms": {
-                  "field": "adm3.keyword",
-                  "size": 100
-                }
-              }
-            }
-          }
-        }
-      },
-      
-    }, 
-    "query": { // todo:same filters as in search, except the active facet
-      "bool": {
-        "must": [
-          { "match_all": {} },
+    size: 0,
+    aggs,
+    query: { // todo:same filters as in search, except the active facet
+      bool: {
+        must: [
+          { match_all: {} },
           ...params.q ? [{
-            "simple_query_string": {
-              "query": params.q,
-              "fields": ["label"]
+            simple_query_string: {
+              query: params.q,
+              fields: ["label"]
             }}] : []
 
         ]

@@ -32,7 +32,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
 
   useEffect(() => {
     setFilterStatus('loading');
-    fetch(`/api/facet?dataset=${params.dataset}&${facetQuery}`).then(response => response.json()).then(es_data => {
+    fetch(`/api/facet?dataset=${params.dataset}&facets=adm1,adm2,adm3${facetQuery ? '&' + facetQuery : ''}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.adm1)
       setTimeout(() => {
         setFilterStatus('expanded');
