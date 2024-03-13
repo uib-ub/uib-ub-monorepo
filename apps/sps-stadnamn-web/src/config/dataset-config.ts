@@ -1,4 +1,4 @@
-import * as schema from "./config-schema"
+import * as schema from "./dataset-config-schema"
 
 export const datasetTitles: schema.DatasetTitles = {
     bsn: "Bustadnavnregisteret",
