@@ -1,5 +1,5 @@
 import SearchProvider from "@/app/search-provider"
-export default function WorkbenchLayout({ children, searchSection }: { children: React.ReactNode, searchSection: React.ReactNode } ) {  
+export default function ViewLayout({ children, searchSection }: { children: React.ReactNode, searchSection: React.ReactNode } ) {  
     return (
               <main className="flex flex-col xl:grid xl:grid-cols-3 mb-3 xl:mx-2 gap-2 scroll-container">
                 <SearchProvider>

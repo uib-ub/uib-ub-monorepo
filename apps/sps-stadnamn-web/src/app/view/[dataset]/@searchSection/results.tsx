@@ -32,19 +32,19 @@ export default function Results({ hits }: { hits: any }) {
     const showInMap = (uuid: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
       newSearchParams.set('docs', String(uuid))
-      router.push(`/workbench/${params.dataset}?${newSearchParams.toString()}`)
+      router.push(`/view/${params.dataset}?${newSearchParams.toString()}`)
     }
 
     const goToDoc = (uuid: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
       newSearchParams.delete('docs')
-      router.push(`/workbench/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
+      router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
     }
 
     const goToIIIF = (uuid: string, manifest: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
       newSearchParams.set('docs', String(uuid))
-      router.push(`/workbench/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
+      router.push(`/view/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
     }
 
 
@@ -112,7 +112,7 @@ export default function Results({ hits }: { hits: any }) {
           <IconButton 
             onClick={() => showInMap(hit._id)} 
             label="Vis i kart" 
-            aria-current={searchParams.get('docs') == hit._id && pathname == `/workbench/${params.dataset}` ? 'page': undefined} 
+            aria-current={searchParams.get('docs') == hit._id && pathname == `/view/${params.dataset}` ? 'page': undefined} 
             className="p-1 text-neutral-700">
               <PiMapPinFill className="text-xl xl:text-3xl"/></IconButton> 
         }

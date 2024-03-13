@@ -15,7 +15,7 @@ export default function SubPage ( { params }: { params: { dataset: string, subpa
 
   return (
     <>
-    <Breadcrumbs parentName={datasetTitles[mainIndex]} parentUrl={`/workbench/${params.dataset}/info`} currentName={subpages[mainIndex][params.subpage -1]} />
+    <Breadcrumbs parentName={datasetTitles[mainIndex]} parentUrl={`/view/${params.dataset}/info`} currentName={subpages[mainIndex][params.subpage -1]} />
     <MDXRemote source={src} /> 
     </>
   )

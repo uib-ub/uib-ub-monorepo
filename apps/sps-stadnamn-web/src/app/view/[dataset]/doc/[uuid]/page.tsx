@@ -43,7 +43,7 @@ export default async function DocumentView({ params }: { params: { dataset: stri
       : null}
       {doc._source.image?.manifest && <div>
         <h3>Sedler</h3>
-        <Link href={`/workbench/${params.dataset}/iiif/${doc._source.image.manifest}`}><Thumbnail manifestId={doc._source.image.manifest}/></Link>
+        <Link href={`/view/${params.dataset}/iiif/${doc._source.image.manifest}`}><Thumbnail manifestId={doc._source.image.manifest}/></Link>
 
 
         </div>}

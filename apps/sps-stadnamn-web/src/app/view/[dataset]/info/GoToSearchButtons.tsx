@@ -9,7 +9,7 @@ export default function GoToSearchButtons() {
     const currentSearch = useSearchParams().toString()
 
     return (
-        <Link href={ '/workbench/' + params.dataset + (currentSearch ? '?' + currentSearch : '') } className="btn btn-outline no-underline"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
+        <Link href={ '/view/' + params.dataset + (currentSearch ? '?' + currentSearch : '') } className="btn btn-outline no-underline"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
     )
 
 }

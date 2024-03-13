@@ -149,7 +149,7 @@ export default function Datasets() {
                 </ul>
                 </div>
                 <div className='mt-10 flex gap-2 flex-wrap'>
-                <Link href={'/workbench/' + dataset + (datasetPresentation[dataset].initPage ? `/${datasetPresentation[dataset].initPage}` : '')} className="no-underline btn btn-outline">
+                <Link href={'/view/' + dataset + (datasetPresentation[dataset].initPage ? `/${datasetPresentation[dataset].initPage}` : '')} className="no-underline btn btn-outline">
                 Åpne {datasetTitles[dataset]}
               </Link>
               {Object.keys(datasetPresentation[dataset].subindices || {}).map((subindexKey) => {
@@ -160,7 +160,7 @@ export default function Datasets() {
                 return (
                 <Link 
                   key={subindexKey} 
-                  href={'/workbench/' + subindexKey + (initPage ? `/${initPage}/` : '')} 
+                  href={'/view/' + subindexKey + (initPage ? `/${initPage}/` : '')} 
                   className="no-underline btn btn-outline"
                 >
                   Søk i {datasetTitles[subindexKey]}
