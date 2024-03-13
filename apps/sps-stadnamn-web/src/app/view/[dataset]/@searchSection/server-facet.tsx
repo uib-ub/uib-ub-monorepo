@@ -46,7 +46,7 @@ export default function ServerFacet({ setFilterStatus }: { setFilterStatus: (sta
 
   useEffect(() => {
     setFilterStatus('loading');
-    fetch(`/api/facet?dataset=${params.dataset}&facets=${selectedFacet}${facetSearch ? '&facetSearch=' + facetSearch : ''}${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
+    fetch(`/api/facet?dataset=${params.dataset}&facets=${selectedFacet}${facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.[selectedFacet])
       setTimeout(() => {
         setFilterStatus('expanded');
