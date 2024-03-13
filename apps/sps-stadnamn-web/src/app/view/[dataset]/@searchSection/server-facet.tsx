@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
-import { facetConfig } from '@/config/client-config';
+import { facetConfig } from '@/config/dataset-config';
 
 
 

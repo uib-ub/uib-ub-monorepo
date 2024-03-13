@@ -3,7 +3,7 @@ import EmbeddedMap from '@/components/Map/EmbeddedMap'
 import OriginalData from './original-data'
 import Thumbnail from './thumbnail'
 import Link from 'next/link'
-import { infoPageRenderers } from '@/config/client-config-renderers'
+import { infoPageRenderers } from '@/config/dataset-render-config'
 
 
 export default async function DocumentView({ params }: { params: { dataset: string, uuid: string }}) { 

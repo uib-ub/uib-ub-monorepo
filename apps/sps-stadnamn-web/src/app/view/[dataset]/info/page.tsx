@@ -1,4 +1,4 @@
-import { datasetPresentation, datasetTitles, subpages } from '@/config/client-config'
+import { datasetPresentation, datasetTitles, subpages } from '@/config/dataset-config'
 import Link from 'next/link'
 import { PiCaretRightBold } from 'react-icons/pi'
 import GoToSearchButtons from './GoToSearchButtons'

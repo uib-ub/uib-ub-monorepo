@@ -9,7 +9,7 @@ import SearchBar from './SearchBar'
 import { PiInfoFill } from 'react-icons/pi'
 import { SearchContext } from '@/app/search-provider'
 
-import { datasetTitles } from '@/config/client-config'
+import { datasetTitles } from '@/config/dataset-config'
 import { useQueryStringWithout } from '@/lib/search-params';
 
 

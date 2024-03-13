@@ -5,7 +5,7 @@ import { useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
-import { resultRenderers, defaultResultRenderer } from '@/config/client-config-renderers';
+import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
 
 
 export default function Results({ hits }: { hits: any }) {

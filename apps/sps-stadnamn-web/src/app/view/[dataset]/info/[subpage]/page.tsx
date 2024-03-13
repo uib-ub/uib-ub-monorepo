@@ -3,7 +3,7 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import fs from 'fs';
 import path from 'path';
-import { datasetTitles, subpages } from '@/config/client-config'
+import { datasetTitles, subpages } from '@/config/dataset-config'
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 
 export default function SubPage ( { params }: { params: { dataset: string, subpage: number } }) {

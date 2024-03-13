@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
 import PopupList from './PopupList'
 import { indexToCode } from '@/lib/datasets';
-import { datasetTitles } from '@/config/client-config';
+import { datasetTitles } from '@/config/dataset-config';
 import Link from 'next/link';
 
 export default function MapExplorer(props) {
