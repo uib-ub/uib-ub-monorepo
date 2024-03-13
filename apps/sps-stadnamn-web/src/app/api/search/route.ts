@@ -1,26 +1,8 @@
-//export const runtime = 'edge'
 export const runtime = 'edge'
-export async function GET(request: Request) {
-  const urlParams = new URL(request.url).searchParams;
-  const params: { [key: string]: string | null } = {};
-  const filters: { [key: string]: string[] } = {};
 
-  for (const [key, value] of urlParams.entries()) {
-    switch (key) {
-      case 'q':
-      case 'dataset':
-      case 'page':
-      case 'sort':
-      case 'size':
-        params[key] = urlParams.get(key);
-        break;
-      default:
-        if (!filters[key]) {
-          filters[key] = [];
-        }
-        filters[key].push(value);
-    }
-  }
+import { extractFacets } from '../_utils/facets'
+export async function GET(request: Request) {
+  const {term_filters, params} = extractFacets(request)
   const dataset = params.dataset == 'search' ? '*' : params.dataset;
 
   const query: Record<string,any> = {
@@ -45,32 +27,11 @@ export async function GET(request: Request) {
   }
 
   const simple_query_string = params.q ? {
-          "simple_query_string": {
-            "query": params.q,
-            "fields": ["label"]
-          }} : null
+    "simple_query_string": {
+      "query": params.q,
+      "fields": ["label"]
+    }} : null
 
-
-  const term_filters = []
-  if (Object.keys(filters).length > 0 ) {
-    if (filters.adm) {
-      term_filters.push({
-        "bool": {
-          "should": filters.adm.map((value: string) => ({ 
-            "bool": {
-              "filter": value.split("_").reverse().map((value: string, index: number) => ({
-                  
-                  "term":  { [`adm${index+1}.keyword`]: value }
-              }))
-            }
-          })),
-          "minimum_should_match": 1
-        }
-
-      })
-
-    }
-  }
 
 
   if (simple_query_string && term_filters.length) {
@@ -90,11 +51,6 @@ export async function GET(request: Request) {
       }
     }
   }
-
-
-
-  //console.log("SEARCH QUERY", JSON.stringify(query))
-
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {
     method: 'POST',

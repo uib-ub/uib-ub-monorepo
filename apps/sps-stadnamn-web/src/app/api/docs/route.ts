@@ -1,4 +1,3 @@
-//export const runtime = 'edge'
 export const runtime = 'edge'
 export async function GET(request: Request) {
     const docs = new URLSearchParams(new URL(request.url).search).get('docs');
