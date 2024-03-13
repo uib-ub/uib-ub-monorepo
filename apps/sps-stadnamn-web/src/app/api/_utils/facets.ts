@@ -61,8 +61,7 @@ export function extractFacets(request: Request ) {
       })
     }
   }
-  //console.log("TERM FILTER", term_filters)
-  console.log("TERM FILTER", term_filters)
+
   return {term_filters, params}
 
 
