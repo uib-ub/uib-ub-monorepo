@@ -1,12 +1,14 @@
-//export const runtime = 'edge'
 export const runtime = 'edge'
+import { extractFacets } from '../_utils/facets'
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
+  const {term_filters } = extractFacets(request)
   const dataset = params.dataset == 'search' ? '*' : params.dataset;
-  const facets = params.facets.split(',')
+  const facets = params.facets?.split(',')
 
-
-  let aggs = {};
+ let aggs;
+ if (facets) {
+  aggs = {}
   for (let i = facets.length - 1; i >= 0; i--) {
     aggs = {
       [facets[i]]: {
@@ -18,8 +20,9 @@ export async function GET(request: Request) {
       }
     };
   }
-
-
+ }
+  
+  
   const query = {
     size: 0,
     aggs,
@@ -36,11 +39,12 @@ export async function GET(request: Request) {
               query: params.q,
               fields: ["label"]
             }}] : [],
-
-        ]
+        ],
+        ...term_filters.length ? {filter: term_filters} : {}
        }
     }
   }
+
 
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {

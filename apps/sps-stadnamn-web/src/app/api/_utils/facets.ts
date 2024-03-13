@@ -1,6 +1,6 @@
 export function extractFacets(request: Request ) {
   const urlParams = new URL(request.url).searchParams;
-  
+
   const term_filters = []
   const params: { [key: string]: string | null } = {};
 
@@ -14,6 +14,11 @@ export function extractFacets(request: Request ) {
       case 'page':
       case 'sort':
       case 'size':
+      case 'topLeftLat':
+      case 'topLeftLng':
+      case 'bottomRightLat':
+      case 'bottomRightLng':
+      case 'facets':
         params[key] = urlParams.get(key);
         break;
       default:
@@ -27,7 +32,7 @@ export function extractFacets(request: Request ) {
 
 
   // Hierarchical facet 
-  if (Object.keys(clientFacets).length > 0 ) {
+  if (Object.keys(clientFacets).length) {
     if (clientFacets.adm) {
       term_filters.push({
         "bool": {
@@ -48,7 +53,7 @@ export function extractFacets(request: Request ) {
   }
 
   // other facets
-  if (Object.keys(serverFacets).length > 0) {
+  if (Object.keys(serverFacets).length) {
     for (const [key, values] of Object.entries(serverFacets)) {
       term_filters.push({
         "terms": { [`${key}.keyword`]: values }

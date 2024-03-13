@@ -1,37 +1,11 @@
-//export const runtime = 'edge'
 export const runtime = 'edge'
+
+import { extractFacets } from '../_utils/facets'
+
 export async function GET(request: Request) {
-    const urlParams = new URL(request.url).searchParams;
-    const params: { [key: string]: string | null } = {};
-    const filters: { [key: string]: string[] } = {};
+    const {term_filters, params} = extractFacets(request)
 
 
-  for (const [key, value] of urlParams.entries()) {
-    switch (key) {
-      case 'q':
-      case 'dataset':
-      case 'topLeftLat':
-      case 'topLeftLng':
-      case 'bottomRightLat':
-      case 'bottomRightLng':
-        params[key] = urlParams.get(key);
-        break;
-      default:
-        if (!filters[key]) {
-          filters[key] = [];
-        }
-
-        if (key == 'adm2') {
-          let key_value = value.split('_');
-          if (key_value.length == 2) {
-            filters[key].push(key_value[0]);
-            break;
-          }
-        }
-        
-        filters[key].push(value);
-    }
-  }
   const dataset = params.dataset == 'search' ? '*' : params.dataset;
 
 
@@ -83,26 +57,7 @@ const simple_query_string = params.q ? {
     }} : null
 
 
-    const term_filters = []
-    if (Object.keys(filters).length > 0 ) {
-      if (filters.adm) {
-        term_filters.push({
-          "bool": {
-            "should": filters.adm.map((value: string) => ({ 
-              "bool": {
-                "filter": value.split("_").reverse().map((value: string, index: number) => ({
-                    
-                    "term":  { [`adm${index+1}.keyword`]: value }
-                }))
-              }
-            })),
-            "minimum_should_match": 1
-          }
   
-        })
-  
-      }
-    }
 
 
 if (simple_query_string || term_filters.length) {
