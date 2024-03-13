@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ClientFacet from './client-facet';
 import ServerFacet from './server-facet';
 import { PiCaretDownFill, PiCaretUpFill, PiX, PiTrashFill } from 'react-icons/pi';
@@ -11,20 +11,16 @@ import IconButton from '@/components/ui/icon-button';
 export default function Facets() {
     const router = useRouter()
     const pathname = usePathname()
-    const [filterStatus, setFilterStatus] = useState<Record<string, string>>({adm: 'collapsed'})
+
     const searchQuery = useQueryWithout(['docs', 'view', 'manifest'])
     const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'size')
     const [chipsExpanded, setChipsExpanded] = useState(false);
-
     const filterNames = Array.from(new Set(activeFilters.map(item => item[0])))
     const clearedParams = useQueryStringWithout([...filterNames, 'page', 'sort'])
+    const [expandedFacet, setExpandedFacet] = useState<string | null>(null)
+    const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
     
-    const toggleExpanded = (filterName: string) => {
-      setFilterStatus({
-          ...filterStatus,
-          [filterName]: filterStatus[filterName] === 'expanded' ? 'collapsed' : 'expanded'
-      });
-  }
+
 
     const removeFilter = (name: string, value: string) => {      
       const updatedParams = new URLSearchParams(searchQuery.filter(item => item[0] != name || item[1] != value)).toString()
@@ -33,6 +29,14 @@ export default function Facets() {
 
     const clearFilters = () => {
       router.push(pathname + '?' + clearedParams, { scroll: false});
+    }
+
+    const toggleFacet = (facet: string) => {
+      if (expandedFacet != facet) {
+        setLoadingFacet(facet)
+
+      }
+      setExpandedFacet(currentFacet => currentFacet == facet? null : facet)
     }
 
 
@@ -72,23 +76,25 @@ export default function Facets() {
     : null}
 
     <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
-      <button type="button" onClick={() => toggleExpanded('adm')}  className='flex w-full items-center gap-1'>
-      {filterStatus.adm === 'loading' ? <Spinner className='w-[1em] h-[1em}'/> : (filterStatus.adm === 'expanded' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>)}
+      <button type="button" onClick={() => toggleFacet('adm')}  className='flex w-full items-center gap-1'>
+      { expandedFacet == 'adm' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>}
       Område 
+      { loadingFacet == 'adm' ? <Spinner className='w-[1em] h-[1em}'/> : null}
       
       </button>
     </h3>
-    { filterStatus.adm !== 'collapsed' && <ClientFacet facetName="adm" setFilterStatus={(status: any) => setFilterStatus({...filterStatus, adm: status})}/>}
+    { expandedFacet == 'adm' ? <ClientFacet facetName='adm' showLoading={(facet: string | null) => setLoadingFacet(facet)}/> : null}
 
 
     <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
-      <button type="button" onClick={() => toggleExpanded('facetSearch')}  className='flex w-full items-center gap-1'>
-      {filterStatus.facetSearch === 'loading' ? <Spinner className='w-[1em] h-[1em}'/> : (filterStatus.facetSearch === 'expanded' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>)}
+      <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
+      { expandedFacet == 'server' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>}
       Andre filtre
+      { loadingFacet == 'server' ? <Spinner className='w-[1em] h-[1em}'/> : null}
       
       </button>
     </h3>
-    { filterStatus.facetSearch !== 'collapsed' && <ServerFacet setFilterStatus={(status: any) => setFilterStatus({...filterStatus, facetSearch: status})}/>}
+    { expandedFacet == 'server' && <ServerFacet showLoading={(facet: string | null) => setLoadingFacet(facet)}/>}
 
     </section>
   )

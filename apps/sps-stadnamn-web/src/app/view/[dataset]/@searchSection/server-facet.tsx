@@ -6,7 +6,7 @@ import IconButton from '@/components/ui/icon-button';
 
 
 
-export default function ServerFacet({ setFilterStatus }: { setFilterStatus: (status: string) => void }) {
+export default function ServerFacet({ showLoading }: { showLoading: (facet: string | null) => void }) {
   const router = useRouter()
   const pathname = usePathname()
   const params = useParams()
@@ -45,11 +45,10 @@ export default function ServerFacet({ setFilterStatus }: { setFilterStatus: (sta
     
 
   useEffect(() => {
-    setFilterStatus('loading');
     fetch(`/api/facet?dataset=${params.dataset}&facets=${selectedFacet}${facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.[selectedFacet])
       setTimeout(() => {
-        setFilterStatus('expanded');
+        showLoading(null);
       }, 200);
       setIsLoading(false);
     })
