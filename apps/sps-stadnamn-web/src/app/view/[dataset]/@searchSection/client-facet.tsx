@@ -157,7 +157,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-4 p-2 border-b border-neutral-300 pb-4">
+    <div className="flex flex-col gap-4 p-2 py-4 border-b border-neutral-300">
     <div className='flex gap-2'>
       <input onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
     <select onChange={(e) => setSortMethod(e.target.value)}>

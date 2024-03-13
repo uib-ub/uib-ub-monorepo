@@ -63,7 +63,7 @@ export default function ServerFacet({ setFilterStatus }: { setFilterStatus: (sta
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-4 p-2 border-b border-neutral-300 pb-4">
+    <div className="flex flex-col gap-4 p-2 border-b border-neutral-300 py-4">
     <div className='flex gap-2'>
     <select onChange={(e) => switchFacet(e.target.value)}>
         {availableFacets.map((item, index) => (

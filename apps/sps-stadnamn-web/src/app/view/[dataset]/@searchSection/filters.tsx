@@ -79,9 +79,11 @@ export default function Facets() {
       </button>
     </h3>
     { filterStatus.adm !== 'collapsed' && <ClientFacet facetName="adm" setFilterStatus={(status: any) => setFilterStatus({...filterStatus, adm: status})}/>}
+
+
     <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleExpanded('facetSearch')}  className='flex w-full items-center gap-1'>
-      {filterStatus.facetSearch === 'loading' ? <Spinner className='w-[1em] h-[1em}'/> : (filterStatus.serverFacet === 'expanded' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>)}
+      {filterStatus.facetSearch === 'loading' ? <Spinner className='w-[1em] h-[1em}'/> : (filterStatus.facetSearch === 'expanded' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>)}
       Andre filtre
       
       </button>
