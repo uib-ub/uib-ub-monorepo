@@ -18,14 +18,6 @@ export async function GET(request: Request) {
         if (!filters[key]) {
           filters[key] = [];
         }
-        
-        if (key == 'adm2') {
-          let key_value = value.split('_');
-          if (key_value.length == 2) {
-            filters[key].push(key_value[0]);
-            break;
-          }
-        }
         filters[key].push(value);
     }
   }
