@@ -12,7 +12,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
   const params = useParams()
   const [sortMethod, setSortMethod] = useState('key');
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
-  const facetQuery = useQueryStringWithout(['docs', 'view', 'manifest', facetName, 'page', 'size', 'sort']);
+  const paramsExceptFacet = useQueryStringWithout(['docs', 'view', 'manifest', facetName, 'page', 'size', 'sort']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
@@ -32,7 +32,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
 
   useEffect(() => {
     setFilterStatus('loading');
-    fetch(`/api/facet?dataset=${params.dataset}&facets=adm1,adm2,adm3${facetQuery ? '&' + facetQuery : ''}`).then(response => response.json()).then(es_data => {
+    fetch(`/api/facet?dataset=${params.dataset}&facets=adm1,adm2,adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.adm1)
       setTimeout(() => {
         setFilterStatus('expanded');
@@ -40,7 +40,7 @@ export default function ClientFacet({ setFilterStatus, facetName }: { setFilterS
       setIsLoading(false);
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [facetQuery, params.dataset]
+    }, [paramsExceptFacet, params.dataset]
     )
 
   const useClearFilter = () => {

@@ -12,7 +12,7 @@ export async function GET(request: Request) {
       [facets[i]]: {
         terms: {
           field: `${facets[i]}.keyword`,
-          size: 30
+          size: params.facetSearch ? 10 : 50
         },
         ...(i < facets.length - 1 ? { aggs } : {})
       }
@@ -26,12 +26,16 @@ export async function GET(request: Request) {
     query: { // todo:same filters as in search, except the active facet
       bool: {
         must: [
-          { match_all: {} },
+          ...params.facetSearch ? [{
+            simple_query_string: {
+              query: params.facetSearch,
+              fields: facets
+            }}] : [{ match_all: {} }],
           ...params.q ? [{
             simple_query_string: {
               query: params.q,
               fields: ["label"]
-            }}] : []
+            }}] : [],
 
         ]
        }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ClientFacet from './client-facet';
+import ServerFacet from './server-facet';
 import { PiCaretDownFill, PiCaretUpFill, PiX, PiTrashFill } from 'react-icons/pi';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
@@ -36,15 +37,18 @@ export default function Facets() {
 
 
   return (
-    <section className='flex flex-col w-full gap-2'>
+    <section className='flex flex-col w-full'>
+    
     <span className="flex px-2 align-bottom"><h2 className='h-full lg:text-xl align-bottom font-semibold small-caps'>Filtre</h2>
-    {activeFilters.length ? 
+    {activeFilters.length ?
     <IconButton type="button" label="Fjern alle filtre" onClick={clearFilters} className="icon-button ml-auto py-0">
       <PiTrashFill className="text-lg lg:text-xl text-neutral-800" aria-hidden="true"/>
     </IconButton> 
     : null
     }
     </span>
+    {activeFilters.length ? 
+    <div className='py-2 border-b border-neutral-300'>
     {activeFilters.map(([name, value], index) => (
       <input type="hidden" name={name} value={value} key={index}/>
       ))}
@@ -64,8 +68,10 @@ export default function Facets() {
         )}
       
     </ul>
+    </div>
+    : null}
 
-    <h3 className='lg:text-lg p-2 border-y border-y-neutral-300'>
+    <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleExpanded('adm')}  className='flex w-full items-center gap-1'>
       {filterStatus.adm === 'loading' ? <Spinner className='w-[1em] h-[1em}'/> : (filterStatus.adm === 'expanded' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>)}
       Område 
@@ -73,6 +79,14 @@ export default function Facets() {
       </button>
     </h3>
     { filterStatus.adm !== 'collapsed' && <ClientFacet facetName="adm" setFilterStatus={(status: any) => setFilterStatus({...filterStatus, adm: status})}/>}
+    <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
+      <button type="button" onClick={() => toggleExpanded('facetSearch')}  className='flex w-full items-center gap-1'>
+      {filterStatus.facetSearch === 'loading' ? <Spinner className='w-[1em] h-[1em}'/> : (filterStatus.serverFacet === 'expanded' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>)}
+      Andre filtre
+      
+      </button>
+    </h3>
+    { filterStatus.facetSearch !== 'collapsed' && <ServerFacet setFilterStatus={(status: any) => setFilterStatus({...filterStatus, facetSearch: status})}/>}
 
     </section>
   )
