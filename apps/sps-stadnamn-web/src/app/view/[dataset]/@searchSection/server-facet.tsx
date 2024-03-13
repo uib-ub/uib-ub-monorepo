@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
-import { PiTrashFill, PiSortAscending, PiSortDescending } from 'react-icons/pi';
-import IconButton from '@/components/ui/icon-button';
+import { facetConfig } from '@/config/client-config';
 
 
 
 export default function ServerFacet({ showLoading }: { showLoading: (facet: string | null) => void }) {
   const router = useRouter()
   const pathname = usePathname()
-  const params = useParams()
+  const params = useParams<Record<string, string>>()
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
@@ -18,11 +17,8 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const [facetSearch, setFacetSearch] = useState('');
   
 
-  const availableFacets = [
-    ["rawData.arkivTilvising", 'Arkivtilvising'],
-    ["rawData.oppskrivar", 'Oppskrivar'],
-  ]
-  const [selectedFacet, setSelectedFacet] = useState(availableFacets[0][0]);
+  const availableFacets = facetConfig[params.dataset]
+  const [selectedFacet, setSelectedFacet] = useState(availableFacets[0].key);
   const paramsExceptFacet = useQueryStringWithout(['docs', 'view', 'manifest', 'page', 'size', 'sort', selectedFacet])
 
   const switchFacet = (facet: string) => {
@@ -66,7 +62,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     <div className='flex gap-2'>
     <select onChange={(e) => switchFacet(e.target.value)}>
         {availableFacets.map((item, index) => (
-            <option key={index} value={item[0]}>{item[1]}</option>
+            <option key={index} value={item.key}>{item.label}</option>
         ))}
     </select>
     <input onChange={(e) => setFacetSearch(e.target.value)} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>

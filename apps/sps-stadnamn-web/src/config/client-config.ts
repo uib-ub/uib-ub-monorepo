@@ -1,29 +1,6 @@
-interface DatasetTitles {
-  [key: string]: string;
-}
+import * as schema from "./config-schema"
 
-interface SubindexPresentation {
-  [key: string]: {
-    img?: string;
-    alt?: string;
-    imageAttribution?: string;
-    description?: string;
-    initPage?: string;
-  }
-}
-
-interface DatasetPresentation {
-  [key: string]: {
-    img: string;
-    alt: string;
-    imageAttribution: string;
-    description: string;
-    subindices?: SubindexPresentation;
-    initPage?: string;
-  }
-}
-
-export const datasetTitles: DatasetTitles = {
+export const datasetTitles: schema.DatasetTitles = {
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
@@ -40,7 +17,7 @@ export const datasetTitles: DatasetTitles = {
 
 
 
-export const datasetPresentation: DatasetPresentation = {
+export const datasetPresentation: schema.DatasetPresentation = {
       bsn: {
         img: "/datasets/ubb-spr-bp-0001_sm.jpg",
         alt: "En kvinnelig arkivar eller kontorist sitter ved et skrivebord foran en stor rekke arkivskuffer.",
@@ -157,8 +134,15 @@ export const datasetTypes: Record<string, string[]> = {
 
 
 
-export const facetConfig = {
-    bsn: {
-    }
+export const facetConfig: Record<string, schema.FacetConfigItem[]> = {
+    hord: [
+      {"key": "rawData.arkivTilvising", "label": "Arkivtilvising"},
+      {"key": "rawData.oppskrivar", "label": "Oppskrivar"},
+    ],
+    mu1950: [
+      {"key": "rawData.eigar", "label": "Eigar"},
+      {"key": "rawData.koordinattype", "label": "Koordinattype"}
+    ],
 
 }
+
