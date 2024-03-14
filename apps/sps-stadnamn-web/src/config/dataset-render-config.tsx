@@ -40,10 +40,10 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
     </div>
     {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
-    <InfoBox items={[
+    <InfoBox dataset={'hord'} items={[
       {title: 'Kommune', value: source.rawData.kommuneNamn}, 
       {title: 'Kommunenummer', value: source.rawData.kommuneNr}, 
-      {title: 'Gardsnummer', value: source.rawData.bruka?.bruk?.gardsNr},
+      {title: 'Gardsnummer', value: source.rawData.bruka?.bruk?.gardsNr, searchFields: {'rawData.kommuneNr': source.rawData.kommuneNr, 'rawData.bruka__bruk.gardsNr': source.rawData.bruka?.bruk?.gardsNr}},
       {title: 'Oppskrivar', value: source.rawData.oppskrivar},
       {title: 'Oppskrivingstid', value: source.rawData.oppskrivingsTid},
     ]}/>
