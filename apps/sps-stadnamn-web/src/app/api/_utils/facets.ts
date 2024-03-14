@@ -56,9 +56,22 @@ export function extractFacets(request: Request ) {
   // other facets
   if (Object.keys(serverFacets).length) {
     for (const [key, values] of Object.entries(serverFacets)) {
-      term_filters.push({
-        "terms": { [`${key}.keyword`]: values }
-      })
+      // Handle nested properties
+      if (key.includes('__')) {
+        const [base, nested] = key.split('__');
+        term_filters.push({
+          "nested": {
+            "path": base,
+            "query": {
+              "terms": { [`${base}.${nested}.keyword`]: values }
+            }
+          }
+        });
+      } else {
+        term_filters.push({
+          "terms": { [`${key}.keyword`]: values }
+        });
+      }
     }
   }
 
