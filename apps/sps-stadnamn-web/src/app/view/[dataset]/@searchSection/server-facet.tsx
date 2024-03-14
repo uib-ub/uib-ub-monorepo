@@ -18,7 +18,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   
 
   const availableFacets = facetConfig[params.dataset]
-  const [selectedFacet, setSelectedFacet] = useState(availableFacets[0].key);
+  const [selectedFacet, setSelectedFacet] = useState(availableFacets && availableFacets[0]?.key);
   const paramsExceptFacet = useQueryStringWithout(['docs', 'view', 'manifest', 'page', 'size', 'sort', selectedFacet])
 
   const switchFacet = (facet: string) => {
@@ -61,7 +61,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     <div className="flex flex-col gap-4 p-2 border-b border-neutral-300 py-4">
     <div className='flex gap-2'>
     <select onChange={(e) => switchFacet(e.target.value)}>
-        {availableFacets.map((item, index) => (
+        {availableFacets?.map((item, index) => (
             <option key={index} value={item.key}>{item.label}</option>
         ))}
     </select>
