@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <>
-<main className="flex flex-col grow-1 gap-48 items-center justify-center pb-8 lg:pt-32 md:pt-16 sm:pt-8  lg:pb-16 px-4 w-full flex-grow">
+<main className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow">
   <div className="flex flex-col gap-24 w-full">
   <div className="flex flex-col gap-12 w-full">
   <div className="flex flex-col gap-8 ">
@@ -52,9 +52,9 @@ export default function Home() {
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-serif text-3xl">Kildetilpasset søk</h2>
-    <ul className="sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
+    <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
-        <li key={index} className="card flex flex-col md:h-64 my-6 sm:my-0">
+        <li key={index} className="card flex flex-col md:h-64 sm:my-0">
           <Link href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
           <div className="w-full aspect-square sm:h-32 sm:w-32 sm:md:h-64 sm:md:w-64  lg:p-1 overflow-hidden sm:flex-none">
           <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%]"/>
