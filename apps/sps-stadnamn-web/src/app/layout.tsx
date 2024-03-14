@@ -35,7 +35,7 @@ export default function RootLayout({
         <header className="flex flex-col lg:flex-row lg:gap-6 py-2 px-1 lg:p-3 lg:px-4 text-neutral-900">
           <div className="flex flex-wrap pl-3 md:justify-between h-full items-center">
           
-          <Link href="/" className="text-base sm:text-xl lg:text-2xl small-caps font-serif h-full lg:pt-0">Stadnamnportalen</Link>
+          <Link href="/" className="text-lg sm:text-xl lg:text-2xl small-caps font-serif h-full lg:pt-0">Stadnamnportalen</Link>
           <Menu/>
           
           </div>
