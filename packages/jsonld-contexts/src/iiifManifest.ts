@@ -39,6 +39,9 @@ export const iiifManifestContext = {
     },
     "thumbnail": {
       "@id": "http://iiif.io/api/presentation/3#thumbnail",
+      "@container": [
+        "@set"
+      ]
     },
     "description": {
       "@id": "http://purl.org/dc/elements/1.1/description",
