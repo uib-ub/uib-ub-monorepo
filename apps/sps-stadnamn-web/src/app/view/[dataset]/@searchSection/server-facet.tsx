@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import { facetConfig } from '@/config/dataset-config';
-import { PiSortAscending, PiSortDescending, PiFunnelSimple } from 'react-icons/pi';
+import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 
 
@@ -62,14 +62,20 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-4 p-2 border-b border-neutral-300 py-4">
-    <div className='flex gap-3'>
+    <div className="flex flex-col gap-2 p-2 border-b border-neutral-300 py-4">
+    <div className='flex gap-2'>
     <select onChange={(e) => switchFacet(e.target.value)}>
         {availableFacets?.map((item, index) => (
             <option key={index} value={item.key}>{item.label}</option>
         ))}
     </select>
-    <input onChange={(e) => setFacetSearch(e.target.value)} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
+    <div className='relative grow'>
+      <input onChange={(e) => setFacetSearch(e.target.value)} 
+          className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
+      <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
+        <PiMagnifyingGlass aria-hidden={true} className='text-neutral-900'/>
+      </span>
+    </div>
 
     {sortMode == 'doc_count' ?
     <IconButton className="text-xl" label="Sorter stigende" onClick={() => setSortMode('asc')}><PiSortAscending/></IconButton>

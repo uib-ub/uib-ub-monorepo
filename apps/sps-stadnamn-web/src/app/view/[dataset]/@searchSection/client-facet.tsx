@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
-import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple } from 'react-icons/pi';
+import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple, PiFunnel } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 
 
@@ -148,9 +148,15 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-4 p-2 py-4 border-b border-neutral-300">
-    <div className='flex gap-3'>
-      <input onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
+    <div className="flex flex-col gap-2 p-2 py-4 border-b border-neutral-300">
+    <div className='flex gap-2'>
+    <div className='relative grow'>
+      <input onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
+          className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
+      <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
+        <PiFunnel aria-hidden={true} className='text-neutral-900'/>
+      </span>
+    </div>
     
     {sortMode == 'doc_count' ?
       <IconButton className="text-xl" label="Sorter stigende" onClick={() => setSortMode('asc')}><PiSortAscending/></IconButton>
