@@ -17,14 +17,14 @@ export default function SearchBar() {
 
 
     return (
-        <div className="flex gap-2 px-2">
-            <div className="relative w-full h-full">
+        <div className="flex gap-2 px-2 items-stretch">
+            <div className="relative w-full">
             <input type="text" 
                    ref={inputRef}
                    name="q" 
                    value={inputValue} 
                    onChange={(event) => setInputValue(event.target.value)}    
-                   className='border border-neutral-500 w-full h-full rounded-sm px-2'/>
+                   className='border border-neutral-500 w-full !h-full rounded-sm px-2'/>
             { inputValue && 
             <IconButton type="button" onClick={clearInput} label="Tøm søk" className="absolute right-2 top-1/2 transform -translate-y-1/2"><PiX className="text-lg"/></IconButton> }
             </div>
