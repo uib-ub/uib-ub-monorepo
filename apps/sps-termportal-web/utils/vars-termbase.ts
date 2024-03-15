@@ -31,6 +31,7 @@ export type Domains =
   | "DOMENE-3ASamfunnsfag"
   | "DOMENE-3AOkonomiAdministrasjon";
 
+  // TODO replace with lazy query
 export const termbaseOrder: Samling[] = [
   "ARTSDB",
   "ASTRONOMI",
@@ -55,6 +56,7 @@ export const termbaseOrder: Samling[] = [
   "UHR",
 ];
 
+// TODO replace with lazy query
 export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   ARTSDB: ["nb", "nn", "en", "la"],
   ASTRONOMI: ["nb", "nn", "en"],
@@ -79,6 +81,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   UHR: ["nb", "nn", "en"],
 };
 
+// TODO Why are the bases lists needed? replace with lazy
 export const domainNesting = {
   "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
   "DOMENE-3ANaturvitenskapTeknologi": {
