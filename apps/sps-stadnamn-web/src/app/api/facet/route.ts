@@ -14,7 +14,8 @@ export async function GET(request: Request) {
       [facets[i]]: {
         terms: {
           field: `${facets[i]}.keyword`,
-          size: params.facetSearch ? 10 : 50
+          size: params.facetSearch ? 10 : 50,
+          ...params.facetSort ? { order: { _key: params.facetSort } } : {},
         },
         ...(i < facets.length - 1 ? { aggs } : {})
       }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
-import { PiTrashFill, PiSortAscending, PiSortDescending } from 'react-icons/pi';
+import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 
 
@@ -10,14 +10,13 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const router = useRouter()
   const pathname = usePathname()
   const params = useParams()
-  const [sortMethod, setSortMethod] = useState('key');
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = useQueryStringWithout(['docs', 'view', 'manifest', facetName, 'page', 'size', 'sort']);
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
   const clearedFilters = useQueryStringWithout([facetName, 'page'])
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
@@ -46,9 +45,6 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     router.push(pathname + '?' + clearedFilters, { scroll: false})
   }
 
-  const handleSortOrderChange = () => {
-    setSortOrder(prevSortOrder => prevSortOrder === 'asc' ? 'desc' : 'asc');
-  };
 
   const isChecked = (paramName: string, ownPath: string[]) => {
     if (paramLookup.has(facetName, ownPath.join("_"))) return true
@@ -92,20 +88,16 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     router.push(pathname + "?" + new URLSearchParams(newParams).toString())
   }
 
-
-
   const sortBuckets = (buckets: any) => {
     const orderCompare = (a: string, b: string) => {
-    return sortOrder === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
+      return sortMode === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
     }
     return [...buckets].sort((a, b) => {
-      if (sortMethod === 'doc_count') {
-        const difference = parseInt(b.doc_count) - parseInt(a.doc_count)
-        return sortOrder === 'asc' ? difference : -difference
+      if (sortMode === 'doc_count') {
+        return parseInt(b.doc_count) - parseInt(a.doc_count);
       } else {
         if (a.label && b.label) {
           return orderCompare(a.label.buckets[0].key, b.label.buckets[0].key);
-
         }
         return orderCompare(a.key, b.key);
       }
@@ -157,18 +149,21 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     <>
     { !isLoading &&
     <div className="flex flex-col gap-4 p-2 py-4 border-b border-neutral-300">
-    <div className='flex gap-2'>
+    <div className='flex gap-3'>
       <input onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
-    <select onChange={(e) => setSortMethod(e.target.value)}>
-        <option value="key">alfabetisk</option>
-        <option value="doc_count">antall treff</option>
-    </select>
-    <IconButton className="text-xl" label={sortOrder == 'asc' ? 'Sorter stigende': 'Sorter synkende'} onClick={handleSortOrderChange}>{sortOrder == 'asc' ? <PiSortDescending/>: <PiSortAscending/> }</IconButton>
+    
+    {sortMode == 'doc_count' ?
+      <IconButton className="text-xl" label="Sorter stigende" onClick={() => setSortMode('asc')}><PiSortAscending/></IconButton>
+    : sortMode == 'asc' ?
+      <IconButton className="text-xl" label="Sorter synkende" onClick={() => setSortMode('desc')}><PiSortDescending/></IconButton>
+    :
+      <IconButton className="text-xl" label="Sorter etter antall treff" onClick={() => setSortMode('doc_count')}><PiFunnelSimple/></IconButton>
+    }
     {paramLookup.get(facetName) ?
-    <IconButton type="button" label="Fjern områdefiltre" onClick={useClearFilter} className="icon-button ml-auto">
-      <PiTrashFill className="text-xl text-neutral-800" aria-hidden="true"/>
-    </IconButton>
-    : null
+      <IconButton type="button" label="Fjern områdefiltre" onClick={useClearFilter} className="icon-button ml-auto">
+        <PiTrashFill className="text-xl text-neutral-800" aria-hidden="true"/>
+      </IconButton>
+      : null
     }
     </div>
     { facetAggregation?.buckets ?

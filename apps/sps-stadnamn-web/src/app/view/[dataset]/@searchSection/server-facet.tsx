@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import { facetConfig } from '@/config/dataset-config';
-
+import { PiSortAscending, PiSortDescending, PiFunnelSimple } from 'react-icons/pi';
+import { TbAbc } from 'react-icons/tb';
+import IconButton from '@/components/ui/icon-button';
 
 
 export default function ServerFacet({ showLoading }: { showLoading: (facet: string | null) => void }) {
@@ -13,7 +15,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
   const [facetSearch, setFacetSearch] = useState('');
   
 
@@ -41,7 +43,10 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     
 
   useEffect(() => {
-    fetch(`/api/facet?dataset=${params.dataset}&facets=${selectedFacet}${facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
+    fetch(`/api/facet?dataset=${params.dataset}&facets=${selectedFacet}${
+      facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
+        paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
+          sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.[selectedFacet])
       setTimeout(() => {
         showLoading(null);
@@ -49,7 +54,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
       setIsLoading(false);
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [paramsExceptFacet, params.dataset, selectedFacet, facetSearch]
+    }, [paramsExceptFacet, params.dataset, selectedFacet, facetSearch, sortMode]
     )
 
 
@@ -59,13 +64,21 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     <>
     { !isLoading &&
     <div className="flex flex-col gap-4 p-2 border-b border-neutral-300 py-4">
-    <div className='flex gap-2'>
+    <div className='flex gap-3'>
     <select onChange={(e) => switchFacet(e.target.value)}>
         {availableFacets?.map((item, index) => (
             <option key={index} value={item.key}>{item.label}</option>
         ))}
     </select>
     <input onChange={(e) => setFacetSearch(e.target.value)} className="bg-neutral-50 border rounded-sm border-neutral-300 grow"></input>
+
+    {sortMode == 'doc_count' ?
+    <IconButton className="text-xl" label="Sorter stigende" onClick={() => setSortMode('asc')}><PiSortAscending/></IconButton>
+    : sortMode == 'asc' ?
+    <IconButton className="text-xl" label="Sorter synkende" onClick={() => setSortMode('desc')}><PiSortDescending/></IconButton>
+    : 
+    <IconButton className="text-xl" label="Sorter etter antall treff" onClick={() => setSortMode('doc_count')}><PiFunnelSimple/></IconButton>
+    }
     </div>
     { facetAggregation?.buckets.length ?
     <ul role="status" aria-live="polite" className='flex flex-col gap-2 px-2 p-2 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border rounded-sm bg-neutral-50 border-neutral-300'>
