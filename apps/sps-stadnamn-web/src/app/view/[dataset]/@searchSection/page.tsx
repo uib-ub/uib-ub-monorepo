@@ -37,9 +37,10 @@ export default function SearchSection () {
                     onClick={() => router.push(`/view/${params.dataset}/info${filteredParams ? '?' + filteredParams : ''}`)}
                     label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h1>
         </div>
-        <SearchBar/>
-        <div className='flex flex-col h-full gap-2'>
-          <form id="search_form" onSubmit={ handleSubmit }>
+
+        <div className='flex flex-col h-full gap-4'>
+          <form id="search_form" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
+            <SearchBar/>
             <Filters/>
           </form>
           { isLoading && filteredParams ?          
