@@ -23,9 +23,9 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const expandedFacets = new Set<string>();
   for (const [key, value] of paramLookup) {
     if (key != facetName) continue
-    const path = value.split('_')
+    const path = value.split('__')
     for (let i = 0; i < path.length; i++) {
-      expandedFacets.add(path.slice(i).join('_'))
+      expandedFacets.add(path.slice(i).join('__'))
     }
   }
 
@@ -47,20 +47,20 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
 
 
   const isChecked = (paramName: string, ownPath: string[]) => {
-    if (paramLookup.has(facetName, ownPath.join("_"))) return true
+    if (paramLookup.has(facetName, ownPath.join('__'))) return true
     // Check if in expandedFacets
-    if (expandedFacets.has(ownPath.join("_"))) return true
+    if (expandedFacets.has(ownPath.join("__"))) return true
     return false
   }
 
 
   const toggleAdm = (beingChecked: boolean, paramName: string, chosenPath: string[]) => {
-    const chosenValue = chosenPath.join('_')
+    const chosenValue = chosenPath.join('__')
     let hasSibling = false
     const newParams = searchParams.filter(urlParam => {
       if (urlParam[0] != paramName) return true // Ignore other params
       if (urlParam[1] == chosenValue) return false // remove self
-      const urlPath = urlParam[1].split('_')
+      const urlPath = urlParam[1].split('__')
 
       // remove parents
       if (urlPath.length < chosenPath.length && chosenPath.slice(1).every((value, index) => value == urlPath[index])) return false
@@ -82,7 +82,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
       newParams.push([paramName, chosenValue]) // add self
     }
     else if (chosenPath.length > 1 && !hasSibling) { // add parent if no siblings checked
-      newParams.push([paramName, chosenPath.slice(1).join('_')])
+      newParams.push([paramName, chosenPath.slice(1).join('__')])
     }
 
     router.push(pathname + "?" + new URLSearchParams(newParams).toString())

@@ -40,7 +40,7 @@ export function extractFacets(request: Request ) {
         "bool": {
           "should": clientFacets.adm.map((value: string) => ({ 
             "bool": {
-              "filter": value.split("_").reverse().map((value: string, index: number) => ({
+              "filter": value.split("__").reverse().map((value: string, index: number) => ({
                   
                   "term":  { [`adm${index+1}.keyword`]: value }
               }))
