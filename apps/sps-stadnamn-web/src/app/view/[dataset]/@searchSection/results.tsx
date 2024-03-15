@@ -47,19 +47,29 @@ export default function Results({ hits }: { hits: any }) {
       router.push(`/view/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
     }
 
+  const ResutlsTitle = () => {
+    return <>
+    <span className='text-xl text-center h-full font-semibold small-caps'>
+      Treff
+      </span> <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span>
+    </>
+  }
+
 
   return (
     <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
     <span className="flex px-2 gap-2 flex-wrap">
-      <h2 id="result_heading" aria-live="polite" className='text-lg small-caps font-semibold'>
-        <button type="button" className="flex gap-2 items-center flex-nowrap" onClick={() => setIsOpen(!isOpen)} aria-controls="result_list" aria-expanded={isOpen}>
+      <h2 id="result_heading" aria-live="polite">
+        <button type="button" className="flex gap-2 items-center flex-nowrap md:hidden" onClick={() => setIsOpen(!isOpen)} aria-controls="result_list" aria-expanded={isOpen}>
           { isOpen? 
             <PiCaretUpFill aria-hidden={true} className="md:hidden"/>
             :
             <PiCaretDownFill aria-hidden={true} className="md:hidden"/> }
-        Treff <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span>
+        <ResutlsTitle/>
 
         </button>
+        <span className='hidden md:inline'><ResutlsTitle/></span>
+
       </h2>
       <span className="ml-auto">
       <label>Sorter etter: </label>
