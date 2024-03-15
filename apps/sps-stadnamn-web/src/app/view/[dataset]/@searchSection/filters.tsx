@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ClientFacet from './client-facet';
 import ServerFacet from './server-facet';
 import { PiCaretDownFill, PiCaretUpFill, PiX, PiTrashFill } from 'react-icons/pi';
