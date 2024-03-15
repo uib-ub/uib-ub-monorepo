@@ -1,6 +1,6 @@
 import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUpFill, PiCaretDownFill } from 'react-icons/pi';
+import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUpFill, PiCaretDownFill, PiListNumbers, PiArrowsDownUp } from 'react-icons/pi';
 import { useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
@@ -71,18 +71,19 @@ export default function Results({ hits }: { hits: any }) {
         <span className='hidden md:inline'><ResutlsTitle/></span>
 
       </h2>
-      <span className="ml-auto">
-      <label>Sorter etter: </label>
-      <select name="orderBy">
+      <div className="ml-auto flex items-end gap-4">
+      <span><PiArrowsDownUp className='inline  space-x-2 text-xl' aria-hidden={true}/><label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
+      <select id="sort_select" name="orderBy">
         <option value="">relevans</option>
         <option value="label">stadnamn</option>
         <option value="adm2">kommune</option>
       </select>
-      { searchParams.get('orderBy') ?
-      <IconButton className="ml-auto text-xl" label={searchParams.get('sort') == 'desc'? 'Sorter synkende' : 'Sorter stigende'} onClick={sortResults}>{searchParams.get('sort') == 'desc'? <PiSortDescending/> : <PiSortAscending/> }</IconButton>
-      : null
-      }
-    </span>
+      </span>
+
+      <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter synkende' : 'Sorter stigende'} onClick={sortResults}>{searchParams.get('sort') == 'desc'? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }</IconButton>
+
+      
+    </div>
     </span>
     <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
 
