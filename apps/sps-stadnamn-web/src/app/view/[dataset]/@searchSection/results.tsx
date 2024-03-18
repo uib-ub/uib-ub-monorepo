@@ -73,7 +73,6 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
 
   return (
     <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
-      Show loading: {showLoading}
     <span className="flex px-2 gap-2 flex-wrap">
       <h2 id="result_heading" aria-live="polite">
         <button type="button" className="flex gap-2 items-center flex-nowrap md:hidden" onClick={() => setIsOpen(!isOpen)} aria-controls="result_list" aria-expanded={isOpen}>
