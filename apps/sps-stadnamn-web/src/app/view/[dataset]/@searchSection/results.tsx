@@ -6,9 +6,10 @@ import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
+import Spinner from '@/components/svg/Spinner';
 
 
-export default function Results({ hits }: { hits: any }) {
+export default function Results({ hits, isLoading }: { hits: any, isLoading: boolean}) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const router = useRouter()
@@ -51,7 +52,7 @@ export default function Results({ hits }: { hits: any }) {
     return <>
     <span className='text-xl text-center h-full font-semibold small-caps'>
       Treff
-      </span> <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span>
+      </span> { isLoading ? <Spinner className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
     </>
   }
 

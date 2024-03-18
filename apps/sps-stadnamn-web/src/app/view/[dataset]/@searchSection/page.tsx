@@ -2,7 +2,6 @@
 import { useContext } from 'react';
 import { useParams, useRouter } from 'next/navigation'
 import IconButton from '@/components/ui/icon-button';
-import Spinner from '@/components/svg/Spinner'
 import Results from '@/app/view/[dataset]/@searchSection/results'
 import Filters from './filters'
 import SearchBar from './SearchBar'
@@ -42,22 +41,9 @@ export default function SearchSection () {
           <form id="search_form" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
             <SearchBar/>
             <Filters/>
-          </form>
-          { isLoading && filteredParams ?          
-            <div className="flex h-full items-center justify-center">
-              <div>
-                <Spinner className="w-20 h-20"/>
-              </div>
-            </div> 
-          : 
-          <>
-          
-            
-            { !isLoading && resultData && filteredParams ? <Results hits={resultData.hits}/> : null }
-          </>
-          
+          </form>            
+            { resultData && filteredParams ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
 
-          }
         </div>
         </>
 
