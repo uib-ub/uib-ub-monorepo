@@ -69,6 +69,30 @@ export const iiifManifestContext = {
         "@set"
       ],
     },
+    "hasXSView": {
+      "@id": "ubbont:hasXSView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasSMView": {
+      "@id": "ubbont:hasSMView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasMDView": {
+      "@id": "ubbont:hasMDView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasXLView": {
+      "@id": "ubbont:hasXLView",
+      "@container": [
+        "@set"
+      ],
+    },
     "sc": "http://iiif.io/api/presentation/3#",
     "oa": "http://www.w3.org/ns/oa#",
     "dct": "http://purl.org/dc/terms/",

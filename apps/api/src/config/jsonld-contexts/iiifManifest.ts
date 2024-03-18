@@ -39,6 +39,9 @@ export const iiifManifestContext = {
     },
     "thumbnail": {
       "@id": "http://iiif.io/api/presentation/3#thumbnail",
+      "@container": [
+        "@set"
+      ]
     },
     "description": {
       "@id": "http://purl.org/dc/elements/1.1/description",
@@ -63,6 +66,30 @@ export const iiifManifestContext = {
       "@id": "as:summary",
       "@container": [
         "@language",
+        "@set"
+      ],
+    },
+    "hasXSView": {
+      "@id": "ubbont:hasXSView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasSMView": {
+      "@id": "ubbont:hasSMView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasMDView": {
+      "@id": "ubbont:hasMDView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasXLView": {
+      "@id": "ubbont:hasXLView",
+      "@container": [
         "@set"
       ],
     },
