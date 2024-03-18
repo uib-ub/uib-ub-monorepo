@@ -1,7 +1,7 @@
 import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
 import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUpFill, PiCaretDownFill, PiListNumbers, PiArrowsDownUp } from 'react-icons/pi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
@@ -17,6 +17,20 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     const [isOpen, setIsOpen] = useState(false)
     const titleRenderer = resultRenderers[params.dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
+    const [ showLoading, setShowLoading ] = useState<boolean>(true)
+
+    useEffect(() => {
+      if (!isLoading) {
+        setTimeout(() => {
+          setShowLoading(false)
+        }, 200);
+      }
+      else {
+        setShowLoading(true)
+      }
+    }
+    , [isLoading])
+
 
     const sortResults = () => {
       const params = new URLSearchParams(searchParams)
@@ -52,13 +66,14 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     return <>
     <span className='text-xl text-center h-full font-semibold small-caps'>
       Treff
-      </span> { isLoading ? <Spinner className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
+      </span> { showLoading ? <Spinner className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
     </>
   }
 
 
   return (
     <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
+      Show loading: {showLoading}
     <span className="flex px-2 gap-2 flex-wrap">
       <h2 id="result_heading" aria-live="polite">
         <button type="button" className="flex gap-2 items-center flex-nowrap md:hidden" onClick={() => setIsOpen(!isOpen)} aria-controls="result_list" aria-expanded={isOpen}>
