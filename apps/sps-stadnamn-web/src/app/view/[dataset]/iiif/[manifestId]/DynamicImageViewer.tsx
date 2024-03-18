@@ -14,7 +14,7 @@ const DynamicImageViewer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const manifestId = useParams().manifestId;
+  const {dataset, manifestId} = useParams();
   
 
   const toggleCollapse = (value: boolean | ((prevState: boolean) => boolean)) => {
@@ -27,7 +27,7 @@ const DynamicImageViewer = () => {
   useEffect(() => {
     const fetchManifestAndInitializeViewer = async () => {
       setIsLoading(true);
-      const response = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
+      const response = await fetch(dataset == 'nbas' ? `https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json` : `https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
       const manifestBody = await response.json();
       setManifest(manifestBody);
       setCurrentPage(0)
@@ -141,7 +141,7 @@ const DynamicImageViewer = () => {
           <h2 className='text-xl font-bold'> Seddel: {manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h2>
 
 
-        {manifest.metadata.map((item: Record<string, any>, index: number) => (
+        {manifest.metadata?.map((item: Record<string, any>, index: number) => (
           <p key={index} className='flex justify-between'>
             <span className='font-semibold'>{item.label?.no?.[0] || item.label?.nb?.[0]}:</span>
             <span>{item.value?.none?.[0]}</span>

@@ -1,11 +1,12 @@
 
 import Image from "next/image"
 
-export default async function Thumbnail({ manifestId }: { manifestId: string }) {
+export default async function Thumbnail({ manifestId, dataset }: { manifestId: string, dataset: string}) {
 
     async function fetchThumbnail() {
         'use server'
-        const res = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`, {
+        const res = await fetch(dataset == 'nbas' ? `https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json`
+        : `https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`, {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',
