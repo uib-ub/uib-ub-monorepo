@@ -1,4 +1,3 @@
-import { DashboardUpcomingActivities } from '#build/components';
 <template>
   <div class="flex">
     <SideBar />
@@ -11,9 +10,12 @@ import { DashboardUpcomingActivities } from '#build/components';
           </div>
         </h1>
       </header>
-      <div class="flex space-x-12">
-        <DashboardRecentActivities />
-        <DashboardUpcomingActivities />
+      <div class="space-y-12">
+        <DashboardTermbaseStatus />
+        <div class="flex space-x-12">
+          <DashboardRecentActivities />
+          <DashboardUpcomingActivities />
+        </div>
       </div>
     </main>
   </div>
