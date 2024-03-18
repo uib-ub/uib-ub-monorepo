@@ -10,10 +10,12 @@ function getQuery(id: string) {
     CONSTRUCT {
       ?uri ?p ?o ;
         a crm:E22_Human-Made_Object ;
+        crm:P2_has_type ?type ;
         dct:title ?label ;
         dct:created ?created ;
         rdfs:label ?label ;
         muna:image ?image ;
+        ubbont:hasThumbnail ?thumbString ;
         muna:subjectOfManifest ?manifest ;
         foaf:homepage ?homepage .
       ?o a ?oClass ;
@@ -24,7 +26,10 @@ function getQuery(id: string) {
     } WHERE { 
       VALUES ?id {"${id}"}
       ?uri dct:identifier ?id ;
-        ?p ?o .
+        ?p ?o ;
+        a ?class .
+      OPTIONAL {?uri ubbont:hasThumbnail ?thumb } .
+      BIND(str(?thumb) AS ?thumbString)
       OPTIONAL {?uri dct:title ?title } .
       OPTIONAL {?uri foaf:name ?name } .
       OPTIONAL {?uri skos:prefLabel ?prefLabel } .
@@ -59,16 +64,17 @@ function getQuery(id: string) {
         ?uri dct:license / rdfs:label ?licenseLabel .
       }
       FILTER(?o != ?uri)
-      BIND(iri(REPLACE(str(?uri), "http://data.ub.uib.no","https://marcus.uib.no","i")) as ?homepage) .
-      BIND(CONCAT("https://api-ub.vercel.app/items/", ?id, "/manifest") as ?manifest) .
-      BIND(xsd:double(?long) as ?longDouble) .
-      BIND(xsd:double(?lat) as ?latDouble) .
-      FILTER(?p NOT IN (ubbont:cataloguer, ubbont:internalNote, ubbont:showWeb, ubbont:clause, ubbont:hasRepresentation))
+      BIND(REPLACE(STR(?class), ".+[/#]([^/#]+)$", "$1") as ?type)
+      BIND(iri(REPLACE(str(?uri), "http://data.ub.uib.no","https://marcus.uib.no","i")) as ?homepage)
+      BIND(EXISTS{?uri ubbont:hasRepresentation ?repr} AS ?isDigitized)
+      BIND(IF(?isDigitized, CONCAT("https://api-ub.vercel.app/items/", ?id, "/manifest"), "") as ?manifest)
+      BIND(xsd:double(?long) as ?longDouble)
+      BIND(xsd:double(?lat) as ?latDouble)
+      FILTER(?p NOT IN (rdf:type, ubbont:cataloguer, ubbont:internalNote, ubbont:showWeb, ubbont:clause, ubbont:hasRepresentation, ubbont:hasThumbnail))
     }`
 
   return query
 }
-
 export async function getItemData(id: string, source: string, context: string, type: string): Promise<JsonLd> {
   const url = `${source}${encodeURIComponent(getQuery(id))}&output=nt`
   try {

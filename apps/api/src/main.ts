@@ -20,6 +20,7 @@ import es from './routes/admin/es_templates.route'
 import marcus from './routes/legacy/items.route'
 import wab from './routes/legacy/items_wab.route'
 import ingest from './routes/admin/ingest.route'
+import ingestManifests from './routes/admin/ingest_manifests.route'
 import ingestLegacySka from './routes/admin/ingest_ska.route'
 import ingestLegacyWab from './routes/admin/ingest_wab.route'
 
@@ -62,6 +63,7 @@ server.route('/admin', es)
 server.route('/legacy', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
 server.route('/legacy', marcus)
 server.route('/admin', ingest)
+server.route('/admin', ingestManifests)
 server.route('/admin', ingestLegacySka)
 server.route('/admin', ingestLegacyWab)
 // The ns route is for the context files.

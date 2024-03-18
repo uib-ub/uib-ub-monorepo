@@ -18,10 +18,24 @@ export const esSuccessSchema = z.object({
   index: z.string().optional().openapi({ example: 'search-group-source-timestamp' }),
 }).openapi('ES')
 
+export const esSuccessesSchema = z.array(
+  z.object({
+    acknowledged: z.boolean(),
+    shards_acknowledged: z.boolean().optional(),
+    index: z.string().optional().openapi({ example: 'search-group-source-timestamp' }),
+  })
+).openapi('ES')
+
 
 export const esFailureSchema = z.object({
   error: z.string()
 }).openapi('ES')
+
+export const esFailuresSchema = z.array(
+  z.object({
+    error: z.string()
+  })
+).openapi('ES')
 
 export const FailureSchema = z.object({
   error: z.boolean(),
