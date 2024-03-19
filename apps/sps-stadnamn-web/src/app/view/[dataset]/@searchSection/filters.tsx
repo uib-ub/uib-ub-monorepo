@@ -67,14 +67,14 @@ export default function Facets() {
       ))}
     <ul className='flex flex-wrap gap-2 px-2 pb-2'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, activeFilters.length > 8 ? 4 : 8)).map(([name, value], index) => (
-        <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border p-1 pr-2 pl-3 rounded-full'>
+        <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border pr-2 py-1 pl-3 rounded-full text-sm'>
           { fieldNames[name] ? fieldNames[name] + ": " : null} { value.split('__')[0] }
-          <IconButton type="button" onClick={() => removeFilter(name, value)} label="Fjern filter"><PiX className="text-lg"/></IconButton>
+          <IconButton type="button" onClick={() => removeFilter(name, value)} label="Fjern filter"><PiX className="text-base"/></IconButton>
         </li>
         ))}
         {activeFilters.length > 8 && (
           <li>
-          <button type="button" onClick={() => setChipsExpanded(!chipsExpanded)} className="btn btn-outline rounded-full ">
+          <button type="button" onClick={() => setChipsExpanded(!chipsExpanded)} className="btn btn-outline rounded-full p-1 px-3">
             {chipsExpanded ? 'Vis mindre' : 'Vis mer'}
           </button>
           </li>
