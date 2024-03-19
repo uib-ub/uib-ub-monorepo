@@ -21,10 +21,15 @@ export const resultRenderers: ResultRenderers = {
   hord: {
     title: (source: any) => {
       const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
-      return <><strong>{source.label}</strong>{altLabels ? ', ' + altLabels : ''}{source.adm2 ? ' | ' + source.adm2 + ' kommune' : ''}</> 
+      return <><strong>{source.label}</strong>{altLabels ? ', ' + altLabels : ''}</> 
     },
     details: (source: any) => {
-      return  (source.rawData.merknader || '')
+      const knr = source.rawData.kommuneNr
+      const gnr = source.rawData.bruka?.bruk?.gardsNr
+      const bnr = source.rawData.bruka?.bruk?.bruksNr
+      const details = knr ? knr + " - " + [gnr, bnr].filter((v) => v).join('/') : [gnr, bnr].filter((v) => v).join('/');
+      const reference = source.rawData.arkivTilvising
+      return  <>{ source.adm2 + ' kommune'}{details ? ', ' + details : '' }{ reference ? '. ' + reference : ''}</>
     },
 
   }
