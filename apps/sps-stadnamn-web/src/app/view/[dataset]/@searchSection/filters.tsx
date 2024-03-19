@@ -2,16 +2,17 @@ import { useState } from 'react';
 import ClientFacet from './client-facet';
 import ServerFacet from './server-facet';
 import { PiCaretDownFill, PiCaretUpFill, PiX, PiTrashFill } from 'react-icons/pi';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 import IconButton from '@/components/ui/icon-button';
+import { facetConfig } from '@/config/dataset-config';
 
 
 export default function Facets() {
     const router = useRouter()
     const pathname = usePathname()
-
+    const params = useParams<{dataset: string}>()
     const searchQuery = useQueryWithout(['docs', 'view', 'manifest'])
     const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'size')
     const [chipsExpanded, setChipsExpanded] = useState(false);
@@ -19,6 +20,14 @@ export default function Facets() {
     const clearedParams = useQueryStringWithout([...filterNames, 'page', 'sort'])
     const [expandedFacet, setExpandedFacet] = useState<string | null>(null)
     const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
+
+    const fieldNames: Record<string, string> = facetConfig[params.dataset]?.reduce((acc: Record<string, string>, item: any) => {
+      acc[item.key] = item.label;
+      return acc;
+    }, {});
+
+    // turn list of {key: theKey, label: theLabel} into a object of {key: label}
+    ;
     
 
 
@@ -59,7 +68,7 @@ export default function Facets() {
     <ul className='flex flex-wrap gap-2 px-2 pb-2'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, activeFilters.length > 8 ? 4 : 8)).map(([name, value], index) => (
         <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border p-1 pr-2 pl-3 rounded-full'>
-          <span>{ value.split('__')[0] }</span>
+          { fieldNames[name] ? fieldNames[name] + ": " : null} { value.split('__')[0] }
           <IconButton type="button" onClick={() => removeFilter(name, value)} label="Fjern filter"><PiX className="text-lg"/></IconButton>
         </li>
         ))}
