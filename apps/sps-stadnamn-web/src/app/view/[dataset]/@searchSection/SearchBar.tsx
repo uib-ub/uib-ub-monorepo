@@ -1,16 +1,20 @@
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import IconButton from "@/components/ui/icon-button";
 import { useState, useRef } from "react";
-
+import { useQueryStringWithout } from "@/lib/search-params";
 
 export default function SearchBar() {
     const searchParams = useSearchParams()
+    const router = useRouter()
+    const clearedQuery = useQueryStringWithout(['q', 'page'])
+    const pathname = usePathname()
 
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const clearInput = () => {
+        router.push(pathname + clearedQuery ? '?' + clearedQuery : '', { scroll: false })
         setInputValue('')
         inputRef.current?.focus()
     }
