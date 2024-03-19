@@ -10,7 +10,11 @@ export default function InfoBox({ items: items, dataset }: { items: Record<strin
                 <strong className="text-neutral-900">{item.title}</strong>
                 <p>{item.searchFields && Object.values(item.searchFields).every(value => typeof value === 'string') ?
                   
-                  <Link className="no-underline flex items-center gap-1" href={`/view/${dataset}?${Object.entries(item.searchFields).map(([key, value]) => `${key}=${encodeURIComponent(value as string)}`).join('&')}`}>{item.value}<div></div><PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/></Link>
+                  <Link className="no-underline flex items-center gap-1" 
+                        href={`/view/${dataset}?${Object.entries(item.searchFields).map(([key, value]) => `${key}=${encodeURIComponent(value as string)}`).join('&')}`}>
+                          {item.value}
+                          <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
+                  </Link>
                   : item.value}</p>
 
             </div>
