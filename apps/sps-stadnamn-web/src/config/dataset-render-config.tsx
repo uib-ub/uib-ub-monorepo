@@ -27,9 +27,9 @@ export const resultRenderers: ResultRenderers = {
       const knr = source.rawData.kommuneNr
       const gnr = source.rawData.bruka?.bruk?.gardsNr
       const bnr = source.rawData.bruka?.bruk?.bruksNr
-      const details = knr ? knr + " - " + [gnr, bnr].filter((v) => v).join('/') : [gnr, bnr].filter((v) => v).join('/');
-      const reference = source.archive.institution
-      return  <>{ source.adm2 + ' kommune'}{details ? ', ' + details : '' }{ reference ? '. ' + reference : ''}</>
+      const details = [gnr, bnr].filter((v) => v).join('/')
+      //const details = knr ? knr + " - " +  : [gnr, bnr].filter((v) => v).join('/');
+      return  <>{ source.rawData.kommuneNamn + "u, " + source.rawData.kommuneNr}{details ? ' - ' + details : '' }</>
     },
 
   }
