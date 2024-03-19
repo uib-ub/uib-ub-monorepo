@@ -18,7 +18,7 @@ export default function (base: string): string {
       }
       UNION
       {
-        GRAPH ns:3702 {
+        GRAPH ns:DOMENE {
           ?page a skos:Concept ;
                 skosxl:prefLabel ?xl .
           ?xl skosxl:literalForm ?label .
