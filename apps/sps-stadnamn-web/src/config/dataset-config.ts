@@ -137,7 +137,10 @@ export const datasetTypes: Record<string, string[]> = {
 export const facetConfig: Record<string, schema.FacetConfigItem[]> = {
     hord: [
       {"key": "archive.institution", "label": "Arkivtilvising"},
+      {"key": "cadastre__gnr", "label": "Gardsnummer"},
       {"key": "rawData.oppskrivar", "label": "Oppskrivar"},
+      {"key": "rawData.informant", "label": "Informant"},
+      {"key": "rawData.oppskrivingsTid", "label": "Oppskrivingstid"},
     ],
     mu1950: [
       {"key": "rawData.eigar", "label": "Eigar"},

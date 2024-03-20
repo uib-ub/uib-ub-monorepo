@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ClientFacet from './client-facet';
 import ServerFacet from './server-facet';
-import { PiCaretDownFill, PiCaretUpFill, PiX, PiTrashFill } from 'react-icons/pi';
+import { PiCaretDown, PiCaretUp, PiX, PiTrashFill } from 'react-icons/pi';
 import { useRouter, usePathname, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
@@ -86,7 +86,7 @@ export default function Facets() {
 
     <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleFacet('adm')}  className='flex w-full items-center gap-1'>
-      { expandedFacet == 'adm' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>}
+      { expandedFacet == 'adm' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
       Område 
       { loadingFacet == 'adm' ? <Spinner className='w-[1em] h-[1em}'/> : null}
       
@@ -97,7 +97,7 @@ export default function Facets() {
 
     <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
-      { expandedFacet == 'server' ? <PiCaretUpFill className='text-neutral-950'/> : <PiCaretDownFill className='text-neutral-950'/>}
+      { expandedFacet == 'server' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
       Andre filtre
       { loadingFacet == 'server' ? <Spinner className='w-[1em] h-[1em}'/> : null}
       

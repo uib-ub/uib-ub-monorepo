@@ -1,6 +1,6 @@
 import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUpFill, PiCaretDownFill, PiListNumbers, PiArrowsDownUp } from 'react-icons/pi';
+import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUp, PiCaretDown, PiListNumbers, PiArrowsDownUp } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
@@ -77,9 +77,9 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       <h2 id="result_heading" aria-live="polite">
         <button type="button" className="flex gap-2 items-center flex-nowrap md:hidden" onClick={() => setIsOpen(!isOpen)} aria-controls="result_list" aria-expanded={isOpen}>
           { isOpen? 
-            <PiCaretUpFill aria-hidden={true} className="md:hidden"/>
+            <PiCaretUp aria-hidden={true} className="md:hidden"/>
             :
-            <PiCaretDownFill aria-hidden={true} className="md:hidden"/> }
+            <PiCaretDown aria-hidden={true} className="md:hidden"/> }
         <ResutlsTitle/>
 
         </button>

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react';
-import { PiCaretDownFill, PiCaretUpFill } from 'react-icons/pi';
+import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 export default function OriginalData(rawData: any) {
     const [expanded, setExpanded] = useState(false);
     function renderData(data: any, prefix = ''): any {
@@ -54,7 +54,7 @@ export default function OriginalData(rawData: any) {
         <>
        
         <button onClick={() => setExpanded(currentValue => !currentValue)} className="hover:cursor-pointer text-lg" aria-controls="original_data_list" aria-expanded={expanded}>
-            { expanded ? <PiCaretUpFill className="text2xl inline"/> : <PiCaretDownFill className="text2xl inline"/>} Opprinnelige data</button>
+            { expanded ? <PiCaretUp className="text2xl inline"/> : <PiCaretDown className="text2xl inline"/>} Opprinnelige data</button>
         <div id="original_data_list">
         {expanded &&
             <ul id="original_data_list" className="flex flex-col gap-x-4 list-none p-0 my-2">

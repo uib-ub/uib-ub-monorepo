@@ -10,18 +10,40 @@ export async function GET(request: Request) {
  if (facets) {
   aggs = {}
   for (let i = facets.length - 1; i >= 0; i--) {
-    aggs = {
-      [facets[i]]: {
-        terms: {
-          field: `${facets[i]}.keyword`,
-          size: params.facetSearch ? 10 : 50,
-          ...params.facetSort ? { order: { _key: params.facetSort } } : {},
-        },
-        ...(i < facets.length - 1 ? { aggs } : {})
-      }
-    };
+      const facetField = facets[i].split('__');
+      const isNestedQuery = facetField.length > 1;
+
+      aggs = isNestedQuery
+        ? {
+          [facetField[0]]: {
+            nested: {
+              path: facetField[0],
+            },
+            aggs: {
+              [facetField[1]]: {
+                terms: {
+                  field: `${facetField.join('.')}`,
+                  size: params.facetSearch ? 10 : 50,
+                  ...params.facetSort ? { order: { _key: params.facetSort } } : {},
+                },
+              },
+            },
+          },
+          ...(i < facets.length - 1 ? { aggs } : {})
+        }
+        : {
+            [facets[i]]: {
+              terms: {
+                field: `${facets[i]}.keyword`,
+                size: params.facetSearch ? 10 : 50,
+                ...params.facetSort ? { order: { _key: params.facetSort } } : {},
+              },
+              ...(i < facets.length - 1 ? { aggs } : {})
+            }
+          };
+    }
   }
- }
+
   
   
   const query = {
@@ -45,6 +67,8 @@ export async function GET(request: Request) {
        }
     }
   }
+
+  console.log(JSON.stringify(query, null, 2))
 
 
 

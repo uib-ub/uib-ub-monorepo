@@ -64,7 +64,7 @@ export function extractFacets(request: Request ) {
           "nested": {
             "path": base,
             "query": {
-              "terms": { [`${base}.${nested}.keyword`]: values }
+              "terms": { [`${base}.${nested}`]: values }
             }
           }
         });

@@ -46,7 +46,17 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
       facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
         paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
           sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
-      setFacetAggregation(es_data.aggregations?.[selectedFacet])
+      
+      // if selectedfacet is nested with __
+      if (selectedFacet.includes('__')) {
+        const [parent, child] = selectedFacet.split('__')
+        setFacetAggregation(es_data.aggregations?.[parent]?.[child])
+      }
+      else {
+        setFacetAggregation(es_data.aggregations?.[selectedFacet])
+      }
+
+      
       setTimeout(() => {
         showLoading(null);
       }, 200);
@@ -90,7 +100,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
       {facetAggregation?.buckets.map((item: any, index: number) => (
         <li key={index}>
         <label>
-          <input type="checkbox" checked={paramLookup.getAll(selectedFacet).includes(item.key) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
+          <input type="checkbox" checked={paramLookup.getAll(selectedFacet).includes(item.key.toString()) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
           {item.key} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
         </li>
