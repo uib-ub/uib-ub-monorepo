@@ -26,13 +26,8 @@ export default function SearchBar() {
         // Get the current search params
         const params = new URLSearchParams(location.search);
     
-        if (field !== 'label') {
-            // If the field value is not 'label', add or replace the 'field' parameter
-            params.set('field', field);
-        } else {
-            // If the field value is 'label', remove the 'field' parameter
-            params.delete('field');
-        }
+        // Add or replace the 'field' parameter
+        params.set('field', field);
     
         // Create the new URL
         const newUrl = pathname + '?' + params.toString();
