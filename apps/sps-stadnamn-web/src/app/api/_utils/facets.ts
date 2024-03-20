@@ -1,8 +1,8 @@
 export function extractFacets(request: Request ) {
   const urlParams = new URL(request.url).searchParams;
 
-  const term_filters = []
-  const params: { [key: string]: string | null } = {};
+  const termFilters = []
+  const filteredParams: { [key: string]: string | null } = {};
 
   const clientFacets: { [key: string]: string[] } = {};
   const serverFacets: { [key: string]: string[] } = {};
@@ -22,7 +22,7 @@ export function extractFacets(request: Request ) {
       case 'bottomRightLng':
       case 'facetSearch':
       case 'facets':
-        params[key] = urlParams.get(key);
+        filteredParams[key] = urlParams.get(key);
         break;
       default:
         const facets = key == 'adm' ? clientFacets : serverFacets;
@@ -37,7 +37,7 @@ export function extractFacets(request: Request ) {
   // Hierarchical facet 
   if (Object.keys(clientFacets).length) {
     if (clientFacets.adm) {
-      term_filters.push({
+      termFilters.push({
         "bool": {
           "should": clientFacets.adm.map((value: string) => ({ 
             "bool": {
@@ -61,7 +61,7 @@ export function extractFacets(request: Request ) {
       // Handle nested properties
       if (key.includes('__')) {
         const [base, nested] = key.split('__');
-        term_filters.push({
+        termFilters.push({
           "nested": {
             "path": base,
             "query": {
@@ -70,14 +70,14 @@ export function extractFacets(request: Request ) {
           }
         });
       } else {
-        term_filters.push({
+        termFilters.push({
           "terms": { [`${key}.keyword`]: values }
         });
       }
     }
   }
 
-  return {term_filters, params}
+  return {termFilters, filteredParams}
 
 
 }

@@ -1,10 +1,12 @@
 export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
+import { getQueryString } from '../_utils/query-string';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
-  const {term_filters } = extractFacets(request)
+  const { termFilters, filteredParams } = extractFacets(request)
   const dataset = params.dataset == 'search' ? '*' : params.dataset;
   const facets = params.facets?.split(',')
+  const { simple_query_string } = getQueryString(filteredParams)
 
  let aggs;
  if (facets) {
@@ -57,19 +59,12 @@ export async function GET(request: Request) {
               query: params.facetSearch,
               fields: facets
             }}] : [{ match_all: {} }],
-          ...params.q ? [{
-            simple_query_string: {
-              query: params.q,
-              fields: ["label"]
-            }}] : [],
+          ...params.q ? [simple_query_string] : [],
         ],
-        ...term_filters.length ? {filter: term_filters} : {}
+        ...termFilters.length ? {filter: termFilters} : {}
        }
     }
   }
-
-  //console.log(JSON.stringify(query, null, 2))
-
 
 
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {

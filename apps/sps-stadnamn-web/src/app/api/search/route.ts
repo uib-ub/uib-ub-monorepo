@@ -3,13 +3,13 @@ export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 export async function GET(request: Request) {
-  const {term_filters, params} = extractFacets(request)
-  const dataset = params.dataset == 'search' ? '*' : params.dataset;
-  const { highlight, simple_query_string } = getQueryString(params)
+  const {termFilters, filteredParams} = extractFacets(request)
+  const dataset = filteredParams.dataset == 'search' ? '*' : filteredParams.dataset;
+  const { highlight, simple_query_string } = getQueryString(filteredParams)
 
   const query: Record<string,any> = {
-    "from": params.page ? (parseInt(params.page) - 1) * parseInt(params.size || '10') : 0,
-    "size": params.size  || 10,
+    "from": filteredParams.page ? (parseInt(filteredParams.page) - 1) * parseInt(filteredParams.size || '10') : 0,
+    "size": filteredParams.size  || 10,
     ...highlight ? {highlight} : {},
     "aggs": {
       "viewport": {
@@ -23,26 +23,26 @@ export async function GET(request: Request) {
     "sort": [
       {
         "label.keyword": {
-        "order": params.sort == 'desc' ? 'desc' : 'asc'
+        "order": filteredParams.sort == 'desc' ? 'desc' : 'asc'
         }
       }
     ]
   }
 
-  if (simple_query_string && term_filters.length) {
+  if (simple_query_string && termFilters.length) {
     query.query = {
       "bool": {
         "must": simple_query_string,
-        "filter": term_filters
+        "filter": termFilters
       }
     }
   }
   else if (simple_query_string) {
     query.query = simple_query_string
   }
-  else if (term_filters.length) {
+  else if (termFilters.length) {
     query.query = {"bool": {
-        "filter": term_filters
+        "filter": termFilters
       }
     }
   }

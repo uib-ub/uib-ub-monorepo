@@ -1,13 +1,12 @@
 export const runtime = 'edge'
 
 import { extractFacets } from '../_utils/facets'
+import { getQueryString } from '../_utils/query-string';
 
 export async function GET(request: Request) {
-    const {term_filters, params} = extractFacets(request)
-
-
-  const dataset = params.dataset == 'search' ? '*' : params.dataset;
-
+  const {termFilters, filteredParams} = extractFacets(request)
+  const { simple_query_string } = getQueryString(filteredParams)
+  const dataset = filteredParams.dataset == 'search' ? '*' : filteredParams.dataset;
 
   const query: Record<string,any> = {
     size: 200,
@@ -25,12 +24,12 @@ export async function GET(request: Request) {
 const geo_query = {geo_bounding_box: {
     location: {
         top_left: {
-          lat: params.topLeftLat ? parseFloat(params.topLeftLat) : 90,
-          lon: params.topLeftLng ? parseFloat(params.topLeftLng) : -180,
+          lat: filteredParams.topLeftLat ? parseFloat(filteredParams.topLeftLat) : 90,
+          lon: filteredParams.topLeftLng ? parseFloat(filteredParams.topLeftLng) : -180,
         },
         bottom_right: {
-          lat: params.bottomRightLat ? parseFloat(params.bottomRightLat) : -90,
-          lon: params.bottomRightLng ? parseFloat(params.bottomRightLng) : 180,
+          lat: filteredParams.bottomRightLat ? parseFloat(filteredParams.bottomRightLat) : -90,
+          lon: filteredParams.bottomRightLng ? parseFloat(filteredParams.bottomRightLng) : 180,
         },
     }}
 }
@@ -50,17 +49,8 @@ if (geo_query.geo_bounding_box.location.top_left.lon < -180) {
 }
 
 
-const simple_query_string = params.q ? {
-    "simple_query_string": {
-      "query": params.q,
-      "fields": ["label"]
-    }} : null
 
-
-  
-
-
-if (simple_query_string || term_filters.length) {
+if (simple_query_string || termFilters.length) {
     query.query = {
         "bool": {
             "must": [geo_query],
@@ -69,8 +59,8 @@ if (simple_query_string || term_filters.length) {
     if (simple_query_string) {
         query.query.bool.must.push(simple_query_string)
     }
-    if (term_filters.length) {
-        query.query.bool.filter = term_filters
+    if (termFilters.length) {
+        query.query.bool.filter = termFilters
     }
 }
 else {
