@@ -46,7 +46,7 @@ export default function SearchBar() {
                    name="q" 
                    value={inputValue} 
                    onChange={(event) => setInputValue(event.target.value)}    
-                   className='!w-full !h-full px-2 border-l border-neutral-300 focus:outline-none'/>
+                   className={`!w-full !h-full px-2 focus:outline-none ${fieldConfig[dataset] ? 'border-l border-neutral-300' : ''}`}/>
             </div>
             { inputValue && 
             <IconButton type="button" onClick={clearInput} label="Tøm søk" className="absolute right-2 top-1/2 transform -translate-y-1/2"><PiX className="text-lg"/></IconButton> }
