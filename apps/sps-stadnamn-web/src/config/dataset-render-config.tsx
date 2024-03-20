@@ -29,7 +29,7 @@ export const resultRenderers: ResultRenderers = {
       const bnr = source.rawData.bruka?.bruk?.bruksNr
       const details = [gnr, bnr].filter((v) => v).join('/')
       //const details = knr ? knr + " - " +  : [gnr, bnr].filter((v) => v).join('/');
-      return  <>{ source.rawData.kommuneNamn + "u, " + source.rawData.kommuneNr}{details ? ' - ' + details : '' }</>
+      return  <>{ source.rawData.kommuneNamn + ", " + source.rawData.kommuneNr}{details ? ' - ' + details : '' }</>
     },
 
   }
