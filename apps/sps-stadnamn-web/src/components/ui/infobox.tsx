@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PiMagnifyingGlass } from "react-icons/pi";
 
 export default function InfoBox({ items: items, dataset }: { items: Record<string,any>[], dataset: string}) {
-    const filteredItems = items.filter(item => item.value !== undefined && item.value !== null && item.value !== '');
+    const filteredItems = items.filter(item => item.value !== undefined && item.value !== null && item.value !== '' && item.value.length !== 0);
     return (
       <div className="flex flex-wrap gap-8">
         {filteredItems.map((item: Record<string,any> , index: number) => (
