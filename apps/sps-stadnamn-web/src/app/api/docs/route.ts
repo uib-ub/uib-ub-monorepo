@@ -19,7 +19,7 @@ export async function GET(request: Request) {
         }
     }
 
-    console.log(JSON.stringify(query))
+    //console.log(JSON.stringify(query))
 
     const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {
     method: 'POST',
