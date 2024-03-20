@@ -5,14 +5,14 @@ export default function (termbase: string) {
   const query = `
   ${prefix}
 
-  SELECT ?concept ?pred2 ?defValue ?lang WHERE {
+  SELECT ?concept ?defValue ?lang WHERE {
     GRAPH ns:${termbase} {
       ?concept skosno:definisjon ?def .
       ?def rdfs:label ?defValue .
       BIND ( lang(?defValue) as ?lang ) .
     }
   }
-  LIMIT 500
+  LIMIT 1000
   `;
   return query;
 }
