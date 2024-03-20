@@ -48,8 +48,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <InfoBox dataset={'hord'} items={[
       {title: 'Kommune', value: source.rawData.kommuneNamn}, 
       {title: 'Kommunenummer', value: source.rawData.kommuneNr}, 
-      {title: 'Gardsnummer', value: source.cadastre.map((item: any) => item.gnr), searchFields: {'rawData.kommuneNr': source.rawData.kommuneNr, 'cadastre__gnr': source.rawData.bruka?.bruk?.gardsNr}},
-      {title: 'Bruksnummer', value: source.cadastre.map((item: any) => item.bnr), searchFields: {'rawData.kommuneNr': source.rawData.kommuneNr, 'cadastre__gnr': source.rawData.bruka?.bruk?.gardsNr, 'cadastre__bnr': source.rawData.bruka?.bruk?.bruksNr}},
+      {title: 'Gardsnummer', value: source.cadastre?.map((item: any) => item.gnr), searchFields: {'rawData.kommuneNr': source.rawData.kommuneNr, 'cadastre__gnr': source.rawData.bruka?.bruk?.gardsNr}},
+      {title: 'Bruksnummer', value: source.cadastre?.map((item: any) => item.bnr), searchFields: {'rawData.kommuneNr': source.rawData.kommuneNr, 'cadastre__gnr': source.rawData.bruka?.bruk?.gardsNr, 'cadastre__bnr': source.rawData.bruka?.bruk?.bruksNr}},
       {title: 'Oppskrivar', value: source.rawData.oppskrivar},
       {title: 'Oppskrivingstid', value: source.rawData.oppskrivingsTid},
     ]}/>
