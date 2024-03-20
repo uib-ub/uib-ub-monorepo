@@ -13,7 +13,7 @@ export default function Facets() {
     const router = useRouter()
     const pathname = usePathname()
     const params = useParams<{dataset: string}>()
-    const searchQuery = useQueryWithout(['docs', 'view', 'manifest'])
+    const searchQuery = useQueryWithout(['docs', 'view', 'manifest', 'field'])
     const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'size')
     const [chipsExpanded, setChipsExpanded] = useState(false);
     const filterNames = Array.from(new Set(activeFilters.map(item => item[0])))

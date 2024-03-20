@@ -105,9 +105,9 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     <ul className='flex flex-col gap-1 mb-2'>
       {hits.hits.map((hit: any) => (
         <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow border-t last:border-b border-neutral-400">
-        <div className='font-semibold">'>{titleRenderer(hit._source)}
+        <div className='font-semibold">'>{titleRenderer(hit)}
         <p>
-          { detailsRenderer(hit._source) }
+          { detailsRenderer(hit) }
         </p>
         </div>
         <div className='flex gap-1 ml-auto self-end'>

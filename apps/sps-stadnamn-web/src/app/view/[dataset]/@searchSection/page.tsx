@@ -16,7 +16,7 @@ export default function SearchSection () {
     const params = useParams<{dataset: string}>()
     const router = useRouter()
     const { resultData, isLoading } = useContext(SearchContext)
-    const filteredParams = useQueryStringWithout(['docs'])
+    const filteredParams = useQueryStringWithout(['docs', 'field'])
     let [mainIndex, subindex] = params.dataset.split("_")
 
       const handleSubmit = async (event: any) => {

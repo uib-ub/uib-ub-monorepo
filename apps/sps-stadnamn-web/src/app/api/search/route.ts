@@ -1,13 +1,16 @@
 export const runtime = 'edge'
 
 import { extractFacets } from '../_utils/facets'
+import { getQueryString } from '../_utils/query-string';
 export async function GET(request: Request) {
   const {term_filters, params} = extractFacets(request)
   const dataset = params.dataset == 'search' ? '*' : params.dataset;
+  const { highlight, simple_query_string } = getQueryString(params)
 
   const query: Record<string,any> = {
     "from": params.page ? (parseInt(params.page) - 1) * parseInt(params.size || '10') : 0,
     "size": params.size  || 10,
+    ...highlight ? {highlight} : {},
     "aggs": {
       "viewport": {
         "geo_bounds": {
@@ -25,14 +28,6 @@ export async function GET(request: Request) {
       }
     ]
   }
-
-  const simple_query_string = params.q ? {
-    "simple_query_string": {
-      "query": params.q,
-      "fields": ["label"]
-    }} : null
-
-
 
   if (simple_query_string && term_filters.length) {
     query.query = {
@@ -52,6 +47,8 @@ export async function GET(request: Request) {
     }
   }
 
+  //console.log("QUERY", JSON.stringify(query))
+
   const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {
     method: 'POST',
     body: JSON.stringify(query),
@@ -62,6 +59,7 @@ export async function GET(request: Request) {
   })
 
   const data = await res.json()
+  //console.log("DATA", data)
 
   return Response.json(data);
 }
