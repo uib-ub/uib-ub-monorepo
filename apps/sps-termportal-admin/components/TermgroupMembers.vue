@@ -12,8 +12,16 @@
       <Column header="Navn" field="label" sortable />
       <Column header="Termgruppe" field="group" sortable />
       <Column header="Rolle" field="role" sortable />
-      <Column header="Start" field="start" sortable />
-      <Column header="Slutt" field="end" sortable />
+      <Column header="Start" field="start" sortable>
+        <template #body="slotProps">
+          {{ prettyPrintDate(slotProps.data.start) }}
+        </template>
+      </Column>
+      <Column header="Slutt" field="end" sortable>
+        <template #body="slotProps">
+          {{ prettyPrintDate(slotProps.data.end) }}
+        </template>
+      </Column>
       <Column header="Aktiv" field="active" sortable data-type="boolean">
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
@@ -86,7 +94,7 @@ const procdata = computed(() => {
         start: person.termgroups
           .map((group) =>
             group.qualifiedMembership.map((membership) =>
-              membership.timespan.beginOfTheBegin.substring(0, 10)
+              membership?.timespan?.beginOfTheBegin.substring(0, 10)
             )
           )
           .join(", "),
@@ -94,7 +102,7 @@ const procdata = computed(() => {
           .map((group) =>
             group.qualifiedMembership.map(
               (membership) =>
-                membership.timespan?.endOfTheEnd?.substring(0, 10) || undefined
+                membership?.timespan?.endOfTheEnd?.substring(0, 10) || undefined
             )
           )
           .filter((end) => !end)

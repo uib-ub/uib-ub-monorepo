@@ -40,8 +40,8 @@ const procdata = computed(() =>
       id: a._id,
       label: a.label,
       get time() {
-        const start = a.start?.substring(0, 10);
-        const end = a.end?.substring(0, 10);
+        const start = prettyPrintDate(a.start?.substring(0, 10));
+        const end = prettyPrintDate(a.end?.substring(0, 10));
         if (start === end) {
           return end;
         } else {
