@@ -28,3 +28,8 @@ export interface FacetConfigItem {
     label: string;
     sort?: 'doc_count' | 'asc' | 'desc';
   }
+
+  export interface FieldConfigItem {
+    key: string;
+    label: string;
+  }

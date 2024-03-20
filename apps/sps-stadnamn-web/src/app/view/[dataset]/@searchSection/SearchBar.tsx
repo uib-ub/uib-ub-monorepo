@@ -1,14 +1,17 @@
-import { useSearchParams, useRouter, usePathname } from "next/navigation"
-import { PiMagnifyingGlass, PiSlidersHorizontal, PiX } from 'react-icons/pi';
+import { useSearchParams, useRouter, usePathname, useParams } from "next/navigation"
+import { PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import IconButton from "@/components/ui/icon-button";
 import { useState, useRef } from "react";
 import { useQueryStringWithout } from "@/lib/search-params";
+import { fieldConfig } from "@/config/dataset-config";
 
 export default function SearchBar() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const clearedQuery = useQueryStringWithout(['q', 'page'])
     const pathname = usePathname()
+    const params = useParams()
+    const dataset = params.dataset == 'search' ? '*' : params.dataset as string;
 
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -20,19 +23,10 @@ export default function SearchBar() {
     }
 
     const changeField = (event: any) => {
-        // Get the field value
         const field = event.target.value;
-    
-        // Get the current search params
         const params = new URLSearchParams(location.search);
-    
-        // Add or replace the 'field' parameter
         params.set('field', field);
-    
-        // Create the new URL
         const newUrl = pathname + '?' + params.toString();
-    
-        // Navigate to the new URL
         router.push(newUrl);
     }
 
@@ -42,10 +36,10 @@ export default function SearchBar() {
         <>
         <div className="flex gap-2 px-2 items-stretch">
             <div className="border border-neutral-500 w-full !h-full rounded-sm flex">
-                <select name="field" value={searchParams.get('field') || 'label'} className="m-2"  onChange={changeField}>
-                    <option value="label">Namn</option>
-                    <option value="rawData.merknader">Merknader</option>
-                </select>
+                {fieldConfig[dataset] &&
+                <select name="field" value={searchParams.get('field') || fieldConfig[dataset][0].key} className="m-2"  onChange={changeField}>
+                    {fieldConfig[dataset].map((field: any) => <option key={field.key} value={field.key}>{field.label}</option>)}
+                </select>}
             <input type="text" 
                    ref={inputRef}
                    name="q" 

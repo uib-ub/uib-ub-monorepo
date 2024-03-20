@@ -133,6 +133,14 @@ export const datasetTypes: Record<string, string[]> = {
 }
 
 
+export const fieldConfig: Record<string, schema.FieldConfigItem[]> = {
+  hord: [
+    {"key": "label", "label": "Namn"},
+    {"key": "rawData.merknader", "label": "Merknader"},
+  ]
+}
+
+
 
 export const facetConfig: Record<string, schema.FacetConfigItem[]> = {
     hord: [
