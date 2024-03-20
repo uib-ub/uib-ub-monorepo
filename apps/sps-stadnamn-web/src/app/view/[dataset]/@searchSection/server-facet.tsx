@@ -14,16 +14,18 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
+  
   const [facetSearch, setFacetSearch] = useState('');
   
 
   const availableFacets = facetConfig[params.dataset]
   const [selectedFacet, setSelectedFacet] = useState(availableFacets && availableFacets[0]?.key);
+  const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = useQueryStringWithout(['docs', 'view', 'manifest', 'page', 'size', 'sort', selectedFacet])
 
   const switchFacet = (facet: string) => {
     setSelectedFacet(facet)
+    setSortMode(facetConfig[params.dataset].find(item => item.key == facet)?.sort || 'doc_count')
   }
 
   const toggleFilter = (beingChecked: boolean, facet: string, value: string) => {
