@@ -69,10 +69,10 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
 
 export const defaultResultRenderer: Renderer = {
-      title: (source: any) => {
-        return source.label
+      title: (hit: any) => {
+        return hit._source.label
       },
-      details: (source: any) => {
-        return source.adm2
+      details: (hit: any) => {
+        return hit._source.adm2
       }
   }
