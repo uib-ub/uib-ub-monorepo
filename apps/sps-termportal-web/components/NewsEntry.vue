@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="news-item">
     <dt class="font-semibold">
       {{ title }}
     </dt>
@@ -22,6 +22,13 @@ const prettyDate = computed(() => {
   return new Date(props.date).toLocaleString(locale.value, {
     dateStyle: "medium",
     timeStyle: undefined,
+  });
+});
+
+// Fix for missing serialization with current nuxt/sanity setup
+onMounted(() => {
+  document.querySelectorAll(".news-item a").forEach(function (el) {
+    el.setAttribute("target", "_blank");
   });
 });
 </script>
