@@ -26,7 +26,7 @@ const query = `
   date,
   "title": coalesce(title${langOrder.value[0]}, title${langOrder.value[1]}, title${langOrder.value[2]}),
   "content": coalesce(content${langOrder.value[0]}, content${langOrder.value[1]}, content${langOrder.value[2]})
-} | order(end desc)[0...3]
+} | order(date desc)[0...3]
 `;
 
 const { data } = useLazySanityQuery(query);
