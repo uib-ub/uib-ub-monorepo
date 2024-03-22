@@ -20,7 +20,7 @@ export function flatMapManifestsForBulkIndexing(data: any, indexName: string) {
   // create an array of objects with the id and the data
   const body = items.flatMap((item: any, i: number) => [
     item, {
-      id: data[i].id,
+      id: data[i].identifier ?? `missing ID`,
       label: data[i].label,
       manifest: data[i]
     }

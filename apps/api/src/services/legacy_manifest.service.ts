@@ -1,6 +1,6 @@
 import { JsonLd } from 'jsonld/jsonld-spec'
 import { API_URL, SPARQL_PREFIXES } from '../config/constants'
-import compactAndFrameNTriples from '../helpers/frameJsonLd'
+import compactAndFrameNTriples from '../helpers/compactAndFrameNTriples'
 import fetch from '../helpers/fetchRetry'
 import { constructManifest } from '../helpers/constructManifest'
 

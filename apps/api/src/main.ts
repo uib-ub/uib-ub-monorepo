@@ -51,7 +51,6 @@ server.get('/', (c) => {
   return c.json({
     reference_url: `${url}/reference`,
     openapi_url: `${url}/openapi`,
-    items_url: `${url}/items{?page,limit}`,
   })
 })
 

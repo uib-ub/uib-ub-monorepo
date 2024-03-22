@@ -90,22 +90,29 @@ route.openapi(getItem, async (c) => {
   const as = c.req.query('as')
 
   if (as === 'iiif') {
-    const SERVICE_URL = DATA_SOURCES.filter(service => service.name === 'marcus')[0].url
-    const CONTEXT = `${DOMAIN}/ns/manifest/context.json`
+    const data: TODO = await client.search({
+      index: `search-manifests-*`,
+      query: {
+        match_phrase: {
+          "id": id
+        },
+      }
+    })
 
-    try {
-      const data: TODO = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')
-      return c.json(data);
-    } catch (error) {
-      // Handle the error here
-      console.error(error);
-      return c.json({ error: 'Internal Server Error' }, 500)
+    if (data.hits?.total.value === 0) {
+      return c.json({ error: true, message: 'Not found' }, 404)
     }
+
+    if (data.hits?.total.value > 1) {
+      return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
+    }
+
+    return c.json(data.hits.hits[0]._source.manifest)
   }
 
   try {
     const data: TODO = await client.search({
-      index: `search-chc-*`,
+      index: `search-chc`,
       // TODO: This should use term: identifier.keyword to ensure exact match
       query: {
         match_phrase: {
@@ -116,6 +123,10 @@ route.openapi(getItem, async (c) => {
 
     if (data.hits?.total.value === 0) {
       return c.json({ error: true, message: 'Not found' }, 404)
+    }
+
+    if (data.hits?.total.value > 1) {
+      return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
     }
 
     return c.json(data.hits.hits.map((hit: any) => {
@@ -189,23 +200,5 @@ route.openapi(getManifest, async (c) => {
   }
 })
 
-/* 
 
-app.openapi(getItem, async (c) => {
-  const id = c.req.param('id')
-
-  const data = await client.search({
-    "index": `search-chc-*-manifests-*`,
-    query: {
-      match: {
-        identifier: id
-      }
-    }
-  })
-  return c.json(data.hits.hits.map((hit: any) => {
-    return hit._source
-  }))
-})
-
-*/
 export default route

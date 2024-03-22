@@ -7,7 +7,7 @@ import { zValidator } from '@hono/zod-validator'
 import z from 'zod'
 import { resolveManifests } from '../../helpers/resolveManifests'
 import { isEmpty } from 'lodash'
-import { flatMapManifestsForBulkIndexing } from '../../helpers/flatMapManifestsForBulkIndexing copy'
+import { flatMapManifestsForBulkIndexing } from '../../helpers/flatMapManifestsForBulkIndexing'
 
 const route = new Hono()
 

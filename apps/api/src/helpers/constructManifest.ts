@@ -63,7 +63,7 @@ export function constructManifest(data: any, API: string, SOURCE: string, PROVID
           format: "application/ld+json"
         },
         {
-          id: `${SOURCE}describe<${data.seeAlso[0] ?? data.seeAlso}>&output=json`,
+          id: `${SOURCE}describe<${data.seeAlso}>&output=json`,
           type: "Dataset",
           label: {
             en: ["Object description in RDF"],

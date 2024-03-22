@@ -1,6 +1,6 @@
 import { JsonLd } from 'jsonld/jsonld-spec'
 import { SPARQL_PREFIXES } from '../config/constants'
-import compactAndFrameNTriples from '../helpers/frameJsonLd'
+import compactAndFrameNTriples from '../helpers/compactAndFrameNTriples'
 import fetch from '../helpers/fetchRetry'
 import { removeStringsFromArray } from '../helpers/removeStringsFromArray'
 
@@ -19,6 +19,7 @@ function getQuery(id: string) {
         muna:subjectOfManifest ?manifest ;
         foaf:homepage ?homepage .
       ?o a ?oClass ;
+        ?p2 ?o2 ;
         dct:identifier ?identifier ;
         rdfs:label ?oLabel ;
         wgs:long ?longDouble ;
@@ -51,7 +52,9 @@ function getQuery(id: string) {
       }
       BIND (COALESCE(?imgMD,?imgSM,?mdImage,?smImage) AS ?image) . 
       OPTIONAL { 
-        ?o a ?oClass .
+        ?o a ?oClass ;
+          ?p2 ?o2 .
+        FILTER(?p2 NOT IN (dct:hasPart, ubbont:isSubjectOf, ubbont:locationFor, foaf:made))
         OPTIONAL { ?o dct:identifier ?identifier } .
         OPTIONAL { ?o (dct:title|foaf:name|skos:prefLabel|rdfs:label) ?oLabel } . 
         OPTIONAL {

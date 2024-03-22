@@ -1,6 +1,6 @@
 import { SPARQL_PREFIXES } from '../config/constants'
 import { cleanJsonld } from '../helpers/cleanJsonLd'
-import compactAndFrameNTriples from '../helpers/frameJsonLd'
+import compactAndFrameNTriples from '../helpers/compactAndFrameNTriples'
 
 function getQuery(page = 0, limit = 100) {
   const query = `
@@ -40,7 +40,7 @@ export async function getItems(url: string, context: string, page?: number, limi
     )
     const result = await response.text()
 
-    const data = await compactAndFrameNTriples(result, context)
+    const data = await compactAndFrameNTriples(result, context, 'HumanMadeObject')
     return cleanJsonld(data)
   }
   catch (error) {
