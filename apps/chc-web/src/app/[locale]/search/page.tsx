@@ -10,6 +10,7 @@ import {
 } from "react-instantsearch";
 import { Hit } from "@/app/[locale]/search/_components/hit";
 import createClient from "@searchkit/instantsearch-client";
+import { history } from 'instantsearch.js/es/lib/routers';
 import "instantsearch.css/themes/reset-min.css";
 
 const searchClient = createClient({
@@ -21,7 +22,7 @@ const facetAttributes = [
     attribute: "type",
     label: "Type",
   },
-  {
+  /* {
     attribute: "maker.label_none",
     label: "Maker",
   },
@@ -32,16 +33,24 @@ const facetAttributes = [
   {
     attribute: "spatial.label_none",
     label: "Place",
-  },
+  }, */
 ];
 
 export default function SearchPage() {
+  const routing = {
+    router: history({
+      cleanUrlOnDispose: false,
+    }),
+  };
   return (
     <>
       <InstantSearch
         searchClient={searchClient}
-        indexName="marcus-demo"
-        routing={true}
+        indexName={process.env.NEXT_PUBLIC_ES_INDEX}
+        routing={routing}
+        future={{
+          preserveSharedStateOnUnmount: true,
+        }}
       >
         <SearchBox
           classNames={{
@@ -61,6 +70,7 @@ export default function SearchPage() {
                 ) : null}
                 <RefinementList
                   attribute={facet.attribute}
+                  limit={200}
                   searchable
                   classNames={{
                     label: "flex flex-row items-center space-x-3 space-y-0",
