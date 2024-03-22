@@ -26,6 +26,7 @@
       <Column sortable field="nb" header="Bokmål" />
       <Column sortable field="nb" header="Nynorsk" />
       <Column sortable field="nb" header="Engelsk" />
+      <Column sortable field="concepts" header="Begreper" />
     </DataTable>
     <pre>{{ displayData }}</pre>
   </div>
@@ -37,14 +38,21 @@ import { FilterMatchMode } from "primevue/api";
 import { prefix } from "termportal-ui/utils/utils";
 
 const query = `${prefix}
+PREFIX base: <http://wiki.terminologi.no/index.php/Special:URIResolver/>
+
 SELECT
   ?concept
   (CONCAT("{",GROUP_CONCAT(?lab; SEPARATOR=", "), "}") AS ?labels)
   ?level
   ?children
+  (COUNT(DISTINCT ?termpost) AS ?concepts)
 WHERE {
-  GRAPH ns:DOMENE {
-    ?concept skosxl:prefLabel ?label .
+  GRAPH <urn:x-arq:UnionGraph> {
+    ?concept skosp:memberOf base:DOMENE-3ADOMENE ;
+             skosxl:prefLabel ?label .
+    OPTIONAL {
+      ?termpost skosp:domene ?concept .
+    }
     ?label skosxl:literalForm ?labelVal .
     BIND(
       CONCAT("\\"", lang(?labelVal), "\\"", ": \\"", STR(?labelVal), "\\"") AS ?lab
@@ -55,7 +63,7 @@ WHERE {
         (COUNT(DISTINCT ?parents) AS ?level)
         (GROUP_CONCAT(DISTINCT ?child; SEPARATOR=", ") AS ?children)
       WHERE {
-        ?concept rdf:type skos:Concept ;
+        ?concept skosp:memberOf base:DOMENE-3ADOMENE ;
                  skos:broader* ?parents .
         OPTIONAL {
           ?concept skos:narrower ?child .
@@ -85,6 +93,7 @@ const preProc = computed(() => {
       en: labels?.en,
       level: d.level.value,
       children: d?.children ? d?.children.value.split(", ") : [],
+      concepts: d.concepts.value,
     };
   });
 });
