@@ -3,7 +3,7 @@ export const iiifManifestContext = {
     "id": "@id",
     "type": "@type",
     "body": {
-      "@id": "http://www.w3.org/ns/oa#body",
+      "@id": "http://www.w3.org/ns/oa#body"
     },
     "Annotation": {
       "@id": "http://www.w3.org/ns/oa#Annotation",
@@ -15,7 +15,10 @@ export const iiifManifestContext = {
     },
     "homepage": {
       "@id": "http://iiif.io/api/presentation/3#homepage",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": [
+        "@set"
+      ]
     },
     "seeAlso": {
       "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
