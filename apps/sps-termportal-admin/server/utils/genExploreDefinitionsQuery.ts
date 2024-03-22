@@ -1,19 +1,18 @@
-import { samlingMapping, prefix } from "termportal-ui/utils/utils";
+import { prefix } from "termportal-ui/utils/utils";
 
 export default function (termbase: string) {
-  const namespace = samlingMapping[termbase];
 
   const query = `
   ${prefix}
 
-  SELECT ?concept ?pred2 ?defValue ?lang WHERE {
-    GRAPH ns:${namespace} {
+  SELECT ?concept ?defValue ?lang WHERE {
+    GRAPH ns:${termbase} {
       ?concept skosno:definisjon ?def .
       ?def rdfs:label ?defValue .
       BIND ( lang(?defValue) as ?lang ) .
     }
   }
-  LIMIT 500
+  LIMIT 1000
   `;
   return query;
 }

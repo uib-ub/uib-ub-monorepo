@@ -11,8 +11,16 @@
     >
       <Column field="label" header="Label" sortable />
       <Column field="type" header="type" sortable />
-      <Column field="start" header="Start" sortable />
-      <Column field="end" header="Slutt" sortable />
+      <Column field="start" header="Start" sortable>
+        <template #body="slotProps">
+          {{ prettyPrintDate(slotProps.data.start) }}
+        </template>
+      </Column>
+      <Column field="end" header="Slutt" sortable>
+        <template #body="slotProps">
+          {{ prettyPrintDate(slotProps.data.end) }}
+        </template>
+      </Column>
       <Column field="termbase" header="Termbase" sortable />
       <Column header="">
         <template #body="slotProps">

@@ -1,9 +1,11 @@
 import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
 import { getItems } from '../../services/legacy_items.service'
 import { getItemData } from '../../services/legacy_item.service'
-import { PaginationParamsSchema, SourceParamsSchema, TODO, LegacyItemSchema } from '../../models'
+import { PaginationParamsSchema, SourceParamsSchema, TODO, LegacyItemSchema, AsParamsSchema, IdParamsSchema, FailureSchema } from '../../models'
 import { DOMAIN, DATA_SOURCES } from '../../config/constants'
 import { countItems } from '../../services/legacy_count.service'
+import { TFailure, getManifestData } from '../../services/legacy_manifest.service'
+import { JsonLdDocument } from 'jsonld'
 
 const route = new OpenAPIHono()
 
@@ -84,6 +86,7 @@ export const getItem = createRoute({
   path: '/{source}/{id}',
   request: {
     params: LegacyItemSchema,
+    query: AsParamsSchema,
   },
   responses: {
     200: {
@@ -102,13 +105,74 @@ export const getItem = createRoute({
 
 route.openapi(getItem, async (c) => {
   const { id, source } = c.req.param()
+  const as = c.req.query('as')
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
   const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
+  const CONTEXT_IIIF = `${DOMAIN}/ns/manifest/context.json`
+
+  if (as === 'iiif') {
+    try {
+      const data: TODO = await getManifestData(id, SERVICE_URL, CONTEXT_IIIF, 'Manifest')
+      return c.json(data);
+    } catch (error) {
+      // Handle the error here
+      console.error(error);
+      return c.json({ error: 'Internal Server Error' }, 500)
+    }
+  }
+
   try {
     const data: TODO = await getItemData(id, SERVICE_URL, CONTEXT, 'HumanMadeObject')
 
     // @TODO: figure out how to type the openapi response with JSONLD
     return c.json(data);
+  } catch (error) {
+    // Handle the error here
+    console.error(error);
+    return c.json({ error: 'Internal Server Error' }, 500)
+  }
+})
+
+export const getManifest = createRoute({
+  method: 'get',
+  path: '/{source}/{id}/manifest.json',
+  request: {
+    params: LegacyItemSchema,
+  },
+  responses: {
+    200: {
+      content: {
+        'application/json': {
+          schema: ItemSchema,
+        },
+      },
+      description: 'Retrieve a item.',
+    },
+    404: {
+      content: {
+        'application/json': {
+          schema: FailureSchema,
+        },
+      },
+      description: 'Failure message.',
+    },
+  },
+  tags: ['legacy'],
+})
+
+route.openapi(getManifest, async (c) => {
+  const { id, source } = c.req.param()
+  const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
+  const CONTEXT = `${DOMAIN}/ns/manifest/context.json`
+
+  try {
+    const data: JsonLdDocument | TFailure = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')
+    if ('error' in data) {
+      return c.json({ error: true, message: 'Not found' }, 404)
+    }
+
+    // @TODO: figure out how to type the openapi response with JSONLD
+    return c.json(data as any);
   } catch (error) {
     // Handle the error here
     console.error(error);

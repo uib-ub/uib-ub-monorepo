@@ -94,6 +94,7 @@ export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
   ],
 };
 
+// TODO refactor with lazy data
 function deriveLanguageInfo(languages: LangCode[]): {
   [key in LangCode]: Samling[];
 } {

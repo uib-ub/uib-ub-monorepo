@@ -36,8 +36,8 @@ PREFIX iiif_prezi: <http://iiif.io/api/presentation/3#>
 PREFIX as: <http://www.w3.org/ns/activitystreams#>
 `
 
-export const DOMAIN = 'https://api.ub.uib.no'
-export const API_URL: string = process.env.NODE_ENV === 'http://localhost:3009' ? DOMAIN : 'http://localhost:3009'
+export const DOMAIN: string = 'https://api.ub.uib.no'
+export const API_URL: string = process.env.NODE_ENV === 'production' ? DOMAIN : 'http://localhost:3009'
 
 /**
  * This is a list of services that can be used to look up an id.

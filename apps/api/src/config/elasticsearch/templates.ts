@@ -26,6 +26,30 @@ export const chcTemplate = {
   }
 }
 
+export const manifestsTemplate = {
+  "name": "manifests-template",
+  "index_patterns": ["search-manifests-*"],
+  "template": {
+    "settings": {
+      ...settings.manifests.settings
+    },
+    "mappings": {
+      "_source": {
+        "enabled": true
+      },
+      "properties": mappings.manifests.properties
+    },
+    "aliases": {
+      "search-manifests": {}
+    },
+  },
+  "priority": 500,
+  "version": 3,
+  "_meta": {
+    "description": "my custom"
+  }
+}
+
 export const skaTemplate = {
   "name": "ska-demo-settings",
   "index_patterns": ["search-legacy-ska"],

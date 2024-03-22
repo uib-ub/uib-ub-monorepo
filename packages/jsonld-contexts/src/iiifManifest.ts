@@ -3,7 +3,7 @@ export const iiifManifestContext = {
     "id": "@id",
     "type": "@type",
     "body": {
-      "@id": "http://www.w3.org/ns/oa#body",
+      "@id": "http://www.w3.org/ns/oa#body"
     },
     "Annotation": {
       "@id": "http://www.w3.org/ns/oa#Annotation",
@@ -15,7 +15,10 @@ export const iiifManifestContext = {
     },
     "homepage": {
       "@id": "http://iiif.io/api/presentation/3#homepage",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": [
+        "@set"
+      ]
     },
     "seeAlso": {
       "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
@@ -39,6 +42,9 @@ export const iiifManifestContext = {
     },
     "thumbnail": {
       "@id": "http://iiif.io/api/presentation/3#thumbnail",
+      "@container": [
+        "@set"
+      ]
     },
     "description": {
       "@id": "http://purl.org/dc/elements/1.1/description",
@@ -63,6 +69,30 @@ export const iiifManifestContext = {
       "@id": "as:summary",
       "@container": [
         "@language",
+        "@set"
+      ],
+    },
+    "hasXSView": {
+      "@id": "ubbont:hasXSView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasSMView": {
+      "@id": "ubbont:hasSMView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasMDView": {
+      "@id": "ubbont:hasMDView",
+      "@container": [
+        "@set"
+      ],
+    },
+    "hasXLView": {
+      "@id": "ubbont:hasXLView",
+      "@container": [
         "@set"
       ],
     },

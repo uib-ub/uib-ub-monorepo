@@ -1,4 +1,3 @@
-import { samlingMapping } from "termportal-ui/utils/utils";
 import { Samling } from "~/utils/vars-termbase";
 
 export function genTQLangArgument(languages: string[]) {
@@ -15,7 +14,7 @@ export function genTQGraphValue(termbases: (Samling | "all")[]) {
   if (termbases[0] === "all") {
     return ["<urn:x-arq:UnionGraph>"];
   } else {
-    return termbases.map((tb) => `ns:${samlingMapping[tb as Samling]}`);
+    return termbases.map((tb) => `ns:${tb}`);
   }
 }
 

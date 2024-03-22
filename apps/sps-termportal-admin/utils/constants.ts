@@ -7,9 +7,11 @@ export const statusOrder = [
 ];
 
 export const activityTypes = {
+  termbaseInitialisering: "Termbase initialisering",
   termbasePublisering: "Termbase publisering",
   termbaseOpprettelse: "Termbase opprettelse",
   termbaseImportering: "Termbase importering",
+  møte: "Møte osv."
 };
 
 export const studioBaseRoute = "/studio/structure";

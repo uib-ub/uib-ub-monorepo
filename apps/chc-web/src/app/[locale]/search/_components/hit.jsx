@@ -49,7 +49,7 @@ export function Hit({ hit }) {
       <CardHeader className="p-2">
         <CardTitle>
           <Link href={`/items/${hit.identifier}`} className="leading-6">
-            {hit.label_none || hit.label?.no || hit.identifier}
+            {hit._label?.no?.[0] || hit.identifier}
           </Link>
         </CardTitle>
         <CardDescription>
@@ -60,7 +60,7 @@ export function Hit({ hit }) {
           ))}
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-2">
+      {/* <CardContent className="p-2">
         {hit.description_none ?? hit.description?.no ? (
           <div className="font-serif text-sm">
             {renderHTML(hit.description_none ?? hit.description?.no)}
@@ -79,15 +79,15 @@ export function Hit({ hit }) {
               </Badge>
               {Array.isArray(hit.type)
                 ? hit.type.map((t) => (
-                    <Badge key={t} variant="outline">
-                      {t}
-                    </Badge>
-                  ))
+                  <Badge key={t} variant="outline">
+                    {t}
+                  </Badge>
+                ))
                 : [hit.type].map((t) => (
-                    <Badge key={t} variant="outline">
-                      {t}
-                    </Badge>
-                  ))}
+                  <Badge key={t} variant="outline">
+                    {t}
+                  </Badge>
+                ))}
             </div>
           </PopoverContent>
         </Popover>
@@ -114,7 +114,7 @@ export function Hit({ hit }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 }
