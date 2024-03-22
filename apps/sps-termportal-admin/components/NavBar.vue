@@ -5,7 +5,7 @@ import { listenQuery } from 'sanity';
       <div class="flex h-full items-center justify-between">
         <div
           class="flex h-full items-center"
-          :class="{'pl-6 xl:pl-0': context === 'minimal' }"
+          :class="{ 'pl-6 xl:pl-0': context === 'minimal' }"
         >
           <SideBar class="flex justify-center">
             <NuxtLink to="/">
@@ -35,7 +35,15 @@ import { listenQuery } from 'sanity';
             <NavBarLink to="/overview">Overview</NavBarLink>
             <NavBarLink to="/insights">Insights</NavBarLink>
             <NavBarLink to="/quality/termbase">Quality</NavBarLink>
-            <NavBarLink to="/explore/termbase">Explore</NavBarLink>
+            <NavBarLink class="group hover:text-gray-800"
+              >Explore
+              <div
+                class="hidden bg-white group-hover:block absolute border border-solid rounded-md border-gray-300"
+              >
+                <NavBarLink to="/explore/termbase">Termbase</NavBarLink>
+                <NavBarLink to="/explore/domain">Domain</NavBarLink>
+              </div>
+            </NavBarLink>
             <NavBarLink to="/activities">Activities</NavBarLink>
             <NavBarLink to="/docs">Documentation</NavBarLink>
             <NavBarLink to="/studio">Studio</NavBarLink>
