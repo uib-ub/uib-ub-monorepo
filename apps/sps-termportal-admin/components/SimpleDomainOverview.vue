@@ -17,7 +17,9 @@
       <Column sortable field="order" header="Kode">
         <template #body="{ data }">
           <div :style="{ 'padding-left': `${(data.level - 1) * 12}px` }">
-            <span>{{ data.hierarchy.substring(1, data.hierarchy.length-1) }}</span>
+            <span>{{
+              data.hierarchy.substring(1, data.hierarchy.length - 1)
+            }}</span>
           </div>
         </template>
       </Column>
@@ -125,7 +127,17 @@ const displayData = computed(() => {
   if (preProc.value) {
     const collected = [];
     let domainCounter = 0;
-    const topdomains = preProc.value.filter((d) => d.level === "1").sort();
+    const topdomains = preProc.value
+      .filter((d) => d.level === "1")
+      .sort(function (a, b) {
+        if (a.concept < b.concept) {
+          return -1;
+        }
+        if (a.concept > b.concept) {
+          return 1;
+        }
+        return 0;
+      });
     let hierarchyCounter = 0;
     topdomains.forEach((domain) => {
       hierarchyCounter++;
