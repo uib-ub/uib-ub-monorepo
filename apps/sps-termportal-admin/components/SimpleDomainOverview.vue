@@ -123,21 +123,23 @@ function processDomain(
   return updatedCounter;
 }
 
+function sortPageName(a, b) {
+  if (a.concept < b.concept) {
+    return -1;
+  }
+  if (a.concept > b.concept) {
+    return 1;
+  }
+  return 0;
+}
+
 const displayData = computed(() => {
   if (preProc.value) {
     const collected = [];
     let domainCounter = 0;
     const topdomains = preProc.value
       .filter((d) => d.level === "1")
-      .sort(function (a, b) {
-        if (a.concept < b.concept) {
-          return -1;
-        }
-        if (a.concept > b.concept) {
-          return 1;
-        }
-        return 0;
-      });
+      .sort(sortPageName);
     let hierarchyCounter = 0;
     topdomains.forEach((domain) => {
       hierarchyCounter++;
