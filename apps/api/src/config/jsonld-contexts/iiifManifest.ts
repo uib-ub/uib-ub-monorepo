@@ -15,7 +15,10 @@ export const iiifManifestContext = {
     },
     "homepage": {
       "@id": "http://iiif.io/api/presentation/3#homepage",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": [
+        "@set"
+      ],
     },
     "seeAlso": {
       "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
