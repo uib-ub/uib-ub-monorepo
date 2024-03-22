@@ -114,6 +114,10 @@ const ubbontContext = {
       "@id": "ubbont:techniqueOf",
       "@type": "@id"
     },
+    "acquiredFrom": {
+      "@id": "ubbont:acquiredFrom",
+      "@type": "@id"
+    },
     "hasURI": {
       "@id": "ubbont:hasURI",
       "@type": "xsd:string"
@@ -314,12 +318,20 @@ const ubbontContext = {
       "@id": "bibo:issue",
       "@type": "xsd:integer"
     },
+    "isDigitized": {
+      "@id": "ubbont:isDigitized",
+      "@type": "xsd:boolean"
+    },
     "cataloguer": {
       "@id": "ubbont:cataloguer",
       "@type": "@id"
     },
     "references": {
       "@id": "dct:references",
+      "@container": [
+        "@set",
+        "@language"
+      ]
     },
     "Room": {
       "@id": "ubbont:Room"
@@ -350,7 +362,6 @@ const ubbontContext = {
     },
     "hasBeenMergedWith": {
       "@id": "ubbont:hasBeenMergedWith",
-      "@type": "xsd:string"
     },
     "pages": {
       "@id": "bibo:pages",
@@ -1121,7 +1132,6 @@ const ubbontContext = {
     },
     "hasThumbnail": {
       "@id": "ubbont:hasThumbnail",
-      "@type": "xsd:anyuri"
     },
     "catalogueStatus": {
       "@id": "ubbont:catalogueStatus"
@@ -1132,10 +1142,11 @@ const ubbontContext = {
     },
     "provenance": {
       "@id": "dct:provenance",
-      "@container": [
-        "@set",
-        "@language"
-      ]
+      "@type": "@id"
+    },
+    "reciever": {
+      "@id": "bibo:reciever",
+      "@type": "@id"
     },
     "Thesis": {
       "@id": "ubbont:Thesis"

@@ -12,7 +12,7 @@ import { convertToFloat } from './convertToFloat';
  * @param type - The type to be used for framing.
  * @returns A Promise that resolves to the framed JSON-LD data.
  */
-const compactAndFrameNTriples = async (data: any, context: string, type?: string) => {
+const compactAndFrameNTriples = async (data: any, context: string, type: string) => {
   // @TODO: Add support for multiple contexts?
   const useContext = CONTEXTS[context as keyof typeof CONTEXTS]
 
@@ -29,16 +29,17 @@ const compactAndFrameNTriples = async (data: any, context: string, type?: string
     useContext as ContextDefinition
   ) // Compact to JSON-LD
 
-  if (type) {
+  try {
     const framed = jsonld.frame(compacted, {
       ...useContext as ContextDefinition,
       '@type': type,
       '@embed': '@always',
     });
     return omitEmpty(await framed)
+  } catch (e) {
+    console.log(JSON.stringify(e, null, 2))
+    return { error: true, message: e }
   }
-
-  return compacted
 }
 
 export default compactAndFrameNTriples

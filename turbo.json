@@ -1,5 +1,5 @@
 {
-  "schema": "https://turborepo.org/schema.json",
+  "$schema": "https://turborepo.org/schema.json",
   "globalEnv": [],
   "pipeline": {
     "build": {
@@ -42,6 +42,7 @@
         "ES_APIKEY",
         "ES_PATH",
         "ES_INDEX_SECRET",
+        "NEXT_PUBLIC_ES_INDEX",
         "NEXT_PUBLIC_VERCEL_URL",
         "NEXT_PUBLIC_SANITY_API_VERSION",
         "NEXT_PUBLIC_PUBLIC_DOMAIN",
