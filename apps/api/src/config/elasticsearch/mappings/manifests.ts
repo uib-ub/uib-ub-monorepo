@@ -3,9 +3,6 @@ export const manifests = {
     "id": {
       "type": "keyword",
     },
-    "label": {
-      "type": "keyword",
-    },
     "manifest": {
       "type": "object",
       "enabled": false
