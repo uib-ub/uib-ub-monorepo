@@ -1,7 +1,7 @@
-import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
+import { OpenAPIHono, createRoute } from '@hono/zod-openapi'
 import client from '../../config/apis/esClient'
-import { chcTemplate } from '../../config/elasticsearch/templates'
-import { esFailureSchema, esSuccessSchema, indexParamsSchema } from '../../models'
+import { chcTemplate, manifestsTemplate } from '../../config/elasticsearch/templates'
+import { esFailureSchema, esSuccessesSchema } from '../../models'
 
 const route = new OpenAPIHono()
 
@@ -12,7 +12,7 @@ export const putTemplates = createRoute({
     200: {
       content: {
         'application/json': {
-          schema: esSuccessSchema,
+          schema: esSuccessesSchema,
         },
       },
       description: '',
@@ -32,12 +32,15 @@ export const putTemplates = createRoute({
 
 route.openapi(putTemplates, async (c) => {
   try {
-    const response = await client.indices.putIndexTemplate(chcTemplate);
-
-    return c.json(response);
+    const promises = [
+      client.indices.putIndexTemplate(manifestsTemplate),
+      client.indices.putIndexTemplate(chcTemplate)
+    ]
+    const response = await Promise.all(promises)
+    return c.json(response)
   } catch (error) {
     console.error(error);
-    return c.json({ error: 'Internal Server Error' }, 500);
+    return c.json({ error: 'Ops, something went wrong!' }, 500);
   }
 });
 
