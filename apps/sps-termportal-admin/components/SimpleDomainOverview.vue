@@ -1,35 +1,32 @@
 <template>
-  <div class="">
-    <DataTable
-      v-model:filters="filters"
-      selection-mode="single"
-      :value="displayData"
-      removable-sort
-      filter-display="row"
-      table-style="min-width: 1rem"
-      :global-filter-fields="['hierarchy', 'nb', 'nn', 'en']"
-    >
-      <template #header>
-        <div class="flex space-x-3">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
+  <DataTable
+    v-model:filters="filters"
+    selection-mode="single"
+    :value="displayData"
+    removable-sort
+    filter-display="row"
+    table-style="min-width: 1rem"
+    :global-filter-fields="['hierarchy', 'nb', 'nn', 'en']"
+  >
+    <template #header>
+      <div class="flex space-x-3">
+        <InputText v-model="filters['global'].value" placeholder="Søk" />
+      </div>
+    </template>
+    <Column sortable field="order" header="Kode">
+      <template #body="{ data }">
+        <div :style="{ 'padding-left': `${(data.level - 1) * 12}px` }">
+          <span>{{
+            data.hierarchy.substring(1, data.hierarchy.length - 1)
+          }}</span>
         </div>
       </template>
-      <Column sortable field="order" header="Kode">
-        <template #body="{ data }">
-          <div :style="{ 'padding-left': `${(data.level - 1) * 12}px` }">
-            <span>{{
-              data.hierarchy.substring(1, data.hierarchy.length - 1)
-            }}</span>
-          </div>
-        </template>
-      </Column>
-      <Column sortable field="nb" header="Bokmål" />
-      <Column sortable field="nb" header="Nynorsk" />
-      <Column sortable field="nb" header="Engelsk" />
-      <Column sortable field="concepts" header="Begreper" />
-    </DataTable>
-    <pre>{{ displayData }}</pre>
-  </div>
+    </Column>
+    <Column sortable field="nb" header="Bokmål" />
+    <Column sortable field="nb" header="Nynorsk" />
+    <Column sortable field="nb" header="Engelsk" />
+    <Column sortable field="concepts" header="Begreper" />
+  </DataTable>
 </template>
 
 <script setup lang="ts">
