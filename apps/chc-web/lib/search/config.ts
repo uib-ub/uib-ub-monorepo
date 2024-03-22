@@ -43,13 +43,12 @@ const client: SearchkitConfig = {
     facet_attributes: [
       { attribute: "type", field: "type", type: "string" },
       {
-        attribute: "maker._label.no",
-        field: "_label.no.keyword",
-        nestedPath: "maker",
+        attribute: "producedBy.carriedOutBy._label.no",
+        field: "producedBy.carriedOutBy._label.no.keyword",
         type: "string",
       },
       {
-        attribute: "subject._label",
+        attribute: "subject._label.no",
         field: "_label.no.keyword",
         nestedPath: "subject",
         type: "string",
@@ -61,7 +60,7 @@ const client: SearchkitConfig = {
         type: "string",
       },
     ],
-    geo_attribute: "location",
+    geo_attribute: "coordinates",
   },
 };
 
