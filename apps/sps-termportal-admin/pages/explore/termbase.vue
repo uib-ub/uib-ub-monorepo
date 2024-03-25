@@ -6,7 +6,7 @@
         <h1 class="mb-6 text-2xl">Termbase Exploration</h1>
         <SimpleOverview v-model:modelValue="selectedTermbase" />
       </section>
-      <ExploreDefinitions
+      <ExploreTermbaseDefinitions
         v-if="selectedTermbase?.id"
         :key="`exploredef${selectedTermbase?.id}`"
         :termbase="selectedTermbase"

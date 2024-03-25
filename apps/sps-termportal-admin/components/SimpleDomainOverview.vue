@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-2">
-    <p>Select termbase to display more information.</p>
+    <p>Select domain to display more information.</p>
     <DataTable
       v-model:filters="filters"
       v-model:selection="selectedDomain"
