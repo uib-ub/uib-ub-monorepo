@@ -98,7 +98,7 @@ const preProc = computed(() => {
     const labels = JSON.parse(d.labels.value);
 
     return {
-      concept: cleanId(d.concept.value, true),
+      id: cleanId(d.concept.value, true),
       nb: labels?.nb,
       nn: labels?.nn,
       en: labels?.en,
@@ -129,7 +129,7 @@ function processDomain(
   if (domainInstance.children) {
     domainInstance.children.forEach((child) => {
       hierarchyCounter++;
-      const childDomain = data.filter((d) => d.concept === child)[0];
+      const childDomain = data.filter((d) => d.id === child)[0];
       if (childDomain) {
         updatedCounter = processDomain(
           data,
@@ -146,10 +146,10 @@ function processDomain(
 }
 
 function sortPageName(a, b) {
-  if (a.concept < b.concept) {
+  if (a.id < b.id) {
     return -1;
   }
-  if (a.concept > b.concept) {
+  if (a.id > b.id) {
     return 1;
   }
   return 0;
