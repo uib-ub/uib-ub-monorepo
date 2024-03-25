@@ -20,3 +20,15 @@ export function prettyPrintDate(date: string) {
     return "";
   }
 }
+
+export function cleanId(uri: string, rmNs = false) {
+  const replaced = uri.replace(
+    "http://wiki.terminologi.no/index.php/Special:URIResolver/",
+    ""
+  );
+  if (rmNs) {
+    return replaced.split("-3A")[1];
+  } else {
+    return replaced;
+  }
+}
