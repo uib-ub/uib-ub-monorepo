@@ -1,0 +1,67 @@
+import { FileTree } from 'nextra/components'
+
+# Nextjs frontend
+
+*WIP* - This is a work in progress.
+
+Remember, import from shared packages when possible.
+
+## File structure
+
+How to structure your files in a Nextjs frontend.
+ 
+<FileTree>
+  <FileTree.Folder name="src" defaultOpen>
+    <FileTree.Folder name="actions" defaultOpen>
+    </FileTree.Folder>
+    <FileTree.Folder name="app" defaultOpen>
+      <FileTree.Folder name="api" defaultOpen>
+        <FileTree.File name="route.tsx" />
+      </FileTree.Folder>
+      <FileTree.Folder name="path" defaultOpen>
+        <FileTree.File name="default.tsx" />
+        <FileTree.File name="error.tsx" />
+        <FileTree.File name="layout.tsx" />
+        <FileTree.File name="loading.tsx" />
+        <FileTree.File name="opengraph-image.tsx" />
+        <FileTree.File name="twitter-image.tsx" />
+        <FileTree.File name="page.tsx" />
+        <FileTree.File name="route.tsx" />
+        <FileTree.File name="not-found.tsx" />
+      </FileTree.Folder>
+      <FileTree.Folder name="[[...slug]]" defaultOpen>
+        <FileTree.File name="page.tsx" />
+      </FileTree.Folder>
+      <FileTree.File name="error.tsx" />
+      <FileTree.File name="icon.svg" />
+      <FileTree.File name="layout.tsx" />
+      <FileTree.File name="loading.tsx" />
+      <FileTree.File name="manifest.ts" />
+      <FileTree.File name="page.tsx" />
+      <FileTree.File name="robots.txt" />
+      <FileTree.File name="sitemap.ts" />
+      <FileTree.File name="shared-metadata.ts" />
+    </FileTree.Folder>
+    <FileTree.Folder name="components" defaultOpen>
+      <FileTree.Folder name="shells" defaultOpen>
+      </FileTree.Folder>
+      <FileTree.Folder name="shared" defaultOpen>
+      </FileTree.Folder>
+      <FileTree.Folder name="props" defaultOpen>
+      </FileTree.Folder>
+    </FileTree.Folder>
+    <FileTree.Folder name="hooks" defaultOpen>
+    </FileTree.Folder>
+    <FileTree.Folder name="lib" defaultOpen>
+    </FileTree.Folder>
+    <FileTree.File name="instrumentation.ts" />
+    <FileTree.File name="middleware.ts" />
+  </FileTree.Folder>
+  <FileTree.Folder name="public" defaultOpen>
+  </FileTree.Folder>
+  <FileTree.File name=".env*" />
+  <FileTree.File name="next.config.js" />
+  <FileTree.File name="package.json" />
+  <FileTree.File name="tsconfig.ts" />
+</FileTree>
+
