@@ -1,38 +1,53 @@
 <template>
-  <DataTable
-    v-model:filters="filters"
-    selection-mode="single"
-    :value="displayData"
-    removable-sort
-    filter-display="row"
-    table-style="min-width: 1rem"
-    :global-filter-fields="['hierarchy', 'nb', 'nn', 'en']"
-  >
-    <template #header>
-      <div class="flex space-x-3">
-        <InputText v-model="filters['global'].value" placeholder="Søk" />
-      </div>
-    </template>
-    <Column sortable field="order" header="Kode">
-      <template #body="{ data }">
-        <div :style="{ 'padding-left': `${(data.level - 1) * 12}px` }">
-          <span>{{
-            data.hierarchy.substring(1, data.hierarchy.length - 1)
-          }}</span>
+  <div class="space-y-2">
+    <p>Select termbase to display more information.</p>
+    <DataTable
+      v-model:filters="filters"
+      v-model:selection="selectedDomain"
+      selection-mode="single"
+      :value="displayData"
+      removable-sort
+      filter-display="row"
+      :row-class="rowClass"
+      table-style="min-width: 1rem"
+      :global-filter-fields="['hierarchy', 'nb']"
+    >
+      <template #header>
+        <div class="flex space-x-3">
+          <InputText v-model="filters['global'].value" placeholder="Søk" />
         </div>
       </template>
-    </Column>
-    <Column sortable field="nb" header="Bokmål" />
-    <Column sortable field="nb" header="Nynorsk" />
-    <Column sortable field="nb" header="Engelsk" />
-    <Column sortable field="concepts" header="Begreper" />
-  </DataTable>
+      <Column selection-mode="single" header-style="width: 3rem"></Column>
+      <Column sortable field="order" header="Kode">
+        <template #body="{ data }">
+          <div :style="{ 'padding-left': `${(data.level - 1) * 12}px` }">
+            <span>{{
+              data.hierarchy.substring(1, data.hierarchy.length - 1)
+            }}</span>
+          </div>
+        </template>
+      </Column>
+      <Column sortable field="nb" header="Bokmål" />
+      <Column sortable field="concepts" header="Begreper" />
+      <Column sortable field="conceptSum" header="Totalt antall begreper">
+      </Column>
+    </DataTable>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
-
 import { prefix } from "termportal-ui/utils/utils";
+
+const selectedDomain = ref();
+const props = defineProps({
+  modelValue: { type: Object, required: true },
+});
+const emits = defineEmits(["update:modelValue"]);
+
+watch(selectedDomain, () => {
+  emits("update:modelValue", selectedDomain.value);
+});
 
 const query = `${prefix}
 PREFIX base: <http://wiki.terminologi.no/index.php/Special:URIResolver/>
@@ -73,7 +88,6 @@ WHERE {
 GROUP BY ?concept ?level ?children
 `;
 
-// const { data } = await useLazyFetch("/api/tb/all/overview");
 const { data } = await useLazyFetch("/api/query", {
   method: "post",
   body: { query },
@@ -84,12 +98,14 @@ const preProc = computed(() => {
     const labels = JSON.parse(d.labels.value);
 
     return {
-      concept: d.concept.value,
+      concept: cleanId(d.concept.value, true),
       nb: labels?.nb,
       nn: labels?.nn,
       en: labels?.en,
       level: d.level.value,
-      children: d?.children ? d?.children.value.split(", ") : [],
+      children: d?.children
+        ? d?.children.value.split(", ").map((id) => cleanId(id, true))
+        : [],
       concepts: d.concepts.value,
     };
   });
@@ -157,9 +173,23 @@ const displayData = computed(() => {
         [hierarchyCounter]
       );
     });
-    return collected;
+    const sumAdded = collected.map((outer) => {
+      const conceptSum = collected
+        .map((inner) =>
+          inner.hierarchy.startsWith(outer.hierarchy.slice(0, -1))
+            ? parseInt(inner.concepts)
+            : 0
+        )
+        .reduce((a, b) => a + b, 0);
+      return { ...outer, ...{ conceptSum } };
+    });
+    return sumAdded;
   }
 });
+
+const rowClass = (data) => {
+  return [{ "bg-gray-100": data.level === "1" }];
+};
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
