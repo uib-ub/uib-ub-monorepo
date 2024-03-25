@@ -1,21 +1,24 @@
 "use client";
 import {
+  InstantSearch,
   SearchBox,
   Hits,
   Stats,
   CurrentRefinements,
   Pagination,
   RefinementList,
+  Configure,
+  SortBy,
 } from "react-instantsearch";
-import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import { Hit } from "@/app/[locale]/search/_components/hit";
-import createClient from "@searchkit/instantsearch-client";
-import { history } from 'instantsearch.js/es/lib/routers';
+import createClient from '@searchkit/instantsearch-client'
 import "instantsearch.css/themes/reset-min.css";
 
 const searchClient = createClient({
   url: "/api/search",
 });
+
+const INDEX = process.env.NEXT_PUBLIC_ES_INDEX;
 
 const facetAttributes = [
   {
@@ -39,16 +42,26 @@ const facetAttributes = [
 export function Search() {
   return (
     <>
-      <InstantSearchNext
+      <InstantSearch
         searchClient={searchClient}
         indexName={process.env.NEXT_PUBLIC_ES_INDEX}
-        routing={{
-          router: { push: (url) => window.history.pushState({}, "", url) },
-        }}
+        routing
         future={{
           preserveSharedStateOnUnmount: true,
         }}
       >
+        <Configure
+          hitsPerPage={12}
+        />
+        <SortBy
+          items={[
+            { label: 'By ranking', value: INDEX! },
+            { label: 'Available (desc)', value: `${INDEX!}_available_desc` },
+            { label: 'Available (asc)', value: `${INDEX!}_available_asc` },
+            { label: 'Identifier (desc)', value: `${INDEX!}_identifier_desc` },
+            { label: 'Identifier (asc)', value: `${INDEX!}_identifier_asc` },
+          ]}
+        />
         <SearchBox
           classNames={{
             form: "my-5 w-full text-lg flex flex-row items-center space-x-3 space-y-0",
@@ -128,7 +141,7 @@ export function Search() {
             />
           </div>
         </div>
-      </InstantSearchNext>
+      </InstantSearch>
     </>
   );
 }

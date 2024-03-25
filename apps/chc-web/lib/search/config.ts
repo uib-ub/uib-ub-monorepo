@@ -60,6 +60,28 @@ const client: SearchkitConfig = {
         type: "string",
       },
     ],
+    sorting: {
+      default: {
+        field: '_score',
+        order: 'desc'
+      },
+      _available_desc: {
+        field: '_available',
+        order: 'desc'
+      },
+      _available_asc: {
+        field: '_available',
+        order: 'asc'
+      },
+      _identifier_desc: {
+        field: 'identifier',
+        order: 'desc'
+      },
+      _identifier_asc: {
+        field: 'identifier',
+        order: 'asc'
+      }
+    },
     geo_attribute: "coordinates",
   },
 };
