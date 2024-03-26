@@ -64,7 +64,7 @@ export default function Facets() {
     <ul className='flex flex-wrap gap-2 px-2 pb-2'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, activeFilters.length > 8 ? 4 : 8)).map(([name, value], index) => (
         <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border pr-2 py-1 pl-3 rounded-full text-sm'>
-          { fieldNames[name] ? fieldNames[name] + ": " : null} { value.split('__')[0] }
+          { fieldNames?.[name] ? fieldNames[name] + ": " : null} { value.split('__')[0] }
           <IconButton type="button" onClick={() => removeFilter(name, value)} label="Fjern filter"><PiX className="text-base"/></IconButton>
         </li>
         ))}
