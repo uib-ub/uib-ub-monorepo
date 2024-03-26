@@ -26,10 +26,6 @@ export default function Facets() {
       return acc;
     }, {});
 
-    // turn list of {key: theKey, label: theLabel} into a object of {key: label}
-    ;
-    
-
 
     const removeFilter = (name: string, value: string) => {      
       const updatedParams = new URLSearchParams(searchQuery.filter(item => item[0] != name || item[1] != value)).toString()
