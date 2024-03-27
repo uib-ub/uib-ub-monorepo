@@ -2,12 +2,12 @@ import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
 import { getItems } from '../../services/legacy_items.service'
 import { DOMAIN, DATA_SOURCES } from '../../config/constants'
-import { indexData } from '../../helpers/indexData'
+import { indexData } from '../../helpers/indexers/indexData'
 import { zValidator } from '@hono/zod-validator'
 import z from 'zod'
-import { resolveManifests } from '../../helpers/resolveManifests'
+import { resolveManifests } from '../../helpers/indexers/resolveManifests'
 import { isEmpty } from 'lodash'
-import { flatMapManifestsForBulkIndexing } from '../../helpers/flatMapManifestsForBulkIndexing'
+import { flatMapManifestsForBulkIndexing } from '../../helpers/indexers/flatMapManifestsForBulkIndexing'
 
 const route = new Hono()
 

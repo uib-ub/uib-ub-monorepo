@@ -1,8 +1,8 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { getSkaAgents } from '../../services/sparql/legacy/ska/getSkaAgents';
-import { chunk } from '../../helpers/chunk';
-import { flatMapDataForBulkIndexing } from '../../helpers/flatMapDataForBulkIndexing';
-import { indexData } from '../../helpers/indexData';
+import { chunk } from '../../helpers/indexers/chunk';
+import { flatMapDataForBulkIndexing } from '../../helpers/indexers/flatMapDataForBulkIndexing';
+import { indexData } from '../../helpers/indexers/indexData';
 import { getSkaDocuments } from '../../services/sparql/legacy/ska/getSkaDocuments';
 import { getSkaTopics } from '../../services/sparql/legacy/ska/getSkaTopics';
 
