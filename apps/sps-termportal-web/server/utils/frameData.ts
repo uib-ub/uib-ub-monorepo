@@ -167,6 +167,11 @@ export default function (
         "@id": "dct:subject",
         "@container": "@set",
       },
+      equivalence: {
+        "@id": "skosp:equivalence",
+        "@container": "@set",
+      },
+      equivalenceValue: "skosp:equivalenceValue",
       memberOf: {
         "@id": "skosp:memberOf",
         "@type": "@id",
