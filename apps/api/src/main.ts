@@ -18,6 +18,7 @@ import lookupId from './routes/lookup.route'
 import ns from './routes/ns.route'
 import es from './routes/admin/es_templates.route'
 import marcus from './routes/legacy/items.route'
+import marcusNew from './routes/legacy/items.new.route'
 import wab from './routes/legacy/items_wab.route'
 import ingest from './routes/admin/ingest.route'
 import ingestManifests from './routes/admin/ingest_manifests.route'
@@ -61,6 +62,7 @@ server.route('/lookup', lookupId)
 server.route('/admin', es)
 server.route('/legacy', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
 server.route('/legacy', marcus)
+server.route('/legacy', marcusNew)
 server.route('/admin', ingest)
 server.route('/admin', ingestManifests)
 server.route('/admin', ingestLegacySka)
