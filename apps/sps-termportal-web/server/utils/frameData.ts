@@ -118,6 +118,51 @@ export default function (
         "@type": "@id",
         "@container": "@set",
       },
+      // generic concept relation
+      hasGenericConceptRelation: {
+        "@id": "skosno:hasGenericConceptRelation",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasGenericConcept: {
+        "@id": "skosno:hasGenericConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasSpecificConcept: {
+        "@id": "skosno:hasSpecificConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+
+      // partitive concept relation
+      hasPartitiveConceptRelation: {
+        "@id": "skosno:hasPartitiveConceptRelation",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasPartitiveConcept: {
+        "@id": "skosno:hasPartitiveConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasComprehensiveConcept: {
+        "@id": "skosno:hasComprehensiveConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      // associative concept relation
+      isFromConceptIn: {
+        "@id": "skosno:isFromConceptIn",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasToConcept: {
+        "@id": "skosno:hasToConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+
       subject: {
         "@id": "dct:subject",
         "@container": "@set",
