@@ -7,7 +7,8 @@ import { useQueryStringWithout } from '@/lib/search-params'
 import PopupList from './PopupList'
 import { indexToCode } from '@/lib/datasets';
 import { datasetTitles } from '@/config/dataset-config';
-import Link from 'next/link';
+import IconButton from '@/components/ui/icon-button';
+import { PiInfoFill } from 'react-icons/pi';
 
 export default function MapExplorer(props) {
   const [markers, setMarkers] = useState([]);
@@ -221,14 +222,18 @@ export default function MapExplorer(props) {
 
               <Popup minWidth={256} maxWidth={300} autoPan={false}>
                                     
-              <ul className="flex flex-col gap-1">
+              { params.dataset == 'search' ?
+                <ul className="flex flex-col gap-2">
                 {Object.entries(groupByIndex(props.docs)).map(([index, docs]) => (
-                  <li key={index}>
-                    <h3 className="text-lg flex  justify-between"><Link className="!text-black" href={'/search/' + indexToCode(index)}>{datasetTitles[indexToCode(index)]}</Link></h3>
-                      <PopupList docs={props.docs} dataset={params.dataset} />
+                  <li key={index}> 
+                    <h3 className="text-lg flex justify-between font-semibold">{datasetTitles[indexToCode(index)]}<IconButton label="Info" onClick={() => router.push('/view/' + indexToCode(index) + "/info")}><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h3>
+                      <PopupList docs={props.docs} view={params.dataset} />
                   </li>
                 ))}
-              </ul>
+                </ul>
+                :
+                <PopupList docs={props.docs} view={params.dataset} />
+              }
                     
               </Popup>
 

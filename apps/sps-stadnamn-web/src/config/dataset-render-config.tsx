@@ -29,7 +29,7 @@ export const resultRenderers: ResultRenderers = {
     title: (hit: any) => {
       const source = hit._source
       const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
-      return <><strong>{source.label}</strong>{altLabels ? ', ' + altLabels : ''}</> 
+      return <><strong>{source.label}{altLabels ? ', ':''}</strong>{altLabels}</> 
     },
     details: (hit: any) => {
       const source = hit._source
