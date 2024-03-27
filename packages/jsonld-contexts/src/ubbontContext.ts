@@ -1130,7 +1130,7 @@ const ubbontContext = {
     "Exhibition": {
       "@id": "ubbont:Exhibition"
     },
-    "hasThumbnail": {
+    "thumbnail": {
       "@id": "ubbont:hasThumbnail",
     },
     "catalogueStatus": {
