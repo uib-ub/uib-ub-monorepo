@@ -2,6 +2,7 @@ export const runtime = 'edge'
 
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
+import { postQuery } from '../_utils/fetch';
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset == 'search' ? '*' : filteredParams.dataset;
@@ -47,19 +48,7 @@ export async function GET(request: Request) {
     }
   }
 
-  //console.log("QUERY", JSON.stringify(query))
-
-  const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {
-    method: 'POST',
-    body: JSON.stringify(query),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `ApiKey ${process.env.ES_TOKEN}`,
-    }
-  })
-
-  const data = await res.json()
-  //console.log("DATA", data)
+  const data = await postQuery(dataset, query)
 
   return Response.json(data);
 }

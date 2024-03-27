@@ -1,6 +1,7 @@
 export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
+import { postQuery } from '../_utils/fetch';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
   const { termFilters, filteredParams } = extractFacets(request)
@@ -66,17 +67,7 @@ export async function GET(request: Request) {
     }
   }
 
-
-  const res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {
-    method: 'POST',
-    body: JSON.stringify(query),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `ApiKey ${process.env.ES_TOKEN}`,
-    }
-  })
-
-  const data = await res.json()
+  const data = await postQuery(dataset, query)
 
   return Response.json(data);
 }

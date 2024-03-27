@@ -2,6 +2,7 @@ export const runtime = 'edge'
 
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
+import { postQuery } from '../_utils/fetch';
 
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
@@ -67,25 +68,7 @@ else {
     query.query = geo_query
 }
 
-let res
-try {
-  res = await fetch(`https://search.testdu.uib.no/search/stadnamn-${dataset}-demo/_search`, {
-    method: 'POST',
-    body: JSON.stringify(query),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `ApiKey ${process.env.ES_TOKEN}`,
-    }
-  });
-
-  if (!res.ok) {
-    return new Response(`Request failed with status ${res.status}`, { status: res.status });
-  }
-  } catch (error) {
-    return new Response(`Request failed with error: ${error}`, { status: 500 });
-  }
-
-  const data = await res?.json()
+  const data = await postQuery(dataset, query)
 
   return Response.json(data);
 }

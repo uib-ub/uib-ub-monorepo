@@ -21,7 +21,11 @@
         "^build"
       ],
       "env": [
-        "ES_TOKEN"
+        "SN_ENV",
+        "SN_ENDPOINT",
+        "SN_TOKEN",
+        "SN_ENDPOINT_TEST",
+        "SN_TOKEN_TEST"
       ]
     },
     "build#chc-web": {
