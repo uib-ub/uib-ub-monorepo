@@ -90,16 +90,19 @@ export default function Facets() {
     </h3>
     { expandedFacet == 'adm' ? <ClientFacet facetName='adm' showLoading={(facet: string | null) => setLoadingFacet(facet)}/> : null}
 
-
-    <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
-      <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
-      { expandedFacet == 'server' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
-      Andre filtre
-      { loadingFacet == 'server' ? <Spinner className='w-[1em] h-[1em}'/> : null}
-      
-      </button>
-    </h3>
-    { expandedFacet == 'server' && <ServerFacet showLoading={(facet: string | null) => setLoadingFacet(facet)}/>}
+    { facetConfig[params.dataset] && 
+        <>
+        <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
+          <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
+          { expandedFacet == 'server' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
+          Andre filtre
+          { loadingFacet == 'server' ? <Spinner className='w-[1em] h-[1em}'/> : null}
+          
+          </button>
+        </h3>
+        { expandedFacet == 'server' && <ServerFacet showLoading={(facet: string | null) => setLoadingFacet(facet)}/>}
+        </>
+      }
 
     </section>
   )
