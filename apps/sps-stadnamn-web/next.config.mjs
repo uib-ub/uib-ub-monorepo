@@ -5,7 +5,12 @@ import createMDX from '@next/mdx'
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   images: {
-    domains: ["iiif.test.ubbe.no"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.ubbe.no',
+      }
+    ],
   },
   
 }
