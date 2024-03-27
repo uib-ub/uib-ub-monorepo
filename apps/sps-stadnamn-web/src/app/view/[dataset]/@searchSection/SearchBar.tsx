@@ -38,7 +38,7 @@ export default function SearchBar() {
             <div className="border border-neutral-500 relative w-full rounded-sm">
                 <div className="flex w-full h-full">
                 {fieldConfig[dataset] &&
-                <select name="field" value={searchParams.get('field') || fieldConfig[dataset][0].key} className="m-2"  onChange={changeField}>
+                <select name="field" value={searchParams.get('field') || fieldConfig[dataset][0].key} className="h-full mx-1"  onChange={changeField}>
                     {fieldConfig[dataset].map((field: any) => <option key={field.key} value={field.key}>{field.label}</option>)}
                 </select>}
                 <input type="text" 
