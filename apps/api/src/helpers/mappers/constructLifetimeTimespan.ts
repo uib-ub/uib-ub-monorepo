@@ -1,6 +1,6 @@
 import { getTimespan } from './constructTimespan';
 import { randomUUID } from 'crypto';
-import { checkIntervalValidity } from './checkIntervalValidity';
+import { checkIntervalValidity } from '../checkers/checkIntervalValidity';
 
 export const constructLifetimeTimespan = (data: any) => {
   return data.map((item: any) => {

@@ -1,7 +1,7 @@
 import { IIIFBuilder } from '@iiif/builder'
 import { sortBy } from 'lodash'
-import { stringifyObject } from './stringifyObject';
-import { PROVIDER_UB } from '../config/iiifConfig';
+import { stringifyObject } from '../stringifyObject';
+import { PROVIDER_UB } from '../../config/iiifConfig';
 import rtlDetect from 'rtl-detect-intl';
 import { randomUUID } from 'crypto';
 const fs = require("fs");

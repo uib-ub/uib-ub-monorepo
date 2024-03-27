@@ -1,4 +1,4 @@
-import { reduceValuesByLanguage } from './reduceValuesByLanguage'
+import { reduceValuesByLanguage } from '../reduceValuesByLanguage'
 
 export function constructMetadata(data: any) {
   console.log("🚀 ~ constructMetadata ~ data:", data)

@@ -1,5 +1,5 @@
 import { getTimespan } from './constructTimespan';
-import { checkIntervalValidity } from './checkIntervalValidity';
+import { checkIntervalValidity } from '../checkers/checkIntervalValidity';
 
 export const constructEventTimespan = (data: any) => {
   return data.map((item: any) => {
