@@ -28,7 +28,7 @@
           class="basis-5/12"
         ></NewsWrapper>
       </div>
-      <CollaboratorsTP class="mt-6 xl:mt-8" />
+      <CollaboratorsTP class="mt-8 xl:mt-14" />
     </main>
   </div>
 </template>
