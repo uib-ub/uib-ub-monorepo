@@ -2,7 +2,7 @@ export function extractFacets(request: Request ) {
   const urlParams = new URL(request.url).searchParams;
 
   const termFilters = []
-  const filteredParams: { [key: string]: string | null } = {};
+  const filteredParams: { [key: string]: string } = {};
 
   const clientFacets: { [key: string]: string[] } = {};
   const serverFacets: { [key: string]: string[] } = {};
@@ -22,7 +22,7 @@ export function extractFacets(request: Request ) {
       case 'bottomRightLng':
       case 'facetSearch':
       case 'facets':
-        filteredParams[key] = urlParams.get(key);
+        filteredParams[key] = urlParams.get(key)!;
         break;
       default:
         const facets = key == 'adm' ? clientFacets : serverFacets;
