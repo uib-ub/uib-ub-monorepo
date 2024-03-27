@@ -148,7 +148,6 @@ export const facetConfig: Record<string, schema.FacetConfigItem[]> = {
       {"key": "cadastre__gnr", "label": "Gardsnummer", "sort": "asc"},
       {"key": "cadastre__bnr", "label": "Bruksnummer", "sort": "asc"},
       {"key": "rawData.oppskrivar", "label": "Oppskrivar"},
-      {"key": "rawData.informant", "label": "Informant"},
       {"key": "rawData.oppskrivingsTid", "label": "Oppskrivingstid"},
     ],
     mu1950: [
