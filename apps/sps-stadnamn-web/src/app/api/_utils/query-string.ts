@@ -1,7 +1,9 @@
 export function getQueryString(params: { [key: string]: string | null }) {
   const simple_query_string = params.q ? {
-    "simple_query_string": {
+    "query_string": {
       "query": params.q,
+      "allow_leading_wildcard": true,
+      "default_operator": "AND",
       "fields": [params.field || "label"]
     }} : null
 
