@@ -24,7 +24,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
     "query_string": {
       "query": modifyQuery(params.q),
       "allow_leading_wildcard": true,
-      "default_operator": params.field ? "OR" : "AND",
+      "default_operator": params.field != "label" ? "OR" : "AND",
       "fields": [params.field || "label"]
     }} : null
 
