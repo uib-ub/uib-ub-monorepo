@@ -1,15 +1,21 @@
 function modifyQuery(query: string) {
   const lowerCaseQuery = query.toLowerCase();
 
+  // Escape special characters
+  let escapedQuery = lowerCaseQuery.replace(/([=&&||!(){}[\]^:\\/])/g, '\\$1');
+
+  // Remove < and >, as they cannot be escaped
+  escapedQuery = escapedQuery.replace(/[<>]/g, '');
+
   if (lowerCaseQuery.includes('aa')) {
-    return `(${query}) OR (${query.replace(/aa/gi, 'å')})`;
+    return `(${escapedQuery}) OR (${escapedQuery.replace(/aa/gi, 'å')})`;
   }
 
   if (lowerCaseQuery.includes('å')) {
-    return `(${query}) OR (${query.replace(/å/gi, 'aa')})`;
+    return `(${escapedQuery}) OR (${escapedQuery.replace(/å/gi, 'aa')})`;
   }
 
-  return query;
+  return escapedQuery;
 }
 
 export function getQueryString(params: { [key: string]: string | null }) {
