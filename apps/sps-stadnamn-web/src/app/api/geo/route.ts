@@ -13,13 +13,6 @@ export async function GET(request: Request) {
     size: 200,
     fields: ["label", "location"],
     _source: false,
-    sort: [
-        {
-        "uuid.keyword": {
-            order: "asc"
-        }
-        }
-    ],
 }
 
 const geo_query = {geo_bounding_box: {
