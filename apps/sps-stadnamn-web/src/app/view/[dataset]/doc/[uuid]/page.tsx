@@ -15,7 +15,7 @@ export default async function DocumentView({ params }: { params: { dataset: stri
     const doc = await fetchDoc(params)
     return (
       
-      <div className="mx-2 p-4 lg:p-8 lg:overflow-y-auto space-y-6 info-content">
+      <div className="mx-2 p-4 lg:p-8 lg:overflow-y-auto space-y-6 dataset-info">
         { doc && <>
       
       <h2>{doc._source.label}</h2>
