@@ -1,4 +1,4 @@
-//export const runtime = 'edge'
+export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/fetch';
