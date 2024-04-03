@@ -27,7 +27,8 @@ export async function GET(request: Request) {
       } else {
         sortArray.push({
           [`${field}`]: {
-            "order": order
+            "order": order,
+            "missing": "_first"
           }
         });
       }

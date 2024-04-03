@@ -161,7 +161,7 @@ export const facetConfig: Record<string, schema.FacetConfigItem[]> = {
 export const sortConfig: Record<string, Record<string, string>[]> = {
   hord: [
     {"key": "label.keyword", "label": "stadnamn"},
-    {"key": "cadastre__knr,cadastre__gnr,cadastre__bnr", "label": "matrikkel"},
+    {"key": "rawData.kommuneNr.keyword,cadastre__gnr,cadastre__bnr", "label": "matrikkel"},
   ]
 }
 
