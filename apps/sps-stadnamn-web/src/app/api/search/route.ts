@@ -8,6 +8,32 @@ export async function GET(request: Request) {
   const dataset = filteredParams.dataset == 'search' ? '*' : filteredParams.dataset;
   const { highlight, simple_query_string } = getQueryString(filteredParams)
 
+  const sortArray = []
+
+  if (filteredParams.orderBy) {
+    const fields = filteredParams.orderBy.split(',');
+    for (const field of fields) {
+      const nestedFields = field.split('__');
+      const order = filteredParams.sort == 'desc' ? 'desc' : 'asc';
+      if (nestedFields.length > 1) {
+        sortArray.push({
+          [`${nestedFields[0]}.${nestedFields[1]}`]: {
+            "order": order,
+            "nested": {
+              "path": nestedFields[0]
+            }
+          }
+        });
+      } else {
+        sortArray.push({
+          [`${field}`]: {
+            "order": order
+          }
+        });
+      }
+    }
+  }
+    
   const query: Record<string,any> = {
     "from": filteredParams.page ? (parseInt(filteredParams.page) - 1) * parseInt(filteredParams.size || '10') : 0,
     "size": filteredParams.size  || 10,
@@ -21,13 +47,7 @@ export async function GET(request: Request) {
 
       }
     },
-    "sort": [
-      {
-        "label.keyword": {
-        "order": filteredParams.sort == 'desc' ? 'desc' : 'asc'
-        }
-      }
-    ]
+    "sort": sortArray
   }
 
   if (simple_query_string && termFilters.length) {

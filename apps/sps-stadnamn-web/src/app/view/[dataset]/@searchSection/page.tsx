@@ -38,7 +38,7 @@ export default function SearchSection () {
         </div>
 
         <div className='flex flex-col h-full gap-4'>
-          <form id="search_form" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
+          <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
             <SearchBar/>
             <Filters/>
           </form>            

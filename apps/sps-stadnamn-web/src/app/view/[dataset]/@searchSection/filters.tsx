@@ -14,10 +14,10 @@ export default function Facets() {
     const pathname = usePathname()
     const params = useParams<{dataset: string}>()
     const searchQuery = useQueryWithout(['docs', 'view', 'manifest', 'field'])
-    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'size')
+    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'orderBy' && item[0] != 'size')
     const [chipsExpanded, setChipsExpanded] = useState(false);
     const filterNames = Array.from(new Set(activeFilters.map(item => item[0])))
-    const clearedParams = useQueryStringWithout([...filterNames, 'page', 'sort'])
+    const clearedParams = useQueryStringWithout([...filterNames, 'page', 'sort', 'orderBy'])
     const [expandedFacet, setExpandedFacet] = useState<string | null>(null)
     const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
 
