@@ -1,4 +1,4 @@
-import { useSearchParams, useRouter, usePathname, useParams } from "next/navigation"
+import { useSearchParams, useRouter, useParams } from "next/navigation"
 import { PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import IconButton from "@/components/ui/icon-button";
 import { useState, useRef } from "react";
@@ -9,7 +9,6 @@ export default function SearchBar() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const clearedQuery = useQueryStringWithout(['q', 'page'])
-    const pathname = usePathname()
     const params = useParams()
     const dataset = params.dataset == 'search' ? '*' : params.dataset as string;
 
@@ -17,7 +16,7 @@ export default function SearchBar() {
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const clearInput = () => {
-        router.push(pathname + clearedQuery ? '?' + clearedQuery : '', { scroll: false })
+        router.push(`/view/${dataset}${clearedQuery ? '?' + clearedQuery : ''}`, { scroll: false })
         setInputValue('')
         inputRef.current?.focus()
     }
@@ -26,7 +25,7 @@ export default function SearchBar() {
         const field = event.target.value;
         const params = new URLSearchParams(location.search);
         params.set('field', field);
-        const newUrl = pathname + '?' + params.toString();
+        const newUrl = `/view/${dataset}?${params.toString()}`;
         router.push(newUrl);
     }
 

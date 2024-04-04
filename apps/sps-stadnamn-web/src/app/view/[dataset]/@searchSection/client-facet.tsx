@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
+import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple, PiFunnel } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
@@ -8,7 +8,6 @@ import IconButton from '@/components/ui/icon-button';
 
 export default function ClientFacet({ showLoading, facetName }: { showLoading: (facet: string | null) => void, facetName: string }) {
   const router = useRouter()
-  const pathname = usePathname()
   const params = useParams()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = useQueryStringWithout(['docs', 'view', 'manifest', facetName, 'page', 'size', 'sort', 'orderBy']);
@@ -42,7 +41,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     )
 
   const useClearFilter = () => {
-    router.push(pathname + '?' + clearedFilters, { scroll: false})
+    router.push(`/view/${params.dataset}?${clearedFilters}`, { scroll: false})
   }
 
 
@@ -85,7 +84,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
       newParams.push([paramName, chosenPath.slice(1).join('__')])
     }
 
-    router.push(pathname + "?" + new URLSearchParams(newParams).toString())
+    router.push(`/view/${params.dataset}?${new URLSearchParams(newParams).toString()}`)
   }
 
   const sortBuckets = (buckets: any) => {

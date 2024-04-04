@@ -8,7 +8,6 @@ import IconButton from '@/components/ui/icon-button';
 
 export default function ServerFacet({ showLoading }: { showLoading: (facet: string | null) => void }) {
   const router = useRouter()
-  const pathname = usePathname()
   const params = useParams<Record<string, string>>()
   const paramLookup = useSearchParams()
   const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
@@ -35,10 +34,10 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
       if (filteredParams.length == searchParams.length) {
       searchParams.push([facet, value])
       }
-      router.push(pathname + "?" + new URLSearchParams(searchParams).toString())
+      router.push(`/view/${params.dataset}?${new URLSearchParams(searchParams).toString()}`)
     }
     else {
-        router.push(pathname + "?" + new URLSearchParams(filteredParams).toString())
+      router.push(`/view/${params.dataset}?${new URLSearchParams(filteredParams).toString()}`)
     }
 }
     
