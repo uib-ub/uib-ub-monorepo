@@ -41,7 +41,8 @@ export const datasetPresentation: schema.DatasetPresentation = {
         img: "/datasets/Østfold_gml_herredsinndeling.png",
         alt: "Verket bygger på den gamle herredsinndelinga i Østfold",
         imageAttribution: "Bustadnavn i Østfold",
-        description: "Bustadnavn i Østfold"
+        description: `Bustadnavn i Østfold er een utgivelse over bebyggelsesnavna (bustadnavna) i Østfold herredsvis (22 herred etter den gamle inndelinga). Navneforskerne Tom Schmidt og Margit Harsson ved Seksjon for navnegransking (UiO) sto for redigering og utgiving av serien, som bygger på et originalmanus av Kåre Hoel, en  navnegranskerkollega. Det første bindet, om Hobøl, kom ut i 1994. Pr. 2018 har det blitt utgitt 17 bind i denne bokserien.
+        Verket er en sterkt utvidet og revidert utgave av Oluf Ryghs Norske Gaardnavne (bind 1 Smaalenenes Amt, 1897). Rygh begrenset seg i all hovedsak til navn på matrikkelgårdene, men nå er også navn på andre bebyggelser tatt opp til drøfting, samtidig som gårdsnavnene gis en fyldig behandling - både språklig og kulturhistorisk.`
       },
       leks: {
         img: "/datasets/leks2.png",
