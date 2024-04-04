@@ -58,8 +58,21 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <InfoBox dataset={'hord'} items={[
       {title: 'Kommune', value: source.rawData.kommuneNamn}, 
       {title: 'Kommunenummer', value: source.rawData.kommuneNr}, 
-      {title: 'Gardsnummer', value: source.cadastre?.map((item: any) => item.gnr), searchFields: {'rawData.kommuneNr': source.rawData.kommuneNr, 'cadastre__gnr': source.rawData.bruka?.bruk?.gardsNr}},
-      {title: 'Bruksnummer', value: source.cadastre?.map((item: any) => item.bnr), searchFields: {'rawData.kommuneNr': source.rawData.kommuneNr, 'cadastre__gnr': source.rawData.bruka?.bruk?.gardsNr, 'cadastre__bnr': source.rawData.bruka?.bruk?.bruksNr}},
+      {
+        title: 'Gardsnummer', 
+        items: [...new Set(source.cadastre?.map((item: any) => item.gnr) as string[])].map((gnr: string) => ({
+          value: gnr, 
+          href: `/view/hord?rawData.kommuneNr=${encodeURIComponent(source.rawData.kommuneNr)}&cadastre__gnr=${encodeURIComponent(gnr)}`
+        })),
+      },
+      {
+        title: 'Bruksnummer', 
+        items: source.cadastre?.map((item: any) => ({
+          value: item.bnr, 
+          href: `/view/hord?rawData.kommuneNr=${encodeURIComponent(source.rawData.kommuneNr)}&cadastre__gnr=${encodeURIComponent(item.gnr)}&cadastre__bnr=${encodeURIComponent(item.bnr)}`
+        })),
+      },
+      
       {title: 'Oppskrivar', value: source.rawData.oppskrivar},
       {title: 'Oppskrivingstid', value: source.rawData.oppskrivingsTid},
     ]}/>
