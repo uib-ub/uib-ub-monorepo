@@ -57,7 +57,7 @@
                 <TermSection>
                   <!--Equivalence -->
                   <TermProp
-                    v-if="true"
+                    v-if="concept?.hasEquivalenceData?.[lang]"
                     :flex="
                       concept?.hasEquivalenceData?.[lang][0]?.['note']?.[
                         '@value'
