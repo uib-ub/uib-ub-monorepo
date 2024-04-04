@@ -81,6 +81,11 @@ export default function (
         "@type": "@id",
         "@container": "@set",
       },
+      qualifiedBroader: {
+        "@id": "skosp:qualifiedBroader",
+        "@type": "@id",
+        "@container": "@set",
+      },
       specializes: {
         "@id": "xkos:specializes",
         "@type": "@id",
@@ -93,6 +98,11 @@ export default function (
       },
       narrower: {
         "@id": "skos:narrower",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      qualifiedNarrower: {
+        "@id": "skosp:qualifiedNarrower",
         "@type": "@id",
         "@container": "@set",
       },
@@ -111,13 +121,28 @@ export default function (
         "@type": "@id",
         "@container": "@set",
       },
+      qualifiedSeeAlso: {
+        "@id": "skosp:qualifiedSeeAlso",
+        "@type": "@id",
+        "@container": "@set",
+      },
       replaces: {
         "@id": "dct:replaces",
         "@type": "@id",
         "@container": "@set",
       },
+      qualifiedReplaces: {
+        "@id": "skosp:qualifiedReplaces",
+        "@type": "@id",
+        "@container": "@set",
+      },
       replacedBy: {
         "@id": "dct:replacedBy",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      qualifiedReplacedBy: {
+        "@id": "skosp:qualifiedReplacedBy",
         "@type": "@id",
         "@container": "@set",
       },
@@ -165,16 +190,20 @@ export default function (
         "@type": "@id",
         "@container": "@set",
       },
-
+      concept: {
+        "@id": "skosp:concept",
+        "@type": "@id",
+        "@container": "@set",
+      },
       subject: {
         "@id": "dct:subject",
         "@container": "@set",
       },
-      equivalence: {
-        "@id": "skosp:equivalence",
+      hasEquivalenceData: {
+        "@id": "skosp:hasEquivalenceData",
+        "@type": "@id",
         "@container": "@set",
       },
-      equivalenceValue: "skosp:equivalenceValue",
       memberOf: {
         "@id": "skosp:memberOf",
         "@type": "@id",
