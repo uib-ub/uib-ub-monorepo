@@ -17,7 +17,6 @@ export default function (
       xkos: "http://rdf-vocabulary.ddialliance.org/xkos#",
       skosxl: "http://www.w3.org/2008/05/skos-xl#",
       skosno: "https://data.norge.no/vocabulary/skosno#",
-      skosno2: "http://difi.no/skosno#",
       skosp: "http://www.data.ub.uib.no/ns/spraksamlingene/skos#",
       dct: "http://purl.org/dc/terms/",
       dcat: "http://www.w3.org/ns/dcat#",
@@ -220,12 +219,6 @@ export default function (
       },
       definisjon: {
         "@id": "skosno:definisjon",
-        "@type": "@id",
-        "@container": "@set",
-      },
-      // backward compatibility
-      betydningsbeskrivelse: {
-        "@id": "skosno2:betydningsbeskrivelse",
         "@type": "@id",
         "@container": "@set",
       },
