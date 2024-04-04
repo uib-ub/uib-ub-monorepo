@@ -7,25 +7,30 @@
  * @param data - concept data
  */
 export function parseConceptData(data: any, mainConceptId: string) {
-  const languageProps = [
-    "prefLabel",
-    "altLabel",
-    "hiddenLabel",
-    "definisjon",
-    "betydningsbeskrivelse",
-    "hasUsage",
-    "hasEquivalenceData"
-  ];
+  const languageProps = {
+    proper: [
+      "prefLabel",
+      "altLabel",
+      "hiddenLabel",
+      "definisjon",
+      "betydningsbeskrivelse",
+      "hasUsage",
+    ],
+    ephemeral: ["hasEquivalenceData"],
+  };
   let identified: any;
   if (!data["@graph"]) {
     identified = identifyData([data]);
   } else {
     identified = identifyData(data["@graph"]);
   }
-  identified = idSubobjectsWithLang(identified, languageProps);
+  identified = idSubobjectsWithLang(
+    identified,
+    languageProps.proper.concat(languageProps.ephemeral)
+  );
   const languages = getConceptLanguages(
     identified[mainConceptId],
-    languageProps
+    languageProps.proper
   );
   return {
     meta: {
@@ -62,10 +67,7 @@ function idSubobjectsWithLang(
     for (const labeltype of labeltypes) {
       try {
         if (data[id][labeltype]) {
-          data[id][labeltype] = updateLabel(
-            data[id][labeltype],
-            labeltype
-          );
+          data[id][labeltype] = updateLabel(data[id][labeltype], labeltype);
         }
       } catch (e) {}
     }
@@ -76,16 +78,15 @@ function idSubobjectsWithLang(
 /**
  * Returns new object with language as key for labels list.
  *
- * @param data - Dataset that represents concepts and labels
- * @param conceptUri - key for object that represents concept
+ * @param labels - Array of labels
  * @param labelType - label type to update
  * @returns object for labeltype with list for each language
  */
-function updateLabel(labels: any, labelType: string) {
+function updateLabel(labels: Array<Record<string, any>>, labelType: string) {
   const newLabels: { [key: string]: Array<string> } = {};
   for (const label of labels) {
     if (labelType === "hasEquivalenceData") {
-      addLabel(newLabels, label, label.language)
+      addLabel(newLabels, label, label.language);
     } else if (
       labelType === "definisjon" ||
       labelType === "betydningsbeskrivelse" ||
@@ -106,7 +107,6 @@ function updateLabel(labels: any, labelType: string) {
         addLabel(newLabels, label, label.label["@language"]);
       }
     } else if (labelType === "description") {
-      // TODO deprecated?
       addLabel(newLabels, label, label["@language"]);
     } else {
       for (const lf of label.literalForm) {
@@ -118,7 +118,11 @@ function updateLabel(labels: any, labelType: string) {
   return newLabels;
 }
 
-function addLabel(newLabels, label: string, language: string) {
+function addLabel(
+  newLabels: Record<string, any>,
+  label: Record<string, any>,
+  language: string
+) {
   try {
     // key already exists
     newLabels[language].push(label);
@@ -148,6 +152,7 @@ function validateLabel(label: any): boolean {
 function getConceptLanguages(concept: any, languageProps: string[]) {
   //  console.log(Object.keys(concept["prefLabel"]));
   const lang = languageProps.flatMap((prop) => {
+    // only equivalence shouldn't be displayed
     if (concept?.[prop]) {
       return Object.keys(concept[prop]);
     } else return [];
