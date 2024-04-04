@@ -13,6 +13,7 @@ export const datasetTitles: schema.DatasetTitles = {
     skul: "Skulebarnsoppskriftene",
     leks: "Norsk stadnamnleksikon",
     leks_g: "grunnord",
+    ostf: "Bustadnavn i Østfold",
 }
 
 

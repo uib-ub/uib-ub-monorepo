@@ -30,7 +30,7 @@ export default function SearchSection () {
     
     return (
         <>
-        <div className='px-2 flex flex-wrap gap-y-2'><h1 id="dataset_heading" className='text-xl font-sans font-semibold flex gap-1'>
+        <div className='px-2 flex flex-wrap gap-y-2'><h1 className='text-xl font-sans font-semibold flex gap-1'>
           {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
         <IconButton className='align-middle' 
                     onClick={() => router.push(`/view/${params.dataset}/info${filteredParams ? '?' + filteredParams : ''}`)}
