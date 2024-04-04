@@ -7,7 +7,7 @@ export default function NavBar(props: any) {
             <Link href="/help">Søkeveiledning</Link>
             <Link href="/datasets">Søkevisninger</Link>
             <Link href="/feedback">Tilbakemelding</Link>
-            <Link href="/info">Om Stadnamnportalen</Link>
+            <Link href="/info">Info</Link>
 
         </nav>
     )
