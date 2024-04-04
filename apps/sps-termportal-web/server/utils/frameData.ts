@@ -23,16 +23,24 @@ export default function (
       dcat: "http://www.w3.org/ns/dcat#",
       xsd: "http://www.w3.org/2001/XMLSchema#",
       vcard: "http://www.w3.org/2006/vcard/ns#",
+      prov: "http://www.w3.org/ns/prov#",
+      euvoc: "http://publications.europa.eu/ontology/euvoc#",
       literalForm: { "@id": "skosxl:literalForm", "@container": "@set" },
       type: { "@id": "@type", "@container": "@set" },
       label: "rdfs:label",
+      created: "dct:created",
+      creator: "dct:creator",
       modified: "dct:modified",
+      startDate: "euvoc:startDate",
+      endDate: "euvoc:endDate",
       identifier: "dct:identifier",
       language: "dct:language",
       source: "dct:source",
       scopeNote: "skos:scopeNote",
       note: "skos:note",
       license: "dct:license",
+      value: "prov:value",
+      status: "euvoc:status",
       opprinneligSpraak: "skosp:opprinneligSpraak",
       isOfAbbreviationType: "skosp:isOfAbbreviationType",
       isAbbreviationOf: "skosp:isAbbreviationOf",
@@ -73,6 +81,11 @@ export default function (
         "@type": "@id",
         "@container": "@set",
       },
+      qualifiedBroader: {
+        "@id": "skosp:qualifiedBroader",
+        "@type": "@id",
+        "@container": "@set",
+      },
       specializes: {
         "@id": "xkos:specializes",
         "@type": "@id",
@@ -85,6 +98,11 @@ export default function (
       },
       narrower: {
         "@id": "skos:narrower",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      qualifiedNarrower: {
+        "@id": "skosp:qualifiedNarrower",
         "@type": "@id",
         "@container": "@set",
       },
@@ -103,8 +121,18 @@ export default function (
         "@type": "@id",
         "@container": "@set",
       },
+      qualifiedSeeAlso: {
+        "@id": "skosp:qualifiedSeeAlso",
+        "@type": "@id",
+        "@container": "@set",
+      },
       replaces: {
         "@id": "dct:replaces",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      qualifiedReplaces: {
+        "@id": "skosp:qualifiedReplaces",
         "@type": "@id",
         "@container": "@set",
       },
@@ -113,8 +141,67 @@ export default function (
         "@type": "@id",
         "@container": "@set",
       },
+      qualifiedReplacedBy: {
+        "@id": "skosp:qualifiedReplacedBy",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      // generic concept relation
+      hasGenericConceptRelation: {
+        "@id": "skosno:hasGenericConceptRelation",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasGenericConcept: {
+        "@id": "skosno:hasGenericConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasSpecificConcept: {
+        "@id": "skosno:hasSpecificConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+
+      // partitive concept relation
+      hasPartitiveConceptRelation: {
+        "@id": "skosno:hasPartitiveConceptRelation",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasPartitiveConcept: {
+        "@id": "skosno:hasPartitiveConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasComprehensiveConcept: {
+        "@id": "skosno:hasComprehensiveConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      // associative concept relation
+      isFromConceptIn: {
+        "@id": "skosno:isFromConceptIn",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      hasToConcept: {
+        "@id": "skosno:hasToConcept",
+        "@type": "@id",
+        "@container": "@set",
+      },
+      concept: {
+        "@id": "skosp:concept",
+        "@type": "@id",
+        "@container": "@set",
+      },
       subject: {
         "@id": "dct:subject",
+        "@container": "@set",
+      },
+      hasEquivalenceData: {
+        "@id": "skosp:hasEquivalenceData",
+        "@type": "@id",
         "@container": "@set",
       },
       memberOf: {

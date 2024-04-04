@@ -10,5 +10,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skosp: <http://www.data.ub.uib.no/ns/spraksamlingene/skos#>
 PREFIX skosno: <https://data.norge.no/vocabulary/skosno#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX euvoc: <http://publications.europa.eu/ontology/euvoc#>
 PREFIX ns: <http://spraksamlingane.no/terminlogi/named/>
 `;

@@ -50,20 +50,21 @@
         <dd class="max-w-prose" v-html="d.subject[0]" />
       </TermProp>
       <TermProp
-        v-if="d?.['skosp:dctSource'] || d.source?.label"
+        v-if="d?.['skosp:dctSource'] || d.source"
         :label="$t('id.referanse')"
       >
         <dd
           v-if="
+            typeof d?.['skosp:dctSource']?.['skosp:rdfsLabel'] === 'string' ||
             typeof d?.source?.label?.['@value'] === 'string' ||
-            typeof d?.source === 'string' ||
-            typeof d?.['skosp:dctSource']?.['skosp:rdfsLabel'] === 'string'
+            typeof d?.source === 'string'
           "
           class="max-w-prose"
           v-html="
             `
         ${d?.['skosp:dctSource']?.['skosp:rdfsLabel'] || ''}
-        ${d?.source?.label?.['@value'] || d?.source || ''}`
+        ${d?.source?.label?.['@value'] || d?.source ||''}
+        `
           "
         />
         <template v-else-if="Array.isArray(d?.source)">

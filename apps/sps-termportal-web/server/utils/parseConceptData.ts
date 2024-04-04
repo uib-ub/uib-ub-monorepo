@@ -14,6 +14,7 @@ export function parseConceptData(data: any, mainConceptId: string) {
     "definisjon",
     "betydningsbeskrivelse",
     "hasUsage",
+    "hasEquivalenceData"
   ];
   let identified: any;
   if (!data["@graph"]) {
@@ -61,9 +62,8 @@ function idSubobjectsWithLang(
     for (const labeltype of labeltypes) {
       try {
         if (data[id][labeltype]) {
-          data[id][labeltype] = updateLabel2(
+          data[id][labeltype] = updateLabel(
             data[id][labeltype],
-            id,
             labeltype
           );
         }
@@ -81,12 +81,12 @@ function idSubobjectsWithLang(
  * @param labelType - label type to update
  * @returns object for labeltype with list for each language
  */
-function updateLabel2(data: any, conceptUri: string, labelType: string) {
+function updateLabel(labels: any, labelType: string) {
   const newLabels: { [key: string]: Array<string> } = {};
-  const labels = data;
   for (const label of labels) {
-    let language;
-    if (
+    if (labelType === "hasEquivalenceData") {
+      addLabel(newLabels, label, label.language)
+    } else if (
       labelType === "definisjon" ||
       labelType === "betydningsbeskrivelse" ||
       labelType === "hasUsage"
@@ -107,8 +107,7 @@ function updateLabel2(data: any, conceptUri: string, labelType: string) {
       }
     } else if (labelType === "description") {
       // TODO deprecated?
-      language = label["@language"];
-      addLabel(newLabels, label, language);
+      addLabel(newLabels, label, label["@language"]);
     } else {
       for (const lf of label.literalForm) {
         const fullLabel = { literalForm: lf };
