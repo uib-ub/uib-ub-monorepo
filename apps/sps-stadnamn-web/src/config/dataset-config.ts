@@ -85,9 +85,9 @@ export const datasetPresentation: schema.DatasetPresentation = {
       },
       ostf: {
         img: "/datasets/Halmstad-1989.jpg",
-        alt: "Bustadnavn i Østfold",
+        alt: "Tettstedet Halmstad i Rygge",
         imageAttribution: "Ketil Johansen 1989, CC BY-SA 3.0",
-        description: "Halmstad i Rygge kommune"
+        description: "Bustadnavn i Østfold"
       },
 }
 
