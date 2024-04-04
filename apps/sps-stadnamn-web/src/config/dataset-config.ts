@@ -83,6 +83,12 @@ export const datasetPresentation: schema.DatasetPresentation = {
             initPage: "info",
         }},
       },
+      ostf: {
+        img: "/datasets/Halmstad-1989.jpg",
+        alt: "Bustadnavn i Østfold",
+        imageAttribution: "Ketil Johansen 1989, CC BY-SA 3.0",
+        description: "Halmstad i Rygge kommune"
+      },
 }
 
 export const subpages: Record<string, string[]> = {
@@ -119,6 +125,7 @@ export const datasetFeatures: Record<string, string[]> = {
   mu1950: ["link"],
   skul: ["image"],
   leks: ["phonetic", "base"],
+  ostf: ["link"]
 }
 
 export const datasetTypes: Record<string, string[]> = {
@@ -131,6 +138,7 @@ export const datasetTypes: Record<string, string[]> = {
   mu1950: ["public", "collection"],
   skul: ["collection"],
   leks: ["encyclopedia"],
+  ostf: ["encyclopedia"]
 }
 
 
