@@ -141,6 +141,7 @@
     "topheading": "Begrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
+    "validityperiod": "Gyldighetsperiode",
     "equivalence": "Ekvivalens", // TODO
     "ekvIngen": "ingen",
     "ekvFull": "full",

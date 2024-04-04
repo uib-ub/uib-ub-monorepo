@@ -184,6 +184,23 @@
                     />
                   </TermProp>
                   <TermProp
+                    v-if="
+                      timeDisplay(concept.startDate) ||
+                      timeDisplay(concept.endDate)
+                    "
+                    :flex="true"
+                    :label="$t('id.validityperiod')"
+                  >
+                    <TermDescription
+                      :flex="true"
+                      :data="[
+                        `${timeDisplay(concept.startDate)}-${timeDisplay(
+                          concept.endDate
+                        )}`,
+                      ]"
+                    />
+                  </TermProp>
+                  <TermProp
                     v-if="displayInfo?.subject"
                     :flex="true"
                     :label="$t('id.subject')"
@@ -201,7 +218,10 @@
                     :flex="true"
                     :label="$t('id.modified')"
                   >
-                    <TermDescription :flex="true" :data="[modified()]" />
+                    <TermDescription
+                      :flex="true"
+                      :data="[timeDisplay(concept.modified['@value'])]"
+                    />
                   </TermProp>
                   <template v-if="concept?.scopeNote">
                     <TermProp
@@ -336,17 +356,20 @@ const pagetitle = computed(() => {
   }
 });
 
-const modified = () => {
+const timeDisplay = (data) => {
   try {
-    const date = new Date(concept.value.modified["@value"]).toLocaleDateString(
-      locale.value
-    );
-    const time = new Date(concept.value.modified["@value"]).toLocaleTimeString(
-      locale.value
-    );
-    return date + ", " + time;
+    const date = new Date(data).toLocaleDateString(locale.value);
+    const dispDate = date !== "Invalid Date" ? date : "";
+    const time = new Date(data).toLocaleTimeString(locale.value);
+    const dispTime =
+      time !== "Invalid Date" && time !== "00:00:00" ? time : "";
+    if (dispTime) {
+      return dispDate + ", " + dispTime;
+    } else {
+      return dispDate;
+    }
   } catch (e) {
-    return undefined;
+    return null;
   }
 };
 
