@@ -37,6 +37,23 @@ export const datasetPresentation: schema.DatasetPresentation = {
         imageAttribution: "Wikimedia commons",
         description: "Norske Gaardnavne er en digital utgivelse av bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning."
       },
+      ostf: {
+        img: "/datasets/Østfold_gml_herredsinndeling.png",
+        alt: "Verket bygger på den gamle herredsinndelinga i Østfold",
+        imageAttribution: "Bustadnavn i Østfold",
+        description: "Bustadnavn i Østfold"
+      },
+      leks: {
+        img: "/datasets/leks2.png",
+        alt: "Forside til Norsk stadnamnleksikon 1997",
+        imageAttribution: "Språksamlingane",
+        description: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
+        initPage: "info",
+        subindices: {
+          leks_g: {
+            initPage: "info",
+        }},
+      },      
       nbas: {
         img: "/datasets/vincent-botta-wYD_wfifJVs-unsplash.jpg",
         imageAttribution: "Vincent Botta, Unsplash.com",
@@ -71,23 +88,6 @@ export const datasetPresentation: schema.DatasetPresentation = {
         alt: "Interiør fra klasserom, jenteklasse",
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
         description: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms."
-      },
-      leks: {
-        img: "/datasets/leks2.png",
-        alt: "Forside til Norsk stadnamnleksikon 1997",
-        imageAttribution: "Språksamlingane",
-        description: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
-        initPage: "info",
-        subindices: {
-          leks_g: {
-            initPage: "info",
-        }},
-      },
-      ostf: {
-        img: "/datasets/Halmstad-1989.jpg",
-        alt: "Tettstedet Halmstad i Rygge",
-        imageAttribution: "Ketil Johansen 1989, CC BY-SA 3.0",
-        description: "Bustadnavn i Østfold"
       },
 }
 
