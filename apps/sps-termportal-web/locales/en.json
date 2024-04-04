@@ -79,6 +79,14 @@
       "LISENS-3ACC_BY_40": "CC BY 4.0",
       "LISENS-3ACC_BY-2DNC_40": "CC BY-NC 4.0",
       "LISENS-3ACC_BY-2DNC-2DND_40": "CC BY-NC-ND 4.0"
+    },
+    "equivalence": {
+      "equivalence": "Equivalence",
+      "none": "none",
+      "full": "full",
+      "delvis": "partial",
+      "bredere": "broader meaning",
+      "smalere": "narrower meaning"
     }
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
@@ -140,14 +148,7 @@
     "topheading": "Concept view",
     "tableview": "Table view",
     "languagedata": "Language data",
-    "validityperiode": "Period of validity",
-    "equivalence": "Equivalence",
-    "ekvIngen": "none",
-    "ekvFull": "full",
-    "ekvDelvis": "partial",
-    "ekvBredere": "broader meaning",
-    "ekvSmalere": "narrower meaning",
-    "equivalenceNote": "Equivalence note",
+    "validityperiod": "Period of validity",
     "prefLabel": "Preferred term",
     "altLabel": "Admitted term",
     "hiddenLabel": "Depreciated term",

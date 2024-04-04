@@ -79,6 +79,14 @@
       "LISENS-3ACC_BY_40": "CC BY 4.0",
       "LISENS-3ACC_BY-2DNC_40": "CC BY-NC 4.0",
       "LISENS-3ACC_BY-2DNC-2DND_40": "CC BY-NC-ND 4.0"
+    },
+    "equivalence": {
+      "equivalence": "Ekvivalens",
+      "none": "ingen",
+      "full": "full",
+      "delvis": "delvis",
+      "bredere": "bredere betydning",
+      "smalere": "smalere betydning"
     }
   },
   "domainOverview": { "domainsAndBases": "Domener og termbaser" },
@@ -142,13 +150,6 @@
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
     "validityperiod": "Gyldighetsperiode",
-    "equivalence": "Ekvivalens", // TODO
-    "ekvIngen": "ingen",
-    "ekvFull": "full",
-    "ekvDelvis": "delvis",
-    "ekvBredere": "bredere betydning",
-    "ekvSmalere": "smalere betydning",
-    "equivalenceNote": "Ekvivalensmerknad", // TODO
     "prefLabel": "Anbefalt term",
     "altLabel": "Tillatt term",
     "hiddenLabel": "Frarådet term",

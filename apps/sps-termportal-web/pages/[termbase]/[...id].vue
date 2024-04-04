@@ -55,6 +55,31 @@
                   }}</AppLink>
                 </h3>
                 <TermSection>
+                  <!--Equivalence -->
+                  <TermProp
+                    v-if="true"
+                    :flex="
+                      concept?.hasEquivalenceData?.[lang][0]?.['note']?.[
+                        '@value'
+                      ]
+                        ? false
+                        : true
+                    "
+                    :label="$t('global.equivalence.equivalence')"
+                  >
+                    <TermDescription
+                      :flex="
+                        concept?.hasEquivalenceData?.[lang][0]?.['note']?.[
+                          '@value'
+                        ]
+                          ? false
+                          : true
+                      "
+                      :data="concept?.hasEquivalenceData?.[lang]"
+                      prop="equivalence"
+                    ></TermDescription>
+                  </TermProp>
+
                   <!--Definition-->
                   <TermProp
                     v-if="
@@ -295,6 +320,7 @@ if (process.client) {
     ],
   });
 }
+
 const route = useRoute();
 const searchScrollBarPos = useSearchScrollBarPos();
 const dataDisplayLanguages = useDataDisplayLanguages();
@@ -361,8 +387,7 @@ const timeDisplay = (data) => {
     const date = new Date(data).toLocaleDateString(locale.value);
     const dispDate = date !== "Invalid Date" ? date : "";
     const time = new Date(data).toLocaleTimeString(locale.value);
-    const dispTime =
-      time !== "Invalid Date" && time !== "00:00:00" ? time : "";
+    const dispTime = time !== "Invalid Date" && time !== "00:00:00" ? time : "";
     if (dispTime) {
       return dispDate + ", " + dispTime;
     } else {
