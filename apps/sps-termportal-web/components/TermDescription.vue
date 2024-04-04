@@ -9,18 +9,20 @@
     }"
   >
     <!-- Links are passed as Arrays -->
-    <div
-      v-if="!Array.isArray(mainValue(d))"
-      :lang="dataLang"
-      class="max-w-prose"
-      v-html="mainValue(d)"
-    />
-    <AppLink
-      v-else
-      class="underline hover:decoration-2 max-w-prose"
-      :to="d[1]"
-      >{{ d[0] }}</AppLink
-    >
+    <div v-if="mainValue(d)">
+      <div
+        v-if="!Array.isArray(mainValue(d))"
+        :lang="dataLang"
+        class="max-w-prose"
+        v-html="mainValue(d)"
+      />
+      <AppLink
+        v-else
+        class="underline hover:decoration-2 max-w-prose"
+        :to="d[1]"
+        >{{ d[0] }}</AppLink
+      >
+    </div>
     <dl
       v-if="
         d?.note ||
@@ -32,7 +34,8 @@
         d?.source ||
         d?.['skosp:dctSource']
       "
-      class="grid-col-3 ml-2 mt-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1 md:ml-5"
+      class="grid-col-3 ml-2 flex max-w-prose flex-wrap gap-x-8 gap-y-1 md:ml-5"
+      :class="{ 'mt-3': mainValue(d) }"
     >
       <TermProp v-if="d.isOfAbbreviationType" :label="$t('id.forkortelseType')">
         <dd class="max-w-prose" v-html="d.isOfAbbreviationType" />
@@ -63,7 +66,7 @@
           v-html="
             `
         ${d?.['skosp:dctSource']?.['skosp:rdfsLabel'] || ''}
-        ${d?.source?.label?.['@value'] || d?.source ||''}
+        ${d?.source?.label?.['@value'] || d?.source || ''}
         `
           "
         />
@@ -102,6 +105,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
+const i18n = useI18n();
+
 const props = defineProps({
   data: { type: Array, required: true },
   prop: { type: String, default: undefined },
@@ -111,6 +118,19 @@ const props = defineProps({
 
 const mainValue = (data) => {
   switch (props.prop) {
+    case "equivalence": {
+      const value = data?.value?.["@id"];
+      if (value) {
+        const key = value.split("/").slice(-1)[0];
+        if (key !== "startingLanguage") {
+          return i18n.t(`global.equivalence.${key}`);
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
     case "definition":
       return data?.label["@value"];
     case "prefLabel":
