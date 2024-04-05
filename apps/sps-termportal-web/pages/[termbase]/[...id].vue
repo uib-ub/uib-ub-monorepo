@@ -32,7 +32,9 @@
         >
           <main ref="main" class="h-full">
             <h2 id="main" class="pb-4">
-              <AppLink class="text-3xl" to="#main">{{ pagetitle }}</AppLink>
+              <AppLink class="text-3xl" to="#main">
+                <span v-html="pagetitle"></span
+              ></AppLink>
               <div v-if="concept?.memberOf">
                 <AppLink
                   class="text-lg text-gray-600 underline hover:text-black"
