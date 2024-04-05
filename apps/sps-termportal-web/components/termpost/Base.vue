@@ -11,7 +11,7 @@
       v-if="displayInfo?.semanticRelations"
       :display-info="displayInfo"
     />
-    <TermpostGenerelSection
+    <TermpostGeneralSection
       v-if="displayInfo"
       :concept="concept"
       :display-info="displayInfo"

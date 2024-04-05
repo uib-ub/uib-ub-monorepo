@@ -3,9 +3,9 @@
     <h3 :id="lang" class="pb-1 text-xl">
       <AppLink :to="`#${lang}`">{{ $t("global.lang." + lang) }}</AppLink>
     </h3>
-    <TermSection>
+    <TermpostTermSection>
       <!--Equivalence -->
-      <TermProp
+      <TermpostTermProp
         v-if="concept?.hasEquivalenceData?.[lang]"
         :flex="
           concept?.hasEquivalenceData?.[lang][0]?.['note']?.['@value']
@@ -14,7 +14,7 @@
         "
         :label="$t('global.equivalence.equivalence')"
       >
-        <TermDescription
+        <TermpostTermDescription
           :flex="
             concept?.hasEquivalenceData?.[lang][0]?.['note']?.['@value']
               ? false
@@ -22,66 +22,66 @@
           "
           :data="concept?.hasEquivalenceData?.[lang]"
           prop="equivalence"
-        ></TermDescription>
-      </TermProp>
+        ></TermpostTermDescription>
+      </TermpostTermProp>
 
       <!--Definition-->
-      <TermProp
+      <TermpostTermProp
         v-if="
           concept?.definisjon?.[lang] || concept?.betydningsbeskrivelse?.[lang]
         "
         :label="$t('id.definisjon')"
       >
-        <TermDescription
+        <TermpostTermDescription
           :data="
             concept.definisjon?.[lang] || concept?.betydningsbeskrivelse?.[lang]
           "
           prop="definition"
           :data-lang="lang"
         >
-        </TermDescription>
-      </TermProp>
+        </TermpostTermDescription>
+      </TermpostTermProp>
 
       <!--Anbefalt term-->
-      <TermProp v-if="concept?.prefLabel?.[lang]" :label="$t('id.prefLabel')">
-        <TermDescription
+      <TermpostTermProp v-if="concept?.prefLabel?.[lang]" :label="$t('id.prefLabel')">
+        <TermpostTermDescription
           prop="prefLabel"
           :data="concept?.prefLabel[lang]"
           :data-lang="lang"
         >
-        </TermDescription>
-      </TermProp>
+        </TermpostTermDescription>
+      </TermpostTermProp>
 
       <!--Tillatt term-->
-      <TermProp v-if="concept?.altLabel?.[lang]" :label="$t('id.altLabel')">
-        <TermDescription
+      <TermpostTermProp v-if="concept?.altLabel?.[lang]" :label="$t('id.altLabel')">
+        <TermpostTermDescription
           prop="altLabel"
           :data="concept?.altLabel[lang]"
           :data-lang="lang"
         >
-        </TermDescription>
-      </TermProp>
+        </TermpostTermDescription>
+      </TermpostTermProp>
       <!--Frarådet term-->
-      <TermProp
+      <TermpostTermProp
         v-if="concept?.hiddenLabel?.[lang]"
         :label="$t('id.hiddenLabel')"
       >
-        <TermDescription
+        <TermpostTermDescription
           prop="altLabel"
           :data="concept?.hiddenLabel[lang]"
           :data-lang="lang"
         >
-        </TermDescription>
-      </TermProp>
+        </TermpostTermDescription>
+      </TermpostTermProp>
       <!--Kontekst-->
-      <TermProp v-if="concept?.hasUsage?.[lang]" :label="$t('id.kontekst')">
-        <TermDescription
+      <TermpostTermProp v-if="concept?.hasUsage?.[lang]" :label="$t('id.kontekst')">
+        <TermpostTermDescription
           prop="context"
           :data="concept?.hasUsage[lang]"
           :data-lang="lang"
         />
-      </TermProp>
-    </TermSection>
+      </TermpostTermProp>
+    </TermpostTermSection>
   </div>
 </template>
 

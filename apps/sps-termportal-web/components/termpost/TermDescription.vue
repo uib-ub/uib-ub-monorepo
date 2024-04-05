@@ -37,22 +37,28 @@
       class="grid-col-3 ml-2 flex max-w-prose flex-wrap gap-x-8 gap-y-1 md:ml-5"
       :class="{ 'mt-3': mainValue(d) }"
     >
-      <TermProp v-if="d.isOfAbbreviationType" :label="$t('id.forkortelseType')">
+      <TermpostTermProp
+        v-if="d.isOfAbbreviationType"
+        :label="$t('id.forkortelseType')"
+      >
         <dd class="max-w-prose" v-html="d.isOfAbbreviationType" />
-      </TermProp>
-      <TermProp v-if="d.isAbbreviationOf" :label="$t('id.forkortelseAv')">
+      </TermpostTermProp>
+      <TermpostTermProp
+        v-if="d.isAbbreviationOf"
+        :label="$t('id.forkortelseAv')"
+      >
         <dd class="max-w-prose" v-html="d.isAbbreviationOf" />
-      </TermProp>
-      <TermProp v-if="d.isCollocatedWith" :label="$t('id.kollokasjon')">
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.isCollocatedWith" :label="$t('id.kollokasjon')">
         <dd
           class="max-w-prose"
           v-html="d.isCollocatedWith.map((el) => el['@value']).join(', ')"
         />
-      </TermProp>
-      <TermProp v-if="d.subject" :label="$t('id.kontekstAv')">
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.subject" :label="$t('id.kontekstAv')">
         <dd class="max-w-prose" v-html="d.subject[0]" />
-      </TermProp>
-      <TermProp
+      </TermpostTermProp>
+      <TermpostTermProp
         v-if="d?.['skosp:dctSource'] || d.source"
         :label="$t('id.referanse')"
       >
@@ -83,23 +89,23 @@
           :lang="d?.source?.['@language']"
           v-html="d.source?.['@value']"
         />
-      </TermProp>
-      <TermProp v-if="d.note" :label="$t('id.note')">
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.note" :label="$t('id.note')">
         <dd
           class="max-w-prose"
           :lang="d.note?.['@language']"
           v-html="d.note?.['@value']"
         />
         <dd v-if="d.note?.source" v-html="`(${d.note?.source})`" />
-      </TermProp>
-      <TermProp v-if="d.scopeNote" :label="$t('id.note')">
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.scopeNote" :label="$t('id.note')">
         <dd
           class="max-w-prose"
           :lang="d.scopeNote?.['@language']"
           v-html="d.scopeNote?.['@value']"
         />
         <dd v-if="d.scopeNote?.source" v-html="`(${d.scopeNote?.source})`" />
-      </TermProp>
+      </TermpostTermProp>
     </dl>
   </dd>
 </template>

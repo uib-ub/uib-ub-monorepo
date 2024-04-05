@@ -3,27 +3,31 @@
     <h3 id="felles" class="pb-1 text-xl">
       <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
     </h3>
-    <TermSection :flex="true">
-      <TermProp
+    <TermpostTermSection :flex="true">
+      <TermpostTermProp
         v-if="lalof(concept?.memberOf)"
         :flex="true"
         :label="$t('id.collection')"
       >
-        <TermDescription
+        <TermpostTermDescription
           prop="link"
           :flex="true"
           :data="[[lalof(concept.memberOf), '/' + termbase]]"
         />
-      </TermProp>
-      <TermProp v-if="concept?.domene" :flex="true" :label="$t('id.domain')">
-        <TermDescription :flex="true" :data="[lalof(concept.domene)]" />
-      </TermProp>
-      <TermProp
+      </TermpostTermProp>
+      <TermpostTermProp
+        v-if="concept?.domene"
+        :flex="true"
+        :label="$t('id.domain')"
+      >
+        <TermpostTermDescription :flex="true" :data="[lalof(concept.domene)]" />
+      </TermpostTermProp>
+      <TermpostTermProp
         v-if="timeDisplay(concept?.startDate) || timeDisplay(concept?.endDate)"
         :flex="true"
         :label="$t('id.validityperiod')"
       >
-        <TermDescription
+        <TermpostTermDescription
           :flex="true"
           :data="[
             `${timeDisplay(concept?.startDate)}-${timeDisplay(
@@ -31,26 +35,26 @@
             )}`,
           ]"
         />
-      </TermProp>
-      <TermProp
+      </TermpostTermProp>
+      <TermpostTermProp
         v-if="displayInfo?.subject"
         :flex="true"
         :label="$t('id.subject')"
       >
-        <TermDescription :flex="true" :data="[displayInfo?.subject]" />
-      </TermProp>
-      <TermProp
+        <TermpostTermDescription :flex="true" :data="[displayInfo?.subject]" />
+      </TermpostTermProp>
+      <TermpostTermProp
         v-if="concept?.modified && !legacyTbs.includes(termbase)"
         :flex="true"
         :label="$t('id.modified')"
       >
-        <TermDescription
+        <TermpostTermDescription
           :flex="true"
           :data="[timeDisplay(concept.modified['@value'])]"
         />
-      </TermProp>
+      </TermpostTermProp>
       <template v-if="concept?.scopeNote">
-        <TermProp
+        <TermpostTermProp
           v-for="scopeNote in Array.isArray(concept?.scopeNote)
             ? concept?.scopeNote
             : [concept?.scopeNote]"
@@ -59,14 +63,14 @@
           :label="$t('id.note')"
         >
           <div class="block md:flex">
-            <TermDescription
+            <TermpostTermDescription
               :flex="true"
               :data="[scopeNote?.label?.['@value'] || scopeNote['@value']]"
               :data-lang="
                 scopeNote?.label?.['@language'] || scopeNote['@language']
               "
             />
-            <TermDescription
+            <TermpostTermDescription
               v-if="scopeNote?.source"
               :flex="true"
               :data="[
@@ -75,19 +79,19 @@
               ]"
             />
           </div>
-        </TermProp>
+        </TermpostTermProp>
       </template>
-      <TermProp
+      <TermpostTermProp
         v-if="legacyTbs.includes(termbase) && concept"
         :flex="true"
         :label="$t('id.note')"
       >
-        <TermDescription
+        <TermpostTermDescription
           :flex="true"
           :data="[$t('id.noteTermbaseIsUnmaintained')]"
         />
-      </TermProp>
-    </TermSection>
+      </TermpostTermProp>
+    </TermpostTermSection>
   </div>
 </template>
 
