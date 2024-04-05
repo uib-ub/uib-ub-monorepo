@@ -27,7 +27,7 @@
           </nav>
         </div>
         <!-- Termpost -->
-        <div class="flex grow flex-col lg:w-3/4">
+        <div class="flex grow flex-col">
           <main ref="main" class="h-full">
             <h2 id="main" class="pb-4">
               <AppLink class="text-3xl" to="#main">
