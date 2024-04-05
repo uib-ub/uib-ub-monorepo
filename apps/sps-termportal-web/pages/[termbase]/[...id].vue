@@ -10,7 +10,7 @@
         <!-- Search results -->
         <div
           v-if="searchData.length > 0"
-          class="hidden max-w-[22em] shrink-0 flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw]"
+          class="hidden max-w-[22em] shrink-0 flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw] pr-3 lg:pr-6"
         >
           <BackToSearch />
           <nav aria-labelledby="sidebarresults">
@@ -26,10 +26,8 @@
             </ol>
           </nav>
         </div>
-        <div
-          class="flex grow flex-col lg:w-3/4"
-          :class="{ 'pl-3 lg:pl-6': searchData.length > 0 }"
-        >
+        <!-- Termpost -->
+        <div class="flex grow flex-col lg:w-3/4">
           <main ref="main" class="h-full">
             <h2 id="main" class="pb-4">
               <AppLink class="text-3xl" to="#main">
@@ -44,7 +42,7 @@
                 </AppLink>
               </div>
             </h2>
-            <TermpostBase :data="data" :main-concept-id="procId"/>
+            <TermpostBase :data="data" :main-concept-id="procId" />
             <div v-if="error">Error</div>
           </main>
         </div>
@@ -55,24 +53,6 @@
 
 <script setup lang="ts">
 import { Samling } from "~~/utils/vars-termbase";
-
-if (process.client) {
-  useHead({
-    script: [
-      {
-        src: "/mathjax-config.js",
-        type: "text/javascript",
-        defer: true,
-      },
-      {
-        id: "MathJax-script",
-        type: "text/javascript",
-        src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
-        defer: true,
-      },
-    ],
-  });
-}
 
 const route = useRoute();
 const searchScrollBarPos = useSearchScrollBarPos();
@@ -147,11 +127,6 @@ onBeforeUnmount(() => {
   }
   if (sidebar.value) {
     searchScrollBarPos.value = sidebar.value.scrollTop;
-  }
-});
-onMounted(() => {
-  if (typeof window?.MathJax !== "undefined") {
-    window.MathJax.typesetPromise();
   }
 });
 </script>

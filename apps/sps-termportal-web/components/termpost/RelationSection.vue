@@ -4,7 +4,7 @@
       <AppLink to="#relasjon"> {{ $t("id.relasjon") }}</AppLink>
     </h3>
     <TermpostTermSection>
-      <template v-for="relationType in semanticRelationTypes">
+      <template v-for="relationType in Object.keys(semanticRelationTypes)">
         <TermpostTermProp
           v-if="displayInfo.semanticRelations[relationType]"
           :key="relationType"

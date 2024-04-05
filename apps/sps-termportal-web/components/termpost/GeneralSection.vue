@@ -12,7 +12,7 @@
         <TermpostTermDescription
           prop="link"
           :flex="true"
-          :data="[[lalof(concept.memberOf), '/' + termbase]]"
+          :data="[{ target: [lalof(concept.memberOf), '/' + termbase] }]"
         />
       </TermpostTermProp>
       <TermpostTermProp

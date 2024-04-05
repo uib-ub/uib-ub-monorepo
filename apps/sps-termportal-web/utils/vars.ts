@@ -45,18 +45,18 @@ export type SemanticRelation =
   | "replaces"
   | "replacedBy";
 
-export const semanticRelationTypes: SemanticRelation[] = [
-  "narrower",
-  "specializes",
-  "isPartOf",
-  "broader",
-  "generalizes",
-  "hasPart",
-  "related",
-  "seeAlso",
-  "replaces",
-  "replacedBy",
-];
+export const semanticRelationTypes = {
+  narrower: ["qualifiedNarrower", "concept"],
+  specializes: ["hasGenericConceptRelation", "hasGenericConcept"],
+  isPartOf: ["PartitiveConceptRelation", "hasComprehensiveConcept"],
+  broader: ["qualifiedBroader", "concept"],
+  generalizes: ["hasGenericConceptRelation", "hasSpecificConcept"],
+  hasPart: ["PartitiveConceptRelation", "hasPartitiveConcept"],
+  related: ["isFromConceptIn", "hasToConcept"],
+  seeAlso: ["qualifiedSeeAlso", "concept"],
+  replaces: ["qualifiedReplaces", "concept"],
+  replacedBy: ["qualifiedReplacedBy", "concept"],
+};
 
 export interface SearchOptions {
   type: QueryType;
