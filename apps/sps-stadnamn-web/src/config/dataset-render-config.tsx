@@ -47,6 +47,32 @@ export const resultRenderers: ResultRenderers = {
 
 
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
+  bsn: (source: any) => {
+    return <>
+    <div className='space-y-2'>
+    {source.rawData?.stnavn?.komm && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.stnavn?.komm}</div>}
+    </div>
+    <InfoBox dataset={'bsn'}
+             items={[
+                {title: 'Opppslagsform', value: source.rawData?.stnavn?.oppslag?.oppslord},
+                {title: 'Preposisjon', value: source.rawData?.stnavn?.oppslag?.prep},
+                {title: 'Parform', value: source.rawData?.stnavn?.parform_pf_navn},
+                {title: 'Stedstype', value: source.rawData?.stnavn?.sted?.type},
+                {title: 'Kommune', value: source.adm2},
+                {title: 'Fylke', value: source.adm1},
+                {
+                  title: 'Gardsnummer', 
+                  items: [{value: source.rawData?.stnavn?.sted?.gårdsnr, href: `/view/bsn?rawData.stnavn.sted__gårdsnr=${encodeURIComponent(source.rawData?.stnavn?.sted?.gårdsnr)}`}]
+                },
+                {
+                  title: 'Bruksnummer', 
+                  items: [{value: source.rawData?.stnavn?.sted?.bruksnr, href: `/view/bsn?rawData.stnavn.sted__bruksnr=${encodeURIComponent(source.rawData?.stnavn?.sted?.bruksnr)}&rawData.stnavn.sted__gårdsnr=${encodeURIComponent(source.rawData?.stnavn?.sted?.gårdsnr)}`}]
+                },
+              ]}
+    />
+    </>
+
+  },
   hord: (source: any) => {
     const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
     return <>
