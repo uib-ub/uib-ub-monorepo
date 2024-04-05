@@ -46,7 +46,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                         </IconButton> 
                     }
                     {doc._source.audio && 
-                        <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${doc._source.audio.file}`} 
+                        <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${doc._source.audio.file}`} 
                             className="text-2xl inline text-neutral-700"/> 
                     }
                     {doc._source.link &&

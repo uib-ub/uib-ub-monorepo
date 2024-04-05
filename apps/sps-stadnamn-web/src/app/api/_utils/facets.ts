@@ -13,6 +13,7 @@ export function extractFacets(request: Request ) {
       case 'dataset':
       case 'page':
       case 'sort':
+      case 'orderBy':
       case 'field':
       case 'facetSort':
       case 'size':

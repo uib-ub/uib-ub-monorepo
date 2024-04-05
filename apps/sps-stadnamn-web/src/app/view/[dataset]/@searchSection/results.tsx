@@ -6,6 +6,7 @@ import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
+import { sortConfig } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
 
 
@@ -38,6 +39,18 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         params.delete('sort')
       } else {
         params.set('sort', 'desc')
+      }
+      params.delete('page')
+        
+      router.push(pathname + "?" + params.toString())
+    }
+
+    const orderBy = (e: any) => {
+      const params = new URLSearchParams(searchParams)
+      if (e.target.value == '') {
+        params.delete('orderBy')
+      } else {
+        params.set('orderBy', e.target.value)
       }
       params.delete('page')
         
@@ -87,13 +100,17 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
 
       </h2>
       <div className="ml-auto flex items-end gap-4">
-      <span><PiArrowsDownUp className='inline  space-x-2 text-xl' aria-hidden={true}/><label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
-      <select id="sort_select" name="orderBy">
-        <option value="">relevans</option>
-        <option value="label">stadnamn</option>
-        <option value="adm2">kommune</option>
-      </select>
+      {sortConfig[params.dataset] && 
+      <span>
+        <label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
+        <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy} value={searchParams.get('orderBy') || undefined}>
+          <option value="">relevans</option>
+          {sortConfig[params.dataset].map((sort: any) => (
+            <option key={sort.key} value={sort.key}>  {sort.label}</option>
+          ))}
+        </select>
       </span>
+    }
 
       <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter synkende' : 'Sorter stigende'} onClick={sortResults}>{searchParams.get('sort') == 'desc'? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }</IconButton>
 

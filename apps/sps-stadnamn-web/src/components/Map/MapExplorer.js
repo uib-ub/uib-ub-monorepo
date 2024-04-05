@@ -85,7 +85,6 @@ export default function MapExplorer(props) {
     if (props.docs?.[0]?._source?.location) {
 
       if (openPopup.current) {
-        console.log("Opening popup")
         selectedMarker.current.openPopup();
         openPopup.current = false;
       }

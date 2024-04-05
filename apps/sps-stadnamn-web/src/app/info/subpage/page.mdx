@@ -1,0 +1,36 @@
+import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import { metadata as parent  } from "../page.mdx"
+export const metadata = { title: 'Søkeveiledning' }
+
+<Breadcrumbs parentName={parent.title} parentUrl={`/info`} currentName={metadata.title} />
+
+# Søkeveiledning
+Stadnamnportalen har et [overordnet søk](/view/search) og [søkevisninger for enkelte datasett](/datasets). I førstnevnte skal vi på sikt slå sammen alle treff som er tildelt en stadnamn-ID i språksamlingenes
+database (SNID). I datasettvisningene vil man kunne bruke søkefiltre som er spesifikke for hvert datasett.
+
+## Søkefeltet
+Hovedsøkefeltet øverst i søkeseksjonen søker på stedsnavn som inneholder alle ordene du skriver inn, men ikke nødvendigvis i samme rekkefølge - **Berg Nordre** vil også gi treff på "Nordre Berg".
+Hvis søkevisningen har en knapp for å søke i annet enn stedsnavn, kan søket gi treff som inneholder bare ett av ordene du skriver inn.
+
+### Frasesøk
+Sett anførselstegn rundt søket for å søke etter en frase eller et navn bestående av flere ord. "Berg Nordre" gir for eksempel ikke treff på "Nordre Berg", men du vil få treff på dette hvis du søker uten anførselstegn.
+
+### Søk med jokertegn
+Tegnet **\*** kan brukes til trunkering av ett eller flere tegn. For eksempel vil søket **berg\*** gi treff på "Berg", "Bergen", "Bergheim". Tegnet kan plasseres hvor som helst og flere ganger i søkeordet.
+Bruk **?** for å søke etter ett tegn. For eksempel vil søket **b?rg** gi treff på "Berg", men ikke "Bratsberg".
+
+### Fuzzy søk
+Fuzzy søk gir treff på ord som ligner det du søker på. For eksempel vil søket **berg~** gi treff på "Bergen", "Berga" og "Bergheim".
+
+### Utelat ord fra søket
+For å utelate ord fra søket, bruk **-** foran ordet. For eksempel vil søket **berg -nordre** gi treff på alle stedsnavn som inneholder "berg", men ikke "nordre".
+
+### Nærhetssøk
+For å søke etter to ord som er nær hverandre kan du sette anførselstegn rundt dem og legget til **~** og et tall som angir hvor mange ord som kan være mellom de to ordene. For eksempel vil søket **"berg  nordre"~2** gi treff på "Berg Søndre og Nordre".
+
+## Områdefilter
+Områdefilter er et hierarkisk filter som i hovedsak deles inn etter administrativ inndeling på kommune og fylke.
+
+## Andre filtre
+Denne filterfunksjonen er ikke hierarkisk, men kan søke i felt med større variasjon i verdiene. Av hensyn til ytelse er det lagt inn en maksgrense på 50 verdier i listen.
+
