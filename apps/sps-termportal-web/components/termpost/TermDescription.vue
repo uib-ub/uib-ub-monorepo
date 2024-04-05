@@ -31,6 +31,7 @@
         d?.isAbbreviationOf ||
         d?.isCollocatedWith ||
         d?.subject ||
+        d?.description ||
         d?.source ||
         d?.['skosp:dctSource']
       "
@@ -53,6 +54,12 @@
         <dd
           class="max-w-prose"
           v-html="d.isCollocatedWith.map((el) => el['@value']).join(', ')"
+        />
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.description" :label="$t('id.inndelingskriterium')">
+        <dd
+          class="max-w-prose"
+          v-html="d.description.map((el) => el['@value']).join(', ')"
         />
       </TermpostTermProp>
       <TermpostTermProp v-if="d.subject" :label="$t('id.kontekstAv')">
