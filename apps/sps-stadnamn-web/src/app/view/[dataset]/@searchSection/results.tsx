@@ -103,10 +103,10 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       {sortConfig[params.dataset] && 
       <span>
         <label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
-        <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy}>
-          <option value="" selected={searchParams.get('orderBy') == ''}>relevans</option>
+        <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy} value={searchParams.get('orderBy') || undefined}>
+          <option value="">relevans</option>
           {sortConfig[params.dataset].map((sort: any) => (
-            <option key={sort.key} value={sort.key} selected={searchParams.get('orderBy') == sort.key}>  {sort.label}</option>
+            <option key={sort.key} value={sort.key}>  {sort.label}</option>
           ))}
         </select>
       </span>
