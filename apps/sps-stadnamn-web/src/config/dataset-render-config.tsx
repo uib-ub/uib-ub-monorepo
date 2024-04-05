@@ -1,4 +1,5 @@
 import InfoBox from '@/components/ui/infobox';
+import Link from 'next/link';
 
 interface Renderer {
   title: (hit: any) => any;
@@ -103,8 +104,52 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Oppskrivingstid', value: source.rawData.oppskrivingsTid},
     ]}/>
     </>
-  }
+  },
+  ostf: (source: any) => {
+      return <>
+      { source.links?.length &&
+      <div>
+      <h3>Lenker</h3>
+      <ul className='!mt-0'>
+        {source.links.map((link: any, index: number) => (
+          <li key={index}><Link href={link} className="">{link}</Link></li>
+        ))}
+
+      </ul>
+
+      
+      </div>
+      }
+      <InfoBox dataset={'ostf'} 
+               items={[
+        {title: 'Oppslagsform', value: source.rawData['Oppslagsform/skriftform']},
+        {title: 'Kommune', value: source.rawData["Herred for lokalitet"]},
+        {title: 'Fylke', value: source.rawData.Fylke},
+        {title: 'Matrikkelnummer', value: source.rawData.GNID},
+        {title: 'Sidetall', value: source.rawData["Sidetall/henvisning"]},
+        {title: 'Koordinater', value: source.rawData.Y + ", " + source.rawData.X},
+        {title: 'Presisjon', value: source.rawData.Koordinattype},
+        {title: 'StedsnavnID', value: source.rawData.SNID},
+        {title: 'Unikt matrikkelnummer', items: 
+          ["GNIDu_01", "GNIDu_02", "GNIDu_03", "GNIDu_04", "GNIDu_05", "GNIDu_06"].filter(item => source.rawData[item]?.length).map(key => {
+            return {value: source.rawData[key], href: `/view/ostf?rawData.${key}=${encodeURIComponent(source.rawData[key])}`}
+          }
+
+          )
+        },
+      ]}/>
+
+
+
+      
+      
+      </>
+  } 
+
 }
+
+
+
 
 
 export const defaultResultRenderer: Renderer = {

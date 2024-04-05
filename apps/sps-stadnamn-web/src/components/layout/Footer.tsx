@@ -7,7 +7,8 @@ export default function Footer() {
         
         <nav className="flex flex-col lg:flex-row gap-6 justify-center items-center">
           <Link href="/" className="text-center px-4 py-2 w-full lg:w-auto">Tilgjengelighetserklæring</Link>
-          <Link href="/" className="text-center px-4 py-2 w-full lg:w-auto">Personvern</Link>
+          <Link href="/info/privacy" className="text-center px-4 py-2 w-full lg:w-auto">Personvern</Link>
+          <Link href="/info/license" className="text-center px-4 py-2 w-full lg:w-auto">Opphavsrett</Link>
         </nav>
         
       </footer>

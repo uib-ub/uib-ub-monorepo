@@ -65,7 +65,7 @@
     @apply pb-4;
   }
 
-  h1, .dataset-info h2 {
+  h1, .dataset-info h2, .instance-info h2 {
     @apply text-xl sm:text-2xl lg:text-3xl text-neutral-900 md:text-3xl lg:text-4xl font-serif
   }
 
@@ -73,7 +73,7 @@
     @apply py-2
   }
 
-  .dataset-info h3, .page-info h2 {
+  .dataset-info h3, .instance-info h3, .page-info h2 {
     @apply text-lg sm:text-xl lg:text-2xl mt-4 text-neutral-900 font-serif py-2;
   }
 
@@ -81,15 +81,15 @@
     @apply text-base sm:text-base lg:text-lg mt-4 text-neutral-900 pt-2;
   }
 
-  .dataset-info ul {
+  .dataset-info ul, .instance-info ul, .page-info ul {
     @apply list-disc pl-4 py-2;
   }
 
-  .dataset-info ol {
+  .dataset-info ol, .instance-info ol, .page-info ol {
     @apply list-decimal pl-4 py-2;
   }
 
-  .dataset-info li {
+  .dataset-info li, .instance-info li, .page-info li {
     @apply py-1;
   }
 
