@@ -56,11 +56,12 @@
           v-html="d.isCollocatedWith.map((el) => el['@value']).join(', ')"
         />
       </TermpostTermProp>
-      <TermpostTermProp v-if="d.description" :label="$t('id.inndelingskriterium')">
-        <dd
-          class="max-w-prose"
-          v-html="d.description.map((el) => el['@value']).join(', ')"
-        />
+      <!-- TODO: fix after change in export -->
+      <TermpostTermProp
+        v-if="d.description"
+        :label="$t('id.inndelingskriterium')"
+      >
+        <dd class="max-w-prose" v-html="d.description.und" />
       </TermpostTermProp>
       <TermpostTermProp v-if="d.subject" :label="$t('id.kontekstAv')">
         <dd class="max-w-prose" v-html="d.subject[0]" />
