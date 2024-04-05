@@ -3,20 +3,20 @@
     <h3 id="relasjon" class="pb-1 text-xl">
       <AppLink to="#relasjon"> {{ $t("id.relasjon") }}</AppLink>
     </h3>
-    <TermSection>
+    <TermpostTermSection>
       <template v-for="relationType in semanticRelationTypes">
-        <TermProp
+        <TermpostTermProp
           v-if="displayInfo.semanticRelations[relationType]"
           :key="relationType"
           :label="$t('id.' + relationType)"
         >
-          <TermDescription
+          <TermpostTermDescription
             prop="link"
             :data="displayInfo.semanticRelations[relationType]"
           />
-        </TermProp>
+        </TermpostTermProp>
       </template>
-    </TermSection>
+    </TermpostTermSection>
   </div>
 </template>
 

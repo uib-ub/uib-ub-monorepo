@@ -3,11 +3,14 @@
     <h3 class="pb-1 text-xl">
       <AppLink to="#symbol"> {{ $t("id.symbol") }}</AppLink>
     </h3>
-    <TermSection>
-      <TermProp label="">
-        <TermDescription :data="displayInfo?.symbol" prop="nonLingusticLabel" />
-      </TermProp>
-    </TermSection>
+    <TermpostTermSection>
+      <TermpostTermProp label="">
+        <TermpostTermDescription
+          :data="displayInfo?.symbol"
+          prop="nonLingusticLabel"
+        />
+      </TermpostTermProp>
+    </TermpostTermSection>
   </div>
 </template>
 
