@@ -39,7 +39,7 @@ export const resultRenderers: ResultRenderers = {
       const details = [gnr, bnr].filter((v) => v).join('/')
       const snippet = hit.highlight?.['rawData.merknader'][0] && formatHighlight(hit.highlight['rawData.merknader'][0])
 
-      return  <>{snippet && <>{snippet} | </>}{ source.rawData.kommuneNamn + ", " + knr}{details ? ' - ' + details : '' }</>
+      return  <>{snippet && <>{snippet} | </>}{ " " + source.rawData.kommuneNamn + ", " + knr}{details ? ' - ' + details : '' }</>
     },
 
   }
