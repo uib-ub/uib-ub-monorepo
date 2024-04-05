@@ -102,7 +102,24 @@ export function getRelationData(
           const link = "/" + target.replace("/", "%2F").replace("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
-            const relation = { target: [label, link] };
+            let relation = { target: [label, link] };
+
+            const toReifiedProp = semanticRelationTypes[relationType][0];
+            const fromReifiedProp = semanticRelationTypes[relationType][1];
+
+            if (data[mainConceptId]?.[toReifiedProp]) {
+              const reifiedRelation = data[mainConceptId]?.[
+                toReifiedProp
+              ].filter(
+                (relation) =>
+                  fromReifiedProp in relation &&
+                  relation[fromReifiedProp].includes(mainConceptId)
+              );
+              if (reifiedRelation) {
+                relation = { ...relation, ...reifiedRelation[0] };
+              }
+            }
+
             return relation;
           } else {
             return null;
