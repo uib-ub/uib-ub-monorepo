@@ -6,7 +6,8 @@ export default function AudioButton({ audioFile, className }: { audioFile: strin
   const [playing, setPlaying] = useState(false);
   const audio = useRef<HTMLAudioElement | null>(null);
 
-  const togglePlay = () => {
+  const togglePlay = (event: React.MouseEvent) => {
+    event.stopPropagation();
 
     if (audio.current) {
         if (playing) {
@@ -19,7 +20,6 @@ export default function AudioButton({ audioFile, className }: { audioFile: strin
             setPlaying(true); 
         }   
     }
-    
   };
 
   return (
