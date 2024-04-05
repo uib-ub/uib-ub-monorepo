@@ -19,8 +19,8 @@
       <AppLink
         v-else
         class="underline hover:decoration-2 max-w-prose"
-        :to="d[1]"
-        >{{ d[0] }}</AppLink
+        :to="mainValue(d)[1]"
+        >{{ mainValue(d)[0] }}</AppLink
       >
     </div>
     <dl
@@ -150,7 +150,7 @@ const mainValue = (data) => {
     case "nonLingusticLabel":
       return data?.nonLingusticLabel;
     case "link":
-      return data;
+      return data?.target;
     default:
       return data;
   }

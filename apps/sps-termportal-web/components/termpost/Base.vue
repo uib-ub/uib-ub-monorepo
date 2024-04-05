@@ -62,7 +62,7 @@ const displayInfo = computed(() => {
       hiddenLabelLength: props.data?.meta.maxLen.hiddenLabel,
     };
     // semantic relations
-    for (const relationType of semanticRelationTypes) {
+    for (const relationType of Object.keys(semanticRelationTypes)) {
       const relData = getRelationData(
         props.data?.concept,
         props.mainConceptId,
