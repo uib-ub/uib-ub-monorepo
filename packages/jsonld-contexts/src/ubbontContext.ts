@@ -1185,7 +1185,10 @@ const ubbontContext = {
     },
     "isReferencedBy": {
       "@id": "dct:isReferencedBy",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": [
+        "@set"
+      ]
     },
     "isRightsHolderOf": {
       "@id": "ubbont:isRightsHolderOf",
