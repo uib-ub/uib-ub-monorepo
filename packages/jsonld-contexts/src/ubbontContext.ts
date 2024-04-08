@@ -62,6 +62,9 @@ const ubbontContext = {
       "@id": "crm:P108i_was_produced_by",
       "@type": "@id",
     },
+    "hasType": {
+      "@id": "crm:P2_has_type"
+    },
     "carriedOutBy": {
       "@id": "crm::P14_carried_out_by",
       "@type": "@id",
