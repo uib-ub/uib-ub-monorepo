@@ -1,4 +1,4 @@
-const classToAttMapping = {
+export const classToAttMapping: { [key: string]: { mapping: string } } = {
   Document: {
     mapping: "http://vocab.getty.edu/aat/300026030",
   },

@@ -3,11 +3,7 @@ import { API_URL, SPARQL_PREFIXES } from '../config/constants'
 import compactAndFrameNTriples from '../helpers/compactAndFrameNTriples'
 import fetch from '../helpers/fetchRetry'
 import { constructManifest } from '../helpers/mappers/constructManifest'
-
-export type TFailure = {
-  error: boolean
-  message: unknown
-}
+import { TFailure } from '../models'
 
 function getQuery(id: string) {
   const query = `

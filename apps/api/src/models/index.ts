@@ -1,5 +1,10 @@
 import { z } from '@hono/zod-openapi'
 
+export type TFailure = {
+  error: boolean
+  message: unknown
+}
+
 export const indexParamsSchema = z.object({
   index: z.string()
     .openapi({
@@ -124,11 +129,11 @@ export const PaginationParamsSchema = z.object({
     }),
 })
 
-export const AsParamsSchema = z.object({
+export const ItemParamsSchema = z.object({
   as: z
-    .string()
+    .enum(['iiif', 'la', 'ubbont'])
     .optional()
-    .default('0')
+    .default('la')
     .openapi({
       param: {
         name: 'as',
