@@ -4,6 +4,23 @@
   "description": "Core definitions that are used to compose the Linked Art JSON-LD API",
   "type": "object",
   "definitions": {
+    "thumbnailProp": {
+      "title": "ubbont:hasThumbnail",
+      "description": "A uri to a thumbnail image of the entity",
+      "type": "string"
+    },
+    "_availableProp": {
+      "title": "dct:available",
+      "description": "The date-time at which the entity was made available",
+      "type": "string",
+      "format": "date-time"
+    },
+    "_modifiedProp": {
+      "title": "dct:modified",
+      "description": "The date-time at which the entity was made modified",
+      "type": "string",
+      "format": "date-time"
+    },
     "idProp": {
       "title": "the subject uri",
       "description": "The URI of the entity",
