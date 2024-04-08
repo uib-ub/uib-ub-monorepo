@@ -49,11 +49,6 @@
         "New Haven, CT"
       ]
     },
-    "thumbnailProp": {
-      "title": "ubbont:hasThumbnail",
-      "description": "A uri to a thumbnail image of the entity",
-      "type": "string"
-    },
     "typeProp": {
       "title": "rdf:type",
       "description": "The class of the entity",
