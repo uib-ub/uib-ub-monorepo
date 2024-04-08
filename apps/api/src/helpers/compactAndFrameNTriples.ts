@@ -1,6 +1,5 @@
 import jsonld, { ContextDefinition } from 'jsonld'
-import { CONTEXTS } from '../config/jsonld-contexts';
-import omitEmpty from 'omit-empty-es';
+import { CONTEXTS } from 'jsonld-contexts';
 import { constructProduction } from './mappers/constructProduction';
 import { cleanDateDatatypes } from './cleaners/cleanDateDatatypes';
 import { convertToFloat } from './cleaners/convertToFloat';

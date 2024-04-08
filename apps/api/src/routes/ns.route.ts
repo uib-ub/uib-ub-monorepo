@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import contexts from '../config/jsonld-contexts';
+import contexts from 'jsonld-contexts';
 
 /**
  * These routes serves static files.
