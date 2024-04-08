@@ -15,27 +15,26 @@ const getDateFromDate = (unix: number) => {
 
 export const getTimespan = (date: any, after: any, before: any) => {
   if (!date && !after && !before) return undefined
-  //console.log('getTimespan', date, after, before)
 
   try {
     if (date) {
-      const e = edtf(date['@value'], { types: ['Year', 'Date', 'Interval', 'Season'] })
+      const e = edtf(date, { types: ['Year', 'Date', 'Interval', 'Season'] })
       return mapEDTF(e)
     }
-    if (after?.['@value'] === before?.['@value']) {
-      const e = edtf(before?.['@value'], { types: ['Year', 'Date', 'Interval', 'Season'] })
+    if (after === before) {
+      const e = edtf(before, { types: ['Year', 'Date', 'Interval', 'Season'] })
       return mapEDTF(e)
     }
     if (after && !before) {
-      const e = edtf(`${after['@value']}/`, { types: ['Year', 'Date', 'Interval', 'Season'] })
+      const e = edtf(`${after}/`, { types: ['Year', 'Date', 'Interval', 'Season'] })
       return mapEDTF(e)
     }
     if (!after && before) {
-      const e = edtf(`/${before['@value']}`, { types: ['Year', 'Date', 'Interval', 'Season'] })
+      const e = edtf(`/${before}`, { types: ['Year', 'Date', 'Interval', 'Season'] })
       return mapEDTF(e)
     }
     if (after && before) {
-      const e = edtf(`${after['@value']}/${before['@value']}`, { types: ['Year', 'Date', 'Interval', 'Season'] })
+      const e = edtf(`${after}/${before}`, { types: ['Year', 'Date', 'Interval', 'Season'] })
       return mapEDTF(e)
     }
   } catch (e) {
@@ -59,7 +58,7 @@ export const mapEDTF = (edtf: any) => {
   if (edtf.type == 'Interval') {
     const timespan = {
       id: randomUUID(),
-      _type: ['Timespan'],
+      type: ['Timespan'],
       edtf: edtf,
       ...(edtf.lower?.min && { beginOfTheBegin: getDateFromDateTime(edtf.lower?.min) }),
       ...(edtf.lower?.max && { endOfTheBegin: getDateFromDateTime(edtf.lower?.max) }),
@@ -73,7 +72,7 @@ export const mapEDTF = (edtf: any) => {
   const timespan = {
     edtf: edtf,
     id: randomUUID(),
-    _type: ['Timespan'],
+    type: ['Timespan'],
     ...(edtf.min && (edtf.min != edtf.max) && { beginOfTheBegin: getDateFromDateTime(edtf.min) }),
     ...(edtf.min && (edtf.min === edtf.max) && { date: getDateFromDate(edtf.min) }),
     ...(edtf.max && (edtf.min != edtf.max) && { endOfTheEnd: getDateFromDateTime(edtf.max) }),

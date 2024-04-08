@@ -1,37 +1,63 @@
 import { getTimespan } from './constructTimespan';
 import { randomUUID } from 'crypto';
 import { checkIntervalValidity } from '../checkers/checkIntervalValidity';
+import omitEmptyEs from 'omit-empty-es';
 
 export const constructProduction = (data: any) => {
-  return data.map((item: any) => {
-    const {
-      ['http://xmlns.com/foaf/0.1/maker']: maker,
-      ['http://purl.org/dc/terms/created']: created,
-      ['http://data.ub.uib.no/ontology/madeAfter']: madeAfter,
-      ['http://data.ub.uib.no/ontology/madeBefore']: madeBefore,
-      //['http://data.ub.uib.no/ontology/technique']: technique,
-    } = item;
-    delete item['http://xmlns.com/foaf/0.1/maker'];
-    delete item['http://purl.org/dc/terms/created'];
-    delete item['http://data.ub.uib.no/ontology/madeAfter'];
-    delete item['http://data.ub.uib.no/ontology/madeBefore'];
+  const {
+    maker,
+    created,
+    placeOfPublication,
+    publishedYear,
+    madeAfter,
+    madeBefore,
+    technique,
+  } = data;
 
-    let start = madeAfter?.[0] ?? undefined;
-    let end = madeBefore?.[0] ?? undefined;
+  if (!maker && !created && !placeOfPublication && !publishedYear && !madeAfter && !madeBefore && !technique) return data;
 
-    if (start && end) {
-      [start, end] = checkIntervalValidity(start, end);
+  delete data.maker
+  delete data.created
+  delete data.placeOfPublication
+  delete data.publishedYear
+  delete data.madeAfter
+  delete data.madeBefore
+  delete data.technique
+
+  let start = madeAfter ?? undefined;
+  let end = madeBefore ?? undefined;
+
+  if (start && end) {
+    [start, end] = checkIntervalValidity(start, end);
+  }
+  const timespan = getTimespan(created, start, end);
+
+  return omitEmptyEs({
+    ...data,
+    produced_by: {
+      _type: 'Production',
+      carried_out_by: maker?.map((actor: any) => {
+        return {
+          id: actor.id,
+          type: actor.type,
+          _label: actor._label,
+        }
+      }) ?? undefined,
+      took_place_at: placeOfPublication ? {
+        id: placeOfPublication.id,
+        type: placeOfPublication.type,
+        _label: placeOfPublication._label,
+      } : undefined,
+      technique: technique?.map((technique: any) => {
+        return {
+          id: technique.id,
+          type: technique.type,
+          _label: technique._label,
+        }
+
+      }) ?? undefined,
+      timespan: timespan ?? undefined,
+      publishedYear, // @TODO: How to handle this?
     }
-    const timespan = getTimespan(created?.[0], start, end);
-    if (!timespan && !maker) return item;
-    return {
-      ...item,
-      produced_by: {
-        id: randomUUID(),
-        _type: ['Production'],
-        carried_out_by: maker ?? undefined,
-        timespan: timespan ?? undefined,
-      }
-    };
   });
 };

@@ -1,8 +1,15 @@
-import { de, id } from 'date-fns/locale'
+import { getLanguage } from './getLanguage';
+import omitEmptyEs from 'omit-empty-es';
+
 
 export const constructIdentifiers = (data: any) => {
-  const { _label, identifier, previousIdentifier } = data
-  console.log(_label, identifier, previousIdentifier)
+  const { _label, identifier, previousIdentifier } = data;
+
+  if (!identifier && !previousIdentifier && !_label) return data;
+
+  delete data.title;
+  delete data.identifier;
+  delete data.previousIdentifier;
 
   const previous = {
     _label: `${previousIdentifier}`,
@@ -20,7 +27,7 @@ export const constructIdentifiers = (data: any) => {
       },
     ],
     content: previousIdentifier,
-  }
+  };
 
   const id = {
     _label: `${identifier}`,
@@ -38,40 +45,11 @@ export const constructIdentifiers = (data: any) => {
       }
     ],
     content: identifier,
-  }
+  };
 
-  const getLanguage = (lang: string) => {
-    switch (lang) {
-      case 'no':
-        return {
-          id: "https://vocab.getty.edu/aat/300443706",
-          type: "Language",
-          _label: "Norwegian"
-        }
-      case 'en':
-        return {
-          id: "https://vocab.getty.edu/aat/300388277",
-          type: "Language",
-          _label: "English"
-        }
-      case 'fr':
-        return {
-          id: "https://vocab.getty.edu/aat/300388306",
-          type: "Language",
-          _label: "French"
-        }
-      default:
-        return {
-          id: "https://vocab.getty.edu/aat/300443706",
-          type: "Language",
-          _label: "Norwegian"
-        }
-    }
-  }
-
-  let names: any[] = []
+  let names: any[] = [];
   if (_label) {
-    names = Object.entries(_label).map(([key, value]: [string, unknown]) => {
+    names = Object.entries(_label).map(([key, value]: [string, any]) => {
       return {
         type: "Name",
         classified_as: [
@@ -86,78 +64,22 @@ export const constructIdentifiers = (data: any) => {
             _label: "Constructed titles"
           } : undefined,
         ],
-        content: value,
+        content: value[0],
         language: [
           getLanguage(key)
         ]
-      }
-    })
+      };
+    });
   }
 
-  delete data.previousIdentifier
+  delete data.previousIdentifier;
 
-  return {
+  return omitEmptyEs({
     ...data,
     identified_by: [
       ...names,
       identifier ? id : undefined,
       previousIdentifier ? previous : undefined,
     ],
-  }
-}
-
-
-
-/* 
-"Identifier": {
-  "title": "crm:E42_Identifier",
-  "description": "An identifier for an entity\nSee: [API](https://linked.art/api/1.0/shared/identifier/) | [Model](https://linked.art/model/base/#identifiers)",
-  "type": "object",
-  "properties": {
-    "_label": {
-      "$ref": "#/definitions/labelProp"
-    },
-    "type": {
-      "allOf": [
-        {
-          "title": "General",
-          "$ref": "#/definitions/typeProp"
-        },
-        {
-          "title": "Specific",
-          "type": "string",
-          "const": "Identifier"
-        }
-      ]
-    },
-    "identified_by": {
-      "$ref": "#/definitions/identified_byProp"
-    },
-    "classified_as": {
-      "$ref": "#/definitions/classified_asProp"
-    },
-    "content": {
-      "$ref": "#/definitions/contentProp"
-    },
-    "part": {
-      "description": "A list of one or more `Identifier` structures, which are parts of this `Identifier`",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Identifier"
-      }
-    },
-    "assigned_by": {
-      "description": "The activity through which this `Identifier` was assigned to the entity",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/AttributeAssignment"
-      }
-    }
-  },
-  "required": [
-    "type",
-    "content"
-  ],
-  "additionalProperties": false
-},
-*/
+  });
+};
