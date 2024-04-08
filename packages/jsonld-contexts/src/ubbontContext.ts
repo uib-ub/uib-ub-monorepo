@@ -66,8 +66,8 @@ const ubbontContext = {
       "@id": "crm:P2_has_type"
     },
     "carriedOutBy": {
-      "@id": "crm::P14_carried_out_by",
-      "@type": "@id",
+      "@id": "crm:P14_carried_out_by",
+      "@type": "@id"
     },
     "spatial": {
       "@id": "dct:spatial",
