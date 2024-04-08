@@ -30,7 +30,19 @@
     "labelProp": {
       "title": "rdfs:label",
       "description": "A human readable name or label for the entity, intended for developers",
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string"
+            }
+          }
+        }
+      ],
       "examples": [
         "Georgia O'Keeffe",
         "Blue by Georgia O'Keeffe",
