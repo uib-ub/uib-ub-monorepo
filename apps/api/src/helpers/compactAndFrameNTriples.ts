@@ -3,6 +3,7 @@ import { CONTEXTS } from 'jsonld-contexts';
 import { constructProduction } from './mappers/constructProduction';
 import { cleanDateDatatypes } from './cleaners/cleanDateDatatypes';
 import { convertToFloat } from './cleaners/convertToFloat';
+import omitEmptyEs from 'omit-empty-es';
 
 /**
  * Compacts and frames the given data in NTriples format to JSON-LD format.
@@ -19,22 +20,22 @@ const compactAndFrameNTriples = async (data: any, context: string, type: string)
   const json = await jsonld.fromRDF(data)
   const fixedDates = cleanDateDatatypes(json)
   const withFloats = convertToFloat(fixedDates)
-  const cleaned = constructProduction(withFloats)
 
   const compacted = await jsonld.compact({
-    '@graph': cleaned,
+    '@graph': withFloats,
     ...useContext as ContextDefinition
   },
     useContext as ContextDefinition
   ) // Compact to JSON-LD
 
   try {
-    const framed = jsonld.frame(compacted, {
+    const framed = await jsonld.frame(compacted, {
       ...useContext as ContextDefinition,
       '@type': type,
       '@embed': '@always',
     });
-    return omitEmpty(await framed)
+    const data = constructProduction(framed)
+    return omitEmptyEs(await data)
   } catch (e) {
     console.log(JSON.stringify(e, null, 2))
     return { error: true, message: e }

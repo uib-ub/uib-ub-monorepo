@@ -12,6 +12,7 @@
     "jsxImportSource": "hono/jsx",
     "outDir": "dist",
     "strictNullChecks": true,
+    "resolveJsonModule": true
   },
   "include": [
     "next-env.d.ts",
