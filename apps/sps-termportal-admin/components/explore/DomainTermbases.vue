@@ -59,7 +59,7 @@ WHERE {
 GROUP BY ?label
 `;
 
-const { data } = await useLazyFetch("/api/query", {
+const { data } = await useLazyFetch("/api/withQuery", {
   method: "post",
   body: { query },
 });
