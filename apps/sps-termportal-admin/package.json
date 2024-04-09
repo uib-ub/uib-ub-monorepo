@@ -14,7 +14,6 @@
   },
   "devDependencies": {
     "@nuxt/content": "2.12.1",
-    "@nuxt/devtools": "latest",
     "@nuxt/test-utils-edge": "^3.0.1-rc.0-27907907.1406d21",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/sanity": "^1.8.3",
@@ -31,7 +30,7 @@
     "eslint-plugin-tsdoc": "^0.2.17",
     "jsonld": "^8.1.0",
     "next-auth": "4.21.1",
-    "nuxt": "3.11.0",
+    "nuxt": "3.8.0",
     "nuxt-icon": "^0.6.1",
     "prettier": "^2.8.3",
     "prettier-plugin-tailwindcss": "^0.2.1",
