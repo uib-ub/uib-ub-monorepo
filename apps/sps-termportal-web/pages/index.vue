@@ -23,15 +23,13 @@
           :path="`/${locale}/welcome`"
           class="content-wrapper basis-7/12"
         />
-        <NewsWrapper
-          :key="`news${locale}`"
-          class="basis-5/12"
-        ></NewsWrapper>
+        <NewsWrapper :key="`news${locale}`" class="basis-5/12" />
       </div>
       <CollaboratorsTP class="mt-8 xl:mt-14" />
     </main>
   </div>
 </template>
+
 <script setup lang="ts">
 const locale = useLocale();
 </script>
