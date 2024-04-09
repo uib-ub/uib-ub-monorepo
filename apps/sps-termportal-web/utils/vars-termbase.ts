@@ -80,30 +80,6 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   UDEUT: ["nb", "nn", "en", "fr"],
   UHR: ["nb", "nn", "en"],
 };
-
-// TODO Why are the bases lists needed? replace with lazy
-export const domainNesting = {
-  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
-  "DOMENE-3ANaturvitenskapTeknologi": {
-    bases: [
-      "NOT",
-      "MRT",
-      "SDIR",
-      "ARTSDB",
-      "EVERTEBRATER",
-      "RTT",
-      "ROMFYS",
-      "KLIMA",
-      "ASTRONOMI",
-      // "BIOLOGI",
-      "CMBIOLOGI",
-      "KJEMI",
-    ],
-  },
-  "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING", "UDEUT"] },
-  "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
-};
-
 type CollectionUriPatternKey =
   | "bkg"
   | "nav"
