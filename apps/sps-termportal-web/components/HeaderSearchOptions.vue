@@ -86,13 +86,10 @@ function filterTermbases(termbases, filterTermbases, option, defaultValue) {
 
 function deriveSearchOptions(searchOption, defaultValue) {
   // TODO optimize, create list of languages of domains/termbases
-  const topdomain = "all";
   const currentValue = searchInterface.value[searchOption];
   let termbases = termbaseOrder;
   let options;
-  if (topdomain !== "all") {
-    termbases = domainNesting[topdomain]?.bases;
-  }
+
 
   if (searchOption !== "language") {
     termbases = filterTermbases(
