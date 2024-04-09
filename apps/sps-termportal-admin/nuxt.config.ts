@@ -53,6 +53,17 @@ export default defineNuxtConfig({
   },
   routeRules: {
     "/studio/**": { ssr: false },
+    "/api/**": {
+      cors: true,
+      headers: {
+        "Access-Control-Allow-Methods": "GET, POST",
+      },
+    },
   },
   ssr: false,
+  vite: {
+    define: {
+      __NUXT_ASYNC_CONTEXT__: false
+    }
+  }
 });
