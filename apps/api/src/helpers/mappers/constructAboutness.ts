@@ -1,7 +1,7 @@
 import omitEmptyEs from 'omit-empty-es';
-import { mapToGeneralClass } from '../mapToGeneralClass';
+import { mapToGeneralClass } from './mapToGeneralClass';
 import { getLanguage } from './getLanguage';
-import { classToAttMapping } from '../classToHasType';
+import { classToAttMapping } from './mapClassToClassifiedAs';
 
 export const constructAboutness = (data: any) => {
   const { hasType, description, physicalDescription, physicalCondition, pages, isReferencedBy, subject, spatial, shows = [], dimension = [] } = data;
