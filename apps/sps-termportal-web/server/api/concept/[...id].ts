@@ -3,21 +3,21 @@ import { termbaseUriPatterns } from "../../../utils/vars-termbase";
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.endpointUrl;
- // const body = await readBody(event);
+
   const idArray = decodeURI(event.context.params.id).split("/");
-  const termbase = idArray[0]
-  const cArray = idArray.slice(1)
+  const termbase = idArray[0];
+  const conceptIdArray = idArray.slice(1);
   let base;
   let id: string;
   let uri: string;
   if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
     base = runtimeConfig.public.base;
-    id = `${termbase}-3A${cArray[0]}`;
-    uri = id
+    id = `${termbase}-3A${conceptIdArray.join("/")}`;
+    uri = id;
   } else {
-    base = termbaseUriPatterns[termbase][cArray[0]];
-    id = cArray.slice(1).join("/");
-    uri = base + id
+    base = termbaseUriPatterns[termbase][conceptIdArray[0]];
+    id = conceptIdArray.slice(1).join("/");
+    uri = base + id;
   }
 
   const query = genConceptQuery(base, termbase, id);
