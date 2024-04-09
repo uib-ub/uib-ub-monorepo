@@ -16,7 +16,7 @@ export default function (base: string, termbase: string, id: string): string {
     "skos:broader",
     "rdfs:seeAlso",
     "dct:replaces",
-    "dct:replacedBy"
+    "dct:replacedBy",
   ];
 
   const query = `#log: ${JSON.stringify(log)}
