@@ -12,6 +12,9 @@ export default defineNuxtConfig({
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],
+  experimental: {
+    componentIslands: true,
+  },
   app: {
     head: {
       title: "Termportalen",
