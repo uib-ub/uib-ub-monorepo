@@ -66,8 +66,10 @@ export const tbstatus = {
       { title: "Publisert", value: "publisert" },
     ],
   },
+  initialValue: "kjent",
   fieldset: "basics",
 };
+
 export const timespan = {
   name: "timespan",
   type: "Timespan",
