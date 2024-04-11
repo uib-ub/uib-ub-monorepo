@@ -33,7 +33,7 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const timeInfo = ref(false);
 
 // 86400 is a hack to display todays events.
@@ -50,13 +50,6 @@ const query = `
 } | order(end desc)[0...10]`;
 
 const { data } = useLazySanityQuery(query);
-
-const colorMapping = {
-  2: { color: "#FF6347", description: "i dag eller i går" },
-  7: { color: "#FFA500", description: "mindre enn syv dager siden" },
-  30: { color: "#FFD700", description: "mindre enn 30 dager siden" },
-  1000: { color: "#69b9fe", description: "for mer enn 30 dager siden" },
-};
 
 const procdata = computed(() =>
   data.value?.map((a) => {
@@ -80,9 +73,9 @@ const procdata = computed(() =>
           Math.abs((today.getTime() - endDate.getTime()) / millisecondsPerDay)
         );
 
-        for (const number of Object.keys(colorMapping)) {
+        for (const number of Object.keys(activityColorMapping)) {
           if (distance < number) {
-            return colorMapping[number];
+            return activityColorMapping[number];
           }
         }
       },
