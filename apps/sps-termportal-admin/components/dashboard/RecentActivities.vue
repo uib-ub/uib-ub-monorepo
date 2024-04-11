@@ -4,7 +4,7 @@
     <ol class="space-y-0.5 text-lg ml-1">
       <li
         v-for="activity in procdata"
-        :key="activity.label + activity.end"
+        :key="activity.label + activity.time"
         class="flex space-x-4 hover:bg-gray-100 p-1"
       >
         <AppLink
@@ -14,17 +14,28 @@
         >
           <div class="w-[25rem]">{{ activity.label }}</div>
           <div>{{ activity.time }}</div>
-          <div
-            class="w-7 h-7 rounded-2xl shrink-0"
-            :style="`background-color: ${activity.colorCoding}`"
-          />
         </AppLink>
+        <div
+          class="w-7 h-7 rounded-2xl shrink-0"
+          :style="`background-color: ${activity?.colorCoding?.color}`"
+          @mouseover="timeInfo = activity.label + activity.time"
+          @mouseleave="timeInfo = false"
+        >
+          <div
+            v-show="timeInfo == activity.label + activity.time"
+            class="absolute bg-white p-2 ml-9 mt-[-8px] border border-solid rounded-md"
+          >
+            {{ activity?.colorCoding?.description }}
+          </div>
+        </div>
       </li>
     </ol>
   </section>
 </template>
 
 <script setup>
+const timeInfo = ref(false);
+
 // 86400 is a hack to display todays events.
 // timespan.begiOfTheEnd is not available in groq
 // timespan.endOfTheEnd defaults to ...T23:59:59.999Z for undefined times
@@ -40,6 +51,12 @@ const query = `
 
 const { data } = useLazySanityQuery(query);
 
+const colorMapping = {
+  2: { color: "#FF6347", description: "i dag eller i går" },
+  7: { color: "#FFA500", description: "mindre enn syv dager siden" },
+  30: { color: "#FFD700", description: "mindre enn 30 dager siden" },
+  1000: { color: "#69b9fe", description: "for mer enn 30 dager siden" },
+};
 
 const procdata = computed(() =>
   data.value?.map((a) => {
@@ -48,7 +65,7 @@ const procdata = computed(() =>
       label: a.label,
       get time() {
         const start = prettyPrintDate(a.start?.substring(0, 10));
-        const end = prettyPrintDate(a.end?.substring(0, 10))
+        const end = prettyPrintDate(a.end?.substring(0, 10));
         if (start === end) {
           return end;
         } else {
@@ -62,14 +79,11 @@ const procdata = computed(() =>
         const distance = Math.floor(
           Math.abs((today.getTime() - endDate.getTime()) / millisecondsPerDay)
         );
-        if (distance < 2) {
-          return "#FF6347";
-        } else if (distance < 7) {
-          return "#FFA500";
-        } else if (distance < 30) {
-          return "#FFD700";
-        } else {
-          return "#69b9fe";
+
+        for (const number of Object.keys(colorMapping)) {
+          if (distance < number) {
+            return colorMapping[number];
+          }
         }
       },
     };
