@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     dataportenAuthorizedUsers:
       process.env.NUXT_DATAPORTEN_AUTHORIZED_USERS?.split(", "),
     endpointUrl: "",
+    endpointUrlInternal: "",
     public: {
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
@@ -63,7 +64,7 @@ export default defineNuxtConfig({
   ssr: false,
   vite: {
     define: {
-      __NUXT_ASYNC_CONTEXT__: false
-    }
-  }
+      __NUXT_ASYNC_CONTEXT__: false,
+    },
+  },
 });

@@ -11,7 +11,7 @@ export const activityTypes = {
   termbasePublisering: "Termbase publisering",
   termbaseOpprettelse: "Termbase opprettelse",
   termbaseImportering: "Termbase importering",
-  møte: "Møte osv."
+  møte: "Møte osv.",
 };
 
 export const studioBaseRoute = "/studio/structure";
@@ -23,3 +23,11 @@ export const activityColorMapping = {
   30: { color: "#FFD700", description: "mindre enn 30 dager siden" },
   1000: { color: "#69b9fe", description: "for mer enn 30 dager siden" },
 };
+
+export const orderTopDomain = [
+  "NaturvitenskapTeknologi",
+  "Humaniora",
+  "Samfunnsfag",
+  "OkonomiAdministrasjon",
+  "Helse_og_sosial",
+];
