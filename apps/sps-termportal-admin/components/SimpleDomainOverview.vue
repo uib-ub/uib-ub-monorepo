@@ -27,9 +27,31 @@
           </div>
         </template>
       </Column>
-      <Column sortable field="nb" header="Bokmål" />
+      <Column sortable field="nb" header="Bokmål navn" />
       <Column sortable field="concepts" header="Begreper" />
-      <Column sortable field="conceptSum" header="Totalt antall begreper">
+      <Column sortable field="conceptSum" header="Totalt antall begreper" />
+      <Column field="published" header="publisert" data-type="boolean">
+        <template #body="{ data }">
+          <div class="flex align-items-center gap-2">
+            <span>{{ data.published ? "Ja" : "Nei" }}</span>
+          </div>
+        </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <TriStateCheckbox
+            v-model="filterModel.value"
+            @change="filterCallback()"
+          />
+        </template>
+      </Column>
+      <Column header="">
+        <template #body="slotProps">
+          <NuxtLink
+            :to="`${wikiPageLink}DOMENE:${slotProps.data.id}`"
+            target="_blank"
+          >
+            Wiki
+          </NuxtLink>
+        </template>
       </Column>
     </DataTable>
   </div>
@@ -38,6 +60,7 @@
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
 import { prefix } from "termportal-ui/utils/utils";
+import { orderTopDomain } from "~/utils/constants";
 
 const selectedDomain = ref();
 const props = defineProps({
@@ -54,14 +77,17 @@ PREFIX base: <http://wiki.terminologi.no/index.php/Special:URIResolver/>
 
 SELECT
   ?concept
-  (CONCAT("{",GROUP_CONCAT(?lab; SEPARATOR=", "), "}") AS ?labels)
+  (CONCAT("{",GROUP_CONCAT(DISTINCT ?lab; SEPARATOR=", "), "}") AS ?labels)
   ?level
+  ?published
   ?children
   (COUNT(DISTINCT ?termpost) AS ?concepts)
 WHERE {
   GRAPH <urn:x-arq:UnionGraph> {
     ?concept skosp:memberOf base:DOMENE-3ADOMENE ;
+             skosp:publisere ?published ;
              skosxl:prefLabel ?label .
+
     OPTIONAL {
       ?termpost skosp:domene ?concept .
     }
@@ -75,8 +101,9 @@ WHERE {
         (COUNT(DISTINCT ?parents) AS ?level)
         (GROUP_CONCAT(DISTINCT ?child; SEPARATOR=", ") AS ?children)
       WHERE {
+        base:DOMENE-3AToppdomene skos:narrower* ?concept .
         ?concept skosp:memberOf base:DOMENE-3ADOMENE ;
-                 skos:broader* ?parents .
+                 skos:broader+ ?parents .
         OPTIONAL {
           ?concept skos:narrower ?child .
         }
@@ -85,12 +112,12 @@ WHERE {
     }
   }
 }
-GROUP BY ?concept ?level ?children
+GROUP BY ?concept ?level ?children ?published
 `;
 
 const { data } = await useLazyFetch("/api/withQuery", {
   method: "post",
-  body: { query },
+  body: { query, internal: true },
 });
 
 const preProc = computed(() => {
@@ -102,6 +129,7 @@ const preProc = computed(() => {
       nb: labels?.nb,
       nn: labels?.nn,
       en: labels?.en,
+      published: d.published.value === "true",
       level: d.level.value,
       children: d?.children
         ? d?.children.value.split(", ").map((id) => cleanId(id, true))
@@ -127,7 +155,8 @@ function processDomain(
   });
 
   if (domainInstance.children) {
-    domainInstance.children.forEach((child) => {
+    const sortedChildren = domainInstance?.children.sort();
+    sortedChildren.forEach((child) => {
       hierarchyCounter++;
       const childDomain = data.filter((d) => d.id === child)[0];
       if (childDomain) {
@@ -145,23 +174,18 @@ function processDomain(
   return updatedCounter;
 }
 
-function sortPageName(a, b) {
-  if (a.id < b.id) {
-    return -1;
-  }
-  if (a.id > b.id) {
-    return 1;
-  }
-  return 0;
-}
-
 const displayData = computed(() => {
+  const order = orderTopDomain;
   if (preProc.value) {
     const collected = [];
     let domainCounter = 0;
     const topdomains = preProc.value
       .filter((d) => d.level === "1")
-      .sort(sortPageName);
+      .sort(
+        (a, b) =>
+          (order.includes(a.id) ? order.indexOf(a.id) : Infinity) -
+          (order.includes(b.id) ? order.indexOf(b.id) : Infinity)
+      );
     let hierarchyCounter = 0;
     topdomains.forEach((domain) => {
       hierarchyCounter++;
@@ -193,5 +217,6 @@ const rowClass = (data) => {
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  published: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 </script>
