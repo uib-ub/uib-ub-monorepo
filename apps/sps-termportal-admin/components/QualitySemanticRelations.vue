@@ -37,7 +37,8 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 const datatable = ref();
 
 const { data } = useLazyFetch(
-  `/api/tb/${props.termbase.id}/qualitySemanticRelations`
+  `/api/tb/${props.termbase.id}/qualitySemanticRelations`,
+  { method: "post", body: { internal: true } }
 );
 
 const relations = computed(() => {
