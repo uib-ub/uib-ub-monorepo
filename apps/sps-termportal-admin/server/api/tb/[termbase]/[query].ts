@@ -5,7 +5,15 @@ import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticR
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const url = runtimeConfig.endpointUrl;
+  let body;
+  try {
+    body = await readBody(event);
+  } catch (error) {}
+  let url = runtimeConfig.endpointUrl;
+
+  if (body?.internal) {
+    url = runtimeConfig.endpointUrlInternal;
+  }
 
   const termbase = event.context.params?.termbase;
   const queryType = event.context.params?.query;
