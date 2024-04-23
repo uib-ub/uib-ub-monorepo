@@ -19,10 +19,10 @@
       />
     </div>
     <div class="max-w-prose">
-      <figure class="border-solid border p-2">
-        <ImgBase :img-src="displayInfo.image[0].value['@id']"></ImgBase>
-        <figcaption>{{ displayInfo.image[0].description[locale] }}</figcaption>
-      </figure>
+      <TermpostVisualizationSection
+        v-if="displayInfo?.image"
+        :display-info="displayInfo"
+      />
     </div>
   </div>
 </template>
