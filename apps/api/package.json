@@ -28,6 +28,7 @@
     "jsonld-contexts": "*",
     "lodash": "^4.17.21",
     "node-fetch-native": "^1.6.2",
+    "node-html-markdown": "^1.3.0",
     "omit-empty-es": "^1.2.0",
     "rate-limiter-flexible": "5.0.0",
     "rtl-detect-intl": "^0.1.2",
@@ -45,6 +46,6 @@
     "ts-jest": "^29.1.2",
     "tsconfig": "*",
     "tsx": "^4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.5"
   }
 }
