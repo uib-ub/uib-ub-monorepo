@@ -35,9 +35,6 @@
 		"_modified": {
 			"$ref": "core.json#/definitions/_modifiedProp"
 		},
-		"about": {
-			"$ref": "core.json#/definitions/aboutProp"
-		},
 		"identified_by": {
 			"$ref": "core.json#/definitions/identified_byProp"
 		},
