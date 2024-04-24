@@ -13,9 +13,9 @@ export const aatWidthtType = {
 }
 
 export const aatCMUnitType = {
-  id: "http://vocab.getty.edu/aat/300379098",
+  id: "https://vocab.getty.edu/aat/300379098",
   type: "MeasurementUnit",
-  _label: "centimeters"
+  _label: "Centimeters"
 }
 
 export const aatCircaType = {

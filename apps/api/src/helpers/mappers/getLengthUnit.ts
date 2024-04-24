@@ -6,10 +6,12 @@ import { aatCMUnitType } from './staticMapping';
  * @param {string} str - The string to extract the length and unit from
  * @returns {object} - An object with length, unit and isApproximation
  * @example
- * getLengthUnit("10 cm") // [10, "cm"]
- * getLengthUnit("10") // [10, ""]
- * getLengthUnit("cm") // [NaN, "cm"]
- * getLengthUnit("") // [NaN, ""]
+ * getLengthUnit("10 cm") // { value: 10, unit: { id: 'http://vocab.getty.edu/aat/300379098', type: 'MeasurementUnit', _label: 'centimeters' }, isApproximation: false }
+ * getLengthUnit("ca 10 cm") // { value: 10, unit: { id: 'http://vocab.getty.edu/aat/300379098', type: 'MeasurementUnit', _label: 'centimeters' }, isApproximation: true }
+ * getLengthUnit("10") // { value: NaN, unit: {}, isApproximation: false }
+ * getLengthUnit("10 mm") // { value: 1, unit: { id: 'http://vocab.getty.edu/aat/300379098', type: 'MeasurementUnit', _label: 'centimeters' }, isApproximation: false }
+ * getLengthUnit("ca 10 mm") // { value: 1, unit: { id: 'http://vocab.getty.edu/aat/300379098', type: 'MeasurementUnit', _label: 'centimeters' }, isApproximation: true }
+ * getLengthUnit("ca 10") // { value: 10, unit: { id: 'http://vocab.getty.edu/aat/300379098', type: 'MeasurementUnit', _label: 'centimeters' }, isApproximation: true }
  */
 export function getLengthUnit(str: string): { value: number, unit: any, isApproximation: boolean } {
   const isApproximation = String(str).startsWith("ca");
