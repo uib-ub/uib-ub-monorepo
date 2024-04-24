@@ -144,3 +144,12 @@ export const ItemParamsSchema = z.object({
 })
 
 export type TODO = any
+
+export type TBaseMetadata = {
+  identifier: string,
+  context: string[],
+  newId: string,
+  originalId: string,
+  productionTimespan: any,
+  _label: any,
+}
