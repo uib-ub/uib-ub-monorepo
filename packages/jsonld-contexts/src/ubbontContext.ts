@@ -119,7 +119,8 @@ const ubbontContext = {
     },
     "acquiredFrom": {
       "@id": "ubbont:acquiredFrom",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "hasURI": {
       "@id": "ubbont:hasURI",
@@ -256,7 +257,8 @@ const ubbontContext = {
     },
     "commissionedBy": {
       "@id": "ubbont:commissionedBy",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "priority": {
       "@id": "ubbont:workflow/priority"
@@ -361,10 +363,12 @@ const ubbontContext = {
     },
     "receivedFrom": {
       "@id": "ubbont:receivedFrom",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "hasBeenMergedWith": {
       "@id": "ubbont:hasBeenMergedWith",
+      "@container": "@set"
     },
     "pages": {
       "@id": "bibo:pages",
@@ -396,7 +400,8 @@ const ubbontContext = {
     },
     "hasVersion": {
       "@id": "dct:hasVersion",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "Grunneiendom": {
       "@id": "geo-deling:Grunneiendom"
@@ -406,7 +411,8 @@ const ubbontContext = {
     },
     "formerOwnerOf": {
       "@id": "ubbont:formerOwnerOf",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "depiction": {
       "@id": "foaf:depiction",
@@ -541,7 +547,8 @@ const ubbontContext = {
     },
     "recipient": {
       "@id": "bibo:recipient",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "focus": {
       "@id": "foaf:focus",
@@ -707,7 +714,8 @@ const ubbontContext = {
     },
     "placeDelivery": {
       "@id": "ubbont:placeDelivery",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "pseudonym": {
       "@id": "dbo:pseudonym",
@@ -729,7 +737,8 @@ const ubbontContext = {
     },
     "producedIn": {
       "@id": "event:producedIn",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "notation": {
       "@id": "skos:notation"
@@ -855,7 +864,8 @@ const ubbontContext = {
     },
     "originalCreator": {
       "@id": "ubbont:originalCreator",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "madeBefore": {
       "@id": "ubbont:madeBefore",
@@ -1093,14 +1103,16 @@ const ubbontContext = {
     },
     "placeOfPublication": {
       "@id": "ubbont:placeOfPublication",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "birthDate": {
       "@id": "dbo:birthDate"
     },
     "publisher": {
       "@id": "dct:publisher",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "userPoint": {
       "@id": "ubbont:userPoint"
@@ -1117,7 +1129,8 @@ const ubbontContext = {
     },
     "originPlace": {
       "@id": "ubbont:originPlace",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "relatedWebPage": {
       "@id": "ubbont:relatedWebPage",
@@ -1144,12 +1157,12 @@ const ubbontContext = {
       "@type": "xsd:dateTime"
     },
     "provenance": {
-      "@id": "dct:provenance",
-      "@type": "@id"
+      "@id": "dct:provenance"
     },
     "reciever": {
       "@id": "bibo:reciever",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "Thesis": {
       "@id": "ubbont:Thesis"
@@ -1372,7 +1385,8 @@ const ubbontContext = {
     },
     "sender": {
       "@id": "ubbont:sender",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "formationYear": {
       "@id": "dbo:formationYear"
@@ -1551,7 +1565,8 @@ const ubbontContext = {
     },
     "editor": {
       "@id": "bibo:editor",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "Letter": {
       "@id": "bibo:Letter"
