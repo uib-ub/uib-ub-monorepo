@@ -3,8 +3,6 @@ import { streamSSE } from 'hono/streaming'
 import { getItems } from '../../services/legacy_items.service'
 import { DOMAIN, DATA_SOURCES } from '../../config/constants'
 import { indexData } from '../../helpers/indexers/indexData'
-import { zValidator } from '@hono/zod-validator'
-import z from 'zod'
 import { resolveManifests } from '../../helpers/indexers/resolveManifests'
 import { isEmpty } from 'lodash'
 import { flatMapManifestsForBulkIndexing } from '../../helpers/indexers/flatMapManifestsForBulkIndexing'
@@ -12,20 +10,12 @@ import { flatMapManifestsForBulkIndexing } from '../../helpers/indexers/flatMapM
 const route = new Hono()
 
 route.get('/ingest/manifests',
-  zValidator(
-    'query',
-    z.object({
-      index: z.string(),
-      page: z.string().optional(),
-      limit: z.string().optional(),
-      source: z.string(),
-    })
-  ),
   async (c) => {
-    const index = c.req.query('index')
-    const page = c.req.query('page') ?? '0'
-    const limit = c.req.query('limit') ?? '100'
-    const source = c.req.query('source')
+    const { index, page = '0', limit = '100', source } = c.req.query()
+    if (!index || !source) {
+      return c.text('Missing query parameters', 400)
+    }
+
     const type = "Manifest"
     const limitInt = parseInt(limit)
 

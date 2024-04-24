@@ -5,26 +5,16 @@ import { DOMAIN, DATA_SOURCES } from '../../config/constants'
 import { flatMapDataForBulkIndexing } from '../../helpers/indexers/flatMapDataForBulkIndexing'
 import { resolveIds } from '../../helpers/indexers/resolveIds'
 import { indexData } from '../../helpers/indexers/indexData'
-import { zValidator } from '@hono/zod-validator'
-import z from 'zod'
 
 const route = new Hono()
 
 route.get('/ingest',
-  zValidator(
-    'query',
-    z.object({
-      index: z.string(),
-      limit: z.string().optional(),
-      source: z.string(),
-      type: z.string(),
-    })
-  ),
   async (c) => {
-    const index = c.req.query('index')
-    const limit = c.req.query('limit') ?? '100'
-    const source = c.req.query('source')
-    const type = c.req.query('type')
+    const { index, limit = '100', source, type } = c.req.query()
+    if (!index || !source || !type) {
+      return c.text('Missing query parameters', 400)
+    }
+
     const limitInt = parseInt(limit)
 
     const API_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
