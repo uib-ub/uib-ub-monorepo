@@ -1,9 +1,8 @@
 import omitEmptyEs from 'omit-empty-es';
-import { getLanguage } from './getLanguage';
 
 export const constructAssertions = (data: any) => {
   const {
-    relation
+    relation,
   } = data;
 
   if (!relation) return data;
@@ -30,6 +29,8 @@ export const constructAssertions = (data: any) => {
 
   return omitEmptyEs({
     ...data,
-    attributed_by: relationArray
+    attributed_by: [
+      ...relationArray,
+    ]
   });
 }

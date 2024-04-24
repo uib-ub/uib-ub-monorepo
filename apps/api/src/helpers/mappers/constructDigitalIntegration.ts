@@ -6,21 +6,26 @@ export const constructDigitalIntegration = (data: any) => {
     image,
     subjectOfManifest,
     homepage,
+    page,
   } = data;
 
-  if (!thumbnail && !image) return data;
+  if (!thumbnail && !image && !subjectOfManifest && !homepage && !page) return data;
 
   delete data.thumbnail
   delete data.image
   delete data.subjectOfManifest
   delete data.homepage
+  delete data.page
 
-  let thumbnailObject = {}
-  let imageObject = {}
-  let subjectOf: any[] = []
+  let thumbnailArray: any[] = []
+  let imageArray: any[] = []
+  let subjectManifestOf: any[] = []
+  let subjectHomepageOf: any[] = []
+  let pageArray: any[] = []
 
   if (thumbnail) {
-    thumbnailObject = {
+    thumbnailArray = [{
+      id: thumbnail,
       type: 'VisualItem',
       digitally_shown_by: {
         type: 'DigitalObject',
@@ -45,11 +50,12 @@ export const constructDigitalIntegration = (data: any) => {
           type: 'DigitalObject',
         },]
       }
-    }
+    }]
   }
 
   if (image) {
-    imageObject = {
+    imageArray = [{
+      id: image,
       type: 'VisualItem',
       digitally_shown_by: {
         type: 'DigitalObject',
@@ -69,11 +75,11 @@ export const constructDigitalIntegration = (data: any) => {
           type: 'DigitalObject',
         }],
       }
-    }
+    }]
   }
 
   if (subjectOfManifest) {
-    subjectOf = [
+    subjectManifestOf = [
       {
         id: subjectOfManifest,
         type: 'DigitalObject',
@@ -81,51 +87,80 @@ export const constructDigitalIntegration = (data: any) => {
           no: ['Digitalt objekt'],
           en: ['Digital object'],
         },
-        /* conforms_to: [
+        conforms_to: [
           {
             id: "http://iiif.io/api/presentation",
             type: "InformationObject"
           }
-        ] */
+        ]
       }
     ]
+  }
+
+  if (homepage) {
+    subjectHomepageOf = [{
+      id: homepage,
+      type: "LinguisticObject",
+      digitally_carried_by: [
+        {
+          id: homepage,
+          type: "DigitalObject",
+          classified_as: [
+            {
+              id: "https://vocab.getty.edu/aat/300264578",
+              type: "Type",
+              _label: "Web Page"
+            }
+          ],
+          format: "text/html",
+          access_point: [
+            {
+              id: homepage,
+              type: "DigitalObject"
+            }
+          ]
+        }
+      ]
+    }]
+  }
+
+  if (page) {
+    pageArray = [{
+      type: "LinguisticObject",
+      _label: page._label,
+      digitally_carried_by: [
+        {
+          type: "DigitalObject",
+          classified_as: [
+            {
+              id: "http://vocab.getty.edu/aat/300264578",
+              type: "Type",
+              _label: "Web Page"
+            }
+          ],
+          format: "text/html",
+          access_point: [
+            {
+              id: page['ubbont:hasURI'] ?? page.hasURI,
+              type: "DigitalObject"
+            }
+          ]
+        }
+      ]
+    }]
   }
 
 
   return omitEmptyEs({
     ...data,
-    ...(thumbnail || image ? {
-      representation: [
-        thumbnailObject,
-        imageObject,
-      ]
-    } : undefined),
+    representation: [
+      ...thumbnailArray,
+      ...imageArray,
+    ],
     subject_of: [
-      ...subjectOf,
-      (homepage ? {
-        id: homepage,
-        type: "LinguisticObject",
-        digitally_carried_by: [
-          {
-            id: homepage,
-            type: "DigitalObject",
-            classified_as: [
-              {
-                id: "http://vocab.getty.edu/aat/300264578",
-                type: "Type",
-                _label: "Web Page"
-              }
-            ],
-            format: "text/html",
-            access_point: [
-              {
-                id: homepage,
-                type: "DigitalObject"
-              }
-            ]
-          }
-        ]
-      } : undefined)
+      ...subjectManifestOf,
+      ...subjectHomepageOf,
+      ...pageArray,
     ]
   })
 };
