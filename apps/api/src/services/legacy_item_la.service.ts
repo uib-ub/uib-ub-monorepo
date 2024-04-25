@@ -11,10 +11,17 @@ import { constructAboutness } from '../helpers/mappers/constructAboutness'
 import { constructAssertions } from '../helpers/mappers/constructAssertions'
 import { constructIdentifiers } from '../helpers/mappers/constructIdentifiers'
 import { CONTEXTS } from 'jsonld-contexts'
-import { TFailure } from '../models'
+import { TBaseMetadata, TFailure } from '../models'
 import { HumanMadeObjectSchema } from 'types'
 import omitEmptyEs from 'omit-empty-es'
 import ajv from '../helpers/validator'
+import { constructOwnership } from '../helpers/mappers/constructOwnership'
+import { constructProvenance } from '../helpers/mappers/constructProvenance'
+import { constructCorrespondance } from '../helpers/mappers/constructCorrespondance'
+import { constructLicense } from '../helpers/mappers/constructSubjectOf'
+import { getTimespan } from '../helpers/mappers/constructTimespan'
+import { constructCoreMetadata } from '../helpers/mappers/constructCoreMetadata'
+import { constructDimension } from '../helpers/mappers/constructDimension'
 
 function getQuery(id: string) {
   const query = `
@@ -28,6 +35,7 @@ function getQuery(id: string) {
         rdfs:label ?label ;
         muna:image ?image ;
         ubbont:hasThumbnail ?thumbString ;
+        ubbont:hasTranscription ?transcription ;
         muna:subjectOfManifest ?manifest ;
         foaf:homepage ?homepage .
       ?o a ?oClass ;
@@ -63,10 +71,13 @@ function getQuery(id: string) {
         OPTIONAL {?part ubbont:hasSMView ?imgSM .} 
       }
       BIND (COALESCE(?imgMD,?imgSM,?mdImage,?smImage) AS ?image) . 
+      OPTIONAL {
+        ?uri ubbont:hasTranscription/ubbont:hasRepresentation/ubbont:hasURI ?transcription .
+      }
       OPTIONAL { 
         ?o a ?oClass ;
           ?p2 ?o2 .
-          FILTER(?p2 NOT IN (dct:hasPart, ubbont:isSubjectOf, ubbont:locationFor, foaf:made, ubbont:techniqueOf, ubbont:cataloguer, ubbont:isRightsHolderOf, skos:narrower, skos:broader, ubbont:ownedBy, dct:references, dct:isPartOf, dct:subject, dct:spatial, dct:isReferencedBy, ubbont:technique, bibo:owner, dct:relation, ubbont:reproduced, foaf:depiction, foaf:page))
+          FILTER(?p2 NOT IN (dct:hasPart, ubbont:isSubjectOf, ubbont:locationFor, foaf:made, ubbont:techniqueOf, ubbont:cataloguer, ubbont:isRightsHolderOf, skos:narrower, skos:broader, ubbont:ownedBy, dct:references, dct:isPartOf, dct:subject, dct:spatial, dct:isReferencedBy, ubbont:technique, bibo:owner, dct:relation, ubbont:reproduced, foaf:depiction, foaf:page, ubbont:formerOwnerOf, ubbont:commissioned, ubbont:originalCreatorOf, ubbont:published, dct:hasVersion))
         OPTIONAL { ?o dct:identifier ?identifier } .
         OPTIONAL { ?o (dct:title|foaf:name|skos:prefLabel|rdfs:label) ?oLabel } . 
         OPTIONAL {
@@ -85,7 +96,7 @@ function getQuery(id: string) {
       BIND(IF(?isDigitized, CONCAT("https://api-ub.vercel.app/items/", ?id, "/manifest"), "") as ?manifest)
       BIND(xsd:double(?long) as ?longDouble)
       BIND(xsd:double(?lat) as ?latDouble)
-      FILTER(?p NOT IN (rdf:type, ubbont:cataloguer, ubbont:internalNote, ubbont:showWeb, ubbont:clause, ubbont:hasRepresentation, ubbont:hasThumbnail))
+      FILTER(?p NOT IN (rdf:type, ubbont:cataloguer, ubbont:internalNote, ubbont:showWeb, ubbont:clause, ubbont:hasRepresentation, ubbont:hasThumbnail, ubbont:hasTranscription))
     }`
 
   return query
@@ -100,6 +111,13 @@ async function getItemData(id: string, source: string, context: string, type: st
     const response = await fetch(url)
     const results: unknown = await response.text()
 
+    if (!results) {
+      return {
+        error: true,
+        message: 'ID not found, or the object have insufficient metadata'
+      }
+    }
+
     // We get the data as NTriples, so we need to convert it to JSON-LD
     const json = await jsonld.fromRDF(results as object)
 
@@ -110,9 +128,8 @@ async function getItemData(id: string, source: string, context: string, type: st
     // Compact the data to make it easier to work with
     const compacted = await jsonld.compact({
       '@graph': withFloats
-    },
-      useContext as ContextDefinition
-    ) // Compact to JSON-LD
+    }, useContext as ContextDefinition
+    )
 
     let data: any
 
@@ -123,34 +140,47 @@ async function getItemData(id: string, source: string, context: string, type: st
         '@embed': '@always',
       });
       data = omitEmptyEs(await framed)
-    } catch (e) {
-      console.log(JSON.stringify(e, null, 2))
-      return { error: true, message: e }
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 2))
+      return { error: true, message: error }
     }
 
-    // Remove the inline context and add the url to the context
-    data['@context'] = ['https://linked.art/ns/v1/linked-art.json', context]
     // We assume all @none language tags are really norwegian
     data = JSON.parse(JSON.stringify(data).replaceAll('"none":', '"no":'))
     // Removes non-object items from the specified properties of the input data array.
     data = removeStringsFromArray(data)
 
-    // Change id as this did not work in the query
-    data.id = `${DOMAIN}/items/${data.identifier}`
-
+    // Remove the inline context and add the url to the context
     // Add provenance as a string. @TODO: Remove this when we have dct:provenance on all items in the dataset
     data.provenance = typeof data.provenance === 'string' ? data.provenance : data.provenance?._label ?? undefined
+    // License is an object, but we only need the label.no
+    data.license = data.license?._label?.no[0] ?? undefined
 
     // @TODO: Remove this when we have dct:modified on all items in the dataset
     data._modified = data._modified ?? "2020-01-01T00:00:00"
 
+    const base: TBaseMetadata = {
+      identifier: data.identifier,
+      context: ['https://linked.art/ns/v1/linked-art.json', context],
+      newId: `${DOMAIN}/items/${data.uuid ?? data.identifier}`,
+      originalId: data.id,
+      productionTimespan: getTimespan(data.created, data.madeAfter, data.madeBefore),
+      _label: data._label,
+    }
+
     // Construct LinkedArt
+    data = constructCoreMetadata(base, data)
     data = constructIdentifiers(data)
     data = constructProduction(data)
+    data = constructProvenance(data)
     data = constructCollection(data)
     data = constructDigitalIntegration(data)
-    data = constructAboutness(data)
+    data = await constructAboutness(data)
+    data = constructDimension(data)
     data = constructAssertions(data)
+    data = constructOwnership(base, data)
+    data = constructCorrespondance(data)
+    data = await constructLicense(base, data)
 
     // Validate the data
     const validate = ajv.getSchema("object.json")
