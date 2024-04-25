@@ -2,8 +2,8 @@
   "extends": "tsconfig/base.json",
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
@@ -12,7 +12,11 @@
     "jsxImportSource": "hono/jsx",
     "outDir": "dist",
     "strictNullChecks": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": [
+      "node",
+      "jest"
+    ],
   },
   "include": [
     "next-env.d.ts",
