@@ -124,7 +124,10 @@ const { data: dbdata } = await useLazyFetch("/api/tb/all/overview", {
   body: { internal: true },
 });
 
-const query = `*[_type == "termbase" && status == 'publisert']{
+const query = `
+*[_type == "termbase" &&
+ (status == 'publisert' || status == 'opprettet')
+]{
   _id,
   id,
   status,
