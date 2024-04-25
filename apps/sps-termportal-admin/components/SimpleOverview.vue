@@ -130,6 +130,7 @@ const query = `
 ]{
   _id,
   id,
+  label,
   status,
   "responsibleStaff": responsibleStaff->label
 }`;
@@ -158,7 +159,8 @@ const merged = computed(() => {
       if (!ids.includes(entry.id)) {
         const data = {
           label: entry.label,
-          id: entry.id + "*",
+          id: entry.id,
+          conceptCount: 0,
           status: numberStatus(entry.status),
           staff: entry.responsibleStaff,
           _id: entry._id,
