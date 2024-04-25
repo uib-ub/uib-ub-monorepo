@@ -1,10 +1,9 @@
-import { utcToZonedTime, format } from 'date-fns-tz'
+import { toZonedTime, format } from 'date-fns-tz'
 import { fromUnixTime } from 'date-fns'
 import edtf from 'edtf'
-import { randomUUID } from 'crypto'
 
 const getDateFromDateTime = (unix: number) => {
-  const date = format(utcToZonedTime(fromUnixTime(unix / 1000), 'UTC'), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: 'UTC' })
+  const date = format(toZonedTime(fromUnixTime(unix / 1000), 'UTC'), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: 'UTC' })
   return date
 }
 
@@ -13,6 +12,22 @@ const getDateFromDate = (unix: number) => {
   return date
 }
 
+/**
+ * Construct CIDOC-CRM Timespan from EDTF string, using edtf.js. 
+ * TODO: Remember to improve error handeling, eg 820 vs 0820.
+ * @param date 
+ * @param after 
+ * @param before 
+ * @returns {
+ *  type: 'Timespan',
+ *  edtf: string,
+ *  beginOfTheBegin: string,
+ *  endOfTheBegin?: string,
+ *  beginOfTheEnd?: string,
+ *  endOfTheEnd: string,
+ *  date?: string
+ * }
+ */
 export const getTimespan = (date: any, after: any, before: any) => {
   if (!date && !after && !before) return undefined
 
@@ -53,13 +68,13 @@ export const mapEDTF = (edtf: any) => {
   if (!edtf) {
     return undefined
   }
-  // console.log('Got EDTF', edtf)
+
+  const dateString = edtf.toString()
 
   if (edtf.type == 'Interval') {
     const timespan = {
-      id: randomUUID(),
-      type: ['Timespan'],
-      edtf: edtf,
+      type: 'Timespan',
+      edtf: dateString,
       ...(edtf.lower?.min && { beginOfTheBegin: getDateFromDateTime(edtf.lower?.min) }),
       ...(edtf.lower?.max && { endOfTheBegin: getDateFromDateTime(edtf.lower?.max) }),
       ...(edtf.upper?.min && { beginOfTheEnd: getDateFromDateTime(edtf.upper?.min) }),
@@ -70,9 +85,8 @@ export const mapEDTF = (edtf: any) => {
   }
 
   const timespan = {
-    edtf: edtf,
-    id: randomUUID(),
-    type: ['Timespan'],
+    edtf: dateString,
+    type: 'Timespan',
     ...(edtf.min && (edtf.min != edtf.max) && { beginOfTheBegin: getDateFromDateTime(edtf.min) }),
     ...(edtf.min && (edtf.min === edtf.max) && { date: getDateFromDate(edtf.min) }),
     ...(edtf.max && (edtf.min != edtf.max) && { endOfTheEnd: getDateFromDateTime(edtf.max) }),
