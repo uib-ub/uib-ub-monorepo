@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     dataportenAuthorizedUsers:
       process.env.NUXT_DATAPORTEN_AUTHORIZED_USERS?.split(", "),
     endpointUrl: "",
+    endpointUrlInternal: "",
     public: {
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
@@ -53,6 +54,17 @@ export default defineNuxtConfig({
   },
   routeRules: {
     "/studio/**": { ssr: false },
+    "/api/**": {
+      cors: true,
+      headers: {
+        "Access-Control-Allow-Methods": "GET, POST",
+      },
+    },
   },
   ssr: false,
+  vite: {
+    define: {
+      __NUXT_ASYNC_CONTEXT__: false,
+    },
+  },
 });

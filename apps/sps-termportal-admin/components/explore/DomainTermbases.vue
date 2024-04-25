@@ -59,9 +59,9 @@ WHERE {
 GROUP BY ?label
 `;
 
-const { data } = await useLazyFetch("/api/query", {
+const { data } = await useLazyFetch("/api/withQuery", {
   method: "post",
-  body: { query },
+  body: { query, internal: true },
 });
 
 const displayData = computed(() => {
@@ -70,18 +70,16 @@ const displayData = computed(() => {
   });
 });
 
-const queryRec = `
+const queryRecursive = `
 PREFIX base: <http://wiki.terminologi.no/index.php/Special:URIResolver/>
 ${prefix}
 
 SELECT ?label (COUNT(DISTINCT ?concept) AS ?concepts)
 WHERE {
   GRAPH <urn:x-arq:UnionGraph> {
-
-      base:DOMENE-3A${props.domain.id} skos:narrower+ ?subdomain .
-      ?concept skosp:domene ?subdomain .
-
-    ?concept skosp:memberOf ?collection .
+    base:DOMENE-3A${props.domain.id} skos:narrower+ ?subdomain .
+    ?concept skosp:domene ?subdomain ;
+             skosp:memberOf ?collection .
     ?collection rdfs:label ?label .
     FILTER (lang(?label) = 'nb')
   }
@@ -89,9 +87,9 @@ WHERE {
 GROUP BY ?label
 `;
 
-const { data: dataRec } = await useLazyFetch("/api/query", {
+const { data: dataRec } = await useLazyFetch("/api/withQuery", {
   method: "post",
-  body: { query: queryRec },
+  body: { query: queryRecursive, internal: true },
 });
 
 const displayDataRec = computed(() => {

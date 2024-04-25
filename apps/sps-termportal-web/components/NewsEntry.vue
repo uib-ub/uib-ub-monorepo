@@ -1,5 +1,5 @@
 <template>
-  <div class="news-item">
+  <div class="news-item max-w-md">
     <dt class="font-semibold">
       {{ title }}
     </dt>

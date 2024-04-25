@@ -29,7 +29,6 @@ export default {
       hidden: ({ document }) => document?.status === "publisert",
     },
   ],
-  initialValue: { licenseAgreementStatus: "ingen" },
   fields: [
     label,
     {
@@ -72,6 +71,7 @@ export default {
           { title: "Signert", value: "signert" },
         ],
       },
+      initialValue: "ingen",
     },
     note,
     responsibleStaff,

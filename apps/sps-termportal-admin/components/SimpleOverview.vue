@@ -119,11 +119,18 @@ watch(selectedTermbase, () => {
   emits("update:modelValue", selectedTermbase.value);
 });
 
-const { data: dbdata } = await useLazyFetch("/api/tb/all/overview");
+const { data: dbdata } = await useLazyFetch("/api/tb/all/overview", {
+  method: "post",
+  body: { internal: true },
+});
 
-const query = `*[_type == "termbase" && status == 'publisert']{
+const query = `
+*[_type == "termbase" &&
+ (status == 'publisert' || status == 'opprettet')
+]{
   _id,
   id,
+  label,
   status,
   "responsibleStaff": responsibleStaff->label
 }`;
@@ -152,7 +159,8 @@ const merged = computed(() => {
       if (!ids.includes(entry.id)) {
         const data = {
           label: entry.label,
-          id: entry.id + "*",
+          id: entry.id,
+          conceptCount: 0,
           status: numberStatus(entry.status),
           staff: entry.responsibleStaff,
           _id: entry._id,

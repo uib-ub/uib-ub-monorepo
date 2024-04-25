@@ -2,13 +2,13 @@
   <section class="">
     <h2 class="text-lg font-semibold pb-5 text-gray-800">Termbase status</h2>
     <div class="py-0.5 px-0.5 flex text-lg max-w-fit bg-tpblue-400">
-      <div class="arrow right flex">
+      <div v-if="data?.ingen" class="arrow right flex">
         <span
           ><span class="font-semibold pr-2">{{ data?.ingen }}</span
           >ingen</span
         >
       </div>
-      <div class="arrow left right flex">
+      <div class="arrow right flex" :class="{ left: data?.ingen }">
         <span
           ><span class="font-semibold pr-2">{{ data?.kjent }}</span
           >kjent</span

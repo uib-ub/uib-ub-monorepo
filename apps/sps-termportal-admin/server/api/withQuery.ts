@@ -1,7 +1,11 @@
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const url = runtimeConfig.endpointUrl;
   const body = await readBody(event);
+  let url = runtimeConfig.endpointUrl;
+
+  if (body?.internal) {
+    url = runtimeConfig.endpointUrlInternal;
+  }
 
   const data = await $fetch(url, {
     method: "post",
