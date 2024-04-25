@@ -119,7 +119,10 @@ watch(selectedTermbase, () => {
   emits("update:modelValue", selectedTermbase.value);
 });
 
-const { data: dbdata } = await useLazyFetch("/api/tb/all/overview");
+const { data: dbdata } = await useLazyFetch("/api/tb/all/overview", {
+  method: "post",
+  body: { internal: true },
+});
 
 const query = `*[_type == "termbase" && status == 'publisert']{
   _id,
