@@ -13,10 +13,6 @@
     "outDir": "dist",
     "strictNullChecks": true,
     "resolveJsonModule": true,
-    "types": [
-      "node",
-      "jest"
-    ],
   },
   "include": [
     "next-env.d.ts",
