@@ -1,5 +1,5 @@
 import omitEmptyEs from 'omit-empty-es';
-import { TBaseMetadata } from '../../models';
+import { TBaseMetadata } from '../../../models';
 
 /*
   * Construct ownership object

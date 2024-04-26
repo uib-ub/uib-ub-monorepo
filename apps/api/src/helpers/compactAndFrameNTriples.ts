@@ -1,6 +1,5 @@
 import jsonld, { ContextDefinition } from 'jsonld'
 import { CONTEXTS } from 'jsonld-contexts';
-import { constructProduction } from './mappers/constructProduction';
 import { cleanDateDatatypes } from './cleaners/cleanDateDatatypes';
 import { convertToFloat } from './cleaners/convertToFloat';
 import omitEmptyEs from 'omit-empty-es';
@@ -34,8 +33,7 @@ const compactAndFrameNTriples = async (data: any, context: string, type: string)
       '@type': type,
       '@embed': '@always',
     });
-    const data = constructProduction(framed)
-    return omitEmptyEs(await data)
+    return omitEmptyEs(await framed)
   } catch (e) {
     console.log(JSON.stringify(e, null, 2))
     return { error: true, message: e }

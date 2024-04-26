@@ -1,5 +1,5 @@
-import { getTimespan } from './constructTimespan';
-import { checkIntervalValidity } from '../checkers/checkIntervalValidity';
+import { getTimespan } from '../constructTimespan';
+import { checkIntervalValidity } from '../../checkers/checkIntervalValidity';
 import omitEmptyEs from 'omit-empty-es';
 
 export const constructProduction = (data: any) => {
