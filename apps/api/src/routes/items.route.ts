@@ -1,8 +1,8 @@
 import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import { AsParamsSchema, FailureSchema, IdParamsSchema, PaginationParamsSchema, TODO } from '../models'
+import { ItemParamsSchema, FailureSchema, IdParamsSchema, PaginationParamsSchema, TODO, TFailure } from '../models'
 import { DOMAIN, DATA_SOURCES } from '../config/constants'
 import client from '../config/apis/esClient'
-import { TFailure, getManifestData } from '../services/legacy_manifest.service'
+import { getManifestData } from '../services/legacy_manifest.service'
 import { JsonLdDocument } from 'jsonld'
 
 const route = new OpenAPIHono()
@@ -62,7 +62,7 @@ export const getItem = createRoute({
   path: '/{id}',
   request: {
     params: IdParamsSchema,
-    query: AsParamsSchema,
+    query: ItemParamsSchema,
   },
   responses: {
     200: {
@@ -151,6 +151,10 @@ route.get('/:id/manifest', (c) => {
   return c.redirect(`/items/${id}/manifest.json`, 301)
 })
 
+
+/**
+ * DEPRECATED
+ */
 
 export const getManifest = createRoute({
   method: 'get',

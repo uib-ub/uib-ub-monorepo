@@ -1,11 +1,15 @@
 import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
 import { getItems } from '../../services/legacy_items.service'
-import { getItemData } from '../../services/legacy_item.service'
-import { PaginationParamsSchema, SourceParamsSchema, TODO, LegacyItemSchema, AsParamsSchema, IdParamsSchema, FailureSchema } from '../../models'
+import getItemLAData from '../../services/legacy_item_la.service'
+import getItemUbbontData from '../../services/legacy_item_ubbont.service'
+import { PaginationParamsSchema, SourceParamsSchema, TODO, LegacyItemSchema, ItemParamsSchema, IdParamsSchema, FailureSchema, TFailure } from '../../models'
 import { DOMAIN, DATA_SOURCES } from '../../config/constants'
 import { countItems } from '../../services/legacy_count.service'
-import { TFailure, getManifestData } from '../../services/legacy_manifest.service'
+import { getManifestData } from '../../services/legacy_manifest.service'
 import { JsonLdDocument } from 'jsonld'
+
+const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
+const CONTEXT_IIIF = `${DOMAIN}/ns/manifest/context.json`
 
 const route = new OpenAPIHono()
 
@@ -86,7 +90,7 @@ export const getItem = createRoute({
   path: '/{source}/{id}',
   request: {
     params: LegacyItemSchema,
-    query: AsParamsSchema,
+    query: ItemParamsSchema,
   },
   responses: {
     200: {
@@ -105,10 +109,10 @@ export const getItem = createRoute({
 
 route.openapi(getItem, async (c) => {
   const { id, source } = c.req.param()
-  const as = c.req.query('as')
+  const { as = 'la' } = c.req.query()
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-  const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
-  const CONTEXT_IIIF = `${DOMAIN}/ns/manifest/context.json`
+
+  const fetcher = as === 'la' ? getItemLAData : getItemUbbontData
 
   if (as === 'iiif') {
     try {
@@ -122,7 +126,7 @@ route.openapi(getItem, async (c) => {
   }
 
   try {
-    const data: TODO = await getItemData(id, SERVICE_URL, CONTEXT, 'HumanMadeObject')
+    const data: TODO = await fetcher(id, SERVICE_URL, CONTEXT, 'HumanMadeObject')
 
     // @TODO: figure out how to type the openapi response with JSONLD
     return c.json(data);

@@ -1,7 +1,7 @@
 import jsonld from 'jsonld';
 import { isObjectEmpty } from '../../../../helpers/isObjectEmpty';
 import { DATA_SOURCES } from '../../../../config/constants';
-import contexts from '../../../../config/jsonld-contexts';
+import contexts from 'jsonld-contexts';
 
 const SKA_API = DATA_SOURCES.filter((service) => service.name === 'ska')[0].url;
 

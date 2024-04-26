@@ -1,8 +1,8 @@
-import app from '../main'
+import server from '../main'
 
 describe('Reference', () => {
   test('GET /reference', async () => {
-    const res = await app.request('http://localhost/reference')
+    const res = await server.request('/reference')
     expect(res.status).toBe(200)
   })
 })
