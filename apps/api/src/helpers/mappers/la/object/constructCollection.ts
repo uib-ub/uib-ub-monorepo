@@ -1,3 +1,5 @@
+import omitEmptyEs from 'omit-empty-es';
+
 export const constructCollection = (data: any) => {
   const {
     isPartOf,
@@ -14,10 +16,8 @@ export const constructCollection = (data: any) => {
     };
   })
 
-  return {
+  return omitEmptyEs({
     ...data,
     member_of: sets,
-  };
-
-
+  });
 }

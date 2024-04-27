@@ -1,6 +1,6 @@
 import omitEmptyEs from 'omit-empty-es';
-import { attributionNoDerivsType, attributionNonCommercialNoDerivsType, attributionNonCommercialType, attributionShareAlikeType, attributionType, publicDomainType, rsCopyrightUndeterminedType, rsInCopyrighttype } from '../staticMapping';
-import { TBaseMetadata } from '../../../models';
+import { attributionNoDerivsType, attributionNonCommercialNoDerivsType, attributionNonCommercialType, attributionShareAlikeType, attributionType, publicDomainType, rsCopyrightUndeterminedType, rsInCopyrighttype } from '../../staticMapping';
+import { TBaseMetadata } from '../../../../models';
 
 const getLicenseMapping = (licenseName: string) => {
   switch (licenseName) {

@@ -1,4 +1,4 @@
-import { getLanguage } from '../getLanguage';
+import { getLanguage } from '../../getLanguage';
 import omitEmptyEs from 'omit-empty-es';
 
 

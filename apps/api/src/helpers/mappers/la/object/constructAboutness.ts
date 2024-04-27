@@ -1,13 +1,13 @@
 import omitEmptyEs from 'omit-empty-es';
-import { Publication, mapToGeneralClass } from '../mapToGeneralClass';
-import { getLanguage } from '../getLanguage';
-import { classToAttMapping } from '../mapClassToClassifiedAs';
-import { DOMAIN } from '../../../config/constants';
+import { Publication, mapToGeneralClass } from '../../mapToGeneralClass';
+import { getLanguage } from '../../getLanguage';
+import { classToAttMapping } from '../../mapClassToClassifiedAs';
+import { DOMAIN } from '../../../../config/constants';
 import { randomUUID } from 'crypto';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
-import { aatAbstractsType, aatDescriptionsType, aatInternalNoteType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatRelatedTextualReferencesType } from '../staticMapping';
+import { aatAbstractsType, aatDescriptionsType, aatInternalNoteType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatRelatedTextualReferencesType } from '../../staticMapping';
 import { isEqual } from 'lodash';
-import { getTimespan } from '../constructTimespan';
+import { getTimespan } from '../../constructTimespan';
 
 
 export const constructAboutness = async (data: any) => {
