@@ -98,7 +98,10 @@
           v-html="d.source?.['@value']"
         />
       </TermpostTermProp>
-      <TermpostTermProp v-if="d.note" :label="$t('id.note')">
+      <TermpostTermProp
+        v-if="d.note && prop !== 'equivalence' && prop !== 'equivalencenote'"
+        :label="$t('id.note')"
+      >
         <dd
           class="max-w-prose"
           :lang="d.note?.['@language']"
@@ -128,6 +131,12 @@ const props = defineProps({
   prop: { type: String, default: undefined },
   dataLang: { type: String, default: undefined },
   flex: { type: Boolean, default: false },
+  meta: {
+    type: Object,
+    default() {
+      return {};
+    },
+  },
 });
 
 const mainValue = (data) => {
@@ -137,7 +146,11 @@ const mainValue = (data) => {
       if (value) {
         const key = value.split("/").slice(-1)[0];
         if (key !== "startingLanguage") {
-          return i18n.t(`global.equivalence.${key}`);
+          return (
+            i18n.t(`global.equivalence.${key}`) +
+            " " +
+            i18n.t(`global.lang.${props.meta.startingLanguage}`, 0)
+          );
         } else {
           return false;
         }
@@ -145,6 +158,8 @@ const mainValue = (data) => {
         return false;
       }
     }
+    case "equivalencenote":
+      return data?.note?.["@value"];
     case "definition":
       return data?.label["@value"];
     case "prefLabel":

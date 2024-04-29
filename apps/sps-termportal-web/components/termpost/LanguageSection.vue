@@ -1,27 +1,43 @@
 <template>
   <div class="">
     <h3 :id="lang" class="pb-1 text-xl">
-      <AppLink :to="`#${lang}`">{{ $t("global.lang." + lang) }}</AppLink>
+      <AppLink :to="`#${lang}`"
+        >{{ $t("global.lang." + lang) }}
+        <span v-if="lang === meta.startingLanguage" class="font-light"
+          >({{ $t("global.equivalence.startingLanguage") }})</span
+        ></AppLink
+      >
     </h3>
     <TermpostTermSection>
       <!--Equivalence -->
       <TermpostTermProp
-        v-if="concept?.hasEquivalenceData?.[lang]"
-        :flex="
-          concept?.hasEquivalenceData?.[lang][0]?.['note']?.['@value']
-            ? false
-            : true
+        v-if="
+          concept?.hasEquivalenceData?.[lang] && meta.startingLanguage !== lang
         "
+        :flex="true"
         :label="$t('global.equivalence.equivalence')"
       >
         <TermpostTermDescription
-          :flex="
-            concept?.hasEquivalenceData?.[lang][0]?.['note']?.['@value']
-              ? false
-              : true
-          "
+          :flex="true"
           :data="concept?.hasEquivalenceData?.[lang]"
+          :meta="meta"
           prop="equivalence"
+        ></TermpostTermDescription>
+      </TermpostTermProp>
+      <!--Equivalencemerknad -->
+      <TermpostTermProp
+        v-if="
+          concept?.hasEquivalenceData?.[lang] &&
+          concept?.hasEquivalenceData?.[lang][0]?.note
+        "
+        :flex="true"
+        :label="$t('global.equivalence.equivalencenote')"
+      >
+        <TermpostTermDescription
+          :flex="true"
+          :data="concept?.hasEquivalenceData?.[lang]"
+          :meta="meta"
+          prop="equivalencenote"
         ></TermpostTermDescription>
       </TermpostTermProp>
 
@@ -43,7 +59,10 @@
       </TermpostTermProp>
 
       <!--Anbefalt term-->
-      <TermpostTermProp v-if="concept?.prefLabel?.[lang]" :label="$t('id.prefLabel')">
+      <TermpostTermProp
+        v-if="concept?.prefLabel?.[lang]"
+        :label="$t('id.prefLabel')"
+      >
         <TermpostTermDescription
           prop="prefLabel"
           :data="concept?.prefLabel[lang]"
@@ -53,7 +72,10 @@
       </TermpostTermProp>
 
       <!--Tillatt term-->
-      <TermpostTermProp v-if="concept?.altLabel?.[lang]" :label="$t('id.altLabel')">
+      <TermpostTermProp
+        v-if="concept?.altLabel?.[lang]"
+        :label="$t('id.altLabel')"
+      >
         <TermpostTermDescription
           prop="altLabel"
           :data="concept?.altLabel[lang]"
@@ -74,7 +96,10 @@
         </TermpostTermDescription>
       </TermpostTermProp>
       <!--Kontekst-->
-      <TermpostTermProp v-if="concept?.hasUsage?.[lang]" :label="$t('id.kontekst')">
+      <TermpostTermProp
+        v-if="concept?.hasUsage?.[lang]"
+        :label="$t('id.kontekst')"
+      >
         <TermpostTermDescription
           prop="context"
           :data="concept?.hasUsage[lang]"
