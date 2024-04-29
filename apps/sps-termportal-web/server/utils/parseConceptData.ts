@@ -32,9 +32,24 @@ export function parseConceptData(data: any, mainConceptId: string) {
     identified[mainConceptId],
     languageProps.proper
   );
+
+  const startingLanguage = () => {
+    let language = null;
+    try {
+      language = Object.entries(
+        identified[mainConceptId]?.hasEquivalenceData
+      ).filter(([k, v]) => {
+        const key = v[0]?.value["@id"].split("/").slice(-1)[0];
+        return key === "startingLanguage";
+      })[0][0];
+    } catch {}
+    return language;
+  };
+
   return {
     meta: {
       language: languages,
+      startingLanguage: startingLanguage(),
       maxLen: {
         altLabel: getMaxNumberOfInstances(identified[mainConceptId]?.altLabel),
         hiddenLabel: getMaxNumberOfInstances(
