@@ -82,11 +82,13 @@
     },
     "equivalence": {
       "equivalence": "Ekvivalens",
-      "none": "ingen",
-      "full": "full",
-      "delvis": "delvis",
-      "bredere": "bredere betydning",
-      "smalere": "smalere betydning"
+      "equivalencenote": "Ekvivalensmerknad",
+      "startingLanguage": "utgangsspråk",
+      "none": "ingen ekvivalens til",
+      "full": "full ekvivalens til",
+      "delvis": "delvis ekvivalens til",
+      "bredere": "bredere intensjon enn",
+      "smalere": "smalare intensjon enn"
     }
   },
   "domainOverview": { "domainsAndBases": "Domener og termbaser" },
