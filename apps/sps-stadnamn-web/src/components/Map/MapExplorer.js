@@ -36,6 +36,11 @@ export default function MapExplorer(props) {
         setLeafletBounds(node.getBounds());
         setZoom(node.getZoom());
       });
+
+      node.on('baselayerchange', (layer) => {
+        localStorage.setItem('baseLayer', layer.name);
+      });
+
     }
     
   }, []);
@@ -170,19 +175,53 @@ export default function MapExplorer(props) {
   }, [props.docs]);
 
 
-
   return (
     <Map mapRef={mapRef} bounds={props.mapBounds} className='w-full aspect-square lg:aspect-auto lg:h-full'>
-            {({ TileLayer, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
+            {({ TileLayer, LayersControl, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
+              
                 <>
-          
-            <TileLayer
-              key="map_topo4"
-              url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
-              attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-              subdomains={['', '2', '3']} 
-            />
+
+           <TileLayer
+                key="map_cartodb"
+                url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
+              />
+           <LayersControl collapsed={false}>
+
             
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'Topografisk norgeskart'} name="Topografisk norgeskart">
+              <TileLayer
+                key="map_topo4"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']} 
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'Topografisk gråtonekart'} name="Topografisk gråtonekart">
+              <TileLayer
+                key="map_topo4graatone"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4graatone&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'Terrengkart'} name="Terrengkart">
+              <TileLayer
+                key="map_terreng_norgeskart"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=terreng_norgeskart&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'Verdenskart'} name="Verdenskart">
+              <TileLayer
+                key="map_carto_labels"
+                url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
+              />
+            </LayersControl.BaseLayer>
+            </LayersControl>
+
             {markers.map(marker => (
               <CircleMarker role="button" 
                             pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
