@@ -87,6 +87,7 @@
 
 <script setup lang="ts">
 const props = defineProps({
+  meta: { type: Object, required: true },
   concept: { type: Object, required: true },
   lang: { type: String, required: true },
 });

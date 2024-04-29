@@ -2,7 +2,11 @@
   <div class="lg:flex lg:space-x-6 space-y-5 lg:space-y-0">
     <div class="grid gap-y-5 shrink-0">
       <div v-for="lang in displayInfo?.displayLanguages" :key="'disp_' + lang">
-        <TermpostLanguageSection :concept="concept" :lang="lang" />
+        <TermpostLanguageSection
+          :concept="concept"
+          :lang="lang"
+          :meta="data?.meta"
+        />
       </div>
       <TermpostSymbolSection
         v-if="displayInfo?.symbol"
