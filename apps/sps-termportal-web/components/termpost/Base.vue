@@ -22,7 +22,7 @@
         :display-info="displayInfo"
       />
     </div>
-    <div class="max-w-prose">
+    <div>
       <TermpostVisualizationSection
         v-if="displayInfo?.image"
         :display-info="displayInfo"
