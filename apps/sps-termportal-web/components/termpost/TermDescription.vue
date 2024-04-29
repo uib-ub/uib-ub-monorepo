@@ -25,15 +25,17 @@
     </div>
     <dl
       v-if="
-        d?.note ||
-        d?.scopeNote ||
-        d?.isOfAbbreviationType ||
-        d?.isAbbreviationOf ||
-        d?.isCollocatedWith ||
-        d?.subject ||
-        d?.description ||
-        d?.source ||
-        d?.['skosp:dctSource']
+        (d?.note ||
+          d?.scopeNote ||
+          d?.isOfAbbreviationType ||
+          d?.isAbbreviationOf ||
+          d?.isCollocatedWith ||
+          d?.subject ||
+          d?.description ||
+          d?.source ||
+          d?.['skosp:dctSource']) &&
+        prop !== 'equivalence' &&
+        prop !== 'equivalencenote'
       "
       class="grid-col-3 ml-2 flex max-w-prose flex-wrap gap-x-8 gap-y-1 md:ml-5"
       :class="{ 'mt-3': mainValue(d) }"
@@ -98,10 +100,7 @@
           v-html="d.source?.['@value']"
         />
       </TermpostTermProp>
-      <TermpostTermProp
-        v-if="d.note && prop !== 'equivalence' && prop !== 'equivalencenote'"
-        :label="$t('id.note')"
-      >
+      <TermpostTermProp v-if="d.note" :label="$t('id.note')">
         <dd
           class="max-w-prose"
           :lang="d.note?.['@language']"
