@@ -82,11 +82,13 @@
     },
     "equivalence": {
       "equivalence": "Equivalence",
-      "none": "none",
-      "full": "full",
-      "delvis": "partial",
-      "bredere": "broader meaning",
-      "smalere": "narrower meaning"
+      "equivalencenote": "Equivalence note",
+      "startingLanguage": "starting language",
+      "none": "none equivalence to",
+      "full": "full equivalence to",
+      "delvis": "partial equivalence to",
+      "bredere": "Broader intension than",
+      "smalere": "Narrower intension than"
     }
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
