@@ -17,7 +17,7 @@
         :display-info="displayInfo"
       />
       <TermpostGeneralSection
-        v-if="displayInfo"
+        v-if="displayInfo && concept"
         :concept="concept"
         :display-info="displayInfo"
       />
