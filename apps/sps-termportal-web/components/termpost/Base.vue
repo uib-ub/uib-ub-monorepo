@@ -1,6 +1,8 @@
 <template>
-  <div class="lg:flex lg:space-x-6 space-y-5 lg:space-y-0">
-    <div class="grid gap-y-5 shrink-0">
+  <div
+    class="lg:flex lg:space-x-1 xl:space-x-3 2xl:space-x-5 space-y-5 lg:space-y-0"
+  >
+    <div class="grid gap-y-5 shrink-0 lg:shrink lg:min-w-[30em]">
       <div v-for="lang in displayInfo?.displayLanguages" :key="'disp_' + lang">
         <TermpostLanguageSection
           :concept="concept"
