@@ -140,13 +140,14 @@ const DynamicImageViewer = () => {
         <aside id="iiif_info" className='space-y-2 text-sm text-gray-800 p-4'>
           <h2 className='text-xl font-bold'> Seddel: {manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h2>
 
-
+        <ul className="flex flex-wrap gap-8">
         {manifest.metadata?.map((item: Record<string, any>, index: number) => (
-          <p key={index} className='flex justify-between'>
-            <span className='font-semibold'>{item.label?.no?.[0] || item.label?.nb?.[0]}:</span>
+          <li key={index} className='flex flex-col'>
+            <span className='font-semibold'>{item.label?.none?.[0] || item.label?.no?.[0] || item.label?.nb?.[0]}</span>
             <span>{item.value?.none?.[0]}</span>
-          </p>
+          </li>
         ))}
+        </ul>
       </aside>
     : null
     }
