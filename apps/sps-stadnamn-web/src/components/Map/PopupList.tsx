@@ -77,7 +77,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
 
     if (docs.length > 1) {
         return (
-          <ul className='flex flex-col max-h-64 overflow-y-scroll gap-1 divide-y divide-neutral-400'>
+          <ul className='flex flex-col gap-1 divide-y divide-neutral-400'>
             {listRenderer()}
           </ul>
         )
