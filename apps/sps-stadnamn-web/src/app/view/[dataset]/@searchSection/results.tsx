@@ -1,12 +1,12 @@
 import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUp, PiCaretDown, PiListNumbers, PiArrowsDownUp } from 'react-icons/pi';
+import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUp, PiCaretDown } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
-import { sortConfig } from '@/config/dataset-config';
+import { sortConfig, datasetTitles } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
 
 
@@ -128,6 +128,13 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         </p>
         </div>
         <div className='flex gap-1 ml-auto self-end'>
+        { params.dataset == 'search' &&  
+          <IconButton onClick={() => router.push(`/view/${hit._index.split('-')[1]}`)} 
+                      label={datasetTitles[hit._index.split('-')[1]]} 
+                      className="self-center px-1">
+                       <span className="not-italic font-semibold text-sm text-neutral-900">{hit._index.split('-')[1].toUpperCase()}</span>
+          </IconButton>
+        }
 
         {hit._source.image && 
           <IconButton 
