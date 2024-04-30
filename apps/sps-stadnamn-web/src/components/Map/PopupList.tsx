@@ -29,8 +29,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
             <>
             { dataset == view ?
                     <div>
-                        {resultRenderers[view]?.title(doc)}
-                        {resultRenderers[view]?.details(doc)}
+                        {resultRenderers[view]?.title(doc)} | {resultRenderers[view]?.details(doc)}
                     </div>
                     :
                     <>
@@ -68,7 +67,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
     const listRenderer = () => {
       return docs.map(doc => {
           return (
-          <li key={doc._id} className='text-lg inline space-x-1'>
+          <li key={doc._id} className='text-lg inline space-x-1 py-2'>
               {listItemRenderer(doc)}
           </li>
           )
@@ -78,7 +77,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
 
     if (docs.length > 1) {
         return (
-          <ul className='flex flex-col'>
+          <ul className='flex flex-col max-h-64 overflow-y-scroll gap-1 divide-y divide-neutral-400'>
             {listRenderer()}
           </ul>
         )
