@@ -16,7 +16,7 @@ export default async function DocumentView({ params }: { params: { dataset: stri
     return (
       
       <div className="mx-2 p-4 lg:p-8 lg:overflow-y-auto space-y-6 instance-info">
-        { doc && <>
+        { doc && doc._source && <>
       
       <h2>{doc._source.label}</h2>
       { infoPageRenderers[params.dataset]? infoPageRenderers[params.dataset](doc._source) : null }
