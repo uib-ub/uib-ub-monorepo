@@ -38,7 +38,8 @@ export default function MapExplorer(props) {
       });
 
       node.on('baselayerchange', (layer) => {
-        localStorage.setItem('baseLayer', layer.name);
+        const layerCode = {"Norgeskart": "map_topo4", "Norgeskart, gråtoner": "map_topo4graatone", "Terrengkart": "map_terreng", "Verdenskart": "map_carto_labels"}[layer.name] || "map_topo4"
+        localStorage.setItem('baseLayer', layerCode);
       });
 
     }
@@ -189,7 +190,7 @@ export default function MapExplorer(props) {
            <LayersControl collapsed={false}>
 
             
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'Topografisk norgeskart'} name="Topografisk norgeskart">
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4'} name="Norgeskart">
               <TileLayer
                 key="map_topo4"
                 url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
@@ -197,7 +198,7 @@ export default function MapExplorer(props) {
                 subdomains={['', '2', '3']} 
               />
             </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'Topografisk gråtonekart'} name="Topografisk gråtonekart">
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4graatone'} name="Norgeskart, gråtoner">
               <TileLayer
                 key="map_topo4graatone"
                 url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4graatone&zoom={z}&x={x}&y={y}"
@@ -205,15 +206,15 @@ export default function MapExplorer(props) {
                 subdomains={['', '2', '3']}
               />
             </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'Terrengkart'} name="Terrengkart">
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_terreng'} name="Terrengkart">
               <TileLayer
-                key="map_terreng_norgeskart"
+                key="map_terreng"
                 url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=terreng_norgeskart&zoom={z}&x={x}&y={y}"
                 attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
                 subdomains={['', '2', '3']}
               />
             </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'Verdenskart'} name="Verdenskart">
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_carto_labels'} name="Verdenskart">
               <TileLayer
                 key="map_carto_labels"
                 url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
