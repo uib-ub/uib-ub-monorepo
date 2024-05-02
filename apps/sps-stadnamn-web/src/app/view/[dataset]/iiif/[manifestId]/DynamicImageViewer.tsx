@@ -84,7 +84,7 @@ const DynamicImageViewer = () => {
     };
 
     fetchManifestAndInitializeViewer();
-  }, [manifestId]);
+  }, [manifestId, dataset]);
 
   return (
     <div className='h-full w-full flex flex-col'>
