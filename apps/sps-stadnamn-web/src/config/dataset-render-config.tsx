@@ -42,6 +42,16 @@ export const resultRenderers: ResultRenderers = {
       return <>{loktypes}{loktypes && ', '}{hit._source.adm2}, {hit._source.adm1},  </>
     }
   },
+  ostf: {
+    title: (hit: any) => {
+      return <><strong>{hit._source.label}</strong> </>
+    },
+    details: (hit: any) => {
+      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
+
+      return <>{hit._source.adm2}, {hit._source.adm1}, {hit._source.rawData.GNID} </>
+    }
+  },
   
   hord: {
     title: (hit: any) => {
