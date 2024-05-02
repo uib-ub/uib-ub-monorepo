@@ -5,8 +5,14 @@ import Thumbnail from './thumbnail'
 import Link from 'next/link'
 import { infoPageRenderers } from '@/config/dataset-render-config'
 import { fetchDoc } from '@/app/api/_utils/actions'
+import { PiCaretLeftBold } from 'react-icons/pi'
 
-export default async function DocumentView({ params }: { params: { dataset: string, uuid: string }}) { 
+export default async function DocumentView({ params, searchParams }: { params: { dataset: string, uuid: string }, searchParams: Record<string, string>}) { 
+
+  // If searchParams not empty
+  const hasSearchParams = Object.keys(searchParams).length > 0
+
+  
 
   if (Array.isArray(params.dataset)) {
       throw new Error('Expected "dataset" to be a string, but received an array');
@@ -16,6 +22,9 @@ export default async function DocumentView({ params }: { params: { dataset: stri
     return (
       
       <div className="mx-2 p-4 lg:p-8 lg:overflow-y-auto space-y-6 instance-info">
+        {
+          hasSearchParams && <Link href={`/view/${params.dataset}?${new URLSearchParams(searchParams).toString()}`} className="no-underline inline"><PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>Tilbake til kartet</Link>
+        }
         { doc && doc._source && <>
       
       <h2>{doc._source.label}</h2>
