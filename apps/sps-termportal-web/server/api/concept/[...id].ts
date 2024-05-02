@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
   let base;
   let id: string;
   let uri: string;
+  // FBK has subcollections that are part of the uri.
   if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
     base = runtimeConfig.public.base;
     id = `${termbase}-3A${conceptIdArray.join("/")}`;
@@ -40,10 +41,6 @@ export default defineEventHandler(async (event) => {
     }).then((value) => {
       clearTimeout(timer);
       return value;
-    });
-
-    setResponseHeaders(event, {
-      "Cache-Control": "public, max-age=3600",
     });
 
     return frameData(data, "skos:Concept").then((result) => {
