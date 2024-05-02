@@ -1,12 +1,12 @@
 import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUp, PiCaretDown, PiListNumbers, PiArrowsDownUp } from 'react-icons/pi';
+import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUp, PiCaretDown } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
-import { sortConfig } from '@/config/dataset-config';
+import { sortConfig, datasetTitles } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
 
 
@@ -119,15 +119,22 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     </span>
     <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
 
-    <ul className='flex flex-col gap-1 mb-2'>
+    <ul className='flex flex-col gap-1 mb-2 divide-y divide-neutral-400'>
       {hits.hits.map((hit: any) => (
-        <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow border-t last:border-b border-neutral-400">
-        <div className='font-semibold">'>{titleRenderer(hit)}
+        <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow">
+        <div>{titleRenderer(hit)}
         <p>
           { detailsRenderer(hit) }
         </p>
         </div>
         <div className='flex gap-1 ml-auto self-end'>
+        { params.dataset == 'search' &&  
+          <IconButton onClick={() => router.push(`/view/${hit._index.split('-')[1]}`)} 
+                      label={datasetTitles[hit._index.split('-')[1]]} 
+                      className="self-center px-1">
+                       <span className="not-italic font-semibold text-sm text-neutral-900">{hit._index.split('-')[1].toUpperCase()}</span>
+          </IconButton>
+        }
 
         {hit._source.image && 
           <IconButton 

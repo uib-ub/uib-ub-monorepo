@@ -36,6 +36,12 @@ export default function MapExplorer(props) {
         setLeafletBounds(node.getBounds());
         setZoom(node.getZoom());
       });
+
+      node.on('baselayerchange', (layer) => {
+        const layerCode = {"Norgeskart": "map_topo4", "Norgeskart, gråtoner": "map_topo4graatone", "Terrengkart": "map_terreng", "Verdenskart": "map_carto_labels"}[layer.name] || "map_topo4"
+        localStorage.setItem('baseLayer', layerCode);
+      });
+
     }
     
   }, []);
@@ -170,19 +176,53 @@ export default function MapExplorer(props) {
   }, [props.docs]);
 
 
-
   return (
     <Map mapRef={mapRef} bounds={props.mapBounds} className='w-full aspect-square lg:aspect-auto lg:h-full'>
-            {({ TileLayer, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
+            {({ TileLayer, LayersControl, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
+              
                 <>
-          
-            <TileLayer
-              key="map_topo4"
-              url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
-              attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-              subdomains={['', '2', '3']} 
-            />
+
+           <TileLayer
+                key="map_cartodb"
+                url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
+              />
+           <LayersControl collapsed={false}>
+
             
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4'} name="Norgeskart">
+              <TileLayer
+                key="map_topo4"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']} 
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4graatone'} name="Norgeskart, gråtoner">
+              <TileLayer
+                key="map_topo4graatone"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4graatone&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_terreng'} name="Terrengkart">
+              <TileLayer
+                key="map_terreng"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=terreng_norgeskart&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_carto_labels'} name="Verdenskart">
+              <TileLayer
+                key="map_carto_labels"
+                url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
+              />
+            </LayersControl.BaseLayer>
+            </LayersControl>
+
             {markers.map(marker => (
               <CircleMarker role="button" 
                             pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
@@ -222,7 +262,7 @@ export default function MapExplorer(props) {
               <Popup minWidth={256} maxWidth={300} autoPan={false}>
                                     
               { params.dataset == 'search' ?
-                <ul className="flex flex-col gap-2">
+                <ul className="flex flex-col gap-2 max-h-64 overflow-y-scroll">
                 {Object.entries(groupByIndex(props.docs)).map(([index, docs]) => (
                   <li key={index}> 
                     <h3 className="text-lg flex justify-between font-semibold">{datasetTitles[indexToCode(index)]}<IconButton label="Info" onClick={() => router.push('/view/' + indexToCode(index) + "/info")}><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h3>
@@ -231,7 +271,7 @@ export default function MapExplorer(props) {
                 ))}
                 </ul>
                 :
-                <PopupList docs={props.docs} view={params.dataset} />
+                <div className="max-h-64 overflow-y-scroll"><PopupList docs={props.docs} view={params.dataset} /></div>
               }
                     
               </Popup>
