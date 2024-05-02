@@ -25,7 +25,11 @@ export default defineNuxtConfig({
       cors: true,
       headers: {
         "Access-Control-Allow-Methods": "GET, POST",
+        "Cache-Control": "max-age=600, s-maxage=3600, stale-while-revalidate=7200",
       },
+    },
+    "/api/search/**": {
+      headers: { "Cache-Control": "no-store" },
     },
   },
   appConfig: {},
