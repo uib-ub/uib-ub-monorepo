@@ -43,7 +43,7 @@ const DynamicImageViewer = () => {
           "protocol": "http://iiif.io/api/image",
           "tiles": [{
             "scaleFactors": [ 1, 2, 4, 8, 16, 32 ],
-            "width": 1024
+            "width": 128
           }]
         };
       });
