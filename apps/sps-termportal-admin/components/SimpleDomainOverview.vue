@@ -117,7 +117,8 @@ GROUP BY ?concept ?level ?children ?published
 
 const { data } = await useLazyFetch("/api/withQuery", {
   method: "post",
-  body: { query, internal: true },
+  query: { internal: true },
+  body: { query },
 });
 
 const preProc = computed(() => {

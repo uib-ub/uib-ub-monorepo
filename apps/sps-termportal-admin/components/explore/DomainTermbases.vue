@@ -61,7 +61,8 @@ GROUP BY ?label
 
 const { data } = await useLazyFetch("/api/withQuery", {
   method: "post",
-  body: { query, internal: true },
+  query: { internal: true },
+  body: { query },
 });
 
 const displayData = computed(() => {
@@ -89,7 +90,8 @@ GROUP BY ?label
 
 const { data: dataRec } = await useLazyFetch("/api/withQuery", {
   method: "post",
-  body: { query: queryRecursive, internal: true },
+  query: { internal: true },
+  body: { query: queryRecursive },
 });
 
 const displayDataRec = computed(() => {

@@ -1,9 +1,10 @@
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
+  const queryParams = getQuery(event);
   const body = await readBody(event);
   let url = runtimeConfig.endpointUrl;
 
-  if (body?.internal) {
+  if (queryParams?.internal) {
     url = runtimeConfig.endpointUrlInternal;
   }
 

@@ -120,8 +120,7 @@ watch(selectedTermbase, () => {
 });
 
 const { data: dbdata } = await useLazyFetch("/api/tb/all/overview", {
-  method: "post",
-  body: { internal: true },
+  query: { internal: true },
 });
 
 const query = `
