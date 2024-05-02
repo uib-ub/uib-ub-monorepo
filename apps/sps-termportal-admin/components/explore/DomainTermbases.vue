@@ -60,6 +60,7 @@ GROUP BY ?label
 `;
 
 const { data } = await useLazyFetch("/api/withQuery", {
+  method: "post",
   query: { internal: true },
   body: { query },
 });
@@ -88,6 +89,7 @@ GROUP BY ?label
 `;
 
 const { data: dataRec } = await useLazyFetch("/api/withQuery", {
+  method: "post",
   query: { internal: true },
   body: { query: queryRecursive },
 });

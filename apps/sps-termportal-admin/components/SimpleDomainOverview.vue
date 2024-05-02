@@ -116,6 +116,7 @@ GROUP BY ?concept ?level ?children ?published
 `;
 
 const { data } = await useLazyFetch("/api/withQuery", {
+  method: "post",
   query: { internal: true },
   body: { query },
 });
