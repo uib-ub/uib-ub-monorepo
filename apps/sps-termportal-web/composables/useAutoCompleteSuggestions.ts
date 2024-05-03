@@ -2,14 +2,12 @@ export default async function (searchterm: string) {
   const data = ref([]);
   if (typeof searchterm === "string") {
     if (searchterm.trim().length) {
-      data.value = await $fetch("/api/search/autocomplete", {
-        method: "POST",
-        body: {
-          searchOptions: {
-            ...useGenSearchOptions("autocomplete"),
-            ...{ term: searchterm },
-          },
-        },
+      const options = useGenSearchOptions("autocomplete", {
+        term: searchterm,
+      });
+      const params = new URLSearchParams(options).toString();
+
+      data.value = await $fetch(`/api/search/autocomplete?${params}`, {
         retry: 1,
       });
       data.value.unshift(searchterm);

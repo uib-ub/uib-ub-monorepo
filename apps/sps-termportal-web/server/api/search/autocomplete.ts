@@ -1,13 +1,12 @@
 import { genAutocompleteQuery } from "~/server/utils/genAutocompleteQuery";
+import { decodeSearchOptions } from "~/server/utils/genQueryUtils";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.endpointUrl;
-  const body = await readBody(event);
-  const query = genAutocompleteQuery(
-    body.searchOptions,
-    runtimeConfig.public.base
-  );
+  const queryParams = getQuery(event);
+  const searchOptions = decodeSearchOptions(queryParams);
+  const query = genAutocompleteQuery(searchOptions, runtimeConfig.public.base);
 
   const controller = new AbortController();
   const timer = setTimeout(() => {
