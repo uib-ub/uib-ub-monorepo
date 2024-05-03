@@ -137,7 +137,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       { source.links?.length &&
       <div>
       <h3>Lenker</h3>
-      <ul className='!mt-0'>
+      <ul className='!mt-0 !list-none !pl-0'>
         {source.links.map((link: any, index: number) => (
           <li key={index}><Link href={link} target="_blank" className=''>{link}</Link></li>
         ))}
