@@ -89,7 +89,9 @@ type CollectionUriPatternKey =
   | "brreg"
   | "bufdir"
   | "fbk"
-  | "ex";
+  | "ex"
+  | "skatt";
+
 export const termbaseUriPatterns: {
   [key in Samling]?: { [key in CollectionUriPatternKey]: string };
 } = {
@@ -100,5 +102,6 @@ export const termbaseUriPatterns: {
     bufdir: "https://data.bufdir.no/begrep/",
     fbk: "https://concept-catalog.fellesdatakatalog.digdir.no/collections/",
     ex: "http://example.com/",
+    skatt: "https://data.skatteetaten.no/begrep/#GeneratedCollection",
   },
 };
