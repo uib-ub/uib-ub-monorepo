@@ -28,36 +28,36 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
         return (
             <>
             { dataset == view ?
-                    <div>
+                    <>
                         {resultRenderers[view]?.title(doc)} | {resultRenderers[view]?.details(doc)}
-                    </div>
+                    </>
                     :
                     <>
                         {doc._source.label}
                     </>
                 } 
-                <span className='inline space-x-1'>
+                <div className='inline space-x-1 inline'>
                     {doc._source.image && 
                         <IconButton 
                             onClick={() => goToIIIF(doc._id, doc._source.image.manifest)} 
                             label="Vis seddel">
-                            <PiArticleFill className="text-xl text-neutral-700 inline"/>
+                            <PiArticleFill className="text-xl align-top text-neutral-700 inline"/>
                         </IconButton> 
                     }
                     {doc._source.audio && 
                         <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${doc._source.audio.file}`} 
-                            className="text-2xl inline text-neutral-700"/> 
+                            className="text-2xl align-top inline text-neutral-700"/> 
                     }
                     {doc._source.link &&
                         <Link href={doc._source.link} className="no-underline" target="_blank">
                             <IconButton 
                                 label="Ekstern ressurs">
-                                <PiLinkBold className="text-xl text-neutral-700 inline"/>
+                                <PiLinkBold className="text-xl align-top text-neutral-700 inline"/>
                             </IconButton> 
                         </Link>
                     }
-                    <IconButton label="Infoside" onClick={() => goToDoc(doc._source.uuid)}><PiInfoFill className='text-2xl text-primary-600 inline'/></IconButton>
-                </span>
+                    <IconButton label="Infoside" onClick={() => goToDoc(doc._source.uuid)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
+                </div>
                 
             </>
         )
