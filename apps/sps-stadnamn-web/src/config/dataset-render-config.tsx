@@ -139,7 +139,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       <h3>Lenker</h3>
       <ul className='!mt-0'>
         {source.links.map((link: any, index: number) => (
-          <li key={index}><Link href={link} className="">{link}</Link></li>
+          <li key={index}><Link href={link} target="_blank" className=''>{link}</Link></li>
         ))}
 
       </ul>
