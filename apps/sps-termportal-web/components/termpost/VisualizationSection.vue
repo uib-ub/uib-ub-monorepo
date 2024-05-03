@@ -1,9 +1,9 @@
 <template>
   <div class="max-w-prose">
     <figure class="border-solid border p-2 rounded-sm space-y-2">
-      <AppLink :to="displayInfo.image[0].value['@id']" :hide-icon="true">
+      <AppLink :to="displayInfo.image[0]?.value['@id']" :hide-icon="true">
         <ImgBase
-          :img-src="displayInfo.image[0].value['@id']"
+          :img-src="displayInfo.image[0]?.value['@id']"
           img-alt="TODO"
         ></ImgBase>
       </AppLink>

@@ -4,7 +4,7 @@
   >
     <div class="lg:order-last lg:ml-2 xl:ml-5">
       <TermpostVisualizationSection
-        v-if="displayInfo?.image"
+        v-if="displayInfo?.image[0]"
         :display-info="displayInfo"
       />
     </div>
