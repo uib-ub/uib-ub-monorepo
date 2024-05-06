@@ -110,47 +110,50 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
   const rightsStatement = getLicenseMapping(isPublicDomain?.['dct:license'] || license || 'default')
 
 
+  const workRightsStatement = {
+    id: base.newId,
+    type: "Right",
+    _label: "Rights statement for work",
+    classified_as: [
+      {
+        id: "http://vocab.getty.edu/aat/300417696",
+        type: "Type",
+        _label: "Rights (Legal Concept)"
+      },
+      rightsStatement,
+    ],
+    referred_to_by: [
+      {
+        id: "https://data.ub.uib.no/????/licensing/description",
+        type: "LinguisticObject",
+        _label: "Rights Statement Description",
+        classified_as: [
+          aatBriefTextType,
+        ],
+        content: rightsStatement._label
+      }
+    ],
+    possessed_by: [
+      data.current_owner
+    ],
+    subject_of: [
+      {
+        id: "https://data.ub.uib.no/????/licensing/acknowledgements",
+        type: "LinguisticObject",
+        _label: "Acknowledgements for Work Rights",
+        classified_as: [
+          aatAcknowledgementsType,
+        ],
+        content: "Works are provided by the University of Bergen Library. All works are licensed or marked under the respective rights statements."
+      }
+    ]
+  }
+
+
   return omitEmptyEs({
     ...data,
     subject_to: [
-      {
-        id: base.newId,
-        type: "Right",
-        _label: "Rights statement for work",
-        classified_as: [
-          {
-            id: "http://vocab.getty.edu/aat/300417696",
-            type: "Type",
-            _label: "Rights (Legal Concept)"
-          },
-          rightsStatement,
-        ],
-        referred_to_by: [
-          {
-            id: "https://data.getty.edu/museum/collection/object/6ea43ea4-0fd2-4310-b98a-b83dae8733e7/licensing/description",
-            type: "LinguisticObject",
-            _label: "Rights Statement Description",
-            classified_as: [
-              aatBriefTextType,
-            ],
-            content: rightsStatement._label
-          }
-        ],
-        possessed_by: [
-          data.current_owner
-        ],
-        subject_of: [
-          {
-            id: "https://data.ub.uib.no/????/licensing/acknowledgements",
-            type: "LinguisticObject",
-            _label: "Acknowledgements for Work Rights",
-            classified_as: [
-              aatAcknowledgementsType,
-            ],
-            content: "Works are provided by the University of Bergen Library. All works are licensed or marked under the respective rights statements."
-          }
-        ]
-      },
+      data.type === 'HumanMadeObject' ? workRightsStatement : null,
       {
         id: "https://data.ub.uib.no/collection/ubb",
         type: "Right",
@@ -180,7 +183,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
             classified_as: [
               aatAcknowledgementsType,
             ],
-            content: "Collection metadata provided by the University of Bergen Library. All metadata about collections and items are licensed under CC0 1.0 (http://creativecommons.org/publicdomain/zero/1.0/). The works themselves are licensed under the respective rights statements."
+            content: "Collection metadata provided by the University of Bergen Library. All metadata are licensed under CC0 1.0 (http://creativecommons.org/publicdomain/zero/1.0/). The works themselves are licensed or marked under the respective rights statements."
           }
         ]
       }

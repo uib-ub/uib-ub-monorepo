@@ -1,14 +1,15 @@
-import omitEmptyEs from 'omit-empty-es';
-import { Publication, mapToGeneralClass } from '../../mapToGeneralClass';
-import { getLanguage } from '../../getLanguage';
-import { classToAttMapping } from '../../mapClassToClassifiedAs';
-import { DOMAIN } from '../../../../config/constants';
 import { randomUUID } from 'crypto';
-import { NodeHtmlMarkdown } from 'node-html-markdown';
-import { aatAbstractsType, aatDescriptionsType, aatInternalNoteType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatRelatedTextualReferencesType } from '../../staticMapping';
 import { isEqual } from 'lodash';
+import { NodeHtmlMarkdown } from 'node-html-markdown';
+import omitEmptyEs from 'omit-empty-es';
+import { DOMAIN } from '../../../../config/constants';
 import { getTimespan } from '../../constructTimespan';
+import { getLanguage } from '../../getLanguage';
+import { Publication, mapToGeneralClass } from '../../mapToGeneralClass';
+import { aatAbstractsType, aatDescriptionsType, aatDisplayBiographyType, aatInternalNoteType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatPublishingType, aatRelatedTextualReferencesType } from '../../staticMapping';
 
+// TODO: Add "culture statement"
+// TODO: Use markdown for all text fields, and add format: "text/markdown"
 
 export const constructAboutness = async (data: any) => {
   const {
@@ -35,6 +36,7 @@ export const constructAboutness = async (data: any) => {
     editor,
     hasVersion,
     originalCreator,
+    profession,
   } = data;
 
   const type = mapToGeneralClass(hasType)
@@ -75,7 +77,8 @@ export const constructAboutness = async (data: any) => {
     !issued &&
     !editor &&
     !hasVersion &&
-    !originalCreator
+    !originalCreator &&
+    !profession
   ) {
     return data;
   }
@@ -102,6 +105,7 @@ export const constructAboutness = async (data: any) => {
   delete data.editor
   delete data.hasVersion
   delete data.originalCreator
+  delete data.profession
 
   let isReferencedByArray: any[] = [];
   let descriptionArray: any[] = [];
@@ -119,6 +123,7 @@ export const constructAboutness = async (data: any) => {
   let provenanceArray: any[] = []
   let referenceArray: any[] = []
   let abstractArray: any[] = []
+  let professionArray: any[] = []
 
   // if there is a link to a html file, we need to fetch the content and convert it to markdown
   if (hasTranscription?.includes('.html')) {
@@ -127,13 +132,18 @@ export const constructAboutness = async (data: any) => {
     transcriptionMarkdown = NodeHtmlMarkdown.translate(html);
   }
 
-  const classified_as = [
-    {
-      id: classToAttMapping[hasType]?.mapping ?? "https://fix.me",
-      type: "Type",
-      _label: hasType,
-    }
-  ];
+  if (profession) {
+    professionArray = [{
+      type: "LinguisticObject",
+      classified_as: [
+        aatDisplayBiographyType,
+      ],
+      language: [
+        getLanguage('no')
+      ],
+      content: profession.join('; ')
+    }]
+  };
 
   if (isReferencedBy) {
     isReferencedByArray = isReferencedBy.map((reference: any) => {
@@ -155,16 +165,18 @@ export const constructAboutness = async (data: any) => {
   // dct:references (objects). We get the references from the 
   // ubbont:isReferencedBy above.
   if (reference) {
-    referenceArray = [{
-      type: "LinguisticObject",
-      classified_as: [
-        aatRelatedTextualReferencesType
-      ],
-      language: [
-        getLanguage('no')
-      ],
-      content: reference,
-    }]
+    referenceArray = reference.map((ref: string) => {
+      return {
+        type: "LinguisticObject",
+        classified_as: [
+          aatRelatedTextualReferencesType
+        ],
+        language: [
+          getLanguage('no')
+        ],
+        content: ref,
+      };
+    });
   }
 
   if (description) {
@@ -177,7 +189,8 @@ export const constructAboutness = async (data: any) => {
         language: [
           getLanguage(key)
         ],
-        content: value[0]
+        content: NodeHtmlMarkdown.translate(value[0]),
+        format: 'text/markdown',
       }
     });
   }
@@ -192,7 +205,8 @@ export const constructAboutness = async (data: any) => {
         language: [
           getLanguage(key)
         ],
-        content: value[0]
+        content: NodeHtmlMarkdown.translate(value[0]),
+        format: 'text/markdown',
       }
     });
   }
@@ -210,7 +224,8 @@ export const constructAboutness = async (data: any) => {
         language: [
           getLanguage(key)
         ],
-        content: value[0]
+        content: NodeHtmlMarkdown.translate(value[0]),
+        format: 'text/markdown',
       }
     });
   }
@@ -225,7 +240,8 @@ export const constructAboutness = async (data: any) => {
         language: [
           getLanguage(key)
         ],
-        content: value[0]
+        content: NodeHtmlMarkdown.translate(value[0]),
+        format: 'text/markdown',
       }
     });
   }
@@ -239,7 +255,8 @@ export const constructAboutness = async (data: any) => {
       language: [
         getLanguage('no')
       ],
-      content: typeOfDamage
+      content: NodeHtmlMarkdown.translate(typeOfDamage),
+      format: 'text/markdown',
     }];
   }
 
@@ -253,7 +270,8 @@ export const constructAboutness = async (data: any) => {
         language: [
           getLanguage(key)
         ],
-        content: value[0]
+        content: NodeHtmlMarkdown.translate(value[0]),
+        format: 'text/markdown',
       }
     });
   }
@@ -268,7 +286,8 @@ export const constructAboutness = async (data: any) => {
         language: [
           getLanguage(key)
         ],
-        content: value[0]
+        content: NodeHtmlMarkdown.translate(value[0]),
+        format: 'text/markdown',
       }
     });
   }
@@ -412,11 +431,7 @@ export const constructAboutness = async (data: any) => {
           no: [`Publiseringen av "${data._label.no}"`]
         },
         classified_as: [
-          {
-            id: "http://vocab.getty.edu/aat/300054686",
-            type: "Type",
-            _label: "Publishing"
-          }
+          aatPublishingType,
         ],
         timespan: getTimespan(publishedYear ?? issued, undefined, undefined),
         took_place_at: placeOfPublication ? placeOfPublication.map((place: any) => {
@@ -440,7 +455,6 @@ export const constructAboutness = async (data: any) => {
 
   return omitEmptyEs({
     ...data,
-    classified_as,
     referred_to_by: [
       ...descriptionArray,
       ...abstractArray,
@@ -450,6 +464,7 @@ export const constructAboutness = async (data: any) => {
       ...physicalConditionArray,
       ...provenanceArray,
       ...referenceArray,
+      ...professionArray
     ],
     shows: showsArray,
     carries: [

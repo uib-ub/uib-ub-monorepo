@@ -1,4 +1,5 @@
 import omitEmptyEs from 'omit-empty-es';
+import { aatDigitalImageType, aatThumbnailsType, aatWebPageType } from '../../staticMapping';
 
 export const constructDigitalIntegration = (data: any) => {
   const {
@@ -7,21 +8,64 @@ export const constructDigitalIntegration = (data: any) => {
     subjectOfManifest,
     homepage,
     page,
+    img,
+    seeAlso,
   } = data;
 
-  if (!thumbnail && !image && !subjectOfManifest && !homepage && !page) return data;
+  if (
+    !thumbnail &&
+    !image &&
+    !subjectOfManifest &&
+    !homepage &&
+    !page &&
+    !img &&
+    !seeAlso
+  ) return data;
 
   delete data.thumbnail
   delete data.image
   delete data.subjectOfManifest
   delete data.homepage
   delete data.page
+  delete data.img
+  delete data.seeAlso
 
   let thumbnailArray: any[] = []
   let imageArray: any[] = []
   let subjectManifestOf: any[] = []
   let subjectHomepageOf: any[] = []
   let pageArray: any[] = []
+  let imgArray: any[] = []
+  let seeAlsoArray: any[] = []
+
+  if (img) {
+    imgArray = [{
+      id: img[0],
+      type: 'VisualItem',
+      digitally_shown_by: {
+        type: 'DigitalObject',
+        _label: {
+          no: ['Digitalt objekt'],
+          en: ['Digital object'],
+        },
+        classified_as: [
+          aatDigitalImageType,
+          aatThumbnailsType,
+        ],
+        access_point: [{
+          id: img[0],
+          type: 'DigitalObject',
+        },]
+      }
+    }]
+  }
+
+  if (seeAlso) {
+    seeAlsoArray = seeAlso.map((item: any) => ({
+      id: item['ubbont:hasURI'] ?? item.hasURI,
+      _label: item._label,
+    }));
+  }
 
   if (thumbnail) {
     thumbnailArray = [{
@@ -34,16 +78,8 @@ export const constructDigitalIntegration = (data: any) => {
           en: ['Digital object'],
         },
         classified_as: [
-          {
-            id: "http://vocab.getty.edu/aat/300215302",
-            type: "Type",
-            _label: "Digital Image"
-          },
-          {
-            id: "http://fix.me",
-            type: "Type",
-            _label: "Thumbnails"
-          },
+          aatDigitalImageType,
+          aatThumbnailsType,
         ],
         access_point: [{
           id: thumbnail,
@@ -64,11 +100,7 @@ export const constructDigitalIntegration = (data: any) => {
           en: ['Digital object'],
         },
         classified_as: [
-          {
-            id: "http://vocab.getty.edu/aat/300215302",
-            type: "Type",
-            _label: "Digital Image"
-          },
+          aatDigitalImageType,
         ],
         access_point: [{
           id: image,
@@ -97,6 +129,7 @@ export const constructDigitalIntegration = (data: any) => {
     ]
   }
 
+  // Always a string, as this is created by the query
   if (homepage) {
     subjectHomepageOf = [{
       id: homepage,
@@ -106,11 +139,7 @@ export const constructDigitalIntegration = (data: any) => {
           id: homepage,
           type: "DigitalObject",
           classified_as: [
-            {
-              id: "https://vocab.getty.edu/aat/300264578",
-              type: "Type",
-              _label: "Web Page"
-            }
+            aatWebPageType,
           ],
           format: "text/html",
           access_point: [
@@ -125,42 +154,41 @@ export const constructDigitalIntegration = (data: any) => {
   }
 
   if (page) {
-    pageArray = [{
+    pageArray = page.map((item: any) => ({
       type: "LinguisticObject",
-      _label: page._label,
+      _label: item._label,
       digitally_carried_by: [
         {
           type: "DigitalObject",
           classified_as: [
-            {
-              id: "http://vocab.getty.edu/aat/300264578",
-              type: "Type",
-              _label: "Web Page"
-            }
+            aatWebPageType,
           ],
           format: "text/html",
           access_point: [
             {
-              id: page['ubbont:hasURI'] ?? page.hasURI,
+              id: item['ubbont:hasURI'] ?? item.hasURI,
               type: "DigitalObject"
             }
           ]
         }
       ]
-    }]
+    }));
   }
-
 
   return omitEmptyEs({
     ...data,
     representation: [
       ...thumbnailArray,
       ...imageArray,
+      ...imgArray,
     ],
     subject_of: [
       ...subjectManifestOf,
       ...subjectHomepageOf,
       ...pageArray,
-    ]
+    ],
+    equivalent: [
+      ...seeAlsoArray,
+    ],
   })
 };
