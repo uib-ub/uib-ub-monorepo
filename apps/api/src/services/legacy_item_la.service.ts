@@ -1,26 +1,27 @@
-import { DOMAIN, SPARQL_PREFIXES } from '../config/constants'
-import fetch from '../helpers/fetchRetry'
-import { removeStringsFromArray } from '../helpers/cleaners/removeStringsFromArray'
 import jsonld, { ContextDefinition } from 'jsonld'
+import { CONTEXTS } from 'jsonld-contexts'
+import omitEmptyEs from 'omit-empty-es'
+import { HumanMadeObjectSchema } from 'types'
+import { DOMAIN, SPARQL_PREFIXES } from '../config/constants'
 import { cleanDateDatatypes } from '../helpers/cleaners/cleanDateDatatypes'
 import { convertToFloat } from '../helpers/cleaners/convertToFloat'
-import { constructProduction } from '../helpers/mappers/object/constructProduction'
-import { constructCollection } from '../helpers/mappers/object/constructCollection'
-import { constructDigitalIntegration } from '../helpers/mappers/object/constructDigitalIntegration'
-import { constructAboutness } from '../helpers/mappers/object/constructAboutness'
-import { constructAssertions } from '../helpers/mappers/object/constructAssertions'
-import { constructIdentifiers } from '../helpers/mappers/object/constructIdentifiers'
-import { CONTEXTS } from 'jsonld-contexts'
-import { TBaseMetadata, TFailure } from '../models'
-import { HumanMadeObjectSchema } from 'types'
-import omitEmptyEs from 'omit-empty-es'
-import ajv from '../helpers/validator'
-import { constructOwnership } from '../helpers/mappers/object/constructOwnership'
-import { constructProvenance } from '../helpers/mappers/object/constructProvenance'
-import { constructCorrespondance } from '../helpers/mappers/object/constructCorrespondance'
-import { constructLicense } from '../helpers/mappers/object/constructSubjectOf'
+import { removeStringsFromArray } from '../helpers/cleaners/removeStringsFromArray'
+import fetch from '../helpers/fetchRetry'
 import { getTimespan } from '../helpers/mappers/constructTimespan'
+import { constructCollection } from '../helpers/mappers/la/object/constructCollection'
+import { constructCoreMetadata } from '../helpers/mappers/la/object/constructCoreMetadata'
+import { constructCorrespondance } from '../helpers/mappers/la/object/constructCorrespondance'
+import { constructDimension } from '../helpers/mappers/la/object/constructDimension'
+import { constructOwnership } from '../helpers/mappers/la/object/constructOwnership'
+import { constructProduction } from '../helpers/mappers/la/object/constructProduction'
+import { constructProvenance } from '../helpers/mappers/la/object/constructProvenance'
+import { constructAboutness } from '../helpers/mappers/la/shared/constructAboutness'
+import { constructAssertions } from '../helpers/mappers/la/shared/constructAssertions'
+import { constructDigitalIntegration } from '../helpers/mappers/la/shared/constructDigitalIntegration'
+import { constructIdentifiers } from '../helpers/mappers/la/shared/constructIdentifiers'
+import { constructSubjectTo } from '../helpers/mappers/la/shared/constructSubjectTo'
 import jsonSchemaValidator from '../helpers/validators/jsonSchemaValidator'
+import { TBaseMetadata, TFailure } from '../models'
 
 function getQuery(id: string) {
   const query = `
@@ -150,6 +151,7 @@ async function getItemData(id: string, source: string, context: string, type: st
     data = removeStringsFromArray(data)
 
     // Remove the inline context and add the url to the context
+    data['@context'] = context
     // Add provenance as a string. @TODO: Remove this when we have dct:provenance on all items in the dataset
     data.provenance = typeof data.provenance === 'string' ? data.provenance : data.provenance?._label ?? undefined
     // License is an object, but we only need the label.no
@@ -179,10 +181,10 @@ async function getItemData(id: string, source: string, context: string, type: st
     data = constructAssertions(data)
     data = constructOwnership(base, data)
     data = constructCorrespondance(data)
-    data = await constructLicense(base, data)
+    data = await constructSubjectTo(base, data)
 
     // Validate the data
-    const validate = ajv.getSchema("object.json")
+    const validate = jsonSchemaValidator.getSchema("object.json")
 
     if (validate) {
       const valid = validate(data)
