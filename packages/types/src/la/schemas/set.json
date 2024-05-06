@@ -1,8 +1,8 @@
 {
-	"$schema": "http://json-schema.org/schema#",
-	"$id": "file:///Users/rs2668/Development/other/linked-art/json-validator/schema/",
-	"title": "Place Schema",
-	"description": "_crm:E53\\_Place_\nGeographic locations where activities occur.\nSee: [API](https://linked.art/api/1.0/endpoint/place/) | [Model](https://linked.art/model/place/)",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "set.json",
+	"title": "Collection Schema",
+	"description": "_la:Set_\nA collection of other resources, such as a set of objects or places.\n[API](https://linked.art/api/1.0/endpoint/set/) | [Model](https://linked.art/model/collection/)",
 	"type": "object",
 	"properties": {
 		"@context": {
@@ -20,18 +20,18 @@
 				{
 					"title": "Specific",
 					"type": "string",
-					"const": "Place"
+					"const": "Set"
 				}
 			]
 		},
 		"_label": {
 			"$ref": "core.json#/definitions/labelProp"
 		},
-		"classified_as": {
-			"$ref": "core.json#/definitions/classified_asProp"
-		},
 		"identified_by": {
 			"$ref": "core.json#/definitions/identified_byProp"
+		},
+		"classified_as": {
+			"$ref": "core.json#/definitions/classified_asProp"
 		},
 		"referred_to_by": {
 			"$ref": "core.json#/definitions/referred_to_byProp"
@@ -44,10 +44,10 @@
 				},
 				{
 					"title": "Specific",
-					"description": "List of `Place` entities",
+					"description": "List of equivalent `Set` entities",
 					"type": "array",
 					"items": {
-						"$ref": "core.json#/definitions/PlaceRef"
+						"$ref": "core.json#/definitions/SetRef"
 					}
 				}
 			]
@@ -64,26 +64,27 @@
 		"attributed_by": {
 			"$ref": "core.json#/definitions/attributed_byRelProp"
 		},
-		"defined_by": {
-			"title": "crm:P168_place_is_defined_by",
-			"description": "A string with a WKT or GeoJSON definition of the area of the Place",
-			"type": "string"
+		"dimension": {
+			"$ref": "core.json#/definitions/dimensionProp"
 		},
-		"approximated_by": {
-			"title": "crm:P189i_is_approximated_by",
-			"description": "This `Place` is approximately the same area as the given entities",
+		"about": {
+			"$ref": "core.json#/definitions/aboutProp"
+		},
+		"members_exemplified_by": {
+			"description": "Great big bucket for arbitrary data here :(",
+			"type": "array"
+		},
+		"used_for": {
+			"title": "crm:P16i_was_used_for",
+			"description": "",
 			"type": "array",
 			"items": {
-				"$ref": "core.json#/definitions/PlaceRef"
+				"$ref": "core.json#/definitions/Activity"
 			}
 		},
-		"part_of": {
-			"title": "crm:P89_falls_within",
-			"description": "This `Place` is contained within one or more larger `Place` entities",
-			"type": "array",
-			"items": {
-				"$ref": "core.json#/definitions/PlaceRef"
-			}
+		"created_by": {
+			"title": "crm:P94i_was_created_by",
+			"$ref": "core.json#/definitions/Creation"
 		}
 	},
 	"required": [

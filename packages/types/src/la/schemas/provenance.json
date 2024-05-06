@@ -1,6 +1,6 @@
 {
-	"$schema": "http://json-schema.org/schema#",
-	"$id": "file:///Users/rs2668/Development/other/linked-art/json-validator/schema/",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "provenance.json",
 	"title": "Provenance Activity Schema",
 	"description": "_crm:E7\\_Activity_\nA broad activity during which the ownership, custody, location or other rights related to one or more objects are changed\nSee: [API](https://linked.art/api/1.0/endpoint/provenance/) | [Model](https://linked.art/model/provenance/)",
 	"type": "object",
@@ -421,14 +421,17 @@
 				"establishes": {
 					"title": "la:establishes",
 					"description": "",
-					"$ref": "core.json#/definitions/LegalRight"
+					"type": "array",
+					"items": {
+						"$ref": "core.json#/definitions/Right"
+					}
 				},
 				"invalidates": {
 					"title": "la:invalidates",
 					"description": "",
 					"type": "array",
 					"items": {
-						"$ref": "core.json#/definitions/LegalRight"
+						"$ref": "core.json#/definitions/Right"
 					}
 				}
 			},
@@ -491,17 +494,17 @@
 				},
 				"moved_from": {
 					"title": "crm:P27_moved_from",
-					"description": "",
+					"description": "Reference to the Place where the objects were moved from",
 					"$ref": "core.json#/definitions/PlaceRef"
 				},
 				"moved_to": {
 					"title": "crm:P26_moved_to",
-					"description": "",
+					"description": "Reference to the Place where the objects were moved to",
 					"$ref": "core.json#/definitions/PlaceRef"
 				},
 				"moved": {
 					"title": "crm:P25_moved",
-					"description": "",
+					"description": "The objects that were moved",
 					"type": "array",
 					"items": {
 						"$ref": "core.json#/definitions/HumanMadeObjectRef"
@@ -567,7 +570,7 @@
 				},
 				"encountered": {
 					"title": "sci:O19_has_found_object",
-					"description": "",
+					"description": "The objects that were encountered during this event",
 					"type": "array",
 					"items": {
 						"$ref": "core.json#/definitions/HumanMadeObjectRef"

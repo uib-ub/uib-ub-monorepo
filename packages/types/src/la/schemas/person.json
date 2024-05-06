@@ -1,8 +1,8 @@
 {
-	"$schema": "http://json-schema.org/schema#",
-	"$id": "file:///Users/rs2668/Development/other/linked-art/json-validator/schema/",
-	"title": "Collection Schema",
-	"description": "_la:Set_\nA collection of other resources, such as a set of objects or places.\n[API](https://linked.art/api/1.0/endpoint/set/) | [Model](https://linked.art/model/collection/)",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "person.json",
+	"title": "Person",
+	"description": "_crm:E21\\_Person_\nA human.\nSee: [API](https://linked.art/api/1.0/endpoint/person/) | [Model](https://linked.art/model/actor/)",
 	"type": "object",
 	"properties": {
 		"@context": {
@@ -20,7 +20,7 @@
 				{
 					"title": "Specific",
 					"type": "string",
-					"const": "Set"
+					"const": "Person"
 				}
 			]
 		},
@@ -44,10 +44,10 @@
 				},
 				{
 					"title": "Specific",
-					"description": "List of equivalent `Set` entities",
+					"description": "List of `Person` entities",
 					"type": "array",
 					"items": {
-						"$ref": "core.json#/definitions/SetRef"
+						"$ref": "core.json#/definitions/PersonRef"
 					}
 				}
 			]
@@ -56,7 +56,7 @@
 			"$ref": "core.json#/definitions/representationProp"
 		},
 		"member_of": {
-			"$ref": "core.json#/definitions/member_ofSetProp"
+			"$ref": "core.json#/definitions/member_ofGroupProp"
 		},
 		"subject_of": {
 			"$ref": "core.json#/definitions/subject_ofProp"
@@ -64,18 +64,30 @@
 		"attributed_by": {
 			"$ref": "core.json#/definitions/attributed_byRelProp"
 		},
-		"dimension": {
-			"$ref": "core.json#/definitions/dimensionProp"
+		"carried_out": {
+			"$ref": "core.json#/definitions/carried_outProp"
 		},
-		"created_by": {
-			"title": "crm:P94i_was_created_by",
-			"$ref": "#/definitions/Creation"
+		"contact_point": {
+			"$ref": "core.json#/definitions/contact_pointProp"
+		},
+		"residence": {
+			"$ref": "core.json#/definitions/residenceProp"
+		},
+		"born": {
+			"title": "crm:P98i_was_born",
+			"description": "The event in which this Person was born",
+			"$ref": "#/definitions/Birth"
+		},
+		"died": {
+			"title": "crm:P100i_died_in",
+			"description": "The event in which this Person died",
+			"$ref": "#/definitions/Death"
 		}
 	},
 	"definitions": {
-		"Creation": {
-			"title": "crm:E65_Creation",
-			"description": "The creation of the Set, potentially before any members were added",
+		"Birth": {
+			"title": "crm:E67_Birth",
+			"description": "The birth event of a person",
 			"type": "object",
 			"properties": {
 				"type": {
@@ -87,7 +99,7 @@
 						{
 							"title": "Specific",
 							"type": "string",
-							"const": "Creation"
+							"const": "Birth"
 						}
 					]
 				},
@@ -111,23 +123,47 @@
 				},
 				"caused_by": {
 					"$ref": "core.json#/definitions/caused_byProp"
+				}
+			}
+		},
+		"Death": {
+			"title": "crm:E69_Death",
+			"description": "The death event of a person",
+			"type": "object",
+			"properties": {
+				"type": {
+					"allOf": [
+						{
+							"title": "General",
+							"$ref": "core.json#/definitions/typeProp"
+						},
+						{
+							"title": "Specific",
+							"type": "string",
+							"const": "Death"
+						}
+					]
 				},
-				"carried_out_by": {
-					"$ref": "core.json#/definitions/carried_out_byProp"
+				"_label": {
+					"$ref": "core.json#/definitions/labelProp"
 				},
-				"used_specific_object": {
-					"$ref": "core.json#/definitions/used_specific_objectProp"
+				"identified_by": {
+					"$ref": "core.json#/definitions/identified_byProp"
 				},
-				"influenced_by": {
-					"$ref": "core.json#/definitions/influenced_byProp"
+				"classified_as": {
+					"$ref": "core.json#/definitions/classified_asProp"
 				},
-				"technique": {
-					"$ref": "core.json#/definitions/techniqueProp"
+				"referred_to_by": {
+					"$ref": "core.json#/definitions/referred_to_byProp"
 				},
-				"part_of": {
-					"title": "crm:P9i_forms_part_of",
-					"description": "An identified event or activity which this activity is part of",
-					"$ref": "core.json#/definitions/EventRefOrActivityRef"
+				"took_place_at": {
+					"$ref": "core.json#/definitions/took_place_atProp"
+				},
+				"timespan": {
+					"$ref": "core.json#/definitions/timespanProp"
+				},
+				"caused_by": {
+					"$ref": "core.json#/definitions/caused_byProp"
 				}
 			}
 		}
