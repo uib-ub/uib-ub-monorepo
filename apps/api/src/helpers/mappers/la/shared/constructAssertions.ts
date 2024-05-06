@@ -3,13 +3,20 @@ import omitEmptyEs from 'omit-empty-es';
 export const constructAssertions = (data: any) => {
   const {
     relation,
+    relationToString,
   } = data;
 
-  if (!relation) return data;
+  if (
+    !relation &&
+    !relationToString
+  ) return data;
 
   delete data.relation
+  delete data.relationToString
 
   let relationArray: any[] = []
+  // TODO: finish this. 
+  let relationToStringArray: any[] = []
 
   if (relation) {
     relationArray = relation.map((relation: any) => {
