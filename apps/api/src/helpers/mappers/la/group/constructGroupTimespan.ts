@@ -1,12 +1,16 @@
-import { getTimespan } from './constructTimespan';
+import { getTimespan } from '../../constructTimespan';
 import { randomUUID } from 'crypto';
-import { checkIntervalValidity } from '../checkers/checkIntervalValidity';
+import { checkIntervalValidity } from '../../../validators/checkIntervalValidity';
 
 export const constructGroupTimespan = (data: any) => {
   return data.map((item: any) => {
     const {
-      ['http://dbpedia.org/ontology/extinctionYear']: extinctionYear, ['http://dbpedia.org/ontology/extinctionDate']: extinctionDate, ['http://dbpedia.org/ontology/deathYear']: formationYear, ['http://dbpedia.org/ontology/formationDate']: formationDate,
+      ['http://dbpedia.org/ontology/extinctionYear']: extinctionYear,
+      ['http://dbpedia.org/ontology/extinctionDate']: extinctionDate,
+      ['http://dbpedia.org/ontology/deathYear']: formationYear,
+      ['http://dbpedia.org/ontology/formationDate']: formationDate,
     } = item;
+
     delete item['http://dbpedia.org/ontology/extinctionYear'];
     delete item['http://dbpedia.org/ontology/extinctionDate'];
     delete item['http://dbpedia.org/ontology/formationYear'];

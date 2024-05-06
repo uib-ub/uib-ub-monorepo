@@ -1,11 +1,13 @@
-import { getTimespan } from './constructTimespan';
-import { checkIntervalValidity } from '../checkers/checkIntervalValidity';
+import { getTimespan } from '../../constructTimespan';
+import { checkIntervalValidity } from '../../../validators/checkIntervalValidity';
 
 export const constructEventTimespan = (data: any) => {
   return data.map((item: any) => {
     const {
-      ['http://data.ub.uib.no/ontology/begin']: begin, ['http://data.ub.uib.no/ontology/end']: end,
+      ['http://data.ub.uib.no/ontology/begin']: begin,
+      ['http://data.ub.uib.no/ontology/end']: end,
     } = item;
+
     delete item['http://data.ub.uib.no/ontology/begin'];
     delete item['http://data.ub.uib.no/ontology/end'];
 
