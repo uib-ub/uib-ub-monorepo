@@ -20,8 +20,7 @@ import { constructProvenance } from '../helpers/mappers/object/constructProvenan
 import { constructCorrespondance } from '../helpers/mappers/object/constructCorrespondance'
 import { constructLicense } from '../helpers/mappers/object/constructSubjectOf'
 import { getTimespan } from '../helpers/mappers/constructTimespan'
-import { constructCoreMetadata } from '../helpers/mappers/object/constructCoreMetadata'
-import { constructDimension } from '../helpers/mappers/object/constructDimension'
+import jsonSchemaValidator from '../helpers/validators/jsonSchemaValidator'
 
 function getQuery(id: string) {
   const query = `
