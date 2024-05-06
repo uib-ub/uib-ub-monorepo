@@ -1,4 +1,5 @@
 import omitEmptyEs from 'omit-empty-es';
+import { fixmeCorrespondanceType } from '../../staticMapping';
 
 /**
  * Construct correspondance object
@@ -39,11 +40,7 @@ export const constructCorrespondance = (data: any) => {
   const correspondanceArray = [{
     type: "Activity",
     classified_as: [
-      {
-        id: "http://fix.me",
-        type: "Type",
-        _label: "Correspondance"
-      }
+      fixmeCorrespondanceType,
     ],
     carried_out_by: sourceArray?.map((source: any) => {
       return {
