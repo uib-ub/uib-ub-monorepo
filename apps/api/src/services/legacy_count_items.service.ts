@@ -22,12 +22,12 @@ const query = `
 
 export async function countItems(source: string): Promise<any> {
   const SERVICE = DATA_SOURCES.filter((service) => service.name === source)[0].url
-  const url = `${SERVICE}${encodeURIComponent(query)}&output=csv`
+  const url = `${SERVICE}${encodeURIComponent(query)}&output=json`
   try {
     const response = await fetch(url)
-    const csv = await response.text()
+    const data = await response.json()
 
-    return parseInt(csv.split('\r\n')[1])
+    return parseInt(data.results.bindings[0].total.value)
   } catch (error) {
     console.error(error);
     throw error;
