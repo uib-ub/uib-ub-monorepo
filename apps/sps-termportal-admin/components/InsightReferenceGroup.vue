@@ -48,8 +48,8 @@ const procdata = computed(() => {
     .map((group) => {
       const map = {
         label: group.label,
-        count: group.qualifiedMembership.length,
-        timespan: group.termgroups[0].qualifiedConsultation[0].timespan.edtf,
+        count: group.qualifiedMembership ? group.qualifiedMembership.length : 0,
+        timespan: group.termgroups[0].qualifiedConsultation[0].timespan?.edtf,
         termgroup: group.termgroups[0].label,
         // count: group.members.filter((member) => member.termgroups.length > 0)
         //   .length,
