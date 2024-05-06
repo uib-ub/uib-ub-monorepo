@@ -1,4 +1,5 @@
 import omitEmptyEs from 'omit-empty-es';
+import { aatProvenanceActivityType, institutions } from '../../staticMapping';
 
 export const constructProvenance = (data: any) => {
   const {
@@ -20,11 +21,7 @@ export const constructProvenance = (data: any) => {
         type: "Activity",
         _label: "Acquisition",
         classified_as: [
-          {
-            id: "http://vocab.getty.edu/aat/300055863",
-            type: "Type",
-            _label: "Provenance Activity"
-          },
+          aatProvenanceActivityType,
         ],
         part: [
           {
@@ -48,14 +45,7 @@ export const constructProvenance = (data: any) => {
               }
             ],
             transferred_title_to: [
-              {
-                id: "https://www.uib.no/ub",
-                type: "Group",
-                _label: {
-                  no: ["Universitetsbiblioteket"],
-                  en: ["University Library"],
-                }
-              }
+              institutions.ubb
             ]
           }
         ]
