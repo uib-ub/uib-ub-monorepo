@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { showRoutes } from 'hono/dev'
 import { serveStatic } from '@hono/node-server/serve-static'
+import { OpenAPIHono } from '@hono/zod-openapi'
 import { bearerAuth } from 'hono/bearer-auth'
 import { cors } from 'hono/cors'
+import { showRoutes } from 'hono/dev'
 import { logger } from 'hono/logger'
 import { rateLimiter } from './middlewares/rate-limiter'
 
@@ -12,18 +12,18 @@ const privilegedToken = 'read+write'
 const privilegedMethods = ['POST', 'PUT', 'PATCH', 'DELETE']
 
 // Import the routes.
-import items from './routes/items.route'
-import reference from './routes/references.route'
-import lookupId from './routes/lookup.route'
-import ns from './routes/ns.route'
 import es from './routes/admin/es_templates.route'
-import marcusUbbont from './routes/legacy/items.route'
-import wab from './routes/legacy/items_wab.route'
 import ingest from './routes/admin/ingest.route'
 import ingestManifests from './routes/admin/ingest_manifests.route'
 import ingestLegacySka from './routes/admin/ingest_ska.route'
 import ingestLegacyWab from './routes/admin/ingest_wab.route'
-import { request } from 'http'
+import items from './routes/items.route'
+import legacyItems from './routes/legacy/items.route'
+import wab from './routes/legacy/items_wab.route'
+import legacyPeople from './routes/legacy/people.route'
+import lookupId from './routes/lookup.route'
+import ns from './routes/ns.route'
+import reference from './routes/references.route'
 
 // Create a new Hono instance. We use the OpenAPIHono class to create the app, 
 // because it has the .openapi() method that we need to define the OpenAPI
