@@ -1,10 +1,8 @@
 <template>
-  <div
-    class="lg:flex space-y-5 lg:space-y-0"
-  >
+  <div class="lg:flex space-y-5 lg:space-y-0">
     <div class="lg:order-last lg:ml-2 xl:ml-5">
       <TermpostVisualizationSection
-        v-if="displayInfo?.image[0]"
+        v-if="displayInfo?.image && displayInfo?.image[0]"
         :display-info="displayInfo"
       />
     </div>
