@@ -1,5 +1,47 @@
-import _ from 'lodash';
+export const institutions: { [key: string]: { id: string; type: string; _label: Record<string, string[]> } } = {
+  uib: {
+    id: 'http://data.ub.uib.no/instance/organization/79543723-f0e9-40a6-bfb9-4830f080e887',
+    type: 'Group',
+    _label: {
+      no: ['Universitetet i Bergen'],
+      en: ['University of Bergen'],
+    },
+  },
+  ubb: {
+    id: "http://data.ub.uib.no/instance/organization/0f4d957a-5476-4e88-b2b6-71a06c1ecf9c",
+    type: "Group",
+    _label: {
+      no: ["Universitetsbiblioteket i Bergen"],
+      en: ["University of Bergen Library"],
+    }
+  },
+  spes: {
+    id: "http://data.ub.uib.no/instance/organization/de88f626-4b67-4fef-9d88-6930e8b5c645",
+    type: "Group",
+    _label: {
+      no: ["Spesialsamlingene ved Universitetsbiblioteket i Bergen"],
+      en: ["Special collections atht the University of Bergen Library"],
+    }
+  },
+  sab: {
+    id: 'http://data.ub.uib.no/instance/organization/statsarkivet-i-bergen',
+    type: 'Group',
+    _label: {
+      no: ['Statsarkivet i Bergen'],
+    },
+  },
+  bba: {
+    id: 'http://data.ub.uib.no/instance/organization/3f0ed65b-8e5c-484e-8805-89619ee56a77',
+    type: 'Group',
+    _label: {
+      no: ['Bergen byarkiv'],
+    },
+  }
+}
 
+/**
+ * AAT Types
+ */
 export const aatHeightType = {
   id: "https://vocab.getty.edu/aat/300055644",
   type: "Type",
@@ -47,35 +89,247 @@ export const aatDescriptionsType = {
   type: "Type",
   _label: "Description",
 };
+
 export const aatAbstractsType = {
   id: "https://vocab.getty.edu/aat/300026032",
   type: "Type",
   _label: "Abstracts (summaries)",
 };
+
 export const aatPhysicalConditionsType = {
   id: "https://vocab.getty.edu/aat/300435425",
   type: "Type",
   _label: "Condition/examination description",
 };
+
 export const aatProvenanceStatementsType = {
   id: "https://vocab.getty.edu/aat/300444174",
   type: "Type",
   _label: "Provenance statement",
 };
+
 export const aatCountOfType = {
   id: "http://vocab.getty.edu/aat/300404433",
   type: "Type",
   _label: "Count Of"
 };
+
 export const aatPagesMeasurementUnitType = {
   id: "http://vocab.getty.edu/aat/300194222",
   type: "MeasurementUnit",
   _label: "Pages"
 };
 
+export const aatDigitalImageType = {
+  id: "http://vocab.getty.edu/aat/300215302",
+  type: "Type",
+  _label: "Digital Image"
+}
+
+export const aatThumbnailsType = {
+  id: "http://fix.me",
+  type: "Type",
+  _label: "Thumbnails"
+}
+
+export const aatWebPageType = {
+  id: "https://vocab.getty.edu/aat/300264578",
+  type: "Type",
+  _label: "Web Page"
+}
+
+export const aatAccessionNumberType = {
+  id: "https://vocab.getty.edu/aat/300312355",
+  type: "Type",
+  _label: "Accession Number"
+}
+
+export const aatHistoricalTermsType = {
+  id: "https://vocab.getty.edu/aat/300449151",
+  type: "Type",
+  _label: "Historical terms"
+}
+
+export const aatIsbnType = {
+  id: "https://vocab.getty.edu/aat/300417443",
+  type: "Type",
+  _label: "ISBN"
+}
+
+export const aatCatalogNumbersType = {
+  id: "https://vocab.getty.edu/aat/300404620",
+  type: "Type",
+  _label: "Catalog numbers"
+}
+
+export const aatPreferredTermsType = {
+  id: "https://vocab.getty.edu/aat/300404670",
+  type: "Type",
+  _label: "Preferred terms"
+}
+
+export const aatConstructedTitlesType = {
+  id: "https://vocab.getty.edu/aat/300417205",
+  type: "Type",
+  _label: "Constructed titles"
+}
+
+export const aatPrimaryNameType = {
+  id: "http://vocab.getty.edu/aat/300404670",
+  type: "Type",
+  _label: "Primary Name"
+}
+
+export const aatAlternativeTitlesType = {
+  id: "https://vocab.getty.edu/aat/300417226",
+  type: "Type",
+  _label: "Alternative titles"
+}
+
+export const aatProvenanceActivityType = {
+  id: "http://vocab.getty.edu/aat/300055863",
+  type: "Type",
+  _label: "Provenance Activity"
+}
+
+export const aatPublishingType = {
+  id: "http://vocab.getty.edu/aat/300054686",
+  type: "Type",
+  _label: "Publishing"
+}
+
+export const fixmeCorrespondanceType = {
+  id: "http://fix.me",
+  type: "Type",
+  _label: "Correspondance"
+}
+
+export const aatBriefTextType = {
+  id: "http://vocab.getty.edu/aat/300418049",
+  type: "Type",
+  _label: "Brief Text"
+}
+
+export const aatAcknowledgementsType = {
+  id: "http://vocab.getty.edu/aat/300026687",
+  type: "Type",
+  _label: "Acknowledgements"
+}
+
+export const aatRightsType = {
+  id: "http://vocab.getty.edu/aat/300417696",
+  type: "Type",
+  _label: "Rights (Legal Concept)"
+}
+
+export const aatIdentificationNumberType = {
+  id: "http://vocab.getty.edu/aat/300404626",
+  type: "Type",
+  _label: "Identification Number"
+}
+
+export const aatTitlesType = {
+  id: "http://vocab.getty.edu/aat/300417193",
+  type: "Type",
+  _label: "Titles (General, Names)"
+}
+
+export const aatCultureType = {
+  id: "http://vocab.getty.edu/aat/300055768",
+  type: "Type",
+  _label: "Culture"
+}
+
+export const aatFamilyNameType = {
+  id: "https://vocab.getty.edu/aat/300435247",
+  type: "Type",
+  _label: "Family Name"
+}
+
+export const aatLastNameType = {
+  id: "https://vocab.getty.edu/aat/300404652",
+  type: "Type",
+  _label: "Last Name"
+}
+
+export const aatFirstNameType = {
+  id: "https://vocab.getty.edu/aat/300404651",
+  type: "Type",
+  _label: "First Name"
+}
+
+export const aatMaidenNameType = {
+  id: "https://vocab.getty.edu/aat/300404682",
+  type: "Type",
+  _label: "Maiden Name"
+}
+
+export const aatMiddleNameType = {
+  id: "https://vocab.getty.edu/aat/300404654",
+  type: "Type",
+  _label: "Middle Name"
+}
+
+export const aatStageNameType = {
+  id: "https://vocab.getty.edu/aat/300404679",
+  type: "Type",
+  _label: "Stage Name"
+}
+
+export const aatSuffixesType = {
+  id: "https://vocab.getty.edu/aat/300404662",
+  type: "Type",
+  _label: "Suffixes"
+}
+
+export const aatPrefixesType = {
+  id: "https://vocab.getty.edu/aat/300404845",
+  type: "Type",
+  _label: "Prefixes"
+}
+
+export const aatPseudonymsType = {
+  id: "https://vocab.getty.edu/aat/300404657",
+  type: "Type",
+  _label: "Pseudonyms"
+}
+
+export const aatDisplayBiographyType = {
+  id: "https://vocab.getty.edu/aat/300435422",
+  type: "Type",
+  _label: "Display biography"
+}
+
+export const aatMaleType = {
+  id: "https://vocab.getty.edu/aat/300189559",
+  type: "Type",
+  _label: "Male"
+}
+
+export const aatFemaleType = {
+  id: "https://vocab.getty.edu/aat/300189557",
+  type: "Type",
+  _label: "Female"
+}
+
+export const aatSiblingsType = {
+  id: "https://vocab.getty.edu/aat/300187624",
+  type: "Type",
+  _label: "Siblings"
+}
+
 /**
  * Rights and Licenses
  */
+export const ccPublicDomainMarkType = {
+  id: "http://creativecommons.org/publicdomain/zero/1.0/",
+  type: "Type",
+  _label: {
+    no: ["CC0 1.0 Universal (CC0 1.0) Ingen opphavsrett"],
+    en: ["CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"],
+  }
+}
+
 export const rsCopyrightUndeterminedType = {
   id: "http://rightsstatements.org/vocab/UND/1.0/",
   type: "Type",
