@@ -1,6 +1,6 @@
 import omitEmptyEs from 'omit-empty-es';
-import { attributionNoDerivsType, attributionNonCommercialNoDerivsType, attributionNonCommercialType, attributionShareAlikeType, attributionType, publicDomainType, rsCopyrightUndeterminedType, rsInCopyrighttype } from '../../staticMapping';
 import { TBaseMetadata } from '../../../../models';
+import { aatAcknowledgementsType, aatBriefTextType, aatRightsType, attributionNoDerivsType, attributionNonCommercialNoDerivsType, attributionNonCommercialType, attributionShareAlikeType, attributionType, ccPublicDomainMarkType, institutions, publicDomainType, rsCopyrightUndeterminedType, rsInCopyrighttype } from '../../staticMapping';
 
 const getLicenseMapping = (licenseName: string) => {
   switch (licenseName) {
@@ -83,7 +83,7 @@ function getIsInPublicDomainQuery(id: string) {
   return query
 }
 
-export const constructLicense = async (base: TBaseMetadata, data: any) => {
+export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
   const {
     license,
   } = data;
@@ -131,11 +131,7 @@ export const constructLicense = async (base: TBaseMetadata, data: any) => {
             type: "LinguisticObject",
             _label: "Rights Statement Description",
             classified_as: [
-              {
-                id: "http://vocab.getty.edu/aat/300418049",
-                type: "Type",
-                _label: "Brief Text"
-              }
+              aatBriefTextType,
             ],
             content: rightsStatement._label
           }
@@ -149,11 +145,7 @@ export const constructLicense = async (base: TBaseMetadata, data: any) => {
             type: "LinguisticObject",
             _label: "Acknowledgements for Work Rights",
             classified_as: [
-              {
-                id: "http://vocab.getty.edu/aat/300026687",
-                type: "Type",
-                _label: "Acknowledgements"
-              }
+              aatAcknowledgementsType,
             ],
             content: "Works are provided by the University of Bergen Library. All works are licensed or marked under the respective rights statements."
           }
@@ -164,52 +156,21 @@ export const constructLicense = async (base: TBaseMetadata, data: any) => {
         type: "Right",
         _label: "License for Collection Metadata",
         classified_as: [
-          {
-            id: "http://vocab.getty.edu/aat/300417696",
-            type: "Type",
-            _label: "Rights (Legal Concept)"
-          },
-          {
-            id: "http://creativecommons.org/publicdomain/zero/1.0/", // @TODO: We have decided long ago that metadata is CC0, but will this apply in all cases and for all collections?.
-            type: "Type",
-            _label: "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
-          }
+          aatRightsType,
+          ccPublicDomainMarkType,
         ],
         referred_to_by: [
           {
-            id: "https://data.getty.edu/museum/collection/object/6ea43ea4-0fd2-4310-b98a-b83dae8733e7/licensing/description",
             type: "LinguisticObject",
             _label: "License Description",
             classified_as: [
-              {
-                id: "http://vocab.getty.edu/aat/300418049",
-                type: "Type",
-                _label: "Brief Text"
-              }
+              aatBriefTextType,
             ],
             content: "No Copyright"
           }
         ],
         possessed_by: [
-          {
-            id: "https://data.ub.uib.no/instance/organization/0f4d957a-5476-4e88-b2b6-71a06c1ecf9c",
-            type: "Group",
-            _label: "The University of Bergen Library",
-            /*  member_of: [ // Do we need this?
-               {
-                 id: "http://vocab.getty.edu/ulan/500115987",
-                 type: "Group",
-                 _label: "The University of Bergen Library",
-                 classified_as: [
-                   {
-                     id: "http://vocab.getty.edu/ulan/500000003",
-                     type: "Type",
-                     _label: "Corporate Bodies"
-                   }
-                 ]
-               }
-             ] */
-          }
+          institutions.ubb // TODO: should this be the library or UiB?
         ],
         subject_of: [
           {
@@ -217,11 +178,7 @@ export const constructLicense = async (base: TBaseMetadata, data: any) => {
             type: "LinguisticObject",
             _label: "Acknowledgements for Collection Metadata",
             classified_as: [
-              {
-                id: "http://vocab.getty.edu/aat/300026687",
-                type: "Type",
-                _label: "Acknowledgements"
-              }
+              aatAcknowledgementsType,
             ],
             content: "Collection metadata provided by the University of Bergen Library. All metadata about collections and items are licensed under CC0 1.0 (http://creativecommons.org/publicdomain/zero/1.0/). The works themselves are licensed under the respective rights statements."
           }
