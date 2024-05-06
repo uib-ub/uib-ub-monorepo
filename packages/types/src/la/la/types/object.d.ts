@@ -184,6 +184,19 @@ export type CrmP16UsedSpecificObject = (CrmE22_HumanMade_Object | LaSet)[];
  * The class of the entity
  */
 export type RdfType3 = string;
+export type Specific13 =
+  | "HumanMadeObject"
+  | "Person"
+  | "Group"
+  | "VisualItem"
+  | "LinguisticObject"
+  | "Set"
+  | "Place"
+  | "DigitalObject"
+  | "Type"
+  | "Event"
+  | "Activity"
+  | "Period";
 /**
  * An entity that influenced the activity in some way
  */
@@ -207,17 +220,17 @@ export type General16 = NoName[];
 /**
  * List of `HumanMadeObject` entities
  */
-export type Specific13 = CrmE22_HumanMade_Object[];
+export type Specific14 = CrmE22_HumanMade_Object[];
 /**
  * The class of the entity
  */
 export type RdfType4 = string;
-export type Specific14 = "VisualItem";
+export type Specific15 = "VisualItem";
 /**
  * The class of the entity
  */
 export type RdfType5 = string;
-export type Specific15 = "DigitalObject";
+export type Specific16 = "DigitalObject";
 /**
  * A URL from which the digital object is able to be retrieved
  */
@@ -246,7 +259,7 @@ export type LaMemberOf = LaSet[];
  * The class of the entity
  */
 export type RdfType7 = string;
-export type Specific16 = "LinguisticObject";
+export type Specific17 = "LinguisticObject";
 /**
  * A digital object that carries the current linguistic object
  */
@@ -287,7 +300,7 @@ export type LaCurrentPermanentCustodian = (E21_Person | CrmE74_Group)[];
  * The class of the entity
  */
 export type RdfType9 = string;
-export type Specific17 = "Activity";
+export type Specific18 = "Activity";
 /**
  * One or more other activities without their own identities in which this object was used
  */
@@ -308,7 +321,7 @@ export type CrmP128Carries = CrmE33_Linguistic_Object1[];
  * The class of the entity
  */
 export type RdfType11 = string;
-export type Specific18 = "Production";
+export type Specific19 = "Production";
 /**
  * An identified event or activity which this activity is part of
  */
@@ -318,7 +331,7 @@ export type CrmP46IsComposedOf = CrmE12_Production[];
  * The class of the entity
  */
 export type RdfType12 = string;
-export type Specific19 = "Destruction";
+export type Specific20 = "Destruction";
 /**
  * An identified event or activity which this event is part of
  */
@@ -327,7 +340,7 @@ export type CrmP9IFormsPartOf1 = CrmE6_Event | CrmE7_Activity;
  * The class of the entity
  */
 export type RdfType13 = string;
-export type Specific20 = "PartRemoval";
+export type Specific21 = "PartRemoval";
 /**
  * An identified event or activity which this activity is part of
  */
@@ -340,7 +353,7 @@ export type CrmP113IWasRemovedBy = CrmE80_Part_Removal[];
  * The class of the entity
  */
 export type RdfType14 = string;
-export type Specific21 = "Encounter";
+export type Specific22 = "Encounter";
 /**
  * An identified event or activity which this activity is part of
  */
@@ -363,7 +376,7 @@ export interface HumanMadeObjectSchema {
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
   referred_to_by?: CrmP67IIsReferredToBy;
-  equivalent?: General16 & Specific13;
+  equivalent?: General16 & Specific14;
   representation?: CrmP138IHasRepresentation;
   member_of?: LaMemberOf;
   subject_of?: CrmP129IIsSubjectOf;
@@ -594,21 +607,7 @@ export interface LaSet {
  */
 export interface NoName {
   id: TheSubjectUri;
-  type: RdfType3 &
-    (
-      | "HumanMadeObject"
-      | "Person"
-      | "Group"
-      | "VisualItem"
-      | "LinguisticObject"
-      | "Set"
-      | "Place"
-      | "DigitalObject"
-      | "Type"
-      | "Event"
-      | "Activity"
-      | "Period"
-    );
+  type: RdfType3 & Specific13;
   _label?: RdfsLabel;
 }
 /**
@@ -621,7 +620,7 @@ export interface NoName1 {
  * An embedded Visual Item, such as the content of a digital image
  */
 export interface CrmE36_Visual_Item {
-  type: RdfType4 & Specific14;
+  type: RdfType4 & Specific15;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -632,7 +631,7 @@ export interface CrmE36_Visual_Item {
  * An embedded Digital Object, such as a home page reference
  */
 export interface DigD1_Digital_Object {
-  type?: RdfType5 & Specific15;
+  type?: RdfType5 & Specific16;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -654,7 +653,7 @@ export interface CrmE73_Information_Object {
  * An embedded Linguistic Object, such as the content of a web page
  */
 export interface CrmE33_Linguistic_Object2 {
-  type: RdfType7 & Specific16;
+  type: RdfType7 & Specific17;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -706,7 +705,7 @@ export interface CrmP55HasCurrentLocation {
  * An activity carried out by some person or group
  */
 export interface CrmE7_Activity1 {
-  type: RdfType9 & Specific17;
+  type: RdfType9 & Specific18;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -733,7 +732,7 @@ export interface CrmE36_Visual_Item1 {
  * The `Production` activity which created this object
  */
 export interface CrmP108IWasProducedBy {
-  type?: RdfType11 & Specific18;
+  type?: RdfType11 & Specific19;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -753,7 +752,7 @@ export interface CrmP108IWasProducedBy {
  * The production/creation of the object
  */
 export interface CrmE12_Production {
-  type?: RdfType11 & Specific18;
+  type?: RdfType11 & Specific19;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -773,7 +772,7 @@ export interface CrmE12_Production {
  * The `Destruction` event in which this object was destroyed
  */
 export interface CrmP13IWasDestroyedBy {
-  type?: RdfType12 & Specific19;
+  type?: RdfType12 & Specific20;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -788,7 +787,7 @@ export interface CrmP13IWasDestroyedBy {
  * The activity of removing this object from some other object.
  */
 export interface CrmE80_Part_Removal {
-  type?: RdfType13 & Specific20;
+  type?: RdfType13 & Specific21;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -817,7 +816,7 @@ export interface CrmE22_HumanMade_Object2 {
  * The activity during which this object was encountered, found or discovered.
  */
 export interface SciS19_Encounter_Event {
-  type?: RdfType14 & Specific21;
+  type?: RdfType14 & Specific22;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;

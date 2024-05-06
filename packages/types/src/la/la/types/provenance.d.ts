@@ -184,6 +184,19 @@ export type CrmP16UsedSpecificObject = (CrmE22_HumanMade_Object | LaSet)[];
  * The class of the entity
  */
 export type RdfType3 = string;
+export type Specific13 =
+  | "HumanMadeObject"
+  | "Person"
+  | "Group"
+  | "VisualItem"
+  | "LinguisticObject"
+  | "Set"
+  | "Place"
+  | "DigitalObject"
+  | "Type"
+  | "Event"
+  | "Activity"
+  | "Period";
 /**
  * An entity that influenced the activity in some way
  */
@@ -207,17 +220,17 @@ export type General16 = NoName[];
 /**
  * List of equivalent `Activity` entities
  */
-export type Specific13 = CrmE7_Activity[];
+export type Specific14 = CrmE7_Activity[];
 /**
  * The class of the entity
  */
 export type RdfType4 = string;
-export type Specific14 = "VisualItem";
+export type Specific15 = "VisualItem";
 /**
  * The class of the entity
  */
 export type RdfType5 = string;
-export type Specific15 = "DigitalObject";
+export type Specific16 = "DigitalObject";
 /**
  * A URL from which the digital object is able to be retrieved
  */
@@ -246,7 +259,7 @@ export type LaMemberOf = LaSet[];
  * The class of the entity
  */
 export type RdfType7 = string;
-export type Specific16 = "LinguisticObject";
+export type Specific17 = "LinguisticObject";
 /**
  * A digital object that carries the current linguistic object
  */
@@ -275,7 +288,7 @@ export type PartOptions =
  * The class of the entity
  */
 export type RdfType8 = string;
-export type Specific17 = "Acquisition";
+export type Specific18 = "Acquisition";
 export type CrmP23TransferredTitleFrom = (E21_Person | CrmE74_Group)[];
 export type CrmP22TransferredTitleTo = (E21_Person | CrmE74_Group)[];
 export type CrmP24TransferredTitleOf = CrmE22_HumanMade_Object[];
@@ -283,17 +296,17 @@ export type CrmP24TransferredTitleOf = CrmE22_HumanMade_Object[];
  * The class of the entity
  */
 export type RdfType9 = string;
-export type Specific18 = "RightAcquisition";
+export type Specific19 = "RightAcquisition";
 /**
  * The class of the entity
  */
 export type RdfType10 = string;
-export type Specific19 = "Right";
+export type Specific20 = "Right";
 /**
  * The class of the entity
  */
 export type RdfType11 = string;
-export type Specific20 = "Creation";
+export type Specific21 = "Creation";
 /**
  * An identified event or activity which this creation is part of
  */
@@ -304,7 +317,7 @@ export type LaInvalidates = CrmE30_Right[];
  * The class of the entity
  */
 export type RdfType12 = string;
-export type Specific21 = "TransferOfCustody";
+export type Specific22 = "TransferOfCustody";
 export type CrmP28CustodySurrenderedBy = (E21_Person | CrmE74_Group)[];
 export type CrmP29CustodyReceivedBy = (E21_Person | CrmE74_Group)[];
 export type CrmP30TransferredCustodyOf = CrmE22_HumanMade_Object[];
@@ -312,14 +325,14 @@ export type CrmP30TransferredCustodyOf = CrmE22_HumanMade_Object[];
  * The class of the entity
  */
 export type RdfType13 = string;
-export type Specific22 = "Payment";
+export type Specific23 = "Payment";
 export type LaPaidFrom = (E21_Person | CrmE74_Group)[];
 export type LaPaidTo = (E21_Person | CrmE74_Group)[];
 /**
  * The class of the entity
  */
 export type RdfType14 = string;
-export type Specific23 = "MonetaryAmount";
+export type Specific24 = "MonetaryAmount";
 /**
  * The class of the entity
  */
@@ -328,7 +341,7 @@ export type RdfType15 = string;
  * The class of the entity
  */
 export type RdfType16 = string;
-export type Specific24 = "Encounter";
+export type Specific25 = "Encounter";
 /**
  * The objects that were encountered during this event
  */
@@ -337,7 +350,7 @@ export type SciO19HasFoundObject = CrmE22_HumanMade_Object[];
  * The class of the entity
  */
 export type RdfType17 = string;
-export type Specific25 = "Move";
+export type Specific26 = "Move";
 /**
  * The objects that were moved
  */
@@ -346,7 +359,7 @@ export type CrmP25Moved = CrmE22_HumanMade_Object[];
  * The class of the entity
  */
 export type RdfType18 = string;
-export type Specific26 = "Activity";
+export type Specific27 = "Activity";
 /**
  * More specific parts of the event
  */
@@ -365,7 +378,7 @@ export interface ProvenanceActivitySchema {
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as: CrmP2HasType;
   referred_to_by?: CrmP67IIsReferredToBy;
-  equivalent?: General16 & Specific13;
+  equivalent?: General16 & Specific14;
   representation?: CrmP138IHasRepresentation;
   member_of?: LaMemberOf;
   subject_of?: CrmP129IIsSubjectOf;
@@ -591,21 +604,7 @@ export interface LaSet {
  */
 export interface NoName {
   id: TheSubjectUri;
-  type: RdfType3 &
-    (
-      | "HumanMadeObject"
-      | "Person"
-      | "Group"
-      | "VisualItem"
-      | "LinguisticObject"
-      | "Set"
-      | "Place"
-      | "DigitalObject"
-      | "Type"
-      | "Event"
-      | "Activity"
-      | "Period"
-    );
+  type: RdfType3 & Specific13;
   _label?: RdfsLabel;
 }
 /**
@@ -618,7 +617,7 @@ export interface NoName1 {
  * An embedded Visual Item, such as the content of a digital image
  */
 export interface CrmE36_Visual_Item {
-  type: RdfType4 & Specific14;
+  type: RdfType4 & Specific15;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -629,7 +628,7 @@ export interface CrmE36_Visual_Item {
  * An embedded Digital Object, such as a home page reference
  */
 export interface DigD1_Digital_Object {
-  type?: RdfType5 & Specific15;
+  type?: RdfType5 & Specific16;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -651,7 +650,7 @@ export interface CrmE73_Information_Object {
  * An embedded Linguistic Object, such as the content of a web page
  */
 export interface CrmE33_Linguistic_Object2 {
-  type: RdfType7 & Specific16;
+  type: RdfType7 & Specific17;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -663,7 +662,7 @@ export interface CrmE33_Linguistic_Object2 {
  * The transfer of ownership of a physical object between parties
  */
 export interface CrmE8_Acquisition {
-  type: RdfType8 & Specific17;
+  type: RdfType8 & Specific18;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -680,7 +679,7 @@ export interface CrmE8_Acquisition {
   transferred_title_of: CrmP24TransferredTitleOf;
 }
 export interface LaRightAcquisition {
-  type: RdfType9 & Specific18;
+  type: RdfType9 & Specific19;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -700,7 +699,7 @@ export interface LaRightAcquisition {
  */
 export interface CrmE30_Right {
   _label?: RdfsLabel;
-  type: RdfType10 & Specific19;
+  type: RdfType10 & Specific20;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
   referred_to_by?: CrmP67IIsReferredToBy;
@@ -711,7 +710,7 @@ export interface CrmE30_Right {
  * The creation of the intellectual/conceptual entity
  */
 export interface CrmP94IWasCreatedBy {
-  type?: RdfType11 & Specific20;
+  type?: RdfType11 & Specific21;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -727,7 +726,7 @@ export interface CrmP94IWasCreatedBy {
   [k: string]: unknown;
 }
 export interface CrmE10_TransferOf_Custody {
-  type: RdfType12 & Specific21;
+  type: RdfType12 & Specific22;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -744,7 +743,7 @@ export interface CrmE10_TransferOf_Custody {
   transferred_custody_of: CrmP30TransferredCustodyOf;
 }
 export interface LaPayment {
-  type: RdfType13 & Specific22;
+  type: RdfType13 & Specific23;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -762,7 +761,7 @@ export interface LaPayment {
 }
 export interface LaPaidAmount {
   _label?: RdfsLabel;
-  type: RdfType14 & Specific23;
+  type: RdfType14 & Specific24;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
   value: CrmP90HasValue;
@@ -779,7 +778,7 @@ export interface CrmE98_Currency {
   _label?: RdfsLabel;
 }
 export interface SciS19_Encounter_Event {
-  type: RdfType16 & Specific24;
+  type: RdfType16 & Specific25;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -794,7 +793,7 @@ export interface SciS19_Encounter_Event {
   encountered: SciO19HasFoundObject;
 }
 export interface CrmE9_Move {
-  type: RdfType17 & Specific25;
+  type: RdfType17 & Specific26;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -829,7 +828,7 @@ export interface CrmE53_Place2 {
   _label?: RdfsLabel;
 }
 export interface CrmE7_Activity1 {
-  type: RdfType18 & Specific26;
+  type: RdfType18 & Specific27;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as: CrmP2HasType;

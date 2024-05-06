@@ -1367,7 +1367,7 @@
                             "$ref": "#/definitions/typeProp"
                         },
                         {
-                            "Title": "Specific",
+                            "title": "Specific",
                             "type": "string",
                             "enum": [
                                 "HumanMadeObject",

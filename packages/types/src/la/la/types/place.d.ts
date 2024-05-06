@@ -180,6 +180,19 @@ export type CrmP16UsedSpecificObject = (CrmE22_HumanMade_Object | LaSet)[];
  * The class of the entity
  */
 export type RdfType3 = string;
+export type Specific13 =
+  | "HumanMadeObject"
+  | "Person"
+  | "Group"
+  | "VisualItem"
+  | "LinguisticObject"
+  | "Set"
+  | "Place"
+  | "DigitalObject"
+  | "Type"
+  | "Event"
+  | "Activity"
+  | "Period";
 /**
  * An entity that influenced the activity in some way
  */
@@ -207,17 +220,17 @@ export type General16 = NoName[];
 /**
  * List of `Place` entities
  */
-export type Specific13 = CrmE53_Place[];
+export type Specific14 = CrmE53_Place[];
 /**
  * The class of the entity
  */
 export type RdfType4 = string;
-export type Specific14 = "VisualItem";
+export type Specific15 = "VisualItem";
 /**
  * The class of the entity
  */
 export type RdfType5 = string;
-export type Specific15 = "DigitalObject";
+export type Specific16 = "DigitalObject";
 /**
  * A URL from which the digital object is able to be retrieved
  */
@@ -246,7 +259,7 @@ export type LaMemberOf = LaSet[];
  * The class of the entity
  */
 export type RdfType7 = string;
-export type Specific16 = "LinguisticObject";
+export type Specific17 = "LinguisticObject";
 /**
  * A digital object that carries the current linguistic object
  */
@@ -281,7 +294,7 @@ export interface PlaceSchema {
   classified_as?: CrmP2HasType;
   identified_by?: CrmP1IsIdentifiedBy;
   referred_to_by?: CrmP67IIsReferredToBy;
-  equivalent?: General16 & Specific13;
+  equivalent?: General16 & Specific14;
   representation?: CrmP138IHasRepresentation;
   member_of?: LaMemberOf;
   subject_of?: CrmP129IIsSubjectOf;
@@ -500,21 +513,7 @@ export interface LaSet {
  */
 export interface NoName {
   id: TheSubjectUri;
-  type: RdfType3 &
-    (
-      | "HumanMadeObject"
-      | "Person"
-      | "Group"
-      | "VisualItem"
-      | "LinguisticObject"
-      | "Set"
-      | "Place"
-      | "DigitalObject"
-      | "Type"
-      | "Event"
-      | "Activity"
-      | "Period"
-    );
+  type: RdfType3 & Specific13;
   _label?: RdfsLabel;
 }
 /**
@@ -527,7 +526,7 @@ export interface NoName1 {
  * An embedded Visual Item, such as the content of a digital image
  */
 export interface CrmE36_Visual_Item {
-  type: RdfType4 & Specific14;
+  type: RdfType4 & Specific15;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -538,7 +537,7 @@ export interface CrmE36_Visual_Item {
  * An embedded Digital Object, such as a home page reference
  */
 export interface DigD1_Digital_Object {
-  type?: RdfType5 & Specific15;
+  type?: RdfType5 & Specific16;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -560,7 +559,7 @@ export interface CrmE73_Information_Object {
  * An embedded Linguistic Object, such as the content of a web page
  */
 export interface CrmE33_Linguistic_Object2 {
-  type: RdfType7 & Specific16;
+  type: RdfType7 & Specific17;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
