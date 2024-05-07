@@ -11,9 +11,7 @@
     <TermpostTermSection>
       <!--Equivalence -->
       <TermpostTermProp
-        v-if="
-          concept?.hasEquivalenceData?.[lang] && meta.startingLanguage !== lang
-        "
+        v-if="meta.startingLanguage && meta.startingLanguage !== lang"
         :flex="true"
         :label="$t('global.equivalence.equivalence')"
       >
