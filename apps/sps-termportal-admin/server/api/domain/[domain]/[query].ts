@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
   const domain = decodeURI(event.context.params?.domain);
   const queryType = event.context.params?.query;
 
+  console.log(domain)
   const query = () => {
     switch (queryType) {
       case "domainOverview":
