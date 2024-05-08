@@ -40,9 +40,5 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  setResponseHeaders(event, {
-    "Cache-Control": "public, max-age=1200",
-  });
-
   return data;
 });
