@@ -18,6 +18,7 @@ import ingestManifests from './routes/admin/ingest_manifests.route'
 import ingestLegacySka from './routes/admin/ingest_ska.route'
 import ingestLegacyWab from './routes/admin/ingest_wab.route'
 import items from './routes/items.route'
+import legacyGroups from './routes/legacy/groups.route'
 import legacyItems from './routes/legacy/items.route'
 import wab from './routes/legacy/items_wab.route'
 import legacyPeople from './routes/legacy/people.route'
@@ -63,6 +64,7 @@ app.route('/admin', es)
 app.route('/legacy', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
 app.route('/legacy', legacyItems)
 app.route('/legacy', legacyPeople)
+app.route('/legacy', legacyGroups)
 app.route('/admin', ingest)
 app.route('/admin', ingestManifests)
 app.route('/admin', ingestLegacySka)

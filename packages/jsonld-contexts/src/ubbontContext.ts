@@ -702,6 +702,9 @@ const ubbontContext = {
     "Person": {
       "@id": "foaf:Person"
     },
+    "Group": {
+      "@id": "crm:E74_Group"
+    },
     "based_near": {
       "@id": "foaf:based_near",
       "@type": "@id",

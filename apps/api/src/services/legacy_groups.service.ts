@@ -25,7 +25,7 @@ function getQuery(page = 0, limit = 100) {
 }
 
 
-export async function getPeople(url: string, context: string, page?: number, limit?: number): Promise<any> {
+export async function getGroups(url: string, context: string, page?: number, limit?: number): Promise<any> {
   if (!url) { throw Error }
 
   const query = getQuery(page, limit)
@@ -36,9 +36,16 @@ export async function getPeople(url: string, context: string, page?: number, lim
         query,
       )}&output=nt`,
     )
-    const result = await response.text()
+    const results = await response.text()
 
-    const data = await compactAndFrameNTriples(result, context, 'Person')
+    if (!results) {
+      return {
+        error: true,
+        message: 'ID not found, or the object have insufficient metadata'
+      }
+    }
+
+    const data = await compactAndFrameNTriples(results, context, 'Group')
     return cleanJsonld(data)
   }
   catch (error) {

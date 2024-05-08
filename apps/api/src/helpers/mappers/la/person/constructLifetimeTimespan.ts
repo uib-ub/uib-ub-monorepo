@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import omitEmptyEs from 'omit-empty-es';
 import { API_URL } from '../../../../config/constants';
 import { checkIntervalValidity } from '../../../validators/checkIntervalValidity';
@@ -78,10 +77,9 @@ export const constructLifetimeTimespan = (data: any) => {
     ...data,
     ...(birthTimespan ? {
       born: {
-        id: randomUUID(),
         _type: 'Birth',
         timespan: birthTimespan,
-        parent: parent.map((parent: any) => ({ // TODO: not valid CRM, as this should be "by mother" or "from father
+        parent: parent?.map((parent: any) => ({ // TODO: not valid CRM, as this should be "by mother" or "from father
           id: `${API_URL}/people/${parent.identifier}`,
           type: 'Person',
           _label: parent._label,
@@ -95,7 +93,6 @@ export const constructLifetimeTimespan = (data: any) => {
     } : null),
     ...(deathTimespan ? {
       died: {
-        id: randomUUID(),
         _type: 'Death',
         timespan: deathTimespan,
         took_place_at: deathPlace ? {

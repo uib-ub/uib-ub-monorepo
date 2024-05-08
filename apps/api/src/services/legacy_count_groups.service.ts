@@ -20,7 +20,7 @@ const query = `
   }
 `
 
-export async function countPeople(source: string): Promise<any> {
+export async function countGroups(source: string): Promise<any> {
   const SERVICE = DATA_SOURCES.filter((service) => service.name === source)[0].url
   const url = `${SERVICE}${encodeURIComponent(query)}&output=json`
   try {

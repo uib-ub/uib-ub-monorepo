@@ -7,7 +7,7 @@ import { cleanDateDatatypes } from '../helpers/cleaners/cleanDateDatatypes'
 import { convertToFloat } from '../helpers/cleaners/convertToFloat'
 import { removeStringsFromArray } from '../helpers/cleaners/removeStringsFromArray'
 import fetch from '../helpers/fetchRetry'
-import { constructCoreMetadata } from '../helpers/mappers/la/person/constructCoreMetadata'
+import { constructCoreMetadata } from '../helpers/mappers/la/group/constructCoreMetadata'
 import { constructLifetimeTimespan } from '../helpers/mappers/la/person/constructLifetimeTimespan'
 import { constructAboutness } from '../helpers/mappers/la/shared/constructAboutness'
 import { constructAssertions } from '../helpers/mappers/la/shared/constructAssertions'
@@ -22,7 +22,7 @@ function getQuery(id: string) {
     ${SPARQL_PREFIXES}
     CONSTRUCT {
       ?uri ?p ?o ;
-        a ?class ;
+        a crm:E74_Group ;
         crm:P2_has_type ?type ;
         dct:created ?created ;
         rdfs:label ?label ;
@@ -60,7 +60,7 @@ function getQuery(id: string) {
   return query
 }
 
-async function getPersonData(id: string, source: string, context: string, type: string): Promise<HumanMadeObjectSchema | TFailure> {
+async function getGroupData(id: string, source: string, context: string, type: string): Promise<HumanMadeObjectSchema | TFailure> {
   const url = `${source}${encodeURIComponent(getQuery(id))}&output=nt`
   // @TODO: Add support for multiple contexts?
   const useContext = CONTEXTS[context as keyof typeof CONTEXTS]
@@ -119,7 +119,7 @@ async function getPersonData(id: string, source: string, context: string, type: 
     const base: TBaseMetadata = {
       identifier: data.identifier,
       context: ['https://linked.art/ns/v1/linked-art.json', context],
-      newId: `${DOMAIN}/people/${data.uuid ?? data.identifier}`,
+      newId: `${DOMAIN}/groups/${data.uuid ?? data.identifier}`,
       originalId: data.id,
       _label: data._label,
     }
@@ -151,4 +151,4 @@ async function getPersonData(id: string, source: string, context: string, type: 
   }
 }
 
-export default getPersonData
+export default getGroupData
