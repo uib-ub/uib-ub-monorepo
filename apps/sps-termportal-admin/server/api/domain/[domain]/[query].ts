@@ -11,9 +11,10 @@ export default defineEventHandler(async (event) => {
     url = runtimeConfig.endpointUrlInternal;
   }
 
-  const domain = event.context.params?.domain;
+  const domain = decodeURI(event.context.params?.domain);
   const queryType = event.context.params?.query;
 
+  console.log(domain)
   const query = () => {
     switch (queryType) {
       case "domainOverview":
