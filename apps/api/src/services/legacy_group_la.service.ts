@@ -89,14 +89,14 @@ async function getGroupData(id: string, source: string, context: string, type: s
     }, useContext as ContextDefinition
     )
 
-    const hasTypeAsString = ((compacted['@graph'] as any).filter((i: any) => i.identifier === id)[0]?.hasType as string).toLowerCase ?? (compacted.hasType as string).toLowerCase
+    const hasClassAsString = ((compacted['@graph'] as any).filter((i: any) => i.identifier === id)[0]?.hasType as string).toLowerCase() ?? (compacted.hasType as string).toLowerCase()
 
     let data: any
 
     try {
       const framed = jsonld.frame(compacted, {
         ...useContext,
-        '@id': `http://data.ub.uib.no/instance/${hasTypeAsString}/${id}`,
+        '@id': `http://data.ub.uib.no/instance/${hasClassAsString}/${id}`,
         '@embed': '@always',
       });
       data = omitEmptyEs(await framed)
