@@ -63,7 +63,13 @@ export default defineNuxtConfig({
     "/api/tb/**": {
       headers: {
         "Cache-Control":
-          "max-age=600, s-maxage=3600, stale-while-revalidate=7200",
+          "max-age=600, s-maxage=7200, stale-while-revalidate=36000",
+      },
+    },
+    "/api/domain/**": {
+      headers: {
+        "Cache-Control":
+          "max-age=600, s-maxage=7200, stale-while-revalidate=36000",
       },
     },
   },
