@@ -1,5 +1,5 @@
 import { SearchDataStats } from "./states";
-import { Matching, SearchOptions } from "~~/utils/vars";
+import { Matching, SearchOptions, searchFilterDataEmpty } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
@@ -68,17 +68,13 @@ export async function useFetchSearchData(options: SearchOptions) {
   searchFetchLatest.value = fetchTime;
   const situation = options.situation;
 
-  if (situation === "initial") {
-    if (route.path === "/search") {
-      searchFetchInitial.value = true;
-    }
-    searchFilterData.value = {
-      lang: [],
-      samling: [],
-      predicate: [],
-      matching: [],
-      context: [],
-    };
+  if (situation === "initial" && route.path === "/search") {
+    searchFetchInitial.value = true;
+  }
+
+  // Reset filter if initial search or options change
+  if (situation === "initial" || situation === "options") {
+    searchFilterData.value = searchFilterDataEmpty();
   }
 
   if (
