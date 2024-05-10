@@ -63,7 +63,6 @@ function getQuery(id: string) {
 
 async function getPersonData(id: string, source: string, context: string, type: string): Promise<HumanMadeObjectSchema | TFailure> {
   const url = `${source}${encodeURIComponent(getQuery(id))}&output=nt`
-  // @TODO: Add support for multiple contexts?
   const useContext = CONTEXTS[context as keyof typeof CONTEXTS]
 
   try {
@@ -90,7 +89,7 @@ async function getPersonData(id: string, source: string, context: string, type: 
     }, useContext as ContextDefinition
     )
 
-    const hasTypeAsString = ((compacted['@graph'] as any).filter((i: any) => i.identifier === id)[0]?.hasType as string).toLowerCase ?? (compacted.hasType as string).toLowerCase
+    const hasTypeAsString = ((compacted['@graph'] as any).filter((i: any) => i.identifier === id)[0]?.hasType as string).toLowerCase() ?? (compacted.hasType as string).toLowerCase()
 
     let data: any
 

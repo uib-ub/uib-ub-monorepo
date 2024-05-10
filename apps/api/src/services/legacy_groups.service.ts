@@ -6,7 +6,8 @@ function getQuery(page = 0, limit = 100) {
   const query = `
     ${SPARQL_PREFIXES}
     CONSTRUCT {
-      ?uri dct:identifier ?id ;
+      ?uri a crm:E74_Group ;
+        dct:identifier ?id .
     } WHERE { 
       SERVICE <cache:> { 
         SELECT ?uri ?id WHERE 

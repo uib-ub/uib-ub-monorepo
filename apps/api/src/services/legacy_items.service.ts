@@ -7,13 +7,15 @@ function getQuery(page = 0, limit = 100) {
   const query = `
     ${SPARQL_PREFIXES}
     CONSTRUCT {
-      ?uri dct:identifier ?id ;
+      ?uri a ?class ; 
+        dct:identifier ?id ;
         ubbont:isDigitized ?isDigitized .
     } WHERE { 
       SERVICE <cache:> { 
-        SELECT ?uri ?id ?isDigitized WHERE 
+        SELECT ?uri ?class ?id ?isDigitized WHERE 
           { 
             ?uri rdf:type/rdfs:subClassOf* bibo:Document ;
+              a ?class ;
               ubbont:showWeb true ;
               dct:identifier ?id .
             BIND(EXISTS{?uri ubbont:hasRepresentation ?repr} AS ?isDigitized)
