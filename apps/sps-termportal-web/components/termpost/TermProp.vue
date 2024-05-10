@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'md:flex': flex }">
+  <div :class="{ 'xs:flex xs:space-x-3': flex }">
     <dt class="max-w-prose font-semibold" :class="{ 'w-32 shrink-0': flex }">
       {{ label }}
     </dt>

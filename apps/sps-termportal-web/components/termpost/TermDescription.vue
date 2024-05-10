@@ -9,47 +9,66 @@
     }"
   >
     <!-- Links are passed as Arrays -->
-    <div
-      v-if="!Array.isArray(mainValue(d))"
-      :lang="dataLang"
-      class="max-w-prose"
-      v-html="mainValue(d)"
-    />
-    <AppLink
-      v-else
-      class="underline hover:decoration-2 max-w-prose"
-      :to="d[1]"
-      >{{ d[0] }}</AppLink
-    >
+    <div v-if="mainValue(d)">
+      <div
+        v-if="!Array.isArray(mainValue(d))"
+        :lang="dataLang"
+        class="max-w-prose"
+        v-html="mainValue(d)"
+      />
+      <AppLink
+        v-else
+        class="underline hover:decoration-2 max-w-prose"
+        :to="mainValue(d)[1]"
+        >{{ mainValue(d)[0] }}</AppLink
+      >
+    </div>
     <dl
       v-if="
-        d?.note ||
-        d?.scopeNote ||
-        d?.isOfAbbreviationType ||
-        d?.isAbbreviationOf ||
-        d?.isCollocatedWith ||
-        d?.subject ||
-        d?.source ||
-        d?.['skosp:dctSource']
+        (d?.note ||
+          d?.scopeNote ||
+          d?.isOfAbbreviationType ||
+          d?.isAbbreviationOf ||
+          d?.isCollocatedWith ||
+          d?.subject ||
+          d?.description ||
+          d?.source ||
+          d?.['skosp:dctSource']) &&
+        prop !== 'equivalence' &&
+        prop !== 'equivalencenote'
       "
-      class="grid-col-3 ml-2 mt-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1 md:ml-5"
+      class="grid-col-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1"
+      :class="{ 'mt-4': mainValue(d) }"
     >
-      <TermProp v-if="d.isOfAbbreviationType" :label="$t('id.forkortelseType')">
+      <TermpostTermProp
+        v-if="d.isOfAbbreviationType"
+        :label="$t('id.forkortelseType')"
+      >
         <dd class="max-w-prose" v-html="d.isOfAbbreviationType" />
-      </TermProp>
-      <TermProp v-if="d.isAbbreviationOf" :label="$t('id.forkortelseAv')">
+      </TermpostTermProp>
+      <TermpostTermProp
+        v-if="d.isAbbreviationOf"
+        :label="$t('id.forkortelseAv')"
+      >
         <dd class="max-w-prose" v-html="d.isAbbreviationOf" />
-      </TermProp>
-      <TermProp v-if="d.isCollocatedWith" :label="$t('id.kollokasjon')">
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.isCollocatedWith" :label="$t('id.kollokasjon')">
         <dd
           class="max-w-prose"
           v-html="d.isCollocatedWith.map((el) => el['@value']).join(', ')"
         />
-      </TermProp>
-      <TermProp v-if="d.subject" :label="$t('id.kontekstAv')">
+      </TermpostTermProp>
+      <!-- TODO: fix after change in export -->
+      <TermpostTermProp
+        v-if="d.description"
+        :label="$t('id.inndelingskriterium')"
+      >
+        <dd class="max-w-prose" v-html="d.description.und" />
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.subject" :label="$t('id.kontekstAv')">
         <dd class="max-w-prose" v-html="d.subject[0]" />
-      </TermProp>
-      <TermProp
+      </TermpostTermProp>
+      <TermpostTermProp
         v-if="d?.['skosp:dctSource'] || d.source"
         :label="$t('id.referanse')"
       >
@@ -63,7 +82,7 @@
           v-html="
             `
         ${d?.['skosp:dctSource']?.['skosp:rdfsLabel'] || ''}
-        ${d?.source?.label?.['@value'] || d?.source ||''}
+        ${d?.source?.label?.['@value'] || d?.source || ''}
         `
           "
         />
@@ -80,37 +99,66 @@
           :lang="d?.source?.['@language']"
           v-html="d.source?.['@value']"
         />
-      </TermProp>
-      <TermProp v-if="d.note" :label="$t('id.note')">
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.note" :label="$t('id.note')">
         <dd
           class="max-w-prose"
           :lang="d.note?.['@language']"
           v-html="d.note?.['@value']"
         />
         <dd v-if="d.note?.source" v-html="`(${d.note?.source})`" />
-      </TermProp>
-      <TermProp v-if="d.scopeNote" :label="$t('id.note')">
+      </TermpostTermProp>
+      <TermpostTermProp v-if="d.scopeNote" :label="$t('id.note')">
         <dd
           class="max-w-prose"
           :lang="d.scopeNote?.['@language']"
           v-html="d.scopeNote?.['@value']"
         />
         <dd v-if="d.scopeNote?.source" v-html="`(${d.scopeNote?.source})`" />
-      </TermProp>
+      </TermpostTermProp>
     </dl>
   </dd>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
+const i18n = useI18n();
+
 const props = defineProps({
   data: { type: Array, required: true },
   prop: { type: String, default: undefined },
   dataLang: { type: String, default: undefined },
   flex: { type: Boolean, default: false },
+  meta: {
+    type: Object,
+    default() {
+      return {};
+    },
+  },
 });
 
 const mainValue = (data) => {
   switch (props.prop) {
+    case "equivalence": {
+      const value = data?.value?.["@id"];
+      if (value) {
+        const key = value.split("/").slice(-1)[0];
+        if (key !== "startingLanguage") {
+          return (
+            i18n.t(`global.equivalence.${key}`) +
+            " " +
+            i18n.t(`global.lang.${props.meta.startingLanguage}`, 0)
+          );
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
+    case "equivalencenote":
+      return data?.note?.["@value"];
     case "definition":
       return data?.label["@value"];
     case "prefLabel":
@@ -124,7 +172,7 @@ const mainValue = (data) => {
     case "nonLingusticLabel":
       return data?.nonLingusticLabel;
     case "link":
-      return data;
+      return data?.target;
     default:
       return data;
   }

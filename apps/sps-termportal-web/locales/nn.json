@@ -80,6 +80,16 @@
       "LISENS-3ACC_BY_40": "CC BY 4.0",
       "LISENS-3ACC_BY-2DNC_40": "CC BY-NC 4.0",
       "LISENS-3ACC_BY-2DNC-2DND_40": "CC BY-NC-ND 4.0"
+    },
+    "equivalence": {
+      "equivalence": "Ekvivalens",
+      "equivalencenote": "Ekvivalensmerknad",
+      "startingLanguage": "utgangsspråk",
+      "none": "ingen ekvivalens med",
+      "full": "full ekvivalens med",
+      "delvis": "delvis ekvivalens til",
+      "bredere": "breiare intensjon enn",
+      "smalere": "smalare intensjon enn"
     }
   },
   "domainOverview": { "domainsAndBases": "Domene og termbasar" },
@@ -141,13 +151,7 @@
     "topheading": "Omgrepsvisning",
     "tableview": "Tabellvisning",
     "languagedata": "Språkdata",
-    "equivalence": "Ekvivalens",
-    "ekvIngen": "ingen",
-    "ekvFull": "full",
-    "ekvDelvis": "delvis",
-    "ekvBredere": "breiare tyding",
-    "ekvSmalere": "smalare tyding",
-    "equivalenceNote": "Ekvivalensmerknad",
+    "validityperiod": "Gyldigheitsperiode",
     "prefLabel": "Tilrådd term",
     "altLabel": "Tillaten term",
     "hiddenLabel": "Frårådd term",
@@ -182,7 +186,9 @@
     "modified": "Sist oppdatert",
     "note": "Merknad",
     "tilbake": "Til søkeresultat",
-    "noteTermbaseIsUnmaintained": "Dette er ein historisk ressurs som p.t. ikkje blir oppdatert."
+    "noteTermbaseIsUnmaintained": "Dette er ein historisk ressurs som p.t. ikkje blir oppdatert.",
+    "visualization": "Visualisering",
+    "imageAltLabel": "Visualisering av omgrepet"
   },
   "index": { "title": "Termportalen" },
   "search": {

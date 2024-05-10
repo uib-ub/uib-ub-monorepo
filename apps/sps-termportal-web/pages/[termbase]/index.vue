@@ -115,8 +115,6 @@ import { LangCode } from "~/composables/locale";
 const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
-const lalo = useLazyLocales();
-const locale = useLocale();
 
 const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
   key: `termbase_${termbase}`,
