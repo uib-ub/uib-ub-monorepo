@@ -1,33 +1,59 @@
 <template>
-  <div class="lg:flex space-y-5 lg:space-y-0">
-    <div class="lg:order-last lg:ml-2 xl:ml-5">
-      <TermpostVisualizationSection
-        v-if="displayInfo?.image && displayInfo?.image[0]"
-        :display-info="displayInfo"
-      />
-    </div>
-    <div class="grid gap-y-5 shrink-0 lg:shrink lg:min-w-[30em]">
-      <div v-for="lang in displayInfo?.displayLanguages" :key="'disp_' + lang">
-        <TermpostLanguageSection
-          :concept="concept"
-          :lang="lang"
-          :meta="data?.meta"
+  <div>
+    <Head v-if="mainp">
+      <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
+    </Head>
+    <h2 :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`" class="pb-4">
+      <AppLink
+        class="text-3xl"
+        :to="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
+      >
+        <span v-html="pagetitle"></span
+      ></AppLink>
+      <div v-if="mainConcept?.memberOf">
+        <AppLink
+          class="text-lg text-gray-600 underline hover:text-black"
+          :to="'/' + mainConcept?.memberOf.split('-3A')[1]"
+        >
+          {{ lalof(mainConcept.memberOf) }}
+        </AppLink>
+      </div>
+    </h2>
+    <div class="lg:flex space-y-5 lg:space-y-0">
+      <div class="lg:order-last lg:ml-2 xl:ml-5">
+        <TermpostVisualizationSection
+          v-if="displayInfo?.image && displayInfo?.image[0] && pagetitle"
+          :display-info="displayInfo"
+          :pagetitle="pagetitle"
         />
       </div>
-      <TermpostSymbolSection
-        v-if="displayInfo?.symbol"
-        :display-info="displayInfo"
-      />
-      <TermpostRelationSection
-        v-if="displayInfo?.semanticRelations"
-        :display-info="displayInfo"
-      />
-      <TermpostGeneralSection
-        v-if="displayInfo && concept"
-        :concept="concept"
-        :display-info="displayInfo"
-      />
+      <div class="grid gap-y-5 shrink-0 lg:shrink lg:min-w-[30em]">
+        <div
+          v-for="lang in displayInfo?.displayLanguages"
+          :key="'disp_' + lang"
+        >
+          <TermpostLanguageSection
+            :concept="mainConcept"
+            :lang="lang"
+            :meta="data?.meta"
+          />
+        </div>
+        <TermpostSymbolSection
+          v-if="displayInfo?.symbol"
+          :display-info="displayInfo"
+        />
+        <TermpostRelationSection
+          v-if="displayInfo?.semanticRelations"
+          :display-info="displayInfo"
+        />
+        <TermpostGeneralSection
+          v-if="displayInfo && mainConcept"
+          :concept="mainConcept"
+          :display-info="displayInfo"
+        />
+      </div>
     </div>
+    <div v-if="error">Error</div>
   </div>
 </template>
 
@@ -54,30 +80,58 @@ const dataDisplayLanguages = useDataDisplayLanguages();
 const locale = useLocale();
 
 const props = defineProps({
-  data: { type: Object, required: true },
+  conceptUrl: { type: String, required: true },
   mainConceptId: { type: String, required: true },
+  mainp: { type: Boolean, default: false },
 });
 
-const concept = computed(() => {
-  return props.data.concept[props.mainConceptId];
+const controller = new AbortController();
+const timer = setTimeout(() => {
+  controller.abort();
+}, 6000);
+
+const { data, error } = await useAsyncData("concept" + props.conceptUrl, () =>
+  $fetch(`/api/concept/${props.conceptUrl}`, {
+    method: "GET",
+    headers: process.server
+      ? { cookie: "session=" + useRuntimeConfig().apiKey }
+      : undefined,
+    retry: 1,
+    signal: controller.signal,
+  }).then((value) => {
+    clearTimeout(timer);
+    return value;
+  })
+);
+
+const mainConcept = computed(() => {
+  return data.value.concept[props.mainConceptId];
+});
+
+const pagetitle = computed(() => {
+  if (mainConcept.value) {
+    return getConceptDisplaytitle(mainConcept.value);
+  } else {
+    return "";
+  }
 });
 
 const displayInfo = computed(() => {
-  if (props.data?.meta) {
-    const conceptLanguages = props.data.meta?.language;
+  if (data.value?.meta) {
+    const conceptLanguages = data.value.meta?.language;
     const displayLanguages = dataDisplayLanguages.value.filter((language) =>
       Array.from(conceptLanguages).includes(language)
     );
     const info = {
       conceptLanguages,
       displayLanguages,
-      altLabelLength: props.data?.meta.maxLen.altLabel,
-      hiddenLabelLength: props.data?.meta.maxLen.hiddenLabel,
+      altLabelLength: data.value.meta?.maxLen.altLabel,
+      hiddenLabelLength: data.value.meta?.maxLen.hiddenLabel,
     };
     // semantic relations
     for (const relationType of Object.keys(semanticRelationTypes)) {
       const relData = getRelationData(
-        props.data?.concept,
+        data.value?.concept,
         props.mainConceptId,
         relationType
       );
@@ -91,8 +145,8 @@ const displayInfo = computed(() => {
       }
     }
     // subjects
-    if (props.data.concept?.[props.mainConceptId]?.subject) {
-      const subj = props.data.concept[props.mainConceptId].subject;
+    if (data.value.concept?.[props.mainConceptId]?.subject) {
+      const subj = mainConcept.value.subject;
       let subjectlist;
       if (typeof subj[0] === "string") {
         subjectlist = subj;
@@ -105,8 +159,8 @@ const displayInfo = computed(() => {
     }
 
     // notation: symbols and images
-    if (props.data.concept?.[props.mainConceptId]?.notation) {
-      const notation = props.data.concept?.[props.mainConceptId]?.notation;
+    if (mainConcept.value?.notation) {
+      const notation = mainConcept.value?.notation;
       info.symbol = notation.filter((notation) =>
         notation?.type.includes("skosxl:Label")
       );
@@ -126,6 +180,13 @@ const displayInfo = computed(() => {
 onMounted(() => {
   if (typeof window?.MathJax !== "undefined") {
     window.MathJax.typesetPromise();
+  }
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(timer);
+  if (!data.value[props.mainConceptId] && !controller.signal.aborted) {
+    controller.abort();
   }
 });
 </script>
