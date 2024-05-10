@@ -1,16 +1,23 @@
 <template>
-  <div class="max-w-prose">
-    <figure class="border-solid border p-2 rounded-sm space-y-2">
-      <AppLink :to="displayInfo.image[0]?.value['@id']" :hide-icon="true">
+  <div class="max-w-prose mx-2">
+    <h3 id="vis" class="pb-1 text-xl sr-only">
+      {{ $t("id.visualization") }}
+    </h3>
+    <figure class="rounded-sm space-y-2 min-w-full">
+      <AppLink
+        :to="displayInfo.image[0]?.value['@id']"
+        :hide-icon="true"
+        class="min-w-full"
+      >
         <ImgBase
           :img-src="displayInfo.image[0]?.value['@id']"
           :img-alt="`${$t('id.imageAltLabel')} '${pagetitle}'`"
-          class="min-w-full"
+          class="border-solid border min-w-full"
         ></ImgBase>
+        <figcaption v-if="caption" class="pt-2">
+          {{ caption }}
+        </figcaption>
       </AppLink>
-      <figcaption v-if="caption">
-        {{ caption }}
-      </figcaption>
     </figure>
   </div>
 </template>
