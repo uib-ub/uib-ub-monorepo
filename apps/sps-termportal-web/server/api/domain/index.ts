@@ -13,10 +13,6 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    setResponseHeaders(event, {
-      "Cache-Control": "public, max-age=3600",
-    });
-
     return frameData(data, "skos:Concept", true).then((result) => {
       delete result["@context"];
       return identifyData(result["@graph"]);

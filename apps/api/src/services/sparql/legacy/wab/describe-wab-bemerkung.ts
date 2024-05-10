@@ -1,6 +1,6 @@
 import jsonld from 'jsonld'
 import { DATA_SOURCES } from '../../../../config/constants';
-import contexts from '../../../../config/jsonld-contexts';
+import contexts from 'jsonld-contexts';
 
 const WAB_API = DATA_SOURCES.filter((service) => service.name === 'wab')[0].url
 

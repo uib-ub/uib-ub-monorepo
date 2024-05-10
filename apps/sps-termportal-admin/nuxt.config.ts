@@ -60,6 +60,18 @@ export default defineNuxtConfig({
         "Access-Control-Allow-Methods": "GET, POST",
       },
     },
+    "/api/tb/**": {
+      headers: {
+        "Cache-Control":
+          "max-age=600, s-maxage=7200, stale-while-revalidate=36000",
+      },
+    },
+    "/api/domain/**": {
+      headers: {
+        "Cache-Control":
+          "max-age=600, s-maxage=7200, stale-while-revalidate=36000",
+      },
+    },
   },
   ssr: false,
   vite: {

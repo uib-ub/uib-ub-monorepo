@@ -358,6 +358,18 @@ FILTER (isLiteral(?o))
 GROUP BY datatype(?o) ?p
 ```
 
+### Instances with multiple _bibo:pages_
+
+```sparql
+select ?homepage ?id (GROUP_CONCAT(?o;SEPARATOR=", ") as ?pages) where {
+  ?s bibo:pages ?o ;
+     dct:identifier ?id .
+  BIND(iri(REPLACE(str(?s), "http://data.ub.uib.no","https://marcus.uib.no","i")) as ?homepage)
+}
+GROUP BY ?homepage ?id
+HAVING(count(?o) > 1)
+```
+
 ## Prefixes
 
 ```sparql

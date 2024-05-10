@@ -66,7 +66,7 @@ const procdata = computed(() => {
         ?.map(
           (group) =>
             group.label +
-            ` (${group.qualifiedMembership[0].timespan.edtf}, ${group.qualifiedMembership[0].role})`
+            ` (${group.qualifiedMembership[0].timespan?.edtf}, ${group.qualifiedMembership[0].role})`
         )
         .join(", "),
       organization: person.qualifiedDelegation

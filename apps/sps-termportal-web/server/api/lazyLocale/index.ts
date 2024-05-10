@@ -13,11 +13,6 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    setResponseHeaders(event, {
-      "Cache-Control": "public, max-age=3600",
-    });
-
     return data.results.bindings;
-  } catch (e) {
-  }
+  } catch (e) {}
 });

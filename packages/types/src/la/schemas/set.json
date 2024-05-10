@@ -1,0 +1,97 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "set.json",
+	"title": "Collection Schema",
+	"description": "_la:Set_\nA collection of other resources, such as a set of objects or places.\n[API](https://linked.art/api/1.0/endpoint/set/) | [Model](https://linked.art/model/collection/)",
+	"type": "object",
+	"properties": {
+		"@context": {
+			"$ref": "core.json#/definitions/ContextStringOrArray"
+		},
+		"id": {
+			"$ref": "core.json#/definitions/idProp"
+		},
+		"type": {
+			"allOf": [
+				{
+					"title": "General",
+					"$ref": "core.json#/definitions/typeProp"
+				},
+				{
+					"title": "Specific",
+					"type": "string",
+					"const": "Set"
+				}
+			]
+		},
+		"_label": {
+			"$ref": "core.json#/definitions/labelProp"
+		},
+		"identified_by": {
+			"$ref": "core.json#/definitions/identified_byProp"
+		},
+		"classified_as": {
+			"$ref": "core.json#/definitions/classified_asProp"
+		},
+		"referred_to_by": {
+			"$ref": "core.json#/definitions/referred_to_byProp"
+		},
+		"equivalent": {
+			"allOf": [
+				{
+					"title": "General",
+					"$ref": "core.json#/definitions/equivalentProp"
+				},
+				{
+					"title": "Specific",
+					"description": "List of equivalent `Set` entities",
+					"type": "array",
+					"items": {
+						"$ref": "core.json#/definitions/SetRef"
+					}
+				}
+			]
+		},
+		"representation": {
+			"$ref": "core.json#/definitions/representationProp"
+		},
+		"member_of": {
+			"$ref": "core.json#/definitions/member_ofSetProp"
+		},
+		"subject_of": {
+			"$ref": "core.json#/definitions/subject_ofProp"
+		},
+		"attributed_by": {
+			"$ref": "core.json#/definitions/attributed_byRelProp"
+		},
+		"dimension": {
+			"$ref": "core.json#/definitions/dimensionProp"
+		},
+		"about": {
+			"$ref": "core.json#/definitions/aboutProp"
+		},
+		"members_exemplified_by": {
+			"description": "Great big bucket for arbitrary data here :(",
+			"type": "array"
+		},
+		"used_for": {
+			"title": "crm:P16i_was_used_for",
+			"description": "",
+			"type": "array",
+			"items": {
+				"$ref": "core.json#/definitions/Activity"
+			}
+		},
+		"created_by": {
+			"title": "crm:P94i_was_created_by",
+			"$ref": "core.json#/definitions/Creation"
+		}
+	},
+	"required": [
+		"@context",
+		"id",
+		"type",
+		"_label"
+	],
+	"additionalProperties": false
+}

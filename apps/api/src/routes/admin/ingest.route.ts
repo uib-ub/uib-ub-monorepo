@@ -1,34 +1,25 @@
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
+import { DATA_SOURCES } from '../../config/constants'
+import { env } from '../../config/env'
+import { flatMapDataForBulkIndexing } from '../../helpers/indexers/flatMapDataForBulkIndexing'
+import { indexData } from '../../helpers/indexers/indexData'
+import { resolveIds } from '../../helpers/indexers/resolveIds'
 import { getItems } from '../../services/legacy_items.service'
-import { DOMAIN, DATA_SOURCES } from '../../config/constants'
-import { flatMapDataForBulkIndexing } from '../../helpers/flatMapDataForBulkIndexing'
-import { resolveIds } from '../../helpers/resolveIds'
-import { indexData } from '../../helpers/indexData'
-import { zValidator } from '@hono/zod-validator'
-import z from 'zod'
 
 const route = new Hono()
 
 route.get('/ingest',
-  zValidator(
-    'query',
-    z.object({
-      index: z.string(),
-      limit: z.string().optional(),
-      source: z.string(),
-      type: z.string(),
-    })
-  ),
   async (c) => {
-    const index = c.req.query('index')
-    const limit = c.req.query('limit') ?? '100'
-    const source = c.req.query('source')
-    const type = c.req.query('type')
+    const { index, limit = '100', source, type } = c.req.query()
+    if (!index || !source || !type) {
+      return c.text('Missing query parameters', 400)
+    }
+
     const limitInt = parseInt(limit)
 
     const API_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-    const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
+    const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
 
     return streamSSE(c, async (stream) => {
       let id = 0

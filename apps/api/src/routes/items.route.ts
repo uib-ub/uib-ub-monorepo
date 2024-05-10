@@ -1,9 +1,10 @@
-import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import { AsParamsSchema, FailureSchema, IdParamsSchema, PaginationParamsSchema, TODO } from '../models'
-import { DOMAIN, DATA_SOURCES } from '../config/constants'
-import client from '../config/apis/esClient'
-import { TFailure, getManifestData } from '../services/legacy_manifest.service'
+import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
 import { JsonLdDocument } from 'jsonld'
+import client from '../config/apis/esClient'
+import { DATA_SOURCES } from '../config/constants'
+import { env } from '../config/env'
+import { FailureSchema, IdParamsSchema, ItemParamsSchema, PaginationParamsSchema, TFailure, TODO } from '../models'
+import { getManifestData } from '../services/legacy_manifest.service'
 
 const route = new OpenAPIHono()
 
@@ -62,7 +63,7 @@ export const getItem = createRoute({
   path: '/{id}',
   request: {
     params: IdParamsSchema,
-    query: AsParamsSchema,
+    query: ItemParamsSchema,
   },
   responses: {
     200: {
@@ -152,6 +153,10 @@ route.get('/:id/manifest', (c) => {
 })
 
 
+/**
+ * DEPRECATED
+ */
+
 export const getManifest = createRoute({
   method: 'get',
   path: '/{id}/manifest.json',
@@ -183,7 +188,7 @@ route.openapi(getManifest, async (c) => {
   const id = c.req.param('id')
   const source = 'marcus'
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-  const CONTEXT = `${DOMAIN}/ns/manifest/context.json`
+  const CONTEXT = `${env.PROD_URL}/ns/manifest/context.json`
 
   try {
     const data: JsonLdDocument | TFailure = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')

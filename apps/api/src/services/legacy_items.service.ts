@@ -1,18 +1,21 @@
+import jsonld from 'jsonld'
+import { CONTEXTS } from 'jsonld-contexts'
 import { SPARQL_PREFIXES } from '../config/constants'
-import { cleanJsonld } from '../helpers/cleanJsonLd'
-import compactAndFrameNTriples from '../helpers/compactAndFrameNTriples'
+import { cleanJsonld } from '../helpers/cleaners/cleanJsonLd'
 
 function getQuery(page = 0, limit = 100) {
   const query = `
     ${SPARQL_PREFIXES}
     CONSTRUCT {
-      ?uri dct:identifier ?id ;
+      ?uri a ?class ; 
+        dct:identifier ?id ;
         ubbont:isDigitized ?isDigitized .
     } WHERE { 
       SERVICE <cache:> { 
-        SELECT ?uri ?id ?isDigitized WHERE 
+        SELECT ?uri ?class ?id ?isDigitized WHERE 
           { 
             ?uri rdf:type/rdfs:subClassOf* bibo:Document ;
+              a ?class ;
               ubbont:showWeb true ;
               dct:identifier ?id .
             BIND(EXISTS{?uri ubbont:hasRepresentation ?repr} AS ?isDigitized)
@@ -29,7 +32,7 @@ function getQuery(page = 0, limit = 100) {
 
 export async function getItems(url: string, context: string, page?: number, limit?: number): Promise<any> {
   if (!url) { throw Error }
-
+  const useContext = CONTEXTS[context as keyof typeof CONTEXTS]
   const query = getQuery(page, limit)
 
   try {
@@ -38,9 +41,10 @@ export async function getItems(url: string, context: string, page?: number, limi
         query,
       )}&output=nt`,
     )
-    const result = await response.text()
+    const result: unknown = await response.text()
+    const json = await jsonld.fromRDF(result as object)
+    const data = await jsonld.compact(json, useContext)
 
-    const data = await compactAndFrameNTriples(result, context, 'HumanMadeObject')
     return cleanJsonld(data)
   }
   catch (error) {
