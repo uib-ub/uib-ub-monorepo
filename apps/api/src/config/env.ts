@@ -6,6 +6,7 @@ export const withDevDefault = <T extends z.ZodTypeAny>(
 ) => (process.env["NODE_ENV"] !== "production" ? schema.default(val) : schema);
 
 const schema = z.object({
+  PROD_URL: z.string().url(),
   API_URL: withDevDefault(z.string().url(), 'http://localhost'),
   PORT: withDevDefault(z.string(), '3009').transform(Number),
   ES_HOST: z.string().url(),

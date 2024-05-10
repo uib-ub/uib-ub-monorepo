@@ -1,5 +1,6 @@
 import { JsonLd } from 'jsonld/jsonld-spec'
-import { API_URL, SPARQL_PREFIXES } from '../config/constants'
+import { SPARQL_PREFIXES } from '../config/constants'
+import { env } from '../config/env'
 import compactAndFrameNTriples from '../helpers/compactAndFrameNTriples'
 import fetch from '../helpers/fetchRetry'
 import { constructManifest } from '../helpers/mappers/constructManifest'
@@ -71,7 +72,7 @@ function getQuery(id: string) {
         OPTIONAL { ?resource ubbont:hasMDView ?partMD . }
         OPTIONAL { ?resource ubbont:hasXLView ?partXL . }
       }
-      BIND(iri(concat("${API_URL}", "/items/", ?id, "?as=iiif")) AS ?manifestURL)
+      BIND(iri(concat("${env.API_URL}", "/items/", ?id, "?as=iiif")) AS ?manifestURL)
       BIND(iri(concat("http://data.ub.uib.no/instance/", ?id, "/manifest/range/1")) AS ?rangeURL)
       BIND(iri(concat("http://data.ub.uib.no/instance/page/", ?id, "_p1")) AS ?singleCanvas)
       BIND(iri(replace(str(?s), "data.ub.uib.no", "marcus.uib.no", "i")) AS ?homepage)
@@ -103,7 +104,7 @@ export async function getManifestData(id: string, source: string, context: strin
       context,
       type
     )
-    data = constructManifest(data, API_URL, source)
+    data = constructManifest(data, env.API_URL, source)
 
     return data
   } catch (error) {

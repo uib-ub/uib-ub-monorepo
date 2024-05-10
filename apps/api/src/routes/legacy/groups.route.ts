@@ -1,12 +1,11 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
-import { DATA_SOURCES, DOMAIN } from '../../config/constants'
+import { DATA_SOURCES } from '../../config/constants'
+import { env } from '../../config/env'
 import { AsParamsSchema, LegacyGroupSchema, PaginationParamsSchema, SourceParamsSchema, TODO } from '../../models'
 import { countGroups } from '../../services/legacy_count_groups.service'
 import getGroupData from '../../services/legacy_group_la.service'
 import { getGroups } from '../../services/legacy_groups.service'
 import getItemUbbontData from '../../services/legacy_item_ubbont.service'
-
-const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
 
 const route = new OpenAPIHono()
 
@@ -77,7 +76,7 @@ route.openapi(getList, async (c) => {
   const pageInt = parseInt(page)
   const limitInt = parseInt(limit)
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-  const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
+  const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
 
   const data = await getGroups(SERVICE_URL, CONTEXT, pageInt, limitInt)
   return c.json(data)
@@ -109,6 +108,7 @@ route.openapi(getItem, async (c) => {
   const { id, source } = c.req.param()
   const { as = 'la' } = c.req.query()
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
+  const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
 
   const fetcher = as === 'la' ? getGroupData : getItemUbbontData
 

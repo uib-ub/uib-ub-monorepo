@@ -1,6 +1,7 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
 import { JsonLdDocument } from 'jsonld'
-import { DATA_SOURCES, DOMAIN } from '../../config/constants'
+import { DATA_SOURCES } from '../../config/constants'
+import { env } from '../../config/env'
 import { FailureSchema, ItemParamsSchema, LegacyItemSchema, PaginationParamsSchema, SourceParamsSchema, TFailure, TODO } from '../../models'
 import { countItems } from '../../services/legacy_count_items.service'
 import getItemLAData from '../../services/legacy_item_la.service'
@@ -8,8 +9,8 @@ import getItemUbbontData from '../../services/legacy_item_ubbont.service'
 import { getItems } from '../../services/legacy_items.service'
 import { getManifestData } from '../../services/legacy_manifest.service'
 
-const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
-const CONTEXT_IIIF = `${DOMAIN}/ns/manifest/context.json`
+const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
+const CONTEXT_IIIF = `${env.PROD_URL}/ns/manifest/context.json`
 
 const route = new OpenAPIHono()
 
@@ -80,7 +81,7 @@ route.openapi(getList, async (c) => {
   const pageInt = parseInt(page)
   const limitInt = parseInt(limit)
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-  const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
+  const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
   const data = await getItems(SERVICE_URL, CONTEXT, pageInt, limitInt)
   return c.json(data)
 })
@@ -167,7 +168,7 @@ export const getManifest = createRoute({
 route.openapi(getManifest, async (c) => {
   const { id, source } = c.req.param()
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-  const CONTEXT = `${DOMAIN}/ns/manifest/context.json`
+  const CONTEXT = `${env.PROD_URL}/ns/manifest/context.json`
 
   try {
     const data: JsonLdDocument | TFailure = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')
