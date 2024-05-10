@@ -5,6 +5,7 @@
         <ImgBase
           :img-src="displayInfo.image[0]?.value['@id']"
           :img-alt="`${$t('id.imageAltLabel')} '${pagetitle}'`"
+          class="min-w-full"
         ></ImgBase>
       </AppLink>
       <figcaption v-if="caption">
