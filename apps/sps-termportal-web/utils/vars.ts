@@ -128,3 +128,13 @@ export const licenseLinks = {
   "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED":
     "https://urn.fi/urn:nbn:fi:lb-2019071724",
 };
+
+export const searchFilterDataEmpty = (): SearchFilterData => {
+  return {
+    lang: [],
+    samling: [],
+    predicate: [],
+    matching: [],
+    context: [],
+  };
+};
