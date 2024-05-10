@@ -2,7 +2,7 @@ const autocrop = require('svgo-autocrop');
 
 module.exports = {
   icon: false,
-  outDir: 'build',
+  outDir: 'temp',
   filenameCase: 'kebab',
   ignoreExisting: false,
   jsxRuntime: "classic",

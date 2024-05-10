@@ -4,6 +4,7 @@
 dist
 .output
 .cache
+temp
 
 # a11y
 pally-ci-report

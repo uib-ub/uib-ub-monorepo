@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "build": "npx @svgr/cli -- src/assets"
+    "build-assets": "npx @svgr/cli -- src/assets"
   },
   "author": "",
   "license": "ISC",

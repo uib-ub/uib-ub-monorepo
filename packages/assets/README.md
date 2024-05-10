@@ -6,13 +6,13 @@ NB! The svg files are not used directly, but are converted to react components. 
 
 ## Directory structure
 
-* `build`: temporary directory used to generate assets.
+* `temp`: temporary directory used to generate assets. This folder is ignored by git.
 * `src`: contains svg assets used by the monorepo, but with some modifications.
-  * `src/assets`: contains svg assets "as is" used by the monorepo.
+  * `src/assets`: contains svg assets "as is" used by `svgr`.
   * `src/react`: react components generated from svg assets.
 
 ## How to add a new asset
 
 1. Add the svg asset to the `assets` directory (use *kebab-case*).
-2. `npm run build-assets -w assets` to generate the react components in `build`.
+2. `npm run build-assets -w assets` to generate the react components in `temp`.
 3. Copy new react components from `build` to `src/react`, and modify as needed.
