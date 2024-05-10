@@ -27,7 +27,7 @@
         <div class="flex grow flex-col">
           <main ref="main" class="h-full">
             <TermpostBase
-              v-if="mainConceptId"
+              v-if="conceptUrl && mainConceptId"
               :concept-url="conceptUrl"
               :main-concept-id="mainConceptId"
               :mainp="true"
