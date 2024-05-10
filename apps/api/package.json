@@ -1,15 +1,16 @@
 {
   "name": "api",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "bun --hot  src/main.ts",
+    "dev": "bun --hot src/main.ts",
     "dev:node": "tsx watch src/node-server.ts",
     "lint": "eslint .",
-    "start": "node dist/main.js",
-    "test": "jest --silent",
-    "test:watch": "jest --watch --silent",
-    "copy-contexts": "cp -r ../../packages/jsonld-contexts/src/* ./src/config/jsonld-contexts"
+    "start": "bun run src/main.ts",
+    "start:node": "node --experimental-modules --es-module-specifier-resolution=node ./dist/node-server.js",
+    "test": "bun test",
+    "test:watch": "jest --watch --silent"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.12.1",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
+    "@types/bun": "^1.1.1",
     "@types/jest": "^29.5.11",
     "@types/jsonld": "^1.5.13",
     "@types/lodash": "^4.14.202",
