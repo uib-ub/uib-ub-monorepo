@@ -1,8 +1,5 @@
 <template>
   <div class="flex h-full">
-    <Head>
-      <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
-    </Head>
     <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
     <div class="flex">
       <SideBar />
@@ -29,21 +26,12 @@
         <!-- Termpost -->
         <div class="flex grow flex-col">
           <main ref="main" class="h-full">
-            <h2 id="main" class="pb-4">
-              <AppLink class="text-3xl" to="#main">
-                <span v-html="pagetitle"></span
-              ></AppLink>
-              <div v-if="concept?.memberOf">
-                <AppLink
-                  class="text-lg text-gray-600 underline hover:text-black"
-                  :to="'/' + concept?.memberOf.split('-3A')[1]"
-                >
-                  {{ lalof(concept.memberOf) }}
-                </AppLink>
-              </div>
-            </h2>
-            <TermpostBase :data="data" :main-concept-id="procId" />
-            <div v-if="error">Error</div>
+            <TermpostBase
+              v-if="mainConceptId"
+              :concept-url="conceptUrl"
+              :main-concept-id="mainConceptId"
+              :mainp="true"
+            />
           </main>
         </div>
       </div>
@@ -69,50 +57,22 @@ onMounted(() => {
   }
 });
 
-let base: string;
-let id: string;
-let procId: string;
-if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
-  // base = runtimeConfig.public.base;
-  id = `${termbase}-3A${idArray[0]}`;
-  procId = id;
-} else {
-  base = termbaseUriPatterns[termbase][idArray[0]];
-  id = idArray.slice(1).join("/");
-  procId = base + id;
+function getConceptId(termbase, idArray) {
+  let id: string;
+  let mainConceptId: string;
+  if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
+    id = `${termbase}-3A${idArray[0]}`;
+    mainConceptId = id;
+  } else {
+    const base = termbaseUriPatterns[termbase][idArray[0]];
+    id = idArray.slice(1).join("/");
+    mainConceptId = base + id;
+  }
+  return mainConceptId;
 }
 
-const controller = new AbortController();
-const timer = setTimeout(() => {
-  controller.abort();
-}, 6000);
-
-const { data, error } = await useAsyncData(
-  `concept${termbase}${idArray.join("")}`,
-  () =>
-    $fetch(`/api/concept/${termbase}/${encodeURI(idArray.join("/"))}`, {
-      method: "GET",
-      headers: process.server
-        ? { cookie: "session=" + useRuntimeConfig().apiKey }
-        : undefined,
-      //      body: { concept: idArray.join("/"), base, termbase },
-      retry: 1,
-      signal: controller.signal,
-    }).then((value) => {
-      clearTimeout(timer);
-      return value;
-    })
-);
-
-const concept = computed(() => {
-  return data.value?.concept[procId];
-});
-
-const pagetitle = computed(() => {
-  if (concept.value) {
-    return getConceptDisplaytitle(concept.value);
-  }
-});
+const conceptUrl = `${termbase}/${encodeURI(idArray.join("/"))}`;
+const mainConceptId = getConceptId(termbase, idArray);
 
 useResizeObserver(main, (e) => {
   if (sidebar.value) {
@@ -121,10 +81,6 @@ useResizeObserver(main, (e) => {
 });
 
 onBeforeUnmount(() => {
-  clearTimeout(timer);
-  if (!data.value[procId] && !controller.signal.aborted) {
-    controller.abort();
-  }
   if (sidebar.value) {
     searchScrollBarPos.value = sidebar.value.scrollTop;
   }
