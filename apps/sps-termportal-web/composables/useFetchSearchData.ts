@@ -23,7 +23,7 @@ export async function fetchSearchDataMatching(
   }
 }
 
-export type FetchType = "initial" | "filter" | "further" | "options";
+export type FetchType = "initial" | "options" | "filter" | "further";
 async function fetchSearchDataAggregate(
   searchOptions: SearchOptions,
   currentFetch: number
@@ -69,11 +69,9 @@ export async function useFetchSearchData(options: SearchOptions) {
   const situation = options.situation;
 
   if (situation === "initial" && route.path === "/search") {
-    searchFetchInitial.value = true;
-  }
-
-  // Reset filter if initial search or options change
-  if (situation === "initial" || situation === "options") {
+    if (route.path === "/search") {
+      searchFetchInitial.value = true;
+    }
     searchFilterData.value = searchFilterDataEmpty();
   }
 
