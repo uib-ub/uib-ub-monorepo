@@ -180,7 +180,7 @@ const displayInfo = computed(() => {
 });
 
 onMounted(() => {
-  if (typeof window?.MathJax !== "undefined") {
+  if (window?.MathJax) {
     window.MathJax.typesetPromise();
   }
 });
