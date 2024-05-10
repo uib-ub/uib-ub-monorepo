@@ -23,10 +23,14 @@
         ></TermpostTermDescription>
       </TermpostTermProp>
       <!--Equivalencemerknad -->
+      <!-- TODO: Fix RTT edge case -->
       <TermpostTermProp
         v-if="
           concept?.hasEquivalenceData?.[lang] &&
-          concept?.hasEquivalenceData?.[lang][0]?.note
+          concept?.hasEquivalenceData?.[lang][0]?.note &&
+          !concept?.hasEquivalenceData?.[lang][0]?.note['@value'].startsWith(
+            'RTT'
+          )
         "
         :flex="true"
         :label="$t('global.equivalence.equivalencenote')"
