@@ -27,7 +27,7 @@
           :pagetitle="pagetitle"
         />
       </div>
-      <div class="grid gap-y-5 shrink-0 lg:shrink lg:min-w-[30em]">
+      <div class="grid gap-y-7 shrink-0 lg:shrink lg:min-w-[30em]">
         <div
           v-for="lang in displayInfo?.displayLanguages"
           :key="'disp_' + lang"
@@ -79,8 +79,11 @@ if (process.client) {
 const dataDisplayLanguages = useDataDisplayLanguages();
 
 const props = defineProps({
+  // used to fetch data
   conceptUrl: { type: String, required: true },
+  // used to identify main concept in fetched data
   mainConceptId: { type: String, required: true },
+  // toggle if concept should be used to set head title and skiplink target
   mainp: { type: Boolean, default: false },
 });
 
