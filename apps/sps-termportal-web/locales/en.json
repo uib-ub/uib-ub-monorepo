@@ -185,7 +185,8 @@
     "modified": "Last modified",
     "note": "Note",
     "tilbake": "To search results",
-    "noteTermbaseIsUnmaintained": "This is a historical resource and is not currently being updated"
+    "noteTermbaseIsUnmaintained": "This is a historical resource and is not currently being updated",
+    "imageAltLabel": "Visualization of the concept"
   },
   "index": { "title": "Termportalen" },
   "search": {

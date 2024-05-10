@@ -186,7 +186,8 @@
     "modified": "Sist oppdatert",
     "note": "Merknad",
     "tilbake": "Til søkeresultat",
-    "noteTermbaseIsUnmaintained": "Dette er ein historisk ressurs som p.t. ikkje blir oppdatert."
+    "noteTermbaseIsUnmaintained": "Dette er ein historisk ressurs som p.t. ikkje blir oppdatert.",
+    "imageAltLabel": "Visualisering av omgrepet"
   },
   "index": { "title": "Termportalen" },
   "search": {
