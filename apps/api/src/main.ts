@@ -12,6 +12,7 @@ const privilegedToken = 'read+write'
 const privilegedMethods = ['POST', 'PUT', 'PATCH', 'DELETE']
 
 // Import the routes.
+import { env } from './config/env'
 import es from './routes/admin/es_templates.route'
 import ingest from './routes/admin/ingest.route'
 import ingestManifests from './routes/admin/ingest_manifests.route'
@@ -108,7 +109,7 @@ app.get('/ns/ontology/ubbont.owl', serveStatic({ path: './statics/ontology/ubbon
 showRoutes(app)
 
 // Start the server on port 3009.
-const port = 3009
+const port = env.PORT
 
 export default {
   port,
