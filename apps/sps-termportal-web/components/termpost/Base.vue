@@ -77,7 +77,6 @@ if (process.client) {
 }
 
 const dataDisplayLanguages = useDataDisplayLanguages();
-const locale = useLocale();
 
 const props = defineProps({
   conceptUrl: { type: String, required: true },
