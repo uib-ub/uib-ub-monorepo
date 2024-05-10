@@ -4,7 +4,7 @@
       <AppLink :to="displayInfo.image[0]?.value['@id']" :hide-icon="true">
         <ImgBase
           :img-src="displayInfo.image[0]?.value['@id']"
-          img-alt="TODO"
+          :img-alt="`${$t('id.imageAltLabel')} '${pagetitle}'`"
         ></ImgBase>
       </AppLink>
       <figcaption v-if="caption">
@@ -15,7 +15,10 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({ displayInfo: { type: Object, required: true } });
+const props = defineProps({
+  displayInfo: { type: Object, required: true },
+  pagetitle: { type: String, required: true },
+});
 
 const caption = computed(() => {
   let caption;
