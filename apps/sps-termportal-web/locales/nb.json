@@ -84,9 +84,9 @@
       "equivalence": "Ekvivalens",
       "equivalencenote": "Ekvivalensmerknad",
       "startingLanguage": "utgangsspråk",
-      "none": "ingen ekvivalens til",
-      "full": "full ekvivalens til",
-      "delvis": "delvis ekvivalens til",
+      "none": "ingen ekvivalens med",
+      "full": "full ekvivalens med",
+      "delvis": "delvis ekvivalens med",
       "bredere": "bredere intensjon enn",
       "smalere": "smalare intensjon enn"
     }
