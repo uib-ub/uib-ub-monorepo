@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { showRoutes } from 'hono/dev'
 import { serveStatic } from '@hono/node-server/serve-static'
+import { OpenAPIHono } from '@hono/zod-openapi'
 import { bearerAuth } from 'hono/bearer-auth'
 import { cors } from 'hono/cors'
+import { showRoutes } from 'hono/dev'
 import { logger } from 'hono/logger'
 import { rateLimiter } from './middlewares/rate-limiter'
 
@@ -12,18 +12,20 @@ const privilegedToken = 'read+write'
 const privilegedMethods = ['POST', 'PUT', 'PATCH', 'DELETE']
 
 // Import the routes.
-import items from './routes/items.route'
-import reference from './routes/references.route'
-import lookupId from './routes/lookup.route'
-import ns from './routes/ns.route'
+import { env } from './config/env'
 import es from './routes/admin/es_templates.route'
-import marcusUbbont from './routes/legacy/items.route'
-import wab from './routes/legacy/items_wab.route'
 import ingest from './routes/admin/ingest.route'
 import ingestManifests from './routes/admin/ingest_manifests.route'
 import ingestLegacySka from './routes/admin/ingest_ska.route'
 import ingestLegacyWab from './routes/admin/ingest_wab.route'
-import { request } from 'http'
+import items from './routes/items.route'
+import legacyGroups from './routes/legacy/groups.route'
+import legacyItems from './routes/legacy/items.route'
+import wab from './routes/legacy/items_wab.route'
+import legacyPeople from './routes/legacy/people.route'
+import lookupId from './routes/lookup.route'
+import ns from './routes/ns.route'
+import reference from './routes/references.route'
 
 // Create a new Hono instance. We use the OpenAPIHono class to create the app, 
 // because it has the .openapi() method that we need to define the OpenAPI
@@ -61,7 +63,9 @@ app.route('/reference', reference)
 app.route('/lookup', lookupId)
 app.route('/admin', es)
 app.route('/legacy', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
-app.route('/legacy', marcusUbbont)
+app.route('/legacy', legacyItems)
+app.route('/legacy', legacyPeople)
+app.route('/legacy', legacyGroups)
 app.route('/admin', ingest)
 app.route('/admin', ingestManifests)
 app.route('/admin', ingestLegacySka)
@@ -105,7 +109,7 @@ app.get('/ns/ontology/ubbont.owl', serveStatic({ path: './statics/ontology/ubbon
 showRoutes(app)
 
 // Start the server on port 3009.
-const port = 3009
+const port = env.PORT
 
 export default {
   port,

@@ -1,11 +1,12 @@
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
-import { getItems } from '../../services/legacy_items.service'
-import { DOMAIN, DATA_SOURCES } from '../../config/constants'
+import isEmpty from 'lodash/isEmpty'
+import { DATA_SOURCES } from '../../config/constants'
+import { env } from '../../config/env'
+import { flatMapManifestsForBulkIndexing } from '../../helpers/indexers/flatMapManifestsForBulkIndexing'
 import { indexData } from '../../helpers/indexers/indexData'
 import { resolveManifests } from '../../helpers/indexers/resolveManifests'
-import { isEmpty } from 'lodash'
-import { flatMapManifestsForBulkIndexing } from '../../helpers/indexers/flatMapManifestsForBulkIndexing'
+import { getItems } from '../../services/legacy_items.service'
 
 const route = new Hono()
 
@@ -20,8 +21,8 @@ route.get('/ingest/manifests',
     const limitInt = parseInt(limit)
 
     const API_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-    const CONTEXT = `${DOMAIN}/ns/ubbont/context.json`
-    const IIIF_CONTEXT = `${DOMAIN}/ns/manifest/context.json`
+    const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
+    const IIIF_CONTEXT = `${env.PROD_URL}/ns/manifest/context.json`
 
     return streamSSE(c, async (stream) => {
       let id = 0

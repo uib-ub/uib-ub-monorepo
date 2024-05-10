@@ -4,6 +4,7 @@
 dist
 .output
 .cache
+temp
 
 # a11y
 pally-ci-report
@@ -25,6 +26,7 @@ coverage
 out/
 build
 .swc/
+next-env.d.ts
 
 # sanity
 /studio/dist
@@ -104,6 +106,8 @@ yalc.lock
 # npm package zips
 *.tgz
 
-# Temporary ignore
+# tsconfig
+tsconfig.tsbuildinfo
 
+# Temporary ignore
 /apps/ub-dashboard/v1

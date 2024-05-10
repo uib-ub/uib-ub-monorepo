@@ -36,9 +36,6 @@ PREFIX iiif_prezi: <http://iiif.io/api/presentation/3#>
 PREFIX as: <http://www.w3.org/ns/activitystreams#>
 `
 
-export const DOMAIN: string = 'https://api.ub.uib.no'
-export const API_URL: string = process.env.NODE_ENV === 'production' ? DOMAIN : 'http://localhost:3009'
-
 /**
  * This is a list of services that can be used to look up an id.
  * It is not thought through and should be replaced with a ETL strategy.

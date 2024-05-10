@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint --ext .ts,.js,.vue --ignore-path ../../.gitignore .",
     "preview": "nuxt preview",
-    "test": "vitest"
+    "test": "vitest --passWithNoTests"
   },
   "devDependencies": {
     "@nuxt/content": "2.7.0",

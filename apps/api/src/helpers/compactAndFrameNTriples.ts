@@ -1,8 +1,8 @@
-import jsonld, { ContextDefinition } from 'jsonld'
+import jsonld, { ContextDefinition } from 'jsonld';
 import { CONTEXTS } from 'jsonld-contexts';
+import omitEmptyEs from 'omit-empty-es';
 import { cleanDateDatatypes } from './cleaners/cleanDateDatatypes';
 import { convertToFloat } from './cleaners/convertToFloat';
-import omitEmptyEs from 'omit-empty-es';
 
 /**
  * Compacts and frames the given data in NTriples format to JSON-LD format.

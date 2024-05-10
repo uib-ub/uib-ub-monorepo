@@ -35,6 +35,11 @@ const ubbontContext = {
     "id": "@id",
     "type": "@type",
     "none": "@none",
+    "seeAlso": {
+      "@id": "rdfs:seeAlso",
+      "@type": "@id",
+      "@container": "@set"
+    },
     "_label": {
       "@id": "rdfs:label",
       "@container": [
@@ -207,7 +212,7 @@ const ubbontContext = {
     },
     "profession": {
       "@id": "dbo:profession",
-      "@type": "xsd:string"
+      "@container": "@set"
     },
     "CopyBook": {
       "@id": "ubbont:CopyBook"
@@ -228,7 +233,7 @@ const ubbontContext = {
     },
     "hiddenLabel": {
       "@id": "skos:hiddenLabel",
-      "@type": "xsd:string"
+      "@container": "@set"
     },
     "license": {
       "@id": "dct:license",
@@ -265,7 +270,7 @@ const ubbontContext = {
     },
     "img": {
       "@id": "foaf:img",
-      "@type": "xsd:string"
+      "@container": "@set"
     },
     "Vidisse": {
       "@id": "ubbont:Vidisse"
@@ -396,7 +401,8 @@ const ubbontContext = {
       "@id": "bibo:Workshop"
     },
     "viafID": {
-      "@id": "ubbont:viafID"
+      "@id": "ubbont:viafID",
+      "@container": "@set"
     },
     "hasVersion": {
       "@id": "dct:hasVersion",
@@ -471,7 +477,8 @@ const ubbontContext = {
       "@id": "ubbont:UserGenereatedContent"
     },
     "deathDate": {
-      "@id": "dbo:deathDate"
+      "@id": "dbo:deathDate",
+      "@type": "xsd:date"
     },
     "altLabel": {
       "@id": "skos:altLabel",
@@ -522,7 +529,8 @@ const ubbontContext = {
     },
     "parent": {
       "@id": "schema:parent",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "DoctoralThesis": {
       "@id": "ubbont:DoctoralThesis"
@@ -565,8 +573,7 @@ const ubbontContext = {
       "@type": "@id"
     },
     "familyName": {
-      "@id": "foaf:familyName",
-      "@type": "xsd:string"
+      "@id": "foaf:familyName"
     },
     "measurement": {
       "@id": "ubbont:measurement",
@@ -574,7 +581,8 @@ const ubbontContext = {
     },
     "sibling": {
       "@id": "schema:sibling",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "superEvent": {
       "@id": "schema:superEvent",
@@ -694,9 +702,13 @@ const ubbontContext = {
     "Person": {
       "@id": "foaf:Person"
     },
+    "Group": {
+      "@id": "crm:E74_Group"
+    },
     "based_near": {
       "@id": "foaf:based_near",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "Priority": {
       "@id": "ubbont:workflow/Priority"
@@ -719,7 +731,7 @@ const ubbontContext = {
     },
     "pseudonym": {
       "@id": "dbo:pseudonym",
-      "@type": "xsd:string"
+      "@container": "@set"
     },
     "formLabel": {
       "@id": "ubbont:formLabel",
@@ -790,7 +802,6 @@ const ubbontContext = {
     },
     "name": {
       "@id": "foaf:name",
-      "@type": "xsd:string"
     },
     "postalCode": {
       "@id": "schema:postalCode",
@@ -907,8 +918,7 @@ const ubbontContext = {
       "@type": "xsd:gYear"
     },
     "firstName": {
-      "@id": "foaf:firstName",
-      "@type": "xsd:string"
+      "@id": "foaf:firstName"
     },
     "alt": {
       "@id": "wgs:alt"
@@ -976,7 +986,8 @@ const ubbontContext = {
     },
     "spouse": {
       "@id": "schema:spouse",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "hasTimeline": {
       "@id": "ubbont:hasTimeline",
@@ -997,7 +1008,8 @@ const ubbontContext = {
     },
     "knows": {
       "@id": "schema:knows",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "editorialNote": {
       "@id": "skos:editorialNote",
@@ -1052,6 +1064,7 @@ const ubbontContext = {
     },
     "reference": {
       "@id": "ubbont:reference",
+      "@container": "@set"
     },
     "GraphicArt": {
       "@id": "ubbont:GraphicArt"
@@ -1107,7 +1120,8 @@ const ubbontContext = {
       "@container": "@set"
     },
     "birthDate": {
-      "@id": "dbo:birthDate"
+      "@id": "dbo:birthDate",
+      "@type": "xsd:date"
     },
     "publisher": {
       "@id": "dct:publisher",
@@ -1256,6 +1270,7 @@ const ubbontContext = {
     },
     "bibsysID": {
       "@id": "ubbont:bibsysID",
+      "@container": "@set"
     },
     "internalNote": {
       "@id": "ubbont:internalNote",

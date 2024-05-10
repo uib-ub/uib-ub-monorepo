@@ -1,12 +1,11 @@
-import dotenv from 'dotenv';
-const { Client } = require('@elastic/elasticsearch')
-
-dotenv.config()
+import { Client, HttpConnection } from '@elastic/elasticsearch';
+import { env } from '../env';
 
 const client = new Client({
-  node: process.env.ES_HOST,
+  node: env.ES_HOST,
+  Connection: HttpConnection, // TODO: remove when Bun supports ConnectionError (see https://github.com/oven-sh/bun/issues/7920)
   auth: {
-    apiKey: process.env.ES_APIKEY
+    apiKey: env.ES_APIKEY!
   }
 });
 

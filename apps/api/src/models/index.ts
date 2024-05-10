@@ -92,6 +92,48 @@ export const LegacyItemSchema = z.object({
     })
 })
 
+export const LegacyPersonSchema = z.object({
+  source: z.enum(['marcus', 'ska'])
+    .openapi({
+      param: {
+        name: 'source',
+        in: 'path',
+        required: true,
+      },
+      example: 'marcus',
+    }),
+  id: z.string()
+    .openapi({
+      param: {
+        name: 'id',
+        in: 'path',
+        required: true,
+      },
+      example: 'f4c9914c-fb05-4d02-8054-f3c2ddb64afe',
+    })
+})
+
+export const LegacyGroupSchema = z.object({
+  source: z.enum(['marcus', 'ska'])
+    .openapi({
+      param: {
+        name: 'source',
+        in: 'path',
+        required: true,
+      },
+      example: 'marcus',
+    }),
+  id: z.string()
+    .openapi({
+      param: {
+        name: 'id',
+        in: 'path',
+        required: true,
+      },
+      example: '0f4d957a-5476-4e88-b2b6-71a06c1ecf9c',
+    })
+})
+
 export const IdQuerySchema = z.object({
   id: z.string()
     .openapi({
@@ -143,6 +185,20 @@ export const ItemParamsSchema = z.object({
     }),
 })
 
+export const AsParamsSchema = z.object({
+  as: z
+    .enum(['la', 'ubbont'])
+    .optional()
+    .default('la')
+    .openapi({
+      param: {
+        name: 'as',
+        in: 'query',
+      },
+      example: 'la',
+    }),
+})
+
 export type TODO = any
 
 export type TBaseMetadata = {
@@ -150,6 +206,6 @@ export type TBaseMetadata = {
   context: string[],
   newId: string,
   originalId: string,
-  productionTimespan: any,
+  productionTimespan?: any,
   _label: any,
 }
