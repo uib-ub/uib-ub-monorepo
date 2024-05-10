@@ -2,7 +2,8 @@ import jsonld, { ContextDefinition } from 'jsonld'
 import { CONTEXTS } from 'jsonld-contexts'
 import omitEmptyEs from 'omit-empty-es'
 import { HumanMadeObjectSchema } from 'types'
-import { DOMAIN, SPARQL_PREFIXES } from '../config/constants'
+import { SPARQL_PREFIXES } from '../config/constants'
+import { env } from '../config/env'
 import { cleanDateDatatypes } from '../helpers/cleaners/cleanDateDatatypes'
 import { convertToFloat } from '../helpers/cleaners/convertToFloat'
 import { removeStringsFromArray } from '../helpers/cleaners/removeStringsFromArray'
@@ -119,7 +120,7 @@ async function getPersonData(id: string, source: string, context: string, type: 
     const base: TBaseMetadata = {
       identifier: data.identifier,
       context: ['https://linked.art/ns/v1/linked-art.json', context],
-      newId: `${DOMAIN}/people/${data.uuid ?? data.identifier}`,
+      newId: `${env.API_URL}/people/${data.uuid ?? data.identifier}`,
       originalId: data.id,
       _label: data._label,
     }

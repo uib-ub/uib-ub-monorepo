@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
 import omitEmptyEs from 'omit-empty-es';
-import { DOMAIN } from '../../../../config/constants';
+import { env } from '../../../../config/env';
 import { getTimespan } from '../../constructTimespan';
 import { getLanguage } from '../../getLanguage';
 import { Publication, mapToGeneralClass } from '../../mapToGeneralClass';
@@ -349,7 +349,7 @@ export const constructAboutness = async (data: any) => {
 
   if (type === "Image") {
     showsArray = [{
-      id: `${DOMAIN}/visualitem/${visualItemVersionId ?? randomUUID()}`,
+      id: `${env.API_URL}/visualitem/${visualItemVersionId ?? randomUUID()}`,
       type: "VisualItem",
       creation: {
         type: "Creation",
@@ -404,7 +404,7 @@ export const constructAboutness = async (data: any) => {
 
   if (type === "Text") {
     carriesArray = [{
-      id: `${DOMAIN}/text/${randomUUID()}`,
+      id: `${env.API_URL}/text/${randomUUID()}`, // TODO: use an id that we can use to create this LinguisticObject
       type: "LinguisticObject",
       _label: {
         no: [`Innholdet til ${data.identifier}`],

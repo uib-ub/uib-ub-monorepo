@@ -1,5 +1,5 @@
 import omitEmptyEs from 'omit-empty-es';
-import { API_URL } from '../../../../config/constants';
+import { env } from '../../../../config/env';
 import { checkIntervalValidity } from '../../../validators/checkIntervalValidity';
 import { getTimespan } from '../../constructTimespan';
 import { aatSiblingsType } from '../../staticMapping';
@@ -54,7 +54,7 @@ export const constructLifetimeTimespan = (data: any) => {
       ],
       involves_partner: sibling.map((sibling: any) => {
         return {
-          id: `${API_URL}/people/${sibling.identifier}`,
+          id: `${env.API_URL}/people/${sibling.identifier}`,
           type: 'Person',
           _label: sibling._label,
         }
@@ -80,7 +80,7 @@ export const constructLifetimeTimespan = (data: any) => {
         _type: 'Birth',
         timespan: birthTimespan,
         parent: parent?.map((parent: any) => ({ // TODO: not valid CRM, as this should be "by mother" or "from father
-          id: `${API_URL}/people/${parent.identifier}`,
+          id: `${env.API_URL}/people/${parent.identifier}`,
           type: 'Person',
           _label: parent._label,
         })),
