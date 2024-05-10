@@ -1,9 +1,9 @@
-import { IIIFBuilder } from '@iiif/builder'
-import { sortBy } from 'lodash'
-import { stringifyObject } from '../stringifyObject';
-import { PROVIDER_UB } from '../../config/iiifConfig';
-import rtlDetect from 'rtl-detect-intl';
+import { IIIFBuilder } from '@iiif/builder';
 import { randomUUID } from 'crypto';
+import sortBy from 'lodash/sortBy';
+import rtlDetect from 'rtl-detect-intl';
+import { PROVIDER_UB } from '../../config/iiifConfig';
+import { stringifyObject } from '../stringifyObject';
 const fs = require("fs");
 
 

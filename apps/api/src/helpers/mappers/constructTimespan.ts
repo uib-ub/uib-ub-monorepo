@@ -1,5 +1,5 @@
-import { toZonedTime, format } from 'date-fns-tz'
 import { fromUnixTime } from 'date-fns'
+import { format, toZonedTime } from 'date-fns-tz'
 import edtf from 'edtf'
 
 const getDateFromDateTime = (unix: number) => {
@@ -53,7 +53,6 @@ export const getTimespan = (date: any, after: any, before: any) => {
       return mapEDTF(e)
     }
   } catch (e) {
-    console.log('Error in getTimespan', e)
     return undefined
   }
   return undefined
