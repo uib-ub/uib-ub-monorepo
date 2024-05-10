@@ -187,6 +187,7 @@
     "note": "Merknad",
     "tilbake": "Til søkeresultater",
     "noteTermbaseIsUnmaintained": "Dette er en historisk ressurs som p.t. ikke oppdateres.",
+    "visualization": "Visualisering",
     "imageAltLabel": "Visualisering av begrepet"
   },
   "index": { "title": "Termportalen" },
