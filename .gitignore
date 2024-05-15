@@ -12,7 +12,9 @@ pally-ci-report
 
 # dependencies
 node_modules
+studio/node_modules
 .pnp
+/.pnp
 .pnp.js
 
 # testing
@@ -25,6 +27,7 @@ coverage
 .next/
 out/
 build
+/build
 .swc/
 next-env.d.ts
 
@@ -39,6 +42,8 @@ next-env.d.ts
 .DS_Store
 *.pem
 /.vscode
+.idea/
+*.iml
 
 # debug
 logs
@@ -55,6 +60,7 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 docker-compose.env
+studio/.env.development
 
 # turbo
 .turbo
@@ -106,8 +112,10 @@ yalc.lock
 # npm package zips
 *.tgz
 
-# tsconfig
+# Typescript
 tsconfig.tsbuildinfo
+*.tsbuildinfo
 
 # Temporary ignore
 /apps/ub-dashboard/v1
+/apps/chc-web/v1
