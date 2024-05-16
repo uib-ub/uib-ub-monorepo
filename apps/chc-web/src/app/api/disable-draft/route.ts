@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export function GET(request: NextRequest) {
   draftMode().disable()
-  const url = new URL(request.nextUrl)
-  return NextResponse.redirect(new URL('/', url.origin))
+  const url = new URL(request.nextUrl.origin)
+  // Redirect to the homepage, when we disable draft mode
+  return NextResponse.redirect(new URL('/', url))
 }
