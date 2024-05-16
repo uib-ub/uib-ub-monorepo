@@ -1,5 +1,5 @@
 import "server-only";
-import { API_URL } from "v1/lib/constants";
+import { API_URL } from "../constants";
 
 export async function getItemData(id: string): Promise<any> {
   const res = await fetch(`${API_URL}/items/${id}`, {
