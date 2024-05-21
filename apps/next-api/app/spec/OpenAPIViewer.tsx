@@ -1,11 +1,10 @@
 'use client';
 
-import "swagger-ui-react/swagger-ui.css"
-import SwaggerUI from 'swagger-ui-react'
+import SwaggerUI from 'swagger-ui-react';
+import "swagger-ui-react/swagger-ui.css";
 
 export default function OpenAPIViewer({ spec, url }: any) {
   return (
-    /* @ts-ignore */
     <SwaggerUI spec={spec} url={url} />
   );
 }
