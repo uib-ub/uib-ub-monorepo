@@ -1,6 +1,6 @@
-import React, { ReactElement, Fragment } from 'react'
+import { Listbox, Transition } from '@headlessui/react'
 import cn from 'clsx'
-import { Listbox, Portal, Transition } from '@headlessui/react'
+import { Fragment, ReactElement } from 'react'
 import { CheckIcon } from '../assets/icons/CheckIcon'
 import { usePopper } from '../utils/use-popper'
 
@@ -66,12 +66,14 @@ export function Select({
             // @ts-ignore
             ref={container}
             as={Fragment}
-            className="border border-black/5 dark:border-white/20 z-20 max-h-64 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg dark:bg-neutral-800"
             leave="transition-opacity"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options static>
+            <Listbox.Options
+              className="border border-black/5 dark:border-white/20 z-20 max-h-64 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg dark:bg-neutral-800"
+              static
+            >
               {options.map(option => (
                 <Listbox.Option
                   key={option.key}
