@@ -1,0 +1,40 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "extends": [
+    "//"
+  ],
+  "pipeline": {
+    "api": {
+      "outputs": [
+        ".next/**",
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "DATAPORTEN_AUTH_ENDPOINT",
+        "DATAPORTEN_ID",
+        "DATAPORTEN_SECRET",
+        "NEXT_PUBLIC_GITAPP_HOST",
+        "NEXT_PUBLIC_GITAPP_TOKEN",
+        "NEXT_PUBLIC_GITLAB_HOST",
+        "NEXT_PUBLIC_GITLAB_TOKEN",
+        "NEXT_PUBLIC_GITHUB_TOKEN",
+        "NEXT_PUBLIC_GITBEAKER_CAMELIZE",
+        "NEXT_PUBLIC_SANITY_API_VERSION",
+        "NEXT_PUBLIC_SANITY_DATASET",
+        "NEXT_PUBLIC_SANITY_PROJECT_ID",
+        "NEXT_PUBLIC_SANITY_STUDIO_URL",
+        "NEXTAUTH_URL",
+        "NEXTAUTH_SECRET",
+        "VERCEL_ENV",
+        "VERCEL_URL",
+        "SANITY_API_TOKEN",
+        "SANITY_API_READ_TOKEN",
+        "SANITY_API_WRITE_TOKEN",
+        "SANITY_REVALIDATE_SECRET"
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "extends": [
+    "//"
+  ],
+  "pipeline": {
+    "api": {
+      "outputs": [
+        ".next/**",
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "XATA_API_KEY",
+        "XATA_BRANCH",
+        "VERCEL_ENV",
+        "VERCEL_URL"
+      ]
+    }
+  }
+}
