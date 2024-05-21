@@ -1,0 +1,23 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "extends": [
+    "//"
+  ],
+  "pipeline": {
+    "api": {
+      "outputs": [
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "ES_HOST",
+        "ES_TOKEN",
+        "ES_PATH",
+        "SANITY_API_TOKEN",
+        "SANITY_PROJECT_ID"
+      ]
+    }
+  }
+}
