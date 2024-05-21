@@ -25,10 +25,10 @@ export const locate: DocumentLocationResolver = (params, context) => {
       { perspective: 'previewDrafts' },
     ) as Observable<
       | {
-        _type: string
-        slug: { current: string }
-        title: string | null
-      }[]
+          _type: string
+          slug: { current: string }
+          title: string | null
+        }[]
       | null
     >
     return doc$.pipe(
@@ -40,21 +40,21 @@ export const locate: DocumentLocationResolver = (params, context) => {
           case 'home':
             return isReferencedBySettings
               ? ({
-                locations: [
-                  {
-                    title:
-                      docs?.find((doc) => doc._type === 'home')?.title ||
-                      'Home',
-                    href: resolveHref(params.type)!,
-                  },
-                ],
-                tone: 'positive',
-                message: 'This document is used to render the front page',
-              } satisfies DocumentLocationsState)
+                  locations: [
+                    {
+                      title:
+                        docs?.find((doc) => doc._type === 'home')?.title ||
+                        'Home',
+                      href: resolveHref(params.type)!,
+                    },
+                  ],
+                  tone: 'positive',
+                  message: 'This document is used to render the front page',
+                } satisfies DocumentLocationsState)
               : ({
-                tone: 'critical',
-                message: `The top menu isn't linking to the home page. This might make it difficult for visitors to navigate your site.`,
-              } satisfies DocumentLocationsState)
+                  tone: 'critical',
+                  message: `The top menu isn't linking to the home page. This might make it difficult for visitors to navigate your site.`,
+                } satisfies DocumentLocationsState)
           case 'page':
             return {
               locations: docs
