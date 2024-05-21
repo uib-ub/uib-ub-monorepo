@@ -42,6 +42,7 @@
     "@sanity/util": "3.24.1",
     "@sanity/uuid": "3.0.2",
     "@sanity/vision": "3.17.0",
+    "@sanity/webhook": "^3.0.1",
     "@seidhr/sanity-plugin-timespan-input": "^3.0.4",
     "@tanstack/react-table": "^8.10.6",
     "@xata.io/client": "^0.28.0",
