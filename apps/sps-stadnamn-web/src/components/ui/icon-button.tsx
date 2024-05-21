@@ -1,24 +1,28 @@
-"use-client"
+'use client'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip"
 
-import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
 
-const TooltipButton = dynamic(() => import('./tooltip-button'), { ssr: false })
+export default function TooltipButton({ children, className, textClass, label, type, ...rest }: { children: React.ReactNode, className?: string, textClass?: string, label: string, [x: string]: any, type?: "button" | "submit" | "reset" }) {
+    return (
 
-export default function IconButton({ children, className, type='button', label, ...rest }: { children: React.ReactNode, className?: string, label: string, [x: string]: any }) {
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger className={className} aria-label={label} type={type || "button"} {...rest}>
+                    {textClass ? <span className={textClass}>{label}</span> : null}
+                    <i  aria-hidden='true'>
+                        {children}
+                    </i>
+                </TooltipTrigger>
+                <TooltipContent>
+                {label}
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
 
-  return (
-  
-    <Suspense fallback={
-      <button type={type} className={className} aria-label={label}>
-          <i  aria-hidden='true'>
-                    {children}
-              </i> 
-      </button>
-
-    }>
-  <TooltipButton className={className} type={type} label={label}  {...rest}>{children}</TooltipButton>
-  </Suspense>
-    
-  );
+    );
 }

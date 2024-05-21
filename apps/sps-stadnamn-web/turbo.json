@@ -6,17 +6,18 @@
   "pipeline": {
     "api": {
       "outputs": [
-        "dist/**"
+        "dist/**",
+        ".next/**"
       ],
       "dependsOn": [
         "^build"
       ],
       "env": [
-        "ES_HOST",
+        "SN_ENV",
+        "ES_ENDPOINT",
         "ES_TOKEN",
-        "ES_PATH",
-        "SANITY_API_TOKEN",
-        "SANITY_PROJECT_ID"
+        "ES_ENDPOINT_TEST",
+        "ES_TOKEN_TEST"
       ]
     }
   }

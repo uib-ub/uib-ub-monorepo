@@ -1,73 +1,134 @@
 'use client'
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Map from './Map'
-import { useSearchParams, usePathname, useRouter } from 'next/navigation'
+import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
-
-const DEFAULT_CENTER = [60.3913, 5.3221];
-const DEFAULT_ZOOM = 5;
+import PopupList from './PopupList'
+import { indexToCode } from '@/lib/datasets';
+import { datasetTitles } from '@/config/dataset-config';
+import IconButton from '@/components/ui/icon-button';
+import { PiInfoFill } from 'react-icons/pi';
 
 export default function MapExplorer(props) {
-
   const [markers, setMarkers] = useState([]);
-  const mapRef = useRef(null);
-  const [bounds, setBounds] = useState(null);
+  const mapInstance = useRef(null);
+  const [leafletBounds, setLeafletBounds] = useState(null);
+  const [resultCount, setResultCount] = useState(null);
+  const initialRender = useRef(true);
+  const [zoom, setZoom] = useState(null);
   const searchParams = useSearchParams()
+  const params = useParams()
+  const router = useRouter()
   const pathname = usePathname()
-  const router = useRouter();
-  const mapQueryString = useQueryStringWithout(["document", "size", "page", "sort"])
+  const mapQueryString = useQueryStringWithout(["docs", "size", "page", "sort"])
+  const controllerRef = useRef(new AbortController());
+  const openPopup = useRef(false);
+  const selectedMarker = useRef(null);
+
+  const mapRef = useCallback(node => {
+    if (node !== null) {
+      mapInstance.current = node;
+      node.on('moveend', () => {
+        controllerRef.current.abort();
+        controllerRef.current = new AbortController();
+
+        setLeafletBounds(node.getBounds());
+        setZoom(node.getZoom());
+      });
+
+      node.on('baselayerchange', (layer) => {
+        const layerCode = {"Norgeskart": "map_topo4", "Norgeskart, gråtoner": "map_topo4graatone", "Terrengkart": "map_terreng", "Verdenskart": "map_carto_labels"}[layer.name] || "map_topo4"
+        localStorage.setItem('baseLayer', layerCode);
+      });
+
+    }
+    
+  }, []);
+  
+
+
+  function groupMarkers(markers) {
+    const grouped = {};
+
+    markers.forEach(marker => {
+      const lat = marker.fields.location[0].coordinates[1];
+      const lon = marker.fields.location[0].coordinates[0];
+      const key = `${lat},${lon}`;
+
+      if (!grouped[key]) {
+        grouped[key] = { lat, lon, hits: [] };
+      }
+      grouped[key].hits.push({id: marker._id, label: marker.fields.label});
+    });
+  
+    return Object.values(grouped);
+  }
+
+  const groupByIndex = (docs) => {
+    return docs.reduce((grouped, doc) => {
+      const key = doc._index;
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+      grouped[key].push(doc);
+      return grouped;
+    }, {});
+  };
+
+
 
   const documentUrl = (uuid) => {
     const params = new URLSearchParams(searchParams)
-    params.set('document', String(uuid))
+    params.set('docs', String(uuid))
     return pathname + "?" + params.toString()
   }
 
-  const onMapLoaded = (mapInstance) => {
-    setBounds(mapInstance.target.getBounds());
-  };
+  
 
   useEffect(() => {
-    if (mapRef.current) {
-        if (props.mapBounds.length) {
-            mapRef.current.fitBounds(props.mapBounds, {maxZoom: 8})
-        }
-      //mapRef.current.setView(props.center || DEFAULT_CENTER, props.bounds.length ? mapRef.current.getBoundsZoom(props.bounds) : DEFAULT_ZOOM);
-    }
-  }, [mapRef.current, props.center, props.mapBounds]);
+    // This code will run whenever the marker's position is changed
+    if (props.docs?.[0]?._source?.location) {
 
-  useEffect(() => {
-    // Check if the map is initialized
-    if (mapRef.current) {
+      if (openPopup.current) {
+        selectedMarker.current.openPopup();
+        openPopup.current = false;
+      }
+      else {
+        selectedMarker.current?.closePopup();
+      }
       
-      // Update the bounds state when the map's view changes
-      mapRef.current.on('moveend', () => {
-        const newBounds = mapRef.current.getBounds();
-        setBounds(newBounds);
-      });
+      //console.log("Marker position changed", selectedMarker.current, props.docs);
     }
-  }, [mapRef.current]);
+  }, [props.docs]);
+
 
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (bounds) {
+    if (!props.isLoading) {
+      //console.log("Fetching geodata", props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading)
+      const topLeftLat = leafletBounds ? leafletBounds.getNorthEast().lat : props.mapBounds[0][0];
+      const topLeftLng = leafletBounds ? leafletBounds.getSouthWest().lng : props.mapBounds[0][1];
+      const bottomRightLat = leafletBounds ? leafletBounds.getSouthWest().lat : props.mapBounds[1][0];
+      const bottomRightLng = leafletBounds ? leafletBounds.getNorthEast().lng : props.mapBounds[1][1];
+
       // Fetch data based on the new bounds
-      const params = mapQueryString
-      const query = `/api/geo?dataset=hord&${ params? 
-                                             params + "&" : "" 
+      const queryParams = mapQueryString
+      const query = `/api/geo?dataset=${params.dataset}&${ queryParams? 
+                                            queryParams + "&" : "" 
                                             }topLeftLat=${
-                                              bounds.getNorthEast().lat
+                                             topLeftLat
                                             }&topLeftLng=${
-                                              bounds.getSouthWest().lng
+                                              topLeftLng
                                             }&bottomRightLat=${
-                                              bounds.getSouthWest().lat
+                                              bottomRightLat
                                             }&bottomRightLng=${
-                                              bounds.getNorthEast().lng
+                                              bottomRightLng
                                             }`
 
       fetch(query, {
+        signal: controllerRef.current.signal,
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -77,42 +138,148 @@ export default function MapExplorer(props) {
       .then(response => response.json())
       .then(data => {
 
-        setMarkers(data.hits.hits)})
+        setResultCount(data.hits.total.value);        
+        const markers = groupMarkers(data.hits.hits);
+        setMarkers(markers)})
+        
 
-      .catch(error => console.error('Error:', error));
+        .catch(error => {
+          if (error.name !== 'AbortError') {
+            console.error('Fetch request failed:', error);
+          }
+        }
+      );
+        
     }
-  }, [bounds, mapQueryString]);
+  }, [props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading]);
 
+  // Fit map to bounds when searching
+  useEffect(() => {
+    if (initialRender.current) {
+      initialRender.current = false;
+    }
+    else if (mapInstance.current && props.mapBounds?.length && !props.isLoading) {
+      mapInstance.current.fitBounds(props.mapBounds, {maxZoom: 8})
+    }
+  }, [props.mapBounds, props.isLoading]);
+  
+  
+  // Move view to selected marker if it is not in view
+  useEffect(() => {
+    if (props.docs?.[0]._source.location && mapInstance.current) {
+      const { coordinates } = props.docs[0]._source.location;
+      const latLng = L.latLng(coordinates[1], coordinates[0]);
+      if (!mapInstance.current.getBounds().contains(latLng)) {
+        mapInstance.current.setView(latLng, 10);
+      }
+    }
+  }, [props.docs]);
 
 
   return (
-    <Map mapRef={mapRef} whenReady={onMapLoaded} zoom={DEFAULT_ZOOM} center={DEFAULT_CENTER} className='w-full aspect-square lg:aspect-auto lg:h-full'>
-            {({ TileLayer, CircleMarker, Marker }, leaflet) => (
+    <Map mapRef={mapRef} bounds={props.mapBounds} className='w-full aspect-square lg:aspect-auto lg:h-full'>
+            {({ TileLayer, LayersControl, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
+              
                 <>
-          
-            <TileLayer
-              key="map_topo4"
-              url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
-              attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-              subdomains={['', '2', '3']} 
-            />
+
+           <TileLayer
+                key="map_cartodb"
+                url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
+              />
+           <LayersControl collapsed={false}>
+
             
-            {markers.map((marker, index) => (
-              <CircleMarker role="button" circleClick={() => {
-                console.log("CLICKED")
-                router.push(documentUrl(props.doc._id))
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4'} name="Norgeskart">
+              <TileLayer
+                key="map_topo4"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']} 
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4graatone'} name="Norgeskart, gråtoner">
+              <TileLayer
+                key="map_topo4graatone"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4graatone&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_terreng'} name="Terrengkart">
+              <TileLayer
+                key="map_terreng"
+                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=terreng_norgeskart&zoom={z}&x={x}&y={y}"
+                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                subdomains={['', '2', '3']}
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_carto_labels'} name="Verdenskart">
+              <TileLayer
+                key="map_carto_labels"
+                url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
+              />
+            </LayersControl.BaseLayer>
+            </LayersControl>
 
-              } } pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
-                            key={index} center={[marker.fields.location[0].coordinates[1], marker.fields.location[0].coordinates[0]]} radius={7}>
+            {markers.map(marker => (
+              <CircleMarker role="button" 
+                            pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
+                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}${(zoom > 14 || resultCount < 20) && markers.length < 100  ? 'labeled' : ''}`} 
+                            center={[marker.lat, marker.lon]} 
+                            radius={marker.hits.length == 1 ? 8 : marker.hits.length == 1 && 9 || marker.hits.length < 4 && 10 || marker.hits.length >= 4 && 12}
+                            eventHandlers={{click: () => {
+                              const uuids = marker.hits.map(item => item.id).join(",")
+                              openPopup.current = true
+                              router.push(documentUrl(uuids), { scroll: false})
+                            }}}>
+                  
+                    {  (zoom > 14 || resultCount < 20) && markers.length < 100 ? 
+                    
+                    <Tooltip className="!text-black !border-0 !shadow-none !bg-white !font-semibold !rounded-full !px-2 !pt-0 !pb-0 !mt-3 before:hidden" 
+                             direction="bottom" 
+                             permanent={true}
+                             eventHandlers={{click: () => {
+                              // TOODO: open popup
+                            }}}>
+                      {marker.hits[0].label}{marker.hits.length > 1 ? `...` : ''}
 
+                      </Tooltip>  : null}
+
+                  
 
               </CircleMarker>
-                
             ))}
-            {props.doc?.location ? <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
-                            key={props.doc._id} position={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]}>
+            
+           
+            {props.docs?.[0]?._source?.location ?
+            
+            ( <Marker ref={selectedMarker} className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
+                             position={[props.docs[0]._source.location.coordinates[1], props.docs[0]._source.location.coordinates[0]]}>
 
-              </Marker> : null}
+
+              <Popup minWidth={256} maxWidth={300} autoPan={false}>
+                                    
+              { params.dataset == 'search' ?
+                <ul className="flex flex-col gap-2 max-h-64 overflow-y-scroll">
+                {Object.entries(groupByIndex(props.docs)).map(([index, docs]) => (
+                  <li key={index}> 
+                    <h3 className="text-lg flex justify-between font-semibold">{datasetTitles[indexToCode(index)]}<IconButton label="Info" onClick={() => router.push('/view/' + indexToCode(index) + "/info")}><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h3>
+                      <PopupList docs={props.docs} view={params.dataset} />
+                  </li>
+                ))}
+                </ul>
+                :
+                <div className="max-h-64 overflow-y-scroll"><PopupList docs={props.docs} view={params.dataset} /></div>
+              }
+                    
+              </Popup>
+
+              </Marker> )
+              : null}
+              
+              
             </>
             )}
     </Map>

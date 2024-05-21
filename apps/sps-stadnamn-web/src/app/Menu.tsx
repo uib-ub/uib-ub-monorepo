@@ -9,12 +9,12 @@ export default function Menu() {
 
     return (
         <>
-            <div className=""><IconButton aria-controls="menu_navbar" 
+            <IconButton aria-controls="menu_navbar" 
                                         label="Meny"
                                         aria-expanded={menuOpen} 
-                                        className="p-1 rounded-sm lg:hidden ml-auto" 
+                                        className="p-1 px-2 rounded-sm lg:hidden ml-auto" 
                                         onClick={() => setMenuOpen(!menuOpen)}>
-                                        <PiList className="text-3xl"/></IconButton></div>
+                                        <PiList className="text-3xl"/></IconButton>
             {menuOpen && <NavBar id="menu_navbar" className="text-xl lg:hidden text-center gap-6 my-6 small-caps w-100 flex flex-col w-full font-semibold"/>}
         </>
     )

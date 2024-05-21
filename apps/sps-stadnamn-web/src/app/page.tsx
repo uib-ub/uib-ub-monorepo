@@ -3,76 +3,79 @@ import { PiMapTrifold } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
+import Image from 'next/image';
+import { datasetTitles, datasetPresentation } from '@/config/dataset-config';
+import Footer from '../components/layout/Footer';
 
 export default function Home() {
-  const cards = [
-    { img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Prof_oluf_rygh.jpg", title: "Oluf Rygh: Norske Gaardnavne", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-    { img: "https://via.placeholder.com/150", title: "Matrikkelen 1886", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-    { img: "https://via.placeholder.com/150", title: "Bustadnamn", description: "Description" },
-  ];
+
+  const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
+    const info = datasetPresentation[code]
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: info.description, subindices: info.subindices, initPage: info.initPage }
+  }
+  )
+
 
   return (
     <>
-<main className="flex flex-col grow-1 gap-24 items-center justify-center pb-8 lg:pt-32  lg:pb-16 px-4 my-auto">
-  <div className="flex flex-col gap-12 my-2">
-  <div className="flex flex-col gap-6 items-center">
-  <h1 className="text-2xl sm:text-3xl text-neutral-900 md:text-4xl lg:text-5xl font-serif">Stedsnavnsøk</h1>
+<main className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow">
+  <div className="flex flex-col gap-24 w-full">
+  <div className="flex flex-col gap-12 w-full">
+  <div className="flex flex-col gap-8 ">
+  <h1 className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center md:text-4xl lg:text-5xl">Stadnamnportalen</h1>
   
-  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center max-w-2xl mx-auto gap-2" action="search/stadnamn">
-
-    <input className="col-span-4 rounded-sm h-full border border-gray-400 text-base px-2" name="q" type="text"/>
-    <IconButton className="btn btn-primary h-full col-span-1 text-base" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></IconButton>
-    <button className="btn text-base col-span-5 md:col-span-2 whitespace-nowrap"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</button>
+  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-3" action="view/search">
+    <label htmlFor="search_input" className="sr-only">Søk i alle kilder</label>
+    <input id="search_input" className="col-span-4 rounded-sm h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
+    <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></IconButton>
+    <Link href="/view/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
   </form>
   
   </div>
 
   </div>
 
-  <div className="flex items-center flex-col lg:flex-row gap-12">
+  <div className="flex items-center justify-center flex-col lg:flex-row gap-12">
   <div className="flex flex-col md:flex-row items-center gap-6 text-neutral-950 "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
   <div className="flex flex-col md:flex-row gap-6 jusitfy-between text-center">
-  <div className="flex flex-col"><span className="font-semibold">Språksamlingene</span>
+  <div className="flex flex-col"><span className="font-semibold">Språksamlingane</span>
   <Link href="https://spraksamlingane.no" className="text-sm">spraksamlingane.no</Link></div>
   <div className="flex flex-col"><span className="font-semibold">Digital utvikling</span>
   <Link href="https://uib.no/digitalutvikling" className="text-sm">uib.no/digitalutvikling</Link></div>
 
   </div>
+  </div>
   
 
 
   </div>
-  <section className="flex flex-col items-center gap-6">
-    <h2 className="font-serif text-3xl">Datasett</h2>
-    Filtre her
-    <ul className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
+  <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Kildetilpassede søkevisninger</h2>
+    <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
-        <li key={index} className="card flex">
-          <img src={card.img} alt="Oluf Rygh, portrettfoto" className="w-24 h-24 md:w-48 md:h-48 object-cover m-2"/>
-          <div className="content p-4 w-128">
+        <li key={index} className="card flex flex-col md:h-64 sm:my-0">
+          <Link href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
+          <div className="w-full aspect-square sm:h-32 sm:w-32 sm:md:h-64 sm:md:w-64  lg:p-1 overflow-hidden sm:flex-none">
+          <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%]"/>
+        </div>
+          <div className="content p-4 pb-2 w-128 flex flex-col">
             <h3 className="text-lg font-semibold">{card.title}</h3>
             <p>{card.description}</p>
+            {card.imageAttribution && 
+            <small className="text-neutral-700 text-xs mt-auto">Illustrasjon: {card.imageAttribution}</small>
+          }
           </div>
+          </Link>
         </li>
       ))}
     </ul>
+    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass className="text-2xl"/>Flere søkevisninger</Link>
     </section>
   
 
 </main>
-        <footer className="bg-neutral-200  p-6 text-center">
-        
-        <nav className="flex flex-col lg:flex-row gap-3">
-          <Link href="/">Personvern</Link>
-          <Link href="/">Tilgjengelighetserklæring</Link>
-        </nav>
-        
-      </footer>
+      <Footer/>
       </>
   );
 }

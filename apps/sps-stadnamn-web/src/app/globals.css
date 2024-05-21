@@ -10,13 +10,17 @@
     @apply bg-neutral-50
   }
 
-  html:has(.search-view), body:has(.search-view), main.search-view {
-    @apply lg:h-full lg:overflow-hidden;
+  html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
+    @apply xl:h-full xl:overflow-hidden;
+  }
+
+  ::selection {
+    @apply bg-accent-700 rounded-sm text-white;
   }
 
 
   a {
-    @apply underline decoration-2 decoration-primary-600 underline-offset-4;
+    @apply underline decoration-1 decoration-primary-600 underline-offset-4;
 
   }
 
@@ -25,6 +29,9 @@
     font-variant: all-small-caps;
   }
 
+  .stable-scrollbar {
+    scrollbar-gutter: stable;
+  }
 
   * {
     scrollbar-color:  #8e8580 transparent;
@@ -39,6 +46,12 @@
     accent-color: theme('colors.accent.700') !important;
   }
 
+  mark {
+    @apply bg-accent-200 border border-accent-900 rounded-sm px-1;
+  }
+
+
+
 
 
 }
@@ -48,8 +61,37 @@
     @apply bg-white shadow rounded-sm;
   }
 
+  .dataset-info p, .page-info p {
+    @apply pb-4;
+  }
 
+  h1, .dataset-info h2, .instance-info h2 {
+    @apply text-xl sm:text-2xl lg:text-3xl text-neutral-900 md:text-3xl lg:text-4xl font-serif
+  }
 
+  .page-info h1 {
+    @apply py-2
+  }
+
+  .dataset-info h3, .instance-info h3, .page-info h2 {
+    @apply text-lg sm:text-xl lg:text-2xl mt-4 text-neutral-900 font-serif py-2;
+  }
+
+  .page-info h3 {
+    @apply text-base sm:text-base lg:text-lg mt-4 text-neutral-900 pt-2;
+  }
+
+  .dataset-info ul, .instance-info ul, .page-info ul {
+    @apply list-disc pl-4 py-2;
+  }
+
+  .dataset-info ol, .instance-info ol, .page-info ol {
+    @apply list-decimal pl-4 py-2;
+  }
+
+  .dataset-info li, .instance-info li, .page-info li {
+    @apply py-1;
+  }
 
   .btn {
     @apply inline-flex items-center rounded-sm justify-center px-4 py-2 shadow-sm text-sm font-medium text-white bg-neutral-700 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-600;
@@ -76,8 +118,19 @@
     @apply no-underline;
   }
 
-  
+  button[disabled] i {
+    @apply text-gray-400;
+  }
 
+  button[aria-current='page'] i {
+    @apply text-accent-800;
+
+  }
+
+  button[aria-current='page'] {
+    @apply ring-accent-800 ring-1 rounded-full;
+
+  }
 
 }
 
