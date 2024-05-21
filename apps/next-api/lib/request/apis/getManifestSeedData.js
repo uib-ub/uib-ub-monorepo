@@ -38,7 +38,7 @@ export async function getManifestSeedData(id, url) {
         ubbont:hasSMView ?singleSM .
     }
     WHERE { 
-      GRAPH ?g { 
+      SERVICE <cache:> {
         VALUES ?id { "${id}" }
         ?s dct:identifier ?id ;
           ubbont:hasRepresentation ?repr ;

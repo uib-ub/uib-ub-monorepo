@@ -1,0 +1,42 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "linked-art.json",
+    "title": "Linked Art Schema",
+    "description": "All Linked Art Records",
+    "type": "object",
+    "anyOf": [
+        {
+            "$ref": "concept.json"
+        },
+        {
+            "$ref": "digital.json"
+        },
+        {
+            "$ref": "event.json"
+        },
+        {
+            "$ref": "group.json"
+        },
+        {
+            "$ref": "image.json"
+        },
+        {
+            "$ref": "object.json"
+        },
+        {
+            "$ref": "person.json"
+        },
+        {
+            "$ref": "place.json"
+        },
+        {
+            "$ref": "provenance.json"
+        },
+        {
+            "$ref": "set.json"
+        },
+        {
+            "$ref": "text.json"
+        }
+    ]
+}

@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   extends: ["termportal-ui"],
   modules: [
     "@nuxt/content",
+    "@nuxtjs/sanity",
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],
@@ -24,6 +25,18 @@ export default defineNuxtConfig({
       cors: true,
       headers: {
         "Access-Control-Allow-Methods": "GET, POST",
+        "Cache-Control":
+          "max-age=600, s-maxage=3600, stale-while-revalidate=7200",
+      },
+    },
+    "/api/search/**": {
+      headers: { "Cache-Control": "no-store" },
+    },
+    "/api/search/autocomplete/**": {
+      cors: true,
+      headers: {
+        "Cache-Control":
+          "max-age=600, s-maxage=3600, stale-while-revalidate=7200",
       },
     },
   },
@@ -65,6 +78,13 @@ export default defineNuxtConfig({
         dir: "web",
       },
     },
+  },
+  sanity: {
+    projectId: process.env.SANITY_PROJECT_ID,
+    dataset: "production",
+    apiVersion: "2023-10-09",
+    token: process.env.SANITY_API_TOKEN,
+    useCdn: true,
   },
   // htmlValidator: {
   //  usePrettier: true,

@@ -1,22 +1,6 @@
 import { getTranslator } from "next-intl/server";
 import { notFound } from "next/navigation";
-import Subjects from "@/app/[locale]/(chc)/_components/subject";
 import ManifestViewer from "@/app/[locale]/(chc)/_components/iiif/manifest-viewer.client";
-import { InternationalLabel } from "@/app/[locale]/(chc)/_components/international-label.client";
-
-const url = "https://sparql.ub.uib.no/sparql/query?query=";
-
-async function getData(id: string) {
-  const res = await fetch(`http://localhost:3009/id/${id}`, {
-    next: { revalidate: 10000 },
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
-  return res.json();
-}
 
 export default async function ItemRoute({
   params: { locale, id },
@@ -24,24 +8,29 @@ export default async function ItemRoute({
   params: { locale: string; id: string };
 }) {
   const t = await getTranslator(locale, "Item");
-  const data = await getData(id);
-  if (!data) {
+  const res = await fetch(`http://127.0.0.1:3009/items/${id}?as=iiif`);
+
+  if (!res.ok) {
     notFound();
   }
+
+  const data = await res.json();
+
+  // TODO: the viewer will change height when navigating between canvases
+  // because we have level 0 Image api, and do not have the dimensions of the images.
 
   return (
     <>
       <div>
-        <InternationalLabel label={data.label} lang={locale} />
-        {data.subjectOfManifest ? (
+        {data ? (
           <ManifestViewer
-            id={data.subjectOfManifest}
+            id={data}
             options={{
               canvasBackgroundColor: "#222",
-              canvasHeight: "70vh",
+              canvasHeight: "640px",
               renderAbout: true,
               showIIIFBadge: true,
-              showTitle: false,
+              showTitle: true,
               showInformationToggle: true,
               openSeadragon: {
                 gestureSettingsMouse: {
@@ -51,9 +40,6 @@ export default async function ItemRoute({
             }}
           />
         ) : null}
-        <div className="my-5 flex flex-col gap-2">
-          <Subjects data={data.subject} />
-        </div>
       </div>
     </>
   );

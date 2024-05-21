@@ -19,7 +19,7 @@ const props = defineProps({
 const displaytitle = () => {
   if (props.fkey === "context") {
     if (searchInterface.value.useDomain) {
-      return i18n.t("global.domain.domain", 0);
+      return i18n.t("global.domain.domain");
     } else {
       return i18n.t("global.termbase", 0);
     }

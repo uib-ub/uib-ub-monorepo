@@ -23,7 +23,8 @@ export type Samling =
   | "KJEMI"
   | "FBK"
   | "BIBINF"
-  | "UDEUT";
+  | "UDEUT"
+  | "SKOG";
 
 export type Domains =
   | "DOMENE-3AHumaniora"
@@ -31,6 +32,7 @@ export type Domains =
   | "DOMENE-3ASamfunnsfag"
   | "DOMENE-3AOkonomiAdministrasjon";
 
+// TODO replace with lazy query
 export const termbaseOrder: Samling[] = [
   "ARTSDB",
   "ASTRONOMI",
@@ -48,6 +50,7 @@ export const termbaseOrder: Samling[] = [
   "NOT",
   "ROMFYS",
   "SEMANTIKK",
+  "SKOG",
   "SDIR",
   "RTT",
   "TOLKING",
@@ -55,6 +58,7 @@ export const termbaseOrder: Samling[] = [
   "UHR",
 ];
 
+// TODO replace with lazy query
 export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   ARTSDB: ["nb", "nn", "en", "la"],
   ASTRONOMI: ["nb", "nn", "en"],
@@ -74,40 +78,20 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   NOT: ["nb", "nn", "en", "de", "fr", "la"],
   ROMFYS: ["nb", "nn", "en"],
   RTT: ["nb", "nn", "en", "da", "de", "fi", "fr", "it", "ru", "sv"],
+  SKOG: ["nb", "nn", "en", "de", "fr"],
   TOLKING: ["nb", "en", "ar", "fr", "pl", "ru", "so", "ti", "fa-af"],
   UDEUT: ["nb", "nn", "en", "fr"],
   UHR: ["nb", "nn", "en"],
 };
-
-export const domainNesting = {
-  "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
-  "DOMENE-3ANaturvitenskapTeknologi": {
-    bases: [
-      "NOT",
-      "MRT",
-      "SDIR",
-      "ARTSDB",
-      "EVERTEBRATER",
-      "RTT",
-      "ROMFYS",
-      "KLIMA",
-      "ASTRONOMI",
-      // "BIOLOGI",
-      "CMBIOLOGI",
-      "KJEMI",
-    ],
-  },
-  "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING", "UDEUT"] },
-  "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
-};
-
 type CollectionUriPatternKey =
   | "bkg"
   | "nav"
   | "brreg"
   | "bufdir"
   | "fbk"
-  | "ex";
+  | "ex"
+  | "skatt";
+
 export const termbaseUriPatterns: {
   [key in Samling]?: { [key in CollectionUriPatternKey]: string };
 } = {
@@ -118,5 +102,6 @@ export const termbaseUriPatterns: {
     bufdir: "https://data.bufdir.no/begrep/",
     fbk: "https://concept-catalog.fellesdatakatalog.digdir.no/collections/",
     ex: "http://example.com/",
+    skatt: "https://data.skatteetaten.no/begrep/#GeneratedCollection",
   },
 };

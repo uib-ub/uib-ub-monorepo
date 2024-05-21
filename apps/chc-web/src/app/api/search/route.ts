@@ -1,12 +1,12 @@
-import API from "@searchkit/api";
-import { NextResponse } from "next/server";
+import Client from "@searchkit/api";
+import { NextRequest, NextResponse } from "next/server";
 import config from "lib/search/config";
 
-export const runtime = "edge";
+const apiClient = Client(config, { debug: false });
 
-const apiClient = API(config, { debug: false });
+export async function POST(req: NextRequest, res: NextResponse) {
+  const data = await req.json()
 
-export async function POST(request: Request) {
-  const results = await apiClient.handleRequest(await request.json());
-  return NextResponse.json(results);
+  const results = await apiClient.handleRequest(data)
+  return NextResponse.json(results)
 }

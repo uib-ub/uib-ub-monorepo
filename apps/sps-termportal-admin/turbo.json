@@ -1,0 +1,42 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "extends": [
+    "//"
+  ],
+  "pipeline": {
+    "api": {
+      "outputs": [
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "AUTH_ORIGIN",
+        "NUXT_AUTH_SECRET",
+        "NUXT_DATAPORTEN_AUTHORIZED_USERS",
+        "NUXT_DATAPORTEN_CLIENT_ID",
+        "NUXT_DATAPORTEN_CLIENT_SECRET",
+        "NUXT_ENDPOINT_URL",
+        "NUXT_PUBLIC_BASE",
+        "NX_DAEMON",
+        "TURBO_REMOTE_ONLY",
+        "TURBO_RUN_SUMMARY",
+        "VERCEL",
+        "VERCEL_ENV",
+        "VERCEL_GIT_COMMIT_AUTHOR_LOGIN",
+        "VERCEL_GIT_COMMIT_AUTHOR_NAME",
+        "VERCEL_GIT_COMMIT_MESSAGE",
+        "VERCEL_GIT_COMMIT_REF",
+        "VERCEL_GIT_COMMIT_SHA",
+        "VERCEL_GIT_PREVIOUS_SHA",
+        "VERCEL_GIT_PROVIDER",
+        "VERCEL_GIT_PULL_REQUEST_ID",
+        "VERCEL_GIT_REPO_ID",
+        "VERCEL_GIT_REPO_OWNER",
+        "VERCEL_GIT_REPO_SLUG",
+        "VERCEL_URL"
+      ]
+    }
+  }
+}

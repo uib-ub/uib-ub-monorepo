@@ -27,6 +27,19 @@
 
           <SearchField class="max-w-[51em]" />
         </div>
+        <div v-if="context === 'minimal'">
+          <LogoUiB
+            class="mt-6 ml-5 lg:hidden"
+            img-style="max-height: 60px"
+            logo-type="symbol"
+          />
+          <LogoUiB
+            class="mt-6 md:mt-7 ml-1 md:pl-3 hidden lg:block"
+            img-style="max-height: 85px"
+            logo-type="2lines"
+            :logo-language="locale == 'en' ? 'en' : 'no'"
+          />
+        </div>
       </div>
       <div class="hidden lg:flex">
         <ul

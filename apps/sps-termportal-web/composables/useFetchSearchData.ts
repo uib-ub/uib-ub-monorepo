@@ -1,5 +1,5 @@
 import { SearchDataStats } from "./states";
-import { Matching, SearchOptions } from "~~/utils/vars";
+import { Matching, SearchOptions, searchFilterDataEmpty } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
@@ -23,7 +23,7 @@ export async function fetchSearchDataMatching(
   }
 }
 
-export type FetchType = "initial" | "filter" | "further" | "options";
+export type FetchType = "initial" | "options" | "filter" | "further";
 async function fetchSearchDataAggregate(
   searchOptions: SearchOptions,
   currentFetch: number
@@ -68,17 +68,11 @@ export async function useFetchSearchData(options: SearchOptions) {
   searchFetchLatest.value = fetchTime;
   const situation = options.situation;
 
-  if (situation === "initial") {
+  if (situation === "initial" && route.path === "/search") {
     if (route.path === "/search") {
       searchFetchInitial.value = true;
     }
-    searchFilterData.value = {
-      lang: [],
-      samling: [],
-      predicate: [],
-      matching: [],
-      context: [],
-    };
+    searchFilterData.value = searchFilterDataEmpty();
   }
 
   if (

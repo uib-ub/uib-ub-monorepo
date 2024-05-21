@@ -7,28 +7,49 @@
  * @param data - concept data
  */
 export function parseConceptData(data: any, mainConceptId: string) {
-  const languageProps = [
-    "prefLabel",
-    "altLabel",
-    "hiddenLabel",
-    "definisjon",
-    "betydningsbeskrivelse",
-    "hasUsage",
-  ];
+  const languageProps = {
+    proper: [
+      "prefLabel",
+      "altLabel",
+      "hiddenLabel",
+      "definisjon",
+      "betydningsbeskrivelse",
+      "hasUsage",
+    ],
+    ephemeral: ["hasEquivalenceData"],
+  };
   let identified: any;
   if (!data["@graph"]) {
     identified = identifyData([data]);
   } else {
     identified = identifyData(data["@graph"]);
   }
-  identified = idSubobjectsWithLang(identified, languageProps);
+  identified = idSubobjectsWithLang(
+    identified,
+    languageProps.proper.concat(languageProps.ephemeral)
+  );
   const languages = getConceptLanguages(
     identified[mainConceptId],
-    languageProps
+    languageProps.proper
   );
+
+  const startingLanguage = () => {
+    let language = null;
+    try {
+      language = Object.entries(
+        identified[mainConceptId]?.hasEquivalenceData
+      ).filter(([k, v]) => {
+        const key = v[0]?.value["@id"].split("/").slice(-1)[0];
+        return key === "startingLanguage";
+      })[0][0];
+    } catch {}
+    return language;
+  };
+
   return {
     meta: {
       language: languages,
+      startingLanguage: startingLanguage(),
       maxLen: {
         altLabel: getMaxNumberOfInstances(identified[mainConceptId]?.altLabel),
         hiddenLabel: getMaxNumberOfInstances(
@@ -61,11 +82,7 @@ function idSubobjectsWithLang(
     for (const labeltype of labeltypes) {
       try {
         if (data[id][labeltype]) {
-          data[id][labeltype] = updateLabel2(
-            data[id][labeltype],
-            id,
-            labeltype
-          );
+          data[id][labeltype] = updateLabel(data[id][labeltype], labeltype);
         }
       } catch (e) {}
     }
@@ -76,17 +93,16 @@ function idSubobjectsWithLang(
 /**
  * Returns new object with language as key for labels list.
  *
- * @param data - Dataset that represents concepts and labels
- * @param conceptUri - key for object that represents concept
+ * @param labels - Array of labels
  * @param labelType - label type to update
  * @returns object for labeltype with list for each language
  */
-function updateLabel2(data: any, conceptUri: string, labelType: string) {
+function updateLabel(labels: Array<Record<string, any>>, labelType: string) {
   const newLabels: { [key: string]: Array<string> } = {};
-  const labels = data;
   for (const label of labels) {
-    let language;
-    if (
+    if (labelType === "hasEquivalenceData") {
+      addLabel(newLabels, label, label.language);
+    } else if (
       labelType === "definisjon" ||
       labelType === "betydningsbeskrivelse" ||
       labelType === "hasUsage"
@@ -106,9 +122,7 @@ function updateLabel2(data: any, conceptUri: string, labelType: string) {
         addLabel(newLabels, label, label.label["@language"]);
       }
     } else if (labelType === "description") {
-      // TODO deprecated?
-      language = label["@language"];
-      addLabel(newLabels, label, language);
+      addLabel(newLabels, label, label["@language"]);
     } else {
       for (const lf of label.literalForm) {
         const fullLabel = { literalForm: lf };
@@ -119,7 +133,11 @@ function updateLabel2(data: any, conceptUri: string, labelType: string) {
   return newLabels;
 }
 
-function addLabel(newLabels, label: string, language: string) {
+function addLabel(
+  newLabels: Record<string, any>,
+  label: Record<string, any>,
+  language: string
+) {
   try {
     // key already exists
     newLabels[language].push(label);
@@ -149,6 +167,7 @@ function validateLabel(label: any): boolean {
 function getConceptLanguages(concept: any, languageProps: string[]) {
   //  console.log(Object.keys(concept["prefLabel"]));
   const lang = languageProps.flatMap((prop) => {
+    // only equivalence shouldn't be displayed
     if (concept?.[prop]) {
       return Object.keys(concept[prop]);
     } else return [];

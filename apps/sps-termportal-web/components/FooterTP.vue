@@ -1,7 +1,11 @@
 <template>
   <footer class="bg-tpblue-400 text-white">
     <div class="flex flex-wrap items-center justify-center gap-x-6 p-2">
-      <LogoUiB img-style="width: 100px" />
+      <LogoUiB
+        img-style="width: 100px"
+        logo-type="symbol"
+        :logo-negative="true"
+      />
       <div class="flex flex-col space-y-2 text-lg">
         <AppLink
           to="mailto:termportalen@uib.no"

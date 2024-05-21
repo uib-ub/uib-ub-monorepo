@@ -6,7 +6,9 @@
   "types": "./src/index.ts",
   "scripts": {
     "type-check": "tsc",
-    "la-sync": "node ./src/functions/la-sync.js && cd ./src/la-schemas && json2ts -i \"*.json\" -o ../la-types"
+    "la-download": "node ./src/functions/la-sync.js",
+    "la-to-types": "cd ./src/la/schemas && json2ts -i \"*.json\" -o ../la/types",
+    "la-sync": "npm run la-download && npm run la-to-types"
   },
   "author": "",
   "license": "ISC",

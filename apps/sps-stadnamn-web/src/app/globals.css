@@ -20,7 +20,7 @@
 
 
   a {
-    @apply underline decoration-2 decoration-primary-600 underline-offset-4;
+    @apply underline decoration-1 decoration-primary-600 underline-offset-4;
 
   }
 

@@ -1,8 +1,14 @@
 {
-  "schema": "https://turborepo.org/schema.json",
+  "$schema": "https://turborepo.org/schema.json",
   "globalEnv": [],
   "pipeline": {
     "build": {
+      "dotEnv": [
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
+      ],
       "outputs": [
         "dist/**",
         ".next/**",
@@ -10,142 +16,6 @@
       ],
       "dependsOn": [
         "^build"
-      ]
-    },
-    "build#sps-stadnamn-web": {
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "SN_ENV",
-        "ES_ENDPOINT",
-        "ES_TOKEN",
-        "ES_ENDPOINT_TEST",
-        "ES_TOKEN_TEST"
-      ]
-    },
-    "build#chc-web": {
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "NEXTAUTH_SECRET",
-        "DATAPORTEN_ID",
-        "DATAPORTEN_SECRET",
-        "MARCUS_API",
-        "SKA_API",
-        "ES_HOST",
-        "ES_APIKEY",
-        "ES_PATH",
-        "ES_INDEX_SECRET",
-        "NEXT_PUBLIC_VERCEL_URL",
-        "NEXT_PUBLIC_SANITY_API_VERSION",
-        "NEXT_PUBLIC_PUBLIC_DOMAIN",
-        "SANITY_API_READ_TOKEN",
-        "SANITY_REQUIRE_PREVIEW_SECRET",
-        "NEXT_PUBLIC_SANITY_PROJECT_TITLE"
-      ]
-    },
-    "build#next-api": {
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "NEXTAUTH_SECRET",
-        "DATAPORTEN_ID",
-        "DATAPORTEN_SECRET",
-        "MARCUS_API",
-        "SKA_API",
-        "ES_HOST",
-        "ES_APIKEY",
-        "ES_PATH",
-        "ES_INDEX_SECRET",
-        "NEXT_PUBLIC_VERCEL_URL",
-        "NEXT_PUBLIC_PUBLIC_DOMAIN"
-      ]
-    },
-    "build#chc-exh-nt-web": {
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "NODE_ENV",
-        "VERCEL_URL",
-        "API_SECRET",
-        "SANITY_API_TOKEN",
-        "NEXT_PUBLIC_SANITY_API_TOKEN",
-        "NEXT_PUBLIC_BASE_PATH",
-        "NEXT_PUBLIC_SANITY_DATASET",
-        "NEXT_PUBLIC_SANITY_PROJECT_ID",
-        "NEXT_PUBLIC_BASE_PATH",
-        "NEXT_PUBLIC_BASE_LANGUAGE",
-        "NEXT_PUBLIC_VERCEL_ENV",
-        "NEXT_PUBLIC_GOOGLE_ANALYTICS",
-        "SANITY_PREVIEW_SECRET",
-        "VERCEL_ENV",
-        "VERCEL_URL"
-      ]
-    },
-    "build#ub-dashboard": {
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "NEXT_PUBLIC_SANITY_PROJECT_ID",
-        "NEXT_PUBLIC_SANITY_DATASET",
-        "NEXT_PUBLIC_SANITY_STUDIO_URL",
-        "NEXT_PUBLIC_GITAPP_HOST",
-        "NEXT_PUBLIC_GITAPP_TOKEN",
-        "NEXT_PUBLIC_GITLAB_HOST",
-        "NEXT_PUBLIC_GITLAB_TOKEN",
-        "NEXT_PUBLIC_GITHUB_TOKEN",
-        "NEXT_PUBLIC_GITBEAKER_CAMELIZE",
-        "SANITY_REVALIDATE_SECRET",
-        "SANITY_API_TOKEN",
-        "NEXTAUTH_URL",
-        "NEXTAUTH_SECRET",
-        "DATAPORTEN_ID",
-        "DATAPORTEN_SECRET",
-        "DATAPORTEN_AUTH_ENDPOINT",
-        "SANITY_REVALIDATE_SECRET"
-      ]
-    },
-    "build#docs": {
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ]
-    },
-    "build#sps-termportal-admin": {
-      "outputs": [
-        "dist/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "NUXT_DATAPORTEN_AUTHORIZED_USERS",
-        "SANITY_API_TOKEN,"
       ]
     },
     "generate#sps-termportalen-web": {
