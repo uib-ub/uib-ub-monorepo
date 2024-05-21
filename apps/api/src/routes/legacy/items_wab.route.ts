@@ -1,4 +1,5 @@
-import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
+import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
+import { JSONValue } from 'hono/utils/types'
 import { IdQuerySchema, PaginationParamsSchema } from '../../models'
 import { getWabBemerkung } from '../../services/sparql/legacy/wab/get-wab-bemerkung'
 import { listWabBemerkung } from '../../services/sparql/legacy/wab/list-wab-bemerkung'
@@ -67,7 +68,7 @@ export const getItem = createRoute({
 app.openapi(getItem, async (c) => {
   const { id } = c.req.query()
   const response = await getWabBemerkung(id)
-  return c.json(response)
+  return c.json(response as JSONValue, 200)
 })
 
 export default app
