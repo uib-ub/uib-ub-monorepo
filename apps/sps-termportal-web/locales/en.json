@@ -79,6 +79,16 @@
       "LISENS-3ACC_BY_40": "CC BY 4.0",
       "LISENS-3ACC_BY-2DNC_40": "CC BY-NC 4.0",
       "LISENS-3ACC_BY-2DNC-2DND_40": "CC BY-NC-ND 4.0"
+    },
+    "equivalence": {
+      "equivalence": "Equivalence",
+      "equivalencenote": "Equivalence note",
+      "startingLanguage": "starting language",
+      "none": "none equivalence to",
+      "full": "full equivalence to",
+      "delvis": "partial equivalence to",
+      "bredere": "Broader intension than",
+      "smalere": "Narrower intension than"
     }
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
@@ -140,13 +150,7 @@
     "topheading": "Concept view",
     "tableview": "Table view",
     "languagedata": "Language data",
-    "equivalence": "Equivalence",
-    "ekvIngen": "none",
-    "ekvFull": "full",
-    "ekvDelvis": "partial",
-    "ekvBredere": "broader meaning",
-    "ekvSmalere": "narrower meaning",
-    "equivalenceNote": "Equivalence note",
+    "validityperiod": "Period of validity",
     "prefLabel": "Preferred term",
     "altLabel": "Admitted term",
     "hiddenLabel": "Depreciated term",
@@ -181,7 +185,9 @@
     "modified": "Last modified",
     "note": "Note",
     "tilbake": "To search results",
-    "noteTermbaseIsUnmaintained": "This is a historical resource and is not currently being updated"
+    "noteTermbaseIsUnmaintained": "This is a historical resource and is not currently being updated",
+    "visualization": "Visualization",
+    "imageAltLabel": "Visualization of the concept"
   },
   "index": { "title": "Termportalen" },
   "search": {

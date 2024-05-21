@@ -73,12 +73,10 @@
                       v-if="licenseLinks[data?.license['@id']]"
                       class="underline hover:decoration-2"
                       :to="licenseLinks[data?.license?.['@id']]"
-                      >{{
-                        $t("global.license." + data?.license["@id"])
-                      }}</AppLink
+                      >{{ licenseLabels[data?.license?.["@id"]] }}</AppLink
                     >
                     <span v-else class="">
-                      {{ $t("global.license." + data?.license?.["@id"]) }}
+                      {{ licenseLabels[data?.license?.["@id"]] }}
                     </span>
                   </dd>
                 </div>
@@ -117,8 +115,6 @@ import { LangCode } from "~/composables/locale";
 const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
-const lalo = useLazyLocales();
-const locale = useLocale();
 
 const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
   key: `termbase_${termbase}`,

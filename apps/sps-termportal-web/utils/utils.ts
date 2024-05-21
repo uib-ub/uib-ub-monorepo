@@ -96,13 +96,31 @@ export function getRelationData(
         try {
           // Pass concept object
           const label = getConceptDisplaytitle(data[target]);
-          // Slashed are allowed on Pagenames, should be escaped
+          // Slashes are allowed on Pagenames, should be escaped
           // TODO might break links between concepts of external tbs
           // Termbase is part of URI (seperated by '-3A')
           const link = "/" + target.replace("/", "%2F").replace("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
-            return [label, link];
+            let relation = { target: [label, link] };
+
+            const toReifiedProp = semanticRelationTypes[relationType][0];
+            const fromReifiedProp = semanticRelationTypes[relationType][1];
+
+            if (data[mainConceptId]?.[toReifiedProp]) {
+              const reifiedRelation = data[mainConceptId]?.[
+                toReifiedProp
+              ].filter(
+                (relation) =>
+                  fromReifiedProp in relation &&
+                  relation[fromReifiedProp].includes(mainConceptId)
+              );
+              if (reifiedRelation) {
+                relation = { ...relation, ...reifiedRelation[0] };
+              }
+            }
+
+            return relation;
           } else {
             return null;
           }
@@ -111,6 +129,7 @@ export function getRelationData(
         }
       }
     );
+    // remove null entries
     const cleanedUp = tmpRelData.filter(
       (entry: null | Array<Array<string>>) => entry
     );

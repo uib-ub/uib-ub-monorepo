@@ -32,26 +32,11 @@ export interface SearchInterface {
 
 export const useDomainData = () =>
   useState("domainData", () => ({
-    "DOMENE-3ANaturvitenskapTeknologi": {
-      bases: [
-        "NOT",
-        "MRT",
-        "SDIR",
-        "ARTSDB",
-        "EVERTEBRATER",
-        "RTT",
-        "ROMFYS",
-        "KLIMA",
-        "ASTRONOMI",
-        // "BIOLOGI",
-        "CMBIOLOGI",
-        "KJEMI",
-      ],
-    },
-    "DOMENE-3AHumaniora": { bases: ["LINGVISTIKK", "SEMANTIKK"] },
-    "DOMENE-3AOkonomiAdministrasjon": { bases: ["NHH", "FBK", "UHR"] },
-    "DOMENE-3ASamfunnsfag": { bases: ["BIBINF", "NOJU", "TOLKING"] },
-//    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
+    "DOMENE-3ANaturvitenskapTeknologi": {},
+    "DOMENE-3AHumaniora": {},
+    "DOMENE-3AOkonomiAdministrasjon": {},
+    "DOMENE-3ASamfunnsfag": {},
+    //    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
   }));
 
 export const useSearchInterface = () =>
@@ -97,15 +82,10 @@ export interface SearchFilterData {
   samling: string[];
   predicate: LabelPredicate[];
   matching: Matching[];
+  context: string[];
 }
 export const useSearchFilterData = () =>
-  useState<SearchFilterData>("searchFilterData", () => ({
-    lang: [],
-    samling: [],
-    predicate: [],
-    matching: [],
-    context: [],
-  }));
+  useState<SearchFilterData>("searchFilterData", () => searchFilterDataEmpty());
 export const useSearchFetchLatest = () =>
   useState<number>("searchFetchLatest", () => NaN);
 export const useDataDisplayLanguages = () =>

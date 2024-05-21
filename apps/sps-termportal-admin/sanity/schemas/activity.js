@@ -22,16 +22,14 @@ export default {
       type: "string",
       title: "Aktivitetstype",
       options: {
-        list: [
-          { title: "Termbase opprettelse", value: "termbaseOpprettelse" },
-          { title: "Termbase importering", value: "termbaseImportering" },
-          { title: "Termbase publisering", value: "termbasePublisering" },
-        ],
+        list: Object.keys(activityTypes).map((key) => {
+          return { title: activityTypes[key], value: key };
+        }),
       },
     },
     {
       name: "qualifiedAssociation",
-      title: "Henrettet av agenten",
+      title: "Utført av",
       type: "array",
       of: [association],
     },

@@ -86,7 +86,21 @@ export default function (situation: string, options?: SearchOptions) {
       newOptions.matching.splice(0, 1, ["full-cs", "full-ci"]);
     }
   }
-  if (options) {
-    return { ...newOptions, ...options };
-  } else return newOptions;
+  const merged = options ? { ...newOptions, ...options } : newOptions;
+
+  if (situation === "autocomplete") {
+    const reduced = {
+      term: merged.term,
+      language: merged.language,
+      useDomain: merged.useDomain,
+    };
+    if (merged.useDomain) {
+      reduced["domain"] = merged.domain;
+    } else {
+      reduced["termbase"] = merged.termbase;
+    }
+    return reduced;
+  } else {
+    return merged;
+  }
 }

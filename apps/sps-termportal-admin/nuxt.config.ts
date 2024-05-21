@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     dataportenAuthorizedUsers:
       process.env.NUXT_DATAPORTEN_AUTHORIZED_USERS?.split(", "),
     endpointUrl: "",
+    endpointUrlInternal: "",
     public: {
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
@@ -49,9 +50,33 @@ export default defineNuxtConfig({
     dataset: "production",
     apiVersion: "2023-10-09",
     token: process.env.SANITY_API_TOKEN,
+    useCdn: true,
   },
   routeRules: {
     "/studio/**": { ssr: false },
+    "/api/**": {
+      cors: true,
+      headers: {
+        "Access-Control-Allow-Methods": "GET, POST",
+      },
+    },
+    "/api/tb/**": {
+      headers: {
+        "Cache-Control":
+          "max-age=600, s-maxage=7200, stale-while-revalidate=36000",
+      },
+    },
+    "/api/domain/**": {
+      headers: {
+        "Cache-Control":
+          "max-age=600, s-maxage=7200, stale-while-revalidate=36000",
+      },
+    },
   },
   ssr: false,
+  vite: {
+    define: {
+      __NUXT_ASYNC_CONTEXT__: false,
+    },
+  },
 });
