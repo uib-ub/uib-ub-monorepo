@@ -39,7 +39,7 @@ export const resultRenderers: ResultRenderers = {
       else {
         loktypes = loktypes?.type
       }
-      return <>{loktypes}{loktypes && ', '}{hit._source.adm2}, {hit._source.adm1},  </>
+      return <>{loktypes}{loktypes && ', '}{hit._source.adm2}, {hit._source.adm1}  </>
     }
   },
   ostf: {
