@@ -41,7 +41,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                         <IconButton 
                             onClick={() => goToIIIF(doc._id, doc._source.image.manifest)} 
                             label="Vis seddel">
-                            <PiArticleFill className="text-xl align-top text-neutral-700 inline"/>
+                            <PiArticleFill className="text-2xl align-top text-neutral-700 inline"/>
                         </IconButton> 
                     }
                     {doc._source.audio && 
@@ -52,7 +52,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                         <Link href={doc._source.link} className="no-underline" target="_blank">
                             <IconButton 
                                 label="Ekstern ressurs">
-                                <PiLinkBold className="text-xl align-top text-neutral-700 inline"/>
+                                <PiLinkBold className="text-2xl align-top text-neutral-700 inline"/>
                             </IconButton> 
                         </Link>
                     }
