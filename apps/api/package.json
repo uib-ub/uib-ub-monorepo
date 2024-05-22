@@ -3,14 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
     "dev": "bun --hot src/main.ts",
-    "dev:node": "tsx watch src/node-server.ts",
-    "lint": "eslint .",
     "start": "bun run src/main.ts",
-    "start:node": "node --experimental-modules --es-module-specifier-resolution=node ./dist/node-server.js",
     "test": "bun test",
-    "test:watch": "jest --watch --silent"
+    "test:watch": "bun test --watch"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.12.1",
@@ -41,16 +37,7 @@
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/bun": "^1.1.1",
-    "@types/jest": "^29.5.11",
     "@types/jsonld": "^1.5.13",
-    "@types/lodash": "^4.14.202",
-    "@types/node": "^20.10.6",
-    "eslint-config-custom": "*",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.1.2",
-    "ts-node": "^10.9.2",
-    "tsconfig": "*",
-    "tsx": "^4",
-    "typescript": "^5.4.5"
+    "@types/lodash": "^4.14.202"
   }
 }
