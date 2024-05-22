@@ -29,14 +29,14 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
             <>
             { dataset == view ?
                     <>
-                        {resultRenderers[view]?.title(doc)} | {resultRenderers[view]?.details(doc)}
+                        {resultRenderers[view]?.title(doc)}
                     </>
                     :
                     <>
                         {doc._source.label}
                     </>
                 } 
-                <div className='inline space-x-1 inline'>
+                <div className='inline space-x-1'>
                     {doc._source.image && 
                         <IconButton 
                             onClick={() => goToIIIF(doc._id, doc._source.image.manifest)} 
@@ -58,6 +58,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                     }
                     <IconButton label="Infoside" onClick={() => goToDoc(doc._source.uuid)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
                 </div>
+                 { dataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc)}</p> }
                 
             </>
         )

@@ -262,7 +262,7 @@ export default function MapExplorer(props) {
               <Popup minWidth={256} maxWidth={300} autoPan={false}>
                                     
               { params.dataset == 'search' ?
-                <ul className="flex flex-col gap-2 max-h-64 overflow-y-scroll">
+                <ul className="flex flex-col gap-2 max-h-64 overflow-y-auto">
                 {Object.entries(groupByIndex(props.docs)).map(([index, docs]) => (
                   <li key={index}> 
                     <h3 className="text-lg flex justify-between font-semibold">{datasetTitles[indexToCode(index)]}<IconButton label="Info" onClick={() => router.push('/view/' + indexToCode(index) + "/info")}><PiInfoFill className="text-2xl text-primary-600"/></IconButton></h3>
@@ -271,7 +271,7 @@ export default function MapExplorer(props) {
                 ))}
                 </ul>
                 :
-                <div className="max-h-64 overflow-y-scroll"><PopupList docs={props.docs} view={params.dataset} /></div>
+                <div className="max-h-64 overflow-y-auto"><PopupList docs={props.docs} view={params.dataset} /></div>
               }
                     
               </Popup>
