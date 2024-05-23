@@ -20,13 +20,24 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
   return [...new Set(altLabels)].join(', ')
 }
 
+const defaultTitle = (hit: any) => {
+  return <><strong>{hit._source.label}</strong> </>
+}
+
+
 
 
 export const resultRenderers: ResultRenderers = {
+  leks: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
+
+      return <>{hit._source.rawData.lokalitetstype && hit._source.rawData.lokalitetstype + " | "} {hit._source.adm2}, {hit._source.adm1}</>
+    }
+  },
   bsn: {
-    title: (hit: any) => {
-      return <><strong>{hit._source.label}</strong> </>
-    },
+    title: defaultTitle,
     details: (hit: any) => {
       // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
       let loktypes = hit._source.rawData?.stnavn?.loktype
@@ -36,7 +47,7 @@ export const resultRenderers: ResultRenderers = {
       else {
         loktypes = loktypes?.type
       }
-      return <>{loktypes}{loktypes && ', '}{hit._source.adm2}, {hit._source.adm1}  </>
+      return <>{loktypes}{loktypes && ' | '}{hit._source.adm2}, {hit._source.adm1}  </>
     }
   },
   ostf: {
