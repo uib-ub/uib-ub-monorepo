@@ -10,7 +10,7 @@
  */
 export type JSONLDContext = LinkedArt | LinkedArtWithExtensions;
 export type LinkedArt = "https://linked.art/ns/v1/linked-art.json";
-export type LinkedArtWithExtensions = [] | [string];
+export type LinkedArtWithExtensions = string[];
 /**
  * The URI of the entity
  */
@@ -54,17 +54,7 @@ export type CrmP72HasLanguage = CrmE56_Language[];
  * The class of the entity
  */
 export type General4 = string;
-export type Specific3 = "Identifier";
-/**
- * The class of the entity
- */
-export type General5 = string;
-export type Specific4 = "AttributeAssignment";
-/**
- * The class of the entity
- */
-export type General6 = string;
-export type Specific5 = "LinguisticObject";
+export type Specific3 = "LinguisticObject";
 /**
  * The media type of the content of the embedded text, e.g. text/plain
  */
@@ -72,12 +62,12 @@ export type DcFormat = string;
 /**
  * The class of the entity
  */
-export type General7 = string;
-export type Specific6 = "DigitalObject";
+export type General5 = string;
+export type Specific4 = "DigitalObject";
 /**
  * The class of the entity
  */
-export type General8 = string;
+export type General6 = string;
 /**
  * An embedded statement about this entity, or a reference to a text that refers to the entity
  */
@@ -86,6 +76,16 @@ export type CrmP67IIsReferredToBy = (
   | DigD1_Digital_ObjectSeeSchemaDigitalHtml
   | CrmE33_Linguistic_Object1
 )[];
+/**
+ * The class of the entity
+ */
+export type General7 = string;
+export type Specific5 = "Identifier";
+/**
+ * The class of the entity
+ */
+export type General8 = string;
+export type Specific6 = "AttributeAssignment";
 /**
  * The class of the entity
  */
@@ -181,9 +181,26 @@ export type RdfType2 = string;
  */
 export type CrmP16UsedSpecificObject = (CrmE22_HumanMade_Object | LaSet)[];
 /**
- * A Person, Group or Object that influenced the activity in some way
+ * The class of the entity
  */
-export type CrmP15WasInfluencedBy = (CrmE22_HumanMade_Object | E21_Person | CrmE74_Group)[];
+export type RdfType3 = string;
+export type Specific13 =
+  | "HumanMadeObject"
+  | "Person"
+  | "Group"
+  | "VisualItem"
+  | "LinguisticObject"
+  | "Set"
+  | "Place"
+  | "DigitalObject"
+  | "Type"
+  | "Event"
+  | "Activity"
+  | "Period";
+/**
+ * An entity that influenced the activity in some way
+ */
+export type CrmP15WasInfluencedBy = NoName[];
 /**
  * A general technique that was employed to carry out this activity
  */
@@ -197,23 +214,41 @@ export type CrmP177AssignedPropertyType = string;
  */
 export type CrmP1IsIdentifiedBy = (CrmE33_E41_Linguistic_Appellation | CrmE42_Identifier)[];
 /**
- * The class of the entity
- */
-export type RdfType3 = string;
-/**
  * A reference to one or more other identities for this entity, such as in external vocabularies or systems
  */
-export type General16 = NoName1[];
+export type General16 = NoName[];
 /**
  * List of equivalent `Activity` entities
  */
-export type Specific13 = CrmE7_Activity[];
+export type Specific14 = CrmE7_Activity[];
 /**
  * The class of the entity
  */
 export type RdfType4 = string;
+export type Specific15 = "VisualItem";
 /**
- * A reference to one or more `VisualItem` entities which depict this entity
+ * The class of the entity
+ */
+export type RdfType5 = string;
+export type Specific16 = "DigitalObject";
+/**
+ * A URL from which the digital object is able to be retrieved
+ */
+export type LaAccessPoint = DigD1_Digital_ObjectSeeSchemaDigitalHtml[];
+/**
+ * The class of the entity
+ */
+export type RdfType6 = string;
+/**
+ * A standard or specification that this entity conforms to or embodies
+ */
+export type DctermsConformsTo = CrmE73_Information_Object[];
+/**
+ * A digital object that shows the current visual item
+ */
+export type LaDigitallyShownBy = DigD1_Digital_Object[];
+/**
+ * An embedded link through a VisualItem to a Digital Object
  */
 export type CrmP138IHasRepresentation = CrmE36_Visual_Item[];
 /**
@@ -221,9 +256,18 @@ export type CrmP138IHasRepresentation = CrmE36_Visual_Item[];
  */
 export type LaMemberOf = LaSet[];
 /**
+ * The class of the entity
+ */
+export type RdfType7 = string;
+export type Specific17 = "LinguisticObject";
+/**
+ * A digital object that carries the current linguistic object
+ */
+export type LaDigitallyCarriedBy = DigD1_Digital_Object[];
+/**
  * One or more human-readable web pages or other digital objects where the focus of the content is this entity
  */
-export type CrmP129IIsSubjectOf = DigD1_Digital_ObjectSeeSchemaDigitalHtml[];
+export type CrmP129IIsSubjectOf = CrmE33_Linguistic_Object2[];
 /**
  * One or more AttributeAssignments that relate some other entity to this one
  */
@@ -243,63 +287,79 @@ export type PartOptions =
 /**
  * The class of the entity
  */
-export type RdfType5 = string;
-export type Specific14 = "Acquisition";
+export type RdfType8 = string;
+export type Specific18 = "Acquisition";
 export type CrmP23TransferredTitleFrom = (E21_Person | CrmE74_Group)[];
 export type CrmP22TransferredTitleTo = (E21_Person | CrmE74_Group)[];
 export type CrmP24TransferredTitleOf = CrmE22_HumanMade_Object[];
 /**
  * The class of the entity
  */
-export type RdfType6 = string;
-export type Specific15 = "RightAcquisition";
+export type RdfType9 = string;
+export type Specific19 = "RightAcquisition";
 /**
  * The class of the entity
  */
-export type RdfType7 = string;
-export type Specific16 = "Right";
+export type RdfType10 = string;
+export type Specific20 = "Right";
+/**
+ * The class of the entity
+ */
+export type RdfType11 = string;
+export type Specific21 = "Creation";
+/**
+ * An identified event or activity which this creation is part of
+ */
+export type CrmP9IFormsPartOf1 = CrmE6_Event | CrmE7_Activity;
+export type LaEstablishes = CrmE30_Right[];
 export type LaInvalidates = CrmE30_Right[];
 /**
  * The class of the entity
  */
-export type RdfType8 = string;
-export type Specific17 = "TransferOfCustody";
+export type RdfType12 = string;
+export type Specific22 = "TransferOfCustody";
 export type CrmP28CustodySurrenderedBy = (E21_Person | CrmE74_Group)[];
 export type CrmP29CustodyReceivedBy = (E21_Person | CrmE74_Group)[];
 export type CrmP30TransferredCustodyOf = CrmE22_HumanMade_Object[];
 /**
  * The class of the entity
  */
-export type RdfType9 = string;
-export type Specific18 = "Payment";
+export type RdfType13 = string;
+export type Specific23 = "Payment";
 export type LaPaidFrom = (E21_Person | CrmE74_Group)[];
 export type LaPaidTo = (E21_Person | CrmE74_Group)[];
 /**
  * The class of the entity
  */
-export type RdfType10 = string;
-export type Specific19 = "MonetaryAmount";
+export type RdfType14 = string;
+export type Specific24 = "MonetaryAmount";
 /**
  * The class of the entity
  */
-export type RdfType11 = string;
+export type RdfType15 = string;
 /**
  * The class of the entity
  */
-export type RdfType12 = string;
-export type Specific20 = "Encounter";
+export type RdfType16 = string;
+export type Specific25 = "Encounter";
+/**
+ * The objects that were encountered during this event
+ */
 export type SciO19HasFoundObject = CrmE22_HumanMade_Object[];
 /**
  * The class of the entity
  */
-export type RdfType13 = string;
-export type Specific21 = "Move";
+export type RdfType17 = string;
+export type Specific26 = "Move";
+/**
+ * The objects that were moved
+ */
 export type CrmP25Moved = CrmE22_HumanMade_Object[];
 /**
  * The class of the entity
  */
-export type RdfType14 = string;
-export type Specific22 = "Activity";
+export type RdfType18 = string;
+export type Specific27 = "Activity";
 /**
  * More specific parts of the event
  */
@@ -318,7 +378,7 @@ export interface ProvenanceActivitySchema {
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as: CrmP2HasType;
   referred_to_by?: CrmP67IIsReferredToBy;
-  equivalent?: General16 & Specific13;
+  equivalent?: General16 & Specific14;
   representation?: CrmP138IHasRepresentation;
   member_of?: LaMemberOf;
   subject_of?: CrmP129IIsSubjectOf;
@@ -344,6 +404,7 @@ export interface CrmE33_E41_Linguistic_Appellation {
   classified_as?: CrmP2HasType;
   content: CrmP190HasSymbolicContent;
   language?: CrmP72HasLanguage;
+  referred_to_by?: CrmP67IIsReferredToBy;
   /**
    * A list of one or more `Name` structures, which are parts of this `Name`
    */
@@ -369,12 +430,43 @@ export interface CrmE56_Language {
   _label?: RdfsLabel;
 }
 /**
+ * An embedded, relatively short piece of textual content
+ * See: [API](https://linked.art/api/1.0/shared/statement/) | [Model](https://linked.art/model/base/#statements-about-a-resource)
+ */
+export interface CrmE33_Linguistic_Object {
+  _label?: RdfsLabel;
+  type: General4 & Specific3;
+  identified_by?: CrmP1IsIdentifiedBy;
+  referred_to_by?: CrmP67IIsReferredToBy;
+  classified_as?: CrmP2HasType;
+  content: CrmP190HasSymbolicContent;
+  language?: CrmP72HasLanguage;
+  format?: DcFormat;
+}
+/**
+ * Reference to a `DigitalObject`
+ */
+export interface DigD1_Digital_ObjectSeeSchemaDigitalHtml {
+  id: TheSubjectUri;
+  type: General5 & Specific4;
+  _label?: RdfsLabel;
+}
+/**
+ * Reference to a `LinguisticObject`
+ * See: [Schema](text.html)
+ */
+export interface CrmE33_Linguistic_Object1 {
+  id: TheSubjectUri;
+  type: General6 & "LinguisticObject";
+  _label?: RdfsLabel;
+}
+/**
  * An identifier for an entity
  * See: [API](https://linked.art/api/1.0/shared/identifier/) | [Model](https://linked.art/model/base/#identifiers)
  */
 export interface CrmE42_Identifier {
   _label?: RdfsLabel;
-  type: General4 & Specific3;
+  type: General7 & Specific5;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
   content: CrmP190HasSymbolicContent;
@@ -391,7 +483,7 @@ export interface CrmE42_Identifier {
  * An activity which involves the assignment of some value to some entity, often with an explicit relationship between value and entity
  */
 export interface CrmE13_Attribute_Assignment {
-  type: General5 & Specific4;
+  type: General8 & Specific6;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -404,38 +496,8 @@ export interface CrmE13_Attribute_Assignment {
   influenced_by?: CrmP15WasInfluencedBy;
   technique?: CrmP32UsedGeneralTechnique;
   part_of?: CrmE6_Event | CrmE7_Activity;
-  assigned?: NoName;
+  assigned?: NoName1;
   assigned_property?: CrmP177AssignedPropertyType;
-}
-/**
- * An embedded, relatively short piece of textual content
- * See: [API](https://linked.art/api/1.0/shared/statement/) | [Model](https://linked.art/model/base/#statements-about-a-resource)
- */
-export interface CrmE33_Linguistic_Object {
-  _label?: RdfsLabel;
-  type: General6 & Specific5;
-  identified_by?: CrmP1IsIdentifiedBy;
-  classified_as?: CrmP2HasType;
-  content: CrmP190HasSymbolicContent;
-  language?: CrmP72HasLanguage;
-  format?: DcFormat;
-}
-/**
- * Reference to a `DigitalObject`
- */
-export interface DigD1_Digital_ObjectSeeSchemaDigitalHtml {
-  id: TheSubjectUri;
-  type: General7 & Specific6;
-  _label?: RdfsLabel;
-}
-/**
- * Reference to a `LinguisticObject`
- * See: [Schema](text.html)
- */
-export interface CrmE33_Linguistic_Object1 {
-  id: TheSubjectUri;
-  type: General8 & "LinguisticObject";
-  _label?: RdfsLabel;
 }
 /**
  * Reference to a `Place` entity
@@ -537,48 +599,70 @@ export interface LaSet {
   _label?: RdfsLabel;
 }
 /**
- * Attribute Assignments can assign any entity, structure or value
- */
-export interface NoName {
-  [k: string]: unknown;
-}
-/**
  * Reference to another primary entity
  * See: [API](https://linked.art/api/1.0/shared/reference/) | [Model]()
  */
-export interface NoName1 {
+export interface NoName {
   id: TheSubjectUri;
-  type: RdfType3 &
-    (
-      | "HumanMadeObject"
-      | "Person"
-      | "Group"
-      | "VisualItem"
-      | "LinguisticObject"
-      | "Set"
-      | "Place"
-      | "DigitalObject"
-      | "Type"
-      | "Event"
-      | "Activity"
-      | "Period"
-    );
+  type: RdfType3 & Specific13;
   _label?: RdfsLabel;
 }
 /**
- * Reference to a `VisualItem`
- * See: [Schema](image.html)
+ * Attribute Assignments can assign any entity, structure or value
+ */
+export interface NoName1 {
+  [k: string]: unknown;
+}
+/**
+ * An embedded Visual Item, such as the content of a digital image
  */
 export interface CrmE36_Visual_Item {
-  id: TheSubjectUri;
-  type: RdfType4 & "VisualItem";
+  type: RdfType4 & Specific15;
   _label?: RdfsLabel;
+  identified_by?: CrmP1IsIdentifiedBy;
+  classified_as?: CrmP2HasType;
+  referred_to_by?: CrmP67IIsReferredToBy;
+  digitally_shown_by?: LaDigitallyShownBy;
+}
+/**
+ * An embedded Digital Object, such as a home page reference
+ */
+export interface DigD1_Digital_Object {
+  type?: RdfType5 & Specific16;
+  _label?: RdfsLabel;
+  identified_by?: CrmP1IsIdentifiedBy;
+  classified_as?: CrmP2HasType;
+  referred_to_by?: CrmP67IIsReferredToBy;
+  access_point?: LaAccessPoint;
+  format?: DcFormat;
+  conforms_to?: DctermsConformsTo;
+  [k: string]: unknown;
+}
+/**
+ * Reference to an `InformationObject`
+ */
+export interface CrmE73_Information_Object {
+  id: TheSubjectUri;
+  type: RdfType6 & "InformationObject";
+  _label?: RdfsLabel;
+}
+/**
+ * An embedded Linguistic Object, such as the content of a web page
+ */
+export interface CrmE33_Linguistic_Object2 {
+  type: RdfType7 & Specific17;
+  _label?: RdfsLabel;
+  identified_by?: CrmP1IsIdentifiedBy;
+  classified_as?: CrmP2HasType;
+  referred_to_by?: CrmP67IIsReferredToBy;
+  language?: CrmP72HasLanguage;
+  digitally_carried_by?: LaDigitallyCarriedBy;
 }
 /**
  * The transfer of ownership of a physical object between parties
  */
 export interface CrmE8_Acquisition {
-  type: RdfType5 & Specific14;
+  type: RdfType8 & Specific18;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -595,7 +679,7 @@ export interface CrmE8_Acquisition {
   transferred_title_of: CrmP24TransferredTitleOf;
 }
 export interface LaRightAcquisition {
-  type: RdfType6 & Specific15;
+  type: RdfType9 & Specific19;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -610,48 +694,39 @@ export interface LaRightAcquisition {
   establishes: LaEstablishes;
   invalidates?: LaInvalidates;
 }
-export interface LaEstablishes {
-  _label?: RdfsLabel;
-  type: RdfType7 & Specific16;
-  identified_by?: CrmP1IsIdentifiedBy;
-  classified_as?: CrmP2HasType;
-  referred_to_by?: CrmP67IIsReferredToBy;
-  possessed_by?: (E21_Person | CrmE74_Group)[];
-  applies_to?: CrmE22_HumanMade_Object[];
-  dimension?: CrmE54_Dimension[];
-  part?: CrmE30_Right[];
-}
-/**
- * A measurable aspect of an entity, with a numeric value, a unit for that value, and a type relative to the entity
- * See: [API](https://linked.art/api/1.0/shared/dimension/) | [Model](https://linked.art/model/object/physical/#dimensions)
- */
-export interface CrmE54_Dimension {
-  _label?: RdfsLabel;
-  type: General11 & Specific9;
-  identified_by?: CrmP1IsIdentifiedBy;
-  classified_as?: CrmP2HasType;
-  value: CrmP90HasValue;
-  lower_value_limit?: CrmP90AHasLowerValueLimit;
-  upper_value_limit?: CrmP90AHasUpperValueLimit;
-  unit: CrmP91HasUnit;
-  assigned_by?: CrmP141IWasAssignedBy;
-}
 /**
  * A legal right that can be held by some party over some entity
  */
 export interface CrmE30_Right {
   _label?: RdfsLabel;
-  type: RdfType7 & Specific16;
+  type: RdfType10 & Specific20;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
   referred_to_by?: CrmP67IIsReferredToBy;
+  created_by?: CrmP94IWasCreatedBy;
   possessed_by?: (E21_Person | CrmE74_Group)[];
-  applies_to?: CrmE22_HumanMade_Object[];
-  dimension?: CrmE54_Dimension[];
-  part?: CrmE30_Right[];
+}
+/**
+ * The creation of the intellectual/conceptual entity
+ */
+export interface CrmP94IWasCreatedBy {
+  type?: RdfType11 & Specific21;
+  _label?: RdfsLabel;
+  identified_by?: CrmP1IsIdentifiedBy;
+  classified_as?: CrmP2HasType;
+  referred_to_by?: CrmP67IIsReferredToBy;
+  took_place_at?: CrmP7TookPlaceAt;
+  timespan?: CrmP4HasTimeSpan;
+  caused_by?: SciO13IIsTriggeredBy;
+  carried_out_by?: CrmP14CarriedOutBy;
+  used_specific_object?: CrmP16UsedSpecificObject;
+  influenced_by?: CrmP15WasInfluencedBy;
+  technique?: CrmP32UsedGeneralTechnique;
+  part_of?: CrmP9IFormsPartOf1;
+  [k: string]: unknown;
 }
 export interface CrmE10_TransferOf_Custody {
-  type: RdfType8 & Specific17;
+  type: RdfType12 & Specific22;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -668,7 +743,7 @@ export interface CrmE10_TransferOf_Custody {
   transferred_custody_of: CrmP30TransferredCustodyOf;
 }
 export interface LaPayment {
-  type: RdfType9 & Specific18;
+  type: RdfType13 & Specific23;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -686,7 +761,7 @@ export interface LaPayment {
 }
 export interface LaPaidAmount {
   _label?: RdfsLabel;
-  type: RdfType10 & Specific19;
+  type: RdfType14 & Specific24;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
   value: CrmP90HasValue;
@@ -699,11 +774,11 @@ export interface LaPaidAmount {
  */
 export interface CrmE98_Currency {
   id: TheSubjectUri;
-  type: RdfType11 & "Currency";
+  type: RdfType15 & "Currency";
   _label?: RdfsLabel;
 }
 export interface SciS19_Encounter_Event {
-  type: RdfType12 & Specific20;
+  type: RdfType16 & Specific25;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -718,7 +793,7 @@ export interface SciS19_Encounter_Event {
   encountered: SciO19HasFoundObject;
 }
 export interface CrmE9_Move {
-  type: RdfType13 & Specific21;
+  type: RdfType17 & Specific26;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
@@ -753,7 +828,7 @@ export interface CrmE53_Place2 {
   _label?: RdfsLabel;
 }
 export interface CrmE7_Activity1 {
-  type: RdfType14 & Specific22;
+  type: RdfType18 & Specific27;
   _label?: RdfsLabel;
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as: CrmP2HasType;
