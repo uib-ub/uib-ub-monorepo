@@ -1,6 +1,6 @@
 import { DATA_SOURCES } from '@config/constants'
 import { env } from '@config/env'
-import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
 import { ItemParamsSchema, LegacyItemSchema, TODO } from '@models'
 import getItemLAData from '@services/sparql/marcus/item_la.service'
 import getItemUbbontData from '@services/sparql/marcus/item_ubbont.service'
@@ -13,8 +13,6 @@ const CONTEXT_IIIF = `${env.PROD_URL}/ns/manifest/context.json`
 
 const route = new OpenAPIHono()
 
-const ItemSchema = z.record(z.string()).openapi('Item')
-
 export const getItem = createRoute({
   method: 'get',
   path: '/items/{source}/{id}',
@@ -26,21 +24,22 @@ export const getItem = createRoute({
     200: {
       content: {
         'application/json': {
-          schema: ItemSchema,
+          schema: humanMadeObjectSchema.openapi('Item', { type: 'object' }),
         },
       },
-      description: 'Retrieve a item.',
+      description: 'Placeholder for the proper schema.',
     },
   },
   description: 'Retrieve a item. This is a physical or born-digital item in the library collection.',
-  tags: ['sparql'],
+  tags: ['sparql', 'items'],
 })
 
 
 route.openapi(getItem, async (c) => {
   const { id, source } = c.req.param()
   const { as = 'la' } = c.req.query()
-  const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
+
+  const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url;
 
   const fetcher = as === 'la' ? getItemLAData : getItemUbbontData
 
@@ -59,7 +58,7 @@ route.openapi(getItem, async (c) => {
     const data: TODO = await fetcher(id, SERVICE_URL, CONTEXT, 'HumanMadeObject')
     const parsed = humanMadeObjectSchema.safeParse(data);
     if (parsed.success === false) {
-      console.log("🚀 ~ route.openapi ~ t:", parsed.error.issues)
+      console.log("🚀 ~ route.openapi ~ parsed:", parsed.error.issues)
     }
     // @TODO: figure out how to type the openapi response with JSONLD
     return c.json(data);
