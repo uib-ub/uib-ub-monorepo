@@ -45,9 +45,9 @@ route.get('/ingest',
           totalFetched += data.length;
 
           try {
-            const resolved = await resolveIds(data, API_URL, CONTEXT, type!);
-            const preparedData = flatMapDataForBulkIndexing(resolved, index!);
-            const indexStatus: any = await indexData(preparedData, index!) ?? 0;
+            const resolved = await resolveIds(data, API_URL, CONTEXT, type);
+            const preparedData = flatMapDataForBulkIndexing(resolved, index);
+            const indexStatus: any = await indexData(preparedData, index) ?? 0;
 
             const took = performance.now() - t0;
             totalIndexed += indexStatus.count;
