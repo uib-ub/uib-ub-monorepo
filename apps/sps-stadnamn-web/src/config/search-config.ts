@@ -40,6 +40,10 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
         {"key": "rawData.eigar", "label": "Eigar"},
         {"key": "rawData.koordinattype", "label": "Koordinattype"}
       ],
+      m1838: [
+        {"key": "cadastre.gnr", "label": "Gardsnummer"},
+        {"key": "cadastre.bnr", "label": "Bruksnummer"}
+      ],
   
   }
   

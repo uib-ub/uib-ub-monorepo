@@ -19,6 +19,12 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
+    m1838: (source: any) => {
+      return <>
+      {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
+      </>
+    },
+      
     rygh: (source: any) => {
       return <>
       {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
@@ -26,7 +32,22 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         {title: 'Stadnamn', value: source.label},
         {title: 'Herred', value: source.adm2},
         {title: 'Amt', value: source.adm1},
-        {title: 'Kommunenummer', value: source.rawData.KNR}
+        {title: 'Kommunenummer', value: source.rawData.KNR},
+        {
+          title: 'Gardsnummer', 
+          items: [...new Set(source.cadastre?.map((item: any) => item.gnr) as string[])].map((gnr: string) => ({
+            value: gnr, 
+            href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(gnr)}`
+          })),
+        },
+        {
+          title: 'Bruksnummer', 
+          items: source.cadastre?.map((item: any) => ({
+            value: item.bnr, 
+            href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(item.gnr)}&cadastre__bnr=${encodeURIComponent(item.bnr)}`
+          })),
+        },
+      
       ]}/>
 
       </>
