@@ -23,11 +23,15 @@ import manifest from './routes/items/manifest.route'
 import lookupId from './routes/lookup.route'
 import ns from './routes/ns.route'
 import reference from './routes/references.route'
-import sparqlGroups from './routes/sparql/groups.route'
-import sparqlItem from './routes/sparql/item.route'
-import sparqlItems from './routes/sparql/items.route'
-import wab from './routes/sparql/items_wab.route'
-import sparqlPeople from './routes/sparql/people.route'
+import sparqlGroups from './routes/sparql/groups/groups.route'
+import sparqlCountItems from './routes/sparql/items/count.route'
+import sparqlItem from './routes/sparql/items/item.route'
+import sparqlItems from './routes/sparql/items/items.route'
+import sparqlManifest from './routes/sparql/items/manifest.route'
+import sparqlCountPeople from './routes/sparql/people/count.route'
+import sparqlPeople from './routes/sparql/people/people.route'
+import sparqlPerson from './routes/sparql/people/person.route'
+import wab from './routes/sparql/wab/items_wab.route'
 
 // Create a new Hono instance. We use the OpenAPIHono class to create the app, 
 // because it has the .openapi() method that we need to define the OpenAPI
@@ -67,8 +71,12 @@ app.route('/reference', reference)
 app.route('/lookup', lookupId)
 app.route('/admin', es)
 app.route('/sparql', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
-app.route('/sparql', sparqlItems)
+app.route('/sparql', sparqlCountItems)
 app.route('/sparql', sparqlItem)
+app.route('/sparql', sparqlItems)
+app.route('/sparql', sparqlManifest)
+app.route('/sparql', sparqlPerson)
+app.route('/sparql', sparqlCountPeople)
 app.route('/sparql', sparqlPeople)
 app.route('/sparql', sparqlGroups)
 app.route('/admin', ingest)
