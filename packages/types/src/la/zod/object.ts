@@ -34,6 +34,9 @@ export const destructionTypeSchema = z.literal("Destruction");
 export const partRemovalTypeSchema = z.literal("PartRemoval");
 export const encounterTypeSchema = z.literal("Encounter");
 export const rightTypeSchema = z.literal("Right");
+export const setTypeSchema = z.literal("Set");
+export const eventTypeSchema = z.literal("Event");
+export const periodTypeSchema = z.literal("Period");
 
 export const allTypesSchema = z.union([
   objectTypeSchema,
@@ -45,9 +48,9 @@ export const allTypesSchema = z.union([
   digitalObjectTypeSchema,
   typeTypeSchema,
   activityTypeSchema,
-  z.literal("Set"),
-  z.literal("Event"),
-  z.literal("Period"),
+  setTypeSchema,
+  eventTypeSchema,
+  periodTypeSchema,
 ]);
 
 export const rdfTypeSchema = z.string();
