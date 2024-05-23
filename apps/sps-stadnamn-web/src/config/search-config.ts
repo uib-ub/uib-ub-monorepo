@@ -19,6 +19,11 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
+      leks: [
+        {"key": "rawData.lokalitetstype", "label": "Lokalitetstype"},
+        {"key": "rawData.gnidu", "label": "GNIDu"},
+        {"key": "rawData.sisteledd", "label": "Sisteledd"},
+      ],
       hord: [
         {"key": "archive.institution", "label": "Arkivtilvising"},
         {"key": "cadastre__gnr", "label": "Gardsnummer", "sort": "asc"},
