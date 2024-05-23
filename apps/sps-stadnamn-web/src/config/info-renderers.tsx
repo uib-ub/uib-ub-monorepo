@@ -55,7 +55,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     leks: (source: any) => {
       return <>
       <div className='space-y-2'>
-      {source.rawData?.tolking && <div><strong className="text-neutral-900">Tolking: </strong><HtmlString htmlString={source.rawData?.tolking} /></div>}
+      {source.rawData?.tolking && <><strong className="text-neutral-900">Tolking: </strong><HtmlString htmlString={source.rawData?.tolking} /></>}
       </div>
       <InfoBox dataset={'leks'} items={[
         {title: 'Oppslagsform', value: source.label},
