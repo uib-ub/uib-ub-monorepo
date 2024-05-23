@@ -1,6 +1,6 @@
+import { institutions } from '@/helpers/mappers/staticMapping';
+import { TBaseMetadata } from '@models';
 import omitEmptyEs from 'omit-empty-es';
-import { TBaseMetadata } from '../../../../models';
-import { institutions } from '../../staticMapping';
 
 export const constructOwnership = (base: TBaseMetadata, data: any) => {
   const {
@@ -43,20 +43,18 @@ export const constructOwnership = (base: TBaseMetadata, data: any) => {
     _label: owner?._label,
   } : undefined;
 
-  const current_location = [{
+  const current_location = {
     id: storedAt?.id ?? 'https://data.ub.uib.no/place/storage',
     type: 'Place',
     _label: storedAt?._label ?? 'Storage',
-  }];
+  };
 
   return omitEmptyEs({
     ...data,
     current_keeper: [
       keeper,
     ],
-    current_location: [
-      ...current_location,
-    ],
+    current_location,
     current_owner: [
       ownership,
     ],

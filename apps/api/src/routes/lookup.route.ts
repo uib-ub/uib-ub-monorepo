@@ -1,6 +1,6 @@
-import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import { lookupService } from '../services/lookup.service'
-import { IdParamsSchema } from '../models'
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import { IdParamsSchema } from '@models'
+import { lookupService } from '@services/lookup.service'
 
 /**
  * Lookup schema

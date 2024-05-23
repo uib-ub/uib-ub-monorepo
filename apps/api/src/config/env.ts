@@ -11,6 +11,7 @@ const schema = z.object({
   PORT: withDevDefault(z.string(), '3009').transform(Number),
   ES_HOST: z.string().url(),
   ES_APIKEY: z.string(),
+  ES_WRITE_TOKEN: z.string(),
 });
 
 const parsed = schema.safeParse(process.env);

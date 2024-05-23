@@ -1,4 +1,4 @@
-import getItemData from '../../services/legacy_item_ubbont.service';
+import getItemData from '@services/sparql/marcus/item_ubbont.service';
 
 export async function resolveIds(ids: any, source: string, context: string, type: string): Promise<any> {
   try {

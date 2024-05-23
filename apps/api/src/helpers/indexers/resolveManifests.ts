@@ -1,4 +1,4 @@
-import { getManifestData } from '../../services/legacy_manifest.service';
+import { getManifestData } from '@services/sparql/marcus/manifest.service';
 
 export async function resolveManifests(ids: any, source: string, context: string, type: string): Promise<any> {
   try {

@@ -1,12 +1,11 @@
-import { randomUUID } from 'crypto';
+import { getLanguage } from '@/helpers/mappers/getLanguage';
+import { mapToGeneralClass, Publication } from '@/helpers/mappers/mapToGeneralClass';
+import { aatAbstractsType, aatDescriptionsType, aatDisplayBiographyType, aatInternalNoteType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatPublishingType, aatRelatedTextualReferencesType } from '@/helpers/mappers/staticMapping';
+import { env } from '@config/env';
+import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
 import isEqual from 'lodash/isEqual';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
 import omitEmptyEs from 'omit-empty-es';
-import { env } from '../../../../config/env';
-import { getTimespan } from '../../constructTimespan';
-import { getLanguage } from '../../getLanguage';
-import { Publication, mapToGeneralClass } from '../../mapToGeneralClass';
-import { aatAbstractsType, aatDescriptionsType, aatDisplayBiographyType, aatInternalNoteType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatPublishingType, aatRelatedTextualReferencesType } from '../../staticMapping';
 
 // TODO: Add "culture statement"
 // TODO: Use markdown for all text fields, and add format: "text/markdown"
@@ -349,7 +348,7 @@ export const constructAboutness = async (data: any) => {
 
   if (type === "Image") {
     showsArray = [{
-      id: `${env.API_URL}/visualitem/${visualItemVersionId ?? randomUUID()}`,
+      id: `${env.API_URL}/visualitem/${visualItemVersionId ?? crypto.randomUUID()}`,
       type: "VisualItem",
       creation: {
         type: "Creation",
@@ -404,7 +403,7 @@ export const constructAboutness = async (data: any) => {
 
   if (type === "Text") {
     carriesArray = [{
-      id: `${env.API_URL}/text/${randomUUID()}`, // TODO: use an id that we can use to create this LinguisticObject
+      id: `${env.API_URL}/text/${crypto.randomUUID()}`, // TODO: use an id that we can use to create this LinguisticObject
       type: "LinguisticObject",
       _label: {
         no: [`Innholdet til ${data.identifier}`],
@@ -433,7 +432,7 @@ export const constructAboutness = async (data: any) => {
         classified_as: [
           aatPublishingType,
         ],
-        timespan: getTimespan(publishedYear ?? issued, undefined, undefined),
+        timespan: getTimeSpan(publishedYear ?? issued, undefined, undefined),
         took_place_at: placeOfPublication ? placeOfPublication.map((place: any) => {
           return {
             id: place.id,

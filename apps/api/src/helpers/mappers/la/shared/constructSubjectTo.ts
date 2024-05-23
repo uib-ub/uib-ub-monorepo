@@ -1,6 +1,6 @@
+import { aatAcknowledgementsType, aatBriefTextType, aatRightsType, attributionNoDerivsType, attributionNonCommercialNoDerivsType, attributionNonCommercialType, attributionShareAlikeType, attributionType, ccPublicDomainMarkType, institutions, publicDomainType, rsCopyrightUndeterminedType, rsInCopyrighttype } from '@/helpers/mappers/staticMapping';
+import { TBaseMetadata } from '@models';
 import omitEmptyEs from 'omit-empty-es';
-import { TBaseMetadata } from '../../../../models';
-import { aatAcknowledgementsType, aatBriefTextType, aatRightsType, attributionNoDerivsType, attributionNonCommercialNoDerivsType, attributionNonCommercialType, attributionShareAlikeType, attributionType, ccPublicDomainMarkType, institutions, publicDomainType, rsCopyrightUndeterminedType, rsInCopyrighttype } from '../../staticMapping';
 
 const getLicenseMapping = (licenseName: string) => {
   switch (licenseName) {
@@ -86,6 +86,7 @@ function getIsInPublicDomainQuery(id: string) {
 export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
   const {
     license,
+    current_owner
   } = data;
 
   delete data.license;
@@ -134,7 +135,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
       }
     ],
     possessed_by: [
-      data.current_owner
+      ...current_owner
     ],
     subject_of: [
       {

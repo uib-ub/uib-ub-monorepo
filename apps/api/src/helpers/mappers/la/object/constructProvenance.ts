@@ -1,5 +1,5 @@
+import { aatProvenanceActivityType, institutions } from '@helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
-import { aatProvenanceActivityType, institutions } from '../../staticMapping';
 
 export const constructProvenance = (data: any) => {
   const {

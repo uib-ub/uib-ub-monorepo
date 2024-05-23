@@ -1,11 +1,9 @@
+import { PROVIDER_UB } from '@config/iiifConfig';
+import { stringifyObject } from '@helpers/stringifyObject';
 import { IIIFBuilder } from '@iiif/builder';
-import { randomUUID } from 'crypto';
 import sortBy from 'lodash/sortBy';
 import rtlDetect from 'rtl-detect-intl';
-import { PROVIDER_UB } from '../../config/iiifConfig';
-import { stringifyObject } from '../stringifyObject';
 const fs = require("fs");
-
 
 /**
  * Constructs a IIIF manifest
@@ -31,12 +29,12 @@ export function constructManifest(data: any, API: string, SOURCE: string, PROVID
 
   // Create the manifest
   const manifest = builder.createManifest(
-    data.id ?? `http://error.io/${randomUUID()}`,
+    data.id ?? `http://error.io/${crypto.randomUUID()}`,
     (manifest: any) => {
       manifest.setLabel(data.label);
       manifest.setSummary(data.summary);
       data.thumbnail?.length > 0 ? manifest.addThumbnail({
-        id: data.thumbnail[0] ?? `http://error.io/${randomUUID()}`, // TODO: Data cleanup. We can have multiple thumbnails, but we only use the first one
+        id: data.thumbnail[0] ?? `http://error.io/${crypto.randomUUID()}`, // TODO: Data cleanup. We can have multiple thumbnails, but we only use the first one
         type: "Image",
         format: "image/jpeg",
         width: 250,
@@ -83,7 +81,7 @@ export function constructManifest(data: any, API: string, SOURCE: string, PROVID
       });
       manifest.setRights("http://creativecommons.org/licenses/by/4.0/");
       data.items ? data.items.map((item: any) => {
-        const randomID = randomUUID()
+        const randomID = crypto.randomUUID()
         const canvasIdentifier = item.id ? parseInt(String(item.id).toString().split("_p")[1]) : randomID
         const domain = data.id ?? `http://error.io`
         const canvasID = `${domain}/canvas/${canvasIdentifier}`
@@ -94,7 +92,7 @@ export function constructManifest(data: any, API: string, SOURCE: string, PROVID
           canvas.setWidth(1024);
           canvas.setHeight(1024);
           item.thumbnail?.length > 0 ? canvas.addThumbnail({
-            id: item.thumbnail[0] ?? `http://error.io/${randomUUID()}`, // TODO: compacting and framing should not return prefixed keys!
+            id: item.thumbnail[0] ?? `http://error.io/${crypto.randomUUID()}`, // TODO: compacting and framing should not return prefixed keys!
             type: "Image",
             format: "image/jpeg",
             width: 200,
@@ -111,7 +109,7 @@ export function constructManifest(data: any, API: string, SOURCE: string, PROVID
                   id: item.items?.hasXLView?.[0]
                     || item.items?.hasMDView?.[0]
                     || item.items?.hasSMView?.[0]
-                    || `http://error.io/${randomUUID()}`,
+                    || `http://error.io/${crypto.randomUUID()}`,
                   type: "Image",
                   format: "image/jpeg",
                   width: 1024,

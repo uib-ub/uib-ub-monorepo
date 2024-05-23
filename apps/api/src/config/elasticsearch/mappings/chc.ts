@@ -309,16 +309,16 @@ export const chc = {
         "edtf": {
           "type": "keyword"
         },
-        "beginOfTheBegin": {
+        "begin_of_the_begin": {
           "type": "date"
         },
-        "endOfTheBegin": {
+        "end_of_the_begin": {
           "type": "date"
         },
-        "beginOfTheEnd": {
+        "begin_of_the_end": {
           "type": "date"
         },
-        "endOfTheEnd": {
+        "end_of_the_end": {
           "type": "date"
         }
       }

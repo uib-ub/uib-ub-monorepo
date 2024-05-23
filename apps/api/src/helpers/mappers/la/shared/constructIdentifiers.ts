@@ -1,6 +1,6 @@
+import { getLanguage } from '@/helpers/mappers/getLanguage';
+import { aatAlternativeTitlesType, aatConstructedTitlesType, aatFirstNameType, aatHistoricalTermsType, aatIsbnType, aatLastNameType, aatPreferredTermsType, aatPrimaryNameType } from '@/helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
-import { getLanguage } from '../../getLanguage';
-import { aatAlternativeTitlesType, aatConstructedTitlesType, aatFirstNameType, aatHistoricalTermsType, aatIsbnType, aatLastNameType, aatPreferredTermsType, aatPrimaryNameType } from '../../staticMapping';
 
 export const constructIdentifiers = (data: any) => {
   const {
@@ -53,15 +53,18 @@ export const constructIdentifiers = (data: any) => {
   let previousArray: any[] = [];
   let bibsysArray: any[] = [];
   let viafArray: any[] = [];
+  let isbnArray: any[] = [];
 
-  const isbnArray = [{
-    _label: `${isbn}`,
-    type: 'Identifier',
-    classified_as: [
-      aatIsbnType,
-    ],
-    content: isbn,
-  }];
+  if (isbn) {
+    isbnArray = [{
+      _label: `${isbn}`,
+      type: 'Identifier',
+      classified_as: [
+        aatIsbnType,
+      ],
+      content: isbn,
+    }];
+  }
 
   if (previousIdentifier) {
     previousArray = [{

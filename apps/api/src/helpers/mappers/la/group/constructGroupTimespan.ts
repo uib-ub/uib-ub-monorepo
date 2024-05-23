@@ -1,8 +1,7 @@
-import { getTimespan } from '../../constructTimespan';
-import { randomUUID } from 'crypto';
-import { checkIntervalValidity } from '../../../validators/checkIntervalValidity';
+import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
+import { checkIntervalValidity } from '@helpers/validators/checkIntervalValidity';
 
-export const constructGroupTimespan = (data: any) => {
+export const constructGroupTimeSpan = (data: any) => {
   return data.map((item: any) => {
     const {
       ['http://dbpedia.org/ontology/extinctionYear']: extinctionYear,
@@ -23,23 +22,23 @@ export const constructGroupTimespan = (data: any) => {
       [coalescedFormation, coalescedExtinction] = checkIntervalValidity(coalescedFormation, coalescedExtinction);
     }
 
-    const formationTimespan = getTimespan(coalescedFormation, null, null);
-    const extinctionTimespan = getTimespan(coalescedExtinction, null, null);
-    if (!formationTimespan && !extinctionTimespan) return item;
+    const formationTimeSpan = getTimeSpan(coalescedFormation, null, null);
+    const extinctionTimeSpan = getTimeSpan(coalescedExtinction, null, null);
+    if (!formationTimeSpan && !extinctionTimeSpan) return item;
     return {
       ...item,
-      ...(formationTimespan ? {
+      ...(formationTimeSpan ? {
         formedBy: {
-          id: randomUUID(),
+          id: crypto.randomUUID(),
           _type: ['Formation'],
           timespan: formationDate ?? undefined,
         }
       } : null),
       ...(extinctionDate ? {
         dissolvedBy: {
-          id: randomUUID(),
+          id: crypto.randomUUID(),
           _type: ['Dissolution'],
-          timespan: extinctionTimespan ?? undefined,
+          timespan: extinctionTimeSpan ?? undefined,
         }
       } : null)
     };

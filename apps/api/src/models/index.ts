@@ -206,6 +206,6 @@ export type TBaseMetadata = {
   context: string[],
   newId: string,
   originalId: string,
-  productionTimespan?: any,
+  productionTimeSpan?: any,
   _label: any,
 }

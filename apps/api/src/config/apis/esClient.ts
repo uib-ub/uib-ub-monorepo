@@ -1,5 +1,5 @@
+import { env } from '@config/env';
 import { Client, HttpConnection } from '@elastic/elasticsearch';
-import { env } from '../env';
 
 const client = new Client({
   node: env.ES_HOST,

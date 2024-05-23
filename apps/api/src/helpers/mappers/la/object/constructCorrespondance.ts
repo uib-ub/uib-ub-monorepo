@@ -1,5 +1,5 @@
+import { fixmeCorrespondanceType } from '@/helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
-import { fixmeCorrespondanceType } from '../../staticMapping';
 
 /**
  * Construct correspondance object

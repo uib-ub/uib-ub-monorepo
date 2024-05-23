@@ -1,12 +1,12 @@
+import { DATA_SOURCES } from '@config/constants'
+import { env } from '@config/env'
+import { flatMapManifestsForBulkIndexing } from '@helpers/indexers/flatMapManifestsForBulkIndexing'
+import { indexData } from '@helpers/indexers/indexData'
+import { resolveManifests } from '@helpers/indexers/resolveManifests'
+import { getItems } from '@services/sparql/marcus/items.service'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
 import isEmpty from 'lodash/isEmpty'
-import { DATA_SOURCES } from '../../config/constants'
-import { env } from '../../config/env'
-import { flatMapManifestsForBulkIndexing } from '../../helpers/indexers/flatMapManifestsForBulkIndexing'
-import { indexData } from '../../helpers/indexers/indexData'
-import { resolveManifests } from '../../helpers/indexers/resolveManifests'
-import { getItems } from '../../services/legacy_items.service'
 
 const route = new Hono()
 

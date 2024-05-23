@@ -1,5 +1,5 @@
-import { getTimespan } from '../../constructTimespan';
-import { checkIntervalValidity } from '../../../validators/checkIntervalValidity';
+import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
+import { checkIntervalValidity } from '@helpers/validators/checkIntervalValidity';
 import omitEmptyEs from 'omit-empty-es';
 
 export const constructProduction = (data: any) => {
@@ -30,7 +30,7 @@ export const constructProduction = (data: any) => {
     [start, end] = checkIntervalValidity(start, end);
   }
 
-  const timespan = getTimespan(created ?? createdYear?.['@value'], start, end);
+  const timespan = getTimeSpan(created ?? createdYear?.['@value'], start, end);
 
   return omitEmptyEs({
     ...data,
@@ -46,7 +46,7 @@ export const constructProduction = (data: any) => {
       technique: technique?.map((technique: any) => {
         return {
           id: technique.id,
-          type: technique.type,
+          type: 'Type',
           _label: technique._label,
         }
       }) ?? undefined,

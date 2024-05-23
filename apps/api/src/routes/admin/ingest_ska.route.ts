@@ -1,10 +1,10 @@
+import { chunk } from '@helpers/indexers/chunk';
+import { flatMapDataForBulkIndexing } from '@helpers/indexers/flatMapDataForBulkIndexing';
+import { indexData } from '@helpers/indexers/indexData';
 import { OpenAPIHono } from '@hono/zod-openapi';
-import { getSkaAgents } from '../../services/sparql/legacy/ska/getSkaAgents';
-import { chunk } from '../../helpers/indexers/chunk';
-import { flatMapDataForBulkIndexing } from '../../helpers/indexers/flatMapDataForBulkIndexing';
-import { indexData } from '../../helpers/indexers/indexData';
-import { getSkaDocuments } from '../../services/sparql/legacy/ska/getSkaDocuments';
-import { getSkaTopics } from '../../services/sparql/legacy/ska/getSkaTopics';
+import { getSkaAgents } from '@services/sparql/ska/getSkaAgents';
+import { getSkaDocuments } from '@services/sparql/ska/getSkaDocuments';
+import { getSkaTopics } from '@services/sparql/ska/getSkaTopics';
 
 interface IndexDataResponse {
   count: number;

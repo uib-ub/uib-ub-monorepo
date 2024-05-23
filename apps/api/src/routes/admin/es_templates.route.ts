@@ -1,7 +1,7 @@
-import { OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import client from '../../config/apis/esClient'
-import { chcTemplate, manifestsTemplate } from '../../config/elasticsearch/templates'
-import { esFailureSchema, esSuccessesSchema } from '../../models'
+import client from '@config/apis/esClient'
+import { chcTemplate, manifestsTemplate } from '@config/elasticsearch/templates'
+import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
+import { esFailureSchema, esSuccessesSchema } from '@models'
 
 const route = new OpenAPIHono()
 

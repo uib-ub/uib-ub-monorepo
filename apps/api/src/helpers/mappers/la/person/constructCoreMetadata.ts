@@ -1,6 +1,6 @@
+import { aatFemaleType, aatMaleType } from '@/helpers/mappers/staticMapping';
+import { TBaseMetadata } from '@models';
 import omitEmptyEs from 'omit-empty-es';
-import { TBaseMetadata } from '../../../../models';
-import { aatFemaleType, aatMaleType } from '../../staticMapping';
 
 export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
   const {
