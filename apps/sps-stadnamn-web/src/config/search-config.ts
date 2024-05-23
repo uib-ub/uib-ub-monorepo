@@ -19,6 +19,11 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
+      rygh: [
+        {"key": "rawData.Lokalitetstype", "label": "Lokalitetstype"},
+        {"key": "rawData.Gnr", "label": "Gardsnummer"},
+        {"key": "rawData.Bnr", "label": "Bruksnummer"},
+      ],
       leks: [
         {"key": "rawData.lokalitetstype", "label": "Lokalitetstype"},
         {"key": "rawData.gnidu", "label": "GNIDu"},

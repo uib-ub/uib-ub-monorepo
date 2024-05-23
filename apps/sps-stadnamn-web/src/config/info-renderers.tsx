@@ -19,6 +19,18 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
+    rygh: (source: any) => {
+      return <>
+      {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
+      <InfoBox dataset={'rygh'} items={[
+        {title: 'Stadnamn', value: source.label},
+        {title: 'Herred', value: source.adm2},
+        {title: 'Amt', value: source.adm1},
+        {title: 'Kommunenummer', value: source.rawData.KNR}
+      ]}/>
+
+      </>
+    },
     leks: (source: any) => {
       return <>
       <div className='space-y-2'>

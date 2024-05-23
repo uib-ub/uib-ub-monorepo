@@ -25,14 +25,16 @@ const defaultTitle = (hit: any) => {
 }
 
 
-
-
 export const resultRenderers: ResultRenderers = {
+  rygh: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      return <>{hit._source.rawData.Lokalitetstype && hit._source.rawData.Lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
+    }
+  },
   leks: {
     title: defaultTitle,
     details: (hit: any) => {
-      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
-
       return <>{hit._source.rawData.lokalitetstype && hit._source.rawData.lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
     }
   },
