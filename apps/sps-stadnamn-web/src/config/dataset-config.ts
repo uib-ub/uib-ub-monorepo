@@ -171,6 +171,10 @@ export const sortConfig: Record<string, Record<string, string>[]> = {
   hord: [
     {"key": "label.keyword", "label": "stadnamn"},
     {"key": "rawData.kommuneNr.keyword,cadastre__gnr,cadastre__bnr", "label": "matrikkel"},
+  ],
+  ostf: [
+    {"key": "label.keyword", "label": "Oppslagsform"},
+    {"key": "rawData.GNID.keyword", "label": "Matrikkelnummer"},
   ]
 }
 

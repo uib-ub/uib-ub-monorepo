@@ -3,7 +3,7 @@ import EmbeddedMap from '@/components/Map/EmbeddedMap'
 import OriginalData from './original-data'
 import Thumbnail from './thumbnail'
 import Link from 'next/link'
-import { infoPageRenderers } from '@/config/dataset-render-config'
+import { infoPageRenderers } from '@/config/info-renderers'
 import { fetchDoc } from '@/app/api/_utils/actions'
 import { PiCaretLeftBold } from 'react-icons/pi'
 

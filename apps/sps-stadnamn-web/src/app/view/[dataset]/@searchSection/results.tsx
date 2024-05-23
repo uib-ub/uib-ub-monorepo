@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
-import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
+import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { sortConfig, datasetTitles } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
 

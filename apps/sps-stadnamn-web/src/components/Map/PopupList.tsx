@@ -4,7 +4,7 @@ import { useSearchParams, useParams, useRouter } from 'next/navigation'
 import { PiArticleFill, PiInfoFill, PiLinkBold } from 'react-icons/pi'
 import AudioButton from '@/components/results/audioButton';
 import Link from 'next/link';
-import { resultRenderers } from '@/config/dataset-render-config';
+import { resultRenderers } from '@/config/result-renderers';
 
 export default function PopupList({ docs, view }: { docs: any[], view: string} ) {
     const searchParams = useSearchParams()
