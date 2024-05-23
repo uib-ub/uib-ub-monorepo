@@ -6,15 +6,17 @@
   "types": "./src/index.ts",
   "scripts": {
     "type-check": "tsc",
-    "la-download": "node ./src/functions/la-sync.js",
-    "la-to-types": "cd ./src/la/schemas && json2ts -i \"*.json\" -o ../la/types",
-    "la-sync": "npm run la-download && npm run la-to-types"
+    "la-download": "node ./src/scripts/la-sync.js",
+    "la-to-types": "cd ./src/la/schemas && json2ts -i \"*.json\" -o ../types",
+    "la-sync": "npm run la-download && npm run la-to-types",
+    "la-to-zod": "cd ./src/la/types && ts-to-zod *.d.ts *.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "json-schema-to-typescript": "^11.0.5",
     "tiged": "^2.12.5",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "ts-to-zod": "^3.8.5"
   }
 }
