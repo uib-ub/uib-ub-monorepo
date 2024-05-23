@@ -8,7 +8,44 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
   }
 
 
+  function createMarkup(htmlString: string) {
+    const decodedHtmlString = htmlString.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    return {__html: decodedHtmlString};
+  }
+  
+  function HtmlString({htmlString}: {htmlString: string}) {
+    return <div dangerouslySetInnerHTML={createMarkup(htmlString)} />;
+  }
+
+
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
+    leks: (source: any) => {
+      return <>
+      <div className='space-y-2'>
+      {source.rawData?.tolking && <div><strong className="text-neutral-900">Tolking: </strong><HtmlString htmlString={source.rawData?.tolking} /></div>}
+      </div>
+      <InfoBox dataset={'leks'} items={[
+        {title: 'Oppslagsform', value: source.label},
+        {title: 'Lokalitetstype', value: source.rawData.lokalitetstype},
+        {title: 'Kommune', value: source.adm2},
+        {title: 'Kommunenummer', value: source.rawData.kommunenr},
+        {title: 'Fylke', value: source.adm1},
+        {title: 'Førsteledd', value: source.rawData.førsteledd},
+        {title: 'Sisteledd', value: source.rawData.sisteledd},
+        {title: 'StedsnavnID', 
+          items: [{value: source.rawData.snid, href: `/view/leks?rawData.snid=${encodeURIComponent(source.rawData.snid)}`}]},
+        {title: 'GNIDu', 
+          items: [{value: source.rawData.gnidu, href: `/view/leks?rawData.gnidu=${encodeURIComponent(source.rawData.gnidu)}`}]},
+        {title: 'Longitude', value: source.rawData.longitude},
+        {title: 'Latitude', value: source.rawData.latitude},
+        {title: 'N50 Kartid', value: source.rawData.n50_kartid}
+      ]}/>
+    </>
+
+
+
+
+    },
     bsn: (source: any) => {
       return <>
       <div className='space-y-2'>
