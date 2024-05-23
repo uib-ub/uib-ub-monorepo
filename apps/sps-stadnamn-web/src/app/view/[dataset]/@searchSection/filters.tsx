@@ -6,7 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 import IconButton from '@/components/ui/icon-button';
-import { facetConfig } from '@/config/dataset-config';
+import { facetConfig } from '@/config/search-config';
 
 
 export default function Facets() {

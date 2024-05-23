@@ -1,6 +1,29 @@
-import * as schema from "./dataset-config-schema"
+export interface DatasetTitles {
+  [key: string]: string;
+}
 
-export const datasetTitles: schema.DatasetTitles = {
+export interface SubindexPresentation {
+  [key: string]: {
+    img?: string;
+    alt?: string;
+    imageAttribution?: string;
+    description?: string;
+    initPage?: string;
+  }
+}
+
+export interface DatasetPresentation {
+  [key: string]: {
+    img: string;
+    alt: string;
+    imageAttribution: string;
+    description: string;
+    subindices?: SubindexPresentation;
+    initPage?: string;
+  }
+}
+
+export const datasetTitles: DatasetTitles = {
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
@@ -18,7 +41,7 @@ export const datasetTitles: schema.DatasetTitles = {
 
 
 
-export const datasetPresentation: schema.DatasetPresentation = {
+export const datasetPresentation: DatasetPresentation = {
       bsn: {
         img: "/datasets/ubb-spr-bp-0001_sm.jpg",
         alt: "En kvinnelig arkivar eller kontorist sitter ved et skrivebord foran en stor rekke arkivskuffer.",
@@ -142,39 +165,5 @@ export const datasetTypes: Record<string, string[]> = {
 }
 
 
-export const fieldConfig: Record<string, schema.FieldConfigItem[]> = {
-  hord: [
-    {"key": "label", "label": "Namn"},
-    {"key": "rawData.merknader", "label": "Merknader"},
-  ]
-}
 
-
-
-export const facetConfig: Record<string, schema.FacetConfigItem[]> = {
-    hord: [
-      {"key": "archive.institution", "label": "Arkivtilvising"},
-      {"key": "cadastre__gnr", "label": "Gardsnummer", "sort": "asc"},
-      {"key": "cadastre__bnr", "label": "Bruksnummer", "sort": "asc"},
-      {"key": "rawData.oppskrivar", "label": "Oppskrivar"},
-      {"key": "rawData.oppskrivingsTid", "label": "Oppskrivingstid"},
-    ],
-    mu1950: [
-      {"key": "rawData.eigar", "label": "Eigar"},
-      {"key": "rawData.koordinattype", "label": "Koordinattype"}
-    ],
-
-}
-
-
-export const sortConfig: Record<string, Record<string, string>[]> = {
-  hord: [
-    {"key": "label.keyword", "label": "stadnamn"},
-    {"key": "rawData.kommuneNr.keyword,cadastre__gnr,cadastre__bnr", "label": "matrikkel"},
-  ],
-  ostf: [
-    {"key": "label.keyword", "label": "Oppslagsform"},
-    {"key": "rawData.GNID.keyword", "label": "Matrikkelnummer"},
-  ]
-}
 

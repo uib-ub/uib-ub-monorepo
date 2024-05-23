@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
 import PopupList from './PopupList'
 import { indexToCode } from '@/lib/datasets';
-import { datasetTitles } from '@/config/dataset-config';
+import { datasetTitles } from '@/config/metadata-config';
 import IconButton from '@/components/ui/icon-button';
 import { PiInfoFill } from 'react-icons/pi';
 
