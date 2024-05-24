@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { fetchDoc } from '@/app/api/_utils/actions'
 import { PiCaretLeftBold } from 'react-icons/pi'
+import ErrorMessage from '@/components/ErrorMessage'
 
 export default async function DocumentView({ params, searchParams }: { params: { dataset: string, uuid: string }, searchParams: Record<string, string>}) { 
 
@@ -19,6 +20,10 @@ export default async function DocumentView({ params, searchParams }: { params: {
     }
 
     const doc = await fetchDoc(params)
+    if (doc.error) {
+      return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
+    }
+
     return (
       
       <div className="mx-2 p-4 lg:p-8 lg:overflow-y-auto space-y-6 instance-info">

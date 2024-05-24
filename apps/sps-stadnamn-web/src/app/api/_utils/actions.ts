@@ -10,9 +10,13 @@ export async function fetchDoc(params: any, retry: boolean = true) {
         }
     })
 
-    if (retry && !res.ok) {
-        return fetchDoc(params, retry = false);
-  }
+    if (!res.ok) {
+        const errorResponse = await res.json();
+        if (retry) {
+            return fetchDoc(params, retry = false);
+        }
+        return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
+    }
   const data = await res.json()
   return data
 

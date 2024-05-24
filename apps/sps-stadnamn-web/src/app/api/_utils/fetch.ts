@@ -14,11 +14,10 @@ export async function postQuery(dataset: string, query: any, retry: boolean = tr
     
     if (!res.ok) {
         const errorResponse = await res.json();
-        console.error('Elasticsearch error:', errorResponse);
         if (retry) {
             return postQuery(dataset, query, false);
         } else {
-            throw new Error(`Request failed with status ${res.status}`);
+            return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
         }
     }
 

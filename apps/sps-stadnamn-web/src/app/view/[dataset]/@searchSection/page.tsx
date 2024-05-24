@@ -15,7 +15,7 @@ import { useQueryStringWithout } from '@/lib/search-params';
 export default function SearchSection () {
     const params = useParams<{dataset: string}>()
     const router = useRouter()
-    const { resultData, isLoading } = useContext(SearchContext)
+    const { resultData, isLoading, searchError } = useContext(SearchContext)
     const filteredParams = useQueryStringWithout(['docs'])
     let [mainIndex, subindex] = params.dataset.split("_")
 
@@ -40,7 +40,7 @@ export default function SearchSection () {
         <div className='flex flex-col h-full gap-4'>
           <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
             <SearchBar/>
-            <Filters/>
+            { !searchError && <Filters/> }
           </form>            
             { resultData && filteredParams ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
 
