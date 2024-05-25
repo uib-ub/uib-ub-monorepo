@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hono-api
+  labels:
+    app: hono-api
+spec:
+  replicas: 3
+  template:
+    metadata:
+      name: hono-api
+      labels:
+        app: hono-api
+    spec:
+      containers:
+        - name: hono-api

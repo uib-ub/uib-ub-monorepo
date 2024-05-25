@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hono-api
+  labels:
+    app: hono-api
+spec:
+  selector:
+    matchLabels:
+      app: hono-api
+  template:
+    spec:
+      containers:
+        - name: hono-api
+          image: ghcr.io/uib-ub/uib-ub/uib-ub-monorepo-api:latest
+          imagePullPolicy: Always
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                configMapKeyRef:
+                  name: hono-api-config
+                  key: namespace
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: hono-api-config
+                  key: node_env
+            - name: ES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: hono-api-config
+                  key: es_host
+            - name: PROD_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: hono-api-config
+                  key: prod_url
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: hono-api-config
+                  key: port
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: hono-api-config
+                  key: api_url
+            - name: ES_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: esapikeycred
+                  key: esApiKey
+          ports:
+            - containerPort: 3009
+      imagePullSecrets:
+        - name: regcred
