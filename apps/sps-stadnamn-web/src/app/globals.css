@@ -58,7 +58,7 @@
 
 @layer components {
   .card {
-    @apply bg-white shadow rounded-sm;
+    @apply bg-white shadow-sm shadow-neutral-200 border border-neutral-200 rounded-sm;
   }
 
   .dataset-info p, .page-info p {
