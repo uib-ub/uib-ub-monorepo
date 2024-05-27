@@ -30,12 +30,8 @@ export async function fetchSOSI(sosiCode: string) {
     })
 
     if (!res.ok) {
-        const errorResponse = await res.json();
-
         // TODO: load backup jeson of all navneobjekttype
-        
-
-        return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
+        return {};
     }
   const data = await res.json()
   return data
