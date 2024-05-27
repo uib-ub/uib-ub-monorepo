@@ -38,7 +38,7 @@ export type Specific = "Type" | "Currency" | "Material" | "Language" | "Measurem
 /**
  * A human readable name or label for the entity, intended for developers
  */
-export type RdfsLabel = string;
+export type RdfsLabel = Partial<string | Record<string, string[]> | undefined>;
 /**
  * The class of the entity
  */
@@ -479,7 +479,7 @@ export type CrmP50HasCurrentKeeper = (E21_Person | CrmE74_Group)[];
  */
 export type LaCurrentPermanentCustodian = (E21_Person | CrmE74_Group)[];
 /**
- * One or more other activities without their own identities in which this object was used
+ * Activities that this entity was used for.
  */
 export type CrmP16IWasUsedFor2 = CrmE7_Activity1[];
 /**
