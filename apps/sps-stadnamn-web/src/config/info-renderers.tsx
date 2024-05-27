@@ -19,6 +19,32 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
+    nbas: (source: any) => {
+      return <>
+      
+      
+      </>
+
+    },  
+
+    mu1950: (source: any) => {
+      return <>
+      <InfoBox dataset={'mu1950'} 
+               items={[
+        {title: 'Stadnamn', value: source.label},
+        {title: 'Kommune', value: source.adm2},
+        {title: 'Fylke', value: source.adm1},
+        {title: 'Kommunenummer', value: source.rawData.knr},
+        {title: 'GNIDu', value: source.rawData.gnidu},
+      ]}/>
+
+      </>
+    },
+    m1886: (source: any) => {
+      return <>
+      {source.rawData?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknader}</>}
+      </>
+    },
     m1838: (source: any) => {
       return <>
       {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
