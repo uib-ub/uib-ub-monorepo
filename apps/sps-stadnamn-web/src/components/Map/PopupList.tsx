@@ -56,7 +56,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                             </IconButton> 
                         </Link>
                     }
-                    <IconButton label="Infoside" onClick={() => goToDoc(doc._source.uuid)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
+                    <IconButton label="Infoside" onClick={() => goToDoc(doc._id)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
                 </div>
                  { dataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc)}</p> }
                 
