@@ -8,5 +8,7 @@ export type { PlaceSchema } from './la/types/place.d'
 export type { ProvenanceActivitySchema } from './la/types/provenance.d'
 export type { CollectionSchema } from './la/types/set.d'
 export type { TextSchema } from './la/types/text.d'
+export { groupSchema } from './la/zod/group'
 export { humanMadeObjectSchema } from './la/zod/object'
+export { personSchema } from './la/zod/person'
 

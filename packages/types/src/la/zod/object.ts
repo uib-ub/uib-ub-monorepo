@@ -4,77 +4,13 @@ import {
   CrmE12_Production, CrmE13_Attribute_Assignment, CrmE33_E41_Linguistic_Appellation, CrmE33_Linguistic_Object, CrmE33_Linguistic_Object2, CrmE36_Visual_Item, CrmE42_Identifier, CrmE54_Dimension, CrmE55_Type, CrmE7_Activity1, CrmE80_Part_Removal, CrmP108IWasProducedBy, CrmP113IWasRemovedBy, CrmP129IIsSubjectOf, CrmP138IHasRepresentation, CrmP13IWasDestroyedBy, CrmP140IWasAttributedBy, CrmP141IWasAssignedBy, CrmP16IWasUsedFor, CrmP191HadDuration, CrmP1IsIdentifiedBy, CrmP2HasType, CrmP32UsedGeneralTechnique, CrmP43HasDimension, CrmP46IsComposedOf, CrmP4HasTimeSpan, CrmP67IIsReferredToBy, DigD1_Digital_Object, HumanMadeObjectSchema, LaDigitallyCarriedBy, LaDigitallyShownBy, SciO19IWasObjectEncounteredAt,
   SciS19_Encounter_Event
 } from "./../types/object.d";
+import { activityTypeSchema, attributionAssignmentTypeSchema, crmHumanMadeObjectTypeSchema, crmP177AssignedPropertyTypeSchema, crmP190HasSymbolicContentSchema, crmP81AEndOfTheBeginSchema, crmP81BBeginOfTheEndSchema, crmP82ABeginOfTheBeginSchema, crmP82BEndOfTheEndSchema, crmP90AHasLowerValueLimitSchema, crmP90AHasUpperValueLimitSchema, crmP90HasValueSchema, dcFormatSchema, destructionTypeSchema, digitalObjectTypeSchema, dimensionTypeSchema, encounterTypeSchema, genericReference, genericReferencesSchema, genericString, groupTypeSchema, identifierTypeSchema, jSONLDContextSchema, nameTypeSchema, partRemovalTypeSchema, personTypeSchema, placeTypeSchema, productionSchema, rdfsLabelSchema, rdfTypeSchema, rightTypeSchema, textTypeSchema, theSubjectUriSchema, timespanTypeSchema, typeTypeSchema, visualItemTypeSchema } from './core';
+import { HalSchema } from './hal';
 
 export const linkedArtSchema = z.literal(
   "https://linked.art/ns/v1/linked-art.json",
 );
 
-export const linkedArtWithExtensionsSchema = z.array(z.string());
-
-export const theSubjectUriSchema = z.string().url();
-
-export const genericString = z.string();
-
-export const objectTypeSchema = z.literal("HumanMadeObject");
-export const nameTypeSchema = z.literal("Name");
-export const typeTypeSchema = z.literal("Type");
-export const textTypeSchema = z.literal("LinguisticObject");
-export const digitalObjectTypeSchema = z.literal("DigitalObject");
-export const identifierTypeSchema = z.literal("Identifier");
-export const attributionAssignmentTypeSchema = z.literal("AttributeAssignment");
-export const placeTypeSchema = z.literal("Place");
-export const timespanTypeSchema = z.literal("TimeSpan");
-export const dimensionTypeSchema = z.literal("Dimension");
-export const personTypeSchema = z.literal("Person");
-export const groupTypeSchema = z.literal("Group");
-export const visualItemTypeSchema = z.literal("VisualItem");
-export const activityTypeSchema = z.literal("Activity");
-export const productionSchema = z.literal("Production");
-export const destructionTypeSchema = z.literal("Destruction");
-export const partRemovalTypeSchema = z.literal("PartRemoval");
-export const encounterTypeSchema = z.literal("Encounter");
-export const rightTypeSchema = z.literal("Right");
-export const setTypeSchema = z.literal("Set");
-export const eventTypeSchema = z.literal("Event");
-export const periodTypeSchema = z.literal("Period");
-
-export const allTypesSchema = z.union([
-  objectTypeSchema,
-  personTypeSchema,
-  groupTypeSchema,
-  visualItemTypeSchema,
-  textTypeSchema,
-  placeTypeSchema,
-  digitalObjectTypeSchema,
-  typeTypeSchema,
-  activityTypeSchema,
-  setTypeSchema,
-  eventTypeSchema,
-  periodTypeSchema,
-]);
-
-export const rdfTypeSchema = z.string();
-export const langLabelSchema = z.record(z.string(), z.array(z.string()));
-export const rdfsLabelSchema = genericString.or(langLabelSchema); // Not compliant with Linked Art, as it expects a string (export const rdfsLabelSchema = z.string();)
-export const crmP190HasSymbolicContentSchema = z.string();
-export const dcFormatSchema = z.string();
-
-export const crmP82ABeginOfTheBeginSchema = z.string();
-export const crmP81AEndOfTheBeginSchema = z.string();
-export const crmP81BBeginOfTheEndSchema = z.string();
-export const crmP82BEndOfTheEndSchema = z.string();
-export const crmP90HasValueSchema = z.number();
-export const crmP90AHasLowerValueLimitSchema = z.number();
-export const crmP90AHasUpperValueLimitSchema = z.number();
-export const crmP177AssignedPropertyTypeSchema = z.string();
-
-export const genericReference = z.object({
-  id: theSubjectUriSchema,
-  type: rdfTypeSchema.and(allTypesSchema),
-  _label: rdfsLabelSchema.optional(),
-});
-
-export const genericReferencesSchema = z.array(genericReference);
 
 export const crmE56LanguageSchema = z.object({
   id: theSubjectUriSchema,
@@ -128,7 +64,7 @@ export const crmE74GroupSchema = z.object({
 
 export const crmE22HumanMadeObjectSchema = z.object({
   id: theSubjectUriSchema,
-  type: rdfTypeSchema.and(objectTypeSchema),
+  type: rdfTypeSchema.and(crmHumanMadeObjectTypeSchema),
   _label: rdfsLabelSchema.optional(),
 });
 
@@ -199,7 +135,7 @@ export const crmP9IFormsPartOf3Schema = z.union([
 
 export const crmE22HumanMadeObject1Schema = z.object({
   id: theSubjectUriSchema,
-  type: rdfTypeSchema.and(objectTypeSchema),
+  type: rdfTypeSchema.and(crmHumanMadeObjectTypeSchema),
   _label: rdfsLabelSchema.optional(),
 });
 
@@ -219,14 +155,10 @@ export const crmP91HasUnitSchema = z.object({
 
 export const crmE22HumanMadeObject2Schema = z.object({
   id: theSubjectUriSchema,
-  type: rdfTypeSchema.and(objectTypeSchema),
+  type: rdfTypeSchema.and(crmHumanMadeObjectTypeSchema),
   _label: rdfsLabelSchema.optional(),
 });
 
-export const jSONLDContextSchema = z.union([
-  linkedArtSchema,
-  linkedArtWithExtensionsSchema,
-]);
 
 export const crmP72HasLanguageSchema = z.array(crmE56LanguageSchema);
 
@@ -550,7 +482,7 @@ export const humanMadeObjectSchema: z.ZodSchema<HumanMadeObjectSchema> =
     z.object({
       "@context": jSONLDContextSchema,
       id: theSubjectUriSchema,
-      type: genericString.and(objectTypeSchema),
+      type: genericString.and(crmHumanMadeObjectTypeSchema),
       _label: rdfsLabelSchema,
       _available: z.string(),
       _modified: z.string(),
@@ -577,6 +509,7 @@ export const humanMadeObjectSchema: z.ZodSchema<HumanMadeObjectSchema> =
       removed_by: crmP113IWasRemovedBySchema.optional(),
       encountered_by: sciO19IWasObjectEncounteredAtSchema.optional(),
       subject_to: crmP104IsSubjectToSchema.optional(),
+      _links: HalSchema,
     }).strict(),
   );
 

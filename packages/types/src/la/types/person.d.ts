@@ -23,7 +23,7 @@ export type Specific = "Person";
 /**
  * A human readable name or label for the entity, intended for developers
  */
-export type RdfsLabel = string;
+export type RdfsLabel = string | Record<string, string[]>;
 /**
  * The class of the entity
  */
@@ -313,7 +313,7 @@ export interface PersonSchema {
   identified_by?: CrmP1IsIdentifiedBy;
   classified_as?: CrmP2HasType;
   referred_to_by?: CrmP67IIsReferredToBy;
-  equivalent?: General16 & Specific14;
+  equivalent?: Specific14;
   representation?: CrmP138IHasRepresentation;
   member_of?: CrmP107IIsCurrentOrFormerMemberOf;
   subject_of?: CrmP129IIsSubjectOf;

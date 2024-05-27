@@ -9,7 +9,7 @@
     "la-download": "node ./src/scripts/la-sync.js",
     "la-to-types": "cd ./src/la/schemas && json2ts -i \"*.json\" -o ../types",
     "la-sync": "npm run la-download && npm run la-to-types",
-    "la-to-zod": "cd ./src/la/types && ts-to-zod *.d.ts *.ts"
+    "la-to-zod": "cd ./src/la/types && ts-to-zod group.d.ts ../zod/group.ts"
   },
   "author": "",
   "license": "ISC",
