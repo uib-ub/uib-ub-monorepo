@@ -21,3 +21,23 @@ export async function fetchDoc(params: any, retry: boolean = true) {
   return data
 
   }
+
+
+export async function fetchSOSI(sosiCode: string) {
+    'use server'
+    const res = await fetch("https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + sosiCode + ".json", {
+        method: 'GET'
+    })
+
+    if (!res.ok) {
+        const errorResponse = await res.json();
+
+        // TODO: load backup jeson of all navneobjekttype
+        
+
+        return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
+    }
+  const data = await res.json()
+  return data
+
+  }
