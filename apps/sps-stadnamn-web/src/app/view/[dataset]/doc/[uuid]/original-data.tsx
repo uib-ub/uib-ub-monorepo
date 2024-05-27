@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react';
 import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
-export default function OriginalData(rawData: any) {
+export default function OriginalData({rawData}: {rawData: Record<string, any>}) {
     const [expanded, setExpanded] = useState(false);
     function renderData(data: any, prefix = ''): any {
         return Object.keys(data).map((key) => {
@@ -57,9 +57,9 @@ export default function OriginalData(rawData: any) {
             { expanded ? <PiCaretUp className="text2xl inline"/> : <PiCaretDown className="text2xl inline"/>} Rådata </button>
         <div id="original_data_list">
         {expanded &&
-            <ul id="original_data_list" className="flex flex-col gap-x-4 list-none p-0 my-2">
-                {renderData(rawData)}
-            </ul>
+          <ul id="original_data_list" className="flex flex-col gap-x-4 !list-none p-0 my-2 bg-neutral-50">
+              {renderData(rawData)}
+          </ul>
         }
         </div>
         </>
