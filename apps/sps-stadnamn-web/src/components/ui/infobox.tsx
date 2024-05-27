@@ -22,7 +22,7 @@ export default async function InfoBox({ items: items, dataset, sosi }: { items: 
                 ))
 
                 ||
-                ( item.sosi ? 
+                ( item.sosi && sosiData.id ? 
 
                   <Link className="no-underline flex items-center gap-1" 
                         href={sosiData.id}
