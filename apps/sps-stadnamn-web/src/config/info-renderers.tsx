@@ -21,6 +21,15 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     nbas: (source: any) => {
       return <>
+      <InfoBox dataset={'nbas'} 
+               items={[
+        {title: 'Stadnamn', value: source.rawData.oppslagsform},
+        {title: 'Lokalitetstype', value: source.rawData.lokalitetstype_sosi, sosi: true},
+        {title: 'Kommune', value: source.rawData.herred},
+        {title: 'Fylke', value: source.rawData.fylke},
+        {title: 'Kommunenummer', value: source.rawData.kommunenummer},
+        {title: 'GNIDu', value: source.rawData.gnidu},
+      ]}/>
       
       
       </>
