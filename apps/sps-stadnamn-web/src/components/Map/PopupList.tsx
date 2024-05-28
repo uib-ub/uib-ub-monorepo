@@ -14,7 +14,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
 
     const goToDoc = (uuid: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.delete('docs')
+      //newSearchParams.delete('docs')
       router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
     }
 

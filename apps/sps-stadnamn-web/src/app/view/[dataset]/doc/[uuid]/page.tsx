@@ -28,7 +28,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
       
       <div className="mx-2 p-4 lg:p-8 lg:overflow-y-auto space-y-6 instance-info">
         {
-          hasSearchParams && <Link href={`/view/${params.dataset}?${new URLSearchParams(searchParams).toString()}`} className="no-underline inline"><PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>Tilbake til kartet</Link>
+          <Link href={`/view/${params.dataset}?${new URLSearchParams(searchParams).toString()}`} className="no-underline inline"><PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>{hasSearchParams ? 'Tilbake til kartet' : 'Vis på kartet'}</Link>
         }
         { doc && doc._source && <>
       
