@@ -1,4 +1,4 @@
-name: Manually deploy hono api to hono-api-dev env on microk8s
+name: Manually deploy hono api to hono-api-dev env/namespace on microk8s
 
 on: workflow_dispatch # run manually
 
@@ -28,17 +28,21 @@ jobs:
 
       - name: deploy apply pods to hono-api-dev env
         run: |
+          # create namespace hono-api-dev
           kubectl apply -f microk8s-hono-api/dev/namespace.yaml
+          # create secret regcred for kubernetes to pull image from private registry on Github
           if ! kubectl -n hono-api-dev get secret regcred; then
             kubectl -n hono-api-dev create secret docker-registry regcred --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-server=ghcr.io
           else
             echo "Secret regcred already exists, skipping creation."
           fi
+          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
           if ! kubectl -n hono-api-dev get secret esapikeycred; then
             kubectl -n hono-api-dev create secret generic esapikeycred --from-literal=esApiKey=${{ secrets.ES_APIKEY }}
           else
             echo "Secret esapikeycred already exists, skipping creation."
           fi
+          # apply all resources in overlays based on namespace
           kubectl apply -k microk8s-hono-api/dev -n hono-api-dev
 
       - name: Wait For Deployment To Start
