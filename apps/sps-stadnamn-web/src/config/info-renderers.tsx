@@ -201,7 +201,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
           {title: 'Fylke', value: source.rawData.Fylke},
           {title: 'Matrikkelnummer', value: source.rawData.GNID},
           {title: 'Sidetall', value: source.rawData["Sidetall/henvisning"]},
-          {title: 'Koordinater', value: source.rawData.Y + ", " + source.rawData.X},
+          {title: 'Koordinater', value: source.rawData.Y + (source.rawData.X && source.rawData.Y && ", ") + source.rawData.X},
           {title: 'Presisjon', value: source.rawData.Koordinattype},
           {title: 'StedsnavnID', value: source.rawData.SNID},
           {title: 'Unikt matrikkelnummer', items: 
