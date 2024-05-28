@@ -57,7 +57,7 @@ export default function OriginalData({rawData}: {rawData: Record<string, any>}) 
             { expanded ? <PiCaretUp className="text2xl inline"/> : <PiCaretDown className="text2xl inline"/>} Rådata</button>
         <div id="original_data_list">
         {expanded &&
-        <div className='bg-neutral-50 my-2'><div className="flex text-base gap-2 items-center px-4 py-2"><PiWarningFill className='text-xl text-primary-600' aria-label="Advarsel"/>Kan inneholde feil som ikke vil bli rettet</div>
+        <div className='bg-neutral-50 my-2'><div className="flex text-base gap-2 items-center px-4 py-2"><PiWarningFill className='text-xl' aria-label="Advarsel"/>Kan inneholde feil som ikke vil bli rettet</div>
           <ul id="original_data_list" className="flex flex-col gap-x-4 !list-none p-0">
               {renderData(rawData)}
           </ul>
