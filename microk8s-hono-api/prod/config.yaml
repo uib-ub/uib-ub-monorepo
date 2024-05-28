@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hono-api-config
+data:
+  namespace: "hono-api-prod"
+  prod_url: "https://api-prod.testdu.uib.no"
