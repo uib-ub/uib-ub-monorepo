@@ -1,0 +1,52 @@
+name: Manually deploy hono api to hono-api-test env/namespace on microk8s
+
+on: workflow_dispatch # run manually
+
+jobs:
+  deploy-test:
+    name: Deploy to hono api test
+    environment:
+      name: hono-api-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v3
+
+      - name: Setup kubectl
+        env:
+          MICROK8S_CONFIG: ${{ secrets.MICROK8S_CONFIG }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${MICROK8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+
+      - name: Check kubectl get node
+        run: kubectl get nodes -o wide
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: deploy apply pods to hono-api-test env
+        run: |
+          # create namespace hono-api-test
+          kubectl apply -f microk8s-hono-api/test/namespace.yaml
+          # create secret regcred for kubernetes to pull image from private registry on Github
+          if ! kubectl -n hono-api-test get secret regcred; then
+            kubectl -n hono-api-test create secret docker-registry regcred --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-server=ghcr.io
+          else
+            echo "Secret regcred already exists, skipping creation."
+          fi
+          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
+          if ! kubectl -n hono-api-test get secret esapikeycred; then
+            kubectl -n hono-api-test create secret generic esapikeycred --from-literal=esApiKey=${{ secrets.ES_APIKEY }}
+          else
+            echo "Secret esapikeycred already exists, skipping creation."
+          fi
+          # apply all resources in overlays based on namespace
+          kubectl apply -k microk8s-hono-api/test -n hono-api-test
+
+      - name: Wait For Deployment To Start
+        run: sleep 10s
+
+      - name: Wait For Pods To Start
+        run: kubectl wait --for=condition=ready pod -l app=hono-api -n hono-api-test --timeout=10m
