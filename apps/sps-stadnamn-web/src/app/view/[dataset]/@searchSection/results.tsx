@@ -66,7 +66,6 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
 
     const goToDoc = (uuid: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.delete('docs')
       router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
     }
 
