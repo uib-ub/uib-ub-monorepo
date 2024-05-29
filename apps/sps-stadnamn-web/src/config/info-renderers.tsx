@@ -200,6 +200,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
           {title: 'Kommune', value: source.rawData["Herred for lokalitet"]},
           {title: 'Fylke', value: source.rawData.Fylke},
           {title: 'Matrikkelnummer', value: source.rawData.GNID},
+          {title: 'Bind', value: source.rawData.Bind},
           {title: 'Sidetall', value: source.rawData["Sidetall/henvisning"]},
           {title: 'Koordinater', value: [source.rawData.X, source.rawData.Y].filter(Boolean).join(", ")},
           {title: 'Presisjon', value: source.rawData.Koordinattype},
