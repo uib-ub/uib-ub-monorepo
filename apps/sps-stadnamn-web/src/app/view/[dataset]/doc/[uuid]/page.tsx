@@ -7,6 +7,7 @@ import { infoPageRenderers } from '@/config/info-renderers'
 import { fetchDoc } from '@/app/api/_utils/actions'
 import { PiCaretLeftBold } from 'react-icons/pi'
 import ErrorMessage from '@/components/ErrorMessage'
+import CoordinateInfo from './coordinate-info'
 
 export default async function DocumentView({ params, searchParams }: { params: { dataset: string, uuid: string }, searchParams: Record<string, string>}) { 
 
@@ -46,7 +47,13 @@ export default async function DocumentView({ params, searchParams }: { params: {
         <OriginalData rawData={doc._source.rawData}/>
         </div>
       : null}
-      {doc._source.location && <div><h3>Koordinater</h3><EmbeddedMap doc={doc._source}/> </div> }
+      {doc._source.location && <div className='space-y-3'>
+        <h3>Koordinater</h3>
+
+        <CoordinateInfo source={doc._source}/>
+        <EmbeddedMap doc={doc._source}/> 
+        
+      </div> }
       </>}
       </div>
     )
