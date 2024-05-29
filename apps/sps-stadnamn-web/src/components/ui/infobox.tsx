@@ -8,7 +8,7 @@ export default async function InfoBox({ items: items, dataset, sosi }: { items: 
     const sosiData = sosi ? await fetchSOSI(sosi) : null;
 
     return (
-      <div className="flex flex-wrap gap-8">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-8">
         {filteredItems.map((item: Record<string,any> , index: number) => (
             <div key={index} className="flex flex-col">
                 <strong className="text-neutral-900">{item.title}</strong>
