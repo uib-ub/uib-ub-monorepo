@@ -24,6 +24,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
     <InfoBox dataset={'rygh'} items={[
       {title: 'Stadnamn', value: source.label},
+      {title: 'Lokalitetstype', value: source.type, sosi: true},
       {title: 'Herred', value: source.adm2},
       {title: 'Amt', value: source.adm1},
       {title: 'Kommunenummer', value: source.rawData.KNR},
