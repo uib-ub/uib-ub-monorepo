@@ -42,7 +42,7 @@ export const resultRenderers: ResultRenderers = {
     title: defaultTitle,
     details: (hit: any) => {
       // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
-      let loktypes = hit._source.rawData?.stnavn?.loktype
+      let loktypes = hit._source.rawData?.original.stnavn?.loktype
       if (Array.isArray(loktypes)) {
         loktypes = loktypes.map((type: any) => type.type).join(', ')
       }
