@@ -87,6 +87,14 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                   title: 'Bruksnummer', 
                   items: [{value: source.rawData?.original?.stnavn?.sted?.bruksnr, href: `/view/bsn?rawData.original.stnavn.sted__bruksnr=${encodeURIComponent(source.rawData?.original?.stnavn?.sted?.bruksnr)}&rawData.original.stnavn.sted__gårdsnr=${encodeURIComponent(source.rawData?.original.stnavn?.sted?.gårdsnr)}`}]
                 },
+                {
+                  title: 'Gardsnummer', 
+                  items: [{value: source.rawData?.supplemented?.gnr, href: `/view/bsn?rawData.supplemented.gnr=${encodeURIComponent(source.rawData?.supplemented?.gnr)}`}]
+                },
+                {
+                  title: 'Bruksnummer', 
+                  items: [{value: source.rawData?.supplemented?.bnr, href: `/view/bsn?rawData.supplemented.bnrr=${encodeURIComponent(source.rawData?.supplemented?.bnr)}&rawData.supplemented.gnr=${encodeURIComponent(source.rawData?.supplemented.gnr)}`}]
+                },
               ]}
     />
     </>
