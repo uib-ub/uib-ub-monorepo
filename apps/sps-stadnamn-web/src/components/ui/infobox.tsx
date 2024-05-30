@@ -7,6 +7,17 @@ export default async function InfoBox({ items: items, dataset, sosi }: { items: 
 
     const sosiData = sosi ? await fetchSOSI(sosi) : null;
 
+    const buildHref = (params: Record<string, string>) => {
+      // Add parameter if value isn't null or empty string
+      const searchParams = new URLSearchParams();
+      Object.keys(params).forEach(key => {
+        if (params[key]) {
+          searchParams.append(key, params[key]);
+        }
+      });
+      return `/view/${dataset}?${searchParams.toString()}`;
+    }
+
     return (
       <div className="flex flex-col sm:flex-row flex-wrap gap-8">
         {filteredItems.map((item: Record<string,any> , index: number) => (
@@ -15,7 +26,7 @@ export default async function InfoBox({ items: items, dataset, sosi }: { items: 
                 <p>
                 {item.items?.map((subItem: any, subIndex: number) => (
                   <Link key={subIndex} className="no-underline flex items-center gap-1" 
-                        href={subItem.href}>
+                        href={subItem.hrefParams ? buildHref(subItem.hrefParams) : subItem.href}>
                     {subItem.value}
                     <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
                   </Link>
