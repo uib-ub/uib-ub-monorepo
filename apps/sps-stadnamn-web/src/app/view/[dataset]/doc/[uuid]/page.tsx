@@ -21,6 +21,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
     }
 
     const doc = await fetchDoc(params)
+    const docDataset = doc._index.split('-')[1]
+
     if (doc.error) {
       return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
     }
@@ -34,7 +36,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
         { doc && doc._source && <>
       
       <h2>{doc._source.label}</h2>
-      { infoPageRenderers[params.dataset]? infoPageRenderers[params.dataset](doc._source) : null }
+      { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](doc._source) : null }
       
       {doc._source.image?.manifest && <div>
         <h3>Sedler</h3>

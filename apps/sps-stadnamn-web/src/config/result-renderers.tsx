@@ -26,6 +26,20 @@ const defaultTitle = (hit: any) => {
 
 
 export const resultRenderers: ResultRenderers = {
+  bsn: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
+      let loktypes = hit._source.rawData?.original?.stnavn?.loktype
+      if (Array.isArray(loktypes)) {
+        loktypes = loktypes.map((type: any) => type.type).join(', ')
+      }
+      else {
+        loktypes = loktypes?.type
+      }
+      return <>{loktypes}{loktypes && ' | '}{hit._source.adm2}, {hit._source.adm1}  </>
+    }
+  },
   rygh: {
     title: defaultTitle,
     details: (hit: any) => {
@@ -38,20 +52,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{hit._source.rawData.lokalitetstype && hit._source.rawData.lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
     }
   },
-  bsn: {
-    title: defaultTitle,
-    details: (hit: any) => {
-      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
-      let loktypes = hit._source.rawData?.stnavn?.loktype
-      if (Array.isArray(loktypes)) {
-        loktypes = loktypes.map((type: any) => type.type).join(', ')
-      }
-      else {
-        loktypes = loktypes?.type
-      }
-      return <>{loktypes}{loktypes && ' | '}{hit._source.adm2}, {hit._source.adm1}  </>
-    }
-  },
+  
   ostf: {
     title: (hit: any) => {
       return <><strong>{hit._source.label}</strong> </>
