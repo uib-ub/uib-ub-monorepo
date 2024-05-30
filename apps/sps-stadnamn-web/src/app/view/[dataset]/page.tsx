@@ -4,10 +4,11 @@ import { useState, useEffect, useContext } from "react"
 import MapExplorer from '@/components/Map/MapExplorer'
 import { SearchContext } from '@/app/search-provider'
 import Spinner from '@/components/svg/Spinner'
+import ErrorMessage from '@/components/ErrorMessage'
 
 
 export default function SearchView() {
-    const { mapBounds, isLoading } = useContext(SearchContext)
+    const { mapBounds, isLoading, searchError } = useContext(SearchContext)
     const params = useParams()
     const [docs, setDocs] = useState<any>(null)
     const docs_uuid = useSearchParams().get('docs')
@@ -39,8 +40,12 @@ export default function SearchView() {
                 <Spinner className="w-20 h-20"/>
               </div>
             </div> 
-            : <div role="status" aria-live="polite" className='flex items-center justify-center my-auto text-xl font-semibold'>Ingen treff i kart</div>
-          
+            : 
+            (
+            searchError ? <ErrorMessage error={searchError} message="Kunne ikke gjennomføre søket"/>
+            :
+            <div role="status" aria-live="polite" className='flex items-center justify-center my-auto text-xl font-semibold'>Ingen treff i kart</div>
+            )
           
 
           }

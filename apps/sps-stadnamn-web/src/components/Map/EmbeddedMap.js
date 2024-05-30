@@ -17,7 +17,7 @@ export default function EmbeddedMap(props) {
 
 
   return (
-    <Map mapRef={mapRef} zoom={8} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]} className="w-full aspect-square lg:aspect-video">
+    <Map mapRef={mapRef} zoom={8} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]} className="aspect-square max-w-xl lg:aspect-video">
             {({ TileLayer, Marker }, leaflet) => (
                 <>
           

@@ -3,7 +3,7 @@ import { PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import IconButton from "@/components/ui/icon-button";
 import { useState, useRef } from "react";
 import { useQueryStringWithout } from "@/lib/search-params";
-import { fieldConfig } from "@/config/dataset-config";
+import { fieldConfig } from "@/config/search-config";
 
 export default function SearchBar() {
     const searchParams = useSearchParams()

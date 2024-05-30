@@ -11,11 +11,10 @@ export async function GET(request: Request) {
     if (!docs || !dataset) {
         return new Response('Missing parameter', { status: 400 });
       }
-
     const query = {
         query: {
             terms: {
-                "uuid.keyword": docs.split(',')
+                "_id": docs.split(',')
             }
         }
     }

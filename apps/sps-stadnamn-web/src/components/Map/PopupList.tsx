@@ -4,7 +4,7 @@ import { useSearchParams, useParams, useRouter } from 'next/navigation'
 import { PiArticleFill, PiInfoFill, PiLinkBold } from 'react-icons/pi'
 import AudioButton from '@/components/results/audioButton';
 import Link from 'next/link';
-import { resultRenderers } from '@/config/dataset-render-config';
+import { resultRenderers } from '@/config/result-renderers';
 
 export default function PopupList({ docs, view }: { docs: any[], view: string} ) {
     const searchParams = useSearchParams()
@@ -14,7 +14,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
 
     const goToDoc = (uuid: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.delete('docs')
+      //newSearchParams.delete('docs')
       router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
     }
 
@@ -29,19 +29,19 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
             <>
             { dataset == view ?
                     <>
-                        {resultRenderers[view]?.title(doc)} | {resultRenderers[view]?.details(doc)}
+                        {resultRenderers[view]?.title(doc)}
                     </>
                     :
                     <>
                         {doc._source.label}
                     </>
                 } 
-                <div className='inline space-x-1 inline'>
+                <div className='inline space-x-1'>
                     {doc._source.image && 
                         <IconButton 
                             onClick={() => goToIIIF(doc._id, doc._source.image.manifest)} 
                             label="Vis seddel">
-                            <PiArticleFill className="text-xl align-top text-neutral-700 inline"/>
+                            <PiArticleFill className="text-2xl align-top text-neutral-700 inline"/>
                         </IconButton> 
                     }
                     {doc._source.audio && 
@@ -52,12 +52,13 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                         <Link href={doc._source.link} className="no-underline" target="_blank">
                             <IconButton 
                                 label="Ekstern ressurs">
-                                <PiLinkBold className="text-xl align-top text-neutral-700 inline"/>
+                                <PiLinkBold className="text-2xl align-top text-neutral-700 inline"/>
                             </IconButton> 
                         </Link>
                     }
-                    <IconButton label="Infoside" onClick={() => goToDoc(doc._source.uuid)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
+                    <IconButton label="Infoside" onClick={() => goToDoc(doc._id)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
                 </div>
+                 { dataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc)}</p> }
                 
             </>
         )

@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
-import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
-import { sortConfig, datasetTitles } from '@/config/dataset-config';
+import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
+import { sortConfig } from '@/config/search-config';
+import { datasetTitles } from '@/config/metadata-config';
 import Spinner from '@/components/svg/Spinner';
 
 
@@ -65,7 +66,6 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
 
     const goToDoc = (uuid: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.delete('docs')
       router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
     }
 

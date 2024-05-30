@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
-import { datasetTitles, datasetPresentation } from '@/config/dataset-config';
+import { datasetTitles, datasetPresentation } from '@/config/metadata-config';
 import Footer from '../components/layout/Footer';
 
 export default function Home() {
@@ -56,8 +56,8 @@ export default function Home() {
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 sm:my-0">
           <Link href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
-          <div className="w-full aspect-square sm:h-32 sm:w-32 sm:md:h-64 sm:md:w-64  lg:p-1 overflow-hidden sm:flex-none">
-          <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%]"/>
+          <div className="aspect-square  m-1 overflow-hidden sm:flex-none">
+          <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%] overflow-hidden"/>
         </div>
           <div className="content p-4 pb-2 w-128 flex flex-col">
             <h3 className="text-lg font-semibold">{card.title}</h3>
