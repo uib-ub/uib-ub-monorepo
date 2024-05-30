@@ -73,10 +73,10 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </div>
     <InfoBox dataset={'bsn'}
              items={[
-                {title: 'Opppslagsform', value: source.rawData?.original.stnavn?.oppslag?.oppslord},
-                {title: 'Preposisjon', value: source.rawData?.original.stnavn?.oppslag?.prep},
-                {title: 'Parform', value: source.rawData?.original.stnavn?.parform_pf_navn},
-                {title: 'Stedstype', value: source.rawData?.original.stnavn?.sted?.type},
+                {title: 'Opppslagsform', value: source.label},
+                {title: 'Preposisjon', value: source.rawData?.original?.stnavn?.oppslag?.prep},
+                {title: 'Parform', value: source.rawData?.original?.stnavn?.parform_pf_navn},
+                {title: 'Stedstype', value: source.rawData?.original?.stnavn?.sted?.type},
                 {title: 'Kommune', value: source.adm2},
                 {title: 'Fylke', value: source.adm1},
                 {
