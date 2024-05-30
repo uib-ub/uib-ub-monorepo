@@ -21,6 +21,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
     }
 
     const doc = await fetchDoc(params)
+    const docDataset = doc._index.split('-')[1]
+
     if (doc.error) {
       return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
     }
