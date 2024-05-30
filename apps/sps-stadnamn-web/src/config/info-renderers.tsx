@@ -69,7 +69,10 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   bsn: (source: any) => {
     return <>
     <div className='space-y-2'>
-    {source.rawData?.original.stnavn?.komm && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.original.stnavn?.komm}</div>}
+    {source.rawData?.original?.stnavn?.komm ?
+     <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData.original.stnavn?.komm}</div>
+     : source.rawData?.supplemented?.merknad && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.supplemented?.merknad}</div>
+    }
     </div>
     <InfoBox dataset={'bsn'}
              items={[
@@ -85,7 +88,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                 },
                 {
                   title: 'Bruksnummer', 
-                  items: [{value: source.rawData?.original?.stnavn?.sted?.bruksnr, href: `/view/bsn?rawData.original.stnavn.sted__bruksnr=${encodeURIComponent(source.rawData?.original?.stnavn?.sted?.bruksnr)}&rawData.original.stnavn.sted__gårdsnr=${encodeURIComponent(source.rawData?.original.stnavn?.sted?.gårdsnr)}`}]
+                  items: [{value: source.rawData?.original?.stnavn?.sted?.bruksnr, href: `/view/bsn?rawData.original.stnavn.sted__bruksnr=${encodeURIComponent(source.rawData?.original?.stnavn?.sted?.bruksnr)}&rawData.original.stnavn.sted__gårdsnr=${encodeURIComponent(source.rawData?.original?.stnavn?.sted?.gårdsnr)}`}]
                 },
                 {
                   title: 'Gardsnummer', 
