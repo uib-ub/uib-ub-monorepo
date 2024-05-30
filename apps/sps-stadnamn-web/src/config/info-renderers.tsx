@@ -167,10 +167,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     return <>
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
     <InfoBox dataset={'m1838'} 
-    sosi={source.type}
     items={[
       {title: 'Stadnamn', value: source.label},
-      {title: 'Lokalitetstype', value: source.type, sosi: true},
+      {title: 'Lokalitetstype', value: source.rawData.lokalitetstype_sosi, sosi: true},
       {title: 'Prestegjeld', value: source.adm2},
       {title: 'Amt', value: source.adm1},
 
