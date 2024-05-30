@@ -81,22 +81,39 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                 {title: 'Parform', value: source.rawData?.original?.stnavn?.parform_pf_navn},
                 {title: 'Stedstype', value: source.rawData?.original?.stnavn?.sted?.type},
                 {title: 'Kommune', value: source.adm2},
+                {title: 'Kommunenummer', value: source.rawData?.supplemented?.knr},
                 {title: 'Fylke', value: source.adm1},
                 {
                   title: 'Gardsnummer', 
-                  items: [{value: source.rawData?.original?.stnavn?.sted?.gårdsnr, href: `/view/bsn?rawData.original.stnavn.sted__gårdsnr=${encodeURIComponent(source.rawData?.original?.stnavn?.sted?.gårdsnr)}`}]
+                  items: [{value: source.rawData?.original?.stnavn?.sted?.gårdsnr, hrefParams: {
+                    'adm2': source.adm2,
+                    'adm1': source.adm1,
+                    'rawData.original.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
+                  }}]
                 },
                 {
-                  title: 'Bruksnummer', 
-                  items: [{value: source.rawData?.original?.stnavn?.sted?.bruksnr, href: `/view/bsn?rawData.original.stnavn.sted__bruksnr=${encodeURIComponent(source.rawData?.original?.stnavn?.sted?.bruksnr)}&rawData.original.stnavn.sted__gårdsnr=${encodeURIComponent(source.rawData?.original?.stnavn?.sted?.gårdsnr)}`}]
+                  title: 'Gardsnummer',
+                  items: [{value: source.rawData?.supplemented?.gnr, hrefParams: {
+                    'rawData.supplemented.knr': source.rawData?.supplemented?.knr,
+                    'rawData.supplemented.gnr': source.rawData?.supplemented?.gnr,
+                  }}]
                 },
                 {
-                  title: 'Gardsnummer', 
-                  items: [{value: source.rawData?.supplemented?.gnr, href: `/view/bsn?rawData.supplemented.gnr=${encodeURIComponent(source.rawData?.supplemented?.gnr)}`}]
+                  title: 'Bruksnummer',
+                  items: [{value: !source.rawData?.original && source.rawData?.original?.stnavn?.sted?.bruksnr, hrefParams: {
+                    'rawData.adm2': source.adm2,
+                    'rawData.adm1': source.adm1,
+                    'rawData.original.stnavn.sted__bruksnr': source.rawData?.original?.stnavn?.sted?.bruksnr,
+                    'rawData.original.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
+                  }}]
                 },
                 {
-                  title: 'Bruksnummer', 
-                  items: [{value: source.rawData?.supplemented?.bnr, href: `/view/bsn?rawData.supplemented.bnrr=${encodeURIComponent(source.rawData?.supplemented?.bnr)}&rawData.supplemented.gnr=${encodeURIComponent(source.rawData?.supplemented.gnr)}`}]
+                  title: 'Bruksnummer',
+                  items: [{value: !source.rawData?.original && source.rawData?.supplemented?.bnr, hrefParams: {
+                    'rawData.supplemented.knr': source.rawData?.supplemented?.knr,
+                    'rawData.supplemented.bnr': source.rawData?.supplemented?.bnr,
+                    'rawData.supplemented.gnr': source.rawData?.supplemented?.gnr
+                  }}]
                 },
               ]}
     />

@@ -26,18 +26,6 @@ const defaultTitle = (hit: any) => {
 
 
 export const resultRenderers: ResultRenderers = {
-  rygh: {
-    title: defaultTitle,
-    details: (hit: any) => {
-      return <>{hit._source.rawData.Lokalitetstype && hit._source.rawData.Lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
-    }
-  },
-  leks: {
-    title: defaultTitle,
-    details: (hit: any) => {
-      return <>{hit._source.rawData.lokalitetstype && hit._source.rawData.lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
-    }
-  },
   bsn: {
     title: defaultTitle,
     details: (hit: any) => {
@@ -52,6 +40,19 @@ export const resultRenderers: ResultRenderers = {
       return <>{loktypes}{loktypes && ' | '}{hit._source.adm2}, {hit._source.adm1}  </>
     }
   },
+  rygh: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      return <>{hit._source.rawData.Lokalitetstype && hit._source.rawData.Lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
+    }
+  },
+  leks: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      return <>{hit._source.rawData.lokalitetstype && hit._source.rawData.lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
+    }
+  },
+  
   ostf: {
     title: (hit: any) => {
       return <><strong>{hit._source.label}</strong> </>
