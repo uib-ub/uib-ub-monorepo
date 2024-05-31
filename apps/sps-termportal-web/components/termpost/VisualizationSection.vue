@@ -12,7 +12,7 @@
         <ImgBase
           :img-src="displayInfo.image[0]?.value['@id']"
           :img-alt="`${$t('id.imageAltLabel')} '${pagetitle}'`"
-          class="border-solid border min-w-full"
+          class="border-solid border min-w-full p-1"
         ></ImgBase>
         <figcaption v-if="caption" class="pt-2">
           {{ caption }}
