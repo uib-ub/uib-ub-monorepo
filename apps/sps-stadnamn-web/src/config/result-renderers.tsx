@@ -106,9 +106,11 @@ export const resultRenderers: ResultRenderers = {
     }
   },
   skul: {
-    title: defaultTitle,
+    title: (hit: any) => {
+      return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
+    },
     details: (hit: any) => {
-      return <>{hit._source.adm2}, {hit._source.adm1}  </>
+      return loktypeDetails(hit._source.type && (hit._source.type[0].toUpperCase() + hit._source.type.slice(1)), hit)
     }
   },
   ostf: {
