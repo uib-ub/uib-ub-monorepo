@@ -169,10 +169,15 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
     <InfoBox dataset={'m1838'} 
     items={[
-      {title: 'Stadnamn', value: source.label},
       {title: 'Lokalitetstype', value: source.type, sosi: true},
       {title: 'Prestegjeld', value: source.adm2},
       {title: 'Amt', value: source.adm1},
+      {title: 'Kommunenummer', value: source.rawData.KNR},
+      {title: 'Matrikkelnummer', items: [{value: source.rawData.MNR, hrefParams: {'rawData.MNR': source.rawData.MNR, 'rawData.KNR': source.rawData.KNR }}]},
+      {title: 'Løpenummer', value: source.rawData.LNR},
+      {title: 'GNIDu', value: source.rawData.GNIDu},
+      {title: 'StedsnavnID', value: source.rawData.SNID}
+
 
     ]}/>
 
