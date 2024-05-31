@@ -7,6 +7,7 @@ import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 import IconButton from '@/components/ui/icon-button';
 import { facetConfig } from '@/config/search-config';
+import { datasetTitles } from '@/config/metadata-config';
 
 
 export default function Facets() {
@@ -24,6 +25,14 @@ export default function Facets() {
       acc[item.key] = item.label;
       return acc;
     }, {});
+
+    const getFieldLabel = (name: string, value: string) => {
+      // Add any special cases here
+      if (name == "_index") {
+        return datasetTitles[value.split("-")[2]] || value
+      }
+      return value.split('__')[0]
+    }
 
 
     const removeFilter = (name: string, value: string) => {      
@@ -63,7 +72,7 @@ export default function Facets() {
     <ul className='flex flex-wrap gap-2 px-2 pb-2'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, activeFilters.length > 8 ? 4 : 8)).map(([name, value], index) => (
         <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border pr-2 py-1 pl-3 rounded-full text-sm'>
-          { fieldNames?.[name] ? fieldNames[name] + ": " : null} { value.split('__')[0] }
+          { fieldNames?.[name] ? fieldNames[name] + ": " : null} { getFieldLabel(name, value) }
           <IconButton type="button" onClick={() => removeFilter(name, value)} label="Fjern filter"><PiX className="text-base"/></IconButton>
         </li>
         ))}
