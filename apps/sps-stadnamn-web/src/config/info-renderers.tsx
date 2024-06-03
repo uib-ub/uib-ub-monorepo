@@ -116,6 +116,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                     'rawData.supplemented.gnr': source.rawData?.supplemented?.gnr
                   }}]
                 },
+                {title: 'StedsnavnID', value: source.rawData?.supplemented?.snid, href: `/view/search?snid=${encodeURIComponent(source.rawData?.supplemented?.snid)}`},
               ]}
     />
     </>
