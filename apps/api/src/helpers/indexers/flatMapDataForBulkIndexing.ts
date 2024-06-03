@@ -1,5 +1,3 @@
-import { randomUUID } from 'crypto';
-
 /**
  * Prepares the data for bulk indexing in Elasticsearch.
  * 
@@ -13,7 +11,7 @@ export function flatMapDataForBulkIndexing(data: any, indexName: string) {
   const items = data.map(({ identifier, id }: { identifier: string, id: string }) => ({
     index: {
       _index: indexName,
-      _id: identifier || id || `error:${randomUUID()}`
+      _id: identifier || id || `error:${crypto.randomUUID()}`
     }
   }));
 

@@ -1,10 +1,10 @@
+import { aatSiblingsType } from '@/helpers/mappers/staticMapping';
+import { env } from '@config/env';
+import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
+import { checkIntervalValidity } from '@helpers/validators/checkIntervalValidity';
 import omitEmptyEs from 'omit-empty-es';
-import { env } from '../../../../config/env';
-import { checkIntervalValidity } from '../../../validators/checkIntervalValidity';
-import { getTimespan } from '../../constructTimespan';
-import { aatSiblingsType } from '../../staticMapping';
 
-export const constructLifetimeTimespan = (data: any) => {
+export const constructLifetimeTimeSpan = (data: any) => {
 
   const {
     birthYear,
@@ -70,36 +70,36 @@ export const constructLifetimeTimespan = (data: any) => {
     [start, end] = checkIntervalValidity(start, end);
   }
 
-  const birthTimespan = getTimespan(start, null, null);
-  const deathTimespan = getTimespan(end, null, null);
+  const birthTimeSpan = getTimeSpan(start, null, null);
+  const deathTimeSpan = getTimeSpan(end, null, null);
 
   return omitEmptyEs({
     ...data,
-    ...(birthTimespan ? {
+    ...(birthTimeSpan ? {
       born: {
         _type: 'Birth',
-        timespan: birthTimespan,
+        timespan: birthTimeSpan,
         parent: parent?.map((parent: any) => ({ // TODO: not valid CRM, as this should be "by mother" or "from father
           id: `${env.API_URL}/people/${parent.identifier}`,
           type: 'Person',
           _label: parent._label,
         })),
-        took_place_at: birthPlace ? {
-          id: birthPlace._id,
+        took_place_at: birthPlace ? [{
+          id: birthPlace.id,
           type: 'Place',
           _label: birthPlace._label,
-        } : undefined,
+        }] : undefined,
       }
     } : null),
-    ...(deathTimespan ? {
+    ...(deathTimeSpan ? {
       died: {
         _type: 'Death',
-        timespan: deathTimespan,
-        took_place_at: deathPlace ? {
+        timespan: deathTimeSpan,
+        took_place_at: deathPlace ? [{
           id: deathPlace.id,
           type: 'Place',
           _label: deathPlace._label,
-        } : undefined,
+        }] : undefined,
       }
     } : null),
     residence: based_near, // TODO: make into a proper Place object ref,

@@ -1,7 +1,7 @@
-import { getTimespan } from '../../constructTimespan';
-import { checkIntervalValidity } from '../../../validators/checkIntervalValidity';
+import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
+import { checkIntervalValidity } from '@helpers/validators/checkIntervalValidity';
 
-export const constructEventTimespan = (data: any) => {
+export const constructEventTimeSpan = (data: any) => {
   return data.map((item: any) => {
     const {
       ['http://data.ub.uib.no/ontology/begin']: begin,
@@ -16,7 +16,7 @@ export const constructEventTimespan = (data: any) => {
     if (start && end) {
       [start, ending] = checkIntervalValidity(start, ending);
     }
-    const timespan = getTimespan(null, start, ending);
+    const timespan = getTimeSpan(null, start, ending);
 
     if (!timespan) return item;
     return {

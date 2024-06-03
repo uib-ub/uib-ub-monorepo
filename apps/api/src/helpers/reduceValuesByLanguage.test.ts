@@ -1,4 +1,4 @@
-import { reduceValuesByLanguage } from '../helpers/reduceValuesByLanguage'
+import { reduceValuesByLanguage } from '@helpers/reduceValuesByLanguage'
 
 describe('reduceValuesByLanguage', () => {
   test('should reduce values by language', () => {

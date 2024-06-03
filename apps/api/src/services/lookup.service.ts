@@ -1,5 +1,5 @@
-import { DATA_SOURCES } from '../config/constants'
-//import { default as fetch } from '../helpers/fetchRetry'
+import { DATA_SOURCES } from '@config/constants'
+//import { default as fetch } from '@helpers/fetchRetry'
 
 export async function lookupService(id: string) {
   const sparqlAskQuery = `

@@ -1,4 +1,4 @@
-import { reduceValuesByLanguage } from '../reduceValuesByLanguage'
+import { reduceValuesByLanguage } from '@helpers/reduceValuesByLanguage'
 
 export function constructMetadata(data: any) {
   console.log("🚀 ~ constructMetadata ~ data:", data)
@@ -27,7 +27,7 @@ export function constructMetadata(data: any) {
     } : undefined,
     data.timespan?.edtf ? {
       label: {
-        en: ["Timespan"],
+        en: ["Time span"],
         no: ["Tidsspenn"],
       },
       value: {

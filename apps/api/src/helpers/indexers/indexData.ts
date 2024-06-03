@@ -1,4 +1,4 @@
-import client from '../../config/apis/esClient';
+import client from '@config/apis/esClient';
 
 interface IndexDataResponse {
   count: number;

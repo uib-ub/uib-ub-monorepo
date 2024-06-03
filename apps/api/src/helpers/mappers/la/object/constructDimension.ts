@@ -1,6 +1,6 @@
+import { getLengthUnit } from '@helpers/mappers/getLengthUnit';
+import { aatCircaType, aatCountOfType, aatHeightType, aatPagesMeasurementUnitType, aatWidthtType } from '@helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
-import { getLengthUnit } from '../../getLengthUnit';
-import { aatCircaType, aatCountOfType, aatHeightType, aatPagesMeasurementUnitType, aatWidthtType } from '../../staticMapping';
 
 export const constructDimension = (data: any) => {
   const {

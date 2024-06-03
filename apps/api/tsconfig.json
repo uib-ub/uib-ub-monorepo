@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "paths": {
+      "@*": [
+        "./src/*"
+      ],
+      "components/*": [
+        "./components/*"
+      ],
+    }
+  }
+}

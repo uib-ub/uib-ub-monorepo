@@ -33,7 +33,7 @@ const compactAndFrameNTriples = async (data: any, context: string, type: string)
       '@type': type,
       '@embed': '@always',
     });
-    return omitEmptyEs(await framed)
+    return omitEmptyEs(framed)
   } catch (e) {
     console.log(JSON.stringify(e, null, 2))
     return { error: true, message: e }

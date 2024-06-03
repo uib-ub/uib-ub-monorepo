@@ -1,6 +1,6 @@
+import { classToAttMapping } from '@helpers/mappers/mapClassToClassifiedAs';
+import { TBaseMetadata } from '@models';
 import omitEmptyEs from 'omit-empty-es';
-import { TBaseMetadata } from '../../../../models';
-import { classToAttMapping } from '../../mapClassToClassifiedAs';
 
 export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
   const {

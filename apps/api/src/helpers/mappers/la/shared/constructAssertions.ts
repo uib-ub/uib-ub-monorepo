@@ -23,13 +23,11 @@ export const constructAssertions = (data: any) => {
       return {
         type: "AttributeAssignment",
         assigned_property: "relation",
-        assigned: [
-          {
-            id: relation.id,
-            type: relation.type,
-            _label: relation._label,
-          }
-        ]
+        assigned: {
+          id: relation.id,
+          type: relation.type,
+          _label: relation._label,
+        }
       }
     });
   }

@@ -1,4 +1,4 @@
-import server from '../main'
+import server from '@main'
 
 /**
  * Performs a smoke test.

@@ -324,17 +324,23 @@ export const aatSiblingsType = {
 export const ccPublicDomainMarkType = {
   id: "http://creativecommons.org/publicdomain/zero/1.0/",
   type: "Type",
-  _label: {
-    no: ["CC0 1.0 Universal (CC0 1.0) Ingen opphavsrett"],
-    en: ["CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"],
-  }
+  _label: "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+  /* identified_by: [
+    {
+      type: 'Name',
+      content: {
+        no: ["CC0 1.0 Universal (CC0 1.0) Ingen opphavsrett"],
+        en: ["CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"],
+      }
+    }
+  ] */
 }
 
 export const rsCopyrightUndeterminedType = {
   id: "http://rightsstatements.org/vocab/UND/1.0/",
   type: "Type",
   _label: "Copyright Undetermined",
-  identified_by: [
+  /* identified_by: [
     {
       type: 'Name',
       content: {
@@ -342,14 +348,14 @@ export const rsCopyrightUndeterminedType = {
         no: 'Opphavsrett ikke fastsatt'
       }
     }
-  ]
+  ] */
 }
 
 export const rsInCopyrighttype = {
   id: "http://rightsstatements.org/vocab/InC/1.0/",
   type: "Type",
   _label: "In Copyright",
-  identified_by: [
+  /* identified_by: [
     {
       type: 'Name',
       content: {
@@ -357,14 +363,14 @@ export const rsInCopyrighttype = {
         no: 'All rettigheter reservert'
       }
     }
-  ]
+  ] */
 }
 
 export const attributionNonCommercialNoDerivsType = {
   id: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
   type: 'Type',
   _label: 'CC BY-NC-ND 4.0',
-  identified_by: [
+  /* identified_by: [
     {
       type: 'Name',
       content: {
@@ -372,13 +378,13 @@ export const attributionNonCommercialNoDerivsType = {
         no: 'Navngivelse-IkkeKommersiell-IngenBearbeidelser'
       }
     }
-  ]
+  ] */
 };
 export const attributionType = {
   id: 'https://creativecommons.org/licenses/by/4.0/',
   type: 'Type',
   _label: 'CC BY 4.0',
-  identified_by: [
+  /* identified_by: [
     {
       type: 'Name',
       content: {
@@ -386,13 +392,13 @@ export const attributionType = {
         no: 'Navngivelse'
       }
     }
-  ]
+  ] */
 };
 export const attributionShareAlikeType = {
   id: 'https://creativecommons.org/licenses/by-sa/4.0/',
   type: 'Type',
   _label: 'CC BY-SA 4.0',
-  identified_by: [
+  /* identified_by: [
     {
       type: 'Name',
       content: {
@@ -400,14 +406,14 @@ export const attributionShareAlikeType = {
         no: 'Navngivelse-DelPåSammeVilkår'
       }
     }
-  ]
+  ] */
 };
 
 export const attributionNonCommercialType = {
   id: 'https://creativecommons.org/licenses/by-nc/4.0/',
   type: 'Type',
   _label: 'CC NC 4.0',
-  identified_by: [
+  /* identified_by: [
     {
       type: 'Name',
       content: {
@@ -415,14 +421,14 @@ export const attributionNonCommercialType = {
         no: 'Navngivelse-IkkeKommersiell'
       }
     }
-  ]
+  ] */
 };
 
 export const attributionNoDerivsType = {
   id: 'https://creativecommons.org/licenses/by-nd/4.0/',
   type: 'Type',
   _label: 'CC ND 4.0',
-  identified_by: [
+  /* identified_by: [
     {
       type: 'Name',
       content: {
@@ -430,14 +436,14 @@ export const attributionNoDerivsType = {
         no: 'Navngivelse-IngenBearbeidelser'
       }
     }
-  ]
+  ] */
 };
 
 export const publicDomainType = {
   id: 'https://creativecommons.org/publicdomain/mark/1.0',
   type: 'Type',
   _label: 'Public Domain',
-  identified_by: [
+  /* identified_by: [
     {
       type: 'Name',
       content: {
@@ -445,5 +451,5 @@ export const publicDomainType = {
         no: 'Falt i det fri'
       }
     }
-  ]
+  ] */
 };

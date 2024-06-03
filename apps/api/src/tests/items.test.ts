@@ -1,5 +1,5 @@
-import { env } from '../config/env'
-import server from '../main'
+import { env } from '@config/env'
+import server from '@main'
 
 describe('Items', () => {
   test('GET /items', async () => {

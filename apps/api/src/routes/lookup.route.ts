@@ -1,6 +1,6 @@
-import { z, OpenAPIHono, createRoute } from '@hono/zod-openapi'
-import { lookupService } from '../services/lookup.service'
-import { IdParamsSchema } from '../models'
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import { IdParamsSchema } from '@models'
+import { lookupService } from '@services/lookup.service'
 
 /**
  * Lookup schema
@@ -44,7 +44,7 @@ export const resolveId = createRoute({
     },
   },
   description: 'Lookup ID and find service url and type this objects is available at.',
-  tags: ['lookup'],
+  tags: ['Lookup'],
 })
 
 app.openapi(resolveId, async (c) => {

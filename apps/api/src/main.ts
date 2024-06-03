@@ -1,31 +1,38 @@
-import { serveStatic } from '@hono/node-server/serve-static'
 import { OpenAPIHono } from '@hono/zod-openapi'
 import { bearerAuth } from 'hono/bearer-auth'
+import { serveStatic } from 'hono/bun'
 import { cors } from 'hono/cors'
 import { showRoutes } from 'hono/dev'
 import { logger } from 'hono/logger'
 import { rateLimiter } from './middlewares/rate-limiter'
 
 // Tokens and array of HTTP methods that are considered privileged.
-const readToken = 'read'
-const privilegedToken = 'read+write'
+const privilegedToken = env.API_ES_WRITE_TOKEN
 const privilegedMethods = ['POST', 'PUT', 'PATCH', 'DELETE']
 
 // Import the routes.
 import { env } from './config/env'
-import es from './routes/admin/es_templates.route'
-import ingest from './routes/admin/ingest.route'
-import ingestManifests from './routes/admin/ingest_manifests.route'
-import ingestLegacySka from './routes/admin/ingest_ska.route'
-import ingestLegacyWab from './routes/admin/ingest_wab.route'
-import items from './routes/items.route'
-import legacyGroups from './routes/legacy/groups.route'
-import legacyItems from './routes/legacy/items.route'
-import wab from './routes/legacy/items_wab.route'
-import legacyPeople from './routes/legacy/people.route'
+import es from './routes/ingest/es_templates.route'
+import ingest from './routes/ingest/marcus/ingest_items.route'
+import ingestManifests from './routes/ingest/marcus/ingest_manifests.route'
+import ingestSka from './routes/ingest/ska/ingest_ska.route'
+import ingestWab from './routes/ingest/wab/ingest_wab.route'
+import item from './routes/items/item.route'
+import items from './routes/items/items.route'
+import manifest from './routes/items/manifest.route'
 import lookupId from './routes/lookup.route'
 import ns from './routes/ns.route'
 import reference from './routes/references.route'
+import sparqlCountGroups from './routes/sparql/groups/count.route'
+import sparqlGroup from './routes/sparql/groups/group.route'
+import sparqlGroups from './routes/sparql/groups/groups.route'
+import sparqlCountItems from './routes/sparql/items/count.route'
+import sparqlItem from './routes/sparql/items/item.route'
+import sparqlItems from './routes/sparql/items/items.route'
+import sparqlCountPeople from './routes/sparql/people/count.route'
+import sparqlPeople from './routes/sparql/people/people.route'
+import sparqlPerson from './routes/sparql/people/person.route'
+import wab from './routes/sparql/wab/items_wab.route'
 
 // Create a new Hono instance. We use the OpenAPIHono class to create the app, 
 // because it has the .openapi() method that we need to define the OpenAPI
@@ -58,18 +65,26 @@ app.get('/', (c) => {
 })
 
 app.route('/items', items)
+app.route('/items', item)
+app.route('/items', manifest)
 // The reference route is the OpenAPI documentation UI.
 app.route('/reference', reference)
 app.route('/lookup', lookupId)
 app.route('/admin', es)
-app.route('/legacy', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
-app.route('/legacy', legacyItems)
-app.route('/legacy', legacyPeople)
-app.route('/legacy', legacyGroups)
+app.route('/sparql', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
+app.route('/sparql', sparqlCountItems) // All the sparql routes needs to be in a spesific order.
+app.route('/sparql', sparqlItem)
+app.route('/sparql', sparqlItems)
+app.route('/sparql', sparqlCountPeople)
+app.route('/sparql', sparqlPerson)
+app.route('/sparql', sparqlPeople)
+app.route('/sparql', sparqlCountGroups)
+app.route('/sparql', sparqlGroup)
+app.route('/sparql', sparqlGroups)
 app.route('/admin', ingest)
 app.route('/admin', ingestManifests)
-app.route('/admin', ingestLegacySka)
-app.route('/admin', ingestLegacyWab)
+app.route('/admin', ingestSka)
+app.route('/admin', ingestWab)
 // The ns route is for the context files.
 app.route('/ns', ns)
 
