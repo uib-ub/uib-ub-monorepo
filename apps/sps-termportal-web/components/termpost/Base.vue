@@ -39,7 +39,7 @@
           />
         </div>
         <TermpostSymbolSection
-          v-if="displayInfo?.symbol"
+          v-if="displayInfo?.symbol && displayInfo?.symbol.length"
           :display-info="displayInfo"
         />
         <TermpostRelationSection
