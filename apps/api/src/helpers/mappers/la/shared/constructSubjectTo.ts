@@ -85,6 +85,7 @@ function getIsInPublicDomainQuery(id: string) {
 
 export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
   const {
+    type,
     license,
     current_owner
   } = data;
@@ -95,20 +96,22 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
   // We have to check if the work is in the public domain, as we are missing a lot of rights statements.
   // The query is constructed to check if the work is older than 50 years, or if the creator has been dead for more than 70 years.
   // A positive result will override the license statement.
-  let isPublicDomain: any = null;
+  let isPublicDomainCheckResult: any = null;
 
-  try {
-    const url = `https://sparql.ub.uib.no/sparql/query?query=${encodeURIComponent(getIsInPublicDomainQuery(base.identifier))}&output=json`
-    const response = await fetch(url);
-    if (!response.ok) {
-      console.log(`Request failed with status ${response.status}`);
+  if (type === 'HumanMadeObject') {
+    try {
+      const url = `https://sparql.ub.uib.no/sparql/query?query=${encodeURIComponent(getIsInPublicDomainQuery(base.identifier))}&output=json`
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.log(`Request failed with status ${response.status}`);
+        return
+      }
+      isPublicDomainCheckResult = await response.json();
+    } catch (error) {
+      console.error("Error:", error);
     }
-    isPublicDomain = await response.json();
-  } catch (error) {
-    console.error("Error:", error);
   }
-
-  const rightsStatement = getLicenseMapping(isPublicDomain?.['dct:license'] || license || 'default')
+  const rightsStatement = getLicenseMapping(isPublicDomainCheckResult?.['dct:license'] || license || 'default')
 
 
   const workRightsStatement = {
@@ -134,9 +137,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
         content: rightsStatement._label
       }
     ],
-    possessed_by: [
-      ...current_owner
-    ],
+    possessed_by: current_owner,
     subject_of: [
       {
         id: "https://data.ub.uib.no/????/licensing/acknowledgements",

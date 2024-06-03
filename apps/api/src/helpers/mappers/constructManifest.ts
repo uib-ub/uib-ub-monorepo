@@ -3,7 +3,6 @@ import { stringifyObject } from '@helpers/stringifyObject';
 import { IIIFBuilder } from '@iiif/builder';
 import sortBy from 'lodash/sortBy';
 import rtlDetect from 'rtl-detect-intl';
-const fs = require("fs");
 
 /**
  * Constructs a IIIF manifest

@@ -3,6 +3,7 @@ import omitEmptyEs from 'omit-empty-es';
 
 export const constructDigitalIntegration = (data: any) => {
   const {
+    type,
     thumbnail,
     image,
     subjectOfManifest,
@@ -40,7 +41,6 @@ export const constructDigitalIntegration = (data: any) => {
 
   if (img) {
     imgArray = [{
-      id: img[0],
       type: 'VisualItem',
       digitally_shown_by: [
         {
@@ -65,13 +65,13 @@ export const constructDigitalIntegration = (data: any) => {
   if (seeAlso) {
     seeAlsoArray = seeAlso.map((item: any) => ({
       id: item['ubbont:hasURI'] ?? item.hasURI,
+      type: type,
       _label: item._label,
     }));
   }
 
   if (thumbnail) {
     thumbnailArray = [{
-      id: thumbnail,
       type: 'VisualItem',
       digitally_shown_by: [
         {
@@ -95,7 +95,6 @@ export const constructDigitalIntegration = (data: any) => {
 
   if (image) {
     imageArray = [{
-      id: image,
       type: 'VisualItem',
       digitally_shown_by: [
         {
@@ -135,11 +134,11 @@ export const constructDigitalIntegration = (data: any) => {
             ],
             conforms_to: [
               {
-                id: "http://iiif.io/api/presentation/",
+                id: "https://iiif.io/api/presentation/",
                 type: "InformationObject"
               }
             ],
-            format: "application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'"
+            format: "application/ld+json;profile='https://iiif.io/api/presentation/3/context.json'"
           }
         ]
       }
@@ -149,11 +148,9 @@ export const constructDigitalIntegration = (data: any) => {
   // Always a string, as this is created by the query
   if (homepage) {
     subjectHomepageOf = [{
-      id: homepage,
       type: "LinguisticObject",
       digitally_carried_by: [
         {
-          id: homepage,
           type: "DigitalObject",
           classified_as: [
             aatWebPageType,

@@ -84,22 +84,22 @@ export const constructLifetimeTimeSpan = (data: any) => {
           type: 'Person',
           _label: parent._label,
         })),
-        took_place_at: birthPlace ? {
-          id: birthPlace._id,
+        took_place_at: birthPlace ? [{
+          id: birthPlace.id,
           type: 'Place',
           _label: birthPlace._label,
-        } : undefined,
+        }] : undefined,
       }
     } : null),
     ...(deathTimeSpan ? {
       died: {
         _type: 'Death',
         timespan: deathTimeSpan,
-        took_place_at: deathPlace ? {
+        took_place_at: deathPlace ? [{
           id: deathPlace.id,
           type: 'Place',
           _label: deathPlace._label,
-        } : undefined,
+        }] : undefined,
       }
     } : null),
     residence: based_near, // TODO: make into a proper Place object ref,
