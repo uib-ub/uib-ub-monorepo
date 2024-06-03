@@ -27,7 +27,7 @@ export const putTemplates = createRoute({
     },
   },
   description: '',
-  tags: ['admin'],
+  tags: ['Ingest'],
 })
 
 route.openapi(putTemplates, async (c) => {
