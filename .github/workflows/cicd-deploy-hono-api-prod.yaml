@@ -1,0 +1,76 @@
+name: Manually deploy hono api to hono-api-prod env/namespace on microk8s
+
+on: workflow_dispatch # run manually
+
+jobs:
+  deploy-prod:
+    name: Deploy to hono api prod
+    environment:
+      name: hono-api-prod
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v3
+
+      - name: Setup kubectl
+        env:
+          MICROK8S_CONFIG: ${{ secrets.MICROK8S_CONFIG }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${MICROK8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+
+      - name: Check kubectl get node
+        run: kubectl get nodes -o wide
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: deploy apply pods to hono-api-prod env
+        run: |
+          # create namespace hono-api-prod
+          kubectl apply -f microk8s-hono-api/prod/namespace.yaml
+
+          # create secret regcred for kubernetes to pull image from private registry on Github
+          if ! kubectl -n hono-api-prod get secret regcred; then
+            # create the secret when no secret is found
+            kubectl -n hono-api-prod create secret docker-registry regcred --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-server=ghcr.io
+          else
+            # check if kubernetes secret regcred needs an update, and update it when it is not the same as given secret GHCR_PAT from Github repository secret
+            existing_pass=$(kubectl -n hono-api-prod get secret regcred --template='{{index .data ".dockerconfigjson" | base64decode}}' | jq -r '.auths["ghcr.io"].password')
+            if [[ "$existing_pass" != "${{ secrets.GHCR_PAT }}" ]]; then
+              echo "Updating kubernetes secret as password from Github repository secret do not match."
+              kubectl -n hono-api-prod delete secret regcred
+              kubectl -n hono-api-prod create secret docker-registry regcred --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-server=ghcr.io
+            else
+              echo "Secret regcred already exists, and it is the same as GHCR_PAT Github repository secret, skipping."
+            fi
+          fi
+
+          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
+          if ! kubectl -n hono-api-prod get secret esapikeycred; then
+            # create the secret when no secret is found
+            kubectl -n hono-api-prod create secret generic esapikeycred --from-literal=esApiKey=${{ secrets.ES_APIKEY }}
+          else
+            # check if kubernetes secret esapikeycred needs an update, and update it when it is not the same as given secret ES_APIKEY from Github repository secret
+            existing_pass=$(kubectl -n hono-api-prod get secret esapikeycred --template='{{index .data "esApiKey" | base64decode}}')
+            if [[ "$existing_pass" != "${{ secrets.ES_APIKEY }}" ]]; then
+              echo "Updating kubernetes secret esapikeycred, as password from Github repository secret ES_APIKEY do not match."
+              kubectl -n hono-api-prod delete secret esapikeycred
+              kubectl -n hono-api-prod create secret generic esapikeycred --from-literal=esApiKey=${{ secrets.ES_APIKEY }}
+            else
+              echo "Secret esapikeycred already exists, and it is the same as ES_APIKEY Github repository secret, skipping."
+            fi
+          fi
+
+          # apply all resources in overlays based on namespace
+          kubectl apply -k microk8s-hono-api/prod -n hono-api-prod
+
+      - name: Wait For Deployment To Start
+        run: sleep 10s
+
+      - name: Wait For Pods To Start
+        run: kubectl wait --for=condition=ready pod -l app=hono-api -n hono-api-prod --timeout=10m

@@ -11,15 +11,16 @@ services:
   hono_api:
     build:
       context: .
-      dockerfile: ./apps/api/Dockerfile
+      dockerfile: Dockerfile.api
     container_name: hono-api
     environment:
       NODE_ENV: production
       ES_HOST: https://search.ub.uib.no
+      PROD_URL: https://api.ub.uib.no
+      API_URL: http://localhost
     ports:
       - "3009:3009"
       - "3000:3000"
-
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the

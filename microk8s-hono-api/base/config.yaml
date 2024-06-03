@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hono-api-config
+data:
+  namespace: "default"
+  node_env: "production"
+  es_host: "https://search.ub.uib.no"
+  prod_url: "https://api.ub.uib.no"
+  port: "3009"
+  api_url: "http://localhost"
