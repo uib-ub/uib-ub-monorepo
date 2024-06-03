@@ -192,8 +192,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Stadnamn', value: source.label},
       {title: 'Kommune', value: source.adm2},
       {title: 'Fylke', value: source.adm1},
-      {title: 'Kommunenummer', value: source.rawData.knr},
-      {title: 'GNIDu', value: source.rawData.gnidu},
+      {title: 'Kommunenummer', value: source.rawData?.knr},
+      {title: 'GNIDu', value: source.rawData?.gnidu},
     ]}/>
 
     </>
