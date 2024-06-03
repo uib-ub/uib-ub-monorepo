@@ -80,7 +80,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                 {title: 'Opppslagsform', value: source.label},
                 {title: 'Preposisjon', value: source.rawData?.original?.stnavn?.oppslag?.prep},
                 {title: 'Parform', value: source.rawData?.original?.stnavn?.parform_pf_navn},
-                {title: 'Stedstype', value: source.rawData?.original?.stnavn?.sted?.type},
+                {title: 'Stedstype', value: source.rawData?.supplemented?.type, sosi: true},
                 {title: 'Kommune', value: source.adm2},
                 {title: 'Kommunenummer', value: source.rawData?.supplemented?.knr},
                 {title: 'Fylke', value: source.adm1},
