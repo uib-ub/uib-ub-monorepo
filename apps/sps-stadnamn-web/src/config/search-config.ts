@@ -20,8 +20,8 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
       search: [
-        {"key": "snid", "label": "Stadnamn ID"},
         {"key": "_index", "label": "Datasett"},
+        {"key": "snid", "label": "Stadnamn ID"},
         {"key": "gnidu", "label": "GNIDu"},
         {"key": "midu", "label": "MIDu"},
         {"key": "type", "label": "SOSI stedstype"},
