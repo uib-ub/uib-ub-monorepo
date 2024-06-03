@@ -32,7 +32,7 @@ export const getItem = createRoute({
       description: 'Failure message.',
     },
   },
-  tags: ['items'],
+  tags: ['Items'],
 })
 
 route.openapi(getItem, async (c) => {

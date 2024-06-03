@@ -23,7 +23,7 @@ export const countGroupsRoute = createRoute({
     },
   },
   description: 'Returns the number of groups in the dataset. These are groups connected to material in the library collection.',
-  tags: ['sparql'],
+  tags: ['Sparql'],
 })
 
 route.openapi(countGroupsRoute, async (c) => {

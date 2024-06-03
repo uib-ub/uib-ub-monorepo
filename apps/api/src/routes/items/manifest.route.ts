@@ -2,7 +2,7 @@ import { DATA_SOURCES } from '@config/constants'
 import { env } from '@config/env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 import { FailureSchema, IdParamsSchema, TFailure } from '@models'
-import { getManifestData } from '@services/sparql/marcus/manifest.service'
+import { manifestService } from '@services/sparql/marcus/manifest.service'
 import { HTTPException } from 'hono/http-exception'
 import { JsonLdDocument } from 'jsonld'
 
@@ -49,7 +49,7 @@ export const getManifest = createRoute({
       description: 'Failure message.',
     },
   },
-  tags: ['items'],
+  tags: ['Items'],
 })
 
 route.openapi(getManifest, async (c) => {
@@ -59,7 +59,7 @@ route.openapi(getManifest, async (c) => {
   const CONTEXT = `${env.PROD_URL}/ns/manifest/context.json`
 
   try {
-    const data: JsonLdDocument | TFailure = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')
+    const data: JsonLdDocument | TFailure = await manifestService(id, SERVICE_URL, CONTEXT, 'Manifest')
     if ('error' in data) {
       return c.json({ error: true, message: 'Not found' }, 404)
     }

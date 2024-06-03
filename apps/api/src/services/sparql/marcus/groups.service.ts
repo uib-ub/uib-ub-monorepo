@@ -1,6 +1,8 @@
 import { SPARQL_PREFIXES } from '@config/constants'
 import { cleanJsonld } from '@helpers/cleaners/cleanJsonLd'
 import compactAndFrameNTriples from '@helpers/compactAndFrameNTriples'
+import { sqb } from '@helpers/sparqlQueryBuilder'
+import { listSparqlQuery } from '../queries'
 
 function getQuery(page = 0, limit = 100) {
   const query = `
@@ -29,9 +31,10 @@ function getQuery(page = 0, limit = 100) {
 export async function getGroups(url: string, context: string, page?: number, limit?: number): Promise<any> {
   if (!url) { throw Error }
 
-  const query = getQuery(page, limit)
-
+  //const query = getQuery(page, limit)
+  const query = sqb(listSparqlQuery, { type: 'crm:E74_Group', types: '<http://xmlns.com/foaf/0.1/Organization> <http://dbpedia.org/ontology/Company> <http://data.ub.uib.no/ontology/Publisher> <http://data.ub.uib.no/ontology/Family>', page: `${page * limit}`, limit: `${limit}` });
   try {
+    console.log("🚀 ~ getGroups ~ query:", query)
     const response = await fetch(
       `${url}${encodeURIComponent(
         query,

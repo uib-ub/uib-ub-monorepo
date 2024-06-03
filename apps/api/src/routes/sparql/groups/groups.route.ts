@@ -35,7 +35,7 @@ export const getList = createRoute({
     },
   },
   description: 'Retrieve a list of groups.',
-  tags: ['sparql'],
+  tags: ['Sparql'],
 })
 
 route.openapi(getList, async (c) => {

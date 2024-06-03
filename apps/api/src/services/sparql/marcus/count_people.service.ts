@@ -1,26 +1,9 @@
 import { DATA_SOURCES } from '@config/constants'
 import fetch from '@helpers/fetchRetry'
-
-const query = `
-  PREFIX bibo: <http://purl.org/ontology/bibo/>
-  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  PREFIX dct: <http://purl.org/dc/terms/>
-  PREFIX ubbont: <http://data.ub.uib.no/ontology/>
-
-  SELECT (count(?uri) as ?total) WHERE { 
-    SERVICE <cache:> { 
-      SELECT ?uri WHERE 
-        { 
-          VALUES ?types { <http://xmlns.com/foaf/0.1/Person> <http://data.ub.uib.no/ontology/Cataloguer> }
-          ?uri rdf:type ?types ;
-            dct:identifier ?id .
-        }
-    }
-  }
-`
-
+import { sqb } from '@helpers/sparqlQueryBuilder'
+import { countSparqlQuery } from '@services/sparql/queries'
 export async function countPeople(source: string): Promise<any> {
+  const query = sqb(countSparqlQuery, { types: '<http://xmlns.com/foaf/0.1/Person> <http://data.ub.uib.no/ontology/Cataloguer>' })
   const SERVICE = DATA_SOURCES.filter((service) => service.name === source)[0].url
   const url = `${SERVICE}${encodeURIComponent(query)}&output=json`
   try {

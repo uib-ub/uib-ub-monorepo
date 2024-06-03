@@ -32,7 +32,7 @@ export const getList = createRoute({
     },
   },
   description: 'Retrieve a list of items. These are physical or born-digital items in the library collection.',
-  tags: ['items'],
+  tags: ['Items'],
 })
 
 route.openapi(getList, async (c) => {

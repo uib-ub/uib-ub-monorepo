@@ -1,15 +1,19 @@
 import { DATA_SOURCES } from '@config/constants'
 import { env } from '@config/env'
+import { cleanDateDatatypes } from '@helpers/cleaners/cleanDateDatatypes'
+import { convertToFloat } from '@helpers/cleaners/convertToFloat'
+import { useFrame } from '@helpers/useFrame'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
-import { ItemParamsSchema, LegacyItemSchema, TODO } from '@models'
-import getItemLAData from '@services/sparql/marcus/item_la.service'
-import getItemUbbontData from '@services/sparql/marcus/item_ubbont.service'
-import { getManifestData } from '@services/sparql/marcus/manifest.service'
+import { ItemParamsSchema, LegacyItemSchema } from '@models'
+import getItemUbbontData from '@services/sparql/marcus/item.service'
+import { manifestService } from '@services/sparql/marcus/manifest.service'
+import { toIIIFPresentationTransformer, toLinkedArtItemTransformer, toUbbontTransformer } from '@transformers/item.transformer'
 import { HTTPException } from 'hono/http-exception'
-import { humanMadeObjectSchema } from 'types/src/la/zod/object'
-
-const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
-const CONTEXT_IIIF = `${env.PROD_URL}/ns/manifest/context.json`
+import { ContextDefinition, JsonLdDocument } from 'jsonld'
+import { iiifManifestContext } from 'jsonld-contexts/src/iiifManifest'
+import ubbontContext from 'jsonld-contexts/src/ubbontContext'
+import { ZodHumanMadeObjectSchema } from 'types'
+import { ZodSchema } from 'zod'
 
 const route = new OpenAPIHono()
 
@@ -24,16 +28,15 @@ export const getItem = createRoute({
     200: {
       content: {
         'application/json': {
-          schema: humanMadeObjectSchema.openapi('Item', { type: 'object' }),
+          schema: ZodHumanMadeObjectSchema.openapi('Item', { type: 'object' }),
         },
       },
       description: 'Placeholder for the proper schema.',
     },
   },
   description: 'Retrieve a item. This is a physical or born-digital item in the library collection.',
-  tags: ['sparql', 'items'],
+  tags: ['Sparql', 'Items'],
 })
-
 
 route.openapi(getItem, async (c) => {
   const { id, source } = c.req.param()
@@ -41,27 +44,57 @@ route.openapi(getItem, async (c) => {
 
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url;
 
-  const fetcher = as === 'la' ? getItemLAData : getItemUbbontData
+  let fetcher: Function
+  let transformer: Function
+  let schema: ZodSchema
+  let type: string
+  let context: ContextDefinition
+  let contextString: string
 
-  if (as === 'iiif') {
-    try {
-      const data: TODO = await getManifestData(id, SERVICE_URL, CONTEXT_IIIF, 'Manifest')
-      return c.json(data);
-    } catch (error) {
-      // Handle the error here
-      console.error(error);
-      throw new HTTPException(500, { message: 'Internal Server Error' })
-    }
+  switch (as) {
+    case 'la':
+      fetcher = getItemUbbontData;
+      transformer = toLinkedArtItemTransformer
+      schema = ZodHumanMadeObjectSchema
+      type = 'HumanMadeObject'
+      context = ubbontContext as ContextDefinition
+      contextString = `${env.API_URL}/ns/ubbont/context.json`
+      break;
+    case 'ubbont':
+      fetcher = getItemUbbontData;
+      transformer = toUbbontTransformer
+      type = 'HumanMadeObject'
+      context = ubbontContext as ContextDefinition
+      contextString = `${env.API_URL}/ns/ubbont/context.json`
+      break;
+    case 'iiif':
+      fetcher = manifestService;
+      transformer = toIIIFPresentationTransformer
+      type = 'Manifest'
+      context = iiifManifestContext as ContextDefinition
+      contextString = `${env.API_URL}/ns/manifest/context.json`
+      break;
+    default:
+      throw new HTTPException(400, { message: 'Invalid value for "as" parameter' });
   }
 
   try {
-    const data: TODO = await fetcher(id, SERVICE_URL, CONTEXT, 'HumanMadeObject')
-    const parsed = humanMadeObjectSchema.safeParse(data);
-    if (parsed.success === false) {
-      console.log("🚀 ~ route.openapi ~ parsed:", parsed.error.issues)
+    const data = await fetcher(id, SERVICE_URL)
+    // We clean up the data before compacting and framing
+    const fixedDates = cleanDateDatatypes(data)
+    const withFloats = convertToFloat(fixedDates)
+
+    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: context, type: type })
+    const response = await transformer(framed, contextString)
+
+    if (schema) {
+      const parsed = schema.safeParse(response);
+      if (parsed.success === false) {
+        console.log(parsed.error.issues)
+      }
     }
-    // @TODO: figure out how to type the openapi response with JSONLD
-    return c.json(data);
+
+    return c.json(response);
   } catch (error) {
     // Handle the error here
     console.error(error);

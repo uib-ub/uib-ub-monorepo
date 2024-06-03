@@ -44,7 +44,7 @@ export const resolveId = createRoute({
     },
   },
   description: 'Lookup ID and find service url and type this objects is available at.',
-  tags: ['lookup'],
+  tags: ['Lookup'],
 })
 
 app.openapi(resolveId, async (c) => {

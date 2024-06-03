@@ -23,12 +23,13 @@ export const countPeopleRoute = createRoute({
     },
   },
   description: 'Returns the number of items in the dataset. These are physical or born-digital items in the library collection.',
-  tags: ['sparql'],
+  tags: ['Sparql'],
 })
 
 route.openapi(countPeopleRoute, async (c) => {
   const source = c.req.param('source')
   const data = await countPeople(source)
+  console.log("🚀 ~ route.openapi ~ data:", data)
   return c.json(data)
 })
 

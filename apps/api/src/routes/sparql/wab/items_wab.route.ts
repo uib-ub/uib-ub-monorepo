@@ -31,7 +31,7 @@ export const getList = createRoute({
     },
   },
   description: 'Retrieve a list of Bemerkung, DiaryEntry, Correspondence, Recollection, LectureNotes, MS or TS. The items is part of the Wittgenstein dataset. The identifier is a URL, so you must pass it as a query parameter.',
-  tags: ['sparql'],
+  tags: ['Sparql'],
 })
 
 export default app

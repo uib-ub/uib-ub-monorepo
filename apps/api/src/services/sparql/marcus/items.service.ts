@@ -1,39 +1,14 @@
-import { SPARQL_PREFIXES } from '@config/constants'
 import { cleanJsonld } from '@helpers/cleaners/cleanJsonLd'
+import { sqb } from '@helpers/sparqlQueryBuilder'
 import jsonld from 'jsonld'
 import { CONTEXTS } from 'jsonld-contexts'
-
-function getQuery(page = 0, limit = 100) {
-  const query = `
-    ${SPARQL_PREFIXES}
-    CONSTRUCT {
-      ?uri a ?class ; 
-        dct:identifier ?id ;
-        ubbont:isDigitized ?isDigitized .
-    } WHERE { 
-      SERVICE <cache:> { 
-        SELECT ?uri ?class ?id ?isDigitized WHERE 
-          { 
-            ?uri rdf:type/rdfs:subClassOf* bibo:Document ;
-              a ?class ;
-              ubbont:showWeb true ;
-              dct:identifier ?id .
-            BIND(EXISTS{?uri ubbont:hasRepresentation ?repr} AS ?isDigitized)
-          }
-        ORDER BY ?id
-        OFFSET ${page * limit}
-        LIMIT ${limit}
-      }
-    }
-  `
-  return query
-}
-
+import { listItemsSparqlQuery } from '../queries'
 
 export async function getItems(url: string, context: string, page?: number, limit?: number): Promise<any> {
   if (!url) { throw Error }
   const useContext = CONTEXTS[context as keyof typeof CONTEXTS]
-  const query = getQuery(page, limit)
+
+  const query = sqb(listItemsSparqlQuery, { page: `${page * limit}`, limit: `${limit}` });
 
   try {
     const response = await fetch(

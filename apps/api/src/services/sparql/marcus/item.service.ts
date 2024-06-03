@@ -3,10 +3,10 @@ import { sqb } from '@helpers/sparqlQueryBuilder'
 import { HTTPException } from 'hono/http-exception'
 import jsonld from 'jsonld'
 import { JsonLd } from 'jsonld/jsonld-spec'
-import { manifestSparqlQuery } from '../queries'
+import { itemSparqlQuery } from '../queries'
 
-export async function manifestService(id: string, source: string): Promise<JsonLd> {
-  const query = sqb(manifestSparqlQuery, { id })
+async function getItemData(id: string, source: string): Promise<JsonLd> {
+  const query = sqb(itemSparqlQuery, { id })
   const url = `${source}${encodeURIComponent(query)}&output=nt`
 
   try {
@@ -29,3 +29,5 @@ export async function manifestService(id: string, source: string): Promise<JsonL
     throw new HTTPException(500, { message: 'Internal Server Error' });
   }
 }
+
+export default getItemData

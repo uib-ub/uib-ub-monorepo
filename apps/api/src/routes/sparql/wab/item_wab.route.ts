@@ -23,7 +23,7 @@ export const getItem = createRoute({
     },
   },
   description: 'Retrieve a Bemerkung, DiaryEntry, Correspondence, Recollection, LectureNotes, MS or TS from the Wittgenstein dataset.',
-  tags: ['sparql'],
+  tags: ['Sparql'],
 })
 
 app.openapi(getItem, async (c) => {

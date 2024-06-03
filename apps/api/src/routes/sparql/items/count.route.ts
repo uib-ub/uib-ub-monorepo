@@ -3,7 +3,7 @@ import { env } from '@config/env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 import { FailureSchema, LegacyItemSchema, SourceParamsSchema, TFailure } from '@models'
 import { countItems } from '@services/sparql/marcus/count_items.service'
-import { getManifestData } from '@services/sparql/marcus/manifest.service'
+import { manifestService } from '@services/sparql/marcus/manifest.service'
 import { HTTPException } from 'hono/http-exception'
 import { JsonLdDocument } from 'jsonld'
 
@@ -29,7 +29,7 @@ export const countItemsRoute = createRoute({
     },
   },
   description: 'Returns the number of items in the dataset. These are physical or born-digital items in the library collection.',
-  tags: ['sparql'],
+  tags: ['Sparql'],
 })
 
 route.openapi(countItemsRoute, async (c) => {
@@ -62,7 +62,7 @@ export const getManifest = createRoute({
       description: 'Failure message.',
     },
   },
-  tags: ['sparql'],
+  tags: ['Sparql'],
 })
 
 route.openapi(getManifest, async (c) => {
@@ -71,7 +71,7 @@ route.openapi(getManifest, async (c) => {
   const CONTEXT = `${env.PROD_URL}/ns/manifest/context.json`
 
   try {
-    const data: JsonLdDocument | TFailure = await getManifestData(id, SERVICE_URL, CONTEXT, 'Manifest')
+    const data: JsonLdDocument | TFailure = await manifestService(id, SERVICE_URL, CONTEXT, 'Manifest')
     if ('error' in data) {
       throw new HTTPException(500, { message: 'Internal Server Error' })
     }
