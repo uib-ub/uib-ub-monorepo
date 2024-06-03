@@ -19,6 +19,14 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
+      search: [
+        {"key": "_index", "label": "Datasett"},
+        {"key": "snid", "label": "Stadnamn ID"},
+        {"key": "gnidu", "label": "GNIDu"},
+        {"key": "midu", "label": "MIDu"},
+        {"key": "type", "label": "SOSI stedstype"},
+
+      ],
       rygh: [
         {"key": "rawData.Lokalitetstype", "label": "Lokalitetstype"},
         {"key": "rawData.Gnr", "label": "Gardsnummer"},

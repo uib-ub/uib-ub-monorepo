@@ -4,6 +4,7 @@ import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import { facetConfig } from '@/config/search-config';
 import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
+import { datasetTitles } from '@/config/metadata-config';
 
 
 export default function ServerFacet({ showLoading }: { showLoading: (facet: string | null) => void }) {
@@ -25,6 +26,14 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const switchFacet = (facet: string) => {
     setSelectedFacet(facet)
     setSortMode(facetConfig[params.dataset].find(item => item.key == facet)?.sort || 'doc_count')
+  }
+
+  const processItem = (item: Record<string, string>) => {
+    if (selectedFacet == '_index') {
+      return {key: 'stadnamn-local-' + item.key.split('-')[1], label: datasetTitles[item.key.split('-')[1]], doc_count: item.doc_count}
+    }
+    return {key: item.key, label: item.key, doc_count: item.doc_count}
+
   }
 
   const toggleFilter = (beingChecked: boolean, facet: string, value: string) => {
@@ -98,11 +107,11 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     </div>
     { facetAggregation?.buckets.length ?
     <ul role="status" aria-live="polite" className='flex flex-col gap-2 px-2 p-2 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border rounded-sm bg-neutral-50 border-neutral-300'>
-      {facetAggregation?.buckets.map((item: any, index: number) => (
+      {facetAggregation?.buckets.map(processItem).map((item: any, index: number) => (
         <li key={index}>
         <label>
           <input type="checkbox" checked={paramLookup.getAll(selectedFacet).includes(item.key.toString()) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
-          {item.key} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+          {item.label} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
         </li>
         ))}

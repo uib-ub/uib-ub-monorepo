@@ -72,7 +72,7 @@ export function extractFacets(request: Request ) {
         });
       } else {
         termFilters.push({
-          "terms": { [`${key}.keyword`]: values }
+          "terms": { [key == '_index' ? key : `${key}.keyword`]: values }
         });
       }
     }

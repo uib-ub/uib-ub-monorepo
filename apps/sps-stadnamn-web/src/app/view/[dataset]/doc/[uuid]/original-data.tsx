@@ -54,7 +54,7 @@ export default function OriginalData({rawData}: {rawData: Record<string, any>}) 
         <>
        
         <button onClick={() => setExpanded(currentValue => !currentValue)} className="hover:cursor-pointer text-lg" aria-controls="original_data_list" aria-expanded={expanded}>
-            { expanded ? <PiCaretUp className="text2xl inline"/> : <PiCaretDown className="text2xl inline"/>} Rådata</button>
+            { expanded ? <PiCaretUp className="text2xl inline"/> : <PiCaretDown className="text2xl inline"/>} Grunnlagsdata</button>
         <div id="original_data_list">
         {expanded &&
         <div className='bg-neutral-50 my-2'><div className="flex text-base gap-2 items-center px-4 py-2"><PiWarningFill className='text-xl' aria-label="Advarsel"/>Kan inneholde feil som ikke vil bli rettet</div>

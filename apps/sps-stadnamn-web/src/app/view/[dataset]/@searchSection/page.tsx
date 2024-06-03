@@ -30,7 +30,7 @@ export default function SearchSection () {
     
     return (
         <>
-        <div className='px-2 flex flex-wrap gap-y-2'>
+        <div className='px-4 md:px-2 flex flex-wrap gap-y-2'>
           <h1 className='text-xl font-sans font-semibold flex gap-1' title={resultData && resultData.hits?.hits?.[0]?._index}>
             {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
               <IconButton className='align-middle' 

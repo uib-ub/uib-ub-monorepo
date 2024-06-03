@@ -24,8 +24,26 @@ const defaultTitle = (hit: any) => {
   return <><strong>{hit._source.label}</strong> </>
 }
 
+const loktypeDetails = (loktype: string, hit: any) => {
+  return <>{loktype}{loktype && ' – '} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}  </>
+}
+
+
+
 
 export const resultRenderers: ResultRenderers = {
+  rygh: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      return loktypeDetails(hit._source.rawData.Lokalitetstype, hit)
+    }
+  },
+  leks: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      return loktypeDetails(hit._source.rawData.lokalitetstype, hit)
+    }
+  },
   bsn: {
     title: defaultTitle,
     details: (hit: any) => {
@@ -37,33 +55,9 @@ export const resultRenderers: ResultRenderers = {
       else {
         loktypes = loktypes?.type
       }
-      return <>{loktypes}{loktypes && ' | '}{hit._source.adm2}, {hit._source.adm1}  </>
+      return loktypeDetails(loktypes, hit)
     }
   },
-  rygh: {
-    title: defaultTitle,
-    details: (hit: any) => {
-      return <>{hit._source.rawData.Lokalitetstype && hit._source.rawData.Lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
-    }
-  },
-  leks: {
-    title: defaultTitle,
-    details: (hit: any) => {
-      return <>{hit._source.rawData.lokalitetstype && hit._source.rawData.lokalitetstype + " | "} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
-    }
-  },
-  
-  ostf: {
-    title: (hit: any) => {
-      return <><strong>{hit._source.label}</strong> </>
-    },
-    details: (hit: any) => {
-      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
-
-      return <>{hit._source.adm2}, {hit._source.adm1}, {hit._source.rawData.GNID} </>
-    }
-  },
-  
   hord: {
     title: (hit: any) => {
       const source = hit._source
@@ -79,17 +73,64 @@ export const resultRenderers: ResultRenderers = {
       const snippet = hit.highlight?.['rawData.merknader'][0] && formatHighlight(hit.highlight['rawData.merknader'][0])
 
       return  <>{snippet && <>{snippet} | </>}{ " " + source.rawData.kommuneNamn + ", " + knr}{details ? ' - ' + details : '' }</>
+    }
+  },
+  nbas: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      return loktypeDetails(hit._source.rawData?.lokalitetstype_sosiype, hit)
+    }
+  },
+  m1838: {
+    title: (hit: any) => {
+      return <>{defaultTitle(hit)} | {hit._source.rawData?.KNR}-{hit._source.rawData?.MNR}{hit._source.rawData?.LNR && '.'}{hit._source.rawData?.LNR}</>
     },
+    details: (hit: any) => {
+      return loktypeDetails(hit._source.rawData?.Lokalitetstype, hit)
+    }
+  },
+  m1886: {
+    title: (hit: any) => {
+      return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
+    },
+    details: (hit: any) => {
+      return loktypeDetails(hit._source.type && (hit._source.type[0].toUpperCase() + hit._source.type.slice(1)), hit)
+    }
+  },
+  mu1950: {
+    title: (hit: any) => {
+      return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
+    },
+    details: (hit: any) => {
+      return loktypeDetails(hit._source.type && (hit._source.type[0].toUpperCase() + hit._source.type.slice(1)), hit)
+    }
+  },
+  skul: {
+    title: (hit: any) => {
+      return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
+    },
+    details: (hit: any) => {
+      return loktypeDetails(hit._source.type && (hit._source.type[0].toUpperCase() + hit._source.type.slice(1)), hit)
+    }
+  },
+  ostf: {
+    title: (hit: any) => {
+      return <><strong>{hit._source.label}</strong> </>
+    },
+    details: (hit: any) => {
+      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
 
-  }
+      return <>{hit._source.adm2}, {hit._source.adm1}, {hit._source.rawData.GNID} </>
+    }
+  },
+  
+  
 }
 
 
 export const defaultResultRenderer: Renderer = {
-  title: (hit: any) => {
-    return hit._source.label
-  },
+  title: defaultTitle,
   details: (hit: any) => {
-    return hit._source.adm2
+    return <>{hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
   }
 }

@@ -80,7 +80,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                 {title: 'Opppslagsform', value: source.label},
                 {title: 'Preposisjon', value: source.rawData?.original?.stnavn?.oppslag?.prep},
                 {title: 'Parform', value: source.rawData?.original?.stnavn?.parform_pf_navn},
-                {title: 'Stedstype', value: source.rawData?.original?.stnavn?.sted?.type},
+                {title: 'Stedstype', value: source.rawData?.supplemented?.type, sosi: true},
                 {title: 'Kommune', value: source.adm2},
                 {title: 'Kommunenummer', value: source.rawData?.supplemented?.knr},
                 {title: 'Fylke', value: source.adm1},
@@ -116,6 +116,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                     'rawData.supplemented.gnr': source.rawData?.supplemented?.gnr
                   }}]
                 },
+                {title: 'StedsnavnID', value: source.rawData?.supplemented?.snid, href: `/view/search?snid=${encodeURIComponent(source.rawData?.supplemented?.snid)}`},
               ]}
     />
     </>
@@ -169,10 +170,15 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
     <InfoBox dataset={'m1838'} 
     items={[
-      {title: 'Stadnamn', value: source.label},
-      {title: 'Lokalitetstype', value: source.rawData.lokalitetstype_sosi, sosi: true},
+      {title: 'Lokalitetstype', value: source.type, sosi: true},
       {title: 'Prestegjeld', value: source.adm2},
       {title: 'Amt', value: source.adm1},
+      {title: 'Kommunenummer', value: source.rawData.KNR},
+      {title: 'Matrikkelnummer', items: [{value: source.rawData.MNR, hrefParams: {'rawData.MNR': source.rawData.MNR, 'rawData.KNR': source.rawData.KNR }}]},
+      {title: 'Løpenummer', value: source.rawData.LNR},
+      {title: 'GNIDu', value: source.rawData.GNIDu},
+      {title: 'StedsnavnID', value: source.rawData.SNID}
+
 
     ]}/>
 

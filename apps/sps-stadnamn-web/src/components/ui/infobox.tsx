@@ -6,16 +6,18 @@ export default async function InfoBox({ items: items, dataset }: { items: Record
     const filteredItems = items.filter(item =>  item.value?.length || (item.items?.length && item.items[0].value?.length));
 
 
-    const subitemRenderer = (subItem: any, subIndex: number) => {
+    const subitemRenderer = (item: any) => {
       return (
-        (subItem.hrefParams || subItem.href) ?
-        <Link key={subIndex} className="no-underline flex items-center gap-1" 
-                        href={subItem.hrefParams ? buildHref(subItem.hrefParams) : subItem.href }>
-                    {subItem.value}
+        (item.hrefParams || item.href) &&
+        <Link className="no-underline flex items-center gap-1" 
+                        href={item.hrefParams ? buildHref(item.hrefParams) : item.href }>
+                    {item.value}
                     <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
                   </Link>
-        :
-        subItem.value
+        ||
+        (item.sosi && <PlaceType sosiCode={item.value}/>)
+        ||
+        item.value
       )
     }
 
@@ -37,13 +39,13 @@ export default async function InfoBox({ items: items, dataset }: { items: Record
             <div key={index} className="flex flex-col">
                 <strong className="text-neutral-900">{item.title}</strong>
                 <p>
-                {item.items?.length == 1 && subitemRenderer(item.items[0], 0)}
+                {item.items?.length == 1 && subitemRenderer(item.items[0])}
                 {item.items?.length > 1 && <ul> 
                   {item.items.map((subItem: any, subIndex: number) => (
-                    <li key={subItem}> {subitemRenderer(subItem, subIndex)} </li>
+                    <li key={subIndex}> {subitemRenderer(subItem)} </li>
                   ))}
                 </ul> }
-                {(!item.items && item.sosi) ? <PlaceType sosiCode={item.value}/> :  item.value  }
+                {!item.items &&  subitemRenderer(item)}
         
                 </p>
 
