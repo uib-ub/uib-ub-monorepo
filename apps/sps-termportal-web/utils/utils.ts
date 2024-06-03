@@ -208,3 +208,16 @@ export function lalof(key: string): string {
     .find((value) => value !== undefined);
   return label ?? key;
 }
+
+export function htmlify(data: string): string {
+  try {
+    const pars = data
+      .split("\n")
+      .filter((p) => p)
+      .map((p) => `<p>${p}</p>`)
+      .join("");
+    return pars;
+  } catch (e) {
+    return data;
+  }
+}
