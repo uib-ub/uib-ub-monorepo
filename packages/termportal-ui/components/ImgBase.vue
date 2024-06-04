@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex">
     <img :src="imgSrc" :style="imgStyle" :alt="imgAlt" aria-hidden="true" />
   </div>
 </template>

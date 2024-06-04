@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-prose mx-2">
+  <div class="max-w-prose lg:mx-2">
     <h3 id="vis" class="pb-1 text-xl sr-only">
       {{ $t("id.visualization") }}
     </h3>
@@ -12,7 +12,8 @@
         <ImgBase
           :img-src="displayInfo.image[0]?.value['@id']"
           :img-alt="`${$t('id.imageAltLabel')} '${pagetitle}'`"
-          class="border-solid border min-w-full p-1"
+          class="border-solid border lg:p-2 p-1 justify-center max-h-[18em] lg:min-w-[15em] lg:max-w-[30em]"
+          img-style="width: 100%"
         ></ImgBase>
         <figcaption v-if="caption" class="pt-2">
           {{ caption }}
