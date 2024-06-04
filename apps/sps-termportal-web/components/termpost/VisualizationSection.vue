@@ -3,7 +3,7 @@
     <h3 id="vis" class="pb-1 text-xl sr-only">
       {{ $t("id.visualization") }}
     </h3>
-    <figure class="rounded-sm space-y-2 min-w-full">
+    <figure class="rounded-sm space-y-2">
       <AppLink
         :to="displayInfo.image[0]?.value['@id']"
         :hide-icon="true"
@@ -12,7 +12,7 @@
         <ImgBase
           :img-src="displayInfo.image[0]?.value['@id']"
           :img-alt="`${$t('id.imageAltLabel')} '${pagetitle}'`"
-          class="border-solid border lg:p-2 p-1 justify-center max-h-[18em] lg:min-w-[15em] lg:max-w-[30em]"
+          class="border-solid border lg:p-2 p-1 justify-center max-h-[17em] lg:min-w-[22em] lg:max-w-[30em]"
           img-style="width: 100%"
         ></ImgBase>
         <figcaption v-if="caption" class="pt-2">
