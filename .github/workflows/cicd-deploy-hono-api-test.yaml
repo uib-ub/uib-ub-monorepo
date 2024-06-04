@@ -69,6 +69,9 @@ jobs:
           # apply all resources in overlays based on namespace
           kubectl apply -k microk8s-hono-api/test -n hono-api-test
 
+          # rolling restart hono-api
+          kubectl rollout restart deployment hono-api -n hono-api-test
+
       - name: Wait For Deployment To Start
         run: sleep 10s
 
