@@ -150,9 +150,8 @@ const Page: NextPage = ({ data, preview }: any) => {
             button={
               <MarcusIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-700 hover:text-neutral-800 dark:text-neutral-200 dark:hover:text-neutral-200' />
             }>
-            <div className='gap-5 text-sm dark:text-neutral-300 text-neutral-700 px-5 py-3'>
-              {locale === 'no' && <div>Denne utstillingen er en del av <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>}
-              {locale === 'en' && <div>This exhibition is a part of <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>}
+            <div className={`gap-5 ${locale === 'ar' ? 'text-xl ' : 'text-sm'} dark:text-neutral-300 text-neutral-700 px-5 py-3`}>
+              <div>{t('partOfMarcus')} <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>
             </div>
           </Menu>
         }
@@ -160,7 +159,7 @@ const Page: NextPage = ({ data, preview }: any) => {
         <Pane intent='content'>
           <main className='flex flex-col mt-5 mb-20'>
             <Hero
-              label={slug?.label}
+              label={slug?.label ?? title}
               image={aboutImage || heroImage || null}
               figCaption={
                 <figcaption className='flex gap-1 justify-end mt-1 font-light text-sm text-neutral-500 dark:text-neutral-400'>
@@ -169,7 +168,7 @@ const Page: NextPage = ({ data, preview }: any) => {
                     <p className='font-light text-sm'>
                       <i>
                         <Link href={`/id/${slug?.about?._id}`}>
-                          {slug?.about?.label[locale ?? ''] || slug?.about?.label[defaultLocale ?? ''] || 'Missing default language label'}
+                          {slug?.about?.label[locale!] ?? slug?.about?.label[defaultLocale!]}
                         </Link>
                       </i>
 
@@ -184,6 +183,7 @@ const Page: NextPage = ({ data, preview }: any) => {
 
             <div className='mt-5 mb-54 grid grid-cols-content font-light font-serif text-lg'>
               {linguisticDocumentBody && <TextBlocks value={linguisticDocumentBody} />}
+              {!linguisticDocumentBody && (<div className='col-start-1 col-end-6 md:col-start-3 md:col-end-4 text-center text-4xl'>غير مترجمة</div>)} {/* "Not translated" */}
             </div>
           </main>
           <Footer locale={locale} />

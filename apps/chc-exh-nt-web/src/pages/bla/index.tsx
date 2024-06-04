@@ -77,8 +77,7 @@ const Browse: NextPage = ({ data, preview }: any) => {
               <MarcusIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-700 hover:text-neutral-800 dark:text-neutral-200 dark:hover:text-neutral-200' />
             }>
             <div className='gap-5 text-sm dark:text-neutral-300 text-neutral-700 px-5 py-3'>
-              {locale === 'no' && <div>Denne utstillingen er en del av <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>}
-              {locale === 'en' && <div>This exhibition is a part of <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>}
+              <div>{t('partOfMarcus')} <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>
             </div>
           </Menu>
         }
@@ -97,7 +96,7 @@ const Browse: NextPage = ({ data, preview }: any) => {
                       />
                     </NextLink>) : null}
                     <div className="p-6 bg-white dark:bg-black">
-                      <h5 className="text-xl font-medium mb-2"><NextLink href={`/id/${item._id}`}>{item.label[locale || ''] || 'Missing title'}</NextLink></h5>
+                      <h5 className="text-xl font-medium mb-2"><NextLink href={`/id/${item._id}`}>{item.label[locale!] ?? item.label['en']}</NextLink></h5>
                       <p className="text-base mb-4">
                         {item.referredToBy?.[locale || '']}
                       </p>

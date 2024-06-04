@@ -5,6 +5,11 @@
     "close": "إغلاق",
     "open": "فتح",
     "subjects": "عناوين الموضوع",
-    "production": "إنتاج"
+    "production": "إنتاج",
+    "partOfMarcus": "هذا المعرض هو جزء من"
+  },
+  "Footer": {
+    "exhibitionBy": "المعرض من إنشاء",
+    "supportedBy": "برعاية"
   }
 }

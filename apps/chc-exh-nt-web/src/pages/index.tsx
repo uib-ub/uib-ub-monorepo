@@ -41,7 +41,7 @@ const Home: NextPage = ({ data, preview }: any) => {
   /* console.log("🚀 ~ file: index.tsx:39 ~ data", JSON.stringify(fallback, null, 2)) */
 
   const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title
-  const subtitle = identifiedBy.filter((name: any) => name.language[0] === locale)[0].subtitle?.[0] ?? 'Missing'
+  const subtitle = identifiedBy.filter((name: any) => name.language[0] === locale)[0].subtitle ?? undefined
   const linguisticDocumentBody = frontpage[0]?.content ?? fallback[0]?.content
 
 
@@ -60,35 +60,6 @@ const Home: NextPage = ({ data, preview }: any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/*  <Layout
-        data={data}
-        title={
-          <NextLink href={`/`} className='text-neutral-500 dark:text-neutral-300'>
-            {title}
-          </NextLink>
-        }
-        nav={
-          <div className='flex sm:flex-col gap-2'>
-            <UiBIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-800 dark:text-neutral-100 dark:hover:text-neutral-200' />
-            <Menu aria-label='primary navigation'>
-              <MainNav value={mainNav} />
-            </Menu>
-          </div>
-        }
-        icon={
-          <Menu
-            aria-label='secondary navigation'
-            button={
-              <MarcusIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-700 hover:text-neutral-800 dark:text-neutral-200 dark:hover:text-neutral-200' />
-            }>
-            <div className='gap-5 text-sm dark:text-neutral-300 text-neutral-700 px-5 py-3'>
-              {locale === 'no' && <div>Denne utstillingen er en del av <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>}
-              {locale === 'en' && <div>This exhibition is a part of <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>}
-            </div>
-          </Menu>
-        }
-      > 
-        <Pane intent='content'>*/}
       <div className='bg-white dark:bg-neutral-900'>
         <header className='px-3 py-3 sticky top-0 w-full z-10'>
           <div className='flex gap-2 items-start'>
@@ -150,7 +121,7 @@ const Home: NextPage = ({ data, preview }: any) => {
                 {section?.target ?
                   <li key={section._key} className='text-md font-light first:mt-0 mt-4'>
                     <NavLink href={`/${section?.target?.route}`}>
-                      {section?.target?.label?.[locale || '']}
+                      {section?.target?.label?.[locale!] ?? section?.target?.label?.['en']}
                     </NavLink>
                   </li>
                   : null
@@ -159,7 +130,7 @@ const Home: NextPage = ({ data, preview }: any) => {
                   {section?.links && section?.links.map((link: any) => (
                     <li key={link._key} className='mt-1 pl-4'>
                       <NavLink href={`/${link?.target?.route}`}>
-                        {link?.label?.[locale || ''] || link?.target?.label?.[locale || '']}
+                        {(link?.label?.[locale!] ?? link?.label?.['en']) || (link?.target?.label?.[locale!] || link?.target?.label?.['en'])}
                       </NavLink>
                     </li>
                   ))}

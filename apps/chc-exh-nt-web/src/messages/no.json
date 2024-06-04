@@ -5,6 +5,11 @@
     "close": "Lukk",
     "open": "Åpne",
     "subjects": "Emneord",
-    "production": "Laget av"
+    "production": "Laget av",
+    "partOfMarcus": "This exhibition is a part of"
+  },
+  "Footer": {
+    "exhibitionBy": "Nettuststillingen er laget av",
+    "supportedBy": "Støttet av"
   }
 }

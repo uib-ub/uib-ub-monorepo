@@ -1,6 +1,6 @@
-import React from 'react'
 import { Popover } from '@headlessui/react'
 import { Bars4Icon } from '@heroicons/react/20/solid'
+import React from 'react'
 import { usePopper } from '../utils/use-popper'
 
 type MenuProps = {
@@ -14,7 +14,7 @@ type MenuProps = {
 export const Menu: React.FC<MenuProps> = ({ children, button, className, accessKey, isHorizontal = false }) => {
   const [trigger, container] = usePopper({
     strategy: 'fixed',
-    placement: 'right-start',
+    //placement: 'right-start',
     modifiers: [
       { name: 'offset', options: { offset: [0, 15] } },
       {
@@ -50,7 +50,7 @@ export const Menu: React.FC<MenuProps> = ({ children, button, className, accessK
           </Popover.Button>
           <Popover.Panel
             ref={container}
-            className="w-full max-h-1/4 border border-black/5 dark:border-white/20 relative z-30 rounded-md bg-white py-1 text-sm shadow-lg dark:bg-neutral-800"
+            className="max-h-1/4 border border-black/5 dark:border-white/20 relative z-30 rounded-md bg-white py-1 text-sm shadow-lg dark:bg-neutral-800"
           >
             {children}
           </Popover.Panel>

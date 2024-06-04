@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { CMILogo, FrittOrdLogo, NCHSLogo, UIBUBLeftEngLogo, UIBUBLeftNorLogo } from 'tailwind-ui';
 
 interface FooterProps {
@@ -5,17 +6,19 @@ interface FooterProps {
 }
 
 export const Footer = ({ locale }: FooterProps) => {
+  const t = useTranslations('Footer');
+
   return (
     <footer className='mt-16 pb-32'>
       <div className='flex flex-col items-center w-full'>
-        <p className='text-neutral-500 dark:text-neutral-300 font-light text-sm'>
-          {locale === 'no' ? 'Nettuststillingen er laget av' : 'The exhibition is created by'}
+        <p className={`text-neutral-500 dark:text-neutral-300 font-light ${locale === 'ar' ? 'text-2xl' : 'text-md'}`}>
+          {t('exhibitionBy')}
         </p>
         <div className='w-full md:max-w-[600px] self-center items-center content-center grid grid-cols-6 gap-x-10 gap-y-5'>
           <div className='col-span-6 grid grid-cols-8'>
             <div className='col-start-1 col-span-8 md:col-start-2 md:col-span-6'>
               {locale === 'no' ? (<UIBUBLeftNorLogo className='text-black dark:text-white h-auto w-auto' />) : null}
-              {locale === 'en' ? (<UIBUBLeftEngLogo className='text-black dark:text-white h-auto w-auto' />) : null}
+              {['en', 'ar'].includes(locale!) ? (<UIBUBLeftEngLogo className='text-black dark:text-white h-auto w-auto' />) : null}
             </div>
           </div>
           <div className='col-span-3 max-sm:col-span-4 max-sm:col-start-2'>
@@ -26,8 +29,8 @@ export const Footer = ({ locale }: FooterProps) => {
           </div>
 
           <div className='col-span-6 mt-10 flex justify-center'>
-            <p className='text-neutral-500 dark:text-neutral-300 font-light text-sm'>
-              {locale === 'no' ? 'Støttet av' : 'Supported by'}
+            <p className={`text-neutral-500 dark:text-neutral-300 font-light ${locale === 'ar' ? 'text-2xl' : 'text-md'}`}>
+              {t('supportedBy')}
             </p>
           </div>
           <div className='col-span-6 grid grid-cols-6'>

@@ -88,7 +88,7 @@ export const MainNav: React.FC<MainNavProps> = ({ buttonLabel, title, descriptio
 
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex min-h-full items-center justify-center p-4">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -98,7 +98,7 @@ export const MainNav: React.FC<MainNavProps> = ({ buttonLabel, title, descriptio
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-5/6 transform overflow-hidden rounded-xl dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-900 p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-5/6 transform overflow-hidden rounded-xl dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-900 p-6 shadow-xl transition-all">
                   <div className='flex justify-between gap-5 mb-3'>
                     <Dialog.Title
                       as="h3"
@@ -120,14 +120,14 @@ export const MainNav: React.FC<MainNavProps> = ({ buttonLabel, title, descriptio
                       <React.Fragment key={section._key}>
                         {section?.label ?
                           <li key={section._key} className='border-b text-md font-light first:mt-0 mt-4'>
-                            {section?.label?.[locale || ''] || section?.target?.label?.[locale || '']}
+                            {(section?.label?.[locale!] ?? section?.label?.['en']) || (section?.target?.label?.[locale!] ?? section?.target?.label?.['en'])}
                           </li>
                           : null
                         }
                         {section?.target ?
                           <li key={section._key} className='text-md font-light first:mt-0 mt-4'>
                             <NavLink href={`/${section?.target?.route}`}>
-                              <span onClick={closeModal}>{section?.target?.label?.[locale || '']}</span>
+                              <span onClick={closeModal}>{section?.target?.label?.[locale!] ?? section?.target?.label?.['en']}</span>
                             </NavLink>
                           </li>
                           : null
@@ -136,7 +136,7 @@ export const MainNav: React.FC<MainNavProps> = ({ buttonLabel, title, descriptio
                           {section?.links && section?.links.map((link: any) => (
                             <li key={link._key} className='mt-1 pl-4'>
                               <NavLink href={`/${link?.target?.route}`}>
-                                <span onClick={closeModal}>{link?.label?.[locale || ''] || link?.target?.label?.[locale || '']}</span>
+                                <span onClick={closeModal}>{(link?.label?.[locale!] ?? link?.label?.['en']) || (link?.target?.label?.[locale!] ?? link?.target?.label?.['en'])}</span>
                               </NavLink>
                             </li>
                           ))}

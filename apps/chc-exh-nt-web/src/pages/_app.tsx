@@ -1,5 +1,5 @@
 import "tailwind-ui/styles.css";
-import "../styles/globals.css";
+/* import "../styles/globals.css"; */
 
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
@@ -10,16 +10,16 @@ import Script from 'next/script';
 import * as React from "react";
 
 
-const sans = Merriweather_Sans({
+const merriweatherSans = Merriweather_Sans({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-merriweatherSans',
   fallback: ['Helvetica', 'ui-sans-serif', 'sans-serif'],
   adjustFontFallback: false,
 })
 
-const serif = Newsreader({
+const newsreader = Newsreader({
   subsets: ['latin'],
-  variable: '--font-serif',
+  variable: '--font-newsreader',
   fallback: ['Times New Roman', 'ui-serif', 'serif'],
   adjustFontFallback: false,
 })
@@ -28,6 +28,14 @@ const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   return (
     <React.StrictMode>
+      <style jsx global>
+        {`
+          :root {
+            --font-merriweatherSans: ${merriweatherSans.style.fontFamily};
+            --font-newsreader: ${newsreader.style.fontFamily};
+          }
+        `}
+      </style>
       {/* Global Site Tag (gtag.js) - Google Analytics */}
       <Script
         strategy="lazyOnload"
@@ -53,7 +61,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         <ThemeProvider enableSystem={true} attribute="class">
           <>
             {/* @ts-ignore */}
-            <Component {...pageProps} className={`${sans.variable} ${serif.variable}`} />
+            <Component {...pageProps} /* className={`${merriweatherSans.variable} ${newsreader.variable}`} */ />
           </>
         </ThemeProvider>
       </NextIntlClientProvider>

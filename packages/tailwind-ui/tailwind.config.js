@@ -15,8 +15,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)', ...fontFamily.sans],
-        serif: ['var(--font-serif)', ...fontFamily.serif],
+        sans: ['var(--font-merriweatherSans)', ...fontFamily.sans],
+        serif: ['var(--font-newsreader)', ...fontFamily.serif],
       },
       colors: {
         brandblue: colors.blue[500],

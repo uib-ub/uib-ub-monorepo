@@ -5,6 +5,11 @@
     "close": "Close",
     "open": "Open",
     "subjects": "Subjects",
-    "production": "Production"
+    "production": "Production",
+    "partOfMarcus": "Denne utstillingen er en del av"
+  },
+  "Footer": {
+    "exhibitionBy": "The exhibition is created by",
+    "supportedBy": "Sponsored by"
   }
 }
