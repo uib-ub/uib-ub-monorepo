@@ -129,10 +129,13 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         </div>
         <div className='flex gap-1 ml-auto self-end'>
         { params.dataset == 'search' &&  
-          <IconButton onClick={() => router.push(`/view/${hit._index.split('-')[1]}`)} 
-                      label={datasetTitles[hit._index.split('-')[1]]} 
+        ( hit._source.children?.length > 1 && 
+          <div><span className='text-sm bg-neutral-100 rounded-full px-2'>{ hit._source.children.length }</span> </div>
+        ) ||
+          <IconButton onClick={() => router.push(`/view/${hit._source.dataset}/doc/${hit._source.children[0]}`)} 
+                      label={datasetTitles[hit._source.dataset]} 
                       className="self-center px-1">
-                       <span className="not-italic font-semibold text-sm text-neutral-900">{hit._index.split('-')[1].toUpperCase()}</span>
+                       <span className="not-italic font-semibold text-sm text-neutral-900">{hit._source.dataset?.toUpperCase()}</span>
           </IconButton>
         }
 

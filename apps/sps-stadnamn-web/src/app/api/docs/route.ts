@@ -9,7 +9,7 @@ export async function GET(request: Request) {
 
 
     if (!docs || !dataset) {
-        return new Response('Missing parameter', { status: 400 });
+        return new Response('MISSING_PARAMETER', { status: 400 });
       }
     const query = {
         query: {

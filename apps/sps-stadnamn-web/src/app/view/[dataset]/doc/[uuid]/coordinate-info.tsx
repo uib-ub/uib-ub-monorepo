@@ -20,7 +20,6 @@ export default function CoordinateInfo({source}: {source: Record<string, any>}) 
           const res = await fetch(`/api/vocab/${source.coordinateType}`);
           const data = await res.json();
           setCoordinateData(data);
-          console.log(data)
         };
       
         fetchData();
