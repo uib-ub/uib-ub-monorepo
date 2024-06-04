@@ -4,7 +4,7 @@ module.exports = {
   swcMinify: true,
   transpilePackages: ['tailwind-ui'],
   i18n: {
-    locales: ['en', 'no'],
+    locales: ['en', 'no', 'ar'],
     defaultLocale: 'en',
     localeDetection: false,
   },

@@ -1,7 +1,7 @@
-import React from 'react'
-import { Select } from './Select'
 import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/router'
+import React from 'react'
+import { Select } from './Select'
 
 interface LocaleSwitchProps {
   lite?: boolean

@@ -1,14 +1,14 @@
-import DocumentsPane from 'sanity-plugin-documents-pane'
+import { BsFileRichtext } from 'react-icons/bs'
+import { CgTemplate } from 'react-icons/cg'
+import { FaBookDead, FaBookOpen, FaGifts, FaGlasses, FaMapMarkedAlt, FaProjectDiagram, FaRoute, FaSitemap, FaTags } from 'react-icons/fa'
+import { FiActivity } from 'react-icons/fi'
+import { GiBoltSpellCast, GiCrackedGlass, GiSettingsKnobs } from 'react-icons/gi'
+import { GoArchive as AllIcon, GoMegaphone as BlogIcon } from 'react-icons/go'
+import { ImLibrary } from 'react-icons/im'
+import { MdEvent, MdOutlineEmojiObjects } from 'react-icons/md'
 import { RiMapPinLine } from 'react-icons/ri'
 import { TiUser } from 'react-icons/ti'
-import { MdOutlineEmojiObjects, MdEvent } from 'react-icons/md'
-import { FaMapMarkedAlt, FaGifts, FaGlasses, FaProjectDiagram, FaBookOpen, FaBookDead, FaTags, FaSitemap, FaRoute } from 'react-icons/fa'
-import { GoMegaphone as BlogIcon, GoArchive as AllIcon } from 'react-icons/go'
-import { ImLibrary } from 'react-icons/im'
-import { CgTemplate } from 'react-icons/cg'
-import { BsFileRichtext } from 'react-icons/bs'
-import { GiBoltSpellCast, GiSettingsKnobs, GiCrackedGlass } from 'react-icons/gi'
-import { FiActivity } from 'react-icons/fi'
+import DocumentsPane from 'sanity-plugin-documents-pane'
 
 const i18nConfig = {
   base: "no",
@@ -20,7 +20,11 @@ const i18nConfig = {
     {
       "id": "no",
       "title": "Bokmål"
-    }
+    },
+    {
+      "id": "ar",
+      "title": "Arabic"
+    },
   ]
 }
 

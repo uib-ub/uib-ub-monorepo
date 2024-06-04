@@ -1,16 +1,17 @@
-import React from "react";
-import type { GetStaticProps, NextPage } from 'next'
-import { getClient } from '../lib/sanity.server'
-import { mainNav, siteSettings } from '../lib/queries/fragments'
+import { Bars4Icon } from '@heroicons/react/24/outline';
+import type { GetStaticProps, NextPage } from 'next';
+import { useTranslations } from 'next-intl';
+import { groq } from 'next-sanity';
 import Head from "next/head";
-import { Spacer, ThemeSwitch, LocaleSwitch, NavLink } from "tailwind-ui";
 import { NextRouter, useRouter } from 'next/router';
-import { groq } from 'next-sanity'
+import React from "react";
+import { LocaleSwitch, NavLink, Spacer, ThemeSwitch } from "tailwind-ui";
+import { Footer } from '../components/Footer';
 import { MainNav } from '../components/Header/MainNav';
 import SanityImage from '../components/SanityImage';
-import { Footer } from '../components/Footer';
-import { Bars4Icon } from '@heroicons/react/24/outline';
 import Sections from '../components/TextBlocks/Blocks/Sections';
+import { mainNav, siteSettings } from '../lib/queries/fragments';
+import { getClient } from '../lib/sanity.server';
 
 const frontpageQuery = groq`
   {
@@ -27,18 +28,20 @@ export const getStaticProps: GetStaticProps = async ({ locale, preview = false }
       data,
       locale,
       preview,
-      //messages: (await import(`../messages/${locale}.json`)).default
+      messages: (await import(`../messages/${locale}.json`)).default
     },
   }
 }
 
 const Home: NextPage = ({ data, preview }: any) => {
   const { locale }: NextRouter = useRouter()
+  const t = useTranslations('Nav');
+
   const { mainNav, siteSettings: { label, description, identifiedBy, image, frontpage, fallback } } = data
   /* console.log("🚀 ~ file: index.tsx:39 ~ data", JSON.stringify(fallback, null, 2)) */
 
-  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title[0]
-  const subtitle = identifiedBy.filter((name: any) => name.language[0] === locale)[0].subtitle[0]
+  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title
+  const subtitle = identifiedBy.filter((name: any) => name.language[0] === locale)[0].subtitle?.[0] ?? 'Missing'
   const linguisticDocumentBody = frontpage[0]?.content ?? fallback[0]?.content
 
 
@@ -90,12 +93,12 @@ const Home: NextPage = ({ data, preview }: any) => {
         <header className='px-3 py-3 sticky top-0 w-full z-10'>
           <div className='flex gap-2 items-start'>
             <MainNav
-              title={locale === 'no' ? 'Meny' : 'Menu'}
+              title={t('menu')}
               aria-label='primary navigation'
               buttonLabel={
                 <div className='p-2 md:p-3 gap-3 flex bg-white/70 dark:bg-white/10 backdrop-blur-sm rounded items-center'>
                   <Bars4Icon className={'max-sm:w-5 max-sm:h-5 sm:w-6 sm:h-6'} />
-                  <div className='max-md:sr-only'>Menu</div>
+                  <div className='max-md:sr-only'>{t('menu')}</div>
                 </div>
               }
               value={mainNav}
@@ -107,7 +110,8 @@ const Home: NextPage = ({ data, preview }: any) => {
                   lite
                   labels={{
                     no: 'Norsk',
-                    en: 'English'
+                    en: 'English',
+                    ar: 'Arabic',
                   }}
                 />
                 <ThemeSwitch lite />
@@ -131,7 +135,7 @@ const Home: NextPage = ({ data, preview }: any) => {
         <div className='flex flex-col justify-center items-center w-prose mt-5'>
 
           <h2 className='max-sm:text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl text-center font-sans font-bold pb-2 text-neutral-800 dark:text-neutral-100'>
-            {locale === 'en' ? 'Content' : 'Innhold'}
+            {t('toc')}
           </h2>
 
           <ul className='text-lg dark:text-neutral-300 text-neutral-700 p-5'>

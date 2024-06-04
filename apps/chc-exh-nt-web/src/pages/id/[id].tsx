@@ -1,19 +1,19 @@
-import React from "react";
-import type { GetStaticProps, NextPage } from 'next'
-import { getClient } from '../../lib/sanity.server'
-import { usePreviewSubscription } from '../../lib/sanity'
-import { mainNav, siteSettings, item } from '../../lib/queries/fragments'
-import { publicDocumentTypes } from '../../lib/constants'
-import Head from "next/head";
-import { MarcusIcon, Minimap, Palette, Pane, Spacer, Subjects, Layout, UiBIcon, Menu } from "tailwind-ui";
-import { NextRouter, useRouter } from 'next/router';
-import NextLink from 'next/link';
-import { groq } from 'next-sanity'
-import { MainNav } from '../../components/Header/MainNav';
-import ErrorPage from 'next/error'
-import dynamic from "next/dynamic";
-import { Description } from '../../components/Props/Description';
 import { ArrowTopRightOnSquareIcon, Bars4Icon, CodeBracketSquareIcon, IdentificationIcon } from '@heroicons/react/24/outline';
+import type { GetStaticProps, NextPage } from 'next';
+import { useTranslations } from 'next-intl';
+import { groq } from 'next-sanity';
+import dynamic from "next/dynamic";
+import ErrorPage from 'next/error';
+import Head from "next/head";
+import NextLink from 'next/link';
+import { NextRouter, useRouter } from 'next/router';
+import { Layout, MarcusIcon, Menu, Palette, Pane, Spacer, Subjects, UiBIcon } from "tailwind-ui";
+import { MainNav } from '../../components/Header/MainNav';
+import { Description } from '../../components/Props/Description';
+import { publicDocumentTypes } from '../../lib/constants';
+import { item, mainNav, siteSettings } from '../../lib/queries/fragments';
+import { usePreviewSubscription } from '../../lib/sanity';
+import { getClient } from '../../lib/sanity.server';
 
 const ManifestViewer = dynamic(() => import("../../components/IIIF/ManifestViewer"), {
   ssr: false,
@@ -83,7 +83,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale, preview =
       preview,
       // Pass down the initial content, and our query
       data: { page, query, queryParams },
-      //messages: (await import(`../../messages/${locale}.json`)).default
+      messages: (await import(`../../messages/${locale}.json`)).default
     },
   }
 }
@@ -104,6 +104,12 @@ export async function getStaticPaths() {
           id: item._id,
           locale: 'no'
         },
+      })),
+      ...results?.map((item: any) => ({
+        params: {
+          id: item._id,
+          locale: 'ar'
+        },
       }))
     ] || [],
     fallback: 'blocking',
@@ -113,6 +119,7 @@ export async function getStaticPaths() {
 
 const Id: NextPage = ({ data, preview }: any) => {
   const { locale, isFallback }: NextRouter = useRouter()
+  const t = useTranslations('Nav');
 
   const { data: previewData } = usePreviewSubscription(data?.query, {
     params: data?.queryParams ?? {},
@@ -144,7 +151,7 @@ const Id: NextPage = ({ data, preview }: any) => {
   // It'll be completely blank when they start!
 
   const { siteSettings: { label, description, identifiedBy }, mainNav, item } = page
-  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title[0]
+  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title
 
   return (
     <>
@@ -165,12 +172,12 @@ const Id: NextPage = ({ data, preview }: any) => {
           <div className='flex sm:flex-col gap-2'>
             <UiBIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-800 dark:text-neutral-100 dark:hover:text-neutral-200' />
             <MainNav
-              title={locale === 'no' ? 'Meny' : 'Menu'}
+              title={t('menu')}
               aria-label='primary navigation'
               buttonLabel={
                 <div className='gap-1 flex md:flex-col backdrop-blur-sm rounded items-center'>
                   <Bars4Icon className={'max-sm:w-5 max-sm:h-5 sm:w-6 sm:h-6'} />
-                  <div className='max-md:sr-only'>Menu</div>
+                  <div className='max-md:sr-only'>{t('menu')}</div>
                 </div>
               }
               value={mainNav}
@@ -286,8 +293,8 @@ const Id: NextPage = ({ data, preview }: any) => {
               : null
             }
 
-            <div className='flex flex-col flex-wrap justify-center gap-5'>
-              <h1 className='sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl'>{item[0].label[locale || ''] || `Missing ${locale} title`}</h1>
+            <div className='flex flex-col flex-wrap justify-center gap-3'>
+              <h1 className='sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl'>{item[0].label[locale!] ?? item[0].label['en']}</h1>
 
               {item[0]?.referredToBy ?
                 <div className='max-w-prose xl:text-xl text-light'>
@@ -302,9 +309,7 @@ const Id: NextPage = ({ data, preview }: any) => {
                 .map((activity: any) => (
                   <div key={activity._key} className='flex flex-wrap items-baseline gap-3'>
                     <div className='w-24 flex-grow-0 text-sm font-light'>
-                      {locale === 'en' ? 'Production' : null}
-                      {locale === 'no' ? 'Laget av' : null}
-                      {locale === 'ar' ? 'إنتاج' : null}
+                      {t('production')}
                     </div>
                     <div key={activity._id || activity._key}>
                       <div>{activity.contributionAssignedBy?.[0].assignedActor?.label[locale || ''] || Object.values(activity.contributionAssignedBy?.[0].assignedActor?.label)[1]}</div>
@@ -322,11 +327,9 @@ const Id: NextPage = ({ data, preview }: any) => {
               {item[0]?.subject ?
                 <div className='flex flex-wrap items-baseline gap-3'>
                   <div className='w-24 flex-grow-0 text-sm font-light'>
-                    {locale === 'en' ? 'Subjects' : null}
-                    {locale === 'no' ? 'Emneord' : null}
-                    {locale === 'ar' ? 'عناوين الموضوع' : null}
+                    {t('subjects')}
                   </div>
-                  <Subjects value={item[0]?.subject} language={locale || ''} />
+                  <Subjects value={item[0]?.subject} language={locale} />
                 </div>
                 : null
               }
@@ -341,12 +344,12 @@ const Id: NextPage = ({ data, preview }: any) => {
                   )) : null
               }
 
-              {item[0]?.depicts?.some((depiction: any) => depiction._type === "Place") ? (
+              {/* {item[0]?.depicts?.some((depiction: any) => depiction._type === "Place") ? (
                 <Minimap
                   label={item[0]?.depicts?.[0].label[locale ?? 'en']}
                   lnglat={[item[0]?.depicts?.[0].definedBy?.lng, item[0]?.depicts?.[0].definedBy?.lat]}
                 />
-              ) : null}
+              ) : null} */}
 
               <div className='flex flex-col gap-1 my-3'>
                 {item[0]?.preferredIdentifier ?

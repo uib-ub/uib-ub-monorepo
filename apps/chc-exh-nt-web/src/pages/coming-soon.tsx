@@ -2,7 +2,6 @@ import type { GetStaticProps, NextPage } from "next";
 import { groq } from 'next-sanity';
 import Head from "next/head";
 import { NextRouter, useRouter } from 'next/router';
-import React from "react";
 import { AppShell, LocaleSwitch } from "tailwind-ui";
 import { ThemeSwitch } from '../components/ThemeSwitch';
 import { siteSettings } from '../lib/queries/fragments';
@@ -22,7 +21,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, preview = false }
       data,
       locale,
       preview,
-      //messages: (await import(`../messages/${locale}.json`)).default
+      messages: (await import(`../messages/${locale}.json`)).default
     },
   }
 }
@@ -59,7 +58,8 @@ const ComingSoon: NextPage = ({ data, preview }: any) => {
           <LocaleSwitch
             labels={{
               no: 'Norsk',
-              en: 'English'
+              en: 'English',
+              ar: 'Arabic',
             }}
           />
           <ThemeSwitch />

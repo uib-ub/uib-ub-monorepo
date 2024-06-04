@@ -1,16 +1,16 @@
-import React from "react";
-import type { GetStaticProps, NextPage } from 'next'
-import { getClient } from '../../lib/sanity.server'
-import { mainNav, siteSettings, items } from '../../lib/queries/fragments'
-import Head from "next/head";
-import { Layout, LocaleSwitch, Pane, MarcusIcon, UiBIcon, Menu, Modal } from "tailwind-ui";
-import { NextRouter, useRouter } from 'next/router';
-import NextLink from 'next/link';
-import { groq } from 'next-sanity'
-import SanityImage from '../../components/SanityImage';
-import { MainNav } from '../../components/Header/MainNav';
 import { ArrowTopRightOnSquareIcon, Bars4Icon } from '@heroicons/react/24/outline';
+import type { GetStaticProps, NextPage } from 'next';
+import { useTranslations } from 'next-intl';
+import { groq } from 'next-sanity';
+import Head from "next/head";
+import NextLink from 'next/link';
+import { NextRouter, useRouter } from 'next/router';
+import { Layout, MarcusIcon, Menu, Pane, UiBIcon } from "tailwind-ui";
 import { Footer } from '../../components/Footer';
+import { MainNav } from '../../components/Header/MainNav';
+import SanityImage from '../../components/SanityImage';
+import { items, mainNav, siteSettings } from '../../lib/queries/fragments';
+import { getClient } from '../../lib/sanity.server';
 
 const itemsQuery = groq`
   {
@@ -28,15 +28,16 @@ export const getStaticProps: GetStaticProps = async ({ locale, preview = false }
       data,
       locale,
       preview,
-      //messages: (await import(`../messages/${locale}.json`)).default
+      messages: (await import(`../../messages/${locale}.json`)).default
     },
   }
 }
 
 const Browse: NextPage = ({ data, preview }: any) => {
-  const { locale, locales, asPath, defaultLocale }: NextRouter = useRouter()
+  const { locale }: NextRouter = useRouter()
+  const t = useTranslations('Nav');
   const { mainNav, siteSettings: { label, description, identifiedBy }, items } = data
-  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title[0]
+  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title
 
   return (
     <>
@@ -57,12 +58,12 @@ const Browse: NextPage = ({ data, preview }: any) => {
           <div className='flex sm:flex-col gap-2'>
             <UiBIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-800 dark:text-neutral-100 dark:hover:text-neutral-200' />
             <MainNav
-              title={locale === 'no' ? 'Meny' : 'Menu'}
+              title={t('menu')}
               aria-label='primary navigation'
               buttonLabel={
                 <div className='gap-1 flex md:flex-col backdrop-blur-sm rounded items-center'>
                   <Bars4Icon className={'max-sm:w-5 max-sm:h-5 sm:w-6 sm:h-6'} />
-                  <div className='max-md:sr-only'>Menu</div>
+                  <div className='max-md:sr-only'>{t('menu')}</div>
                 </div>
               }
               value={mainNav}

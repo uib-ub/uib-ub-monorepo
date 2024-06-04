@@ -2,21 +2,21 @@
  * This config is used to set up Sanity Studio that's mounted on the `/pages/studio/[[...index]].tsx` route
  */
 
-import { visionTool } from '@sanity/vision'
-import { defineConfig, Slug } from 'sanity'
-import { withDocumentI18nPlugin } from '@sanity/document-internationalization'
-import { imageHotspotArrayPlugin } from "sanity-plugin-hotspot-array"
 import { codeInput } from "@sanity/code-input";
 import { colorInput } from "@sanity/color-input";
-import { table } from '@sanity/table';
 import { dashboardTool, projectInfoWidget, projectUsersWidget } from "@sanity/dashboard";
-import { deskTool } from 'sanity/desk'
-import { languageFilter } from '@sanity/language-filter'
-import { media } from 'sanity-plugin-media'
+import { withDocumentI18nPlugin } from '@sanity/document-internationalization';
+import { languageFilter } from '@sanity/language-filter';
+import { table } from '@sanity/table';
+import { visionTool } from '@sanity/vision';
+import { defineConfig } from 'sanity';
 import { vercelWidget } from "sanity-plugin-dashboard-widget-vercel";
-import { schemaTypes } from './src/lib/munaPlugin/src'
+import { imageHotspotArrayPlugin } from "sanity-plugin-hotspot-array";
+import { media } from 'sanity-plugin-media';
+import { deskTool } from 'sanity/desk';
+import { defaultDocumentNode, structure } from './src/lib/deskStructure';
+import { schemaTypes } from './src/lib/munaPlugin/src';
 import SiteSettings from './src/lib/munaPlugin/src/schemas/classes/persistent/information/site/SiteSettings';
-import { structure, defaultDocumentNode } from './src/lib/deskStructure'
 // import { default as ImportTool } from './src/lib/plugins/import-tool/src/App'
 
 // @TODO: update next-sanity/studio to automatically set this when needed

@@ -1,18 +1,19 @@
-import Head from 'next/head'
-import { usePreviewSubscription } from '../lib/sanity'
-import { filterDataToSingleItem } from '../lib/functions'
-import { getClient } from '../lib/sanity.server'
-import { groq } from 'next-sanity'
-import { routeQuery } from '../lib/queries/routeQuery'
-import { TextBlocks } from '../components/TextBlocks'
-import { useRouter } from 'next/router'
+import { ArrowTopRightOnSquareIcon, Bars4Icon } from '@heroicons/react/24/outline'
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
-import { Hero, Layout, Link, MarcusIcon, Menu, Modal, Pane, UiBIcon } from 'tailwind-ui'
+import { useTranslations } from 'next-intl'
+import { groq } from 'next-sanity'
+import Head from 'next/head'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import { Hero, Layout, Link, MarcusIcon, Menu, Pane, UiBIcon } from 'tailwind-ui'
+import { Footer } from '../components/Footer'
 import { MainNav } from '../components/Header/MainNav'
 import SanityImage from '../components/SanityImage'
-import { ArrowTopRightOnSquareIcon, Bars4Icon } from '@heroicons/react/24/outline'
-import { Footer } from '../components/Footer'
+import { TextBlocks } from '../components/TextBlocks'
+import { filterDataToSingleItem } from '../lib/functions'
+import { routeQuery } from '../lib/queries/routeQuery'
+import { usePreviewSubscription } from '../lib/sanity'
+import { getClient } from '../lib/sanity.server'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const routesQuery = groq`
@@ -62,13 +63,15 @@ export const getStaticProps: GetStaticProps = async ({ params, locale, preview =
       preview,
       // Pass down the initial content, and our query
       data: { page, query, queryParams },
-      //messages: (await import(`../messages/${locale}.json`)).default
+      messages: (await import(`../messages/${locale}.json`)).default
     },
   }
 }
 
 const Page: NextPage = ({ data, preview }: any) => {
   const { locale, defaultLocale } = useRouter()
+  const t = useTranslations('Nav');
+
   const { data: previewData } = usePreviewSubscription(data?.query, {
     params: data?.queryParams ?? {},
     // The hook will return this on first render
@@ -83,7 +86,7 @@ const Page: NextPage = ({ data, preview }: any) => {
   //console.log(JSON.stringify(page, null, 2))
 
   const { mainNav, siteSettings: { label, description, identifiedBy } } = page
-  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title[0]
+  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title
 
   {/* If LinguisticDocument the content is in the body field */ }
   const slug = page?.route[0]?.locale[0] ?? page?.route[0]?.fallback[0]
@@ -129,12 +132,12 @@ const Page: NextPage = ({ data, preview }: any) => {
           <div className='flex sm:flex-col gap-2'>
             <UiBIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-800 dark:text-neutral-100 dark:hover:text-neutral-200' />
             <MainNav
-              title={locale === 'no' ? 'Meny' : 'Menu'}
+              title={t('menu')}
               aria-label='primary navigation'
               buttonLabel={
                 <div className='gap-1 flex md:flex-col backdrop-blur-sm rounded items-center'>
                   <Bars4Icon className={'max-sm:w-5 max-sm:h-5 sm:w-6 sm:h-6'} />
-                  <div className='max-md:sr-only'>Menu</div>
+                  <div className='max-md:sr-only'>{t('menu')}</div>
                 </div>
               }
               value={mainNav}

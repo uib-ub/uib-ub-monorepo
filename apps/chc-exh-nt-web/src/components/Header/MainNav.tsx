@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router'
-import React from 'react';
-import { NavLink } from 'tailwind-ui'
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/router';
+import React, { Fragment, useState } from 'react';
+import { NavLink } from 'tailwind-ui';
 
 type MainNavProps = {
   buttonLabel: string | React.ReactNode
@@ -51,6 +51,7 @@ export interface ToC {
 export const MainNav: React.FC<MainNavProps> = ({ buttonLabel, title, description, accessKey, value }) => {
   let [isOpen, setIsOpen] = useState(false)
   const { locale } = useRouter()
+  const t = useTranslations('Nav');
 
   function closeModal() {
     setIsOpen(false)
@@ -105,7 +106,7 @@ export const MainNav: React.FC<MainNavProps> = ({ buttonLabel, title, descriptio
                     >
                       {title}
                     </Dialog.Title>
-                    <button className='px-3 py-1 border-2' onClick={closeModal}>Close</button>
+                    <button className='px-3 py-1 border-2' onClick={closeModal}>{t('close')}</button>
                   </div>
                   {description ? (
                     <Dialog.Description
