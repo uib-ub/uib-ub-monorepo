@@ -68,7 +68,20 @@ export async function useFetchSearchData(options: SearchOptions) {
   searchFetchLatest.value = fetchTime;
   const situation = options.situation;
 
-  if (situation === "initial" && route.path === "/search") {
+  if (situation === "initial") {
+    window._paq.push([
+      "trackEvent",
+      "search",
+      "initial search",
+      JSON.stringify({
+        term: options.term,
+        language: options.language,
+        translate: options.translate,
+        useDomain: options.useDomain,
+        domain: options.domain,
+        termbase: options.termbase,
+      }),
+    ]);
     if (route.path === "/search") {
       searchFetchInitial.value = true;
     }
