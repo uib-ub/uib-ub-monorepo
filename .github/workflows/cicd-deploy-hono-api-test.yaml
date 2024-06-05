@@ -66,6 +66,22 @@ jobs:
             fi
           fi
 
+          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
+          if ! kubectl -n hono-api-test get secret apieswritetokencred; then
+            # create the secret when no secret is found
+            kubectl -n hono-api-test create secret generic apieswritetokencred --from-literal=apiEsWriteToken=${{ secrets.API_ES_WRITE_TOKEN }}
+          else
+            # check if kubernetes secret apieswritetokencred needs an update, and update it when it is not the same as given secret API_ES_WRITE_TOKEN from Github repository secret
+            existing_pass=$(kubectl -n hono-api-test get secret apieswritetokencred --template='{{index .data "apiEsWriteToken" | base64decode}}')
+            if [[ "$existing_pass" != "${{ secrets.API_ES_WRITE_TOKEN }}" ]]; then
+              echo "Updating kubernetes secret apieswritetokencred, as password from Github repository secret API_ES_WRITE_TOKEN do not match."
+              kubectl -n hono-api-test delete secret apieswritetokencred
+              kubectl -n hono-api-test create secret generic apieswritetokencred --from-literal=apiEsWriteToken=${{ secrets.API_ES_WRITE_TOKEN }}
+            else
+              echo "Secret apieswritetokencred already exists, and it is the same as ES_APIKEY Github repository secret, skipping."
+            fi
+          fi
+
           # apply all resources in overlays based on namespace
           kubectl apply -k microk8s-hono-api/test -n hono-api-test
 
