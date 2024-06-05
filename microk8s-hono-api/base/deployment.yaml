@@ -50,6 +50,11 @@ spec:
                 secretKeyRef:
                   name: esapikeycred
                   key: esApiKey
+            - name: API_ES_WRITE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: apieswritetokencred
+                  key: apiEsWriteToken
           ports:
             - containerPort: 3009
       imagePullSecrets:
