@@ -21,6 +21,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     return <div dangerouslySetInnerHTML={createMarkup(htmlString)} />;
   }
 
+  /*
   const timelineData = [
     { year: 1838, spellings: ['Aas'] },
     { year: 1886, spellings: ['Aas'] },
@@ -28,6 +29,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     { year: 1950, spellings: ['Ås'] },
     { year: 2000, spellings: ['Ås'] },
   ]
+
   
   const Timeline2 = () => (
     <div className='flex items-top !mt-4'>
@@ -85,15 +87,17 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     </div>
   );
 
-
+  */
 
   // merge the two into a responsive version
 
-  const Timeline = () => (
+  const Timeline = (timelineData: Record<string,string[]>[]) => (
     <div className='relative md:flex md:items-top mt-4'>
-      {timelineData.map((item, index) => (
-        <div key={index} className='flex md:flex-col items-center pb-2 md:pb-0  relative'>
-
+      {timelineData.map((item, index) => {
+        const [year, labels] = Object.entries(item)[0];
+  
+        return (
+          <div key={index} className='flex md:flex-col items-center pb-2 md:pb-0  relative'>
             <div className='hidden md:flex items-center w-full'>
               <div className={`w-[50%] ${index !== 0 && 'border-t-2 border-primary-300'}`} />
               <div><div className='w-2 h-2 bg-primary-500 rounded-full'></div></div>
@@ -105,31 +109,47 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
           <div className='md:hidden w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-1'></div>
 
           <div className='ml-6 md:ml-0 md:flex md:gap-1 md:flex-col md:text-center pb-2 md:py-0 md:mt-2 md:px-4 '>
-            <Link href="/" className='block mb-1 font-bold'>{item.year}</Link>
-            {item.spellings.length > 1 ?
+            <div className='block mb-1 font-bold'>{year}</div>
+            {labels?.length > 1 ?
               <ul className='!p-0'>
-                {item.spellings.map((spelling, i) => (
-                  <li className=' list-none !py-0' key={i}>{spelling}</li>
+                {labels.map((label, i) => (
+                  <li className=' list-none !py-0' key={i}>{label}</li>
                 ))}
-
               </ul>
               :
-              <span>{item.spellings[0]}</span>
-              }
+              <span>{labels?.[0]}</span>
+            }
           </div>
-          
         </div>
-      ))}
+      );
+    }
+    )}
     </div>
   );
-
       
 
   
   
 
 
+  const transformAttestation = (arr: { label: string; year: string }[]): Record<string, string[]>[] => {
+    let grouped: Record<string,string[]> = {};
 
+    arr?.forEach(item => {
+        if (grouped[item.year]) {
+            grouped[item.year].push(item.label);
+        } else {
+            grouped[item.year] = [item.label];
+        }
+    });
+
+    let result = Object.keys(grouped).map(year => {
+        return { [year]: grouped[year] };
+    });
+    console.log(result)
+
+    return result;
+}
 
 
 
@@ -139,8 +159,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     return <>
     <div className='space-y-8'>
     <span><strong>Stadnamn ID: </strong> {source.snid || 'Ikke definert'}</span>
+    {source.attestations && Timeline(transformAttestation(source.attestations))}
     
-    {Timeline()}
     </div>
     <GroupedChildren childIdentifiers={source.children}/>
     </>

@@ -21,6 +21,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
     const [ showLoading, setShowLoading ] = useState<boolean>(true)
 
+
     useEffect(() => {
       if (!isLoading) {
         setTimeout(() => {
@@ -129,7 +130,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         <div className='flex gap-1 ml-auto self-end'>
         { params.dataset == 'search' &&  
         ( hit._source.children?.length > 1 && 
-          <div><span className='text-sm bg-neutral-100 rounded-full px-2'>{ hit._source.children.length }</span> </div>
+          <div className="flex"><span className='text-base font-semibold bg-neutral-100 rounded-full px-2 py-0 self-center'>{ hit._source.children.length }</span> </div>
         ) ||
           <IconButton onClick={() => router.push(`/view/${hit._source.dataset}/doc/${hit._source.children[0]}`)} 
                       label={datasetTitles[hit._source.dataset]} 

@@ -1,3 +1,4 @@
+'use client'
 import { useState, useRef } from 'react';
 import { PiPlayCircleFill, PiPauseCircleFill } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
