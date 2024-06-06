@@ -41,6 +41,7 @@ export default function SearchBar() {
                     {fieldConfig[dataset].map((field: any) => <option key={field.key} value={field.key}>{field.label}</option>)}
                 </select>}
                 <input type="text" 
+                   aria-label="Søk"
                    ref={inputRef}
                    name="q" 
                    value={inputValue} 
