@@ -118,7 +118,6 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     </div>
     </span>
     <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
-
     <ul className='flex flex-col gap-1 mb-2 divide-y divide-neutral-400'>
       {hits.hits.map((hit: any) => (
         <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow">
