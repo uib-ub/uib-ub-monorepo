@@ -146,7 +146,6 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     let result = Object.keys(grouped).map(year => {
         return { [year]: grouped[year] };
     });
-    console.log(result)
 
     return result;
 }
