@@ -1,6 +1,15 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">Institutions participating in termgroups</h2>
+    <div class="space-y-2">
+      <p>
+        List of insitutions with a count of associated people in termgroups that
+        have 'opprettet' or 'publisert' termbases.
+      </p>
+      <p>
+        The lookup follows the logic: Organization->Person->Termgroup->Termbase
+      </p>
+    </div>
     <DataTable
       ref="datatable"
       v-model:filters="filters"
