@@ -5,7 +5,7 @@ import { postQuery } from '../_utils/fetch';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
   const { termFilters, filteredParams } = extractFacets(request)
-  const dataset = params.dataset == 'search' ? '*' : params.dataset;
+  const dataset = params.dataset// == 'search' ? '*' : params.dataset;
   const facets = params.facets?.split(',')
   const { simple_query_string } = getQueryString(filteredParams)
 

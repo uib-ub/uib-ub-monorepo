@@ -21,6 +21,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
     const [ showLoading, setShowLoading ] = useState<boolean>(true)
 
+
     useEffect(() => {
       if (!isLoading) {
         setTimeout(() => {
@@ -118,7 +119,6 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     </div>
     </span>
     <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
-
     <ul className='flex flex-col gap-1 mb-2 divide-y divide-neutral-400'>
       {hits.hits.map((hit: any) => (
         <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow">
@@ -129,10 +129,13 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         </div>
         <div className='flex gap-1 ml-auto self-end'>
         { params.dataset == 'search' &&  
-          <IconButton onClick={() => router.push(`/view/${hit._index.split('-')[1]}`)} 
-                      label={datasetTitles[hit._index.split('-')[1]]} 
+        ( hit._source.children?.length > 1 && 
+          <div className="flex"><span className='text-base font-semibold bg-neutral-100 rounded-full px-2 py-0 self-center'>{ hit._source.children.length }</span> </div>
+        ) ||
+          <IconButton onClick={() => router.push(`/view/${hit._source.dataset}/doc/${hit._source.children[0]}`)} 
+                      label={datasetTitles[hit._source.dataset]} 
                       className="self-center px-1">
-                       <span className="not-italic font-semibold text-sm text-neutral-900">{hit._index.split('-')[1].toUpperCase()}</span>
+                       <span className="not-italic font-semibold text-sm text-neutral-900">{hit._source.dataset?.toUpperCase()}</span>
           </IconButton>
         }
 

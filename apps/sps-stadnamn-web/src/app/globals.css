@@ -77,6 +77,10 @@
     @apply text-lg sm:text-xl lg:text-2xl mt-4 text-neutral-900 font-serif py-2;
   }
 
+  .dataset-info h4, .instance-info h4, .page-info h3 {
+    @apply text-lg sm:text-base lg:text-lg mt-4 text-neutral-900 font-semibold py-2;
+  }
+
   .page-info h3 {
     @apply text-base sm:text-base lg:text-lg mt-4 text-neutral-900 pt-2;
   }

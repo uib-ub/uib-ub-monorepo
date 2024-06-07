@@ -94,7 +94,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
     },
     details: (hit: any) => {
-      return loktypeDetails(hit._source.type && (hit._source.type[0].toUpperCase() + hit._source.type.slice(1)), hit)
+      return loktypeDetails(hit._source.sosi && (hit._source.sosi[0].toUpperCase() + hit._source.sosi.slice(1)), hit)
     }
   },
   mu1950: {
@@ -102,7 +102,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
     },
     details: (hit: any) => {
-      return loktypeDetails(hit._source.type && (hit._source.type[0].toUpperCase() + hit._source.type.slice(1)), hit)
+      return loktypeDetails(hit._source.sosi && (hit._source.sosi[0].toUpperCase() + hit._source.sosi.slice(1)), hit)
     }
   },
   skul: {
@@ -110,7 +110,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
     },
     details: (hit: any) => {
-      return loktypeDetails(hit._source.type && (hit._source.type[0].toUpperCase() + hit._source.type.slice(1)), hit)
+      return loktypeDetails(hit._source.type && (hit._source.type[0].toUpperCase() + hit._source.sosi.slice(1)), hit)
     }
   },
   ostf: {

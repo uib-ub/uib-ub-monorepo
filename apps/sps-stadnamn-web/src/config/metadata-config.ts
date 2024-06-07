@@ -103,7 +103,7 @@ export const datasetPresentation: DatasetPresentation = {
       mu1950: {
         img: "/datasets/6541_inndeling_s_1950_jpg300dpi.jpg",
         alt: "Herredskart 1950",
-        imageAttribution: "Kartvkeret, kommunneinndelinger 1950",
+        imageAttribution: "Kartverket, kommunneinndelinger 1950",
         description: "Matrikkelutkastet av 1950 var forberedelsen til en ny matrikkel for hele Norge, men oppgaven ble aldri fullført, og man brukte i stedet kommunale eiendomsregistre. Utkastet dekker samlet sett over 767 000 matrikler fra landkommunene i alle fylker unntatt Finnmark. Hver matrikkel er angitt med gards- og bruksnavn, matrikkelnummer og verdi."
       },
       skul: {

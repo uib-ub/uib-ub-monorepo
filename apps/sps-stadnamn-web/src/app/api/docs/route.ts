@@ -3,13 +3,13 @@ import { postQuery } from "../_utils/fetch";
 export async function GET(request: Request) {
     const docs = new URLSearchParams(new URL(request.url).search).get('docs');
     let dataset = new URLSearchParams(new URL(request.url).search).get('dataset');
-    if (!dataset || dataset == 'search') {
+    if (!dataset) { // || dataset == 'search') {
       dataset = '*'
     }
 
 
     if (!docs || !dataset) {
-        return new Response('Missing parameter', { status: 400 });
+        return new Response('MISSING_PARAMETER', { status: 400 });
       }
     const query = {
         query: {

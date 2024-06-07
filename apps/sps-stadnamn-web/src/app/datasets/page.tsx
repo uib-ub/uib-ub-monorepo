@@ -59,8 +59,9 @@ export default function Datasets() {
           <h1 id="page_heading" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Søkevisninger</h1>
           <div className='flex flex-col lg:grid lg:grid-cols-3 justify-between gap-12 w-full'>
           <div className='flex flex-col md gap-4'>
-          <h2 className='text-xl'>Tittel</h2>
+          <h2 className='text-xl'><label htmlFor="titleSearch">Tittel</label></h2>
           <input
+              id='titleSearch'
               className='rounded-sm border border-gray-400 text-base px-2 py-1'
               type="text"
               value={searchTerm}
@@ -83,7 +84,7 @@ export default function Datasets() {
                         checked={selectedFilters.includes(type)}
                         onChange={() => handleFilterChange(type)}
                     />
-                    <label htmlFor={type}>{(typeNames as {[key: string]: string})[type]} <span className='rounded-sm p-0 px-1 bg-neutral-600 text-white text-xs'>{resultCount}</span></label>
+                    <label htmlFor={type}>{(typeNames as {[key: string]: string})[type]} <span className='rounded-sm p-0 px-1 bg-neutral-800 text-white text-xs'>{resultCount}</span></label>
                     </li>
                 );
                 }
@@ -106,7 +107,7 @@ export default function Datasets() {
                         checked={selectedFilters.includes(feature)}
                         onChange={() => handleFilterChange(feature)}
                     />
-                    <label htmlFor={feature}>{(featureNames as {[key: string]: string})[feature]} <span className='rounded-sm p-0 px-1 bg-neutral-600 text-white text-xs'>{resultCount}</span></label>
+                    <label htmlFor={feature}>{(featureNames as {[key: string]: string})[feature]} <span className='rounded-sm p-0 px-1 bg-neutral-800 text-white text-xs'>{resultCount}</span></label>
                     </li>
                 );
                 }

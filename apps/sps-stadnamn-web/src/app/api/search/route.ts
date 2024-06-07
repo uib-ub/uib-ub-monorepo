@@ -5,7 +5,7 @@ import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/fetch';
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
-  const dataset = filteredParams.dataset == 'search' ? '*' : filteredParams.dataset;
+  const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
   const { highlight, simple_query_string } = getQueryString(filteredParams)
 
   const sortArray = []

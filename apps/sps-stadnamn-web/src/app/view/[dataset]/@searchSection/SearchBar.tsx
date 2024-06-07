@@ -10,7 +10,7 @@ export default function SearchBar() {
     const router = useRouter()
     const clearedQuery = useQueryStringWithout(['q', 'page'])
     const params = useParams()
-    const dataset = params.dataset == 'search' ? '*' : params.dataset as string;
+    const dataset = params.dataset as string// params.dataset == 'search' ? '*' : params.dataset as string;
 
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -41,6 +41,7 @@ export default function SearchBar() {
                     {fieldConfig[dataset].map((field: any) => <option key={field.key} value={field.key}>{field.label}</option>)}
                 </select>}
                 <input type="text" 
+                   aria-label="Søk"
                    ref={inputRef}
                    name="q" 
                    value={inputValue} 

@@ -1,5 +1,9 @@
+import GroupedChildren from '@/app/view/[dataset]/doc/[uuid]/grouped-children';
 import InfoBox from '@/components/ui/infobox';
 import Link from 'next/link';
+import React from 'react';
+import { PiFunnelBold } from 'react-icons/pi';
+
 
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
@@ -17,14 +21,155 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     return <div dangerouslySetInnerHTML={createMarkup(htmlString)} />;
   }
 
+  /*
+  const timelineData = [
+    { year: 1838, spellings: ['Aas'] },
+    { year: 1886, spellings: ['Aas'] },
+    { year: 1890, spellings: ['Gjellestad vestre og østre', 'Aas'] },
+    { year: 1950, spellings: ['Ås'] },
+    { year: 2000, spellings: ['Ås'] },
+  ]
+
+  
+  const Timeline2 = () => (
+    <div className='flex items-top !mt-4'>
+      {timelineData.map((item, index) => (
+          <div key={index} className='flex sm:flex-col items-center'>
+            <div className='flex items-center w-full'>
+              <div className='w-[50%] border-t-2 border-primary-300' />
+              <div><div className='w-3 h-3 bg-primary-500 rounded-full'></div></div>
+              {index !== timelineData.length - 1 && <div className='w-[50%] border-t-2 border-primary-300' />}
+            </div>
+            <div className='flex gap-1 flex-col sm:text-center py-2 sm:py-0 sm:mt-2 px-4'>
+              <Link href="/" className='block mb-1 font-bold'>{item.year}</Link>
+              {item.spellings.length > 1 ?
+              <ul className='!py-0'>
+                {item.spellings.map((spelling, i) => (
+                  <li className=' list-none !py-0' key={i}>{spelling}</li>
+                ))}
+
+              </ul>
+              :
+              <span>{item.spellings[0]}</span>
+              }
+
+            </div>
+          </div>
+      ))}
+    </div>
+  );
+
+
+
+
+  const Timeline3 = () => (
+    <div className='relative m-4'>
+      
+      {timelineData.map((item, index) => (
+        <div key={index} className='flex items-center pb-2 relative'>
+          <div className={`bg-primary-300 absolute w-1 left-0 top-0 ${index === timelineData.length -1 ? 'h-2' : 'h-full'} ${index === 0 && 'mt-2'}`}></div>
+          <div className='w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-1'></div>
+          <div className='ml-6'>
+            <Link href="/" className='block mb-1 font-bold'>{item.year}</Link>
+            {item.spellings.length > 1 ?
+              <ul className='!py-0'>
+                {item.spellings.map((spelling, i) => (
+                  <li className=' list-none !py-0' key={i}>{spelling}</li>
+                ))}
+
+              </ul>
+              :
+              <span>{item.spellings[0]}</span>
+              }
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  */
+
+  // merge the two into a responsive version
+
+  const Timeline = (timelineData: Record<string,string[]>[]) => (
+    <div className='relative md:flex md:items-top mt-4'>
+      {timelineData.map((item, index) => {
+        const [year, labels] = Object.entries(item)[0];
+  
+        return (
+          <div key={index} className='flex md:flex-col items-center pb-2 md:pb-0  relative'>
+            <div className='hidden md:flex items-center w-full'>
+              <div className={`w-[50%] ${index !== 0 && 'border-t-2 border-primary-300'}`} />
+              <div><div className='w-2 h-2 bg-primary-500 rounded-full'></div></div>
+              {index !== timelineData.length - 1 && <div className='w-[50%] border-t-2 border-primary-300' />}
+            </div>
+
+
+          <div className={`md:hidden bg-primary-300 absolute w-1 left-0 top-0 ${index === timelineData.length -1 ? 'h-2' : 'h-full'} ${index === 0 && 'mt-2'}`}></div>
+          <div className='md:hidden w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-1'></div>
+
+          <div className='ml-6 md:ml-0 md:flex md:gap-1 md:flex-col md:text-center pb-2 md:py-0 md:mt-2 md:px-4 '>
+            <div className='block mb-1 font-bold'>{year}</div>
+            {labels?.length > 1 ?
+              <ul className='!p-0'>
+                {labels.map((label, i) => (
+                  <li className=' list-none !py-0' key={i}>{label}</li>
+                ))}
+              </ul>
+              :
+              <span>{labels?.[0]}</span>
+            }
+          </div>
+        </div>
+      );
+    }
+    )}
+    </div>
+  );
+      
+
+  
+  
+
+
+  const transformAttestation = (arr: { label: string; year: string }[]): Record<string, string[]>[] => {
+    let grouped: Record<string,string[]> = {};
+
+    arr?.forEach(item => {
+        if (grouped[item.year]) {
+            grouped[item.year].push(item.label);
+        } else {
+            grouped[item.year] = [item.label];
+        }
+    });
+
+    let result = Object.keys(grouped).map(year => {
+        return { [year]: grouped[year] };
+    });
+
+    return result;
+}
+
+
+
 
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
+  search: (source: any) => {
+    return <>
+    <div className='space-y-8'>
+    <span><strong>Stadnamn ID: </strong> {source.snid || 'Ikke definert'}</span>
+    {source.attestations && Timeline(transformAttestation(source.attestations))}
+    
+    </div>
+    <GroupedChildren childIdentifiers={source.children}/>
+    </>
+  },
   rygh: (source: any) => {
     return <>
     {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
     <InfoBox dataset={'rygh'} items={[
       {title: 'Stadnamn', value: source.label},
-      {title: 'Lokalitetstype', value: source.type, sosi: true},
+      {title: 'Lokalitetstype', value: source.sosi, sosi: true},
       {title: 'Herred', value: source.adm2},
       {title: 'Amt', value: source.adm1},
       {title: 'Kommunenummer', value: source.rawData.KNR},
@@ -170,7 +315,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
     <InfoBox dataset={'m1838'} 
     items={[
-      {title: 'Lokalitetstype', value: source.type, sosi: true},
+      {title: 'Lokalitetstype', value: source.sosi, sosi: true},
       {title: 'Prestegjeld', value: source.adm2},
       {title: 'Amt', value: source.adm1},
       {title: 'Kommunenummer', value: source.rawData.KNR},
@@ -192,8 +337,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Stadnamn', value: source.label},
       {title: 'Kommune', value: source.adm2},
       {title: 'Fylke', value: source.adm1},
-      {title: 'Kommunenummer', value: source.rawData.knr},
-      {title: 'GNIDu', value: source.rawData.gnidu},
+      {title: 'Kommunenummer', value: source.rawData?.knr},
+      {title: 'GNIDu', value: source.rawData?.gnidu},
     ]}/>
 
     </>
