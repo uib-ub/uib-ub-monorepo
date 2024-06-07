@@ -180,9 +180,9 @@ const displayInfo = computed(() => {
 });
 
 onMounted(() => {
-  if (window?.MathJax) {
+  setTimeout(() => {
     window.MathJax.typesetPromise();
-  }
+  }, 0);
 });
 
 onBeforeUnmount(() => {
