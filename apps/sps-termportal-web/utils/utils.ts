@@ -212,7 +212,7 @@ export function lalof(key: string): string {
 export function htmlify(data: string): string {
   try {
     const pars = data
-      .split("\n")
+      .split("\n\n")
       .filter((p) => p)
       .map((p) => `<p>${p}</p>`)
       .join("");
