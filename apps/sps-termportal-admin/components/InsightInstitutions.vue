@@ -59,8 +59,6 @@ const query = `
   `;
 const { data } = useLazySanityQuery(query);
 
-//      person.termgroups.map((tg) => tg?.termbase).flat().length > 0
-
 const procdata = computed(() => {
   const mapped = data.value
     ?.filter(
