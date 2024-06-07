@@ -1,6 +1,15 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">Institutions participating in termgroups</h2>
+    <div class="space-y-2">
+      <p>
+        List of insitutions with a count of associated people in termgroups that
+        have 'opprettet' or 'publisert' termbases.
+      </p>
+      <p>
+        The lookup follows the logic: Organization->Person->Termgroup->Termbase
+      </p>
+    </div>
     <DataTable
       ref="datatable"
       v-model:filters="filters"
@@ -39,7 +48,10 @@ const query = `
           *[_type == "group" && references(^._id)]
           {
             label,
-            qualifiedMembership[]{ timespan }
+            qualifiedMembership[]{ timespan },
+            "termbase": *[_type == "termbase" &&
+                          references(^._id) &&
+                          (status == "opprettet" || status == "publisert")]{id}
           }
       }
   }
@@ -50,23 +62,26 @@ const { data } = useLazySanityQuery(query);
 const procdata = computed(() => {
   const mapped = data.value
     ?.filter(
-      (group) =>
+      (orga) =>
         !(
           (
-            group.members.length <= 0 || // filter out organizations without members
-            group._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
+            orga.members.length <= 0 || // filter out organizations without members
+            orga._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
           ) // filter out termportalen
         )
     )
-    .map((group) => {
+    .map((orga) => {
       const map = {
-        label: group.label,
-        count: group.members.filter((member) => member.termgroups.length > 0)
-          .length,
+        label: orga.label,
+        count: orga.members.filter(
+          (member) =>
+            member.termgroups.map((tg) => tg.termbase).flat().length > 0
+        ).length,
       };
       return map;
     })
-    .filter((group) => group.count > 0);
+    .filter((orga) => orga.count > 0);
+
   return mapped;
 });
 

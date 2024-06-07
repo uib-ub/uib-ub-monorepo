@@ -1,6 +1,13 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">Institutions responsible for termbases</h2>
+    <div class="">
+      <p>
+        List of institutions registered as responsible for one or more
+        termbases. Only termbases that have the status 'opprettet' or
+        'publisert' are included in the count.
+      </p>
+    </div>
     <DataTable
       ref="datatable"
       v-model:filters="filters"
@@ -30,7 +37,9 @@ const query = `
     *[_type == "organization"]
     { _id,
       label,
-      "termbases": *[_type == "termbase" && references(^._id)]{
+      "termbases": *[_type == "termbase" &&
+                     references(^._id) &&
+                     (status == 'publisert' || status == 'opprettet')]{
         qualifiedAttribution[group._ref == ^.^._id]{...}
       }
     }
