@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     const query = {
         query: {
             terms: {
-                "_id": docs.split(',')
+                "uuid": docs.split(',')
             }
         }
     }

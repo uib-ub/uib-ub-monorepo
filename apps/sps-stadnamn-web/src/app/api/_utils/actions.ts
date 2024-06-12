@@ -10,35 +10,25 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     const { endpoint, token } = detectEnv(retry)
 
     let res
-
-    if (params.dataset == 'search') {
-        // Post a search query for the document
-        const query = {
-            query: {
-                terms: {
-                    "_id": [params.uuid]
-                }
+    // Post a search query for the document
+    const query = {
+        query: {
+            terms: {
+                "uuid": [params.uuid]
             }
         }
-        res = await fetch(`${endpoint}stadnamn-${process.env.SN_ENV}-*/_search`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `ApiKey ${token}`,
-            },
-            body: JSON.stringify(query)
-        });
     }
-    else {
-        // Get the document by uuid
-        res = await fetch(`${endpoint}stadnamn-${process.env.SN_ENV}-${params.dataset}/_doc/${params.uuid}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `ApiKey ${token}`,
-            }
-        })
-    }
+
+
+    res = await fetch(`${endpoint}stadnamn-${process.env.SN_ENV}-*/_search`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `ApiKey ${token}`,
+        },
+        body: JSON.stringify(query)
+    });
+
 
     if (!res.ok) {
         const errorResponse = await res.json();
@@ -54,8 +44,9 @@ export async function fetchDoc(params: any, retry: boolean = true) {
         }
     }
   const data = await res.json()
+
   
-  return params.dataset == 'search' ? data.hits.hits[0] : data
+  return data.hits.hits[0]
 
   }
 
@@ -83,7 +74,7 @@ export async function fetchChildrenGrouped(uuids: string[], retry: boolean = tru
     const query = {
         query: {
             terms: {
-                "_id": uuids
+                "uuid": uuids
             }
         },
         aggs: {

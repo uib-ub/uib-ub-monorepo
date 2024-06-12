@@ -1,6 +1,7 @@
 export interface FacetConfigItem {
     key: string;
     label: string;
+    omitLabel?: boolean;
     sort?: 'doc_count' | 'asc' | 'desc';
   }
 
@@ -10,6 +11,10 @@ export interface FacetConfigItem {
   }
 
 export const fieldConfig: Record<string, FieldConfigItem[]> = {
+    search: [
+      {"key": "_search", "label": "Namn"},
+      {"key": "description", "label": "Beskriving"},
+    ],
     hord: [
       {"key": "label", "label": "Namn"},
       {"key": "rawData.merknader", "label": "Merknader"},
@@ -20,7 +25,7 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
       search: [
-        {"key": "_index", "label": "Datasett"},
+        {"key": "datasets", "label": "Datasett", "omitLabel": true},
         {"key": "snid", "label": "Stadnamn ID"},
         {"key": "gnidu", "label": "GNIDu"},
         {"key": "midu", "label": "MIDu"},

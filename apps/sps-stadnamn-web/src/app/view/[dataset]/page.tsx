@@ -23,6 +23,9 @@ export default function SearchView() {
                 setDocs(es_data.hits.hits)
             })
         }
+        else {
+            setDocs([])
+        }
     }, [docs_uuid, params.dataset])
     
 

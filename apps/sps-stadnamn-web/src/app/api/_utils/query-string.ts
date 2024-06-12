@@ -20,12 +20,24 @@ function modifyQuery(query: string) {
 
 export function getQueryString(params: { [key: string]: string | null }) {
 
+  let fields, default_operator
+  if (params.field == '_search') {
+    // Preferred label is prioritized in snid-search
+    fields = ["label^3", "altLabels^2", "attestations.label"]
+    default_operator = "AND"
+
+  }
+  else {
+    fields = [params.field || "label"]
+    default_operator = params.field && params.field != "label" ? "OR" : "AND"
+  }
+
   const simple_query_string = params.q ? {
-    "query_string": {
-      "query": modifyQuery(params.q),
-      "allow_leading_wildcard": true,
-      "default_operator": params.field && params.field != "label" ? "OR" : "AND",
-      "fields": [params.field || "label"]
+      query_string: {
+      query: modifyQuery(params.q),
+      allow_leading_wildcard: true,
+      default_operator,
+      fields
     }} : null
 
   const highlight = params.q && params.field && params.field != 'label' ? {

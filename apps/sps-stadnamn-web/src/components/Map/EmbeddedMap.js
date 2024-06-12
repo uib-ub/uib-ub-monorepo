@@ -29,7 +29,7 @@ export default function EmbeddedMap(props) {
             />
             
             {props.doc?.location ? <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
-                            key={props.doc._id} position={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]}>
+                            key={props.doc.uuid} position={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]}>
 
               </Marker> : null}
             </>

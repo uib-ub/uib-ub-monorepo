@@ -121,29 +121,27 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
     <ul className='flex flex-col gap-1 mb-2 divide-y divide-neutral-400'>
       {hits.hits.map((hit: any) => (
-        <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow">
+        <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-grow">
         <div>{titleRenderer(hit)}
         <p>
           { detailsRenderer(hit) }
         </p>
         </div>
         <div className='flex gap-1 ml-auto self-end'>
-        { params.dataset == 'search' &&  
-        ( hit._source.children?.length > 1 && 
-          <div className="flex"><span className='text-base font-semibold bg-neutral-100 rounded-full px-2 py-0 self-center'>{ hit._source.children.length }</span> </div>
-        ) ||
-          <IconButton onClick={() => router.push(`/view/${hit._source.dataset}/doc/${hit._source.children[0]}`)} 
-                      label={datasetTitles[hit._source.dataset]} 
-                      className="self-center px-1">
-                       <span className="not-italic font-semibold text-sm text-neutral-900">{hit._source.dataset?.toUpperCase()}</span>
-          </IconButton>
+        { params.dataset == 'search'  && 
+        <div className="flex"><span className='text-sm bg-neutral-100 rounded-full px-2 py-0 self-center whitespace-nowrap'>
+          { hit._source.children?.length == 1 ? datasetTitles[hit._source.datasets[0]] : <> { hit._source.datasets.length } datasett </>} 
+          </span> 
+          
+          </div>
+
         }
 
         {hit._source.image && 
           <IconButton 
-            onClick={() => goToIIIF(hit._id, hit._source.image.manifest)} 
+            onClick={() => goToIIIF(hit._source.uuid, hit._source.image.manifest)} 
             label="Vis seddel" 
-            aria-current={searchParams.get('docs') == hit._id && pathname.includes('/iiif/') ? 'page': undefined}
+            aria-current={searchParams.get('docs') == hit._source.uuid && pathname.includes('/iiif/') ? 'page': undefined}
             className="p-1 text-neutral-700">
               <PiArticleFill className="text-xl xl:text-3xl"/></IconButton> 
         }
@@ -163,18 +161,19 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         }
         {hit._source.location && 
           <IconButton 
-            onClick={() => showInMap(hit._id)} 
+            onClick={() => showInMap(hit._source.uuid)} 
             label="Vis i kart" 
-            aria-current={searchParams.get('docs') == hit._id && pathname == `/view/${params.dataset}` ? 'page': undefined} 
+            aria-current={searchParams.get('docs') == hit._source.uuid && pathname == `/view/${params.dataset}` ? 'page': undefined} 
             className="p-1 text-neutral-700">
               <PiMapPinFill className="text-xl xl:text-3xl"/></IconButton> 
         }
+
         <IconButton 
-          onClick={() => goToDoc(hit._id)} 
+          onClick={() => goToDoc(hit._source.uuid)} 
           label="Infoside" 
-          aria-current={params.uuid == hit._id && pathname.includes('/doc/') ? 'page': undefined} 
+          aria-current={params.uuid == hit._source.uuid && pathname.includes('/doc/') ? 'page': undefined} 
           className="p-1 text-primary-600">
-            <PiInfoFill className="text-xl xl:text-3xl"/></IconButton>
+            <PiInfoFill className="text-xl xl:text-3xl"/></IconButton> 
         </div>
         </li>
       ))}

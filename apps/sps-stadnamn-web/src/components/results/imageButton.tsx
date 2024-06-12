@@ -21,9 +21,9 @@ export default function ImageButton({hit}: {hit: any}) {
         <>
 
 <IconButton 
-            onClick={() => goToIIIF(hit._id, hit._source.image.manifest)} 
+            onClick={() => goToIIIF(hit._source.uuid, hit._source.image.manifest)} 
             label="Vis seddel" 
-            aria-current={searchParams.get('docs') == hit._id && pathname.includes('/iiif/') ? 'page': undefined}
+            aria-current={searchParams.get('docs') == hit._source.uuid && pathname.includes('/iiif/') ? 'page': undefined}
             className="p-1 text-neutral-700">
               <PiArticleFill className="text-xl xl:text-3xl"/></IconButton> 
         </>

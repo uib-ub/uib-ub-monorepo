@@ -21,15 +21,17 @@ export default function Facets() {
     const [expandedFacet, setExpandedFacet] = useState<string | null>(null)
     const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
 
+    
     const fieldNames: Record<string, string> = facetConfig[params.dataset]?.reduce((acc: Record<string, string>, item: any) => {
+      if (item.omitLabel) return acc;
       acc[item.key] = item.label;
       return acc;
     }, {});
 
     const getFieldLabel = (name: string, value: string) => {
       // Add any special cases here
-      if (name == "_index") {
-        return datasetTitles[value.split("-")[2]] || value
+      if (name == "datasets") {
+        return datasetTitles[value] || value
       }
       return value.split('__')[0]
     }

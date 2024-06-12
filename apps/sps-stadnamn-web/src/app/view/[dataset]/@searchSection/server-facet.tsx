@@ -29,8 +29,8 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   }
 
   const processItem = (item: Record<string, string>) => {
-    if (selectedFacet == '_index') {
-      return {key: 'stadnamn-local-' + item.key.split('-')[1], label: datasetTitles[item.key.split('-')[1]], doc_count: item.doc_count}
+    if (selectedFacet == 'datasets') {
+      return {key: item.key, label: datasetTitles[item.key], doc_count: item.doc_count}
     }
     return {key: item.key, label: item.key, doc_count: item.doc_count}
 
