@@ -24,7 +24,8 @@ export type Samling =
   | "FBK"
   | "BIBINF"
   | "UDEUT"
-  | "SKOG";
+  | "SKOG"
+  | "WHT";
 
 export type Domains =
   | "DOMENE-3AHumaniora"
@@ -56,6 +57,7 @@ export const termbaseOrder: Samling[] = [
   "TOLKING",
   "UDEUT",
   "UHR",
+  "WHT",
 ];
 
 // TODO replace with lazy query
@@ -82,6 +84,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   TOLKING: ["nb", "en", "ar", "fr", "pl", "ru", "so", "ti", "fa-af"],
   UDEUT: ["nb", "nn", "en", "fr"],
   UHR: ["nb", "nn", "en"],
+  WHT: ["nb", "nn", "en"],
 };
 type CollectionUriPatternKey =
   | "bkg"
