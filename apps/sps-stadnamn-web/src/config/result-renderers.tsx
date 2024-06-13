@@ -32,6 +32,12 @@ const loktypeDetails = (loktype: string, hit: any) => {
 
 
 export const resultRenderers: ResultRenderers = {
+  search: {
+    title: defaultTitle,
+    details: (hit: any) => {
+      return <>{hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
+    }
+  },
   rygh: {
     title: defaultTitle,
     details: (hit: any) => {
