@@ -24,7 +24,13 @@ export default function SearchBar() {
     const changeField = (event: any) => {
         const field = event.target.value;
         const params = new URLSearchParams(location.search);
-        params.set('field', field);
+        if (field) {
+            params.set('field', field);
+        }
+        else {
+            params.delete('field');
+        }
+        
         const newUrl = `/view/${dataset}?${params.toString()}`;
         router.push(newUrl);
     }
