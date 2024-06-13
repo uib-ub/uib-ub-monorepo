@@ -6,7 +6,5 @@ export async function GET(request: Request) {
     const uuid = url.pathname.split('/')[3];
     const data = await fetchDoc({ uuid, dataset: 'vocab' });
 
-    console.log(data)
-
   return Response.json(data);
 }

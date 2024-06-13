@@ -36,7 +36,6 @@ export async function fetchDoc(params: any, retry: boolean = true) {
             return fetchDoc(params, retry = false);
         }
         if (errorResponse.error) {
-            console.log(errorResponse.error)
             return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
         }
         if (errorResponse.found == false) {
