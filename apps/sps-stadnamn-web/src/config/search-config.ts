@@ -12,7 +12,7 @@ export interface FacetConfigItem {
 
 export const fieldConfig: Record<string, FieldConfigItem[]> = {
     search: [
-      {"key": "_search", "label": "Namn"},
+      {"key": "label", "label": "Namn"},
       {"key": "description", "label": "Beskriving"},
     ],
     hord: [
