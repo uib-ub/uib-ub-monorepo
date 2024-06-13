@@ -37,6 +37,7 @@ export const datasetTitles: DatasetTitles = {
     leks: "Norsk stadnamnleksikon",
     leks_g: "grunnord",
     ostf: "Bustadnavn i Østfold",
+    sof: "Fylkesarkivet i Vestland"
 }
 
 
@@ -112,6 +113,13 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
         description: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms."
       },
+      sof: {
+        img: "/datasets/SOF.jpg",
+        alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
+        imageAttribution: "Fylkesarkivet i Vestland",
+        description: "Stadnamnsamlinga frå Fylkesarkivet har ei stor samling med over publiserte på nettsidene og kartfesta. Namna er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivets stadnamn: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
+
+      }
 }
 
 export const subpages: Record<string, string[]> = {
@@ -129,7 +137,7 @@ export const featureNames: Record<string, string> = {
 }
 
 export const typeNames: Record<string, string> = {
-  "collection": "Språksamlingenes arkiv",
+  "sprak": "Språksamlingenes arkiv",
   "encyclopedia": "Oppslagsverk",
   "database": "Database",
   "public": "Offentlig register",
@@ -148,20 +156,22 @@ export const datasetFeatures: Record<string, string[]> = {
   mu1950: ["link"],
   skul: ["image"],
   leks: ["phonetic", "base"],
-  ostf: ["link"]
+  ostf: ["link"],
+  sof: ["link", "coordinates", "phonetic"]
 }
 
 export const datasetTypes: Record<string, string[]> = {
-  bsn: ["collection"],
-  hord: ["collection", "database"],
+  bsn: ["sprak"],
+  hord: ["sprak", "database"],
   rygh: ["encyclopedia"],
-  nbas: ["collection", "database"],
+  nbas: ["sprak", "database"],
   m1838: ["public"],
   m1886: ["public"],
-  mu1950: ["public", "collection"],
-  skul: ["collection"],
+  mu1950: ["public", "sprak"],
+  skul: ["sprak"],
   leks: ["encyclopedia"],
-  ostf: ["encyclopedia"]
+  ostf: ["encyclopedia"],
+  sof: ["database"]
 }
 
 
