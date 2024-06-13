@@ -1,3 +1,5 @@
+import { postQuery } from './fetch'
+
 const detectEnv = (retry: boolean) => {
     const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
     const token = endpoint == process.env.ES_ENDPOINT ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
@@ -111,3 +113,54 @@ export async function fetchChildrenGrouped(uuids: string[], retry: boolean = tru
     return data.aggregations.dataset.buckets
 
   }
+
+
+
+  export async function fetchStats() {
+    'use server'
+    const query = {
+        "size": 0,
+        "aggs": {
+            "search_dataset": {
+                "filter": {
+                    "bool": {
+                        "must": [
+                            {
+                                "term": {
+                                    "_index": `stadnamn-${process.env.SN_ENV}-search`
+                                }
+                            },
+                            {
+                                "exists": {
+                                    "field": "snid"
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "other_datasets": {
+                "filter": {
+                    "bool": {
+                        "must_not": [
+                            {
+                                "term": {
+                                    "_index": `stadnamn-${process.env.SN_ENV}-vocab`
+                                }
+                            },
+                            {
+                                "term": {
+                                    "_index": `stadnamn-${process.env.SN_ENV}-search`
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+    const res = await postQuery('*', query)
+
+    return res
+}

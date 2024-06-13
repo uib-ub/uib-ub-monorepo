@@ -6,14 +6,19 @@ import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
 import { datasetTitles, datasetPresentation } from '@/config/metadata-config';
 import Footer from '../components/layout/Footer';
+import { fetchStats } from '@/app/api/_utils/actions';
 
-export default function Home() {
+
+export default async function Home() {
+
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
     return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: info.description, subindices: info.subindices, initPage: info.initPage }
   }
   )
+
+  const stats = await fetchStats()
 
 
   return (
@@ -31,6 +36,18 @@ export default function Home() {
     <Link href="/view/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
   </form>
   
+
+  <ul className="flex flex-col gap-6 lg:flex-row items-center justify-center text-neutral-950 font-serif">
+    <li className="flex gap-2">
+      Identifiserte stadnamn:
+      <span className="font-semibold">{stats.aggregations.search_dataset.doc_count.toLocaleString('nb-NO')}</span>
+    </li>
+    <li className="flex gap-2">
+      <h2>Stadnamn i kjeldene:</h2>
+      <span className="font-semibold">{stats.aggregations.other_datasets.doc_count.toLocaleString('nb-NO')}</span>
+    </li>
+  </ul>
+
   </div>
 
   </div>
