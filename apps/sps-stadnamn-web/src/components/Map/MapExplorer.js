@@ -5,10 +5,6 @@ import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigat
 import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
 import PopupList from './PopupList'
-import { indexToCode } from '@/lib/datasets';
-import { datasetTitles } from '@/config/metadata-config';
-import IconButton from '@/components/ui/icon-button';
-import { PiInfoFill } from 'react-icons/pi';
 
 export default function MapExplorer(props) {
   const [markers, setMarkers] = useState([]);
@@ -64,17 +60,6 @@ export default function MapExplorer(props) {
 
     return Object.values(grouped);
   }
-
-  const groupByIndex = (docs) => {
-    return docs.reduce((grouped, doc) => {
-      const key = doc._index;
-      if (!grouped[key]) {
-        grouped[key] = [];
-      }
-      grouped[key].push(doc);
-      return grouped;
-    }, {});
-  };
 
 
   const documentUrl = (uuid) => {
