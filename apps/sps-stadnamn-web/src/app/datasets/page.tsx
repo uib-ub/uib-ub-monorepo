@@ -1,14 +1,17 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames } from '@/config/metadata-config'
 import Image from 'next/image'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { PiArchiveFill, PiArticleFill, PiBooksFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
 
+
 export default function Datasets() {
+
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [stats, setStats] = useState<any>(null);
 
   const allFeatures = Object.keys(featureNames);
   const allTypes = Object.keys(typeNames);
@@ -23,12 +26,32 @@ export default function Datasets() {
     "maps": <PiMapTrifoldFill />,
     "base": <PiWallFill />,
 
-    "collection": <PiArchiveFill />,
+    "sprak": <PiArchiveFill />,
     "encyclopedia": <PiBooksFill />,
     "database": <PiDatabaseFill />,
     "public": <PiGavelFill />,
     
   };
+
+  useEffect(() => {
+    fetch('/api/stats').then(response => response.json()).then(data => {
+      const metadata = data.aggregations.other_datasets.indices.buckets.reduce((acc: any, bucket: any) => {
+        const parts = bucket.key.split('-');
+        const datasetCode = parts[1];
+        const timestamp = parts[2];
+        acc[datasetCode] = {
+          timestamp: parseInt(timestamp, 10),
+          doc_count: bucket.doc_count
+        };
+        return acc;
+      }, {});
+      setStats(metadata)
+    }).catch(() =>
+      setStats(null))}
+  , [])
+
+
+
 
   const handleFilterChange = (filter: string) => {
     setSelectedFilters(prevFilters =>
@@ -119,8 +142,7 @@ export default function Datasets() {
 
           <ul className="flex flex-col gap-6">
             {filteredDatasets.map((dataset) => (
-          <li key={dataset} className="card flex flex-col sm:flex-row h-full my-6 sm:my-0 w-full sm:grid sm:grid-cols-4">
-            
+          <li key={dataset} className="card flex flex-col sm:flex-row h-full my-6 sm:my-0 w-full sm:grid sm:grid-cols-4 relative">
               <div className='flex flex-col sm:col-span-1'>
               <Image src={datasetPresentation[dataset].img} alt={datasetPresentation[dataset].alt || ''} width="512" height="512" className="object-cover aspect-square sepia-[25%] grayscale-[50%]"/>
               <small className="text-neutral-700 text-xs p-1">{datasetPresentation[dataset].alt} | {datasetPresentation[dataset].imageAttribution}</small>
@@ -169,7 +191,9 @@ export default function Datasets() {
               )})}
               </div>
               </div>
+             
               </div>
+              {stats?.[dataset] && <div className="absolute right-6 bottom-4 text-2xl text-neutral-700 font-serif">{stats[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div> }
               
           </li>
         ))}

@@ -119,46 +119,61 @@ export async function fetchChildrenGrouped(uuids: string[], retry: boolean = tru
   export async function fetchStats() {
     'use server'
     const query = {
-        "size": 0,
-        "aggs": {
-            "search_dataset": {
-                "filter": {
-                    "bool": {
-                        "must": [
-                            {
-                                "term": {
-                                    "_index": `stadnamn-${process.env.SN_ENV}-search`
-                                }
-                            },
-                            {
-                                "exists": {
-                                    "field": "snid"
-                                }
+    "size": 0,
+    "aggs": {
+        "search_dataset": {
+            "filter": {
+                "bool": {
+                    "must": [
+                        {
+                            "term": {
+                                "_index": `stadnamn-${process.env.SN_ENV}-search`
                             }
-                        ]
-                    }
+                        },
+                        {
+                            "exists": {
+                                "field": "snid"
+                            }
+                        }
+                    ]
                 }
             },
-            "other_datasets": {
-                "filter": {
-                    "bool": {
-                        "must_not": [
-                            {
-                                "term": {
-                                    "_index": `stadnamn-${process.env.SN_ENV}-vocab`
-                                }
-                            },
-                            {
-                                "term": {
-                                    "_index": `stadnamn-${process.env.SN_ENV}-search`
-                                }
+            "aggs": {
+                "indices": {
+                    "terms": {
+                        "field": "_index"
+                    }
+                }
+            }
+        },
+        "other_datasets": {
+            "filter": {
+                "bool": {
+                    "must_not": [
+                        {
+                            "term": {
+                                "_index": `stadnamn-${process.env.SN_ENV}-vocab`
                             }
-                        ]
+                        },
+                        {
+                            "term": {
+                                "_index": `stadnamn-${process.env.SN_ENV}-search`
+                            }
+                        }
+                    ]
+                }
+            },
+            "aggs": {
+                "indices": {
+                    "terms": {
+                        "field": "_index",
+                        "size": 100
                     }
                 }
             }
         }
     }
+}
 
     const res = await postQuery('*', query)
 
