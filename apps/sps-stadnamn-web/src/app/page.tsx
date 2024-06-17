@@ -1,5 +1,5 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiMapTrifold } from 'react-icons/pi';
+import { PiInfoFill, PiMapTrifold } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
@@ -37,7 +37,7 @@ export default async function Home() {
   </form>
   
 
-  <ul className="text-neutral-950 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-12">
+  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-12">
   <li className="flex flex-col gap-0 items-center text-lg">
       Stadnamnoppslag
       <span className="text-4xl">{stats.aggregations.search_dataset.doc_count.toLocaleString('nb-NO')}</span>
@@ -74,7 +74,7 @@ export default async function Home() {
 
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Kildetilpassede søkevisninger</h2>
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Søk i datasetta</h2>
     <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 sm:my-0">
@@ -93,7 +93,7 @@ export default async function Home() {
         </li>
       ))}
     </ul>
-    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass className="text-2xl"/>Flere søkevisninger</Link>
+    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass className="text-2xl"/>Fleire datasett</Link>
     </section>
   
 
