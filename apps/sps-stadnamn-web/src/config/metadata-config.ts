@@ -32,7 +32,7 @@ export const datasetTitles: DatasetTitles = {
     m1838: "Matrikkelen 1838", 
     m1886: "Matrikkelen av 1886",
     mu1950: "Matrikkelutkastet 1950", 
-    search: "Stedsnavnsøk",
+    search: "Stadnamnsøk",
     skul: "Skulebarnsoppskriftene",
     leks: "Norsk stadnamnleksikon",
     leks_g: "grunnord",
