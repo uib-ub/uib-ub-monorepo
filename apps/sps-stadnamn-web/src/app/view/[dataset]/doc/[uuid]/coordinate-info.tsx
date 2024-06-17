@@ -17,16 +17,18 @@ export default function CoordinateInfo({source}: {source: Record<string, any>}) 
 
     useEffect(() => {
         const fetchData = async () => {
-          const res = await fetch(`/api/vocab/${source.coordinateType}`);
+         if (source.coordinateType) {
+            const res = await fetch(`/api/vocab/${source.coordinateType}`);
           const data = await res.json();
           setCoordinateData(data);
+         }
+         else {
+            setCoordinateData({});
+         }
         };
       
         fetchData();
-      }, [source.coordinateType]);
-
-
-
+      }, [source]);
 
 
 
