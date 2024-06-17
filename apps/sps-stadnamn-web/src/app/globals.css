@@ -110,7 +110,7 @@
   }
 
   .icon-button {
-    @apply p-1 flex gap-1 shadow-none items-center text-neutral-900 hover:text-primary-700;
+    @apply p-1 flex gap-1 shadow-none items-center text-neutral-900 hover:text-primary-700 !font-sans;
   }
 
 
