@@ -37,15 +37,21 @@ export default async function Home() {
   </form>
   
 
-  <ul className="flex flex-col gap-6 lg:flex-row items-center justify-center text-neutral-950 font-serif">
-    <li className="flex gap-2">
-      Identifiserte stadnamn:
-      <span className="font-semibold">{stats.aggregations.search_dataset.doc_count.toLocaleString('nb-NO')}</span>
+  <ul className="text-neutral-950 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-12">
+  <li className="flex flex-col gap-0 items-center text-lg">
+      Stadnamnoppslag
+      <span className="text-4xl">{stats.aggregations.search_dataset.doc_count.toLocaleString('nb-NO')}</span>
     </li>
-    <li className="flex gap-2">
-      <h2>Stadnamn i kjeldene:</h2>
-      <span className="font-semibold">{stats.aggregations.other_datasets.doc_count.toLocaleString('nb-NO')}</span>
+    
+    <li className="flex flex-col gap-0 items-center text-lg">
+      Datasett
+      <span className="text-4xl">{(Object.keys(datasetTitles).length - 1).toLocaleString('nb-NO')}</span>
     </li>
+    <li className="flex flex-col gap-0 items-center text-lg">
+      Oppslag i datasetta
+      <span className="text-4xl">{stats.aggregations.other_datasets.doc_count.toLocaleString('nb-NO')}</span>
+    </li>
+    
   </ul>
 
   </div>
