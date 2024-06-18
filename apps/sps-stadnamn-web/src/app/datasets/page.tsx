@@ -152,10 +152,10 @@ export default function Datasets() {
                 <h3 className="text-2xl font-semibold">{datasetTitles[dataset]}</h3>
                 <ul className='flex gap-2 my-2 text-neutral-900'>
                 {datasetTypes[dataset].map((type) => (
-                    <div key={type} className="flex items-center gap-1">
+                    <li key={type} className="flex items-center gap-1">
                     {icons[type]}
                     <span>{typeNames[type]}</span>
-                    </div>
+                    </li>
                 ))}
                 </ul>
                 <div className="space-y-4">
@@ -164,10 +164,10 @@ export default function Datasets() {
                 <h4 className='font-semibold'>Ressurser</h4>
                 <ul className='flex gap-2 text-neutral-900'>
                 {datasetFeatures[dataset].map((feature) => (
-                    <div key={feature} className="flex items-center gap-1">
+                    <li key={feature} className="flex items-center gap-1">
                     {icons[feature]}
                     <span>{featureNames[feature]}</span>
-                    </div>
+                    </li>
                 ))}
                 </ul>
                 </div>

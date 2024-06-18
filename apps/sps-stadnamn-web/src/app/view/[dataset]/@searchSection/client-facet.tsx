@@ -150,7 +150,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     <div className="flex flex-col gap-2 p-2 py-4 border-b border-neutral-300">
     <div className='flex gap-2'>
     <div className='relative grow'>
-      <input onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
+      <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
           className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
       <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
         <PiFunnel aria-hidden={true} className='text-neutral-900'/>

@@ -90,8 +90,9 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
         ))}
     </select>
     <div className='relative grow'>
-      <input onChange={(e) => setFacetSearch(e.target.value)} 
-          className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
+      <input aria-label={"Søk i " + availableFacets?.find(facet => facet.key === selectedFacet)?.label}
+             onChange={(e) => setFacetSearch(e.target.value)} 
+             className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
       <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
         <PiMagnifyingGlass aria-hidden={true} className='text-neutral-900'/>
       </span>
