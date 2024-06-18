@@ -74,7 +74,7 @@ export default async function Home() {
 
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Søk i einskilde datasett</h2>
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalgte datasett</h2>
     <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 sm:my-0">
