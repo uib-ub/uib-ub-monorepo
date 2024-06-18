@@ -24,6 +24,12 @@ export const activityColorMapping = {
   1000: { color: "#69b9fe", description: "for mer enn 30 dager siden" },
 };
 
+export const blockerColorMapping = {
+  hard: { color: "red" },
+  soft: { color: "orange" },
+  ok: { color: "green" },
+};
+
 export const orderTopDomain = [
   "NaturvitenskapTeknologi",
   "Humaniora",

@@ -32,6 +32,44 @@
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.status }}</span>
+            <div
+              v-if="
+                data.status !== '1. kjent' && data.status !== '5. publisert'
+              "
+            >
+              <Icon
+                v-if="data.blocker.status === 'ok'"
+                name="mdi:play"
+                size="1.6em"
+                :color="blockerColorMapping.ok.color"
+              />
+              <Icon
+                v-else-if="data.blocker.status === 'soft'"
+                name="mdi:pause"
+                size="1.6em"
+                :color="blockerColorMapping.soft.color"
+              />
+              <Icon
+                v-else-if="data.blocker.status === 'hard'"
+                name="mdi:stop"
+                size="1.6em"
+                :color="blockerColorMapping.hard.color"
+              />
+            </div>
+
+            <Icon
+              v-else-if="
+                data.status !== '1. kjent' && data.blocker.status !== 'ok'
+              "
+              name="fa6-solid:triangle-exclamation"
+              size="1.2em"
+              :color="
+                data.blocker.status === 'hard'
+                  ? blockerColorMapping.hard.color
+                  : blockerColorMapping.soft.color
+              "
+              class="ml-[6px] mt-[3px]"
+            />
           </div>
         </template>
         <template #filter="{ filterModel, filterCallback }">
@@ -247,12 +285,13 @@ const merged = computed(() => {
       if (!ids.includes(entry.id)) {
         const data = {
           label: entry.label,
-          id: entry.id + "*",
+          id: entry.id,
           status: numberStatus(entry.status),
           labels: entry.labelsOk,
           descriptions: entry.descriptionsOk,
           agreement: entry.licenseAgreementStatus,
           staff: entry.responsibleStaff,
+          domain: entry.domain,
           _id: entry._id,
         };
         enriched.push(data);
@@ -260,8 +299,65 @@ const merged = computed(() => {
     }
   }
 
-  return enriched;
+  const blocker = enriched?.map((tb) => ({
+    ...tb,
+    ...{ blocker: checkBlocker(tb) },
+  }));
+  return blocker;
 });
+
+function checkBlocker(tb) {
+  const blocker = { hard: {}, soft: {}, status: "ok" };
+  if (tb.status) {
+    const statusNumber = Number(tb.status[0]);
+
+    // 2. planlagt or further
+    if (statusNumber > 1) {
+      // soft
+      if (!tb.staff) {
+        blocker.soft.staff = "No responsible staff assigned.";
+      }
+    }
+    // 3. initialisert or further
+    if (statusNumber > 2) {
+      // hard
+      if (!tb.id) {
+        blocker.hard.id = "No ID defined.";
+      }
+      // soft
+      if (!tb.domain && statusNumber < 5) {
+        blocker.soft.domain = "No domain provided.";
+      }
+    }
+    // 4. opprettet or further
+    if (statusNumber > 3) {
+      // hard
+      if (!tb.license) {
+        blocker.hard.license = "No license registered.";
+      }
+      if (!tb.agreement || tb.agreement === "ingen") {
+        blocker.hard.agreement = "No agreement registered.";
+      }
+      if (!tb.labels) {
+        blocker.hard.labels = "Labels not approved.";
+      }
+      if (!tb.descriptions) {
+        blocker.hard.descriptions = "Descriptions not approved.";
+      }
+    }
+
+    if (Object.keys(blocker.hard).length > 0) {
+      blocker.status = "hard";
+    } else if (Object.keys(blocker.soft).length > 0) {
+      blocker.status = "soft";
+    }
+  } else {
+    blocker.hard.status = "No status registered";
+    blocker.status = "hard";
+  }
+
+  return blocker;
+}
 
 const statuses = computed(() => {
   const statusArray = merged.value?.map((tb) => {
