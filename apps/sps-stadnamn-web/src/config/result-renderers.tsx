@@ -38,6 +38,14 @@ export const resultRenderers: ResultRenderers = {
       return <>{hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
     }
   },
+  sof: {
+    title: (hit: any) => {
+    return <>{defaultTitle(hit)} | {hit._source.rawData?.KommuneNr}{hit._source.rawData?.GardsNr && '-'}{hit._source.rawData?.GardsNr}{hit._source.rawData?.GardsNr && '/'}{hit._source.rawData?.GardsNr}</>
+    },
+    details: (hit: any) => {
+      return <>{hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
+    }
+  },
   rygh: {
     title: defaultTitle,
     details: (hit: any) => {
