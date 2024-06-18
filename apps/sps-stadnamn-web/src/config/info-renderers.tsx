@@ -164,6 +164,23 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <GroupedChildren childIdentifiers={source.children}/>
     </>
   },
+  sof: (source: any) => {
+    return <>
+    <InfoBox dataset={'sof'} items={[
+      {title: 'Normert form', value: source.rawData.Normform},
+      {title: 'Oppslagsform', value: source.rawData.OppsForm},
+      {title: 'Lydskrift', value: source.rawData.Fonskr},
+      {title: 'Kulturkode', value: source.rawData.Kulturkode},
+      {title: 'Kommunenummer', value: source.rawData.KommuneNr},
+      {title: 'Kommune', value: source.adm2},
+      {title: 'Fylke', value: source.adm1},
+      {title: 'Gardsnummer', value: source.rawData.Gardsnr},
+      {title: 'Bruksnummer', value: source.rawData.Bruksnr},
+      {title: 'Oppskriver', value: source.rawData.Oppskrivar},
+      {title: 'Informant', value: source.rawData.Informant}
+    ]}/>
+    </>
+  },
   rygh: (source: any) => {
     return <>
     {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}

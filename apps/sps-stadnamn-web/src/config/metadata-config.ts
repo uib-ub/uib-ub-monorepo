@@ -37,7 +37,7 @@ export const datasetTitles: DatasetTitles = {
     leks: "Norsk stadnamnleksikon",
     leks_g: "grunnord",
     ostf: "Bustadnavn i Østfold",
-    sof: "Fylkesarkivet i Vestland"
+    sof: "Fylkesarkivet i Sogn og Fjordane"
 }
 
 
@@ -53,7 +53,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
         alt: "Utsnitt av kart over Hordaland og Sogn og Fjordane",
         imageAttribution: "Kartverket: Generalkart VII, L. Arentz 1929",
-        description: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er at finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig at se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg at lytte til den lokale uttalen."
+        description: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg å lytte til den lokale uttalen."
       },
       rygh: {
         img: "/datasets/Prof_oluf_rygh.jpg",
@@ -71,7 +71,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/leks2.png",
         alt: "Forside til Norsk stadnamnleksikon 1997",
         imageAttribution: "Språksamlingane",
-        description: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
+        description: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg å søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
         initPage: "info",
         subindices: {
           leks_g: {
@@ -114,11 +114,10 @@ export const datasetPresentation: DatasetPresentation = {
         description: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms."
       },
       sof: {
-        img: "/datasets/SOF.jpg",
+        img: "/datasets/SOF.JPG",
         alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
         imageAttribution: "Fylkesarkivet i Vestland",
-        description: "Stadnamnsamlinga frå Fylkesarkivet har ei stor samling med over publiserte på nettsidene og kartfesta. Namna er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivets stadnamn: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
-
+        description: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivet i Vestlands stadnamnside: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
       }
 }
 
