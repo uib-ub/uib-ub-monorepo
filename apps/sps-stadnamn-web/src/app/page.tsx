@@ -20,6 +20,9 @@ export default async function Home() {
 
   const stats = await fetchStats()
 
+  // Exclude indices that are subordinated to other indices (index name contains underscore)
+  const filteredDatasets = stats.aggregations.other_datasets.indices.buckets.filter((bucket: any) => !bucket.key.includes('_'))
+  const filteredDatasetsDocCount = filteredDatasets.reduce((acc: number, bucket: any) => acc + bucket.doc_count, 0)
 
   return (
     <>
@@ -45,11 +48,11 @@ export default async function Home() {
     
     <li className="flex flex-col gap-0 items-center text-lg">
       Datasett
-      <span className="text-4xl">{(Object.keys(datasetTitles).length - 1).toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{(filteredDatasets.length).toLocaleString('nb-NO')}</span>
     </li>
     <li className="flex flex-col gap-0 items-center text-lg">
       Oppslag i datasetta
-      <span className="text-4xl">{stats.aggregations.other_datasets.doc_count.toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{filteredDatasetsDocCount.toLocaleString('nb-NO')}</span>
     </li>
     
   </ul>
