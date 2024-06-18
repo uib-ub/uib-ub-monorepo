@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill, PiCaretLeftBold } from 'react-icons/pi';
 import IconButton from '../../../../../components/ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
-import { useParams } from 'next/navigation';
-//import Viewer from "@samvera/clover-iiif/viewer";
+import { useParams, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 const DynamicImageViewer = () => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
@@ -15,6 +15,10 @@ const DynamicImageViewer = () => {
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const {dataset, manifestId} = useParams();
+
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const hasSearchParams = searchParams.toString()
   
 
   const toggleCollapse = (value: boolean | ((prevState: boolean) => boolean)) => {
@@ -84,7 +88,12 @@ const DynamicImageViewer = () => {
 
   return (
     <div className='h-full w-full flex flex-col'>
-    <div className='h-full w-full relative'>
+    <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+            className="no-underline p-4 bg-white">
+        <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
+        {hasSearchParams ? 'Tilbake til kartet' : 'Vis på kartet'}
+      </Link>
+    <div className='h-full w-full relative mt-10'>
     {isLoading || !viewerRef.current? 
     <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner className='w-20 h-20'/></div>
       : null
