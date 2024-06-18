@@ -53,7 +53,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
         alt: "Utsnitt av kart over Hordaland og Sogn og Fjordane",
         imageAttribution: "Kartverket: Generalkart VII, L. Arentz 1929",
-        description: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er at finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig at se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg at lytte til den lokale uttalen."
+        description: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg å lytte til den lokale uttalen."
       },
       rygh: {
         img: "/datasets/Prof_oluf_rygh.jpg",
@@ -71,7 +71,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/leks2.png",
         alt: "Forside til Norsk stadnamnleksikon 1997",
         imageAttribution: "Språksamlingane",
-        description: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg at søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
+        description: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg å søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
         initPage: "info",
         subindices: {
           leks_g: {
