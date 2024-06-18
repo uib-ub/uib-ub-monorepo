@@ -928,7 +928,8 @@ const ubbontContext = {
       "@type": "@id"
     },
     "rodeNr": {
-      "@id": "ubbont:rodeNr"
+      "@id": "ubbont:rodeNr",
+      "@container": "@set"
     },
     "identifier": {
       "@id": "dct:identifier"
@@ -1379,7 +1380,8 @@ const ubbontContext = {
     },
     "reproduced": {
       "@id": "ubbont:reproduced",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "focalLength": {
       "@id": "exif:focalLength"
