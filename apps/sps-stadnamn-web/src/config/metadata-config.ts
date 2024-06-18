@@ -37,7 +37,7 @@ export const datasetTitles: DatasetTitles = {
     leks: "Norsk stadnamnleksikon",
     leks_g: "grunnord",
     ostf: "Bustadnavn i Østfold",
-    sof: "Fylkesarkivet i Vestland"
+    sof: "Fylkesarkivet i Sogn og Fjordane"
 }
 
 
@@ -117,8 +117,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/SOF.jpg",
         alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
         imageAttribution: "Fylkesarkivet i Vestland",
-        description: "Stadnamnsamlinga frå Fylkesarkivet har ei stor samling med over publiserte på nettsidene og kartfesta. Namna er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivets stadnamn: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
-
+        description: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivet i Vestlands stadnamnside: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
       }
 }
 
