@@ -150,7 +150,7 @@ export default function MapExplorer(props) {
 
 
   return (
-    <Map mapRef={mapRef} bounds={props.mapBounds} className='w-full aspect-square lg:aspect-auto lg:h-full'>
+    <Map mapRef={mapRef} bounds={props.mapBounds} className='w-full h-full'>
             {({ TileLayer, LayersControl, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
 
           <>
