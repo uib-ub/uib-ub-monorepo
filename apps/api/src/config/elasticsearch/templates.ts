@@ -13,6 +13,8 @@ export const chcTemplate = {
       "_source": {
         "enabled": true
       },
+      "date_detection": false,
+      "dynamic": false,
       "properties": mappings.chc.properties
     },
     "aliases": {
