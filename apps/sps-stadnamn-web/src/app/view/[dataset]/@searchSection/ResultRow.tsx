@@ -1,7 +1,5 @@
-import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
 import { PiMapPinFill, PiInfoFill, PiArticleFill, PiLinkBold } from 'react-icons/pi';
-import { useState } from 'react';
 import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
@@ -14,7 +12,6 @@ export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}
     const pathname = usePathname()
     const router = useRouter()
     const params = useParams<{uuid: string; dataset: string}>()
-    const [isOpen, setIsOpen] = useState(false)
     const titleRenderer = resultRenderers[params.dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
 
@@ -92,8 +89,9 @@ export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}
         { params.dataset == 'search'  && (
           <IconButton label={"Vis treff frå " + (hit._source.children?.length == 1 ? datasetTitles[hit._source.datasets[0]]: hit._source.datasets.length  + " datasett")} 
                       textIcon 
+                      aria-current={params.uuid == hit._source.uuid && pathname.includes('/doc/') ? 'page': undefined} 
                       onClick={() => goToDoc(hit._source.uuid)} 
-                      className="flex text-sm bg-neutral-100 text-black rounded-full pl-3 pr-1 py-1 self-center whitespace-nowrap">
+                      className="flex text-sm bg-neutral-100 text-black rounded-full pl-3 pr-1 py-1 self-center whitespace-nowrap snid-button">
                       
 
           { hit._source.datasets?.length > 1 ? hit._source.datasets.length + ' datasett' :  hit._source.datasets[0].toUpperCase() }<PiInfoFill className="text-xl text-primary-600 ml-1"/>

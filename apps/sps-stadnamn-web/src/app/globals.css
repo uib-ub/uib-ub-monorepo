@@ -136,6 +136,14 @@
 
   }
 
+  button[aria-current='page'].snid-button {
+    @apply bg-accent-200 ring-1;
+  }
+
+  button[aria-current='page'].snid-button svg {
+    @apply text-accent-800;
+  }
+
 }
 
 @layer utilities {
