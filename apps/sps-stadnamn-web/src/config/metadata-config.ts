@@ -114,7 +114,7 @@ export const datasetPresentation: DatasetPresentation = {
         description: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms."
       },
       sof: {
-        img: "/datasets/SOF.jpg",
+        img: "/datasets/SOF.JPG",
         alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
         imageAttribution: "Fylkesarkivet i Vestland",
         description: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivet i Vestlands stadnamnside: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
