@@ -1,4 +1,5 @@
 import { fixmeCorrespondanceType } from '@/helpers/mappers/staticMapping';
+import { env } from '@config/env';
 import omitEmptyEs from 'omit-empty-es';
 
 /**
@@ -43,16 +44,20 @@ export const constructCorrespondance = (data: any) => {
       fixmeCorrespondanceType,
     ],
     carried_out_by: sourceArray?.map((source: any) => {
+      const type = source.type === 'Person' ? 'Person' : 'Group'
+      const id = `${env.API_URL}/${source.type === 'Person' ? 'people' : 'groups'}/${source.identifier}`
       return {
-        id: source.id,
-        type: source.type,
+        id: id,
+        type: type,
         _label: source._label,
       }
     }),
     recipient: targetArray?.map((source: any) => {
+      const type = source.type === 'Person' ? 'Person' : 'Group'
+      const id = `${env.API_URL}/${source.type === 'Person' ? 'people' : 'groups'}/${source.identifier}`
       return {
-        id: source.id,
-        type: source.type,
+        id: id,
+        type: type,
         _label: source._label,
       }
     }),
@@ -60,8 +65,8 @@ export const constructCorrespondance = (data: any) => {
       {
         type: "Move",
         _label: {
-          no: "Sendt",
-          en: "Sent",
+          no: ["Sendt"],
+          en: ["Sent"],
         },
         moved: [
           {
@@ -71,16 +76,18 @@ export const constructCorrespondance = (data: any) => {
           }
         ],
         moved_from: originPlace?.map((place: any) => {
+          const id = `${env.API_URL}/places/${place.identifier}`
           return {
-            id: place.id,
-            type: place.type,
+            id: id,
+            type: 'Place',
             _label: place._label,
           }
         }),
         moved_to: placeDelivery?.map((place: any) => {
+          const id = `${env.API_URL}/places/${place.identifier}`
           return {
-            id: place.id,
-            type: place.type,
+            id: id,
+            type: 'Place',
             _label: place._label,
           }
         }),

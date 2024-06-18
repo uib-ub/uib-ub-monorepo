@@ -1,4 +1,5 @@
 import { institutions } from '@/helpers/mappers/staticMapping';
+import { env } from '@config/env';
 import { TBaseMetadata } from '@models';
 import omitEmptyEs from 'omit-empty-es';
 
@@ -44,9 +45,12 @@ export const constructOwnership = (base: TBaseMetadata, data: any) => {
   } : undefined;
 
   const current_location = {
-    id: storedAt?.id ?? 'https://data.ub.uib.no/place/storage',
+    id: storedAt?.identifier ? `${env.API_URL}/places/${storedAt?.identifier}` : 'https://data.ub.uib.no/place/storage',
     type: 'Place',
-    _label: storedAt?._label ?? 'Storage',
+    _label: storedAt?._label ?? {
+      no: ['Lager'],
+      en: ['Storage'],
+    },
   };
 
   return omitEmptyEs({

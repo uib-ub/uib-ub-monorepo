@@ -16,7 +16,6 @@ export const constructAboutness = async (data: any) => {
     description,
     physicalDescription,
     physicalCondition,
-    isReferencedBy,
     subject,
     spatial,
     depicts,
@@ -36,6 +35,8 @@ export const constructAboutness = async (data: any) => {
     hasVersion,
     originalCreator,
     profession,
+    references,
+    rodeNr,
   } = data;
 
   const type = mapToGeneralClass(hasType)
@@ -58,7 +59,6 @@ export const constructAboutness = async (data: any) => {
     !description &&
     !physicalDescription &&
     !physicalCondition &&
-    !isReferencedBy &&
     !subject &&
     !spatial &&
     !depicts &&
@@ -77,7 +77,9 @@ export const constructAboutness = async (data: any) => {
     !editor &&
     !hasVersion &&
     !originalCreator &&
-    !profession
+    !profession &&
+    !references &&
+    !rodeNr
   ) {
     return data;
   }
@@ -86,7 +88,6 @@ export const constructAboutness = async (data: any) => {
   delete data.description
   delete data.physicalDescription
   delete data.physicalCondition
-  delete data.isReferencedBy
   delete data.subject
   delete data.spatial
   delete data.depicts
@@ -105,8 +106,10 @@ export const constructAboutness = async (data: any) => {
   delete data.hasVersion
   delete data.originalCreator
   delete data.profession
+  delete data.references
+  delete data.rodeNr
+  delete data.depiction // TODO: Not mapped as it is the inverse of depicts
 
-  let isReferencedByArray: any[] = [];
   let descriptionArray: any[] = [];
   let physicalDescriptionArray: any[] = [];
   let physicalConditionArray: any[] = [];
@@ -121,8 +124,10 @@ export const constructAboutness = async (data: any) => {
   let transcriptionMarkdown: any = undefined
   let provenanceArray: any[] = []
   let referenceArray: any[] = []
+  let referencesArray: any[] = []
   let abstractArray: any[] = []
   let professionArray: any[] = []
+  let rodeNrArray: any[] = []
 
   // if there is a link to a html file, we need to fetch the content and convert it to markdown
   if (hasTranscription?.includes('.html')) {
@@ -144,27 +149,43 @@ export const constructAboutness = async (data: any) => {
     }]
   };
 
-  if (isReferencedBy) {
-    isReferencedByArray = isReferencedBy.map((reference: any) => {
+  if (references) {
+    referencesArray = Object.entries(references).map(([key, value]: [string, any]) => {
+      return {
+        type: "LinguisticObject",
+        classified_as: [
+          aatRelatedTextualReferencesType,
+        ],
+        language: [
+          getLanguage(key)
+        ],
+        content: NodeHtmlMarkdown.translate(value[0]),
+        format: 'text/markdown',
+      }
+    });
+  }
+
+  // This is ubbont:reference (strings), not to be confused with 
+  // dct:references (objects).
+  if (reference) {
+    referenceArray = reference.map((ref: string) => {
       return {
         type: "LinguisticObject",
         classified_as: [
           aatRelatedTextualReferencesType
         ],
         language: [
-          getLanguage(reference._label)
+          getLanguage('no')
         ],
-        _label: reference._label,
-        content: reference.description.no[0],
-      }
+        content: ref,
+      };
     });
   }
 
-  // This is ubbont:reference (strings), not to be confused with 
-  // dct:references (objects). We get the references from the 
-  // ubbont:isReferencedBy above.
-  if (reference) {
-    referenceArray = reference.map((ref: string) => {
+  // Rode nr is a reference to the old place name in Bergen.
+  // We need to map this as a textual reference.
+  if (rodeNr) {
+    rodeNrArray = rodeNr.map((ref: string) => {
       return {
         type: "LinguisticObject",
         classified_as: [
@@ -350,7 +371,7 @@ export const constructAboutness = async (data: any) => {
     showsArray = [{
       id: `${env.API_URL}/visualitem/${visualItemVersionId ?? crypto.randomUUID()}`,
       type: "VisualItem",
-      creation: {
+      creation: originalCreator ? {
         type: "Creation",
         carried_out_by: originalCreator ? originalCreator.map((creator: any) => {
           return {
@@ -359,7 +380,7 @@ export const constructAboutness = async (data: any) => {
             _label: creator._label,
           }
         }) : [],
-      },
+      } : [],
       represents: [
         ...representsDepictionArray,
         ...representsSpatialArray,
@@ -457,12 +478,12 @@ export const constructAboutness = async (data: any) => {
     referred_to_by: [
       ...descriptionArray,
       ...abstractArray,
-      ...isReferencedByArray,
       ...physicalDescriptionArray,
-      typeOfDamage,
       ...physicalConditionArray,
       ...provenanceArray,
       ...referenceArray,
+      ...referencesArray,
+      ...rodeNrArray,
       ...professionArray
     ],
     shows: showsArray,

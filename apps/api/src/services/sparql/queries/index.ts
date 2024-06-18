@@ -170,7 +170,7 @@ export const itemSparqlQuery = `
     OPTIONAL {?uri foaf:name ?name } .
     OPTIONAL {?uri skos:prefLabel ?prefLabel } .
     OPTIONAL {?uri rdfs:label ?rdfsLabel } .
-    BIND (COALESCE(?title,?name,?prefLabel,?rdfsLabel, ?id) AS ?label) .
+    BIND (COALESCE(?title,?name,?prefLabel,?rdfsLabel) AS ?label) .
     # Get multipage image
     OPTIONAL { 
       ?uri ubbont:hasRepresentation / dct:hasPart ?page .
@@ -192,7 +192,7 @@ export const itemSparqlQuery = `
     OPTIONAL { 
       ?o a ?oClass ;
         ?p2 ?o2 .
-      FILTER(?p2 NOT IN (dct:hasPart, ubbont:isSubjectOf, ubbont:locationFor, foaf:made, ubbont:techniqueOf, ubbont:cataloguer, ubbont:isRightsHolderOf, skos:narrower, skos:broader, ubbont:ownedBy, dct:references, dct:isPartOf, dct:subject, dct:spatial, dct:isReferencedBy, ubbont:technique, bibo:owner, dct:relation, ubbont:reproduced, foaf:depiction, foaf:page, ubbont:formerOwnerOf, ubbont:commissioned, ubbont:originalCreatorOf, ubbont:published, dct:hasVersion, skos:inScheme))
+      FILTER(?p2 NOT IN (dct:hasPart, ubbont:isSubjectOf, ubbont:locationFor, foaf:made, ubbont:techniqueOf, ubbont:cataloguer, ubbont:isRightsHolderOf, skos:narrower, skos:broader, ubbont:ownedBy, dct:references, dct:isPartOf, dct:subject, dct:spatial, dct:isReferencedBy, ubbont:technique, bibo:owner, dct:relation, ubbont:reproduced, foaf:depiction, foaf:page, ubbont:formerOwnerOf, ubbont:commissioned, ubbont:originalCreatorOf, ubbont:published, dct:hasVersion, skos:inScheme, schema:sibling, schema:parent, schema:spouse))
       OPTIONAL { ?o dct:identifier ?identifier } .
       OPTIONAL { ?o (dct:title|foaf:name|skos:prefLabel|rdfs:label) ?oLabel } . 
       OPTIONAL {
@@ -210,7 +210,7 @@ export const itemSparqlQuery = `
     BIND(EXISTS{?uri ubbont:hasRepresentation ?repr} AS ?isDigitized)
     BIND(xsd:double(?long) as ?longDouble)
     BIND(xsd:double(?lat) as ?latDouble)
-    FILTER(?p NOT IN (rdf:type, ubbont:cataloguer, ubbont:internalNote, ubbont:showWeb, ubbont:clause, ubbont:hasRepresentation, ubbont:hasThumbnail, dct:relation, dc:relation,  ubbont:hasTranscription))
+    FILTER(?p NOT IN (rdf:type, dct:hasPart, ubbont:cataloguer, ubbont:internalNote, ubbont:showWeb, ubbont:clause, ubbont:hasRepresentation, ubbont:hasThumbnail, dct:relation, dc:relation, dct:isReferencedBy, ubbont:hasTranscription))
   }
 `
 

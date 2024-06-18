@@ -73,7 +73,7 @@ export const constructIdentifiers = (data: any) => {
       classified_as: [
         aatHistoricalTermsType,
       ],
-      content: previousIdentifier,
+      content: Array.isArray(previousIdentifier) ? previousIdentifier.join(', ') : previousIdentifier,
     }];
   }
 

@@ -1,4 +1,5 @@
 import { classToAttMapping } from '@helpers/mappers/mapClassToClassifiedAs';
+import { aatReproductionsType } from '@helpers/mappers/staticMapping';
 import { TBaseMetadata } from '@models';
 import omitEmptyEs from 'omit-empty-es';
 
@@ -10,7 +11,8 @@ export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
   } = base;
 
   const {
-    hasType
+    hasType,
+    _available,
   } = data
 
   if (
@@ -21,14 +23,20 @@ export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
 
   delete data.id
   delete data._label
+  delete data._available
   delete data["@context"]
+  delete data.hasPart // @TODO: should be "backlinks" in the _links object. 
+  delete data.catalogueStatus
+  delete data.mainImage // TODO: do we use this boolean?
+  delete data.prefLabel // Not allowed on object
 
   const classified_as = [
     {
       id: classToAttMapping[hasType]?.mapping ?? "https://fix.me/missing-mapping",
       type: "Type",
       _label: hasType,
-    }
+    },
+    data.reproducedBy ? aatReproductionsType : null
   ];
 
   return omitEmptyEs({
@@ -36,6 +44,7 @@ export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
     id: newId,
     type: "HumanMadeObject",
     _label,
+    _available: Array.isArray(_available) ? _available.reduce(function (a, b) { return a < b ? a : b; }) : _available, // When multiple dates, we want the earliest
     classified_as: [
       ...classified_as
     ],

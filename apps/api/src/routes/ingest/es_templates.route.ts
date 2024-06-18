@@ -2,6 +2,7 @@ import client from '@config/apis/esClient'
 import { chcTemplate, manifestsTemplate } from '@config/elasticsearch/templates'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
 import { esFailureSchema, esSuccessesSchema } from '@models'
+import { HTTPException } from 'hono/http-exception'
 
 const route = new OpenAPIHono()
 
@@ -40,7 +41,7 @@ route.openapi(putTemplates, async (c) => {
     return c.json(response)
   } catch (error) {
     console.error(error);
-    return c.json({ error: 'Ops, something went wrong!' }, 500);
+    throw new HTTPException(500, { message: 'Internal Server Error' });
   }
 });
 

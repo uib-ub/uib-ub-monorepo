@@ -91,4 +91,24 @@ route.openapi(getItem, async (c) => {
   }
 })
 
+/**
+ * Redirect .../:id/manifest to .../:id/manifest.json
+ * because we have old links that does not use the .json extension.
+ */
+route.get('/:id/manifest', (c) => {
+  const id = c.req.param('id')
+  return c.redirect(`/items/${id}?as=iiif`, 301)
+})
+
+
+/**
+ * Redirect .../:id/manifest to .../:id/manifest.json
+ * because we have old links that does not use the .json extension.
+ */
+route.get('/:id/manifest.json', (c) => {
+  const id = c.req.param('id')
+  return c.redirect(`/items/${id}?as=iiif`, 301)
+})
+
+
 export default route

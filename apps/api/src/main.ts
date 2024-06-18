@@ -19,7 +19,6 @@ import ingestSka from './routes/ingest/ska/ingest_ska.route'
 import ingestWab from './routes/ingest/wab/ingest_wab.route'
 import item from './routes/items/item.route'
 import items from './routes/items/items.route'
-import manifest from './routes/items/manifest.route'
 import lookupId from './routes/lookup.route'
 import ns from './routes/ns.route'
 import reference from './routes/references.route'
@@ -40,7 +39,7 @@ import wab from './routes/sparql/wab/items_wab.route'
 const app = new OpenAPIHono({ strict: false })
 
 // Single valid privileged token. Authenticates the request using a bearer token.
-app.on(privilegedMethods, '/admin/*', async (c, next) => {
+app.on(privilegedMethods, '/ingest/*', async (c, next) => {
   const bearer = bearerAuth({ token: privilegedToken });
   return bearer(c, next);
 })
@@ -66,7 +65,6 @@ app.get('/', (c) => {
 
 app.route('/items', items)
 app.route('/items', item)
-app.route('/items', manifest)
 // The reference route is the OpenAPI documentation UI.
 app.route('/reference', reference)
 app.route('/lookup', lookupId)

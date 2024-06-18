@@ -1,8 +1,8 @@
-import getItemData from '@services/sparql/marcus/item.service';
+import { getLaItem } from './getLaItem';
 
-export async function resolveIds(ids: any, source: string, context: string, type: string): Promise<any> {
+export async function resolveIds(ids: any, source: string): Promise<any> {
   try {
-    const promises = ids.map((item: { id: string, identifier: string }) => getItemData(item.identifier, source, context, type))
+    const promises = ids.map((item: { id: string, identifier: string }) => getLaItem(item.identifier, source))
     const data = await Promise.all(promises);
     return data;
   } catch (error) {
