@@ -20,9 +20,6 @@ export default async function Home() {
 
   const stats = await fetchStats()
 
-  // Exclude indices that are subordinated to other indices (index name contains underscore)
-  const filteredDatasets = stats.aggregations.other_datasets.indices.buckets.filter((bucket: any) => !bucket.key.includes('_'))
-  const filteredDatasetsDocCount = filteredDatasets.reduce((acc: number, bucket: any) => acc + bucket.doc_count, 0)
 
   return (
     <>
@@ -43,16 +40,16 @@ export default async function Home() {
   <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-12">
   <li className="flex flex-col gap-0 items-center text-lg">
       Stadnamnoppslag
-      <span className="text-4xl">{stats.aggregations.search_dataset.doc_count.toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats.snidCount.toLocaleString('nb-NO')}</span>
     </li>
     
     <li className="flex flex-col gap-0 items-center text-lg">
       Datasett
-      <span className="text-4xl">{(filteredDatasets.length).toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats.datasetCount.toLocaleString('nb-NO')}</span>
     </li>
     <li className="flex flex-col gap-0 items-center text-lg">
       Oppslag i datasetta
-      <span className="text-4xl">{filteredDatasetsDocCount.toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats.datasetDocs.toLocaleString('nb-NO')}</span>
     </li>
     
   </ul>
@@ -77,22 +74,22 @@ export default async function Home() {
 
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalgte datasett</h2>
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalde datasett</h2>
     <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 sm:my-0">
-          <Link href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
+          <div className="flex flex-col sm:flex-row h-full w-full no-underline">
           <div className="aspect-square  m-1 overflow-hidden sm:flex-none">
           <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%] overflow-hidden"/>
         </div>
           <div className="content p-4 pb-2 w-128 flex flex-col">
-            <h3 className="text-lg font-semibold">{card.title}</h3>
+            <h3 className="text-lg font-semibold"><Link href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>{card.title}</Link></h3>
             <p>{card.description}</p>
             {card.imageAttribution && 
             <small className="text-neutral-700 text-xs mt-auto">Illustrasjon: {card.imageAttribution}</small>
           }
           </div>
-          </Link>
+          </div>
         </li>
       ))}
     </ul>

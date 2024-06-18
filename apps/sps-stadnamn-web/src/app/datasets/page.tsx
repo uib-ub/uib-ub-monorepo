@@ -35,21 +35,10 @@ export default function Datasets() {
 
   useEffect(() => {
     fetch('/api/stats').then(response => response.json()).then(data => {
-      const metadata = data.aggregations.other_datasets.indices.buckets.reduce((acc: any, bucket: any) => {
-        const parts = bucket.key.split('-');
-        const datasetCode = parts[1];
-        const timestamp = parts[2];
-        acc[datasetCode] = {
-          timestamp: parseInt(timestamp, 10),
-          doc_count: bucket.doc_count
-        };
-        return acc;
-      }, {});
-      setStats(metadata)
+      setStats(data)
     }).catch(() =>
       setStats(null))}
   , [])
-
 
 
 
@@ -193,7 +182,7 @@ export default function Datasets() {
               </div>
              
               </div>
-              {stats?.[dataset] && <div className="absolute right-6 bottom-4 text-2xl text-neutral-700 font-serif">{stats[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div> }
+              {stats?.datasets[dataset] && <div className="absolute right-6 bottom-4 text-2xl text-neutral-700 font-serif">{stats.datasets[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div> }
               
           </li>
         ))}
