@@ -1,19 +1,24 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiMapTrifold } from 'react-icons/pi';
+import { PiInfoFill, PiMapTrifold } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
 import { datasetTitles, datasetPresentation } from '@/config/metadata-config';
 import Footer from '../components/layout/Footer';
+import { fetchStats } from '@/app/api/_utils/actions';
 
-export default function Home() {
+
+export default async function Home() {
+
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
     return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: info.description, subindices: info.subindices, initPage: info.initPage }
   }
   )
+
+  const stats = await fetchStats()
 
 
   return (
@@ -25,12 +30,30 @@ export default function Home() {
   <h1 className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center md:text-4xl lg:text-5xl">Stadnamnportalen</h1>
   
   <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-3" action="view/search">
-    <label htmlFor="search_input" className="sr-only">Søk i alle kilder</label>
+    <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input id="search_input" className="col-span-4 rounded-sm h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></IconButton>
     <Link href="/view/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
   </form>
   
+
+  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-12">
+  <li className="flex flex-col gap-0 items-center text-lg">
+      Stadnamnoppslag
+      <span className="text-4xl">{stats.aggregations.search_dataset.doc_count.toLocaleString('nb-NO')}</span>
+    </li>
+    
+    <li className="flex flex-col gap-0 items-center text-lg">
+      Datasett
+      <span className="text-4xl">{(Object.keys(datasetTitles).length - 1).toLocaleString('nb-NO')}</span>
+    </li>
+    <li className="flex flex-col gap-0 items-center text-lg">
+      Oppslag i datasetta
+      <span className="text-4xl">{stats.aggregations.other_datasets.doc_count.toLocaleString('nb-NO')}</span>
+    </li>
+    
+  </ul>
+
   </div>
 
   </div>
@@ -51,7 +74,7 @@ export default function Home() {
 
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Kildetilpassede søkevisninger</h2>
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Søk i einskilde datasett</h2>
     <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 sm:my-0">
@@ -70,7 +93,7 @@ export default function Home() {
         </li>
       ))}
     </ul>
-    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass className="text-2xl"/>Flere søkevisninger</Link>
+    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass className="text-2xl"/>Fleire datasett</Link>
     </section>
   
 

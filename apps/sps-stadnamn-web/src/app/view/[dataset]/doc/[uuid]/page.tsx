@@ -53,7 +53,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
         <OriginalData rawData={doc._source.rawData}/>
         </div>
       : null}
-      {doc._source.location && <div className='space-y-3'>
+      {doc._source.location && <div className='space-y-6'>
         <h3>Koordinater</h3>
 
         <CoordinateInfo source={doc._source}/>

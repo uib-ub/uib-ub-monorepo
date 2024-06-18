@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
   const query: Record<string,any> = {
     size: 200,
-    fields: ["label", "location"],
+    fields: ["label", "location", "uuid"],
     _source: false,
 }
 

@@ -29,8 +29,8 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   }
 
   const processItem = (item: Record<string, string>) => {
-    if (selectedFacet == '_index') {
-      return {key: 'stadnamn-local-' + item.key.split('-')[1], label: datasetTitles[item.key.split('-')[1]], doc_count: item.doc_count}
+    if (selectedFacet == 'datasets') {
+      return {key: item.key, label: datasetTitles[item.key], doc_count: item.doc_count}
     }
     return {key: item.key, label: item.key, doc_count: item.doc_count}
 
@@ -90,8 +90,9 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
         ))}
     </select>
     <div className='relative grow'>
-      <input onChange={(e) => setFacetSearch(e.target.value)} 
-          className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
+      <input aria-label={"Søk i " + availableFacets?.find(facet => facet.key === selectedFacet)?.label}
+             onChange={(e) => setFacetSearch(e.target.value)} 
+             className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
       <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
         <PiMagnifyingGlass aria-hidden={true} className='text-neutral-900'/>
       </span>

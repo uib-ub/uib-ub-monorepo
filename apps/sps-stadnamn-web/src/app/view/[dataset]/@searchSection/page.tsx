@@ -19,12 +19,15 @@ export default function SearchSection () {
     const filteredParams = useQueryStringWithout(['docs'])
     let [mainIndex, subindex] = params.dataset.split("_")
 
-      const handleSubmit = async (event: any) => {
-        event.preventDefault()
-        const formData = new FormData(event.target);
-        const formParams = Array.from(formData.entries()).map(item => `${encodeURIComponent(item[0])}=${encodeURIComponent(item[1] as string)}`).join('&');
-        router.push(`/view/${params.dataset}?${formParams}`)
-      }
+    const handleSubmit = async (event: any) => {
+    event.preventDefault()
+    const formData = new FormData(event.target);
+    const formParams: string = Array.from(formData.entries())
+        .filter(item => item[1] !== '') // filter out blank parameters
+        .map(item => `${encodeURIComponent(item[0])}=${encodeURIComponent(item[1] as string)}`)
+        .join('&');
+    router.push(`/view/${params.dataset}?${formParams}`)
+}
 
 
     

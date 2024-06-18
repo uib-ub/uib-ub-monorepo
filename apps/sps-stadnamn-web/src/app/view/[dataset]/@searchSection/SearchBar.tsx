@@ -24,7 +24,13 @@ export default function SearchBar() {
     const changeField = (event: any) => {
         const field = event.target.value;
         const params = new URLSearchParams(location.search);
-        params.set('field', field);
+        if (field) {
+            params.set('field', field);
+        }
+        else {
+            params.delete('field');
+        }
+        
         const newUrl = `/view/${dataset}?${params.toString()}`;
         router.push(newUrl);
     }
@@ -38,7 +44,7 @@ export default function SearchBar() {
                 <div className="flex w-full h-full">
                 {fieldConfig[dataset] &&
                 <select name="field" value={searchParams.get('field') || fieldConfig[dataset][0].key} className="h-full mx-1"  onChange={changeField}>
-                    {fieldConfig[dataset].map((field: any) => <option key={field.key} value={field.key}>{field.label}</option>)}
+                    {fieldConfig[dataset].map((field: any) => <option key={field.key} value={field.key == 'label' ? '' : field.key}>{field.label}</option>)}
                 </select>}
                 <input type="text" 
                    aria-label="Søk"

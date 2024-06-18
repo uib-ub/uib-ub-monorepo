@@ -110,7 +110,7 @@
   }
 
   .icon-button {
-    @apply p-1 flex gap-1 shadow-none items-center text-neutral-900 hover:text-primary-700;
+    @apply p-1 flex gap-1 shadow-none items-center text-neutral-900 hover:text-primary-700 !font-sans;
   }
 
 
@@ -134,6 +134,14 @@
   button[aria-current='page'] {
     @apply ring-accent-800 ring-1 rounded-full;
 
+  }
+
+  button[aria-current='page'].snid-button {
+    @apply bg-accent-200 ring-1;
+  }
+
+  button[aria-current='page'].snid-button svg {
+    @apply text-accent-800;
   }
 
 }

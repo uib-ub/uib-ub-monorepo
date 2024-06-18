@@ -21,9 +21,9 @@ export default function InfoButton({hit}: {hit: any}) {
     return (
 
       <IconButton 
-      onClick={() => goToDoc(hit._id)} 
+      onClick={() => goToDoc(hit._source.uuid)} 
       label="Infoside" 
-      aria-current={params.uuid == hit._id && pathname.includes('/doc/') ? 'page': undefined} 
+      aria-current={params.uuid == hit._source.uuid && pathname.includes('/doc/') ? 'page': undefined} 
       className="p-1 text-primary-600">
         <PiInfoFill className="text-xl xl:text-3xl"/></IconButton>
 

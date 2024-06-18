@@ -39,7 +39,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                 <div className='inline space-x-1'>
                     {doc._source.image && 
                         <IconButton 
-                            onClick={() => goToIIIF(doc._id, doc._source.image.manifest)} 
+                            onClick={() => goToIIIF(doc._source.uuid, doc._source.image.manifest)} 
                             label="Vis seddel">
                             <PiArticleFill className="text-2xl align-top text-neutral-700 inline"/>
                         </IconButton> 
@@ -56,7 +56,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                             </IconButton> 
                         </Link>
                     }
-                    <IconButton label="Infoside" onClick={() => goToDoc(doc._id)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
+                    <IconButton label="Infoside" onClick={() => goToDoc(doc._source.uuid)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
                 </div>
                  { dataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc)}</p> }
                 
@@ -68,7 +68,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
     const listRenderer = () => {
       return docs.map(doc => {
           return (
-          <li key={doc._id} className='text-lg inline space-x-1 py-2'>
+          <li key={doc._source.uuid} className='text-lg inline space-x-1 py-2'>
               {listItemRenderer(doc)}
           </li>
           )

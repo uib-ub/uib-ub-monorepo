@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
             "type": "Feature",
             "geometry": data._source.location,
             "properties": {
-                "id": data._source._id,
+                "id": data._source.uuid,
                 "label": data._source.label,
                 "rawData": data._source.rawData,
                 "adm1": data._source.adm1,
@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
                 "placeName": "P87_is_identified_by",
                 "document": "P70_documents"
             },
-            "@id": data._source._id,
+            "@id": data._source.uuid,
             "@type": "E31_Document",
             "document": {
                 "@id": "_:placeName",
