@@ -38,7 +38,7 @@ export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}
   return (
 
         <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-grow">
-        <div>{titleRenderer(hit)}
+        <div id={"resultText_" + hit._source.uuid}>{titleRenderer(hit)}
         <p>
           { detailsRenderer(hit) }
         </p>
@@ -83,6 +83,7 @@ export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}
           onClick={() => goToDoc(hit._source.uuid)} 
           label="Infoside" 
           aria-current={params.uuid == hit._source.uuid && pathname.includes('/doc/') ? 'page': undefined} 
+          aria-describedby={"resultText_" + hit._source.uuid}
           className="p-1 text-primary-600">
             <PiInfoFill className="text-xl xl:text-3xl"/></IconButton> 
         }
@@ -90,11 +91,12 @@ export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}
           <IconButton label={"Vis treff frå " + (hit._source.children?.length == 1 ? datasetTitles[hit._source.datasets[0]]: hit._source.datasets.length  + " datasett")} 
                       textIcon 
                       aria-current={params.uuid == hit._source.uuid && pathname.includes('/doc/') ? 'page': undefined} 
+                      aria-describedby={"resultText_" + hit._source.uuid}
                       onClick={() => goToDoc(hit._source.uuid)} 
                       className="flex text-sm bg-neutral-100 text-black rounded-full pl-3 pr-1 py-1 self-center whitespace-nowrap snid-button">
                       
 
-          { hit._source.datasets?.length > 1 ? hit._source.datasets.length + ' datasett' :  hit._source.datasets[0].toUpperCase() }<PiInfoFill className="text-xl text-primary-600 ml-1"/>
+          { hit._source.datasets?.length > 1 ? hit._source.datasets.length :  hit._source.datasets[0].toUpperCase() }<PiInfoFill className="text-xl text-primary-600 ml-1"/>
           
           </IconButton>
 
