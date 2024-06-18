@@ -93,44 +93,41 @@ const DynamicImageViewer = () => {
         <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
         {hasSearchParams ? 'Tilbake til kartet' : 'Vis på kartet'}
       </Link>
-    <div className='h-full w-full relative mt-10'>
+    <div className='h-full w-full relative aspect-square sm:aspect-auto'>
     {isLoading || !viewerRef.current? 
     <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner className='w-20 h-20'/></div>
       : null
       }
-    <div className='absolute bottom-0 flex z-[1000] flex gap-2 text-xl p-2 text-white w-full'>
+    <div className='absolute top-0 flex z-[1000]  gap-2 text-xl p-2 text-white w-full'>
 
       <IconButton id="zoom-in-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
         <IconButton id="zoom-out-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
         <IconButton id="home-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Nullstill zoom"><PiHouseFill/></IconButton>
         <IconButton id="full-screen-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Fullskjerm"><PiCornersOut/></IconButton>
 
- 
+    </div>
 
-    <div className="rounded-full border-white border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2 absolute left-1/2 transform -translate-x-1/2">
-        
-          
-    <IconButton 
-      id="previous-button"
-      label="Forrige side">
-        <PiCaretLeftFill/>
-    </IconButton>
-  
+    <div className='absolute bottom-0 left-0 flex z-[1000] flex gap-2 text-xl p-2 text-white w-full'>
 
-  <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
+    <div className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
+      <IconButton 
+        id="previous-button"
+        label="Forrige side">
+          <PiCaretLeftFill/>
+      </IconButton>
+      <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
 
-  
-    <IconButton 
-      id="next-button"
-      label="Neste side">
-        <PiCaretRightFill/>
-    </IconButton>
-  
+    
+      <IconButton 
+        id="next-button"
+        label="Neste side">
+          <PiCaretRightFill/>
+      </IconButton>
   </div>
   <IconButton 
           label={isCollapsed ? "Skjul info" : "Vis info"}
           textClass="text-base"
-          className="pl-3 pr-2 rounded-full border-white border bg-neutral-900 shadow-sm ml-auto flex gap-2 items-center"
+          className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2"
           aria-controls="iiif_info" 
           aria-expanded={isCollapsed} 
           onClick={() => toggleCollapse(!isCollapsed)}>
