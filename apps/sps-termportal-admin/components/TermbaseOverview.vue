@@ -277,9 +277,10 @@ const merged = computed(() => {
         : "",
       agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
       staff: matchid(cmsdata, e, "responsibleStaff"),
+      domain: matchid(cmsdata, e, "domain"),
       _id: matchid(cmsdata, e, "_id"),
     }))
-    .filter((termbase) => termbase.id !== "DOMENE");
+    .filter((termbase) => !["DOMENE", "MRT2"].includes(termbase.id));
 
   if (enriched && cmsdata.value) {
     const ids = dbdata.value?.results?.bindings.map((e) => e.id.value);
