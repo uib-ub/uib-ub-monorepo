@@ -10,6 +10,7 @@ import { SearchContext } from '@/app/search-provider'
 
 import { datasetTitles } from '@/config/metadata-config'
 import { useQueryStringWithout } from '@/lib/search-params';
+import SearchToggle from './SearchToggle'
 
 
 export default function SearchSection () {
@@ -35,18 +36,21 @@ export default function SearchSection () {
 
     
     return (
-       <section className={`card ${showSearch ?  'absolute xl:static z-[2000] xl:z-auto xl:flex' : 'hidden xl:flex'} xl:flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 stable-scrollbar overflow-y-auto h-full w-full`} aria-label="Søkepanel">
+       <section className={`card flex flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 stable-scrollbar xl:overflow-y-auto w-full relative`} aria-label="Søkepanel">
 
         <div className='px-4 md:px-2 flex flex-wrap gap-y-2'>
           <h1 className='text-xl font-sans font-semibold flex gap-1' title={resultData && resultData.hits?.hits?.[0]?._index}>
-            {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
+            <SearchToggle>
+              {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
+            </SearchToggle>
               <IconButton className='align-middle' 
                           onClick={() => router.push(`/view/${params.dataset}/info${filteredParams ? '?' + filteredParams : ''}`)}
                           label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton>
           </h1>
         </div>
         
-        <div className="flex flex-col h-full gap-4 w-full">
+        
+        <div id="collapsibleSearch" className={`${showSearch ?  'absolute xl:static z-[2000] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
         <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
           <SearchBar/>
           { !searchError && <Filters/> }

@@ -1,5 +1,5 @@
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-export const metadata = { title: 'Stadnamnsøk' }
+export const metadata = { title: 'Om Stadnamnsøk' }
 
 export default function Page({ children }: { children: React.ReactNode }) {
   return (
