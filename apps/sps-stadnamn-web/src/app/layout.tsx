@@ -38,7 +38,7 @@ export default function RootLayout({
           <Link href="/" className="text-2xl pt-1 small-caps font-serif h-full lg:pt-0">Stadnamnportalen</Link>
           <Menu/>
           </div>
-          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex gap-6 small-caps font-semibold ml-auto`}/>
+          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex small-caps gap-3 font-semibold ml-auto`}/>
         </header>
         {children}
       </body>
