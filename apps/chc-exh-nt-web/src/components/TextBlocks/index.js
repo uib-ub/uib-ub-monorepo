@@ -1,19 +1,9 @@
-import { Link } from 'tailwind-ui'
 import { PortableText } from '@portabletext/react'
+import { Link } from 'tailwind-ui'
 import {
   ActorBlock,
-  BigTextBlock,
-  IframeBlock,
-  PageHeaderBlock,
-  QuoteBlock,
-  TextBlock,
-  ObjectBlock,
-  TableBlock,
-  TwoColumnBlock,
-  VideoBlock,
-  IllustrationWithCaption,
-  Gallery,
-  PublicationBlock,
+  BigTextBlock, Gallery, IframeBlock, IllustrationWithCaption, ObjectBlock, PageHeaderBlock, PublicationBlock, QuoteBlock, TableBlock, TextBlock, TwoColumnBlock,
+  VideoBlock
 } from './Blocks'
 
 const myPortableTextComponents = () => {
@@ -37,7 +27,7 @@ const myPortableTextComponents = () => {
 
     block: {
       normal: ({ children }) => (
-        <p className='mb-4 col-start-1 col-end-6 md:col-start-3 md:col-end-4'>
+        <p className='mb-4 col-start-1 col-end-6 md:col-start-3 md:col-end-4 rtl:font-arabicSerif'>
           {children}
         </p>
       ),

@@ -17,6 +17,8 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-merriweatherSans)', ...fontFamily.sans],
         serif: ['var(--font-newsreader)', ...fontFamily.serif],
+        arabic: ['var(--font-arabic)'],
+        arabicSerif: ['var(--font-arabicSerif)'],
       },
       colors: {
         brandblue: colors.blue[500],

@@ -311,11 +311,11 @@ const Id: NextPage = ({ data, preview }: any) => {
                       {t('production')}
                     </div>
                     <div key={activity._id || activity._key}>
-                      <div>{activity.contributionAssignedBy?.[0].assignedActor?.label[locale || ''] || Object.values(activity.contributionAssignedBy?.[0].assignedActor?.label)[1]}</div>
+                      <div>{activity.contributionAssignedBy?.[0].assignedActor?.label[locale!] || activity.contributionAssignedBy?.[0].assignedActor?.label['no']}</div>
                       <div className='text-xs text-slate-700 dark:text-slate-300 m-0 p-0'>{activity.timespan?.edtf}</div>
                       <div className='flex flex-col text-xs font-light'>
                         {activity.usedGeneralTechnique && activity.usedGeneralTechnique.map((t: any) => (
-                          <div key={t._id ?? item._key}>{t.label[locale || '']}</div>
+                          <div key={t._id ?? item._key}>{t.label[locale!] || t.label['en'] || t.label['no']}</div>
                         ))}
                       </div>
                     </div>
@@ -371,7 +371,7 @@ const Id: NextPage = ({ data, preview }: any) => {
                 }
 
                 {item[0]?.image?.palette ?
-                  <Palette colors={item[0]?.image?.palette} />
+                  <Palette colors={item[0]?.image?.palette} label={t('palette')} />
                   : null
                 }
               </div>
@@ -379,9 +379,7 @@ const Id: NextPage = ({ data, preview }: any) => {
             </div>
           </Pane>
         </main>
-
       </Layout>
-
     </>
   );
 };

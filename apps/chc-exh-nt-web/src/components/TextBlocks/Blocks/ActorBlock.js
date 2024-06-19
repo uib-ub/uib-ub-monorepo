@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import { Link } from 'tailwind-ui'
 import { Description } from '../../Props/Description'
 
 const ActorBlock = (props) => {
@@ -16,7 +15,7 @@ const ActorBlock = (props) => {
       </h3>
       {referredToBy ?
         <div className='max-w-prose xl:text-xl text-light'>
-          <Description value={referredToBy} language={locale || ''} />
+          <Description value={referredToBy} language={locale} />
         </div>
         : null
       }

@@ -5,6 +5,7 @@ import { groq } from 'next-sanity'
 import Head from 'next/head'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
+import React from 'react'
 import { Hero, Layout, Link, MarcusIcon, Menu, Pane, UiBIcon } from 'tailwind-ui'
 import { Footer } from '../components/Footer'
 import { MainNav } from '../components/Header/MainNav'
@@ -94,6 +95,7 @@ const Page: NextPage = ({ data, preview }: any) => {
 
   const localeCaption = slug?.about?.caption?.filter((i: any) => i.language === locale)[0]?.body
 
+
   const aboutImage = slug?.about ?
     <SanityImage
       image={slug.about.image}
@@ -109,6 +111,27 @@ const Page: NextPage = ({ data, preview }: any) => {
     priority
   /> : null
 
+  const Creators = ({ creators }: { creators: any }) => {
+    return (
+      <>
+        <i>
+          {t('by')}
+        </i > {' '}
+        {
+          creators ? creators.map((creator: any, i: number) => (
+            <React.Fragment key={creator._key}>
+              <span className='font-bold'>
+                {creator.assignedActor.label['en']}
+              </span>
+              {i === creators.length - 2 ? ` ${t('combinator')} ` : null}
+              {i < creators.length - 2 ? ', ' : null}
+            </React.Fragment>
+          )) : null
+        }
+      </>
+    )
+  }
+
   // Notice the optional?.chaining conditionals wrapping every piece of content?
   // This is extremely important as you can't ever rely on a single field
   // of data existing when Editors are creating new documents.
@@ -117,7 +140,7 @@ const Page: NextPage = ({ data, preview }: any) => {
     <>
       <Head>
         <title>{label[locale || 'no']}</title>
-        <meta name="description" content={description[locale || 'no']} />
+        <meta name="description" content={description[locale ?? 'no']} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -177,11 +200,11 @@ const Page: NextPage = ({ data, preview }: any) => {
                   </div>
                 </figcaption>
               }
-              creators={slug?.creator}
+              creators={slug?.creator ? <Creators creators={slug?.creator} /> : null}
               locale={locale || ''}
             />
 
-            <div className='mt-5 mb-54 grid grid-cols-content font-light font-serif text-lg'>
+            <div className='mt-5 mb-54 grid grid-cols-content font-light font-serif rtl:font-arabicSerif text-lg'>
               {linguisticDocumentBody && <TextBlocks value={linguisticDocumentBody} />}
               {!linguisticDocumentBody && (<div className='col-start-1 col-end-6 md:col-start-3 md:col-end-4 text-center text-4xl'>غير مترجمة</div>)} {/* "Not translated" */}
             </div>

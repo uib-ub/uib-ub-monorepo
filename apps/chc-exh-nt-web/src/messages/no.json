@@ -6,7 +6,10 @@
     "open": "Åpne",
     "subjects": "Emneord",
     "production": "Laget av",
-    "partOfMarcus": "This exhibition is a part of"
+    "partOfMarcus": "This exhibition is a part of",
+    "combinator": "og",
+    "by": "av",
+    "palette": "Fargepalett"
   },
   "Footer": {
     "exhibitionBy": "Nettuststillingen er laget av",

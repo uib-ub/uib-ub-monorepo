@@ -1,4 +1,4 @@
-import { TextBlocks } from '../TextBlocks'
+import { TextBlocks } from '../TextBlocks';
 
 interface Body {
   _key: string;
@@ -38,9 +38,14 @@ interface DescriptionProps {
 export const Description = ({ value, language }: DescriptionProps) => {
   const briefDescriptions = value
     .filter((i: any) => i.hasType._id === 'd4b31289-91f4-484d-a905-b3fb0970413c') // filter on type "Brief description"
-    .filter((desc: any) => desc.language === language)[0]
+    //.filter((desc: any) => desc.language === 'en')[0]
+    .reduce((acc: { [key: string]: LinguisticObject }, item: LinguisticObject) => {
+      const locale = item.language;
+      acc[locale] = { ...item };
+      return acc;
+    }, {})
 
   return (
-    <TextBlocks value={briefDescriptions?.body} />
+    <TextBlocks value={briefDescriptions?.[language]?.body ?? briefDescriptions?.en?.body} />
   )
 }

@@ -6,7 +6,10 @@
     "open": "فتح",
     "subjects": "عناوين الموضوع",
     "production": "إنتاج",
-    "partOfMarcus": "هذا المعرض هو جزء من"
+    "partOfMarcus": "هذا المعرض هو جزء من",
+    "combinator": "و",
+    "by": "ل",
+    "palette": "اللوحة اللونية"
   },
   "Footer": {
     "exhibitionBy": "المعرض من إنشاء",

@@ -1,17 +1,14 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 type HeroProps = {
   label: string
   image?: any
   figCaption: any
   locale: string
-  creators?: any[]
-  about?: any
+  creators?: ReactNode
 }
 
-export const Hero: React.FC<HeroProps> = ({ label, creators, image, figCaption, locale }) => {
-  const combinator = locale === 'en' ? ' and ' : ' og '
-
+export const Hero: React.FC<HeroProps> = ({ label, creators, image, figCaption }) => {
   return (
     <div className='flex flex-col gap-10 items-center'>
       {image && (
@@ -28,26 +25,13 @@ export const Hero: React.FC<HeroProps> = ({ label, creators, image, figCaption, 
       )}
 
       <div className='text-center md:w-10/12'>
-        <h1 className='text-2xl sm:text-4xl lg:text-5xl font-black' >
+        <h1 className='text-2xl sm:text-4xl lg:text-5xl ltr:font-black rtl:font-bold'>
           {label}
         </h1>
         {creators ? (
           <div className='mt-1 text-lg text-neutral-800 dark:text-neutral-300 font-serif' >
-            <div>•••</div>
-            <i>
-              {locale === 'en' ? 'by' : 'av'}
-            </i> {' '}
-            <span>
-              {creators && creators.map((creator, i) => (
-                <React.Fragment key={creator._key}>
-                  <span className='font-bold'>
-                    {creator.assignedActor.label[locale]}
-                  </span>
-                  {i === creators.length - 2 ? combinator : null}
-                  {i < creators.length - 2 ? ', ' : null}
-                </React.Fragment>
-              ))}
-            </span>
+            <hr className='w-1/3 mx-auto border-neutral-400 dark:border-neutral-700 my-5' />
+            {creators}
           </div>
         ) : null}
       </div>

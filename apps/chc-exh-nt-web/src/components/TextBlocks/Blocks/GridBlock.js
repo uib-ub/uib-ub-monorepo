@@ -7,11 +7,10 @@ export default function GridBlock(props) {
   }
 
   const { items, label, description } = props
-  /*   console.log("🚀 ~ file: GridBlock.js:9 ~ GridBlock ~ items", items) */
 
   return (
     <div className='my-8 col-start-1 col-end-6 m-6 md:m-24'>
-      {label ? (<h2 className='max-sm:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-center font-sans font-bold pb-10'>{label}</h2>) : null}
+      {label ? (<h2 className='max-sm:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-center font-sans rtl:font-arabic font-bold pb-10'>{label}</h2>) : null}
       {description && (
         <TextBlocks
           value={description}

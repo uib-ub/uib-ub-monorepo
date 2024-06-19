@@ -97,15 +97,15 @@ const Home: NextPage = ({ data, preview }: any) => {
               {heroImage}
             </div>
             <div className='flex flex-col'>
-              <h1 className="max-sm:text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-6xl text-center font-bold font-sans">{title}</h1>
-              <div className="max-sm:text-xs sm:text-sm md:text-xl lg:text-xl xl:text-2xl text-center font-light font-sans">{subtitle}</div>
+              <h1 className="max-sm:text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-6xl text-center font-bold font-sans rtl:font-arabic">{title}</h1>
+              <div className="max-sm:text-xs sm:text-sm md:text-xl lg:text-xl xl:text-2xl text-center font-light font-sans rtl:font-arabic">{subtitle}</div>
             </div>
           </div>
         </main>
 
         <div className='flex flex-col justify-center items-center w-prose mt-5'>
 
-          <h2 className='max-sm:text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl text-center font-sans font-bold pb-2 text-neutral-800 dark:text-neutral-100'>
+          <h2 className='max-sm:text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl text-center font-sans rtl:font-arabic font-bold pb-2 text-neutral-800 dark:text-neutral-100'>
             {t('toc')}
           </h2>
 
@@ -141,7 +141,7 @@ const Home: NextPage = ({ data, preview }: any) => {
         </div>
 
 
-        <div className='mb-28 grid grid-cols-content font-light font-serif text-lg max-w-[1200px] mx-auto'>
+        <div className='mb-28 grid grid-cols-content font-light font-serif rtl:font-arabicSerif text-lg max-w-[1200px] mx-auto'>
           {linguisticDocumentBody && <Sections sections={linguisticDocumentBody} />}
         </div>
 
