@@ -47,3 +47,18 @@ export function pushSearchEvents(options: SearchOptions) {
     ]);
   }
 }
+
+export function pushAutocompleteEvents(options: SearchOptions) {
+  window._paq.push([
+    "trackEvent",
+    "autocomplete",
+    "search data",
+    JSON.stringify({
+      term: options.term,
+      language: options.language,
+      useDomain: options.useDomain,
+      domain: options.domain,
+      termbase: options.termbase,
+    }),
+  ]);
+}
