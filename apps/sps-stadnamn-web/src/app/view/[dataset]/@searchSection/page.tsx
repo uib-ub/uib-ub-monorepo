@@ -1,6 +1,6 @@
 'use client'
 import { useContext } from 'react';
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import IconButton from '@/components/ui/icon-button';
 import Results from '@/app/view/[dataset]/@searchSection/results'
 import Filters from './filters'
@@ -13,11 +13,14 @@ import { useQueryStringWithout } from '@/lib/search-params';
 
 
 export default function SearchSection () {
-    const params = useParams<{dataset: string}>()
+    const params = useParams<{dataset: string, uuid: string, manifestId: string}>()
     const router = useRouter()
     const { resultData, isLoading, searchError } = useContext(SearchContext)
-    const filteredParams = useQueryStringWithout(['docs'])
+    const filteredParams = useQueryStringWithout(['docs', 'search'])
     let [mainIndex, subindex] = params.dataset.split("_")
+    const searchParams = useSearchParams()
+
+    const showSearch = searchParams.get('search') == 'show'
 
     const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -32,7 +35,8 @@ export default function SearchSection () {
 
     
     return (
-        <>
+       <section className={`card ${showSearch ?  'absolute xl:static z-[2000] xl:z-auto xl:flex' : 'hidden xl:flex'} xl:flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 stable-scrollbar overflow-y-auto h-full w-full`} aria-label="Søkepanel">
+
         <div className='px-4 md:px-2 flex flex-wrap gap-y-2'>
           <h1 className='text-xl font-sans font-semibold flex gap-1' title={resultData && resultData.hits?.hits?.[0]?._index}>
             {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
@@ -41,16 +45,17 @@ export default function SearchSection () {
                           label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton>
           </h1>
         </div>
-
-        <div className='flex flex-col h-full gap-4'>
-          <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
-            <SearchBar/>
-            { !searchError && <Filters/> }
-          </form>            
-            { resultData && filteredParams ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
+        
+        <div className="flex flex-col h-full gap-4 w-full">
+        <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
+          <SearchBar/>
+          { !searchError && <Filters/> }
+        </form>            
+          { resultData && filteredParams ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
 
         </div>
-        </>
+        
+        </section>
 
         
     )

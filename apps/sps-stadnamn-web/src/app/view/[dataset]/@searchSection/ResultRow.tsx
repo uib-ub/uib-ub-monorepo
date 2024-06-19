@@ -18,19 +18,29 @@ export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}
 
 
     const showInMap = (uuid: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.set('docs', String(uuid))
-      router.push(`/view/${params.dataset}?${newSearchParams.toString()}`)
+        const newSearchParams = new URLSearchParams(searchParams)
+        newSearchParams.set('docs', String(uuid))
+        newSearchParams.delete('search')
+
+        router.push(`/view/${params.dataset}?${newSearchParams.toString()}`)
     }
 
     const goToDoc = (uuid: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
+        const newSearchParams = new URLSearchParams(searchParams)
+        if (searchParams.get('search') == 'show') {
+            newSearchParams.set('search', 'hide')
+        }
+
+        router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
     }
 
     const goToIIIF = (uuid: string, manifest: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
       newSearchParams.set('docs', String(uuid))
+      if (searchParams.get('search') == 'show') {
+        newSearchParams.set('search', 'hide')
+    }
+
       router.push(`/view/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
     }
 

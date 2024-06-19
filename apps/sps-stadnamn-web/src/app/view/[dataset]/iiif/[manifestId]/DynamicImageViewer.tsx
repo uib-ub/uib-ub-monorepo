@@ -91,7 +91,7 @@ const DynamicImageViewer = () => {
     <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
             className="no-underline p-4 bg-white">
         <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-        {hasSearchParams ? 'Tilbake til kartet' : 'Vis på kartet'}
+        {hasSearchParams && searchParams.get('search') != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
       </Link>
     <div className='h-full w-full relative aspect-square sm:aspect-auto'>
     {isLoading || !viewerRef.current? 

@@ -17,7 +17,7 @@ export default function MapExplorer(props) {
   const params = useParams()
   const router = useRouter()
   const pathname = usePathname()
-  const mapQueryString = useQueryStringWithout(["docs", "size", "page", "sort"])
+  const mapQueryString = useQueryStringWithout(["docs", "search", "size", "page", "sort"])
   const controllerRef = useRef(new AbortController());
   const selectedMarker = useRef(null);
 
