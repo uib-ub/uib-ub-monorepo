@@ -54,7 +54,7 @@ export default function Menu() {
                      className="absolute !z-[3000] !top-[100%] left-0 w-full">
                 <NavBar 
                         onBlur={handleBlur}
-                        className=" h-fit bg-neutral-50 lg:hidden text-xl text-center gap-6 py-6 small-caps flex flex-col w-full h-full font-semibold border-b-2 border-neutral-500 shadow-md"/>
+                        className=" h-fit bg-neutral-50 lg:hidden text-xl text-center py-6 small-caps flex flex-col w-full h-full font-semibold border-b-2 border-neutral-500 shadow-md"/>
                 </div>
                }
         </div>
