@@ -78,18 +78,15 @@ export default async function Home() {
     <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
       {cards.map((card, index) => (
         <li key={index} className="card flex flex-col md:h-64 sm:my-0">
-          <div className="flex flex-col sm:flex-row h-full w-full no-underline">
+          <Link className="flex flex-col sm:flex-row h-full w-full no-underline group" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
           <div className="aspect-square  m-1 overflow-hidden sm:flex-none">
           <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%] overflow-hidden"/>
         </div>
           <div className="content p-4 pb-2 w-128 flex flex-col">
-            <h3 className="text-lg font-semibold"><Link href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>{card.title}</Link></h3>
-            <p>{card.description}</p>
-            {card.imageAttribution && 
-            <small className="text-neutral-700 text-xs mt-auto">Illustrasjon: {card.imageAttribution}</small>
-          }
+            <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+            <p className="pt-2">{card.description}</p>
           </div>
-          </div>
+          </Link>
         </li>
       ))}
     </ul>
