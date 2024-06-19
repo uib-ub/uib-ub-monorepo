@@ -4,9 +4,9 @@ export default function ViewLayout({ children, searchSection }: { children: Reac
               <main className="flex xl:mb-2 xl:mx-2 flex-col xl:grid xl:grid-cols-3 xl:gap-1 scroll-container relative xl:static w-full h-full border-t border-neutral-400 xl:border-none">
                 <SearchProvider>
                   {searchSection}
-                <section className='card flex flex-col w-full h-full xl:col-span-2 xl:overflow-hidden'>
+                <div className='card flex flex-col w-full h-full xl:col-span-2 xl:overflow-hidden'>
                   {children}
-                </section>
+                </div>
                 </SearchProvider>
 
               </main>
