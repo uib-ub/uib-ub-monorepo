@@ -58,7 +58,7 @@ export default function Facets() {
   return (
     <section className='flex flex-col w-full'>
     
-    <span className="flex px-4 md:px-2 align-bottom"><h2 className='h-full text-xl align-bottom font-semibold small-caps'>Filtre</h2>
+    <span className="flex px-4 align-bottom"><h2 className='h-full text-xl align-bottom font-semibold small-caps'>Filtre</h2>
     {activeFilters.length ?
     <IconButton type="button" label="Fjern alle filtre" onClick={clearFilters} className="icon-button ml-auto py-0">
       <PiTrashFill className="text-lg lg:text-xl text-neutral-800" aria-hidden="true"/>

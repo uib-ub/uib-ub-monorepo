@@ -61,7 +61,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
 
   return (
     <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
-    <span className="flex px-2 gap-2 flex-wrap">
+    <span className="flex px-4 gap-2 flex-wrap">
       <h2 id="result_heading" aria-live="polite">
       <span className='text-xl text-center h-full font-semibold small-caps'>
         Treff
@@ -85,7 +85,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       
     </div>
     </span>
-    <section id="result_list" className="lg:py-1 ml-1">
+    <section id="result_list" className="lg:py-1 mx-2">
     <ul className='flex flex-col gap-1 mb-2 divide-y divide-neutral-400'>
       {hits.hits.map((hit: any) => (
         <ResultRow key={hit._source.uuid} hit={hit}/>

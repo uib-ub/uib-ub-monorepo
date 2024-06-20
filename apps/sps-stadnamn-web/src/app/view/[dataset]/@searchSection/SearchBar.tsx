@@ -39,7 +39,7 @@ export default function SearchBar() {
 
     return (
         <>
-        <div className="flex gap-2 px-4 md:px-2 items-stretch">
+        <div className="flex gap-2 px-4 items-stretch">
             <div className="border border-neutral-500 relative w-full rounded-sm">
                 <div className="flex w-full h-full">
                 {fieldConfig[dataset] &&

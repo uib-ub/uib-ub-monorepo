@@ -38,7 +38,7 @@ export default function SearchSection () {
     return (
        <section className={`card flex flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 stable-scrollbar xl:overflow-y-auto w-full relative`} aria-label="Søkepanel">
 
-        <div className='px-4 md:px-2 flex flex-wrap gap-y-2'>
+        <div className='px-4 flex flex-wrap gap-y-2'>
           <h1 className='text-xl font-sans font-semibold flex gap-1' title={resultData && resultData.hits?.hits?.[0]?._index}>
             <SearchToggle>
               {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
