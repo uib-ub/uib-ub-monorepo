@@ -101,52 +101,50 @@ const Home: NextPage = ({ data, preview }: any) => {
               <div className="max-sm:text-xs sm:text-sm md:text-xl lg:text-xl xl:text-2xl text-center font-light font-sans rtl:font-arabic">{subtitle}</div>
             </div>
           </div>
-        </main>
 
-        <div className='flex flex-col justify-center items-center w-prose mt-5'>
+          <div className='max-w-screen-lg mx-auto flex flex-col w-prose mt-5'>
+            <h2 className='px-5 max-sm:text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl font-sans rtl:font-arabic font-bold pb-2 text-neutral-800 dark:text-neutral-100'>
+              {t('toc')}
+            </h2>
 
-          <h2 className='max-sm:text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl text-center font-sans rtl:font-arabic font-bold pb-2 text-neutral-800 dark:text-neutral-100'>
-            {t('toc')}
-          </h2>
-
-          <ul className='text-lg dark:text-neutral-300 text-neutral-700 p-5'>
-            {mainNav?.sections && mainNav?.sections.map((section: any, index: number) => (
-              <React.Fragment key={section._key}>
-                {section?.label ?
-                  <li key={section._key} className='border-b text-md font-light first:mt-0 mt-4'>
-                    {section?.label?.[locale || ''] || section?.target?.label?.[locale || '']}
-                  </li>
-                  : null
-                }
-                {section?.target ?
-                  <li key={section._key} className='text-md font-light first:mt-0 mt-4'>
-                    <NavLink href={`/${section?.target?.route}`}>
-                      {section?.target?.label?.[locale!] ?? section?.target?.label?.['en']}
-                    </NavLink>
-                  </li>
-                  : null
-                }
-                <ul>
-                  {section?.links && section?.links.map((link: any) => (
-                    <li key={link._key} className='mt-1 pl-4'>
-                      <NavLink href={`/${link?.target?.route}`}>
-                        {(link?.label?.[locale!] ?? link?.label?.['en']) || (link?.target?.label?.[locale!] || link?.target?.label?.['en'])}
+            <ul className='text-lg dark:text-neutral-300 text-neutral-700 p-5'>
+              {mainNav?.sections && mainNav?.sections.map((section: any, index: number) => (
+                <React.Fragment key={section._key}>
+                  {section?.label ?
+                    <li key={section._key} className='border-b text-md font-light first:mt-0 mt-4'>
+                      {section?.label?.[locale || ''] || section?.target?.label?.[locale || '']}
+                    </li>
+                    : null
+                  }
+                  {section?.target ?
+                    <li key={section._key} className='text-md font-light first:mt-0 mt-4'>
+                      <NavLink href={`/${section?.target?.route}`}>
+                        {section?.target?.label?.[locale!] ?? section?.target?.label?.['en']}
                       </NavLink>
                     </li>
-                  ))}
-                </ul>
-              </React.Fragment>
-            ))}
-          </ul>
-        </div>
+                    : null
+                  }
+                  <ul>
+                    {section?.links && section?.links.map((link: any) => (
+                      <li key={link._key} className='mt-1 pl-4'>
+                        <NavLink href={`/${link?.target?.route}`}>
+                          {(link?.label?.[locale!] ?? link?.label?.['en']) || (link?.target?.label?.[locale!] || link?.target?.label?.['en'])}
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                </React.Fragment>
+              ))}
+            </ul>
+          </div>
 
 
-        <div className='mb-28 grid grid-cols-content font-light font-serif rtl:font-arabicSerif text-lg max-w-[1200px] mx-auto'>
-          {linguisticDocumentBody && <Sections sections={linguisticDocumentBody} />}
-        </div>
+          <div className='mb-28 grid grid-cols-content font-light font-serif rtl:font-arabicSerif text-lg max-w-[1200px] mx-auto'>
+            {linguisticDocumentBody && <Sections sections={linguisticDocumentBody} />}
+          </div>
+        </main>
 
         <Footer locale={locale} />
-
       </div>
     </>
   );

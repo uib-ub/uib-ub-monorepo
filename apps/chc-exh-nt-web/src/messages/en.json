@@ -14,5 +14,8 @@
   "Footer": {
     "exhibitionBy": "The exhibition is created by",
     "supportedBy": "Sponsored by"
+  },
+  "Blocks": {
+    "download": "Download"
   }
 }

@@ -14,5 +14,8 @@
   "Footer": {
     "exhibitionBy": "Nettuststillingen er laget av",
     "supportedBy": "Støttet av"
+  },
+  "Blocks": {
+    "download": "Last ned"
   }
 }
