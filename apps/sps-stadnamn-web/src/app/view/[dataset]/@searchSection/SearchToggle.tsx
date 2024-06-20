@@ -1,5 +1,5 @@
 'use client'
-import { PiCaretDown, PiCaretUp, PiMagnifyingGlass } from 'react-icons/pi';
+import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 export default function SearchToggle({children}: {children?: React.ReactNode}) {
@@ -27,7 +27,7 @@ export default function SearchToggle({children}: {children?: React.ReactNode}) {
         <>
         <button aria-expanded={expanded} 
                 aria-controls="collapsibleSearch"
-                className="xl:hidden"
+                className="xl:hidden py-2"
                 onClick={toggleSearch}>
             {
                 expanded ? <><PiCaretUp className='inline mr-2'/>{children}</> 
