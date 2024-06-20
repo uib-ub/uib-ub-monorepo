@@ -26,7 +26,8 @@ export default function SearchToggle({children}: {children?: React.ReactNode}) {
     return ( 
         <>
         <button aria-expanded={expanded} 
-                aria-controls="collapsibleSearch"
+                aria-haspopup="true"
+                aria-controls={expanded ? "collapsibleSearch" : undefined }
                 className="xl:hidden py-2"
                 onClick={toggleSearch}>
             {
