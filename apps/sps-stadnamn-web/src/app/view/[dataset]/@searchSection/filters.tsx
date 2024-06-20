@@ -71,7 +71,7 @@ export default function Facets() {
     {activeFilters.map(([name, value], index) => (
       <input type="hidden" name={name} value={value} key={index}/>
       ))}
-    <ul className='flex flex-wrap gap-2 px-2 pb-2'>
+    <ul className='flex flex-wrap gap-2 px-4 pb-2'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, activeFilters.length > 8 ? 4 : 8)).map(([name, value], index) => (
         <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border pr-2 py-1 pl-3 rounded-full text-sm'>
           { fieldNames?.[name] ? fieldNames[name] + ": " : null} { getFieldLabel(name, value) }
