@@ -1,5 +1,3 @@
-
-
 'use client'
 import { PiCaretDown, PiCaretUp, PiMagnifyingGlass } from 'react-icons/pi';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
