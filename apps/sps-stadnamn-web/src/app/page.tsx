@@ -37,17 +37,17 @@ export default async function Home() {
   </form>
   
 
-  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-12">
-  <li className="flex flex-col gap-0 items-center text-lg">
+  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-6 lg:gap-12">
+  <li className="flex flex-col items-center text-lg">
       Stadnamnoppslag
       <span className="text-4xl">{stats.snidCount.toLocaleString('nb-NO')}</span>
     </li>
     
-    <li className="flex flex-col gap-0 items-center text-lg">
+    <li className="flex flex-col items-center text-lg">
       Datasett
       <span className="text-4xl">{stats.datasetCount.toLocaleString('nb-NO')}</span>
     </li>
-    <li className="flex flex-col gap-0 items-center text-lg">
+    <li className="flex flex-col items-center text-lg">
       Oppslag i datasetta
       <span className="text-4xl">{stats.datasetDocs.toLocaleString('nb-NO')}</span>
     </li>
