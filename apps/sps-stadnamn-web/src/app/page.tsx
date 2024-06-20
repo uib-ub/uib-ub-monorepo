@@ -75,17 +75,18 @@ export default async function Home() {
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalde datasett</h2>
-    <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
+    <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
-        <li key={index} className="card flex flex-col md:h-64 sm:my-0">
-          <Link className="flex flex-col sm:flex-row h-full w-full no-underline group" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
-          <div className="aspect-square  m-1 overflow-hidden sm:flex-none">
-          <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%] overflow-hidden"/>
-        </div>
-          <div className="content p-4 pb-2 w-128 flex flex-col">
-            <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
-            <p className="pt-2">{card.description}</p>
-          </div>
+        <li key={index} className="card p-1 xl:col-span-1 items-start">
+          <Link className=" no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0">
+            <Image src={card.img} alt={card.alt || ''} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
+            </div>
+
+            <div className=" py-4 px-6">
+              <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+              <p className="pt-2 text-small">{card.description}</p>
+            </div>
           </Link>
         </li>
       ))}
