@@ -20,6 +20,7 @@ export default function MapExplorer(props) {
   const mapQueryString = useQueryStringWithout(["docs", "search", "size", "page", "sort"])
   const controllerRef = useRef(new AbortController());
   const selectedMarker = useRef(null);
+  const [layerControlCollapsed, setLayerControlCollapsed] = useState(true);
 
 
   const mapRef = useCallback(node => {
@@ -36,6 +37,7 @@ export default function MapExplorer(props) {
       node.on('baselayerchange', (layer) => {
         const layerCode = {"Norgeskart": "map_topo4", "Norgeskart, gråtoner": "map_topo4graatone", "Terrengkart": "map_terreng", "Verdenskart": "map_carto_labels"}[layer.name] || "map_topo4"
         localStorage.setItem('baseLayer', layerCode);
+        setLayerControlCollapsed(true);
       });
 
     }
@@ -159,7 +161,7 @@ export default function MapExplorer(props) {
                 url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
               />
-           <LayersControl collapsed={false}>
+           <LayersControl collapsed={layerControlCollapsed} >
             <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4'} name="Norgeskart">
               <TileLayer
                 key="map_topo4"
