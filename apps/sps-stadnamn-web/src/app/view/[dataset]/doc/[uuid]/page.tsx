@@ -8,6 +8,7 @@ import { fetchDoc } from '@/app/api/_utils/actions'
 import { PiCaretLeftBold } from 'react-icons/pi'
 import ErrorMessage from '@/components/ErrorMessage'
 import CoordinateInfo from './coordinate-info'
+import CopyLink from './CopyLink'
 
 export default async function DocumentView({ params, searchParams }: { params: { dataset: string, uuid: string }, searchParams: Record<string, string>}) { 
 
@@ -36,9 +37,19 @@ export default async function DocumentView({ params, searchParams }: { params: {
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
           {hasSearchParams && searchParams.search != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
         </Link>
+        { doc._source.snid && params.dataset == 'search' && docDataset != 'search' ? 
+          <Link href={`/snid/${doc._source.snid}${hasSearchParams ? '?' + new URLSearchParams(searchParams).toString() : ''}`}
+                className="no-underline inline ml-6">
+            <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
+            Tilbake til stadnamnsida
+            </Link> : null }
         { doc && doc._source && <>
       
       <h2>{doc._source.label}</h2>
+
+      <CopyLink uuid={doc._source.uuid} />
+      
+
       { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](doc._source) : null }
       
       {doc._source.image?.manifest && <div>
