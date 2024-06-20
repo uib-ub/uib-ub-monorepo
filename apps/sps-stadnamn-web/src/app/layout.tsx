@@ -36,7 +36,7 @@ export default function RootLayout({
           <div className="flex flex-wrap pl-3 md:justify-between h-full items-center">
           
           <Link href="/" className="text-2xl pt-1 small-caps font-serif h-full lg:pt-0">Stadnamnportalen</Link>
-          <Menu/>
+          { false && <Menu/>}
           </div>
           <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex small-caps gap-3 font-semibold ml-auto`}/>
         </header>
