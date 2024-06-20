@@ -204,3 +204,23 @@ export async function fetchChildrenGrouped(uuids: string[], retry: boolean = tru
 
     return {datasetDocs, datasetCount, snidCount, datasets, subdatasets}
 }
+
+
+export async function fetchSNID(snid: string) {
+    'use server'
+    const query = {
+        query: {
+            term: {
+                "snid.keyword": snid,
+            }
+        },
+        fields: ["uuid"],
+        _source: false
+    }
+    console.log
+
+    const res = await postQuery('search', query)
+    console.log("RES", res.hits?.hits?.[0])
+    return res.hits?.hits?.[0] || res
+
+}
