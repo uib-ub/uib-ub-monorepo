@@ -40,9 +40,9 @@ export default function SearchSection () {
 
         <div className='px-4 md:px-2 flex flex-wrap gap-y-2'>
           <h1 className='text-xl font-sans font-semibold flex gap-1' title={resultData && resultData.hits?.hits?.[0]?._index}>
-            {false && <SearchToggle>
+            <SearchToggle>
               {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
-            </SearchToggle>}
+            </SearchToggle>
               <IconButton className='align-middle' 
                           onClick={() => router.push(`/view/${params.dataset}/info${filteredParams ? '?' + filteredParams : ''}`)}
                           label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconButton>
