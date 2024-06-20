@@ -90,7 +90,7 @@ export default function Facets() {
     </div>
     : null}
 
-    <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
+    <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleFacet('adm')}  className='flex w-full items-center gap-1'>
       { expandedFacet == 'adm' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
       Område 
@@ -102,7 +102,7 @@ export default function Facets() {
 
     { facetConfig[params.dataset] && 
         <>
-        <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
+        <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
           <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
           { expandedFacet == 'server' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
           Andre filtre
