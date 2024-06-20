@@ -9,12 +9,11 @@ export default function InfoButton({hit}: {hit: any}) {
     const router = useRouter()
     const pathname = usePathname()
     const params = useParams<{uuid: string; dataset: string}>()
-    const dataset = hit._index.split('-')[1]
 
 
     const goToDoc = (uuid: string) => {
       const newSearchParams = new URLSearchParams(searchParams)
-      router.push(`/view/${dataset}/doc/${uuid}?${newSearchParams.toString()}`)
+      router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
     }
 
 
