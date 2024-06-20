@@ -79,7 +79,7 @@ export default async function Home() {
       {cards.map((card, index) => (
         <li key={index} className="card p-1 xl:col-span-1 items-start">
           <Link className=" no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
-            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0">
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square">
             <Image src={card.img} alt={card.alt || ''} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
             </div>
 
