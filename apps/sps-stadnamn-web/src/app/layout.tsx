@@ -21,7 +21,10 @@ const opensans = Open_Sans({
 
 
 export const metadata: Metadata = {
-  title: "Stadnamnportalen",
+  title: {
+    template: "%s - Stadnamnportalen",
+    default: "Stadnamnportalen"
+  },
   description: "Søketjeneste for norske stedstnavn",
 };
 
