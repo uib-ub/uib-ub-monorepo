@@ -23,7 +23,7 @@ export default async function Home() {
 
   return (
     <>
-<main className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow">
+<main id="main" className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow">
   <div className="flex flex-col gap-24 w-full">
   <div className="flex flex-col gap-12 w-full">
   <div className="flex flex-col gap-8 ">
@@ -37,17 +37,17 @@ export default async function Home() {
   </form>
   
 
-  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-12">
-  <li className="flex flex-col gap-0 items-center text-lg">
+  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-6 lg:gap-12">
+  <li className="flex flex-col items-center text-lg">
       Stadnamnoppslag
       <span className="text-4xl">{stats.snidCount.toLocaleString('nb-NO')}</span>
     </li>
     
-    <li className="flex flex-col gap-0 items-center text-lg">
+    <li className="flex flex-col items-center text-lg">
       Datasett
       <span className="text-4xl">{stats.datasetCount.toLocaleString('nb-NO')}</span>
     </li>
-    <li className="flex flex-col gap-0 items-center text-lg">
+    <li className="flex flex-col items-center text-lg">
       Oppslag i datasetta
       <span className="text-4xl">{stats.datasetDocs.toLocaleString('nb-NO')}</span>
     </li>
@@ -75,21 +75,19 @@ export default async function Home() {
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalde datasett</h2>
-    <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
+    <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
-        <li key={index} className="card flex flex-col md:h-64 sm:my-0">
-          <div className="flex flex-col sm:flex-row h-full w-full no-underline">
-          <div className="aspect-square  m-1 overflow-hidden sm:flex-none">
-          <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%] overflow-hidden"/>
-        </div>
-          <div className="content p-4 pb-2 w-128 flex flex-col">
-            <h3 className="text-lg font-semibold"><Link href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>{card.title}</Link></h3>
-            <p>{card.description}</p>
-            {card.imageAttribution && 
-            <small className="text-neutral-700 text-xs mt-auto">Illustrasjon: {card.imageAttribution}</small>
-          }
-          </div>
-          </div>
+        <li key={index} className="card p-1 xl:col-span-1 items-start">
+          <Link className=" no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square">
+            <Image src={card.img} alt={card.alt || ''} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
+            </div>
+
+            <div className=" py-4 px-6">
+              <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+              <p className="pt-2 text-small">{card.description}</p>
+            </div>
+          </Link>
         </li>
       ))}
     </ul>

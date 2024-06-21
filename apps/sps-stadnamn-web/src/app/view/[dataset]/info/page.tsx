@@ -26,7 +26,7 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
 
     return (
         <>
-            <h2><span className='sr-only'>Om </span>{datasetTitles[mainIndex]}</h2>
+            <h2>Om {datasetTitles[mainIndex]}</h2>
             <div className='flex flex-col md:flex-row'>
                 <div className='md:w-1/2'>
                     <p>{info['description']}</p>

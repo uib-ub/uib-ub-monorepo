@@ -1,12 +1,29 @@
 
 
 import type { NextRequest } from 'next/server'
-import { fetchDoc } from './app/api/_utils/actions'
+import { fetchDoc, fetchSNID } from './app/api/_utils/actions'
 export async function middleware(request: NextRequest) {
     // Extract uuid and extension from url
+    
+
+
     const url = new URL(request.url)
-    const dataset = url.pathname.split('/')[2]
-    const suffix = url.pathname.split('/')[4]
+    const path = url.pathname.split('/')
+    
+
+
+    if (path[1] == 'snid') {
+        // redirect
+        const snid = path[2]
+        const data = await fetchSNID(snid);
+        //return Response.json({"url": `/view/search/doc/${data.fields.uuid}`});
+        return Response.redirect(`http:localhost:3000/view/search/doc/${data.fields.uuid}${url.searchParams ? '?' + url.searchParams : ''}`, 302);
+    }
+
+    
+    const dataset = path[2]
+
+    const suffix = path[4]
     const [uuid, extension] = suffix.split('.')
 
 
@@ -67,6 +84,7 @@ export async function middleware(request: NextRequest) {
         '/view/:dataset/doc/:uuid*.json',
         '/view/:dataset/doc/:uuid*.geojson',
         '/view/:dataset/doc/:uuid*.jsonld',
+        '/snid/:snid*',
     ],
     
   }
