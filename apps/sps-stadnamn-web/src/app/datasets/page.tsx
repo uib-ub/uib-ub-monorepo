@@ -129,17 +129,19 @@ export default function Datasets() {
           </div>
           </div>
 
-          <ul className="flex flex-col gap-6">
+          <ul className="flex flex-col gap-y-6 w-full">
             {filteredDatasets.map((dataset) => (
           <li key={dataset} className="card flex flex-col sm:flex-row h-full my-6 sm:my-0 w-full sm:grid sm:grid-cols-4 relative">
-              <div className='flex flex-col sm:col-span-1'>
-              <Image src={datasetPresentation[dataset].img} alt={datasetPresentation[dataset].alt || ''} width="512" height="512" className="object-cover aspect-square sepia-[25%] grayscale-[50%]"/>
+              <div className='flex flex-col sm:col-span-1 w-full'>
+              <Image src={datasetPresentation[dataset].img} alt={datasetPresentation[dataset].alt || ''} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
               <small className="text-neutral-700 text-xs p-1">{datasetPresentation[dataset].alt} | {datasetPresentation[dataset].imageAttribution}</small>
               </div>
               
-              <div className="p-4 pb-2 flex flex-col sm:col-span-3">
-                <h3 className="text-2xl font-semibold">{datasetTitles[dataset]}</h3>
-                <ul className='flex gap-2 my-2 text-neutral-900'>
+              <div className="p-4 pb-2 sm:col-span-3">
+                <span className="flex flex-wrap"><h3 className="text-xl sm:text-2xl font-semibold">{datasetTitles[dataset]}</h3>
+                {stats?.datasets[dataset] && <div className="text-lg ml-auto text-neutral-700 font-serif">{stats.datasets[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div>}
+                </span>
+                <ul className='flex flex-wrap gap-2 my-2 text-neutral-900'>
                 {datasetTypes[dataset].map((type) => (
                     <li key={type} className="flex items-center gap-1">
                     {icons[type]}
@@ -147,11 +149,11 @@ export default function Datasets() {
                     </li>
                 ))}
                 </ul>
-                <div className="space-y-4">
+                <div className="space-y-4 break-words">
                 <p>{datasetPresentation[dataset].description}</p>
                 <div className="space-y-2">
                 <h4 className='font-semibold'>Ressurser</h4>
-                <ul className='flex gap-2 text-neutral-900'>
+                <ul className='flex flex-wrap gap-2 text-neutral-900'>
                 {datasetFeatures[dataset].map((feature) => (
                     <li key={feature} className="flex items-center gap-1">
                     {icons[feature]}
@@ -182,7 +184,6 @@ export default function Datasets() {
               </div>
              
               </div>
-              {stats?.datasets[dataset] && <div className="absolute right-6 bottom-4 text-2xl text-neutral-700 font-serif">{stats.datasets[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div> }
               
           </li>
         ))}
