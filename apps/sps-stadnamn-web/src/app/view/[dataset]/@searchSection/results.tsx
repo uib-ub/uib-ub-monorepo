@@ -65,7 +65,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       <h2 id="result_heading" aria-live="polite">
       <span className='text-xl text-center h-full font-semibold small-caps'>
         Treff
-        </span> { showLoading ? <Spinner className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
+        </span> { showLoading ? <Spinner status="Laster inn treff" className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
       </h2>
       <div className="ml-auto flex items-end gap-4">
       {sortConfig[params.dataset] && 

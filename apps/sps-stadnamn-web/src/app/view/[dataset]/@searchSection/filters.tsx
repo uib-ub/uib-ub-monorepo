@@ -94,8 +94,8 @@ export default function Facets() {
       <button type="button" onClick={() => toggleFacet('adm')}  className='flex w-full items-center gap-1'>
       { expandedFacet == 'adm' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
       Geografisk inndeling
-      { loadingFacet == 'adm' ? <Spinner className='w-[1em] h-[1em}'/> : null}
-      
+      { loadingFacet == 'adm' ? <Spinner status="Laster inn geografisk inndeling" className='w-[1em] h-[1em}'/> : null}
+       
       </button>
     </h3>
     { expandedFacet == 'adm' ? <ClientFacet facetName='adm' showLoading={(facet: string | null) => setLoadingFacet(facet)}/> : null}
@@ -106,7 +106,7 @@ export default function Facets() {
           <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
           { expandedFacet == 'server' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
           Andre filtre
-          { loadingFacet == 'server' ? <Spinner className='w-[1em] h-[1em}'/> : null}
+          { loadingFacet == 'server' ? <Spinner status="Laster inn fasetter" className='w-[1em] h-[1em}'/> : null}
           
           </button>
         </h3>
