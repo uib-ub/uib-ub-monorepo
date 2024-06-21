@@ -32,7 +32,7 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
                     <p>{info['description']}</p>
                     <GoToSearchButtons/>
                     { subpages[mainIndex]?.length &&
-                    <SubpageNav items={subpages[mainIndex].map(subpage => { return { label: subpage, href: `/view/${params.dataset}/info/${subpage}`} })}>
+                    <SubpageNav items={subpages[mainIndex].map((subpage, index) => { return { label: subpage, href: `/view/${params.dataset}/info/${index+1}`} })}>
                         <h3>Artikler</h3>
                     </SubpageNav>
                 }
