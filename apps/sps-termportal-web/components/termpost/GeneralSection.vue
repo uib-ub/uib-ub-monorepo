@@ -91,6 +91,31 @@
           :data="[$t('id.noteTermbaseIsUnmaintained')]"
         />
       </TermpostTermProp>
+      <TermpostTermProp
+        v-if="termbase === 'SNOMEDCT'"
+        :flex="true"
+        :label="$t('id.version')"
+      >
+        <TermpostTermDescription
+          :flex="true"
+          :data="[[$t('misc.snomedVersion'), snomedConfig.linkNotes]]"
+        />
+      </TermpostTermProp>
+      <TermpostTermProp
+        v-if="termbase === 'SNOMEDCT'"
+        :flex="true"
+        :label="$t('id.browser')"
+      >
+        <TermpostTermDescription
+          :flex="true"
+          :data="[
+            [
+              `SNOMED CT Browser: ${displayInfo.pagetitle.value}`,
+              snomedConfig.linkBrowser(route.params.id),
+            ],
+          ]"
+        />
+      </TermpostTermProp>
     </TermpostTermSection>
   </div>
 </template>
