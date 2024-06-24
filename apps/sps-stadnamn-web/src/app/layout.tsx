@@ -5,6 +5,7 @@ import Menu from "./Menu";
 import NavBar from "./NavBar";
 import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
 import { Suspense } from "react";
+import PlausibleProvider from 'next-plausible'
  
 const garamond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -34,6 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no" className={`${garamond.variable} ${opensans.className} h-full w-full`}>
+      <head>
+        <PlausibleProvider domain="stadnamn.uib.no" />
+      </head>
       <body className="flex flex-col w-full h-full relative">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[3001] focus:top-1 focus:py-3 focus:px-6 focus:bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
