@@ -44,13 +44,13 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     // When sort options aren't configured yet, we can sort by relevance or alphabetically using a single toggle
     const sortOrderByCombined = () => {
       const params = new URLSearchParams(searchParams)
-      if (searchParams.get('sort') == 'desc') {
-        params.set('sort', 'asc')
-      } else if (searchParams.get('sort') == 'asc') {
+      if (searchParams.get('sort') == 'asc') {
+        params.set('sort', 'desc')
+      } else if (searchParams.get('sort') == 'desc') {
         params.delete('sort')
       }
       else {
-        params.set('sort', 'desc')
+        params.set('sort', 'asc')
       }
 
       params.delete('page')
