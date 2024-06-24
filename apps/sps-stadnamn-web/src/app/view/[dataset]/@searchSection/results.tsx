@@ -94,11 +94,11 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     }
 
       {sortConfig[params.dataset] ? searchParams.get('orderBy') && <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter stigende' : 'Sorter synkende'} onClick={sortResults}>
-        {searchParams.get('sort') == 'desc'? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }
+        {searchParams.get('sort') ? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }
       </IconButton> 
       :
-      <IconButton label={searchParams.get('sort') == 'desc'&& 'Sorter alfabetisk Å-A' || searchParams.get('sort') == 'asc' && 'Sorter etter relevans' || 'Sorter alfabetisk A-Å'} onClick={sortOrderByCombined}>
-        {searchParams.get('sort') == 'desc' &&  <PiSortAscending className='text-xl'/> || searchParams.get('sort') == 'asc' && <PiFunnelSimple className=' text-xl'/> || <PiSortDescending className=' text-xl'/> }
+      <IconButton label={searchParams.get('sort') == 'asc'&& 'Sorter alfabetisk Å-A' || searchParams.get('sort') == 'desc' && 'Sorter etter relevans' || 'Sorter alfabetisk A-Å'} onClick={sortOrderByCombined}>
+        {searchParams.get('sort') == 'asc' &&  <PiSortDescending className='text-xl'/> || searchParams.get('sort') == 'desc' && <PiFunnelSimple className=' text-xl'/> || <PiSortAscending className=' text-xl'/> }
       </IconButton>
       
       }
