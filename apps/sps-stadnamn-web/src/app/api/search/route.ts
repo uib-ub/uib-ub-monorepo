@@ -10,8 +10,8 @@ export async function GET(request: Request) {
 
   const sortArray = []
 
-  if (filteredParams.orderBy) {
-    const fields = filteredParams.orderBy.split(',');
+  if (filteredParams.sort) {
+    const fields = filteredParams.orderBy?.split(',') || ['label.keyword'];
     for (const field of fields) {
       const nestedFields = field.split('__');
       const order = filteredParams.sort == 'desc' ? 'desc' : 'asc';
