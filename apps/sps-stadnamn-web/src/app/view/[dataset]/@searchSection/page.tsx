@@ -17,7 +17,8 @@ export default function SearchSection () {
     const params = useParams<{dataset: string, uuid: string, manifestId: string}>()
     const router = useRouter()
     const { resultData, isLoading, searchError } = useContext(SearchContext)
-    const filteredParams = useQueryStringWithout(['docs', 'search', 'sort'])
+    const filteredParams = useQueryStringWithout(['docs', 'search'])
+    const filteredParamsNoSort = useQueryStringWithout(['docs', 'search', 'orderBy', 'sort'])
     let [mainIndex, subindex] = params.dataset.split("_")
     const searchParams = useSearchParams()
 
@@ -55,11 +56,9 @@ export default function SearchSection () {
           <SearchBar/>
           { !searchError && <Filters/> }
         </form>            
-          { resultData && filteredParams ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
+          { resultData && filteredParamsNoSort ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
 
-        </div>
-        { searchError && JSON.stringify(searchError)}
-        
+        </div>        
         </section>
 
         
