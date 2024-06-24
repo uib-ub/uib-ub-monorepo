@@ -8,7 +8,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 
 
 export default function SearchView() {
-    const { mapBounds, isLoading, searchError } = useContext(SearchContext)
+    const { mapBounds, isLoading, searchError, resultData } = useContext(SearchContext)
     const params = useParams()
     const [docs, setDocs] = useState<any>(null)
     const docs_uuid = useSearchParams().get('docs')
@@ -47,7 +47,14 @@ export default function SearchView() {
             (
             searchError ? <ErrorMessage error={searchError} message="Kunne ikke gjennomføre søket"/>
             :
-            <div role="status" aria-live="polite" className='flex items-center justify-center my-auto text-xl font-semibold'>Ingen treff i kart</div>
+            <>
+            <div role="status" aria-live="polite" className='flex flex-col items-center justify-center my-auto text-2xl gap-y-1 font-semibold'>
+
+            {resultData?.hits?.hits?.length ? <><div>Ingen treff i kart</div><div className='flex items-center justify-center my-auto text-lg font-semibold text-neutral-800'>Sjå treff utan koordinat i resultatlista</div></> : 
+            <div>Ingen treff</div>}
+            </div>
+            
+            </>
             )
           
 
