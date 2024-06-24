@@ -1,15 +1,18 @@
-import "../styles/globals.css";
 import "tailwind-ui/styles.css";
+import "../styles/globals.css";
 
-import type { AppProps } from "next/app";
-import * as React from "react";
+import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
-import { Merriweather_Sans, Newsreader } from 'next/font/google'
+import type { AppProps } from "next/app";
+import { Merriweather_Sans, Newsreader, Noto_Naskh_Arabic, Rubik } from 'next/font/google';
+import { useRouter } from 'next/router';
 import Script from 'next/script';
+import * as React from "react";
+import { getLangDir } from 'rtl-detect';
 
-const merriweathersans = Merriweather_Sans({
+const merriweatherSans = Merriweather_Sans({
   subsets: ['latin'],
-  variable: '--font-merriweathersans',
+  variable: '--font-merriweatherSans',
   fallback: ['Helvetica', 'ui-sans-serif', 'sans-serif'],
   adjustFontFallback: false,
 })
@@ -21,15 +24,38 @@ const newsreader = Newsreader({
   adjustFontFallback: false,
 })
 
+const arabic = Rubik({
+  subsets: ['arabic'],
+  variable: '--font-arabic',
+  fallback: ['ui-serif', 'serif'],
+  adjustFontFallback: false,
+})
+
+const arabicSerif = Noto_Naskh_Arabic({
+  subsets: ['arabic'],
+  variable: '--font-arabicSerif',
+  fallback: ['ui-serif', 'serif'],
+  adjustFontFallback: false,
+})
+
 const App = ({ Component, pageProps }: AppProps) => {
+  const { locale } = useRouter();
+  const direction = getLangDir(locale!);
+
+  React.useEffect(() => {
+    document.querySelector("body")!.setAttribute("dir", direction);
+  }, [direction]);
+
   return (
     <React.StrictMode>
       <style jsx global>
         {`
           :root {
-            --font-merriweathersans: ${merriweathersans.style.fontFamily};
+            --font-merriweatherSans: ${merriweatherSans.style.fontFamily};
             --font-newsreader: ${newsreader.style.fontFamily};
-          }
+            --font-arabic: ${arabic.style.fontFamily};
+            --font-arabicSerif: ${arabicSerif.style.fontFamily};
+            }
         `}
       </style>
       {/* Global Site Tag (gtag.js) - Google Analytics */}
@@ -48,12 +74,19 @@ const App = ({ Component, pageProps }: AppProps) => {
           });
         `}
       </Script>
-      <ThemeProvider enableSystem={true} attribute="class">
-        <>
-          {/* @ts-ignore */}
-          <Component {...pageProps} />
-        </>
-      </ThemeProvider>
+
+      <NextIntlClientProvider
+        locale={locale}
+        timeZone="Europe/Oslo"
+        messages={pageProps.messages}
+      >
+        <ThemeProvider enableSystem={true} attribute="class">
+          <>
+            {/* @ts-ignore */}
+            <Component {...pageProps} />
+          </>
+        </ThemeProvider>
+      </NextIntlClientProvider>
     </React.StrictMode>
   );
 };

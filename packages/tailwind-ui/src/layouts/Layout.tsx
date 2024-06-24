@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import { AppShell, HeaderShell, LocaleSwitch, ThemeSwitch, Menu, Modal, Pane, PanesShell } from '..';
 import { useRouter } from 'next/router';
+import React, { ReactNode } from 'react';
+import { AppShell, HeaderShell, LocaleSwitch, Modal, Pane, PanesShell, ThemeSwitch } from '..';
 
 type Props = {
   children?: ReactNode
@@ -28,7 +28,8 @@ export const Layout: React.FC<Props> = ({ children, data, title, icon, nav }) =>
               lite={true}
               labels={{
                 no: 'Norsk',
-                en: 'English'
+                en: 'English',
+                ar: 'Arabic',
               }}
             />
             <ThemeSwitch lite={true} />

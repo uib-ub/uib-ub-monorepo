@@ -1,0 +1,21 @@
+{
+  "Nav": {
+    "menu": "القائمة",
+    "toc": "محتويات كتاب",
+    "close": "إغلاق",
+    "open": "فتح",
+    "subjects": "عناوين الموضوع",
+    "production": "إنتاج",
+    "partOfMarcus": "هذا المعرض هو جزء من",
+    "combinator": "و",
+    "by": "ل",
+    "palette": "اللوحة اللونية"
+  },
+  "Footer": {
+    "exhibitionBy": "المعرض من إنشاء",
+    "supportedBy": "برعاية"
+  },
+  "Blocks": {
+    "download": "تحميل"
+  }
+}

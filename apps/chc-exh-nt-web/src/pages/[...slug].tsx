@@ -1,18 +1,20 @@
-import Head from 'next/head'
-import { usePreviewSubscription } from '../lib/sanity'
-import { filterDataToSingleItem } from '../lib/functions'
-import { getClient } from '../lib/sanity.server'
-import { groq } from 'next-sanity'
-import { routeQuery } from '../lib/queries/routeQuery'
-import { TextBlocks } from '../components/TextBlocks'
-import { useRouter } from 'next/router'
+import { ArrowTopRightOnSquareIcon, Bars4Icon } from '@heroicons/react/24/outline'
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
-import { Hero, Layout, Link, MarcusIcon, Menu, Modal, Pane, UiBIcon } from 'tailwind-ui'
+import { useTranslations } from 'next-intl'
+import { groq } from 'next-sanity'
+import Head from 'next/head'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import React from 'react'
+import { Hero, Layout, Link, MarcusIcon, Menu, Pane, UiBIcon } from 'tailwind-ui'
+import { Footer } from '../components/Footer'
 import { MainNav } from '../components/Header/MainNav'
 import SanityImage from '../components/SanityImage'
-import { ArrowTopRightOnSquareIcon, Bars4Icon } from '@heroicons/react/24/outline'
-import { Footer } from '../components/Footer'
+import { TextBlocks } from '../components/TextBlocks'
+import { filterDataToSingleItem } from '../lib/functions'
+import { routeQuery } from '../lib/queries/routeQuery'
+import { urlFor, usePreviewSubscription } from '../lib/sanity'
+import { getClient } from '../lib/sanity.server'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const routesQuery = groq`
@@ -62,13 +64,15 @@ export const getStaticProps: GetStaticProps = async ({ params, locale, preview =
       preview,
       // Pass down the initial content, and our query
       data: { page, query, queryParams },
-      //messages: (await import(`../messages/${locale}.json`)).default
+      messages: (await import(`../messages/${locale}.json`)).default
     },
   }
 }
 
 const Page: NextPage = ({ data, preview }: any) => {
-  const { locale, defaultLocale } = useRouter()
+  const { locale, defaultLocale, asPath } = useRouter()
+  const t = useTranslations('Nav');
+
   const { data: previewData } = usePreviewSubscription(data?.query, {
     params: data?.queryParams ?? {},
     // The hook will return this on first render
@@ -83,13 +87,11 @@ const Page: NextPage = ({ data, preview }: any) => {
   //console.log(JSON.stringify(page, null, 2))
 
   const { mainNav, siteSettings: { label, description, identifiedBy } } = page
-  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title[0]
-
+  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title
   {/* If LinguisticDocument the content is in the body field */ }
   const slug = page?.route[0]?.locale[0] ?? page?.route[0]?.fallback[0]
   const linguisticDocumentBody = page?.route[0]?.locale[0]?.body ?? page?.route[0]?.fallback[0]?.body
-
-  const localeCaption = slug?.about?.caption?.filter((i: any) => i.language === locale)[0]?.body
+  const excerpt = page?.route[0]?.locale[0]?.excerpt ?? page?.route[0]?.fallback[0]?.excerpt
 
   const aboutImage = slug?.about ?
     <SanityImage
@@ -106,6 +108,30 @@ const Page: NextPage = ({ data, preview }: any) => {
     priority
   /> : null
 
+  const seoImage = slug.about.image ?? slug.image
+  const seoAuthors = slug?.creator.map((creator: any) => creator.assignedActor.label[locale!] ?? creator.assignedActor.label.en)
+
+  const Creators = ({ creators }: { creators: any }) => {
+    return (
+      <>
+        <i>
+          {t('by')}
+        </i > {' '}
+        {
+          creators ? creators.map((creator: any, i: number) => (
+            <React.Fragment key={creator._key}>
+              <span className='font-bold'>
+                {creator.assignedActor.label[locale!] ?? creator.assignedActor.label['en']}
+              </span>
+              {i === creators.length - 2 ? ` ${t('combinator')} ` : null}
+              {i < creators.length - 2 ? ', ' : null}
+            </React.Fragment>
+          )) : null
+        }
+      </>
+    )
+  }
+
   // Notice the optional?.chaining conditionals wrapping every piece of content?
   // This is extremely important as you can't ever rely on a single field
   // of data existing when Editors are creating new documents.
@@ -113,9 +139,13 @@ const Page: NextPage = ({ data, preview }: any) => {
   return (
     <>
       <Head>
-        <title>{label[locale || 'no']}</title>
-        <meta name="description" content={description[locale || 'no']} />
-        <link rel="icon" href="/favicon.ico" />
+        <title>{slug?.label || title || label[locale!] || label.en}</title>
+        <meta name="description" content={excerpt || description[locale!] || description.en} />
+        <meta name="twitter:title" content={slug?.label ?? title}></meta>
+        {seoAuthors ? seoAuthors.map((author: any) => <meta key={author.replace(' ', '-').toLowerCase()} name="article:author" content={author}></meta>) : null}
+        {seoImage ? <meta property="og:image" content={urlFor(seoImage).width(500).height(300).url()}></meta> : null}
+        <meta name="twitter:card" content="summary_large_image"></meta>
+        <link rel="canonical" href={`https://marcus.uib.no/exhibition/mer-enn-det-humanitare-blikket/${locale}${asPath}`}></link>
       </Head>
 
       <Layout
@@ -129,12 +159,12 @@ const Page: NextPage = ({ data, preview }: any) => {
           <div className='flex sm:flex-col gap-2'>
             <UiBIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-800 dark:text-neutral-100 dark:hover:text-neutral-200' />
             <MainNav
-              title={locale === 'no' ? 'Meny' : 'Menu'}
+              title={t('menu')}
               aria-label='primary navigation'
               buttonLabel={
                 <div className='gap-1 flex md:flex-col backdrop-blur-sm rounded items-center'>
                   <Bars4Icon className={'max-sm:w-5 max-sm:h-5 sm:w-6 sm:h-6'} />
-                  <div className='max-md:sr-only'>Menu</div>
+                  <div className='max-md:sr-only'>{t('menu')}</div>
                 </div>
               }
               value={mainNav}
@@ -147,9 +177,8 @@ const Page: NextPage = ({ data, preview }: any) => {
             button={
               <MarcusIcon className='max-sm:w-6 max-sm:h-6 md:w-8 md:h-8 text-neutral-700 hover:text-neutral-800 dark:text-neutral-200 dark:hover:text-neutral-200' />
             }>
-            <div className='gap-5 text-sm dark:text-neutral-300 text-neutral-700 px-5 py-3'>
-              {locale === 'no' && <div>Denne utstillingen er en del av <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>}
-              {locale === 'en' && <div>This exhibition is a part of <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>}
+            <div className={`gap-5 ${locale === 'ar' ? 'text-xl ' : 'text-sm'} dark:text-neutral-300 text-neutral-700 px-5 py-3`}>
+              <div>{t('partOfMarcus')} <a href='https://marcus.uib.no' target='_blank' rel="noreferrer">Marcus <ArrowTopRightOnSquareIcon className='inline h-4 w-4' /></a></div>
             </div>
           </Menu>
         }
@@ -157,7 +186,7 @@ const Page: NextPage = ({ data, preview }: any) => {
         <Pane intent='content'>
           <main className='flex flex-col mt-5 mb-20'>
             <Hero
-              label={slug?.label}
+              label={slug?.label ?? title}
               image={aboutImage || heroImage || null}
               figCaption={
                 <figcaption className='flex gap-1 justify-end mt-1 font-light text-sm text-neutral-500 dark:text-neutral-400'>
@@ -166,7 +195,7 @@ const Page: NextPage = ({ data, preview }: any) => {
                     <p className='font-light text-sm'>
                       <i>
                         <Link href={`/id/${slug?.about?._id}`}>
-                          {slug?.about?.label[locale ?? ''] || slug?.about?.label[defaultLocale ?? ''] || 'Missing default language label'}
+                          {slug?.about?.label[locale!] ?? slug?.about?.label[defaultLocale!]}
                         </Link>
                       </i>
 
@@ -175,12 +204,13 @@ const Page: NextPage = ({ data, preview }: any) => {
                   </div>
                 </figcaption>
               }
-              creators={slug?.creator}
+              creators={slug?.creator ? <Creators creators={slug?.creator} /> : null}
               locale={locale || ''}
             />
 
-            <div className='mt-5 mb-54 grid grid-cols-content font-light font-serif text-lg'>
+            <div className='mt-5 mb-54 grid grid-cols-content font-light font-serif rtl:font-arabicSerif text-lg'>
               {linguisticDocumentBody && <TextBlocks value={linguisticDocumentBody} />}
+              {!linguisticDocumentBody && (<div className='col-start-1 col-end-6 md:col-start-3 md:col-end-4 text-center text-4xl'>غير مترجمة</div>)} {/* "Not translated" */}
             </div>
           </main>
           <Footer locale={locale} />

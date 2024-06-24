@@ -1,8 +1,8 @@
+import { useRouter } from 'next/router'
 import { Link } from 'tailwind-ui'
 import { TextBlocks } from '..'
-import Source from './shared/Source'
-import { useRouter } from 'next/router'
 import SanityImage from '../../SanityImage'
+import Source from './shared/Source'
 
 const FigCaption = ({ children, label, description, item }) => {
   return (
@@ -39,7 +39,7 @@ const ObjectBlock = (props) => {
   const height = 'clamp(40em, 50vh, 20em)'
 
   return (
-    <figure key={_key} className='my-8 col-start-3 col-end-4 font-sans'>
+    <figure key={_key} className='my-8 col-start-3 col-end-4 font-sans rtl:font-arabic'>
       {items?.length === 0 && <div className='flex'>Missing figure</div>}
 
       {items && (

@@ -1,0 +1,21 @@
+{
+  "Nav": {
+    "menu": "Menu",
+    "toc": "Table of Contents",
+    "close": "Close",
+    "open": "Open",
+    "subjects": "Subjects",
+    "production": "Production",
+    "partOfMarcus": "Denne utstillingen er en del av",
+    "combinator": "and",
+    "by": "by",
+    "palette": "Color palette"
+  },
+  "Footer": {
+    "exhibitionBy": "The exhibition is created by",
+    "supportedBy": "Sponsored by"
+  },
+  "Blocks": {
+    "download": "Download"
+  }
+}

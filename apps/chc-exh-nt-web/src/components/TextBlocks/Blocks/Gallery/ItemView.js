@@ -1,8 +1,8 @@
-import { TextBlocks } from '../..'
-import { Spacer } from 'tailwind-ui'
-import SanityImage from '../../../SanityImage'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { Spacer } from 'tailwind-ui'
+import { TextBlocks } from '../..'
+import SanityImage from '../../../SanityImage'
 
 export default function ItemView(props) {
   const { locale, defaultLocale } = useRouter()
