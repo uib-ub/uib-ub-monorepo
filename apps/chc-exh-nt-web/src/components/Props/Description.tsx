@@ -31,23 +31,31 @@ interface LinguisticObject {
   language: string;
 }
 
-interface DescriptionProps {
+interface DescriptionsProps {
   value: LinguisticObject[]
   language: string
 }
 
-export const Description = ({ value, language }: DescriptionProps) => {
+export const Description = ({ value, language }: DescriptionsProps) => {
+  if (!value) {
+    return null
+  }
 
   const briefDescriptions = value
     .filter((i: any) => i.hasType._id === 'd4b31289-91f4-484d-a905-b3fb0970413c') // filter on type "Brief description"
-    //.filter((desc: any) => desc.language === 'en')[0]
     .reduce((acc: { [key: string]: LinguisticObject }, item: LinguisticObject) => {
       const locale = item.language;
-      acc[locale] = { ...item };
+      acc[locale] = {
+        ...item,
+      };
       return acc;
     }, {})
 
-  const text = briefDescriptions?.[language] ?? briefDescriptions?.en
+  const text = briefDescriptions?.[language] || briefDescriptions?.en || briefDescriptions?.no
+
+  if (!text) {
+    return null
+  }
 
   return (
     <div lang={text.language} dir={getLangDir(text.language)}>

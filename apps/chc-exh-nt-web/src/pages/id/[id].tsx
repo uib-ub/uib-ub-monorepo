@@ -151,7 +151,7 @@ const Id: NextPage = ({ data, preview }: any) => {
   // It'll be completely blank when they start!
 
   const { siteSettings: { label, description, identifiedBy }, mainNav, item } = page
-  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title
+  const title = identifiedBy.filter((name: any) => name?.language[0] === locale)[0].title
 
   return (
     <>
