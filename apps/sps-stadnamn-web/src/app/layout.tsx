@@ -19,7 +19,6 @@ const opensans = Open_Sans({
 })
  
 
-
 export const metadata: Metadata = {
   title: {
     template: "%s - Stadnamnportalen",
