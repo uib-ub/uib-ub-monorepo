@@ -31,6 +31,7 @@ const DynamicImageViewer = () => {
   useEffect(() => {
     const fetchManifestAndInitializeViewer = async () => {
       setIsLoading(true);
+      // TODO: all datasets should have the same url structure as NBAS
       const response = await fetch(dataset == 'nbas' ? `https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json` : `https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
       const manifestBody = await response.json();
       setManifest(manifestBody);
