@@ -13,7 +13,7 @@ export default function Feedback() {
     return (
         <>
         <main id="main" tabIndex={-1} className="flex flex-col w-full flex-grow">
-        <div className="flex w-full shadow-md pb-2 justify-center"><Link href="https://skjemaker.app.uib.no/view.php?id=16665712" target="_blank">Åpne i nytt vindu</Link></div>
+        <div className="flex w-full shadow-md pb-3 justify-center shadow-md mb-1"><Link href="https://skjemaker.app.uib.no/view.php?id=16665712" target="_blank">Åpne i nytt vindu</Link></div>
         <iframe className="flex-grow"  src="https://skjemaker.app.uib.no/view.php?id=16665712"/>
         
         </main>
