@@ -132,8 +132,8 @@ export default function Datasets() {
             {filteredDatasets.map((dataset) => (
           <li key={dataset} className="card flex flex-col sm:flex-row h-full my-6 sm:my-0 w-full sm:grid sm:grid-cols-4 relative">
               <div className='flex flex-col sm:col-span-1 w-full'>
-              <Image src={datasetPresentation[dataset].img} alt={datasetPresentation[dataset].alt || ''} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
-              <small className="text-neutral-700 text-xs p-1">{datasetPresentation[dataset].alt} | {datasetPresentation[dataset].imageAttribution}</small>
+              <Image src={datasetPresentation[dataset].img} alt="Illustrasjon" aria-describedby={dataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
+              <small id={dataset + "_attribution"} className="text-neutral-700 text-xs p-1">{datasetPresentation[dataset].imageAttribution}</small>
               </div>
               
               <div className="p-4 pb-2 sm:col-span-3">
