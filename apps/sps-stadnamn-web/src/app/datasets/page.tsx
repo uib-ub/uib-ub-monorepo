@@ -18,19 +18,18 @@ export default function Datasets() {
 
   
   const icons: {[key: string]: JSX.Element} ={
-    "image": <PiArticleFill/>,
-    "audio": <PiFileAudioFill />,
-    "phonetic": <PiEarFill />,
-    "coordinates": <PiMapPinLineFill />,
-    "link": <PiLinkSimpleFill />,
-    "maps": <PiMapTrifoldFill />,
-    "base": <PiWallFill />,
+    "image": <PiArticleFill aria-hidden="true"/>,
+    "audio": <PiFileAudioFill aria-hidden="true"/>,
+    "phonetic": <PiEarFill aria-hidden="true"/>,
+    "coordinates": <PiMapPinLineFill aria-hidden="true"/>,
+    "link": <PiLinkSimpleFill aria-hidden="true"/>,
+    "maps": <PiMapTrifoldFill aria-hidden="true"/>,
+    "base": <PiWallFill aria-hidden="true"/>,
+    "sprak": <PiArchiveFill aria-hidden="true"/>,
+    "encyclopedia": <PiBooksFill aria-hidden="true"/>,
+    "database": <PiDatabaseFill aria-hidden="true"/>,
+    "public": <PiGavelFill aria-hidden="true"/>
 
-    "sprak": <PiArchiveFill />,
-    "encyclopedia": <PiBooksFill />,
-    "database": <PiDatabaseFill />,
-    "public": <PiGavelFill />,
-    
   };
 
   useEffect(() => {
