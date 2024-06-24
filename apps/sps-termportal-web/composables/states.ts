@@ -36,7 +36,7 @@ export const useDomainData = () =>
     "DOMENE-3AHumaniora": {},
     "DOMENE-3AOkonomiAdministrasjon": {},
     "DOMENE-3ASamfunnsfag": {},
-    //    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
+    "DOMENE-3AHelse_og_sosial": {},
   }));
 
 export const useSearchInterface = () =>
