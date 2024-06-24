@@ -22,11 +22,9 @@ export default function TooltipButton({ children, className, textClass, textIcon
 
         <TooltipProvider>
             <Tooltip>
-                <TooltipTrigger className={className} type={type || "button"} onClick={handleClick} {...rest}>
-                    <span className="sr-only">{label}</span>
-                    {textClass ? <span aria-hidden='true' className={textClass}>{label}</span> : null}
-                    {textIcon ? children : <i  aria-hidden='true'>{children}</i>
-                }
+                <TooltipTrigger aria-label={label} className={className} type={type || "button"} onClick={handleClick} {...rest}>
+                    {textClass ? <span aria-hidden="true" className={textClass}>{label}</span> : null}
+                    {textIcon ? <span aria-hidden="true" className='flex'>{children}</span> : <i  aria-hidden='true'>{children}</i>}
                 </TooltipTrigger>
                 <TooltipContent>
                 {label}

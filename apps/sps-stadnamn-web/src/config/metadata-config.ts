@@ -17,7 +17,6 @@ export interface DatasetPresentation {
     img: string;
     alt: string;
     imageAttribution: string;
-    description: string;
     subindices?: SubindexPresentation;
     initPage?: string;
   }
@@ -40,6 +39,22 @@ export const datasetTitles: DatasetTitles = {
     sof: "Fylkesarkivet i Sogn og Fjordane"
 }
 
+export const datasetDescriptions: Record<string, string> = {
+  bsn: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig.",
+  hord: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg å lytte til den lokale uttalen.",
+  rygh: "Norske Gaardnavne er en digital utgivelse av bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning.",
+  ostf: `Bustadnavn i Østfold er en utgivelse over bebyggelsesnavna (bustadnavna) i Østfold herredsvis (22 herred etter den gamle inndelinga). Navneforskerne Tom Schmidt og Margit Harsson ved Seksjon for navnegransking (UiO) sto for redigering og utgiving av serien, som bygger på et originalmanus av navnegranskeren Kåre Hoel (1922-1989), en navnegranskerkollega. Serien ble utgitt mellom 1994 og 2021 og består av i alt 20 bind. Verket er en sterkt utvidet og revidert utgave av Oluf Ryghs Norske Gaardnavne (bind 1 Smaalenenes Amt, 1897). Rygh begrenset seg i all hovedsak til navn på matrikkelgårdene, men nå er også navn på andre bebyggelser tatt opp til drøfting, samtidig som gårdsnavnene gis en fyldig behandling - både språklig og kulturhistorisk.`,
+  leks: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg å søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
+  nbas: "Den nasjonale stedsnavnbasen inneholder om lag 700 000 navn totalt (fordelte på kortsamlinger fra herredsregistret, seternavnregisteret, en del enkeltsamlinger, og stedsnavnsamlingen ved Universitetet i Bergen. Hvert navnekort inneholder navneform, uttale og informasjon om tilhørighet til kommune og fylke. I mange tilfelder er også gardsnummer oppgitt. I tillegg inneholder basen 3 700 originale innsamlingskart.",
+  m1838: "Matrikkelen av 1838 er et landsomfattende register over jordeiendommer og deres navn og verdi. Dette var den første nye matrikkel siden 1665. Registeret omfatter nesten 43 000 garder og 110 000 bruk, alle angitt navn, matrikkel- og løpenummer. Matrikkelen er landets første helnorske matrikkel og dekker hele landet unntatt Finnmark, der ikke ble matrikulert før enn godt 150 år senere.",
+  m1886: "Matrikkelen av 1886 er en oversikt over jordeiendommer i hele landet, angitt med navn, matrikkelnummer og verdi. Som noe nytt ble gardsnummer og bruksnummer tatt i bruk. Alle landets fylker, untatt Finnmark er dekket, og for hvert bruksnummer er angitt gards- og bruksnavn, i alt nesten 208 000 matrikler. Matrikelen regnes for å være den første moderne matrikkel, fastsatt etter det systemet vi kjenner i dag.",
+  mu1950: "Matrikkelutkastet av 1950 var forberedelsen til en ny matrikkel for hele Norge, men oppgaven ble aldri fullført, og man brukte i stedet kommunale eiendomsregistre. Utkastet dekker samlet sett over 767 000 matrikler fra landkommunene i alle fylker unntatt Finnmark. Hver matrikkel er angitt med gards- og bruksnavn, matrikkelnummer og verdi.",
+  skul: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms.",
+  sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivet i Vestlands stadnamnside: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
+}
+
+
+
 
 
 export const datasetPresentation: DatasetPresentation = {
@@ -47,31 +62,26 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/ubb-spr-bp-0001_sm.jpg",
         alt: "En kvinnelig arkivar eller kontorist sitter ved et skrivebord foran en stor rekke arkivskuffer.",
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
-        description: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig."
       },
       hord: {
         img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
         alt: "Utsnitt av kart over Hordaland og Sogn og Fjordane",
         imageAttribution: "Kartverket: Generalkart VII, L. Arentz 1929",
-        description: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg å lytte til den lokale uttalen."
       },
       rygh: {
         img: "/datasets/Prof_oluf_rygh.jpg",
         alt: "Oluf Rygh, portrettfoto",
         imageAttribution: "Wikimedia commons",
-        description: "Norske Gaardnavne er en digital utgivelse av bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning."
       },
       ostf: {
         img: "/datasets/Østfold_gml_herredsinndeling.png",
         alt: "Verket bygger på den gamle herredsinndelinga i Østfold",
         imageAttribution: "Bustadnavn i Østfold",
-        description: `Bustadnavn i Østfold er en utgivelse over bebyggelsesnavna (bustadnavna) i Østfold herredsvis (22 herred etter den gamle inndelinga). Navneforskerne Tom Schmidt og Margit Harsson ved Seksjon for navnegransking (UiO) sto for redigering og utgiving av serien, som bygger på et originalmanus av navnegranskeren Kåre Hoel (1922-1989), en navnegranskerkollega. Serien ble utgitt mellom 1994 og 2021 og består av i alt 20 bind. Verket er en sterkt utvidet og revidert utgave av Oluf Ryghs Norske Gaardnavne (bind 1 Smaalenenes Amt, 1897). Rygh begrenset seg i all hovedsak til navn på matrikkelgårdene, men nå er også navn på andre bebyggelser tatt opp til drøfting, samtidig som gårdsnavnene gis en fyldig behandling - både språklig og kulturhistorisk.`
       },
       leks: {
         img: "/datasets/leks2.png",
         alt: "Forside til Norsk stadnamnleksikon 1997",
         imageAttribution: "Språksamlingane",
-        description: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg å søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
         initPage: "info",
         subindices: {
           leks_g: {
@@ -82,7 +92,6 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/vincent-botta-wYD_wfifJVs-unsplash.jpg",
         imageAttribution: "Vincent Botta, Unsplash.com",
         alt: "Harddisk",
-        description: "Den nasjonale stedsnavnbasen inneholder om lag 700 000 navn totalt (fordelte på kortsamlinger fra herredsregistret, seternavnregisteret, en del enkeltsamlinger, og stedsnavnsamlingen ved Universitetet i Bergen. Hvert navnekort inneholder navneform, uttale og informasjon om tilhørighet til kommune og fylke. I mange tilfelder er også gardsnummer oppgitt. I tillegg inneholder basen 3 700 originale innsamlingskart.",
         subindices: {
           nbas_k: {
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
@@ -93,31 +102,26 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
         alt: "Utsnitt fra Matrikkelen 1838, Bykle anneks",
         imageAttribution: "Aust-Agder fylke, Nedenæs amt, Matrikkel , 1838-, oppb: Riksarkivet",
-        description: "Matrikkelen av 1838 er et landsomfattende register over jordeiendommer og deres navn og verdi. Dette var den første nye matrikkel siden 1665. Registeret omfatter nesten 43 000 garder og 110 000 bruk, alle angitt navn, matrikkel- og løpenummer. Matrikkelen er landets første helnorske matrikkel og dekker hele landet unntatt Finnmark, der ikke ble matrikulert før enn godt 150 år senere."
       },
       m1886: {
         img: "/datasets/No-nb_digibok_2014010838007_0180_1.jpg",
         alt: "Den forberedende matrikkelkommisjonen i Kråkstad i 1864",
         imageAttribution: "Østlid, Martin. \"Kråkstad\", s. 180 (nb.no)",
-        description: "Matrikkelen av 1886 er en oversikt over jordeiendommer i hele landet, angitt med navn, matrikkelnummer og verdi. Som noe nytt ble gardsnummer og bruksnummer tatt i bruk. Alle landets fylker, untatt Finnmark er dekket, og for hvert bruksnummer er angitt gards- og bruksnavn, i alt nesten 208 000 matrikler. Matrikelen regnes for å være den første moderne matrikkel, fastsatt etter det systemet vi kjenner i dag."
       },
       mu1950: {
         img: "/datasets/6541_inndeling_s_1950_jpg300dpi.jpg",
         alt: "Herredskart 1950",
         imageAttribution: "Kartverket, kommunneinndelinger 1950",
-        description: "Matrikkelutkastet av 1950 var forberedelsen til en ny matrikkel for hele Norge, men oppgaven ble aldri fullført, og man brukte i stedet kommunale eiendomsregistre. Utkastet dekker samlet sett over 767 000 matrikler fra landkommunene i alle fylker unntatt Finnmark. Hver matrikkel er angitt med gards- og bruksnavn, matrikkelnummer og verdi."
       },
       skul: {
         img: "/datasets/ubb-kk-n-520-005_sm.jpg",
         alt: "Interiør fra klasserom, jenteklasse",
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
-        description: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms."
       },
       sof: {
         img: "/datasets/SOF.JPG",
         alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
         imageAttribution: "Fylkesarkivet i Vestland",
-        description: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivet i Vestlands stadnamnside: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
       }
 }
 

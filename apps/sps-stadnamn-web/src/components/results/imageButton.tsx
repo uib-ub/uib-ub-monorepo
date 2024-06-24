@@ -7,13 +7,13 @@ export default function ImageButton({hit}: {hit: any}) {
     const searchParams = useSearchParams()
     const router = useRouter()
     const pathname = usePathname()
-    const dataset = hit._index.split('-')[1]
+    const params = useParams<{uuid: string; dataset: string}>()
 
 
     const goToIIIF = (uuid: string, manifest: string) => {
         const newSearchParams = new URLSearchParams(searchParams)
         newSearchParams.set('docs', String(uuid))
-        router.push(`/view/${dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
+        router.push(`/view/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
       }
 
 

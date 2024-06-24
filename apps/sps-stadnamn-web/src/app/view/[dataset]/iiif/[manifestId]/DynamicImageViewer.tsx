@@ -31,6 +31,7 @@ const DynamicImageViewer = () => {
   useEffect(() => {
     const fetchManifestAndInitializeViewer = async () => {
       setIsLoading(true);
+      // TODO: all datasets should have the same url structure as NBAS
       const response = await fetch(dataset == 'nbas' ? `https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json` : `https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
       const manifestBody = await response.json();
       setManifest(manifestBody);
@@ -91,11 +92,11 @@ const DynamicImageViewer = () => {
     <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
             className="no-underline p-4 bg-white">
         <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-        {hasSearchParams ? 'Tilbake til kartet' : 'Vis på kartet'}
+        {hasSearchParams && searchParams.get('search') != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
       </Link>
     <div className='h-full w-full relative aspect-square sm:aspect-auto'>
     {isLoading || !viewerRef.current? 
-    <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner className='w-20 h-20'/></div>
+    <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Laster inn bilde" className='w-20 h-20'/></div>
       : null
       }
     <div className='absolute top-0 flex z-[1000]  gap-2 text-xl p-2 text-white w-full'>

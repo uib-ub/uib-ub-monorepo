@@ -10,6 +10,7 @@ export function extractFacets(request: Request ) {
   for (const [key, value] of urlParams.entries()) {
     switch (key) {
       case 'q':
+      case 'search':
       case 'dataset':
       case 'page':
       case 'sort':

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
-import { datasetTitles, datasetPresentation } from '@/config/metadata-config';
+import { datasetTitles, datasetPresentation, datasetDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/Footer';
 import { fetchStats } from '@/app/api/_utils/actions';
 
@@ -14,7 +14,7 @@ export default async function Home() {
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
-    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: info.description, subindices: info.subindices, initPage: info.initPage }
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
   }
   )
 
@@ -23,7 +23,7 @@ export default async function Home() {
 
   return (
     <>
-<main className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow">
+<main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow">
   <div className="flex flex-col gap-24 w-full">
   <div className="flex flex-col gap-12 w-full">
   <div className="flex flex-col gap-8 ">
@@ -32,24 +32,24 @@ export default async function Home() {
   <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-3" action="view/search">
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input id="search_input" className="col-span-4 rounded-sm h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
-    <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-lg"/></IconButton>
+    <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass aria-hidden='true' className="text-xl"/></IconButton>
     <Link href="/view/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
   </form>
   
 
-  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-12">
-  <li className="flex flex-col gap-0 items-center text-lg">
+  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-6 lg:gap-12">
+  <li className="flex flex-col items-center text-lg">
       Stadnamnoppslag
-      <span className="text-4xl">{stats.aggregations.search_dataset.doc_count.toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats.snidCount.toLocaleString('nb-NO')}</span>
     </li>
     
-    <li className="flex flex-col gap-0 items-center text-lg">
+    <li className="flex flex-col items-center text-lg">
       Datasett
-      <span className="text-4xl">{(Object.keys(datasetTitles).length - 1).toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats.datasetCount.toLocaleString('nb-NO')}</span>
     </li>
-    <li className="flex flex-col gap-0 items-center text-lg">
+    <li className="flex flex-col items-center text-lg">
       Oppslag i datasetta
-      <span className="text-4xl">{stats.aggregations.other_datasets.doc_count.toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats.datasetDocs.toLocaleString('nb-NO')}</span>
     </li>
     
   </ul>
@@ -74,26 +74,24 @@ export default async function Home() {
 
   </div>
   <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalgte datasett</h2>
-    <ul className="flex flex-col sm:grid sm:grid-cols-1 2xl:grid-cols-2 gap-6">
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalde datasett</h2>
+    <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
-        <li key={index} className="card flex flex-col md:h-64 sm:my-0">
-          <Link href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')} className="flex flex-col sm:flex-row h-full w-full no-underline">
-          <div className="aspect-square  m-1 overflow-hidden sm:flex-none">
-          <Image src={card.img} alt={card.alt || ''} width="512" height="512" className="object-cover w-full h-full sepia-[25%] grayscale-[50%] overflow-hidden"/>
-        </div>
-          <div className="content p-4 pb-2 w-128 flex flex-col">
-            <h3 className="text-lg font-semibold">{card.title}</h3>
-            <p>{card.description}</p>
-            {card.imageAttribution && 
-            <small className="text-neutral-700 text-xs mt-auto">Illustrasjon: {card.imageAttribution}</small>
-          }
-          </div>
+        <li key={index} className="card p-1 xl:col-span-1 items-start">
+          <Link className=" no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square">
+            <Image src={card.img} alt={card.alt || ''} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
+            </div>
+
+            <div className=" py-4 px-6">
+              <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+              <p className="pt-2 text-small">{card.description}</p>
+            </div>
           </Link>
         </li>
       ))}
     </ul>
-    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass className="text-2xl"/>Fleire datasett</Link>
+    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Fleire datasett</Link>
     </section>
   
 

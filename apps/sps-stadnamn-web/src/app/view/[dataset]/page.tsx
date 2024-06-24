@@ -40,7 +40,7 @@ export default function SearchView() {
             isLoading ? 
             <div className="flex h-full items-center justify-center">
               <div>
-                <Spinner className="w-20 h-20"/>
+                <Spinner status="Laster inn kartet" className="w-20 h-20"/>
               </div>
             </div> 
             : 

@@ -13,8 +13,8 @@ import { datasetTitles } from '@/config/metadata-config';
 export default function Facets() {
     const router = useRouter()
     const params = useParams<{dataset: string}>()
-    const searchQuery = useQueryWithout(['docs', 'view', 'manifest', 'field'])
-    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'orderBy' && item[0] != 'size')
+    const searchQuery = useQueryWithout(['docs', 'search', 'view', 'manifest', 'field'])
+    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'orderBy' && item[0] != 'size' && item[0] != 'search')
     const [chipsExpanded, setChipsExpanded] = useState(false);
     const filterNames = Array.from(new Set(activeFilters.map(item => item[0])))
     const clearedParams = useQueryStringWithout([...filterNames, 'page', 'sort', 'orderBy'])
@@ -58,7 +58,7 @@ export default function Facets() {
   return (
     <section className='flex flex-col w-full'>
     
-    <span className="flex px-4 md:px-2 align-bottom"><h2 className='h-full text-xl align-bottom font-semibold small-caps'>Filtre</h2>
+    <span className="flex px-4 align-bottom"><h2 className='h-full text-xl align-bottom font-semibold small-caps'>Filtre</h2>
     {activeFilters.length ?
     <IconButton type="button" label="Fjern alle filtre" onClick={clearFilters} className="icon-button ml-auto py-0">
       <PiTrashFill className="text-lg lg:text-xl text-neutral-800" aria-hidden="true"/>
@@ -71,7 +71,7 @@ export default function Facets() {
     {activeFilters.map(([name, value], index) => (
       <input type="hidden" name={name} value={value} key={index}/>
       ))}
-    <ul className='flex flex-wrap gap-2 px-2 pb-2'>
+    <ul className='flex flex-wrap gap-2 px-4 pb-2'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, activeFilters.length > 8 ? 4 : 8)).map(([name, value], index) => (
         <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border pr-2 py-1 pl-3 rounded-full text-sm'>
           { fieldNames?.[name] ? fieldNames[name] + ": " : null} { getFieldLabel(name, value) }
@@ -90,23 +90,23 @@ export default function Facets() {
     </div>
     : null}
 
-    <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
+    <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleFacet('adm')}  className='flex w-full items-center gap-1'>
       { expandedFacet == 'adm' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
-      Område 
-      { loadingFacet == 'adm' ? <Spinner className='w-[1em] h-[1em}'/> : null}
-      
+      Geografisk inndeling
+      { loadingFacet == 'adm' ? <Spinner status="Laster inn geografisk inndeling" className='w-[1em] h-[1em}'/> : null}
+       
       </button>
     </h3>
     { expandedFacet == 'adm' ? <ClientFacet facetName='adm' showLoading={(facet: string | null) => setLoadingFacet(facet)}/> : null}
 
     { facetConfig[params.dataset] && 
         <>
-        <h3 className='lg:text-lg p-2 border-b border-neutral-300'>
+        <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
           <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
           { expandedFacet == 'server' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
           Andre filtre
-          { loadingFacet == 'server' ? <Spinner className='w-[1em] h-[1em}'/> : null}
+          { loadingFacet == 'server' ? <Spinner status="Laster inn fasetter" className='w-[1em] h-[1em}'/> : null}
           
           </button>
         </h3>

@@ -46,7 +46,6 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     }
   const data = await res.json()
 
-  
   return data.hits.hits[0]
 
   }
@@ -121,7 +120,7 @@ export async function fetchChildrenGrouped(uuids: string[], retry: boolean = tru
     const query = {
     "size": 0,
     "aggs": {
-        "search_dataset": {
+        "snid": {
             "filter": {
                 "bool": {
                     "must": [
@@ -146,7 +145,7 @@ export async function fetchChildrenGrouped(uuids: string[], retry: boolean = tru
                 }
             }
         },
-        "other_datasets": {
+        "datasets": {
             "filter": {
                 "bool": {
                     "must_not": [
@@ -177,5 +176,50 @@ export async function fetchChildrenGrouped(uuids: string[], retry: boolean = tru
 
     const res = await postQuery('*', query)
 
-    return res
+    //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
+    const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
+        if (!bucket.key.includes('_')) {
+            const [ code, timestamp] = bucket.key.split('-').slice(1)
+            acc[code] = {doc_count: bucket.doc_count, timestamp: timestamp}
+        }
+        return acc
+    }, {})
+
+    const subdatasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
+        if (bucket.key.includes('_')) {
+            acc[bucket.key] = bucket.doc_count
+        }
+        return acc
+    }, {})
+    
+       
+    const snidCount = res.aggregations.snid.doc_count
+
+    // Sum of documents in datasets
+    const datasetDocs = Object.values(datasets).reduce((acc: number, dataset: any) => acc + dataset.doc_count, 0)
+    const datasetCount = Object.keys(datasets).length
+
+
+
+    return {datasetDocs, datasetCount, snidCount, datasets, subdatasets}
+}
+
+
+export async function fetchSNID(snid: string) {
+    'use server'
+    const query = {
+        query: {
+            term: {
+                "snid.keyword": snid,
+            }
+        },
+        fields: ["uuid"],
+        _source: false
+    }
+    console.log
+
+    const res = await postQuery('search', query)
+    console.log("RES", res.hits?.hits?.[0])
+    return res.hits?.hits?.[0] || res
+
 }
