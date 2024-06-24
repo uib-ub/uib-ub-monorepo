@@ -22,8 +22,8 @@ export default function TooltipButton({ children, className, textClass, textIcon
 
         <TooltipProvider>
             <Tooltip>
-                <TooltipTrigger className={className} type={type || "button"} onClick={handleClick} {...rest}>
-                    {textClass ? <span className={textClass}>{label}</span> : null}
+                <TooltipTrigger aria-label={label} className={className} type={type || "button"} onClick={handleClick} {...rest}>
+                    {textClass ? <span aria-hidden="true" className={textClass}>{label}</span> : null}
                     {textIcon ? <span aria-hidden="true" className='flex'>{children}</span> : <i  aria-hidden='true'>{children}</i>}
                 </TooltipTrigger>
                 <TooltipContent>
