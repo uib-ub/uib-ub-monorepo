@@ -7,7 +7,11 @@ export default function Document(props) {
 
   return (
     <Html lang={props.locale}>
-      <Head />
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <meta name="color-scheme" content="light dark"></meta>
+      </Head>
       <body className='bg-neutral-200 dark:bg-[#35393a]' dir={direction}>
         <Main />
         <NextScript />

@@ -12,7 +12,7 @@ import { MainNav } from '../../components/Header/MainNav';
 import { Description } from '../../components/Props/Description';
 import { publicDocumentTypes } from '../../lib/constants';
 import { item, mainNav, siteSettings } from '../../lib/queries/fragments';
-import { usePreviewSubscription } from '../../lib/sanity';
+import { urlFor, usePreviewSubscription } from '../../lib/sanity';
 import { getClient } from '../../lib/sanity.server';
 
 const ManifestViewer = dynamic(() => import("../../components/IIIF/ManifestViewer"), {
@@ -118,7 +118,7 @@ export async function getStaticPaths() {
 
 
 const Id: NextPage = ({ data, preview }: any) => {
-  const { locale, isFallback }: NextRouter = useRouter()
+  const { locale, isFallback, asPath }: NextRouter = useRouter()
   const t = useTranslations('Nav');
 
   const { data: previewData } = usePreviewSubscription(data?.query, {
@@ -156,9 +156,12 @@ const Id: NextPage = ({ data, preview }: any) => {
   return (
     <>
       <Head>
-        <title>{label[locale || 'no']}</title>
-        <meta name="description" content={description[locale || 'no']} />
-        <link rel="icon" href="/favicon.ico" />
+        <title>{item[0].label[locale!] ?? item[0].label.en}</title>
+        <meta name="description" content={description[locale!] ?? description.en} />
+        <meta name="twitter:title" content={item[0].label[locale!] ?? item[0].label.en}></meta>
+        <meta property="og:image" content={urlFor(item[0].image).width(500).height(300).url()}></meta>
+        <meta name="twitter:card" content="summary_large_image"></meta>
+        <link rel="canonical" href={`https://marcus.uib.no/exhibition/mer-enn-det-humanitare-blikket/${locale}${asPath}`}></link>
       </Head>
 
       <Layout
@@ -240,13 +243,6 @@ const Id: NextPage = ({ data, preview }: any) => {
                 )) : null
             }
 
-            {item[0]?.depicts.some((depiction: any) => depiction._type === "Place") ? (
-              <Minimap
-                label={item[0]?.depicts?.[0].label[locale ?? '']}
-                lnglat={[item[0]?.depicts?.[0].definedBy?.lng, item[0]?.depicts?.[0].definedBy?.lat]}
-              />
-            ) : null}
-
             <div className='flex flex-col gap-1 my-3'>
               {item[0]?.preferredIdentifier ?
                 <div className='flex gap-1 items-center font-light text-xs text-gray-700 dark:text-gray-300 mb-1'>
@@ -297,30 +293,30 @@ const Id: NextPage = ({ data, preview }: any) => {
 
               {item[0]?.referredToBy ?
                 <div className='max-w-prose xl:text-xl text-light'>
-                  <Description value={item[0]?.referredToBy} language={locale || ''} />
+                  <Description value={item[0]?.referredToBy} language={locale!} />
                 </div>
                 : null
               }
 
 
-              {item[0]?.activityStream && item[0].activityStream
+              {item[0]?.activityStream ? item[0].activityStream
                 .filter((activity: any) => ['crm:BeginningOfExistence', 'crm:Production'].includes(activity.subType))
                 .map((activity: any) => (
                   <div key={activity._key} className='flex flex-wrap items-baseline gap-3'>
                     <div className='w-24 flex-grow-0 text-sm font-light'>
                       {t('production')}
                     </div>
-                    <div key={activity._id || activity._key}>
+                    <div key={activity._id ?? activity._key}>
                       <div>{activity.contributionAssignedBy?.[0].assignedActor?.label[locale!] || activity.contributionAssignedBy?.[0].assignedActor?.label['no']}</div>
                       <div className='text-xs text-slate-700 dark:text-slate-300 m-0 p-0'>{activity.timespan?.edtf}</div>
                       <div className='flex flex-col text-xs font-light'>
-                        {activity.usedGeneralTechnique && activity.usedGeneralTechnique.map((t: any) => (
+                        {activity.usedGeneralTechnique ? activity.usedGeneralTechnique.map((t: any) => (
                           <div key={t._id ?? item._key}>{t.label[locale!] || t.label['en'] || t.label['no']}</div>
-                        ))}
+                        )) : null}
                       </div>
                     </div>
                   </div>
-                ))
+                )) : null
               }
 
               {item[0]?.subject ?
@@ -342,13 +338,6 @@ const Id: NextPage = ({ data, preview }: any) => {
                     </div>
                   )) : null
               }
-
-              {/* {item[0]?.depicts?.some((depiction: any) => depiction._type === "Place") ? (
-                <Minimap
-                  label={item[0]?.depicts?.[0].label[locale ?? 'en']}
-                  lnglat={[item[0]?.depicts?.[0].definedBy?.lng, item[0]?.depicts?.[0].definedBy?.lat]}
-                />
-              ) : null} */}
 
               <div className='flex flex-col gap-1 my-3'>
                 {item[0]?.preferredIdentifier ?

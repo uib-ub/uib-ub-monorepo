@@ -13,7 +13,7 @@ import SanityImage from '../components/SanityImage'
 import { TextBlocks } from '../components/TextBlocks'
 import { filterDataToSingleItem } from '../lib/functions'
 import { routeQuery } from '../lib/queries/routeQuery'
-import { usePreviewSubscription } from '../lib/sanity'
+import { urlFor, usePreviewSubscription } from '../lib/sanity'
 import { getClient } from '../lib/sanity.server'
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -70,7 +70,7 @@ export const getStaticProps: GetStaticProps = async ({ params, locale, preview =
 }
 
 const Page: NextPage = ({ data, preview }: any) => {
-  const { locale, defaultLocale } = useRouter()
+  const { locale, defaultLocale, asPath } = useRouter()
   const t = useTranslations('Nav');
 
   const { data: previewData } = usePreviewSubscription(data?.query, {
@@ -88,13 +88,10 @@ const Page: NextPage = ({ data, preview }: any) => {
 
   const { mainNav, siteSettings: { label, description, identifiedBy } } = page
   const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title
-
   {/* If LinguisticDocument the content is in the body field */ }
   const slug = page?.route[0]?.locale[0] ?? page?.route[0]?.fallback[0]
   const linguisticDocumentBody = page?.route[0]?.locale[0]?.body ?? page?.route[0]?.fallback[0]?.body
-
-  const localeCaption = slug?.about?.caption?.filter((i: any) => i.language === locale)[0]?.body
-
+  const excerpt = page?.route[0]?.locale[0]?.excerpt ?? page?.route[0]?.fallback[0]?.excerpt
 
   const aboutImage = slug?.about ?
     <SanityImage
@@ -111,6 +108,9 @@ const Page: NextPage = ({ data, preview }: any) => {
     priority
   /> : null
 
+  const seoImage = slug.about.image ?? slug.image
+  const seoAuthors = slug?.creator.map((creator: any) => creator.assignedActor.label[locale!] ?? creator.assignedActor.label.en)
+
   const Creators = ({ creators }: { creators: any }) => {
     return (
       <>
@@ -121,7 +121,7 @@ const Page: NextPage = ({ data, preview }: any) => {
           creators ? creators.map((creator: any, i: number) => (
             <React.Fragment key={creator._key}>
               <span className='font-bold'>
-                {creator.assignedActor.label['en']}
+                {creator.assignedActor.label[locale!] ?? creator.assignedActor.label['en']}
               </span>
               {i === creators.length - 2 ? ` ${t('combinator')} ` : null}
               {i < creators.length - 2 ? ', ' : null}
@@ -139,9 +139,13 @@ const Page: NextPage = ({ data, preview }: any) => {
   return (
     <>
       <Head>
-        <title>{label[locale || 'no']}</title>
-        <meta name="description" content={description[locale ?? 'no']} />
-        <link rel="icon" href="/favicon.ico" />
+        <title>{slug?.label || title || label[locale!] || label.en}</title>
+        <meta name="description" content={excerpt || description[locale!] || description.en} />
+        <meta name="twitter:title" content={slug?.label ?? title}></meta>
+        {seoAuthors ? seoAuthors.map((author: any) => <meta key={author.replace(' ', '-').toLowerCase()} name="article:author" content={author}></meta>) : null}
+        {seoImage ? <meta property="og:image" content={urlFor(seoImage).width(500).height(300).url()}></meta> : null}
+        <meta name="twitter:card" content="summary_large_image"></meta>
+        <link rel="canonical" href={`https://marcus.uib.no/exhibition/mer-enn-det-humanitare-blikket/${locale}${asPath}`}></link>
       </Head>
 
       <Layout

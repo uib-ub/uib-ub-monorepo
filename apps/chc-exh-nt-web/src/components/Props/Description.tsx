@@ -1,3 +1,4 @@
+import { getLangDir } from 'rtl-detect';
 import { TextBlocks } from '../TextBlocks';
 
 interface Body {
@@ -36,6 +37,7 @@ interface DescriptionProps {
 }
 
 export const Description = ({ value, language }: DescriptionProps) => {
+
   const briefDescriptions = value
     .filter((i: any) => i.hasType._id === 'd4b31289-91f4-484d-a905-b3fb0970413c') // filter on type "Brief description"
     //.filter((desc: any) => desc.language === 'en')[0]
@@ -45,7 +47,11 @@ export const Description = ({ value, language }: DescriptionProps) => {
       return acc;
     }, {})
 
+  const text = briefDescriptions?.[language] ?? briefDescriptions?.en
+
   return (
-    <TextBlocks value={briefDescriptions?.[language]?.body ?? briefDescriptions?.en?.body} />
+    <div lang={text.language} dir={getLangDir(text.language)}>
+      <TextBlocks value={text.body} />
+    </div>
   )
 }

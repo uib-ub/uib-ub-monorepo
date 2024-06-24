@@ -30,7 +30,7 @@
     "eslint-config-next": "^13.2.1",
     "jsonata": "^2.0.1",
     "jsonld": "^8.1.0",
-    "next": "^13.5.6",
+    "next": "^14.2.4",
     "next-http-proxy-middleware": "^1.2.5",
     "next-intl": "^3.14.1",
     "next-sanity": "1.1.0",

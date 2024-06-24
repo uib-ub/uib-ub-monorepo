@@ -1,10 +1,9 @@
 import { groq } from 'next-sanity'
-import { siteSettings } from './fragments'
-import { mainNav } from './fragments'
+import { mainNav, siteSettings } from './fragments'
 
 const ROUTE_CONTENT = groq`
   ...,
-  "excerpt": pt::text(excerpt),
+  excerpt,
   "headings": body[length(style) == 2 && string::startsWith(style, "h")],
   creator[] {
     ...,
