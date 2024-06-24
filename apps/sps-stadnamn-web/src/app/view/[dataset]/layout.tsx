@@ -1,5 +1,14 @@
 import SearchProvider from "@/app/search-provider"
 
+import { datasetTitles, datasetDescriptions } from '@/config/metadata-config'
+
+export async function generateMetadata( { params }: { params: { dataset: string } }) {
+  return {
+    title: datasetTitles[params.dataset],
+    description: datasetDescriptions[params.dataset]
+  }
+}
+
 export default function ViewLayout({ children, searchSection }: { children: React.ReactNode, searchSection: React.ReactNode } ) {  
   
     return (

@@ -46,7 +46,6 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     }
   const data = await res.json()
 
-  
   return data.hits.hits[0]
 
   }

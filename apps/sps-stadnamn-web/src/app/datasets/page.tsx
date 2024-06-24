@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect} from 'react';
-import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames } from '@/config/metadata-config'
+import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
@@ -150,7 +150,7 @@ export default function Datasets() {
                 ))}
                 </ul>
                 <div className="space-y-4 break-words">
-                <p>{datasetPresentation[dataset].description}</p>
+                <p>{datasetDescriptions[dataset]}</p>
                 <div className="space-y-2">
                 <h4 className='font-semibold'>Ressurser</h4>
                 <ul className='flex flex-wrap gap-2 text-neutral-900'>

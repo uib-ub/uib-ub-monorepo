@@ -15,7 +15,7 @@ export async function generateMetadata( { params }: { params: { dataset: string,
   const description = src.split('\r\n\r')?.[0].split("\n")?.slice(1).join("\n")
 
   return {
-    title: `${datasetTitles[params.dataset]} - ${subpages[params.dataset][params.subpage - 1]}`,
+    title: `${subpages[params.dataset][params.subpage - 1]} - ${datasetTitles[params.dataset]}`,
     description
   }
 }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
-import { datasetTitles, datasetPresentation } from '@/config/metadata-config';
+import { datasetTitles, datasetPresentation, datasetDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/Footer';
 import { fetchStats } from '@/app/api/_utils/actions';
 
@@ -14,7 +14,7 @@ export default async function Home() {
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
-    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: info.description, subindices: info.subindices, initPage: info.initPage }
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
   }
   )
 

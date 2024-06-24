@@ -9,6 +9,16 @@ import { PiCaretLeftBold } from 'react-icons/pi'
 import ErrorMessage from '@/components/ErrorMessage'
 import CoordinateInfo from './coordinate-info'
 import CopyLink from './CopyLink'
+import { datasetTitles } from '@/config/metadata-config'
+
+export async function generateMetadata( { params }: { params: { dataset: string } }) {
+  const doc = await fetchDoc(params)
+
+  return {
+    title: (doc?._source.label ? doc._source.label + " | " : "") + datasetTitles[params.dataset],
+    description: doc?._source.description
+  }
+}
 
 export default async function DocumentView({ params, searchParams }: { params: { dataset: string, uuid: string }, searchParams: Record<string, string>}) { 
 
@@ -54,16 +64,16 @@ export default async function DocumentView({ params, searchParams }: { params: {
       
       {doc._source.image?.manifest && <div>
         <h3>Sedler</h3>
-        <Link href={`/view/${params.dataset}/iiif/${doc._source.image.manifest}`}><Thumbnail manifestId={doc._source.image.manifest} dataset={params.dataset}/></Link>
+        <Link href={`/view/${params.dataset}/iiif/${doc._source.image.manifest}`}><Thumbnail manifestId={doc._source.image.manifest} dataset={docDataset}/></Link>
 
 
         </div>}
-        {doc._source.rawData ?
+        { doc._source.rawData ?
         <div>
         <OriginalData rawData={doc._source.rawData}/>
         </div>
       : null}
-      {doc._source.location && <div className='space-y-6'>
+      { doc._source.location && <div className='space-y-6'>
         <h3>Koordinater</h3>
 
         <CoordinateInfo source={doc._source}/>
