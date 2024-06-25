@@ -26,7 +26,7 @@ export const datasetTitles: DatasetTitles = {
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
-    nbas: "Den nasjonale stadnamnbasen",
+    nbas: "Den nasjonale stadnamnbasen [Under utvikling]",
     nbas_k: "innsamlingskart",
     m1838: "Matrikkelen 1838", 
     m1886: "Matrikkelen av 1886",
@@ -92,11 +92,11 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/vincent-botta-wYD_wfifJVs-unsplash.jpg",
         imageAttribution: "Vincent Botta, Unsplash.com",
         alt: "Harddisk",
-        subindices: {
-          nbas_k: {
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-          }
-        },
+        //subindices: {
+        //  nbas_k: {
+        //    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        //  }
+        //},
       },
       m1838: {
         img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
