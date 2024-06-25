@@ -188,7 +188,9 @@
     "tilbake": "Til søkeresultat",
     "noteTermbaseIsUnmaintained": "Dette er ein historisk ressurs som p.t. ikkje blir oppdatert.",
     "visualization": "Visualisering",
-    "imageAltLabel": "Visualisering av omgrepet"
+    "imageAltLabel": "Visualisering av omgrepet",
+    "version": "Versjon",
+    "browser": "Ekstern nettlesar"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -217,5 +219,9 @@
     "conceptview": "Termpost",
     "dataDispLang": "Språk for termpost",
     "dataDispLangComment": "Vel kva språk som skal visast i termpostane"
+  },
+  "misc": {
+    "snomedVersion": "SNOMED CT Norwegian National Extension, april 2024 v1.0",
+    "snomedBrowser": "SNOMED CT nettlesar"
   }
 }

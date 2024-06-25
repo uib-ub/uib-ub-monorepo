@@ -25,6 +25,7 @@ export type Samling =
   | "BIBINF"
   | "UDEUT"
   | "SKOG"
+  | "SNOMEDCT"
   | "WHT";
 
 export type Domains =
@@ -52,6 +53,7 @@ export const termbaseOrder: Samling[] = [
   "ROMFYS",
   "SEMANTIKK",
   "SKOG",
+  "SNOMEDCT",
   "SDIR",
   "RTT",
   "TOLKING",
@@ -81,6 +83,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   ROMFYS: ["nb", "nn", "en"],
   RTT: ["nb", "nn", "en", "da", "de", "fi", "fr", "it", "ru", "sv"],
   SKOG: ["nb", "nn", "en", "de", "fr"],
+  SNOMEDCT: ["nb", "nn", "en"],
   TOLKING: ["nb", "en", "ar", "fr", "pl", "ru", "so", "ti", "fa-af"],
   UDEUT: ["nb", "nn", "en", "fr"],
   UHR: ["nb", "nn", "en"],
@@ -106,5 +109,13 @@ export const termbaseUriPatterns: {
     fbk: "https://concept-catalog.fellesdatakatalog.digdir.no/collections/",
     ex: "http://example.com/",
     skatt: "https://data.skatteetaten.no/begrep/#GeneratedCollection",
+  },
+};
+
+export const snomedConfig = {
+  linkNotes:
+    "https://confluence.ihtsdotools.org/display/RMT/SNOMED+CT+Managed+Service+-+Norway+Extension+Release+Notes+-+April+2024",
+  linkBrowser: (snomedId: string) => {
+    return `https://browser.ihtsdotools.org/?perspective=full&conceptId1=${snomedId}&edition=MAIN/SNOMEDCT-NO/2024-04-15&release=&languages=no,en`;
   },
 };

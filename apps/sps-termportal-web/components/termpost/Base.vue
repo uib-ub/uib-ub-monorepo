@@ -172,6 +172,7 @@ const displayInfo = computed(() => {
         )
       );
     }
+    info.pagetitle = pagetitle;
 
     return info;
   } else {
