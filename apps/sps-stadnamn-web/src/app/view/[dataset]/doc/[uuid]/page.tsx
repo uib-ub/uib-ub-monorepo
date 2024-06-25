@@ -15,7 +15,7 @@ export async function generateMetadata( { params }: { params: { dataset: string 
   const doc = await fetchDoc(params)
 
   return {
-    title: (doc?._source.label ? doc._source.label + " | " : "") + datasetTitles[params.dataset],
+    title: (doc?._source.label ? doc._source.label + " | " : "") + datasetTitles[params.dataset] + " - Stadnamnportalen",
     description: doc?._source.description
   }
 }
