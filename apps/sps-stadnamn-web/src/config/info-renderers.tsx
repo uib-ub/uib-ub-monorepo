@@ -256,7 +256,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                 },
                 {
                   title: 'Gardsnummer',
-                  items: [{value: source.rawData?.supplemented?.gnr, hrefParams: {
+                  items: [{value: !source.rawData?.original?.stnavn?.sted?.gårdsnr && source.rawData?.supplemented?.gnr, hrefParams: {
                     'rawData.supplemented.knr': source.rawData?.supplemented?.knr,
                     'rawData.supplemented.gnr': source.rawData?.supplemented?.gnr,
                   }}]
