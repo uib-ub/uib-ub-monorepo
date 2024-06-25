@@ -3,7 +3,6 @@ import { useState, useEffect} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
 import Link from 'next/link'
-import Footer from '@/components/layout/Footer'
 import { PiArchiveFill, PiArticleFill, PiBooksFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
 
 
@@ -63,9 +62,7 @@ export default function Datasets() {
     .filter(dataset => datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase()));
 
 
-  return (
-    <>
-      <main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-48 items-center pb-8 lg:pt-32 md:pt-16 sm:pt-8  lg:pb-16 px-4 w-full flex-grow">
+  return (      
         <section className="flex flex-col items-center gap-12 container" aria-labelledby="page_heading">
           <h1 id="page_heading" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Søkevisninger</h1>
           <div className='flex flex-col lg:grid lg:grid-cols-3 justify-between gap-12 w-full'>
@@ -105,7 +102,6 @@ export default function Datasets() {
           </div>
           <div className='space-y-4'>
             <h2 className='text-xl'>Ressurser</h2>
-            
             <ul className="flex flex-wrap flex-col md:flex-row lg:flex-col xl:flex-row gap-x-6 gap-y-2 justify-equal">
               {allFeatures.map(feature => {{
                 const resultCount = filteredDatasets.filter(dataset => (datasetFeatures as {[key: string]: string[]})[dataset]?.includes(feature)).length;
@@ -127,13 +123,14 @@ export default function Datasets() {
             </ul>
           </div>
           </div>
-
+          <div>
+          <div className="text-xl self-start mb-3" role="status" aria-live="polite">{filteredDatasets.length} av {Object.keys(datasetPresentation).length} datasett</div>
           <ul className="flex flex-col gap-y-6 w-full">
             {filteredDatasets.map((dataset) => (
           <li key={dataset} className="card flex flex-col sm:flex-row h-full my-6 sm:my-0 w-full sm:grid sm:grid-cols-4 relative">
               <div className='flex flex-col sm:col-span-1 w-full'>
-              <Image src={datasetPresentation[dataset].img} alt={datasetPresentation[dataset].alt || ''} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
-              <small className="text-neutral-700 text-xs p-1">{datasetPresentation[dataset].alt} | {datasetPresentation[dataset].imageAttribution}</small>
+              <Image src={datasetPresentation[dataset].img} alt="Illustrasjon" aria-describedby={dataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
+              <small id={dataset + "_attribution"} className="text-neutral-700 text-xs p-1">{datasetPresentation[dataset].imageAttribution}</small>
               </div>
               
               <div className="p-4 pb-2 sm:col-span-3">
@@ -187,9 +184,7 @@ export default function Datasets() {
           </li>
         ))}
       </ul>
+      </div>
     </section>
-    </main>
-    <Footer/>
-    </>
   );
 }

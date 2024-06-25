@@ -39,15 +39,17 @@ export async function middleware(request: NextRequest) {
         }
 
         if (extension == 'jsonld') {
+            const wktPoint = `POINT(${data._source.location.coordinates.join(' ')})`;
             const jsonld = {
                 "@context": {
                     "@vocab": "http://www.cidoc-crm.org/cidoc-crm/",
                     "label": "P1_is_identified_by",
                     "location": "P168_place_is_defined_by",
                     "placeName": "P87_is_identified_by",
-                    "document": "P70_documents"
+                    "document": "P70_documents",
+                    "coordinates": "http://www.opengis.net/ont/geosparql#asWKT"
                 },
-                "@id": data._source.uuid,
+                "id": `https://purl.org/stadnamn/uuid/${data._source.uuid}`,
                 "@type": "E31_Document",
                 "document": {
                     "@id": "_:placeName",
@@ -59,7 +61,7 @@ export async function middleware(request: NextRequest) {
                         "label": data._source.label,
                         "location": {
                             "@type": "E94_Space_Primitive",
-                            "coordinates": data._source.location.coordinates
+                            "coordinates": wktPoint
                         }
                     }
                 }

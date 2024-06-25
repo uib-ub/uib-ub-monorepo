@@ -1,13 +1,9 @@
 import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUp, PiCaretDown, PiPlusCircleFill } from 'react-icons/pi';
+import { PiSortAscending, PiSortDescending, PiFunnelSimple } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
-import AudioButton from '../../../../components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
-import Link from 'next/link';
-import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { sortConfig } from '@/config/search-config';
-import { datasetTitles } from '@/config/metadata-config';
 import Spinner from '@/components/svg/Spinner';
 import ResultRow from './ResultRow';
 
@@ -45,6 +41,23 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       router.push(pathname + "?" + params.toString())
     }
 
+    // When sort options aren't configured yet, we can sort by relevance or alphabetically using a single toggle
+    const sortOrderByCombined = () => {
+      const params = new URLSearchParams(searchParams)
+      if (searchParams.get('sort') == 'asc') {
+        params.set('sort', 'desc')
+      } else if (searchParams.get('sort') == 'desc') {
+        params.delete('sort')
+      }
+      else {
+        params.set('sort', 'asc')
+      }
+
+      params.delete('page')
+        
+      router.push(pathname + "?" + params.toString())
+    }
+
     const orderBy = (e: any) => {
       const params = new URLSearchParams(searchParams)
       if (e.target.value == '') {
@@ -71,7 +84,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       {sortConfig[params.dataset] && 
       <span>
         <label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
-        <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy} value={searchParams.get('orderBy') || undefined}>
+        <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy} value={searchParams.get('orderBy') || ""}>
           <option value="">relevans</option>
           {sortConfig[params.dataset].map((sort: any) => (
             <option key={sort.key} value={sort.key}>  {sort.label}</option>
@@ -80,9 +93,16 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       </span>
     }
 
-      <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter synkende' : 'Sorter stigende'} onClick={sortResults}>{searchParams.get('sort') == 'desc'? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }</IconButton>
-
+      {sortConfig[params.dataset] ? searchParams.get('orderBy') && <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter stigende' : 'Sorter synkende'} onClick={sortResults}>
+        {searchParams.get('sort') ? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }
+      </IconButton> 
+      :
+      <IconButton label={searchParams.get('sort') == 'asc'&& 'Sorter alfabetisk Å-A' || searchParams.get('sort') == 'desc' && 'Sorter etter relevans' || 'Sorter alfabetisk A-Å'} onClick={sortOrderByCombined}>
+        {searchParams.get('sort') == 'asc' &&  <PiSortDescending className='text-xl'/> || searchParams.get('sort') == 'desc' && <PiFunnelSimple className=' text-xl'/> || <PiSortAscending className=' text-xl'/> }
+      </IconButton>
       
+      }
+
     </div>
     </span>
     <section id="result_list" className="lg:py-1 mx-2">

@@ -71,7 +71,7 @@ export const datasetPresentation: DatasetPresentation = {
       rygh: {
         img: "/datasets/Prof_oluf_rygh.jpg",
         alt: "Oluf Rygh, portrettfoto",
-        imageAttribution: "Wikimedia commons",
+        imageAttribution: "Norges geografiske oppmåling; retusjering: J. Nordhagen.",
       },
       ostf: {
         img: "/datasets/Østfold_gml_herredsinndeling.png",
@@ -81,7 +81,7 @@ export const datasetPresentation: DatasetPresentation = {
       leks: {
         img: "/datasets/leks2.png",
         alt: "Forside til Norsk stadnamnleksikon 1997",
-        imageAttribution: "Språksamlingane",
+        imageAttribution: "Skanna av Språksamlingane",
         initPage: "info",
         subindices: {
           leks_g: {
