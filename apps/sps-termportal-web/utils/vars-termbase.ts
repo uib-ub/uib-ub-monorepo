@@ -116,6 +116,6 @@ export const snomedConfig = {
   linkNotes:
     "https://confluence.ihtsdotools.org/display/RMT/SNOMED+CT+Managed+Service+-+Norway+Extension+Release+Notes+-+April+2024",
   linkBrowser: (snomedId: string) => {
-    return `https://browser.ihtsdotools.org/?perspective=full&conceptId1=${snomedId}&edition=MAIN/SNOMEDCT-NO/2024-05-15&release=&languages=no,en`;
+    return `https://browser.ihtsdotools.org/?perspective=full&conceptId1=${snomedId}&edition=MAIN/SNOMEDCT-NO/2024-04-15&release=&languages=no,en`;
   },
 };
