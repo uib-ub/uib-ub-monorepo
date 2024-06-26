@@ -135,7 +135,7 @@ export default function Datasets() {
               
               <div className="p-4 pb-2 sm:col-span-3">
                 <span className="flex flex-wrap"><h3 className="text-xl sm:text-2xl font-semibold">{datasetTitles[dataset]}</h3>
-                {stats?.datasets[dataset] && <div className="text-lg ml-auto text-neutral-700 font-serif">{stats.datasets[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div>}
+                {stats?.datasets?.[dataset] && <div className="text-lg ml-auto text-neutral-700 font-serif">{stats.datasets[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div>}
                 </span>
                 <ul className='flex flex-wrap gap-2 my-2 text-neutral-900'>
                 {datasetTypes[dataset].map((type) => (
