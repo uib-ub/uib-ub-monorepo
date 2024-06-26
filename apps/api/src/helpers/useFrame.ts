@@ -27,15 +27,11 @@ export async function useFrame({ data, context, type, id }: { data: any, context
     return { error: true, message: e }
   }
 
-  // If we have an id, we need to find the type of the object. Because we need to use the whole URI as the id when framing.
-
   try {
     if (id) {
-      const hasTypeAsString = ((compacted['@graph']).filter((i: any) => i.identifier === id)[0]?.hasType as string).toLowerCase() ?? (compacted.hasType as string).toLowerCase()
-
       framed = await jsonld.frame(compacted, {
         ...context,
-        '@id': `http://data.ub.uib.no/instance/${hasTypeAsString}/${id}`,
+        '@id': id,
         '@type': type,
         '@embed': '@always',
       });

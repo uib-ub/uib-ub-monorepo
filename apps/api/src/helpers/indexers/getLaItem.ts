@@ -9,14 +9,14 @@ import { ContextDefinition, JsonLdDocument } from 'jsonld'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
 import { ZodHumanMadeObjectSchema } from 'types'
 
-export const getLaItem = async (id: string, source: string) => {
+export const getLaItem = async (id: string, source: string): Promise<any> => {
   try {
     const data = await getItemData(id, source)
     // We clean up the data before compacting and framing
     const fixedDates = cleanDateDatatypes(data)
     const withFloats = convertToFloat(fixedDates)
 
-    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: ubbontContext as ContextDefinition, type: 'HumanMadeObject', id: id })
+    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: ubbontContext as ContextDefinition, type: 'HumanMadeObject', id: withFloats.id })
     delete framed['@context']
     const response = await toLinkedArtItemTransformer(framed, `${env.API_URL}/ns/ubbont/context.json`)
 
