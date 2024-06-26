@@ -128,10 +128,6 @@ export async function fetchSOSI(sosiCode: string) {
 
     const res = await postQuery('*', query)
 
-    if (!res.ok) {
-        return {error: res.error}
-    }
-
     //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
     const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
         if (!bucket.key.includes('_')) {
