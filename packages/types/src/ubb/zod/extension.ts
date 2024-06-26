@@ -1,4 +1,3 @@
-import { HalSchema } from 'src/hal/zod/hal';
 import { crmE7ActivitySchema, crmE8AcquisitionSchema, crmP104IIsSubjectToSchema, crmP50HasCurrentKeeperSchema } from 'src/la/zod/linked_art';
 import { z } from 'zod';
 
@@ -10,13 +9,13 @@ export const rdfsLabelSchemaExtension = z.union([
 ]);
 
 export const UBBClassExtension = z.object({
-  _available: z.string(),
+  _available: z.string().optional(),
   _modified: z.string(),
   subject_to: z.lazy(() => crmP104IIsSubjectToSchema),
   current_keeper: z.lazy(() => crmP50HasCurrentKeeperSchema.optional()),
   was_used_for: z.lazy(() => z.array(crmE7ActivitySchema)).optional(),
-  changed_ownership_through: z.lazy(() => crmE8AcquisitionSchema).optional(),
-  _links: HalSchema,
+  changed_ownership_through: z.lazy(() => z.array(crmE8AcquisitionSchema)).optional(),
+  // _links: HalSchema,
 });
 
 export const UBBTimeSpanExtension = z.object({
