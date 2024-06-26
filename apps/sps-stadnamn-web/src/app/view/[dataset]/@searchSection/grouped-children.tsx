@@ -56,15 +56,12 @@ export default function GroupedChildren({ uuid, childList, landingPage}: { uuid:
     return (
         <div className="p-2 mb-2"> 
         {isLoading && 
-        // skeleton for as many items as in childList
-        Array.from({length: childList.length}, (_, index) => (
-            <div key={index} className="flex items-center space-x-4">
-                <div className="flex-1 py-1">
-                    <div className="w-2/3 h-4 bg-neutral-200 rounded"></div>
-                    <div className="w-1/3 h-4 bg-neutral-200 rounded"></div>
-                </div>
-            </div>
-        ))
+        // skeleton for as many items as in childList, spaced out with two lines for each item, and three circles in place of the buttons on the right side
+        <div className="animate-pulse flex flex-col gap-y-2">
+          {Array.from({length: childList.length}, (_, i) => (
+            <div key={i} className={"h-4 bg-neutral-200 rounded w-1/4"}></div>
+          ))}
+        </div>
         
 
         
