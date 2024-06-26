@@ -10,7 +10,7 @@ import { streamSSE } from 'hono/streaming'
 const route = new Hono()
 
 function toSeconds(ms: number) {
-  return (ms / 1000).toFixed(3)
+  return (ms / 1000).toFixed(4)
 }
 
 route.get('/ingest',
