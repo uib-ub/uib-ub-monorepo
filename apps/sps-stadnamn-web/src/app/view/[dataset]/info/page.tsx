@@ -30,6 +30,8 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
         info = {...inheritedInfo, ...info.subindices?.[subindex]}
     }
 
+    const filePath = path.join(process.cwd(), 'src', 'content', 'datasets', mainIndex, 'article-0.mdx');
+    const src = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : ''
 
     return (
         <>
@@ -38,6 +40,8 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
                 <div className='md:w-1/2'>
                     <p>{subindex ? datasetDescriptions[subindex] : datasetDescriptions[mainIndex]}</p>
                     <GoToSearchButtons/>
+                    {src && <MDXRemote source={src} />}
+
                     { subpages[mainIndex]?.length &&
                     <SubpageNav items={subpages[mainIndex].map((subpage, index) => { return { label: subpage, href: `/view/${params.dataset}/info/${index+1}`} })}>
                         <h3>Artikler</h3>
