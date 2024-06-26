@@ -17,6 +17,8 @@ export interface DatasetPresentation {
     img: string;
     alt: string;
     imageAttribution: string;
+    license: {name: string, url: string};
+    links?: {title?: string, href: string, text?: string}[];
     subindices?: SubindexPresentation;
     initPage?: string;
   }
@@ -50,10 +52,17 @@ export const datasetDescriptions: Record<string, string> = {
   m1886: "Matrikkelen av 1886 er en oversikt over jordeiendommer i hele landet, angitt med navn, matrikkelnummer og verdi. Som noe nytt ble gardsnummer og bruksnummer tatt i bruk. Alle landets fylker, untatt Finnmark er dekket, og for hvert bruksnummer er angitt gards- og bruksnavn, i alt nesten 208 000 matrikler. Matrikelen regnes for å være den første moderne matrikkel, fastsatt etter det systemet vi kjenner i dag.",
   mu1950: "Matrikkelutkastet av 1950 var forberedelsen til en ny matrikkel for hele Norge, men oppgaven ble aldri fullført, og man brukte i stedet kommunale eiendomsregistre. Utkastet dekker samlet sett over 767 000 matrikler fra landkommunene i alle fylker unntatt Finnmark. Hver matrikkel er angitt med gards- og bruksnavn, matrikkelnummer og verdi.",
   skul: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms.",
-  sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare. Lenke til Fylkesarkivet i Vestlands stadnamnside: https://www.fylkesarkivet.no/stadnamn.380535.no.html"
+  sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare."
 }
 
 
+
+export const licenses: Record<string, {name: string, url: string}> = {
+  ccby4: {
+    name: "CC BY 4.0",
+    url: "https://creativecommons.org/licenses/by/4.0/deed.no"
+  },
+  }
 
 
 
@@ -62,26 +71,31 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/ubb-spr-bp-0001_sm.jpg",
         alt: "En kvinnelig arkivar eller kontorist sitter ved et skrivebord foran en stor rekke arkivskuffer.",
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        license: licenses.ccby4
       },
       hord: {
         img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
         alt: "Utsnitt av kart over Hordaland og Sogn og Fjordane",
         imageAttribution: "Kartverket: Generalkart VII, L. Arentz 1929",
+        license: licenses.ccby4,
       },
       rygh: {
         img: "/datasets/Prof_oluf_rygh.jpg",
         alt: "Oluf Rygh, portrettfoto",
         imageAttribution: "Norges geografiske oppmåling; retusjering: J. Nordhagen.",
+        license: licenses.ccby4,
       },
       ostf: {
         img: "/datasets/Østfold_gml_herredsinndeling.png",
         alt: "Verket bygger på den gamle herredsinndelinga i Østfold",
         imageAttribution: "Bustadnavn i Østfold",
+        license: licenses.ccby4,
       },
       leks: {
         img: "/datasets/leks2.png",
         alt: "Forside til Norsk stadnamnleksikon 1997",
         imageAttribution: "Skanna av Språksamlingane",
+        license: licenses.ccby4,
         initPage: "info",
         subindices: {
           leks_g: {
@@ -92,6 +106,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/vincent-botta-wYD_wfifJVs-unsplash.jpg",
         imageAttribution: "Vincent Botta, Unsplash.com",
         alt: "Harddisk",
+        license: licenses.ccby4,
         //subindices: {
         //  nbas_k: {
         //    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
@@ -102,26 +117,32 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
         alt: "Utsnitt fra Matrikkelen 1838, Bykle anneks",
         imageAttribution: "Aust-Agder fylke, Nedenæs amt, Matrikkel , 1838-, oppb: Riksarkivet",
+        license: licenses.ccby4,
       },
       m1886: {
         img: "/datasets/No-nb_digibok_2014010838007_0180_1.jpg",
         alt: "Den forberedende matrikkelkommisjonen i Kråkstad i 1864",
         imageAttribution: "Østlid, Martin. \"Kråkstad\", s. 180 (nb.no)",
+        license: licenses.ccby4,
       },
       mu1950: {
         img: "/datasets/6541_inndeling_s_1950_jpg300dpi.jpg",
         alt: "Herredskart 1950",
         imageAttribution: "Kartverket, kommunneinndelinger 1950",
+        license: licenses.ccby4,
       },
       skul: {
         img: "/datasets/ubb-kk-n-520-005_sm.jpg",
         alt: "Interiør fra klasserom, jenteklasse",
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        license: licenses.ccby4,
       },
       sof: {
         img: "/datasets/SOF.JPG",
         alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
         imageAttribution: "Fylkesarkivet i Vestland",
+        license: licenses.ccby4,
+        links: [{title: "Nettstad: ", href: "https://www.fylkesarkivet.no/stadnamn.380535.no.html"}]
       }
 }
 
@@ -131,6 +152,7 @@ export const subpages: Record<string, string[]> = {
 
 export const featureNames: Record<string, string> = {
   "image": "Sedler",
+  "image_tmp": "Sedler (kommer)",
   "audio": "Lydopptak",
   "phonetic": "Lydskrift",
   "coordinates": "Koordinater",

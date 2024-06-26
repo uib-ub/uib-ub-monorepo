@@ -147,6 +147,13 @@ export default function Datasets() {
                 </ul>
                 <div className="space-y-4 break-words">
                 <p>{datasetDescriptions[dataset]}</p>
+                <div>Lisens: <Link href={datasetPresentation[dataset].license.url}>
+                  {datasetPresentation[dataset].license.name}
+                </Link></div>
+                {datasetPresentation[dataset].links?.map((link) => (
+                  <div key={link.href}>{link.title}<Link href={link.href}>{link.text || link.href}</Link></div>
+                ))}
+
                 <div className="space-y-2">
                 <h4 className='font-semibold'>Ressurser</h4>
                 <ul className='flex flex-wrap gap-2 text-neutral-900'>
