@@ -66,54 +66,6 @@ export async function fetchSOSI(sosiCode: string) {
 
   }
 
-// Fetch children aggregated by dataset and administrative units. Used in place name ID info page.
-export async function fetchChildrenGrouped(uuids: string[], retry: boolean = true) {
-    'use server'
-    const { endpoint, token } = detectEnv(retry)
-
-    const query = {
-        query: {
-            terms: {
-                "uuid": uuids
-            }
-        },
-        aggs: {
-            dataset: {
-                terms: {
-                    field: "_index",
-                    size: 100
-                },
-                aggs: {
-                    top_docs: {
-                        top_hits: {}
-                    }
-                }
-            }
-        }
-    }
-
-    const res = await fetch(`${endpoint}stadnamn-${process.env.SN_ENV}-*/_search`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `ApiKey ${token}`,
-        },
-        body: JSON.stringify(query)
-    });
-
-    if (!res.ok) {
-        const errorResponse = await res.json();
-        if (retry) {
-            return fetchChildrenGrouped(uuids, retry = false);
-        }
-        return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
-    }
-    const data = await res.json()
-    return data.aggregations.dataset.buckets
-
-  }
-
-
 
   export async function fetchStats() {
     'use server'
@@ -175,6 +127,10 @@ export async function fetchChildrenGrouped(uuids: string[], retry: boolean = tru
 }
 
     const res = await postQuery('*', query)
+
+    if (!res.ok) {
+        return {error: res.error}
+    }
 
     //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
     const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {

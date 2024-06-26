@@ -129,10 +129,7 @@
     @apply text-gray-400;
   }
 
-  button[aria-current='page'] i {
-    @apply text-accent-800;
 
-  }
 
   button[aria-current='page'] {
     @apply ring-accent-800 ring-1 rounded-full;

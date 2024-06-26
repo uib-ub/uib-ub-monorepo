@@ -8,7 +8,8 @@ import {
   } from "@/components/ui/tooltip"
 
 
-export default function TooltipButton({ children, className, textClass, textIcon, label, type, href, ...rest }: { children: React.ReactNode, className?: string, textClass?: string, textIcon?: boolean, label: string, href?: string, [x: string]: any, type?: "button" | "submit" | "reset" }) {
+export default function TooltipButton({ children, className, textClass, textIcon, label, type, href, ...rest }: 
+    { children: React.ReactNode, className?: string, textClass?: string, textIcon?: boolean, label: string, href?: string, [x: string]: any, type?: "button" | "submit" | "reset" }) {
     const router = useRouter();
 
     const handleClick = (e: React.MouseEvent) => {

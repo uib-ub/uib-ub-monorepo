@@ -57,7 +57,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
       
       <h2>{doc._source.label}</h2>
 
-      <CopyLink uuid={doc._source.uuid} />
+      { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') && <CopyLink uuid={doc._source.uuid} /> // NBAS uris aren't stable until we've fixed errors in the dataset
+      }
       
 
       { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](doc._source) : null }
@@ -73,7 +74,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
         <OriginalData rawData={doc._source.rawData}/>
         </div>
       : null}
-      { doc._source.location && <div className='space-y-6'>
+      { docDataset != 'search' && doc._source.location && <div className='space-y-6'>
         <h3>Koordinater</h3>
 
         <CoordinateInfo source={doc._source}/>

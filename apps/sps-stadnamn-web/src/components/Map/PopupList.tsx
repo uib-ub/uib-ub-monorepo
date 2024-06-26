@@ -1,10 +1,11 @@
 
-import IconButton  from '@/components/ui/icon-button'
 import { useSearchParams, useParams, useRouter } from 'next/navigation'
-import { PiArticleFill, PiInfoFill, PiLinkBold } from 'react-icons/pi'
-import AudioButton from '@/components/results/audioButton';
 import Link from 'next/link';
 import { resultRenderers } from '@/config/result-renderers';
+import AudioButton from '@/components/results/audioButton'
+import ImageButton from '@/components/results/imageButton'
+import InfoButton from '@/components/results/infoButton'
+import ExternalLinkButton from '@/components/results/externalLinkButton'
 
 export default function PopupList({ docs, view }: { docs: any[], view: string} ) {
     const searchParams = useSearchParams()
@@ -27,6 +28,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
     const listItemRenderer = (doc: any) => {
         return (
             <>
+            <span id={"resultText_" + doc._source.uuid}>
             { dataset == view ?
                     <>
                         {resultRenderers[view]?.title(doc)}
@@ -36,27 +38,20 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                         {doc._source.label}
                     </>
                 } 
-                <div className='inline space-x-1'>
+                </span>
+                <div className='inline whitespace-nowrap'>
+                    &nbsp;
                     {doc._source.image && 
-                        <IconButton 
-                            onClick={() => goToIIIF(doc._source.uuid, doc._source.image.manifest)} 
-                            label="Vis seddel">
-                            <PiArticleFill className="text-2xl align-top text-neutral-700 inline"/>
-                        </IconButton> 
+                        <ImageButton doc={doc} iconClass='text-2xl align-top text-neutral-700 inline'/> 
                     }
                     {doc._source.audio && 
                         <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${doc._source.audio.file}`} 
                             className="text-2xl align-top inline text-neutral-700"/> 
                     }
                     {doc._source.link &&
-                        <Link href={doc._source.link} className="no-underline" target="_blank">
-                            <IconButton 
-                                label="Ekstern ressurs">
-                                <PiLinkBold className="text-2xl align-top text-neutral-700 inline"/>
-                            </IconButton> 
-                        </Link>
+                        <ExternalLinkButton doc={doc} iconClass='text-2xl align-top text-neutral-700 inline'/>
                     }
-                    <IconButton label="Infoside" onClick={() => goToDoc(doc._source.uuid)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
+                    <InfoButton doc={doc} iconClass='text-2xl align-top text-primary-600 inline'/>
                 </div>
                  { dataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc)}</p> }
                 
