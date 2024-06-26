@@ -5,6 +5,9 @@ import ErrorMessage from '@/components/ErrorMessage'
 import { datasetTitles } from '@/config/metadata-config'
 import { resultRenderers } from '@/config/result-renderers'
 import InfoButton from '@/components/results/infoButton'
+import CoordinateButton from '@/components/results/coordinateButton';
+import ExternalLinkButton from '@/components/results/externalLinkButton';
+import ImageButton from '@/components/results/imageButton';
 import Link from 'next/link'
 
 
@@ -14,9 +17,6 @@ export default function GroupedChildren({ uuid, childList, landingPage}: { uuid:
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        if (childList.length > 20) {
-          console.log("Too many children to fetch", childList)
-        }
         fetch(`/api/children?${childList?.length < 20 ? 'children=' + childList.join(',') : 'parent=' + uuid}`)
         .then(response => response.json())
         .then(data => {
@@ -35,7 +35,7 @@ export default function GroupedChildren({ uuid, childList, landingPage}: { uuid:
           setIsLoading(false)
 
         }
-        ).catch(error => {
+        ).catch((error: any) => {
             setError(error)
             setIsLoading(false)
         })
@@ -48,8 +48,8 @@ export default function GroupedChildren({ uuid, childList, landingPage}: { uuid:
     // How doc can be retrieved from index name:
     
 
-    if (childDocs.error) {
-      return <ErrorMessage error={childDocs} message="Kunne ikke hente attestasjoner"/>
+    if (error) {
+      return <ErrorMessage error={error} message="Kunne ikke hente dokumentene"/>
     }
 
 
@@ -83,6 +83,9 @@ export default function GroupedChildren({ uuid, childList, landingPage}: { uuid:
                     <li key={index} className=''>
                         {resultRenderers[docDataset].title(doc)}
                         {doc._source.sosi && <span> - {doc._source.sosi}</span>}
+                        { doc._source.location && <CoordinateButton doc={doc} iconClass="text-2xl inline" />}
+                        { doc._source.link && <ExternalLinkButton doc={doc} iconClass="text-2xl inline" />}
+                        { doc._source.image && <ImageButton doc={doc} iconClass="text-2xl inline" />}
                         <InfoButton doc={doc} iconClass="text-2xl inline" />
 
                     </li>
