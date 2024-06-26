@@ -179,7 +179,7 @@ export const datasetFeatures: Record<string, string[]> = {
   m1838: ["link"],
   m1886: ["link"],
   mu1950: ["link"],
-  skul: ["image"],
+  skul: ["image_tmp"],
   leks: ["phonetic", "base"],
   ostf: ["link"],
   sof: ["link", "coordinates", "phonetic"]
