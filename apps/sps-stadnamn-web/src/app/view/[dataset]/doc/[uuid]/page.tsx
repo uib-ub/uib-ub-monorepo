@@ -54,8 +54,10 @@ export default async function DocumentView({ params, searchParams }: { params: {
             Tilbake til stadnamnsida
             </Link> : null }
         { doc && doc._source && <>
-      
+      <div className="space-y-2">
       <h2>{doc._source.label}</h2>
+      {doc._source.adm1 && <div>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1}</div> }
+      </div>
 
       { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') && <CopyLink uuid={doc._source.uuid} /> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
