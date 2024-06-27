@@ -11,10 +11,9 @@ import ImageButton from '@/components/results/imageButton';
 import Link from 'next/link'
 
 
-export default function GroupedChildren({ uuid, childList, landingPage}: { uuid: string, childList: string[], landingPage?: boolean}) {
+export default function GroupedChildren({ uuid, childList, landingPage, setExpandLoading}: { uuid: string, childList: string[], landingPage?: boolean, setExpandLoading?: any}) {
     const [childDocs, setChildDocs] = useState<any>([])
     const [error, setError] = useState<any>(null)
-    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         fetch(`/api/children?${childList?.length < 20 ? 'children=' + childList.join(',') : 'parent=' + uuid}`)
@@ -32,14 +31,14 @@ export default function GroupedChildren({ uuid, childList, landingPage}: { uuid:
           , {})
 
           setChildDocs(groupedChildren)
-          setIsLoading(false)
+          setExpandLoading(false)
 
         }
         ).catch((error: any) => {
             setError(error)
-            setIsLoading(false)
+            setExpandLoading(false)
         })
-    }, [uuid, childList])
+    }, [uuid, childList, setExpandLoading])
     
     //await fetchChildrenGrouped(childIdentifiers)
 
@@ -55,17 +54,6 @@ export default function GroupedChildren({ uuid, childList, landingPage}: { uuid:
 
     return (
         <div className="p-2 mb-2"> 
-        {isLoading && 
-        // skeleton for as many items as in childList, spaced out with two lines for each item, and three circles in place of the buttons on the right side
-        <div className="animate-pulse flex flex-col gap-y-2">
-          {Array.from({length: childList.length}, (_, i) => (
-            <div key={i} className={"h-4 bg-neutral-200 rounded w-1/4"}></div>
-          ))}
-        </div>
-        
-
-        
-        }
         {Object.keys(childDocs).map((docDataset: string) => (
             <div key={docDataset} className='break-words'>
                 { !landingPage && Object.keys(childDocs).length > 1 && <h3 className="small-caps text-xl">{datasetTitles[docDataset]}</h3>}

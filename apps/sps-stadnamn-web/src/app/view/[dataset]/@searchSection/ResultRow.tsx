@@ -10,6 +10,7 @@ import ExternalLinkButton from '@/components/results/externalLinkButton';
 import ImageButton from '@/components/results/imageButton';
 import InfoButton from '@/components/results/infoButton';
 import GroupedChildren from './grouped-children';
+import Spinner from '@/components/svg/Spinner';
 
 
 
@@ -18,6 +19,7 @@ export default function ResultRow({ hit }: { hit: any}) {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const expanded = searchParams.get('expanded') == hit._source.uuid
+    const [expandLoading, setExpandLoading] = useState(false)
     const router = useRouter()
 
 
@@ -29,6 +31,7 @@ export default function ResultRow({ hit }: { hit: any}) {
       if (expanded) {
         newSearchParams.delete('expanded')
       } else {
+        setExpandLoading(true)
         newSearchParams.set('expanded', hit._source.uuid)
       }
 
@@ -75,7 +78,7 @@ export default function ResultRow({ hit }: { hit: any}) {
                         onClick={toggleExpanded} 
                         className="flex text-sm bg-neutral-100 text-black rounded-full pr-3 pl-1 py-1 self-center whitespace-nowrap snid-button">
                         
-            {expanded ? <PiCaretUp className="self-center mx-1"/> : <PiCaretDown className="self-center mx-1"/>}
+            {expandLoading ? <Spinner status="Laster treff" className='w-[1em] h-[1em} mx-1'/> : (expanded ? <PiCaretUp className="self-center mx-1"/> : <PiCaretDown className="self-center mx-1"/>)}
             { hit._source.datasets?.length > 1 ? hit._source.datasets.length + " datasett" :  hit._source.datasets[0].toUpperCase()}
             {hit._source.children.length > 1 && ": " + hit._source.children?.length}
             
@@ -93,7 +96,7 @@ export default function ResultRow({ hit }: { hit: any}) {
         </div>
         </div>
         {
-          expanded && <GroupedChildren uuid={hit._source.uuid} childList={hit._source.children}/>
+          expanded && <GroupedChildren uuid={hit._source.uuid} childList={hit._source.children} setExpandLoading={setExpandLoading}/>
         }
         </li>
     )
