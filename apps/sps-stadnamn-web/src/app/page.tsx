@@ -1,5 +1,5 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiInfoFill, PiMapTrifold } from 'react-icons/pi';
+import { PiMapTrifold } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
@@ -37,22 +37,22 @@ export default async function Home() {
   </form>
   
 
-  <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-6 lg:gap-12">
+  { stats && <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-6 lg:gap-12">
   <li className="flex flex-col items-center text-lg">
       Stadnamnoppslag
-      <span className="text-4xl">{stats.snidCount.toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats?.snidCount?.toLocaleString('nb-NO')}</span>
     </li>
     
     <li className="flex flex-col items-center text-lg">
       Datasett
-      <span className="text-4xl">{stats.datasetCount.toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats?.datasetCount?.toLocaleString('nb-NO')}</span>
     </li>
     <li className="flex flex-col items-center text-lg">
       Oppslag i datasetta
-      <span className="text-4xl">{stats.datasetDocs.toLocaleString('nb-NO')}</span>
+      <span className="text-4xl">{stats?.datasetDocs?.toLocaleString('nb-NO')}</span>
     </li>
     
-  </ul>
+  </ul> }
 
   </div>
 
@@ -95,7 +95,7 @@ export default async function Home() {
         </li>
       ))}
     </ul>
-    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Fleire datasett</Link>
+    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Alle datasett</Link>
     </section>
   
 

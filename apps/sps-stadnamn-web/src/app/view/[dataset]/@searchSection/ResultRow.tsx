@@ -1,53 +1,47 @@
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiArticleFill, PiLinkBold } from 'react-icons/pi';
-import AudioButton from '../../../../components/results/audioButton';
+import { useState } from 'react';
+import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
+import AudioButton from '@/components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
-import Link from 'next/link';
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { datasetTitles } from '@/config/metadata-config';
+import CoordinateButton from '@/components/results/coordinateButton';
+import ExternalLinkButton from '@/components/results/externalLinkButton';
+import ImageButton from '@/components/results/imageButton';
+import InfoButton from '@/components/results/infoButton';
+import GroupedChildren from './grouped-children';
 
 
-export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}) {
-    const searchParams = useSearchParams()
-    const pathname = usePathname()
-    const router = useRouter()
+
+export default function ResultRow({ hit }: { hit: any}) {
     const params = useParams<{uuid: string; dataset: string}>()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const expanded = searchParams.get('expanded') == hit._source.uuid
+    const router = useRouter()
+
+
     const titleRenderer = resultRenderers[params.dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
 
-
-
-    const showInMap = (uuid: string) => {
-        const newSearchParams = new URLSearchParams(searchParams)
-        newSearchParams.set('docs', String(uuid))
-        newSearchParams.delete('search')
-
-        router.push(`/view/${params.dataset}?${newSearchParams.toString()}`)
-    }
-
-    const goToDoc = (uuid: string) => {
-        const newSearchParams = new URLSearchParams(searchParams)
-        if (searchParams.get('search') == 'show') {
-            newSearchParams.set('search', 'hide')
-        }
-
-        router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
-    }
-
-    const goToIIIF = (uuid: string, manifest: string) => {
+    const toggleExpanded = () => {
       const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.set('docs', String(uuid))
-      if (searchParams.get('search') == 'show') {
-        newSearchParams.set('search', 'hide')
-    }
+      if (expanded) {
+        newSearchParams.delete('expanded')
+      } else {
+        newSearchParams.set('expanded', hit._source.uuid)
+      }
 
-      router.push(`/view/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
+      router.push(`${pathname}?${newSearchParams.toString()}`)
     }
+    
+
 
 
   return (
 
-        <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-grow">
+        <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col">
+        <div className='flex flex-grow'>
         <div id={"resultText_" + hit._source.uuid}>{titleRenderer(hit)}
         <p>
           { detailsRenderer(hit) }
@@ -59,12 +53,7 @@ export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}
         }
 
         {hit._source.image && 
-          <IconButton 
-            onClick={() => goToIIIF(hit._source.uuid, hit._source.image.manifest)} 
-            label="Vis seddel" 
-            aria-current={searchParams.get('docs') == hit._source.uuid && pathname.includes('/iiif/') ? 'page': undefined}
-            className="p-1 text-neutral-700">
-              <PiArticleFill className="xl:text-3xl"/></IconButton> 
+          <ImageButton doc={hit} iconClass="text-3xl text-neutral-700"/>
         }
         
         {hit._source.audio && 
@@ -72,49 +61,40 @@ export default function ResultRow({ hit, nested }: { hit: any, nested?: boolean}
                        className="text-3xl text-neutral-700"/> 
         }
         {hit._source.link &&
-        <Link href={hit._source.link} className="no-underline" target="_blank">
-          <IconButton 
-            label="Ekstern ressurs"
-            className="p-1 text-neutral-700 xl:text-xl">
-               <PiLinkBold className="text-3xl"/>
-          </IconButton> 
-        </Link>
+        <ExternalLinkButton doc={hit} iconClass="text-3xl text-neutral-700"/>
         }
         {hit._source.location && 
-          <IconButton 
-            onClick={() => showInMap(hit._source.uuid)} 
-            label="Vis i kart" 
-            aria-current={searchParams.get('docs') == hit._source.uuid && pathname == `/view/${params.dataset}` ? 'page': undefined} 
-            className="p-1 text-neutral-700">
-              <PiMapPinFill className="text-3xl"/></IconButton> 
+          <CoordinateButton doc={hit} iconClass="text-3xl text-neutral-700"/>
         }
 
-        { params.dataset != 'search' && <IconButton 
-          onClick={() => goToDoc(hit._source.uuid)} 
-          label="Infoside" 
-          aria-current={params.uuid == hit._source.uuid && pathname.includes('/doc/') ? 'page': undefined} 
-          aria-describedby={"resultText_" + hit._source.uuid}
-          className="p-1 text-primary-600">
-            <PiInfoFill className="text-3xl"/></IconButton> 
-        }
         { params.dataset == 'search'  && (
-          <IconButton label={"Vis treff frå " + (hit._source.children?.length == 1 ? datasetTitles[hit._source.datasets[0]]: hit._source.datasets.length  + " datasett")} 
-                      textIcon 
-                      aria-current={params.uuid == hit._source.uuid && pathname.includes('/doc/') ? 'page': undefined} 
-                      aria-describedby={"resultText_" + hit._source.uuid}
-                      onClick={() => goToDoc(hit._source.uuid)} 
-                      className="flex text-sm bg-neutral-100 text-black rounded-full pl-3 pr-1 py-1 self-center whitespace-nowrap snid-button">
-                      
+            <IconButton label={"Vis treff frå " + (hit._source.children?.length == 1 ? datasetTitles[hit._source.datasets[0]]: hit._source.datasets.length  + " datasett")} 
+                        textIcon 
+                        aria-expanded={expanded} 
+                        aria-describedby={"resultText_" + hit._source.uuid}
+                        onClick={toggleExpanded} 
+                        className="flex text-sm bg-neutral-100 text-black rounded-full pr-3 pl-1 py-1 self-center whitespace-nowrap snid-button">
+                        
+            {expanded ? <PiCaretUp className="self-center mx-1"/> : <PiCaretDown className="self-center mx-1"/>}
+            { hit._source.datasets?.length > 1 ? hit._source.datasets.length + " datasett" :  hit._source.datasets[0].toUpperCase()}
+            {hit._source.children.length > 1 && ": " + hit._source.children?.length}
+            
+            </IconButton>
 
-          { hit._source.datasets?.length > 1 ? hit._source.datasets.length :  hit._source.datasets[0].toUpperCase() }<PiInfoFill className="text-xl text-primary-600 ml-1"/>
-          
-          </IconButton>
 
-
-        )
+          )
 
         }
+
+         { (hit._source.snid || params.dataset != 'search') && <InfoButton doc={hit} iconClass="text-3xl text-primary-600" aria-expanded={expanded} aria-describedby={"resultText_" + hit._source.uuid}
+          />}
+        
+        
         </div>
+        </div>
+        {
+          expanded && <GroupedChildren uuid={hit._source.uuid} childList={hit._source.children}/>
+        }
         </li>
     )
 }

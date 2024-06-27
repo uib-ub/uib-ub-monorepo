@@ -135,7 +135,7 @@ export default function Datasets() {
               
               <div className="p-4 pb-2 sm:col-span-3">
                 <span className="flex flex-wrap"><h3 className="text-xl sm:text-2xl font-semibold">{datasetTitles[dataset]}</h3>
-                {stats?.datasets[dataset] && <div className="text-lg ml-auto text-neutral-700 font-serif">{stats.datasets[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div>}
+                {stats?.datasets?.[dataset] && <div className="text-lg ml-auto text-neutral-700 font-serif">{stats.datasets[dataset].doc_count.toLocaleString('nb-NO')} oppslag</div>}
                 </span>
                 <ul className='flex flex-wrap gap-2 my-2 text-neutral-900'>
                 {datasetTypes[dataset].map((type) => (
@@ -147,6 +147,13 @@ export default function Datasets() {
                 </ul>
                 <div className="space-y-4 break-words">
                 <p>{datasetDescriptions[dataset]}</p>
+                <div>© {datasetPresentation[dataset].attribution}. Lisens: <Link href={datasetPresentation[dataset].license.url}>
+                  {datasetPresentation[dataset].license.name}
+                </Link></div>
+                {datasetPresentation[dataset].links?.map((link) => (
+                  <div key={link.href}>{link.title}<Link href={link.href}>{link.text || link.href}</Link></div>
+                ))}
+
                 <div className="space-y-2">
                 <h4 className='font-semibold'>Ressurser</h4>
                 <ul className='flex flex-wrap gap-2 text-neutral-900'>
