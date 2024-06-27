@@ -18,6 +18,7 @@ export interface DatasetPresentation {
     alt: string;
     imageAttribution: string;
     license: {name: string, url: string};
+    attribution: string;
     links?: {title?: string, href: string, text?: string}[];
     subindices?: SubindexPresentation;
     initPage?: string;
@@ -71,24 +72,28 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/ubb-spr-bp-0001_sm.jpg",
         alt: "En kvinnelig arkivar eller kontorist sitter ved et skrivebord foran en stor rekke arkivskuffer.",
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        attribution: "Beriket av Språksamlingene", 
         license: licenses.ccby4
       },
       hord: {
         img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
         alt: "Utsnitt av kart over Hordaland og Sogn og Fjordane",
         imageAttribution: "Kartverket: Generalkart VII, L. Arentz 1929",
+        attribution: "Berika av Språksamlingane", 
         license: licenses.ccby4,
       },
       rygh: {
         img: "/datasets/Prof_oluf_rygh.jpg",
         alt: "Oluf Rygh, portrettfoto",
         imageAttribution: "Norges geografiske oppmåling; retusjering: J. Nordhagen.",
+        attribution: "Beriket av Språksamlingene", 
         license: licenses.ccby4,
       },
       ostf: {
         img: "/datasets/Østfold_gml_herredsinndeling.png",
         alt: "Verket bygger på den gamle herredsinndelinga i Østfold",
         imageAttribution: "Bustadnavn i Østfold",
+        attribution: "Beriket av Språksamlingene", 
         license: licenses.ccby4,
       },
       leks: {
@@ -96,6 +101,7 @@ export const datasetPresentation: DatasetPresentation = {
         alt: "Forside til Norsk stadnamnleksikon 1997",
         imageAttribution: "Skanna av Språksamlingane",
         license: licenses.ccby4,
+        attribution: "Berika av Språksamlingane", 
         initPage: "info",
         subindices: {
           leks_g: {
@@ -107,6 +113,7 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "Vincent Botta, Unsplash.com",
         alt: "Harddisk",
         license: licenses.ccby4,
+        attribution: "Beriket av Språksamlingene",
         //subindices: {
         //  nbas_k: {
         //    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
@@ -117,30 +124,35 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
         alt: "Utsnitt fra Matrikkelen 1838, Bykle anneks",
         imageAttribution: "Aust-Agder fylke, Nedenæs amt, Matrikkel , 1838-, oppb: Riksarkivet",
+        attribution: "Beriket av Språksamlingene", 
         license: licenses.ccby4,
       },
       m1886: {
         img: "/datasets/No-nb_digibok_2014010838007_0180_1.jpg",
         alt: "Den forberedende matrikkelkommisjonen i Kråkstad i 1864",
         imageAttribution: "Østlid, Martin. \"Kråkstad\", s. 180 (nb.no)",
+        attribution: "Beriket av Språksamlingene", 
         license: licenses.ccby4,
       },
       mu1950: {
         img: "/datasets/6541_inndeling_s_1950_jpg300dpi.jpg",
         alt: "Herredskart 1950",
         imageAttribution: "Kartverket, kommunneinndelinger 1950",
+        attribution: "Beriket av Språksamlingene", 
         license: licenses.ccby4,
       },
       skul: {
         img: "/datasets/ubb-kk-n-520-005_sm.jpg",
         alt: "Interiør fra klasserom, jenteklasse",
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        attribution: "Beriket av Språksamlingene", 
         license: licenses.ccby4,
       },
       sof: {
         img: "/datasets/SOF.JPG",
         alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
         imageAttribution: "Fylkesarkivet i Vestland",
+        attribution: "Fylkesarkivet i Vestland. Berika av Språksamlingane", 
         license: licenses.ccby4,
         links: [{title: "Nettstad: ", href: "https://www.fylkesarkivet.no/stadnamn.380535.no.html"}]
       }

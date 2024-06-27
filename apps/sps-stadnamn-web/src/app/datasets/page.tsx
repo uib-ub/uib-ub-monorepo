@@ -147,7 +147,7 @@ export default function Datasets() {
                 </ul>
                 <div className="space-y-4 break-words">
                 <p>{datasetDescriptions[dataset]}</p>
-                <div>Lisens: <Link href={datasetPresentation[dataset].license.url}>
+                <div>© {datasetPresentation[dataset].attribution}. Lisens: <Link href={datasetPresentation[dataset].license.url}>
                   {datasetPresentation[dataset].license.name}
                 </Link></div>
                 {datasetPresentation[dataset].links?.map((link) => (
