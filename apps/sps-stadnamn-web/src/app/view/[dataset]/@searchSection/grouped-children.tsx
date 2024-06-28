@@ -11,12 +11,12 @@ import ImageButton from '@/components/results/imageButton';
 import Link from 'next/link'
 
 
-export default function GroupedChildren({ uuid, childList, landingPage, setExpandLoading}: { uuid: string, childList: string[], landingPage?: boolean, setExpandLoading?: any}) {
+export default function GroupedChildren({ snid, uuid, childList, landingPage, setExpandLoading}: { snid: string, uuid: string, childList: string[], landingPage?: boolean, setExpandLoading?: any}) {
     const [childDocs, setChildDocs] = useState<any>([])
     const [error, setError] = useState<any>(null)
 
     useEffect(() => {
-        fetch(`/api/children?${childList?.length < 20 ? 'children=' + childList.join(',') : 'parent=' + uuid}`)
+        fetch(`/api/children?${snid ? 'snid=' + snid : (childList.length > 20 ? 'uuids=' + childList.join(',') : 'uuid=' + uuid) }`)
         .then(response => response.json())
         .then(data => {
         // group by index name
@@ -44,7 +44,7 @@ export default function GroupedChildren({ uuid, childList, landingPage, setExpan
             }
             
         })
-    }, [uuid, childList, setExpandLoading])
+    }, [snid, childList, setExpandLoading])
     
     //await fetchChildrenGrouped(childIdentifiers)
 

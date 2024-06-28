@@ -96,7 +96,7 @@ export default function ResultRow({ hit }: { hit: any}) {
         </div>
         </div>
         {
-          expanded && <GroupedChildren uuid={hit._source.uuid} childList={hit._source.children} setExpandLoading={setExpandLoading}/>
+          expanded && <GroupedChildren snid={hit._source.snid} uuid={hit._source.uuid} childList={hit._source.children} setExpandLoading={setExpandLoading}/>
         }
         </li>
     )
