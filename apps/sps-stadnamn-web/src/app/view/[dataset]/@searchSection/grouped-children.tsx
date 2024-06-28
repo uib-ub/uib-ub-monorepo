@@ -31,12 +31,18 @@ export default function GroupedChildren({ uuid, childList, landingPage, setExpan
           , {})
 
           setChildDocs(groupedChildren)
-          setExpandLoading(false)
+          if (setExpandLoading) {
+            setExpandLoading(false)
+          }
+          
 
         }
         ).catch((error: any) => {
             setError(error)
-            setExpandLoading(false)
+            if (setExpandLoading) {
+              setExpandLoading(false)
+            }
+            
         })
     }, [uuid, childList, setExpandLoading])
     
