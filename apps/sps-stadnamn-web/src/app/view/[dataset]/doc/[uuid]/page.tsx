@@ -56,7 +56,10 @@ export default async function DocumentView({ params, searchParams }: { params: {
         { doc && doc._source && <>
       <div className="space-y-2">
       <h2>{doc._source.label}</h2>
-      {doc._source.adm1 && <div>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1}</div> }
+      
+      {doc._source.adm1 && <div>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1}
+      {doc._source.adm2wd && <span className="inline"> (wikidata: <Link target="_blank"  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2wd}</Link>) </span>}
+      </div> }
       </div>
 
       { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') && <CopyLink uuid={doc._source.uuid} /> // NBAS uris aren't stable until we've fixed errors in the dataset
