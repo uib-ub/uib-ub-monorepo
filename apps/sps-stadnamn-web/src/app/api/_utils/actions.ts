@@ -168,10 +168,9 @@ export async function fetchSNID(snid: string) {
         fields: ["uuid"],
         _source: false
     }
-    console.log
 
     const res = await postQuery('search', query)
-    console.log("RES", res.hits?.hits?.[0])
+
     return res.hits?.hits?.[0] || res
 
 }

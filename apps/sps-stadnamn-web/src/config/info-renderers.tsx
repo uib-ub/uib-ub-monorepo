@@ -150,7 +150,13 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     ]}/>
   </>
   },
-  bsn: (source: any) => {
+  leks_g: (source: any) => {
+    return <>
+    {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
+    </>
+  },
+
+  bsn:  (source: any) => {
     return <>
     <div className='space-y-2'>
     {source.rawData?.original?.stnavn?.komm ?

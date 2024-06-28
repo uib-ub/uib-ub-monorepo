@@ -64,7 +64,7 @@ export default function Datasets() {
 
   return (      
         <section className="flex flex-col items-center gap-12 container" aria-labelledby="page_heading">
-          <h1 id="page_heading" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Søkevisninger</h1>
+          <h1 id="page_heading" className="text-2xl sm:text-3xl self-center text-neutral-900 md:text-4xl lg:text-5xl font-serif">Datasett</h1>
           <div className='flex flex-col lg:grid lg:grid-cols-3 justify-between gap-12 w-full'>
           <div className='flex flex-col md gap-4'>
           <h2 className='text-xl'><label htmlFor="titleSearch">Tittel</label></h2>
@@ -151,7 +151,7 @@ export default function Datasets() {
                   {datasetPresentation[dataset].license.name}
                 </Link></div>
                 {datasetPresentation[dataset].links?.map((link) => (
-                  <div key={link.href}>{link.title}<Link href={link.href}>{link.text || link.href}</Link></div>
+                  <div key={link.href}>{link.title}<Link className="break-all" href={link.href}>{link.text || link.href}</Link></div>
                 ))}
 
                 <div className="space-y-2">

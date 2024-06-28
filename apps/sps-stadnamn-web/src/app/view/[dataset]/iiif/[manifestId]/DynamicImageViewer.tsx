@@ -31,7 +31,7 @@ const DynamicImageViewer = () => {
   useEffect(() => {
     const fetchManifestAndInitializeViewer = async () => {
       setIsLoading(true);
-      // TODO: all datasets should have the same url structure as NBAS    
+      // TODO: create api route that generates manifest from elasticsearch index  
       let response 
       try {
         response = await fetch( `https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
