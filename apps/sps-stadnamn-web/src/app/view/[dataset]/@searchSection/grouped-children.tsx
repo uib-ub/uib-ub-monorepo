@@ -12,7 +12,7 @@ import Link from 'next/link'
 
 
 export default function GroupedChildren({ snid, uuid, childList, landingPage, setExpandLoading}: { snid: string, uuid: string, childList: string[], landingPage?: boolean, setExpandLoading?: any}) {
-    const [childDocs, setChildDocs] = useState<any>([])
+    const [childDocs, setChildDocs] = useState<Record<string, any[]>>({})
     const [error, setError] = useState<any>(null)
 
     useEffect(() => {
