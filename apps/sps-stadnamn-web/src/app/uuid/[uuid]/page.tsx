@@ -65,9 +65,8 @@ export default async function LandingPage({ params }: { params: { uuid: string }
         
       </div> }
       { docDataset == 'search' &&
-      <div>
+
         <GroupedChildren snid={doc._source.snid} uuid={doc._source.uuid} childList={doc._source.children} landingPage/>
-      </div>
 
 
       }

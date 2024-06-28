@@ -44,7 +44,7 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
             }
             
         })
-    }, [snid, childList, setExpandLoading])
+    }, [snid, uuid, childList, setExpandLoading])
     
     //await fetchChildrenGrouped(childIdentifiers)
 
@@ -58,8 +58,8 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
     }
 
 
-    return (
-        <div className="p-2 mb-2"> 
+    return childDocs && Object.keys(childDocs).length > 0 ?
+        <div className="p-2 mb-2 transform origin-center"> 
         {Object.keys(childDocs).map((docDataset: string) => (
             <div key={docDataset} className='break-words'>
                 { !landingPage && Object.keys(childDocs).length > 1 && <h3 className="small-caps text-xl">{datasetTitles[docDataset]}</h3>}
@@ -96,5 +96,5 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
             </div>
         ))}
         </div>
-    )
+    : null
 }
