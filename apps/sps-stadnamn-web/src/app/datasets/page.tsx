@@ -151,7 +151,7 @@ export default function Datasets() {
                   {datasetPresentation[dataset].license.name}
                 </Link></div>
                 {datasetPresentation[dataset].links?.map((link) => (
-                  <div key={link.href}>{link.title}<Link href={link.href}>{link.text || link.href}</Link></div>
+                  <div key={link.href}>{link.title}<Link className="break-all" href={link.href}>{link.text || link.href}</Link></div>
                 ))}
 
                 <div className="space-y-2">
