@@ -75,7 +75,9 @@ export const useSearchDataStats = () =>
   useState<SearchDataStats>("searchDataStats", () => ({}));
 
 export const useShowSearchFilter = () =>
-  useState<boolean>("showSearchFilter", () => false);
+  useState<boolean>("showSearchFilter", () =>
+    ["xl", "2xl"].includes(useBreakpoint().value)
+  );
 
 export interface SearchFilterData {
   lang: LangCode[];

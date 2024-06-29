@@ -49,6 +49,8 @@ const route = useRoute();
 const searchData = useSearchData();
 const searchDataStats = useSearchDataStats();
 const allowSearchFetch = useAllowSearchFetch();
+const showSearchFilter = useShowSearchFilter();
+const breakpoint = useBreakpoint();
 const countFetchedMatches = computed(() => {
   return countSearchEntries(searchData.value);
 });
@@ -183,6 +185,11 @@ onMounted(() => {
   i.e. when search route is visited directly
   */
   if (searchInterface.value.term === null) {
+    // display filter if screen size larger than lg
+    if (["xl", "2xl"].includes(breakpoint.value)) {
+      showSearchFilter.value = true;
+    }
+
     for (const [key, value] of Object.entries(searchOptionsInfo)) {
       // Only set state if present in route
       // term can be empty string so the undefined check is neccessary
