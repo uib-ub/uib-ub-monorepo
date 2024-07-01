@@ -47,8 +47,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
           {hasSearchParams && searchParams.search != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
         </Link>
-        { doc._source.snid && params.dataset == 'search' && docDataset != 'search' ? 
-          <Link href={`/snid/${doc._source.snid}${hasSearchParams ? '?' + new URLSearchParams(searchParams).toString() : ''}`}
+        { doc._source.snid && searchParams.expanded && docDataset != 'search' ? 
+          <Link href={`/view/search/doc/${searchParams.expanded}${hasSearchParams ? '?' + new URLSearchParams(searchParams).toString() : ''}`}
                 className="no-underline inline ml-6">
             <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
             Tilbake til stadnamnsida
