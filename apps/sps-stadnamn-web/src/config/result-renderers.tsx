@@ -47,7 +47,9 @@ export const resultRenderers: ResultRenderers = {
     }
   },
   rygh: {
-    title: defaultTitle,
+    title: (hit: any) => {
+      return <>{defaultTitle(hit)} {hit._source.cadastre && <> | {hit._source.rawData.KNR}-{hit._source.cadastre[0]?.gnr}{hit._source.cadastre[0]?.bnr && '/'}{hit._source.cadastre[0]?.bnr}</> }</>
+    },
     details: (hit: any) => {
       return loktypeDetails(hit._source.rawData.Lokalitetstype, hit)
     }
