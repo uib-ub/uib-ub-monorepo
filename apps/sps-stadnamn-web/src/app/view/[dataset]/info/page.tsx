@@ -4,6 +4,7 @@ import SubpageNav from '@/components/layout/SubpageNav'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import fs from 'fs';
 import path from 'path';
+import Link from 'next/link';
 
 export async function generateMetadata( { params }: { params: { dataset: string, subpage: number } }) {
     return {
@@ -39,6 +40,9 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
             <div className='flex flex-col md:flex-row'>
                 <div className='md:w-1/2'>
                     <p>{subindex ? datasetDescriptions[subindex] : datasetDescriptions[mainIndex]}</p>
+                    <p>© {datasetPresentation[mainIndex].attribution}. Lisens: <Link href={datasetPresentation[mainIndex].license.url}>
+                  {datasetPresentation[mainIndex].license.name}
+                </Link></p>
                     <GoToSearchButtons/>
                     {src && <MDXRemote source={src} />}
 
