@@ -105,6 +105,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   rygh: (source: any) => {
     return <>
     {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
+    <div className="mt-3">
+    <Link href={source.rawData.Lenke_til_originalside} target="_blank" className='font-semibold'>Lenke til originalside</Link>
+    </div>
     <InfoBox dataset={'rygh'} items={[
       {title: 'Stadnamn', value: source.label},
       {title: 'Lokalitetstype', value: source.sosi, sosi: true},
@@ -113,16 +116,16 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Kommunenummer', value: source.rawData.KNR},
       {
         title: 'Gardsnummer', 
-        items: [...new Set(source.cadastre?.map((item: any) => item.gnr) as string[])].map((gnr: string) => ({
+        items: [...new Set(source.cadastre?.map((item: {gnr: number, bnr?: number}) => item.gnr.toString()) as string[])].map((gnr: string) => ({
           value: gnr, 
           href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(gnr)}`
         })),
       },
       {
         title: 'Bruksnummer', 
-        items: source.cadastre?.map((item: any) => ({
-          value: item.bnr, 
-          href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(item.gnr)}&cadastre__bnr=${encodeURIComponent(item.bnr)}`
+        items: source.cadastre?.map((item: {gnr: number, bnr: number}) => ({
+          value: item.bnr?.toString(), 
+          href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(item.gnr.toString())}&cadastre__bnr=${encodeURIComponent(item.bnr?.toString())}`
         })),
       },
     
@@ -223,7 +226,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Kommunenummer', value: source.rawData.kommuneNr}, 
       {
         title: 'Gardsnummer', 
-        items: [...new Set(source.cadastre?.map((item: any) => item.gnr) as string[])].map((gnr: string) => ({
+        items: [...new Set(source.cadastre?.map((item: any) => item.gnr.toString()) as string[])].map((gnr: string) => ({
           value: gnr, 
           href: `/view/hord?rawData.kommuneNr=${encodeURIComponent(source.rawData.kommuneNr)}&cadastre__gnr=${encodeURIComponent(gnr)}`
         })),
@@ -231,7 +234,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {
         title: 'Bruksnummer', 
         items: source.cadastre?.map((item: any) => ({
-          value: item.bnr, 
+          value: item.bnr.toString(), 
           href: `/view/hord?rawData.kommuneNr=${encodeURIComponent(source.rawData.kommuneNr)}&cadastre__gnr=${encodeURIComponent(item.gnr)}&cadastre__bnr=${encodeURIComponent(item.bnr)}`
         })),
       },
@@ -282,6 +285,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Kommune', value: source.adm2},
       {title: 'Fylke', value: source.adm1},
       {title: 'Kommunenummer', value: source.rawData?.knr},
+      {title: 'Gardsnummer', value: source.rawData?.gnr},
+      {title: 'Bruksnummer', value: source.rawData?.bnr},
       {title: 'GNIDu', value: source.rawData?.gnidu},
     ]}/>
 
@@ -290,6 +295,22 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   m1886: (source: any) => {
     return <>
     {source.rawData?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknader}</>}
+    
+    <div className="mt-3">
+    <Link href={source.rawData.lenke_til_digital_matrikkel} target="_blank" className='font-semibold'>Lenke til digital matrikkel</Link>
+    </div>
+    
+    <InfoBox dataset={'m1886'}
+             items={[
+              {title: 'Stadnamn', value: source.label},
+              {title: 'Kommune', value: source.adm2},
+              {title: 'Fylke', value: source.adm1},
+              {title: 'Kommunenummer', value: source.rawData.knr},
+              {title: 'Gardsnummer', value: source.rawData.gnr},
+              {title: 'Bruksnummer', value: source.rawData.bnr},
+              {title: 'GNIDu', value: source.rawData.gnidu}
+    ]}/>
+
     </>
   },    
   ostf: (source: any) => {
