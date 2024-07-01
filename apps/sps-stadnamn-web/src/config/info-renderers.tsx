@@ -290,6 +290,22 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   m1886: (source: any) => {
     return <>
     {source.rawData?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknader}</>}
+    
+    <div className="mt-3">
+    <Link href={source.rawData.lenke_til_digital_matrikkel} target="_blank" className='font-semibold'>Lenke til digital matrikkel</Link>
+    </div>
+    
+    <InfoBox dataset={'m1886'}
+             items={[
+              {title: 'Stadnamn', value: source.label},
+              {title: 'Kommune', value: source.adm2},
+              {title: 'Fylke', value: source.adm1},
+              {title: 'Kommunenummer', value: source.rawData.knr},
+              {title: 'Gardsnummer', value: source.rawData.gnr},
+              {title: 'Bruksnummer', value: source.rawData.bnr},
+              {title: 'GNIDu', value: source.rawData.gnidu}
+    ]}/>
+
     </>
   },    
   ostf: (source: any) => {
