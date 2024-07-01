@@ -138,3 +138,5 @@ export const searchFilterDataEmpty = (): SearchFilterData => {
     context: [],
   };
 };
+
+export const uiConfig = { wideUiBreakpoints: ["xl", "2xl"] };
