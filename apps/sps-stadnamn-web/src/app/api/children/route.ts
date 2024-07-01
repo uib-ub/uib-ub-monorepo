@@ -11,22 +11,13 @@ export async function GET(request: Request) {
         const query = {
             size: 1000,
             query: {
-                bool: {
-                    must: {
-                        term: {
-                            "snid.keyword": snid
-                        }
-                    },
-                    must_not: {
-                        term: {
-                            "_index": "search"
-                        }
-                    }
+                term: {
+                    "snid.keyword": snid
                 }
             }
         }
 
-        const data = await postQuery("*", query)
+        const data = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-search`, query)
         return Response.json(data?.hits?.hits || data)
 
     }
@@ -55,24 +46,14 @@ export async function GET(request: Request) {
     const query = {
         size: 1000,
         query: {
-            bool: {
-                must: {
-                    terms: {
-                        "uuid": uuids
-                    }
-                },
-                must_not: {
-                    term: {
-                        "_index": "search"
-                    }
-                }
+            terms: {
+                "uuid": uuids
             }
         }
     }
 
 
-
-    const data = await postQuery("*", query)
+    const data = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-search`, query)
 
     return Response.json(data.hits.hits)
   }
