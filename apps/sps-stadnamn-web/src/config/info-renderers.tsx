@@ -226,7 +226,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Kommunenummer', value: source.rawData.kommuneNr}, 
       {
         title: 'Gardsnummer', 
-        items: [...new Set(source.cadastre?.map((item: any) => item.gnr) as string[])].map((gnr: string) => ({
+        items: [...new Set(source.cadastre?.map((item: any) => item.gnr.toString()) as string[])].map((gnr: string) => ({
           value: gnr, 
           href: `/view/hord?rawData.kommuneNr=${encodeURIComponent(source.rawData.kommuneNr)}&cadastre__gnr=${encodeURIComponent(gnr)}`
         })),
@@ -234,7 +234,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {
         title: 'Bruksnummer', 
         items: source.cadastre?.map((item: any) => ({
-          value: item.bnr, 
+          value: item.bnr.toString(), 
           href: `/view/hord?rawData.kommuneNr=${encodeURIComponent(source.rawData.kommuneNr)}&cadastre__gnr=${encodeURIComponent(item.gnr)}&cadastre__bnr=${encodeURIComponent(item.bnr)}`
         })),
       },
