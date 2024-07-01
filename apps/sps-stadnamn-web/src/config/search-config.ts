@@ -57,6 +57,10 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
         {"key": "cadastre.gnr", "label": "Gardsnummer"},
         {"key": "cadastre.bnr", "label": "Bruksnummer"}
       ],
+      skul: [
+        {"key": "rawData.gnr", "label": "Gardsnummer", "sort": "asc"},
+        {"key": "rawData.bnr", "label": "Bruksnummer", "sort": "asc"},
+      ]
   
   }
   
