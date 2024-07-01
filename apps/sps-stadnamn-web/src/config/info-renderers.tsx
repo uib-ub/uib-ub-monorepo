@@ -105,6 +105,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   rygh: (source: any) => {
     return <>
     {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
+    <div className="mt-3">
+    <Link href={source.rawData.Lenke_til_originalside} target="_blank" className='font-semibold'>Lenke til originalside</Link>
+    </div>
     <InfoBox dataset={'rygh'} items={[
       {title: 'Stadnamn', value: source.label},
       {title: 'Lokalitetstype', value: source.sosi, sosi: true},
