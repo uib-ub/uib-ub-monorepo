@@ -103,11 +103,6 @@ export async function fetchSOSI(sosiCode: string) {
                     "must_not": [
                         {
                             "term": {
-                                "_index": `stadnamn-${process.env.SN_ENV}-vocab`
-                            }
-                        },
-                        {
-                            "term": {
                                 "_index": `stadnamn-${process.env.SN_ENV}-search`
                             }
                         }
@@ -126,7 +121,7 @@ export async function fetchSOSI(sosiCode: string) {
     }
 }
 
-    const res = await postQuery('*', query)
+    const res = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-vocab`, query)
 
     //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
     const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
