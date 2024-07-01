@@ -113,16 +113,16 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Kommunenummer', value: source.rawData.KNR},
       {
         title: 'Gardsnummer', 
-        items: [...new Set(source.cadastre?.map((item: any) => item.gnr) as string[])].map((gnr: string) => ({
+        items: [...new Set(source.cadastre?.map((item: {gnr: number, bnr?: number}) => item.gnr.toString()) as string[])].map((gnr: string) => ({
           value: gnr, 
           href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(gnr)}`
         })),
       },
       {
         title: 'Bruksnummer', 
-        items: source.cadastre?.map((item: any) => ({
-          value: item.bnr, 
-          href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(item.gnr)}&cadastre__bnr=${encodeURIComponent(item.bnr)}`
+        items: source.cadastre?.map((item: {gnr: number, bnr: number}) => ({
+          value: item.bnr?.toString(), 
+          href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(item.gnr.toString())}&cadastre__bnr=${encodeURIComponent(item.bnr?.toString())}`
         })),
       },
     
