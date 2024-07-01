@@ -1,5 +1,5 @@
 import { LangCode } from "./locale";
-import { LabelPredicate, Matching } from "~~/utils/vars";
+import { LabelPredicate, Matching, uiConfig } from "~~/utils/vars";
 import { Samling } from "~~/utils/vars-termbase";
 
 export interface SearchDataEntry {
@@ -76,7 +76,7 @@ export const useSearchDataStats = () =>
 
 export const useShowSearchFilter = () =>
   useState<boolean>("showSearchFilter", () =>
-    ["xl", "2xl"].includes(useBreakpoint().value)
+    uiConfig.wideUiBreakpoints.includes(useBreakpoint().value)
   );
 
 export interface SearchFilterData {

@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { Matching, SearchOptions } from "../utils/vars";
+import { Matching, SearchOptions, uiConfig } from "../utils/vars";
 import { FetchType } from "../composables/useFetchSearchData";
 
 const route = useRoute();
@@ -186,7 +186,7 @@ onMounted(() => {
   */
   if (searchInterface.value.term === null) {
     // display filter if screen size larger than lg
-    if (["xl", "2xl"].includes(breakpoint.value)) {
+    if (uiConfig.wideUiBreakpoints.includes(breakpoint.value)) {
       showSearchFilter.value = true;
     }
 
