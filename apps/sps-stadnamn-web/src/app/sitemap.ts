@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     
     const datasets = Object.keys(datasetTitles).map((dataset) => {
         return {
-            url: `https://stadnamnportalen.no/view/${dataset}/info`,
+            url: `https://stadnamnportalen.uib.no/view/${dataset}/info`,
             priority: dataset == 'search' ? 1 : dataset.includes('_') ? 0.5 : 0.7,
 
         }
