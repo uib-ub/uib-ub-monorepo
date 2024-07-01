@@ -7,9 +7,20 @@ import Image from 'next/image';
 import { datasetTitles, datasetPresentation, datasetDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/Footer';
 import { fetchStats } from '@/app/api/_utils/actions';
+import { redirect } from "next/navigation";
 
 
-export default async function Home() {
+export default async function Home({ searchParams } : { searchParams?: {q: string, d: string} }) {
+
+  // Redirect legacy search params from Toponymi
+  if (searchParams?.q) {''
+    const newSearchParams: Record<string,string> = { q: searchParams.q }
+    if (searchParams.d) {
+      newSearchParams['datasets'] = searchParams.d
+    }
+    redirect('/view/search?' + new URLSearchParams(newSearchParams).toString())
+    
+  }
 
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
