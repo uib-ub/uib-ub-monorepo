@@ -107,6 +107,7 @@
                   class="peer cursor-pointer outline-none"
                   type="checkbox"
                   :value="lang"
+                  @click="pushDataLangDispEvent(dataDisplayLanguages, lang)"
                   @keydown.enter="toggleLang(lang)"
                 />
                 <label
@@ -140,6 +141,7 @@
 
 <script setup>
 import { useI18n } from "vue-i18n";
+import { pushDataLangDispEvent } from "~/utils/analyticsEvents";
 
 const i18n = useI18n();
 const dataDisplayLanguages = useDataDisplayLanguages();
@@ -151,6 +153,7 @@ function setLocale(language) {
 }
 
 function toggleLang(language) {
+  pushDataLangDispEvent(dataDisplayLanguages.value, language);
   const index = dataDisplayLanguages.value.indexOf(language);
   if (index !== -1) {
     dataDisplayLanguages.value.splice(index, 1);
