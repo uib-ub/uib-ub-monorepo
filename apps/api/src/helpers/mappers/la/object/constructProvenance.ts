@@ -1,3 +1,4 @@
+import { env } from '@config/env';
 import { aatProvenanceActivityType, institutions } from '@helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
 
@@ -17,6 +18,8 @@ export const constructProvenance = (data: any) => {
 
   if (acquiredFrom) {
     relationArray = acquiredFrom.map((actor: any) => {
+      const type = actor.type === 'Person' ? 'Person' : 'Group'
+      const id = `${env.API_URL}/${actor.type === 'Person' ? 'people' : 'groups'}/${actor.identifier}`
       return {
         type: "Activity",
         _label: "Acquisition",
@@ -27,8 +30,8 @@ export const constructProvenance = (data: any) => {
           {
             type: "Acquisition",
             _label: {
-              no: `Ervervelsen av ${data.identifier}`,
-              en: `Acquisition of ${data.identifier}`
+              no: `Ervervelse`,
+              en: `Acquisition`,
             },
             transferred_title_of: [
               {
@@ -39,8 +42,8 @@ export const constructProvenance = (data: any) => {
             ],
             transferred_title_from: [
               {
-                id: actor.id,
-                type: actor.type,
+                id: id,
+                type: type,
                 _label: actor._label
               }
             ],
@@ -53,11 +56,13 @@ export const constructProvenance = (data: any) => {
     });
   }
 
-  if (formerOwner) {
-    relationArray = formerOwner.map((actor: any) => {
+  if (Array.isArray(formerOwner) && formerOwner.length > 0) {
+    formerOwnerArray = formerOwner.map((actor: any) => {
+      const type = actor.type === 'Person' ? 'Person' : 'Group'
+      const id = `${env.API_URL}/${actor.type === 'Person' ? 'people' : 'groups'}/${actor.identifier}`
       return {
-        id: actor.id,
-        type: actor.type,
+        id: id,
+        type: type,
         _label: actor._label
       }
     });

@@ -1,9 +1,8 @@
-import client from '@config/apis/esClient'
+import { observeClient } from '@config/apis/esClient'
 import { logLifecyclePolicies } from '@config/elasticsearch/lifecycle-policies'
-import { chcIdTemplateComponent, chcLabelTemplateComponent, chcOwnersTemplateComponent, chcProductionTemplateComponent, chcSourceSettings } from '@config/elasticsearch/mappings/chc'
 import { logMappings } from '@config/elasticsearch/mappings/log'
 import { logSettings } from '@config/elasticsearch/settings/log'
-import { chcTemplate, logTemplate, manifestsTemplate } from '@config/elasticsearch/templates'
+import { logTemplate } from '@config/elasticsearch/templates'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 import { esFailureSchema, esPutSettingsSuccessSchema } from '@models'
 import { TypedResponse } from 'hono'
@@ -15,7 +14,7 @@ const putTemplatesSuccess = z.array(z.union([esPutSettingsSuccessSchema, esFailu
 
 export const putTemplates = createRoute({
   method: 'put',
-  path: '/es/update-templates',
+  path: '/observe/update-templates',
   responses: {
     200: {
       content: {
@@ -35,17 +34,10 @@ route.openapi(
   async (c): Promise<TypedResponse<({ status?: string; value?: { acknowledged?: boolean; } } | { error?: string })[], 200, "json">> => {
     try {
       const promises = [
-        client.ilm.putLifecycle(logLifecyclePolicies),
-        client.cluster.putComponentTemplate(logSettings),
-        client.cluster.putComponentTemplate(logMappings),
-        client.cluster.putComponentTemplate(chcSourceSettings),
-        client.cluster.putComponentTemplate(chcIdTemplateComponent),
-        client.cluster.putComponentTemplate(chcLabelTemplateComponent),
-        client.cluster.putComponentTemplate(chcOwnersTemplateComponent),
-        client.cluster.putComponentTemplate(chcProductionTemplateComponent),
-        client.indices.putIndexTemplate(manifestsTemplate),
-        client.indices.putIndexTemplate(logTemplate),
-        client.indices.putIndexTemplate(chcTemplate),
+        observeClient.ilm.putLifecycle(logLifecyclePolicies),
+        observeClient.cluster.putComponentTemplate(logSettings),
+        observeClient.cluster.putComponentTemplate(logMappings),
+        observeClient.indices.putIndexTemplate(logTemplate),
       ]
       const response = await Promise.allSettled(promises)
       return c.json(response as ({ status?: string; value?: { acknowledged?: boolean; } } | { error?: string })[])

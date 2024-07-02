@@ -39,6 +39,14 @@ export const constructDigitalIntegration = (data: any) => {
   let imgArray: any[] = []
   let seeAlsoArray: any[] = []
 
+  if (seeAlso) {
+    seeAlsoArray = seeAlso.map((item: any) => ({
+      id: item['ubbont:hasURI'] ?? item.hasURI,
+      type: type,
+      _label: item._label,
+    }));
+  }
+
   if (img) {
     imgArray = [{
       type: 'VisualItem',
@@ -62,14 +70,6 @@ export const constructDigitalIntegration = (data: any) => {
     }]
   }
 
-  if (seeAlso) {
-    seeAlsoArray = seeAlso.map((item: any) => ({
-      id: item['ubbont:hasURI'] ?? item.hasURI,
-      type: type,
-      _label: item._label,
-    }));
-  }
-
   if (thumbnail) {
     thumbnailArray = [{
       type: 'VisualItem',
@@ -85,7 +85,7 @@ export const constructDigitalIntegration = (data: any) => {
             aatThumbnailsType,
           ],
           access_point: [{
-            id: thumbnail,
+            id: Array.isArray(thumbnail) ? thumbnail[0] : thumbnail,
             type: 'DigitalObject',
           }]
         }
@@ -107,7 +107,7 @@ export const constructDigitalIntegration = (data: any) => {
             aatDigitalImageType,
           ],
           access_point: [{
-            id: image,
+            id: Array.isArray(image) ? image[0] : image,
             type: 'DigitalObject',
           }],
         }
@@ -167,7 +167,7 @@ export const constructDigitalIntegration = (data: any) => {
     }]
   }
 
-  if (page) {
+  if (Array.isArray(page) && page.length > 0) {
     pageArray = page.map((item: any) => ({
       type: "LinguisticObject",
       _label: item._label,

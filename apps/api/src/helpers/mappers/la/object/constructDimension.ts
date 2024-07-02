@@ -5,6 +5,7 @@ import omitEmptyEs from 'omit-empty-es';
 export const constructDimension = (data: any) => {
   const {
     pages,
+    extent,
     height,
     width,
   } = data;
@@ -12,10 +13,12 @@ export const constructDimension = (data: any) => {
   if (
     !pages &&
     !height &&
-    !width
+    !width &&
+    !extent
   ) return data;
 
   delete data.pages;
+  delete data.extent;
   delete data.height;
   delete data.width;
 
@@ -30,12 +33,26 @@ export const constructDimension = (data: any) => {
       _label: {
         no: [`Antall sider`],
         en: [`Number of pages`],
-
       },
       classified_as: [
         aatCountOfType,
       ],
       value: parseInt(pages),
+      unit: aatPagesMeasurementUnitType,
+    }]
+  }
+
+  if (Number.isInteger(extent)) {
+    pagesArray = [{
+      type: "Dimension",
+      _label: {
+        no: [`Antall sider`],
+        en: [`Number of pages`],
+      },
+      classified_as: [
+        aatCountOfType,
+      ],
+      value: parseInt(extent),
       unit: aatPagesMeasurementUnitType,
     }]
   }

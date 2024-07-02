@@ -36,7 +36,7 @@ export const getList = createRoute({
     },
   },
   description: 'Retrieve a list of persons.',
-  tags: ['sparql'],
+  tags: ['Sparql'],
 })
 
 route.openapi(getList, async (c) => {

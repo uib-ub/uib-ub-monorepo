@@ -50,6 +50,11 @@ spec:
                 secretKeyRef:
                   name: esapikeycred
                   key: esApiKey
+            - name: OBSERVE_ES_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: esobserveapikeycred
+                  key: esObserveApiKey
             - name: API_ES_WRITE_TOKEN
               valueFrom:
                 secretKeyRef:

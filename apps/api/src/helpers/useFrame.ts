@@ -22,22 +22,26 @@ export async function useFrame({ data, context, type, id }: { data: any, context
     },
       context
     )
-    // Rest of the code...
   } catch (e) {
     console.log(JSON.stringify(e, null, 2))
     return { error: true, message: e }
   }
 
-  const hasTypeAsString = ((compacted['@graph'] as any).filter((i: any) => i.identifier === id)[0]?.hasType as string).toLowerCase()
-    ?? (compacted.hasType as string).toLowerCase()
-
   try {
-    framed = await jsonld.frame(compacted, {
-      ...context,
-      ...id && !type && { '@id': `http://data.ub.uib.no/instance/${hasTypeAsString}/${id}` },
-      ...type && !id && { '@type': type },
-      '@embed': '@always',
-    });
+    if (id) {
+      framed = await jsonld.frame(compacted, {
+        ...context,
+        '@id': id,
+        '@type': type,
+        '@embed': '@always',
+      });
+    } else {
+      framed = await jsonld.frame(compacted, {
+        ...context,
+        '@type': type,
+        '@embed': '@always',
+      });
+    }
   } catch (e) {
     console.log(JSON.stringify(e, null, 2))
     return { error: true, message: e }
