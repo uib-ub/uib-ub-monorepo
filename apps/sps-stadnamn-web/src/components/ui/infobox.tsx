@@ -8,12 +8,12 @@ export default async function InfoBox({ items: items, dataset }: { items: Record
 
     const subitemRenderer = (item: any) => {
       return (
-        (item.hrefParams || item.href) &&
+        ((item.hrefParams || item.href) &&
         <Link className="no-underline flex items-center gap-1" 
                         href={item.hrefParams ? buildHref(item.hrefParams) : item.href }>
                     {item.value}
                     <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
-                  </Link>
+                  </Link> )
         ||
         (item.sosi && <PlaceType sosiCode={item.value}/>)
         ||
