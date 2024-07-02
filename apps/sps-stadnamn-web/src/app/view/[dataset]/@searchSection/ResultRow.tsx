@@ -66,7 +66,7 @@ export default function ResultRow({ hit }: { hit: any}) {
         {hit._source.link &&
         <ExternalLinkButton doc={hit} iconClass="text-3xl text-neutral-700"/>
         }
-        {hit._source.location && 
+        {params.dataset != 'search' && hit._source.location && 
           <CoordinateButton doc={hit} iconClass="text-3xl text-neutral-700"/>
         }
 
