@@ -1,13 +1,55 @@
 import { mappings } from './mappings';
-import { settings } from './settings';
+import { chcIdTemplateComponent, chcLabelTemplateComponent, chcOwnersTemplateComponent, chcProductionTemplateComponent, chcSourceSettings } from './mappings/chc';
+
+export const logTemplate = {
+  "name": "log-template",
+  "index_patterns": ["logs-chc"],
+  "data_stream": {},
+  "composed_of": ["log-mappings", "log-settings"],
+  "priority": 500,
+  "_meta": {
+    "description": "Template for time series from CHC logs",
+  }
+}
 
 export const chcTemplate = {
-  "name": "chc-demo-settings",
+  "name": "chc-settings",
   "index_patterns": ["search-chc-*"],
+  "composed_of": [
+    chcSourceSettings.name,
+    chcIdTemplateComponent.name,
+    chcLabelTemplateComponent.name,
+    chcOwnersTemplateComponent.name,
+    chcProductionTemplateComponent.name,
+  ],
   "template": {
     "settings": {
-      "index.default_pipeline": "cho-demo-pipeline", // TODO: change name
-      ...settings.chc.settings
+      "number_of_shards": 3,
+      "number_of_replicas": 0,
+      "max_ngram_diff": 20,
+      "default_pipeline": "chc-pipeline",
+      "analysis": {
+        "analyzer": {
+          "default": {
+            "filter": ["lowercase", "norwegian_stop"],
+            "tokenizer": "standard"
+          },
+          "ubb-whitespace": {
+            "type": "custom",
+            "tokenizer": "whitespace",
+            "filter": [
+              "lowercase",
+              "norwegian_stop"
+            ],
+          },
+        },
+        "filter": {
+          "norwegian_stop": {
+            "type": "stop",
+            "stopwords": "_norwegian_"
+          }
+        }
+      }
     },
     "mappings": {
       "_source": {
@@ -15,7 +57,6 @@ export const chcTemplate = {
       },
       "date_detection": false,
       "dynamic": false,
-      "properties": mappings.chc.properties
     },
     "aliases": {
       "search-chc": {}
@@ -24,7 +65,7 @@ export const chcTemplate = {
   "priority": 500,
   "version": 3,
   "_meta": {
-    "description": "my custom"
+    "description": "Settings for CHC search indices containing items and entites."
   }
 }
 
@@ -33,7 +74,31 @@ export const manifestsTemplate = {
   "index_patterns": ["search-manifests-*"],
   "template": {
     "settings": {
-      ...settings.manifests.settings
+      "number_of_shards": "3",
+      "number_of_replicas": "0",
+      "max_ngram_diff": "20",
+      "analysis": {
+        "analyzer": {
+          "default": {
+            "filter": ["lowercase", "norwegian_stop"],
+            "tokenizer": "standard"
+          },
+          "ubb-whitespace": {
+            "type": "custom",
+            "tokenizer": "whitespace",
+            "filter": [
+              "lowercase",
+              "norwegian_stop"
+            ],
+          },
+        },
+        "filter": {
+          "norwegian_stop": {
+            "type": "stop",
+            "stopwords": "_norwegian_"
+          }
+        }
+      }
     },
     "mappings": {
       "_source": {
@@ -57,8 +122,32 @@ export const skaTemplate = {
   "index_patterns": ["search-legacy-ska"],
   "template": {
     "settings": {
-      "index.default_pipeline": "cho-demo-pipeline",
-      ...settings.ska.settings
+      "index.default_pipeline": "chc-pipeline",
+      "number_of_shards": "2",
+      "number_of_replicas": "0",
+      "max_ngram_diff": "20",
+      "analysis": {
+        "analyzer": {
+          "default": {
+            "filter": ["lowercase", "norwegian_stop"],
+            "tokenizer": "standard"
+          },
+          "ubb-whitespace": {
+            "type": "custom",
+            "tokenizer": "whitespace",
+            "filter": [
+              "lowercase",
+              "norwegian_stop"
+            ],
+          },
+        },
+        "filter": {
+          "norwegian_stop": {
+            "type": "stop",
+            "stopwords": "_norwegian_"
+          }
+        }
+      }
     },
     "mappings": {
       "_source": {
@@ -80,7 +169,51 @@ export const wabTemplate = {
   "template": {
     "settings": {
       "index.default_pipeline": "cho-demo-pipeline",
-      ...settings.wab.settings
+      "number_of_shards": "2",
+      "number_of_replicas": "0",
+      "max_ngram_diff": "20",
+      "analysis": {
+        "filter": {
+          "ngram_filter": {
+            "token_chars": [
+              "letter",
+              "digit",
+              "punctuation",
+              "symbol",
+              "whitespace"
+            ],
+            "min_gram": "2",
+            "type": "ngram",
+            "max_gram": "20"
+          }
+        },
+        "analyzer": {
+          "default": {
+            "tokenizer": "standard",
+            "stopwords": "_english_",
+            "filter": [
+              "lowercase"
+            ]
+          },
+          "ngram_analyzer": {
+            "filter": [
+              "lowercase",
+              "asciifolding",
+              "ngram_filter"
+            ],
+            "type": "custom",
+            "tokenizer": "whitespace"
+          },
+          "whitespace_analyzer": {
+            "filter": [
+              "lowercase",
+              "asciifolding"
+            ],
+            "type": "custom",
+            "tokenizer": "whitespace"
+          }
+        }
+      }
     },
     "mappings": {
       "_source": {
@@ -97,8 +230,6 @@ export const wabTemplate = {
 }
 
 /* 
-Can be used to start with some already created templates
-"composed_of": ["component_template1", "runtime_component_template"], 
 
 Add aliases, but i dont know what it means
 "aliases": {
