@@ -1448,7 +1448,8 @@ const ubbontContext = {
       "@type": "@id"
     },
     "extent": {
-      "@id": "dct:extent"
+      "@id": "dct:extent",
+      "@container": "@set"
     },
     "alternative": {
       "@id": "dct:alternative",
