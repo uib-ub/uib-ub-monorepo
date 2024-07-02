@@ -5,7 +5,6 @@ import PlaceType from "./place-type";
 export default async function InfoBox({ items: items, dataset }: { items: Record<string,any>[], dataset: string }) {
     const filteredItems = items.filter(item =>  item.value?.length || (item.items?.length && item.items[0].value?.length));
 
-
     const subitemRenderer = (item: any) => {
       return (
         ((item.hrefParams || item.href) &&
@@ -38,16 +37,13 @@ export default async function InfoBox({ items: items, dataset }: { items: Record
         {filteredItems.map((item: Record<string,any> , index: number) => (
             <div key={index} className="flex flex-col">
                 <strong className="text-neutral-900">{item.title}</strong>
-                <p>
-                {item.items?.length == 1 && subitemRenderer(item.items[0])}
+                {item.items?.length == 1 && <p>{subitemRenderer(item.items[0])}</p>}                
                 {item.items?.length > 1 && <ul> 
                   {item.items.map((subItem: any, subIndex: number) => (
                     <li key={subIndex}> {subitemRenderer(subItem)} </li>
                   ))}
                 </ul> }
-                {!item.items &&  subitemRenderer(item)}
-        
-                </p>
+                {!item.items &&  <p>{subitemRenderer(item)}</p>}
 
             </div>
         ))}
