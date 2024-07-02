@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react";
-import { PiCheckBold, PiClipboardBold, PiLink } from 'react-icons/pi'
+import { PiCheckBold, PiClipboardBold, PiShareNetwork } from 'react-icons/pi'
 import Link from 'next/link'
 
 export default function CopyLink({ uuid }: { uuid: string }) {
