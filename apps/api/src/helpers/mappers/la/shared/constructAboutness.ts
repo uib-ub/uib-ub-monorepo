@@ -1,6 +1,6 @@
 import { getLanguage } from '@/helpers/mappers/getLanguage';
 import { mapToGeneralClass, Publication } from '@/helpers/mappers/mapToGeneralClass';
-import { aatAbstractsType, aatDescriptionsType, aatDisplayBiographyType, aatInternalNoteType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatPublishingType, aatRelatedTextualReferencesType } from '@/helpers/mappers/staticMapping';
+import { aatAbstractsType, aatDescriptionsType, aatDisplayBiographyType, aatInternalNoteType, aatPaginationStatementType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatPublishingType, aatRelatedTextualReferencesType } from '@/helpers/mappers/staticMapping';
 import { env } from '@config/env';
 import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
 import isEqual from 'lodash/isEqual';
@@ -16,9 +16,9 @@ export const constructAboutness = async (data: any) => {
     description,
     physicalDescription,
     physicalCondition,
-    isReferencedBy,
     subject,
     spatial,
+    locationFor,
     depicts,
     producedIn,
     internalNote,
@@ -36,6 +36,11 @@ export const constructAboutness = async (data: any) => {
     hasVersion,
     originalCreator,
     profession,
+    references,
+    rodeNr,
+    extent,
+    pageStart,
+    pageEnd,
   } = data;
 
   const type = mapToGeneralClass(hasType)
@@ -58,9 +63,9 @@ export const constructAboutness = async (data: any) => {
     !description &&
     !physicalDescription &&
     !physicalCondition &&
-    !isReferencedBy &&
     !subject &&
     !spatial &&
+    !locationFor &&
     !depicts &&
     !producedIn &&
     !internalNote &&
@@ -77,7 +82,12 @@ export const constructAboutness = async (data: any) => {
     !editor &&
     !hasVersion &&
     !originalCreator &&
-    !profession
+    !profession &&
+    !references &&
+    !rodeNr &&
+    !extent &&
+    !pageStart &&
+    !pageEnd
   ) {
     return data;
   }
@@ -86,9 +96,9 @@ export const constructAboutness = async (data: any) => {
   delete data.description
   delete data.physicalDescription
   delete data.physicalCondition
-  delete data.isReferencedBy
   delete data.subject
   delete data.spatial
+  delete data.locationFor
   delete data.depicts
   delete data.producedIn
   delete data.hasTranscription
@@ -105,8 +115,12 @@ export const constructAboutness = async (data: any) => {
   delete data.hasVersion
   delete data.originalCreator
   delete data.profession
+  delete data.references
+  delete data.rodeNr
+  delete data.depiction // TODO: Not mapped as it is the inverse of depicts
+  delete data.pageStart
+  delete data.pageEnd
 
-  let isReferencedByArray: any[] = [];
   let descriptionArray: any[] = [];
   let physicalDescriptionArray: any[] = [];
   let physicalConditionArray: any[] = [];
@@ -117,12 +131,16 @@ export const constructAboutness = async (data: any) => {
   let producedInArray: any[] = [];
   let aboutSpatialArray: any[] = [];
   let aboutSubjectArray: any[] = [];
+  let aboutLocationArray: any[] = [];
   let carriesArray: any[] = [];
   let transcriptionMarkdown: any = undefined
   let provenanceArray: any[] = []
   let referenceArray: any[] = []
+  let referencesArray: any[] = []
   let abstractArray: any[] = []
   let professionArray: any[] = []
+  let rodeNrArray: any[] = []
+  let paginationArray: any[] = []
 
   // if there is a link to a html file, we need to fetch the content and convert it to markdown
   if (hasTranscription?.includes('.html')) {
@@ -144,27 +162,43 @@ export const constructAboutness = async (data: any) => {
     }]
   };
 
-  if (isReferencedBy) {
-    isReferencedByArray = isReferencedBy.map((reference: any) => {
+  if (references) {
+    referencesArray = Object.entries(references).map(([key, value]: [string, any]) => {
+      return {
+        type: "LinguisticObject",
+        classified_as: [
+          aatRelatedTextualReferencesType,
+        ],
+        language: [
+          getLanguage(key)
+        ],
+        content: NodeHtmlMarkdown.translate(value[0]),
+        format: 'text/markdown',
+      }
+    });
+  }
+
+  // This is ubbont:reference (strings), not to be confused with 
+  // dct:references (objects).
+  if (reference) {
+    referenceArray = reference.map((ref: string) => {
       return {
         type: "LinguisticObject",
         classified_as: [
           aatRelatedTextualReferencesType
         ],
         language: [
-          getLanguage(reference._label)
+          getLanguage('no')
         ],
-        _label: reference._label,
-        content: reference.description.no[0],
-      }
+        content: ref,
+      };
     });
   }
 
-  // This is ubbont:reference (strings), not to be confused with 
-  // dct:references (objects). We get the references from the 
-  // ubbont:isReferencedBy above.
-  if (reference) {
-    referenceArray = reference.map((ref: string) => {
+  // Rode nr is a reference to the old place name in Bergen.
+  // We need to map this as a textual reference.
+  if (rodeNr) {
+    rodeNrArray = rodeNr.map((ref: string) => {
       return {
         type: "LinguisticObject",
         classified_as: [
@@ -245,6 +279,21 @@ export const constructAboutness = async (data: any) => {
     });
   }
 
+  if (extent && !Number.isInteger(extent)) {
+    physicalDescriptionArray = Object.entries(extent).map(([key, value]: [string, any]) => {
+      return {
+        type: "LinguisticObject",
+        classified_as: [
+          aatPhysicalDescriptionType
+        ],
+        language: [
+          getLanguage('no')
+        ],
+        content: value,
+      }
+    });
+  }
+
   if (typeOfDamage) {
     provenanceArray = [{
       type: "LinguisticObject",
@@ -314,6 +363,16 @@ export const constructAboutness = async (data: any) => {
     });
   }
 
+  if (pageStart && pageEnd) {
+    paginationArray = [{
+      type: "LinguisticObject",
+      classified_as: [
+        aatPaginationStatementType,
+      ],
+      content: `${pageStart ?? ''}-${pageEnd ?? ''}`,
+    }]
+  }
+
   // If it is not a text, we need to add the subject, spatial and 
   // depicts to the represents or represents_instance_of_type array
   if (spatial && type !== "Text") {
@@ -350,7 +409,7 @@ export const constructAboutness = async (data: any) => {
     showsArray = [{
       id: `${env.API_URL}/visualitem/${visualItemVersionId ?? crypto.randomUUID()}`,
       type: "VisualItem",
-      creation: {
+      creation: originalCreator ? {
         type: "Creation",
         carried_out_by: originalCreator ? originalCreator.map((creator: any) => {
           return {
@@ -359,7 +418,7 @@ export const constructAboutness = async (data: any) => {
             _label: creator._label,
           }
         }) : [],
-      },
+      } : [],
       represents: [
         ...representsDepictionArray,
         ...representsSpatialArray,
@@ -401,13 +460,24 @@ export const constructAboutness = async (data: any) => {
     });
   }
 
+  // Add spatial to the about property
+  if (locationFor && type === "Text") {
+    aboutLocationArray = locationFor.map((place: any) => {
+      return {
+        id: place.id,
+        type: "Type",
+        _label: place._label
+      }
+    });
+  }
+
   if (type === "Text") {
     carriesArray = [{
       id: `${env.API_URL}/text/${crypto.randomUUID()}`, // TODO: use an id that we can use to create this LinguisticObject
       type: "LinguisticObject",
       _label: {
-        no: [`Innholdet til ${data.identifier}`],
-        en: [`Content of ${data.identifier}`],
+        no: [`Tekstlig innhold`],
+        en: [`Text content`],
       },
       carried_out_by: editor ? editor.map((editor: any) => {
         return {
@@ -420,6 +490,7 @@ export const constructAboutness = async (data: any) => {
       about: [
         ...aboutSubjectArray,
         ...aboutSpatialArray,
+        ...aboutLocationArray,
         ...producedInArray,
       ],
       content: transcriptionMarkdown ?? undefined,
@@ -457,12 +528,13 @@ export const constructAboutness = async (data: any) => {
     referred_to_by: [
       ...descriptionArray,
       ...abstractArray,
-      ...isReferencedByArray,
       ...physicalDescriptionArray,
-      typeOfDamage,
       ...physicalConditionArray,
+      ...paginationArray,
       ...provenanceArray,
       ...referenceArray,
+      ...referencesArray,
+      ...rodeNrArray,
       ...professionArray
     ],
     shows: showsArray,

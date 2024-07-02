@@ -12,6 +12,8 @@ const schema = z.object({
   ES_HOST: z.string().url(),
   ES_APIKEY: z.string(),
   API_ES_WRITE_TOKEN: z.string(),
+  OBSERVE_ES_HOST: z.string().url(),
+  OBSERVE_ES_APIKEY: z.string(),
 });
 
 const parsed = schema.safeParse(process.env);

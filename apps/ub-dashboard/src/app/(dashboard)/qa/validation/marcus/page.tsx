@@ -1,7 +1,7 @@
 export const dynamic = 'force-static'
 
-import * as jsonld from 'jsonld';
 import { MainShell } from '@/components/shared/main-shell';
+import * as jsonld from 'jsonld';
 import { ShaclResultCard } from './shacl-result-card';
 
 const apiUrl = 'https://sparql.ub.uib.no/sparql/shacl?graph=union';
@@ -53,7 +53,7 @@ export default async function ShaclPage() {
         <h1>Validering av Marcus datasett</h1>
       </div>
       <div className='grid grid-cols-1 lg:grid-cols-2 auto-rows-auto content-stretch items-baseline gap-8 mb-2 overflow-hidden'>
-        {data?.result.lenght ? data?.result?.map((result: any, i: number) => (
+        {data?.result?.lenght ? data?.result?.map((result: any, i: number) => (
           <ShaclResultCard key={i} data={result} />
         )) :
           <span>
