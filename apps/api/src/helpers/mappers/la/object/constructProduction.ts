@@ -39,7 +39,7 @@ export const constructProduction = (data: any) => {
     [start, end] = checkIntervalValidity(start, end);
   }
 
-  const timespan = getTimeSpan(created ?? createdYear?.['@value'], start, end);
+  const timespan = getTimeSpan(Array.isArray(created) ? created[0] : created ?? createdYear?.['@value'], start, end);
 
   if (maker) {
     makerArray = maker.map((actor: any) => {

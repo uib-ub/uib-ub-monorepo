@@ -210,7 +210,7 @@ export const itemSparqlQuery = `
     BIND(EXISTS{?uri ubbont:hasRepresentation ?repr} AS ?isDigitized)
     BIND(xsd:double(?long) as ?longDouble)
     BIND(xsd:double(?lat) as ?latDouble)
-    FILTER(?p NOT IN (rdf:type, dct:hasPart, ubbont:cataloguer, ubbont:internalNote, ubbont:showWeb, ubbont:clause, ubbont:hasRepresentation, ubbont:hasThumbnail, dct:relation, dc:relation, dct:isReferencedBy, ubbont:hasTranscription))
+    FILTER(?p NOT IN (rdf:type, dct:hasPart, ubbont:cataloguer, ubbont:internalNote, ubbont:showWeb, ubbont:clause, ubbont:hasRepresentation, ubbont:hasThumbnail, dct:relation, dc:relation, dct:isReferencedBy, ubbont:hasTranscription, skos:inScheme))
   }
 `
 

@@ -71,7 +71,7 @@ export const toLinkedArtItemTransformer = async (data: any, context: string): Pr
   const base: TBaseMetadata = {
     identifier: dto.identifier,
     context: ['https://linked.art/ns/v1/linked-art.json', 'https://api.ub.uib.no/ns/ubbont/context.json'],
-    newId: `${env.API_URL}/items/${dto.uuid ?? dto.identifier}`,
+    newId: `${dto.uuid ?? dto.identifier}`,
     originalId: dto.id,
     productionTimeSpan: getTimeSpan(dto.created, dto.madeAfter, dto.madeBefore),
     _label: dto._label,

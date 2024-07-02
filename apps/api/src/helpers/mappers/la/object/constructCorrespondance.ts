@@ -39,6 +39,7 @@ export const constructCorrespondance = (data: any) => {
   const sourceArray = [...receivedFrom, ...sender]
 
   const correspondanceArray = [{
+    id: crypto.randomUUID(),
     type: "Activity",
     classified_as: [
       fixmeCorrespondanceType,

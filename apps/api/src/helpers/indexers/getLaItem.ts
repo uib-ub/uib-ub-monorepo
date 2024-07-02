@@ -1,3 +1,4 @@
+import { observeClient } from '@config/apis/esClient'
 import { env } from '@config/env'
 import { cleanDateDatatypes } from '@helpers/cleaners/cleanDateDatatypes'
 import { convertToFloat } from '@helpers/cleaners/convertToFloat'
@@ -23,6 +24,14 @@ export const getLaItem = async (id: string, source: string): Promise<any> => {
     const parsed = ZodHumanMadeObjectSchema.safeParse(response);
     if (parsed.success === false) {
       console.log(id, parsed.error.issues)
+      // @TODO: Add logging to observe
+      observeClient.index({
+        index: 'logs-chc',
+        body: {
+          '@timestamp': new Date(),
+          message: `id: ${id}, issues: ${JSON.stringify(parsed.error.issues)}`
+        }
+      })
     }
 
     return response

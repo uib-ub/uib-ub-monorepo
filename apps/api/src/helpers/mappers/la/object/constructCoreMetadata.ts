@@ -29,6 +29,8 @@ export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
   delete data.catalogueStatus
   delete data.mainImage // TODO: do we use this boolean?
   delete data.prefLabel // Not allowed on object
+  delete data.temporal // Mostly stuff that is in other fields
+  delete data.hasClause // Ignore this for now
 
   const classified_as = [
     {

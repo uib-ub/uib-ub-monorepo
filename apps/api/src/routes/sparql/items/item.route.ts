@@ -1,3 +1,4 @@
+import { observeClient } from '@config/apis/esClient'
 import { DATA_SOURCES } from '@config/constants'
 import { env } from '@config/env'
 import { cleanDateDatatypes } from '@helpers/cleaners/cleanDateDatatypes'
@@ -91,6 +92,13 @@ route.openapi(getItem, async (c) => {
       const parsed = schema.safeParse(response);
       if (parsed.success === false) {
         console.log(parsed.error.issues)
+        observeClient.index({
+          index: 'logs-chc',
+          body: {
+            '@timestamp': new Date(),
+            message: `id: ${id}, issues: ${JSON.stringify(parsed.error.issues)}`
+          }
+        })
       }
     }
 

@@ -13,8 +13,10 @@ const privilegedMethods = ['POST', 'PUT', 'PATCH', 'DELETE']
 // Import the routes.
 import { env } from './config/env'
 import es from './routes/ingest/es_templates.route'
+import ingestItem from './routes/ingest/marcus/ingest_item.route'
 import ingest from './routes/ingest/marcus/ingest_items.route'
 import ingestManifests from './routes/ingest/marcus/ingest_manifests.route'
+import observe from './routes/ingest/observe_templates.route'
 import ingestSka from './routes/ingest/ska/ingest_ska.route'
 import ingestWab from './routes/ingest/wab/ingest_wab.route'
 import item from './routes/items/item.route'
@@ -39,7 +41,7 @@ import wab from './routes/sparql/wab/items_wab.route'
 const app = new OpenAPIHono({ strict: false })
 
 // Single valid privileged token. Authenticates the request using a bearer token.
-app.on(privilegedMethods, '/ingest/*', async (c, next) => {
+app.on(privilegedMethods, '/admin/es/*', async (c, next) => {
   const bearer = bearerAuth({ token: privilegedToken });
   return bearer(c, next);
 })
@@ -69,6 +71,7 @@ app.route('/items', item)
 app.route('/reference', reference)
 app.route('/lookup', lookupId)
 app.route('/admin', es)
+app.route('/admin', observe)
 app.route('/sparql', wab) // This is hardcoded to the WAB dataset and must be before the dynamic "legacy marcus" route.
 app.route('/sparql', sparqlCountItems) // All the sparql routes needs to be in a spesific order.
 app.route('/sparql', sparqlItem)
@@ -80,6 +83,7 @@ app.route('/sparql', sparqlCountGroups)
 app.route('/sparql', sparqlGroup)
 app.route('/sparql', sparqlGroups)
 app.route('/admin', ingest)
+app.route('/admin', ingestItem)
 app.route('/admin', ingestManifests)
 app.route('/admin', ingestSka)
 app.route('/admin', ingestWab)

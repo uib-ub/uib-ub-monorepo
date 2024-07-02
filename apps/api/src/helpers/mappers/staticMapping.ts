@@ -200,6 +200,12 @@ export const aatProvenanceActivityType = {
   _label: "Provenance Activity"
 }
 
+export const aatPaginationStatementType = {
+  id: "https://vocab.getty.edu/aat/300435440",
+  type: "Type",
+  _label: "Pagination Statement",
+}
+
 export const aatPublishingType = {
   id: "https://vocab.getty.edu/aat/300054686",
   type: "Type",

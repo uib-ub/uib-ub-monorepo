@@ -50,6 +50,7 @@ export const constructIdentifiers = (data: any) => {
   delete data.isbn;
 
   let names: any[] = [];
+  let titles: any[] = [];
   let previousArray: any[] = [];
   let bibsysArray: any[] = [];
   let viafArray: any[] = [];
@@ -140,46 +141,63 @@ export const constructIdentifiers = (data: any) => {
             content: Array.isArray(familyName) ? familyName[0] : familyName,
           } : undefined)
         ],
-      },
-      ...(alternative ? (Object.entries(alternative).map(([key, value]: [string, any]) => {
-        return value.map((val: string) => {
-          return {
-            type: "Name",
-            classified_as: [
-              aatAlternativeTitlesType,
-              val.includes('[', 0) ? aatConstructedTitlesType : undefined,
-            ],
-            content: val,
-            language: [
-              getLanguage(key)
-            ]
-          };
-        })
-      }))[0] : []),
-      ...(altLabel ? (Object.entries(altLabel).map(([key, value]: [string, any]) => {
-        return value.map((val: string) => {
-          return {
-            type: "Name",
-            classified_as: [
-              aatAlternativeTitlesType,
-              val.includes('[', 0) ? aatConstructedTitlesType : undefined,
-            ],
-            content: val,
-            language: [
-              getLanguage(key)
-            ]
-          };
-        })
-      }))[0] : []),
-    ];
+      }
+    ]
   }
 
-  delete data.previousIdentifier;
+  titles = [
+    ...(_label ? (Object.entries(_label).map(([key, value]: [string, any]) => {
+      return value.map((val: string) => {
+        return {
+          type: "Name",
+          classified_as: [
+            aatPrimaryNameType,
+            val.includes('[', 0) ? aatConstructedTitlesType : undefined,
+          ],
+          content: val,
+          language: [
+            getLanguage(key)
+          ]
+        };
+      })
+    }))[0] : []),
+    ...(alternative ? (Object.entries(alternative).map(([key, value]: [string, any]) => {
+      return value.map((val: string) => {
+        return {
+          type: "Name",
+          classified_as: [
+            aatAlternativeTitlesType,
+            val.includes('[', 0) ? aatConstructedTitlesType : undefined,
+          ],
+          content: val,
+          language: [
+            getLanguage(key)
+          ]
+        };
+      })
+    }))[0] : []),
+    ...(altLabel ? (Object.entries(altLabel).map(([key, value]: [string, any]) => {
+      return value.map((val: string) => {
+        return {
+          type: "Name",
+          classified_as: [
+            aatAlternativeTitlesType,
+            val.includes('[', 0) ? aatConstructedTitlesType : undefined,
+          ],
+          content: val,
+          language: [
+            getLanguage(key)
+          ]
+        };
+      })
+    }))[0] : []),
+  ];
 
   return omitEmptyEs({
     ...data,
     identified_by: [
       ...names,
+      ...titles,
       ...id,
       ...previousArray,
       ...bibsysArray,

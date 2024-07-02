@@ -62,10 +62,10 @@ route.openapi(getItem, async (c) => {
   try {
     const data: TODO = await client.search({
       index: `search-chc`,
-      // TODO: This should use term: identifier.keyword to ensure exact match
+      ignore_unavailable: true,
       query: {
         match_phrase: {
-          "identifier": id
+          "_id": id
         },
       }
     })
