@@ -8,7 +8,11 @@ const i18nConfig = {
     {
       "id": "no",
       "title": "Bokmål"
-    }
+    },
+    {
+      "id": "ar",
+      "title": "Arabic"
+    },
   ]
 }
 

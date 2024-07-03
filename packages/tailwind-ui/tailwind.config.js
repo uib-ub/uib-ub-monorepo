@@ -15,9 +15,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        //sans: ['Merriweather Sans', 'sans-serif']
-        sans: ['var(--font-merriweathersans)', ...fontFamily.sans],
-        serif: ['var(--font-newsreader)', ...fontFamily.sans],
+        sans: ['var(--font-merriweatherSans)', ...fontFamily.sans],
+        serif: ['var(--font-newsreader)', ...fontFamily.serif],
+        arabic: ['var(--font-arabic)'],
+        arabicSerif: ['var(--font-arabicSerif)'],
       },
       colors: {
         brandblue: colors.blue[500],

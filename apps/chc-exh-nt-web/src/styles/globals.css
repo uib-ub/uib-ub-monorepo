@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+*[lang='ar']  {
+  font-size: 1.15rem !important;
+  @apply font-arabic
+}
