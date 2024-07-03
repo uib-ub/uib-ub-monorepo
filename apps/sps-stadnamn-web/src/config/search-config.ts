@@ -26,6 +26,8 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   export const facetConfig: Record<string, FacetConfigItem[]> = {
       search: [
         {"key": "datasets", "label": "Datasett", "omitLabel": true},
+        {"key": "adm1Fallback", "label": "Fylke (uordna)"},
+        {"key": "adm2Fallback", "label": "Kommune (uordna)"},
         {"key": "snid", "label": "Stadnamn ID"},
         {"key": "gnidu", "label": "GNIDu"},
         {"key": "midu", "label": "MIDu"},
