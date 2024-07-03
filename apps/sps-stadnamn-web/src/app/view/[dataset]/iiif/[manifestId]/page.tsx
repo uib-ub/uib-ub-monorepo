@@ -2,7 +2,7 @@
 'use client'
 import dynamic from 'next/dynamic';
 
-const DynamicImageViewer = dynamic(() => import('./DynamicImageViewer'), {
+const DynamicImageViewer = dynamic(() => import('@/components/DynamicImageViewer'), {
   ssr: false
 });
 
