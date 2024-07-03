@@ -30,6 +30,11 @@ spec:
                 configMapKeyRef:
                   name: hono-api-config
                   key: es_host
+            - name: OBSERVE_ES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: hono-api-config
+                  key: observe_es_host
             - name: PROD_URL
               valueFrom:
                 configMapKeyRef:
@@ -50,11 +55,6 @@ spec:
                 secretKeyRef:
                   name: esapikeycred
                   key: esApiKey
-            - name: OBSERVE_ES_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: hono-api-config
-                  key: observe_es_host
             - name: OBSERVE_ES_APIKEY
               valueFrom:
                 secretKeyRef:
