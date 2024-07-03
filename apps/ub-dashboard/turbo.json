@@ -3,8 +3,8 @@
   "extends": [
     "//"
   ],
-  "pipeline": {
-    "api": {
+  "tasks": {
+    "build": {
       "outputs": [
         ".next/**",
         "dist/**"
@@ -13,6 +13,7 @@
         "^build"
       ],
       "env": [
+        "NODE_ENV",
         "DATAPORTEN_AUTH_ENDPOINT",
         "DATAPORTEN_ID",
         "DATAPORTEN_SECRET",
