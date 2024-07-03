@@ -4,7 +4,7 @@ import Link from "next/link"
 import Thumbnail from "./thumbnail"
 
 
-export default async function ThumbnailLink({ doc, docDataset, dataset, searchParams }: { doc: any, docDataset: string, dataset?: string, searchParams?: any}) {
+export default async function ThumbnailLink({ doc, dataset, searchParams }: { doc: any, dataset?: string, searchParams?: any}) {
 
         let paramsString
         if (searchParams) {
@@ -17,6 +17,6 @@ export default async function ThumbnailLink({ doc, docDataset, dataset, searchPa
         const iiifLink = dataset ? `/view/${dataset}/iiif/${doc._source.image.manifest}${paramsString ? '?' + paramsString : ''}` : '/iiif/' + doc._source.image.manifest
       
 
-    return <Link href={iiifLink}><Thumbnail manifestId={doc._source.image.manifest} docDataset={docDataset}/></Link>
+    return <Link className="no-underline" href={iiifLink}><Thumbnail manifestId={doc._source.image.manifest}/></Link>
 
 }

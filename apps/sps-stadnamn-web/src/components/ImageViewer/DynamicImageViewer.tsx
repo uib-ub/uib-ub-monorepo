@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
 import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill, PiCaretLeftBold } from 'react-icons/pi';
-import IconButton from './ui/icon-button';
+import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -35,6 +35,9 @@ const DynamicImageViewer = () => {
       let response 
       try {
         response = await fetch( `https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
+        if (response.status === 404) {
+          throw new Error("Not found")
+      }
       }
       catch {
         response = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json`);
