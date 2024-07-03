@@ -94,7 +94,7 @@ jobs:
               kubectl -n hono-api-prod delete secret apieswritetokencred
               kubectl -n hono-api-prod create secret generic apieswritetokencred --from-literal=apiEsWriteToken=${{ secrets.API_ES_WRITE_TOKEN }}
             else
-              echo "Secret apieswritetokencred already exists, and it is the same as ES_APIKEY Github repository secret, skipping."
+              echo "Secret apieswritetokencred already exists, and it is the same as API_ES_WRITE_TOKEN Github repository secret, skipping."
             fi
           fi
 
