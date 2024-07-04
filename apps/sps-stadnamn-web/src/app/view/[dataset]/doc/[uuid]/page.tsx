@@ -1,15 +1,16 @@
 
 import EmbeddedMap from '@/components/Map/EmbeddedMap'
+import ChildMap from '@/components/Map/ChildMap'
 import OriginalData from './original-data'
-import Thumbnail from './thumbnail'
 import Link from 'next/link'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { fetchDoc } from '@/app/api/_utils/actions'
-import { PiCaretLeftBold } from 'react-icons/pi'
+import { PiCaretLeftBold, PiDatabaseFill, PiX } from 'react-icons/pi'
 import ErrorMessage from '@/components/ErrorMessage'
 import CoordinateInfo from './coordinate-info'
 import CopyLink from './CopyLink'
 import { datasetTitles } from '@/config/metadata-config'
+import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
 
 export async function generateMetadata( { params }: { params: { dataset: string } }) {
   const doc = await fetchDoc(params)
@@ -25,13 +26,14 @@ export default async function DocumentView({ params, searchParams }: { params: {
   // If searchParams not empty
   const hasSearchParams = Object.keys(searchParams).length > 0
 
-  
 
   if (Array.isArray(params.dataset)) {
       throw new Error('Expected "dataset" to be a string, but received an array');
     }
 
+    
     const doc = await fetchDoc(params)
+   
 
     if (!doc || doc.error) {
       return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
@@ -39,38 +41,55 @@ export default async function DocumentView({ params, searchParams }: { params: {
 
     const docDataset = doc._index.split('-')[1]
 
+    
+
     return (
-      
-      <div className="mx-2 p-4 lg:p-8 overflow-y-auto space-y-6 instance-info">
-        <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+      <div className="relative h-full w-full">
+        {params.dataset == 'search' && <Link aria-label="Lukk" href={`/view/search?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+              className="no-underline absolute top-5 right-6 z-[2001] text-xl">
+          <PiX aria-hidden="true" className='text-neutral-900 inline'/>
+          
+        </Link>}
+      <div className={(docDataset == 'search' && doc._source.location) ? "p-4 xl:p-8 bg-white overflow-y-auto space-y-3 xl:space-y-6 instance-info absolute h-1/3 xl:h-auto xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md w-full xl:w-1/3 xl:max-h-2/3"
+        : 'mx-2 p-4 lg:p-8 space-y-6 instance-info'
+      }>
+        {params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline inline">
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-          {hasSearchParams && searchParams.search != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
-        </Link>
+          { hasSearchParams && searchParams.search != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
+        </Link>}
+        
         { doc._source.snid && searchParams.expanded && docDataset != 'search' ? 
           <Link href={`/view/search/doc/${searchParams.expanded}${hasSearchParams ? '?' + new URLSearchParams(searchParams).toString() : ''}`}
-                className="no-underline inline ml-6">
+                className="no-underline inline">
             <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
             Tilbake til stadnamnsida
             </Link> : null }
         { doc && doc._source && <>
       <div className="space-y-2">
-      <h2>{doc._source.label}</h2>
+      <span className="flex flex-wrap gap-x-8 gap-y-2"><h2>{doc._source.label}</h2>
+      { docDataset != 'search' &&  params.dataset == 'search' && 
+        <span className='self-center'><Link className="text-lg bg-neutral-700 text-white px-2 rounded-full flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-xl text-white self-center"/>{ datasetTitles[docDataset]}</Link></span>
+      }
+      { docDataset == 'search' && doc._source.snid && <span className="text-neutral-800 self-center">{doc._source.snid} </span> }
+      </span>
       
-      {doc._source.adm1 && <div>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1}
-      {doc._source.adm2wd && <span className="inline"> (wikidata: <Link target="_blank"  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2wd}</Link>) </span>}
+      {doc._source.adm1 && <div>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1} 
+      {doc._source.adm2wd && <> <span className="inline whitespace-nowrap">(wikidata: <Link target="_blank"  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2wd}</Link>) </span></>}
       </div> }
       </div>
-
+      
+      
       { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') && <CopyLink uuid={doc._source.uuid} /> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
+      
       
 
       { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](doc._source) : null }
       
-      {doc._source.image?.manifest && <div>
-        <h3>Sedler</h3>
-        <Link href={`/view/${params.dataset}/iiif/${doc._source.image.manifest}`}><Thumbnail manifestId={doc._source.image.manifest} dataset={docDataset}/></Link>
+      { doc._source.image?.manifest && <div>
+        <h3>Seddel</h3>
+        <ThumbnailLink doc={doc} dataset={params.dataset} searchParams={searchParams} />
 
 
         </div>}
@@ -86,7 +105,15 @@ export default async function DocumentView({ params, searchParams }: { params: {
         <EmbeddedMap doc={doc._source}/> 
         
       </div> }
+      
       </>}
+      </div>
+      { docDataset == 'search' && doc._source.location && <div className='w-full h-full'>
+
+
+        <ChildMap doc={doc._source}/>
+        
+      </div> }
       </div>
     )
 

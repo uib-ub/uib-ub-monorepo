@@ -13,7 +13,7 @@ import { datasetTitles } from '@/config/metadata-config';
 export default function Facets() {
     const router = useRouter()
     const params = useParams<{dataset: string}>()
-    const searchQuery = useQueryWithout(['docs', 'search', 'view', 'manifest', 'field', 'expanded'])
+    const searchQuery = useQueryWithout(['docs', 'popup', 'search', 'view', 'manifest', 'field', 'expanded'])
     const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'orderBy' && item[0] != 'size' && item[0] != 'search')
     const [chipsExpanded, setChipsExpanded] = useState(false);
     const filterNames = Array.from(new Set(activeFilters.map(item => item[0])))

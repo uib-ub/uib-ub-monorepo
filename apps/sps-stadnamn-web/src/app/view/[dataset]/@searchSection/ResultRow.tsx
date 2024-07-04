@@ -51,8 +51,8 @@ export default function ResultRow({ hit }: { hit: any}) {
         </p>
         </div>
         <div className='flex gap-1 ml-auto self-end'>
-        { params.dataset == 'search' && !hit._source.snid &&
-         <span className="self-center px-2  font-semibold text-neutral-800">UORDNA</span>
+        { params.dataset == 'search' && hit._source.children.length == 1 &&
+         <IconButton label={datasetTitles[hit._source.datasets[0]]} textIcon href={`/view/${hit._source.datasets[0]}/info`} className="self-center px-2  text-neutral-900 small-caps text-xl">{hit._source.datasets[0]}</IconButton>
         }
 
         {hit._source.image && 
@@ -66,12 +66,12 @@ export default function ResultRow({ hit }: { hit: any}) {
         {hit._source.link &&
         <ExternalLinkButton doc={hit} iconClass="text-3xl text-neutral-700"/>
         }
-        {params.dataset != 'search' && hit._source.location && 
+        {hit._source.location && 
           <CoordinateButton doc={hit} iconClass="text-3xl text-neutral-700"/>
         }
 
-        { params.dataset == 'search'  && (
-            <IconButton label={"Vis treff frå " + (hit._source.children?.length == 1 ? datasetTitles[hit._source.datasets[0]]: hit._source.datasets.length  + " datasett")} 
+        { params.dataset == 'search' && hit._source.children.length > 1 && (
+            <IconButton label={"Vis " + hit._source.children.length  + " oppslag i datasetta"} 
                         textIcon 
                         aria-expanded={expanded} 
                         aria-describedby={"resultText_" + hit._source.uuid}
@@ -79,8 +79,8 @@ export default function ResultRow({ hit }: { hit: any}) {
                         className="flex text-sm bg-neutral-100 text-black rounded-full pr-3 pl-1 py-1 self-center whitespace-nowrap snid-button">
                         
             {expandLoading ? <Spinner status="Laster treff" className='w-[1em] h-[1em} mx-1'/> : (expanded ? <PiCaretUp className="self-center mx-1"/> : <PiCaretDown className="self-center mx-1"/>)}
-            { hit._source.datasets?.length > 1 ? hit._source.datasets.length + " datasett" :  hit._source.datasets[0].toUpperCase()}
-            {hit._source.children.length > 1 && ": " + hit._source.children?.length}
+            
+            {hit._source.children?.length}
             
             </IconButton>
 
@@ -89,8 +89,7 @@ export default function ResultRow({ hit }: { hit: any}) {
 
         }
 
-         { (hit._source.snid || params.dataset != 'search') && <InfoButton doc={hit} iconClass="text-3xl text-primary-600" aria-expanded={expanded} aria-describedby={"resultText_" + hit._source.uuid}
-          />}
+         <InfoButton doc={hit} iconClass="text-3xl text-primary-600" aria-describedby={"resultText_" + hit._source.uuid}/>
         
         
         </div>

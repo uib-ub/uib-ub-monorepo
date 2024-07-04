@@ -99,11 +99,6 @@ const DynamicImageViewer = () => {
 
   return (
     <div className='h-full w-full flex flex-col'>
-    {params.dataset && <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
-            className="no-underline p-4 bg-white">
-        <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-        {hasSearchParams && searchParams.get('search') != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
-      </Link>}
     <div className='h-full w-full relative aspect-square sm:aspect-auto'>
     {isLoading || !viewerRef.current? 
     <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Laster inn bilde" className='w-20 h-20'/></div>

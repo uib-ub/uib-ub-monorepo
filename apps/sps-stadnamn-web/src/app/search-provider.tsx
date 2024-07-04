@@ -27,7 +27,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const params = useParams()
-    const filteredSearchParams = useQueryStringWithout(['docs', 'search', 'expanded'])
+    const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded'])
 
     useEffect(() => {
 

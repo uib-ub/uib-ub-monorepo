@@ -6,10 +6,11 @@ import { infoPageRenderers } from '@/config/info-renderers'
 import CoordinateInfo from '@/app/view/[dataset]/doc/[uuid]/coordinate-info'
 import EmbeddedMap from '@/components/Map/EmbeddedMap'
 import OriginalData from '@/app/view/[dataset]/doc/[uuid]/original-data'
-import Thumbnail from '@/app/view/[dataset]/doc/[uuid]/thumbnail'
+import Thumbnail from '@/components/ImageViewer/thumbnail'
 import Link from 'next/link'
 import { PiDatabaseFill, PiMagnifyingGlass } from 'react-icons/pi'
 import GroupedChildren from '@/app/view/[dataset]/@searchSection/grouped-children'
+import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
 
 export async function generateMetadata( { params }: { params: { uuid: string } }) {
     const doc = await fetchDoc(params)
@@ -47,9 +48,8 @@ export default async function LandingPage({ params }: { params: { uuid: string }
 
       
       {doc._source.image?.manifest && <div>
-        <h2>Sedler</h2>
-        <Link href={`/view/${docDataset}/iiif/${doc._source.image.manifest}`}><Thumbnail manifestId={doc._source.image.manifest} dataset={docDataset}/></Link>
-
+        <h2>Seddel</h2>
+        <ThumbnailLink doc={doc}/>
 
         </div>}
         { doc._source.rawData ?
