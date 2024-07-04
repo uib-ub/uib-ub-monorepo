@@ -62,7 +62,7 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
         <div className="p-2 mb-2 space-y-4 transform origin-center"> 
         {Object.keys(childDocs).map((docDataset: string) => (
             <div key={docDataset} className='break-words'>
-                { !landingPage && Object.keys(childDocs).length > 1 && <h3 className="small-caps text-xl border-b border-neutral-400 text-neutral-900 font-semibold">{datasetTitles[docDataset]}</h3>}
+                { !landingPage && <h3 className="small-caps text-xl border-b border-neutral-400 text-neutral-900 font-semibold">{datasetTitles[docDataset]}</h3>}
                 { landingPage && <h2 className="!text-lg mt-6">{datasetTitles[docDataset]}</h2> }
                 <ul className="list-none">
                   {childDocs[docDataset].map((doc: Record<string, any>, index: number) => {
