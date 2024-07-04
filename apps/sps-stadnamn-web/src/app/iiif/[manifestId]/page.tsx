@@ -9,7 +9,9 @@ const DynamicImageViewer = dynamic(() => import('@/components/ImageViewer/Dynami
 
 const ImageViewer = (props: any) => {
   return (
+    <div className="bg-white h-full w-full">
       <DynamicImageViewer {...props} />
+    </div>
   )
 }
 

@@ -144,6 +144,31 @@
     @apply text-accent-800;
   }
 
+  .count-marker-highlight img {
+    @apply absolute bottom-1.5 left-1.5 w-16 h-16;
+    translate: -50%;
+  }
+
+
+  .count-marker-highlight {
+    @apply !z-[1000]
+  }
+
+  .count-marker-highlight span {
+    @apply absolute text-base bottom-[1.25rem] left-[0.125rem] text-white;
+  }
+
+  .count-marker img {
+    @apply absolute bottom-1.5 left-1.5 w-12 h-12;
+    translate: -50%;
+  }
+
+
+  .count-marker span {
+    @apply absolute bottom-[1.125rem] left-[0.125rem] text-white;
+  }
+  
+
 }
 
 @layer utilities {

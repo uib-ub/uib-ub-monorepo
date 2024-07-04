@@ -35,7 +35,7 @@ export const resultRenderers: ResultRenderers = {
   search: {
     title: defaultTitle,
     details: (hit: any) => {
-      return <>{hit._source.adm2}{hit._source.adm1 && (hit._source.adm2 ? ', ' : '') + hit._source.adm1}</>
+      return <>{hit._source.adm2 && hit._source.adm2 + ", "}{hit._source.adm1}{ hit._source.adm1 == "[Uordna]" && <>&nbsp;<em>{hit._source.adm2Fallback && hit._source.adm2Fallback + ", " }{hit._source.adm1Fallback}</em></> }</>
     }
   },
   sof: {

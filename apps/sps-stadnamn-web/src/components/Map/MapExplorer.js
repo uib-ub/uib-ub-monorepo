@@ -224,7 +224,7 @@ export default function MapExplorer(props) {
 
             {props.docs?.length && props.docs[0]._source?.location ?
 
-            ( <Marker ref={selectedMarker} icon={new leaflet.icon({iconUrl: '/marker.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
+            ( <Marker ref={selectedMarker} icon={new leaflet.icon({iconUrl: '/markerAccent.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
                              position={[props.docs[0]._source.location.coordinates[1], props.docs[0]._source.location.coordinates[0]]}
                              eventHandlers={{
                               add: () => selectedMarker.current.openPopup(),

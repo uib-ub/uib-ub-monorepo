@@ -1,7 +1,8 @@
 # Stadnamportalen
+Frontend and REST API for Språksamlingane's place name collections.
 
+Leaflet implementation based on [next-leaflet-starter](https://github.com/colbyfayock/next-leaflet-starter)
 
-## Repos in git.app.uib.no
 Data for elasticsearch:
 https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive
 
@@ -33,3 +34,5 @@ Note that the test and production endpoints should be the same locally unless yo
 as indices created for local development (without pushing changes and running the cicd pipeline in stadnamn-archive) will not be available in the production cluster.
 When SN_ENV is defined as prod in the vercel deployment, the test enpoint will serve as fallback.
 In preview deployments, the test endpoint will be used as the primary endpoint, while the production endpoint will serve as fallback.
+
+

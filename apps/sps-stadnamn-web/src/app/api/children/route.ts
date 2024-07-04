@@ -3,9 +3,22 @@ import { postQuery } from "../_utils/fetch";
 export async function GET(request: Request) {
 
     // Extract uuids from comma separated parameter in request
-    const snid = new URLSearchParams(new URL(request.url).search).get('snid');
-    const uuid = new URLSearchParams(new URL(request.url).search).get('uuid');
-    let uuids = new URLSearchParams(new URL(request.url).search).get('uuids')?.split(',');
+    const searchParams = new URLSearchParams(new URL(request.url).search)
+    const snid = searchParams.get('snid');
+    const uuid = searchParams.get('uuid');
+    let uuids = searchParams.get('uuids')?.split(',');
+    const geo = searchParams.get('geo') &&  {
+                                                aggs: {
+                                                    viewport: {
+                                                        geo_bounds: {
+                                                            field: "location",
+                                                            wrap_longitude: true
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+
 
     if (snid) {
         const query = {
@@ -14,11 +27,13 @@ export async function GET(request: Request) {
                 term: {
                     "snid.keyword": snid
                 }
-            }
+            },
+            ...geo || {}
         }
 
+
         const data = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-search`, query)
-        return Response.json(data?.hits?.hits || data)
+        return Response.json(data)
 
     }
 
@@ -49,11 +64,12 @@ export async function GET(request: Request) {
             terms: {
                 "uuid": uuids
             }
-        }
+        },
+        ...geo || {}
     }
 
 
     const data = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-search`, query)
 
-    return Response.json(data.hits.hits)
+    return Response.json(data)
   }

@@ -17,8 +17,8 @@ export default function SearchSection () {
     const params = useParams<{dataset: string, uuid: string, manifestId: string}>()
     const router = useRouter()
     const { resultData, isLoading, searchError } = useContext(SearchContext)
-    const filteredParams = useQueryStringWithout(['docs', 'expanded', 'search'])
-    const filteredParamsNoSort = useQueryStringWithout(['docs', 'expanded', 'search', 'orderBy', 'sort'])
+    const filteredParams = useQueryStringWithout(['docs', 'popup', 'expanded', 'search'])
+    const filteredParamsNoSort = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'orderBy', 'sort'])
     let [mainIndex, subindex] = params.dataset.split("_")
     const searchParams = useSearchParams()
 

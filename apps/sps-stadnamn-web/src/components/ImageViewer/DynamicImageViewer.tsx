@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
 import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill, PiCaretLeftBold } from 'react-icons/pi';
-import IconButton from '../../../../../components/ui/icon-button';
+import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -35,6 +35,9 @@ const DynamicImageViewer = () => {
       let response 
       try {
         response = await fetch( `https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
+        if (response.status === 404) {
+          throw new Error("Not found")
+      }
       }
       catch {
         response = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json`);
@@ -96,11 +99,6 @@ const DynamicImageViewer = () => {
 
   return (
     <div className='h-full w-full flex flex-col'>
-    <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
-            className="no-underline p-4 bg-white">
-        <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-        {hasSearchParams && searchParams.get('search') != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
-      </Link>
     <div className='h-full w-full relative aspect-square sm:aspect-auto'>
     {isLoading || !viewerRef.current? 
     <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Laster inn bilde" className='w-20 h-20'/></div>
@@ -133,13 +131,13 @@ const DynamicImageViewer = () => {
       </IconButton>
   </div>
   <IconButton 
-          label={isCollapsed ? "Skjul info" : "Vis info"}
+          label={isCollapsed ? "Skjul metadata" : "Vis metadata"}
           textClass="text-base"
-          className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2"
+          className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-4 flex gap-2"
           aria-controls="iiif_info" 
           aria-expanded={isCollapsed} 
           onClick={() => toggleCollapse(!isCollapsed)}>
-            {isCollapsed ? <PiXCircleFill/>: <PiInfoFill/>}
+            {isCollapsed ? <PiXCircleFill/>: <PiInfoFill className='self-center'/>}
   </IconButton>
   
     </div>

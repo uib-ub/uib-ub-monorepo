@@ -8,34 +8,21 @@ import InfoButton from '@/components/results/infoButton'
 import ExternalLinkButton from '@/components/results/externalLinkButton'
 
 export default function PopupList({ docs, view }: { docs: any[], view: string} ) {
-    const searchParams = useSearchParams()
-    const dataset = docs[0]._index.split('-')[1];
-    const router = useRouter()
-    const params = useParams<{uuid: string; dataset: string}>()
 
-    const goToDoc = (uuid: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      //newSearchParams.delete('docs')
-      router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
-    }
 
-    const goToIIIF = (uuid: string, manifest: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.set('docs', String(uuid))
-      router.push(`/view/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
-    }
 
     const listItemRenderer = (doc: any) => {
+        const docDataset = doc._index.split('-')[1];
         return (
             <>
             <span id={"resultText_" + doc._source.uuid}>
-            { dataset == view ?
+            { docDataset == view ?
                     <>
                         {resultRenderers[view]?.title(doc)}
                     </>
                     :
                     <>
-                        {doc._source.label}
+                        {resultRenderers[docDataset]?.title(doc)}
                     </>
                 } 
                 </span>
@@ -45,7 +32,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                         <ImageButton doc={doc} iconClass='text-2xl align-top text-neutral-700 inline'/> 
                     }
                     {doc._source.audio && 
-                        <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${doc._source.audio.file}`} 
+                        <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${docDataset}/${doc._source.audio.file}`} 
                             className="text-2xl align-top inline text-neutral-700"/> 
                     }
                     {doc._source.link &&
@@ -53,7 +40,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                     }
                     <InfoButton doc={doc} iconClass='text-2xl align-top text-primary-600 inline'/>
                 </div>
-                 { dataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc)}</p> }
+                 { docDataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc)}</p> }
                 
             </>
         )
