@@ -19,7 +19,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     return <div dangerouslySetInnerHTML={createMarkup(htmlString)} />;
   }
 
-  const Timeline = (arr: { label: string; year: string }[], noCoordinates: boolean) => {
+  const Timeline = (arr: { label: string; year: string }[]) => {
     const grouped: Record<string,string[]> = {};
 
     arr?.forEach(item => {
@@ -36,30 +36,39 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 
   return (
-    <ul className='relative !mx-2 !px-0'>
+    <div className='relative md:flex md:items-top mt-4'>
       {timelineData.map((item, index) => {
         const [year, labels] = Object.entries(item)[0];
   
         return (
-          <li key={index} className='flex items-center !pb-2 !pt-0 relative md:!pb-2'>
+          <div key={index} className='flex md:flex-col items-center pb-2 md:pb-0  relative'>
+            <div className='hidden md:flex items-center w-full'>
+              <div className={`w-[50%] ${index !== 0 && 'border-t-2 border-primary-300'}`} />
+              <div><div className='w-2 h-2 bg-primary-500 rounded-full'></div></div>
+              {index !== timelineData.length - 1 && <div className='w-[50%] border-t-2 border-primary-300' />}
+            </div>
 
-          <div className={`bg-primary-300 absolute w-1 left-0 top-0 ${index === timelineData.length -1 ? 'h-2' : 'h-full'} ${index === 0 && 'mt-2'}`}></div>
-          <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-1`}></div>
-          
-          
 
-          <div className={`ml-6 ${''}`}>
-            <strong className='mb-1'>{year}:&nbsp;</strong>
-                {labels.map((label, i) => ( <span key={i}>
-                  {labels.length > 1 && i > 0 ? ', ' : ''}<span className=' list-none !py-0' key={i}>{label}</span>
-                  </span>
+          <div className={`md:hidden bg-primary-300 absolute w-1 left-0 top-0 ${index === timelineData.length -1 ? 'h-2' : 'h-full'} ${index === 0 && 'mt-2'}`}></div>
+          <div className='md:hidden w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-1'></div>
+
+          <div className='ml-6 md:ml-0 md:flex md:gap-1 md:flex-col md:text-center pb-2 md:py-0 md:mt-2 md:px-4 '>
+            <div className='block mb-1 font-bold'>{year}</div>
+            {labels?.length > 1 ?
+              <ul className='!p-0'>
+                {labels.map((label, i) => (
+                  <li className=' list-none !py-0' key={i}>{label}</li>
                 ))}
+              </ul>
+              :
+              <span>{labels?.[0]}</span>
+            }
           </div>
-        </li>
+        </div>
         );
       }
       )}
-    </ul>
+    </div>
   );
 }
 
@@ -68,11 +77,11 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   search: (source: any) => {
     return <>
-    {source.attestations && Object.keys(source.attestations).length > 1 && <div>
-    <h3>Attestasjoner</h3>
-    {Timeline(source.attestations, !source.location)}
+    <div className='space-y-8'>
+    <span><strong>Stadnamn ID: </strong> {source.snid || 'Ikke definert'}</span>
+    {source.attestations && Timeline(source.attestations)}
+    
     </div>
-    }
     
     </>
   },
@@ -296,6 +305,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
               {title: 'Stadnamn', value: source.label},
               {title: 'Kommune', value: source.adm2},
               {title: 'Fylke', value: source.adm1},
+              {title: 'Lokalitetstype', value: source.sosi, sosi: true},
               {title: 'Kommunenummer', value: source.rawData.knr},
               {title: 'Gardsnummer', value: source.rawData.gnr},
               {title: 'Bruksnummer', value: source.rawData.bnr},
@@ -328,7 +338,12 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         {title: 'Koordinater', value: [source.rawData.X, source.rawData.Y].filter(Boolean).join(", ")},
         {title: 'Presisjon', value: source.rawData.Koordinattype},
         {title: 'StedsnavnID', value: source.rawData.SNID},
-        {title: 'Unikt matrikkelnummer', items: source.gnidu.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},
+        {title: 'Unikt matrikkelnummer', items: 
+          ["GNIDu_01", "GNIDu_02", "GNIDu_03", "GNIDu_04", "GNIDu_05", "GNIDu_06"].filter(item => source.rawData[item]?.length).map(key => {
+            return {value: source.rawData[key], href: `/view/ostf?rawData.${key}=${encodeURIComponent(source.rawData[key])}`}
+          }
+          )
+        },
       ]}/>
       </>
     } 
