@@ -4,6 +4,8 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import Map from './Map'
 import 'leaflet/dist/leaflet.css';
 import PopupList from './PopupList';
+import { backgroundMap, baseMapKeys, baseMapProps } from '@/config/basemap-config'
+
 
 export default function ChildMap(props) {
 
@@ -97,11 +99,8 @@ export default function ChildMap(props) {
             {({ TileLayer, Marker, Tooltip, Popup }, leaflet) => (
                 <>
           
-            <TileLayer
-              key="map_topo4"
-              url="https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png"
-              attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-            />
+            <TileLayer {...backgroundMap} />
+            <TileLayer {...baseMapProps[localStorage.getItem('baseLayer') || baseMapKeys[0]]} />
             
             
 

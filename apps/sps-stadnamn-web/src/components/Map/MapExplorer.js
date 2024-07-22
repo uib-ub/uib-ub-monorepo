@@ -5,6 +5,7 @@ import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigat
 import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
 import PopupList from './PopupList'
+import { backgroundMap, baseMaps, baseMapNames, baseMapKeys } from '@/config/basemap-config'
 
 export default function MapExplorer(props) {
   const [markers, setMarkers] = useState([]);
@@ -23,6 +24,7 @@ export default function MapExplorer(props) {
   const [layerControlCollapsed, setLayerControlCollapsed] = useState(true);
 
 
+
   const mapRef = useCallback(node => {
     if (node !== null) {
       mapInstance.current = node;
@@ -35,7 +37,7 @@ export default function MapExplorer(props) {
       });
 
       node.on('baselayerchange', (layer) => {
-        const layerCode = {"Norgeskart": "map_topo4", "Norgeskart, gråtoner": "map_topo4graatone", "Terrengkart": "map_terreng", "Verdenskart": "map_carto_labels"}[layer.name] || "map_topo4"
+        const layerCode = baseMapKeys[baseMapNames.indexOf(layer.name)]
         localStorage.setItem('baseLayer', layerCode);
         setLayerControlCollapsed(true);
       });
@@ -156,39 +158,17 @@ export default function MapExplorer(props) {
             {({ TileLayer, LayersControl, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
 
           <>
-           <TileLayer
-                key="map_cartodb"
-                url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
-              />
+           <TileLayer {...backgroundMap}/>
            <LayersControl collapsed={layerControlCollapsed} >
-           <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4'} name="Norgeskart (Kartverket)">
-              <TileLayer key="map_topo4"
-                            layers="topo"
-                            attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-                            url="https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png"/>
+           <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == baseMaps[0].key || !localStorage.getItem('baseLayer') || !baseMapKeys.includes(localStorage.getItem('baseLayer'))} name={baseMapNames[0]}>
+              <TileLayer key={baseMaps[0].key} {...baseMaps[0].props} />
             </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4graatone'} name="Norgeskart, gråtoner (Kartverket)">
-              <TileLayer
-                key="map_topo4graatone"
-                url="https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png"
-                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-              />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'toporaster'} name="Norgeskart, stor tekst (Kartverket)">
-              <TileLayer
-                key="toporaster"
-                url="https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png"
-                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-              />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_carto_labels'} name="Verdenskart">
-              <TileLayer
-                key="map_carto_labels"
-                url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
-                attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
-              />
-            </LayersControl.BaseLayer>
+            {baseMaps.slice(1).map((item, index) => (
+              <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == item.key} key={item.key} name={item.name}>
+                <TileLayer key={item.key} {...item.props} />
+              </LayersControl.BaseLayer>
+            ))
+            }
             </LayersControl>
 
             {markers.map(marker => (
