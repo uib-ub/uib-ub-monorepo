@@ -1,6 +1,11 @@
 <template>
   <section>
-    <h2 class="text-lg font-semibold pb-3 text-gray-800">Nylige aktiviteter</h2>
+    <div class="flex justify-between">
+      <h2 class="text-lg font-semibold pb-3 text-gray-800">
+        Nylige aktiviteter
+      </h2>
+      <AddButton :to="studioLinks.newActivity" target="_blank" />
+    </div>
     <ol class="space-y-0.5 text-lg ml-1">
       <li
         v-for="activity in procdata"
