@@ -1,6 +1,7 @@
 import { label, note, timespan } from "./props";
 import association from "./qualifiedPattern/association";
 import communication from "./qualifiedPattern/communication";
+import simpleUsage from "./qualifiedPattern/simpleUsage";
 import usage from "./qualifiedPattern/usage";
 
 export default {
@@ -14,6 +15,7 @@ export default {
     timespan,
     {
       name: "qualifiedUsage",
+      title: "Omfang",
       type: "array",
       of: [usage],
     },
@@ -26,6 +28,12 @@ export default {
           return { title: activityTypes[key], value: key };
         }),
       },
+    },
+    {
+      name: "usage",
+      title: "Gjør bruk av",
+      type: "array",
+      of: [simpleUsage],
     },
     {
       name: "qualifiedAssociation",
