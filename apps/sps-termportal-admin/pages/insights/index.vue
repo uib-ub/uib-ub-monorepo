@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <SideBar></SideBar>
+    <!-- <SideBar></SideBar> -->
     <main class="space-y-8 py-8">
       <h1 class="text-2xl">Insights</h1>
       <InsightInstitutionsTbs />

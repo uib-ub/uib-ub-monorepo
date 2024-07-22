@@ -37,3 +37,7 @@ export const orderTopDomain = [
   "OkonomiAdministrasjon",
   "Helse_og_sosial",
 ];
+
+export const studioLinks = {
+  newActivity: "/studio/intent/create/template=activity;type=activity/",
+};
