@@ -99,9 +99,8 @@ export default function ChildMap(props) {
           
             <TileLayer
               key="map_topo4"
-              url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
+              url="https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png"
               attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-              subdomains={['', '2', '3']} 
             />
             
             

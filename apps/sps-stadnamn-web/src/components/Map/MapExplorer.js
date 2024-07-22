@@ -162,28 +162,24 @@ export default function MapExplorer(props) {
                 attribution="&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>"
               />
            <LayersControl collapsed={layerControlCollapsed} >
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4'} name="Norgeskart">
-              <TileLayer
-                key="map_topo4"
-                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
-                attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-                subdomains={['', '2', '3']}
-              />
+           <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4'} name="Norgeskart (Kartverket)">
+              <TileLayer key="map_topo4"
+                            layers="topo"
+                            attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
+                            url="https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png"/>
             </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4graatone'} name="Norgeskart, gråtoner">
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_topo4graatone'} name="Norgeskart, gråtoner (Kartverket)">
               <TileLayer
                 key="map_topo4graatone"
-                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4graatone&zoom={z}&x={x}&y={y}"
+                url="https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png"
                 attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-                subdomains={['', '2', '3']}
               />
             </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_terreng'} name="Terrengkart">
+            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'toporaster'} name="Norgeskart, stor tekst (Kartverket)">
               <TileLayer
-                key="map_terreng"
-                url="https://opencache{s}.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=terreng_norgeskart&zoom={z}&x={x}&y={y}"
+                key="toporaster"
+                url="https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png"
                 attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-                subdomains={['', '2', '3']}
               />
             </LayersControl.BaseLayer>
             <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == 'map_carto_labels'} name="Verdenskart">
