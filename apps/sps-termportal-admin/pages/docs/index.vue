@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <SideBar></SideBar>
+    <!-- <SideBar /> -->
     <main class="content-page max-w-3xl pt-8 flex">
       <section id="content">
         <h1 class="mb-2 text-2xl">Documentation</h1>
