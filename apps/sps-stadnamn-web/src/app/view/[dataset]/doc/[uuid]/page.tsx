@@ -75,7 +75,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
       </span>
       
       {doc._source.adm1 && <div>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1} 
-      {doc._source.adm2wd && <> <span className="inline whitespace-nowrap">(wikidata: <Link target="_blank"  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2wd}</Link>) </span></>}
+      {doc._source.adm2wd && <> <span className="inline whitespace-nowrap">(wikidata: <Link  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2wd}</Link>) </span></>}
       </div> }
       </div>
       

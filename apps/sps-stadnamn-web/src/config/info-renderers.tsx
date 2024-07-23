@@ -97,7 +97,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     return <>
     {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
     <div className="mt-3">
-    <Link href={source.rawData.Lenke_til_originalside} target="_blank" className='font-semibold'>Lenke til originalside</Link>
+    <Link href={source.rawData.Lenke_til_originalside} className='font-semibold'>Lenke til originalside</Link>
     </div>
     <InfoBox dataset={'rygh'} items={[
       {title: 'Stadnamn', value: source.label},
@@ -288,7 +288,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.rawData?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknader}</>}
     
     <div className="mt-3">
-    <Link href={source.rawData.lenke_til_digital_matrikkel} target="_blank" className='font-semibold'>Lenke til digital matrikkel</Link>
+    <Link href={source.rawData.lenke_til_digital_matrikkel} className='font-semibold'>Lenke til digital matrikkel</Link>
     </div>
     
     <InfoBox dataset={'m1886'}
@@ -312,7 +312,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       <h3>Lenker</h3>
       <ul className='!mt-0 !list-none !pl-0'>
         {source.links.map((link: any, index: number) => (
-          <li key={index}><Link href={link} target="_blank" className=''>{link}</Link></li>
+          <li key={index}><Link href={link} className=''>{link}</Link></li>
         ))}
 
       </ul>
