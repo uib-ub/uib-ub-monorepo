@@ -52,7 +52,11 @@ export default function CoordinateInfo({source}: {source: Record<string, any>}) 
         
             <div className="flex items-center space-x-2">
                 <PiMapPin className="w-6 h-6" />
-                <a className="font-semibold" href={`https://geohack.toolforge.org/geohack.php?pagename=Geohack&params=${source.location.coordinates[1]};${source.location.coordinates[0]}&language=no`}>{convertDMS(source.location.coordinates[1], source.location.coordinates[0])}</a>
+                <a className="font-semibold" 
+                   href={`https://geohack.toolforge.org/geohack.php?pagename=Geohack&params=${source.location.coordinates[1]};${source.location.coordinates[0]}&language=no`}
+                   target="_blank">
+                    {convertDMS(source.location.coordinates[1], source.location.coordinates[0])}
+                    </a>
             </div>
             {coordinateData._source &&
             source.coordinateType && 
