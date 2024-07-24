@@ -116,6 +116,10 @@
     @apply p-1 flex gap-1 shadow-none items-center text-neutral-900 hover:text-primary-700 !font-sans;
   }
 
+  .btn-outline[disabled] {
+    @apply text-neutral-500 bg-white border-neutral-300;
+  }
+
 
   .btn-compact {
     @apply px-3 py-1
