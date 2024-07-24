@@ -1,6 +1,6 @@
 'use client'
 import { useContext } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, useRouter, useSearchParams, usePathname } from 'next/navigation'
 import IconButton from '@/components/ui/icon-button';
 import Results from '@/app/view/[dataset]/@searchSection/results'
 import Filters from './filters'
@@ -16,9 +16,10 @@ import SearchToggle from './SearchToggle'
 export default function SearchSection () {
     const params = useParams<{dataset: string, uuid: string, manifestId: string}>()
     const router = useRouter()
+    const pathname = usePathname()
     const { resultData, isLoading, searchError } = useContext(SearchContext)
     const filteredParams = useQueryStringWithout(['docs', 'popup', 'expanded', 'search'])
-    const filteredParamsNoSort = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'orderBy', 'sort'])
+    const filteredParamsWithoutSort = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'orderBy', 'sort'])
     let [mainIndex, subindex] = params.dataset.split("_")
     const searchParams = useSearchParams()
 
@@ -56,7 +57,7 @@ export default function SearchSection () {
           <SearchBar/>
           { !searchError && <Filters/> }
         </form>            
-          { resultData && filteredParamsNoSort ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
+          { !pathname.includes('/table') && resultData && filteredParamsWithoutSort ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
 
         </div>        
         </section>

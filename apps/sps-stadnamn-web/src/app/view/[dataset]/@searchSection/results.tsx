@@ -1,6 +1,6 @@
 import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiSortAscending, PiSortDescending, PiFunnelSimple } from 'react-icons/pi';
+import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiTable } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
 import IconButton from '@/components/ui/icon-button';
 import { sortConfig } from '@/config/search-config';
@@ -81,7 +81,14 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         </span> { showLoading ? <Spinner status="Laster inn treff" className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
       </h2>
       <div className="ml-auto flex items-end gap-4">
-      {sortConfig[params.dataset] && 
+      { !pathname.includes('/table') &&
+        <button className="btn btn-outline btn-compact !pl-2" onClick={() => router.push(pathname + "/table?" + searchParams.toString())}>
+      <i>
+        <PiTable className="text-xl mr-2"/>
+      </i>
+      Tabellvisning
+      </button>}
+      {sortConfig[params.dataset] && false &&
       <span>
         <label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
         <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy} value={searchParams.get('orderBy') || ""}>
@@ -93,7 +100,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       </span>
     }
 
-      {sortConfig[params.dataset] ? searchParams.get('orderBy') && <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter stigende' : 'Sorter synkende'} onClick={sortResults}>
+      {false &&  ( sortConfig[params.dataset] ? searchParams.get('orderBy') && <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter stigende' : 'Sorter synkende'} onClick={sortResults}>
         {searchParams.get('sort') ? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }
       </IconButton> 
       :
@@ -101,7 +108,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         {searchParams.get('sort') == 'asc' &&  <PiSortDescending className='text-xl'/> || searchParams.get('sort') == 'desc' && <PiFunnelSimple className=' text-xl'/> || <PiSortAscending className=' text-xl'/> }
       </IconButton>
       
-      }
+      )}
 
     </div>
     </span>

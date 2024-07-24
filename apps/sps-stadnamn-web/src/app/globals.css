@@ -171,6 +171,28 @@
   .count-marker span {
     @apply absolute bottom-[1.125rem] left-[0.125rem] text-white;
   }
+
+
+  
+  .result-table {
+    @apply w-full text-left text-neutral-950 border shadow-sm border-neutral-300; /* Adjusted for better contrast */
+  }
+  
+  .result-table thead th {
+    @apply text-neutral-800 uppercase bg-neutral-50 p-4; /* Darker text for better contrast */
+  }
+  
+  .result-table tbody tr {
+    @apply border-b border-neutral-200 hover:bg-neutral-100; /* Lighter hover background for subtle contrast */
+  }
+  
+  .result-table tbody tr:nth-child(even) {
+    @apply bg-neutral-50 hover:!bg-neutral-100; /* Lighter background for rows for better readability */
+  }
+  
+  .result-table td {
+    @apply px-4 py-2;
+  }
   
 
 }
