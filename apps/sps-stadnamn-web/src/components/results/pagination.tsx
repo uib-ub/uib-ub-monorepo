@@ -53,13 +53,13 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
     </div>
     <div className="self-center">
     <label htmlFor="per_page_select">Treff per side: </label>
-    <select id="per_page_select" name="size" onChange={
+    <select id="per_page_select" name="size" value={parseInt(searchParams.get('size') || '10')} onChange={
         (event) => {
             router.push(perPageUrl(event.target.value))
         }
     }>
   {[10, 20, 50, 100].map((value) => (
-    <option key={value} value={value} selected={value == parseInt(searchParams.get('size') || '10')}>
+    <option key={value} value={value}>
       {value}
     </option>
   ))}
