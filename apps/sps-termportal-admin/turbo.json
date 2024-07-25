@@ -1,16 +1,10 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "extends": [
-    "//"
-  ],
+  "extends": ["//"],
   "tasks": {
     "build": {
-      "outputs": [
-        "dist/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build"],
       "env": [
         "AUTH_ORIGIN",
         "NUXT_AUTH_SECRET",
@@ -19,6 +13,8 @@
         "NUXT_DATAPORTEN_CLIENT_SECRET",
         "NUXT_ENDPOINT_URL",
         "NUXT_PUBLIC_BASE",
+        "NUXT_ELASTICSEARCH_URL",
+        "NUXT_ELASTICSEARCH_API_KEY",
         "NX_DAEMON",
         "TURBO_REMOTE_ONLY",
         "TURBO_RUN_SUMMARY",
