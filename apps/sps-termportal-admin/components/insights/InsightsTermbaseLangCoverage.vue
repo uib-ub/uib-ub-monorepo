@@ -1,29 +1,31 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">Termbases: Language coverage [slow query]</h2>
-    <DataTable
-      ref="datatable"
-      v-model:filters="filters"
-      :value="procdata"
-      removable-sort
-      table-style="min-width: 1rem"
-      :global-filter-fields="['label']"
-    >
-      <template #header>
-        <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData($event)" />
-        </div>
-      </template>
-      <Column field="label" header="Navn" sortable />
-      <Column field="count" header="Begreper" sortable />
-      <Column field="tnb" header="med bokmål term" sortable />
-      <Column field="tnn" header="med nynorsk term" sortable />
-      <Column field="ten" header="med engelsk term" sortable />
-      <Column field="dnb" header="med bokmål definisjon" sortable />
-      <Column field="dnn" header="med nynorsk definisjon" sortable />
-      <Column field="den" header="med engelsk definisjon" sortable />
-    </DataTable>
+    <div class="max-w-7xl">
+      <DataTable
+        ref="datatable"
+        v-model:filters="filters"
+        :value="procdata"
+        removable-sort
+        table-style="min-width: 1rem"
+        :global-filter-fields="['label']"
+      >
+        <template #header>
+          <div class="flex justify-between">
+            <InputText v-model="filters['global'].value" placeholder="Søk" />
+            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+          </div>
+        </template>
+        <Column field="label" header="Navn" sortable />
+        <Column field="count" header="Begreper" sortable />
+        <Column field="tnb" header="med bokmål term" sortable />
+        <Column field="tnn" header="med nynorsk term" sortable />
+        <Column field="ten" header="med engelsk term" sortable />
+        <Column field="dnb" header="med bokmål definisjon" sortable />
+        <Column field="dnn" header="med nynorsk definisjon" sortable />
+        <Column field="den" header="med engelsk definisjon" sortable />
+      </DataTable>
+    </div>
   </section>
 </template>
 

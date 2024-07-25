@@ -1,26 +1,28 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">People participating in Reference groups</h2>
-    <DataTable
-      ref="datatable"
-      v-model:filters="filters"
-      :value="procdata"
-      removable-sort
-      paginator
-      :rows="15"
-      table-style="min-width: 1rem"
-      :global-filter-fields="['label', 'termgroup', 'organization']"
-    >
-      <template #header>
-        <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData($event)" />
-        </div>
-      </template>
-      <Column field="label" header="Navn" sortable></Column>
-      <Column field="groups" header="Referansegruppe" sortable></Column>
-      <Column field="organization" header="Organisasjon" sortable></Column>
-    </DataTable>
+    <div class="max-w-7xl">
+      <DataTable
+        ref="datatable"
+        v-model:filters="filters"
+        :value="procdata"
+        removable-sort
+        paginator
+        :rows="15"
+        table-style="min-width: 1rem"
+        :global-filter-fields="['label', 'termgroup', 'organization']"
+      >
+        <template #header>
+          <div class="flex justify-between">
+            <InputText v-model="filters['global'].value" placeholder="Søk" />
+            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+          </div>
+        </template>
+        <Column field="label" header="Navn" sortable></Column>
+        <Column field="groups" header="Referansegruppe" sortable></Column>
+        <Column field="organization" header="Organisasjon" sortable></Column>
+      </DataTable>
+    </div>
   </section>
 </template>
 
