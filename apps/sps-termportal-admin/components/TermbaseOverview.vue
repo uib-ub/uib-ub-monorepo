@@ -263,6 +263,12 @@ function matchid(data, entry, key) {
   return data.value?.find((d) => d.id === entry.id.value)?.[key];
 }
 
+const getLicense = (value) =>
+  value
+    ? licenseLabels[value.replace(runtimeConfig.public.base, "")] ??
+      value.replace(runtimeConfig.public.base, "")
+    : "";
+
 const merged = computed(() => {
   const enriched = dbdata.value?.results?.bindings
     .map((e) => ({
@@ -272,9 +278,7 @@ const merged = computed(() => {
       status: numberStatus(matchid(cmsdata, e, "status")),
       labels: matchid(cmsdata, e, "labelsOk"),
       descriptions: matchid(cmsdata, e, "descriptionsOk"),
-      license: e.license
-        ? licenseLabels[e.license.value.replace(runtimeConfig.public.base, "")]
-        : "",
+      license: getLicense(e?.license?.value),
       agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
       staff: matchid(cmsdata, e, "responsibleStaff"),
       domain: matchid(cmsdata, e, "domain"),
