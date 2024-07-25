@@ -1,24 +1,26 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">Referansegrupper</h2>
-    <DataTable
-      v-model:filters="filters"
-      :value="procdata"
-      removable-sort
-      table-style="min-width: 1rem"
-      :global-filter-fields="['label']"
-    >
-      <template #header>
-        <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData($event)" />
-        </div>
-      </template>
-      <Column field="label" header="Navn referansegruppe" sortable />
-      <Column field="count" header="Medlemmer" sortable />
-      <Column field="timespan" header="Tidsrom" sortable />
-      <Column field="termgroup" header="Termgruppe" sortable />
-    </DataTable>
+    <div class="max-w-7xl">
+      <DataTable
+        v-model:filters="filters"
+        :value="procdata"
+        removable-sort
+        table-style="min-width: 1rem"
+        :global-filter-fields="['label']"
+      >
+        <template #header>
+          <div class="flex justify-between">
+            <InputText v-model="filters['global'].value" placeholder="Søk" />
+            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+          </div>
+        </template>
+        <Column field="label" header="Navn referansegruppe" sortable />
+        <Column field="count" header="Medlemmer" sortable />
+        <Column field="timespan" header="Tidsrom" sortable />
+        <Column field="termgroup" header="Termgruppe" sortable />
+      </DataTable>
+    </div>
   </section>
 </template>
 

@@ -1,27 +1,29 @@
 <template>
   <section>
-    <h2 class="mb-3 text-xl">Published Termbase by Year</h2>
-    <DataTable
-      ref="datatable"
-      v-model:filters="filters"
-      :value="procdata"
-      removable-sort
-      sort-field="year"
-      :sort-order="-1"
-      paginator
-      :rows="15"
-      table-style="min-width: 1rem"
-      :global-filter-fields="['year']"
-    >
-      <template #header>
-        <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData($event)" />
-        </div>
-      </template>
-      <Column field="year" header="År" sortable></Column>
-      <Column field="count" header="Antall" sortable></Column>
-    </DataTable>
+    <h2 class="mb-3 text-xl">Published Termbases by Year</h2>
+    <div class="max-w-xl">
+      <DataTable
+        ref="datatable"
+        v-model:filters="filters"
+        :value="procdata"
+        removable-sort
+        sort-field="year"
+        :sort-order="-1"
+        paginator
+        :rows="15"
+        table-style="min-width: 1rem"
+        :global-filter-fields="['year']"
+      >
+        <template #header>
+          <div class="flex justify-between">
+            <InputText v-model="filters['global'].value" placeholder="Søk" />
+            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+          </div>
+        </template>
+        <Column field="year" header="År" sortable></Column>
+        <Column field="count" header="Antall" sortable></Column>
+      </DataTable>
+    </div>
   </section>
 </template>
 
