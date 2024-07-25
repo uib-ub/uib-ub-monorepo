@@ -3,15 +3,17 @@ export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
+import { getSortArray } from '@/config/server-config';
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
   const { highlight, simple_query_string } = getQueryString(filteredParams)
 
-  const sortArray = []
+  let sortArray = []
 
+  
   if (filteredParams.sort) {
-    const fields = filteredParams.orderBy?.split(',') || ['label.keyword'];
+    const fields = filteredParams.orderBy?.split(',') || ['_score'];
     for (const field of fields) {
       const nestedFields = field.split('__');
       const order = filteredParams.sort == 'desc' ? 'desc' : 'asc';
@@ -33,6 +35,9 @@ export async function GET(request: Request) {
         });
       }
     }
+  }
+  else {
+    sortArray = getSortArray(dataset)
   }
     
   const query: Record<string,any> = {
