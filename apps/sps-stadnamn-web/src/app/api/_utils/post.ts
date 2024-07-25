@@ -17,6 +17,7 @@ export async function postQuery(dataset: string, query: any, retry: boolean = tr
         if (retry) {
             return postQuery(dataset, query, false);
         } else {
+            console.log("ERROR", errorResponse)
             return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
         }
     }

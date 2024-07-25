@@ -1,4 +1,4 @@
-import { postQuery } from './fetch'
+import { postQuery } from './post'
 
 const detectEnv = (retry: boolean) => {
     const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
