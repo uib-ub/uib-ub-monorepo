@@ -7,4 +7,6 @@ export const licenseLabels = {
   "LISENS-3ACC_BY_40": "CC BY 4.0",
   "LISENS-3ACC_BY-2DNC_40": "CC BY-NC 4.0",
   "LISENS-3ACC_BY-2DNC-2DND_40": "CC BY-NC-ND 4.0",
+  "LISENS-3ACC_BY-2DSA_40": "CC BY-SA 4.0",
+  "LISENS-3ACC_BY-2DNC-2DSA_40": "CC BY-NC-SA 4.0"
 };
