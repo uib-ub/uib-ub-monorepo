@@ -1,7 +1,7 @@
 export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
-import { postQuery } from '../_utils/fetch';
+import { postQuery } from '../_utils/post';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
   const { termFilters, filteredParams } = extractFacets(request)

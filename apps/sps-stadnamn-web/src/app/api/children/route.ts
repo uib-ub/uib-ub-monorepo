@@ -1,5 +1,5 @@
 export const runtime = 'edge'
-import { postQuery } from "../_utils/fetch";
+import { postQuery } from "../_utils/post";
 export async function GET(request: Request) {
 
     // Extract uuids from comma separated parameter in request
