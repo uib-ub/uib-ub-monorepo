@@ -56,6 +56,7 @@ export default function TableExplorer() {
 
     return (
             <div  className='flex flex-col my-2 gap-y-4 h-full'>
+                <pre>{JSON.stringify(resultData?.aggregations, null, 2)}</pre>
             <div className='flex  flex-col gap-4 !mx-2'>
             <div className='flex gap-2 mt-2 xl:mt-0'>
             { miscSettings[params.dataset as string]?.display != 'table' &&

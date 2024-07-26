@@ -9,7 +9,7 @@ async function loadConfigForDataset(dataset: string) {
   try {
       // Dynamically import the configuration based on the dataset
       // Adjust the path as necessary to point to where your configurations are stored
-      const configModule = await import(`@/config/datasets/${dataset}.ts`);
+      const configModule = await import(`@/config/server/${dataset}.ts`);
       return configModule.default; // Assuming each module exports its configuration as default
   } catch (error) {
       console.error(`Failed to load configuration for dataset ${dataset}:`, error);
@@ -57,6 +57,65 @@ export async function GET(request: Request) {
     },
     "sort": sortArray
   }
+
+
+  if (filteredParams.display == 'table') {
+    datasetConfig.fields.forEach((field: any) => {
+      if (field.nested) {
+        field.nested.forEach((nestedField: any) => {
+          const nestedKeyword = nestedField.type ? nestedField.key : nestedField.key + ".keyword";
+          query.aggs[nestedKeyword] = {
+            "nested": {
+              "path": field.key
+            },
+            "aggs": {
+              [nestedKeyword]: {
+                "filter": {
+                  "bool": {
+                    "must": {
+                      "exists": {
+                        "field": nestedKeyword
+                      }
+                    },
+                    "must_not": {
+                      "term": {
+                        [nestedKeyword]: "" // Exclude documents where the field is an empty string
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        );
+      }
+      else {
+        const keyword = field.type ? field.key : field.key + ".keyword";
+        query.aggs[keyword] = {
+          "filter": {
+            "bool": {
+              "must": {
+                "exists": {
+                  "field": keyword
+                }
+              },
+              "must_not": {
+                "term": {
+                  [keyword]: "" // Exclude documents where the field is an empty string
+                }
+              }
+            }
+          }
+        }
+      }
+    }  
+    );
+  }
+  
+       
+
 
   if (simple_query_string && termFilters.length) {
     query.query = {
