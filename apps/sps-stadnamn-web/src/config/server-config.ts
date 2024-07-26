@@ -1,5 +1,5 @@
 
-const cadastreSort = ["_score", "adm1.keyword", "adm2.keyword", 
+export const cadastreSort = ["_score", "adm1.keyword", "adm2.keyword", 
     {
       "cadastre.gnr": { // Adjusted to remove `.keyword` since `gnr` is an integer
         "order": "asc", // or "desc" depending on your requirement
