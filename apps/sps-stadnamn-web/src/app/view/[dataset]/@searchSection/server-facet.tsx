@@ -11,7 +11,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const router = useRouter()
   const params = useParams<Record<string, string>>()
   const paramLookup = useSearchParams()
-  const searchParams = useQueryWithout(['docs', 'popup', 'view', 'manifest', 'page'])
+  const searchParams = useQueryWithout(['docs', 'popup', 'display', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -21,7 +21,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const availableFacets = facetConfig[params.dataset]
   const [selectedFacet, setSelectedFacet] = useState(availableFacets && availableFacets[0]?.key);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
-  const paramsExceptFacet = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'view', 'manifest', 'page', 'size', 'sort', 'orderBy', selectedFacet])
+  const paramsExceptFacet = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'display', 'manifest', 'page', 'size', 'asc', 'desc', selectedFacet])
 
   const switchFacet = (facet: string) => {
     setSelectedFacet(facet)

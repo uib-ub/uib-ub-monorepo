@@ -12,7 +12,7 @@ export default function CopyLink({ uuid }: { uuid: string }) {
   };
 
     return (
-        <span className="flex gap-3">
+        <span className="flex gap-4">
         <Link href={process.env.NODE_ENV == 'development' ?  `/uuid/${uuid}` : `https://purl.org/stadnamn/uuid/${uuid}`} className="no-underline inline flex gap-1 items-center"><PiInfinityBold aria-hidden="true" className="inline"/>Varig infoside</Link>
         <button onClick={copyLink}>
         <span className="flex gap-1 items-center">{linkCopied ? <PiCheckBold className="inline" aria-hidden="true"/> : <PiClipboardBold className="inline" aria-hidden="true"/>}Kopier lenke</span>

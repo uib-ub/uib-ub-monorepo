@@ -10,6 +10,11 @@ export interface FacetConfigItem {
     label: string;
   }
 
+  export interface SortConfigItem {
+    display: string;
+    noAdm: boolean;
+  }
+
 export const fieldConfig: Record<string, FieldConfigItem[]> = {
     search: [
       {"key": "label", "label": "Namn"},
@@ -31,7 +36,7 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
         {"key": "snid", "label": "Stadnamn ID"},
         {"key": "gnidu", "label": "GNIDu"},
         {"key": "midu", "label": "MIDu"},
-        {"key": "type", "label": "SOSI stedstype"},
+        {"key": "sosi", "label": "Lokalitetstype"},
 
       ],
       rygh: [
@@ -56,8 +61,13 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
         {"key": "rawData.koordinattype", "label": "Koordinattype"}
       ],
       m1838: [
-        {"key": "cadastre.gnr", "label": "Gardsnummer"},
-        {"key": "cadastre.bnr", "label": "Bruksnummer"}
+        {"key": "rawData.MNR", "label": "Matrikkelnummer"},
+        {"key": "rawData.LNR", "label": "Løpenummer"}
+      ],
+      m1886: [
+        {"key": "sosi", "label": "Lokalitetstype"},
+        {"key": "cadastre__gnr", "label": "Gardsnummer"},
+        {"key": "cadastre__bnr", "label": "Bruksnummer"}
       ],
       skul: [
         {"key": "rawData.gnr", "label": "Gardsnummer", "sort": "asc"},
@@ -67,13 +77,20 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   }
   
   
-  export const sortConfig: Record<string, Record<string, string>[]> = {
-    hord: [
-      {"key": "label.keyword", "label": "stadnamn"},
-      {"key": "rawData.kommuneNr.keyword,cadastre__gnr,cadastre__bnr", "label": "matrikkel"},
-    ],
-    ostf: [
-      {"key": "label.keyword", "label": "Oppslagsform"},
-      {"key": "rawData.GNID.keyword", "label": "Matrikkelnummer"},
-    ]
+export const sortConfig: Record<string, Record<string, string>[]> = {
+  hord: [
+    {"key": "label.keyword", "label": "stadnamn"},
+    {"key": "rawData.kommuneNr.keyword,cadastre__gnr,cadastre__bnr", "label": "matrikkel"},
+  ],
+  ostf: [
+    {"key": "label.keyword", "label": "Oppslagsform"},
+    {"key": "rawData.GNID.keyword", "label": "Matrikkelnummer"},
+  ]
+}
+
+export const miscSettings: Record<string, SortConfigItem> = {
+  'leks_g': {
+    'display': 'table',
+    'noAdm': true
   }
+}

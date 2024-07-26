@@ -25,14 +25,14 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
   }
  
   return (
-    <div className='flex gap-8 flex-wrap mt-4 content-center'>
+    <div className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
     
-    <div className='flex gap-2'>
+    <div className='flex w-full gap-2 justify-even'>
     
-    {totalPages > 2 && <IconButton disabled={currentPage == 1} label="Første side" className='btn btn-outline btn-compact' textIcon href={paginationUrl(1)}><PiCaretDoubleLeft/></IconButton>
+    {totalPages > 2 && <IconButton disabled={currentPage == 1} label="Første side" className='btn btn-outline btn-compact grow md:grow-0' textIcon href={paginationUrl(1)}><PiCaretDoubleLeft/></IconButton>
     
   }
-    { <IconButton disabled={currentPage == 1} label="Forrige side" className='btn btn-outline btn-compact' textIcon href={paginationUrl(currentPage - 1)}><PiCaretLeft/></IconButton>
+    { <IconButton disabled={currentPage == 1} label="Forrige side" className='btn btn-outline btn-compact grow md:grow-0' textIcon href={paginationUrl(currentPage - 1)}><PiCaretLeft/></IconButton>
     
     }
 
@@ -45,10 +45,10 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 
     
     { 
-      <IconButton disabled={currentPage == totalPages} label="Neste side" className='btn btn-outline btn-compact' textIcon href={paginationUrl(currentPage + 1)}><PiCaretRight/></IconButton>
+      <IconButton disabled={currentPage == totalPages} label="Neste side" className='btn btn-outline btn-compact grow md:grow-0' textIcon href={paginationUrl(currentPage + 1)}><PiCaretRight/></IconButton>
     }
     { totalPages > 2 &&
-      <IconButton disabled={currentPage == totalPages} label="Siste side" className='btn btn-outline btn-compact' textIcon href={paginationUrl(totalPages)}><PiCaretDoubleRight/></IconButton>
+      <IconButton disabled={currentPage == totalPages} label="Siste side" className='btn btn-outline btn-compact grow md:grow-0' textIcon href={paginationUrl(totalPages)}><PiCaretDoubleRight/></IconButton>
     }
     </div>
     <div className="self-center">

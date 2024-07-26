@@ -6,18 +6,18 @@ import { useRouter, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 import IconButton from '@/components/ui/icon-button';
-import { facetConfig } from '@/config/search-config';
+import { facetConfig, miscSettings } from '@/config/search-config';
 import { datasetTitles } from '@/config/metadata-config';
 
 
 export default function Facets() {
     const router = useRouter()
     const params = useParams<{dataset: string}>()
-    const searchQuery = useQueryWithout(['docs', 'popup', 'search', 'view', 'manifest', 'field', 'expanded'])
-    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'sort' && item[0] != 'orderBy' && item[0] != 'size' && item[0] != 'search')
+    const searchQuery = useQueryWithout(['docs', 'popup', 'search', 'display', 'manifest', 'field', 'expanded'])
+    const activeFilters = searchQuery.filter(item => item[0] != 'q' && item[0] != 'page' && item[0] != 'asc' && item[0] != 'desc' && item[0] != 'size' && item[0] != 'search')
     const [chipsExpanded, setChipsExpanded] = useState(false);
     const filterNames = Array.from(new Set(activeFilters.map(item => item[0])))
-    const clearedParams = useQueryStringWithout([...filterNames, 'page', 'sort', 'orderBy'])
+    const clearedParams = useQueryStringWithout([...filterNames, 'page', 'asc', 'desc'])
     const [expandedFacet, setExpandedFacet] = useState<string | null>(null)
     const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
 
@@ -90,7 +90,8 @@ export default function Facets() {
     </div>
     : null}
 
-    <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
+    { !miscSettings[params.dataset]?.noAdm && <>
+      <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleFacet('adm')}  className='flex w-full items-center gap-1'>
       { expandedFacet == 'adm' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
       Geografisk inndeling
@@ -99,6 +100,8 @@ export default function Facets() {
       </button>
     </h3>
     { expandedFacet == 'adm' ? <ClientFacet facetName='adm' showLoading={(facet: string | null) => setLoadingFacet(facet)}/> : null}
+    </>
+    }
 
     { facetConfig[params.dataset] && 
         <>

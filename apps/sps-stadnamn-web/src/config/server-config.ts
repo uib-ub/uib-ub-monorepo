@@ -26,9 +26,16 @@ const cadastreSort = ["_score", "adm1.keyword", "adm2.keyword",
 
 export const getSortArray = (dataset: string) => {
     switch (dataset) {
+        case 'search':
+          return ["_score", "adm1.keyword", "adm2.keyword"] // add "ranking"
         case 'hord':
+        case 'bsn':
         case 'm1886':
         return cadastreSort
+        case 'leks_g':
+            return ["_score"]
+        case 'm1838':
+            return ["_score", "cadastreSort.mnr", "cadastreSort.mnrLetter", "cadastreSort.lnr", "cadastreSort.lnrLetter"]
         default:
         return ["_score", "adm1.keyword", "adm2.keyword"]
     }

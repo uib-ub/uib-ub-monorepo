@@ -53,10 +53,13 @@ export default async function DocumentView({ params, searchParams }: { params: {
       <div className={(docDataset == 'search' && doc._source.location) ? "p-4 xl:p-8 bg-white overflow-y-auto space-y-3 xl:space-y-6 instance-info absolute h-1/3 xl:h-auto xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md w-full xl:w-1/3 xl:max-h-2/3"
         : 'mx-2 p-4 lg:p-8 space-y-6 instance-info'
       }>
-        {params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+        { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline inline">
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-          { hasSearchParams && searchParams.search != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
+          
+          { hasSearchParams && searchParams.search != 'hide' ? 
+          (searchParams.display = 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet') : 
+          (searchParams.display = 'table' ? 'Vis i tabellen' : 'Vis på kartet')}
         </Link>}
         
         { doc._source.snid && searchParams.expanded && docDataset != 'search' ? 
@@ -66,20 +69,24 @@ export default async function DocumentView({ params, searchParams }: { params: {
             Tilbake til stadnamnsida
             </Link> : null }
         { doc && doc._source && <>
-      <div className="space-y-2">
+      
       <span className="flex flex-wrap gap-x-8 gap-y-2"><h2>{doc._source.label}</h2>
-      { docDataset != 'search' &&  params.dataset == 'search' && 
-        <span className='self-center'><Link className="text-lg bg-neutral-700 text-white px-2 rounded-full flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-xl text-white self-center"/>{ datasetTitles[docDataset]}</Link></span>
-      }
       { docDataset == 'search' && doc._source.snid && <span className="text-neutral-800 self-center">{doc._source.snid} </span> }
       </span>
+      <div className="flex flex-wrap gap-4">
       
-      {doc._source.adm1 && <div>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1} 
-      {doc._source.adm2wd && <> <span className="inline whitespace-nowrap">(wikidata: <Link  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2wd}</Link>) </span></>}
-      </div> }
+      
+      {doc._source.adm2wd ? <span className="inline whitespace-nowrap"> <Link  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2 + ", "}{doc._source.adm1}</Link> </span>
+      : doc._source.adm1 && <>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1}
+      </>
+      }
+      
+      { docDataset != 'search' &&  params.dataset == 'search' && 
+        <span className='self-center'><Link className="no-underline flex gap-1 items-center" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-lg self-center"/>{ datasetTitles[docDataset]}</Link></span>
+      }
+      
+      
       </div>
-      
-      
       { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') && <CopyLink uuid={doc._source.uuid} /> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
       

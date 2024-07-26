@@ -2,44 +2,67 @@
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { useContext, useState } from "react"
 import { SearchContext } from '@/app/search-provider'
-import Spinner from '@/components/svg/Spinner'
-import ErrorMessage from '@/components/ErrorMessage'
 import Pagination from '@/components/results/pagination'
-import { PiCaretDown, PiCaretUp, PiDownloadSimple, PiMapTrifold, PiPlus } from 'react-icons/pi'
+import { PiCaretDown, PiCaretUp, PiDownloadSimple, PiMapTrifold, PiSortAscending, PiSortDescending } from 'react-icons/pi'
+import { useQueryStringWithout } from '@/lib/search-params'
+import InfoButton from '@/components/results/infoButton'
+import { miscSettings } from '@/config/search-config'
 
 
 
 
 
-export default function TableView() {
+export default function TableExplorer() {
     const searchParams = useSearchParams()
 
-    const { resultData, isLoading, searchError } = useContext(SearchContext)
+    const { resultData } = useContext(SearchContext)
     const router = useRouter()
     const params = useParams()
 
-    const mapViewUrl = `/view/${params.dataset}${searchParams.toString() ? '?' + searchParams.toString() : ''}`
+    const mapViewParams = useQueryStringWithout(["display"])
+    const mapViewUrl = `/view/${params.dataset}${mapViewParams ? '?' + mapViewParams : ''}`
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const [columns, setColumns] = useState<string[]>([])
+
+    const sortToggle = (field: string) => {
+        const newParams = new URLSearchParams(searchParams)
+
+        newParams.delete('page')
+        
+        if (newParams.get('asc') == field) {
+            newParams.delete('asc')
+            newParams.set('desc', field)
+        }
+        else if (newParams.get('desc') == field) {
+            newParams.delete('desc')
+        }
+        else if (newParams.get('asc') != field) {
+            newParams.delete('asc')
+            newParams.delete('desc')
+            newParams.set('asc', field)
+        }
+        
+
+
+
+        router.push(`/view/${params.dataset}?${newParams.toString()}`)
+    }
+
+
+
 
 
 
 
     return (
             <div  className='flex flex-col my-2 gap-y-4 h-full'>
-                {searchError ? <ErrorMessage error={searchError} message="Kunne ikke gjennomføre søket"/>
-                    
-                
-            :
-
-            resultData?.hits?.hits?.length ?
-            <>
-            <div className='flex  flex-col gap-2 !mx-2'>
-            <div className='flex gap-2'>
-            <button className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
+            <div className='flex  flex-col gap-4 !mx-2'>
+            <div className='flex gap-2 mt-2 xl:mt-0'>
+            { miscSettings[params.dataset as string]?.display != 'table' &&
+                <button className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
                 <PiMapTrifold className='text-xl mr-2' aria-hidden="true"/>
                 Kartvisning
-            </button>
+            </button> }
             <button className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
                 <PiDownloadSimple className='text-xl mr-2' aria-hidden="true"/>
                 Last ned
@@ -64,8 +87,31 @@ export default function TableView() {
             <table className='result-table'>
                 <thead>
                     <tr>
-                        <th>Stadnamn</th>
-                        <th>Lokalitetstype</th>
+                        <th>
+                            <button onClick={() => sortToggle('label.keyword')}>
+                            Stadnamn
+                            {
+                                searchParams.get('asc') == 'label.keyword' && <PiSortAscending className='text-xl inline ml-2'/>
+                            }
+                            {
+                                searchParams.get('desc') == 'label.keyword' && <PiSortDescending className='text-xl inline ml-2'/>
+                            }
+                            </button>
+
+
+                        </th>
+                        <th>
+                            <button onClick={() => sortToggle('sosi.keyword')}>
+                            Lokalitetstype
+                            {
+                                searchParams.get('asc') == 'sosi.keyword' && <PiSortAscending className='text-xl inline ml-2'/>
+                            }
+                            {
+                                searchParams.get('desc') == 'sosi.keyword' && <PiSortDescending className='text-xl inline ml-2'/>
+                            }
+                            </button>
+
+                        </th>
                         <th>Gardsnummer</th>
                         <th>Bruksnummer</th>
                     </tr>
@@ -73,7 +119,10 @@ export default function TableView() {
                 <tbody>
                 { resultData?.hits?.hits?.map((hit: any) => (
                     <tr key={hit._id}>
-                        <td>{hit._source.label}</td>
+                        <td>
+                            <InfoButton doc={hit} iconClass='text-2xl align-top text-primary-600 inline'/>
+                            
+                            {hit._source.label}</td>
                         <td>{hit._source.sosi}</td>
                         <td>{hit._source.cadastre?.[0].gnr || '-'}</td>
                         <td>{hit._source.cadastre?.[0].bnr || '-'}</td>
@@ -89,27 +138,11 @@ export default function TableView() {
             
             
             </div>
-            <nav className="center gap-2 mx-2">
+            <nav className="center gap-2 mx-2 pb-4">
             {resultData?.hits?.total.value > 10 && <Pagination totalPages={Math.ceil(resultData?.hits.total.value / (Number(searchParams.get('size')) || 10))}/>}
             </nav>
             
-            </>
-
-            
-             :
-             isLoading ?
-                <div className="flex h-full items-center justify-center">
-                <div>
-                  <Spinner status="Laster inn kartet" className="w-20 h-20"/>
-                </div>
-              </div> 
-              :
-                <div className="flex h-full flex-col items-center justify-center my-auto text-2xl gap-y-1 font-semibold" role="status" aria-live="polite"><div>Ingen treff</div></div>}
-            
             </div>
-            
-  
-          
             
           
             )

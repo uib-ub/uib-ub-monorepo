@@ -10,9 +10,9 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const router = useRouter()
   const params = useParams()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
-  const paramsExceptFacet = useQueryStringWithout(['docs', 'popup', 'search', 'view', 'manifest', facetName, 'page', 'size', 'sort', 'orderBy', 'expanded']);
+  const paramsExceptFacet = useQueryStringWithout(['docs', 'popup', 'search', 'display', 'manifest', facetName, 'page', 'size', 'asc', 'desc', 'expanded']);
   const paramLookup = useSearchParams()
-  const searchParams = useQueryWithout(['docs', 'popup', 'search', 'view', 'manifest', 'page', 'expanded'])
+  const searchParams = useQueryWithout(['docs', 'popup', 'search', 'display', 'manifest', 'page', 'expanded'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');

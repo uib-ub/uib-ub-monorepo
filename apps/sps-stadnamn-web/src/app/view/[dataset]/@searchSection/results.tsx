@@ -81,14 +81,14 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         </span> { showLoading ? <Spinner status="Laster inn treff" className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
       </h2>
       <div className="ml-auto flex items-end gap-4">
-      { !pathname.includes('/table') &&
-        <button className="btn btn-outline btn-compact !pl-2" onClick={() => router.push(pathname + "/table?" + searchParams.toString())}>
+      { searchParams.get('display') != 'table' &&
+        <button className="btn btn-outline btn-compact !pl-2" onClick={() => router.push(`/view/${params.dataset}?display=table&${searchParams.toString()}`)}>
       <i>
-        <PiTable className="text-xl mr-2"/>
+        <PiTable className="text-xl mr-2" aria-hidden="true"/>
       </i>
       Tabellvisning
       </button>}
-      {sortConfig[params.dataset] && false &&
+      {false && sortConfig[params.dataset]  &&
       <span>
         <label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
         <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy} value={searchParams.get('orderBy') || ""}>
@@ -120,7 +120,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     </ul>
 
 
-    <nav className="center gap-2">
+    <nav className="center gap-2 mt-4">
       {hits.total.value > 10 && <Pagination totalPages={Math.ceil(hits.total.value / (Number(searchParams.get('size')) || 10))}/>}
     </nav>
 

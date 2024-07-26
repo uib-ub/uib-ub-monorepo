@@ -5,13 +5,15 @@ import MapExplorer from '@/components/Map/MapExplorer'
 import { SearchContext } from '@/app/search-provider'
 import Spinner from '@/components/svg/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
+import TableExplorer from './table'
 
 
 export default function SearchView() {
     const { mapBounds, isLoading, searchError, resultData } = useContext(SearchContext)
     const params = useParams()
     const [docs, setDocs] = useState<any>(null)
-    const docs_uuid = useSearchParams().get('docs')
+    const searchParams = useSearchParams()
+    const docs_uuid = searchParams.get('docs')
 
     if (Array.isArray(params.dataset)) {
         throw new Error('Expected "dataset" to be a string, but received an array');
@@ -33,14 +35,22 @@ export default function SearchView() {
     return (
         <>
 
-           { mapBounds?.length ? (
+           { 
+
+          searchParams.get('display') == 'table' && resultData?.hits?.hits?.length ?
+          <TableExplorer/>
+
+          :
+           
+           mapBounds?.length ? (
             <MapExplorer docs={docs} mapBounds={mapBounds} isLoading={isLoading}/>
             )
-            :
+
+            : 
             isLoading ? 
             <div className="flex h-full items-center justify-center">
               <div>
-                <Spinner status="Laster inn kartet" className="w-20 h-20"/>
+                <Spinner status="Laster inn treff" className="w-20 h-20"/>
               </div>
             </div> 
             : 

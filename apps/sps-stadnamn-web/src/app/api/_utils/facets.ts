@@ -10,10 +10,11 @@ export function extractFacets(request: Request ) {
   for (const [key, value] of urlParams.entries()) {
     switch (key) {
       case 'q':
+      case 'display': // Display mode. For now table is the only possible value. Map is default
       case 'dataset':
       case 'page':
-      case 'sort':
-      case 'orderBy':
+      case 'asc':
+      case 'desc':
       case 'field':
       case 'facetSort':
       case 'size':

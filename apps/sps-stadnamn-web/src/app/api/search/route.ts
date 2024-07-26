@@ -9,31 +9,15 @@ export async function GET(request: Request) {
   const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
   const { highlight, simple_query_string } = getQueryString(filteredParams)
 
-  let sortArray = []
+  let sortArray: any[] = []
 
   
-  if (filteredParams.sort) {
-    const fields = filteredParams.orderBy?.split(',') || ['_score'];
-    for (const field of fields) {
-      const nestedFields = field.split('__');
-      const order = filteredParams.sort == 'desc' ? 'desc' : 'asc';
-      if (nestedFields.length > 1) {
-        sortArray.push({
-          [`${nestedFields[0]}.${nestedFields[1]}`]: {
-            "order": order,
-            "nested": {
-              "path": nestedFields[0]
-            }
-          }
-        });
-      } else {
-        sortArray.push({
-          [`${field}`]: {
-            "order": order,
-            "missing": "_first"
-          }
-        });
-      }
+  if (filteredParams.display == 'table') {
+    if (filteredParams.asc) {
+      sortArray.push({[filteredParams.asc]: 'asc'})
+    }
+    if (filteredParams.desc) {
+      sortArray.push({[filteredParams.desc]: 'desc'})
     }
   }
   else {
@@ -59,7 +43,7 @@ export async function GET(request: Request) {
   if (simple_query_string && termFilters.length) {
     query.query = {
       "bool": {
-        "must": simple_query_string,
+        "must": simple_query_string,              
         "filter": termFilters
       }
     }

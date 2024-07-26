@@ -16,10 +16,9 @@ import SearchToggle from './SearchToggle'
 export default function SearchSection () {
     const params = useParams<{dataset: string, uuid: string, manifestId: string}>()
     const router = useRouter()
-    const pathname = usePathname()
     const { resultData, isLoading, searchError } = useContext(SearchContext)
     const filteredParams = useQueryStringWithout(['docs', 'popup', 'expanded', 'search'])
-    const filteredParamsWithoutSort = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'orderBy', 'sort'])
+    const filteredParamsWithoutSort = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'asc', 'desc'])
     let [mainIndex, subindex] = params.dataset.split("_")
     const searchParams = useSearchParams()
 
@@ -32,7 +31,7 @@ export default function SearchSection () {
         .filter(item => item[1] !== '') // filter out blank parameters
         .map(item => `${encodeURIComponent(item[0])}=${encodeURIComponent(item[1] as string)}`)
         .join('&');
-    router.push(`/view/${params.dataset}?${formParams}`)
+    router.push(`/view/${params.dataset}?${formParams}${searchParams.get('display') == 'table' ? '&display=table' : ''}`)
 }
 
 
@@ -57,7 +56,7 @@ export default function SearchSection () {
           <SearchBar/>
           { !searchError && <Filters/> }
         </form>            
-          { !pathname.includes('/table') && resultData && filteredParamsWithoutSort ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
+          { searchParams.get('display') != 'table' && resultData && filteredParamsWithoutSort ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
 
         </div>        
         </section>

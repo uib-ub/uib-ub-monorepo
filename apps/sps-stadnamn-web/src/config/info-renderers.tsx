@@ -298,8 +298,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
               {title: 'Fylke', value: source.adm1},
               {title: 'Lokalitetstype', value: source.sosi, sosi: true},
               {title: 'Kommunenummer', value: source.rawData.knr},
-              {title: 'Gardsnummer', value: source.rawData.gnr},
-              {title: 'Bruksnummer', value: source.rawData.bnr},
+              {title: 'Gardsnummer', value: source.cadastre.gnr},
+              {title: 'Bruksnummer', value: source.cadastre.bnr},
               {title: 'GNIDu', value: source.rawData.gnidu}
     ]}/>
 
