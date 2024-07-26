@@ -12,17 +12,46 @@ export async function GET(request: Request) {
   let sortArray: any[] = []
 
   
-  if (filteredParams.display == 'table') {
-    if (filteredParams.asc) {
-      sortArray.push({[filteredParams.asc]: 'asc'})
-    }
-    if (filteredParams.desc) {
-      sortArray.push({[filteredParams.desc]: 'desc'})
+  // Existing sorting logic
+if (filteredParams.display == 'table') {
+  if (filteredParams.asc) {
+    if (filteredParams.asc.includes('__')) {
+      // Handle nested sorting for ascending order
+      const path = filteredParams.asc.split('__')[0];
+      sortArray.push({
+        [filteredParams.asc.replace("__", ".")]: {
+          "order": "asc",
+          "nested": {path}
+        }
+      });
+    } else {
+      // Non-nested sorting
+      sortArray.push({[filteredParams.asc]: 'asc'});
     }
   }
-  else {
+  if (filteredParams.desc) {
+    if (filteredParams.desc.includes('__')) {
+      // Handle nested sorting for descending order
+      const path = filteredParams.desc.split('__')[0];
+      sortArray.push({
+        [filteredParams.desc.replace("__", ".")]: {
+          "order": "desc",
+          "nested": {path}
+        }
+
+    
+      });
+    } else {
+      // Non-nested sorting
+      sortArray.push({[filteredParams.desc]: 'desc'});
+    }
+  }
+}
+
+  if (!sortArray.length) {
     sortArray = getSortArray(dataset)
   }
+
     
   const query: Record<string,any> = {
     "from": filteredParams.page ? (parseInt(filteredParams.page) - 1) * parseInt(filteredParams.size || '10') : 0,

@@ -179,7 +179,11 @@
   }
   
   .result-table thead th {
-    @apply text-neutral-950 uppercase bg-neutral-50 p-4; /* Darker text for better contrast */
+    @apply text-sm uppercase bg-neutral-50 p-4; /* Darker text for better contrast */
+  }
+
+  .result-table thead button {
+    @apply text-neutral-950 uppercase /* Darker text for better contrast */
   }
   
   .result-table tbody tr {

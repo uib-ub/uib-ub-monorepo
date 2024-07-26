@@ -1,12 +1,15 @@
 'use client'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { SearchContext } from '@/app/search-provider'
 import Pagination from '@/components/results/pagination'
-import { PiCaretDown, PiCaretUp, PiDownloadSimple, PiMapTrifold, PiSortAscending, PiSortDescending } from 'react-icons/pi'
+import { PiCaretDown, PiCaretUp, PiDownloadSimple, PiMapTrifold } from 'react-icons/pi'
 import { useQueryStringWithout } from '@/lib/search-params'
 import InfoButton from '@/components/results/infoButton'
-import { miscSettings } from '@/config/search-config'
+import { miscSettings, facetConfig } from '@/config/search-config'
+import SortButton from './SortButton'
+import ExternalLinkButton from '@/components/results/externalLinkButton'
+import ResultRow from '../@searchSection/ResultRow'
 
 
 
@@ -24,34 +27,11 @@ export default function TableExplorer() {
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const [columns, setColumns] = useState<string[]>([])
 
-    const sortToggle = (field: string) => {
-        const newParams = new URLSearchParams(searchParams)
+    const showAdm = searchParams.getAll('adm').length != 1
 
-        newParams.delete('page')
-        
-        if (newParams.get('asc') == field) {
-            newParams.delete('asc')
-            newParams.set('desc', field)
-        }
-        else if (newParams.get('desc') == field) {
-            newParams.delete('desc')
-        }
-        else if (newParams.get('asc') != field) {
-            newParams.delete('asc')
-            newParams.delete('desc')
-            newParams.set('asc', field)
-        }
-        
+    
 
-
-
-        router.push(`/view/${params.dataset}?${newParams.toString()}`)
-    }
-
-
-
-
-
+    
 
 
     return (
@@ -83,59 +63,60 @@ export default function TableExplorer() {
 
 
             }
-
-            <table className='result-table'>
+             <table className='result-table'>
                 <thead>
                     <tr>
                         <th>
-                            <button onClick={() => sortToggle('label.keyword')}>
-                            Stadnamn
-                            {
-                                searchParams.get('asc') == 'label.keyword' && <PiSortAscending className='text-xl inline ml-2'/>
-                            }
-                            {
-                                searchParams.get('desc') == 'label.keyword' && <PiSortDescending className='text-xl inline ml-2'/>
-                            }
-                            </button>
-
-
+                            <SortButton field="label.keyword">
+                            Oppslag
+                            </SortButton>
                         </th>
-                        <th>
-                            <button onClick={() => sortToggle('sosi.keyword')}>
-                            Lokalitetstype
-                            {
-                                searchParams.get('asc') == 'sosi.keyword' && <PiSortAscending className='text-xl inline ml-2'/>
-                            }
-                            {
-                                searchParams.get('desc') == 'sosi.keyword' && <PiSortDescending className='text-xl inline ml-2'/>
-                            }
-                            </button>
-
-                        </th>
-                        <th>Gardsnummer</th>
-                        <th>Bruksnummer</th>
+                        {
+                            showAdm && <th> 
+                                <SortButton field="adm1.keyword,adm2.keyword">
+                                Distrikt
+                                </SortButton>
+                            </th>
+                        }
+                        { facetConfig[params.dataset as string]?.map((facet: any) => (
+                            <th key={facet.key}>
+                                <SortButton field={facet.type ? facet.key : facet.key + ".keyword"}>
+                                    {facet.label}
+                                </SortButton>
+                            </th>
+                        )) }
                     </tr>
                 </thead>
                 <tbody>
                 { resultData?.hits?.hits?.map((hit: any) => (
                     <tr key={hit._id}>
                         <td>
-                            <InfoButton doc={hit} iconClass='text-2xl align-top text-primary-600 inline'/>
-                            
-                            {hit._source.label}</td>
-                        <td>{hit._source.sosi}</td>
-                        <td>{hit._source.cadastre?.[0].gnr || '-'}</td>
-                        <td>{hit._source.cadastre?.[0].bnr || '-'}</td>
+                           <ResultRow hit={hit} adm={false}/>
+                        </td>
+                        {
+                            showAdm && <td>{hit._source.adm2}, {hit._source.adm1}</td>
+                        }
+                        { facetConfig[params.dataset as string]?.map((facet: any) => (
+                            facet.key.includes("__") ? 
+                                <td key={facet.key}>
+                                    {[...new Set(hit._source[facet.key.split("__")[0]]
+                                        .map((k: Record<string, any>) => k[facet.key.split("__")[1]] || '-'))]
+                                        .join(', ')}
+                                </td>
+                            :
+                                <td key={facet.key}>
+                                    {facet.key.split('.').reduce((o: Record<string, any> | undefined, k: string) => (o || {})[k], hit._source) || '-'}
+                                </td>
+                        ))}
                     </tr>
                 ))
             }
-                
+
             
 
 
                 </tbody>
             </table>
-            
             
             </div>
             <nav className="center gap-2 mx-2 pb-4">

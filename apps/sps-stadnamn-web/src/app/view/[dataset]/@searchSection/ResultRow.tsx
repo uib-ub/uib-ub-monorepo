@@ -14,7 +14,7 @@ import Spinner from '@/components/svg/Spinner';
 
 
 
-export default function ResultRow({ hit }: { hit: any}) {
+export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean}) {
     const params = useParams<{uuid: string; dataset: string}>()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -25,6 +25,7 @@ export default function ResultRow({ hit }: { hit: any}) {
 
     const titleRenderer = resultRenderers[params.dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
+    const snippetRenderer = resultRenderers[params.dataset]?.snippet;
 
     const toggleExpanded = () => {
       const newSearchParams = new URLSearchParams(searchParams)
@@ -46,9 +47,13 @@ export default function ResultRow({ hit }: { hit: any}) {
         <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col">
         <div className='flex flex-grow'>
         <div id={"resultText_" + hit._source.uuid}>{titleRenderer(hit)}
-        <p>
-          { detailsRenderer(hit) }
-        </p>
+        {(adm || hit.highlight) && <p>
+          {adm && detailsRenderer(hit)}
+          {adm && hit.highlight && ' | '}
+          {hit.highlight && snippetRenderer && snippetRenderer(hit)}
+          
+
+        </p>}
         </div>
         <div className='flex gap-1 ml-auto self-end'>
         { params.dataset == 'search' && hit._source.children.length == 1 &&

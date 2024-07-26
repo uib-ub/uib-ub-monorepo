@@ -94,7 +94,7 @@ export default function Facets() {
       <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleFacet('adm')}  className='flex w-full items-center gap-1'>
       { expandedFacet == 'adm' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
-      Geografisk inndeling
+      Distrikt
       { loadingFacet == 'adm' ? <Spinner status="Laster inn geografisk inndeling" className='w-[1em] h-[1em}'/> : null}
        
       </button>

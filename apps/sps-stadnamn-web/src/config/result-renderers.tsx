@@ -1,6 +1,7 @@
 interface Renderer {
   title: (hit: any) => any;
   details: (hit: any) => any;
+  snippet?: (hit: any) => any;
 }
 
 interface ResultRenderers {
@@ -80,15 +81,17 @@ export const resultRenderers: ResultRenderers = {
       const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
       return <><strong>{source.label}{altLabels ? ', ':''}</strong>{altLabels}</> 
     },
+    snippet: (hit: any) => {
+      return hit.highlight?.['rawData.merknader'][0] && formatHighlight(hit.highlight['rawData.merknader'][0])
+    },
     details: (hit: any) => {
       const source = hit._source
       const knr = source.rawData.kommuneNr
       const gnr = source.rawData.bruka?.bruk?.gardsNr
       const bnr = source.rawData.bruka?.bruk?.bruksNr
       const details = [gnr, bnr].filter((v) => v).join('/')
-      const snippet = hit.highlight?.['rawData.merknader'][0] && formatHighlight(hit.highlight['rawData.merknader'][0])
 
-      return  <>{snippet && <>{snippet} | </>}{ " " + source.rawData.kommuneNamn + ", " + knr}{details ? ' - ' + details : '' }</>
+      return  <>{ " " + source.rawData.kommuneNamn + ", " + knr}{details ? ' - ' + details : '' }</>
     }
   },
   nbas: {

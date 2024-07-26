@@ -2,6 +2,7 @@ export interface FacetConfigItem {
     key: string;
     label: string;
     omitLabel?: boolean;
+    type?: 'integer' | 'keyword';
     sort?: 'doc_count' | 'asc' | 'desc';
   }
 
@@ -26,6 +27,8 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
     ]
   }
   
+
+
   
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
@@ -51,8 +54,8 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
       ],
       hord: [
         {"key": "archive.institution", "label": "Arkivtilvising"},
-        {"key": "cadastre__gnr", "label": "Gardsnummer", "sort": "asc"},
-        {"key": "cadastre__bnr", "label": "Bruksnummer", "sort": "asc"},
+        {"key": "cadastre__gnr", "label": "Gardsnummer", "sort": "asc", "type": "integer"},
+        {"key": "cadastre__bnr", "label": "Bruksnummer", "sort": "asc", "type": "integer"},
         {"key": "rawData.oppskrivar", "label": "Oppskrivar"},
         {"key": "rawData.oppskrivingsTid", "label": "Oppskrivingstid"},
       ],

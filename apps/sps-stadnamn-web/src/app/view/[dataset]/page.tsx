@@ -5,7 +5,7 @@ import MapExplorer from '@/components/Map/MapExplorer'
 import { SearchContext } from '@/app/search-provider'
 import Spinner from '@/components/svg/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
-import TableExplorer from './table'
+import TableExplorer from './_table/table'
 
 
 export default function SearchView() {
