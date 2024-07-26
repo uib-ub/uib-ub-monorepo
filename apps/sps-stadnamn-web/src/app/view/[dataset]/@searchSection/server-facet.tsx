@@ -11,7 +11,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const router = useRouter()
   const params = useParams<Record<string, string>>()
   const paramLookup = useSearchParams()
-  const searchParams = useQueryWithout(['docs', 'popup', 'display', 'manifest', 'page'])
+  const searchParams = useQueryWithout(['docs', 'popup', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   
