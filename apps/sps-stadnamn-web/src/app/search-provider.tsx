@@ -51,7 +51,9 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             }
             setResultData(es_data)
 
-            }).then(() => setIsLoading(false))
+            }).then(() => setIsLoading(false)).catch(error => {
+                setSearchError({error})
+            })
         
         
       }, [filteredSearchParams, params.dataset])
