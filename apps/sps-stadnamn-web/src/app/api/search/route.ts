@@ -9,44 +9,46 @@ export async function GET(request: Request) {
   const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
   const { highlight, simple_query_string } = getQueryString(filteredParams)
 
-  let sortArray: any[] = []
-
-  
-  // Existing sorting logic
-if (filteredParams.display == 'table') {
-  if (filteredParams.asc) {
-    if (filteredParams.asc.includes('__')) {
-      // Handle nested sorting for ascending order
-      const path = filteredParams.asc.split('__')[0];
-      sortArray.push({
-        [filteredParams.asc.replace("__", ".")]: {
-          "order": "asc",
-          "nested": {path}
-        }
-      });
-    } else {
-      // Non-nested sorting
-      sortArray.push({[filteredParams.asc]: 'asc'});
-    }
-  }
-  if (filteredParams.desc) {
-    if (filteredParams.desc.includes('__')) {
-      // Handle nested sorting for descending order
-      const path = filteredParams.desc.split('__')[0];
-      sortArray.push({
-        [filteredParams.desc.replace("__", ".")]: {
-          "order": "desc",
-          "nested": {path}
-        }
-
+  let sortArray: (string | object)[] = []
     
-      });
-    } else {
-      // Non-nested sorting
-      sortArray.push({[filteredParams.desc]: 'desc'});
+    // Existing sorting logic
+  if (filteredParams.display == 'table') {
+    if (filteredParams.asc) {
+      filteredParams.asc.split(',').forEach((field: string) => {
+      if (field.includes('__')) {
+        // Handle nested sorting for ascending order
+        sortArray.push({
+          [field.replace("__", ".")]: {
+            "order": "asc",
+            "nested": { path: field.split('__')[0] }
+          }
+        });
+      } else {
+        // Non-nested sorting
+        sortArray.push({[field]: 'asc'});
+      }
+    });
+    }
+    if (filteredParams.desc) {
+      filteredParams.desc.split(',').forEach((field: string) => {
+      if (field.includes('__')) {
+        // Handle nested sorting for descending order
+        sortArray.push({
+          [field.replace("__", ".")]: {
+            "order": "desc",
+            "nested": { path: field.split('__')[0] }
+          }
+
+      
+        });
+      } else {
+        // Non-nested sorting
+        sortArray.push({[field]: 'desc'});
+      }
+    });
+
     }
   }
-}
 
   if (!sortArray.length) {
     sortArray = getSortArray(dataset)
@@ -86,6 +88,8 @@ if (filteredParams.display == 'table') {
       }
     }
   }
+
+  //console.log("QUERY", JSON.stringify(query, null, 2))
 
   const data = await postQuery(dataset, query)
 
