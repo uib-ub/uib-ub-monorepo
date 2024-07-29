@@ -13,6 +13,7 @@ export default function CoordinateButton({doc, iconClass, parentUuid}: {doc: any
 
     const showInMap = (uuid: string) => {
         const newSearchParams = new URLSearchParams(searchParams)
+        newSearchParams.delete('display')
 
         if (params.dataset == 'search' && docDaataset != 'search') {
           newSearchParams.set('popup', doc._source.location.coordinates[1] + ',' + doc._source.location.coordinates[0])
