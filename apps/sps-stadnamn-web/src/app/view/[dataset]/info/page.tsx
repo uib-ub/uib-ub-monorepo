@@ -2,7 +2,7 @@ import { datasetDescriptions, datasetPresentation, datasetTitles, subpages } fro
 import GoToSearchButtons from './GoToSearchButtons'
 import SubpageNav from '@/components/layout/SubpageNav'
 import { MDXRemote } from 'next-mdx-remote/rsc'
-import { miscSettings } from '@/config/search-config'
+import { contentSettings } from '@/config/server-config';
 import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
@@ -44,7 +44,7 @@ export default function Subpage( { params }: { params: { dataset: string, subpag
                     <p>© {datasetPresentation[mainIndex].attribution}. Lisens: <Link href={datasetPresentation[mainIndex].license.url}>
                   {datasetPresentation[mainIndex].license.name}
                 </Link></p>
-                    {mainIndex && miscSettings[mainIndex]?.display != 'table' && <GoToSearchButtons dataset={mainIndex}/>}
+                    {mainIndex && contentSettings[mainIndex]?.display != 'table' && <GoToSearchButtons dataset={mainIndex}/>}
                     {src && <MDXRemote source={src} />}
 
                     { subpages[mainIndex]?.length &&

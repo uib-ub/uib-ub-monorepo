@@ -3,12 +3,11 @@ import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { useContext, useEffect, useState } from "react"
 import { SearchContext } from '@/app/search-provider'
 import Pagination from '@/components/results/pagination'
-import { PiCaretDown, PiCaretUp, PiDownloadSimple, PiMapTrifold } from 'react-icons/pi'
+import { PiArrowCircleDown, PiArrowClockwise, PiArrowCounterClockwise, PiCaretDown, PiCaretUp, PiDownloadSimple, PiMapTrifold, PiTrash } from 'react-icons/pi'
 import { useQueryStringWithout } from '@/lib/search-params'
-import InfoButton from '@/components/results/infoButton'
-import { miscSettings, facetConfig } from '@/config/search-config'
+import { facetConfig } from '@/config/search-config'
+import { contentSettings } from '@/config/server-config';
 import SortButton from './SortButton'
-import ExternalLinkButton from '@/components/results/externalLinkButton'
 import ResultRow from '../@searchSection/ResultRow'
 
 
@@ -25,9 +24,40 @@ export default function TableExplorer() {
     const mapViewParams = useQueryStringWithout(["display"])
     const mapViewUrl = `/view/${params.dataset}${mapViewParams ? '?' + mapViewParams : ''}`
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
-    const [columns, setColumns] = useState<string[]>([])
+    const [visibleColumns, setVisibleColumns] = useState<string[]>([])
+    const localStorageKey = `visibleColumns_${params.dataset as string}`;
+    
 
-    const showAdm = searchParams.getAll('adm').length != 1
+    const admValues = searchParams.getAll('adm')
+    const showAdm = admValues.length != 1 || (admValues.length && admValues[0].split("__").length < (contentSettings[params.dataset as string]?.adm || 0))
+    const showCadastre = contentSettings[params.dataset as string]?.cadastre
+
+
+    useEffect(() => {
+        const storedColumns = localStorage.getItem(localStorageKey);
+        if (storedColumns) {
+          setVisibleColumns(JSON.parse(storedColumns));
+        } else {
+          setVisibleColumns(facetConfig[params.dataset as string]?.filter(item => item.table).map(facet => facet.key) || []);
+        }
+        
+      }, [params.dataset, localStorageKey]);
+    
+      const handleCheckboxChange = (columnId: string, isChecked: boolean) => {
+        if (isChecked) {
+          setVisibleColumns(prev => [...prev, columnId]);
+          localStorage.setItem(localStorageKey, JSON.stringify([...visibleColumns, columnId]));
+
+        } else {
+          setVisibleColumns(prev => prev.filter(id => id !== columnId));
+          localStorage.setItem(localStorageKey, JSON.stringify(visibleColumns.filter(id => id !== columnId)));
+        }
+      };
+
+      const resetColumns = () => {
+        setVisibleColumns(facetConfig[params.dataset as string]?.filter(item => item.table).map(facet => facet.key) || []);
+      }
+    
 
     
 
@@ -38,27 +68,44 @@ export default function TableExplorer() {
             <div  className='flex flex-col my-2 gap-y-4 h-full'>
             <div className='flex  flex-col gap-4 !mx-2'>
             <div className='flex gap-2 mt-2 xl:mt-0'>
-            { miscSettings[params.dataset as string]?.display != 'table' &&
-                <button className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
+            { contentSettings[params.dataset as string]?.display != 'table' &&
+                <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
                 <PiMapTrifold className='text-xl mr-2' aria-hidden="true"/>
                 Kartvisning
             </button> }
-            <button className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
+            <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
                 <PiDownloadSimple className='text-xl mr-2' aria-hidden="true"/>
                 Last ned
             </button>
-            <button className='btn btn-outline btn-compact pl-2' onClick={() => setColumnSelectorOpen(!columnSelectorOpen)} aria-expanded={columnSelectorOpen} aria-controls={columnSelectorOpen ? 'column-selector' : undefined}>
+            <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => setColumnSelectorOpen(!columnSelectorOpen)} aria-expanded={columnSelectorOpen} aria-controls={columnSelectorOpen ? 'column-selector' : undefined}>
                 { columnSelectorOpen ? <PiCaretUp className='text-xl mr-2' aria-hidden="true"/> : <PiCaretDown className='text-xl mr-2' aria-hidden="true"/> }           
                 Kolonner
             </button>
+            { // Reset button if visible columns is different from default
+            visibleColumns.length !== (facetConfig[params.dataset as string]?.filter(item => item.table).length || 0) &&
+            <button type="button" className='btn btn-outline btn-compact pl-2' onClick={resetColumns}>
+                <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
+                Tilbakestill kolonner
+            </button>
+
+            }
             </div>
-            { columnSelectorOpen && <div className='flex gap-2' id="column-selector">
-                <input type="checkbox" id="label" name="label" value="label" checked={columns.includes('label')} onChange={(e) => setColumns(e.target.checked ? [...columns, 'label'] : columns.filter(c => c !== 'label') )}/>
-                <label htmlFor="label">Stadnamn</label>
-                <input type="checkbox" id="gnr" name="gnr" value="gnr" checked={columns.includes('gnr')} onChange={(e) => setColumns(e.target.checked ? [...columns, 'gnr'] : columns.filter(c => c !== 'gnr') )}/>
-                <label htmlFor="gnr">Gnr</label>
-                <input type="checkbox" id="bnr" name="bnr" value="bnr" checked={columns.includes('bnr')} onChange={(e) => setColumns(e.target.checked ? [...columns, 'bnr'] : columns.filter(c => c !== 'bnr') )}/>
-                <label htmlFor="bnr">Bnr</label>
+            
+            { columnSelectorOpen && <div className='flex gap-4 px-2 flex-wrap' id="column-selector">
+                
+                {facetConfig[params.dataset as string]?.map((facet: any) => (
+                    <div key={facet.key}>
+                    <label className="flex gap-2">
+                        <input
+                        type="checkbox"
+                        checked={visibleColumns.includes(facet.key)}
+                        onChange={(e) => handleCheckboxChange(facet.key, e.target.checked)}
+                        />
+                        {facet.label}
+                    </label>
+                    </div>
+                ))}
+
             </div>
 
 
@@ -71,14 +118,22 @@ export default function TableExplorer() {
                             Oppslag
                             </SortButton>
                         </th>
+                        
                         {
                             showAdm && <th> 
-                                <SortButton field="adm1.keyword,adm2.keyword">
+                                <SortButton field={Array.from({length: contentSettings[params.dataset as string]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")}>
                                 Distrikt
                                 </SortButton>
                             </th>
                         }
-                        { facetConfig[params.dataset as string]?.map((facet: any) => (
+                        { showCadastre &&
+                            <th>
+                            <SortButton field={`${showAdm ? 'adm1.keyword,adm2.keyword,':''}cadastre__gnr,cadastre__bnr`}>
+                            Matrikkel
+                            </SortButton>
+                            </th>
+                        }
+                        { facetConfig[params.dataset as string]?.filter(item => visibleColumns.includes(item.key)).map((facet: any) => (
                             <th key={facet.key}>
                                 <SortButton field={facet.type ? facet.key : facet.key + ".keyword"}>
                                     {facet.label}
@@ -94,9 +149,14 @@ export default function TableExplorer() {
                            <ResultRow hit={hit} adm={false}/>
                         </td>
                         {
-                            showAdm && <td>{hit._source.adm2}, {hit._source.adm1}</td>
+                            showAdm && <td>{hit._source.adm2}{hit._source.adm3 && ' - ' + hit._source.adm3}, {hit._source.adm1}</td>
                         }
-                        { facetConfig[params.dataset as string]?.map((facet: any) => (
+                        { showCadastre &&
+                            <td>
+                                {hit._source.cadastre.map((c: Record<string, number>) => `${c.gnr}${c.bnr && '/'+ c.bnr}`).join(', ')}
+                            </td>
+                        }
+                        { facetConfig[params.dataset as string]?.filter(item => visibleColumns.includes(item.key)).map((facet: any) => (
                             facet.key.includes("__") ? 
                                 <td key={facet.key}>
                                     {[...new Set(hit._source[facet.key.split("__")[0]]

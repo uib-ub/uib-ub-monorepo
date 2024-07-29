@@ -4,7 +4,7 @@ import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, data
 import Image from 'next/image'
 import Link from 'next/link'
 import { PiArchiveFill, PiArticleFill, PiBooksFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
-import { miscSettings } from '@/config/search-config';
+import { contentSettings } from '@/config/server-config';
 
 
 export default function Datasets() {
@@ -178,7 +178,7 @@ export default function Datasets() {
                 return (
                 <Link 
                   key={subindexKey} 
-                  href={'/view/' + subindexKey + (initPage ? `/${initPage}?display=${miscSettings[subindexKey].display}` : '')} 
+                  href={'/view/' + subindexKey + (initPage ? `/${initPage}?display=${contentSettings[subindexKey].display}` : '')} 
                   className="no-underline btn btn-outline"
                 >
                   Søk i {datasetTitles[subindexKey]}

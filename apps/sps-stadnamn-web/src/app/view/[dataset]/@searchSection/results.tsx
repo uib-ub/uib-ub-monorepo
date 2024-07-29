@@ -1,9 +1,7 @@
 import Pagination from '../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiTable } from 'react-icons/pi';
+import { PiTable } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
-import IconButton from '@/components/ui/icon-button';
-import { sortConfig } from '@/config/search-config';
 import Spinner from '@/components/svg/Spinner';
 import ResultRow from './ResultRow';
 
@@ -88,28 +86,6 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       </i>
       Tabellvisning
       </button>}
-      {false && sortConfig[params.dataset]  &&
-      <span>
-        <label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
-        <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy} value={searchParams.get('orderBy') || ""}>
-          <option value="">relevans</option>
-          {sortConfig[params.dataset].map((sort: any) => (
-            <option key={sort.key} value={sort.key}>  {sort.label}</option>
-          ))}
-        </select>
-      </span>
-    }
-
-      {false &&  ( sortConfig[params.dataset] ? searchParams.get('orderBy') && <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter stigende' : 'Sorter synkende'} onClick={sortResults}>
-        {searchParams.get('sort') ? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }
-      </IconButton> 
-      :
-      <IconButton label={searchParams.get('sort') == 'asc'&& 'Sorter alfabetisk Å-A' || searchParams.get('sort') == 'desc' && 'Sorter etter relevans' || 'Sorter alfabetisk A-Å'} onClick={sortOrderByCombined}>
-        {searchParams.get('sort') == 'asc' &&  <PiSortDescending className='text-xl'/> || searchParams.get('sort') == 'desc' && <PiFunnelSimple className=' text-xl'/> || <PiSortAscending className=' text-xl'/> }
-      </IconButton>
-      
-      )}
-
     </div>
     </span>
     <section id="result_list" className="lg:py-1 mx-2">

@@ -6,7 +6,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 import IconButton from '@/components/ui/icon-button';
-import { facetConfig, miscSettings } from '@/config/search-config';
+import { facetConfig } from '@/config/search-config';
+import { contentSettings } from '@/config/server-config';
 import { datasetTitles } from '@/config/metadata-config';
 
 
@@ -90,7 +91,7 @@ export default function Facets() {
     </div>
     : null}
 
-    { !miscSettings[params.dataset]?.noAdm && <>
+    { contentSettings[params.dataset]?.adm && <>
       <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
       <button type="button" onClick={() => toggleFacet('adm')}  className='flex w-full items-center gap-1'>
       { expandedFacet == 'adm' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}

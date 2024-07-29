@@ -1,9 +1,10 @@
 export interface FacetConfigItem {
     key: string;
     label: string;
-    omitLabel?: boolean;
-    type?: 'integer' | 'keyword';
-    sort?: 'doc_count' | 'asc' | 'desc';
+    omitLabel?: boolean; // Omit label in filter chips
+    table?: boolean; // Show in table view by default
+    type?: 'integer' | 'keyword'; // Elasticsearch data type
+    sort?: 'doc_count' | 'asc' | 'desc'; // Default sort order in facet
   }
 
   export interface FieldConfigItem {
@@ -11,19 +12,16 @@ export interface FacetConfigItem {
     label: string;
   }
 
-  export interface SortConfigItem {
-    display: string;
-    noAdm: boolean;
-  }
+ 
 
 export const fieldConfig: Record<string, FieldConfigItem[]> = {
     search: [
-      {"key": "label", "label": "Namn"},
-      {"key": "description", "label": "Beskriving"},
+      {key: "label", label: "Namn"},
+      {key: "description", label: "Beskriving"},
     ],
     hord: [
-      {"key": "label", "label": "Namn"},
-      {"key": "rawData.merknader", "label": "Merknader"},
+      {key: "label", label: "Namn"},
+      {key: "rawData.merknader", label: "Merknader"},
     ]
   }
   
@@ -33,67 +31,48 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
       search: [
-        {"key": "datasets", "label": "Datasett", "omitLabel": true},
-        {"key": "adm1Fallback", "label": "Fylke (uordna)"},
-        {"key": "adm2Fallback", "label": "Kommune (uordna)"},
-        {"key": "snid", "label": "Stadnamn ID"},
-        {"key": "gnidu", "label": "GNIDu"},
-        {"key": "midu", "label": "MIDu"},
-        {"key": "sosi", "label": "Lokalitetstype"},
+        {key: "datasets", label: "Datasett", omitLabel: true},
+        {key: "adm1Fallback", label: "Fylke (uordna)"},
+        {key: "adm2Fallback", label: "Kommune (uordna)"},
+        {key: "snid", label: "Stadnamn ID"},
+        {key: "gnidu", label: "GNIDu"},
+        {key: "midu", label: "MIDu"},
+        {key: "sosi", label: "Lokalitetstype"},
 
       ],
       rygh: [
-        {"key": "rawData.Lokalitetstype", "label": "Lokalitetstype"},
-        {"key": "rawData.Gnr", "label": "Gardsnummer"},
-        {"key": "rawData.Bnr", "label": "Bruksnummer"},
+        {key: "rawData.Lokalitetstype", label: "Lokalitetstype"},
+        {key: "rawData.Gnr", label: "Gardsnummer"},
+        {key: "rawData.Bnr", label: "Bruksnummer"},
       ],
       leks: [
-        {"key": "rawData.lokalitetstype", "label": "Lokalitetstype"},
-        {"key": "rawData.gnidu", "label": "GNIDu"},
-        {"key": "rawData.sisteledd", "label": "Sisteledd"},
+        {key: "rawData.lokalitetstype", label: "Lokalitetstype"},
+        {key: "rawData.gnidu", label: "GNIDu"},
+        {key: "rawData.sisteledd", label: "Sisteledd"},
       ],
       hord: [
-        {"key": "archive.institution", "label": "Arkivtilvising"},
-        {"key": "cadastre__gnr", "label": "Gardsnummer", "sort": "asc", "type": "integer"},
-        {"key": "cadastre__bnr", "label": "Bruksnummer", "sort": "asc", "type": "integer"},
-        {"key": "rawData.oppskrivar", "label": "Oppskrivar"},
-        {"key": "rawData.oppskrivingsTid", "label": "Oppskrivingstid"},
+        {key: "archive.institution", label: "Arkivtilvising", table: true},
+        {key: "cadastre__gnr", label: "Gardsnummer", sort: "asc", type: "integer"},
+        {key: "cadastre__bnr", label: "Bruksnummer", sort: "asc", type: "integer"},
+        {key: "rawData.oppskrivar", label: "Oppskrivar", table: true},
+        {key: "rawData.oppskrivingsTid", label: "Oppskrivingstid", table: true},
       ],
       mu1950: [
-        {"key": "rawData.eigar", "label": "Eigar"},
-        {"key": "rawData.koordinattype", "label": "Koordinattype"}
+        {key: "rawData.eigar", label: "Eigar"},
+        {key: "rawData.koordinattype", label: "Koordinattype"}
       ],
       m1838: [
-        {"key": "rawData.MNR", "label": "Matrikkelnummer"},
-        {"key": "rawData.LNR", "label": "Løpenummer"}
+        {key: "rawData.MNR", label: "Matrikkelnummer"},
+        {key: "rawData.LNR", label: "Løpenummer"}
       ],
       m1886: [
-        {"key": "sosi", "label": "Lokalitetstype"},
-        {"key": "cadastre__gnr", "label": "Gardsnummer"},
-        {"key": "cadastre__bnr", "label": "Bruksnummer"}
+        {key: "sosi", label: "Lokalitetstype"},
+        {key: "cadastre__gnr", label: "Gardsnummer"},
+        {key: "cadastre__bnr", label: "Bruksnummer"}
       ],
       skul: [
-        {"key": "rawData.gnr", "label": "Gardsnummer", "sort": "asc"},
-        {"key": "rawData.bnr", "label": "Bruksnummer", "sort": "asc"},
+        {key: "rawData.gnr", label: "Gardsnummer", sort: "asc"},
+        {key: "rawData.bnr", label: "Bruksnummer", sort: "asc"},
       ]
   
   }
-  
-  
-export const sortConfig: Record<string, Record<string, string>[]> = {
-  hord: [
-    {"key": "label.keyword", "label": "stadnamn"},
-    {"key": "rawData.kommuneNr.keyword,cadastre__gnr,cadastre__bnr", "label": "matrikkel"},
-  ],
-  ostf: [
-    {"key": "label.keyword", "label": "Oppslagsform"},
-    {"key": "rawData.GNID.keyword", "label": "Matrikkelnummer"},
-  ]
-}
-
-export const miscSettings: Record<string, SortConfigItem> = {
-  'leks_g': {
-    'display': 'table',
-    'noAdm': true
-  }
-}
