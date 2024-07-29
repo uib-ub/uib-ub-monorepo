@@ -45,7 +45,7 @@ export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean
   return (
 
         <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col">
-        <div className='flex flex-grow'>
+        <div className='flex flex-wrap gap-1'>
         <div id={"resultText_" + hit._source.uuid}>{titleRenderer(hit)}
         {(adm || hit.highlight) && <p>
           {adm && detailsRenderer(hit)}
@@ -55,7 +55,7 @@ export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean
 
         </p>}
         </div>
-        <div className='flex gap-1 ml-auto self-end'>
+        <div className='flex gap-1 ml-auto'>
         { params.dataset == 'search' && hit._source.children.length == 1 &&
          <IconButton label={datasetTitles[hit._source.datasets[0]]} textIcon href={`/view/${hit._source.datasets[0]}/info`} className="self-center px-2  text-neutral-900 small-caps text-xl">{hit._source.datasets[0]}</IconButton>
         }
