@@ -56,6 +56,7 @@ export default function TableExplorer() {
 
       const resetColumns = () => {
         setVisibleColumns(facetConfig[params.dataset as string]?.filter(item => item.table).map(facet => facet.key) || []);
+        localStorage.removeItem(localStorageKey);
       }
     
 
@@ -95,6 +96,12 @@ export default function TableExplorer() {
                 
                 {facetConfig[params.dataset as string]?.map((facet: any) => (
                     <div key={facet.key}>
+            }
+            { (searchParams.get('asc') || searchParams.get('desc')) &&
+                <button type="button" className='btn btn-outline btn-compact pl-2' onClick={resetSort}>
+                <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
+                Tilbakestill sortering
+            </button>
                     <label className="flex gap-2">
                         <input
                         type="checkbox"
