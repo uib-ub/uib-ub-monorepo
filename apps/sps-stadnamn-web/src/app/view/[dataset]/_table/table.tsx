@@ -130,7 +130,7 @@ export default function TableExplorer() {
                     <tr>
                         <th>
                             <SortButton field="label.keyword">
-                            Oppslag
+                            Treff
                             </SortButton>
                         </th>
                         
