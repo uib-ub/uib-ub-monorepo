@@ -11,9 +11,6 @@ import SortButton from './SortButton'
 import ResultRow from '../@searchSection/ResultRow'
 
 
-
-
-
 export default function TableExplorer() {
     const searchParams = useSearchParams()
 
@@ -129,30 +126,22 @@ export default function TableExplorer() {
                 <thead>
                     <tr>
                         <th>
-                            <SortButton field="label.keyword">
-                            Treff
-                            </SortButton>
+                            <SortButton field="label.keyword" label="Treff"/>
                         </th>
                         
                         {
                             showAdm && <th> 
-                                <SortButton field={Array.from({length: contentSettings[params.dataset as string]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")}>
-                                Distrikt
-                                </SortButton>
+                                <SortButton field={Array.from({length: contentSettings[params.dataset as string]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Distrikt"/>
                             </th>
                         }
                         { showCadastre &&
                             <th>
-                            <SortButton field={`${showAdm ? 'adm1.keyword,adm2.keyword,':''}cadastre__gnr,cadastre__bnr`}>
-                            Matrikkel
-                            </SortButton>
+                            <SortButton field={`${showAdm ? 'adm1.keyword,adm2.keyword,':''}cadastre__gnr,cadastre__bnr`} label="Matrikkel" description="Gnr/Bnr"/>
                             </th>
                         }
                         { facetConfig[params.dataset as string]?.filter(item => visibleColumns.includes(item.key)).map((facet: any) => (
                             <th key={facet.key}>
-                                <SortButton field={facet.type ? facet.key : facet.key + ".keyword"}>
-                                    {facet.label}
-                                </SortButton>
+                                <SortButton field={facet.type ? facet.key : facet.key + ".keyword"} label={facet.label} description={facet.description}/>
                             </th>
                         )) }
                     </tr>
@@ -202,7 +191,5 @@ export default function TableExplorer() {
             
           
             )
-    
 
-    
 }
