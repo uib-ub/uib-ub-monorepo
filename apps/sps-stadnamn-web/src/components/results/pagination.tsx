@@ -27,7 +27,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
   return (
     <div className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
     
-    <div className='flex w-full gap-2 justify-even'>
+    <div className='flex gap-2 justify-even'>
     
     {totalPages > 2 && <IconButton disabled={currentPage == 1} label="Første side" className='btn btn-outline btn-compact grow md:grow-0' textIcon href={paginationUrl(1)}><PiCaretDoubleLeft/></IconButton>
     
