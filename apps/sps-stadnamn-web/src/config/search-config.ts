@@ -66,7 +66,7 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
         {key: "rawData.LNR", label: "Løpenummer"}
       ],
       m1886: [
-        {key: "sosi", label: "Lokalitetstype"},
+        {key: "sosi", label: "Lokalitetstype", table: true},
         {key: "cadastre__gnr", label: "Gardsnummer"},
         {key: "cadastre__bnr", label: "Bruksnummer"}
       ],
