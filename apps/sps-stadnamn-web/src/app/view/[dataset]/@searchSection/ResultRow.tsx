@@ -56,9 +56,9 @@ export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean
 
         </p>}
         </div>
-        <div className='flex gap-1 ml-auto'>
+        <div className='flex gap-2 ml-auto'>
         { params.dataset == 'search' && hit._source.children.length == 1 &&
-         <IconButton label={datasetTitles[hit._source.datasets[0]]} textIcon href={`/view/${hit._source.datasets[0]}/info`} className="self-center px-2  text-neutral-900 small-caps text-xl">{hit._source.datasets[0]}</IconButton>
+         <IconLink label={datasetTitles[hit._source.datasets[0]]} textIcon href={`/view/${hit._source.datasets[0]}/info`} className="self-center px-2  text-neutral-900 small-caps text-xl no-underline">{hit._source.datasets[0]}</IconLink>
         }
 
         {hit._source.image && 
@@ -67,7 +67,7 @@ export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean
         
         {hit._source.audio && 
           <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${hit._source.audio.file}` } 
-                       className="text-3xl text-neutral-700"/> 
+                       iconClass="text-3xl text-neutral-700"/> 
         }
         {hit._source.link &&
         <ExternalLinkButton doc={hit} iconClass="text-3xl text-neutral-700"/>

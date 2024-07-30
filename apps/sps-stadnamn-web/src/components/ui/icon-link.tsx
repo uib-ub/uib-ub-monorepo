@@ -6,28 +6,21 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from "@/components/ui/tooltip"
+import Link from 'next/link';
 
 
-export default function IconButton({ children, textClass, textIcon, label, type, href, ...rest }: 
-    { children: React.ReactNode, className?: string, textClass?: string, textIcon?: boolean, label: string, href?: string, [x: string]: any, type?: "button" | "submit" | "reset" }) {
-    const router = useRouter();
-
-    const handleClick = (e: React.MouseEvent) => {
-        if (href) {
-            e.preventDefault();
-            router.push(href);
-        }
-    };
+export default function IconLink({ children, textClass, textIcon, label, type, href, ...rest }: 
+    { children: React.ReactNode, textClass?: string, textIcon?: boolean, label: string, href: string, [x: string]: any }) {
     
     return (
 
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <button aria-label={label} type={type || "button"} onClick={handleClick} {...rest}>
+                    <Link aria-label={label} href={href} {...rest}>
                     {textClass ? <span aria-hidden="true" className={textClass}>{label}</span> : null}
                     {textIcon ? <span aria-hidden="true" className='flex'>{children}</span> : <i  aria-hidden='true'>{children}</i>}
-                    </button>
+                    </Link>
                 </TooltipTrigger>
                 <TooltipContent>
                 {label}

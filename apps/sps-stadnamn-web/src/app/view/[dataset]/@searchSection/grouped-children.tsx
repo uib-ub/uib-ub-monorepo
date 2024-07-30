@@ -64,7 +64,7 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
             <div key={docDataset} className='break-words'>
                 { !landingPage && <h3 className="small-caps text-xl border-b border-neutral-400 text-neutral-900 font-semibold">{datasetTitles[docDataset]}</h3>}
                 { landingPage && <h2 className="!text-lg mt-6">{datasetTitles[docDataset]}</h2> }
-                <ul className="list-none">
+                <ul className="list-none space-y-1 my-1">
                   {childDocs[docDataset].map((doc: Record<string, any>, index: number) => {
                     
                     return landingPage ? (
@@ -74,13 +74,15 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
                       )  :
                     (
 
-                    <li key={index} className=''>
-                        {resultRenderers[docDataset].title(doc)}
+                    <li key={index}>
+                        {resultRenderers[docDataset].title(doc, 'map')}
                         {doc._source.sosi && <span> - {doc._source.sosi}</span>}
+                        <span className="space-x-1 mx-2">
                         { doc._source.location && <CoordinateButton doc={doc} iconClass="text-2xl inline" parentUuid={uuid} />}
                         { doc._source.link && <ExternalLinkButton doc={doc} iconClass="text-2xl inline" />}
                         { doc._source.image && <ImageButton doc={doc} iconClass="text-2xl inline" />}
                         <InfoButton doc={doc} iconClass="text-2xl inline" />
+                        </span>
 
                     </li>
 

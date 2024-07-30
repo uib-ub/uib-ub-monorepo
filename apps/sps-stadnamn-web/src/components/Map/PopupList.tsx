@@ -33,7 +33,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                     }
                     {doc._source.audio && 
                         <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${docDataset}/${doc._source.audio.file}`} 
-                            className="text-2xl align-top inline text-neutral-700"/> 
+                            iconClass="text-2xl align-top inline text-neutral-700"/> 
                     }
                     {doc._source.link &&
                         <ExternalLinkButton doc={doc} iconClass='text-2xl align-top text-neutral-700 inline'/>

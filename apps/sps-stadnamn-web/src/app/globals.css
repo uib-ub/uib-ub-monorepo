@@ -50,7 +50,7 @@
     @apply bg-accent-200 border border-accent-900 rounded-sm px-1;
   }
 
-  a[href^="http"]:not(.no-underline):not(.override-external-icon):not(a[href^="https://stadnamnportalen"]):not(a[href^="https://purl.org/stadnamn"]):after {
+  a[href^="http"]:not(.no-underline):not(.override-external-icon):not([aria-label]):not(a[href^="https://stadnamnportalen"]):not(a[href^="https://purl.org/stadnamn"]):after {
     content: "";
     @apply  bg-[url('PhArrowSquareOut.svg')] bg-[length:.75em] bg-left-bottom bg-no-repeat ml-[.2em] inline-block h-[1em] w-[1em];
     
