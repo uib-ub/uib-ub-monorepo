@@ -32,6 +32,14 @@ export default function TableExplorer() {
     const showAdm = admValues.length != 1 || (admValues.length && admValues[0].split("__").length < (contentSettings[params.dataset as string]?.adm || 0))
     const showCadastre = contentSettings[params.dataset as string]?.cadastre
 
+    const resetSort = () => {
+        const newSearchParams = new URLSearchParams(searchParams)
+        newSearchParams.delete('asc')
+        newSearchParams.delete('desc')
+        router.push(`/view/${params.dataset}?${newSearchParams.toString
+        ()}`)
+    }
+
 
     useEffect(() => {
         const storedColumns = localStorage.getItem(localStorageKey);
@@ -89,6 +97,12 @@ export default function TableExplorer() {
                 Tilbakestill kolonner
             </button>
 
+            }
+            { (searchParams.get('asc') || searchParams.get('desc')) &&
+                <button type="button" className='btn btn-outline btn-compact pl-2' onClick={resetSort}>
+                <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
+                Tilbakestill sortering
+            </button>
             }
             </div>
             
