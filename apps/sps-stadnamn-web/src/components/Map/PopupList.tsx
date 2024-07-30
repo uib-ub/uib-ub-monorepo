@@ -18,11 +18,11 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
             <span id={"resultText_" + doc._source.uuid}>
             { docDataset == view ?
                     <>
-                        {resultRenderers[view]?.title(doc)}
+                        {resultRenderers[view]?.title(doc, 'map')}
                     </>
                     :
                     <>
-                        {resultRenderers[docDataset]?.title(doc)}
+                        {resultRenderers[docDataset]?.title(doc, 'map')}
                     </>
                 } 
                 </span>
@@ -40,7 +40,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                     }
                     <InfoButton doc={doc} iconClass='text-2xl align-top text-primary-600 inline'/>
                 </div>
-                 { docDataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc)}</p> }
+                 { docDataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc, 'map')}</p> }
                 
             </>
         )
