@@ -46,12 +46,12 @@ export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean
   return (
 
         <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col">
+        <div className='flex flex-wrap gap-1'>
         <div id={"resultText_" + hit._source.uuid}>{titleRenderer(hit, display)}
-        <div id={"resultText_" + hit._source.uuid}>{titleRenderer(hit)}
+        {(adm || hit.highlight) && <p>
           {adm && detailsRenderer(hit, display)}
-          {adm && detailsRenderer(hit)}
+          {adm && hit.highlight && ' | '}
           {hit.highlight && snippetRenderer && snippetRenderer(hit, display)}
-          {hit.highlight && snippetRenderer && snippetRenderer(hit)}
           
 
         </p>}
