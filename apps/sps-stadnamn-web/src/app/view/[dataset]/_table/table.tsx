@@ -168,7 +168,7 @@ export default function TableExplorer() {
                         }
                         { showCadastre &&
                             <td>
-                                {hit._source.cadastre.map((c: Record<string, number>) => `${c.gnr}${c.bnr && '/'+ c.bnr}`).join(', ')}
+                                {hit._source.cadastre.map((c: Record<string, number>) => `${c.gnr}${c.bnr ? '/'+ c.bnr : ''}`).join(', ')}
                             </td>
                         }
                         { facetConfig[params.dataset as string]?.filter(item => visibleColumns.includes(item.key)).map((facet: any) => (
