@@ -82,10 +82,10 @@ export default function TableExplorer() {
                 <PiMapTrifold className='text-xl mr-2' aria-hidden="true"/>
                 Kartvisning
             </button> }
-            <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
+            {false && <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => router.push(mapViewUrl)}>
                 <PiDownloadSimple className='text-xl mr-2' aria-hidden="true"/>
                 Last ned
-            </button>
+            </button>}
             <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => setColumnSelectorOpen(!columnSelectorOpen)} aria-expanded={columnSelectorOpen} aria-controls={columnSelectorOpen ? 'column-selector' : undefined}>
                 { columnSelectorOpen ? <PiCaretUp className='text-xl mr-2' aria-hidden="true"/> : <PiCaretDown className='text-xl mr-2' aria-hidden="true"/> }           
                 Kolonner
