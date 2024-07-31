@@ -25,7 +25,7 @@ export default function ImageButton({doc, iconClass}: {doc: any, iconClass: stri
             label="Vis seddel" 
             aria-current={searchParams.get('docs') == doc._source.uuid && pathname.includes('/iiif/') ? 'page': undefined}
             className="inline-flex items-center justify-center text-neutral-700 group">
-              <PiArticleFill className={"group-aria-[current=page]:text-accent-800  " + iconClass}/></IconLink> 
+              <PiArticleFill className={"group-aria-[current=page]:text-accent-800 align-text-bottom " + iconClass}/></IconLink> 
         </>
 
         

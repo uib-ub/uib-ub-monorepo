@@ -27,7 +27,7 @@ export default function AudioButton({ audioFile, iconClass }: { audioFile: strin
     <>
     <audio ref={audio} src={audioFile} onEnded={() => setPlaying(false)}/>
     <IconButton onClick={togglePlay} label={playing? "Pause" : "Spill av lyd"}>
-      {playing ? <PiPauseCircleFill className={iconClass} /> : <PiPlayCircleFill className={iconClass} />}
+      {playing ? <PiPauseCircleFill className={"align-text-bottom " + iconClass} /> : <PiPlayCircleFill className={iconClass} />}
     </IconButton>
     </>
   );

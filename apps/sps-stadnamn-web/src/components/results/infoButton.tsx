@@ -28,7 +28,7 @@ export default function InfoButton({doc, iconClass, dataset}: {doc: any, iconCla
       aria-current={pathname.includes('/doc/') && (params.uuid == doc._source.uuid || (doc._source.children?.length == 1 && doc._source.children[0] == params.uuid)) ? 'page': undefined} 
       aria-describedby={"resultText_" + doc._source.uuid}
       className="inline-flex items-center justify-center text-primary-600 group">
-        <PiInfoFill className={"group-aria-[current=page]:text-accent-800 " + iconClass}/></IconLink>
+        <PiInfoFill className={"group-aria-[current=page]:text-accent-800 align-text-bottom " + iconClass}/></IconLink>
 
     )
 

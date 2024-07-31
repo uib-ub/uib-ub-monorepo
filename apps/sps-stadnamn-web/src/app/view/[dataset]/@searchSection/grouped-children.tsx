@@ -74,9 +74,9 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
                       )  :
                     (
 
-                    <li key={index}>
+                    <li key={index} className='flex items-center'>
                         {resultRenderers[docDataset].title(doc, 'map')}
-                        {doc._source.sosi && <span> - {doc._source.sosi}</span>}
+                        {doc._source.sosi && <span>&nbsp;-&nbsp;{doc._source.sosi}</span>}
                         <span className="space-x-1 mx-2">
                         { doc._source.location && <CoordinateButton doc={doc} iconClass="text-2xl inline" parentUuid={uuid} />}
                         { doc._source.link && <ExternalLinkButton doc={doc} iconClass="text-2xl inline" />}

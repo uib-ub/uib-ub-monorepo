@@ -5,7 +5,7 @@ export default function ExternalLinkButton({doc, iconClass}: {doc: any, iconClas
 
     return (
         <IconLink href={doc._source.link} label="Ekstern ressurs" className="inline-flex items-center justify-center group text-neutral-700 xl:text-xl">
-            <PiLinkBold  className={iconClass}/> 
+            <PiLinkBold  className={"align-text-bottom " + iconClass}/> 
         </IconLink>
     )
 

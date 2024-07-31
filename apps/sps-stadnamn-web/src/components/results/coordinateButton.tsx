@@ -31,7 +31,7 @@ export default function CoordinateButton({doc, iconClass, parentUuid}: {doc: any
             label="Vis i kart" 
             aria-current={(searchParams.get('docs') == doc._source.uuid && pathname == `/view/${params.dataset}`) || (searchParams.get('popup') == doc._source.location.coordinates[1] + ',' + doc._source.location.coordinates[0]) ? 'page': undefined} 
             className="inline-flex items-center justify-center group text-neutral-700">
-              <PiMapPinFill className={"group-aria-[current=page]:text-accent-800  " + iconClass}/>
+              <PiMapPinFill className={"group-aria-[current=page]:text-accent-800 align-text-bottom " + iconClass}/>
         </IconLink>  
     )
 
