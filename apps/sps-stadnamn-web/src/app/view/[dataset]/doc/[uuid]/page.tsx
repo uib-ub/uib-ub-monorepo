@@ -75,7 +75,6 @@ export default async function DocumentView({ params, searchParams }: { params: {
       </span>
       <div className="flex flex-wrap gap-4">
       
-      
       {doc._source.adm2wd ? <span className="inline whitespace-nowrap"> <Link  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2 + ", "}{doc._source.adm1}</Link> </span>
       : doc._source.adm1 && <>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1}
       </>
@@ -85,10 +84,9 @@ export default async function DocumentView({ params, searchParams }: { params: {
         <span className='self-center'><Link className="no-underline flex gap-1 items-center" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-lg self-center"/>{ datasetTitles[docDataset]}</Link></span>
       }
       
-      
-      </div>
       { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') && <CopyLink uuid={doc._source.uuid} /> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
+      </div>
       
       
 
