@@ -26,7 +26,7 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
   }
   
 
-const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarden"}
+const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarden", table: true}
   
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
@@ -66,7 +66,7 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
         {key: "rawData.LNR", label: "Løpenummer"}
       ],
       m1886: [
-        {...sosi, table: true},
+        sosi,
         {key: "cadastre__gnr", label: "Gardsnummer"},
         {key: "cadastre__bnr", label: "Bruksnummer"}
       ],

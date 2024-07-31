@@ -64,12 +64,12 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
             <div key={docDataset} className='break-words'>
                 { !landingPage && <h3 className="small-caps text-xl border-b border-neutral-400 text-neutral-900 font-semibold">{datasetTitles[docDataset]}</h3>}
                 { landingPage && <h2 className="!text-lg mt-6">{datasetTitles[docDataset]}</h2> }
-                <ul className="list-none space-y-1 my-1">
+                <ul className="list-none space-y-2 my-4">
                   {childDocs[docDataset].map((doc: Record<string, any>, index: number) => {
                     
                     return landingPage ? (
                     <li key={index} className='list-none'>
-                        <Link className="no-underline" href={"/uuid/" + doc._source.uuid}>{resultRenderers[docDataset].title(doc)}</Link>
+                        <Link className="no-underline" href={"/uuid/" + doc._source.uuid}>{resultRenderers[docDataset].title(doc, 'map')}</Link>
                     </li>
                       )  :
                     (

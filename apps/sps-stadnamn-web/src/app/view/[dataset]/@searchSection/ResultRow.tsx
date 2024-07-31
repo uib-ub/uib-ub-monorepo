@@ -11,10 +11,11 @@ import ImageButton from '@/components/results/imageButton';
 import InfoButton from '@/components/results/infoButton';
 import GroupedChildren from './grouped-children';
 import Spinner from '@/components/svg/Spinner';
+import IconLink from '@/components/ui/icon-link';
 
 
 
-export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean}) {
+export default function ResultRow({ hit, adm = true, externalLoading}: { hit: any, adm?: boolean, externalLoading?: boolean} ) {
     const params = useParams<{uuid: string; dataset: string}>()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -84,7 +85,7 @@ export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean
                         onClick={toggleExpanded} 
                         className="flex text-sm bg-neutral-100 text-black rounded-full pr-3 pl-1 py-1 self-center whitespace-nowrap snid-button">
                         
-            {expandLoading ? <Spinner status="Laster treff" className='w-[1em] h-[1em} mx-1'/> : (expanded ? <PiCaretUp className="self-center mx-1"/> : <PiCaretDown className="self-center mx-1"/>)}
+            {((externalLoading===undefined ?  expandLoading : externalLoading) && expanded) ? <Spinner status="Laster treff" className='w-[1em] h-[1em} mx-1'/> : (expanded ? <PiCaretUp className="self-center mx-1"/> : <PiCaretDown className="self-center mx-1"/>)}
             
             {hit._source.children?.length}
             
@@ -101,7 +102,7 @@ export default function ResultRow({ hit, adm = true }: { hit: any, adm?: boolean
         </div>
         </div>
         {
-          expanded && <GroupedChildren snid={hit._source.snid} uuid={hit._source.uuid} childList={hit._source.children} setExpandLoading={setExpandLoading}/>
+          expanded && searchParams.get('display') != 'table' && <GroupedChildren snid={hit._source.snid} uuid={hit._source.uuid} childList={hit._source.children} setExpandLoading={setExpandLoading}/>
         }
         </li>
     )

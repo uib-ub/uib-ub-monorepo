@@ -49,6 +49,7 @@ export const resultRenderers: ResultRenderers = {
   },
   rygh: {
     title: (hit: any, display: string) => {
+      if (display == 'table') return defaultTitle(hit)
       return <>{defaultTitle(hit)} {hit._source.cadastre && <> | {hit._source.rawData.KNR}-{hit._source.cadastre[0]?.gnr}{hit._source.cadastre[0]?.bnr && '/'}{hit._source.cadastre[0]?.bnr}</> }</>
     },
     details: (hit: any, display: string) => {
@@ -119,6 +120,7 @@ export const resultRenderers: ResultRenderers = {
   },
   mu1950: {
     title: (hit: any, display: string) => {
+      if (display == 'table') return defaultTitle(hit)
       return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
     },
     details: (hit: any, display: string) => {

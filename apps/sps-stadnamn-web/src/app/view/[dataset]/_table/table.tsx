@@ -1,14 +1,15 @@
 'use client'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState, Fragment } from "react"
 import { SearchContext } from '@/app/search-provider'
 import Pagination from '@/components/results/pagination'
-import { PiArrowCircleDown, PiArrowClockwise, PiArrowCounterClockwise, PiCaretDown, PiCaretUp, PiDownloadSimple, PiMapTrifold, PiTrash } from 'react-icons/pi'
+import { PiArrowCounterClockwise, PiCaretDown, PiCaretUp, PiDownloadSimple, PiMapTrifold } from 'react-icons/pi'
 import { useQueryStringWithout } from '@/lib/search-params'
 import { facetConfig } from '@/config/search-config'
 import { contentSettings } from '@/config/server-config';
 import SortButton from './SortButton'
 import ResultRow from '../@searchSection/ResultRow'
+import GroupedChildren from '../@searchSection/grouped-children'
 
 
 export default function TableExplorer() {
@@ -23,6 +24,7 @@ export default function TableExplorer() {
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const [visibleColumns, setVisibleColumns] = useState<string[]>([])
     const localStorageKey = `visibleColumns_${params.dataset as string}`;
+    const [expandLoading, setExpandLoading] = useState<boolean>(false)
     
 
     const admValues = searchParams.getAll('adm')
@@ -63,12 +65,16 @@ export default function TableExplorer() {
         setVisibleColumns(facetConfig[params.dataset as string]?.filter(item => item.table).map(facet => facet.key) || []);
         localStorage.removeItem(localStorageKey);
       }
-    
 
+      function getValueByKeyPath(key: string, source: Record<string, any>): any {
+        const value = key.split('.').reduce((o: Record<string, any> | undefined, k: string) => (o || {})[k], source);
+        if (Array.isArray(value)) {
+          // Limit to 10 values
+          return value.slice(0,10).join(', ') + (value.length > 10 ? '...' : '');
+        }
+        return value || '-';
+      }
     
-
-    
-
 
     return (
             <div  className='flex flex-col my-2 gap-y-4 h-full'>
@@ -126,7 +132,7 @@ export default function TableExplorer() {
                 <thead>
                     <tr>
                         <th>
-                            <SortButton field="label.keyword" label="Treff"/>
+                            <SortButton field="label.keyword" label="Treff" description='Oppslagsord'/>
                         </th>
                         
                         {
@@ -136,7 +142,7 @@ export default function TableExplorer() {
                         }
                         { showCadastre &&
                             <th>
-                            <SortButton field={`${showAdm ? 'adm1.keyword,adm2.keyword,':''}cadastre__gnr,cadastre__bnr`} label="Matrikkel" description="Gnr/Bnr"/>
+                            <SortButton field={`${showAdm ? 'adm1.keyword,adm2.keyword,':''}cadastre__gnr,cadastre__bnr`} label="Matrikkel" description="Gnr/Bnr kommunevis"/>
                             </th>
                         }
                         { facetConfig[params.dataset as string]?.filter(item => visibleColumns.includes(item.key)).map((facet: any) => (
@@ -148,16 +154,17 @@ export default function TableExplorer() {
                 </thead>
                 <tbody>
                 { resultData?.hits?.hits?.map((hit: any) => (
-                    <tr key={hit._id}>
+                    <Fragment key={hit._id}>
+                    <tr>
                         <td>
-                           <ResultRow hit={hit} adm={false}/>
+                           <ResultRow hit={hit} adm={false} externalLoading={expandLoading}/>
                         </td>
                         {
-                            showAdm && <td>{hit._source.adm2}{hit._source.adm3 && ' - ' + hit._source.adm3}, {hit._source.adm1}</td>
+                            showAdm && <td>{hit._source.adm2}{hit._source.adm3 && ' - ' + hit._source.adm3}{hit._source.adm2 && ', '}{hit._source.adm1}</td>
                         }
                         { showCadastre &&
                             <td>
-                                {hit._source.cadastre.map((c: Record<string, number>) => `${c.gnr}${c.bnr ? '/'+ c.bnr : ''}`).join(', ')}
+                                {hit._source.cadastre?.map((c: Record<string, number>) => `${c.gnr}${c.bnr ? '/'+ c.bnr : ''}`).join(', ')}
                             </td>
                         }
                         { facetConfig[params.dataset as string]?.filter(item => visibleColumns.includes(item.key)).map((facet: any) => (
@@ -169,10 +176,18 @@ export default function TableExplorer() {
                                 </td>
                             :
                                 <td key={facet.key}>
-                                    {facet.key.split('.').reduce((o: Record<string, any> | undefined, k: string) => (o || {})[k], hit._source) || '-'}
+                                    {getValueByKeyPath(facet.key, hit._source)}
                                 </td>
                         ))}
                     </tr>
+                    { searchParams.get('expanded') == hit._source.uuid && 
+                        <tr>
+                        <td colSpan={visibleColumns.length + 2}>
+                            <GroupedChildren snid={hit._source.snid} uuid={hit._source.uuid} childList={hit._source.children} setExpandLoading={setExpandLoading}/>
+                        </td>
+                        </tr>
+                    }
+                    </Fragment>
                 ))
             }
 

@@ -1,3 +1,4 @@
+'use client'
 import { useSearchParams, useParams, useRouter } from "next/navigation"
 import { PiSortAscending, PiSortDescending } from "react-icons/pi"
 
