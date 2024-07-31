@@ -2,6 +2,7 @@ export interface FacetConfigItem {
     key: string;
     label: string;
     omitLabel?: boolean; // Omit label in filter chips
+    description?: string; // Description of facet
     table?: boolean; // Show in table view by default
     type?: 'integer' | 'keyword'; // Elasticsearch data type
     sort?: 'doc_count' | 'asc' | 'desc'; // Default sort order in facet
