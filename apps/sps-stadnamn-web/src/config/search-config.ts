@@ -40,6 +40,17 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
         sosi
 
       ],
+      bsn: [
+        {key: "rawData.stnavn.loktype.type", label: "Lokalitetstype (ustandardisert)", table: true},
+        {key: "rawData.stnavn.sted.gårdsnr", label: "Gardsnr"},
+        {key: "rawData.stnavn.sted.bruksnr", label: "Bruksnr"},
+        {key: "rawData.stnavn.oppslag.oppslord", label: "Oppslagsord"},
+        {key: "rawData.stnavn.oppslag.utmledd", label: "Utmerkingsledd"},
+        {key: "rawData.stnavn.oppslag.hovledd", label: "Hovudledd"},
+
+
+
+      ],
       rygh: [
         {key: "rawData.Lokalitetstype", label: "Lokalitetstype"},
         {key: "rawData.Gnr", label: "Gardsnummer"},

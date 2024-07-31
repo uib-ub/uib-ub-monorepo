@@ -16,7 +16,7 @@ export interface ContentSettingsItem {
     bsn: {
       display: 'map',
       adm: 2,
-      cadastre: false // Not cleaned yet
+      cadastre: true
     },
     hord: {
       display: 'map',

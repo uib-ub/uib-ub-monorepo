@@ -154,7 +154,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     return <>
     <div className='space-y-2'>
     {source.rawData?.original?.stnavn?.komm ?
-     <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData.original.stnavn?.komm}</div>
+     <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData.stnavn?.komm}</div>
      : source.rawData?.supplemented?.merknad && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.supplemented?.merknad}</div>
     }
     </div>
@@ -172,7 +172,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                   items: [{value: source.rawData?.original?.stnavn?.sted?.gårdsnr, hrefParams: {
                     'adm2': source.adm2,
                     'adm1': source.adm1,
-                    'rawData.original.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
+                    'rawData.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
                   }}]
                 },
                 {
@@ -187,8 +187,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                   items: [{value: !source.rawData?.original && source.rawData?.original?.stnavn?.sted?.bruksnr, hrefParams: {
                     'rawData.adm2': source.adm2,
                     'rawData.adm1': source.adm1,
-                    'rawData.original.stnavn.sted__bruksnr': source.rawData?.original?.stnavn?.sted?.bruksnr,
-                    'rawData.original.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
+                    'rawData.stnavn.sted__bruksnr': source.rawData?.original?.stnavn?.sted?.bruksnr,
+                    'rawData.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
                   }}]
                 },
                 {
