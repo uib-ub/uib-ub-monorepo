@@ -28,6 +28,7 @@ export default function TableExplorer() {
     
 
     const admValues = searchParams.getAll('adm')
+    // Hide adm if only one value is present and it has no sublevels
     const showAdm = admValues.length != 1 || (admValues.length && admValues[0].split("__").length < (contentSettings[params.dataset as string]?.adm || 0))
     const showCadastre = contentSettings[params.dataset as string]?.cadastre
 
@@ -45,7 +46,11 @@ export default function TableExplorer() {
         if (storedColumns) {
           setVisibleColumns(JSON.parse(storedColumns));
         } else {
-          setVisibleColumns(facetConfig[params.dataset as string]?.filter(item => item.table).map(facet => facet.key) || []);
+          const columns = facetConfig[params.dataset as string]?.filter(item => item.table).map(facet => facet.key) || []
+          if (contentSettings[params.dataset as string]?.adm) {
+            columns.unshift('adm')
+          }
+          setVisibleColumns(columns);
         }
         
       }, [params.dataset, localStorageKey]);
@@ -94,7 +99,7 @@ export default function TableExplorer() {
                 Kolonner
             </button>
             { // Reset button if visible columns is different from default
-            visibleColumns.length !== (facetConfig[params.dataset as string]?.filter(item => item.table).length || 0) &&
+            visibleColumns.length !== (facetConfig[params.dataset as string]?.filter(item => item.table).length + (contentSettings[params.dataset as string]?.adm ? 1 : 0 )|| 0) &&
             <button type="button" className='btn btn-outline btn-compact pl-2' onClick={resetColumns}>
                 <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
                 Tilbakestill kolonner
@@ -110,7 +115,16 @@ export default function TableExplorer() {
             </div>
             
             { columnSelectorOpen && <div className='flex gap-4 px-2 flex-wrap' id="column-selector">
-                
+                { contentSettings[params.dataset as string]?.adm && <div>
+                    <label className="flex gap-2">
+                        <input
+                        type="checkbox"
+                        checked={visibleColumns.includes('adm')}
+                        onChange={(e) => handleCheckboxChange('adm', e.target.checked)}
+                        />
+                        Distrikt
+                    </label>
+                </div>}
                 {facetConfig[params.dataset as string]?.map((facet: any) => (
                     <div key={facet.key}>
                     <label className="flex gap-2">
