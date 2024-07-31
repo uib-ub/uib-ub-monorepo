@@ -189,6 +189,11 @@
   .result-table tbody tr {
     @apply border-b border-neutral-200 hover:bg-neutral-100; /* Lighter hover background for subtle contrast */
   }
+
+ 
+  .result-table tbody th {
+    @apply px-4 py-1 border-neutral-200 font-normal; /* Lighter border for subtle contrast */
+  }
   
   .result-table tbody tr:nth-child(even) {
     @apply bg-neutral-50 hover:!bg-neutral-100; /* Lighter background for rows for better readability */

@@ -156,9 +156,9 @@ export default function TableExplorer() {
                 { resultData?.hits?.hits?.map((hit: any) => (
                     <Fragment key={hit._id}>
                     <tr>
-                        <td>
+                        <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source.uuid ? 'rowgroup' : 'row'}>
                            <ResultRow hit={hit} adm={false} externalLoading={expandLoading}/>
-                        </td>
+                        </th>
                         {
                             showAdm && <td>{hit._source.adm2}{hit._source.adm3 && ' - ' + hit._source.adm3}{hit._source.adm2 && ', '}{hit._source.adm1}</td>
                         }
@@ -182,7 +182,7 @@ export default function TableExplorer() {
                     </tr>
                     { searchParams.get('expanded') == hit._source.uuid && 
                         <tr>
-                        <td colSpan={visibleColumns.length + 2}>
+                        <td colSpan={visibleColumns.length + 2} headers={"rowHeader_" + hit._id}>
                             <GroupedChildren snid={hit._source.snid} uuid={hit._source.uuid} childList={hit._source.children} setExpandLoading={setExpandLoading}/>
                         </td>
                         </tr>
