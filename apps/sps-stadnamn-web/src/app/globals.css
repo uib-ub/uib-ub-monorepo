@@ -135,8 +135,8 @@
 
 
 
-  button[aria-current='page'] {
-    @apply ring-accent-800 ring-1 rounded-full;
+  button[aria-current='page'], a[aria-current='page'] i {
+    @apply ring-accent-800 ring-2 rounded-full ring-offset-2;
 
   }
 
