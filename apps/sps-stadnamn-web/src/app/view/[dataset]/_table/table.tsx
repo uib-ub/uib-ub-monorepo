@@ -174,7 +174,7 @@ export default function TableExplorer() {
                            <ResultRow hit={hit} adm={false} externalLoading={expandLoading}/>
                         </th>
                         {
-                            showAdm && <td>{hit._source.adm2}{hit._source.adm3 && ' - ' + hit._source.adm3}{hit._source.adm2 && ', '}{hit._source.adm1}</td>
+                            showAdm && visibleColumns.includes('adm') && <td>{hit._source.adm2}{hit._source.adm3 && ' - ' + hit._source.adm3}{hit._source.adm2 && ', '}{hit._source.adm1}</td>
                         }
                         { showCadastre &&
                             <td>
