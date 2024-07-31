@@ -51,7 +51,7 @@ export default function SearchSection () {
         </div>
         
         
-        <div id="collapsibleSearch" className={`${showSearch ?  'absolute xl:static z-[2000] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
+        <div id="collapsibleSearch" className={`${showSearch ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
         <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
           <SearchBar/>
           { !searchError && <Filters/> }

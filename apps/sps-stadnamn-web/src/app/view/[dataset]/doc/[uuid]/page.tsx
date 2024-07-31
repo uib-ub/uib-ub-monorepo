@@ -50,7 +50,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
           <PiX aria-hidden="true" className='text-neutral-900 inline'/>
           
         </Link>}
-      <div className={(docDataset == 'search' && doc._source.location) ? "p-4 xl:p-8 bg-white overflow-y-auto space-y-3 xl:space-y-6 instance-info absolute h-1/3 xl:h-auto xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md w-full xl:w-1/3 xl:max-h-2/3"
+      <div className={(docDataset == 'search' && doc._source.location) ? "p-4 xl:p-8 bg-white overflow-y-auto space-y-3 xl:space-y-6 instance-info absolute w-full h-1/2 lg:h-full lg:w-1/2 xl:w-1/3 xl:h-auto xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md xl:max-h-2/3"
         : 'mx-2 p-4 lg:p-8 space-y-6 instance-info'
       }>
         { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 

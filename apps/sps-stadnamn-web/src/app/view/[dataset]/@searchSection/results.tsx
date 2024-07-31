@@ -56,16 +56,12 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       router.push(pathname + "?" + params.toString())
     }
 
-    const orderBy = (e: any) => {
-      const params = new URLSearchParams(searchParams)
-      if (e.target.value == '') {
-        params.delete('orderBy')
-      } else {
-        params.set('orderBy', e.target.value)
-      }
-      params.delete('page')
-        
-      router.push(pathname + "?" + params.toString())
+
+    const openTableView = () => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      newSearchParams.set('display', 'table')
+      newSearchParams.delete('search') // Hide search bar section on mobile devices
+      router.push(`/view/${params.dataset}?display=table&${newSearchParams.toString()}`)
     }
 
 
@@ -80,7 +76,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
       </h2>
       <div className="ml-auto flex items-end gap-4">
       { searchParams.get('display') != 'table' &&
-        <button className="btn btn-outline btn-compact !pl-2" onClick={() => router.push(`/view/${params.dataset}?display=table&${searchParams.toString()}`)}>
+        <button className="btn btn-outline btn-compact !pl-2" onClick={openTableView}>
       <i>
         <PiTable className="text-xl mr-2" aria-hidden="true"/>
       </i>
