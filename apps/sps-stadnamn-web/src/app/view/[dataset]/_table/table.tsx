@@ -150,7 +150,7 @@ export default function TableExplorer() {
                         </th>
                         
                         {
-                            showAdm && <th> 
+                            showAdm && visibleColumns.includes('adm') && <th> 
                                 <SortButton field={Array.from({length: contentSettings[params.dataset as string]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Distrikt"/>
                             </th>
                         }
