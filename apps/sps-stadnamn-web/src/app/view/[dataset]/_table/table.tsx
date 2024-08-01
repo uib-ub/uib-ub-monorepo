@@ -50,6 +50,9 @@ export default function TableExplorer() {
           if (contentSettings[params.dataset as string]?.adm) {
             columns.unshift('adm')
           }
+          if (contentSettings[params.dataset as string]?.cadastre) {
+            columns.push('cadastre')
+          }
           setVisibleColumns(columns);
         }
         
@@ -99,7 +102,10 @@ export default function TableExplorer() {
                 Kolonner
             </button>
             { // Reset button if visible columns is different from default
-            visibleColumns.length !== (facetConfig[params.dataset as string]?.filter(item => item.table).length + (contentSettings[params.dataset as string]?.adm ? 1 : 0 )|| 0) &&
+            visibleColumns.length !== (facetConfig[params.dataset as string]?.filter(item => item.table).length
+                                                + (contentSettings[params.dataset as string]?.adm ? 1 : 0 )
+                                                + (contentSettings[params.dataset as string]?.cadastre ? 1 : 0 )
+                                                || 0) &&
             <button type="button" className='btn btn-outline btn-compact pl-2' onClick={resetColumns}>
                 <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
                 Tilbakestill kolonner
@@ -123,6 +129,16 @@ export default function TableExplorer() {
                         onChange={(e) => handleCheckboxChange('adm', e.target.checked)}
                         />
                         Distrikt
+                    </label>
+                </div>}
+                { contentSettings[params.dataset as string]?.cadastre && <div>
+                    <label className="flex gap-2">
+                        <input
+                        type="checkbox"
+                        checked={visibleColumns.includes('cadastre')}
+                        onChange={(e) => handleCheckboxChange('cadastre', e.target.checked)}
+                        />
+                        Matrikkel
                     </label>
                 </div>}
                 {facetConfig[params.dataset as string]?.map((facet: any) => (
@@ -176,7 +192,7 @@ export default function TableExplorer() {
                         {
                             showAdm && visibleColumns.includes('adm') && <td>{hit._source.adm2}{hit._source.adm3 && ' - ' + hit._source.adm3}{hit._source.adm2 && ', '}{hit._source.adm1}</td>
                         }
-                        { showCadastre &&
+                        { showCadastre && visibleColumns.includes('cadastre') &&
                             <td>
                                 {hit._source.cadastre?.map((c: Record<string, number>) => `${c.gnr}${c.bnr ? '/'+ c.bnr : ''}`).join(', ')}
                             </td>
