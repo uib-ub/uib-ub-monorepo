@@ -59,7 +59,6 @@
 
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
-import { prefix } from "termportal-ui/utils/utils";
 import { orderTopDomain } from "~/utils/constants";
 
 const selectedDomain = ref();
@@ -72,27 +71,29 @@ watch(selectedDomain, () => {
   emits("update:modelValue", selectedDomain.value);
 });
 
-const { data } = await useLazyFetch("/api/domain/all/domainOverview", {
+const { data } = await useLazyFetch("/api/domain/all/domain_overview", {
   query: { internal: true },
 });
 
 const preProc = computed(() => {
-  return data.value?.results?.bindings.map((d) => {
-    const labels = JSON.parse(d.labels.value);
+  if (data.value) {
+    return data.value.map((d) => {
+      const labels = JSON.parse(d.labels.value);
 
-    return {
-      id: cleanId(d.concept.value, true),
-      nb: labels?.nb,
-      nn: labels?.nn,
-      en: labels?.en,
-      published: d.published.value === "true",
-      level: d.level.value,
-      children: d?.children
-        ? d?.children.value.split(", ").map((id) => cleanId(id, true))
-        : [],
-      concepts: d.concepts.value,
-    };
-  });
+      return {
+        id: cleanId(d.concept.value, true),
+        nb: labels?.nb,
+        nn: labels?.nn,
+        en: labels?.en,
+        published: d.published.value === "true",
+        level: d.level.value,
+        children: d?.children
+          ? d?.children.value.split(", ").map((id) => cleanId(id, true))
+          : [],
+        concepts: d.concepts.value,
+      };
+    });
+  }
 });
 
 function processDomain(

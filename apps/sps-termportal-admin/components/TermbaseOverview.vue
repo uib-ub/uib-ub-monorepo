@@ -248,7 +248,7 @@ watch(selectedTermbase, () => {
   emits("update:modelValue", selectedTermbase.value);
 });
 
-const { data: dbdata } = await useLazyFetch("/api/tb/all/overview", {
+const { data: dbdata } = await useLazyFetch("/api/tb/all/termbase_overview", {
   query: { internal: true },
 });
 
@@ -270,47 +270,49 @@ const getLicense = (value) =>
     : "";
 
 const merged = computed(() => {
-  const enriched = dbdata.value?.results?.bindings
-    .map((e) => ({
-      label: e.label.value,
-      id: e.id.value,
-      conceptCount: e.concepts.value,
-      status: numberStatus(matchid(cmsdata, e, "status")),
-      labels: matchid(cmsdata, e, "labelsOk"),
-      descriptions: matchid(cmsdata, e, "descriptionsOk"),
-      license: getLicense(e?.license?.value),
-      agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
-      staff: matchid(cmsdata, e, "responsibleStaff"),
-      domain: matchid(cmsdata, e, "domain"),
-      _id: matchid(cmsdata, e, "_id"),
-    }))
-    .filter((termbase) => !["DOMENE", "MRT2"].includes(termbase.id));
+  if (dbdata.value) {
+    const enriched = dbdata.value
+      .map((e) => ({
+        label: e.label.value,
+        id: e.id.value,
+        conceptCount: e.concepts.value,
+        status: numberStatus(matchid(cmsdata, e, "status")),
+        labels: matchid(cmsdata, e, "labelsOk"),
+        descriptions: matchid(cmsdata, e, "descriptionsOk"),
+        license: getLicense(e?.license?.value),
+        agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
+        staff: matchid(cmsdata, e, "responsibleStaff"),
+        domain: matchid(cmsdata, e, "domain"),
+        _id: matchid(cmsdata, e, "_id"),
+      }))
+      .filter((termbase) => !["DOMENE", "MRT2"].includes(termbase.id));
 
-  if (enriched && cmsdata.value) {
-    const ids = dbdata.value?.results?.bindings.map((e) => e.id.value);
-    for (const entry of cmsdata.value) {
-      if (!ids.includes(entry.id)) {
-        const data = {
-          label: entry.label,
-          id: entry.id,
-          status: numberStatus(entry.status),
-          labels: entry.labelsOk,
-          descriptions: entry.descriptionsOk,
-          agreement: entry.licenseAgreementStatus,
-          staff: entry.responsibleStaff,
-          domain: entry.domain,
-          _id: entry._id,
-        };
-        enriched.push(data);
+    if (enriched && cmsdata.value) {
+      const ids = dbdata.value.map((e) => e.id.value);
+      for (const entry of cmsdata.value) {
+        if (!ids.includes(entry.id)) {
+          const data = {
+            label: entry.label,
+            id: entry.id,
+            status: numberStatus(entry.status),
+            labels: entry.labelsOk,
+            descriptions: entry.descriptionsOk,
+            agreement: entry.licenseAgreementStatus,
+            staff: entry.responsibleStaff,
+            domain: entry.domain,
+            _id: entry._id,
+          };
+          enriched.push(data);
+        }
       }
     }
-  }
 
-  const blocker = enriched?.map((tb) => ({
-    ...tb,
-    ...{ blocker: checkBlocker(tb) },
-  }));
-  return blocker;
+    const blocker = enriched?.map((tb) => ({
+      ...tb,
+      ...{ blocker: checkBlocker(tb) },
+    }));
+    return blocker;
+  }
 });
 
 function checkBlocker(tb) {
