@@ -41,3 +41,9 @@ export const orderTopDomain = [
 export const studioLinks = {
   newActivity: "/studio/intent/create/template=activity;type=activity/",
 };
+
+export const esCachedQueries = [
+  "termbase_overview",
+  "termbase_language_coverage",
+  "domain_overview",
+];
