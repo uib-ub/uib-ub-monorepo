@@ -1,12 +1,13 @@
 import { esCachedQueries } from "~/utils/constants";
 
-export async function checkEsCache(queryType: string) {
-  if (esCachedQueries.includes(queryType)) {
+export async function checkEsCache(queryType: string, addition?: string) {
+  const key = addition ? `${queryType}-${addition}` : queryType;
+  if (esCachedQueries.includes(key)) {
     const esPrep = {
       index: "termp-a-keyval",
       query: {
         term: {
-          key: queryType,
+          key,
         },
       },
     };
