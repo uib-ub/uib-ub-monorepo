@@ -170,7 +170,7 @@ export default function TableExplorer() {
                                 <SortButton field={Array.from({length: contentSettings[params.dataset as string]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Distrikt"/>
                             </th>
                         }
-                        { showCadastre &&
+                        { showCadastre && visibleColumns.includes('cadastre') &&
                             <th>
                             <SortButton field={`${showAdm ? 'adm1.keyword,adm2.keyword,':''}cadastre__gnr,cadastre__bnr`} label="Matrikkel" description="Gnr/Bnr kommunevis"/>
                             </th>
