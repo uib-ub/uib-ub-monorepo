@@ -43,14 +43,14 @@
 const props = defineProps({ domain: { type: Object, required: true } });
 
 const { data } = await useLazyFetch(
-  `/api/domain/${props.domain.id}/exploreDomainTermbases`,
+  `/api/domain/${props.domain.id}/domain_termbases_direct`,
   {
     query: { internal: true },
   }
 );
 
 const displayData = computed(() => {
-  return data.value?.results?.bindings?.map((tb) => {
+  return data.value?.map((tb) => {
     return { label: tb.label.value, concepts: tb.concepts.value };
   });
 });
@@ -63,7 +63,7 @@ const { data: dataRec } = await useLazyFetch(
 );
 
 const displayDataRec = computed(() => {
-  return dataRec.value?.results?.bindings.map((tb) => {
+  return dataRec.value?.map((tb) => {
     return { label: tb.label.value, concepts: tb.concepts.value };
   });
 });

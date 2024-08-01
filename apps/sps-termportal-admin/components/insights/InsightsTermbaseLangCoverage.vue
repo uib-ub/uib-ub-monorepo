@@ -32,34 +32,36 @@
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
 
-const { data } = await useLazyFetch("/api/tb/all/insightTermbase");
+const { data } = await useLazyFetch("/api/tb/all/termbase_language_coverage");
 
 const procdata = computed(() => {
-  const mapped = data.value?.results?.bindings.map((tb) => {
-    const map = {
-      label: tb.label.value,
-      count: tb.concepts.value,
-      tnb: tb.termsNb.value,
-      tnn: tb.termsNn.value,
-      ten: tb.termsEn.value,
-      dnb: tb.defNb.value,
-      dnn: tb.defNn.value,
-      den: tb.defEn.value,
-    };
-    return map;
-  });
+  if (data.value) {
+    const mapped = data.value.map((tb) => {
+      const map = {
+        label: tb.label.value,
+        count: tb.concepts.value,
+        tnb: tb.termsNb.value,
+        tnn: tb.termsNn.value,
+        ten: tb.termsEn.value,
+        dnb: tb.defNb.value,
+        dnn: tb.defNn.value,
+        den: tb.defEn.value,
+      };
+      return map;
+    });
 
-  const filtered = mapped?.filter((value, index) => {
-    const _value = JSON.stringify(value);
-    return (
-      index ===
-      mapped?.findIndex((obj) => {
-        return JSON.stringify(obj) === _value;
-      })
-    );
-  });
+    const filtered = mapped?.filter((value, index) => {
+      const _value = JSON.stringify(value);
+      return (
+        index ===
+        mapped?.findIndex((obj) => {
+          return JSON.stringify(obj) === _value;
+        })
+      );
+    });
 
-  return filtered;
+    return filtered;
+  }
 });
 
 const datatable = ref();
