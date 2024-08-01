@@ -25,6 +25,7 @@ export type Samling =
   | "BIBINF"
   | "UDEUT"
   | "SKOG"
+  | "SVV"
   | "TOT"
   | "WHT";
 
@@ -54,6 +55,7 @@ export const termbaseOrder: Samling[] = [
   "SEMANTIKK",
   "SKOG",
   "SDIR",
+  "SVV",
   "RTT",
   "TOT",
   "TOLKING",
@@ -83,6 +85,7 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   ROMFYS: ["nb", "nn", "en"],
   RTT: ["nb", "nn", "en", "da", "de", "fi", "fr", "it", "ru", "sv"],
   SKOG: ["nb", "nn", "en", "de", "fr"],
+  SVV: ["nb", "nn", "en"],
   TOLKING: ["nb", "en", "ar", "fr", "pl", "ru", "so", "ti", "fa-af"],
   TOT: ["nb", "nn", "en"],
   UDEUT: ["nb", "nn", "en", "fr"],
