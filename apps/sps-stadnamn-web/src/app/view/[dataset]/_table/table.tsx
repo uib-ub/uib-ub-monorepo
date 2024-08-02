@@ -70,7 +70,14 @@ export default function TableExplorer() {
       };
 
       const resetColumns = () => {
-        setVisibleColumns(facetConfig[params.dataset as string]?.filter(item => item.table).map(facet => facet.key) || []);
+        const facetColumns = facetConfig[params.dataset as string]?.filter(item => item.table).map(facet => facet.key) || []
+        if (contentSettings[params.dataset as string]?.adm) {
+          facetColumns.unshift('adm')
+        }
+        if (contentSettings[params.dataset as string]?.cadastre) {
+          facetColumns.push('cadastre')
+        }
+        setVisibleColumns(facetColumns)
         localStorage.removeItem(localStorageKey);
       }
 
