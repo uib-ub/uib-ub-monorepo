@@ -1,10 +1,14 @@
 <template>
   <div class="space-y-2">
-    <h2 class="mt-6 mb-2 text-xl">Termbase Status Blocker and Notifications</h2>
+    <h2 class="mt-6 mb-2 text-xl font-semibold">
+      Termbase Status Blocker and Notifications
+    </h2>
     <div class="space-y-5">
       <template v-for="tb in termbases" :key="tb.id">
         <section v-if="tb.status !== '1. kjent' && tb.blocker.status !== 'ok'">
-          <h3 class="text-lg mb-1">{{ tb.label }}: {{ tb.status }}</h3>
+          <h3 v-if="!inline" class="text-lg mb-1">
+            {{ tb.label }}: {{ tb.status }}
+          </h3>
           <div class="space-y-2">
             <div v-if="Object.keys(tb.blocker.hard).length > 0">
               <h4 v-if="tb.status === '5. publisert'" class="font-semibold">
@@ -74,5 +78,8 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({ termbases: { type: Object, required: true } });
+const props = defineProps({
+  termbases: { type: Object, required: true },
+  inline: { type: Boolean, default: false },
+});
 </script>
