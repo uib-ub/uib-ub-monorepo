@@ -4,7 +4,8 @@
     <DataTable
       v-model:filters="filters"
       v-model:selection="selectedTermbase"
-      selection-mode="multiple"
+      v-model:expandedRows="expandedRows"
+      selection-mode="checkbox"
       :value="merged"
       removable-sort
       paginator
@@ -18,6 +19,7 @@
           <InputText v-model="filters['global'].value" placeholder="Søk" />
         </div>
       </template>
+      <Column expander style="width: 3rem" />
       <Column selection-mode="multiple" header-style="width: 3rem"></Column>
       <Column sortable field="label" header="Navn" />
       <!-- <Column sortable field="id" header="ID" /> -->
@@ -229,6 +231,49 @@
           </NuxtLink>
         </template>
       </Column>
+      <template #expansion="slotProps">
+        <div class="p-2 space-y-3 max-w-4xl">
+          <!-- <pre>{{ slotProps.data }}</pre> -->
+          <h2 class="text-lg my-2 font-semibold">Info</h2>
+          <dl>
+            <div v-if="slotProps.data?.id" class="flex space-x-5">
+              <dt class="font-semibold w-16">ID</dt>
+              <dd>{{ slotProps.data?.id }}</dd>
+            </div>
+            <div v-if="slotProps.data?.type" class="flex space-x-5">
+              <dt class="font-semibold w-16">Type</dt>
+              <dd>{{ slotProps.data?.type }}</dd>
+            </div>
+            <div v-if="slotProps.data?.contact" class="flex space-x-5">
+              <dt class="font-semibold w-16">Kontakt</dt>
+              <dd>
+                <div
+                  v-for="contact in slotProps.data?.contact"
+                  :key="contact._id"
+                >
+                  <div v-if="!contact.email" class="">{{ contact.label }}</div>
+                  <AppLink
+                    v-else
+                    class="underline hover:decoration-2"
+                    :to="`mailto:${contact.email}`"
+                    >{{ contact.label }}</AppLink
+                  >
+                </div>
+              </dd>
+            </div>
+          </dl>
+          <div v-if="slotProps.data.note" class="content-page">
+            <h2 class="text-lg my-1 font-semibold">Merknad</h2>
+            <TpSanityContent :blocks="slotProps.data.note" />
+          </div>
+          <TermbaseBlocker
+            v-if="slotProps.data?.blocker?.status !== 'ok'"
+            :key="'blocker' + selectedTermbase.map((tb) => tb._id).join('')"
+            :termbases="[slotProps.data]"
+            :inline="true"
+          />
+        </div>
+      </template>
     </DataTable>
   </section>
 </template>
@@ -238,6 +283,7 @@ import { FilterMatchMode } from "primevue/api";
 
 const runtimeConfig = useRuntimeConfig();
 
+const expandedRows = ref([]);
 const selectedTermbase = ref([]);
 const props = defineProps({
   modelValue: { type: Array, required: true },
@@ -254,7 +300,8 @@ const { data: dbdata } = await useLazyFetch("/api/tb/all/termbase_overview", {
 
 const query = `*[_type == "termbase"]{
   ...,
-  "responsibleStaff": responsibleStaff->label
+  "responsibleStaff": responsibleStaff->label,
+  "contact": contactPerson[]->{_id, label, email}
 }`;
 
 const { data: cmsdata } = useLazySanityQuery(query);
@@ -283,6 +330,9 @@ const merged = computed(() => {
         agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
         staff: matchid(cmsdata, e, "responsibleStaff"),
         domain: matchid(cmsdata, e, "domain"),
+        note: matchid(cmsdata, e, "note"),
+        type: matchid(cmsdata, e, "type"),
+        contact: matchid(cmsdata, e, "contact"),
         _id: matchid(cmsdata, e, "_id"),
       }))
       .filter((termbase) => !["DOMENE", "MRT2"].includes(termbase.id));
@@ -300,6 +350,9 @@ const merged = computed(() => {
             agreement: entry.licenseAgreementStatus,
             staff: entry.responsibleStaff,
             domain: entry.domain,
+            note: entry.note,
+            type: entry.type,
+            contact: entry.contact,
             _id: entry._id,
           };
           enriched.push(data);
