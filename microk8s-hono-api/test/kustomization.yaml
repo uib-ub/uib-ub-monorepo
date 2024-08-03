@@ -1,7 +1,10 @@
 resources:
-  - ../base
+- ../base
+- namespace.yaml
 
-patchesStrategicMerge:
-  - config.yaml
-  - deployment.yaml
-  - ingress.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patches:
+- path: config.yaml
+- path: deployment.yaml
+- path: ingress.yaml
