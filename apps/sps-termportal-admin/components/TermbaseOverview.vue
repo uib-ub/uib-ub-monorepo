@@ -2,6 +2,7 @@
   <section>
     <h1 class="mb-6 text-2xl">Termbase oversikt</h1>
     <DataTable
+      ref="datatable"
       v-model:filters="filters"
       v-model:selection="selectedTermbase"
       v-model:expandedRows="expandedRows"
@@ -15,8 +16,9 @@
       :global-filter-fields="['label', 'id', 'conceptCount']"
     >
       <template #header>
-        <div class="flex">
+        <div class="flex justify-between">
           <InputText v-model="filters['global'].value" placeholder="Søk" />
+          <Button class="h-10" label="Eksport" @click="exportData()" />
         </div>
       </template>
       <Column expander style="width: 3rem" />
@@ -462,4 +464,9 @@ const filters = ref({
   agreement: { value: null, matchMode: FilterMatchMode.IN },
   staff: { value: null, matchMode: FilterMatchMode.IN },
 });
+
+const datatable = ref();
+const exportData = () => {
+  datatable.value.exportCSV();
+};
 </script>

@@ -2,6 +2,7 @@
   <div class="space-y-2">
     <p>Select domain to display more information.</p>
     <DataTable
+      ref="datatable"
       v-model:filters="filters"
       v-model:selection="selectedDomain"
       selection-mode="single"
@@ -13,8 +14,9 @@
       :global-filter-fields="['hierarchy', 'nb']"
     >
       <template #header>
-        <div class="flex space-x-3">
+        <div class="flex justify-between">
           <InputText v-model="filters['global'].value" placeholder="Søk" />
+          <Button class="h-10" label="Eksport" @click="exportData()" />
         </div>
       </template>
       <Column selection-mode="single" header-style="width: 3rem"></Column>
@@ -60,6 +62,11 @@
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
 import { orderTopDomain } from "~/utils/constants";
+
+const datatable = ref();
+const exportData = () => {
+  datatable.value.exportCSV();
+};
 
 const selectedDomain = ref();
 const props = defineProps({

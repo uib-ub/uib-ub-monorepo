@@ -2,6 +2,7 @@
   <section>
     <h2 class="my-6 text-xl">Termgroup members</h2>
     <DataTable
+      ref="datatable"
       v-model:filters="filters"
       :value="procdata"
       removable-sort
@@ -9,10 +10,25 @@
       :rows="15"
       filter-display="row"
     >
+      <template #header>
+        <div class="flex justify-end">
+          <Button class="h-10" label="Eksport" @click="exportData()" />
+        </div>
+      </template>
       <Column header="Navn" field="label" sortable />
+      <Column header="E-post" field="email" sortable>
+        <template #body="{ data }">
+          <AppLink
+            class="underline hover:decoration-2"
+            :to="`mailto:${data.email}`"
+            >{{ data?.email }}</AppLink
+          >
+        </template>
+      </Column>
+      <Column header="Organisasjon" field="institution" sortable />
       <Column header="Termgruppe" field="group" sortable />
       <Column header="Rolle" field="role" sortable />
-      <Column header="Start" field="start" sortable>
+      <!-- <Column header="Start" field="start" sortable>
         <template #body="slotProps">
           {{ prettyPrintDate(slotProps.data.start) }}
         </template>
@@ -21,7 +37,7 @@
         <template #body="slotProps">
           {{ prettyPrintDate(slotProps.data.end) }}
         </template>
-      </Column>
+      </Column> -->
       <Column header="Aktiv" field="active" sortable data-type="boolean">
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
@@ -44,6 +60,11 @@ import { FilterMatchMode } from "primevue/api";
 
 const props = defineProps({ termbases: { type: Array, required: true } });
 
+const datatable = ref();
+const exportData = () => {
+  datatable.value.exportCSV();
+};
+
 const filters = ref({
   active: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
@@ -53,6 +74,8 @@ const query = `
 *[_type == "person"]{
   _id,
   label,
+  email,
+  "institution": qualifiedDelegation[!defined(timespan.endOfTheEnd)]{timespan, "organization": organization->label},
   "termgroup": *[_type == "group" &&
                  references(^._id)
                  ]{
@@ -75,6 +98,8 @@ const procdata = computed(() => {
     ?.map((person) => {
       const data = {
         label: person?.label,
+        email: person?.email,
+        institution: person?.institution,
         termgroups: person?.termgroup.filter(
           (group) => group.termbase.length > 0
         ),
@@ -85,7 +110,19 @@ const procdata = computed(() => {
     .map((person) => {
       return {
         label: person.label,
-        group: person.termgroups.map((group) => group.label).join(", "),
+        email: person.email,
+        institution: person.institution
+          ?.map(
+            (delegation) =>
+              `${delegation.organization} (${delegation?.timespan?.edtf})`
+          )
+          .join(", "),
+        group: person.termgroups
+          .map(
+            (group) =>
+              `${group.label} (${group?.qualifiedMembership[0]?.timespan?.edtf})`
+          )
+          .join(", "),
         role: person.termgroups
           .map((group) =>
             group.qualifiedMembership.map((membership) => membership.role)
