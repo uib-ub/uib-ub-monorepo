@@ -109,7 +109,7 @@ export default function Facets() {
         <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
           <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
           { expandedFacet == 'server' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
-          Andre filtre
+          {contentSettings[params.dataset]?.adm ? 'Andre filtre' : 'Legg til filter'}
           { loadingFacet == 'server' ? <Spinner status="Laster inn fasetter" className='w-[1em] h-[1em}'/> : null}
           
           </button>
