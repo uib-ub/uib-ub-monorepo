@@ -3,7 +3,8 @@ import { useSearchParams } from 'next/navigation'
 export function useQueryWithout(omit : string[]) {
     const params = useSearchParams()
     const paramsArray = Array.from(params.entries());
-    return  paramsArray.filter(([key]) => !omit.includes(key));
+    // IF in omit or first character is underscore
+    return  paramsArray.filter(([key]) => !omit.includes(key) && key[0] !== '_');
 
 }
 
