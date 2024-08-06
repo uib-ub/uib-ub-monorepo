@@ -9,9 +9,16 @@ interface ResultRenderers {
 }
 
 
+
+function createMarkup(htmlString: string) {
+  const decodedHtmlString = htmlString.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  return {__html: decodedHtmlString};
+}
+
+
+
 const formatHighlight = (highlight: string) => {
-  const segments = highlight.split(/<\/?em>/);
-  return segments.map((segment, index) => index % 2 === 0 ? segment : <mark key={index}>{segment}</mark>);
+  return <div dangerouslySetInnerHTML={createMarkup(highlight)}></div>;
 
 }
 
@@ -51,6 +58,9 @@ export const resultRenderers: ResultRenderers = {
     title: (hit: any, display: string) => {
       if (display == 'table') return defaultTitle(hit)
       return <>{defaultTitle(hit)} {hit._source.cadastre && <> | {hit._source.rawData.KNR}-{hit._source.cadastre[0]?.gnr}{hit._source.cadastre[0]?.bnr && '/'}{hit._source.cadastre[0]?.bnr}</> }</>
+    },
+    snippet: (hit: any, display: string) => {
+      return hit.highlight?.['content.html'][0] && formatHighlight(hit.highlight['content.html'][0])
     },
     details: (hit: any, display: string) => {
       return loktypeDetails(hit._source.rawData.Lokalitetstype, hit)

@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'PhoneticFont';
+  src: url('/fonts/no____.woff2') format('woff2');
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

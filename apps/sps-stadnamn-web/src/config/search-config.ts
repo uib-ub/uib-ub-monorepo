@@ -23,7 +23,11 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
     hord: [
       {key: "label", label: "Namn"},
       {key: "rawData.merknader", label: "Merknader"},
-    ]
+    ],
+    rygh: [
+      {key: "label", label: "Namn"},
+      {key: "content.html", label: "Fulltekst"},
+    ],
   }
   
 

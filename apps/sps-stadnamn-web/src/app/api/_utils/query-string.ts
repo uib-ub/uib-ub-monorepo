@@ -29,6 +29,10 @@ export function getQueryString(params: { [key: string]: string | null }) {
     }} : null
 
   const highlight = params.q && params.field && params.field != 'label' ? {
+    pre_tags: ["<mark>"],
+    post_tags: ["</mark>"],
+    boundary_scanner_locale: "nn-NO",
+    
     fields: {
         [params.field]: {}
     }

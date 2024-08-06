@@ -15,8 +15,8 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     return {__html: decodedHtmlString};
   }
   
-  function HtmlString({htmlString}: {htmlString: string}) {
-    return <div dangerouslySetInnerHTML={createMarkup(htmlString)} />;
+  function HtmlString({htmlString, className}: {htmlString: string, className?: string}) {
+    return <div className={className} dangerouslySetInnerHTML={createMarkup(htmlString)} />;
   }
 
   const Timeline = (arr: { label: string; year: string }[], noCoordinates: boolean) => {
@@ -95,7 +95,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   rygh: (source: any) => {
     return <>
-    {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
+    {source.content?.html && <HtmlString className='space-y-4' htmlString={source.content.html} />}
     <div className="mt-3">
     <Link href={source.rawData.Lenke_til_originalside} className='font-semibold'>Lenke til originalside</Link>
     </div>
