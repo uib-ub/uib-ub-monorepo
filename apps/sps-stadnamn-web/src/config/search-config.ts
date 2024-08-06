@@ -37,8 +37,8 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
   export const facetConfig: Record<string, FacetConfigItem[]> = {
       search: [
         {key: "datasets", label: "Datasett", omitLabel: true},
-        {key: "adm1Fallback", label: "Fylke (uordna)"},
-        {key: "adm2Fallback", label: "Kommune (uordna)"},
+        {key: "adm1Fallback", label: "Fylke (ustandardisert)"},
+        {key: "adm2Fallback", label: "Kommune (ustandardisert)"},
         {key: "snid", label: "Stadnamn ID"},
         {key: "gnidu", label: "GNIDu"},
         {key: "midu", label: "MIDu"},
