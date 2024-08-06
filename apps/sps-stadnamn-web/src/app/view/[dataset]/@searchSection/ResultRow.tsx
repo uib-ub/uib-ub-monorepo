@@ -49,13 +49,13 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
         <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col">
         <div className='flex flex-wrap gap-1'>
         <div id={"resultText_" + hit._source.uuid}>{titleRenderer(hit, display)}
-        {(adm || hit.highlight) && <p>
+        {(adm || hit.highlight) && <div>
           {adm && detailsRenderer(hit, display)}
           {adm && hit.highlight && ' | '}
           {hit.highlight && snippetRenderer && snippetRenderer(hit, display)}
           
 
-        </p>}
+        </div>}
         </div>
         <div className='flex gap-2 ml-auto'>
         { params.dataset == 'search' && hit._source.children.length == 1 &&
