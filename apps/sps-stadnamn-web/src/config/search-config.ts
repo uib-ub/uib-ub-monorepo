@@ -28,6 +28,10 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
       {key: "label", label: "Namn"},
       {key: "content.html", label: "Fulltekst"},
     ],
+    leks_g: [
+      {key: "label", label: "Namn"},
+      {key: "content.text", label: "Fulltekst"},
+    ],
   }
   
 
@@ -72,6 +76,11 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
         {key: "rawData.lokalitetstype", label: "Lokalitetstype"},
         {key: "rawData.gnidu", label: "GNIDu"},
         {key: "rawData.sisteledd", label: "Sisteledd"},
+      ],
+      leks_g: [
+        {key: "rawData.språk", label: "Språk"},
+        {key: "rawData.kjelde", label: "Kjelde"},
+        
       ],
       mu1950: [
         {key: "rawData.eigar", label: "Eigar"},

@@ -72,6 +72,15 @@ export const resultRenderers: ResultRenderers = {
       return loktypeDetails(hit._source.rawData.lokalitetstype, hit)
     }
   },
+  leks_g: {
+    title: defaultTitle,
+    snippet: (hit: any, display: string) => {
+      return hit.highlight?.['content.text'][0] && formatHighlight(hit.highlight['content.text'][0])
+    },
+    details: (hit: any, display: string) => {
+      return 
+    }
+  },
   bsn: {
     title: defaultTitle,
     details: (hit: any, display: string) => {

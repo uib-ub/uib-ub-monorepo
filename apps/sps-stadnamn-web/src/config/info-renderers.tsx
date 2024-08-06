@@ -146,7 +146,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   leks_g: (source: any) => {
     return <>
-    {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
+    {source.content?.html && <HtmlString className='space-y-2' htmlString={source.content?.html} />}
     </>
   },
 
