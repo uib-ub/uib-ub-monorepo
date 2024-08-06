@@ -40,15 +40,6 @@ export default function TableExplorer() {
         ()}`)
     }
 
-    // Redirect to document if only one hit
-    useEffect(() => {
-        if (resultData?.hits?.total.value == 1 && !searchParams.get('_redirected')) {
-            const newUrlParams = new URLSearchParams(searchParams)
-            newUrlParams.set('_redirected', 'true')
-            router.replace(`/view/${params.dataset}/doc/${resultData.hits.hits[0]._source.uuid}?${newUrlParams.toString()}`)
-        }
-    }, [resultData, params.dataset, searchParams, router])
-
 
 
     useEffect(() => {
