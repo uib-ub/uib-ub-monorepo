@@ -5,14 +5,16 @@ ARG BUN_VERSION=1.1.8
 FROM node:20-buster AS base
 
 # Install bash for base and clean cache for smaller image
-RUN apt-get update && apt-get install -y && apt-get clean bash
+RUN apt-get update && \
+  apt-get install -y bash && \
+  apt-get clean
 
 # Install turbo for base
 RUN npm install -g turbo@latest
 
 # Install Bun for base
-RUN curl -fsSL https://bun.sh/install | bash
-RUN mv /root/.bun/bin/bun /usr/local/bin/
+RUN curl -fsSL https://bun.sh/install | bash && \
+  mv /root/.bun/bin/bun /usr/local/bin/
 # Ensure Bun environment
 ENV PATH="/usr/local/bin:$PATH"
 # Check Bun installation
