@@ -25,7 +25,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
       query: modifyQuery(params.q),
       allow_leading_wildcard: true,
       default_operator: params.field ? 'AND' : 'OR',
-      fields: params.field ? [params.field] : ["label^3", "altLabels^2", "attestiations.label"],
+      fields: params.field ? [params.field] : ["label^3", "altLabels^2", "attestations.label"],
     }} : null
 
   const highlight = params.q && params.field && params.field != 'label' ? {
