@@ -46,32 +46,32 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
 
       ],
       bsn: [
-        {key: "rawData.stnavn.loktype.type", label: "Lokalitetstype (ustandardisert)", table: true},
+        {key: "rawData.stnavn.loktype.type", label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table: true},
         {key: "rawData.stnavn.sted.gårdsnr", label: "Gardsnr"},
         {key: "rawData.stnavn.sted.bruksnr", label: "Bruksnr"},
         {key: "rawData.stnavn.oppslag.oppslord", label: "Oppslagsord"},
         {key: "rawData.stnavn.oppslag.utmledd", label: "Utmerkingsledd"},
         {key: "rawData.stnavn.oppslag.hovledd", label: "Hovudledd"},
-
-
-
+      ],
+      hord: [
+        {key: "archive.institution", label: "Arkivtilvising", table: true},
+        {key: "label", label: "debug", table: true},
+        {key: "cadastre__gnr", label: "Gardsnummer", sort: "asc", type: "integer"},
+        {key: "cadastre__bnr", label: "Bruksnummer", sort: "asc", type: "integer"},
+        {key: "rawData.oppskrivar", label: "Oppskrivar", table: true},
+        {key: "rawData.oppskrivingsTid", label: "Oppskrivingstid", table: true},
       ],
       rygh: [
         {key: "rawData.Lokalitetstype", label: "Lokalitetstype"},
-        {key: "rawData.Gnr", label: "Gardsnummer"},
-        {key: "rawData.Bnr", label: "Bruksnummer"},
+        {key: "rawData.Bind", label: "Bind", type: "integer"},
+        {key: "rawData.Sidetall", label: "Sidetall"},
+        {key: "cadastre.gnr", label: "Gardsnummer"},
+        {key: "cadastre.bnr", label: "Bruksnummer"},
       ],
       leks: [
         {key: "rawData.lokalitetstype", label: "Lokalitetstype"},
         {key: "rawData.gnidu", label: "GNIDu"},
         {key: "rawData.sisteledd", label: "Sisteledd"},
-      ],
-      hord: [
-        {key: "archive.institution", label: "Arkivtilvising", table: true},
-        {key: "cadastre__gnr", label: "Gardsnummer", sort: "asc", type: "integer"},
-        {key: "cadastre__bnr", label: "Bruksnummer", sort: "asc", type: "integer"},
-        {key: "rawData.oppskrivar", label: "Oppskrivar", table: true},
-        {key: "rawData.oppskrivingsTid", label: "Oppskrivingstid", table: true},
       ],
       mu1950: [
         {key: "rawData.eigar", label: "Eigar"},
