@@ -193,7 +193,7 @@
   }
   
   .result-table tbody tr {
-    @apply border-b border-neutral-200 hover:bg-neutral-100; /* Lighter hover background for subtle contrast */
+    @apply border-b border-neutral-200; /* Lighter hover background for subtle contrast */
   }
 
  
@@ -202,7 +202,7 @@
   }
   
   .result-table tbody tr:nth-child(even) {
-    @apply bg-neutral-50 hover:!bg-neutral-100; /* Lighter background for rows for better readability */
+    @apply bg-neutral-50; /* Lighter background for rows for better readability */
   }
   
   .result-table td {
