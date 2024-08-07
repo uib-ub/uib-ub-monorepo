@@ -95,10 +95,14 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   rygh: (source: any) => {
     return <>
-    {source.content?.html && <HtmlString className='space-y-4' htmlString={source.content.html} />}
-    <div className="mt-3">
-    <Link href={source.rawData.Lenke_til_originalside} className='font-semibold'>Lenke til originalside</Link>
+
+    {source.content?.html && <div className="inline-flex flex-col md:flex-row gap-4">
+      <Link href={source.rawData.Lenke_til_originalside} className='whitespace-nowrap inline'>Bind {source.rawData.Bind}, side {source.rawData.Side}</Link>
+    <HtmlString className='space-y-4 inline' htmlString={source.content.html} />
+
     </div>
+    
+    }
     <InfoBox dataset={'rygh'} items={[
       {title: 'Stadnamn', value: source.label},
       {title: 'Lokalitetstype', value: source.sosi, sosi: true},
