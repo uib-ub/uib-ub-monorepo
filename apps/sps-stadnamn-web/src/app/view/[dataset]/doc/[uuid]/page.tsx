@@ -58,8 +58,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
           
           { hasSearchParams && searchParams.search != 'hide' ? 
-          (searchParams.display = 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet') : 
-          (searchParams.display = 'table' ? 'Vis i tabellen' : 'Vis på kartet')}
+          (searchParams.display == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet') : 
+          (searchParams.display == 'table' ? 'Vis i tabellen' : 'Vis på kartet')}
         </Link>}
         
         { doc._source.snid && searchParams.expanded && docDataset != 'search' ? 

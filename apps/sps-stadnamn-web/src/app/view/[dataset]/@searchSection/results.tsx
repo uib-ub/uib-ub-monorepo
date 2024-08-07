@@ -59,7 +59,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
 
     const openTableView = () => {
       const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.set('display', 'table')
+      newSearchParams.delete('display')
       newSearchParams.delete('search') // Hide search bar section on mobile devices
       router.push(`/view/${params.dataset}?display=table&${newSearchParams.toString()}`)
     }
