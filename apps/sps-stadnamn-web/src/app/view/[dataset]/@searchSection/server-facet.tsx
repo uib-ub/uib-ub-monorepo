@@ -112,7 +112,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
         <li key={index}>
         <label>
           <input type="checkbox" checked={paramLookup.getAll(selectedFacet).includes(item.key.toString()) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
-          {item.label} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+          {item.label == "_false" ? "[ingen verdi]" : item.label} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
         </li>
         ))}

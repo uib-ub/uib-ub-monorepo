@@ -31,6 +31,8 @@ export default function Facets() {
 
     const getFieldLabel = (name: string, value: string) => {
       // Add any special cases here
+      if (value == "_false") return "Nei"
+      if (value == "_true") return "Ja"
       if (name == "datasets") {
         return datasetTitles[value] || value
       }
