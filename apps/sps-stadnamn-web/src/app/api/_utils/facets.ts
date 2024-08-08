@@ -60,6 +60,10 @@ export function extractFacets(request: Request ) {
   // other facets
   if (Object.keys(serverFacets).length) {
     for (const [key, values] of Object.entries(serverFacets)) {
+      const hasFalse = values.includes("_false");
+      const hasTrue = values.includes("_true");
+      const filteredValues = values.filter(value => value !== "_false" && value !== "_true");
+
       // Handle nested properties
       if (key.includes('__')) {
         const [base, nested] = key.split('__');
@@ -67,14 +71,28 @@ export function extractFacets(request: Request ) {
           "nested": {
             "path": base,
             "query": {
-              "terms": { [`${base}.${nested}`]: values }
+              "bool": {
+                "should": [
+                  ...(hasFalse ? [{"bool": {"must_not": {"exists": {"field": `${base}.${nested}`}}}}] : []),
+                  ...(hasTrue ? [{"exists": {"field": `${base}.${nested}`}}] : []),
+                  ...(filteredValues.length ? [{"terms": { [`${base}.${nested}`]: filteredValues }}] : [])
+                ],
+                "minimum_should_match": 1
+              }
             }
           }
         });
       } else {
-        termFilters.push({
-          "terms": { [`${key}.keyword`]: values }
-        });
+          termFilters.push({
+            "bool": {
+              "should": [
+                ...(hasFalse ? [{"bool": {"must_not": {"exists": {"field": `${key}.keyword`}}}}] : []),
+                ...(hasTrue ? [{"exists": {"field": `${key}.keyword`}}] : []),
+                ...(filteredValues.length ? [{"terms": { [`${key}.keyword`]: filteredValues }}] : [])
+              ],
+              "minimum_should_match": 1
+            }
+          });
       }
     }
   }
