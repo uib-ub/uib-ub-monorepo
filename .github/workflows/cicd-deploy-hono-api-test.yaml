@@ -32,7 +32,7 @@ jobs:
       - name: deploy apply pods to hono-api-test env
         run: |
           # create namespace hono-api-test
-          kubectl apply -f microk8s-hono-api/test/namespace.yaml
+          kubectl apply -f microk8s-hono-api/hono-api-test/namespace.yaml
 
           # create secret regcred for kubernetes to pull image from private registry on Github
           if ! kubectl -n hono-api-test get secret regcred; then
@@ -99,7 +99,7 @@ jobs:
           fi
 
           # apply all resources in overlays based on namespace
-          kubectl apply -k microk8s-hono-api/test -n hono-api-test
+          kubectl apply -k microk8s-hono-api/hono-api-test -n hono-api-test
 
           # rolling restart hono-api
           kubectl rollout restart deployment hono-api -n hono-api-test
