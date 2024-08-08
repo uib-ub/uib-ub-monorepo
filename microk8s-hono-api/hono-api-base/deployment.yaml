@@ -9,6 +9,9 @@ spec:
     matchLabels:
       app: hono-api
   template:
+    metadata:
+      labels:
+        app: hono-api
     spec:
       containers:
         - name: hono-api
@@ -67,5 +70,18 @@ spec:
                   key: apiEsWriteToken
           ports:
             - containerPort: 3009
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
       imagePullSecrets:
         - name: regcred
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
