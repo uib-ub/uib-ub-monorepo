@@ -8,9 +8,11 @@ export const statusOrder = [
 
 export const activityTypes = {
   termbaseInitialisering: "Termbase initialisering",
-  termbasePublisering: "Termbase publisering",
   termbaseOpprettelse: "Termbase opprettelse",
   termbaseImportering: "Termbase importering",
+  termbasePublisering: "Termbase publisering",
+  termbaseStatusReport: "Termbase status rapport",
+  termgruppeOppdatering: "Termgruppe medlemsoppdatering",
   møte: "Møte osv.",
 };
 

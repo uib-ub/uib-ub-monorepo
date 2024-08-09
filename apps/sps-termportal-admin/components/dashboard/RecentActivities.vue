@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="flex justify-between">
-      <h2 class="text-lg font-semibold pb-3 text-gray-800">
+      <h2 class="text-lg font-semibold pb-2 text-gray-800">
         Nylige aktiviteter
       </h2>
       <AddButton :to="studioLinks.newActivity" target="_blank" />

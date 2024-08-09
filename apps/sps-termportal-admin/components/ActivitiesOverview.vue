@@ -55,7 +55,7 @@
           </template>
         </Column>
         <template #expansion="slotProps">
-          <div class="p-4 space-y-3">
+          <div class="p-4 space-y-3 max-w-3xl">
             <div v-if="slotProps.data.note" class="content-page">
               <h2 class="text-lg py-1 font-semibold">Merknad</h2>
               <TpSanityContent :blocks="slotProps.data.note" />
