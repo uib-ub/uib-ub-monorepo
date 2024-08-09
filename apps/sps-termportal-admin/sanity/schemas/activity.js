@@ -11,14 +11,6 @@ export default {
   liveEdit: true,
   fields: [
     label,
-    note,
-    timespan,
-    {
-      name: "qualifiedUsage",
-      title: "Omfang",
-      type: "array",
-      of: [usage],
-    },
     {
       name: "type",
       type: "string",
@@ -28,6 +20,14 @@ export default {
           return { title: activityTypes[key], value: key };
         }),
       },
+    },
+    note,
+    timespan,
+    {
+      name: "qualifiedUsage",
+      title: "Omfang",
+      type: "array",
+      of: [usage],
     },
     {
       name: "usage",
