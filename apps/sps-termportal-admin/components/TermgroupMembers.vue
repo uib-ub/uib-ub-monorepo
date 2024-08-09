@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h2 class="my-6 text-xl">Termgroup members</h2>
+    <h2 class="my-6 text-xl font-semibold">Termgroup members</h2>
     <DataTable
       ref="datatable"
       v-model:filters="filters"
