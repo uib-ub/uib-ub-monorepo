@@ -4,7 +4,7 @@ export async function checkEsCache(queryType: string, addition?: string) {
   const key = addition ? `${queryType}-${addition}` : queryType;
   if (esCachedQueries.includes(key)) {
     const esPrep = {
-      index: "termp-a-keyval",
+      index: "search-termp-a-keyval",
       query: {
         term: {
           key,

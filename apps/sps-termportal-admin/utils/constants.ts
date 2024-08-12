@@ -11,7 +11,7 @@ export const activityTypes = {
   termbaseOpprettelse: "Termbase opprettelse",
   termbaseImportering: "Termbase importering",
   termbasePublisering: "Termbase publisering",
-  termbaseStatusReport: "Termbase status rapport",
+  termbaseStatusReport: "Termbase statusrapport",
   termgruppeOppdatering: "Termgruppe medlemsoppdatering",
   møte: "Møte osv.",
 };

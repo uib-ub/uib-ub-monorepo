@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const query = {
-    index: "termp-a-analytics",
+    index: "search-termp-a-analytics",
     query: {
       match_all: {},
     },
