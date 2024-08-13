@@ -32,7 +32,7 @@ export async function GET(request: Request) {
         }
 
 
-        const data = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-search`, query)
+        const data = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
         return Response.json(data)
 
     }
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
     }
 
 
-    const data = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-search`, query)
+    const data = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
 
     return Response.json(data)
   }

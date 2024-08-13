@@ -22,7 +22,7 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     }
 
 
-    res = await fetch(`${endpoint}stadnamn-${process.env.SN_ENV}-*/_search`, {
+    res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-*/_search`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export async function fetchSOSI(sosiCode: string) {
                     "must": [
                         {
                             "term": {
-                                "_index": `stadnamn-${process.env.SN_ENV}-search`
+                                "_index": `search-stadnamn-${process.env.SN_ENV}-search`
                             }
                         },
                         {
@@ -103,7 +103,7 @@ export async function fetchSOSI(sosiCode: string) {
                     "must_not": [
                         {
                             "term": {
-                                "_index": `stadnamn-${process.env.SN_ENV}-search`
+                                "_index": `search-stadnamn-${process.env.SN_ENV}-search`
                             }
                         }
                     ]
@@ -121,7 +121,7 @@ export async function fetchSOSI(sosiCode: string) {
     }
 }
 
-    const res = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-vocab`, query)
+    const res = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-vocab`, query)
 
     //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
     const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
