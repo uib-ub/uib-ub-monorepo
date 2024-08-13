@@ -119,7 +119,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const listItem = (item: any, index: number, baseName: string, path: string[], parentChecked: boolean) => {
     const childAggregation = baseName + (path.length + 1);
     const checked = isChecked(baseName, path);
-    const children = item[childAggregation]?.buckets
+    const children = item[childAggregation]?.buckets.filter((subitem: any) => subitem.key !=="_false")
     const filteredChildren = facetSearchQuery && children?.filter((subitem: any) => facetSearch(subitem, baseName, path.length +1))
 
     return (
