@@ -43,6 +43,7 @@ export async function GET(request: Request) {
                 size: params.facetSearch ? 10 : 50,
                 ...params.facetSort ? { order: { _key: params.facetSort } } : {},
               },
+              ...(i < facets.length - 1 ? { aggs } : {})
             }
           };
     }
