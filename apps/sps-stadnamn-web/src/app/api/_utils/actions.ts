@@ -126,7 +126,7 @@ export async function fetchSOSI(sosiCode: string) {
     //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
     const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
         if (!bucket.key.includes('_')) {
-            const [ code, timestamp] = bucket.key.split('-').slice(1)
+            const [ code, timestamp] = bucket.key.split('-').slice(2)
             acc[code] = {doc_count: bucket.doc_count, timestamp: timestamp}
         }
         return acc

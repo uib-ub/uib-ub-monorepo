@@ -29,7 +29,7 @@ export default async function LandingPage({ params }: { params: { uuid: string }
         return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
       }
 
-    const docDataset = doc._index.split('-')[1]
+    const docDataset = doc._index.split('-')[2]
 
     // Get the keys of the object to use as table headers
 

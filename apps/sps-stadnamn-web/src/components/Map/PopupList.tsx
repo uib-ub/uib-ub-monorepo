@@ -12,7 +12,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
 
 
     const listItemRenderer = (doc: any) => {
-        const docDataset = doc._index.split('-')[1];
+        const docDataset = doc._index.split('-')[2];
         return (
             <>
             <span id={"resultText_" + doc._source.uuid}>

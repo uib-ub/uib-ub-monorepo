@@ -21,7 +21,7 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
         .then(data => {
         // group by index name
         const groupedChildren = data.hits?.hits?.reduce((acc: Record<string, any[]>, doc: Record<string, any>) => {
-            const index = doc._index.split('-')[1]
+            const index = doc._index.split('-')[2]
             if (!acc[index]) {
                 acc[index] = []
             }

@@ -39,7 +39,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
       return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
     }
 
-    const docDataset = doc._index.split('-')[1]
+    const docDataset = doc._index.split('-')[2]
 
     
 
