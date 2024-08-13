@@ -9,15 +9,16 @@ export async function GET(request: Request) {
   const facets = params.facets?.split(',')
   const { simple_query_string } = getQueryString(filteredParams)
 
- let aggs : Record<string,any>;
+ let aggs;
  if (facets) {
   aggs = {}
   for (let i = facets.length - 1; i >= 0; i--) {
       const facetField = facets[i].split('__');
       const isNestedQuery = facetField.length > 1;
 
-      if (isNestedQuery) {
-          aggs[facetField[0]] = {
+      aggs = isNestedQuery
+        ? {
+          [facetField[0]]: {
             nested: {
               path: facetField[0],
             },
@@ -31,10 +32,11 @@ export async function GET(request: Request) {
                 },
               },
             },
-          }
+          },
+          ...(i < facets.length - 1 ? { aggs } : {})
         }
-        else {
-          aggs[facets[i]] = {
+        : {
+            [facets[i]]: {
               terms: {
                 field: `${facets[i]}.keyword`,
                 missing: "_false",
