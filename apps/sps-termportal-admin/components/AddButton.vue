@@ -1,6 +1,6 @@
 <template>
   <AppLink
-    class="w-7 h-7 rounded-2xl shrink-0 bg-gray-200 mr-1 hover:bg-gray-300"
+    class="w-7 h-7 rounded-2xl shrink-0 bg-gray-200 mr-1 hover:bg-gray-300 mx-2"
     :to="to"
     :target="target"
     ><Icon
