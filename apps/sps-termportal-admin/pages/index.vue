@@ -14,7 +14,7 @@
         <DashboardTermbaseStatus />
         <div class="flex space-x-12">
           <DashboardRecentActivities />
-          <div class="space-y-5">
+          <div class="space-y-5 min-w-[28em]">
             <DashboardOngoingActivities />
             <DashboardUpcomingActivities />
             <DashboardScheduledActivities>

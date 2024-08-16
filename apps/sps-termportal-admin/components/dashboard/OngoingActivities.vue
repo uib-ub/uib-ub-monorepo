@@ -10,15 +10,26 @@
       <li
         v-for="activity in procdata"
         :key="activity.id"
-        class="hover:bg-gray-100 p-1"
+        class="flex space-x-2 justify-between"
       >
         <AppLink
-          class="space-x-3 flex"
+          class="p-1 flex hover:bg-gray-100 justify-between grow"
           :to="`/studio/structure/activity;${activity.id}`"
           target="_blank"
         >
-          <div class="w-[18rem]">{{ activity.label }}</div>
+          <div>{{ activity.label }}</div>
           <div>{{ activity.begin }}/...</div>
+        </AppLink>
+        <AppLink
+          v-if="activity.type === 'termgruppeOppdatering'"
+          class="p-1"
+          to="/tasks/memberupdate"
+        >
+          <Icon
+            name="mdi:read-more-outline"
+            size="1.8em"
+            class="p-1 hover:bg-gray-100 rounded"
+          />
         </AppLink>
       </li>
     </ol>
@@ -33,19 +44,21 @@ const query = `
 ]{
   _id,
   label,
+  type,
   "begin": timespan.beginOfTheBegin,
 } | order(begin desc)[0...10]`;
+
+const { data } = useLazySanityQuery(query);
 
 const procdata = computed(() =>
   data.value.map((a) => {
     const tmp = {
       id: a._id,
       label: a.label,
+      type: a.type,
       begin: prettyPrintDate(a.begin?.substring(0, 10)),
     };
     return tmp;
   })
 );
-
-const { data } = useLazySanityQuery(query);
 </script>

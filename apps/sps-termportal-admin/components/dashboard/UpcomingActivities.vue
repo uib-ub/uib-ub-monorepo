@@ -13,11 +13,11 @@
         class="hover:bg-gray-100 p-1"
       >
         <AppLink
-          class="space-x-3 flex"
+          class="space-x-3 flex justify-between"
           :to="`/studio/structure/activity;${activity.id}`"
           target="_blank"
         >
-          <div class="w-[18rem]">{{ activity.label }}</div>
+          <div>{{ activity.label }}</div>
           <div>{{ activity.time }}</div>
         </AppLink>
       </li>
