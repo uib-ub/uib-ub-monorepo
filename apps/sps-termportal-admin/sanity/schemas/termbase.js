@@ -105,6 +105,13 @@ export default {
       },
       initialValue: "ingen",
     },
+    {
+      name: "reminderInterval",
+      title: "Påminnelsesintervall",
+      type: "number",
+      fieldset: "status",
+      initialValue: 120,
+    },
     note,
     responsibleStaff,
     {

@@ -95,9 +95,29 @@
           </MultiSelect>
         </template>
       </Column>
-      <Column field="lastActivityDate" header="Siste aktivitet" sortable>
+      <Column field="lastActivityDays" header="Siste aktivitet" sortable>
         <template #body="{ data }">
-          <div v-if="data.lastActivityDate">{{ data.lastActivityDate }} d.</div>
+          <div v-if="data.lastActivityDays">{{ data.lastActivityDays }} d.</div>
+        </template>
+      </Column>
+      <Column field="reminderCalc" header="Påminnelse" sortable>
+        <template #body="{ data }">
+          <div v-if="data.reminderCalc">
+            <Icon
+              name="material-symbols:circle"
+              size="1.2em"
+              class="mr-1 mb-[4px]"
+              :class="{
+                'text-green-600': data.reminderCalc < 0,
+                'text-yellow-400':
+                  data.reminderCalc < reportReminder.interval.error &&
+                  data.reminderCalc > 0,
+                'text-red-500':
+                  data.reminderCalc > reportReminder.interval.error,
+              }"
+            ></Icon>
+            {{ data.reminderCalc }} d.
+          </div>
         </template>
       </Column>
       <Column
@@ -255,6 +275,10 @@
                 <dt class="font-semibold w-36">Beskrivelse sjekket</dt>
                 <dd>{{ slotProps.data.descriptions ? "Ja" : "Nei" }}</dd>
               </div>
+              <div v-if="slotProps.data" class="flex space-x-5">
+                <dt class="font-semibold w-36">Påminnelsesintervall</dt>
+                <dd>{{ slotProps.data.reminderInterval || "Ingen" }}</dd>
+              </div>
             </div>
           </dl>
           <div v-if="slotProps.data.note" class="content-page">
@@ -319,7 +343,8 @@ const { data: dbdata } = await useLazyFetch("/api/tb/all/termbase_overview", {
 const query = `*[_type == "termbase"]{
   ...,
   "lastActivity": *[_type == "activity"
-                    && references(^._id)]
+                    && references(^._id)
+                    && defined(timespan)]
                     {
                       _id,
                       label,
@@ -345,36 +370,47 @@ const getLicense = (value) =>
 const merged = computed(() => {
   // enrich dbdata with cms data
   const enriched = dbdata.value
-    ?.map((e) => ({
-      label: e.label.value,
-      id: e.id.value,
-      conceptCount: e.concepts.value,
-      status: numberStatus(matchid(cmsdata, e, "status")),
-      labels: matchid(cmsdata, e, "labelsOk"),
-      descriptions: matchid(cmsdata, e, "descriptionsOk"),
-      license: getLicense(e?.license?.value),
-      agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
-      staff: matchid(cmsdata, e, "responsibleStaff"),
-      domain: matchid(cmsdata, e, "domain"),
-      note: matchid(cmsdata, e, "note"),
-      type: matchid(cmsdata, e, "type"),
-      contact: matchid(cmsdata, e, "contact"),
-      lastActivity:
-        matchid(cmsdata, e, "lastActivity")?.length > 0
-          ? matchid(cmsdata, e, "lastActivity")[0]
-          : null,
-      lastActivityDate:
-        matchid(cmsdata, e, "lastActivity")?.length > 0
-          ? getDaysDiff(
-              matchid(
-                cmsdata,
-                e,
-                "lastActivity"
-              )[0]?.timespan?.endOfTheEnd?.substring(0, 10)
-            )
-          : "",
-      _id: matchid(cmsdata, e, "_id"),
-    }))
+    ?.map((e) => {
+      const tmp = {
+        label: e.label.value,
+        id: e.id.value,
+        conceptCount: e.concepts.value,
+        status: numberStatus(matchid(cmsdata, e, "status")),
+        labels: matchid(cmsdata, e, "labelsOk"),
+        descriptions: matchid(cmsdata, e, "descriptionsOk"),
+        license: getLicense(e?.license?.value),
+        agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
+        staff: matchid(cmsdata, e, "responsibleStaff"),
+        domain: matchid(cmsdata, e, "domain"),
+        note: matchid(cmsdata, e, "note"),
+        type: matchid(cmsdata, e, "type"),
+        contact: matchid(cmsdata, e, "contact"),
+        reminderInterval: matchid(cmsdata, e, "reminderInterval"),
+        lastActivity:
+          matchid(cmsdata, e, "lastActivity")?.length > 0
+            ? matchid(cmsdata, e, "lastActivity")[0]
+            : null,
+        lastActivityDays:
+          matchid(cmsdata, e, "lastActivity")?.length > 0
+            ? getDaysDiff(
+                matchid(
+                  cmsdata,
+                  e,
+                  "lastActivity"
+                )[0]?.timespan?.endOfTheEnd?.substring(0, 10)
+              )
+            : null,
+        get reminderCalc() {
+          if (tmp.reminderInterval && tmp.lastActivityDays) {
+            return -(tmp.reminderInterval - tmp.lastActivityDays);
+          } else {
+            return "";
+          }
+        },
+        _id: matchid(cmsdata, e, "_id"),
+      };
+      return tmp;
+    })
     .filter((termbase) => !["DOMENE", "MRT2"].includes(termbase.id));
 
   // get termbases that are not present in the wiki
@@ -394,14 +430,23 @@ const merged = computed(() => {
           note: entry.note,
           type: entry.type,
           contact: entry.contact,
+          reminderInterval: entry.reminderInterval,
           lastActivity:
             entry.lastActivity.length > 0 ? entry.lastActivity[0] : null,
-          lastActivityDate:
+          lastActivityDays:
             entry.lastActivity.length > 0
               ? getDaysDiff(
                   entry.lastActivity[0]?.timespan?.endOfTheEnd?.substring(0, 10)
                 )
-              : "",
+              : null,
+          get reminderCalc() {
+            if (data.reminderInterval && data.lastActivityDays) {
+              const diff = -(data.reminderInterval - data.lastActivityDays);
+              return -(data.reminderInterval - data.lastActivityDays);
+            } else {
+              return "";
+            }
+          },
           _id: entry._id,
         };
         enriched.push(data);

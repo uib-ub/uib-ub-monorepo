@@ -25,19 +25,7 @@
           >
         </template>
       </Column>
-      <Column header="Organisasjon" field="institution" sortable />
       <Column header="Termgruppe" field="group" sortable />
-      <Column header="Rolle" field="role" sortable />
-      <!-- <Column header="Start" field="start" sortable>
-        <template #body="slotProps">
-          {{ prettyPrintDate(slotProps.data.start) }}
-        </template>
-      </Column>
-      <Column header="Slutt" field="end" sortable>
-        <template #body="slotProps">
-          {{ prettyPrintDate(slotProps.data.end) }}
-        </template>
-      </Column> -->
       <Column header="Aktiv" field="active" sortable data-type="boolean">
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
@@ -49,6 +37,21 @@
             v-model="filterModel.value"
             @change="filterCallback()"
           />
+        </template>
+      </Column>
+      <Column header="Rolle" field="role" sortable />
+      <Column header="Organisasjon" field="institution" sortable />
+      <Column>
+        <template #body="slotProps">
+          <div class="flex">
+            <AppLink
+              :to="`${studioBaseRoute}/person;${slotProps.data._id}`"
+              target="_blank"
+              class="hover:bg-gray-100 p-1 rounded"
+            >
+              Studio
+            </AppLink>
+          </div>
         </template>
       </Column>
     </DataTable>
