@@ -319,7 +319,8 @@ const { data: dbdata } = await useLazyFetch("/api/tb/all/termbase_overview", {
 const query = `*[_type == "termbase"]{
   ...,
   "lastActivity": *[_type == "activity"
-                    && references(^._id)]
+                    && references(^._id)
+                    && defined(timespan)]
                     {
                       _id,
                       label,

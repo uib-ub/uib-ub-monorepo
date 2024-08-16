@@ -73,12 +73,15 @@
       <Column field="termbase" header="Termbase" sortable />
       <Column header="">
         <template #body="slotProps">
-          <NuxtLink
-            :to="`/studio/desk/activity;${slotProps.data.id}`"
-            target="_blank"
-          >
-            Rediger
-          </NuxtLink>
+          <div class="flex">
+            <AppLink
+              :to="`/studio/desk/activity;${slotProps.data.id}`"
+              target="_blank"
+              class="hover:bg-gray-100 p-1 rounded"
+            >
+              Studio
+            </AppLink>
+          </div>
         </template>
       </Column>
       <template #expansion="slotProps">
@@ -132,13 +135,13 @@ const procdata = computed(() => {
     .map((activity) => {
       return {
         id: activity._id,
-        label: activity.label,
-        type: activityTypes[activity.type] || activity.type,
-        note: activity.note,
-        start: activity.timespan.beginOfTheBegin?.substring(0, 10),
-        end: activity.timespan.endOfTheEnd?.substring(0, 10),
-        termbase: activity.qualifiedUsage
-          .map((usage) => props.termbases[usage.termbase._ref])
+        label: activity?.label,
+        type: activityTypes[activity.type] || activity?.type,
+        note: activity?.note,
+        start: activity.timespan?.beginOfTheBegin?.substring(0, 10),
+        end: activity.timespan?.endOfTheEnd?.substring(0, 10),
+        termbase: activity?.qualifiedUsage
+          ?.map((usage) => props.termbases[usage.termbase._ref])
           .join(", "),
       };
     });
