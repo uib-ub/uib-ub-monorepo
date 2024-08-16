@@ -49,3 +49,7 @@ export const esCachedQueries = [
   "termbase_language_coverage",
   "domain_overview",
 ];
+
+export const reportReminder = {
+  interval: { reminder: 120, error: 60 },
+};
