@@ -33,7 +33,7 @@ export default function OriginalData({rawData}: {rawData: Record<string, any>}) 
             return (
             <li key={newKey} className="list !py-0">
               <strong>{key}:</strong>
-              <ul className="pl-5 !py-0 className='text-nowrap">
+              <ul className="pl-5 !py-0 className='">
                 {renderData(value, newKey)}
               </ul>
               </li> 
@@ -41,7 +41,7 @@ export default function OriginalData({rawData}: {rawData: Record<string, any>}) 
               
             } else {
             return (
-              <li key={newKey} className='text-nowrap !py-0'>
+              <li key={newKey} className='!py-0'>
                 <strong>{key}:</strong> {value}
               </li>
             );
