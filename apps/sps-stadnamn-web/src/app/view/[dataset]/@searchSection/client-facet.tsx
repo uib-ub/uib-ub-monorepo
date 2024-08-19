@@ -119,14 +119,19 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const listItem = (item: any, index: number, baseName: string, path: string[], parentChecked: boolean) => {
     const childAggregation = baseName + (path.length + 1);
     const checked = isChecked(baseName, path);
-    const children = item[childAggregation]?.buckets.filter((subitem: any) => subitem.key !=="_false")
+    let children = item[childAggregation]?.buckets
+    children = children?.some((child: any) => child.key[0] != "_") ? children : []
     const filteredChildren = facetSearchQuery && children?.filter((subitem: any) => facetSearch(subitem, baseName, path.length +1))
+
+    
+    let label = path[0] == "_false" ? (path.length == 1 ? "[utan distrikt]" : "[ingen underordna]") : item.key   
+ 
 
     return (
       <li key={item.key} className="my-0">
         <label>
           <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, baseName, path)}} className='mr-2' />
-          {item.key} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+          {label} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
 
       {children?.length && (checked || filteredChildren) ? 
@@ -134,6 +139,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
         {sortBuckets(filteredChildren || children).map((subitem, subindex) => {
           return listItem(subitem, subindex, baseName, [subitem.key, ...path], checked || parentChecked)
         })} 
+
       </ul> 
       : null}
       

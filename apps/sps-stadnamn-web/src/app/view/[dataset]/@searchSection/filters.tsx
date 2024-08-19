@@ -23,20 +23,28 @@ export default function Facets() {
     const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
 
     
-    const fieldNames: Record<string, string> = facetConfig[params.dataset]?.reduce((acc: Record<string, string>, item: any) => {
-      if (item.omitLabel) return acc;
-      acc[item.key] = item.label;
-      return acc;
-    }, {});
 
     const getFieldLabel = (name: string, value: string) => {
+
+      const fieldConfig = facetConfig[params.dataset]?.find(item => item.key == name)
+      const label = fieldConfig?.label || name
+      const omitLabel = fieldConfig?.omitLabel || name == 'adm'
+
+      const values = value.split('__')
+
       // Add any special cases here
-      if (value == "_false") return "Nei"
-      if (value == "_true") return "Ja"
+      if (values[0] == "_false" && name == "adm") {
+        if (values.length == 1) return "[utan distrikt]"
+        return values[1] + " (ingen underordna)"
+      }
+        
+        
+      if (values[0] == "_false") return (label || name) + ": Nei"
+      if (value == "_true") return (label || name) + ": Ja"
       if (name == "datasets") {
         return datasetTitles[value] || value
       }
-      return value.split('__')[0]
+      return ( omitLabel ? '' : label ) + values[0]
     }
 
 
@@ -77,7 +85,7 @@ export default function Facets() {
     <ul className='flex flex-wrap gap-2 px-4 pb-2'>
       {(chipsExpanded ? activeFilters : activeFilters.slice(0, activeFilters.length > 8 ? 4 : 8)).map(([name, value], index) => (
         <li key={index} className='flex items-center gap-2 border-neutral-600 bg-neutral-50 border pr-2 py-1 pl-3 rounded-full text-sm'>
-          { fieldNames?.[name] ? fieldNames[name] + ": " : null} { getFieldLabel(name, value) }
+          { getFieldLabel(name, value) }
           <IconButton type="button" onClick={() => removeFilter(name, value)} label="Fjern filter"><PiX className="text-base"/></IconButton>
         </li>
         ))}

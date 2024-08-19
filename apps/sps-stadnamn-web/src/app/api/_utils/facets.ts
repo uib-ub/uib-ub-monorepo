@@ -41,7 +41,8 @@ export function extractFacets(request: Request ) {
     if (clientFacets.adm) {
       termFilters.push({
         "bool": {
-          "should": clientFacets.adm.map((value: string) => ({ 
+          "should": [
+            ...clientFacets.adm.filter((value: string) => value.slice(0,6) != "_false").map((value: string) => ({ 
             "bool": {
               "filter": value.split("__").reverse().map((value: string, index: number) => ({
                   
@@ -49,6 +50,28 @@ export function extractFacets(request: Request ) {
               }))
             }
           })),
+          // Handle N/A values
+          ...clientFacets.adm.filter((value: string) => value.slice(0,6) == "_false").map((value: string) => {
+            // Split the value to separate the levels and remove the "_false" prefix
+            const levels = value.slice(8).split('__').filter(val => val.length).reverse();
+            console.log("LEVELS", levels)
+            const mustClauses = levels.map((level, index) => ({
+              "term": { [`adm${index+1}.keyword`]: level }
+            }));
+          
+            // The last level index is determined by the number of levels specified
+            const lastLevelIndex = levels.length + 1;
+          
+            return {
+              "bool": {
+                "must": mustClauses,
+                "must_not": [{
+                  "exists": { "field": `adm${lastLevelIndex}.keyword` }
+                }]
+              }
+            };
+          })
+        ],
           "minimum_should_match": 1
         }
 
