@@ -13,7 +13,7 @@ export default function OriginalData({rawData}: {rawData: Record<string, any>}) 
               <>
               
                   {value.map((item, index) => (
-                    <li key={newKey + index} className='text-nowrap !py-0'>
+                    <li key={newKey + index} className='!py-0'>
                 <strong>{key}:</strong>
                       {typeof item === 'object' ? 
                         <ul className="ml-4 !pt-0">
