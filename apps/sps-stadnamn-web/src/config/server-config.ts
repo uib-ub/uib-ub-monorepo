@@ -59,7 +59,7 @@ export interface ContentSettingsItem {
     skul: {
       display: 'map',
       adm: 2,
-      cadastre: true
+      cadastre: false // not cleaned yet
     },
     sof: {
       display: 'map',
