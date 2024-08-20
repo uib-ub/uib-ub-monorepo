@@ -321,6 +321,7 @@
 
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
+import { hiddenCollections } from "~/utils/constants";
 import { getDaysDiff } from "~/utils/utils";
 
 const runtimeConfig = useRuntimeConfig();
@@ -411,7 +412,7 @@ const merged = computed(() => {
       };
       return tmp;
     })
-    .filter((termbase) => !["DOMENE", "MRT2"].includes(termbase.id));
+    .filter((termbase) => !hiddenCollections.includes(termbase.id));
 
   // get termbases that are not present in the wiki
   if (enriched && cmsdata.value) {
