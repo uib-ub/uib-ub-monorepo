@@ -13,14 +13,14 @@
       <div class="space-y-12">
         <DashboardTermbaseStatus />
         <div class="flex space-x-12">
-          <DashboardRecentActivities />
-          <div class="space-y-5 min-w-[28em]">
+          <div class="space-y-5 min-w-[32em]">
             <DashboardOngoingActivities />
             <DashboardUpcomingActivities />
             <DashboardScheduledActivities>
               <DashboardScheduledMemberUpdate />
             </DashboardScheduledActivities>
           </div>
+          <DashboardRecentActivities class="min-w-[32em]"/>
         </div>
       </div>
     </main>

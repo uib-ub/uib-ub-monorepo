@@ -97,7 +97,15 @@
       </Column>
       <Column field="lastActivityDays" header="Siste aktivitet" sortable>
         <template #body="{ data }">
-          <div v-if="data.lastActivityDays">{{ data.lastActivityDays }} d.</div>
+          <div v-if="data.lastActivityDays && data.lastActivityDays > 0">
+            {{ data.lastActivityDays }} d.
+          </div>
+          <Icon
+            v-if="data.lastActivityDays === -1"
+            name="mdi:dots-horizontal"
+            size="2.2em"
+            class="ml-[-3px] mb-[-10px]"
+          ></Icon>
         </template>
       </Column>
       <Column field="reminderCalc" header="Påminnelse" sortable>
@@ -234,7 +242,6 @@
       </Column>
       <template #expansion="slotProps">
         <div class="p-2 space-y-3 max-w-4xl">
-          <!-- <pre>{{ slotProps.data }}</pre> -->
           <h2 class="text-xl my-2 font-semibold">Info</h2>
           <dl class="flex space-x-12">
             <div>
@@ -320,6 +327,7 @@
 </template>
 
 <script setup lang="ts">
+import { timespan } from "@seidhr/sanity-plugin-timespan-input";
 import { FilterMatchMode } from "primevue/api";
 import { hiddenCollections } from "~/utils/constants";
 import { getDaysDiff } from "~/utils/utils";
@@ -368,6 +376,14 @@ const getLicense = (value) =>
       value.replace(runtimeConfig.public.base, "")
     : "";
 
+function calcLastActivity(timespan: Object) {
+  if (timespan?.endOfTheEnd) {
+    return getDaysDiff(timespan.endOfTheEnd?.substring(0, 10));
+  } else {
+    return -1;
+  }
+}
+
 const merged = computed(() => {
   // enrich dbdata with cms data
   const enriched = dbdata.value
@@ -393,13 +409,7 @@ const merged = computed(() => {
             : null,
         lastActivityDays:
           matchid(cmsdata, e, "lastActivity")?.length > 0
-            ? getDaysDiff(
-                matchid(
-                  cmsdata,
-                  e,
-                  "lastActivity"
-                )[0]?.timespan?.endOfTheEnd?.substring(0, 10)
-              )
+            ? calcLastActivity(matchid(cmsdata, e, "lastActivity")[0]?.timespan)
             : null,
         get reminderCalc() {
           if (tmp.reminderInterval && tmp.lastActivityDays) {
