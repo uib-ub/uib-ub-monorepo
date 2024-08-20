@@ -1,8 +1,8 @@
 export interface ContentSettingsItem {
   display: string;
-  adm?: number;
-  cadastre?: boolean;
-  sort?: any[];
+  adm?: number; // Deepest level of adm
+  cadastre?: boolean; // If the dataset contains standardized cadastral data
+  sort?: any[]; // Custom sort array
 }
 
 
