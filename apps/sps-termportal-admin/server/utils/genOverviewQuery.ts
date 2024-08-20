@@ -12,6 +12,8 @@ export default function () {
           rdfs:label ?label .
       OPTIONAL {
         ?concept skosp:memberOf ?tb .
+      }
+      OPTIONAL {
         ?tb dct:license ?license .
       }
       FILTER ( lang(?label) = 'nb') .
