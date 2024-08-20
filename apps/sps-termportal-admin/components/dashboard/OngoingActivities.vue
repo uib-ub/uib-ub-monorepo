@@ -13,7 +13,7 @@
         class="flex space-x-2 justify-between"
       >
         <AppLink
-          class="p-1 flex hover:bg-gray-100 justify-between grow"
+          class="p-1 flex hover:bg-gray-100 justify-between grow space-x-3"
           :to="`/studio/structure/activity;${activity.id}`"
           target="_blank"
         >
