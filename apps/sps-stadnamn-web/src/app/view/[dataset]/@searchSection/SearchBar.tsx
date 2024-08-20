@@ -26,9 +26,11 @@ export default function SearchBar() {
         const params = new URLSearchParams(location.search);
         if (field) {
             params.set('field', field);
+            params.delete('page');
         }
         else {
             params.delete('field');
+            params.delete('page');
         }
         
         const newUrl = `/view/${dataset}?${params.toString()}`;
