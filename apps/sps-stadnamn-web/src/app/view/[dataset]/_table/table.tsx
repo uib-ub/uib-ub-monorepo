@@ -200,7 +200,7 @@ export default function TableExplorer() {
                            <ResultRow hit={hit} adm={false} externalLoading={expandLoading}/>
                         </th>
                         {
-                            showAdm && visibleColumns.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{hit._source.adm1}</td>
+                            showAdm && visibleColumns.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{joinWithSlash(hit._source.adm1)}</td>
                         }
                         { showCadastre && visibleColumns.includes('cadastre') &&
                             <td>
