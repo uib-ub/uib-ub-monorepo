@@ -6,7 +6,7 @@ import IconLink from '../ui/icon-link';
 export default function CoordinateButton({doc, iconClass, parentUuid}: {doc: any, iconClass: string, parentUuid?: string}) {
     const searchParams = useSearchParams()
     const params = useParams()
-    const docDaataset = doc._index.split('-')[1]
+    const docDaataset = doc._index.split('-')[2]
     const pathname = usePathname()
 
 
