@@ -60,7 +60,7 @@ export default function SearchView() {
             <>
             <div role="status" aria-live="polite" className='flex flex-col items-center justify-center my-auto text-2xl gap-y-1 font-semibold'>
 
-            {resultData?.hits?.hits?.length ? <><div>Ingen treff i kart</div><div className='flex items-center justify-center my-auto text-lg font-semibold text-neutral-800'>Sjå treff utan koordinat i resultatlista</div></> : 
+            {resultData?.hits?.hits?.length ? <><div>Ingen treff med koordinat</div><div className='self-center text-center my-auto text-lg font-semibold text-neutral-800'>Sjå treff utan koordinat i resultatlista<br/>eller i tabellvisning</div></> : 
             <div>Ingen treff</div>}
             </div>
             
