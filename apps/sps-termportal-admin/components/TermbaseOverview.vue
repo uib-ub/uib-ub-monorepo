@@ -97,7 +97,9 @@
       </Column>
       <Column field="lastActivityDays" header="Siste aktivitet" sortable>
         <template #body="{ data }">
-          <div v-if="data.lastActivityDays && data.lastActivityDays > 0">
+          <div
+            v-if="data.lastActivityDays !== null && data.lastActivityDays >= 0"
+          >
             {{ data.lastActivityDays }} d.
           </div>
           <Icon
@@ -110,7 +112,7 @@
       </Column>
       <Column field="reminderCalc" header="Påminnelse" sortable>
         <template #body="{ data }">
-          <div v-if="data.reminderCalc">
+          <div v-if="data.reminderCalc !== null">
             <Icon
               name="material-symbols:circle"
               size="1.2em"
@@ -412,10 +414,10 @@ const merged = computed(() => {
             ? calcLastActivity(matchid(cmsdata, e, "lastActivity")[0]?.timespan)
             : null,
         get reminderCalc() {
-          if (tmp.reminderInterval && tmp.lastActivityDays) {
+          if (tmp.reminderInterval && tmp.lastActivityDays !== null) {
             return -(tmp.reminderInterval - tmp.lastActivityDays);
           } else {
-            return "";
+            return null;
           }
         },
         _id: matchid(cmsdata, e, "_id"),
@@ -446,16 +448,14 @@ const merged = computed(() => {
             entry.lastActivity.length > 0 ? entry.lastActivity[0] : null,
           lastActivityDays:
             entry.lastActivity.length > 0
-              ? getDaysDiff(
-                  entry.lastActivity[0]?.timespan?.endOfTheEnd?.substring(0, 10)
-                )
+              ? calcLastActivity(entry.lastActivity[0]?.timespan)
               : null,
           get reminderCalc() {
-            if (data.reminderInterval && data.lastActivityDays) {
+            if (data.reminderInterval && data.lastActivityDays !== null) {
               const diff = -(data.reminderInterval - data.lastActivityDays);
               return -(data.reminderInterval - data.lastActivityDays);
             } else {
-              return "";
+              return null;
             }
           },
           _id: entry._id,
