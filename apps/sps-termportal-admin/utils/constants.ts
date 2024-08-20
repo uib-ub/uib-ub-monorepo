@@ -53,3 +53,5 @@ export const esCachedQueries = [
 export const reportReminder = {
   interval: { reminder: 120, error: 60 },
 };
+
+export const hiddenCollections = ["DOMENE", "LISENS", "MRT2"];
