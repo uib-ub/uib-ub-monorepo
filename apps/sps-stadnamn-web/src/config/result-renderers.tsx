@@ -36,6 +36,10 @@ const loktypeDetails = (loktype: string, hit: any) => {
   return <>{loktype}{loktype && ' – '} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}  </>
 }
 
+const multivalue = (value: string|string[]) => {
+  return Array.isArray(value) ? value.join("/") : value
+}
+
 
 
 
