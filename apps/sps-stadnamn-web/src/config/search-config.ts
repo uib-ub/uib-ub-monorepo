@@ -28,6 +28,10 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
       {key: "label", label: "Namn"},
       {key: "content.html", label: "Fulltekst"},
     ],
+    leks: [
+      {key: "label", label: "Namn"},
+      {key: "content.html", label: "Fulltekst"},
+    ],
     leks_g: [
       {key: "label", label: "Namn"},
       {key: "content.text", label: "Fulltekst"},
