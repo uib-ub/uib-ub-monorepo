@@ -41,6 +41,10 @@ export default async function DocumentView({ params, searchParams }: { params: {
 
     const docDataset = doc._index.split('-')[2]
 
+    const multivalue = (value: string|string[]) => {
+      return Array.isArray(value) ? value.join("/") : value
+    }
+
     
 
     return (
@@ -74,11 +78,16 @@ export default async function DocumentView({ params, searchParams }: { params: {
       { docDataset == 'search' && doc._source.snid && <span className="text-neutral-800 self-center">{doc._source.snid} </span> }
       </span>
       <div className="flex flex-wrap gap-4">
-      
-      {doc._source.adm2wd ? <span className="inline whitespace-nowrap"> <Link  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2 + ", "}{doc._source.adm1}</Link> </span>
-      : doc._source.adm1 && <>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1}
+        <div className='flex'>
+      {doc._source.wikiAdm?.length > 1 && <>
+      {[doc._source.adm1, doc._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
+      {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
       </>
+      
+      || doc._source.wikiAdm &&  <span className="inline whitespace-nowrap"> <Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</Link> </span>
+      || doc._source.adm1 && <span className="inline whitespace-nowrap">{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</span>
       }
+      </div>
       
       { docDataset != 'search' &&  params.dataset == 'search' && 
         <span className='self-center'><Link className="no-underline flex gap-1 items-center" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-lg self-center"/>{ datasetTitles[docDataset]}</Link></span>
