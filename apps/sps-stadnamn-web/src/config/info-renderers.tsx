@@ -128,22 +128,25 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   leks: (source: any) => {
     return <>
-    <div className='space-y-2'>
-    {source.rawData?.tolking && <><strong className="text-neutral-900">Tolking: </strong><HtmlString htmlString={source.rawData?.tolking} /></>}
+    {source.content?.html && <div className="inline-flex flex-col md:flex-row gap-4 bg-neutral-50 border border-neutral-200 p-4">
+      <Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link>
+    <HtmlString className='space-y-2 inline' htmlString={source.content.html} />
+
     </div>
+    }
     <InfoBox dataset={'leks'} items={[
       {title: 'Oppslagsform', value: source.label},
-      {title: 'Lokalitetstype', value: source.rawData.lokalitetstype},
-      {title: 'Kommune', value: source.adm2},
-      {title: 'Kommunenummer', value: source.rawData.kommunenr},
-      {title: 'Fylke', value: source.adm1},
-      {title: 'Førsteledd', value: source.rawData.førsteledd},
-      {title: 'Sisteledd', value: source.rawData.sisteledd},
+      {title: 'Lokalitetstype', value: source.rawData.Lokalitetstype},
+      {title: 'Kommune', value: source.rawData.Kommune},
+      {title: 'Kommunenummer', value: source.rawData.Kommunenr},
+      {title: 'Fylke', value: source.rawData.Fylke},
+      {title: 'Førsteledd', value: source.rawData.Førsteledd},
+      {title: 'Sisteledd', value: source.rawData.Sisteledd},
       {title: 'StedsnavnID', 
-        items: [{value: source.rawData.snid, href: `/view/leks?rawData.snid=${encodeURIComponent(source.rawData.snid)}`}]},
+        items: [{value: source.rawData.SNID, href: `/view/leks?rawData.snid=${encodeURIComponent(source.rawData.SNID)}`}]},
       {title: 'GNIDu', 
-        items: [{value: source.rawData.gnidu, href: `/view/leks?rawData.gnidu=${encodeURIComponent(source.rawData.gnidu)}`}]},
-      {title: 'N50 Kartid', value: source.rawData.n50_kartid}
+        items: [{value: source.rawData.GNIDu, href: `/view/leks?rawData.gnidu=${encodeURIComponent(source.rawData.GNIDu)}`}]},
+      {title: 'N50 Kartid', value: source.rawData.N50_kartid}
     ]}/>
   </>
   },
