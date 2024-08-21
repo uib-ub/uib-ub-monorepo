@@ -68,18 +68,21 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
         {key: "cadastre__bnr", label: "Bruksnummer", sort: "asc", type: "integer"},
         {key: "rawData.oppskrivar", label: "Oppskrivar", table: true},
         {key: "rawData.oppskrivingsTid", label: "Oppskrivingstid", table: true},
+        {key: "rawData.bildeNr", label: "Bildenummer", table: true},
+
       ],
       rygh: [
         {key: "rawData.Lokalitetstype", label: "Lokalitetstype"},
         {key: "rawData.Bind", label: "Bind", type: "integer"},
-        {key: "rawData.Sidetall", label: "Sidetall"},
-        {key: "cadastre.gnr", label: "Gardsnummer"},
-        {key: "cadastre.bnr", label: "Bruksnummer"},
+        {key: "rawData.Side", label: "Sidetall"},
+        {key: "rawData.Gnr", label: "Gardsnummer"},
+        {key: "rawData.Bnr", label: "Bruksnummer"},
       ],
       leks: [
-        {key: "rawData.lokalitetstype", label: "Lokalitetstype"},
-        {key: "rawData.gnidu", label: "GNIDu"},
-        {key: "rawData.sisteledd", label: "Sisteledd"},
+        {key: "rawData.Lokalitetstype", label: "Lokalitetstype"},
+        {key: "rawData.GNIDu", label: "GNIDu"},
+        {key: "rawData.Sisteledd", label: "Sisteledd"},
+        {key: "rawData.Kjelde", label: "Kjelde"},
       ],
       leks_g: [
         {key: "rawData.språk", label: "Språk"},
@@ -102,6 +105,9 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
       skul: [
         {key: "rawData.gnr", label: "Gardsnummer", sort: "asc"},
         {key: "rawData.bnr", label: "Bruksnummer", sort: "asc"},
+      ],
+      nbas: [
+        {key: "rawData.lokalitetstype_sosiype", label: "Lokalitetstype"},
       ]
   
   }
