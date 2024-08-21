@@ -37,7 +37,7 @@ export default function SearchView() {
 
            { 
 
-          searchParams.get('display') == 'table' && resultData?.hits?.hits?.length ?
+          searchParams.get('display') == 'table' ?
           <TableExplorer/>
 
           :
