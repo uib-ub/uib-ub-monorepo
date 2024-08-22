@@ -73,7 +73,8 @@ export const resultRenderers: ResultRenderers = {
   leks: {
     title: defaultTitle,
     details: (hit: any, display: string) => {
-      return loktypeDetails(hit._source.rawData.lokalitetstype, hit)
+      const loktype = hit._source.rawData.lokalitetstype
+      return <>{loktype}{loktype && ' – '} {hit._source.rawData.Kommune}{hit._source.rawData.Fylke && ', ' + hit._source.rawData.Fylke}  </>
     }
   },
   leks_g: {
