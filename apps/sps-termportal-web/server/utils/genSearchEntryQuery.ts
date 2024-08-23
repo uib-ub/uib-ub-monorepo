@@ -72,7 +72,7 @@ export function getContextFilter(searchOptions) {
         if (searchOptions.useDomain) {
           return `base:${d}`;
         } else {
-          return `base:${d}-3A${d}`
+          return `base:${d}-3A${d}`;
         }
       })
       .join(", ");
@@ -138,7 +138,12 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
     searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
     ?label2 skosxl:literalForm ?translate .
-    FILTER ( langmatches(lang(?translate), "${searchOptions.translate}") ) }`
+    FILTER ( lang(?translate) = "${searchOptions.translate}" ${
+          searchOptions.translate === "en"
+            ? "|| lang(?translate) = 'en-GB'"
+            : ""
+        })
+    }`
       : "";
 
   const subqueryTemplate = (

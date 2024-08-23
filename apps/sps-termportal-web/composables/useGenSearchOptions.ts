@@ -33,7 +33,10 @@ export default function (situation: string, options?: SearchOptions) {
     situation,
     // searchOptionsInterface
     term: searchInterface.value.term || "",
-    language: [searchInterface.value.language],
+    language: [
+      searchInterface.value.language,
+      ...(searchInterface.value.language === "en" ? ["en-GB", "en-US"] : []),
+    ],
     translate: searchInterface.value.translate,
     termbase: searchInterface.value.termbase,
     domain: [Object.keys(searchInterface.value.domain)[0]], // TODO domain
