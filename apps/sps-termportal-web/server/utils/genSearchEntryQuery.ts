@@ -134,6 +134,8 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   };
 
   const translate = searchOptions.translate !== "none" ? "?translate" : "";
+  // handles situation where 'en' is selected as target language and en-GB should
+  // works under the assumption that there are not 'en' AND 'en-GB'/'en-US' in same tb
   const translateOptional =
     searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .

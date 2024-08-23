@@ -223,7 +223,7 @@
     "dataDispLangComment": "Velg hvilke språk som skal vises i termpostene"
   },
   "misc": {
-    "snomedVersion": "SNOMED CT Norwegian National Extension, april 2024 v1.0",
+    "snomedVersion": "SNOMED CT Norway Extension, mai 2024 v1.0",
     "snomedBrowser": "SNOMED CT nettleser"
   }
 }

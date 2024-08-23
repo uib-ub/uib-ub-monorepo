@@ -113,9 +113,10 @@ export const termbaseUriPatterns: {
 };
 
 export const snomedConfig = {
-  edition: "MAIN/SNOMEDCT-NO/2024-04-15",
+  edition: "MAIN/SNOMEDCT-NO/2024-05-15",
+  linkNotesLabel: "",
   linkNotes:
-    "https://confluence.ihtsdotools.org/display/RMT/SNOMED+CT+Managed+Service+-+Norway+Extension+Release+Notes+-+April+2024",
+    "https://confluence.ihtsdotools.org/display/RMT/SNOMED+CT+Managed+Service+-+Norway+Extension+Release+Notes+-+May+2024",
   linkBrowser(snomedId: string) {
     return `https://browser.ihtsdotools.org/?perspective=full&conceptId1=${snomedId}&edition=${this.edition}&release=&languages=no,en`;
   },

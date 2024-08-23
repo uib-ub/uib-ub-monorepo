@@ -110,7 +110,7 @@
           :flex="true"
           :data="[
             [
-              `SNOMED CT Browser: ${displayInfo.pagetitle.value}`,
+              `${$t('misc.snomedBrowser')}: ${displayInfo.pagetitle.value}`,
               snomedConfig.linkBrowser(route.params.id),
             ],
           ]"
