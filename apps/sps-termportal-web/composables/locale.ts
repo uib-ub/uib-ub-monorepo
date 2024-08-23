@@ -8,6 +8,8 @@ export type LangCode =
   | "da"
   | "de"
   | "en"
+  | "en-GB"
+  | "en-US"
   | "fa-af"
   | "fi"
   | "fr"
@@ -37,11 +39,15 @@ export const useLocaleLangOrder = () => {
   return langOrder as Readonly<Ref<LangCode[]>>;
 };
 
+export const dataDisplayOnlyLanguages = ["en-GB", "en-US"];
+
 export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
   nb: [
     "nb",
     "nn",
     "en",
+    "en-GB",
+    "en-US",
     "ar",
     "da",
     "fi",
@@ -60,6 +66,8 @@ export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
     "nn",
     "nb",
     "en",
+    "en-GB",
+    "en-US",
     "ar",
     "da",
     "fi",
@@ -76,6 +84,8 @@ export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
   ],
   en: [
     "en",
+    "en-GB",
+    "en-US",
     "nb",
     "nn",
     "ar",

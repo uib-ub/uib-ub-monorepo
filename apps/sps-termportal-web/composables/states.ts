@@ -93,6 +93,8 @@ export const useDataDisplayLanguages = () =>
     "nb",
     "nn",
     "en",
+    "en-GB",
+    "en-US",
     "ar",
     "da",
     "de",
