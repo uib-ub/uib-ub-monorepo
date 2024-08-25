@@ -21,6 +21,7 @@
               :label-data="entryData.label"
               :label-lang="entryData.lang"
             />
+            <!-- Language information smaller screens-->
             <div
               class="pl-3 font-light lg:hidden"
               :class="{
@@ -28,7 +29,9 @@
                   searchInterface.translate === 'none' &&
                   searchInterface.language !== 'all',
                 'md:hidden': searchInterface.translate === 'none',
-                'sm:hidden': searchInterface.language !== 'all',
+                'sm:hidden':
+                  searchInterface.language !== 'all' &&
+                  searchInterface.language !== 'en',
               }"
             >
               <span class="hidden sm:inline">
@@ -47,8 +50,13 @@
               </span>
             </div>
           </div>
+          <!-- Language information larger screens -->
           <div
-            v-if="searchInterface.language === 'all'"
+            v-if="
+              ['all', 'en'].includes(searchInterface.language) ||
+              entryData.lang.includes('en-gb') ||
+              entryData.lang.includes('en-us')
+            "
             class="hidden px-2 sm:w-2/5 lg:block lg:max-w-[10rem]"
             :class="{ 'md:block': searchInterface.translate === 'none' }"
           >
@@ -58,6 +66,7 @@
                 .join(", ")
             }}
           </div>
+          <!-- Target language information -->
           <div
             v-if="searchInterface.translate !== 'none'"
             class="flex justify-between sm:w-1/2 sm:px-2"
@@ -66,7 +75,7 @@
               'lg:w-5/12': searchInterface.language === 'all',
             }"
           >
-            <b v-html="entryData.translate"></b>
+            <span v-html="entryData.translate"></span>
             <div class="text-right font-light sm:hidden">
               {{ $t("global.lang." + searchInterface.translate) }}
             </div>
