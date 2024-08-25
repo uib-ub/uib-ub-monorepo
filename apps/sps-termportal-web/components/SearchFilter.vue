@@ -82,7 +82,7 @@ const displaySection = (key, data) => {
     return (
       searchInterface.value.language === "all" ||
       (searchInterface.value.language === "en" &&
-        (data.includes("en-GB") || data.includes("en-US")))
+        (data.includes("en-gb") || data.includes("en-us")))
     );
   }
   // Don't display matching filter if no matching data, e.g. no search term/all query

@@ -36,7 +36,7 @@ export default function (situation: string, options?: SearchOptions) {
     language: [
       searchInterface.value.language,
       ...(searchInterface.value.language === "en" ? ["en-GB", "en-US"] : []),
-    ],
+    ], // jena seems to store them in this format
     translate: searchInterface.value.translate,
     termbase: searchInterface.value.termbase,
     domain: [Object.keys(searchInterface.value.domain)[0]], // TODO domain
