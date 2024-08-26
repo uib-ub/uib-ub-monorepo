@@ -1080,7 +1080,7 @@
   box-shadow: 0 0 0 0.2rem #BFDBFE;
 }
 .p-inputswitch:not(.p-disabled):hover .p-inputswitch-slider {
-  background: #2563eb;
+  @apply bg-tpblue-400;
 }
 .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
   background: #b6bfc8;
@@ -1089,7 +1089,7 @@
   background: #ffffff;
 }
 .p-inputswitch.p-inputswitch-checked:not(.p-disabled):hover .p-inputswitch-slider {
-  background: #2563eb;
+  @apply bg-tpblue-400;
 }
 .p-inputswitch.p-invalid .p-inputswitch-slider {
   border-color: #e24c4c;
