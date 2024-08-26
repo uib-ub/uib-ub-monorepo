@@ -26,6 +26,8 @@ export type Samling =
   | "UDEUT"
   | "SKOG"
   | "SNOMEDCT"
+  | "SVV"
+  | "TOT"
   | "WHT";
 
 export type Domains =
@@ -55,7 +57,9 @@ export const termbaseOrder: Samling[] = [
   "SKOG",
   "SNOMEDCT",
   "SDIR",
+  "SVV",
   "RTT",
+  "TOT",
   "TOLKING",
   "UDEUT",
   "UHR",
@@ -84,7 +88,9 @@ export const termbaseInfo: { [key in Samling]: LangCode[] } = {
   RTT: ["nb", "nn", "en", "da", "de", "fi", "fr", "it", "ru", "sv"],
   SKOG: ["nb", "nn", "en", "de", "fr"],
   SNOMEDCT: ["nb", "nn", "en"],
+  SVV: ["nb", "nn", "en"],
   TOLKING: ["nb", "en", "ar", "fr", "pl", "ru", "so", "ti", "fa-af"],
+  TOT: ["nb", "nn", "en"],
   UDEUT: ["nb", "nn", "en", "fr"],
   UHR: ["nb", "nn", "en"],
   WHT: ["nb", "nn", "en"],

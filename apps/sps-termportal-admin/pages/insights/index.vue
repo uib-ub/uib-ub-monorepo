@@ -1,13 +1,13 @@
 <template>
   <div class="flex">
-    <SideBar></SideBar>
+    <!-- <SideBar></SideBar> -->
     <main class="space-y-8 py-8">
       <h1 class="text-2xl">Insights</h1>
-      <InsightInstitutionsTbs />
-      <InsightInstitutions />
-      <InsightPeople />
-      <InsightReferenceGroup />
-      <InsightReferencePeople />
+      <InsightsInstitutionsTbs />
+      <InsightsInstitutions />
+      <InsightsPeople />
+      <InsightsReferenceGroup />
+      <InsightsReferencePeople />
       <section>
         <h2 class="mb-3 text-xl">Number of domains</h2>
         <div class="">Could be displayed as a nested list.</div>
@@ -25,14 +25,10 @@
         <h2 class="mb-3 text-xl">Number of termbases by domain</h2>
         <div class="">Combine with previous?</div>
       </section>
-      <InsightTermbaseLangCoverage />
-      <InsightPublishedTbsYear />
-      <InsightPlannedTbs />
-      <section>
-        <h2 class="mb-3 text-xl">Analytics data</h2>
-        <div class="">total number of searches</div>
-        <div class="">Expand: Visits? time period? comparisons? etc.</div>
-      </section>
+      <InsightsTermbaseLangCoverage />
+      <InsightsPublishedTbsYear />
+      <InsightsPlannedTbs />
+      <InsightsBasicAnalytics />
     </main>
   </div>
 </template>

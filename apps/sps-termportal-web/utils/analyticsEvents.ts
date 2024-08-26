@@ -62,3 +62,25 @@ export function pushAutocompleteEvents(options: SearchOptions) {
     }),
   ]);
 }
+
+export function pushDataLangDispEvent(
+  dataDisplayLanguages: Array<LangCode>,
+  language: LangCode
+) {
+  const langIndex = dataDisplayLanguages.indexOf(language);
+  let change;
+  if (langIndex !== -1) {
+    change = [language, "rm"];
+  } else {
+    change = [language, "add"];
+  }
+  window._paq.push([
+    "trackEvent",
+    "settings",
+    "change data display language",
+    JSON.stringify({
+      change,
+      display: dataDisplayLanguages,
+    }),
+  ]);
+}

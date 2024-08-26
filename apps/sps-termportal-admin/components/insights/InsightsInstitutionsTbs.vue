@@ -1,32 +1,34 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">Institutions responsible for termbases</h2>
-    <div class="">
-      <p>
-        List of institutions registered as responsible for one or more
-        termbases. Only termbases that have the status 'opprettet' or
-        'publisert' are included in the count.
-      </p>
+    <div class="space-y-3 max-w-3xl">
+      <div class="max-w-2xl">
+        <p>
+          List of institutions registered as responsible for one or more
+          termbases. Only termbases that have the status 'opprettet' or
+          'publisert' are included in the count.
+        </p>
+      </div>
+      <DataTable
+        ref="datatable"
+        v-model:filters="filters"
+        :value="procdata"
+        removable-sort
+        sort-field="count"
+        :sort-order="-1"
+        table-style="min-width: 1rem"
+        :global-filter-fields="['label']"
+      >
+        <template #header>
+          <div class="flex justify-between">
+            <InputText v-model="filters['global'].value" placeholder="Søk" />
+            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+          </div>
+        </template>
+        <Column field="label" header="Navn" sortable></Column>
+        <Column field="count" header="Termbaser" sortable></Column>
+      </DataTable>
     </div>
-    <DataTable
-      ref="datatable"
-      v-model:filters="filters"
-      :value="procdata"
-      removable-sort
-      sort-field="count"
-      :sort-order="-1"
-      table-style="min-width: 1rem"
-      :global-filter-fields="['label']"
-    >
-      <template #header>
-        <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData($event)" />
-        </div>
-      </template>
-      <Column field="label" header="Navn" sortable></Column>
-      <Column field="count" header="Termbaser" sortable></Column>
-    </DataTable>
   </section>
 </template>
 

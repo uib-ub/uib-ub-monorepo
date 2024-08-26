@@ -1,5 +1,6 @@
 export default {
   name: "usage",
+  title: "Omfang",
   type: "object",
   fields: [
     {
@@ -35,6 +36,8 @@ export default {
               filter: "isPartOf._ref == $scope",
               params: { scope: parent.scope._ref },
             };
+          } else {
+            return {};
           }
         },
       },

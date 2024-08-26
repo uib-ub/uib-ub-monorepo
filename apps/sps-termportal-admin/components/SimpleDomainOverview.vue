@@ -2,6 +2,7 @@
   <div class="space-y-2">
     <p>Select domain to display more information.</p>
     <DataTable
+      ref="datatable"
       v-model:filters="filters"
       v-model:selection="selectedDomain"
       selection-mode="single"
@@ -13,8 +14,9 @@
       :global-filter-fields="['hierarchy', 'nb']"
     >
       <template #header>
-        <div class="flex space-x-3">
+        <div class="flex justify-between">
           <InputText v-model="filters['global'].value" placeholder="Søk" />
+          <Button class="h-10" label="Eksport" @click="exportData()" />
         </div>
       </template>
       <Column selection-mode="single" header-style="width: 3rem"></Column>
@@ -59,8 +61,12 @@
 
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
-import { prefix } from "termportal-ui/utils/utils";
 import { orderTopDomain } from "~/utils/constants";
+
+const datatable = ref();
+const exportData = () => {
+  datatable.value.exportCSV();
+};
 
 const selectedDomain = ref();
 const props = defineProps({
@@ -72,27 +78,29 @@ watch(selectedDomain, () => {
   emits("update:modelValue", selectedDomain.value);
 });
 
-const { data } = await useLazyFetch("/api/domain/all/domainOverview", {
+const { data } = await useLazyFetch("/api/domain/all/domain_overview", {
   query: { internal: true },
 });
 
 const preProc = computed(() => {
-  return data.value?.results?.bindings.map((d) => {
-    const labels = JSON.parse(d.labels.value);
+  if (data.value) {
+    return data.value.map((d) => {
+      const labels = JSON.parse(d.labels.value);
 
-    return {
-      id: cleanId(d.concept.value, true),
-      nb: labels?.nb,
-      nn: labels?.nn,
-      en: labels?.en,
-      published: d.published.value === "true",
-      level: d.level.value,
-      children: d?.children
-        ? d?.children.value.split(", ").map((id) => cleanId(id, true))
-        : [],
-      concepts: d.concepts.value,
-    };
-  });
+      return {
+        id: cleanId(d.concept.value, true),
+        nb: labels?.nb,
+        nn: labels?.nn,
+        en: labels?.en,
+        published: d.published.value === "true",
+        level: d.level.value,
+        children: d?.children
+          ? d?.children.value.split(", ").map((id) => cleanId(id, true))
+          : [],
+        concepts: d.concepts.value,
+      };
+    });
+  }
 });
 
 function processDomain(

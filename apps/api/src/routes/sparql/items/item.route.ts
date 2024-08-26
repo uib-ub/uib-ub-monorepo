@@ -1,3 +1,4 @@
+import { observeClient } from '@config/apis/esClient'
 import { DATA_SOURCES } from '@config/constants'
 import { env } from '@config/env'
 import { cleanDateDatatypes } from '@helpers/cleaners/cleanDateDatatypes'
@@ -84,13 +85,20 @@ route.openapi(getItem, async (c) => {
     const fixedDates = cleanDateDatatypes(data)
     const withFloats = convertToFloat(fixedDates)
 
-    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: context, type: type })
+    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: context, type: type, id: withFloats.id })
     const response = await transformer(framed, contextString)
 
     if (schema) {
       const parsed = schema.safeParse(response);
       if (parsed.success === false) {
         console.log(parsed.error.issues)
+        observeClient.index({
+          index: 'logs-chc',
+          body: {
+            '@timestamp': new Date(),
+            message: `id: ${id}, issues: ${JSON.stringify(parsed.error.issues)}`
+          }
+        })
       }
     }
 

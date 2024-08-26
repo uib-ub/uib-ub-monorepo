@@ -62,10 +62,10 @@ route.openapi(getItem, async (c) => {
   try {
     const data: TODO = await client.search({
       index: `search-chc`,
-      // TODO: This should use term: identifier.keyword to ensure exact match
+      ignore_unavailable: true,
       query: {
         match_phrase: {
-          "identifier": id
+          "_id": id
         },
       }
     })
@@ -90,5 +90,25 @@ route.openapi(getItem, async (c) => {
     return c.json({ error: true, message: "Ups, something went wrong!" }, 404)
   }
 })
+
+/**
+ * Redirect .../:id/manifest to .../:id/manifest.json
+ * because we have old links that does not use the .json extension.
+ */
+route.get('/:id/manifest', (c) => {
+  const id = c.req.param('id')
+  return c.redirect(`/items/${id}?as=iiif`, 301)
+})
+
+
+/**
+ * Redirect .../:id/manifest to .../:id/manifest.json
+ * because we have old links that does not use the .json extension.
+ */
+route.get('/:id/manifest.json', (c) => {
+  const id = c.req.param('id')
+  return c.redirect(`/items/${id}?as=iiif`, 301)
+})
+
 
 export default route

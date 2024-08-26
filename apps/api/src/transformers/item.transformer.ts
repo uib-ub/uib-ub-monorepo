@@ -1,7 +1,7 @@
 import { removeStringsFromArray } from '@helpers/cleaners/removeStringsFromArray';
 import { constructManifest } from '@helpers/mappers/constructManifest';
-import { constructCoreMetadata } from '@helpers/mappers/la/group/constructCoreMetadata';
 import { constructCollection } from '@helpers/mappers/la/object/constructCollection';
+import { constructCoreMetadata } from '@helpers/mappers/la/object/constructCoreMetadata';
 import { constructCorrespondance } from '@helpers/mappers/la/object/constructCorrespondance';
 import { constructDimension } from '@helpers/mappers/la/object/constructDimension';
 import { constructOwnership } from '@helpers/mappers/la/object/constructOwnership';
@@ -10,19 +10,19 @@ import { constructProvenance } from '@helpers/mappers/la/object/constructProvena
 import { constructAboutness } from '@helpers/mappers/la/shared/constructAboutness';
 import { constructAssertions } from '@helpers/mappers/la/shared/constructAssertions';
 import { constructDigitalIntegration } from '@helpers/mappers/la/shared/constructDigitalIntegration';
-import { constructHal } from '@helpers/mappers/la/shared/constructHal';
 import { constructIdentifiers } from '@helpers/mappers/la/shared/constructIdentifiers';
 import { constructSubjectTo } from '@helpers/mappers/la/shared/constructSubjectTo';
 import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
 import { TBaseMetadata } from '@models';
 import { env } from 'bun';
+import omitEmptyEs from 'omit-empty-es';
 import type { CrmE22_HumanMade_Object } from 'types/src/la/types/linked_art';
 
 export const toUbbontTransformer = async (data: any, context: string) => {
   let dto = data
 
   // We assume all @none language tags are really norwegian
-  dto = JSON.parse(JSON.stringify(dto).replaceAll('"@none":', '"no":'))
+  dto = JSON.parse(JSON.stringify(dto).replaceAll('"@none":', '"no":').replaceAll('"none":', '"no":'))
   // Removes non-object items from the specified properties of the input dto array.
   dto = removeStringsFromArray(dto)
 
@@ -43,9 +43,11 @@ export const toLinkedArtItemTransformer = async (data: any, context: string): Pr
   let dto = data
 
   // We assume all @none language tags are really norwegian
-  dto = JSON.parse(JSON.stringify(dto).replaceAll('"@none":', '"no":'))
+  dto = JSON.parse(JSON.stringify(dto).replaceAll('"@none":', '"no":').replaceAll('"none":', '"no":'))
   // Removes non-object items from the specified properties of the input dto array.
   dto = removeStringsFromArray(dto)
+  // TODO: we  do this all over the place, is it efficient?
+  dto = omitEmptyEs(dto)
 
   // Remove the inline context and add the url to the context
   dto['@context'] = context
@@ -57,13 +59,22 @@ export const toLinkedArtItemTransformer = async (data: any, context: string): Pr
   // @TODO: Remove this when we have dct:modified on all items in the dtoset
   dto._modified = dto._modified ?? "2020-01-01T00:00:00"
 
+
+  // We might not get a label for the object, but we need to have a label for the object. So we add a placeholder label.
+  if (!dto._label) {
+    dto._label = {
+      no: ["Uten tittel"],
+      en: ["Untitled"]
+    }
+  }
+
   const base: TBaseMetadata = {
-    identifier: data.identifier,
+    identifier: dto.identifier,
     context: ['https://linked.art/ns/v1/linked-art.json', 'https://api.ub.uib.no/ns/ubbont/context.json'],
-    newId: `${env.API_URL}/items/${data.uuid ?? data.identifier}`,
-    originalId: data.id,
-    productionTimeSpan: getTimeSpan(data.created, data.madeAfter, data.madeBefore),
-    _label: data._label,
+    newId: `${dto.uuid ?? dto.identifier}`,
+    originalId: dto.id,
+    productionTimeSpan: getTimeSpan(dto.created, dto.madeAfter, dto.madeBefore),
+    _label: dto._label,
   }
 
   // Construct LinkedArt
@@ -79,7 +90,6 @@ export const toLinkedArtItemTransformer = async (data: any, context: string): Pr
   dto = constructOwnership(base, dto)
   dto = constructCorrespondance(dto)
   dto = await constructSubjectTo(base, dto)
-  dto = constructHal(dto)
 
   return dto
 }

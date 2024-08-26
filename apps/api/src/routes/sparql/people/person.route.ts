@@ -68,7 +68,7 @@ route.openapi(getItem, async (c) => {
     const fixedDates = cleanDateDatatypes(data)
     const withFloats = convertToFloat(fixedDates)
 
-    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: context, id: id })
+    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: context, id: withFloats.id })
     const response = await transformer(framed, contextString)
 
     if (schema) {

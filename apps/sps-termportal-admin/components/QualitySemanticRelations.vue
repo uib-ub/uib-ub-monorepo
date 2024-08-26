@@ -42,22 +42,24 @@ const { data } = useLazyFetch(
 );
 
 const relations = computed(() => {
-  return data?.value?.results?.bindings.map((e) => {
-    return {
-      concept: e.concept.value
-        .split("/")
-        .slice(-1)[0]
-        .split("-3A")
-        .slice(-1)[0],
-      link:
-        "https://wiki.terminologi.no/index.php?title=" +
-        e.concept.value.split("/").slice(-1)[0].split("-3A").join(":"),
-      relations: e.relations.value
-        .split(";")
-        .map((rel) => rel.split("/").slice(-1)[0].split("-3A").slice(-1)[0])
-        .join(", "),
-    };
-  });
+  if (data.value) {
+    return data?.value.map((e) => {
+      return {
+        concept: e.concept.value
+          .split("/")
+          .slice(-1)[0]
+          .split("-3A")
+          .slice(-1)[0],
+        link:
+          "https://wiki.terminologi.no/index.php?title=" +
+          e.concept.value.split("/").slice(-1)[0].split("-3A").join(":"),
+        relations: e.relations.value
+          .split(";")
+          .map((rel) => rel.split("/").slice(-1)[0].split("-3A").slice(-1)[0])
+          .join(", "),
+      };
+    });
+  }
 });
 
 const exportCSV = () => {
