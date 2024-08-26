@@ -46,8 +46,8 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
 
   return (
 
-        <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col">
-        <div className='flex flex-wrap gap-1'>
+        <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col gap-4">
+        <div className='flex flex-wrap gap-2'>
         <div id={"resultText_" + hit._source.uuid}>{titleRenderer(hit, display)}
         {(adm || hit.highlight) && <div>
           {adm && detailsRenderer(hit, display)}
