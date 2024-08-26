@@ -20,6 +20,12 @@
       v-if="panel"
       class="absolute z-10 grid grid-flow-row grid-cols-1 gap-x-8 gap-y-0 rounded-[7px] border border-gray-300 bg-white p-2 shadow-md md:grid-cols-2"
     >
+      <button
+        class="absolute top-0 right-0 border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 mr-1 mt-1 flex justify-center"
+        @click="panel = false"
+      >
+        <Icon name="material-symbols:close" size="1.4rem" />
+      </button>
       <div v-for="tb of termbaseOrder" :key="tb" class="flex">
         <input
           :id="tb"
