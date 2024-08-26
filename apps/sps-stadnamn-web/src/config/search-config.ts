@@ -45,8 +45,9 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
   export const facetConfig: Record<string, FacetConfigItem[]> = {
       search: [
         {key: "datasets", label: "Datasett", omitLabel: true},
-        {key: "adm1Fallback", label: "Fylke (ustandardisert)"},
-        {key: "adm2Fallback", label: "Kommune (ustandardisert)"},
+        //{key: "coordinateDataset", label: "DEBUG COORD"},
+       // {key: "adm1Fallback", label: "Fylke (ustandardisert)"},
+        //{key: "adm2Fallback", label: "Kommune (ustandardisert)"},
         {key: "snid", label: "Stadnamn ID"},
         {key: "gnidu", label: "GNIDu"},
         {key: "midu", label: "MIDu"},
@@ -63,7 +64,7 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
       ],
       hord: [
         {key: "archive.institution", label: "Arkivtilvising", table: true},
-        {key: "label", label: "debug", table: true},
+        //{key: "label", label: "debug", table: true},
         {key: "cadastre__gnr", label: "Gardsnummer", sort: "asc", type: "integer"},
         {key: "cadastre__bnr", label: "Bruksnummer", sort: "asc", type: "integer"},
         {key: "rawData.oppskrivar", label: "Oppskrivar", table: true},
@@ -105,9 +106,20 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
       skul: [
         {key: "rawData.gnr", label: "Gardsnummer", sort: "asc"},
         {key: "rawData.bnr", label: "Bruksnummer", sort: "asc"},
+        {key: "rawData.knr", label: "knr"},
       ],
       nbas: [
         {key: "rawData.lokalitetstype_sosiype", label: "Lokalitetstype"},
+      ],
+      ostf: [
+        {key: "rawData.Bindsortering", label: "Bind"},
+      ],
+      tot: [
+        {key: "rawData.GNR", label: "Gardsnummer"},
+        {key: "rawData.BNR", label: "Bruksnummer"},
+        {key: "rawData.Kjelde", label: "Kjelde"},
+        {key: "rawData.Kjeldeform", label: "Kjeldeform"},
+
       ]
   
   }

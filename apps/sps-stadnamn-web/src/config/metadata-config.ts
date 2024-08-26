@@ -39,7 +39,8 @@ export const datasetTitles: DatasetTitles = {
     leks: "Norsk stadnamnleksikon",
     leks_g: "grunnord",
     ostf: "Bustadnavn i Østfold",
-    sof: "Fylkesarkivet i Sogn og Fjordane"
+    sof: "Fylkesarkivet i Sogn og Fjordane",
+    tot: "Totennavn"
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -53,7 +54,8 @@ export const datasetDescriptions: Record<string, string> = {
   m1886: "Matrikkelen av 1886 er en oversikt over jordeiendommer i hele landet, angitt med navn, matrikkelnummer og verdi. Som noe nytt ble gardsnummer og bruksnummer tatt i bruk. Alle landets fylker, untatt Finnmark er dekket, og for hvert bruksnummer er angitt gards- og bruksnavn, i alt nesten 208 000 matrikler. Matrikelen regnes for å være den første moderne matrikkel, fastsatt etter det systemet vi kjenner i dag.",
   mu1950: "Matrikkelutkastet av 1950 var forberedelsen til en ny matrikkel for hele Norge, men oppgaven ble aldri fullført, og man brukte i stedet kommunale eiendomsregistre. Utkastet dekker samlet sett over 767 000 matrikler fra landkommunene i alle fylker unntatt Finnmark. Hver matrikkel er angitt med gards- og bruksnavn, matrikkelnummer og verdi.",
   skul: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms.",
-  sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare."
+  sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare.",
+  tot: "Totennavn er en samling av navn på garder, bruk, småbruk, forsvunne stedsnavn, skogteiger og jorder fra hele Toten. Materialet baserer seg på kjeldemateriale samlet inn til Norsk stedsnavnarkiv ved Universitetet i Oslo. Arbeidet er utført av Trond Nygård på oppdrag for daværende Seksjon for navnegransking. Prosjektet ble sluttført i 2007. Kartfesting er uført på Språksamlingane i 2024."
 }
 
 
@@ -155,6 +157,13 @@ export const datasetPresentation: DatasetPresentation = {
         attribution: "Fylkesarkivet i Vestland. Berika av Språksamlingane", 
         license: licenses.ccby4,
         links: [{title: "Nettstad: ", href: "https://www.fylkesarkivet.no/stadnamn.380535.no.html"}]
+      },
+      tot: {
+        img: "/datasets/toten.png",
+        alt: "Historisk fotografi med garder og bruk ved Einavatnet.",
+        imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
       }
 }
 
@@ -171,6 +180,7 @@ export const featureNames: Record<string, string> = {
   "link": "Lenker",
   "maps": "Skannede kart",
   "base": "Grunnord",
+  "prep": "Preposisjoner",
 }
 
 export const typeNames: Record<string, string> = {
@@ -194,7 +204,8 @@ export const datasetFeatures: Record<string, string[]> = {
   skul: ["image_tmp"],
   leks: ["phonetic", "base"],
   ostf: ["link"],
-  sof: ["link", "coordinates", "phonetic"]
+  sof: ["link", "coordinates", "phonetic"],
+  tot: ["phonetic"]
 }
 
 export const datasetTypes: Record<string, string[]> = {
@@ -208,7 +219,8 @@ export const datasetTypes: Record<string, string[]> = {
   skul: ["sprak"],
   leks: ["encyclopedia"],
   ostf: ["encyclopedia"],
-  sof: ["database"]
+  sof: ["database"],
+  tot: ["database", "sprak"]
 }
 
 

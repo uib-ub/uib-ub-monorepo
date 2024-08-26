@@ -41,6 +41,53 @@ export default function TableExplorer() {
     }
 
 
+    function formatCadastre(cadastre: Record<string, any>[]): string {
+        return cadastre.map(item => {
+            if (Array.isArray(item.gnr)) {
+                if (item.gnr.length > 1) {
+                    return `${item.gnr[0]}-${item.gnr[1]}`;
+                } else {
+                    return `${item.gnr[0]}`;
+                }
+            } else if (item.bnr) {
+                if (Array.isArray(item.bnr)) {
+                    // Sort bnr to ensure correct range identification
+                    const sortedBnr = item.bnr.sort((a, b) => a - b);
+                    const ranges = [];
+                    let start = sortedBnr[0];
+                    let end = start;
+    
+                    for (let i = 1; i < sortedBnr.length; i++) {
+                        if (sortedBnr[i] === end + 1) {
+                            end = sortedBnr[i];
+                        } else {
+                            if (start === end) {
+                                ranges.push(`${item.gnr}/${start}`);
+                            } else {
+                                ranges.push(`${item.gnr}/${start}-${end}`);
+                            }
+                            start = sortedBnr[i];
+                            end = start;
+                        }
+                    }
+    
+                    // Handle the last range or number
+                    if (start === end) {
+                        ranges.push(`${item.gnr}/${start}`);
+                    } else {
+                        ranges.push(`${item.gnr}/${start}-${end}`);
+                    }
+    
+                    return ranges.join(', ');
+                } else {
+                    return `${item.gnr}/${item.bnr}`;
+                }
+            } else {
+                return `${item.gnr}`;
+            }
+        }).join(', ');
+    }
+
 
     useEffect(() => {
         const storedColumns = localStorage.getItem(localStorageKey);
@@ -83,7 +130,13 @@ export default function TableExplorer() {
       }
 
       function getValueByKeyPath(key: string, source: Record<string, any>): any {
-        const value = key.split('.').reduce((o: Record<string, any> | undefined, k: string) => (o || {})[k], source);
+        let value = key.split('.').reduce((o: Record<string, any> | undefined, k: string) => (o || {})[k], source);
+
+        if (value && key == 'datasets') {
+            value = value.map((dataset: string) => dataset.toUpperCase())
+        }
+
+
         if (Array.isArray(value)) {
           // Limit to 10 values
           return value.slice(0,10).join(', ') + (value.length > 10 ? '...' : '');
@@ -204,7 +257,7 @@ export default function TableExplorer() {
                         }
                         { showCadastre && visibleColumns.includes('cadastre') &&
                             <td>
-                                {hit._source.cadastre?.map((c: Record<string, number>) => `${c.gnr}${c.bnr ? '/'+ c.bnr : ''}`).join(', ')}
+                                {hit._source.cadastre && formatCadastre(hit._source.cadastre)}
                             </td>
                         }
                         { facetConfig[params.dataset as string]?.filter(item => visibleColumns.includes(item.key)).map((facet: any) => (

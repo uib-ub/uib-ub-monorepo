@@ -10,7 +10,7 @@ export interface ContentSettingsItem {
   export const contentSettings: Record<string, ContentSettingsItem> = {
     search: {
       display: 'map',
-      adm: 2,
+      adm: 3,
       sort: ["ranking", "_score", "adm1.keyword", "adm2.keyword"] // add "ranking" in order to favor results with snid and multiple attestations
     },
     bsn: {
@@ -54,7 +54,7 @@ export interface ContentSettingsItem {
     ostf: {
       display: 'map',
       adm: 2,
-      cadastre: true
+      cadastre: false
     },
     skul: {
       display: 'map',
@@ -69,6 +69,11 @@ export interface ContentSettingsItem {
     rygh: {
       display: 'map',
       adm: 2,
+      cadastre: true
+    },
+    tot: {
+      display: 'map',
+      adm: 3,
       cadastre: true
     },
   }
