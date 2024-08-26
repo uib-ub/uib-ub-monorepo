@@ -78,6 +78,12 @@
         class="absolute z-10 grid grid-cols-3 rounded-[7px] border border-gray-300 bg-white shadow-md"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
+        <button
+          class="absolute top-0 right-0 border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 mr-1 mt-1 flex justify-center"
+          @click="panel = false"
+        >
+          <Icon name="material-symbols:close" size="1.4rem" />
+        </button>
         <div
           v-for="topdomain of panelTopdomains"
           :key="topdomain"
