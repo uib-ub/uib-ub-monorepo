@@ -59,6 +59,23 @@ export const datasetDescriptions: Record<string, string> = {
 }
 
 
+export const publishDates: Record<string, string> = {
+  bsn: "2024-05-29",
+  hord: "2024-02-07",
+  rygh: "2024-05-29",
+  nbas: "2024-05-29",
+  m1838: "2024-05-29",
+  m1886: "2024-05-29",
+  mu1950: "2024-05-29",
+  skul: "2024-03-22",
+  leks: "2024-05-29",
+  leks_g: "2024-03-27",
+  ostf: "2024-05-29",
+  sof: "2024-06-13",
+  tot: "2024-08-26"
+}
+
+
 
 export const licenses: Record<string, {name: string, url: string}> = {
   ccby4: {

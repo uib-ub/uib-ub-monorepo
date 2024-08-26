@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
-import { datasetTitles, datasetPresentation, datasetDescriptions } from '@/config/metadata-config';
+import { datasetTitles, datasetPresentation, datasetDescriptions, publishDates } from '@/config/metadata-config';
 import Footer from '../components/layout/Footer';
 import { fetchStats } from '@/app/api/_utils/actions';
 import { redirect } from "next/navigation";
@@ -24,6 +24,13 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
 
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
+    const info = datasetPresentation[code]
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
+  }
+  )
+
+
+  const newest = Object.entries(publishDates).sort((a, b) => b[1].localeCompare(a[1])).slice(0, 2).map(entry => entry[0]).map(code => {
     const info = datasetPresentation[code]
     return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
   }
@@ -84,7 +91,31 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
 
 
   </div>
-  <section className="flex flex-col items-center gap-12 container" aria-labelledby="dataset_showcase">
+  <div className="flex flex-col items-center container gap-24">
+  <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Nyleg lagt til:</h2>
+    <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
+      {newest.map((card, index) => (
+        <li key={index} className="card p-1 xl:col-span-1 items-start">
+          <Link className=" no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
+          <div className="">
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square">
+            <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
+            </div>
+            <div id={card.code + "_attribution"} className="text-xs text-neutral-700 w-full mt-1">{card.imageAttribution}</div>
+          </div>
+
+            <div className=" py-4 px-6">
+              <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+              <p className="pt-2 text-small">{card.description}</p>
+              
+            </div>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalde datasett</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
@@ -106,8 +137,10 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
         </li>
       ))}
     </ul>
-    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Alle datasett</Link>
+
     </section>
+    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Alle datasett</Link>
+    </div>
   
 
 </main>
