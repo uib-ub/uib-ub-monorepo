@@ -79,12 +79,12 @@ export default async function DocumentView({ params, searchParams }: { params: {
       </span>
       <div className="flex flex-wrap gap-4">
         <div className='flex'>
-      {doc._source.wikiAdm?.length > 1 && <>
+      {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && <>
       {[doc._source.adm1, doc._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
       {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
       </>
       
-      || doc._source.wikiAdm &&  <span className="inline whitespace-nowrap"> <Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</Link> </span>
+      || doc._source.wikiAdm &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</Link> </span>
       || doc._source.adm1 && <span className="inline whitespace-nowrap">{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</span>
       }
       </div>

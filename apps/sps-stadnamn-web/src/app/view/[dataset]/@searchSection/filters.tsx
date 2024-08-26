@@ -35,7 +35,7 @@ export default function Facets() {
       // Add any special cases here
       if (values[0] == "_false" && name == "adm") {
         if (values.length == 1) return "[utan distrikt]"
-        return values[1] + " (ingen underordna)"
+        return values[1] + " (utan underinndeling)"
       }
         
         

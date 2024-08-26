@@ -124,7 +124,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     const filteredChildren = facetSearchQuery && children?.filter((subitem: any) => facetSearch(subitem, baseName, path.length +1))
 
     
-    let label = path[0] == "_false" ? (path.length == 1 ? "[utan distrikt]" : "[ingen underordna]") : item.key   
+    let label = path[0] == "_false" ? (path.length == 1 ? "[utan distrikt]" : "[utan underinndeling]") : item.key   
  
 
     return (

@@ -336,7 +336,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         {title: 'Koordinater', value: [source.rawData.X, source.rawData.Y].filter(Boolean).join(", ")},
         {title: 'Presisjon', value: source.rawData.Koordinattype},
         {title: 'StedsnavnID', value: source.rawData.SNID},
-        {title: 'Unikt matrikkelnummer', items: source.gnidu.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},
+        {title: 'Unikt matrikkelnummer', items: source.gnidu?.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},
       ]}/>
       </>
     } 
