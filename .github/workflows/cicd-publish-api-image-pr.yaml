@@ -13,4 +13,6 @@ jobs:
 
     - name: Print the pr last commit SHA (shortened)
       if: ${{ github.event_name == 'pull_request' }}
-      run: echo "The commit SHA is ${{ format('{0:.7}', github.event.pull_request.head.sha) }}"
+      run: |
+        SHORT_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
+        echo "The short commit SHA is $SHORT_SHA"
