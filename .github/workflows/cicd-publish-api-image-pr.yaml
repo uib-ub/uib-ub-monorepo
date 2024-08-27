@@ -1,4 +1,4 @@
-name: Manually publish container image using the last commit SHA as an image tag
+name: Publish container image using the last commit SHA as an image tag
 
 on:
   pull_request: # run on pull requests
@@ -31,10 +31,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get short SHA
+      - name: Get short SHA from PR head commit
         id: get_sha
-        run: echo "SHORT_SHA=$(echo '${{ github.sha }}' | cut -c1-7)" >> $GITHUB_ENV
-
+        if: ${{ github.event_name == 'pull_request' }}
+        run: echo "SHORT_SHA=$(echo '${{ github.event.pull_request.head.sha }}' | cut -c1-7)" >> $GITHUB_ENV
+        
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
