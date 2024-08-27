@@ -1,4 +1,4 @@
-name: Build and publish container image for api
+name: Publish container image for API using latest as an image tag
 
 on: workflow_dispatch # run maually
 
