@@ -13,4 +13,4 @@ jobs:
 
     - name: Print the pr last commit SHA (shortened)
       if: ${{ github.event_name == 'pull_request' }}
-      run: echo "The commit SHA is ${{ github.event.pull_request.head.sha.substr(0, 7) }}"
+      run: echo "The commit SHA is ${{ github.event.pull_request.head.sha.substr[0:7] }}"
