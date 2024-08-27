@@ -29,7 +29,6 @@ export default function TableExplorer() {
 
     const admValues = searchParams.getAll('adm')
     // Hide adm if only one value is present and it has no sublevels
-    const showAdm = admValues.length != 1 || (admValues.length && admValues[0].split("__").length < (contentSettings[params.dataset as string]?.adm || 0))
     const showCadastre = contentSettings[params.dataset as string]?.cadastre
 
     const resetSort = () => {
@@ -229,13 +228,13 @@ export default function TableExplorer() {
                         </th>
                         
                         {
-                            showAdm && visibleColumns.includes('adm') && <th> 
+                            visibleColumns.includes('adm') && <th> 
                                 <SortButton field={Array.from({length: contentSettings[params.dataset as string]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Distrikt"/>
                             </th>
                         }
                         { showCadastre && visibleColumns.includes('cadastre') &&
                             <th>
-                            <SortButton field={`${showAdm ? 'adm1.keyword,adm2.keyword,':''}cadastre__gnr,cadastre__bnr`} label="Matrikkel" description="Gnr/Bnr kommunevis"/>
+                            <SortButton field='adm1.keyword,adm2.keyword,cadastre__gnr,cadastre__bnr' label="Matrikkel" description="Gnr/Bnr kommunevis"/>
                             </th>
                         }
                         { facetConfig[params.dataset as string]?.filter(item => visibleColumns.includes(item.key)).map((facet: any) => (
@@ -253,7 +252,7 @@ export default function TableExplorer() {
                            <ResultRow hit={hit} adm={false} externalLoading={expandLoading}/>
                         </th>
                         {
-                            showAdm && visibleColumns.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{joinWithSlash(hit._source.adm1)}</td>
+                            visibleColumns.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{joinWithSlash(hit._source.adm1)}</td>
                         }
                         { showCadastre && visibleColumns.includes('cadastre') &&
                             <td>
