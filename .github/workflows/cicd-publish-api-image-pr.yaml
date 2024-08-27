@@ -1,4 +1,4 @@
-name: Publish container image using the last commit SHA as an image tag
+name: Publish container image using PR head commit SHA as an image tag
 
 on:
   pull_request: # run on pull requests
