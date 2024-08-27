@@ -1,7 +1,6 @@
-name: Manually publish container image using the last commit SHA as image tag
+name: Manually publish container image using the last commit SHA as an image tag
 
-on: 
-  workflow_dispatch: # run manually
+on:
   pull_request: # run on pull requests
 
 jobs:
@@ -12,5 +11,6 @@ jobs:
     - name: Check out the code
       uses: actions/checkout@v4
 
-    - name: Print the pr last commit SHA
-      run: echo "The commit SHA is ${{ github.event.pull_request.head.sha }}"
+    - name: Print the pr last commit SHA (shortened)
+      if: ${{ github.event_name == 'pull_request' }}
+      run: echo "The commit SHA is ${{ github.event.pull_request.head.sha.substr(0, 7) }}"
