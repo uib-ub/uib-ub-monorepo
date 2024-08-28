@@ -30,79 +30,151 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: deploy apply pods to hono-api-test env
+        env:
+          REGISTRY: ghcr.io
         run: |
-          # create namespace hono-api-test
-          kubectl apply -f microk8s-hono-api/hono-api-test/namespace.yaml
-
-          # create secret regcred for kubernetes to pull image from private registry on Github
-          if ! kubectl -n hono-api-test get secret regcred; then
-            # create the secret when no secret is found
-            kubectl -n hono-api-test create secret docker-registry regcred --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-server=ghcr.io
+          # Check if the namespace 'hono-api-test' is already created, if not, create it.
+          NAMESPACE=$(kubectl get namespaces -o jsonpath="{.items[?(@.metadata.name=='hono-api-test')].metadata.name}")
+          if [ -z "$NAMESPACE" ]; then
+            echo "Namespace $NAMESPACE does not exist. Creating namespace..."
+            kubectl apply -f microk8s-hono-api/hono-api-test/namespace.yaml
           else
-            # check if kubernetes secret regcred needs an update, and update it when it is not the same as given secret GHCR_PAT from Github repository secret
-            existing_pass=$(kubectl -n hono-api-test get secret regcred --template='{{index .data ".dockerconfigjson" | base64decode}}' | jq -r '.auths["ghcr.io"].password')
-            if [[ "$existing_pass" != "${{ secrets.GHCR_PAT }}" ]]; then
-              echo "Updating kubernetes secret as password from Github repository secret do not match."
-              kubectl -n hono-api-test delete secret regcred
-              kubectl -n hono-api-test create secret docker-registry regcred --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-server=ghcr.io
+            echo "Namespace $NAMESPACE already exists. Skipping creation."
+          fi 
+
+          function manage_kube_secret {
+            local secret_name=$1
+            local secret_key=$2
+            local secret_value=$3
+            local secret_type=${4:-generic}
+
+            if [ "$secret_name" == "regcred" ]; then
+              # Special handling for Github container registry secret
+              if ! kubectl -n hono-api-test get secret "$secret_name"; then
+                echo "Creating Github container registry secret $secret_name..."
+                kubectl -n hono-api-test create secret "$secret_type" "$secret_name" \
+                  --docker-username=${{ github.actor }} \
+                  --docker-password="$secret_value" \
+                  --docker-server=${{ env.REGISTRY }}
+              else
+                echo "Checking if Github container registry secret $secret_name needs to be updated..."
+                existing_pass=$(kubectl -n hono-api-test get secret "$secret_name" --template='{{index .data ".dockerconfigjson" | base64decode}}' | jq -r '.auths["ghcr.io"].password')
+                if [[ "$existing_pass" != "$secret_value" ]]; then
+                  echo "Updating Github registry secret $secret_name..."
+                  kubectl -n hono-api-test delete secret "$secret_name"
+                  kubectl -n hono-api-test create secret "$secret_type" "$secret_name" \
+                    --docker-username=${{ github.actor }} \
+                    --docker-password="$secret_value" \
+                    --docker-server=${{ env.REGISTRY }}
+                else
+                  echo "Github container registry secret $secret_name is up-to-date, no action required."
+                fi
+              fi
             else
-              echo "Secret regcred already exists, and it is the same as GHCR_PAT Github repository secret, skipping."
+              # General handling for other secrets using passed parameters
+              if ! kubectl -n hono-api-test get secret "$secret_name"; then
+                echo "Creating secret $secret_name..."
+                kubectl -n hono-api-test create secret "$secret_type" "$secret_name" --from-literal="$secret_key"="$secret_value"
+              else
+                echo "Checking if secret $secret_name needs to be updated..."
+                existing_value=$(kubectl -n hono-api-test get secret "$secret_name" --template="{{index .data \"$secret_key\" | base64decode}}")
+                if [[ "$existing_value" != "$secret_value" ]]; then
+                  echo "Updating secret $secret_name..."
+                  kubectl -n hono-api-test delete secret "$secret_name"
+                  kubectl -n hono-api-test create secret "$secret_type" "$secret_name" --from-literal="$secret_key"="$secret_value"
+                else
+                  echo "Secret $secret_name is up-to-date, no action required."
+                fi
+              fi
             fi
+          }
+
+          # Handle secrets using the generic function
+          manage_kube_secret "regcred" ".dockerconfigjson" "${{ secrets.GHCR_PAT }}" "docker-registry"
+          manage_kube_secret "esapikeycred" "esApiKey" "${{ secrets.ES_APIKEY }}"
+          manage_kube_secret "esobserveapikeycred" "esObserveApiKey" "${{ secrets.OBSERVE_ES_APIKEY }}"
+          manage_kube_secret "apieswritetokencred" "apiEsWriteToken" "${{ secrets.API_ES_WRITE_TOKEN }}"
+
+          DEPLOYMENT_NAME="hono-api"
+          NAMESPACE="hono-api-test"
+          # Check if the deployment already exists
+          if kubectl get deployment "$DEPLOYMENT_NAME" -n "$NAMESPACE" >/dev/null 2>&1; then
+            echo "Deployment $DEPLOYMENT_NAME already exists. Performing rolling restart..."
+            kubectl rollout restart deployment "$DEPLOYMENT_NAME" -n "$NAMESPACE"
+          else
+            echo "Deployment $DEPLOYMENT_NAME does not exist. Applying deployment..."
+            kubectl apply -k microk8s-hono-api/hono-api-dev -n "$NAMESPACE"
           fi
 
-          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
-          if ! kubectl -n hono-api-test get secret esapikeycred; then
-            # create the secret when no secret is found
-            kubectl -n hono-api-test create secret generic esapikeycred --from-literal=esApiKey=${{ secrets.ES_APIKEY }}
-          else
-            # check if kubernetes secret esapikeycred needs an update, and update it when it is not the same as given secret ES_APIKEY from Github repository secret
-            existing_pass=$(kubectl -n hono-api-test get secret esapikeycred --template='{{index .data "esApiKey" | base64decode}}')
-            if [[ "$existing_pass" != "${{ secrets.ES_APIKEY }}" ]]; then
-              echo "Updating kubernetes secret esapikeycred, as password from Github repository secret ES_APIKEY do not match."
-              kubectl -n hono-api-test delete secret esapikeycred
-              kubectl -n hono-api-test create secret generic esapikeycred --from-literal=esApiKey=${{ secrets.ES_APIKEY }}
-            else
-              echo "Secret esapikeycred already exists, and it is the same as ES_APIKEY Github repository secret, skipping."
-            fi
-          fi
-
-          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
-          if ! kubectl -n hono-api-dev get secret esobserveapikeycred; then
-            # create the secret when no secret is found
-            kubectl -n hono-api-dev create secret generic esobserveapikeycred --from-literal=esObserveApiKey=${{ secrets.OBSERVE_ES_APIKEY }}
-          else
-            # check if kubernetes secret esobserveapikeycred needs an update, and update it when it is not the same as given secret OBSERVE_ES_APIKEY from Github repository secret
-            existing_pass=$(kubectl -n hono-api-dev get secret esobserveapikeycred --template='{{index .data "esObserveApiKey" | base64decode}}')
-            if [[ "$existing_pass" != "${{ secrets.OBSERVE_ES_APIKEY }}" ]]; then
-              echo "Updating kubernetes secret esobserveapikeycred, as password from Github repository secret OBSERVE_ES_APIKEY do not match."
-              kubectl -n hono-api-dev delete secret esobserveapikeycred
-              kubectl -n hono-api-dev create secret generic esobserveapikeycred --from-literal=esObserveApiKey=${{ secrets.OBSERVE_ES_APIKEY }}
-            else
-              echo "Secret esobserveapikeycred already exists, and it is the same as OBSERVE_ES_APIKEY Github repository secret, skipping."
-            fi
-          fi
-
-          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
-          if ! kubectl -n hono-api-test get secret apieswritetokencred; then
-            # create the secret when no secret is found
-            kubectl -n hono-api-test create secret generic apieswritetokencred --from-literal=apiEsWriteToken=${{ secrets.API_ES_WRITE_TOKEN }}
-          else
-            # check if kubernetes secret apieswritetokencred needs an update, and update it when it is not the same as given secret API_ES_WRITE_TOKEN from Github repository secret
-            existing_pass=$(kubectl -n hono-api-test get secret apieswritetokencred --template='{{index .data "apiEsWriteToken" | base64decode}}')
-            if [[ "$existing_pass" != "${{ secrets.API_ES_WRITE_TOKEN }}" ]]; then
-              echo "Updating kubernetes secret apieswritetokencred, as password from Github repository secret API_ES_WRITE_TOKEN do not match."
-              kubectl -n hono-api-test delete secret apieswritetokencred
-              kubectl -n hono-api-test create secret generic apieswritetokencred --from-literal=apiEsWriteToken=${{ secrets.API_ES_WRITE_TOKEN }}
-            else
-              echo "Secret apieswritetokencred already exists, and it is the same as API_ES_WRITE_TOKEN Github repository secret, skipping."
-            fi
-          fi
-
-          # apply all resources in overlays based on namespace
-          kubectl apply -k microk8s-hono-api/hono-api-test -n hono-api-test
-
-          # rolling restart hono-api
-          kubectl rollout restart deployment hono-api -n hono-api-test
+#          # create secret regcred for kubernetes to pull image from private registry on Github
+#          if ! kubectl -n hono-api-test get secret regcred; then
+#            # create the secret when no secret is found
+#            kubectl -n hono-api-test create secret docker-registry regcred --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-server=ghcr.io
+#          else
+#            # check if kubernetes secret regcred needs an update, and update it when it is not the same as given secret GHCR_PAT from Github repository secret
+#            existing_pass=$(kubectl -n hono-api-test get secret regcred --template='{{index .data ".dockerconfigjson" | base64decode}}' | jq -r '.auths["ghcr.io"].password')
+#            if [[ "$existing_pass" != "${{ secrets.GHCR_PAT }}" ]]; then
+#              echo "Updating kubernetes secret as password from Github repository secret do not match."
+#              kubectl -n hono-api-test delete secret regcred
+#              kubectl -n hono-api-test create secret docker-registry regcred --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-server=ghcr.io
+#            else
+#              echo "Secret regcred already exists, and it is the same as GHCR_PAT Github repository secret, skipping."
+#            fi
+#          fi
+#
+#          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
+#          if ! kubectl -n hono-api-test get secret esapikeycred; then
+#            # create the secret when no secret is found
+#            kubectl -n hono-api-test create secret generic esapikeycred --from-literal=esApiKey=${{ secrets.ES_APIKEY }}
+#          else
+#            # check if kubernetes secret esapikeycred needs an update, and update it when it is not the same as given secret ES_APIKEY from Github repository secret
+#            existing_pass=$(kubectl -n hono-api-test get secret esapikeycred --template='{{index .data "esApiKey" | base64decode}}')
+#            if [[ "$existing_pass" != "${{ secrets.ES_APIKEY }}" ]]; then
+#              echo "Updating kubernetes secret esapikeycred, as password from Github repository secret ES_APIKEY do not match."
+#              kubectl -n hono-api-test delete secret esapikeycred
+#              kubectl -n hono-api-test create secret generic esapikeycred --from-literal=esApiKey=${{ secrets.ES_APIKEY }}
+#            else
+#              echo "Secret esapikeycred already exists, and it is the same as ES_APIKEY Github repository secret, skipping."
+#            fi
+#          fi
+#
+#          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
+#          if ! kubectl -n hono-api-dev get secret esobserveapikeycred; then
+#            # create the secret when no secret is found
+#            kubectl -n hono-api-dev create secret generic esobserveapikeycred --from-literal=esObserveApiKey=${{ secrets.OBSERVE_ES_APIKEY }}
+#          else
+#            # check if kubernetes secret esobserveapikeycred needs an update, and update it when it is not the same as given secret OBSERVE_ES_APIKEY from Github repository secret
+#            existing_pass=$(kubectl -n hono-api-dev get secret esobserveapikeycred --template='{{index .data "esObserveApiKey" | base64decode}}')
+#            if [[ "$existing_pass" != "${{ secrets.OBSERVE_ES_APIKEY }}" ]]; then
+#              echo "Updating kubernetes secret esobserveapikeycred, as password from Github repository secret OBSERVE_ES_APIKEY do not match."
+#              kubectl -n hono-api-dev delete secret esobserveapikeycred
+#              kubectl -n hono-api-dev create secret generic esobserveapikeycred --from-literal=esObserveApiKey=${{ secrets.OBSERVE_ES_APIKEY }}
+#            else
+#              echo "Secret esobserveapikeycred already exists, and it is the same as OBSERVE_ES_APIKEY Github repository secret, skipping."
+#            fi
+#          fi
+#
+#          # create secrets for hono api to use as environment variables defined in deployment.yaml in base directory
+#          if ! kubectl -n hono-api-test get secret apieswritetokencred; then
+#            # create the secret when no secret is found
+#            kubectl -n hono-api-test create secret generic apieswritetokencred --from-literal=apiEsWriteToken=${{ secrets.API_ES_WRITE_TOKEN }}
+#          else
+#            # check if kubernetes secret apieswritetokencred needs an update, and update it when it is not the same as given secret API_ES_WRITE_TOKEN from Github repository secret
+#            existing_pass=$(kubectl -n hono-api-test get secret apieswritetokencred --template='{{index .data "apiEsWriteToken" | base64decode}}')
+#            if [[ "$existing_pass" != "${{ secrets.API_ES_WRITE_TOKEN }}" ]]; then
+#              echo "Updating kubernetes secret apieswritetokencred, as password from Github repository secret API_ES_WRITE_TOKEN do not match."
+#              kubectl -n hono-api-test delete secret apieswritetokencred
+#              kubectl -n hono-api-test create secret generic apieswritetokencred --from-literal=apiEsWriteToken=${{ secrets.API_ES_WRITE_TOKEN }}
+#            else
+#              echo "Secret apieswritetokencred already exists, and it is the same as API_ES_WRITE_TOKEN Github repository secret, skipping."
+#            fi
+#          fi
+#
+#          # apply all resources in overlays based on namespace
+#          kubectl apply -k microk8s-hono-api/hono-api-test -n hono-api-test
+#
+#          # rolling restart hono-api
+#          kubectl rollout restart deployment hono-api -n hono-api-test
 
       - name: Wait For Deployment To Start
         run: sleep 10s
