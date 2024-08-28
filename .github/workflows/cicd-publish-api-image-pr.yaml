@@ -1,6 +1,7 @@
 name: Publish container image for API using PR head commit SHA as an image tag
 
 on:
+  workflow_dispatch: # run manually
   pull_request: # run on pull requests
 
 env:
