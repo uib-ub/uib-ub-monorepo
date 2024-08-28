@@ -30,7 +30,6 @@ export function getTermData(term: string) {
 
 export function getLanguageData(searchOptions: SearchOptions): string[] {
   if (searchOptions.language[0] !== "all") {
-    console.log(searchOptions);
     if (searchOptions.situation.startsWith("filter")) {
       const tmplcs = searchOptions.language.map((lc) => {
         if (lc === "en-gb") {
