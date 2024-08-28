@@ -100,8 +100,13 @@ const DynamicImageViewer = () => {
     <div className='h-full w-full flex flex-col'>
      
     <div className='h-full w-full relative aspect-square sm:aspect-auto'>
-    <span className="absolute right-0 top-0 z-[1001] mx-3 my-2 rounded-full border-white text-white border bg-neutral-900 shadow-sm">
-      <IconButton href={`/view/${dataset}${hasSearchParams ? '?' + searchParams.toString() : ''}`} className='p-2' label={searchParams.get('display') == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet'}><PiXBold className='text-xl'/></IconButton></span>
+    { params.dataset &&
+      <span className="absolute right-0 top-0 z-[1001] mx-3 my-2 rounded-full border-white text-white border bg-neutral-900 shadow-sm">
+        <IconButton href={`/view/${dataset}${hasSearchParams ? '?' + searchParams.toString() : ''}`} className='p-2' label={searchParams.get('display') == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet'}>
+          <PiXBold className='text-xl'/>
+        </IconButton>
+      </span>
+    }
     {isLoading || !viewerRef.current? 
     <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Laster inn bilde" className='w-20 h-20'/></div>
       : null
