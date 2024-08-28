@@ -29,7 +29,7 @@ export const datasetTitles: DatasetTitles = {
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
-    nbas: "Den nasjonale stadnamnbasen [Under utvikling]",
+    nbas: "Den nasjonale stadnamnbasen",
     nbas_k: "innsamlingskart",
     m1838: "Matrikkelen 1838", 
     m1886: "Matrikkelen av 1886",

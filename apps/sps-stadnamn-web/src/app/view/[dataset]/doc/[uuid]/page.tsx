@@ -5,7 +5,7 @@ import OriginalData from './original-data'
 import Link from 'next/link'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { fetchDoc } from '@/app/api/_utils/actions'
-import { PiCaretLeftBold, PiDatabaseFill, PiX } from 'react-icons/pi'
+import { PiCaretLeftBold, PiDatabaseFill, PiWarningFill, PiX } from 'react-icons/pi'
 import ErrorMessage from '@/components/ErrorMessage'
 import CoordinateInfo from './coordinate-info'
 import CopyLink from './CopyLink'
@@ -71,7 +71,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
                 className="no-underline inline">
             <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
             Tilbake til stadnamnsida
-            </Link> : null }
+            </Link> : null 
+        }
         { doc && doc._source && <>
       
       <span className="flex flex-wrap gap-x-8 gap-y-2"><h2>{doc._source.label}</h2>
@@ -79,13 +80,14 @@ export default async function DocumentView({ params, searchParams }: { params: {
       </span>
       <div className="flex flex-wrap gap-4">
         <div className='flex'>
-      {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && <>
-      {[doc._source.adm1, doc._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
-      {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
-      </>
+      {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && 
+        <>
+        {[doc._source.adm1, doc._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
+        {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
+        </>
       
-      || doc._source.wikiAdm &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</Link> </span>
-      || doc._source.adm1 && <span className="inline whitespace-nowrap">{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</span>
+        || doc._source.wikiAdm &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</Link> </span>
+        || doc._source.adm1 && <span className="inline whitespace-nowrap">{[3, 2, 1].filter(i => doc._source['adm' + i]).map(i => multivalue(doc._source['adm' + i])).join(", ")}</span>
       }
       </div>
       
@@ -93,7 +95,9 @@ export default async function DocumentView({ params, searchParams }: { params: {
         <span className='self-center'><Link className="no-underline flex gap-1 items-center" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-lg self-center"/>{ datasetTitles[docDataset]}</Link></span>
       }
       
-      { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') && <CopyLink uuid={doc._source.uuid} /> // NBAS uris aren't stable until we've fixed errors in the dataset
+      { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
+          <CopyLink uuid={doc._source.uuid}/> 
+          : <div className="flex gap-1 items-center w-full"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
       </div>
       
