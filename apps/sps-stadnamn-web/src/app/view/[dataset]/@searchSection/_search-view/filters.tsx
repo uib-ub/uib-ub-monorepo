@@ -1,19 +1,21 @@
 import { useState } from 'react';
-import ClientFacet from './client-facet';
-import ServerFacet from './server-facet';
+import ClientFacet from '../client-facet';
+import ServerFacet from '../server-facet';
 import { PiCaretDown, PiCaretUp, PiX, PiTrashFill } from 'react-icons/pi';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 import IconButton from '@/components/ui/icon-button';
 import { facetConfig } from '@/config/search-config';
 import { contentSettings } from '@/config/server-config';
 import { datasetTitles } from '@/config/metadata-config';
+import BooleanFacet from '../bool-facet';
 
 
 export default function Facets() {
     const router = useRouter()
     const params = useParams<{dataset: string}>()
+    const searchParams = useSearchParams()
     const searchQuery = useQueryWithout(['docs', 'popup', 'search', 'manifest', 'field', 'expanded', 'page'])
     const activeFilters = searchQuery.filter(item => item[0][0] != '_' && item[0] != 'q' && item[0] != 'page' && item[0] != 'display' && item[0] != 'asc' && item[0] != 'desc' && item[0] != 'size' && item[0] != 'search')
     const [chipsExpanded, setChipsExpanded] = useState(false);
@@ -21,6 +23,7 @@ export default function Facets() {
     const clearedParams = useQueryStringWithout([...filterNames, 'page', 'asc', 'desc'])
     const [expandedFacet, setExpandedFacet] = useState<string | null>(null)
     const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
+    
 
     
 
@@ -39,12 +42,12 @@ export default function Facets() {
       }
         
         
-      if (values[0] == "_false") return (label || name) + ": Nei"
-      if (value == "_true") return (label || name) + ": Ja"
+      if (values[0] == "_false") return (label || name) + "Nei"
+      if (value == "_true") return (label || name) + "Ja"
       if (name == "datasets") {
         return datasetTitles[value] || value
       }
-      return ( omitLabel ? '' : label ) + values[0]
+      return ( omitLabel ? '' : label + ": " ) + values[0]
     }
 
 
@@ -114,8 +117,26 @@ export default function Facets() {
     </>
     }
 
+
+
+
+
+
+
     { facetConfig[params.dataset] && 
         <>
+        {false && <> <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
+          <button type="button" onClick={() => toggleFacet('bool')} className='flex w-full items-center gap-1'>
+          { expandedFacet == 'bool' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
+          Ressurser
+          { loadingFacet == 'bool' ? <Spinner status="Laster inn fasetter" className='w-[1em] h-[1em}'/> : null}
+          
+          </button>
+        </h3>
+        { expandedFacet == 'bool' && <BooleanFacet showLoading={(facet: string | null) => setLoadingFacet(facet)}/>}
+        </>}
+        
+
         <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
           <button type="button" onClick={() => toggleFacet('server')} className='flex w-full items-center gap-1'>
           { expandedFacet == 'server' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
@@ -125,9 +146,9 @@ export default function Facets() {
           </button>
         </h3>
         { expandedFacet == 'server' && <ServerFacet showLoading={(facet: string | null) => setLoadingFacet(facet)}/>}
+
         </>
       }
-
     </section>
   )
 

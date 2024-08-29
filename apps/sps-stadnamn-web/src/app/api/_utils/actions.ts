@@ -169,3 +169,35 @@ export async function fetchSNID(snid: string) {
     return res.hits?.hits?.[0] || res
 
 }
+
+
+// Fetch children of a document in the same index (documents that have the uuid as the value in "within" field)
+export async function fetchCadastralSubunits(dataset: string, uuid: string, fields: string[], sortFields: string[]) {
+    'server'
+    const query = {
+        query: {
+            term: {
+                "within.keyword": uuid
+            }
+        },
+        fields: fields,    
+        sort: sortFields.map((field: string) => {
+            if (field.startsWith("cadastre.")) {
+                return {
+                    [field]: {
+                        order: "asc",
+                        nested: {
+                            path: field.split('.')[0] // Assuming the field is in the format "cadastre.bnr"
+                        }
+                    }
+                };
+            } else {
+                return {[field]: "asc"};
+            }
+        }),
+        _source: false
+
+    }
+    return await postQuery(dataset, query)
+    
+}

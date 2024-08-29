@@ -1,3 +1,4 @@
+import CadastralSubdivisions from '@/app/view/[dataset]/doc/[uuid]/cadastral-subdivisions';
 import InfoBox from '@/components/ui/infobox';
 import Link from 'next/link';
 import React from 'react';
@@ -232,7 +233,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {
         title: 'Bruksnummer', 
         items: source.cadastre?.map((item: any) => ({
-          value: item.bnr.toString(), 
+          value: item.bnr?.toString(), 
           href: `/view/hord?rawData.kommuneNr=${encodeURIComponent(source.rawData.kommuneNr)}&cadastre__gnr=${encodeURIComponent(item.gnr)}&cadastre__bnr=${encodeURIComponent(item.bnr)}`
         })),
       },
@@ -277,16 +278,18 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   mu1950: (source: any) => {
     return <>
+    { source.sosi != 'gard' ?
     <InfoBox dataset={'mu1950'} 
               items={[
       {title: 'Stadnamn', value: source.label},
       {title: 'Kommune', value: source.adm2},
       {title: 'Fylke', value: source.adm1},
-      {title: 'Kommunenummer', value: source.rawData?.knr},
-      {title: 'Gardsnummer', value: source.rawData?.gnr},
-      {title: 'Bruksnummer', value: source.rawData?.bnr},
-      {title: 'GNIDu', value: source.rawData?.gnidu},
+      {title: 'Kommunenummer', value: source.rawData?.KNR},
+      {title: 'Gardsnummer', value: source.rawData?.GNR},
+      {title: 'Bruksnummer', value: source.rawData?.BNR},
+      {title: 'GNIDu', value: source.gnidu},
     ]}/>
+    : <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} uuid={source.uuid}/> }
 
     </>
   },

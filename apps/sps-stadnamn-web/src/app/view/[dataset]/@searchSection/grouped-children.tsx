@@ -59,24 +59,24 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
 
 
     return childDocs && Object.keys(childDocs).length > 0 ?
-        <div className="p-2 mb-2 space-y-4 transform origin-center"> 
+        <div className="p-2 mb-4 space-y-6 transform origin-center"> 
         {Object.keys(childDocs).map((docDataset: string) => (
             <div key={docDataset} className='break-words'>
                 { !landingPage && <h3 className="small-caps text-xl border-b border-neutral-400 text-neutral-900 font-semibold">{datasetTitles[docDataset]}</h3>}
                 { landingPage && <h2 className="!text-lg mt-6">{datasetTitles[docDataset]}</h2> }
-                <ul className="list-none space-y-2 my-4">
+                <ul className="list-none space-y-4 my-4">
                   {childDocs[docDataset].map((doc: Record<string, any>, index: number) => {
                     
                     return landingPage ? (
                     <li key={index} className='list-none'>
-                        <Link className="no-underline" href={"/uuid/" + doc._source.uuid}>{resultRenderers[docDataset].title(doc, 'map')}</Link>
+                        <Link className="no-underline hover:underline" href={"/uuid/" + doc._source.uuid}>{resultRenderers[docDataset].title(doc, 'grouped')} {resultRenderers[docDataset].details(doc, 'grouped')}</Link>
                     </li>
                       )  :
                     (
 
                     <li key={index} className='flex items-center'>
-                        {resultRenderers[docDataset].title(doc, 'map')}
-                        {doc._source.sosi && <span>&nbsp;-&nbsp;{doc._source.sosi}</span>}
+                        <span>{resultRenderers[docDataset].title(doc, 'grouped')} {resultRenderers[docDataset].details(doc, 'grouped')}</span>
+
                         <span className="space-x-1 mx-2">
                         { doc._source.location && <CoordinateButton doc={doc} iconClass="text-2xl inline" parentUuid={uuid} />}
                         { doc._source.link && <ExternalLinkButton doc={doc} iconClass="text-2xl inline" />}
