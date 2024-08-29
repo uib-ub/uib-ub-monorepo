@@ -18,7 +18,10 @@ function createMarkup(htmlString: string) {
 
 
 const formatHighlight = (highlight: string) => {
-  return <div dangerouslySetInnerHTML={createMarkup(highlight)}></div>;
+  // Remove inomplete html tags
+  let processedHighlight = highlight.replace(/<[^>]*$/, '').replace(/^[^<]*>/, '')
+
+  return <div dangerouslySetInnerHTML={createMarkup(processedHighlight)}></div>;
 
 }
 
@@ -29,18 +32,85 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 }
 
 const defaultTitle = (hit: any) => {
-  return <><strong>{hit._source.label}</strong> </>
+  return <><strong>{hit._source.label}</strong></>
 }
 
 const loktypeDetails = (loktype: string, hit: any) => {
   return <>{loktype}{loktype && ' – '} {hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}  </>
 }
 
+
+
 const multivalue = (value: string|string[]) => {
   return Array.isArray(value) ? value.join("/") : value
 }
 
+function formatCadastre(cadastre: Record<string, any>[]): string {
+  return cadastre.map(item => {
+      if (Array.isArray(item.gnr)) {
+          if (item.gnr.length > 1) {
+              return `${item.gnr[0]}-${item.gnr[1]}`;
+          } else {
+              return `${item.gnr[0]}`;
+          }
+      } else if (item.bnr) {
+          if (Array.isArray(item.bnr)) {
+              // Sort bnr to ensure correct range identification
+              const sortedBnr = item.bnr.sort((a, b) => a - b);
+              const ranges = [];
+              let start = sortedBnr[0];
+              let end = start;
 
+              for (let i = 1; i < sortedBnr.length; i++) {
+                  if (sortedBnr[i] === end + 1) {
+                      end = sortedBnr[i];
+                  } else {
+                      if (start === end) {
+                          ranges.push(`${item.gnr}/${start}`);
+                      } else {
+                          ranges.push(`${item.gnr}/${start}-${end}`);
+                      }
+                      start = sortedBnr[i];
+                      end = start;
+                  }
+              }
+
+              // Handle the last range or number
+              if (start === end) {
+                  ranges.push(`${item.gnr}/${start}`);
+              } else {
+                  ranges.push(`${item.gnr}/${start}-${end}`);
+              }
+
+              return ranges.join(', ');
+          } else {
+              return `${item.gnr}/${item.bnr}`;
+          }
+      } else {
+          return `${item.gnr}`;
+      }
+  }).join(', ');
+}
+
+
+const formatAdm = (source: Record<string, any>) => {
+  const {adm1, adm2, adm3} = source
+  return <>{adm3}{adm3 && ' – '}{adm2 && adm2 != adm1 && adm2 + ', '}{adm1}</>
+}
+
+const cadastreAdm = (knr: string, gnr: string, bnr: string, sep: string, source: Record<string,any>, display: string ) => {
+  const { cadastre } = source
+
+
+  const admText = display != 'grouped' ? <>{(source.cadastre || gnr) && gnr != "0" && ', '}{formatAdm(source)}</> : ''
+  if (cadastre) {
+    return <>{!knr && "Gnr" + (cadastre.bnr ? "/Bnr": "") + ": "}{knr}{knr && "-"}{formatCadastre(cadastre)}{admText}</>
+  }
+  if (!gnr || gnr == '0') {
+    return admText
+  }
+  return  <>{!knr && "Gnr" + (bnr ? "/Bnr": "") + ": "}{gnr && knr}{knr && gnr && '-'}{gnr}{bnr && bnr != '0' ? sep + bnr : ''}{admText}</>
+}
 
 
 export const resultRenderers: ResultRenderers = {
@@ -52,29 +122,42 @@ export const resultRenderers: ResultRenderers = {
   },
   sof: {
     title: (hit: any, display: string) => {
-    return <>{defaultTitle(hit)} | {hit._source.rawData?.KommuneNr}{hit._source.rawData?.GardsNr && '-'}{hit._source.rawData?.GardsNr}{hit._source.rawData?.GardsNr && '/'}{hit._source.rawData?.GardsNr}</>
+     // TODO: add kulturkode to the datasets?
+     const placeType = hit._source.placeType?.label
+     if (placeType) {
+        return <>{defaultTitle(hit)} {` (${placeType.toLowerCase()})`}</>
+      }
+      else {
+        return defaultTitle(hit)
+      }
     },
     details: (hit: any, display: string) => {
-      return <>{hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
+      return cadastreAdm(hit._source.rawData?.KommuneNr, hit._source.rawData?.GardsNr, hit._source.rawData?.BruksNr, "/", hit._source, display)
     }
   },
   rygh: {
     title: (hit: any, display: string) => {
       if (display == 'table') return defaultTitle(hit)
-      return <>{defaultTitle(hit)} {hit._source.cadastre && <> | {hit._source.rawData.KNR}-{hit._source.cadastre[0]?.gnr}{hit._source.cadastre[0]?.bnr && '/'}{hit._source.cadastre[0]?.bnr}</> }</>
+      return <>{defaultTitle(hit)}{hit._source.rawData?.Lokalitetstype && ` (${hit._source.rawData?.Lokalitetstype.toLowerCase()})`}</>
     },
     snippet: (hit: any, display: string) => {
       return hit.highlight?.['content.html'][0] && formatHighlight(hit.highlight['content.html'][0])
     },
     details: (hit: any, display: string) => {
-      return loktypeDetails(hit._source.rawData.Lokalitetstype, hit)
+      return cadastreAdm(hit._source.rawData.KNR, hit._source.rawData?.GNR, hit._source.rawData.BNR, "/", hit._source, display)
     }
   },
   leks: {
-    title: defaultTitle,
+    title: (hit: any, display: string) => {
+      if (display == 'table') return defaultTitle(hit)
+      return <>{defaultTitle(hit)}{hit._source.rawData?.Lokalitetstype ? ` (${hit._source.rawData?.Lokalitetstype.toLowerCase()})` : ""}</>
+    },
+    snippet: (hit: any, display: string) => {
+      return hit.highlight?.['content.html']?.[0] && formatHighlight(hit.highlight['content.html']?.[0])
+    },
     details: (hit: any, display: string) => {
-      const loktype = hit._source.rawData.lokalitetstype
-      return <>{loktype}{loktype && ' – '} {hit._source.rawData.Kommune}{hit._source.rawData.Fylke && ', ' + hit._source.rawData.Fylke}  </>
+      return cadastreAdm(hit._source.rawData.KNR, hit._source.rawData?.GNR, hit._source.rawData?.BNR, "/", hit._source, display)
+      
     }
   },
   leks_g: {
@@ -87,17 +170,20 @@ export const resultRenderers: ResultRenderers = {
     }
   },
   bsn: {
-    title: defaultTitle,
-    details: (hit: any, display: string) => {
+    title: (hit: any, display: string) => {
       // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
-      let loktypes = hit._source.rawData?.original?.stnavn?.loktype
+      let loktypes = hit._source.rawData?.stnavn?.loktype
       if (Array.isArray(loktypes)) {
         loktypes = loktypes.map((type: any) => type.type).join(', ')
       }
       else {
         loktypes = loktypes?.type
       }
-      return loktypeDetails(loktypes, hit)
+      return <>{defaultTitle(hit)} {loktypes && ` (${loktypes.toLowerCase()})`}</>
+    },
+    details: (hit: any, display: string) => {
+      
+      return cadastreAdm(hit._source.tmp?.knr, hit._source.rawData?.stnavn?.sted?.gårdsnr, hit._source.rawData?.stnavn?.sted?.bruksnr, "/", hit._source, display)
     }
   },
   hord: {
@@ -111,44 +197,46 @@ export const resultRenderers: ResultRenderers = {
     },
     details: (hit: any, display: string) => {
       const source = hit._source
-      const knr = source.rawData.kommuneNr
-      const gnr = source.rawData.bruka?.bruk?.gardsNr
-      const bnr = source.rawData.bruka?.bruk?.bruksNr
-      const details = [gnr, bnr].filter((v) => v).join('/')
+      
 
-      return  <>{ " " + source.rawData.kommuneNamn + ", " + knr}{details ? ' - ' + details : '' }</>
+      return  cadastreAdm(source.rawData.kommuneNr, source.rawData.bruka?.bruk?.gardsNr, source.rawData.bruka?.bruk?.bruksNr, "/", source, display)
     }
   },
   nbas: {
-    title: defaultTitle,
+    title: (hit: any, display: string) => {
+      if (display == 'table') return defaultTitle(hit)
+      return <>{defaultTitle(hit)}{hit._source.sosi && <>&nbsp;{`(${hit._source.sosi})`}</>}</>
+    },
     details: (hit: any, display: string) => {
-      return loktypeDetails(hit._source.rawData?.lokalitetstype_sosiype, hit)
+      return formatAdm(hit._source)
     }
   },
   m1838: {
     title: (hit: any, display: string) => {
-      return <>{defaultTitle(hit)} | {hit._source.rawData?.KNR}-{hit._source.rawData?.MNR}{hit._source.rawData?.LNR && '.'}{hit._source.rawData?.LNR}</>
+      return <>{defaultTitle(hit)}{hit._source.sosi && <>&nbsp;{`(${hit._source.sosi})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return loktypeDetails(hit._source.rawData?.Lokalitetstype, hit)
+      return cadastreAdm(hit._source.rawData.KNR, hit._source.rawData?.MNR, hit._source.rawData?.LNR, ".", hit._source, display)
     }
   },
   m1886: {
     title: (hit: any, display: string) => {
       if (display == 'table') return defaultTitle(hit)
-      return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
+        return <>{defaultTitle(hit)}{hit._source.sosi && <>&nbsp;{`(${hit._source.sosi})`}</>}</>
+      //return <>{defaultTitle(hit)} {hit._source.sosi && (" | " + hit._source.sosi[0].toUpperCase() + hit._source.sosi.slice(1))}</>
     },
     details: (hit: any, display: string) => {
-      return loktypeDetails(hit._source.sosi && (hit._source.sosi[0].toUpperCase() + hit._source.sosi.slice(1)), hit)
+      return cadastreAdm(hit._source.rawData?.knr, hit._source.rawData?.gnr, hit._source.rawData?.bnr, "/", hit._source, display)
     }
   },
   mu1950: {
     title: (hit: any, display: string) => {
-      if (display == 'table') return defaultTitle(hit)
-      return <>{defaultTitle(hit)} | {hit._source.rawData?.knr}-{hit._source.rawData?.gnr}{hit._source.rawData?.bnr && '/'}{hit._source.rawData?.bnr}</>
+      if (display == 'table') return defaultTitle(hit) 
+      return <>{defaultTitle(hit)}{hit._source.sosi && <>&nbsp;{`(${hit._source.sosi})`}</>}</>
+      //return <>{defaultTitle(hit)} {hit._source.sosi && (" | " + hit._source.sosi[0].toUpperCase() + hit._source.sosi.slice(1))}</>
     },
     details: (hit: any, display: string) => {
-      return loktypeDetails(hit._source.sosi && (hit._source.sosi[0].toUpperCase() + hit._source.sosi.slice(1)), hit)
+      return cadastreAdm(hit._source.rawData?.KNR || hit._source.knr, hit._source.rawData?.GNR, hit._source.rawData?.BNR, "/", hit._source, display)
     }
   },
   skul: {
@@ -166,7 +254,7 @@ export const resultRenderers: ResultRenderers = {
     details: (hit: any, display: string) => {
       // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
 
-      return <>{hit._source.adm2}, {hit._source.adm1}, {hit._source.rawData.GNID} </>
+      return <> {hit._source.rawData.GNID}{hit._source.rawData.GNID && ", "}{formatAdm(hit._source)}</>
     }
   },
   
