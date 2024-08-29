@@ -118,10 +118,10 @@
               size="1.2em"
               class="mr-1 mb-[4px]"
               :class="{
-                'text-green-600': data.reminderCalc < 0,
+                'text-green-600': data.reminderCalc <= 0,
                 'text-yellow-400':
                   data.reminderCalc < reportReminder.interval.error &&
-                  data.reminderCalc > 0,
+                  data.reminderCalc >= 0,
                 'text-red-500':
                   data.reminderCalc > reportReminder.interval.error,
               }"
