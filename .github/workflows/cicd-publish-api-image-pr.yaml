@@ -1,8 +1,6 @@
 name: Publish container image for API using PR head commit SHA as an image tag during PR
 
-on:
-  workflow_dispatch: # run manually
-#  pull_request: # run on pull requests # TODO: remove this line
+on: workflow_dispatch # run maually
 
 env:
   REGISTRY: ghcr.io
