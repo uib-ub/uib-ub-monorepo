@@ -1,11 +1,11 @@
 <template>
   <div ref="wrapper">
-    <div ref="topWrapper" class="flex flex-wrap gap-x-2 md:flex-nowrap">
+    <div ref="topWrapper">
       <div class="flex flex-wrap gap-x-1 gap-y-1 lg:flex-nowrap">
         <div
           v-for="domain in Object.keys(domainData)"
           :key="domain"
-          class="group flex"
+          class="group flex min-h-[2.3em]"
         >
           <input
             :id="domain"
@@ -25,14 +25,14 @@
             }"
             @click="updateTopdomain(domain)"
           >
-            <div class="w-5">
+            <div class="w-5 flex justify-center">
               <Icon
                 v-if="
                   Object.keys(searchInterface.domain).includes(domain) ||
                   noDomain
                 "
                 name="mdi:checkbox-marked-outline"
-                size="1.3em"
+                size="1.2em"
                 :class="{
                   'text-gray-400 group-hover:text-tpblue-400': noDomain,
                 }"
@@ -41,7 +41,7 @@
               <Icon
                 v-else
                 name="mdi:checkbox-blank-outline"
-                size="1.3em"
+                size="1.2em"
                 class="text-tpblue-400"
                 aria-hidden="true"
               />
@@ -50,32 +50,25 @@
           </label>
         </div>
       </div>
-      <button
-        class="tp-transition-shadow group h-full rounded-[7px] border border-gray-300 px-2 outline-none focus:border-tpblue-300 focus:shadow-tphalo"
-        :disabled="noDomain"
-        :class="{
-          'hover:border-gray-300': noDomain,
-          'cursor-pointer hover:border-tpblue-300': !noDomain,
-        }"
-        @click="panel = !panel"
-      >
-        <Icon
-          name="mdi:chevron-down"
-          size="2.2em"
-          class="ml-[-8px] mr-[-8px] text-gray-600"
-          :class="{
-            'text-gray-400 ': noDomain,
-            'group-hover:text-gray-900': !noDomain,
-          }"
-          aria-hidden="true"
-        />
-        <span class="sr-only">{{ $t("searchBar.expandSubdomains") }}</span>
-      </button>
+      <div class="flex justify-center">
+        <button
+          v-if="!noDomain"
+          class="absolute border border-t-white border-gray-300 rounded-b-md bg-white h-[1.1em] mt-[6px] flex justify-center w-16"
+          @click="panel = !panel"
+        >
+          <Icon
+            name="mdi:chevron-down"
+            size="1.6em"
+            class="text-gray-600 mt-[-7px]"
+            aria-hidden="true"
+          />
+        </button>
+      </div>
     </div>
     <div>
       <div
         v-if="panel"
-        class="absolute z-10 grid grid-cols-3 rounded-[7px] border border-gray-300 bg-white shadow-md"
+        class="absolute z-10 rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-md mt-[6px]"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
         <button
@@ -84,42 +77,46 @@
         >
           <Icon name="material-symbols:close" size="1.4rem" />
         </button>
-        <div
-          v-for="topdomain of panelTopdomains"
-          :key="topdomain"
-          class="px-3 py-2"
-        >
-          <div class="pb-2 text-lg">{{ $t("global.domain." + topdomain) }}</div>
-          <ul>
-            <li
-              v-for="(v, k) of domainData[topdomain].subdomains"
-              :key="k"
-              class=""
-            >
-              <SubdomainEntry
-                v-model="searchInterface.domain"
-                :label="k"
-                :parents="[searchInterface.domain[topdomain] || null]"
-                :topdomain="topdomain"
-              />
-              <ul>
-                <li
-                  v-for="(v, sublabel) of v.subdomains"
-                  :key="sublabel"
-                  class="pl-6"
-                >
-                  <SubdomainEntry
-                    v-model="searchInterface.domain"
-                    :label="sublabel"
-                    :parents="[
-                      searchInterface.domain[k],
-                      searchInterface.domain[topdomain],
-                    ]"
-                  />
-                </li>
-              </ul>
-            </li>
-          </ul>
+        <div class="grid grid-cols-3">
+          <div
+            v-for="topdomain of panelTopdomains"
+            :key="topdomain"
+            class="px-3 py-2"
+          >
+            <div class="pb-2 text-lg">
+              {{ $t("global.domain." + topdomain) }}
+            </div>
+            <ul>
+              <li
+                v-for="(v, k) of domainData[topdomain].subdomains"
+                :key="k"
+                class=""
+              >
+                <SubdomainEntry
+                  v-model="searchInterface.domain"
+                  :label="k"
+                  :parents="[searchInterface.domain[topdomain] || null]"
+                  :topdomain="topdomain"
+                />
+                <ul>
+                  <li
+                    v-for="(v, sublabel) of v.subdomains"
+                    :key="sublabel"
+                    class="pl-6"
+                  >
+                    <SubdomainEntry
+                      v-model="searchInterface.domain"
+                      :label="sublabel"
+                      :parents="[
+                        searchInterface.domain[k],
+                        searchInterface.domain[topdomain],
+                      ]"
+                    />
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -129,7 +126,7 @@
 <script setup lang="ts">
 const panel = ref();
 const wrapper = ref(null);
-const topWrapper = ref(null);
+const topWrapper = ref();
 const searchInterface = useSearchInterface();
 const domainData = useDomainData();
 

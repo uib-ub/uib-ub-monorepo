@@ -11,9 +11,9 @@
         style="top: -52px"
       />
     </div>
-    <div v-if="context === 'full'" class="flex px-4 xl:pl-0">
+    <div v-if="context === 'full'" class="flex px-4 xl:pl-0 w-full">
       <SideBar class="w-0" />
-      <div>
+      <div class="w-full max-w-6xl">
         <HeaderSearchOptions />
         <HeaderSearchScope />
       </div>
