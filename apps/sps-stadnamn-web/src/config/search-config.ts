@@ -91,8 +91,11 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
         
       ],
       mu1950: [
-        {key: "rawData.eigar", label: "Eigar"},
-        {key: "rawData.koordinattype", label: "Koordinattype"}
+        {key: "sosi", label: "Lokalitetstype"},
+        {key: "rawData.Koordinattype", label: "Koordinattype"},
+        {key: "rawData.Eigar", label: "Eigar", table: true},
+        {key: "rawData.Mark", label: "Skyldmark", table: true},
+        {key: "rawData.Øre", label: "Skyldøre", table: true},
       ],
       m1838: [
         {key: "rawData.MNR", label: "Matrikkelnummer"},
