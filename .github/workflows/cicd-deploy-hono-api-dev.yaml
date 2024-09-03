@@ -37,7 +37,7 @@ jobs:
           NAMESPACE=$(kubectl get namespaces -o jsonpath="{.items[?(@.metadata.name=='hono-api-dev')].metadata.name}")
           if [ -z "$NAMESPACE" ]; then
             echo "Namespace $NAMESPACE does not exist. Creating namespace..."
-            kubectl apply -f microk8s-hono-api/hono-api-dev/namespace.yaml
+            kubectl apply -f k8s-hono-api/hono-api-dev/namespace.yaml
           else
             echo "Namespace $NAMESPACE already exists. Skipping creation."
           fi
@@ -103,7 +103,7 @@ jobs:
             kubectl rollout restart deployment "$DEPLOYMENT_NAME" -n "$NAMESPACE"
           else
             echo "Deployment $DEPLOYMENT_NAME does not exist. Applying deployment..."
-            kubectl apply -k microk8s-hono-api/hono-api-dev -n "$NAMESPACE"
+            kubectl apply -k k8s-hono-api/hono-api-dev -n "$NAMESPACE"
           fi
 
       - name: Wait For Deployment To Start
