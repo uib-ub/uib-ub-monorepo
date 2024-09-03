@@ -38,7 +38,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 
 # Install dependencies without audit to speed up the process
-RUN npm ci --no-audit --no-fund
+RUN npm ci --no-audit --no-fund --verbose
 
 # Copy build artifacts
 COPY --from=builder /app/out/full/ .
