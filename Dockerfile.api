@@ -50,7 +50,10 @@ RUN tar -czf app.tar.gz . && rm -rf /app/*
 # FROM bun image AS runner stage to run the application
 FROM oven/bun:${BUN_VERSION}-alpine AS runner
 
-RUN apk add --no-cache curl bash
+# Install bash and curl (if required)
+RUN apk update && \
+    apk add --no-cache bash curl && \
+    rm -rf /var/cache/apk/*
 
 # Set working directory
 WORKDIR /app
@@ -60,9 +63,6 @@ RUN addgroup --system honojs && \
   adduser --system --ingroup honojs honojs --uid 1001
 
 USER honojs
-
-# Copy application from the installer stage
-# COPY --from=installer /app .
 
 # Copy the compressed application from the installer stage and decompress
 COPY --from=installer /app/app.tar.gz ./
