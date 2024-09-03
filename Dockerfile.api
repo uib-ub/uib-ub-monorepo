@@ -38,14 +38,23 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 
 # Install dependencies without audit to speed up the process
-RUN npm install --no-audit
+RUN npm install --no-audit --no-fund
 
 # Copy build artifacts
 COPY --from=builder /app/out/full/ .
 COPY --from=builder /app/turbo.json ./turbo.json
 
-# Compress build artifacts to optimize the copy process
-RUN tar -czf app.tar.gz . && rm -rf /app/*
+# Ensure all file writes are completed before archiving
+RUN sync
+
+# Use a temporary directory to avoid concurrent modifications
+RUN mkdir /tmp/app && cp -r . /tmp/app
+
+# Step to create the archive from the temporary directory
+RUN tar -czf app.tar.gz -C /tmp/app . --verbose
+
+# Cleanup 
+RUN rm -rf /tmp/app
 
 # FROM bun image AS runner stage to run the application
 FROM oven/bun:${BUN_VERSION}-alpine AS runner
@@ -62,10 +71,13 @@ WORKDIR /app
 RUN addgroup --system honojs && \
   adduser --system --ingroup honojs honojs --uid 1001
 
+# Change ownership of the /app directory to the non-root user
+RUN chown -R honojs:honojs /app
+
 USER honojs
 
 # Copy the compressed application from the installer stage and decompress
 COPY --from=installer /app/app.tar.gz ./
-RUN tar -xzf app.tar.gz && rm app.tar.gz
+RUN tar -xzf app.tar.gz --verbose && rm app.tar.gz
 
 CMD ["bun", "run", "./apps/api/src/main.ts"]
