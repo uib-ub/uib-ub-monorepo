@@ -173,7 +173,7 @@ export async function fetchSNID(snid: string) {
 
 // Fetch children of a document in the same index (documents that have the uuid as the value in "within" field)
 export async function fetchCadastralSubunits(dataset: string, uuid: string, fields: string[], sortFields: string[]) {
-    'server'
+    'use server'
     const query = {
         query: {
             term: {
