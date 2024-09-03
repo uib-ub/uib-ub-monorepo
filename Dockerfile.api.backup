@@ -1,13 +1,24 @@
 # Set bun image version
 ARG BUN_VERSION=1.1.8
 
-FROM oven/bun:${BUN_VERSION}-alpine AS base
+# Use node 20 buster as base image
+FROM node:20-buster AS base
 
-# Install bash, curl, and turbo for base, then clean up
-RUN apk update && \
-  apk add --no-cache bash curl nodejs && \
-  bun install -g turbo@latest && \
-  rm -rf /var/cache/apk/*
+# Install bash and turbo for base, then clean up
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends bash curl && \
+  npm install -g turbo@latest && \
+  apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Bun for base
+RUN curl -fsSL https://bun.sh/install | bash && \
+  mv /root/.bun/bin/bun /usr/local/bin/ && \
+  rm -rf /root/.bun
+
+# Ensure Bun environment
+ENV PATH="/usr/local/bin:$PATH"
+# Check Bun installation
+RUN bun -v
 
 # Set working directory for base
 WORKDIR /app
@@ -21,17 +32,20 @@ RUN turbo prune api --docker
 
 # Installer stage to set up environment
 FROM base AS installer
-
+COPY --from=builder /app/.gitignore ./.gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 
 # Install dependencies without audit to speed up the process
+# RUN npm ci --production --no-audit --no-fund --verbose
 RUN bun install 
 
 # Copy build artifacts
 COPY --from=builder /app/out/full/ .
 COPY --from=builder /app/turbo.json ./turbo.json
+
+RUN pwd && ls -lat /app
 
 # FROM bun image AS runner stage to run the application
 FROM oven/bun:${BUN_VERSION}-alpine AS runner
@@ -54,5 +68,7 @@ USER honojs
 COPY --from=installer /app/node_modules ./node_modules
 COPY --from=installer /app/apps ./apps
 COPY --from=installer /app/packages ./packages
+
+RUN pwd && ls -lath /app
 
 CMD ["bun", "run", "./apps/api/src/main.ts"]
