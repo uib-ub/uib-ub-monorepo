@@ -8,7 +8,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import TableExplorer from './_table/table'
 
 
-export default function SearchView() {
+export default function ViewPage() {
     const { mapBounds, isLoading, searchError, resultData } = useContext(SearchContext)
     const params = useParams()
     const [docs, setDocs] = useState<any>(null)

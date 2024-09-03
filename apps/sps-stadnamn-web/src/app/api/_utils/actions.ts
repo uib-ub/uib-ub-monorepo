@@ -201,3 +201,48 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
     return await postQuery(dataset, query)
     
 }
+
+
+
+export async function fetchCadastralView (dataset: string, groupBy: string | undefined, parents: Record<string, string>) {
+    'use server'
+    const filters = parents ? Object.entries(parents).filter(([key, value]) => ["adm1", "adm2", "adm3"].includes(key)).map(([key, value]) => ({ term: { [key + ".keyword"]: value } })) : [];
+    const query = {
+        size: groupBy ? 0 : 30,
+        query: {
+
+            bool: {
+                must: [
+                    { match: { sosi: 'gard' } }
+                    // Add conditions here to ensure no deeper level of aggregation.
+                    // This might involve 'must_not' clauses to exclude documents with certain fields or structures.
+
+                ],
+                filter: filters
+            }
+        },
+        fields: ["label", "uuid", "cadastre.gnr", "location"],
+        ...groupBy ? {
+            aggs: {
+            unique_values: {
+                terms: {
+                    field: groupBy + ".keyword",
+                    size: 500
+                }
+            }
+        }} : {},
+        sort: groupBy ? [{ "knr.keyword": { order: "asc" } }] : [{
+            "cadastre.gnr": {
+                order: "asc",
+                nested: {
+                    path: "cadastre"
+                }
+            }
+        }],
+        _source: false
+    };
+
+    return await postQuery(dataset, query)
+
+
+    }

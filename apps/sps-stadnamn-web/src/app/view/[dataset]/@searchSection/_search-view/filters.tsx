@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import ClientFacet from '../client-facet';
-import ServerFacet from '../server-facet';
+import ClientFacet from './_facets/client-facet';
+import ServerFacet from './_facets/server-facet';
 import { PiCaretDown, PiCaretUp, PiX, PiTrashFill } from 'react-icons/pi';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
@@ -9,7 +9,7 @@ import IconButton from '@/components/ui/icon-button';
 import { facetConfig } from '@/config/search-config';
 import { contentSettings } from '@/config/server-config';
 import { datasetTitles } from '@/config/metadata-config';
-import BooleanFacet from '../bool-facet';
+import BooleanFacet from './_facets/bool-facet';
 
 
 export default function Facets() {

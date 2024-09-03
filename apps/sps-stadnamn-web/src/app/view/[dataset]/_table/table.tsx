@@ -8,8 +8,8 @@ import { useQueryStringWithout } from '@/lib/search-params'
 import { facetConfig } from '@/config/search-config'
 import { contentSettings } from '@/config/server-config';
 import SortButton from './SortButton'
-import ResultRow from '../@searchSection/ResultRow'
-import GroupedChildren from '../@searchSection/grouped-children'
+import ResultRow from '@/components/results/ResultRow'
+import GroupedChildren from '../../../../components/results/grouped-children'
 
 
 export default function TableExplorer() {

@@ -18,7 +18,8 @@ export default function MapExplorer(props) {
   const params = useParams()
   const router = useRouter()
   const pathname = usePathname()
-  const mapQueryString = useQueryStringWithout(["docs", "popup", "expanded", "search", "size", "page", "sort"])
+  const treeMapQueryString = searchParams.get('display') == 'tree' ? `${searchParams.get('adm1') ? "adm=" : ""}${["adm3", "adm2", "adm1"].filter(item => searchParams.get(item)).map(item => searchParams.get(item)).join("__")}` : null
+  const mapQueryString =  useQueryStringWithout(["docs", "popup", "expanded", "search", "size", "page", "sort"])
   const controllerRef = useRef(new AbortController());
   const selectedMarker = useRef(null);
   const [layerControlCollapsed, setLayerControlCollapsed] = useState(true);
@@ -91,7 +92,7 @@ export default function MapExplorer(props) {
       const bottomRightLng = leafletBounds ? leafletBounds.getNorthEast().lng : props.mapBounds[1][1];
 
       // Fetch data based on the new bounds
-      const queryParams = mapQueryString
+      const queryParams = treeMapQueryString !== null ? treeMapQueryString : mapQueryString
       const query = `/api/geo?dataset=${params.dataset}&${ queryParams?
                                             queryParams + "&" : ""
                                             }topLeftLat=${
@@ -128,7 +129,7 @@ export default function MapExplorer(props) {
       );
 
     }
-  }, [props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading]);
+  }, [props.mapBounds, leafletBounds, mapQueryString, treeMapQueryString, params.dataset, props.isLoading]);
 
   // Fit map to bounds when searching
   useEffect(() => {

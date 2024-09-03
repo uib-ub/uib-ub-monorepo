@@ -31,7 +31,7 @@ export interface ContentSettingsItem {
       display: 'table',
     },
     m1838: {
-      display: 'table',
+      display: 'map',
       adm: 2,
       cadastre: false, // Old cadastral system and messy data
       sort: ["_score", "cadastreSort.mnr", "cadastreSort.mnrLetter", "cadastreSort.lnr", "cadastreSort.lnrLetter"]
@@ -75,6 +75,11 @@ export interface ContentSettingsItem {
       display: 'map',
       adm: 3,
       cadastre: true
+    },
+    ssr2016: {
+      display: 'map',
+      adm: 2,
+      cadastre: false // not cleaned yet
     },
   }
 

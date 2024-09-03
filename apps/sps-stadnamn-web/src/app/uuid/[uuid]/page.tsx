@@ -6,7 +6,7 @@ import { infoPageRenderers } from '@/config/info-renderers'
 import OriginalData from '@/app/view/[dataset]/doc/[uuid]/original-data'
 import Link from 'next/link'
 import { PiDatabaseFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi'
-import GroupedChildren from '@/app/view/[dataset]/@searchSection/grouped-children'
+import GroupedChildren from '@/components/results/grouped-children'
 import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
 import CopyLink from '@/app/view/[dataset]/doc/[uuid]/CopyLink'
 

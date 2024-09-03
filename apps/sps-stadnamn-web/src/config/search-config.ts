@@ -16,10 +16,10 @@ export interface FacetConfigItem {
  
 
 export const fieldConfig: Record<string, FieldConfigItem[]> = {
-    search: [
+    /* search: [
       {key: "label", label: "Namn"},
       {key: "description", label: "Beskriving"},
-    ],
+    ], */
     hord: [
       {key: "label", label: "Namn"},
       {key: "rawData.merknader", label: "Merknader"},

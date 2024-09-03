@@ -1,10 +1,11 @@
+'use client'
 import { useContext } from "react";
 import SearchBar from "../SearchBar";
 import { SearchContext } from '@/app/search-provider'
 import Filters from "./filters";
 import { useSearchParams, useRouter, useParams } from "next/navigation";
 import { useQueryStringWithout } from "@/lib/search-params";
-import Results from "../results";
+import Results from "./results";
 
 
 export default function SearchView() {

@@ -279,6 +279,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   mu1950: (source: any) => {
     return <>
     { source.sosi != 'gard' ?
+    <>
+    Bruk under <Link href={`/view/mu1950/doc/${source.within}`}>{source.rawData.Gardsnamn}</Link>
     <InfoBox dataset={'mu1950'} 
               items={[
       {title: 'Stadnamn', value: source.label},
@@ -289,6 +291,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Bruksnummer', value: source.rawData?.BNR},
       {title: 'GNIDu', value: source.gnidu},
     ]}/>
+    </>
     : <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} uuid={source.uuid}/> }
 
     </>
