@@ -20,7 +20,9 @@ const {adm1, adm2 } = searchParams
 const groupBy = adm1 ? adm2 ? undefined : 'adm2' : 'adm1'
 const parents = Object.entries(searchParams).reduce<Record<string, string>>((acc, [key, value]) => {
   if (["adm1", "adm2", "adm3"].includes(key) && key !== groupBy) {
-    acc[key] = value;
+    // Ensure value is treated as a string, taking the first element if it's an array
+    const stringValue = Array.isArray(value) ? value[0] : value;
+    acc[key] = stringValue;
   }
   return acc;
 }, {});
