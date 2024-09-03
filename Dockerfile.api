@@ -4,17 +4,17 @@ ARG BUN_VERSION=1.1.8
 # Use node 20 buster as base image
 FROM node:20-buster AS base
 
-# Install bash for base and clean cache for smaller image
+# Install bash and turbo for base, then clean up
 RUN apt-get update && \
-  apt-get install -y bash && \
-  apt-get clean
-
-# Install turbo for base
-RUN npm install -g turbo@latest
+  apt-get install -y --no-install-recommends bash curl && \
+  npm install -g turbo@latest && \
+  apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Bun for base
 RUN curl -fsSL https://bun.sh/install | bash && \
-  mv /root/.bun/bin/bun /usr/local/bin/
+  mv /root/.bun/bin/bun /usr/local/bin/ && \
+  rm -rf /root/.bun
+
 # Ensure Bun environment
 ENV PATH="/usr/local/bin:$PATH"
 # Check Bun installation
@@ -47,8 +47,7 @@ COPY --from=builder /app/turbo.json ./turbo.json
 # FROM bun image AS runner stage to run the application
 FROM oven/bun:${BUN_VERSION}-alpine AS runner
 
-RUN apk update && \
-  apk add --no-cache curl bash
+RUN apk add --no-cache curl bash
 
 # Set working directory
 WORKDIR /app
