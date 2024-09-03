@@ -32,7 +32,6 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     useEffect(() => {
 
             setIsLoading(true)
-            //console.log("FETCHING ", `/api/search?dataset=${params.dataset}${filteredSearchParams ? '&' + filteredSearchParams : ''}`)
             fetch(`/api/search?dataset=${params.dataset}${filteredSearchParams ? '&' + filteredSearchParams : ''}`)
                 .then(response => response.json())
                 .then(es_data => {
