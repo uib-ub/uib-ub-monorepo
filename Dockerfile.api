@@ -59,6 +59,10 @@ RUN addgroup --system honojs && \
 USER honojs
 
 # Copy application from the installer stage
-COPY --from=installer /app .
+# COPY --from=installer /app .
+
+# Copy the compressed application from the installer stage and decompress
+COPY --from=installer /app/app.tar.gz ./
+RUN tar -xzf app.tar.gz && rm app.tar.gz
 
 CMD ["bun", "run", "./apps/api/src/main.ts"]
