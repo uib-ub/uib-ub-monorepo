@@ -11,7 +11,7 @@ import TreeView from './_tree-view/tree-view';
 import { repeatingSearchParams } from '@/lib/utils';
 
 
-export default function SearchSection ( { params, searchParams, child }: { params: { dataset: string, uuid: string, manifestId: string }, searchParams: Record<string, string | string[]>, child?: React.ReactNode }) {
+export default function SearchSection ( { params, searchParams, child }: { params: { dataset: string, uuid: string, manifestId: string }, searchParams: Record<string, string | string[]> & { adm1?: string, adm2?: string, adm3: string }, child?: React.ReactNode }) {
 
     //useQueryStringWithout(['docs', 'popup', 'expanded', 'search'])
     let [mainIndex, subindex] = params.dataset.split("_")
