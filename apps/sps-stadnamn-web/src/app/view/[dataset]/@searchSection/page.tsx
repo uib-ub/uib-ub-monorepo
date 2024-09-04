@@ -73,7 +73,7 @@ export default function SearchSection ( { params, searchParams, child }: { param
           <i>
             <PiMagnifyingGlass className="text-xl mr-2" aria-hidden="true"/>
           </i>
-          {Object.keys(searchParams).filter(key => !["display", "search", "docs", "adm1", "adm2", "adm3"].includes(key)).length > 0 ? "Tilbake til søk" : "Søkevisning"}
+          Søk
           </Link>
           
           :
