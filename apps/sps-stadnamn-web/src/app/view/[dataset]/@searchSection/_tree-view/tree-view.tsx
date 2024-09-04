@@ -5,10 +5,8 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { datasetTitles } from '@/config/metadata-config';
 import { fetchCadastralView } from '@/app/api/_utils/actions';
 import { repeatingSearchParams } from '@/lib/utils';
-import CoordinateButton from '@/components/results/coordinateButton';
-import InfoButton from '@/components/results/infoButton';
-import { PiInfoFill } from 'react-icons/pi';
-import IconLink from '@/components/ui/icon-link';
+import TreeViewToolbar from './tree-view-toolbar';
+import { PiCaretRightBold } from 'react-icons/pi';
 
 
 
@@ -56,32 +54,19 @@ const buildAdmUrl = (adm: string) => {
           {cadastralData.aggregations.unique_values.buckets.filter((item: any) => item.key != '_false').map((adm: Record<string, any>) => {
 
             return <li key={adm.key} className="flex flex-col gap-2">
-              <Link href={buildAdmUrl(adm.key)} className="lg:text-lg py-2 px-4">{adm.key}</Link>
+              <Link href={buildAdmUrl(adm.key)} className="lg:text-lg gap-2 px-4 py-2 border-b border-neutral-300 no-underline">{adm.key} <PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/></Link>
             </li>
           })}
           </ul>
           }
         </div>
         {cadastralData?.hits?.hits.map((hit: any) => {
-          return <div key={hit._id} className="flex gap-2 px-4 pb-3 pt-1 border-b border-neutral-300">
-            <div className="lg:text-lg">{hit.fields.cadastre?.map((item: any) => item.gnr.join(", "))}&nbsp;{hit.fields.label}</div>
-            <div className='flex gap-2 ml-auto'>
-
-
-        {hit.fields?.location &&
-          <CoordinateButton doc={hit} iconClass="text-3xl text-neutral-700"/>
-        }
-
-         <IconLink label="Infoside" 
-                   href={`/view/${params.dataset}/doc/${hit.fields.uuid}?${repeatingSearchParams(searchParams).toString()}`}
-                   aria-current={params.uuid && params.uuid == hit.fields.uuid  ? 'page': undefined} 
-                   aria-describedby={"resultText_" + hit.fields.uuid}
-                   className="inline-flex items-center justify-center text-primary-600 group">
-                    <PiInfoFill className={"group-aria-[current=page]:text-accent-800 align-text-bottom text-3xl text-primary-600"}/></IconLink>
-    
-        
-        
-        </div>
+          return <div key={hit._id} className="flex gap-2 px-4 py-2 border-b border-neutral-300">
+            <Link href={`/view/${params.dataset}/doc/${hit.fields.uuid}?${repeatingSearchParams(searchParams).toString()}`} className="lg:text-lg">{hit.fields.cadastre?.map((item: any) => item.gnr.join(", "))}&nbsp;{hit.fields.label}
+            </Link>
+            {true && <div className='flex gap-2 ml-auto'>
+              <TreeViewToolbar hit={hit}/>
+            </div>}
             </div>
         })}
 
