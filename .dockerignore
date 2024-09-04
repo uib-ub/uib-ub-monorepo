@@ -3,10 +3,10 @@ RELEASE.md
 .gitignore
 .github
 .git
-docker-compose.api.yml
+Dockerfile*
+docker-compose*
 .env
 .dockerignore
-Dockerfile.api*
 node_modules
 k8s-hono-api
 .turbo
