@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const { termFilters, filteredParams } = extractFacets(request)
   const dataset = params.dataset// == 'search' ? '*' : params.dataset;
   const { simple_query_string } = getQueryString(filteredParams)
-
+/*
   const facets = ["image", "audio", "location", "cadastre"]
 
  let aggs: Record<string,any>;
@@ -52,4 +52,7 @@ export async function GET(request: Request) {
   const data = await postQuery(dataset, query)
 
   return Response.json(data);
+  */
+ return
+
 }
