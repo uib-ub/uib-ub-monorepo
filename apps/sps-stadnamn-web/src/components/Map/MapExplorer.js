@@ -18,7 +18,7 @@ export default function MapExplorer(props) {
   const params = useParams()
   const router = useRouter()
   const pathname = usePathname()
-  const treeMapQueryString = searchParams.get('display') == 'tree' ? `${searchParams.get('adm1') ? "adm=" : ""}${["adm3", "adm2", "adm1"].filter(item => searchParams.get(item)).map(item => searchParams.get(item)).join("__")}` : null
+  const treeMapQueryString = searchParams.get('display') == 'tree' ? `sosi=gard&${searchParams.get('adm1') ? "&adm=" : ""}${["adm3", "adm2", "adm1"].filter(item => searchParams.get(item)).map(item => searchParams.get(item)).join("__")}` : null
   const mapQueryString =  useQueryStringWithout(["docs", "popup", "expanded", "search", "size", "page", "sort"])
   const controllerRef = useRef(new AbortController());
   const selectedMarker = useRef(null);
