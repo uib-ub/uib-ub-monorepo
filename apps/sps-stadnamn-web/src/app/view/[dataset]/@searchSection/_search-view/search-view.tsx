@@ -26,11 +26,13 @@ export default function SearchView() {
         router.push(`/view/${params.dataset}?${formParams}${searchParams.get('display') == 'table' ? '&display=table' : ''}`)
         }
 
-    return <>
+    return (
+      <div id="collapsibleSearch" className={`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
     <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
       <SearchBar/>
       { !searchError && <Filters/> }
     </form>            
       { searchParams.get('display') != 'table' && resultData && filteredParamsWithoutSort ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
-    </>
+      </div>
+      )
 }

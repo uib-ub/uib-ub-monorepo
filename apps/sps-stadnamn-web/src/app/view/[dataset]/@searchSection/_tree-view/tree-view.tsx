@@ -5,8 +5,9 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { datasetTitles } from '@/config/metadata-config';
 import { fetchCadastralView } from '@/app/api/_utils/actions';
 import { repeatingSearchParams } from '@/lib/utils';
-import TreeViewToolbar from './tree-view-toolbar';
+import TreeViewResults from './tree-view-results';
 import { PiCaretRightBold } from 'react-icons/pi';
+import { contentSettings } from '@/config/server-config';
 
 
 
@@ -38,8 +39,8 @@ const buildAdmUrl = (adm: string) => {
   return `/view/${params.dataset}?${newParams.toString()}`
 }
 
-    return <section className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
+    return <section className="flex flex-col gap-4 scroll-container">
+     
         {adm1 && 
           <div className="px-4 py-2">
             <Breadcrumbs 
@@ -48,31 +49,28 @@ const buildAdmUrl = (adm: string) => {
                         parentUrl={[`/view/${params.dataset}?display=tree`, ...parentsUrls]} />
           </div>}
 
-        <div className="flex flex-col gap-2">
-          {cadastralData?.aggregations?.unique_values?.buckets?.length &&
-          <ul className="pb-16">
-          {cadastralData.aggregations.unique_values.buckets.filter((item: any) => item.key != '_false').map((adm: Record<string, any>) => {
+
+          {cadastralData?.aggregations?.adm?.buckets?.length &&
+          <ul className="flex-col gap-2 overflow-y-auto stable-scrollbar">
+          {cadastralData.aggregations.adm.buckets
+                  .filter((item: any) => item.key != '_false')
+                  .sort((a: any, b: any)=> a.knr.buckets[0].key.localeCompare(b.knr.buckets[0].key))
+                  .map((adm: Record<string, any>) => {
 
             return <li key={adm.key} className="flex flex-col gap-2">
-              <Link href={buildAdmUrl(adm.key)} className="lg:text-lg gap-2 px-4 py-2 border-b border-neutral-300 no-underline">{adm.key} <PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/></Link>
+              <Link href={buildAdmUrl(adm.key)} className="lg:text-lg gap-2 px-4 mx-2 py-2 border-b border-neutral-300 no-underline">{contentSettings[params.dataset].tree?.knr?.toLowerCase().endsWith('knr') && (adm1 ? adm.knr.buckets[0].key : adm.knr.buckets[0].key.slice(0,2))} {adm.key}<PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/></Link>
             </li>
           })}
           </ul>
           }
-        </div>
-        {cadastralData?.hits?.hits.map((hit: any) => {
-          return <div key={hit._id} className="flex gap-2 px-4 py-2 border-b border-neutral-300">
-            <Link href={`/view/${params.dataset}/doc/${hit.fields.uuid}?${repeatingSearchParams(searchParams).toString()}`} className="lg:text-lg">{hit.fields.cadastre?.map((item: any) => item.gnr.join(", "))}&nbsp;{hit.fields.label}
-            </Link>
-            {true && <div className='flex gap-2 ml-auto'>
-              <TreeViewToolbar hit={hit}/>
-            </div>}
-            </div>
-        })}
+
+        {cadastralData?.hits?.hits?.length ?
+        <TreeViewResults hits={cadastralData.hits.hits}/>
+        : null
+        }
 
 
 
-      </div>
 
     </section>
     

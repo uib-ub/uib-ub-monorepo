@@ -5,12 +5,13 @@ import OriginalData from './original-data'
 import Link from 'next/link'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { fetchDoc } from '@/app/api/_utils/actions'
-import { PiCaretLeftBold, PiDatabaseFill, PiWarningFill, PiX } from 'react-icons/pi'
+import { PiCaretLeftBold, PiDatabaseFill, PiTreeView, PiWarningFill, PiX } from 'react-icons/pi'
 import ErrorMessage from '@/components/ErrorMessage'
 import CoordinateInfo from './coordinate-info'
 import CopyLink from './CopyLink'
 import { datasetTitles } from '@/config/metadata-config'
 import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
+import { repeatingSearchParams } from '@/lib/utils'
 
 export async function generateMetadata( { params }: { params: { dataset: string } }) {
   const doc = await fetchDoc(params)
@@ -107,6 +108,9 @@ export default async function DocumentView({ params, searchParams }: { params: {
           <CopyLink uuid={doc._source.uuid}/> 
           : <div className="flex gap-1 items-center w-full"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
+      {searchParams.display != 'tree' && <Link href={`/view/${params.dataset}/doc/${params.uuid}?display=tree&${repeatingSearchParams(searchParams)}`} className="whitespace-nowrap no-underline">
+        <PiTreeView aria-hidden="true" className="inline"/> Register
+      </Link>}
       </div>
       
       

@@ -3,6 +3,7 @@ export interface ContentSettingsItem {
   adm?: number; // Deepest level of adm
   cadastre?: boolean; // If the dataset contains standardized cadastral data
   sort?: any[]; // Custom sort array
+  tree?: { subunit?: string, sort?: string[], knr?: string, filter?: any, subunitLabel?: string };
 }
 
 
@@ -34,17 +35,27 @@ export interface ContentSettingsItem {
       display: 'map',
       adm: 2,
       cadastre: false, // Old cadastral system and messy data
-      sort: ["_score", "cadastreSort.mnr", "cadastreSort.mnrLetter", "cadastreSort.lnr", "cadastreSort.lnrLetter"]
+      sort: ["_score", "cadastreSort.mnr", "cadastreSort.mnrLetter", "cadastreSort.lnr", "cadastreSort.lnrLetter"],
+      tree: {
+        subunit: "rawData.MNR",
+        subunitLabel: "Matrikkelnummer",
+        sort: ["rawData.Lenke_til_skannet_matrikkel.keyword", "cadastreSort.mnr", "cadastreSort.mnrLetter"],
+        knr: "rawData.Lenke_til_skannet_matrikkel.keyword"
+      }
     },
     m1886: {
       display: 'map',
       adm: 2,
-      cadastre: true
+      cadastre: true,
+      tree: {
+        knr: "rawData.knr.keyword"
+      }
     },
     mu1950: {
       display: 'map',
       adm: 2,
-      cadastre: true
+      cadastre: true,
+      tree: {}
     },
     nbas: {
       display: 'map',

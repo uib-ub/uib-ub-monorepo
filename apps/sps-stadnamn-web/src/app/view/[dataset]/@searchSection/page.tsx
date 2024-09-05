@@ -1,62 +1,25 @@
 
-import { PiInfoFill, PiMagnifyingGlass, PiTreeView } from 'react-icons/pi'
+import { PiInfoFill } from 'react-icons/pi'
 import { datasetTitles } from '@/config/metadata-config'
 import SearchToggle from './SearchToggle'
-import { contentSettings } from '@/config/server-config';
 import SearchView from './_search-view/search-view';
 import IconLink from '@/components/ui/icon-link';
-import Link from 'next/link';
-import React from 'react';
+import React, { Fragment } from 'react';
 import TreeView from './_tree-view/tree-view';
 import { repeatingSearchParams } from '@/lib/utils';
+import TreeViewToggle from './_tree-view/tree-view-toggle';
+import { contentSettings } from '@/config/server-config';
 
 
-export default function SearchSection ( { params, searchParams, child }: { params: { dataset: string, uuid: string, manifestId: string }, searchParams: Record<string, string | string[]> & { adm1?: string, adm2?: string, adm3: string }, child?: React.ReactNode }) {
+export default function SearchSection ( { params, searchParams }: { params: { dataset: string, uuid: string, manifestId: string }, searchParams: Record<string, string | string[]> & { adm1?: string, adm2?: string, adm3: string } }) {
 
-    //useQueryStringWithout(['docs', 'popup', 'expanded', 'search'])
     let [mainIndex, subindex] = params.dataset.split("_")
-    const showSearch = searchParams.search == 'show'
+    
 
-    const backToSearchLink = () => {
-      const newParams = repeatingSearchParams(searchParams)
-      newParams.delete('display')
-      if (contentSettings[params.dataset].display == 'table') {
-        newParams.set('display', 'table')
-      }
-
-
-      const adm = ['adm3', 'adm2', 'adm1'].filter(adm => newParams.has(adm))
-      if (newParams.has('adm')) {
-        adm.forEach(a => newParams.delete(a))
-      }
-      else if (adm.length) {
-        const admValues = adm.map(a => newParams.get(a))
-        newParams.set('adm', admValues.join('__'))
-
-        adm.forEach(a => newParams.delete(a))
-      }
-
-      return `/view/${params.dataset}${newParams.toString() ? '?'+newParams.toString() : ''}`
-    }
-
-    const treeViewLink = () => {
-      
-      const newParams = repeatingSearchParams(searchParams)
-
-      if (newParams.getAll('adm').length == 1) {
-        const adm = newParams.getAll('adm')[0].split('__').reverse()
-        adm.forEach((a, i) => {
-          newParams.set(`adm${i+1}`, a)
-          }
-        )
-      }
-
-      newParams.set('display', 'tree')
-      return  `/view/${params.dataset}${newParams.toString() ? '?'+newParams.toString() : ''}`
-    }
+    
 
     return (
-       <section className={`card flex flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 stable-scrollbar xl:overflow-y-auto w-full relative`} aria-label="Søkepanel">
+       <section className={`card flex flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 ${searchParams.display != 'tree' ? 'stable-scrollbar' : ''} xl:overflow-y-auto w-full relative`} aria-label="Søkepanel">
 
         <div className='px-4 flex flex-wrap gap-y-2'>
           <h1 className='text-xl font-sans font-semibold flex gap-1'>
@@ -68,39 +31,17 @@ export default function SearchSection ( { params, searchParams, child }: { param
                           label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconLink>
             
           </h1>
-          { searchParams.display == 'tree' ?
-          <Link className="btn btn-outline no-underline btn-compact !pl-2 ml-auto" href={backToSearchLink()}>
-          <i>
-            <PiMagnifyingGlass className="text-xl mr-2" aria-hidden="true"/>
-          </i>
-          Søk
-          </Link>
-          
-          :
-          <Link type="button" className="btn btn-outline no-underline btn-compact !pl-2 ml-auto" href={treeViewLink()}>
-          <i>
-            <PiTreeView className="text-xl mr-2" aria-hidden="true"/>
-          </i>
-          Register
-          </Link>
-            
-          }
 
+          { contentSettings[params.dataset as string]?.tree && <TreeViewToggle/> }
             
         </div>
         
-        
-        <div id="collapsibleSearch" className={`${showSearch ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
         {  searchParams.display == 'tree' ? 
             <TreeView params={params} searchParams={searchParams} />
-
-          : <SearchView/>
-            
-          }
-
-        </div>        
+            : <SearchView/>
+        }
+       
         </section>
 
-        
     )
 }

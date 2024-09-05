@@ -259,6 +259,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   m1838: (source: any) => {
     return <>
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
+    { source.sosi == 'gard' &&
+      <CadastralSubdivisions bnrField="rawData.LNR" sortFields={['cadastreSort.lnr', 'cadastreSort.lnrLetter']} dataset={'m1838'} uuid={source.uuid}/>
+    }
     <InfoBox dataset={'m1838'} 
     items={[
       {title: 'Lokalitetstype', value: source.sosi, sosi: true},

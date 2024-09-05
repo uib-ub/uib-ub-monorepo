@@ -1,3 +1,4 @@
+import { contentSettings } from '@/config/server-config'
 import { postQuery } from './post'
 
 const detectEnv = (retry: boolean) => {
@@ -208,39 +209,51 @@ export async function fetchCadastralView (dataset: string, groupBy: string | und
     'use server'
     const filters = parents ? Object.entries(parents).filter(([key, value]) => ["adm1", "adm2", "adm3"].includes(key)).map(([key, value]) => ({ term: { [key + ".keyword"]: value } })) : [];
     const query = {
-        size: groupBy ? 0 : 30,
+        size: groupBy ? 0 : 1000,
         query: {
 
             bool: {
                 must: [
-                    { match: { sosi: 'gard' } }
-                    // Add conditions here to ensure no deeper level of aggregation.
-                    // This might involve 'must_not' clauses to exclude documents with certain fields or structures.
-
+                    { match: contentSettings[dataset].tree?.filter || { sosi: 'gard' } }
                 ],
                 filter: filters
             }
         },
-        fields: ["label", "uuid", "cadastre.gnr", "location"],
+        fields: ["label", "uuid", (contentSettings[dataset].tree?.subunit || "cadastre.gnr"), "location"],
         ...groupBy ? {
             aggs: {
-            unique_values: {
-                terms: {
-                    field: groupBy + ".keyword",
-                    size: 500
+                adm: {
+                    terms: {
+                        field: groupBy + ".keyword",
+                        size: 500,
+                    },
+                    aggs: {
+                        knr: {
+                            terms: {
+                                field: contentSettings[dataset].tree?.knr || "knr.keyword",
+                                size: 1,
+                            }
+                        }
+
+                    }
                 }
             }
-        }} : {},
-        sort: groupBy ? [{ "knr.keyword": { order: "asc" } }] : [{
-            "cadastre.gnr": {
-                order: "asc",
-                nested: {
-                    path: "cadastre"
-                }
-            }
-        }],
+        } : {
+            sort: contentSettings[dataset].tree?.sort ? 
+                contentSettings[dataset].tree?.sort?.map((field: string) => {
+                    return {[field]: {order: "asc"}}
+                })
+                
+
+
+            : [{ "cadastre.gnr": { order: "asc", nested: { path: "cadastre" } } }]
+
+            
+        },
         _source: false
     };
+
+    //console.log("QUERY", JSON.stringify(query, null, 2))
 
     return await postQuery(dataset, query)
 
