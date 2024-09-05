@@ -9,6 +9,7 @@ import CoordinateButton from '@/components/results/coordinateButton';
 import ExternalLinkButton from '@/components/results/externalLinkButton';
 import ImageButton from '@/components/results/imageButton';
 import Link from 'next/link'
+import ResultLink from './resultLink'
 
 
 export default function GroupedChildren({ snid, uuid, childList, landingPage, setExpandLoading}: { snid: string, uuid: string, childList: string[], landingPage?: boolean, setExpandLoading?: any}) {
@@ -69,19 +70,18 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
                     
                     return landingPage ? (
                     <li key={index} className='list-none'>
-                        <Link className="no-underline hover:underline" href={"/uuid/" + doc._source.uuid}>{resultRenderers[docDataset].title(doc, 'grouped')} {resultRenderers[docDataset].details(doc, 'grouped')}</Link>
+                        <ResultLink doc={doc}>{resultRenderers[docDataset]?.title(doc, 'grouped') || docDataset} {resultRenderers[docDataset]?.details(doc, 'grouped')}</ResultLink>
                     </li>
                       )  :
                     (
 
                     <li key={index} className='flex items-center'>
-                        <span>{resultRenderers[docDataset].title(doc, 'grouped')} {resultRenderers[docDataset].details(doc, 'grouped')}</span>
+                        <ResultLink doc={doc}>{resultRenderers[docDataset]?.title(doc, 'grouped')} {resultRenderers[docDataset]?.details(doc, 'grouped')}</ResultLink>
 
                         <span className="space-x-1 mx-2">
                         { doc._source.location && <CoordinateButton doc={doc} iconClass="text-2xl inline" parentUuid={uuid} />}
                         { doc._source.link && <ExternalLinkButton doc={doc} iconClass="text-2xl inline" />}
                         { doc._source.image && <ImageButton doc={doc} iconClass="text-2xl inline" />}
-                        <InfoButton doc={doc} iconClass="text-2xl inline" />
                         </span>
 
                     </li>

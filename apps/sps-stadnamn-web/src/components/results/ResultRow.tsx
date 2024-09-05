@@ -12,6 +12,7 @@ import InfoButton from '@/components/results/infoButton';
 import GroupedChildren from './grouped-children';
 import Spinner from '@/components/svg/Spinner';
 import IconLink from '@/components/ui/icon-link';
+import ResultLink from './resultLink';
 
 
 
@@ -48,7 +49,7 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
 
         <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col gap-4">
         <div className='flex flex-wrap gap-4'>
-        <div className="flex flex-col gap-2" id={"resultText_" + hit._source.uuid}><span>{titleRenderer(hit, display)}{adm && <>{hit.highlight ? hit._source.adm1 && ' | ' : <br/>}{detailsRenderer(hit, display)}</>}</span>
+        <div className="flex flex-col gap-2" id={"resultText_" + hit._source.uuid}><div><ResultLink doc={hit}>{titleRenderer(hit, display)}</ResultLink>{adm && <>{hit.highlight ? hit._source.adm1 && ' | ' : <br/>}{detailsRenderer(hit, display)}</>}</div>
         {(adm || hit.highlight) && <div>
           
           {hit.highlight && snippetRenderer && snippetRenderer(hit, display)}
@@ -95,7 +96,6 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
 
         }
 
-         <InfoButton doc={hit} iconClass="text-3xl text-primary-600" aria-describedby={"resultText_" + hit._source.uuid}/>
         
         
         </div>
