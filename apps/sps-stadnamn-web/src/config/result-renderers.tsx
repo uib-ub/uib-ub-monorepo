@@ -257,6 +257,19 @@ export const resultRenderers: ResultRenderers = {
       return <> {hit._source.rawData.GNID}{hit._source.rawData.GNID && ", "}{formatAdm(hit._source)}</>
     }
   },
+  tot: {
+    title: defaultTitle,
+    details: (hit: any, display: string) => {
+      return <>{hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
+      }
+  },
+  ssr2016: {
+    title: defaultTitle,
+    details: (hit: any, display: string) => {
+      return <>{hit._source.adm2}{hit._source.adm1 && ', ' + hit._source.adm1}</>
+    }
+  },
+
   
   
 }
