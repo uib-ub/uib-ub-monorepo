@@ -2,7 +2,7 @@ import { useState } from 'react';
 import ClientFacet from './_facets/client-facet';
 import ServerFacet from './_facets/server-facet';
 import { PiCaretDown, PiCaretUp, PiX, PiTrashFill } from 'react-icons/pi';
-import { useRouter, useParams, useSearchParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams, usePathname } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 import IconButton from '@/components/ui/icon-button';
@@ -15,7 +15,7 @@ import BooleanFacet from './_facets/bool-facet';
 export default function Facets() {
     const router = useRouter()
     const params = useParams<{dataset: string}>()
-    const searchParams = useSearchParams()
+    const pathname = usePathname()
     const searchQuery = useQueryWithout(['docs', 'popup', 'search', 'manifest', 'field', 'expanded', 'page'])
     const activeFilters = searchQuery.filter(item => item[0][0] != '_' && item[0] != 'q' && item[0] != 'page' && item[0] != 'display' && item[0] != 'asc' && item[0] != 'desc' && item[0] != 'size' && item[0] != 'search')
     const [chipsExpanded, setChipsExpanded] = useState(false);
@@ -53,11 +53,11 @@ export default function Facets() {
 
     const removeFilter = (name: string, value: string) => {      
       const updatedParams = new URLSearchParams(searchQuery.filter(item => item[0] != name || item[1] != value)).toString()
-      router.push(`/view/${params.dataset}${updatedParams ? '?' + updatedParams : '' }`, { scroll: false})
+      router.push(`${pathname}${updatedParams ? '?' + updatedParams : '' }`, { scroll: false})
     }
 
     const clearFilters = () => {
-      router.push(`/view/${params.dataset}${clearedParams ? '?' + clearedParams : ''}`, { scroll: false})
+      router.push(`${pathname}${clearedParams ? '?' + clearedParams : ''}`, { scroll: false})
     }
 
     const toggleFacet = (facet: string) => {
