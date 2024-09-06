@@ -108,9 +108,6 @@ export default async function DocumentView({ params, searchParams }: { params: {
           <CopyLink uuid={doc._source.uuid}/> 
           : <div className="flex gap-1 items-center w-full"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
-      {searchParams.display != 'tree' && <Link href={`/view/${params.dataset}/doc/${params.uuid}?display=tree&${repeatingSearchParams(searchParams)}`} className="whitespace-nowrap no-underline">
-        <PiTreeView aria-hidden="true" className="inline"/> Register
-      </Link>}
       </div>
       
       
