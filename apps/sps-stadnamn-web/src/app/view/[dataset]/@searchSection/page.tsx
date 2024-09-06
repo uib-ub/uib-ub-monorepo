@@ -7,7 +7,6 @@ import React from 'react';
 import { repeatingSearchParams } from '@/lib/utils';
 import TreeViewToggle from './_tree-view/tree-view-toggle';
 import { contentSettings } from '@/config/server-config';
-import ClientDisplay from './client-display';
 import TreeView from './_tree-view/tree-view';
 import SearchView from './_search-view/search-view';
 
