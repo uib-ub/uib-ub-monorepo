@@ -51,13 +51,17 @@ export default function TreeViewResults({hits}: {hits: any}) {
         <>
          <div className="flex gap-2 px-4 py-2">
             {contentSettings[params.dataset].tree?.subunitLabel || 'Gardsnummer'}:
+            <label htmlFor="startRange" className="sr-only">Fra</label>
             <input 
+
                 type="number" 
                 value={startRange} 
                 onChange={(e) => setStartRange(e.target.value)} 
                 placeholder="fra" 
             />
+            <label htmlFor="endRange" className="sr-only">Til</label>
             <input 
+                id="endRange"
                 type="number" 
                 value={endRange} 
                 onChange={(e) => setEndRange(e.target.value)} 
