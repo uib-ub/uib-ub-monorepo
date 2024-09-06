@@ -1,9 +1,8 @@
 'use client'
- 
 import { createContext } from 'react'
 import { useState, useEffect } from 'react';
 import { ResultData } from './types'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useQueryStringWithout } from '@/lib/search-params';
 
 interface SearchContextData {
