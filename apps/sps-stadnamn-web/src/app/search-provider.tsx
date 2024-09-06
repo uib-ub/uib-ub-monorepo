@@ -62,7 +62,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             })
         
         
-      }, [filteredSearchParams, params.dataset])
+      }, [filteredSearchParams, params.dataset, treeParams])
 
   return <SearchContext.Provider value={{resultData, isLoading, mapBounds, searchError}}>{children}</SearchContext.Provider>
 }
