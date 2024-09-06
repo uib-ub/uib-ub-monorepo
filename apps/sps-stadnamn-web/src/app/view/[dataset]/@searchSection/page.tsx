@@ -7,8 +7,7 @@ import React from 'react';
 import { repeatingSearchParams } from '@/lib/utils';
 import TreeViewToggle from './_tree-view/tree-view-toggle';
 import { contentSettings } from '@/config/server-config';
-import TreeView from './_tree-view/tree-view';
-import SearchView from './_search-view/search-view';
+import ClientDisplay from './client-display';
 
 
 export default function SearchSection ( { params, searchParams }: { params: { dataset: string, uuid: string, manifestId: string }, searchParams: Record<string, string | string[]> & { adm1?: string, adm2?: string, adm3: string } }) {
@@ -36,9 +35,7 @@ export default function SearchSection ( { params, searchParams }: { params: { da
             
         </div>
         
-        {searchParams.display == 'tree' ?
-            <TreeView/>
-            : <SearchView/>}
+        <ClientDisplay/>
        
         </section>
 
