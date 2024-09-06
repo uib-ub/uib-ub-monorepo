@@ -70,8 +70,12 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   search: (source: any) => {
     return <>
     {source.attestations && Object.keys(source.attestations).length > 1 && <div>
-    <h3>Historikk</h3>
-    {Timeline(source.attestations, !source.location)}
+    
+    {source.attestations?.length && 
+      <>
+        <h3>Historikk</h3>
+        {Timeline(source.attestations, !source.location)}
+      </>}
     </div>
     }
     
