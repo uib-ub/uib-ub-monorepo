@@ -27,12 +27,19 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const params = useParams()
+    // Treeparams should only get adm1, adm2, adm3 if they exist
+    const searchParams = useSearchParams()
+    const treeParams = searchParams.get('display') == 'tree' && ['adm1', 'adm2', 'adm3']
+    .filter(name => searchParams.get(name))
+    .map(name => `${name}=${searchParams.get(name)}`)
+    .join('&')
     const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded']) // Props not passed to the search API
 
     useEffect(() => {
 
             setIsLoading(true)
-            fetch(`/api/search?dataset=${params.dataset}${filteredSearchParams ? '&' + filteredSearchParams : ''}`)
+            const chosenParams =  treeParams ? treeParams.toString() : filteredSearchParams
+            fetch(`/api/search?dataset=${params.dataset}${chosenParams ? '&' + chosenParams : ''}`)
                 .then(response => response.json())
                 .then(es_data => {
 
