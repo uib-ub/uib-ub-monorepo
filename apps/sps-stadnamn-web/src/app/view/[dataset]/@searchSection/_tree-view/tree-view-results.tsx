@@ -62,7 +62,7 @@ export default function TreeViewResults({hits}: {hits: any}) {
             <label htmlFor="startRange" className="sr-only">Fra</label>
             <input 
                 id="startRange"
-                className="w-20 p-1 border border-neutral-300 rounded-md" 
+                className="w-16 p-1 border border-neutral-300 rounded-sm" 
                 type="number" 
                 value={startRange} 
                 onChange={(e) => setStartRange(e.target.value)} 
@@ -71,7 +71,7 @@ export default function TreeViewResults({hits}: {hits: any}) {
             <label htmlFor="endRange" className="sr-only">Til</label>
             <input 
                 id="endRange"
-                className="w-20 p-1 border border-neutral-300 rounded-md" 
+                className="w-16 p-1 border border-neutral-300 rounded-sm" 
                 type="number" 
                 value={endRange} 
                 onChange={(e) => setEndRange(e.target.value)} 
