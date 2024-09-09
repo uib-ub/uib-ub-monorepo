@@ -176,6 +176,7 @@ export async function fetchSNID(snid: string) {
 export async function fetchCadastralSubunits(dataset: string, uuid: string, fields: string[], sortFields: string[]) {
     'use server'
     const query = {
+        size: 1000,
         query: {
             term: {
                 "within.keyword": uuid
