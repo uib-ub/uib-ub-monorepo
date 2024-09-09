@@ -1,3 +1,4 @@
+# This dockerfile use node image as base and build application with npm which takes long time.
 # Set bun image version
 ARG BUN_VERSION=1.1.8
 
