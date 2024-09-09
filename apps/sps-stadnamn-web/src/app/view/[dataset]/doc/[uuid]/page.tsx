@@ -92,7 +92,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
         {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
         </>
       
-        || doc._source.wikiAdm &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>
+        || doc._source.wikiAdm && docDataset != 'm1838' &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>
           {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
           {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
           {multivalue(doc._source.adm1)}
