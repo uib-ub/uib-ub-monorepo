@@ -5,13 +5,14 @@ import OriginalData from './original-data'
 import Link from 'next/link'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { fetchDoc } from '@/app/api/_utils/actions'
-import { PiCaretLeftBold, PiDatabaseFill, PiTreeView, PiWarningFill, PiX } from 'react-icons/pi'
+import { PiCaretLeftBold, PiDatabaseFill, PiWarningFill, PiX } from 'react-icons/pi'
 import ErrorMessage from '@/components/ErrorMessage'
 import CoordinateInfo from './coordinate-info'
 import CopyLink from './CopyLink'
 import { datasetTitles } from '@/config/metadata-config'
 import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
-import { repeatingSearchParams } from '@/lib/utils'
+import PlaceType from '@/components/ui/place-type'
+import SearchParamsLink from '@/components/ui/search-params-link'
 
 export async function generateMetadata( { params }: { params: { dataset: string } }) {
   const doc = await fetchDoc(params)
@@ -80,6 +81,10 @@ export default async function DocumentView({ params, searchParams }: { params: {
       { docDataset == 'search' && doc._source.snid && <span className="text-neutral-800 self-center">{doc._source.snid} </span> }
       </span>
       <div className="flex flex-wrap gap-4">
+        {
+         doc._source.sosi && <PlaceType sosiCode={doc._source.sosi}/>
+        }
+      {doc._source.within && <SearchParamsLink href={`/view/${params.dataset}/doc/${doc._source.within}`}><span className="sr-only">under </span>{doc._source.cadastre?.gnr || doc._source.rawData.MNR} {doc._source.misc?.gardLabel}</SearchParamsLink>}
         <div className='flex'>
       {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && 
         <>
