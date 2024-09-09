@@ -37,7 +37,7 @@
   "peerDependencies": {
     "@next/font": "^13.0.5",
     "@popperjs/core": "^2.11.6",
-    "class-variance-authority": "^0.3.0",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^1.2.1",
     "next": "latest",
     "next-themes": "latest",
@@ -46,6 +46,8 @@
     "react-portal": "^4.2.2"
   },
   "dependencies": {
-    "react-simple-maps": "^3.0.0"
+    "@radix-ui/react-slot": "^1.1.0",
+    "react-simple-maps": "^3.0.0",
+    "tailwind-merge": "^2.3.0"
   }
 }

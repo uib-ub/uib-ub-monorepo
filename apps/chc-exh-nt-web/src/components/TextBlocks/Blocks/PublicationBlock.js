@@ -1,19 +1,21 @@
-import { Button } from 'tailwind-ui'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/router'
+import { Button } from 'tailwind-ui'
 import { TextBlocks } from '..'
 import SanityImage from '../../SanityImage'
 
 export default function PublicationBlock(props) {
   const { locale, defaultLocale } = useRouter()
+  const t = useTranslations('Blocks')
+
   if (!props || props.disabled === true) {
     return null
   }
 
   const { objectDescription, label, description } = props
-  /*   console.log("🚀 ~ file: GridBlock.js:9 ~ GridBlock ~ items", items) */
 
   return (
-    <div className='my-8 col-start-3 col-end-4'>
+    <div className='my-8 col-start-3 col-end-4 rtl:font-arabic'>
       <div className='flex gap-5'>
         <div className='w-1/4'>
           <SanityImage
@@ -31,8 +33,8 @@ export default function PublicationBlock(props) {
               value={description}
             />
           )}
-          <Button className='self-start'>
-            <a href={objectDescription.file}>{locale === 'no' ? 'Last ned PDF' : 'Download PDF'}</a>
+          <Button variant="destructive" asChild size="lg">
+            <a href={objectDescription.file}>{t('download')} PDF</a>
           </Button>
         </div>
       </div>

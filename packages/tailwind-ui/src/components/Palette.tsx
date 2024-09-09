@@ -1,8 +1,7 @@
-import React from "react";
-import { SwatchIcon } from '@heroicons/react/24/outline'
-import { useRouter } from 'next/router'
+import { SwatchIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/router';
 
-export const Palette = ({ colors }: any) => {
+export const Palette = ({ colors, label }: any) => {
   const { locale } = useRouter()
   if (!colors) return null
 
@@ -20,7 +19,7 @@ export const Palette = ({ colors }: any) => {
     <div>
       <div className='flex gap-1 items-center text-xs font-light dark:text-neutral-200 text-neutral-800 mb-1'>
         <SwatchIcon className='w-5 h-5' />
-        {locale === 'en' ? 'Colour palette' : 'Fargepalett'}
+        {label}
       </div>
       <div className='grid grid-cols-7'>
         {palette.map((color: string, index: number) => (
