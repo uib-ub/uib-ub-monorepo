@@ -5,14 +5,19 @@ import Link from "next/link"
 import { useParams, useSearchParams } from "next/navigation"
 import { contentSettings } from "@/config/server-config";
 import { useEffect, useState } from "react";
+import { useQueryStringWithout } from "@/lib/search-params";
 
 export default function TreeViewResults({hits}: {hits: any}) {
     const params = useParams<{uuid: string; dataset: string}>()
     const searchParams = useSearchParams()
     const subfield = contentSettings[params.dataset].tree?.subunit || 'cadastre.gnr'
     const [startRange, setStartRange] = useState("")
-    const [endRange, setEndRange] = useState("")
-    const selectedDoc = searchParams.get('docs')?.split(',')?.[0]
+    const [endRange, setEndRange] = useState("") 
+    const [clickedDoc, setClickedDoc] = useState<string | null>(null)
+    const selectedDoc = searchParams.get('parent') || searchParams.get('docs')?.split(',')?.[0]
+
+    const linkSearchParams = useQueryStringWithout(['search'])
+
 
     const findNumber = (fields: any): string => {
         
@@ -37,11 +42,14 @@ export default function TreeViewResults({hits}: {hits: any}) {
     });
 
     useEffect(() => {
-        const matchingElement = params.uuid ? document.getElementById(`item-${params.uuid}`) : selectedDoc && document.getElementById(`item-${selectedDoc}`);
+
+        
+        const matchingElement = selectedDoc && document.getElementById(`item-${selectedDoc}`);
         if (matchingElement) {
           matchingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }, [params.uuid, selectedDoc]);
+      
+      }, [selectedDoc]);
       
 
 
@@ -77,8 +85,9 @@ export default function TreeViewResults({hits}: {hits: any}) {
           return <li key={hit._id} 
                      className="flex gap-4 px-4 py-2 border-b border-neutral-300 mx-2"
                      id={`item-${hit.fields.uuid}`}>
-            <Link href={`/view/${params.dataset}/doc/${hit.fields.uuid}?${searchParams.toString()}`} 
-                  aria-current={hit.fields.uuid == params.uuid ? "page" : undefined}
+            <Link href={`/view/${params.dataset}/doc/${hit.fields.uuid}?${linkSearchParams}`} 
+                  onClick={() => setClickedDoc(hit.fields.uuid?.[0])}
+                  aria-current={(hit.fields.uuid == params.uuid || searchParams.get('parent') == hit.fields.uuid || clickedDoc == hit.fields.uuid) ? "page" : undefined}
                   className="no-underline aria-[current=page]:!text-accent-800 aria-[current=page]:underline aria-[current=page]:decoration-accent-800 hover:underline">{findNumber(hit.fields)}&nbsp;<span className="font-semibold">{hit.fields.label}</span>
             </Link>
             {hit.fields?.location && <div className='flex gap-2 ml-auto'>

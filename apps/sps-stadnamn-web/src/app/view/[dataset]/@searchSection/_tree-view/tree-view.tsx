@@ -37,7 +37,7 @@ const buildAdmUrl = (adm: string) => {
   return `/view/${params.dataset}?${newParams.toString()}`
 }
 
-    return <section className="flex flex-col gap-4 scroll-container">
+    return <section className={`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none' : 'hidden xl:flex'} flex flex-col gap-4 scroll-container w-full`} >
      
         {adm1 && 
           <div className="px-4 py-2">

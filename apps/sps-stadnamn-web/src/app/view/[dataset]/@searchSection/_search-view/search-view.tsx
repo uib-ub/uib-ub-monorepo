@@ -27,7 +27,7 @@ export default function SearchView() {
         }
 
     return (
-      <div id="collapsibleSearch" className={`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
+      <div id="collapsibleView" className={`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
     <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
       <SearchBar/>
       { !searchError && <Filters/> }

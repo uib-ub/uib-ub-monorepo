@@ -25,6 +25,7 @@ export default function TreeViewToggle() {
 
     const backToSearchLink = () => {
         const newParams = new URLSearchParams(searchParams)
+        newParams.delete('parent')
         newParams.delete('display')
         if (contentSettings[params.dataset as string].display == 'table') {
           newParams.set('display', 'table')
@@ -70,6 +71,10 @@ export default function TreeViewToggle() {
           }
           if (adm3) {
             newParams.set('adm3', adm3)
+          }
+
+          if (doc._source.within) {
+            newParams.set('parent', doc._source.within)
           }
         }
 

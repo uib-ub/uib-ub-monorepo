@@ -1,10 +1,10 @@
 
 import { fetchCadastralSubunits } from "@/app/api/_utils/actions"
+import SearchParamsLink from "@/components/ui/search-params-link"
 import { facetConfig } from "@/config/search-config"
-import Link from "next/link"
 
 
-export default async function CadastralSubdivisions({bnrField, sortFields, dataset, uuid}: {bnrField: string, sortFields: string[], dataset: string, uuid: string}) {
+export default async function CadastralSubdivisions({bnrField, sortFields, dataset, uuid}: { bnrField: string, sortFields: string[], dataset: string, uuid: string}) {
 
     const fields = facetConfig[dataset].filter((field: Record<string,any>) => field.table && field.key !== bnrField)
 
@@ -28,7 +28,7 @@ export default async function CadastralSubdivisions({bnrField, sortFields, datas
                 <tbody>
                     {subdivisions.hits.hits.map((hit: any) => (
                         <tr key={hit._id}>
-                            <td><Link href={`/view/${dataset}/doc/${hit.fields.uuid}`}>{hit.fields[bnrField]} {hit.fields.label}</Link></td>
+                            <td><SearchParamsLink href={`/view/${dataset}/doc/${hit.fields.uuid}`}>{hit.fields[bnrField]} {hit.fields.label}</SearchParamsLink></td>
                             {fields.map((field: Record<string,any>) => (
                                 <td key={field.key}>{hit.fields[field.key]}</td>
                             ))}
