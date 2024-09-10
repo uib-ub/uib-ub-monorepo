@@ -25,7 +25,7 @@
         <Icon
           name="material-symbols:close"
           size="1.2rem"
-          class="text-gray-700 mt-0.5 border border-white group-hover:border-gray-300 rounded-sm group-hover:bg-gray-200"
+          class="text-gray-600 mt-0.5 border border-white group-hover:border-gray-300 rounded-sm group-hover:bg-gray-100"
         />
       </button>
     </div>
