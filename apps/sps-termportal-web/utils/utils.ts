@@ -155,9 +155,11 @@ export function parseRelationsRecursively(
   newKey: string
 ) {
   if (data?.[startId]?.[relation] && data[startId][relation].length > 0) {
+    const relations = data[startId][relation].slice().reverse();
+
     return Object.assign(
       {},
-      ...data[startId][relation].map((startId: string) => ({
+      ...relations.map((startId: string) => ({
         [startId]: {
           [newKey]: parseRelationsRecursively(data, startId, relation, newKey),
         },
