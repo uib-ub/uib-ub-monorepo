@@ -57,7 +57,7 @@ export const datasetDescriptions: Record<string, string> = {
   skul: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms.",
   sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare.",
   tot: "Totennavn er en samling av navn på garder, bruk, småbruk, forsvunne stedsnavn, skogteiger og jorder fra hele Toten. Materialet baserer seg på kjeldemateriale samlet inn til Norsk stedsnavnarkiv ved Universitetet i Oslo. Arbeidet er utført av Trond Nygård på oppdrag for daværende Seksjon for navnegransking. Prosjektet ble sluttført i 2007. Kartfesting er uført på Språksamlingane i 2024.", 
-  ssr2016: "Sentralt stadnamnregister forvaltes av Kartverket og inneholder offisielle stedsnavn i Norge"
+  ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur."
 }
 
 
@@ -74,7 +74,8 @@ export const publishDates: Record<string, string> = {
   leks_g: "2024-03-27",
   ostf: "2024-05-29",
   sof: "2024-06-13",
-  tot: "2024-08-26"
+  tot: "2024-08-26",
+  ssr2016: "2024-09-10",
 }
 
 
@@ -183,7 +184,15 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
         attribution: "Språksamlingene",
         license: licenses.ccby4,
-      }
+      },
+      ssr2016: {
+        img: "/datasets/SSR2016.jpg",
+        alt: "Kartutsnitt over Kartverket",
+        imageAttribution: "Statens kartverk",
+        attribution: "Statens kartverk og Språksamlingane",
+        license: licenses.ccby4,
+      },
+
 }
 
 export const subpages: Record<string, string[]> = {
@@ -224,7 +233,8 @@ export const datasetFeatures: Record<string, string[]> = {
   leks: ["phonetic", "base"],
   ostf: ["link"],
   sof: ["link", "coordinates", "phonetic"],
-  tot: ["phonetic"]
+  tot: ["phonetic"],
+  ssr2016: ["link"],
 }
 
 export const datasetTypes: Record<string, string[]> = {
@@ -239,7 +249,8 @@ export const datasetTypes: Record<string, string[]> = {
   leks: ["encyclopedia"],
   ostf: ["encyclopedia"],
   sof: ["database"],
-  tot: ["database", "sprak"]
+  tot: ["database", "sprak"],
+  ssr2016: ["database"],
 }
 
 
