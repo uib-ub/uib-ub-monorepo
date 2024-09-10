@@ -201,9 +201,8 @@ export function getAllKeys(obj: Object): string[] {
 export function lalof(key: string): string {
   const lazyLocales = useLazyLocales();
   const locale = useLocale();
-  const localeLen = Object.keys(languageOrder).length;
   const label = languageOrder[locale.value]
-    .slice(0, localeLen)
+    .filter((lc) => Object.keys(languageOrder).includes(lc))
     .map((lc) => lazyLocales.value?.[lc]?.[key])
     .find((value) => value !== undefined);
   return label ?? key;

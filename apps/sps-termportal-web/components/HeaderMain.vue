@@ -24,7 +24,7 @@
       class="w-full pt-0"
       :class="{ 'pt-1': context === 'full' }"
     >
-      <div class="border-x border-b-[1px] border-gray-300 border-x-white"></div>
+      <div class="border-x border-b border-gray-300 border-x-white"></div>
     </div>
   </header>
 </template>

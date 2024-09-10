@@ -1,5 +1,5 @@
 <template>
-  <div ref="wrapper">
+  <div ref="wrapper" class="w-full">
     <div ref="topWrapper">
       <div class="flex flex-wrap gap-x-1 gap-y-1 lg:flex-nowrap">
         <div
@@ -68,7 +68,7 @@
     <div>
       <div
         v-if="panel"
-        class="absolute z-10 rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-md mt-[6px]"
+        class="absolute z-10 max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg mt-[6px]"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
         <button
@@ -77,7 +77,9 @@
         >
           <Icon name="material-symbols:close" size="1.4rem" />
         </button>
-        <div class="grid grid-cols-3">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+        >
           <div
             v-for="topdomain of panelTopdomains"
             :key="topdomain"
