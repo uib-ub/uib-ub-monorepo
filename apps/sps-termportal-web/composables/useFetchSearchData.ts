@@ -71,10 +71,11 @@ export async function useFetchSearchData(options: SearchOptions) {
   // Matomo Events
   pushSearchEvents(options);
 
-  if (situation === "initial") {
-    if (route.path === "/search") {
-      searchFetchInitial.value = true;
-    }
+  if (situation === "initial" && route.path === "/search") {
+    searchFetchInitial.value = true;
+  }
+
+  if (situation === "initial" || situation === "options") {
     searchFilterData.value = searchFilterDataEmpty();
   }
 
