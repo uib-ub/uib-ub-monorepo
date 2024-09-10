@@ -13,6 +13,7 @@ import { datasetTitles } from '@/config/metadata-config'
 import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
 import PlaceType from '@/components/ui/place-type'
 import SearchParamsLink from '@/components/ui/search-params-link'
+import { repeatingSearchParams } from '@/lib/utils'
 
 export async function generateMetadata( { params }: { params: { dataset: string } }) {
   const doc = await fetchDoc(params)
@@ -59,7 +60,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
       <div className={(docDataset == 'search' && doc._source.location) ? "p-4 xl:p-8 bg-white overflow-y-auto space-y-3 xl:space-y-6 instance-info absolute w-full h-1/2 lg:h-full lg:w-1/2 xl:w-1/3 xl:h-auto xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md xl:max-h-2/3"
         : 'mx-2 p-4 lg:p-8 space-y-6 instance-info'
       }>
-        { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+        { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? repeatingSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline inline">
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
           
@@ -69,10 +70,10 @@ export default async function DocumentView({ params, searchParams }: { params: {
         </Link>}
         
         { doc._source.snid && searchParams.expanded && docDataset != 'search' ? 
-          <Link href={`/view/search/doc/${searchParams.expanded}${hasSearchParams ? '?' + new URLSearchParams(searchParams).toString() : ''}`}
+          <Link href={`/view/search/doc/${searchParams.expanded}${hasSearchParams ? '?' + repeatingSearchParams(searchParams).toString() : ''}`}
                 className="no-underline inline">
-            <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-            Tilbake til stadnamnsida
+            <PiArrowUpBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
+            Overordna stadnamnside
             </Link> : null 
         }
         { doc && doc._source && <>
