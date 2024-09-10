@@ -58,7 +58,7 @@ export default function TreeViewResults({hits}: {hits: any}) {
     return (
         <>
          <fieldset className="flex gap-4 px-4 py-2">
-            <legend>{contentSettings[params.dataset].tree?.subunitLabel || 'Gardsnummer'}</legend>
+            <legend className="flex">{contentSettings[params.dataset].tree?.subunitLabel || 'Gardsnummer'}</legend>
             <label htmlFor="startRange" className="sr-only">Fra</label>
             <input 
                 id="startRange"
@@ -80,10 +80,10 @@ export default function TreeViewResults({hits}: {hits: any}) {
         </fieldset>
         
         
-        <ul className="overflow-y-auto stable-scrollbar">
+        <ul className="overflow-y-auto stable-scrollbar border ml-2 border-neutral-300 pt-2">
             {filteredHits.map((hit: any) => {
           return <li key={hit._id} 
-                     className="flex gap-4 px-4 py-2 border-b border-neutral-300 mx-2"
+                     className="flex gap-4 px-2 py-2 border-b border-neutral-300 mx-2"
                      id={`item-${hit.fields.uuid}`}>
             <Link href={`/view/${params.dataset}/doc/${hit.fields.uuid}?${linkSearchParams}`} 
                   onClick={() => setClickedDoc(hit.fields.uuid?.[0])}
