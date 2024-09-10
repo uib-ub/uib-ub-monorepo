@@ -3,6 +3,8 @@ import InfoBox from '@/components/ui/infobox';
 import Link from 'next/link';
 import React from 'react';
 
+import FacetsInfobox from '@/components/ui/facets-infobox';
+
 
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
@@ -263,31 +265,20 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   m1838: (source: any) => {
     return <>
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
+    <div className="flex mt-3 gap-4">
+    <Link href={source.rawData.Lenke_til_skannet_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Skannet matrikkel</Link>
+    <Link href={source.rawData.Lenke_til_digital_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Digital matrikkel</Link>
+    </div>
     { source.sosi == 'gard' &&
       <CadastralSubdivisions bnrField="rawData.LNR" sortFields={['cadastreSort.lnr', 'cadastreSort.lnrLetter']} dataset={'m1838'} uuid={source.uuid}/>
     }
-    <InfoBox dataset={'m1838'} 
-    items={[
-      {title: 'Lokalitetstype', value: source.sosi, sosi: true},
-      {title: 'Prestegjeld', value: source.adm2},
-      {title: 'Amt', value: source.adm1},
-      {title: 'Kommunenummer', value: source.rawData.KNR},
-      {title: 'Matrikkelnummer', items: [{value: source.rawData.MNR, hrefParams: {'rawData.MNR': source.rawData.MNR, 'rawData.KNR': source.rawData.KNR }}]},
-      {title: 'Løpenummer', value: source.rawData.LNR},
-      {title: 'GNIDu', value: source.rawData.GNIDu},
-      {title: 'StedsnavnID', value: source.rawData.SNID}
-
-
-    ]}/>
-
-
+    <FacetsInfobox dataset={'m1838'} source={source}/>
     </>
+
   },
   mu1950: (source: any) => {
     return <>
     { source.sosi != 'gard' ?
-    <>
-    Bruk under <Link href={`/view/mu1950/doc/${source.within}`}>{source.rawData.Gardsnamn}</Link>
     <InfoBox dataset={'mu1950'} 
               items={[
       {title: 'Stadnamn', value: source.label},
@@ -298,7 +289,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Bruksnummer', value: source.rawData?.BNR},
       {title: 'GNIDu', value: source.gnidu},
     ]}/>
-    </>
     : <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} uuid={source.uuid}/> }
 
     </>

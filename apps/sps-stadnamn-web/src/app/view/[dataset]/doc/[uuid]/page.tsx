@@ -105,6 +105,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
       }
       </div>
       
+      
       { docDataset != 'search' &&  params.dataset == 'search' && 
         <span className='self-center'><Link className="no-underline flex gap-1 items-center" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-lg self-center"/>{ datasetTitles[docDataset]}</Link></span>
       }

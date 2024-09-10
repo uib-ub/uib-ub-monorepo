@@ -8,10 +8,9 @@ export default async function PlaceType({ sosiCode }: { sosiCode: string }) {
 
     return (
         data.id ?
-        <Link className="no-underline flex items-center gap-1"
+        <Link className="inline whitespace-nowrap"
             href={data.id}>
         {data.label}
-        <PiLink aria-hidden={true} className="inline text-primary-600"/>
         </Link>
         :
         sosiCode
