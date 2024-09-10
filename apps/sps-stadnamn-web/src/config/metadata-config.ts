@@ -186,7 +186,7 @@ export const datasetPresentation: DatasetPresentation = {
         license: licenses.ccby4,
       },
       ssr2016: {
-        img: "/datasets/SSR2016.jpg",
+        img: "/datasets/ssr2016.png",
         alt: "Kartutsnitt over Kartverket",
         imageAttribution: "Statens kartverk",
         attribution: "Statens kartverk og Språksamlingane",
