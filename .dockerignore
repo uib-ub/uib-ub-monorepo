@@ -1,0 +1,13 @@
+README.md
+RELEASE.md
+.gitignore
+.github
+.git
+Dockerfile*
+docker-compose*
+.env
+.dockerignore
+node_modules
+k8s-hono-api
+.turbo
+out
