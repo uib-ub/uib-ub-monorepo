@@ -57,9 +57,9 @@ export default async function DocumentView({ params, searchParams }: { params: {
           <PiX aria-hidden="true" className='text-neutral-900 inline'/>
           
         </Link>}
-      <div className={(docDataset == 'search' && doc._source.location) ? "p-4 xl:p-8 bg-white overflow-y-auto space-y-3 xl:space-y-6 instance-info absolute w-full h-1/2 lg:h-full lg:w-1/2 xl:w-1/3 xl:h-auto xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md xl:max-h-2/3"
-        : 'mx-2 p-4 lg:p-8 space-y-6 instance-info'
-      }>
+      <div className={(docDataset == 'search' && doc._source.location) ? "bg-white  xl:overflow-y-auto xl:absolute w-full xl:w-1/3 xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md xl:min-h-fit xl:max-h-[calc(100vh-8rem)]"
+        : 'instance-info h-full'
+      }><div className='space-y-3  xl:space-y-6 p-4 xl:p-8 xl:overflow-y-auto h-full instance-info'>
         { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? repeatingSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline inline">
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
