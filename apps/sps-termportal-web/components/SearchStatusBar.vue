@@ -33,11 +33,11 @@
             />
           </div>
         </button>
+      </div>
+      <div class="flex">
         <TransitionOpacity>
           <SpinnerIcon v-if="pending" />
         </TransitionOpacity>
-      </div>
-      <div class="flex">
         <div class="w-16 pr-1 text-right">{{ count }}</div>
         <div>{{ $t("searchFilter.results") }}</div>
       </div>
