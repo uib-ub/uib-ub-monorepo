@@ -203,6 +203,7 @@ export function lalof(key: string): string {
   const locale = useLocale();
   const localeLen = Object.keys(languageOrder).length;
   const label = languageOrder[locale.value]
+    .filter((lc) => !dataDisplayOnlyLanguages.includes(lc))
     .slice(0, localeLen)
     .map((lc) => lazyLocales.value?.[lc]?.[key])
     .find((value) => value !== undefined);
