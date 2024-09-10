@@ -77,9 +77,16 @@ const filterSections = () => {
 
 const displaySection = (key, data) => {
   // don't display language filter if language selected in search interface
+  // or english and lang range included
   if (key === "lang") {
-    return searchInterface.value.language === "all";
-  } else if (key === "matching") {
+    return (
+      searchInterface.value.language === "all" ||
+      (searchInterface.value.language === "en" &&
+        (data.includes("en-gb") || data.includes("en-us")))
+    );
+  }
+  // Don't display matching filter if no matching data, e.g. no search term/all query
+  else if (key === "matching") {
     return data.length !== 0;
   } else {
     return true;

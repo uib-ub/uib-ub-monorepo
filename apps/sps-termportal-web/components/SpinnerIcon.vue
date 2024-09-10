@@ -3,7 +3,7 @@
     <Icon
       class="tp-spin"
       name="icomoon-free:spinner8"
-      size="1.6em"
+      size="1.5em"
       aria-hidden="true"
     />
     <span class="sr-only">{{ $t("spinnerIcon.srText") }}</span>

@@ -47,7 +47,5 @@ export default defineEventHandler(async (event) => {
       delete result["@context"];
       return parseConceptData(result, uri);
     });
-  } catch (e) {
-    // console.log(e)
-  }
+  } catch (e) {}
 });
