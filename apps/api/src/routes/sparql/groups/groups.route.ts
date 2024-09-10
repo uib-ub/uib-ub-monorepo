@@ -1,8 +1,12 @@
 import { DATA_SOURCES } from '@config/constants'
-import { env } from '@config/env'
+import { cleanJsonld } from '@helpers/cleaners/cleanJsonLd'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import executeQuery from '@lib/executeQuery'
+import { sqb } from '@lib/sparqlQueryBuilder'
 import { PaginationParamsSchema, SourceParamsSchema } from '@models'
-import { getGroups } from '@services/sparql/marcus/groups.service'
+import { listSparqlQuery } from '@services/sparql/queries'
+import jsonld, { ContextDefinition } from 'jsonld'
+import ubbontContext from 'jsonld-contexts/src/ubbontContext'
 
 const route = new OpenAPIHono()
 
@@ -35,7 +39,7 @@ export const getList = createRoute({
     },
   },
   description: 'Retrieve a list of groups.',
-  tags: ['Sparql'],
+  tags: ['Sparql', 'Groups'],
 })
 
 route.openapi(getList, async (c) => {
@@ -44,10 +48,12 @@ route.openapi(getList, async (c) => {
   const pageInt = parseInt(page)
   const limitInt = parseInt(limit)
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-  const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
+  const query = sqb(listSparqlQuery, { type: 'crm:E74_Group', types: '<http://xmlns.com/foaf/0.1/Organization> <http://dbpedia.org/ontology/Company> <http://data.ub.uib.no/ontology/Publisher> <http://data.ub.uib.no/ontology/Family>', page: `${pageInt * limitInt}`, limit: `${limitInt}` });
 
-  const data = await getGroups(SERVICE_URL, CONTEXT, pageInt, limitInt)
-  return c.json(data)
+  const result = await executeQuery(query, SERVICE_URL)
+  const data = await jsonld.compact(result, ubbontContext as ContextDefinition)
+
+  return c.json(cleanJsonld(data))
 })
 
 export default route

@@ -5,9 +5,10 @@ import { cleanDateDatatypes } from '@helpers/cleaners/cleanDateDatatypes'
 import { convertToFloat } from '@helpers/cleaners/convertToFloat'
 import { useFrame } from '@helpers/useFrame'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
+import executeQuery from '@lib/executeQuery'
+import { sqb } from '@lib/sparqlQueryBuilder'
 import { ItemParamsSchema, LegacyItemSchema } from '@models'
-import getItemUbbontData from '@services/sparql/marcus/item.service'
-import { manifestService } from '@services/sparql/marcus/manifest.service'
+import { itemSparqlQuery, manifestSparqlQuery } from '@services/sparql/queries'
 import { toIIIFPresentationTransformer, toLinkedArtItemTransformer, toUbbontTransformer } from '@transformers/item.transformer'
 import { HTTPException } from 'hono/http-exception'
 import { ContextDefinition, JsonLdDocument } from 'jsonld'
@@ -45,7 +46,7 @@ route.openapi(getItem, async (c) => {
 
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url;
 
-  let fetcher: Function
+  let query: string
   let transformer: Function
   let schema: ZodSchema
   let type: string
@@ -54,7 +55,7 @@ route.openapi(getItem, async (c) => {
 
   switch (as) {
     case 'la':
-      fetcher = getItemUbbontData;
+      query = sqb(itemSparqlQuery, { id });
       transformer = toLinkedArtItemTransformer
       schema = ZodHumanMadeObjectSchema
       type = 'HumanMadeObject'
@@ -62,14 +63,14 @@ route.openapi(getItem, async (c) => {
       contextString = `${env.API_URL}/ns/ubbont/context.json`
       break;
     case 'ubbont':
-      fetcher = getItemUbbontData;
+      query = sqb(itemSparqlQuery, { id });
       transformer = toUbbontTransformer
       type = 'HumanMadeObject'
       context = ubbontContext as ContextDefinition
       contextString = `${env.API_URL}/ns/ubbont/context.json`
       break;
     case 'iiif':
-      fetcher = manifestService;
+      query = sqb(manifestSparqlQuery, { id });
       transformer = toIIIFPresentationTransformer
       type = 'Manifest'
       context = iiifManifestContext as ContextDefinition
@@ -80,7 +81,7 @@ route.openapi(getItem, async (c) => {
   }
 
   try {
-    const data = await fetcher(id, SERVICE_URL)
+    const data = await executeQuery(query, SERVICE_URL)
     // We clean up the data before compacting and framing
     const fixedDates = cleanDateDatatypes(data)
     const withFloats = convertToFloat(fixedDates)

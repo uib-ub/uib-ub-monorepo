@@ -1,6 +1,6 @@
+import { bulkIndexData } from '@helpers/indexers/bulkIndexData';
 import { chunk } from '@helpers/indexers/chunk';
 import { flatMapDataForBulkIndexing } from '@helpers/indexers/flatMapDataForBulkIndexing';
-import { indexData } from '@helpers/indexers/indexData';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { getSkaAgents } from '@services/sparql/ska/getSkaAgents';
 import { getSkaDocuments } from '@services/sparql/ska/getSkaDocuments';
@@ -13,7 +13,7 @@ interface IndexDataResponse {
 
 const route = new OpenAPIHono();
 
-route.get('/ingest/legacy/ska', async (c) => {
+route.get('/ska', async (c) => {
   const index = "search-legacy-ska"
   try {
     let agentsReport = {}
@@ -26,7 +26,7 @@ route.get('/ingest/legacy/ska', async (c) => {
       agentsReport = await chunkedAgents.reduce(async (accPromise: IndexDataResponse, data: any[]) => {
         const acc = await accPromise; // Resolve the accumulator promise
         const preparedAgents = flatMapDataForBulkIndexing(data, index);
-        const result = await indexData(preparedAgents, index) as IndexDataResponse;
+        const result = await bulkIndexData(preparedAgents, index) as IndexDataResponse;
         return {
           count: acc.count + result.count,
           errors: [
@@ -43,7 +43,7 @@ route.get('/ingest/legacy/ska', async (c) => {
       documentsReport = await chunkedDocuments.reduce(async (accPromise: IndexDataResponse, data: any[]) => {
         const acc = await accPromise; // Resolve the accumulator promise
         const preparedDocuments = flatMapDataForBulkIndexing(data, index);
-        const result = await indexData(preparedDocuments, index) as IndexDataResponse;
+        const result = await bulkIndexData(preparedDocuments, index) as IndexDataResponse;
         return {
           count: acc.count + result.count,
           errors: [
@@ -60,7 +60,7 @@ route.get('/ingest/legacy/ska', async (c) => {
       topicsReport = await chunkedTopics.reduce(async (accPromise: IndexDataResponse, data: any[]) => {
         const acc = await accPromise; // Resolve the accumulator promise
         const preparedTopics = flatMapDataForBulkIndexing(data, index)
-        const result = await indexData(preparedTopics, index) as IndexDataResponse;
+        const result = await bulkIndexData(preparedTopics, index) as IndexDataResponse;
         return {
           count: acc.count + result.count,
           errors: [

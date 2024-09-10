@@ -5,13 +5,13 @@ interface IndexDataResponse {
   errors: string[];
 }
 
-export async function indexData(data: any, indexName: string, pipeline?: string): Promise<IndexDataResponse | string> {
+export async function bulkIndexData(data: any, indexName: string, pipeline?: string): Promise<IndexDataResponse | string> {
   if (data.length === 0) return `No data to ingest into ${indexName}`;
 
   try {
     // @ts-ignore
     const response: BulkIndexResponse = await client.bulk({
-      refresh: true,
+      refresh: 'wait_for',
       body: data,
       pipeline: pipeline ?? undefined
     });

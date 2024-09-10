@@ -1,6 +1,6 @@
 import { env } from '@config/env';
 import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
-import { checkIntervalValidity } from '@helpers/validators/checkIntervalValidity';
+import { checkIntervalValidity } from '@lib/checkIntervalValidity';
 import omitEmptyEs from 'omit-empty-es';
 
 export const constructProduction = (data: any) => {

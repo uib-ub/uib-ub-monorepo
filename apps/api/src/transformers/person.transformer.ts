@@ -4,7 +4,6 @@ import { constructLifetimeTimeSpan } from '@helpers/mappers/la/person/constructL
 import { constructAboutness } from '@helpers/mappers/la/shared/constructAboutness'
 import { constructAssertions } from '@helpers/mappers/la/shared/constructAssertions'
 import { constructDigitalIntegration } from '@helpers/mappers/la/shared/constructDigitalIntegration'
-import { constructHal } from '@helpers/mappers/la/shared/constructHal'
 import { constructIdentifiers } from '@helpers/mappers/la/shared/constructIdentifiers'
 import { constructSubjectTo } from '@helpers/mappers/la/shared/constructSubjectTo'
 import { TBaseMetadata } from '@models'
@@ -38,7 +37,6 @@ export const toLinkedArtPersonTransformer = async (data: any, context: string) =
   data = await constructAboutness(data)
   data = constructAssertions(data)
   data = await constructSubjectTo(base, data)
-  data = constructHal(data)
 
   return data
 }

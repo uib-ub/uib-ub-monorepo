@@ -19,10 +19,10 @@ export const constructAssertions = (data: any) => {
 
   let relationArray: any[] = []
   // TODO: finish this. 
-  let relationToStringArray: any[] = []
+  // let relationToStringArray: any[] = []
 
   if (relation || references) {
-    relationArray = [...relation, ...references].map((relation: any) => {
+    relationArray = [...(relation ?? []), ...(references ?? [])].map((relation: any) => {
       return {
         type: "AttributeAssignment",
         assigned_property: "relation",

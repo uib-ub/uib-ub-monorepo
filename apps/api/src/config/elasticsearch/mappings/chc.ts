@@ -95,6 +95,23 @@ export const chcIdTemplateComponent: IndicesPutIndexTemplateRequest = {
   }
 }
 
+export const chcDataFieldTemplateComponent: IndicesPutIndexTemplateRequest = {
+  "name": "chc-data-field-template-component",
+  "template": {
+    "mappings": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "enabled": false
+        }
+      },
+    }
+  },
+  "_meta": {
+    "description": "Mapping for a data field.",
+  }
+}
+
 export const chcLabelTemplateComponent: IndicesPutIndexTemplateRequest = {
   "name": "chc-label-template-component",
   "template": {

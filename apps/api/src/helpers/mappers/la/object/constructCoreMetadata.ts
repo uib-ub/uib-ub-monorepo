@@ -31,6 +31,8 @@ export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
   delete data.prefLabel // Not allowed on object
   delete data.temporal // Mostly stuff that is in other fields
   delete data.hasClause // Ignore this for now
+  delete data.logo // Logo is not allowed on object
+  delete data['foaf:logo'] // Logo is not allowed on object
 
   const classified_as = [
     {

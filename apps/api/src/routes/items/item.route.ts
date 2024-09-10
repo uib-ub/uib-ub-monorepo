@@ -1,6 +1,33 @@
 import client from '@config/apis/esClient'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 import { FailureSchema, IdParamsSchema, ItemParamsSchema, TODO } from '@models'
+import { toManifestTransformer } from '@transformers/manifest.transformer'
+
+interface Document {
+  [key: string]: any
+}
+
+const desiredOrder: string[] = ['@context', 'id', 'type', '_label', '_available', '_modified', 'identified_by']
+
+function reorderDocument(doc: Document, order: string[]): Document {
+  const reordered: Document = {};
+
+  // First, add all keys from the desired order that exist in the document
+  for (const key of order) {
+    if (key in doc) {
+      reordered[key] = doc[key];
+    }
+  }
+
+  // Then, add any remaining keys from the document
+  for (const key in doc) {
+    if (!order.includes(key)) {
+      reordered[key] = doc[key];
+    }
+  }
+
+  return reordered;
+}
 
 const route = new OpenAPIHono()
 
@@ -39,8 +66,40 @@ route.openapi(getItem, async (c) => {
   const as = c.req.query('as')
 
   if (as === 'iiif') {
+    try {
+      const data: TODO = await client.search({
+        index: [`search-chc-fileset*`, `search-chc-items_*`],
+        query: {
+          match_phrase: {
+            "id": id
+          },
+        }
+      })
+
+      if (data.hits?.total.value === 0) {
+        return c.json({ error: true, message: 'Not found' }, 404)
+      }
+
+      if (data.hits?.total.value > 2) {
+        return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
+      }
+
+      // if the data.hits.hits does not have an object with _index that starts with search-chc-fileset, we respond that this item has not been digitized
+      if (!data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-fileset'))) {
+        return c.json({ error: true, message: 'Item has not been digitized' }, 404)
+      }
+
+      return c.json(await toManifestTransformer(data.hits.hits))
+    } catch (error) {
+      console.error(error)
+      return c.json({ error: true, message: "Ups, something went wrong!" }, 404)
+    }
+  }
+
+  try {
     const data: TODO = await client.search({
-      index: `search-manifests-*`,
+      index: `search-chc-items_*`,
+      ignore_unavailable: true,
       query: {
         match_phrase: {
           "id": id
@@ -56,34 +115,8 @@ route.openapi(getItem, async (c) => {
       return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
     }
 
-    return c.json(data.hits.hits[0]._source.manifest)
-  }
-
-  try {
-    const data: TODO = await client.search({
-      index: `search-chc`,
-      ignore_unavailable: true,
-      query: {
-        match_phrase: {
-          "_id": id
-        },
-      }
-    })
-
-    if (data.hits?.total.value === 0) {
-      return c.json({ error: true, message: 'Not found' }, 404)
-    }
-
-    if (data.hits?.total.value > 1) {
-      return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
-    }
-
     return c.json(data.hits.hits.map((hit: any) => {
-      return Object.keys(hit._source)
-        .sort()
-        .reduce((acc, key) => ({
-          ...acc, [key]: hit._source[key]
-        }), {})
+      return reorderDocument(hit._source as Document, desiredOrder)
     })[0])
   } catch (error) {
     console.error(error)

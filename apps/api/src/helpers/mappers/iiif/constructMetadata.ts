@@ -1,7 +1,6 @@
-import { reduceValuesByLanguage } from '@helpers/reduceValuesByLanguage'
+import { reduceValuesByLanguage } from '@lib/reduceValuesByLanguage'
 
 export function constructMetadata(data: any) {
-  console.log("🚀 ~ constructMetadata ~ data:", data)
   if (!data) return undefined
   const subjectLabelsByLang = data.subject ? reduceValuesByLanguage(data.subject.map((s: any) => s.label)) : undefined
   const spatialLabelsByLang = data.spatial ? reduceValuesByLanguage(data.spatial.map((s: any) => s.label)) : undefined
