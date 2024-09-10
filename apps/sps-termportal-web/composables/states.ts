@@ -35,7 +35,7 @@ export const useDomainData = () =>
     "DOMENE-3ANaturvitenskapTeknologi": {},
     "DOMENE-3AHumaniora": {},
     "DOMENE-3ASamfunnsfag": {},
-    "DOMENE-3AHelse_og_sosial": {},
+    // "DOMENE-3AHelse_og_sosial": {},
     "DOMENE-3AOkonomiAdministrasjon": {},
   }));
 
@@ -95,8 +95,8 @@ export const useDataDisplayLanguages = () =>
     "nb",
     "nn",
     "en",
-    "en-gb",
-    "en-us",
+    // "en-gb",
+    // "en-us",
     "ar",
     "da",
     "de",
