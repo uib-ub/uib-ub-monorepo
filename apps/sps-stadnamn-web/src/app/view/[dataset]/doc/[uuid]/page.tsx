@@ -14,6 +14,7 @@ import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
 import PlaceType from '@/components/ui/place-type'
 import SearchParamsLink from '@/components/ui/search-params-link'
 import { repeatingSearchParams } from '@/lib/utils'
+import ParentButton from './ParentButton'
 
 export async function generateMetadata( { params }: { params: { dataset: string } }) {
   const doc = await fetchDoc(params)
@@ -52,7 +53,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
 
     return (
       <div className="relative h-full w-full">
-        {params.dataset == 'search' && <Link aria-label="Lukk" href={`/view/search?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+        {params.dataset == 'search' && docDataset == 'search' && <Link aria-label="Lukk" href={`/view/search?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline absolute top-5 right-6 z-[2001] text-xl">
           <PiX aria-hidden="true" className='text-neutral-900 inline'/>
           
@@ -60,6 +61,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
       <div className={(docDataset == 'search' && doc._source.location) ? "bg-white  xl:overflow-y-auto xl:absolute w-full xl:w-1/3 xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md xl:min-h-fit xl:max-h-[calc(100vh-8rem)]"
         : 'instance-info h-full'
       }><div className='space-y-3  xl:space-y-6 p-4 xl:p-8 xl:overflow-y-auto h-full instance-info'>
+        <div className='space-x-4'>
         { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? repeatingSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline inline">
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
@@ -69,13 +71,9 @@ export default async function DocumentView({ params, searchParams }: { params: {
           (searchParams.display == 'table' ? 'Vis i tabellen' : 'Vis på kartet')}
         </Link>}
         
-        { doc._source.snid && searchParams.expanded && docDataset != 'search' ? 
-          <Link href={`/view/search/doc/${searchParams.expanded}${hasSearchParams ? '?' + repeatingSearchParams(searchParams).toString() : ''}`}
-                className="no-underline inline">
-            <PiArrowUpBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-            Overordna stadnamnside
-            </Link> : null 
-        }
+        { docDataset != 'search' && <ParentButton uuid={doc._source.uuid} dataset={params.dataset}/>}
+        </div>
+        
         { doc && doc._source && <>
       
       <span className="flex flex-wrap gap-x-8 gap-y-2"><h2>{doc._source.label}</h2>
