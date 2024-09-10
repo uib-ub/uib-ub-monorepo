@@ -1,7 +1,7 @@
 import { DATA_SOURCES } from '@config/constants'
 import { env } from '@config/env'
+import { bulkIndexData } from '@helpers/indexers/bulkIndexData'
 import { flatMapManifestsForBulkIndexing } from '@helpers/indexers/flatMapManifestsForBulkIndexing'
-import { indexData } from '@helpers/indexers/indexData'
 import { resolveManifests } from '@helpers/indexers/resolveManifests'
 import { getItems } from '@services/sparql/marcus/items.service'
 import { Hono } from 'hono'
@@ -10,7 +10,7 @@ import isEmpty from 'lodash/isEmpty'
 
 const route = new Hono()
 
-route.get('/ingest/manifests',
+route.get('/manifests',
   async (c) => {
     const { index, page = '0', limit = '100', source } = c.req.query()
     if (!index || !source) {
@@ -67,8 +67,8 @@ route.get('/ingest/manifests',
         if (!isEmpty(isDigitized)) {
           try {
             const resolved = await resolveManifests(isDigitized, API_URL, IIIF_CONTEXT, type);
-            const preparedData = flatMapManifestsForBulkIndexing(resolved, index!);
-            const indexStatus: any = await indexData(preparedData, index!) ?? 0;
+            const preparedData = flatMapManifestsForBulkIndexing(resolved, index);
+            const indexStatus: any = await bulkIndexData(preparedData, index) ?? 0;
 
             const took = performance.now() - t0;
             totalIndexed += indexStatus.count;

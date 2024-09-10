@@ -1,8 +1,9 @@
 import { cleanJsonld } from '@helpers/cleaners/cleanJsonLd'
-import { sqb } from '@helpers/sparqlQueryBuilder'
+import { sqb } from '@lib/sparqlQueryBuilder'
 import jsonld from 'jsonld'
 import { CONTEXTS } from 'jsonld-contexts'
 import { listItemsSparqlQuery } from '../queries'
+import { getItemData } from './item.service'
 
 export async function getItems(url: string, context: string, page?: number, limit?: number): Promise<any> {
   if (!url) { throw Error }
@@ -27,3 +28,16 @@ export async function getItems(url: string, context: string, page?: number, limi
     throw new Error
   }
 }
+
+export async function resolveItems(ids: any, source: string): Promise<any> {
+  try {
+    const promises = ids.map((item: { id: string, identifier: string }) => getItemData(item.identifier, source)).filter(Boolean);
+    const data = await Promise.all(promises);
+    return data;
+  } catch (error) {
+    // Handle the error here
+    console.error(error);
+    throw error;
+  }
+}
+

@@ -1,4 +1,4 @@
-import { isObjectEmpty } from '@helpers/isObjectEmpty';
+import { isObjectEmpty } from '@lib/isObjectEmpty';
 
 describe('isObjectEmpty', () => {
   test('should return true for an empty object', () => {

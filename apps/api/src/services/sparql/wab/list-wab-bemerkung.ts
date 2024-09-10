@@ -1,5 +1,5 @@
 import { DATA_SOURCES } from '@config/constants'
-import { isObjectEmpty } from '@helpers/isObjectEmpty'
+import { isObjectEmpty } from '@lib/isObjectEmpty'
 
 const WAB_API = DATA_SOURCES.filter((service) => service.name === 'wab')[0].url
 

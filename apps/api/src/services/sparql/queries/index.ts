@@ -78,6 +78,25 @@ export const personOrGroupSparqlQuery = `
   }
 `
 
+export const listFileSetsSparqlQuery = `
+  ${SPARQL_PREFIXES}
+  CONSTRUCT {
+    ?uri a ore:Aggregation ;
+      dct:identifier ?id .
+  } WHERE { 
+    SERVICE <cache:> { 
+      SELECT ?uri ?id WHERE 
+        { 
+          ?uri rdf:type ore:Aggregation ;
+            rdfs:label ?id .
+        }
+      ORDER BY ?id
+      OFFSET %page
+      LIMIT %limit
+    }
+  }
+`
+
 export const listSparqlQuery = `
   ${SPARQL_PREFIXES}
   CONSTRUCT {
@@ -90,6 +109,7 @@ export const listSparqlQuery = `
           VALUES ?types { %types }
           ?uri rdf:type ?types ;
             dct:identifier ?id .
+          FILTER(STRENDS(STR(?uri), ?id))
         }
       ORDER BY ?id
       OFFSET %page
@@ -109,6 +129,7 @@ export const listSubClassOfSparqlQuery = `
           { 
             ?uri rdf:type/rdfs:subClassOf* %types ;
               dct:identifier ?id .
+            FILTER(STRENDS(STR(?uri), ?id))
           }
         ORDER BY ?id
         OFFSET %page
@@ -131,6 +152,7 @@ export const listItemsSparqlQuery = `
             a ?class ;
             ubbont:showWeb true ;
             dct:identifier ?id .
+          FILTER(STRENDS(STR(?uri), ?id))
           BIND(EXISTS{?uri ubbont:hasRepresentation ?repr} AS ?isDigitized)
         }
       ORDER BY ?id
@@ -204,6 +226,7 @@ export const itemSparqlQuery = `
     OPTIONAL { 
       ?uri dct:license / rdfs:label ?licenseLabel .
     }
+    FILTER(STRENDS(STR(?uri), ?id))
     FILTER(?o != ?uri)
     BIND(REPLACE(STR(?class), ".+[/#]([^/#]+)$", "$1") as ?type)
     BIND(iri(REPLACE(str(?uri), "http://data.ub.uib.no","https://marcus.uib.no","i")) as ?homepage)
@@ -292,4 +315,46 @@ export const manifestSparqlQuery = `
     BIND(str(?partXL) AS ?partXLString)
   }
   ORDER BY ?s ?repr ?part ?resource
+`
+
+export const filesetSparqlQuery = `
+  ${SPARQL_PREFIXES}
+  CONSTRUCT { 
+    ?s a ore:Aggregation ;
+      rdfs:label ?id ;
+      dct:hasPart ?singleCanvas ;
+      dct:hasPart ?parts .
+    ?singleCanvas a ubbont:Page ; 
+      rdfs:label "side 1" ;
+      ubbont:sequenceNr 1 ;
+      ubbont:hasResource ?part .
+    ?part ?p2 ?singlePartProps .
+    ?parts rdfs:label ?partsLabel ;
+      ubbont:sequenceNr ?partsSeq ;
+      ubbont:hasResource ?partsResource .
+    ?partsResource ?p3 ?o3 .
+  }
+  WHERE { 
+  VALUES ?id { "%id" }
+    ?s rdfs:label ?id ;
+       a ore:Aggregation .
+    OPTIONAL { 
+      ?s dct:hasPart ?part .
+      ?part ?p2 ?singlePartProps ;
+        a ubbont:DigitalResource .
+      FILTER(?p2 != ubbont:isResourceOf )
+      FILTER(?p2 != rdfs:type )
+    }
+    OPTIONAL { 
+      ?s dct:hasPart ?parts .
+      ?parts a ubbont:Page ;
+         rdfs:label ?partsLabel ;
+         ubbont:sequenceNr ?partsSeq ;
+         ubbont:hasResource ?partsResource .
+       ?partsResource ?p3 ?o3 .
+       FILTER(?p3 != ubbont:isResourceOf )
+       FILTER(?p3 != rdfs:type )
+    }
+    BIND(iri(concat("http://data.ub.uib.no/instance/page/", ?id, "_p1")) AS ?singleCanvas)
+  }
 `

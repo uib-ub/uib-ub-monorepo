@@ -75,3 +75,20 @@ export const DATA_SOURCES = [
 ]
 
 export type DataSource = typeof DATA_SOURCES[number]
+
+export const CHCSEARCHALIAS = "search-chc"
+
+export const INDICIES = {
+  items: 'search-chc-items',
+  people: 'search-chc-people',
+  places: 'search-chc-places',
+  concepts: 'search-chc-concepts',
+  events: 'search-chc-events',
+  groups: 'search-chc-groups',
+  sets: 'search-chc-sets',
+  texts: 'search-chc-texts',
+  visuals: 'search-chc-visuals',
+  provenance: 'search-chc-provenance',
+  digital: 'search-chc-digital',
+  file_set: 'search-chc-fileset',
+}

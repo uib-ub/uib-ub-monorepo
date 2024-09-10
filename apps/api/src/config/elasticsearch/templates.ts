@@ -1,5 +1,5 @@
 import { mappings } from './mappings';
-import { chcIdTemplateComponent, chcLabelTemplateComponent, chcOwnersTemplateComponent, chcProductionTemplateComponent, chcSourceSettings } from './mappings/chc';
+import { chcDataFieldTemplateComponent, chcIdTemplateComponent, chcLabelTemplateComponent, chcOwnersTemplateComponent, chcProductionTemplateComponent, chcSourceSettings } from './mappings/chc';
 
 export const logTemplate = {
   "name": "log-template",
@@ -14,9 +14,10 @@ export const logTemplate = {
 
 export const chcTemplate = {
   "name": "chc-settings",
-  "index_patterns": ["search-chc-*"],
+  "index_patterns": ["search-chc*"],
   "composed_of": [
     chcSourceSettings.name,
+    chcDataFieldTemplateComponent.name,
     chcIdTemplateComponent.name,
     chcLabelTemplateComponent.name,
     chcOwnersTemplateComponent.name,

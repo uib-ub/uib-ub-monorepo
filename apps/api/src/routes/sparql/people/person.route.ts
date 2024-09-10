@@ -4,8 +4,10 @@ import { cleanDateDatatypes } from '@helpers/cleaners/cleanDateDatatypes'
 import { convertToFloat } from '@helpers/cleaners/convertToFloat'
 import { useFrame } from '@helpers/useFrame'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
+import executeQuery from '@lib/executeQuery'
+import { sqb } from '@lib/sparqlQueryBuilder'
 import { AsParamsSchema, LegacyPersonSchema, TODO } from '@models'
-import getPersonData from '@services/sparql/marcus/person.service'
+import { personOrGroupSparqlQuery } from '@services/sparql/queries'
 import { toUbbontTransformer } from '@transformers/item.transformer'
 import { toLinkedArtPersonTransformer } from '@transformers/person.transformer'
 import { HTTPException } from 'hono/http-exception'
@@ -44,7 +46,6 @@ route.openapi(getItem, async (c) => {
   const { as = 'la' } = c.req.query()
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
 
-  let fetcher: Function = getPersonData;
   let transformer: Function
   let schema: ZodSchema
   let context = ubbontContext as ContextDefinition
@@ -63,12 +64,13 @@ route.openapi(getItem, async (c) => {
   }
 
   try {
-    const data: TODO = await fetcher(id, SERVICE_URL)
+    const query = sqb(personOrGroupSparqlQuery, { id, class: 'foaf:Person' })
+    const data: TODO = await executeQuery(query, SERVICE_URL)
     // We clean up the data before compacting and framing
     const fixedDates = cleanDateDatatypes(data)
     const withFloats = convertToFloat(fixedDates)
 
-    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: context, id: withFloats.id })
+    const framed: JsonLdDocument = await useFrame({ data: withFloats, context: context, type: 'Person', id: withFloats.id })
     const response = await transformer(framed, contextString)
 
     if (schema) {

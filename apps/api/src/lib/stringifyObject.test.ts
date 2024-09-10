@@ -8,6 +8,7 @@ describe('stringifyObject', () => {
       address: {
         street: '123 Main St',
         city: 'New York',
+        number: 123,
       },
     };
 
@@ -17,23 +18,6 @@ describe('stringifyObject', () => {
     expect(result.age).toBe('30');
     expect(result.address.street).toBe('123 Main St');
     expect(result.address.city).toBe('New York');
-  });
-
-  test('should handle nested objects', () => {
-    const obj = {
-      name: 'John',
-      age: 30,
-      address: {
-        street: '123 Main St',
-        city: 'New York',
-      },
-    };
-
-    const result = stringifyObject(obj);
-
-    expect(result.address).toEqual({
-      street: '123 Main St',
-      city: 'New York',
-    });
+    expect(result.address.number).toBe('123');
   });
 });

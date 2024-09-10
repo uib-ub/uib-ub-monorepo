@@ -1,6 +1,6 @@
 import client from '@config/apis/esClient'
 import { logLifecyclePolicies } from '@config/elasticsearch/lifecycle-policies'
-import { chcIdTemplateComponent, chcLabelTemplateComponent, chcOwnersTemplateComponent, chcProductionTemplateComponent, chcSourceSettings } from '@config/elasticsearch/mappings/chc'
+import { chcDataFieldTemplateComponent, chcIdTemplateComponent, chcLabelTemplateComponent, chcOwnersTemplateComponent, chcProductionTemplateComponent, chcSourceSettings } from '@config/elasticsearch/mappings/chc'
 import { logMappings } from '@config/elasticsearch/mappings/log'
 import { logSettings } from '@config/elasticsearch/settings/log'
 import { chcTemplate, logTemplate, manifestsTemplate } from '@config/elasticsearch/templates'
@@ -40,6 +40,7 @@ route.openapi(
         client.cluster.putComponentTemplate(logMappings),
         client.cluster.putComponentTemplate(chcSourceSettings),
         client.cluster.putComponentTemplate(chcIdTemplateComponent),
+        client.cluster.putComponentTemplate(chcDataFieldTemplateComponent),
         client.cluster.putComponentTemplate(chcLabelTemplateComponent),
         client.cluster.putComponentTemplate(chcOwnersTemplateComponent),
         client.cluster.putComponentTemplate(chcProductionTemplateComponent),

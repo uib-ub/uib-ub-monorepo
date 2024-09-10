@@ -1,5 +1,5 @@
 import { removeStringsFromArray } from '@helpers/cleaners/removeStringsFromArray';
-import { constructManifest } from '@helpers/mappers/constructManifest';
+import { constructIIIFStructure } from '@helpers/mappers/iiif/constructIIIFStructure';
 import { constructCollection } from '@helpers/mappers/la/object/constructCollection';
 import { constructCoreMetadata } from '@helpers/mappers/la/object/constructCoreMetadata';
 import { constructCorrespondance } from '@helpers/mappers/la/object/constructCorrespondance';
@@ -14,7 +14,6 @@ import { constructIdentifiers } from '@helpers/mappers/la/shared/constructIdenti
 import { constructSubjectTo } from '@helpers/mappers/la/shared/constructSubjectTo';
 import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
 import { TBaseMetadata } from '@models';
-import { env } from 'bun';
 import omitEmptyEs from 'omit-empty-es';
 import type { CrmE22_HumanMade_Object } from 'types/src/la/types/linked_art';
 
@@ -46,7 +45,7 @@ export const toLinkedArtItemTransformer = async (data: any, context: string): Pr
   dto = JSON.parse(JSON.stringify(dto).replaceAll('"@none":', '"no":').replaceAll('"none":', '"no":'))
   // Removes non-object items from the specified properties of the input dto array.
   dto = removeStringsFromArray(dto)
-  // TODO: we  do this all over the place, is it efficient?
+  // TODO: we do this all over the place, is it efficient?
   dto = omitEmptyEs(dto)
 
   // Remove the inline context and add the url to the context
@@ -94,6 +93,6 @@ export const toLinkedArtItemTransformer = async (data: any, context: string): Pr
   return dto
 }
 
-export const toIIIFPresentationTransformer = async (data: any, source: string) => {
-  return constructManifest(data, env.API_URL, source)
+export const toIIIFPresentationTransformer = async (data: any) => {
+  return constructIIIFStructure(data)
 } 

@@ -10,7 +10,7 @@ import { constructSubjectTo } from '@helpers/mappers/la/shared/constructSubjectT
 import { TBaseMetadata } from '@models'
 import { env } from 'bun'
 
-export const toLinkedArtPersonTransformer = async (data: any, context: string) => {
+export const toLinkedArtGroupTransformer = async (data: any, context: string) => {
   // We assume all @none language tags are really norwegian
   data = JSON.parse(JSON.stringify(data).replaceAll('"none":', '"no":'))
   // Removes non-object items from the specified properties of the input data array.

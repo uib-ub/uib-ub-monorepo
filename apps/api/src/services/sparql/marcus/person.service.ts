@@ -1,5 +1,5 @@
-import fetch from '@helpers/fetchRetry'
-import { sqb } from '@helpers/sparqlQueryBuilder'
+import fetch from '@lib/fetchRetry'
+import { sqb } from '@lib/sparqlQueryBuilder'
 import { personOrGroupSparqlQuery } from '@services/sparql/queries'
 import { JSONArray, JSONObject } from 'hono/utils/types'
 import jsonld from 'jsonld'
