@@ -1,10 +1,10 @@
-import {
-  Matching,
-  SearchOptions,
-  SearchQueryType,
-} from "../../utils/vars";
+import { Matching, SearchOptions, SearchQueryType } from "../../utils/vars";
 
-import { getPredicateValues, getContextFilter } from "./genSearchEntryQuery";
+import {
+  getPredicateValues,
+  getContextFilter,
+  getLanguageData,
+} from "./genSearchEntryQuery";
 
 function sanitizeTerm(term: string) {
   return term
@@ -34,14 +34,6 @@ function getTermData(term: string) {
   };
 }
 
-function getLanguageData(language: string[]): string[] {
-  if (language[0] !== "all") {
-    return language;
-  } else {
-    return [""];
-  }
-}
-
 function getLanguageWhere(
   subqueries: any,
   match: Matching | "all" | "allPatterns",
@@ -69,7 +61,7 @@ function getLanguageWhere(
 export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
   const runtimeConfig = useRuntimeConfig();
   const termData = getTermData(searchOptions.term);
-  const language = getLanguageData(searchOptions.language);
+  const language = getLanguageData(searchOptions);
   const predFilter = getPredicateValues(searchOptions.predicate);
   const context = getContextFilter(searchOptions);
 
@@ -145,7 +137,7 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
                  ?uri ${
                    searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
                  } ?context.
-                BIND ( lang(?lit) as ?prop ).`,
+                BIND ( lcase(lang(?lit)) as ?prop ).`,
         context: `
              ${aggregatePredFilter()}
              ?uri ${

@@ -28,11 +28,11 @@ export const getList = createRoute({
           schema: PeopleSchema,
         },
       },
-      description: 'Retrieve a list of items.',
+      description: 'Retrieve a list of people.',
     },
   },
-  description: 'Retrieve a list of items. These are physical or born-digital items in the library collection.',
-  tags: ['Items'],
+  description: 'Retrieve a list of people.',
+  tags: ['People'],
 })
 
 route.openapi(getList, async (c) => {

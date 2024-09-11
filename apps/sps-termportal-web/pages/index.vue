@@ -12,21 +12,21 @@
       </h1>
     </header>
     <main class="container">
-      <div class="border-grey my-2 border-b-2 px-2">
+      <div class="border-grey space-y-[1px]">
         <SearchField />
-        <HeaderSearchOptions class="pt-2" />
-        <HeaderSearchScope />
+        <div class="w-full">
+          <HeaderSearchOptions class="pt-2" />
+          <HeaderSearchScope />
+        </div>
       </div>
+      <div class="border-b-2 mt-1"></div>
       <div class="flex flex-col gap-x-8 gap-y-6 pt-6 lg:flex-row">
         <ContentDoc
           :key="`welcome${locale}`"
           :path="`/${locale}/welcome`"
           class="content-wrapper basis-7/12"
         />
-        <NewsWrapper
-          :key="`news${locale}`"
-          class="basis-5/12"
-        ></NewsWrapper>
+        <NewsWrapper :key="`news${locale}`" class="basis-5/12"></NewsWrapper>
       </div>
       <CollaboratorsTP class="mt-8 xl:mt-14" />
     </main>

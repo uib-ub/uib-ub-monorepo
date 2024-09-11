@@ -21,7 +21,7 @@ export const getItem = createRoute({
           schema: PersonSchema,
         },
       },
-      description: 'Retrieve a item.',
+      description: 'Retrieve a person.',
     },
     404: {
       content: {
@@ -32,7 +32,7 @@ export const getItem = createRoute({
       description: 'Failure message.',
     },
   },
-  tags: ['Items'],
+  tags: ['People'],
 })
 
 route.openapi(getItem, async (c) => {
@@ -41,10 +41,9 @@ route.openapi(getItem, async (c) => {
   try {
     const data: TODO = await client.search({
       index: `search-chc`,
-      // TODO: This should use term: identifier.keyword to ensure exact match
       query: {
         match_phrase: {
-          "identifier": id
+          id: id
         },
       }
     })

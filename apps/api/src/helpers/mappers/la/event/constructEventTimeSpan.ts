@@ -1,5 +1,5 @@
 import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
-import { checkIntervalValidity } from '@helpers/validators/checkIntervalValidity';
+import { checkIntervalValidity } from '@lib/checkIntervalValidity';
 
 export const constructEventTimeSpan = (data: any) => {
   return data.map((item: any) => {

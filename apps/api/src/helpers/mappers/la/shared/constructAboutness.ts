@@ -1,6 +1,6 @@
 import { getLanguage } from '@/helpers/mappers/getLanguage';
 import { mapToGeneralClass, Publication } from '@/helpers/mappers/mapToGeneralClass';
-import { aatAbstractsType, aatDescriptionsType, aatDisplayBiographyType, aatInternalNoteType, aatPaginationStatementType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatPublishingType, aatRelatedTextualReferencesType } from '@/helpers/mappers/staticMapping';
+import { aatAbstractsType, aatCreationDateDescriptionType, aatDescriptionsType, aatDisplayBiographyType, aatInternalNoteType, aatPaginationStatementType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatPublishingType, aatRelatedTextualReferencesType } from '@/helpers/mappers/staticMapping';
 import { env } from '@config/env';
 import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
 import isEqual from 'lodash/isEqual';
@@ -41,6 +41,7 @@ export const constructAboutness = async (data: any) => {
     extent,
     pageStart,
     pageEnd,
+    date,
   } = data;
 
   const type = mapToGeneralClass(hasType)
@@ -87,7 +88,8 @@ export const constructAboutness = async (data: any) => {
     !rodeNr &&
     !extent &&
     !pageStart &&
-    !pageEnd
+    !pageEnd &&
+    !date
   ) {
     return data;
   }
@@ -120,9 +122,11 @@ export const constructAboutness = async (data: any) => {
   delete data.depiction // TODO: Not mapped as it is the inverse of depicts
   delete data.pageStart
   delete data.pageEnd
+  delete data.date
 
   let descriptionArray: any[] = [];
   let physicalDescriptionArray: any[] = [];
+  let creationDateDescriptionArray: any[] = [];
   let physicalConditionArray: any[] = [];
   let showsArray: any[] = [];
   let representsTypeConceptArray: any[] = [];
@@ -226,6 +230,20 @@ export const constructAboutness = async (data: any) => {
         format: 'text/markdown',
       }
     });
+  }
+
+  if (date) {
+    creationDateDescriptionArray = [{
+      type: "LinguisticObject",
+      classified_as: [
+        aatCreationDateDescriptionType,
+      ],
+      language: [
+        getLanguage('no')
+      ],
+      content: NodeHtmlMarkdown.translate(date),
+      format: 'text/markdown',
+    }]
   }
 
   if (abstract && !isEqual(description, abstract)) {
@@ -529,6 +547,7 @@ export const constructAboutness = async (data: any) => {
       ...descriptionArray,
       ...abstractArray,
       ...physicalDescriptionArray,
+      ...creationDateDescriptionArray,
       ...physicalConditionArray,
       ...paginationArray,
       ...provenanceArray,

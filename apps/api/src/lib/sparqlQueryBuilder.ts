@@ -8,13 +8,13 @@
  * @returns The query string with the placeholders replaced by the values in the params object.
  */
 
-function sparqlQueryBuilder(query: string, params: Record<string, string>): string {
+function sparqlQueryBuilder(query: string, params: Record<string, string | number>): string {
   let result = query;
   for (const key in params) {
     if (params.hasOwnProperty(key)) {
       const placeholder = `%${key}`;
       const value = params[key];
-      result = result.replace(placeholder, value);
+      result = result.replace(placeholder, String(value));
     }
   }
   if (result.includes('%')) {

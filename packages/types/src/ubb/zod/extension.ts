@@ -1,4 +1,4 @@
-import { crmE7ActivitySchema, crmE8AcquisitionSchema, crmP104IIsSubjectToSchema, crmP50HasCurrentKeeperSchema } from 'src/la/zod/linked_art';
+import { crmE55TypeSchema, crmE7ActivitySchema, crmE8AcquisitionSchema, crmP104IIsSubjectToSchema, crmP50HasCurrentKeeperSchema } from 'src/la/zod/linked_art';
 import { z } from 'zod';
 
 export const langLabelSchema = z.record(z.string(), z.array(z.string()));
@@ -20,4 +20,8 @@ export const UBBClassExtension = z.object({
 
 export const UBBTimeSpanExtension = z.object({
   edtf: z.string(),
+})
+
+export const UBBRightExtension = z.object({
+  inherit_from: z.lazy(() => crmE55TypeSchema).optional(),
 })

@@ -34,9 +34,9 @@ export const useDomainData = () =>
   useState("domainData", () => ({
     "DOMENE-3ANaturvitenskapTeknologi": {},
     "DOMENE-3AHumaniora": {},
-    "DOMENE-3AOkonomiAdministrasjon": {},
     "DOMENE-3ASamfunnsfag": {},
-    //    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
+    // "DOMENE-3AHelse_og_sosial": {},
+    "DOMENE-3AOkonomiAdministrasjon": {},
   }));
 
 export const useSearchInterface = () =>
@@ -95,6 +95,8 @@ export const useDataDisplayLanguages = () =>
     "nb",
     "nn",
     "en",
+    // "en-gb",
+    // "en-us",
     "ar",
     "da",
     "de",

@@ -1,12 +1,14 @@
-import fetch from '@helpers/fetchRetry'
-import { sqb } from '@helpers/sparqlQueryBuilder'
+import fetch from '@lib/fetchRetry'
+import { sqb } from '@lib/sparqlQueryBuilder'
+import { toFileSetTransformer } from '@transformers/file_set.transformer'
 import { HTTPException } from 'hono/http-exception'
 import jsonld from 'jsonld'
+import ubbontContext from 'jsonld-contexts/src/ubbontContext'
 import { JsonLd } from 'jsonld/jsonld-spec'
-import { manifestSparqlQuery } from '../queries'
+import { filesetSparqlQuery } from '../queries'
 
-export async function manifestService(id: string, source: string): Promise<JsonLd> {
-  const query = sqb(manifestSparqlQuery, { id })
+export async function fileSetService(id: string, source: string): Promise<JsonLd> {
+  const query = sqb(filesetSparqlQuery, { id })
   const url = `${source}${encodeURIComponent(query)}&output=nt`
 
   try {
@@ -16,14 +18,15 @@ export async function manifestService(id: string, source: string): Promise<JsonL
     if (!results) {
       return {
         error: true,
-        message: 'ID not found, or the object have insufficient metadata'
+        message: 'ID not found.'
       }
     }
 
     // We get the data as NTriples, so we need to convert it to JSON-LD
-    const data = jsonld.fromRDF(results as object)
+    const json = await jsonld.fromRDF(results as object)
 
-    return data
+    const data = await toFileSetTransformer(json, ubbontContext)
+    return data;
   } catch (error) {
     console.error(error);
     throw new HTTPException(500, { message: 'Internal Server Error' });

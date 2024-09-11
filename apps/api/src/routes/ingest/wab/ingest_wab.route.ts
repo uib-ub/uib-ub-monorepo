@@ -1,8 +1,8 @@
+import { bulkIndexData } from '@helpers/indexers/bulkIndexData';
 import { flatMapDataForBulkIndexing } from '@helpers/indexers/flatMapDataForBulkIndexing';
-import { indexData } from '@helpers/indexers/indexData';
-import { resolveWabIds } from '@helpers/indexers/resolveWabIds';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { listWabBemerkung } from '@services/sparql/wab/list-wab-bemerkung';
+import { resolveWabIds } from '@services/sparql/wab/resolveWabIds';
 
 interface IndexDataResponse {
   count: number;
@@ -11,7 +11,7 @@ interface IndexDataResponse {
 
 const route = new OpenAPIHono();
 
-route.get('/ingest/legacy/wab', async (c) => {
+route.get('/wab', async (c) => {
   const index = "search-legacy-wab"
   const page = 0
   try {
@@ -35,7 +35,7 @@ route.get('/ingest/legacy/wab', async (c) => {
       try {
         const resolved = await resolveWabIds(ids);
         const preparedData = flatMapDataForBulkIndexing(resolved, index);
-        const indexStatus = await indexData(preparedData, index) as IndexDataResponse;
+        const indexStatus = await bulkIndexData(preparedData, index) as IndexDataResponse;
 
         const took = performance.now() - t0;
         totalIndexed += indexStatus.count;

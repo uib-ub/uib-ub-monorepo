@@ -241,7 +241,8 @@ const ubbontContext = {
     },
     "locationFor": {
       "@id": "ubbont:locationFor",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "hasPermantentLocation": {
       "@id": "ubbont:hasPermantentLocation",
@@ -548,7 +549,8 @@ const ubbontContext = {
     },
     "hasPart": {
       "@id": "dct:hasPart",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "Concept": {
       "@id": "skos:Concept"
@@ -765,6 +767,11 @@ const ubbontContext = {
     "hasRepresentation": {
       "@id": "ubbont:hasRepresentation",
       "@type": "@id"
+    },
+    "hasResource": {
+      "@id": "ubbont:hasResource",
+      "@type": "@id",
+      "@container": "@set"
     },
     "product": {
       "@id": "event:product",
@@ -1039,6 +1046,12 @@ const ubbontContext = {
     },
     "hasTHView": {
       "@id": "ubbont:hasTHView"
+    },
+    "hasTifView": {
+      "@id": "ubbont:hasTifView"
+    },
+    "hasXSView": {
+      "@id": "ubbont:hasXSView"
     },
     "stores": {
       "@id": "ubbont:stores",

@@ -28,9 +28,22 @@ export function getTermData(term: string) {
   };
 }
 
-export function getLanguageData(language: string[]): string[] {
-  if (language[0] !== "all") {
-    return language;
+export function getLanguageData(searchOptions: SearchOptions): string[] {
+  if (searchOptions.language[0] !== "all") {
+    if (searchOptions.situation.startsWith("filter")) {
+      const tmplcs = searchOptions.language.map((lc) => {
+        if (lc === "en-gb") {
+          return "en-GB";
+        } else if (lc === "en-us") {
+          return "en-US";
+        } else {
+          return lc;
+        }
+      });
+      return tmplcs;
+    } else {
+      return searchOptions.language;
+    }
   } else {
     return [""];
   }
@@ -72,7 +85,7 @@ export function getContextFilter(searchOptions) {
         if (searchOptions.useDomain) {
           return `base:${d}`;
         } else {
-          return `base:${d}-3A${d}`
+          return `base:${d}-3A${d}`;
         }
       })
       .join(", ");
@@ -85,7 +98,7 @@ export function getContextFilter(searchOptions) {
 export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   const runtimeConfig = useRuntimeConfig();
   const termData = getTermData(searchOptions.term);
-  const language = getLanguageData(searchOptions.language);
+  const language = getLanguageData(searchOptions);
   const predFilter = getPredicateValues(searchOptions.predicate);
   const context = getContextFilter(searchOptions);
 
@@ -134,11 +147,18 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   };
 
   const translate = searchOptions.translate !== "none" ? "?translate" : "";
+  // handles situation where 'en' is selected as target language and en-gb should
+  // works under the assumption that there are not 'en' AND 'en-gb'/'en-us' in same tb
   const translateOptional =
     searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
     ?label2 skosxl:literalForm ?translate .
-    FILTER ( langmatches(lang(?translate), "${searchOptions.translate}") ) }`
+    FILTER ( lang(?translate) = "${searchOptions.translate}" ${
+          searchOptions.translate === "en"
+            ? "|| lang(?translate) = 'en-gb'"
+            : ""
+        })
+    }`
       : "";
 
   const subqueryTemplate = (
@@ -206,7 +226,7 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
     ${queryPrefix()}
   
     SELECT DISTINCT ?uri ?predicate ?literal ?score ?context ?samling ${translate}
-           (group_concat( ?l; separator="," ) as ?lang)
+           (group_concat( lcase(?l); separator="," ) as ?lang)
            ?matching
     WHERE {
       GRAPH <urn:x-arq:UnionGraph> {

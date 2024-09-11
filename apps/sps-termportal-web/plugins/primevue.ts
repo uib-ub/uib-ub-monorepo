@@ -6,6 +6,7 @@ import Dropdown from "primevue/dropdown";
 import Menu from "primevue/menu";
 import OverlayPanel from "primevue/overlaypanel";
 import RadioButton from "primevue/radiobutton";
+import InputSwitch from "primevue/inputswitch";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(PrimeVue, { ripple: true });
@@ -13,6 +14,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component("AccordionTab", AccordionTab);
   nuxtApp.vueApp.component("Button", Button);
   nuxtApp.vueApp.component("Dropdown", Dropdown);
+  nuxtApp.vueApp.component("InputSwitch", InputSwitch);
   nuxtApp.vueApp.component("Menu", Menu);
   nuxtApp.vueApp.component("OverlayPanel", OverlayPanel);
   nuxtApp.vueApp.component("RadioButton", RadioButton);

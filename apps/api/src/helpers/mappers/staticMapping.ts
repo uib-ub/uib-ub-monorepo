@@ -1,4 +1,5 @@
 import { env } from '@config/env';
+import { getLanguage } from './getLanguage';
 
 export const institutions: { [key: string]: { id: string; type: string; _label: Record<string, string[]> } } = {
   uib: {
@@ -78,6 +79,12 @@ export const aatPhysicalDescriptionType = {
   id: "https://vocab.getty.edu/aat/300435452",
   type: "Type",
   _label: "Physical description",
+};
+
+export const aatCreationDateDescriptionType = {
+  id: "https://vocab.getty.edu/aat/300435447",
+  type: "Type",
+  _label: "Creation date description",
 };
 
 export const aatInternalNoteType = {
@@ -339,7 +346,7 @@ export const ccPublicDomainMarkType = {
   id: "https://creativecommons.org/publicdomain/zero/1.0/",
   type: "Type",
   _label: "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
-  /* identified_by: [
+  identified_by: [
     {
       type: 'Name',
       content: {
@@ -347,14 +354,26 @@ export const ccPublicDomainMarkType = {
         en: ["CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"],
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is marked with the CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er merket med CC0 1.0 Universal (CC0 1.0) Ingen opphavsrett.",
+    }
+  ]
 }
 
 export const rsCopyrightUndeterminedType = {
   id: "https://rightsstatements.org/vocab/UND/1.0/",
   type: "Type",
   _label: "Copyright Undetermined",
-  /* identified_by: [
+  identified_by: [
     {
       type: 'Name',
       content: {
@@ -362,14 +381,26 @@ export const rsCopyrightUndeterminedType = {
         no: 'Opphavsrett ikke fastsatt'
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "The copyright status of this work is not known.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Opphavsrettsstatusen til dette verket er ikke kjent.",
+    }
+  ]
 }
 
 export const rsInCopyrighttype = {
   id: "https://rightsstatements.org/vocab/InC/1.0/",
   type: "Type",
   _label: "In Copyright",
-  /* identified_by: [
+  identified_by: [
     {
       type: 'Name',
       content: {
@@ -377,14 +408,26 @@ export const rsInCopyrighttype = {
         no: 'All rettigheter reservert'
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "All rights reserved.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "All rettigheter reservert.",
+    }
+  ]
 }
 
 export const attributionNonCommercialNoDerivsType = {
   id: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
   type: 'Type',
   _label: 'CC BY-NC-ND 4.0',
-  /* identified_by: [
+  identified_by: [
     {
       type: 'Name',
       content: {
@@ -392,13 +435,25 @@ export const attributionNonCommercialNoDerivsType = {
         no: 'Navngivelse-IkkeKommersiell-IngenBearbeidelser'
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse-IkkeKommersiell-IngenBearbeidelser 4.0 Internasjonal Lisens.",
+    }
+  ]
 };
 export const attributionType = {
   id: 'https://creativecommons.org/licenses/by/4.0/',
   type: 'Type',
   _label: 'CC BY 4.0',
-  /* identified_by: [
+  identified_by: [
     {
       type: 'Name',
       content: {
@@ -406,13 +461,25 @@ export const attributionType = {
         no: 'Navngivelse'
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse 4.0 Internasjonal Lisens.",
+    }
+  ]
 };
 export const attributionShareAlikeType = {
   id: 'https://creativecommons.org/licenses/by-sa/4.0/',
   type: 'Type',
   _label: 'CC BY-SA 4.0',
-  /* identified_by: [
+  identified_by: [
     {
       type: 'Name',
       content: {
@@ -420,14 +487,26 @@ export const attributionShareAlikeType = {
         no: 'Navngivelse-DelPåSammeVilkår'
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse-DelPåSammeVilkår 4.0 Internasjonal Lisens.",
+    }
+  ]
 };
 
 export const attributionNonCommercialType = {
   id: 'https://creativecommons.org/licenses/by-nc/4.0/',
   type: 'Type',
   _label: 'CC NC 4.0',
-  /* identified_by: [
+  identified_by: [
     {
       type: 'Name',
       content: {
@@ -435,14 +514,26 @@ export const attributionNonCommercialType = {
         no: 'Navngivelse-IkkeKommersiell'
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse-IkkeKommersiell 4.0 Internasjonal Lisens.",
+    }
+  ]
 };
 
 export const attributionNoDerivsType = {
   id: 'https://creativecommons.org/licenses/by-nd/4.0/',
   type: 'Type',
   _label: 'CC ND 4.0',
-  /* identified_by: [
+  identified_by: [
     {
       type: 'Name',
       content: {
@@ -450,20 +541,44 @@ export const attributionNoDerivsType = {
         no: 'Navngivelse-IngenBearbeidelser'
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution-NoDerivs 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse-IngenBearbeidelser 4.0 Internasjonal Lisens.",
+    }
+  ]
 };
 
 export const publicDomainType = {
   id: 'https://creativecommons.org/publicdomain/mark/1.0',
   type: 'Type',
-  _label: 'Public Domain',
-  /* identified_by: [
+  _label: 'Public Domain Mark',
+  identified_by: [
     {
       type: 'Name',
       content: {
-        en: 'Public Domain',
+        en: 'Public Domain Mark',
         no: 'Falt i det fri'
       }
     }
-  ] */
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is marked with the Public Domain Mark.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket har falt i det fri og er er merket med Public Domain Mark.",
+    }
+  ]
 };

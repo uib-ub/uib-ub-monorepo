@@ -1,5 +1,5 @@
 import { DATA_SOURCES } from '@config/constants';
-import { isObjectEmpty } from '@helpers/isObjectEmpty';
+import { isObjectEmpty } from '@lib/isObjectEmpty';
 import * as jsonld from 'jsonld';
 import contexts from 'jsonld-contexts';
 

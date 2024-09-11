@@ -5,6 +5,7 @@ import { cleanDateDatatypes } from './cleaners/cleanDateDatatypes';
 import { convertToFloat } from './cleaners/convertToFloat';
 
 /**
+ * @deprecated
  * Compacts and frames the given data in NTriples format to JSON-LD format.
  * @param data - The data to be converted, in NTriples format.
  * @param context - The context to be used for compacting and framing.
