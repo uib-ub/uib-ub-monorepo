@@ -8,7 +8,7 @@ jobs:
     environment:
       name: hono-api-prod
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Kubectl tool installer
