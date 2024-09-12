@@ -39,6 +39,8 @@ export const useDomainData = () =>
     "DOMENE-3AOkonomiAdministrasjon": {},
   }));
 
+export const useTermbaseData = () => useState("termbaseData", () => ({}));
+
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
     term: null,
@@ -95,8 +97,8 @@ export const useDataDisplayLanguages = () =>
     "nb",
     "nn",
     "en",
-    // "en-gb",
-    // "en-us",
+    "en-gb",
+    "en-us",
     "ar",
     "da",
     "de",

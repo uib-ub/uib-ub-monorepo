@@ -104,6 +104,18 @@ export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
   ],
 };
 
+export function localizeSnomedVersionLabel() {
+  const termbaseData = useTermbaseData();
+  const locale = useLocale();
+  const date = new Date(termbaseData.value.SNOMEDCT.versionEdition);
+  const options = {
+    year: "numeric",
+    month: "long",
+    hour12: true,
+  };
+  return date.toLocaleString(locale.value, options);
+}
+
 // TODO refactor with lazy data
 function deriveLanguageInfo(languages: LangCode[]): {
   [key in LangCode]: Samling[];
