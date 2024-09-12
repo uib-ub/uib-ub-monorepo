@@ -34,6 +34,10 @@ import { useI18n } from "vue-i18n";
 const i18n = useI18n();
 const searchInterface = useSearchInterface();
 const localeLangOrder = useLocaleLangOrder();
+const orderedTermbases = useOrderedTermbases();
+
+// Order of language is not relevant
+const languageInfo = deriveLanguageInfo(languageOrder.nb);
 
 const optionsLanguage = computed(() => {
   const filteredLangs = deriveSearchOptions("language", "all");
@@ -104,7 +108,7 @@ function filterTermbases(termbases, filterTermbases, option, defaultValue) {
 function deriveSearchOptions(searchOption, defaultValue) {
   // TODO optimize, create list of languages of domains/termbases
   const currentValue = searchInterface.value[searchOption];
-  let termbases = termbaseOrder;
+  let termbases = orderedTermbases.value;
   let options;
 
   if (searchOption !== "language") {
@@ -135,7 +139,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
     );
     */
 
-    if (termbases.length !== termbaseOrder.length) {
+    if (termbases.length !== orderedTermbases.value.length) {
       const languages = [
         ...new Set(termbases.map((tb) => termbaseInfo[tb]).flat()),
       ];

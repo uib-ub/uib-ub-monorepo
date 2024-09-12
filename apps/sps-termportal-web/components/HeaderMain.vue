@@ -3,6 +3,7 @@
     <div style="height: 48px">
       <NavBar
         ref="navBarRef"
+        :key="'navbar' + locale"
         :context="context"
         class="tp-transition-slow z-10"
         :class="{
@@ -31,6 +32,7 @@
 
 <script setup lang="ts">
 const route = useRoute();
+const locale = useLocale();
 
 const context = computed(() => {
   if (route.path === "/") {
