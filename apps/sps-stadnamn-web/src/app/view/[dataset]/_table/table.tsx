@@ -27,7 +27,6 @@ export default function TableExplorer() {
     const [expandLoading, setExpandLoading] = useState<boolean>(false)
     
 
-    const admValues = searchParams.getAll('adm')
     // Hide adm if only one value is present and it has no sublevels
     const showCadastre = contentSettings[params.dataset as string]?.cadastre
 
