@@ -3,7 +3,7 @@ export interface ContentSettingsItem {
   adm?: number; // Deepest level of adm
   cadastre?: boolean; // If the dataset contains standardized cadastral data
   sort?: any[]; // Custom sort array
-  tree?: { subunit?: string, sort?: string[], knr?: string, filter?: any, subunitLabel?: string };
+  tree?: { subunit?: string, sort?: string[], knr?: string, filter?: any, subunitLabel?: string, subunitName?: string, leaf?: string}; // Tree settings
 }
 
 
@@ -39,6 +39,8 @@ export interface ContentSettingsItem {
       tree: {
         subunit: "rawData.MNR",
         subunitLabel: "Matrikkelnummer",
+        subunitName: "misc.gardLabel",
+        leaf: "rawData.LNR",
         sort: ["rawData.Lenke_til_skannet_matrikkel.keyword", "cadastreSort.mnr", "cadastreSort.mnrLetter"],
         knr: "rawData.Lenke_til_skannet_matrikkel.keyword"
       }
