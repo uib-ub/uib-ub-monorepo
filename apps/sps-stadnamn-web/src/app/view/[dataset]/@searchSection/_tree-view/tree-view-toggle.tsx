@@ -98,9 +98,9 @@ export default function TreeViewToggle() {
         return (
             <Link className="btn btn-outline no-underline btn-compact !pl-2 ml-auto" href={backToSearchLink()}>
             <i>
-              <PiMagnifyingGlass className="text-xl mr-2" aria-hidden="true"/>
+              <PiMagnifyingGlass className="text-xl md:mr-2" aria-hidden="true"/>
             </i>
-            Søk
+            <span className="sr-only md:not-sr-only">Søk</span>
             </Link>
         )
     }
@@ -108,9 +108,9 @@ export default function TreeViewToggle() {
         return (
              <Link type="button" className="btn btn-outline no-underline btn-compact !pl-2 ml-auto" href={treeViewLink()}>
             <i>
-              <PiTreeView className="text-xl mr-2" aria-hidden="true"/>
+              <PiTreeView className="text-xl md:mr-2" aria-hidden="true"/>
             </i>
-            Register
+            <span className="sr-only md:not-sr-only">Register</span>
             </Link>
 
         )
