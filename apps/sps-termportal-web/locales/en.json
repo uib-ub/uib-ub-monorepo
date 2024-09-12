@@ -222,7 +222,7 @@
     "dataDispLangComment": "Choose the language(s) you want to see in the term entry"
   },
   "misc": {
-    "snomedVersion": "SNOMED CT Norway Extension May 2024 v1.0",
+    "snomedVersion": "SNOMED CT Norway Extension",
     "snomedBrowser": "SNOMED CT browser"
   }
 }
