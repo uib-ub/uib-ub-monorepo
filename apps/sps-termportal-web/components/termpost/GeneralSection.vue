@@ -73,10 +73,7 @@
             <TermpostTermDescription
               v-if="scopeNote?.source"
               :flex="true"
-              :data="[
-                `
-                            (${scopeNote.source})`,
-              ]"
+              :data="[`(${scopeNote.source})`]"
             />
           </div>
         </TermpostTermProp>
@@ -92,17 +89,26 @@
         />
       </TermpostTermProp>
       <TermpostTermProp
-        v-if="termbase === 'SNOMEDCT'"
+        v-if="
+          termbase === 'SNOMEDCT' && termbaseData.SNOMEDCT?.versionNotesLink
+        "
         :flex="true"
         :label="$t('id.version')"
       >
         <TermpostTermDescription
           :flex="true"
-          :data="[[$t('misc.snomedVersion'), snomedConfig.linkNotes]]"
+          :data="[
+            [
+              `${$t('misc.snomedVersion')}, ${localizeSnomedVersionLabel()}`,
+              termbaseData.SNOMEDCT?.versionNotesLink,
+            ],
+          ]"
         />
       </TermpostTermProp>
       <TermpostTermProp
-        v-if="termbase === 'SNOMEDCT'"
+        v-if="
+          termbase === 'SNOMEDCT' && termbaseData.SNOMEDCT?.versionNotesLink
+        "
         :flex="true"
         :label="$t('id.browser')"
       >
@@ -111,7 +117,10 @@
           :data="[
             [
               `${$t('misc.snomedBrowser')}: ${displayInfo.pagetitle.value}`,
-              snomedConfig.linkBrowser(route.params.id),
+              snomedConfig.linkBrowser(
+                termbaseData.SNOMEDCT.versionEdition,
+                route.params.id
+              ),
             ],
           ]"
         />
@@ -121,8 +130,11 @@
 </template>
 
 <script setup lang="ts">
+import { localizeSnomedVersionLabel } from "~/composables/locale";
+
 const route = useRoute();
 const locale = useLocale();
+const termbaseData = useTermbaseData();
 const termbase = route.params.termbase as Samling;
 
 const props = defineProps({
