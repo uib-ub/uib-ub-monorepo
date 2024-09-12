@@ -195,6 +195,7 @@ import { useI18n } from "vue-i18n";
 const i18n = useI18n();
 const locale = useLocale();
 const locales = useLocales();
+const orderedTermbases = useOrderedTermbases();
 const navBar = ref<HTMLElement | null>(null);
 
 const getLangOptions = () => {
@@ -227,7 +228,7 @@ const langOptions = ref(getLangOptions());
 
 const termbaseMenu = ref();
 const termbaseOptions = computed(() =>
-  termbaseOrder.map((tb) => {
+  orderedTermbases.value.map((tb) => {
     return {
       label: `${tb}-3A${tb}`,
       route: `/${tb}`,

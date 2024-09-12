@@ -56,7 +56,7 @@
       <div
         class="grid grid-flow-row grid-cols-1 gap-x-8 gap-y-0 md:grid-cols-2"
       >
-        <div v-for="tb of termbaseOrder" :key="tb" class="flex">
+        <div v-for="tb of orderedTermbases" :key="tb" class="flex max-w-md">
           <input
             :id="tb"
             v-model="searchInterface.termbase"
@@ -99,28 +99,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-
 const searchInterface = useSearchInterface();
-const i18n = useI18n();
+const orderedTermbases = useOrderedTermbases();
 const panel = ref();
 const wrapper = ref(null);
-
-const termbaseLabel = computed(() => {
-  const tbs = searchInterface.value.termbase;
-  if (tbs.length === 0) {
-    return i18n.t("global.samling.all");
-  } else if (tbs.length === 1) {
-    return lalof(`${tbs[0]}-3A${tbs[0]}`);
-  } else {
-    const tbvals = tbs
-      .map((tb) => {
-        return lalof(`${tb}-3A${tb}`);
-      })
-      .join(", ");
-    return `${tbs.length} ${i18n.t("global.termbase", 4)}: ${tbvals}`;
-  }
-});
 
 onClickOutside(wrapper, () => (panel.value = false));
 </script>
