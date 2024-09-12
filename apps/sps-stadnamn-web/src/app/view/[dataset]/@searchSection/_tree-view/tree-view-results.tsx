@@ -85,11 +85,12 @@ export default function TreeViewResults({hits}: {hits: any}) {
           return <li key={hit._id} 
                      className="flex gap-4 px-2 py-2 border-b border-neutral-300 mx-2"
                      id={`item-${hit.fields.uuid}`}>
-            <Link href={`/view/${params.dataset}/doc/${hit.fields.uuid}?${linkSearchParams}`} 
+            <SearchParamsLink href={`/view/${params.dataset}/doc/${hit.fields.uuid}`}
+                  omit-params={["search"]} 
                   onClick={() => setClickedDoc(hit.fields.uuid?.[0])}
                   aria-current={(hit.fields.uuid == params.uuid || searchParams.get('parent') == hit.fields.uuid || clickedDoc == hit.fields.uuid) ? "page" : undefined}
                   className="no-underline aria-[current=page]:!text-accent-800 aria-[current=page]:underline aria-[current=page]:decoration-accent-800 hover:underline">{findNumber(hit.fields)}&nbsp;<span className="font-semibold">{hit.fields.label}</span>
-            </Link>
+            </SearchParamsLink>
             {hit.fields?.location && <div className='flex gap-2 ml-auto'>
                 <CoordinateButton doc={hit} iconClass="text-3xl text-neutral-700"/>
             </div>}
