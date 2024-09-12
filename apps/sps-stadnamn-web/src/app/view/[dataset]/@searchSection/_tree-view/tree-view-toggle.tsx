@@ -42,6 +42,10 @@ export default function TreeViewToggle() {
   
           adm.forEach(a => newParams.delete(a))
         }
+
+        if (searchParams.get('search') == 'hide') {
+          newParams.set('search', 'show')
+        }
   
         return `${pathname}${newParams.toString() ? '?'+newParams.toString() : ''}`
       }
@@ -76,6 +80,10 @@ export default function TreeViewToggle() {
           if (doc._source.within) {
             newParams.set('parent', doc._source.within)
           }
+        }
+
+        if (searchParams.get('search') == 'hide') {
+          newParams.set('search', 'show')
         }
 
 
