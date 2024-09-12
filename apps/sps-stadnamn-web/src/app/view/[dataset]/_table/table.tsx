@@ -146,7 +146,7 @@ export default function TableExplorer() {
     
 
     return (
-            <div  className='flex flex-col my-2 gap-y-4 h-full'>
+            <div  className='flex flex-col py-2 gap-y-4 h-full overflow-y-auto'>
             <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
             <div className='flex gap-2 mt-2 xl:mt-0'>
             { contentSettings[params.dataset as string]?.display != 'table' &&
