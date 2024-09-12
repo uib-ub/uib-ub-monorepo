@@ -32,7 +32,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 }
 
 const defaultTitle = (hit: any) => {
-  return <><strong>{hit._source.label}</strong></>
+  return <span className="font-semibold">{hit._source.label}</span>
 }
 
 const loktypeDetails = (loktype: string, hit: any) => {
