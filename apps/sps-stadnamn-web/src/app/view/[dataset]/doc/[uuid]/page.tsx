@@ -60,7 +60,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
         </Link>}
       <div className={(docDataset == 'search' && doc._source.location) ? "bg-white  xl:overflow-y-auto xl:absolute w-full xl:w-1/3 xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md xl:min-h-fit xl:max-h-[calc(100vh-8rem)]"
         : 'instance-info h-full'
-      }><div className='space-y-3  xl:space-y-6 p-4 xl:p-8 xl:overflow-y-auto h-full instance-info'>
+      }><div className='space-y-8 p-4 xl:p-8 xl:overflow-y-auto h-full instance-info'>
         <div className='space-x-4'>
         { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? repeatingSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline inline">
@@ -76,8 +76,9 @@ export default async function DocumentView({ params, searchParams }: { params: {
         
         { doc && doc._source && <>
       
-      <span className="flex flex-wrap gap-x-8 gap-y-2"><h2>{doc._source.label}</h2>
-      </span>
+      <div className="flex flex-col gap-2">
+        <h2>{doc._source.label}</h2>
+      
       <div className="flex flex-wrap gap-4">
         {
          doc._source.sosi && docDataset != 'search' &&  <PlaceType sosiCode={doc._source.sosi}/>
@@ -112,6 +113,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
           : <div className="flex gap-1 items-center w-full"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
       </div>
+      </div>
       
       
 
@@ -128,23 +130,25 @@ export default async function DocumentView({ params, searchParams }: { params: {
         <OriginalData rawData={doc._source.rawData}/>
         </div>
       : null}
-      { docDataset != 'search' && doc._source.location && <div className='space-y-6'>
+      { docDataset != 'search' && doc._source.location && <div>
         <h3>Koordinater</h3>
-
+        <div className='space-y-6'>
         <CoordinateInfo source={doc._source}/>
         <EmbeddedMap doc={doc._source}/> 
         
-      </div> }
+      </div></div> }
       
       </>}
       </div>
-      { docDataset == 'search' && doc._source.location && <div className='w-full h-full'>
+      </div>
+      { docDataset == 'search' && doc._source.location && <div className='w-full h-full pt-12 pl-4 pr-16 xl:p-0 bg-white'>
 
 
         <ChildMap doc={doc._source}/>
         
       </div> }
       </div>
+      
     )
 
   }
