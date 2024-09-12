@@ -12,3 +12,11 @@ export function repeatingSearchParams(searchParams: Record<string, string | stri
     Array.isArray(values) ? values.map(value => [key, value]) : [[key, values]]
   ))
 }
+
+
+export function getValueByPath (obj: any, path: string | undefined): any {
+  if (!path) {
+    return obj
+  }
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+}

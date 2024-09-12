@@ -2,32 +2,33 @@ import Link from "next/link";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import PlaceType from "./place-type";
 import { facetConfig } from "@/config/search-config";
+import { getValueByPath } from "@/lib/utils";
 
 export default async function FacetsInfobox({ dataset, source }: { dataset: string, source: Record<string,any> }) {
 
-    const getValueByPath = (obj: any, path: string): any => {
+    const getValue = (obj: any, path: string): any => {
       if (path == 'adm') {
         return [obj.adm3, obj.adm2, obj.adm1].filter(Boolean).join('__')
       }
-      return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+      return getValueByPath(obj, path)
     }
 
-    const items = facetConfig[dataset].map((facet) => {
-        const value = getValueByPath(source, facet.key);
+    const items = facetConfig[dataset].filter(item => item.key != 'sosi').map((facet) => {
+        const value = getValue(source, facet.key);
         return {
           title: facet.label,
           items: Array.isArray(value) ? value.map((item: any) => ({value: item, 
                                                                    href: `/view/${dataset}?${facet.key}=${encodeURIComponent(item)}`,
-                                                                  ...facet.additionalParams ?  {hrefParams: facet.additionalParams.map((param: string) => ({[param]: getValueByPath(source, param)}))} : {}
+                                                                  ...facet.additionalParams ?  {hrefParams: facet.additionalParams.map((param: string) => ({[param]: getValue(source, param)}))} : {}
 
           })) : [{value: value,
             
             //hrefParams: {adm1: "test", adm2: "hello"}
             ...facet.additionalParams?.length ? {hrefParams: [facet.key, ...facet.additionalParams || []].reduce((acc, param) => ({
               ...acc,
-              [param]: getValueByPath(source, param)
+              [param]: getValue(source, param)
             }), {})
-          } :  {href: `/view/${dataset}?${facet.key}=${encodeURIComponent(value)}`}
+          } :  facet.filter ? {href: `/view/${dataset}?${facet.key}=${encodeURIComponent(value)}`}: {}
                 
           }]
         }
