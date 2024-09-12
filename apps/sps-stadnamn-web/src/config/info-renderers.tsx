@@ -3,8 +3,19 @@ import InfoBox from '@/components/ui/infobox';
 import Link from 'next/link';
 import React from 'react';
 
-import FacetsInfobox from '@/components/ui/facets-infobox';
 
+import FacetsInfobox from '@/components/ui/facets-infobox';
+import { getValueByPath } from '@/lib/utils';
+import { contentSettings } from './server-config';
+import SearchParamsLink from '@/components/ui/search-params-link';
+
+
+const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string) => {
+  const parentLabel = getValueByPath(source, contentSettings[docDataset].tree?.subunit) + " " + getValueByPath(source, contentSettings[docDataset]?.tree?.subunitName )
+  const parentUrl = `/view/${docDataset}/doc/${source.within}`
+  const currentName = getValueByPath(source, contentSettings[docDataset]?.tree?.leaf) + " " + source.label
+  return <div className="text-lg"><SearchParamsLink className="breadcrumb-link" href={parentUrl}>{parentLabel}</SearchParamsLink><span className="mx-2">/</span>{currentName}</div>
+}
 
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
@@ -269,10 +280,17 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <Link href={source.rawData.Lenke_til_skannet_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Skannet matrikkel</Link>
     <Link href={source.rawData.Lenke_til_digital_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Digital matrikkel</Link>
     </div>
+    <div>
+    <h3>Eiendom</h3>
+    { source.within && cadastreBreadcrumb(source, "m1838") }
     { source.sosi == 'gard' &&
-      <CadastralSubdivisions bnrField="rawData.LNR" sortFields={['cadastreSort.lnr', 'cadastreSort.lnrLetter']} dataset={'m1838'} uuid={source.uuid}/>
+      <CadastralSubdivisions bnrField="rawData.LNR" sortFields={['cadastreSort.lnr', 'cadastreSort.lnrLetter']} dataset={'m1838'} source={source} />
     }
+    </div>
+    <div>
+    <h3>Detaljer</h3>
     <FacetsInfobox dataset={'m1838'} source={source}/>
+    </div>
     </>
 
   },
@@ -289,7 +307,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Bruksnummer', value: source.rawData?.BNR},
       {title: 'GNIDu', value: source.gnidu},
     ]}/>
-    : <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} uuid={source.uuid}/> }
+    : <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} source={source}/> }
 
     </>
   },
