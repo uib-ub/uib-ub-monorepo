@@ -16,7 +16,7 @@ export default function PinnedResult() {
         else {
           setDoc(null)
         }
-      }, [params.uuid, params.dataset])
+      }, [params.uuid, params.dataset, searchParams])
 
 
       return <>
