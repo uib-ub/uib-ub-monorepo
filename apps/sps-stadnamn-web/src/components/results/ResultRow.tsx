@@ -1,6 +1,6 @@
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
 import { useState } from 'react';
-import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
+import { PiCaretDown, PiCaretUp, PiX } from 'react-icons/pi';
 import AudioButton from '@/components/results/audioButton';
 import IconButton from '@/components/ui/icon-button';
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
@@ -24,6 +24,8 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
     const [expandLoading, setExpandLoading] = useState(false)
     const router = useRouter()
     const display = searchParams.get('display') || 'map'
+
+    const isPinned = searchParams.has('expanded') && [...searchParams.keys()].length === 1;
 
 
     const titleRenderer = resultRenderers[params.dataset]?.title || defaultResultRenderer.title
@@ -77,7 +79,7 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
           <CoordinateButton doc={hit} iconClass="text-3xl text-neutral-700"/>
         }
 
-        { params.dataset == 'search' && hit._source.children.length > 1 && (
+        { params.dataset == 'search' && hit._source.children.length > 1 && !isPinned && (
             <IconButton label={"Vis " + hit._source.children.length  + " oppslag i datasetta"} 
                         textIcon 
                         aria-expanded={expanded} 
@@ -95,6 +97,7 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
           )
 
         }
+        {isPinned && <IconButton label="Lukk" textIcon onClick={() => router.push(pathname)} className="flex self-center text-neutral-900"><PiX className="text-3xl"/></IconButton>}
 
         
         
