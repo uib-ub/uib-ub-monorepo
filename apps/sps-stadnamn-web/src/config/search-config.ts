@@ -129,7 +129,12 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
         {key: "rawData.BNR", label: "Bruksnummer"},
         {key: "rawData.Kjelde", label: "Kjelde"},
         {key: "rawData.Kjeldeform", label: "Kjeldeform"},
-
-      ]
+      ],
+      ssr2016: [
+        {key: "rawData.Stedsnavn_lokalId", label: "SSR-nummer"},
+        {key: "rawData.ENH_SSR_ID", label: "Gammelt SSR-nummer"},
+        {key: "misc.language", label: "Språk"},
+        {key: "misc.status", label: "Status 2016"},
+      ],
   
   }
