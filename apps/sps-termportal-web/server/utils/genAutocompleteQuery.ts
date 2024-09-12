@@ -32,7 +32,7 @@ export function genAutocompleteQuery(
    * - term begins with
    * - subwords begin with
    */
-  const query = `#log: ${JSON.stringify(searchOptions)}
+  const query = `
   PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
   PREFIX skosp: <http://www.data.ub.uib.no/ns/spraksamlingene/skos#>
   PREFIX text: <http://jena.apache.org/text#>
