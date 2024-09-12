@@ -123,3 +123,5 @@ export const snomedConfig = {
     return `https://browser.ihtsdotools.org/?perspective=full&conceptId1=${snomedId}&edition=MAIN/SNOMEDCT-NO/${edition}&release=&languages=no,en`;
   },
 };
+
+export const systemTermbases = ["DOMENE", "LISENS"];
