@@ -276,7 +276,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   m1838: (source: any) => {
     return <>
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
-    <div className="flex mt-3 gap-4">
+    <div className="flex flex-wrap mt-3 gap-4">
     <Link href={source.rawData.Lenke_til_skannet_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Skannet matrikkel</Link>
     <Link href={source.rawData.Lenke_til_digital_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Digital matrikkel</Link>
     </div>
