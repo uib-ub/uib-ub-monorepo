@@ -64,6 +64,19 @@
                 {{ $t("global.termbase", 0) }}
               </h2>
               <dl aria-labelledby="tbtermbaseinfo">
+                <div v-if="termbase === 'SNOMEDCT'" class="flex">
+                  <dt class="w-32 shrink-0 font-semibold">
+                    {{ $t("id.version") }}
+                  </dt>
+                  <dd>
+                    <AppLink
+                      class="underline hover:decoration-2"
+                      :to="termbaseData.SNOMEDCT.versionNotesLink"
+                      >{{ localizeSnomedVersionLabel() }}
+                    </AppLink>
+                  </dd>
+                </div>
+
                 <div v-if="data?.license" class="flex">
                   <dt class="w-32 shrink-0 font-semibold">
                     {{ $t("termbase.license", 1) }}
@@ -110,11 +123,12 @@
 </template>
 
 <script setup lang="ts">
-import { LangCode } from "~/composables/locale";
+import { LangCode, localizeSnomedVersionLabel } from "~/composables/locale";
 
 const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
+const termbaseData = useTermbaseData();
 
 const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
   key: `termbase_${termbase}`,
