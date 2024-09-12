@@ -48,8 +48,6 @@ export default async function FacetsInfobox({ dataset, source }: { dataset: stri
                     <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
                   </Link> )
         ||
-        (item.sosi && <PlaceType sosiCode={item.value}/>)
-        ||
         item.value
       )
     }
