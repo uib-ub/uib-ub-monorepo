@@ -3,7 +3,7 @@
     <div style="height: 48px">
       <NavBar
         ref="navBarRef"
-        :key="'navbar' + locale"
+        :key="'navbar' + locale + orderedTermbases.length"
         :context="context"
         class="tp-transition-slow z-10"
         :class="{
@@ -33,6 +33,7 @@
 <script setup lang="ts">
 const route = useRoute();
 const locale = useLocale();
+const orderedTermbases = useOrderedTermbases();
 
 const context = computed(() => {
   if (route.path === "/") {
