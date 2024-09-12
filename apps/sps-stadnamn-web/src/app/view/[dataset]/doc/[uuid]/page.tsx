@@ -77,7 +77,6 @@ export default async function DocumentView({ params, searchParams }: { params: {
         { doc && doc._source && <>
       
       <span className="flex flex-wrap gap-x-8 gap-y-2"><h2>{doc._source.label}</h2>
-      { docDataset == 'search' && doc._source.snid && <span className="text-neutral-800 self-center">{doc._source.snid} </span> }
       </span>
       <div className="flex flex-wrap gap-4">
         {
