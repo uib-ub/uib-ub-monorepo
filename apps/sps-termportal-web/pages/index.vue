@@ -23,6 +23,7 @@
       <div class="flex flex-col gap-x-8 gap-y-6 pt-6 lg:flex-row">
         <ContentDoc
           :key="`welcome${locale}`"
+          :head="false"
           :path="`/${locale}/welcome`"
           class="content-wrapper basis-7/12"
         />
