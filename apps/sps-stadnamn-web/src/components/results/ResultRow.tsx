@@ -25,7 +25,7 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
     const router = useRouter()
     const display = searchParams.get('display') || 'map'
 
-    const isPinned = searchParams.has('expanded') && [...searchParams.keys()].length === 1;
+    const isPinned = searchParams.has('expanded') && [...searchParams.keys()].filter(key => key != 'expanded' && key != 'popup').length == 0
 
 
     const titleRenderer = resultRenderers[params.dataset]?.title || defaultResultRenderer.title
