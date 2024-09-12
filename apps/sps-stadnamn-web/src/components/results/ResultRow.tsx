@@ -49,7 +49,7 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
 
         <li key={hit._source.uuid} className="my-0 py-2 px-2 flex flex-col gap-4">
         <div className='flex flex-wrap gap-4'>
-        <div className="flex flex-col gap-2" id={"resultText_" + hit._source.uuid}><div><ResultLink doc={hit}>{titleRenderer(hit, display)}</ResultLink>{adm && <>{hit.highlight ? hit._source.adm1 && ' | ' : <br/>}{detailsRenderer(hit, display)}</>}</div>
+        <div className="flex flex-col gap-2" id={"resultText_" + hit._source.uuid}><div className="space-y-4"><h3 className="text-lg"><ResultLink doc={hit}>{titleRenderer(hit, display)}</ResultLink></h3>{adm && <>{hit.highlight ? hit._source.adm1 && ' | ' : ''}{detailsRenderer(hit, display)}</>}</div>
         {(adm || hit.highlight) && <div>
           
           {hit.highlight && snippetRenderer && snippetRenderer(hit, display)}
