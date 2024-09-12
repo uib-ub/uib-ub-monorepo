@@ -12,7 +12,6 @@ import CopyLink from './CopyLink'
 import { datasetTitles } from '@/config/metadata-config'
 import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
 import PlaceType from '@/components/ui/place-type'
-import SearchParamsLink from '@/components/ui/search-params-link'
 import { repeatingSearchParams } from '@/lib/utils'
 import ParentButton from './ParentButton'
 
