@@ -7,6 +7,6 @@ data:
   node_env: "production"
   es_host: "https://search.ub.uib.no"
   observe_es_host: "https://observe.ub.uib.no"
-  prod_url: "https://api.ub.uib.no"
   port: "3009"
+  prod_url: "https://api.ub.uib.no"
   api_url: "http://localhost"
