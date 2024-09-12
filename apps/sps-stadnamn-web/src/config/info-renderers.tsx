@@ -360,6 +360,12 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         {title: 'Unikt matrikkelnummer', items: source.gnidu?.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},
       ]}/>
       </>
-    } 
+    },
+    ssr2016: (source: any) => {
+      return <>
+      <FacetsInfobox dataset={'ssr2016'} source={source}/>
+      </>
+    
+    }
   
   }
