@@ -16,6 +16,6 @@ export default function WithinLabel({within}: {within: string}) {
 
     //return JSON.stringify(parentDoc)
 
-    return <>Bruk under {getValueByPath(source, contentSettings[params.dataset as string].tree?.subunit || 'cadastre.gnr')} {source?.label}</>
+    return <>Under {getValueByPath(source, contentSettings[params.dataset as string].tree?.subunit || 'cadastre.gnr')} {source?.label}</>
 
 }

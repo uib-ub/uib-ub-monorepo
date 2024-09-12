@@ -10,6 +10,7 @@ import { facetConfig } from '@/config/search-config';
 import { contentSettings } from '@/config/server-config';
 import { datasetTitles } from '@/config/metadata-config';
 import BooleanFacet from './_facets/bool-facet';
+import WithinLabel from './WithinLabel';
 
 
 export default function Facets() {
@@ -39,6 +40,10 @@ export default function Facets() {
       if (values[0] == "_false" && name == "adm") {
         if (values.length == 1) return "[utan distrikt]"
         return values[1] + " (utan underinndeling)"
+      }
+
+      if (name == 'within') {
+        return <WithinLabel within={value}/>
       }
         
         
