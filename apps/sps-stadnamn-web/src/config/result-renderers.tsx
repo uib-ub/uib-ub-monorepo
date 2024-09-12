@@ -190,7 +190,7 @@ export const resultRenderers: ResultRenderers = {
     title: (hit: any, display: string) => {
       const source = hit._source
       const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
-      return <><strong>{source.label}{altLabels ? ', ':''}</strong>{altLabels}</> 
+      return <><span className="font-semibold">{source.label}{altLabels ? ', ':''}</span>{altLabels}</> 
     },
     snippet: (hit: any, display: string) => {
       return hit.highlight?.['rawData.merknader'][0] && formatHighlight(hit.highlight['rawData.merknader'][0])
