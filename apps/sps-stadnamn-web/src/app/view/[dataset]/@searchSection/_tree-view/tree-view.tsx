@@ -1,12 +1,11 @@
 'use client'  
-import Link from 'next/link';
-import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import { datasetTitles } from '@/config/metadata-config';
 import TreeViewResults from './tree-view-results';
 import { PiCaretRightBold } from 'react-icons/pi';
 import { contentSettings } from '@/config/server-config';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import SearchParamsLink from '@/components/ui/search-params-link';
 
 
 
@@ -30,24 +29,28 @@ useEffect(() => {
 
 }, [params.dataset, adm1, adm2, groupBy])
 
-const buildAdmUrl = (adm: string) => {
-  const newParams = new URLSearchParams(searchParams)
-  if (!groupBy) return "" // To please typescript. The server action won't return aggregations if groupBy is undefined
-  newParams.set(groupBy, adm)
-  return `/view/${params.dataset}?${newParams.toString()}`
-}
+
 
     return <section className={`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none' : 'hidden xl:flex'} flex flex-col gap-4 scroll-container w-full`} >
      
         {adm1 && 
-          <div className="px-4 py-2">
-            <Breadcrumbs 
-                        currentName={adm2 || adm1}
-                        parentName={[datasetTitles[params.dataset as string], ...adm2 ? [adm1] : []]} 
-                        parentUrl={[`/view/${params.dataset}?display=tree`, ...adm2 ? [`/view/${params.dataset}?display=tree&adm1=${adm1}`] : []]}
-                        />
-          </div>}
-
+          <div className="px-4 py-2 text-lg">
+            <SearchParamsLink className="breadcrumb-link" withoutParams={["adm1", "adm2"]}>
+            {datasetTitles[params.dataset as string]}
+            </SearchParamsLink>
+            <span className='mx-2'>/</span>
+            {adm2 ?
+              <>
+              <SearchParamsLink className="breadcrumb-link" withoutParams={["adm2"]}>
+              {adm1}
+              </SearchParamsLink>
+              <span className='mx-2'>/</span>
+              {adm2}
+              </>
+            : adm1
+            }
+          </div>
+        }
 
           {cadastralData?.aggregations?.adm?.buckets?.length &&
           <ul className="flex-col gap-2 overflow-y-auto stable-scrollbar">
@@ -57,7 +60,11 @@ const buildAdmUrl = (adm: string) => {
                   .map((adm: Record<string, any>) => {
 
             return <li key={adm.key} className="flex flex-col gap-2">
-              <Link href={buildAdmUrl(adm.key)} className="lg:text-lg gap-2 px-4 mx-2 py-2 border-b border-neutral-300 no-underline">{contentSettings[params.dataset as string].tree?.knr?.toLowerCase().endsWith('knr') && (adm1 ? adm.knr.buckets[0].key : adm.knr.buckets[0].key.slice(0,2))} {adm.key}<PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/></Link>
+              <SearchParamsLink addParams={{[adm1 ? 'adm2' : 'adm1']: adm.key}}
+                    className="lg:text-lg gap-2 px-4 mx-2 py-2 border-b border-neutral-300 no-underline">
+                      {contentSettings[params.dataset as string].tree?.knr?.toLowerCase().endsWith('knr') && (adm1 ? adm.knr.buckets[0].key : adm.knr.buckets[0].key.slice(0,2))} {adm.key}
+                      <PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/>
+              </SearchParamsLink>
             </li>
           })}
           </ul>
@@ -67,10 +74,6 @@ const buildAdmUrl = (adm: string) => {
         <TreeViewResults hits={cadastralData.hits.hits}/>
         : null
         }
-
-
-
-
     </section>
     
   

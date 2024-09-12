@@ -1,11 +1,9 @@
 'use client'
-
 import CoordinateButton from "@/components/results/coordinateButton"
-import Link from "next/link"
 import { useParams, useSearchParams } from "next/navigation"
 import { contentSettings } from "@/config/server-config";
 import { useEffect, useState } from "react";
-import { useQueryStringWithout } from "@/lib/search-params";
+import SearchParamsLink from "@/components/ui/search-params-link";
 
 export default function TreeViewResults({hits}: {hits: any}) {
     const params = useParams<{uuid: string; dataset: string}>()
@@ -16,20 +14,11 @@ export default function TreeViewResults({hits}: {hits: any}) {
     const [clickedDoc, setClickedDoc] = useState<string | null>(null)
     const selectedDoc = searchParams.get('parent') || searchParams.get('docs')?.split(',')?.[0]
 
-    const linkSearchParams = useQueryStringWithout(['search'])
-
-
     const findNumber = (fields: any): string => {
-        
-      
         if (subfield) {
           return fields[subfield] || fields[subfield.split(".")[0]].map((nested: any) => nested[subfield.split(".")[1]]).join(",")
-          
-      
         }
-      
         return ""
-        
       }
 
     const filteredHits = hits.filter((hit: any) => {
