@@ -81,9 +81,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
       </span>
       <div className="flex flex-wrap gap-4">
         {
-         doc._source.sosi && <PlaceType sosiCode={doc._source.sosi}/>
+         doc._source.sosi && docDataset != 'search' &&  <PlaceType sosiCode={doc._source.sosi}/>
         }
-      {doc._source.within && <SearchParamsLink href={`/view/${params.dataset}/doc/${doc._source.within}`}><span className="sr-only">under </span>{doc._source.cadastre?.gnr || doc._source.rawData.MNR} {doc._source.misc?.gardLabel}</SearchParamsLink>}
         <div className='flex'>
       {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && 
         <>
