@@ -28,7 +28,7 @@ export default async function FacetsInfobox({ dataset, source }: { dataset: stri
               ...acc,
               [param]: getValue(source, param)
             }), {})
-          } :  facet.filter ? {href: `/view/${dataset}?${facet.key}=${encodeURIComponent(value)}`}: {}
+          } :  {}
                 
           }]
         }

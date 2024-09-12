@@ -7,6 +7,7 @@ export interface FacetConfigItem {
     type?: 'integer' | 'keyword'; // Elasticsearch data type
     sort?: 'doc_count' | 'asc' | 'desc'; // Default sort order in facet
     additionalParams?: string[]; // Additional filters to apply when facet is clicked
+    docLink?: string; // Link to another document
   }
 
   export interface FieldConfigItem {
@@ -100,10 +101,12 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
       ],
       m1838: [
         sosi,
-        {key: "rawData.MNR", label: "Matrikkelnummer", additionalParams: ["adm"]},
-        {key: "rawData.LNR", label: "Løpenummer", additionalParams: ["rawData.MNR", "adm"]},
+        {key: "rawData.MNR", label: "Matrikkelnummer"},
+        {key: "rawData.LNR", label: "Løpenummer"},
+        {key: "rawData.1723_MNR", label: "Matrikkelnummer 1723"},
         {key: "rawData.GNIDu", label: "GNIDu"},
-        {key: "rawData.SNID", label: "StedsnavnID"},
+        {key: "adm2", label: "Prestegjeld"},
+        {key: "adm1", label: "Amt"},
       ],
       m1886: [
         sosi,
