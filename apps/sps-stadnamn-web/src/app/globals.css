@@ -66,6 +66,9 @@
 }
 
 @layer components {
+  .breadcrumb-link {
+    @apply no-underline text-lg text-accent-700 hover:underline decoration-accent-700;
+  }
   .card {
     @apply bg-white shadow-lg shadow-neutral-100 xl:border-2 xl:border-neutral-200 xl:rounded-sm;
   }
