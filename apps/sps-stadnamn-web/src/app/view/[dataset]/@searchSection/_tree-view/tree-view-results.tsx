@@ -69,7 +69,7 @@ export default function TreeViewResults({hits}: {hits: any}) {
         </fieldset>
         
         
-        <ul className="overflow-y-auto stable-scrollbar border ml-2 border-neutral-300 pt-2">
+        <ul className="overflow-y-auto stable-scrollbar border mx-2 xl:mr-0 border-neutral-300 pt-2">
             {filteredHits.map((hit: any) => {
           return <li key={hit._id} 
                      className="flex gap-4 px-2 py-2 border-b border-neutral-300 mx-2"
