@@ -5,7 +5,6 @@ import { MainShell } from '@/components/shared/main-shell';
 import { Suspense } from 'react';
 import Links from './links';
 
-
 export default async function LinkShortenerPage() {
   return (
     <MainShell>
