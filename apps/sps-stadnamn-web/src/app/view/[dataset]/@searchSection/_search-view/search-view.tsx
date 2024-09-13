@@ -1,5 +1,5 @@
 'use client'
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import SearchBar from "../SearchBar";
 import { SearchContext } from '@/app/search-provider'
 import Filters from "./filters";
@@ -16,6 +16,20 @@ export default function SearchView() {
     const params = useParams()
     const router = useRouter()
     const filteredParamsWithoutSort = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'asc', 'desc'])
+    const [ showLoading, setShowLoading ] = useState<boolean>(true)
+
+
+    useEffect(() => {
+      if (!isLoading) {
+        setTimeout(() => {
+          setShowLoading(false)
+        }, 200);
+      }
+      else {
+        setShowLoading(true)
+      }
+    }
+    , [isLoading])
 
     const handleSubmit = async (event: any) => {
         event.preventDefault()
@@ -30,11 +44,11 @@ export default function SearchView() {
     return (
       <div id="collapsibleView" className={`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
     <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
-      <SearchBar/>
+      <SearchBar showLoading={showLoading}/>
       { params.dataset == 'search' && params.uuid && !filteredParamsWithoutSort && searchParams.get('expanded') ? <PinnedResult/>
       : !searchError && <Filters/> }
-    </form>            
-      { searchParams.get('display') != 'table' && resultData && filteredParamsWithoutSort ? <Results hits={resultData.hits} isLoading={isLoading}/> : null }
+    </form>          
+      { searchParams.get('display') != 'table' && resultData?.hits?.hits?.length && filteredParamsWithoutSort ? <Results hits={resultData.hits}/> : null }
       </div>
       )
 }

@@ -6,25 +6,11 @@ import Spinner from '@/components/svg/Spinner';
 import ResultRow from '@/components/results/ResultRow';
 
 
-export default function Results({ hits, isLoading }: { hits: any, isLoading: boolean}) {
+export default function Results({ hits }: { hits: any}) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const router = useRouter()
     const params = useParams<{uuid: string; dataset: string}>()
-    const [ showLoading, setShowLoading ] = useState<boolean>(true)
-
-
-    useEffect(() => {
-      if (!isLoading) {
-        setTimeout(() => {
-          setShowLoading(false)
-        }, 200);
-      }
-      else {
-        setShowLoading(true)
-      }
-    }
-    , [isLoading])
 
 
     const sortResults = () => {
@@ -71,8 +57,9 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     <span className="flex px-4 gap-2 flex-wrap">
       <h2 id="result_heading" aria-live="polite">
       <span className='text-xl text-center h-full font-semibold small-caps'>
-        Treff
-        </span> { showLoading ? <Spinner status="Laster inn treff" className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
+        Treff&nbsp;
+        </span> 
+        <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span>
       </h2>
       <div className="ml-auto flex items-end gap-4">
       { searchParams.get('display') != 'table' &&
