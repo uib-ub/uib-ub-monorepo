@@ -14,7 +14,6 @@ export default function WithinLabel({within}: {within: string}) {
 
     }, [params.dataset, within])
 
-    //return JSON.stringify(parentDoc)
 
     return <>Under {getValueByPath(source, contentSettings[params.dataset as string].tree?.subunit || 'cadastre.gnr')} {source?.label}</>
 
