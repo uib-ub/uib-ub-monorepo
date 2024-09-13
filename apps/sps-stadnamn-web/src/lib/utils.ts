@@ -16,7 +16,17 @@ export function repeatingSearchParams(searchParams: Record<string, string | stri
 
 export function getValueByPath (obj: any, path: string | undefined): any {
   if (!path) {
-    return obj
+    return ""
   }
+
+  if (path.split("__").length == 2) {
+    // Concatenate gnr of all cadastre
+    const [nestedField, field] = path.split('__')
+
+    return obj[nestedField]?.map((cad: any) => cad[field]).join(', ')
+    
+  }
+
+  
   return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 }
