@@ -1,9 +1,9 @@
 "use server"
+import { xata } from '@/utils/xataClient';
+import { nanoid } from 'nanoid';
 import { revalidatePath } from "next/cache";
-import { getXataClient } from "@/utils/xata";
-import { z } from 'zod'
-import QRCode from 'qrcode'
-import { nanoid } from 'nanoid'
+import QRCode from 'qrcode';
+import { z } from 'zod';
 
 const generateQR = async (text: string) => {
   try {
@@ -12,8 +12,6 @@ const generateQR = async (text: string) => {
     console.error(err)
   }
 }
-
-const xata = getXataClient();
 
 export async function createShortLink(prevState: any, formData: FormData) {
   "use server";
