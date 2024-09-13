@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { PiMagnifyingGlass } from "react-icons/pi";
-import PlaceType from "./place-type";
 import { facetConfig } from "@/config/search-config";
 import { getValueByPath } from "@/lib/utils";
 
