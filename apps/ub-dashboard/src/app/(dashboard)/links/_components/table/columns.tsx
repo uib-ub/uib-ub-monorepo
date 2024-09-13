@@ -1,14 +1,14 @@
 "use client"
 
+import { CheckHttpStatus } from '@/components/check-http-status'
+import { LoadingSpinner } from '@/components/loaders/loading-spinner'
+import { Button } from '@/components/ui/button'
 import { CaretSortIcon, ClockIcon, TrashIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
-import { LinksProps } from '../links'
 import Link from "next/link"
-import { Button } from '@/components/ui/button'
-import { GiFinishLine } from 'react-icons/gi'
-import { CheckHttpStatus } from '@/components/check-http-status'
 import { Suspense } from 'react'
-import { LoadingSpinner } from '@/components/loaders/loading-spinner'
+import { GiFinishLine } from 'react-icons/gi'
+import { LinksProps } from '../links'
 
 export const columns: ColumnDef<LinksProps>[] = [
   {
@@ -79,7 +79,10 @@ export const columns: ColumnDef<LinksProps>[] = [
     //accessorKey: "url",
     cell: ({ row }: { row: any }) => (
       <Suspense fallback={<LoadingSpinner />}>
-        <CheckHttpStatus url={row.getValue('url')} />
+        {row.getValue('status') as string == 'deleted'
+          ? <CheckHttpStatus url={row.getValue('url')} />
+          : null
+        }
       </Suspense>
     )
   },
