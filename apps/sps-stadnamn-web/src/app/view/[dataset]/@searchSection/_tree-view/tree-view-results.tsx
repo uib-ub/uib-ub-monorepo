@@ -8,17 +8,15 @@ import SearchParamsLink from "@/components/ui/search-params-link";
 export default function TreeViewResults({hits}: {hits: any}) {
     const params = useParams<{uuid: string; dataset: string}>()
     const searchParams = useSearchParams()
-    const subfield = contentSettings[params.dataset].tree?.subunit || 'cadastre.gnr'
+    const subfield = contentSettings[params.dataset].tree?.subunit || 'cadastre__gnr'
     const [startRange, setStartRange] = useState("")
     const [endRange, setEndRange] = useState("") 
     const [clickedDoc, setClickedDoc] = useState<string | null>(null)
     const selectedDoc = searchParams.get('parent') || searchParams.get('docs')?.split(',')?.[0]
 
     const findNumber = (fields: any): string => {
-        if (subfield) {
-          return fields[subfield] || fields[subfield.split(".")[0]].map((nested: any) => nested[subfield.split(".")[1]]).join(",")
-        }
-        return ""
+          return fields[subfield][0]
+        
       }
 
     const filteredHits = hits.filter((hit: any) => {
