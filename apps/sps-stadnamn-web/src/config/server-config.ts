@@ -50,7 +50,10 @@ export interface ContentSettingsItem {
       adm: 2,
       cadastre: true,
       tree: {
-        knr: "rawData.knr.keyword"
+        knr: "rawData.knr.keyword",
+        subunit: "rawData.gnr",
+        subunitName: "rawData.gardsnamn",
+        leaf: "rawData.bnr",
       }
     },
     mu1950: {
