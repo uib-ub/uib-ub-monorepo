@@ -314,22 +314,21 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   m1886: (source: any) => {
     return <>
     {source.rawData?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknader}</>}
-    
-    <div className="mt-3">
-    <Link href={source.rawData.lenke_til_digital_matrikkel} className='font-semibold'>Lenke til digital matrikkel</Link>
+
+    {source.rawData?.lenke_til_digital_matrikkel && <div className="flex flex-wrap mt-3 gap-4">
+    <Link href={source.rawData.lenke_til_digital_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Digital matrikkel</Link>
+    </div> }
+    <div>
+    <h3>Eiendom</h3>
+    { source.within && cadastreBreadcrumb(source, "m1886") }
+    { source.sosi == 'gard' &&
+      <CadastralSubdivisions bnrField="rawData.bnr" sortFields={['cadastre.gnr', 'cadastre.bnr']} dataset={'m1886'} source={source} />
+    }
     </div>
-    
-    <InfoBox dataset={'m1886'}
-             items={[
-              {title: 'Stadnamn', value: source.label},
-              {title: 'Kommune', value: source.adm2},
-              {title: 'Fylke', value: source.adm1},
-              {title: 'Lokalitetstype', value: source.sosi, sosi: true},
-              {title: 'Kommunenummer', value: source.rawData.knr},
-              {title: 'Gardsnummer', value: source.cadastre.gnr},
-              {title: 'Bruksnummer', value: source.cadastre.bnr},
-              {title: 'GNIDu', value: source.rawData.gnidu}
-    ]}/>
+    <div>
+    <h3>Detaljer</h3>
+    <FacetsInfobox dataset={'m1886'} source={source}/>
+    </div>
 
     </>
   },    
