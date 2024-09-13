@@ -1,15 +1,14 @@
 export const revalidate = 30;
 
-import React from 'react';
-import Image from 'next/image'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 import { LinksRecord, XataClient } from '@/utils/xata';
 import { ExternalLinkIcon } from '@radix-ui/react-icons';
+import Image from 'next/image';
 
 const xata = new XataClient();
 
