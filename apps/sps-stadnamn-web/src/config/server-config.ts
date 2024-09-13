@@ -12,7 +12,7 @@ export interface ContentSettingsItem {
     search: {
       display: 'map',
       adm: 3,
-      sort: ["ranking", "_score", "adm1.keyword", "adm2.keyword"] // add "ranking" in order to favor results with snid and multiple attestations
+      sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] // add "ranking" in order to favor results with snid and multiple attestations
     },
     bsn: {
       display: 'map',
