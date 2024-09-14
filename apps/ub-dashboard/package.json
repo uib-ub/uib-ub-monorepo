@@ -44,7 +44,7 @@
     "@sanity/vision": "3.17.0",
     "@seidhr/sanity-plugin-timespan-input": "^3.0.4",
     "@tanstack/react-table": "^8.10.6",
-    "@xata.io/client": "^0.28.0",
+    "@xata.io/client": "^0.30.0",
     "assets": "*",
     "capitalize": "^2.0.4",
     "class-variance-authority": "^0.7.0",
