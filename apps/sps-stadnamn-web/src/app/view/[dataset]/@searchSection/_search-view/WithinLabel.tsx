@@ -15,6 +15,6 @@ export default function WithinLabel({within}: {within: string}) {
     }, [params.dataset, within])
 
 
-    return <>Under {getValueByPath(source, treeSettings[params.dataset as string]?.subunit || 'cadastre.gnr')} {source?.label}</>
+    return source && <>Under {getValueByPath(source, treeSettings[params.dataset as string]?.subunit || 'cadastre.gnr')} {source?.label}</>
 
 }
