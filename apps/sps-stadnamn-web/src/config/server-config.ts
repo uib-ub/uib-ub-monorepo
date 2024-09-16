@@ -20,7 +20,8 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     subunit: "rawData.MNR",
     subunitLabel: "Matrikkelnummer",
     leaf: "rawData.LNR",
-    sort: ["rawData.Lenke_til_skannet_matrikkel.keyword", "cadastreSort.mnr", "cadastreSort.mnrLetter"],
+    //sort: ["rawData.Lenke_til_skannet_matrikkel.keyword", "cadastreSort.mnr", "cadastreSort.mnrLetter"],
+    sort: ["sortOrder"],
     aggSort: "rawData.Lenke_til_skannet_matrikkel.keyword"
   },
   m1886: {
