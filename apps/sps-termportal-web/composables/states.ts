@@ -78,7 +78,13 @@ export interface SearchFilterData {
   context: string[];
 }
 export const useSearchFilterData = () =>
-  useState<SearchFilterData>("searchFilterData", () => searchFilterDataEmpty());
+  useState<SearchFilterData>("searchFilterData", () => ({
+    lang: [],
+    samling: [],
+    predicate: [],
+    matching: [],
+    context: [],
+  }));
 export const useSearchFetchLatest = () =>
   useState<number>("searchFetchLatest", () => NaN);
 export const useDataDisplayLanguages = () =>

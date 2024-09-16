@@ -60,7 +60,6 @@ export async function useFetchSearchData(options: SearchOptions) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
-  const searchFilterData = useSearchFilterData();
   const searchFetchInitial = useSearchFetchInitial();
   const route = useRoute();
   let append = false;
@@ -73,10 +72,6 @@ export async function useFetchSearchData(options: SearchOptions) {
 
   if (situation === "initial" && route.path === "/search") {
     searchFetchInitial.value = true;
-  }
-
-  if (situation === "initial" || situation === "options") {
-    searchFilterData.value = searchFilterDataEmpty();
   }
 
   if (
