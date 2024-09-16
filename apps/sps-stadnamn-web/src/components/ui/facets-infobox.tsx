@@ -64,7 +64,7 @@ export default async function FacetsInfobox({ dataset, source }: { dataset: stri
     }
 
     return (
-      <div className="flex flex-col sm:flex-row flex-wrap gap-8 p-4">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-8 p-4 bg-neutral-50">
         {filteredItems.map((item: Record<string,any> , index: number) => (
             <div key={index} className="flex flex-col">
                 <strong className="text-neutral-900">{item.title}</strong>
