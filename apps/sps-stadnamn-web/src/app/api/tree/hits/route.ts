@@ -30,14 +30,12 @@ export async function GET(request: Request) {
             }
         },
         fields: ["label", "uuid", treeSettings[dataset].subunit?.replace(".keyword", "").replace("__", ".") || 'cadastre.gnr', "location"],
-        /*
         sort: treeSettings[dataset].sort.map((field: string) => {
                 if (nestedPath) {
                     return {[field.replace("__", ".")]: {order: "asc", nested: {path: nestedPath}}}
                 }
                 return {[field]: {order: "asc"}}
             }),
-        */
         _source: false
     };
 
