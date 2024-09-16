@@ -110,8 +110,10 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
       ],
       m1886: [
         sosi,
+        {key: "rawData.knr", label: "Kommunenummer"},
         {key: "cadastre__gnr", label: "Gardsnummer"},
-        {key: "cadastre__bnr", label: "Bruksnummer"}
+        {key: "cadastre__bnr", label: "Bruksnummer"},
+        {key: "gnidu", label: "GNIDu"},
       ],
       skul: [
         {key: "rawData.gnr", label: "Gardsnummer", sort: "asc"},
