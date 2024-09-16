@@ -1,6 +1,6 @@
 import { SemanticRelation } from "./vars";
 import { LangCode } from "~/composables/locale";
-import { SearchDataEntry, useBootstrapData } from "~~/composables/states";
+import { SearchDataEntry, useBootstrapData } from "~/composables/states";
 
 /**
  * Return unique intersection of two Arrays, sorted by order of first.
