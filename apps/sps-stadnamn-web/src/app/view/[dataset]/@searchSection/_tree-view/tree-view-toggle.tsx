@@ -23,21 +23,17 @@ export default function TreeViewToggle() {
         }
       }, [params.uuid, params.dataset])
 
-    const backToSearchLink = () => {
-        const newParams = new URLSearchParams(searchParams)
-        newParams.delete('parent')
-        newParams.delete('display')
+    const searchLink = () => {
+        const newParams = new URLSearchParams()
         if (contentSettings[params.dataset as string].display == 'table') {
           newParams.set('display', 'table')
         }
   
   
-        const adm = ['adm3', 'adm2', 'adm1'].filter(adm => newParams.has(adm))
-        if (newParams.has('adm') || params.uuid) {
-          adm.forEach(a => newParams.delete(a))
-        }
-        else if (adm.length) {
-          const admValues = adm.map(a => newParams.get(a))
+        const adm = ['adm3', 'adm2', 'adm1'].filter(adm => searchParams.get(adm))
+
+        if (adm.length) {
+          const admValues = adm.map(a => searchParams.get(a))
           newParams.set('adm', admValues.join('__'))
   
           adm.forEach(a => newParams.delete(a))
