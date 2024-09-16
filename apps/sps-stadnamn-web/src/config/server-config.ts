@@ -21,7 +21,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     subunitLabel: "Matrikkelnummer",
     leaf: "rawData.LNR",
     //sort: ["rawData.Lenke_til_skannet_matrikkel.keyword", "cadastreSort.mnr", "cadastreSort.mnrLetter"],
-    sort: ["sortOrder"],
+    sort: ["cadastralIndex"],
     aggSort: "rawData.Lenke_til_skannet_matrikkel.keyword"
   },
   m1886: {
@@ -69,7 +69,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       display: 'map',
       adm: 2,
       cadastre: false, // Old cadastral system and messy data
-      sort: ["_score", "cadastreSort.mnr", "cadastreSort.mnrLetter", "cadastreSort.lnr", "cadastreSort.lnrLetter"],
+      sort: ["_score", "cadastralIndex"],
     },
     m1886: {
       display: 'map',
