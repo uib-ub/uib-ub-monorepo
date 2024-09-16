@@ -6,14 +6,14 @@ import React from 'react';
 
 import FacetsInfobox from '@/components/ui/facets-infobox';
 import { getValueByPath } from '@/lib/utils';
-import { contentSettings } from './server-config';
+import { treeSettings } from './server-config';
 import SearchParamsLink from '@/components/ui/search-params-link';
 
 
-const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string) => {
-  const parentLabel = getValueByPath(source, contentSettings[docDataset].tree?.subunit) + " " + getValueByPath(source, contentSettings[docDataset]?.tree?.subunitName )
+const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
+  const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
   const parentUrl = `/view/${docDataset}/doc/${source.within}`
-  const currentName = getValueByPath(source, contentSettings[docDataset]?.tree?.leaf) + " " + source.label
+  const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
   return <div className="text-lg"><SearchParamsLink className="breadcrumb-link" href={parentUrl}>{parentLabel}</SearchParamsLink><span className="mx-2">/</span>{currentName}</div>
 }
 
@@ -282,7 +282,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </div>
     <div>
     <h3>Eiendom</h3>
-    { source.within && cadastreBreadcrumb(source, "m1838") }
+    { source.within && cadastreBreadcrumb(source, "m1838", "misc.gardLabel") }
     { source.sosi == 'gard' &&
       <CadastralSubdivisions bnrField="rawData.LNR" sortFields={['cadastreSort.lnr', 'cadastreSort.lnrLetter']} dataset={'m1838'} source={source} />
     }
