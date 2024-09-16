@@ -1,26 +1,23 @@
 'use client'
 import CoordinateButton from "@/components/results/coordinateButton"
 import { useParams, useSearchParams } from "next/navigation"
-import { contentSettings } from "@/config/server-config";
+import { treeSettings } from "@/config/server-config";
 import { useEffect, useState } from "react";
 import SearchParamsLink from "@/components/ui/search-params-link";
+import { getValueByPath } from "@/lib/utils";
 
 export default function TreeViewResults({hits}: {hits: any}) {
     const params = useParams<{uuid: string; dataset: string}>()
     const searchParams = useSearchParams()
-    const subfield = contentSettings[params.dataset].tree?.subunit || 'cadastre__gnr'
+    const field = treeSettings[params.dataset].subunit
     const [startRange, setStartRange] = useState("")
     const [endRange, setEndRange] = useState("") 
     const [clickedDoc, setClickedDoc] = useState<string | null>(null)
     const selectedDoc = searchParams.get('parent') || searchParams.get('docs')?.split(',')?.[0]
 
-    const findNumber = (fields: any): string => {
-          return fields[subfield][0]
-        
-      }
 
     const filteredHits = hits.filter((hit: any) => {
-        const number = findNumber(hit.fields);
+        const number = getValueByPath(hit.fields, field);
         // Assuming the subfield value is numeric for range comparison
         const numValue = Number(number);
         const startNum = Number(startRange);
@@ -45,7 +42,7 @@ export default function TreeViewResults({hits}: {hits: any}) {
     return (
         <>
          <fieldset className="flex gap-4 px-4 py-2">
-            <legend className="flex">{contentSettings[params.dataset].tree?.subunitLabel || 'Gardsnummer'}</legend>
+            <legend className="flex">{treeSettings[params.dataset]?.subunitLabel || 'Gardsnummer'}</legend>
             <label htmlFor="startRange" className="sr-only">Fra</label>
             <input 
                 id="startRange"
@@ -76,7 +73,7 @@ export default function TreeViewResults({hits}: {hits: any}) {
                   omit-params={["search"]} 
                   onClick={() => setClickedDoc(hit.fields.uuid?.[0])}
                   aria-current={(hit.fields.uuid == params.uuid || searchParams.get('parent') == hit.fields.uuid || clickedDoc == hit.fields.uuid) ? "page" : undefined}
-                  className="no-underline aria-[current=page]:!text-accent-800 aria-[current=page]:underline aria-[current=page]:decoration-accent-800 hover:underline">{findNumber(hit.fields)}&nbsp;<span className="font-semibold">{hit.fields.label}</span>
+                  className="no-underline aria-[current=page]:!text-accent-800 aria-[current=page]:underline aria-[current=page]:decoration-accent-800 hover:underline">{getValueByPath(hit.fields, field)}&nbsp;<span className="font-semibold">{hit.fields.label}</span>
             </SearchParamsLink>
             {hit.fields?.location && <div className='flex gap-2 ml-auto'>
                 <CoordinateButton doc={hit} iconClass="text-3xl text-neutral-700"/>

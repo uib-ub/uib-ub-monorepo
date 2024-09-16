@@ -6,7 +6,7 @@ import IconLink from '@/components/ui/icon-link';
 import React from 'react';
 import { repeatingSearchParams } from '@/lib/utils';
 import TreeViewToggle from './_tree-view/tree-view-toggle';
-import { contentSettings } from '@/config/server-config';
+import { treeSettings } from '@/config/server-config';
 import ClientDisplay from './client-display';
 
 
@@ -31,7 +31,7 @@ export default function SearchSection ( { params, searchParams }: { params: { da
             
           </h1>
 
-          { contentSettings[params.dataset as string]?.tree && <TreeViewToggle/> }
+          { treeSettings[params.dataset as string] && <TreeViewToggle/> }
             
         </div>
         

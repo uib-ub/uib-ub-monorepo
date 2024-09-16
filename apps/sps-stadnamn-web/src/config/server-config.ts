@@ -3,8 +3,41 @@ export interface ContentSettingsItem {
   adm?: number; // Deepest level of adm
   cadastre?: boolean; // If the dataset contains standardized cadastral data
   sort?: any[]; // Custom sort array
-  tree?: { subunit?: string, sort?: string[], knr?: string, filter?: any, subunitLabel?: string, subunitName?: string, leaf?: string}; // Tree settings
 }
+
+export interface TreeSettingsItem {
+  subunit?: string, 
+  subunitLabel?: string,
+  sort: string[], 
+  aggSort: string, 
+  filter?: any, 
+  showNumber?: boolean,
+  leaf?: string
+}
+
+export const treeSettings: Record<string, TreeSettingsItem> = {
+  m1838: {
+    subunit: "rawData.MNR",
+    subunitLabel: "Matrikkelnummer",
+    leaf: "rawData.LNR",
+    sort: ["rawData.Lenke_til_skannet_matrikkel.keyword", "cadastreSort.mnr", "cadastreSort.mnrLetter"],
+    aggSort: "rawData.Lenke_til_skannet_matrikkel.keyword"
+  },
+  m1886: {
+    subunit: "cadastre__gnr",
+    leaf: "cadastre.bnr",
+    sort: ["cadastre__gnr"],
+    aggSort: "rawData.knr.keyword"
+  },
+  mu1950: {
+    subunit: "cadastre__gnr",
+    leaf: "cadastre.bnr",
+    sort: ["cadastre__gnr"],
+    aggSort: "knr.keyword",
+    showNumber: true,
+  }
+}
+
 
 
 
@@ -36,31 +69,16 @@ export interface ContentSettingsItem {
       adm: 2,
       cadastre: false, // Old cadastral system and messy data
       sort: ["_score", "cadastreSort.mnr", "cadastreSort.mnrLetter", "cadastreSort.lnr", "cadastreSort.lnrLetter"],
-      tree: {
-        subunit: "rawData.MNR",
-        subunitLabel: "Matrikkelnummer",
-        subunitName: "misc.gardLabel",
-        leaf: "rawData.LNR",
-        sort: ["rawData.Lenke_til_skannet_matrikkel.keyword", "cadastreSort.mnr", "cadastreSort.mnrLetter"],
-        knr: "rawData.Lenke_til_skannet_matrikkel.keyword"
-      }
     },
     m1886: {
       display: 'map',
       adm: 2,
       cadastre: true,
-      tree: {
-        knr: "rawData.knr.keyword",
-        subunit: "rawData.gnr",
-        subunitName: "rawData.gardsnamn",
-        leaf: "rawData.bnr",
-      }
     },
     mu1950: {
       display: 'map',
       adm: 2,
       cadastre: true,
-      tree: {}
     },
     nbas: {
       display: 'map',
