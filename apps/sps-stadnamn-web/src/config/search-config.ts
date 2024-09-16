@@ -18,7 +18,7 @@ export interface FacetConfigItem {
  
 
 export const fieldConfig: Record<string, FieldConfigItem[]> = {
-    /* search: [
+    /* search: [ // Removed untid short descriptions have been generated
       {key: "label", label: "Namn"},
       {key: "description", label: "Beskriving"},
     ], */
