@@ -296,18 +296,18 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   mu1950: (source: any) => {
     return <>
-    { source.sosi != 'gard' ?
-    <InfoBox dataset={'mu1950'} 
-              items={[
-      {title: 'Stadnamn', value: source.label},
-      {title: 'Kommune', value: source.adm2},
-      {title: 'Fylke', value: source.adm1},
-      {title: 'Kommunenummer', value: source.rawData?.KNR},
-      {title: 'Gardsnummer', value: source.rawData?.GNR},
-      {title: 'Bruksnummer', value: source.rawData?.BNR},
-      {title: 'GNIDu', value: source.gnidu},
-    ]}/>
-    : <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} source={source}/> }
+    <div>
+    <h3>Eiendom</h3>
+    { source.within && cadastreBreadcrumb(source, "mu1950", "rawData.Gardsnamn") }
+    { source.sosi == 'gard' &&
+      <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} source={source} />
+    }
+    </div>
+
+    {source.sosi != 'gard' && 
+      <div><h3>Detaljer</h3>
+      <FacetsInfobox dataset={'mu1950'} source={source}/>
+      </div>}
 
     </>
   },
