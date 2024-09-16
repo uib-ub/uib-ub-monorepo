@@ -2,7 +2,7 @@ import { useBootstrapData } from "~/composables/states";
 
 export default defineNuxtPlugin((nuxtApp) => {
   /*
-  Get subdomains and relations between conceptual domains that are maintained in the CMS.
+  Get labels, data and relations that are maintained in the CMS.
   */
   useAsyncData("appConceptualDomains", () =>
     $fetch("/api/bootstrap", {
