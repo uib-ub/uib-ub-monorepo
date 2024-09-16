@@ -69,12 +69,14 @@ useEffect(() => {
               </>
             : adm1
             }
+            {isLoading && searchParams.get('q') && <Spinner status="Laster inn treff" className="w-[1.5em] h-[1.5em] inline ml-2"/>}
           </div>
         }
+        { isLoadingTree && <div className="justify-center" ><Spinner status="Laster inn aggregater" className="w-10 h-10"/></div> }
 
           {cadastralData?.aggregations?.adm?.buckets?.length &&
           <ul className="flex-col gap-2 overflow-y-auto stable-scrollbar">
-          {aggregate && cadastralData.aggregations.adm.buckets
+          {aggregate && !isLoadingTree && cadastralData?.aggregations.adm.buckets
                   .filter((item: any) => item.key != '_false')
                   .sort((a: any, b: any)=> aggSort ? a.aggNum.buckets[0].key.localeCompare(b.aggNum.buckets[0].key) : a.aggNum.localeCompare(b.key))
                   .map((adm: Record<string, any>) => {
