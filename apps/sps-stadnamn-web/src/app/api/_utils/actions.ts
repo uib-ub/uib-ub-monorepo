@@ -36,6 +36,7 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     if (!res.ok) {
         const errorResponse = await res.json();
         if (retry) {
+            console.log("RETRYING WITH FALLBACK")
             return fetchDoc(params, retry = false);
         }
         if (errorResponse.error) {
