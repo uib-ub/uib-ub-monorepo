@@ -52,11 +52,11 @@ export default function TreeViewToggle() {
   
       const treeViewLink = () => {
         
-        const newParams = new URLSearchParams(searchParams)
+        const newParams = new URLSearchParams()
         
   
-        if (newParams.getAll('adm').length == 1) {
-          const adm = newParams.getAll('adm')[0].split('__').reverse()
+        if (searchParams.getAll('adm').length == 1) {
+          const adm = searchParams.getAll('adm')[0].split('__').reverse()
           adm.forEach((a, i) => {
             newParams.set(`adm${i+1}`, a)
             }
@@ -96,7 +96,7 @@ export default function TreeViewToggle() {
     
     if (searchParams.get('display') == 'tree') {
         return (
-            <Link className="btn btn-outline no-underline btn-compact !pl-2 ml-auto" href={backToSearchLink()}>
+            <Link className="btn btn-outline no-underline btn-compact !pl-2 ml-auto" href={searchLink()}>
             <i>
               <PiMagnifyingGlass className="text-xl md:mr-2" aria-hidden="true"/>
             </i>
