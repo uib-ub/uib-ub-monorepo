@@ -18,6 +18,8 @@ export default function TreeView() {
 
   const { resultData, isLoading, searchError } = useContext(SearchContext)
 
+  const [isLoadingTree, setIsLoadingTree] = useState<boolean>(false)
+
 // Todo: adapt to datasets with adm3
 const adm1 = searchParams.get('adm1')
 const adm2 = searchParams.get('adm2')
@@ -28,9 +30,20 @@ const aggSort = treeSettings[params.dataset as string]?.aggSort
 
 useEffect(() => {
   if (aggregate) {
+    setIsLoadingTree(true)
+
     fetch(`/api/tree?dataset=${params.dataset}${adm1 ? `&adm1=${adm1}` : ''}${adm2 ? `&adm2=${adm2}` : ''}`)
         .then(response => response.json())
-        .then(data => setCadastralData(data))
+        .then(data => {
+          setIsLoadingTree(false)
+          setCadastralData(data)
+        }
+
+    ).catch(error => {
+      console.error(error)
+      setIsLoadingTree(false)
+    }
+    )
   }
 
     
