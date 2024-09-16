@@ -90,7 +90,8 @@
       </TermpostTermProp>
       <TermpostTermProp
         v-if="
-          termbase === 'SNOMEDCT' && termbaseData.SNOMEDCT?.versionNotesLink
+          termbase === 'SNOMEDCT' &&
+          bootstrapData.termbase.SNOMEDCT?.versionNotesLink
         "
         :flex="true"
         :label="$t('id.version')"
@@ -100,14 +101,15 @@
           :data="[
             [
               `${$t('misc.snomedVersion')}, ${localizeSnomedVersionLabel()}`,
-              termbaseData.SNOMEDCT?.versionNotesLink,
+              bootstrapData.termbase.SNOMEDCT?.versionNotesLink,
             ],
           ]"
         />
       </TermpostTermProp>
       <TermpostTermProp
         v-if="
-          termbase === 'SNOMEDCT' && termbaseData.SNOMEDCT?.versionNotesLink
+          termbase === 'SNOMEDCT' &&
+          bootstrapData.termbase.SNOMEDCT?.versionNotesLink
         "
         :flex="true"
         :label="$t('id.browser')"
@@ -118,7 +120,7 @@
             [
               `${$t('misc.snomedBrowser')}: ${displayInfo.pagetitle.value}`,
               snomedConfig.linkBrowser(
-                termbaseData.SNOMEDCT.versionEdition,
+                bootstrapData.termbase.SNOMEDCT.versionEdition,
                 route.params.id
               ),
             ],
@@ -134,8 +136,8 @@ import { localizeSnomedVersionLabel } from "~/composables/locale";
 
 const route = useRoute();
 const locale = useLocale();
-const termbaseData = useTermbaseData();
-const termbase = route.params.termbase as Samling;
+const bootstrapData = useBootstrapData();
+const termbase = route.params.termbase;
 
 const props = defineProps({
   concept: { type: Object, required: true },

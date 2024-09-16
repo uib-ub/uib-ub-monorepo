@@ -71,7 +71,7 @@
                   <dd>
                     <AppLink
                       class="underline hover:decoration-2"
-                      :to="termbaseData.SNOMEDCT.versionNotesLink"
+                      :to="bootstrapData.termbase.SNOMEDCT.versionNotesLink"
                       >{{ localizeSnomedVersionLabel() }}
                     </AppLink>
                   </dd>
@@ -128,7 +128,7 @@ import { LangCode, localizeSnomedVersionLabel } from "~/composables/locale";
 const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
-const termbaseData = useTermbaseData();
+const bootstrapData = useBootstrapData();
 
 const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
   key: `termbase_${termbase}`,

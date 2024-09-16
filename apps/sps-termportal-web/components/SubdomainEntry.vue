@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-const domainData = useDomainData();
+const bootstrapData = useBootstrapData();
 
 const props = defineProps({
   modelValue: { type: Object, required: true },
@@ -59,7 +59,7 @@ function onChange(event) {
   // applies to second level domains
   if (props.topdomain) {
     const subdomains = getAllKeys(
-      domainData.value[props.topdomain].subdomains[domain]
+      bootstrapData.value.domain[props.topdomain].subdomains[domain]
     ).filter((key) => key.startsWith("DOMENE"));
     subdomains.forEach((subdomain) => {
       delete newObject[subdomain];

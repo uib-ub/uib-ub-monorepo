@@ -25,7 +25,7 @@ function getActivationStatus(data, hierarchy) {
 export default function (situation: string, options?: SearchOptions) {
   const searchInterface = useSearchInterface();
   const searchFilterData = useSearchFilterData();
-  const domainData = useDomainData();
+  const bootstrapData = useBootstrapData();
 
   const newOptions: SearchOptions = {
     type: "search",
@@ -55,7 +55,7 @@ export default function (situation: string, options?: SearchOptions) {
   if (newOptions.useDomain) {
     const domainLst = getActivationStatus(
       searchInterface.value.domain,
-      domainData.value
+      bootstrapData.value.domain
     );
     newOptions.domain = domainLst;
   }

@@ -1,6 +1,6 @@
 import { SemanticRelation } from "./vars";
 import { LangCode } from "~/composables/locale";
-import { SearchDataEntry } from "~~/composables/states";
+import { SearchDataEntry, useBootstrapData } from "~~/composables/states";
 
 /**
  * Return unique intersection of two Arrays, sorted by order of first.
@@ -201,11 +201,11 @@ export function getAllKeys(obj: Object): string[] {
  * @returns Localized label or key if not label present
  */
 export function lalof(key: string): string {
-  const lazyLocales = useLazyLocales();
+  const bootstrapData = useBootstrapData();
   const locale = useLocale();
   const label = languageOrder[locale.value]
     .filter((lc) => Object.keys(languageOrder).includes(lc))
-    .map((lc) => lazyLocales.value?.[lc]?.[key])
+    .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
     .find((value) => value !== undefined);
   return label ?? key;
 }

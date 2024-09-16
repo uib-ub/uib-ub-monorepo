@@ -30,17 +30,6 @@ export interface SearchInterface {
   useDomain: boolean;
 }
 
-export const useDomainData = () =>
-  useState("domainData", () => ({
-    "DOMENE-3ANaturvitenskapTeknologi": {},
-    "DOMENE-3AHumaniora": {},
-    "DOMENE-3ASamfunnsfag": {},
-    // "DOMENE-3AHelse_og_sosial": {},
-    "DOMENE-3AOkonomiAdministrasjon": {},
-  }));
-
-export const useTermbaseData = () => useState("termbaseData", () => ({}));
-
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
     term: null,
@@ -119,5 +108,15 @@ export const useConceptViewToggle = () =>
 export const useNavMenuExpanded = () =>
   useState<boolean>("navMenuExpanded", () => false);
 
-export const useLazyLocales = () =>
-  useState<Object>("lazyLocales", () => ({ nb: {}, nn: {}, en: {} }));
+export const useBootstrapData = () =>
+  useState<Object>("lazyLocales", () => ({
+    lalo: { nb: {}, nn: {}, en: {} },
+    termbase: {},
+    domain: {
+      "DOMENE-3ANaturvitenskapTeknologi": {},
+      "DOMENE-3AHumaniora": {},
+      "DOMENE-3ASamfunnsfag": {},
+      // "DOMENE-3AHelse_og_sosial": {},
+      "DOMENE-3AOkonomiAdministrasjon": {},
+    },
+  }));

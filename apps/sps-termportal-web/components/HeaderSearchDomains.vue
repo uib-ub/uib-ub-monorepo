@@ -3,7 +3,7 @@
     <div ref="topWrapper">
       <div class="flex flex-wrap gap-x-1 gap-y-1 lg:flex-nowrap">
         <div
-          v-for="domain in Object.keys(domainData)"
+          v-for="domain in Object.keys(bootstrapData.domain)"
           :key="domain"
           class="group flex min-h-[2.3em]"
         >
@@ -77,9 +77,7 @@
         >
           <Icon name="material-symbols:close" size="1.4rem" />
         </button>
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-        >
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <div
             v-for="topdomain of panelTopdomains"
             :key="topdomain"
@@ -90,7 +88,7 @@
             </div>
             <ul>
               <li
-                v-for="(v, k) of domainData[topdomain].subdomains"
+                v-for="(v, k) of bootstrapData.domain[topdomain].subdomains"
                 :key="k"
                 class=""
               >
@@ -130,7 +128,7 @@ const panel = ref();
 const wrapper = ref(null);
 const topWrapper = ref();
 const searchInterface = useSearchInterface();
-const domainData = useDomainData();
+const bootstrapData = useBootstrapData();
 
 const specifiedDomains = computed(() =>
   Object.keys(searchInterface.value.domain)
@@ -141,7 +139,7 @@ const activeDomains = computed(() =>
   )
 );
 const panelTopdomains = computed(() =>
-  intersectUnique(Object.keys(domainData.value), activeDomains.value)
+  intersectUnique(Object.keys(bootstrapData.value.domain), activeDomains.value)
 );
 
 const noDomain = computed(() => {
@@ -161,7 +159,7 @@ function updateTopdomain(pdomain: string) {
     // delete topdomain
     delete searchInterface.value.domain[pdomain];
     // delete all subdomain data from interface
-    const subdomains = getAllKeys(domainData.value[pdomain]);
+    const subdomains = getAllKeys(bootstrapData.value.domain[pdomain]);
     subdomains.forEach((subdomain) => {
       delete searchInterface.value.domain[subdomain];
     });

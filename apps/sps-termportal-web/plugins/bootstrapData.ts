@@ -1,77 +1,59 @@
+import { useBootstrapData } from "~/composables/states";
+
 export default defineNuxtPlugin((nuxtApp) => {
   /*
   Get subdomains and relations between conceptual domains that are maintained in the CMS.
   */
-  const domainData = useDomainData();
   useAsyncData("appConceptualDomains", () =>
-    $fetch("/api/bootstrap/domain", {
+    $fetch("/api/bootstrap", {
       headers: process.server
         ? { cookie: "session=" + useRuntimeConfig().apiKey }
         : undefined,
       retry: 1,
     }).then((data) => {
-      for (const domain in domainData.value) {
-        // See domain states for predefined topdomains
-        try {
-          domainData.value[domain].subdomains = parseRelationsRecursively(
-            data,
-            domain,
-            "narrower",
-            "subdomains"
-          );
-        } catch (entry) {}
-      }
-    })
-  );
+      const bootstrapData = useBootstrapData();
 
-  /*
-  Get termbase meta data
-  */
-  const termbaseData = useTermbaseData();
-  useAsyncData("appTermbaseData", () =>
-    $fetch("/api/bootstrap/termbase", {
-      headers: process.server
-        ? { cookie: "session=" + useRuntimeConfig().apiKey }
-        : undefined,
-      retry: 1,
-    }).then((data) => {
-      data.forEach((entry) => {
-        const tbLabelLst = entry.page.value.split("-3A");
-        const tbLabel = tbLabelLst[tbLabelLst.length - 1];
-        if (!termbaseData.value[tbLabel]) {
-          termbaseData.value[tbLabel] = {};
+      // lazy locales
+      try {
+        data.lalo.forEach((entry) => {
+          const lang = entry.label["xml:lang"];
+          const pagelst = entry.page.value.split("/");
+          const page = pagelst[pagelst.length - 1];
+          bootstrapData.value.lalo[lang][page] = entry.label.value;
+        });
+      } catch (error) {}
+
+      // domain
+      try {
+        for (const domain in bootstrapData.value.domain) {
+          bootstrapData.value.domain[domain].subdomains =
+            parseRelationsRecursively(
+              data.domain,
+              domain,
+              "narrower",
+              "subdomains"
+            );
         }
-        termbaseData.value[tbLabel].language = entry.languages.value.split(",");
+      } catch (error) {}
 
-        if (entry?.versionInfo) {
-          const viSplit = entry?.versionInfo.value.split(";;;");
-          termbaseData.value[tbLabel].versionEdition = viSplit[0];
-          termbaseData.value[tbLabel].versionNotesLink = viSplit[1];
-        }
-      });
-    })
-  );
+      // termbase meta
+      try {
+        data.termbase.forEach((entry) => {
+          const tbLabelLst = entry.page.value.split("-3A");
+          const tbLabel = tbLabelLst[tbLabelLst.length - 1];
+          if (!bootstrapData.value.termbase[tbLabel]) {
+            bootstrapData.value.termbase[tbLabel] = {};
+          }
+          bootstrapData.value.termbase[tbLabel].language =
+            entry.languages.value.split(",");
 
-  /*
-  Get localization data from CMS.
-  This applies to:
-  - termbase names
-  - conceptual domain names
-  */
-  const lazyLocales = useLazyLocales();
-  useAsyncData("appLazyLocale", () =>
-    $fetch("/api/bootstrap/lazyLocale", {
-      headers: process.server
-        ? { cookie: "session=" + useRuntimeConfig().apiKey }
-        : undefined,
-      retry: 1,
-    }).then((data) => {
-      data.forEach((entry) => {
-        const lang = entry.label["xml:lang"];
-        const pagelst = entry.page.value.split("/");
-        const page = pagelst[pagelst.length - 1];
-        lazyLocales.value[lang][page] = entry.label.value;
-      });
+          if (entry?.versionInfo) {
+            const viSplit = entry?.versionInfo.value.split(";;;");
+            bootstrapData.value.termbase[tbLabel].versionEdition = viSplit[0];
+            bootstrapData.value.termbase[tbLabel].versionNotesLink = viSplit[1];
+          }
+        });
+      } catch (error) {}
     })
   );
 });
