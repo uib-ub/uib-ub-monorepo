@@ -4,8 +4,10 @@ import TreeViewResults from './tree-view-results';
 import { PiCaretRightBold } from 'react-icons/pi';
 import { treeSettings } from '@/config/server-config';
 import { useParams, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import SearchParamsLink from '@/components/ui/search-params-link';
+import { SearchContext } from '@/app/search-provider';
+import Spinner from '@/components/svg/Spinner';
 
 
 
@@ -13,6 +15,8 @@ export default function TreeView() {
   const searchParams = useSearchParams()
   const params = useParams()
   const [cadastralData, setCadastralData] = useState<any>(null)
+
+  const { resultData, isLoading, searchError } = useContext(SearchContext)
 
 // Todo: adapt to datasets with adm3
 const adm1 = searchParams.get('adm1')
@@ -23,11 +27,13 @@ const aggSort = treeSettings[params.dataset as string]?.aggSort
 
 
 useEffect(() => {
-
-    fetch(`/api/${aggregate ? 'tree/aggregate' : 'tree/hits' }?dataset=${params.dataset}${adm1 ? `&adm1=${adm1}` : ''}${adm2 ? `&adm2=${adm2}` : ''}`)
+  if (aggregate) {
+    fetch(`/api/tree?dataset=${params.dataset}${adm1 ? `&adm1=${adm1}` : ''}${adm2 ? `&adm2=${adm2}` : ''}`)
         .then(response => response.json())
         .then(data => setCadastralData(data))
+  }
 
+    
 }, [params.dataset, adm1, adm2, aggregate])
 
 
@@ -55,7 +61,7 @@ useEffect(() => {
 
           {cadastralData?.aggregations?.adm?.buckets?.length &&
           <ul className="flex-col gap-2 overflow-y-auto stable-scrollbar">
-          {cadastralData.aggregations.adm.buckets
+          {aggregate && cadastralData.aggregations.adm.buckets
                   .filter((item: any) => item.key != '_false')
                   .sort((a: any, b: any)=> aggSort ? a.aggNum.buckets[0].key.localeCompare(b.aggNum.buckets[0].key) : a.aggNum.localeCompare(b.key))
                   .map((adm: Record<string, any>) => {
@@ -71,8 +77,9 @@ useEffect(() => {
           </ul>
           }
 
-        {cadastralData?.hits?.hits?.length ?
-        <TreeViewResults hits={cadastralData.hits.hits}/>
+        {!aggregate && !isLoading &&  resultData?.hits?.hits?.length ?
+        
+        <TreeViewResults hits={resultData.hits.hits}/>
         : null
         }
     </section>

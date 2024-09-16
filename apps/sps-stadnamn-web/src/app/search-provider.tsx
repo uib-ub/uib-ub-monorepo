@@ -32,12 +32,16 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     .filter(name => searchParams.get(name))
     .map(name => `${name}=${searchParams.get(name)}`)
     .join('&')
+
+    const treeParamsQuery = searchParams.get('display') == 'tree' && `sosi=gard&size=${searchParams.get('adm2') ? '40' : '0'}${treeParams ? '&' + treeParams : ''}`
+
+
     const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded']) // Props not passed to the search API
 
     useEffect(() => {
 
             setIsLoading(true)
-            const chosenParams =  treeParams ? treeParams.toString() : filteredSearchParams
+            const chosenParams =  treeParamsQuery || filteredSearchParams
             fetch(`/api/search?dataset=${params.dataset}${chosenParams ? '&' + chosenParams : ''}`)
                 .then(response => response.json())
                 .then(es_data => {
@@ -61,7 +65,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             })
         
         
-      }, [filteredSearchParams, params.dataset, treeParams])
+      }, [filteredSearchParams, params.dataset, treeParamsQuery])
 
   return <SearchContext.Provider value={{resultData, isLoading, mapBounds, searchError}}>{children}</SearchContext.Provider>
 }

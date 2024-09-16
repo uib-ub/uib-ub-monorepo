@@ -1,7 +1,7 @@
-import { treeSettings } from "@/config/server-config";
-import { postQuery } from "../../_utils/post";
-
 export const runtime = 'edge'
+import { treeSettings } from "@/config/server-config";
+import { postQuery } from "../_utils/post";
+
 
 export async function GET(request: Request) {
     // get params dataset and groupBy, and adm1 and adm2 if they exist

@@ -17,7 +17,7 @@ export default function TreeViewResults({hits}: {hits: any}) {
 
 
     const filteredHits = hits.filter((hit: any) => {
-        const number = getValueByPath(hit.fields, field);
+        const number = getValueByPath(hit._source, field);
         // Assuming the subfield value is numeric for range comparison
         const numValue = Number(number);
         const startNum = Number(startRange);
@@ -41,7 +41,7 @@ export default function TreeViewResults({hits}: {hits: any}) {
 
     return (
         <>
-         <fieldset className="flex gap-4 px-4 py-2">
+        { false &&  <fieldset className="flex gap-4 px-4 py-2">
             <legend className="flex">{treeSettings[params.dataset]?.subunitLabel || 'Gardsnummer'}</legend>
             <label htmlFor="startRange" className="sr-only">Fra</label>
             <input 
@@ -61,21 +61,21 @@ export default function TreeViewResults({hits}: {hits: any}) {
                 onChange={(e) => setEndRange(e.target.value)} 
                 placeholder="til" 
             />
-        </fieldset>
+        </fieldset>}
         
         
-        <ul className="overflow-y-auto stable-scrollbar border mx-2 xl:mr-0 border-neutral-300 pt-2">
+        <ul className="overflow-y-auto stable-scrollbar border-t-2 border-neutral-100 border-neutral-300 pt-2">
             {filteredHits.map((hit: any) => {
           return <li key={hit._id} 
                      className="flex gap-4 px-2 py-2 border-b border-neutral-300 mx-2"
-                     id={`item-${hit.fields.uuid}`}>
-            <SearchParamsLink href={`/view/${params.dataset}/doc/${hit.fields.uuid}`}
+                     id={`item-${hit._source.uuid}`}>
+            <SearchParamsLink href={`/view/${params.dataset}/doc/${hit._source.uuid}`}
                   omit-params={["search"]} 
-                  onClick={() => setClickedDoc(hit.fields.uuid?.[0])}
-                  aria-current={(hit.fields.uuid == params.uuid || searchParams.get('parent') == hit.fields.uuid || clickedDoc == hit.fields.uuid) ? "page" : undefined}
-                  className="no-underline aria-[current=page]:!text-accent-800 aria-[current=page]:underline aria-[current=page]:decoration-accent-800 hover:underline">{getValueByPath(hit.fields, field)}&nbsp;<span className="font-semibold">{hit.fields.label}</span>
+                  onClick={() => setClickedDoc(hit._source.uuid?.[0])}
+                  aria-current={(hit._source.uuid == params.uuid || searchParams.get('parent') == hit._source.uuid || clickedDoc == hit._source.uuid) ? "page" : undefined}
+                  className="no-underline aria-[current=page]:!text-accent-800 aria-[current=page]:underline aria-[current=page]:decoration-accent-800 hover:underline">{getValueByPath(hit._source, field)}&nbsp;<span className="font-semibold">{hit._source.label}</span>
             </SearchParamsLink>
-            {hit.fields?.location && <div className='flex gap-2 ml-auto'>
+            {hit._source?.location && <div className='flex gap-2 ml-auto'>
                 <CoordinateButton doc={hit} iconClass="text-3xl text-neutral-700"/>
             </div>}
             </li>
