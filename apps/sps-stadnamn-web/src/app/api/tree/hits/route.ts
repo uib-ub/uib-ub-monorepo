@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     console.log("subunit", subunit)
     
     const query = {
-        size: 1000, // TODO: add pagination
+        size: 10, // TODO: add pagination
         query: {
 
             bool: {
