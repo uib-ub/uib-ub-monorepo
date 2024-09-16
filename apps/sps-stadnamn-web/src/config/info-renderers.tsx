@@ -320,7 +320,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </div> }
     <div>
     <h3>Eiendom</h3>
-    { source.within && cadastreBreadcrumb(source, "m1886") }
+    { source.within && cadastreBreadcrumb(source, "m1886", "rawData.gardsnamn") }
     { source.sosi == 'gard' &&
       <CadastralSubdivisions bnrField="rawData.bnr" sortFields={['cadastre.gnr', 'cadastre.bnr']} dataset={'m1886'} source={source} />
     }
