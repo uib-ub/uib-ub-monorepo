@@ -14,6 +14,7 @@ export default function CadastralSubdivisions({bnrField, sortFields, dataset, so
     const [hits, setHits] = useState<Record<string,any> | null>(null)
     const fields = facetConfig[dataset].filter((field: Record<string,any>) => field.table && field.key !== bnrField)
     const [page, setPage] = useState(1)
+    const [isLoading, setIsLoading] = useState(true)
 
 
     useEffect(() => {
@@ -21,7 +22,16 @@ export default function CadastralSubdivisions({bnrField, sortFields, dataset, so
          
         fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${source.uuid}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key).join(",")]}&sortFields=${sortFields.join(",")}`)
             .then(response => response.json())
-            .then(data => setHits(data.hits))
+            .then(data => {
+                
+                setHits(data.hits)
+                setIsLoading(false)
+            }
+            ).catch(error => {
+                console.error(error)
+                setIsLoading(false)
+            }
+            )
         
     }, [dataset, source.uuid, bnrField, sortFields])
 
@@ -36,8 +46,15 @@ export default function CadastralSubdivisions({bnrField, sortFields, dataset, so
     }
 
 
-    return hits && (
+    return (
 <div className="space-y-4">
+    {isLoading ? 
+    <div className="result-table max-h-[320px] overflow-y-auto">
+        <div className="animate-pulse bg-neutral-50 h-12 border-b border-neutral-200 border-b-2 border-neutral-200"></div>
+        <div className="h-8 border-b border-neutral-200"></div>
+        <div className="animate-pulse bg-neutral-50 h-8 border-b border-neutral-200"></div>
+    </div> :
+        hits && <>
             <table className="result-table max-h-[320px] overflow-y-auto">
                 <caption className="sr-only">Underordna bruk</caption>
                 <thead>
@@ -50,7 +67,7 @@ export default function CadastralSubdivisions({bnrField, sortFields, dataset, so
                     </tr>
 
                 </thead>
-                <tbody>
+                <tbody> 
                     {hits.hits.slice((page - 1) * 10, page * 10).map((hit: any) => (
 
                         <tr key={hit._id}>
@@ -62,9 +79,14 @@ export default function CadastralSubdivisions({bnrField, sortFields, dataset, so
                     ))}
                 </tbody>
             </table>
+        
+
+    
             <div className="flex gap-4">{hits.total.value > 10 && <Pagination currentPage={page} setCurrentPage={setPage} totalPages={Math.ceil(hits.total.value / 10)} />}
             {hits.total.value > 1 && <Link href={gotoSearchUrl()} className="btn btn-outline no-underline btn-compact"><PiMagnifyingGlass className="text-xl mr-2" aria-hidden="true"/>Søk i brukene</Link>}
             </div>
+            </>
+            }
             </div>
     ) 
     
