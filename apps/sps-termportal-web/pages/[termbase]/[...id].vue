@@ -14,24 +14,24 @@
             <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
               {{ $t("searchFilter.results-heading") }}
             </h2>
-            <ol ref="sidebar" class="overflow-y-auto" style="height: 0px">
-              <SearchResultListEntryShort
-                v-for="entry in searchData"
-                :key="entry.label + entry.link + entry.lang"
-                :entry-data="entry"
-              />
-            </ol>
+            <SearchResultsList
+              class="overflow-y-auto"
+              style="height: 0px"
+              context="sidebar"
+            />
           </nav>
         </div>
         <!-- Termpost -->
         <div class="flex grow flex-col">
           <main ref="main" class="h-full">
-            <TermpostBase
-              v-if="conceptUrl && mainConceptId"
-              :concept-url="conceptUrl"
-              :main-concept-id="mainConceptId"
-              :mainp="true"
-            />
+            <UtilsTransitionOpacitySection>
+              <TermpostBase
+                v-if="conceptUrl && mainConceptId"
+                :concept-url="conceptUrl"
+                :main-concept-id="mainConceptId"
+                :mainp="true"
+              />
+            </UtilsTransitionOpacitySection>
           </main>
         </div>
       </div>

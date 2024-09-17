@@ -20,13 +20,17 @@
         </div>
       </div>
       <div class="border-b-2 mt-1"></div>
-      <div class="flex flex-col gap-x-8 gap-y-6 pt-6 lg:flex-row">
-        <ContentDoc
-          :key="`welcome${locale}`"
-          :head="false"
-          :path="`/${locale}/welcome`"
-          class="content-wrapper basis-7/12"
-        />
+      <div
+        class="flex flex-col gap-x-8 gap-y-6 pt-6 lg:flex-row justify-between"
+      >
+        <div class="basis-7/12">
+          <ContentDoc
+            :key="`welcome${locale}`"
+            :head="false"
+            :path="`/${locale}/welcome`"
+            class="content-wrapper"
+          />
+        </div>
         <NewsWrapper :key="`news${locale}`" class="basis-5/12"></NewsWrapper>
       </div>
       <CollaboratorsTP class="mt-8 xl:mt-14" />

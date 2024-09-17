@@ -11,7 +11,7 @@
             {{ lalof(termbase + "-3A" + termbase) }}
           </AppLink>
         </h1>
-        <div class="flex flex-col gap-x-5 gap-y-5 lg:flex-row">
+        <div class="flex flex-col gap-x-5 gap-y-5 lg:flex-row justify-between">
           <!--Description-->
           <div class="max-w-prose basis-GRb space-y-2">
             <p v-for="p in description" :key="p" v-html="p" />
