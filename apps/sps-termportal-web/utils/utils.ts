@@ -223,12 +223,14 @@ export function htmlify(data: string): string {
   }
 }
 
-function flattenDict(dict: Object, nestingKey: string): string[] {
+function flattenDict(dict: Object, nestingKey: string, level = 0): string[] {
   let items: string[] = [];
   for (const key in dict) {
-    items.push(key);
+    items.push([key, level]);
     if (typeof dict[key][nestingKey] === "object") {
-      items = items.concat(flattenDict(dict[key][nestingKey], nestingKey));
+      items = items.concat(
+        flattenDict(dict[key][nestingKey], nestingKey, level + 1)
+      );
     }
   }
   return items;
@@ -238,7 +240,9 @@ export function flattenOrderDomains(domains) {
   const bootstrapData = useBootstrapData();
   if (bootstrapData.value.domain) {
     const flatDomains = flattenDict(bootstrapData.value.domain, "subdomains");
-    return intersectUnique(flatDomains, domains);
+    return flatDomains
+      .filter((entry) => domains.includes(entry[0]))
+      .map((entry) => entry[0]); // TODO should be removed and handled down the line
   } else {
     return [];
   }
