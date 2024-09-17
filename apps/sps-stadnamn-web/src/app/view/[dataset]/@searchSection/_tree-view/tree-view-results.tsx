@@ -90,7 +90,7 @@ export default function TreeViewResults({hits, isLoading}: {hits: any, isLoading
                     }
                     else if (isLoading) {
                         return <li key={i} className="flex gap-4 px-2 py-2 border-b border-neutral-300 mx-2">
-                            <div className="rounded-md mt-1 mb-3  bg-neutral-200 h-[1em] animate-pulse" style={{width: `${Math.floor(Math.random() * (24 - 6 + 1) + 6)}rem`}}></div><div className="h-[1.5em] w-[1.5em] rounded-full self-center bg-neutral-200 ml-auto animate-pulse"></div>
+                            <div className="rounded-md m-2  bg-neutral-200 h-[1em] animate-pulse" style={{width: `${Math.floor(Math.random() * (24 - 6 + 1) + 6)}rem`}}></div><div className="h-[1.5em] w-[1.5em] rounded-full self-center bg-neutral-200 ml-auto animate-pulse"></div>
                         </li>
                     }
                     else if ( i == size) {
