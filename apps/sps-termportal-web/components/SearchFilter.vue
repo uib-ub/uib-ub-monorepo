@@ -54,7 +54,9 @@ const filterSections = () => {
       title: "",
       key: "context",
       fkey: "context",
-      data: Object.keys(searchDataStats.value.context || {}).sort(),
+      data: searchInterface.value.useDomain
+        ? flattenOrderDomains(Object.keys(searchDataStats.value.context || {}))
+        : Object.keys(searchDataStats.value.context || {}).sort(),
     },
     {
       title: i18n.t("searchFilter.termproperty"),

@@ -222,3 +222,24 @@ export function htmlify(data: string): string {
     return data;
   }
 }
+
+function flattenDict(dict: Object, nestingKey: string): string[] {
+  let items: string[] = [];
+  for (const key in dict) {
+    items.push(key);
+    if (typeof dict[key][nestingKey] === "object") {
+      items = items.concat(flattenDict(dict[key][nestingKey], nestingKey));
+    }
+  }
+  return items;
+}
+
+export function flattenOrderDomains(domains) {
+  const bootstrapData = useBootstrapData();
+  if (bootstrapData.value.domain) {
+    const flatDomains = flattenDict(bootstrapData.value.domain, "subdomains");
+    return intersectUnique(flatDomains, domains);
+  } else {
+    return [];
+  }
+}
