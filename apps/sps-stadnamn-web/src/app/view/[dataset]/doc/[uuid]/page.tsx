@@ -131,12 +131,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
         </div>
       : null}
       { docDataset != 'search' && doc._source.location && <div>
-        <h3>Koordinater</h3>
-        <div className='space-y-6'>
         <CoordinateInfo source={doc._source}/>
-        <EmbeddedMap doc={doc._source}/> 
-        
-      </div></div> }
+        </div> }
       
       </>}
       </div>

@@ -2,7 +2,6 @@
 
 'use client'
 import { useEffect } from 'react';
-import { PiCaretDown, PiCaretUp  } from 'react-icons/pi';
 import { useState } from 'react';
 
 export default function CoordinateType({source}: {source: Record<string, any>}) {
@@ -30,12 +29,10 @@ export default function CoordinateType({source}: {source: Record<string, any>}) 
     return ( coordinateData._source &&
             <div className="mt-2">
             <button onClick={() => setExpanded(currentValue => !currentValue)} className="hover:cursor-pointer text-lg" aria-controls="original_data_list" aria-expanded={expanded}>
-            { expanded ? <PiCaretUp className="text2xl inline"/> : <PiCaretDown className="text2xl inline"/>} Koordinattype: {coordinateData._source?.label}</button>
+            Koordinattype: {coordinateData._source?.label}</button>
             <div id="original_data_list">
-            {expanded &&
             <p className="mt-1 text-gray-600">{coordinateData._source?.definition}</p>
             
-            }
             </div>
             
 

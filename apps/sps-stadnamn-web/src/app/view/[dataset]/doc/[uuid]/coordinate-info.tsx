@@ -1,10 +1,13 @@
 
 
 'use client'
-import { PiMapPin  } from 'react-icons/pi';
+import { PiCaretDown, PiCaretUp, PiMapPin  } from 'react-icons/pi';
 import CoordinateType from './coordinate-type';
+import EmbeddedMap from '@/components/Map/EmbeddedMap';
+import { useState } from 'react';
 
 function convertDMS(lat: number, lon: number): string {
+
     function toDMS(degree: number, direction: string[]): string {
         const absolute = Math.abs(degree);
         const degrees = Math.floor(absolute);
@@ -19,9 +22,18 @@ function convertDMS(lat: number, lon: number): string {
     return `${latitude} ${longitude}`;
   }
 
+
 export default function CoordinateInfo({source}: {source: Record<string, any>}) {
+    const [expanded, setExpanded] = useState(false)
     return (
         <>
+        <h3>
+            <button aria-controls="coordinate_info" aria-expanded={expanded} onClick={() => setExpanded((value: boolean) => !value)}>
+               {expanded ? <PiCaretUp aria-hidden="true" className="text2xl mr-2 inline"/> : <PiCaretDown aria-hidden="true" className="text2xl mr-2 inline"/>}Koordinater
+            </button>
+        </h3>
+        { expanded &&
+        <div id="coordinate_info" className='space-y-6'>
             <div className="flex items-center space-x-2">
                 <PiMapPin className="w-6 h-6" />
                 <a className="font-semibold" 
@@ -30,9 +42,13 @@ export default function CoordinateInfo({source}: {source: Record<string, any>}) 
                     </a>
             </div>
             {source.coordinateType && 
-            <CoordinateType source={source}/>
-
+                <CoordinateType source={source}/> 
             }
+            <EmbeddedMap doc={source}/> 
+            
+            </div>
+            
+        }
         </>
     );
 }
