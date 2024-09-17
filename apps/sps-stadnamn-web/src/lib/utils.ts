@@ -19,7 +19,12 @@ export function getValueByPath (obj: any, path: string | undefined): any {
     return ""
   }
 
-  // Needed for nested fields in both field and _source
+  
+  if (obj[path]) {
+    return obj[path]
+  }
+  else {
+    // Needed for nested fields in both field and _source
   if (path.split("__").length == 2) {
     // Concatenate gnr of all cadastre
     const [nestedField, field] = path.split('__')
@@ -29,5 +34,11 @@ export function getValueByPath (obj: any, path: string | undefined): any {
   }
 
   // No reduce needed if field instead of _source
-  return obj[path] || path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+
+  }
+
+  
+
+  
 }
