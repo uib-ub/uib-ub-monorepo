@@ -5,27 +5,20 @@ import { getValueByPath } from "@/lib/utils";
 
 export default async function FacetsInfobox({ dataset, source }: { dataset: string, source: Record<string,any> }) {
 
-    const getValue = (obj: any, path: string): any => {
-      if (path == 'adm') {
-        return [obj.adm3, obj.adm2, obj.adm1].filter(Boolean).join('__')
-      }
-      return getValueByPath(obj, path)
-    }
-
     const items = facetConfig[dataset].filter(item => item.key != 'sosi').map((facet) => {
-        const value = getValue(source, facet.key);
+        const value = getValueByPath(source, facet.key);
         return {
           title: facet.label,
           items: Array.isArray(value) ? value.map((item: any) => ({value: item, 
                                                                    href: `/view/${dataset}?${facet.key}=${encodeURIComponent(item)}`,
-                                                                  ...facet.additionalParams ?  {hrefParams: facet.additionalParams.map((param: string) => ({[param]: getValue(source, param)}))} : {}
+                                                                  ...facet.additionalParams ?  {hrefParams: facet.additionalParams.map((param: string) => ({[param]: getValueByPath(source, param)}))} : {}
 
           })) : [{value: value,
             
             //hrefParams: {adm1: "test", adm2: "hello"}
             ...facet.additionalParams?.length ? {hrefParams: [facet.key, ...facet.additionalParams || []].reduce((acc, param) => ({
               ...acc,
-              [param]: getValue(source, param)
+              [param]: getValueByPath(source, param)
             }), {})
           } :  {}
                 
