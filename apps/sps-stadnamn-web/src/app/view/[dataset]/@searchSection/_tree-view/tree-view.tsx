@@ -69,10 +69,15 @@ useEffect(() => {
               </>
             : adm1
             }
-            {isLoading && searchParams.get('q') && <Spinner status="Laster inn treff" className="w-[1.5em] h-[1.5em] inline ml-2"/>}
           </div>
         }
-        { isLoadingTree && <div className="justify-center" ><Spinner status="Laster inn aggregater" className="w-10 h-10"/></div> }
+        { isLoadingTree && <div className='border-t-2 border-neutral-100 border-neutral-300 pt-2 animate-pulse'>
+          <div role="status" aria-live="polite" className="sr-only">Laster inn register</div>
+          { Array.from({length: 20}, (_, i) => <div key={i} className="flex px-2 py-2 border-b border-neutral-300 mx-2">
+            <div className="rounded-md mt-1 mb-3  bg-neutral-300 h-[1em]" style={{width: `${Math.floor(Math.random() * (24 - 6 + 1) + 6)}rem`}}></div>
+          </div>) }
+
+        </div> }
 
           {cadastralData?.aggregations?.adm?.buckets?.length &&
           <ul className="flex-col gap-2 overflow-y-auto stable-scrollbar">
@@ -92,9 +97,9 @@ useEffect(() => {
           </ul>
           }
 
-        {!aggregate && !isLoading &&  resultData?.hits?.hits?.length ?
+        {!aggregate ?
         
-        <TreeViewResults hits={resultData.hits.hits}/>
+        <TreeViewResults hits={resultData?.hits} isLoading={isLoading}/>
         : null
         }
     </section>

@@ -33,7 +33,8 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     .map(name => `${name}=${searchParams.get(name)}`)
     .join('&')
 
-    const treeParamsQuery = searchParams.get('display') == 'tree' && `sosi=gard&size=${searchParams.get('adm2') ? '40' : '0'}${treeParams ? '&' + treeParams : ''}`
+    const treeParamsQuery = searchParams.get('display') == 'tree' && `sosi=gard&size=${searchParams.get('adm2') ? searchParams.get('size') || 50: 0}${treeParams ? '&' + treeParams : ''}`
+
 
 
     const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded']) // Props not passed to the search API
@@ -51,12 +52,14 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 return
             }
 
-            if (es_data.aggregations?.viewport?.bounds) {
-                setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
-                    [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
-            }
-            else {
-                setMapBounds([])
+            if (!treeParamsQuery || !searchParams.get('size') || !mapBounds.length ) {
+                if (es_data.aggregations?.viewport?.bounds) {
+                    setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
+                        [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
+                }
+                else {
+                    setMapBounds([])
+                }
             }
             setResultData(es_data)
 
@@ -65,7 +68,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             })
         
         
-      }, [filteredSearchParams, params.dataset, treeParamsQuery])
+      }, [filteredSearchParams, params.dataset, treeParamsQuery, searchParams, mapBounds.length])
 
   return <SearchContext.Provider value={{resultData, isLoading, mapBounds, searchError}}>{children}</SearchContext.Provider>
 }
