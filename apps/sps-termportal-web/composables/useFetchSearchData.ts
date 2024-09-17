@@ -1,5 +1,5 @@
 import { SearchDataStats } from "./states";
-import { Matching, SearchOptions, searchFilterDataEmpty } from "~~/utils/vars";
+import { Matching, SearchOptions } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
@@ -31,8 +31,19 @@ async function fetchSearchDataAggregate(
   const situation = searchOptions.situation;
 
   const searchDataStats = useSearchDataStats();
+  const searchFilterSelection = useSearchFilterSelection();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
+
+  if (["initial", "options"].includes(situation)) {
+    searchFilterSelection.value = {
+      lang: [],
+      samling: [],
+      predicate: [],
+      matching: [],
+      context: [],
+    };
+  }
 
   const aggregate = await $fetch("/api/search/aggregate", {
     method: "POST",
@@ -41,7 +52,7 @@ async function fetchSearchDataAggregate(
   });
 
   if (currentFetch === searchFetchLatest.value) {
-    if (situation === "initial" || situation === "options") {
+    if (["initial", "options"].includes(situation)) {
       searchDataStats.value = aggregate;
     } else if (situation === "filter") {
       const zeroedStats = resetStats(searchDataStats.value, false);

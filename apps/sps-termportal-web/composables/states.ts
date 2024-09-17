@@ -77,8 +77,8 @@ export interface SearchFilterData {
   matching: Matching[];
   context: string[];
 }
-export const useSearchFilterData = () =>
-  useState<SearchFilterData>("searchFilterData", () => ({
+export const useSearchFilterSelection = () =>
+  useState<SearchFilterData>("searchFilterSelection", () => ({
     lang: [],
     samling: [],
     predicate: [],

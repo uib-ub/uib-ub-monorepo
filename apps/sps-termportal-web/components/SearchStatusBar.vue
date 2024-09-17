@@ -50,9 +50,9 @@ const showSearchFilter = useShowSearchFilter();
 
 const searchData = useSearchData();
 const searchDataStats = useSearchDataStats();
-const searchFilterData = useSearchFilterData();
+
 const searchDataPending = useSearchDataPending();
-const searchFetchInitial = useSearchFetchInitial();
+
 const pending = computed(() => {
   return !Object.values(searchDataPending.value).every((el) => !el);
 });
@@ -66,16 +66,4 @@ const count = computed(() => {
     return 0;
   }
 });
-
-watch(
-  searchFilterData,
-  () => {
-    if (searchFetchInitial.value) {
-      searchFetchInitial.value = false;
-    } else {
-      useFetchSearchData(useGenSearchOptions("filter"));
-    }
-  },
-  { deep: true }
-);
 </script>
