@@ -22,6 +22,9 @@ RUN turbo prune api --docker
 # Installer stage to set up environment
 FROM base AS installer
 
+# Set working directory
+WORKDIR /app
+
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
@@ -34,7 +37,7 @@ COPY --from=builder /app/out/full/ .
 COPY --from=builder /app/turbo.json ./turbo.json
 
 # FROM bun image AS runner stage to run the application
-FROM oven/bun:${BUN_VERSION}-alpine AS runner
+# FROM oven/bun:${BUN_VERSION}-alpine AS runner
 
 # Install bash and curl (if required)
 RUN apk update && \
@@ -42,7 +45,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 # Set working directory
-WORKDIR /app
+# WORKDIR /app
 
 # Set up non-root user
 RUN addgroup --system honojs && \
@@ -51,8 +54,8 @@ RUN addgroup --system honojs && \
 USER honojs
 
 # Copy application from the installer stage
-COPY --from=installer /app/node_modules ./node_modules
-COPY --from=installer /app/apps ./apps
-COPY --from=installer /app/packages ./packages
+# COPY --from=installer /app/node_modules ./node_modules
+# COPY --from=installer /app/apps ./apps
+# COPY --from=installer /app/packages ./packages
 
 CMD ["bun", "run", "./apps/api/src/main.ts"]
