@@ -125,14 +125,17 @@ export default async function DocumentView({ params, searchParams }: { params: {
 
 
         </div>}
-        { doc._source.rawData ?
+        
+      { docDataset != 'search' && doc._source.location && <div>
+        <CoordinateInfo source={doc._source}/>
+        </div> 
+      }
+      { doc._source.rawData ?
         <div>
         <OriginalData rawData={doc._source.rawData}/>
         </div>
-      : null}
-      { docDataset != 'search' && doc._source.location && <div>
-        <CoordinateInfo source={doc._source}/>
-        </div> }
+        : null
+      }
       
       </>}
       </div>
