@@ -3,7 +3,7 @@
     <Head v-if="mainp">
       <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
     </Head>
-    <div v-if="data && bootstrapData">
+    <div>
       <h2
         v-if="pagetitle"
         :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
@@ -15,13 +15,18 @@
         >
           <span v-html="pagetitle"></span
         ></AppLink>
-        <div v-if="mainConcept?.memberOf">
-          <AppLink
-            class="text-lg text-gray-600 underline hover:text-black"
-            :to="'/' + mainConcept?.memberOf.split('-3A')[1]"
-          >
-            {{ lalof(mainConcept.memberOf) }}
-          </AppLink>
+        <div
+          v-if="mainConcept?.memberOf"
+          class="text-lg text-gray-600 underline hover:text-black h-8"
+        >
+          <client-only>
+            <AppLink
+              v-if="mainConcept.memberOf !== lalof(mainConcept.memberOf)"
+              :to="'/' + mainConcept?.memberOf.split('-3A')[1]"
+            >
+              {{ lalof(mainConcept.memberOf) }}
+            </AppLink>
+          </client-only>
         </div>
       </h2>
       <div class="lg:flex space-y-5 lg:space-y-0">
