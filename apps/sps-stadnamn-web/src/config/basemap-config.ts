@@ -1,8 +1,10 @@
 
+/* Default bakgrunnskart bør heller endres hvis man søker i et datasett med annen geografisk dekning enn Norge. 
 export const backgroundMap = {
         url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
         attribution: '&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>'
 }
+        */
 
 export const baseMaps: Record<string, any>[] = [
     {
@@ -30,11 +32,11 @@ export const baseMaps: Record<string, any>[] = [
             attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
         }
     },
-    {
-        key: 'word_map_labels',
+    { // 
+        key: 'word_map',
         name: 'Verdenskart',
         props: {
-            url: 'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
+            url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
             attribution: '&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>'
         }
         

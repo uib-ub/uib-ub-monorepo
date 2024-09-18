@@ -47,15 +47,15 @@ export default function CadastralSubdivisions({bnrField, sortFields, dataset, so
 
 
     return (
-<div className="space-y-4">
+<div className="space-y-4 w-full overflow-hidden">
     {isLoading ? 
-    <div className="result-table max-h-[320px] overflow-y-auto">
+    <div className="result-table max-h-[320px]">
         <div className="animate-pulse bg-neutral-50 h-12 border-b border-neutral-200 border-b-2 border-neutral-200"></div>
         <div className="h-8 border-b border-neutral-200"></div>
         <div className="animate-pulse bg-neutral-50 h-8 border-b border-neutral-200"></div>
     </div> :
         hits && <>
-            <table className="result-table max-h-[320px] overflow-y-auto">
+            <table className="result-table max-h-[320px] overflow-x-auto">
                 <caption className="sr-only">Underordna bruk</caption>
                 <thead>
                     <tr>

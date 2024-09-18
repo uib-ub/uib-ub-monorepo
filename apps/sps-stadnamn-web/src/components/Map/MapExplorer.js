@@ -159,7 +159,7 @@ export default function MapExplorer(props) {
             {({ TileLayer, LayersControl, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
 
           <>
-           <TileLayer {...backgroundMap}/>
+           { false && <TileLayer {...backgroundMap}/>}
            <LayersControl collapsed={layerControlCollapsed} >
            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == baseMaps[0].key || !localStorage.getItem('baseLayer') || !baseMapKeys.includes(localStorage.getItem('baseLayer'))} name={baseMapNames[0]}>
               <TileLayer key={baseMaps[0].key} {...baseMaps[0].props} />
