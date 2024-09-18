@@ -1,8 +1,6 @@
 import Pagination from '../../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
 import { PiTable } from 'react-icons/pi';
-import { useEffect, useState } from 'react';
-import Spinner from '@/components/svg/Spinner';
 import ResultRow from '@/components/results/ResultRow';
 
 
