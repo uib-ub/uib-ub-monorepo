@@ -4,5 +4,7 @@ metadata:
   name: hono-api-config
 data:
   namespace: "hono-api-dev"
-  prod_url: "https://api-dev.testdu.uib.no"
-  api_url: "https://api-dev.testdu.uib.no"
+  # prod_url: "https://api-dev.testdu.uib.no"
+  # api_url: "https://api-dev.testdu.uib.no"
+  prod_url: "https://api.ub.uib.no"
+  api_url: "https://api.ub.uib.no"
