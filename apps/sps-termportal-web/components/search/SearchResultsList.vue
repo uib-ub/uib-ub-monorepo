@@ -1,5 +1,5 @@
 <template>
-  <ol v-if="searchData.length > 0" ref="scrollComponent">
+  <ol ref="resultslist">
     <template v-if="context === 'full'">
       <SearchResultListEntry
         v-for="entry in searchData"
@@ -23,9 +23,11 @@ const searchData = useSearchData();
 const searchDataStats = useSearchDataStats();
 const searchDataPending = useSearchDataPending();
 
-const props = defineProps({ context: { type: String, default: "full" } });
+const props = defineProps({
+  context: { type: String, default: "full" },
+});
 
-const scrollComponent = ref(null);
+const resultslist = ref(null);
 
 const pending = computed(() => {
   return !Object.values(searchDataPending.value).every((el) => !el);
@@ -44,14 +46,18 @@ const countFetchedMatches = computed(() => {
 });
 
 onMounted(() => {
-  window.addEventListener("scroll", fetchFurtherSearchData);
+  if (props.context === "full") {
+    window.addEventListener("scroll", fetchFurtherSearchData);
+  }
 });
 onUnmounted(() => {
-  window.removeEventListener("scroll", fetchFurtherSearchData);
+  if (props.context === "full") {
+    window.removeEventListener("scroll", fetchFurtherSearchData);
+  }
 });
 
 const fetchFurtherSearchData = () => {
-  const element = scrollComponent.value;
+  const element = resultslist.value;
   if (count.value > countFetchedMatches.value && !pending.value) {
     if (element.getBoundingClientRect().bottom * 0.75 < window.innerHeight) {
       const offset: SearchOptions["offset"] = {};
@@ -91,7 +97,6 @@ const fetchFurtherSearchData = () => {
         offset.all = countFetchedMatches.value;
       }
 
-      console.log("fetch more");
       useFetchSearchData(
         useGenSearchOptions("further", {
           offset,

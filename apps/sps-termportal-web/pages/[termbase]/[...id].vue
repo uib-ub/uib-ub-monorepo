@@ -14,11 +14,9 @@
             <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
               {{ $t("searchFilter.results-heading") }}
             </h2>
-            <SearchResultsList
-              class="overflow-y-auto"
-              style="height: 0px"
-              context="sidebar"
-            />
+            <div ref="sidebar" class="overflow-y-auto" style="height: 0px">
+              <SearchResultsList context="sidebar" />
+            </div>
           </nav>
         </div>
         <!-- Termpost -->
@@ -51,12 +49,6 @@ const main = ref(null);
 const termbase = route.params.termbase as Samling;
 const idArray = route.params.id as Array<string>;
 
-onMounted(() => {
-  if (sidebar.value) {
-    sidebar.value.scrollTop = searchScrollBarPos.value;
-  }
-});
-
 function getConceptId(termbase, idArray) {
   let id: string;
   let mainConceptId: string;
@@ -77,6 +69,13 @@ const mainConceptId = getConceptId(termbase, idArray);
 useResizeObserver(main, (e) => {
   if (sidebar.value) {
     sidebar.value.style.height = `${main.value.offsetHeight - 88}px`;
+  }
+});
+
+onMounted(async () => {
+  await nextTick();
+  if (sidebar.value) {
+    sidebar.value.scrollTo(0, searchScrollBarPos.value);
   }
 });
 

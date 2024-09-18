@@ -53,7 +53,7 @@ const pending = computed(() => {
 
 const searchScrollBarPos = useSearchScrollBarPos();
 onBeforeUnmount(() => {
-  searchScrollBarPos.value = window.pageYOffset;
+  searchScrollBarPos.value = window.scrollY;
 });
 
 function considerSearchFetching(situation: FetchType) {
