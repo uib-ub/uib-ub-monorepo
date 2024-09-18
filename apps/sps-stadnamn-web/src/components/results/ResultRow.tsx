@@ -70,7 +70,7 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
         }
         
         {hit._source.audio && 
-          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${hit._source.audio.file}` } 
+          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/hord/${hit._source.audio.file}` } 
                        iconClass="text-3xl text-neutral-700"/> 
         }
         {hit._source.link &&
