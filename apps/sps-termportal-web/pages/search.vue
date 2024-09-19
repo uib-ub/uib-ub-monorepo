@@ -15,11 +15,26 @@
         <div class="xl:flex">
           <SearchFilter class="block xl:hidden" placement="main" />
           <main class="grow">
-            <h2 id="main" class="pb-2 pt-3 text-2xl">
-              <AppLink to="#main">
-                {{ $t("searchFilter.results-heading") }}</AppLink
-              >
-            </h2>
+            <div class="flex justify-between mb-2 mt-3">
+              <div class="flex space-x-6 text-2xl">
+                <h2 id="main" class="ml-0.5">
+                  <AppLink to="#main">
+                    {{ $t("searchFilter.results-heading") }}</AppLink
+                  >
+                </h2>
+                <TransitionOpacity>
+                  <SpinnerIcon
+                    v-if="searchDataPending.entries"
+                    size="0.8em"
+                    class="mt-0.5"
+                  />
+                </TransitionOpacity>
+              </div>
+              <div class="flex text-lg items-end">
+                <div class="w-16 pr-1 text-right">{{ count }}</div>
+                <div>{{ $t("searchFilter.results") }}</div>
+              </div>
+            </div>
             <SearchResultsList />
             <TransitionOpacity v-if="false" class="flex justify-center p-2">
               <SpinnerIcon v-if="pending && countFetchedMatches > 30" />
@@ -40,6 +55,7 @@ const searchData = useSearchData();
 const allowSearchFetch = useAllowSearchFetch();
 const showSearchFilter = useShowSearchFilter();
 const breakpoint = useBreakpoint();
+const searchDataStats = useSearchDataStats();
 const countFetchedMatches = computed(() => {
   return countSearchEntries(searchData.value);
 });
@@ -49,6 +65,17 @@ const searchInterface = useSearchInterface();
 const searchDataPending = useSearchDataPending();
 const pending = computed(() => {
   return !Object.values(searchDataPending.value).every((el) => !el);
+});
+
+const count = computed(() => {
+  if (searchDataPending.value.aggregate) {
+    return countSearchEntries(searchData.value);
+  }
+  try {
+    return sum(Object.values(searchDataStats.value?.lang || []));
+  } catch (e) {
+    return 0;
+  }
 });
 
 const searchScrollBarPos = useSearchScrollBarPos();

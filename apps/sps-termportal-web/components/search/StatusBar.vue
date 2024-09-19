@@ -34,36 +34,10 @@
           </div>
         </button>
       </div>
-      <div class="flex">
-        <TransitionOpacity>
-          <SpinnerIcon v-if="pending" />
-        </TransitionOpacity>
-        <div class="w-16 pr-1 text-right">{{ count }}</div>
-        <div>{{ $t("searchFilter.results") }}</div>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 const showSearchFilter = useShowSearchFilter();
-
-const searchData = useSearchData();
-const searchDataStats = useSearchDataStats();
-
-const searchDataPending = useSearchDataPending();
-
-const pending = computed(() => {
-  return !Object.values(searchDataPending.value).every((el) => !el);
-});
-const count = computed(() => {
-  if (searchDataPending.value.aggregate) {
-    return countSearchEntries(searchData.value);
-  }
-  try {
-    return sum(Object.values(searchDataStats.value?.lang || []));
-  } catch (e) {
-    return 0;
-  }
-});
 </script>

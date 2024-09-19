@@ -2,9 +2,18 @@
   <nav
     v-if="showSearchFilter"
     :id="`filterCard-${placement}`"
-    class="h-full border-gray-300 pr-1 xl:border-r xl:pt-12"
+    class="h-full border-gray-300 pr-1 xl:border-r xl:pt-11"
   >
-    <h2 class="pb-2 pt-1 text-2xl">{{ $t("searchFilter.filter") }}</h2>
+    <div class="flex space-x-6 pb-2 pt-1 text-2xl">
+      <h2>{{ $t("searchFilter.filter") }}</h2>
+      <TransitionOpacity>
+        <SpinnerIcon
+          v-if="searchDataPending.aggregate"
+          size="0.8em"
+          class="mt-0.5"
+        />
+      </TransitionOpacity>
+    </div>
     <div
       class="grid grid-cols-1 gap-4 rounded border-gray-300 xs:grid-cols-2 md:grid-cols-4 xl:grid-cols-1"
     >
@@ -14,7 +23,7 @@
           :title="title"
           :fkey="key"
         >
-          <FilterCheckbox
+          <SearchFilterCheckbox
             v-for="d in data"
             :key="d"
             :ftype="key"
@@ -34,6 +43,7 @@ const showSearchFilter = useShowSearchFilter();
 const searchDataStats = useSearchDataStats();
 const localeLangOrder = useLocaleLangOrder();
 const searchInterface = useSearchInterface();
+const searchDataPending = useSearchDataPending();
 const i18n = useI18n();
 
 const props = defineProps({
