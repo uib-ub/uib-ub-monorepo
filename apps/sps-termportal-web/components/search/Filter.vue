@@ -6,13 +6,13 @@
   >
     <div class="flex space-x-6 pb-2 pt-1 text-2xl">
       <h2>{{ $t("searchFilter.filter") }}</h2>
-      <TransitionOpacity>
-        <SpinnerIcon
+      <UtilsTransitionOpacity>
+        <UtilsSpinnerIcon
           v-if="searchDataPending.aggregate"
           size="0.8em"
           class="mt-0.5"
         />
-      </TransitionOpacity>
+      </UtilsTransitionOpacity>
     </div>
     <div
       class="grid grid-cols-1 gap-4 rounded border-gray-300 xs:grid-cols-2 md:grid-cols-4 xl:grid-cols-1"

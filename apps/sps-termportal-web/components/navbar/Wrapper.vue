@@ -34,7 +34,6 @@
 import { useI18n } from "vue-i18n";
 
 const i18n = useI18n();
-const orderedTermbases = useOrderedTermbases();
 
 const defProps = defineProps({
   context: { type: String, required: true },

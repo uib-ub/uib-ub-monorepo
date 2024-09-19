@@ -22,13 +22,13 @@
                     {{ $t("searchFilter.results-heading") }}</AppLink
                   >
                 </h2>
-                <TransitionOpacity>
-                  <SpinnerIcon
+                <UtilsTransitionOpacity>
+                  <UtilsSpinnerIcon
                     v-if="searchDataPending.entries"
                     size="0.8em"
                     class="mt-0.5"
                   />
-                </TransitionOpacity>
+                </UtilsTransitionOpacity>
               </div>
               <div class="flex text-lg items-end">
                 <div class="w-16 pr-1 text-right">{{ count }}</div>
@@ -36,9 +36,9 @@
               </div>
             </div>
             <SearchResultsList />
-            <TransitionOpacity v-if="false" class="flex justify-center p-2">
-              <SpinnerIcon v-if="pending && countFetchedMatches > 30" />
-            </TransitionOpacity>
+            <UtilsTransitionOpacity v-if="false" class="flex justify-center p-2">
+              <UtilsSpinnerIcon v-if="pending && countFetchedMatches > 30" />
+            </UtilsTransitionOpacity>
           </main>
         </div>
       </div>
