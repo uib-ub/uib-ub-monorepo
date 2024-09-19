@@ -1,17 +1,12 @@
 import { PiLinkBold } from 'react-icons/pi';
-import Link from 'next/link';
+import IconLink from '../ui/icon-link';
 
 export default function ExternalLinkButton({doc, iconClass}: {doc: any, iconClass: string}) {
 
     return (
-
-        <Link href={doc._source.link} aria-label="Ekstern ressurs" className="p-1 text-neutral-700 xl:text-xl no-underline !inline-block" target="_blank">
-          <i aria-hidden="true">
-            <PiLinkBold  className={iconClass}/>
-          </i>
-               
-        </Link>
-
+        <IconLink href={doc._source.link} label="Ekstern ressurs" className="inline-flex items-center justify-center group text-neutral-700 xl:text-xl">
+            <PiLinkBold  className={"align-text-bottom " + iconClass}/> 
+        </IconLink>
     )
 
 }

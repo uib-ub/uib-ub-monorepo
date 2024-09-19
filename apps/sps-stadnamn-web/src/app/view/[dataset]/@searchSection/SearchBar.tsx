@@ -4,8 +4,9 @@ import IconButton from "@/components/ui/icon-button";
 import { useState, useRef } from "react";
 import { useQueryStringWithout } from "@/lib/search-params";
 import { fieldConfig } from "@/config/search-config";
+import Spinner from "@/components/svg/Spinner";
 
-export default function SearchBar() {
+export default function SearchBar({showLoading}: {showLoading?: boolean}) {
     const searchParams = useSearchParams()
     const router = useRouter()
     const clearedQuery = useQueryStringWithout(['q', 'page'])
@@ -26,9 +27,11 @@ export default function SearchBar() {
         const params = new URLSearchParams(location.search);
         if (field) {
             params.set('field', field);
+            params.delete('page');
         }
         else {
             params.delete('field');
+            params.delete('page');
         }
         
         const newUrl = `/view/${dataset}?${params.toString()}`;
@@ -54,6 +57,7 @@ export default function SearchBar() {
                    onChange={(event) => setInputValue(event.target.value)}    
                    className={`!w-full !h-full px-2 focus:outline-none ${fieldConfig[dataset] ? 'border-l border-neutral-300' : ''}`}/>
             </div>
+            { showLoading && searchParams.get('q') &&  <Spinner status="Laster inn treff" className='absolute right-8 top-1/4 w-[1em] h-[1em}'/> }
             { inputValue && 
             <IconButton type="button" onClick={clearInput} label="Tøm søk" className="absolute right-2 top-1/2 transform -translate-y-1/2"><PiX className="text-lg"/></IconButton> }
             </div>

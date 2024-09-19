@@ -8,7 +8,7 @@ import {
   } from "@/components/ui/tooltip"
 
 
-export default function TooltipButton({ children, className, textClass, textIcon, label, type, href, ...rest }: 
+export default function IconButton({ children, textClass, textIcon, label, type, href, ...rest }: 
     { children: React.ReactNode, className?: string, textClass?: string, textIcon?: boolean, label: string, href?: string, [x: string]: any, type?: "button" | "submit" | "reset" }) {
     const router = useRouter();
 
@@ -23,9 +23,11 @@ export default function TooltipButton({ children, className, textClass, textIcon
 
         <TooltipProvider>
             <Tooltip>
-                <TooltipTrigger aria-label={label} className={className} type={type || "button"} onClick={handleClick} {...rest}>
+                <TooltipTrigger asChild>
+                    <button aria-label={label} type={type || "button"} onClick={handleClick} {...rest}>
                     {textClass ? <span aria-hidden="true" className={textClass}>{label}</span> : null}
                     {textIcon ? <span aria-hidden="true" className='flex'>{children}</span> : <i  aria-hidden='true'>{children}</i>}
+                    </button>
                 </TooltipTrigger>
                 <TooltipContent>
                 {label}

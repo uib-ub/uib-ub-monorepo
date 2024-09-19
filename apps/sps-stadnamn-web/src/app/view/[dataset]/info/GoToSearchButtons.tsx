@@ -1,15 +1,14 @@
 
 'use client'
-import { useSearchParams, useParams} from "next/navigation";
 import Link from "next/link";
 
 import { PiMapTrifold } from "react-icons/pi";
-export default function GoToSearchButtons() {
-    const params = useParams()
-    const currentSearch = useSearchParams().toString()
+import { useQueryStringWithout } from "@/lib/search-params";
+export default function GoToSearchButtons({ dataset }: { dataset: string }) {
+    const currentSearch = useQueryStringWithout(['display'])
 
     return (
-        <Link href={ '/view/' + params.dataset + (currentSearch ? '?' + currentSearch : '') } className="btn btn-outline no-underline"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
+        <Link href={ '/view/' + dataset + (currentSearch ? '?' + currentSearch : '') } className="btn btn-outline no-underline"><PiMapTrifold aria-hidden='true' className="mr-2"/>Utforsk kartet</Link>
     )
 
 }

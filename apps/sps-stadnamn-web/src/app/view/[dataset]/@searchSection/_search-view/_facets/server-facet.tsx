@@ -11,7 +11,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const router = useRouter()
   const params = useParams<Record<string, string>>()
   const paramLookup = useSearchParams()
-  const searchParams = useQueryWithout(['docs', 'popup', 'view', 'manifest', 'page'])
+  const searchParams = useQueryWithout(['docs', 'popup', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -21,7 +21,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const availableFacets = facetConfig[params.dataset]
   const [selectedFacet, setSelectedFacet] = useState(availableFacets && availableFacets[0]?.key);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
-  const paramsExceptFacet = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'view', 'manifest', 'page', 'size', 'sort', 'orderBy', selectedFacet])
+  const paramsExceptFacet = useQueryStringWithout(['docs', 'popup', 'expanded', 'search', 'display', 'manifest', 'page', 'size', 'asc', 'desc', selectedFacet])
 
   const switchFacet = (facet: string) => {
     setSelectedFacet(facet)
@@ -112,7 +112,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
         <li key={index}>
         <label>
           <input type="checkbox" checked={paramLookup.getAll(selectedFacet).includes(item.key.toString()) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
-          {item.label} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+          {item.label == "_false" ? "[ingen verdi]" : item.label} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
         </li>
         ))}

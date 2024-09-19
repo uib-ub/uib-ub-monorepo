@@ -1,9 +1,8 @@
 'use client'
- 
 import { createContext } from 'react'
 import { useState, useEffect } from 'react';
 import { ResultData } from './types'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useQueryStringWithout } from '@/lib/search-params';
 
 interface SearchContextData {
@@ -27,13 +26,24 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const params = useParams()
-    const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded'])
+    // Treeparams should only get adm1, adm2, adm3 if they exist
+    const searchParams = useSearchParams()
+    const treeParams = searchParams.get('display') == 'tree' && ['adm1', 'adm2', 'adm3']
+    .filter(name => searchParams.get(name))
+    .map(name => `${name}=${searchParams.get(name)}`)
+    .join('&')
+
+    const treeParamsQuery = searchParams.get('display') == 'tree' && `sosi=gard&size=${searchParams.get('adm2') ? searchParams.get('size') || 50: 0}${treeParams ? '&' + treeParams : ''}`
+
+
+
+    const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded']) // Props not passed to the search API
 
     useEffect(() => {
 
             setIsLoading(true)
-            //console.log("FETCHING ", `/api/search?dataset=${params.dataset}${filteredSearchParams ? '&' + filteredSearchParams : ''}`)
-            fetch(`/api/search?dataset=${params.dataset}${filteredSearchParams ? '&' + filteredSearchParams : ''}`)
+            const chosenParams =  treeParamsQuery || filteredSearchParams
+            fetch(`/api/search?dataset=${params.dataset}${chosenParams ? '&' + chosenParams : ''}`)
                 .then(response => response.json())
                 .then(es_data => {
 
@@ -42,19 +52,23 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 return
             }
 
-            if (es_data.aggregations?.viewport?.bounds) {
-                setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
-                    [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
-            }
-            else {
-                setMapBounds([])
+            if (!treeParamsQuery || !searchParams.get('size') || !mapBounds.length ) {
+                if (es_data.aggregations?.viewport?.bounds) {
+                    setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
+                        [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
+                }
+                else {
+                    setMapBounds([])
+                }
             }
             setResultData(es_data)
 
-            }).then(() => setIsLoading(false))
+            }).then(() => setIsLoading(false)).catch(error => {
+                setSearchError({error})
+            })
         
         
-      }, [filteredSearchParams, params.dataset])
+      }, [filteredSearchParams, params.dataset, treeParamsQuery, searchParams, mapBounds.length])
 
   return <SearchContext.Provider value={{resultData, isLoading, mapBounds, searchError}}>{children}</SearchContext.Provider>
 }

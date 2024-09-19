@@ -1,15 +1,23 @@
 'use client'
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Map from './Map'
 import 'leaflet/dist/leaflet.css';
+import { baseMapProps, baseMapKeys } from '@/config/basemap-config'
 
 export default function EmbeddedMap(props) {
 
   const mapRef = useRef(null);
+  const [baseLayer, setBaseLayer] = useState(null)
+
+
 
   useEffect(() => {
+    setBaseLayer(localStorage?.getItem('baseLayer') && baseMapProps[localStorage.getItem('baseLayer')] || baseMapProps[baseMapKeys[0]])
+    
     if (mapRef.current && props.doc?.location) {
       const { coordinates } = props.doc.location;
+      
+  
       const newCenter = [coordinates[1], coordinates[0]];
       mapRef.current.setView(newCenter);
     }
@@ -21,11 +29,7 @@ export default function EmbeddedMap(props) {
             {({ TileLayer, Marker }, leaflet) => (
                 <>
           
-            <TileLayer
-              key="map_topo4"
-              url="https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png"
-              attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-            />
+          <TileLayer {...baseLayer} />
             
             {props.doc?.location ? <Marker className="text-primary-600 bg-primary-600" icon={new leaflet.icon({iconUrl: '/markerAccent.svg', iconSize: [48, 48], iconAnchor: [24, 48]})}
                             key={props.doc.uuid} position={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]}>

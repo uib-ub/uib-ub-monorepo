@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
         const snid = path[2]
         const data = await fetchSNID(snid);
         //return Response.json({"url": `/view/search/doc/${data.fields.uuid}`});
-        return Response.redirect(`http:localhost:3000/view/search/doc/${data.fields.uuid}${url.searchParams ? '?' + url.searchParams : ''}`, 302);
+        return Response.redirect(`http:localhost:3000/view/search/doc/${data.fields.uuid}?expanded=${data.fields.uuid}${url.searchParams ? '&' + url.searchParams : ''}`, 302);
     }
 
     if (path[1] == "uuid" && path[2].includes('.')) {

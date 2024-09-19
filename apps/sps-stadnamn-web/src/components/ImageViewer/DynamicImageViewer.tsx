@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiX, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill, PiCaretLeftBold } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill, PiCaretLeftBold, PiXBold, PiWarning } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+import ErrorMessage from '../ErrorMessage';
 
 const DynamicImageViewer = () => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
@@ -15,6 +15,7 @@ const DynamicImageViewer = () => {
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const {dataset, manifestId} = useParams();
+  const [error, setError] = useState<any>(null);
 
   const params = useParams();
   const searchParams = useSearchParams();
@@ -40,8 +41,20 @@ const DynamicImageViewer = () => {
       }
       }
       catch {
-        response = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json`);
+        try {
+          response = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json`);
+          if (!response.ok) {
+            setError("MANIFEST_NOT_FOUND")
+            return
+          }
+        }
+        catch {
+          setError("MANIFEST_NOT_FOUND")
+          return
+        }
+        
       }
+
 
       const manifestBody = await response.json();
       setManifest(manifestBody);
@@ -76,6 +89,17 @@ const DynamicImageViewer = () => {
           tileSources
         });
 
+        viewer.current.addHandler('tile-load-failed', function(event) {
+          // Log the error to the console
+          console.log(event)
+          setError("TILE_LOAD_FAILED")
+          
+          //setError({message: event.message, tile: event.tile, code: event.});
+      
+          // Optional: Handle the error, e.g., by displaying a custom error message to the user
+          // or attempting to load a placeholder image.
+      });
+
         viewer.current.addHandler('page', function(event: { page: React.SetStateAction<number>; }) {
           setCurrentPage(event.page);
         });
@@ -99,8 +123,16 @@ const DynamicImageViewer = () => {
 
   return (
     <div className='h-full w-full flex flex-col'>
+     
     <div className='h-full w-full relative aspect-square sm:aspect-auto'>
-    {isLoading || !viewerRef.current? 
+    { params.dataset &&
+      <span className="absolute right-0 top-0 z-[1001] mx-3 my-2 rounded-full border-white text-white border bg-neutral-900 shadow-sm">
+        <IconButton href={`/view/${dataset}${hasSearchParams ? '?' + searchParams.toString() : ''}`} className='p-2' label={searchParams.get('display') == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet'}>
+          <PiXBold className='text-xl'/>
+        </IconButton>
+      </span>
+    }
+    {error ? <div className="pt-10"><ErrorMessage error={{error}} message="Kunne ikke laste bildet"/></div> : isLoading || !viewerRef.current? 
     <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Laster inn bilde" className='w-20 h-20'/></div>
       : null
       }

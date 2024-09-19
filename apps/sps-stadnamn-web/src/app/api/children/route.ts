@@ -1,5 +1,5 @@
 export const runtime = 'edge'
-import { postQuery } from "../_utils/fetch";
+import { postQuery } from "../_utils/post";
 export async function GET(request: Request) {
 
     // Extract uuids from comma separated parameter in request
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
         }
 
 
-        const data = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-search`, query)
+        const data = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
         return Response.json(data)
 
     }
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
     }
 
 
-    const data = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-search`, query)
+    const data = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
 
     return Response.json(data)
   }

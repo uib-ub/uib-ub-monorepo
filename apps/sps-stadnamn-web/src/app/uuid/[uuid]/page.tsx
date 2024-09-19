@@ -3,14 +3,12 @@ import { fetchDoc } from '@/app/api/_utils/actions'
 import ErrorMessage from '@/components/ErrorMessage'
 import { datasetTitles } from '@/config/metadata-config'
 import { infoPageRenderers } from '@/config/info-renderers'
-import CoordinateInfo from '@/app/view/[dataset]/doc/[uuid]/coordinate-info'
-import EmbeddedMap from '@/components/Map/EmbeddedMap'
 import OriginalData from '@/app/view/[dataset]/doc/[uuid]/original-data'
-import Thumbnail from '@/components/ImageViewer/thumbnail'
 import Link from 'next/link'
-import { PiDatabaseFill, PiMagnifyingGlass } from 'react-icons/pi'
-import GroupedChildren from '@/app/view/[dataset]/@searchSection/grouped-children'
+import { PiDatabaseFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi'
+import GroupedChildren from '@/components/results/grouped-children'
 import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
+import CopyLink from '@/app/view/[dataset]/doc/[uuid]/CopyLink'
 
 export async function generateMetadata( { params }: { params: { uuid: string } }) {
     const doc = await fetchDoc(params)
@@ -29,7 +27,11 @@ export default async function LandingPage({ params }: { params: { uuid: string }
         return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
       }
 
-    const docDataset = doc._index.split('-')[1]
+    const docDataset = doc._index.split('-')[2]
+
+    const multivalue = (value: string|string[]) => {
+      return Array.isArray(value) ? value.join("/") : value
+    }
 
     // Get the keys of the object to use as table headers
 
@@ -38,7 +40,35 @@ export default async function LandingPage({ params }: { params: { uuid: string }
     // TODO: create tabs for info, json, geojson and jsonld
     return (
         <div className="instance-info flex flex-col flex-grow space-y-6">
+          <span>
             <h1>{doc._source.label}</h1>
+            <div className="flex flex-wrap gap-4">
+
+      {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && 
+        <>
+        {[doc._source.adm1, doc._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
+        {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
+        </>
+      
+        || doc._source.wikiAdm &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>
+          {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
+          {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
+          {multivalue(doc._source.adm1)}</Link> </span>
+        || doc._source.adm1 && <span className="inline whitespace-nowrap">
+          {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
+          {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
+          {multivalue(doc._source.adm1)}
+        </span>
+      
+      }
+      { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
+          <CopyLink uuid={doc._source.uuid}/> 
+          : <div className="flex gap-1 items-center w-full"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
+      }
+
+      </div>
+      
+      </span>
             { docDataset != 'search' ?
             <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-2xl"/>{ datasetTitles[docDataset]}</Link></div>
             :
@@ -57,13 +87,7 @@ export default async function LandingPage({ params }: { params: { uuid: string }
         <OriginalData rawData={doc._source.rawData}/>
         </div>
       : null}
-      { docDataset != 'search' && doc._source.location && <div className='space-y-6'>
-        <h2>Koordinater</h2>
-
-        <CoordinateInfo source={doc._source}/>
-        <EmbeddedMap doc={doc._source}/> 
-        
-      </div> }
+      
       { docDataset == 'search' &&
 
         <GroupedChildren snid={doc._source.snid} uuid={doc._source.uuid} childList={doc._source.children} landingPage/>

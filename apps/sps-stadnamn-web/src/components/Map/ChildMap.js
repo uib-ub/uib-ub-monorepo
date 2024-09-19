@@ -4,6 +4,9 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import Map from './Map'
 import 'leaflet/dist/leaflet.css';
 import PopupList from './PopupList';
+import { baseMapKeys, baseMapProps } from '@/config/basemap-config'
+import Spinner from '../svg/Spinner';
+
 
 export default function ChildMap(props) {
 
@@ -16,16 +19,15 @@ export default function ChildMap(props) {
   const [leafletBounds, setLeafletBounds] = useState(null);
   const { uuid } = props.doc
   const mapInstance = useRef(null);
-  const [isMapInstanceReady, setIsMapInstanceReady] = useState(false);
+  const [baseLayer, setBaseLayer] = useState(null)
   
 
   const mapRef = useCallback(node => {
     if (node !== null) {
       mapInstance.current = node;
-      setIsMapInstanceReady(true);
     }
-
   }, []);
+
 
   const coordinateUrl = (lat, lon) => {
     const params = new URLSearchParams(searchParams)
@@ -55,7 +57,7 @@ export default function ChildMap(props) {
     return Object.values(grouped);
   }
 
-
+ /*
 
   useEffect(() => {
     if (leafletBounds && mapInstance.current) {
@@ -63,13 +65,15 @@ export default function ChildMap(props) {
     }
   }, [leafletBounds, isMapInstanceReady])
 
+  */
+
 
   useEffect(() => {
     fetch(`/api/children?${props.doc.snid ? 'snid=' + props.doc.snid : 'uuid=' + props.doc.uuid }&geo=true`)
     .then(response => response.json())
     .then(data => {
-    // group by index name
-    
+
+      setBaseLayer(localStorage?.getItem('baseLayer') && baseMapProps[localStorage.getItem('baseLayer')] || baseMapProps[baseMapKeys[0]])
 
     const markers = groupMarkers(data.hits.hits);
     setMarkers(markers)
@@ -85,27 +89,23 @@ export default function ChildMap(props) {
     }
     ).catch(error => console.error(error))
 
-}, [uuid])
+}, [uuid, props.doc.snid, props.doc.uuid])
 
 
-
-  return (
-    <>
+  return  (
+    <div className="bg-neutral-100 h-full w-full">
+    { leafletBounds && props.doc.location.coordinates[1] && baseLayer ?
     
     
-    <Map mapRef={mapRef} zoom={8} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]} className="w-full h-full">
+    <Map mapRef={mapRef} className="w-full h-full" bounds={leafletBounds} center={[props.doc.location.coordinates[1], props.doc.location.coordinates[0]]}>
             {({ TileLayer, Marker, Tooltip, Popup }, leaflet) => (
                 <>
           
-            <TileLayer
-              key="map_topo4"
-              url="https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png"
-              attribution="<a href='http://www.kartverket.no/'>Kartverket</a>"
-            />
+            <TileLayer {...baseLayer} />
             
             
 
-              {markers.map((marker, idx) => {
+              { markers.map((marker, idx) => {
                 const highlighted = searchParams.get('popup') == marker.lat + "," + marker.lon
                 
                 return (
@@ -141,7 +141,9 @@ export default function ChildMap(props) {
             </>
             )}
     </Map>
-    </>
+    : <div className="w-full h-full flex items-center justify-center"><Spinner status="Laster inn treff" className="w-20 h-20"/></div>}
+
+    </div>
   )
 }
 

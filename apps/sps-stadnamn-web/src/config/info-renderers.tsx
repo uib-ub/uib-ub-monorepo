@@ -1,7 +1,21 @@
+import CadastralSubdivisions from '@/app/view/[dataset]/doc/[uuid]/cadastral-subdivisions';
 import InfoBox from '@/components/ui/infobox';
 import Link from 'next/link';
 import React from 'react';
 
+
+import FacetsInfobox from '@/components/ui/facets-infobox';
+import { getValueByPath } from '@/lib/utils';
+import { treeSettings } from './server-config';
+import SearchParamsLink from '@/components/ui/search-params-link';
+
+
+const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
+  const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
+  const parentUrl = `/view/${docDataset}/doc/${source.within}`
+  const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
+  return <div className="text-lg"><SearchParamsLink className="breadcrumb-link" href={parentUrl}>{parentLabel}</SearchParamsLink><span className="mx-2">/</span>{currentName}</div>
+}
 
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
@@ -15,8 +29,8 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     return {__html: decodedHtmlString};
   }
   
-  function HtmlString({htmlString}: {htmlString: string}) {
-    return <div dangerouslySetInnerHTML={createMarkup(htmlString)} />;
+  function HtmlString({htmlString, className}: {htmlString: string, className?: string}) {
+    return <div className={className} dangerouslySetInnerHTML={createMarkup(htmlString)} />;
   }
 
   const Timeline = (arr: { label: string; year: string }[], noCoordinates: boolean) => {
@@ -69,8 +83,12 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   search: (source: any) => {
     return <>
     {source.attestations && Object.keys(source.attestations).length > 1 && <div>
-    <h3>Historikk</h3>
-    {Timeline(source.attestations, !source.location)}
+    
+    {source.attestations?.length && 
+      <>
+        <h3>Historikk</h3>
+        {Timeline(source.attestations, !source.location)}
+      </>}
     </div>
     }
     
@@ -95,10 +113,13 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   rygh: (source: any) => {
     return <>
-    {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
-    <div className="mt-3">
-    <Link href={source.rawData.Lenke_til_originalside} target="_blank" className='font-semibold'>Lenke til originalside</Link>
+
+    {source.content?.html && <div className="inline-flex flex-col md:flex-row gap-4 bg-neutral-50 border border-neutral-200 p-4">
+      <Link href={source.rawData.Lenke_til_originalside} className='whitespace-nowrap inline'>Bind {source.rawData.Bind}, s. {source.rawData.Side}</Link>
+    <HtmlString className='space-y-2 inline' htmlString={source.content.html} />
+
     </div>
+    }
     <InfoBox dataset={'rygh'} items={[
       {title: 'Stadnamn', value: source.label},
       {title: 'Lokalitetstype', value: source.sosi, sosi: true},
@@ -125,28 +146,31 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   leks: (source: any) => {
     return <>
-    <div className='space-y-2'>
-    {source.rawData?.tolking && <><strong className="text-neutral-900">Tolking: </strong><HtmlString htmlString={source.rawData?.tolking} /></>}
+    {source.content?.html && <div className="inline-flex flex-col md:flex-row gap-4 bg-neutral-50 border border-neutral-200 p-4">
+      <Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link>
+    <HtmlString className='space-y-2 inline' htmlString={source.content.html} />
+
     </div>
+    }
     <InfoBox dataset={'leks'} items={[
       {title: 'Oppslagsform', value: source.label},
-      {title: 'Lokalitetstype', value: source.rawData.lokalitetstype},
-      {title: 'Kommune', value: source.adm2},
-      {title: 'Kommunenummer', value: source.rawData.kommunenr},
-      {title: 'Fylke', value: source.adm1},
-      {title: 'Førsteledd', value: source.rawData.førsteledd},
-      {title: 'Sisteledd', value: source.rawData.sisteledd},
+      {title: 'Lokalitetstype', value: source.rawData.Lokalitetstype},
+      {title: 'Kommune', value: source.rawData.Kommune},
+      {title: 'Kommunenummer', value: source.rawData.Kommunenr},
+      {title: 'Fylke', value: source.rawData.Fylke},
+      {title: 'Førsteledd', value: source.rawData.Førsteledd},
+      {title: 'Sisteledd', value: source.rawData.Sisteledd},
       {title: 'StedsnavnID', 
-        items: [{value: source.rawData.snid, href: `/view/leks?rawData.snid=${encodeURIComponent(source.rawData.snid)}`}]},
+        items: [{value: source.rawData.SNID, href: `/view/leks?rawData.snid=${encodeURIComponent(source.rawData.SNID)}`}]},
       {title: 'GNIDu', 
-        items: [{value: source.rawData.gnidu, href: `/view/leks?rawData.gnidu=${encodeURIComponent(source.rawData.gnidu)}`}]},
-      {title: 'N50 Kartid', value: source.rawData.n50_kartid}
+        items: [{value: source.rawData.GNIDu, href: `/view/leks?rawData.gnidu=${encodeURIComponent(source.rawData.GNIDu)}`}]},
+      {title: 'N50 Kartid', value: source.rawData.N50_kartid}
     ]}/>
   </>
   },
   leks_g: (source: any) => {
     return <>
-    {source.description && <div className='space-y-2'><HtmlString htmlString={source.description} /></div>}
+    {source.content?.html && <HtmlString className='space-y-2' htmlString={source.content?.html} />}
     </>
   },
 
@@ -154,7 +178,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     return <>
     <div className='space-y-2'>
     {source.rawData?.original?.stnavn?.komm ?
-     <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData.original.stnavn?.komm}</div>
+     <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData.stnavn?.komm}</div>
      : source.rawData?.supplemented?.merknad && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.supplemented?.merknad}</div>
     }
     </div>
@@ -172,7 +196,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                   items: [{value: source.rawData?.original?.stnavn?.sted?.gårdsnr, hrefParams: {
                     'adm2': source.adm2,
                     'adm1': source.adm1,
-                    'rawData.original.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
+                    'rawData.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
                   }}]
                 },
                 {
@@ -187,8 +211,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
                   items: [{value: !source.rawData?.original && source.rawData?.original?.stnavn?.sted?.bruksnr, hrefParams: {
                     'rawData.adm2': source.adm2,
                     'rawData.adm1': source.adm1,
-                    'rawData.original.stnavn.sted__bruksnr': source.rawData?.original?.stnavn?.sted?.bruksnr,
-                    'rawData.original.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
+                    'rawData.stnavn.sted__bruksnr': source.rawData?.original?.stnavn?.sted?.bruksnr,
+                    'rawData.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
                   }}]
                 },
                 {
@@ -215,6 +239,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <InfoBox dataset={'hord'} items={[
       {title: 'Kommune', value: source.rawData.kommuneNamn}, 
       {title: 'Kommunenummer', value: source.rawData.kommuneNr}, 
+      {title: "StedsnavnID", value: source.snid, href: `/view/hord?rawData.stadnamnID=${encodeURIComponent(source.snid)}`},
       {
         title: 'Gardsnummer', 
         items: [...new Set(source.cadastre?.map((item: any) => item.gnr.toString()) as string[])].map((gnr: string) => ({
@@ -225,7 +250,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {
         title: 'Bruksnummer', 
         items: source.cadastre?.map((item: any) => ({
-          value: item.bnr.toString(), 
+          value: item.bnr?.toString(), 
           href: `/view/hord?rawData.kommuneNr=${encodeURIComponent(source.rawData.kommuneNr)}&cadastre__gnr=${encodeURIComponent(item.gnr)}&cadastre__bnr=${encodeURIComponent(item.bnr)}`
         })),
       },
@@ -251,57 +276,59 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   m1838: (source: any) => {
     return <>
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
-    <InfoBox dataset={'m1838'} 
-    items={[
-      {title: 'Lokalitetstype', value: source.sosi, sosi: true},
-      {title: 'Prestegjeld', value: source.adm2},
-      {title: 'Amt', value: source.adm1},
-      {title: 'Kommunenummer', value: source.rawData.KNR},
-      {title: 'Matrikkelnummer', items: [{value: source.rawData.MNR, hrefParams: {'rawData.MNR': source.rawData.MNR, 'rawData.KNR': source.rawData.KNR }}]},
-      {title: 'Løpenummer', value: source.rawData.LNR},
-      {title: 'GNIDu', value: source.rawData.GNIDu},
-      {title: 'StedsnavnID', value: source.rawData.SNID}
-
-
-    ]}/>
-
-
+    <div className="flex flex-wrap mt-3 gap-4">
+    <Link href={source.rawData.Lenke_til_skannet_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Skannet matrikkel</Link>
+    <Link href={source.rawData.Lenke_til_digital_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Digital matrikkel</Link>
+    </div>
+    <div>
+    <h3>Eiendom</h3>
+    { source.within && cadastreBreadcrumb(source, "m1838", "misc.gardLabel") }
+    { source.sosi == 'gard' &&
+      <CadastralSubdivisions bnrField="rawData.LNR" sortFields={['cadastralIndex']} dataset={'m1838'} source={source} />
+    }
+    </div>
+    <div>
+    <h3>Detaljer</h3>
+    <FacetsInfobox dataset={'m1838'} source={source}/>
+    </div>
     </>
+
   },
   mu1950: (source: any) => {
     return <>
-    <InfoBox dataset={'mu1950'} 
-              items={[
-      {title: 'Stadnamn', value: source.label},
-      {title: 'Kommune', value: source.adm2},
-      {title: 'Fylke', value: source.adm1},
-      {title: 'Kommunenummer', value: source.rawData?.knr},
-      {title: 'Gardsnummer', value: source.rawData?.gnr},
-      {title: 'Bruksnummer', value: source.rawData?.bnr},
-      {title: 'GNIDu', value: source.rawData?.gnidu},
-    ]}/>
+    <div>
+    <h3>Eiendom</h3>
+    { source.within && cadastreBreadcrumb(source, "mu1950", "rawData.Gardsnamn") }
+    { source.sosi == 'gard' &&
+      <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} source={source} />
+    }
+    </div>
+
+    {source.sosi != 'gard' && 
+      <div><h3>Detaljer</h3>
+      <FacetsInfobox dataset={'mu1950'} source={source}/>
+      </div>}
 
     </>
   },
   m1886: (source: any) => {
     return <>
     {source.rawData?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknader}</>}
-    
-    <div className="mt-3">
-    <Link href={source.rawData.lenke_til_digital_matrikkel} target="_blank" className='font-semibold'>Lenke til digital matrikkel</Link>
+
+    {source.rawData?.lenke_til_digital_matrikkel && <div className="flex flex-wrap mt-3 gap-4">
+    <Link href={source.rawData.lenke_til_digital_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Digital matrikkel</Link>
+    </div> }
+    <div>
+    <h3>Eiendom</h3>
+    { source.within && cadastreBreadcrumb(source, "m1886", "rawData.gardsnamn") }
+    { source.sosi == 'gard' &&
+      <CadastralSubdivisions bnrField="rawData.bnr" sortFields={['cadastre.gnr', 'cadastre.bnr']} dataset={'m1886'} source={source} />
+    }
     </div>
-    
-    <InfoBox dataset={'m1886'}
-             items={[
-              {title: 'Stadnamn', value: source.label},
-              {title: 'Kommune', value: source.adm2},
-              {title: 'Fylke', value: source.adm1},
-              {title: 'Lokalitetstype', value: source.sosi, sosi: true},
-              {title: 'Kommunenummer', value: source.rawData.knr},
-              {title: 'Gardsnummer', value: source.rawData.gnr},
-              {title: 'Bruksnummer', value: source.rawData.bnr},
-              {title: 'GNIDu', value: source.rawData.gnidu}
-    ]}/>
+    <div>
+    <h3>Detaljer</h3>
+    <FacetsInfobox dataset={'m1886'} source={source}/>
+    </div>
 
     </>
   },    
@@ -312,7 +339,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       <h3>Lenker</h3>
       <ul className='!mt-0 !list-none !pl-0'>
         {source.links.map((link: any, index: number) => (
-          <li key={index}><Link href={link} target="_blank" className=''>{link}</Link></li>
+          <li key={index}><Link href={link} className=''>{link}</Link></li>
         ))}
 
       </ul>
@@ -329,9 +356,15 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         {title: 'Koordinater', value: [source.rawData.X, source.rawData.Y].filter(Boolean).join(", ")},
         {title: 'Presisjon', value: source.rawData.Koordinattype},
         {title: 'StedsnavnID', value: source.rawData.SNID},
-        {title: 'Unikt matrikkelnummer', items: source.gnidu.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},
+        {title: 'Unikt matrikkelnummer', items: source.gnidu?.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},
       ]}/>
       </>
-    } 
+    },
+    ssr2016: (source: any) => {
+      return <>
+      <FacetsInfobox dataset={'ssr2016'} source={source}/>
+      </>
+    
+    }
   
   }

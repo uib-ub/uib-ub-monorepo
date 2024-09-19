@@ -1,4 +1,5 @@
-import { postQuery } from './fetch'
+import { contentSettings } from '@/config/server-config'
+import { postQuery } from './post'
 
 const detectEnv = (retry: boolean) => {
     const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
@@ -22,7 +23,7 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     }
 
 
-    res = await fetch(`${endpoint}stadnamn-${process.env.SN_ENV}-*/_search`, {
+    res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-*/_search`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,6 +36,7 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     if (!res.ok) {
         const errorResponse = await res.json();
         if (retry) {
+            console.log("RETRYING WITH FALLBACK")
             return fetchDoc(params, retry = false);
         }
         if (errorResponse.error) {
@@ -78,7 +80,7 @@ export async function fetchSOSI(sosiCode: string) {
                     "must": [
                         {
                             "term": {
-                                "_index": `stadnamn-${process.env.SN_ENV}-search`
+                                "_index": `search-stadnamn-${process.env.SN_ENV}-search`
                             }
                         },
                         {
@@ -103,7 +105,7 @@ export async function fetchSOSI(sosiCode: string) {
                     "must_not": [
                         {
                             "term": {
-                                "_index": `stadnamn-${process.env.SN_ENV}-search`
+                                "_index": `search-stadnamn-${process.env.SN_ENV}-search`
                             }
                         }
                     ]
@@ -121,12 +123,12 @@ export async function fetchSOSI(sosiCode: string) {
     }
 }
 
-    const res = await postQuery(`*,-stadnamn-${process.env.SN_ENV}-vocab`, query)
+    const res = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-vocab`, query)
 
     //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
     const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
         if (!bucket.key.includes('_')) {
-            const [ code, timestamp] = bucket.key.split('-').slice(1)
+            const [ code, timestamp] = bucket.key.split('-').slice(2)
             acc[code] = {doc_count: bucket.doc_count, timestamp: timestamp}
         }
         return acc
@@ -168,4 +170,57 @@ export async function fetchSNID(snid: string) {
 
     return res.hits?.hits?.[0] || res
 
+}
+
+
+// Fetch snid when you have the uuid of a child
+export async function fetchSNIDParent(uuid: string) {
+    'use server'
+    const query = {
+        query: {
+            term: {
+                "children.keyword": uuid,
+            }
+        },
+        fields: ["uuid", "snid"],
+        _source: false
+    }
+
+    const res = await postQuery('search', query)
+
+    return res.hits?.hits?.[0] || res
+
+}
+
+
+// Fetch children of a document in the same index (documents that have the uuid as the value in "within" field)
+export async function fetchCadastralSubunits(dataset: string, uuid: string, fields: string[], sortFields: string[]) {
+    'use server'
+    const query = {
+        size: 1000,
+        query: {
+            term: {
+                "within.keyword": uuid
+            }
+        },
+        fields: fields,    
+        sort: sortFields.map((field: string) => {
+            if (field.startsWith("cadastre.")) {
+                return {
+                    [field]: {
+                        order: "asc",
+                        nested: {
+                            path: field.split('.')[0] // Assuming the field is in the format "cadastre.bnr"
+                        }
+                    }
+                };
+            } else {
+                return {[field]: "asc"};
+            }
+        }),
+        _source: false
+
+    }
+    return await postQuery(dataset, query)
+    
 }

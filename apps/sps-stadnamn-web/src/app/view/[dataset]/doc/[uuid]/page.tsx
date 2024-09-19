@@ -5,12 +5,15 @@ import OriginalData from './original-data'
 import Link from 'next/link'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { fetchDoc } from '@/app/api/_utils/actions'
-import { PiCaretLeftBold, PiDatabaseFill, PiX } from 'react-icons/pi'
+import { PiCaretLeftBold, PiDatabaseFill, PiWarningFill, PiX } from 'react-icons/pi'
 import ErrorMessage from '@/components/ErrorMessage'
 import CoordinateInfo from './coordinate-info'
 import CopyLink from './CopyLink'
 import { datasetTitles } from '@/config/metadata-config'
 import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
+import PlaceType from '@/components/ui/place-type'
+import { repeatingSearchParams } from '@/lib/utils'
+import ParentButton from './ParentButton'
 
 export async function generateMetadata( { params }: { params: { dataset: string } }) {
   const doc = await fetchDoc(params)
@@ -39,49 +42,78 @@ export default async function DocumentView({ params, searchParams }: { params: {
       return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
     }
 
-    const docDataset = doc._index.split('-')[1]
+    const docDataset = doc._index.split('-')[2]
+
+    const multivalue = (value: string|string[]) => {
+      return Array.isArray(value) ? value.join("/") : value
+    }
 
     
 
     return (
       <div className="relative h-full w-full">
-        {params.dataset == 'search' && <Link aria-label="Lukk" href={`/view/search?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+        {params.dataset == 'search' && docDataset == 'search' && <Link aria-label="Lukk" href={`/view/search?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline absolute top-5 right-6 z-[2001] text-xl">
           <PiX aria-hidden="true" className='text-neutral-900 inline'/>
           
         </Link>}
-      <div className={(docDataset == 'search' && doc._source.location) ? "p-4 xl:p-8 bg-white overflow-y-auto space-y-3 xl:space-y-6 instance-info absolute h-1/3 xl:h-auto xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md w-full xl:w-1/3 xl:max-h-2/3"
-        : 'mx-2 p-4 lg:p-8 space-y-6 instance-info'
-      }>
-        {params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+      <div className={(docDataset == 'search' && doc._source.location) ? "bg-white  overflow-y-auto xl:absolute w-full xl:w-1/3 xl:top-2 xl:right-2 z-[2000] rounded-sm shadow-md xl:min-h-fit xl:max-h-[calc(100vh-8rem)]"
+        : 'instance-info h-full'
+      }><div className='space-y-8 p-4 xl:p-8 overflow-y-auto h-full instance-info'>
+        { docDataset != 'search' && <div className='flex flex-wrap gap-x-4 gap-y-2'>
+        { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? repeatingSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
               className="no-underline inline">
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-          { hasSearchParams && searchParams.search != 'hide' ? 'Tilbake til kartet' : 'Vis på kartet'}
+          
+          { hasSearchParams && searchParams.search != 'hide' ? 
+          (searchParams.display == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet') : 
+          (searchParams.display == 'table' ? 'Vis i tabellen' : 'Vis på kartet')}
         </Link>}
         
-        { doc._source.snid && searchParams.expanded && docDataset != 'search' ? 
-          <Link href={`/view/search/doc/${searchParams.expanded}${hasSearchParams ? '?' + new URLSearchParams(searchParams).toString() : ''}`}
-                className="no-underline inline">
-            <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
-            Tilbake til stadnamnsida
-            </Link> : null }
+        <ParentButton uuid={doc._source.uuid} dataset={params.dataset}/>
+        </div>
+        }
+        
         { doc && doc._source && <>
-      <div className="space-y-2">
-      <span className="flex flex-wrap gap-x-8 gap-y-2"><h2>{doc._source.label}</h2>
-      { docDataset != 'search' &&  params.dataset == 'search' && 
-        <span className='self-center'><Link className="text-lg bg-neutral-700 text-white px-2 rounded-full flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-xl text-white self-center"/>{ datasetTitles[docDataset]}</Link></span>
-      }
-      { docDataset == 'search' && doc._source.snid && <span className="text-neutral-800 self-center">{doc._source.snid} </span> }
-      </span>
       
-      {doc._source.adm1 && <div>{doc._source.adm2 && doc._source.adm2 + ", "}{doc._source.adm1} 
-      {doc._source.adm2wd && <> <span className="inline whitespace-nowrap">(wikidata: <Link target="_blank"  href={'http://www.wikidata.org/entity/' + doc._source.adm2wd}>{doc._source.adm2wd}</Link>) </span></>}
-      </div> }
+      <div className="flex flex-col gap-2">
+        <h2>{doc._source.label}</h2>
+      
+      <div className="flex flex-wrap gap-4">
+        {
+         doc._source.sosi && docDataset != 'search' &&  <PlaceType sosiCode={doc._source.sosi}/>
+        }
+        <div className='flex'>
+      {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && 
+        <>
+        {[doc._source.adm1, doc._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
+        {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
+        </>
+      
+        || doc._source.wikiAdm && docDataset != 'm1838' &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>
+          {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
+          {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
+          {multivalue(doc._source.adm1)}
+          </Link> </span>
+        || doc._source.adm1 && <span className="inline whitespace-nowrap">
+          {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
+          {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
+          {multivalue(doc._source.adm1)}
+        </span>
+      }
       </div>
       
       
-      { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') && <CopyLink uuid={doc._source.uuid} /> // NBAS uris aren't stable until we've fixed errors in the dataset
+      { docDataset != 'search' &&  params.dataset == 'search' && 
+        <span className='self-center'><Link className="no-underline flex gap-1 items-center" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-lg self-center"/>{ datasetTitles[docDataset]}</Link></span>
       }
+      
+      { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
+          <CopyLink uuid={doc._source.uuid}/> 
+          : <div className="flex gap-1 items-center w-full"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
+      }
+      </div>
+      </div>
       
       
 
@@ -93,28 +125,29 @@ export default async function DocumentView({ params, searchParams }: { params: {
 
 
         </div>}
-        { doc._source.rawData ?
+        
+      { docDataset != 'search' && doc._source.location && <div>
+        <CoordinateInfo source={doc._source}/>
+        </div> 
+      }
+      { doc._source.rawData ?
         <div>
         <OriginalData rawData={doc._source.rawData}/>
         </div>
-      : null}
-      { docDataset != 'search' && doc._source.location && <div className='space-y-6'>
-        <h3>Koordinater</h3>
-
-        <CoordinateInfo source={doc._source}/>
-        <EmbeddedMap doc={doc._source}/> 
-        
-      </div> }
+        : null
+      }
       
       </>}
       </div>
-      { docDataset == 'search' && doc._source.location && <div className='w-full h-full'>
+      </div>
+      { docDataset == 'search' && doc._source.location && <div className='w-full h-full pt-12 pl-4 pr-16 xl:p-0 bg-white'>
 
 
         <ChildMap doc={doc._source}/>
         
       </div> }
       </div>
+      
     )
 
   }

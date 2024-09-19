@@ -1,5 +1,5 @@
 export const runtime = 'edge'
-import { postQuery } from "../_utils/fetch";
+import { postQuery } from "../_utils/post";
 export async function GET(request: Request) {
     const docs = new URLSearchParams(new URL(request.url).search).get('docs');
     let dataset = new URLSearchParams(new URL(request.url).search).get('dataset');
