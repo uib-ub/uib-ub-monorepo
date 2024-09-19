@@ -1,3 +1,4 @@
+import { useI18n } from "vue-i18n";
 import { SemanticRelation } from "./vars";
 import { LangCode } from "~/composables/locale";
 import { SearchDataEntry } from "~/composables/states";
@@ -247,3 +248,14 @@ export function flattenOrderDomains(domains) {
     return [];
   }
 }
+
+export const getLangOptions = () => {
+  const locales = useLocales();
+  const i18n = useI18n();
+  return locales.map((loc) => ({
+    label: loc,
+    command: () => {
+      i18n.locale.value = loc;
+    },
+  }));
+};
