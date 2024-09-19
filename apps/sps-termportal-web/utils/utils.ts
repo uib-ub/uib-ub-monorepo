@@ -237,13 +237,17 @@ function flattenDict(dict: Object, nestingKey: string, level = 0): string[] {
   return items;
 }
 
-export function flattenOrderDomains(domains) {
+export function flattenOrderDomains(domains?) {
   const bootstrapData = useBootstrapData();
   if (bootstrapData.value.domain) {
     const flatDomains = flattenDict(bootstrapData.value.domain, "subdomains");
-    return flatDomains
-      .filter((entry) => domains.includes(entry[0]))
-      .map((entry) => entry[0]); // TODO should be removed and handled down the line
+    if (!domains) {
+      return flatDomains;
+    } else {
+      return flatDomains
+        .filter((entry) => domains.includes(entry[0]))
+        .map((entry) => entry[0]); // TODO should be removed and handled down the line
+    }
   } else {
     return [];
   }

@@ -23,6 +23,17 @@ export async function fetchSearchDataMatching(
   }
 }
 
+export function resetSearchFilterSelection() {
+  const searchFilterSelection = useSearchFilterSelection();
+  searchFilterSelection.value = {
+    lang: [],
+    samling: [],
+    predicate: [],
+    matching: [],
+    context: [],
+  };
+}
+
 export type FetchType = "initial" | "options" | "filter" | "further";
 async function fetchSearchDataAggregate(
   searchOptions: SearchOptions,
@@ -31,18 +42,11 @@ async function fetchSearchDataAggregate(
   const situation = searchOptions.situation;
 
   const searchDataStats = useSearchDataStats();
-  const searchFilterSelection = useSearchFilterSelection();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
 
   if (["initial", "options"].includes(situation)) {
-    searchFilterSelection.value = {
-      lang: [],
-      samling: [],
-      predicate: [],
-      matching: [],
-      context: [],
-    };
+    resetSearchFilterSelection();
   }
 
   const aggregate = await $fetch("/api/search/aggregate", {

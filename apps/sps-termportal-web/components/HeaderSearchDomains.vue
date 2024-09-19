@@ -71,12 +71,21 @@
         class="absolute z-10 max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg mt-[6px]"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
-        <button
-          class="absolute top-0 right-0 border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 mr-1 mt-1 flex justify-center"
-          @click="panel = false"
-        >
-          <Icon name="material-symbols:close" size="1.4rem" />
-        </button>
+        <div class="absolute top-0 right-0 flex mr-1 mt-1 space-x-2">
+          <button
+            v-if="subdomainSpecified"
+            class="p-0.5 text-gray-600 border border-transparent rounded-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+            @click="resetSubdomainOptions()"
+          >
+            <IconReset class="text-lg" size="1.35em" />
+          </button>
+          <button
+            class="border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 hover:text-gray-800 flex justify-center"
+            @click="panel = false"
+          >
+            <IconClose class="text-lg" />
+          </button>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <div
             v-for="topdomain of panelTopdomains"
@@ -146,11 +155,33 @@ const noDomain = computed(() => {
   return Object.keys(searchInterface.value.domain).length === 0;
 });
 
+const subdomainSpecified = computed(() => {
+  const topDomains = Object.keys(bootstrapData.value.domain);
+  return (
+    specifiedDomains.value.filter((domain) => !topDomains.includes(domain))
+      .length > 0
+  );
+});
+
 const deactivatedDomains = computed(() => {
   specifiedDomains.value.filter(
     (domain) => !searchInterface.value.domain[domain]
   );
 });
+
+function resetSubdomainOptions() {
+  const searchInterface = useSearchInterface();
+  const topDomains = Object.keys(bootstrapData.value.domain);
+  const flatSubDomains = flattenOrderDomains()
+    .map((d) => d[0])
+    .filter((domain) => !topDomains.includes(domain));
+
+  Object.keys(searchInterface.value.domain).forEach((domain) => {
+    if (flatSubDomains.includes(domain)) {
+      delete searchInterface.value.domain[domain];
+    }
+  });
+}
 
 onClickOutside(wrapper, () => (panel.value = false));
 
