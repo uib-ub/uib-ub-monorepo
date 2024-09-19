@@ -42,3 +42,15 @@ export function getValueByPath (obj: any, path: string | undefined): any {
 
   
 }
+
+
+// 20 random numbers between 1 and 16, not ordered by size
+
+const baseSkeletonLengths = [4, 1, 13, 11, 8, 3, 15, 6, 10, 2, 14, 9, 7, 12, 5, 16, 2, 8, 4, 11];
+export function getSkeletonLength(index: number, min: number, max: number): number {
+  // Use modulo to wrap the index if it's larger than the list length
+  const wrappedIndex = index % baseSkeletonLengths.length;
+
+  return Math.floor(baseSkeletonLengths[wrappedIndex] * (max - min) / 16 + min);
+}
+
