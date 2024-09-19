@@ -1,7 +1,7 @@
 <template>
   <header>
     <div style="height: 48px">
-      <NavBar
+      <NavbarWrapper
         ref="navBarRef"
         :key="'navbar' + locale + orderedTermbases.length"
         :context="context"

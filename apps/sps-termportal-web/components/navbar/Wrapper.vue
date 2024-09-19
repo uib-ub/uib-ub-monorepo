@@ -14,7 +14,7 @@
           class="flex items-center gap-x-1 px-4 text-lg font-semibold text-gray-600"
         >
           <NavbarLanguage />
-          <NavbarTermbases :key="'termbases_' + orderedTermbases.length" />
+          <NavbarTermbases />
           <NavBarLink to="/om">
             {{ $t("navBar.om") }}
           </NavBarLink>

@@ -11,6 +11,7 @@
     <Menu
       id="termbaseMenu"
       ref="termbaseMenu"
+      :key="orderedTermbases.length"
       :model="termbaseOptions"
       :popup="true"
     >
