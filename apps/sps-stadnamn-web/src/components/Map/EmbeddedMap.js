@@ -9,10 +9,15 @@ export default function EmbeddedMap(props) {
   const mapRef = useRef(null);
   const [baseLayer, setBaseLayer] = useState(null)
 
+
+
   useEffect(() => {
+    setBaseLayer(localStorage?.getItem('baseLayer') && baseMapProps[localStorage.getItem('baseLayer')] || baseMapProps[baseMapKeys[0]])
+    
     if (mapRef.current && props.doc?.location) {
       const { coordinates } = props.doc.location;
-      setBaseLayer(localStorage?.getItem('baseLayer') && baseMapProps[localStorage.getItem('baseLayer')] || baseMapProps[baseMapKeys[0]])
+      
+  
       const newCenter = [coordinates[1], coordinates[0]];
       mapRef.current.setView(newCenter);
     }
