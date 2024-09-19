@@ -62,6 +62,7 @@
             class="text-gray-600 mt-[-7px]"
             aria-hidden="true"
           />
+          <span class="sr-only">Expand domain panel</span>
         </button>
       </div>
     </div>
@@ -78,12 +79,14 @@
             @click="resetSubdomainOptions()"
           >
             <IconReset class="text-lg" size="1.35em" />
+            <span class="sr-only">Reset domain options</span>
           </button>
           <button
             class="border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 hover:text-gray-800 flex justify-center"
             @click="panel = false"
           >
             <IconClose class="text-lg" />
+            <span class="sr-only">Close</span>
           </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

@@ -10,22 +10,27 @@
     </SearchDropdownWrapper>
     <SearchDropdownWrapper target="translate">
       <DropdownPV
-        :id="`translateDropdown`"
         v-model="searchInterface.translate"
+        aria-labelledby="translateDropdownLabel"
         :options="optionsTranslate"
         class="min-w-[6rem]"
       />
     </SearchDropdownWrapper>
-    <div
+    <button
       class="flex space-x-2 pt-1 hover:cursor-pointer group"
       @click="searchInterface.useDomain = !searchInterface.useDomain"
     >
       <div>{{ $t("global.domain.domain") }}</div>
       <div class="h-4 rotate-180 pb-6">
-        <InputSwitch v-model="searchInterface.useDomain" @click.stop="false" />
+        <InputSwitch
+          v-model="searchInterface.useDomain"
+          aria-labelledby="domainSwitchLabel"
+          @click.stop="false"
+        />
+        <span id="domainSwitchLabel" class="sr-only">Use domain search.</span>
       </div>
       <div>{{ $t("global.termbase", 0) }}</div>
-    </div>
+    </button>
   </div>
 </template>
 

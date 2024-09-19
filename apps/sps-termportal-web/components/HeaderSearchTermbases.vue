@@ -47,12 +47,26 @@
       v-if="panel"
       class="absolute z-10 mt-[6px] rounded-b-[7px] border border-gray-300 bg-white border-t-white p-2 shadow-lg"
     >
-      <button
-        class="absolute top-0 right-0 border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 mr-1 mt-1 flex justify-center"
-        @click="panel = false"
-      >
-        <Icon name="material-symbols:close" size="1.4rem" />
-      </button>
+      <div class="absolute top-0 right-0 flex mr-1 mt-1 space-x-2">
+        <button
+          v-if="searchInterface.termbase.length > 0"
+          class="p-0.5 text-gray-600 border border-transparent rounded-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+          @click="searchInterface.termbase = []"
+        >
+          <IconReset class="text-lg" size="1.35em" />
+          <span class="sr-only">Reset termbase options</span>
+        </button>
+        <button
+          class="border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 flex justify-center"
+          @click="panel = false"
+        >
+          <IconClose class="text-lg" />
+          <span class="sr-only">Close</span>
+        </button>
+      </div>
+      <div class="text-lg px-2">
+        {{ $t("global.termbase", 2) }}
+      </div>
       <div
         class="grid grid-flow-row grid-cols-1 gap-x-8 gap-y-0 md:grid-cols-2"
       >
