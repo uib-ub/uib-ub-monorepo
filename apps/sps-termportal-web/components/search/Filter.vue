@@ -7,7 +7,7 @@
     <div class="flex space-x-6 pb-2 pt-1 text-2xl">
       <h2>{{ $t("searchFilter.filter") }}</h2>
       <UtilsTransitionOpacity>
-        <UtilsSpinnerIcon
+        <IconSpinner
           v-if="searchDataPending.aggregate"
           size="0.8em"
           class="mt-0.5"

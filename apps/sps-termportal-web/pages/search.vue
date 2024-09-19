@@ -23,7 +23,7 @@
                   >
                 </h2>
                 <UtilsTransitionOpacity>
-                  <UtilsSpinnerIcon
+                  <IconSpinner
                     v-if="searchDataPending.entries"
                     size="0.8em"
                     class="mt-0.5"
@@ -36,8 +36,11 @@
               </div>
             </div>
             <SearchResultsList />
-            <UtilsTransitionOpacity v-if="false" class="flex justify-center p-2">
-              <UtilsSpinnerIcon v-if="pending && countFetchedMatches > 30" />
+            <UtilsTransitionOpacity
+              v-if="false"
+              class="flex justify-center p-2"
+            >
+              <IconSpinner v-if="pending && countFetchedMatches > 30" />
             </UtilsTransitionOpacity>
           </main>
         </div>
