@@ -7,7 +7,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 import SearchParamsLink from '@/components/ui/search-params-link';
 import { SearchContext } from '@/app/search-provider';
-import Spinner from '@/components/svg/Spinner';
+import { getSkeletonLength } from '@/lib/utils';
 
 
 
@@ -74,7 +74,7 @@ useEffect(() => {
         { isLoadingTree && <div className='border-t-2 border-neutral-100 border-neutral-300 pt-2 animate-pulse'>
           <div role="status" aria-live="polite" className="sr-only">Laster inn register</div>
           { Array.from({length: 20}, (_, i) => <div key={i} className="flex px-2 py-2 border-b border-neutral-300 mx-2">
-            <div className="rounded-md my-2  bg-neutral-200 h-[1em]" style={{width: `${Math.floor(Math.random() * (16 - 4 + 1) + 4)}rem`}}></div>
+            <div className="rounded-md my-2  bg-neutral-200 h-[1em]" style={{width: `${getSkeletonLength(i, 4, 16)}rem`}}></div>
           </div>) }
 
         </div> }

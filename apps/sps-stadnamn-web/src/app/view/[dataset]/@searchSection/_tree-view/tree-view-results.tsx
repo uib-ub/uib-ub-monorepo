@@ -4,7 +4,7 @@ import { useParams, usePathname, useSearchParams } from "next/navigation"
 import { treeSettings } from "@/config/server-config";
 import { useEffect, useState } from "react";
 import SearchParamsLink from "@/components/ui/search-params-link";
-import { getValueByPath } from "@/lib/utils";
+import { getSkeletonLength, getValueByPath } from "@/lib/utils";
 import Link from "next/link";
 import { PiCaretDown } from "react-icons/pi";
 
@@ -90,7 +90,7 @@ export default function TreeViewResults({hits, isLoading}: {hits: any, isLoading
                     }
                     else if (isLoading) {
                         return <li key={i} className="flex gap-4 px-2 py-2 border-b border-neutral-300 mx-2">
-                            <div className="rounded-md my-2  bg-neutral-200 h-[1em] animate-pulse" style={{width: `${Math.floor(Math.random() * (16 - 4 + 1) + 4)}rem`}}></div><div className="h-[1.5em] w-[1.5em] rounded-full self-center bg-neutral-200 ml-auto animate-pulse"></div>
+                            <div className="rounded-md my-2  bg-neutral-200 h-[1em] animate-pulse" style={{width: `${getSkeletonLength(i, 4, 16)}rem`}}></div><div className="h-[1.5em] w-[1.5em] rounded-full self-center bg-neutral-200 ml-auto animate-pulse"></div>
                         </li>
                     }
                     else if ( i == size) {
