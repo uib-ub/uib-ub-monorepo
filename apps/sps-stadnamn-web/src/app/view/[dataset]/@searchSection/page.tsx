@@ -18,7 +18,7 @@ export default function SearchSection ( { params, searchParams }: { params: { da
     
 
     return (
-       <section className="card flex flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 xl:overflow-y-auto w-full h-full relative" aria-label="Søkepanel">
+       <section className="card flex flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 xl:overflow-y-auto w-full max-h-full relative" aria-label="Søkepanel">
 
         <div className='px-4 flex flex-wrap gap-y-2'>
           <h1 className='text-xl font-sans font-semibold flex gap-1'>

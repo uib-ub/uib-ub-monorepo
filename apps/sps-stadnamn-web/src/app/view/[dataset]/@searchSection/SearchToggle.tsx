@@ -22,13 +22,27 @@ export default function SearchToggle({children}: {children?: React.ReactNode}) {
     }
     
 
-
-    return ( 
+    // Temporary workaround in case someone shares a mobile link with a desktop user
+    return searchParams.get('search') ? ( 
         <>
         <button aria-expanded={expanded} 
                 aria-haspopup="true"
                 aria-controls={expanded ? "collapsibleView" : undefined }
-                className="xl:hidden py-2"
+                className="py-2 xl:py-0"
+                onClick={toggleSearch}>
+            {
+                expanded ? <><PiCaretUp className='inline mr-2'/>{children}</> 
+                : <><PiCaretDown className='inline mr-2'/>{children}</>
+            }
+            </button>
+        </>
+    )
+    : ( 
+        <>
+        <button aria-expanded={expanded} 
+                aria-haspopup="true"
+                aria-controls={expanded ? "collapsibleView" : undefined }
+                className="py-2 xl:py-0 xl:hidden"
                 onClick={toggleSearch}>
             {
                 expanded ? <><PiCaretUp className='inline mr-2'/>{children}</> 
