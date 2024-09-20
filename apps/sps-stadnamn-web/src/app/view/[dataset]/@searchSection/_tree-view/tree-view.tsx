@@ -51,7 +51,7 @@ useEffect(() => {
 
 
 
-    return <section className="'absolute xl:static z-[2002] flex-col w-full top-0 bottom-0 h-full overflow-y-auto border-t border-neutral-200 pt-4 xl:pt-0 xl:border-none hidden max-h-full overflow-hidden" 
+    return <section className="absolute xl:static z-[3002] flex-col w-full top-[100%] right-0 bg-white border-t border-neutral-200 pt-4 xl:pt-0 xl:border-none max-h-[64vh] shadow-md xl:shadow-none xl:!max-h-full overflow-hidden rounded-b-md" 
                     style={{display: searchParams.get('search') == 'hide' ? 'none' : 'flex'}}>
      
         {adm1 && 

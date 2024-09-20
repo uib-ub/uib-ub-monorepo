@@ -42,7 +42,7 @@ export default function SearchView() {
         }
 //{`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col gap-4 w-full`} >
     return  (
-      <div id="collapsibleView" className="'absolute xl:static z-[2002] flex-col w-full top-0 bottom-0 h-full overflow-y-auto border-t border-neutral-200 pt-4 xl:pt-0 xl:border-none hidden max-h-full overflow-hidden" style={{display: searchParams.get('search') == 'hide' ? 'none' : 'flex'}}>
+      <div id="collapsibleView" className="absolute xl:static z-[3002] flex-col w-full top-[100%] right-0 bg-white border-t border-neutral-200 pt-4 xl:pt-0 xl:border-none max-h-[64vh] shadow-md xl:shadow-none xl:!max-h-full overflow-hidden" style={{display: searchParams.get('search') == 'hide' ? 'none'  : 'flex'}}>
     <div className="overflow-y-auto h-full">
   
     <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
