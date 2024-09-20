@@ -96,9 +96,10 @@ jobs:
           manage_kube_secret "esobserveapikeycred" "esObserveApiKey" "${{ secrets.OBSERVE_ES_APIKEY }}"
           manage_kube_secret "apieswritetokencred" "apiEsWriteToken" "${{ secrets.API_ES_WRITE_TOKEN }}"
 
+          # Deloy/update application
           DEPLOYMENT_NAME="hono-api"
           NAMESPACE="hono-api-prod"
-          echo "Deployment $DEPLOYMENT_NAME does not exist. Applying deployment..."
+          echo "Applying deployment $DEPLOYMENT_NAME for namespace $NAMESPACE ..."
           kubectl apply -k k8s-hono-api/$NAMESPACE -n "$NAMESPACE"
 
       - name: Wait For Deployment To Start
