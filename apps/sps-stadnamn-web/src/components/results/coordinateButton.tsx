@@ -17,6 +17,11 @@ export default function CoordinateButton({doc, iconClass, parentUuid}: {doc: any
         if (newSearchParams.get('display') != 'tree') {
           newSearchParams.delete('display')
         }
+
+        if (newSearchParams.get('search') == "show") {
+          newSearchParams.set('search', 'hide')
+        }
+
         
 
         if (params.dataset == 'search' && docDaataset != 'search') {
