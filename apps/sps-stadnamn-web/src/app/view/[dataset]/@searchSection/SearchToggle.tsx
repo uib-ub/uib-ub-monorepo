@@ -11,7 +11,7 @@ export default function SearchToggle({children}: {children?: React.ReactNode}) {
     const withSearch = new URLSearchParams(searchParams)
     withSearch.set("search", "show")
 
-    const expanded = pathName.startsWith('/view/') && searchParams.get('search') == 'show'
+    const expanded = pathName.startsWith('/view/') && searchParams.get('search') == 'show' || !searchParams.get('search')
 
     const toggleSearch = () => {
         if (expanded) {
