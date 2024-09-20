@@ -40,9 +40,11 @@ export default function SearchView() {
             .join('&');
         router.push(`/view/${params.dataset}?${formParams}${searchParams.get('display') == 'table' ? '&display=table' : ''}`)
         }
-
-    return (
-      <div id="collapsibleView" className={`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col h-fit gap-4 w-full`} >
+//{`${searchParams.get('search') == 'show' ?  'absolute xl:static z-[2002] xl:z-auto xl:flex top-[100%] bg-white shadow-md xl:shadow-none pb-8' : 'hidden xl:flex'} flex flex-col gap-4 w-full`} >
+    return  (
+      <div id="collapsibleView" className="'absolute xl:static z-[2002] flex-col w-full top-0 bottom-0 h-full overflow-y-auto border-t border-neutral-200 pt-4 xl:pt-0 xl:border-none hidden max-h-full overflow-hidden" style={{display: searchParams.get('search') == 'hide' ? 'none' : 'flex'}}>
+    <div className="overflow-y-auto h-full">
+  
     <form id="searchForm" className='flex flex-col gap-4' onSubmit={ handleSubmit }>
       <SearchBar showLoading={showLoading}/>
       { params.dataset == 'search' && params.uuid && !filteredParamsWithoutSort && searchParams.get('expanded') ? <PinnedResult/>
@@ -50,5 +52,9 @@ export default function SearchView() {
     </form>          
       { searchParams.get('display') != 'table' && resultData?.hits?.hits?.length && filteredParamsWithoutSort ? <Results hits={resultData.hits}/> : null }
       </div>
+
+
+      </div>
+
       )
 }
