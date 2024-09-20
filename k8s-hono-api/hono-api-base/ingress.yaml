@@ -4,20 +4,21 @@ metadata:
   name: hono-api-ingress
   annotations:
     cert-manager.io/cluster-issuer: lets-encrypt
-  # nginx.ingress.kubernetes.io/rewrite-target: /
+    # nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: public
   tls:
-    - hosts:
-        - api.ub.uib.no
-      secretName: hono-api-ingress-tls
+  - hosts:
+    - api.ub.uib.no
+    secretName: hono-api-ingress-tls
   rules:
-    - host: api.ub.uib.no
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: hono-api
-                port:
-                  number: 80
+  - host: api.ub.uib.no
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hono-api
+            port:
+              number: 80
