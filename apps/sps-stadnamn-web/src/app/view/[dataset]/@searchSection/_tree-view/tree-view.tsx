@@ -56,13 +56,13 @@ useEffect(() => {
      
         {adm1 && 
           <div className="px-4 py-2 text-lg">
-            <SearchParamsLink className="breadcrumb-link" withoutParams={["adm1", "adm2"]}>
+            <SearchParamsLink className="breadcrumb-link" withoutParams={["adm1", "adm2", "size"]}>
             {datasetTitles[params.dataset as string]}
             </SearchParamsLink>
             <span className='mx-2'>/</span>
             {adm2 ?
               <>
-              <SearchParamsLink className="breadcrumb-link" withoutParams={["adm2"]}>
+              <SearchParamsLink className="breadcrumb-link" withoutParams={["adm2", "size"]}>
               {adm1}
               </SearchParamsLink>
               <span className='mx-2'>/</span>
@@ -89,6 +89,7 @@ useEffect(() => {
 
             return <li key={adm.key} className="flex flex-col gap-2">
               <SearchParamsLink addParams={{[adm1 ? 'adm2' : 'adm1']: adm.key}}
+                    
                     className="lg:text-lg gap-2 px-4 mx-2 py-2 border-b border-neutral-300 no-underline">
                       {treeSettings[params.dataset as string].showNumber && (adm1 ? adm.aggNum.buckets[0].key : adm.aggNum.buckets[0].key.slice(0,2))} {adm.key}
                       <PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/>
