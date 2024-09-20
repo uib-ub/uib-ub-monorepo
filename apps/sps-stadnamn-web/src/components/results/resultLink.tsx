@@ -21,7 +21,7 @@ export default function ResultLink({children, doc, dataset}: {doc: any, dataset?
     return (
 
       <Link href={docUrl}
-            className="no-underline text-semibold hover:underline !text-black aria-[current=page]:underline  aria-[current=page]:!text-accent-800  aria-[current=page]:!decoration-accent-800"
+            className="text-semibold hover:underline !text-black aria-[current=page]:underline  aria-[current=page]:!text-accent-800  aria-[current=page]:!decoration-accent-800"
             aria-current={pathname.includes('/doc/') && (params.uuid == doc._source?.uuid || (doc._source?.children?.length == 1 && doc._source?.children[0] == params.uuid)) ? 'page': undefined}>
             {children}
         </Link>
