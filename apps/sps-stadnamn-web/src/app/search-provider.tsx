@@ -52,7 +52,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 return
             }
 
-            if (!treeParamsQuery || !searchParams.get('size') || !mapBounds.length ) {
+            if (!treeParamsQuery || !mapBounds.length ) {
                 if (es_data.aggregations?.viewport?.bounds) {
                     setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
                         [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
