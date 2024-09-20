@@ -98,14 +98,8 @@ jobs:
 
           DEPLOYMENT_NAME="hono-api"
           NAMESPACE="hono-api-prod"
-        # # Check if the deployment already exists
-        # if kubectl get deployment "$DEPLOYMENT_NAME" -n "$NAMESPACE" >/dev/null 2>&1; then
-        #   echo "Deployment $DEPLOYMENT_NAME already exists. Performing rolling restart..."
-        #   kubectl rollout restart deployment "$DEPLOYMENT_NAME" -n "$NAMESPACE"
-        # else
           echo "Deployment $DEPLOYMENT_NAME does not exist. Applying deployment..."
           kubectl apply -k k8s-hono-api/$NAMESPACE -n "$NAMESPACE"
-        # fi
 
       - name: Wait For Deployment To Start
         run: sleep 10s
