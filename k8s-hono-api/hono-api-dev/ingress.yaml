@@ -8,12 +8,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    # - api-dev.testdu.uib.no
-    - api.ub.uib.no
+    - api-dev.testdu.uib.no
     secretName: hono-api-ingress-tls
   rules:
-  # - host: api-dev.testdu.uib.no
-  - host: api.ub.uib.no
+  - host: api-dev.testdu.uib.no
     http:
       paths:
       - path: /
