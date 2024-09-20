@@ -88,7 +88,7 @@ export default function ResultRow({ hit, adm = true, externalLoading}: { hit: an
                         onClick={toggleExpanded} 
                         className="flex text-sm bg-neutral-100 text-black rounded-full pr-3 pl-1 py-1 self-center whitespace-nowrap snid-button">
                         
-            {((externalLoading===undefined ?  expandLoading : externalLoading) && expanded) ? <Spinner status="Laster treff" className='w-[1em] h-[1em} mx-1'/> : (expanded ? <PiCaretUp className="self-center mx-1"/> : <PiCaretDown className="self-center mx-1"/>)}
+            {((externalLoading===undefined ?  expandLoading : externalLoading) && expanded) || true ? <Spinner status="Laster treff" className='w-[1em] h-[1em} self-center mx-1'/> : (expanded ? <PiCaretUp className="self-center mx-1"/> : <PiCaretDown className="self-center mx-1"/>)}
             
             {hit._source.children?.length}
             
