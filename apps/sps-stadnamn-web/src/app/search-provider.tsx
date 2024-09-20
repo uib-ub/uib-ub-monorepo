@@ -38,6 +38,8 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
 
     const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded']) // Props not passed to the search API
+    const refitBoundsParams =  useQueryStringWithout(['docs', 'popup', 'size', 'page', 'search', 'expanded'])
+
 
     useEffect(() => {
 
@@ -52,7 +54,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 return
             }
 
-            if (!treeParamsQuery || !mapBounds.length ) {
+            if (!mapBounds.length || refitBoundsParams) {
                 if (es_data.aggregations?.viewport?.bounds) {
                     setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
                         [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
@@ -68,7 +70,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             })
         
         
-      }, [filteredSearchParams, params.dataset, treeParamsQuery, searchParams, mapBounds.length])
+      }, [filteredSearchParams, params.dataset, treeParamsQuery, mapBounds.length, refitBoundsParams])
 
   return <SearchContext.Provider value={{resultData, isLoading, mapBounds, searchError}}>{children}</SearchContext.Provider>
 }
