@@ -1,7 +1,9 @@
 import Pagination from '../../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiTable } from 'react-icons/pi';
+import { PiCaretDoubleUp, PiTable } from 'react-icons/pi';
 import ResultRow from '@/components/results/ResultRow';
+import Link from 'next/link';
+import { useState } from 'react';
 
 
 export default function Results({ hits }: { hits: any}) {
@@ -10,18 +12,25 @@ export default function Results({ hits }: { hits: any}) {
     const router = useRouter()
     const params = useParams<{uuid: string; dataset: string}>()
 
-
-    const sortResults = () => {
-      const params = new URLSearchParams(searchParams)
-      if (searchParams.get('sort') == 'desc') {
-        params.delete('sort')
-      } else {
-        params.set('sort', 'desc')
-      }
-      params.delete('page')
-        
-      router.push(pathname + "?" + params.toString())
+    const hideSearch = () => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      newSearchParams.set('search', 'hide')
+      return pathname + "?" + newSearchParams.toString()
     }
+
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    // Determine if the touch action was a swipe
+    const handleSwipe = () => {
+      // Check if the swipe was significant
+      if (touchStart && touchEnd && touchStart - touchEnd > 150) {
+        // Navigate to ideSearch
+        router.push(hideSearch())
+      }
+    };
+
+
 
     // When sort options aren't configured yet, we can sort by relevance or alphabetically using a single toggle
     const sortOrderByCombined = () => {
@@ -80,6 +89,16 @@ export default function Results({ hits }: { hits: any}) {
     <nav className="center gap-2 mt-4">
       {hits.total.value > 10 && <Pagination totalPages={Math.ceil(hits.total.value / (Number(searchParams.get('size')) || 10))}/>}
     </nav>
+
+    <Link aria-label="Lukk søkemeny" className="w-full p-8 flex justify-center xl:hidden" 
+          href={hideSearch()}
+          onTouchStart={(e) => setTouchStart(e.targetTouches[0].clientY)}
+          onTouchEnd={(e) => {
+          setTouchEnd(e.changedTouches[0].clientY);
+          handleSwipe();
+        }}>
+          <PiCaretDoubleUp aria-hidden="true"/>
+      </Link>
 
     </section>
     </section>
