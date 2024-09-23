@@ -2,40 +2,88 @@
 import { useState } from "react"
 
 export default function Drawer() {
-    const [drawerPosition, setDrawerPosition] = useState(25); // Example initial value
+    const [currentPosition, setCurrentPosition] = useState(25); // Example initial value
+    const [snappedPosition, setSnappedPosition] = useState(25); // Example initial value
+    const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
+    const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down'>(null);
 
     const drawerStyle = {
-        height: `${drawerPosition}svh` // Set height as a percentage of the viewport height
+        height: `${currentPosition}svh` // Set height as a percentage of the viewport height
     };
+
+
+    const pos2svh = (yPos: number) => {
+        const windowHeight = window.visualViewport?.height || window.innerHeight;
+        return (windowHeight - yPos) / windowHeight * 100
+    }
+
+
 
     const handleTouchStart = (e) => {
         e.preventDefault();
         setStartTouchY(e.touches[0].clientY);
+        setSnapped(false);
     };
 
     const handleTouchEnd = (e) => {
         e.preventDefault(); 
-        const endTouchY = e.changedTouches[0].clientY;
-        // If swipe up, open the drawer more, if swipe down, close the drawer
-        if (startTouchY > endTouchY + 10) { // Swipe up
-            setDrawerPosition(100); // Max 90vh
-        } else if (startTouchY < endTouchY - 10) { // Swipe down
-            setDrawerPosition(25);
+        setSnapped(true);
+
+
+        let newPosition = Math.round(currentPosition / 25) * 25
+        if (newPosition < 25) {
+            newPosition = 25
         }
+        else if (newPosition == 75) {
+            newPosition = swipeDirection == 'up' ? 100 : 50
+        }
+        else if (newPosition > 100) {
+            newPosition = 100
+        }
+
+
+        setCurrentPosition(newPosition);
+        setSnappedPosition(newPosition);
+        setSwipeDirection(null);
+
+
     };
 
-    return <div>
-        <div className="bg-primary-400 w-full h-full relative"></div>
-        { drawerPosition > 10 ? <button onClick={() => setDrawerPosition(10)}>Close drawer</button>
-        : <button onClick={() => setDrawerPosition(50)}>Open drawer</button>
-        }
+    const handleTouchMove = (e) => {
+        e.preventDefault();
 
-        <div className="bg-neutral-200 absolute bottom-0 left-0 w-full transition-all duration-300 ease-in-out touch-pan-down" 
+
+        const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
+
+        setSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
+        setCurrentPosition(newHeight < 100 ? newHeight : 100);
+
+  
+    }
+        
+
+    return <div className="h-full">
+        <div className="bg-accent-200 !h-full"><h1>Hello</h1>
+
+        
+            
+            </div>
+        
+
+        <div className={`bg-white absolute md:!h-full md:!w-full md:bg-transparent bottom-0 w-full touch-pan-down ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
              style={drawerStyle} 
              onTouchStart={handleTouchStart} 
+             onTouchMove={handleTouchMove}
              onTouchEnd={handleTouchEnd}>
-            <div className="w-full flex justify-center"><div className="h-2 w-20 bg-neutral-700 mt-2 rounded-full"></div></div>
+
+            <div className="w-full flex justify-center md:hidden"><div className="h-1 w-16 bg-neutral-300 mt-1 rounded-full"></div>
+            
+            </div>
+            Snapped position: {snappedPosition}<br/>
+            Direction: {swipeDirection}<br/>
+            <br/>
+            
         </div>
     </div>
 }
