@@ -89,7 +89,7 @@ export default function Drawer() {
             <div className="h-full overscroll-contain max-h-[calc(100dvh-3rem)] p-4 instance-info" ref={scrollableContent} style={{overflowY: snappedPosition == 100 ? 'auto' : 'hidden', touchAction: snappedPosition == 100 || scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
             <h2>Berg</h2>
             <p>Gard | Ullensvang, Hordaland</p>
-
+            { currentPosition > 25 && <div className="transition-all duration-300 ease-in-out h-full">                                                                                                                                                                                                                                                                                                                    
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
             <p>Aenam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
             <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
@@ -104,16 +104,16 @@ export default function Drawer() {
             <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
             <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
             <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
-
+            </div>}
             
             </div>
-            <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 flex gap-2 py-1 px-4 items-center justify-between shadow-md">
-                <div className="flex gap-2 font-semibold">Treff<span className="bg-primary-500 rounded-full px-2 text-white whitespace-nowrap">10 000+</span></div>
-                <div className="flex">
+            <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 flex gap-2 items-center justify-between shadow-md">
+                <div className="flex px-3 gap-2 font-semibold">Treff<span className="bg-primary-500 rounded-full px-2 text-white whitespace-nowrap">10 000+</span></div>
+                <div className="flex h-full items-center">
                 <div className="px-3"><PiFunnel className="text-3xl"/></div>
                 <div className="px-3"><PiTable className="text-3xl"/></div>
                 <div className="px-3"><PiTreeView className="text-3xl"/></div>
-                <div className="px-3"><PiInfoFill className="text-3xl"/></div>
+                <div className="px-3 text-accent-300"><PiInfoFill className="text-3xl"/></div>
                 </div>
               
 
