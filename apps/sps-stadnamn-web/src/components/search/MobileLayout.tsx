@@ -2,31 +2,27 @@
 import { useRef, useState } from "react"
 import { PiFunnelFill, PiInfoFill, PiListBullets } from "react-icons/pi";
 import Results from "./Results";
-import SearchForm from "./SearchForm";
 import ExampleContent from "./ExampleContent";
 import MapExplorer from "./MapExplorer";
 
 export default function MobileLayout() {
-    const [currentPosition, setCurrentPosition] = useState(25); // Example initial value
-    const [snappedPosition, setSnappedPosition] = useState(25); // Example initial value
+    const [currentPosition, setCurrentPosition] = useState(25);
+    const [snappedPosition, setSnappedPosition] = useState(25);
     const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
     const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down'>(null);
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
 
-    const [drawerContent, setDrawerContent] = useState(null)
+    const [drawerContent, setDrawerContent] = useState<string|null>(null)
 
 
 
         
-    const isScrolling = (target) => {
-        if (snappedPosition == 100 && scrollableContent.current?.contains(target)) {
-            console.log("YES")
+    const isScrolling = (target: EventTarget) => {
+        if (snappedPosition == 100 && target instanceof Node && scrollableContent.current?.contains(target)) {
             return scrollableContent.current.scrollTop != 0
         }
-        console.log("NO")
-
     }
 
 
@@ -36,8 +32,8 @@ export default function MobileLayout() {
     }
 
 
-    const handleTouchStart = (e) => {
-        if (isScrolling(e.target)) {
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+        if (e.target && isScrolling(e.target)) {
             return
         }
 
@@ -46,7 +42,7 @@ export default function MobileLayout() {
         setSnapped(false);
     };
 
-    const handleTouchEnd = (e) => {
+    const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
         setSnapped(true);
 
         // Detect quick swipe up or down, resulting in 25% or 100% height
@@ -78,9 +74,6 @@ export default function MobileLayout() {
 
         }
 
-        
-
-
         setCurrentPosition(newPosition);
         setSnappedPosition(newPosition);
         setSwipeDirection(null);
@@ -88,18 +81,17 @@ export default function MobileLayout() {
 
     };
 
-    const handleTouchMove = (e) => {
-        if (isScrolling(e.target)) {
+    const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        if (e.target && isScrolling(e.target)) {
             return
         }
         const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
-
         setSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
         setCurrentPosition(newHeight < 100 ? newHeight : 100);
 
     }
 
-    const swtichTab = (tab) => {
+    const swtichTab = (tab: string) => {
 
         if (drawerContent == tab) {
             setDrawerContent(null)

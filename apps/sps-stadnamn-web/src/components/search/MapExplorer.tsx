@@ -9,7 +9,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const [layerControlCollapsed, setLayerControlCollapsed] = useState(true);
     const controllerRef = useRef(new AbortController());
 
-    const mapInstance = useRef(null);
+    const mapInstance = useRef<any>(null);;
 
 
 
@@ -63,7 +63,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
  
     return <><Map mapRef={mapRef} zoom={0} center={[59.91, 10.75]} zoomControl={false}
         className='w-full h-full'>
-    {({ TileLayer, LayersControl, CircleMarker, Marker, Popup, Tooltip }, leaflet) => (
+    {({ TileLayer, LayersControl, CircleMarker, Marker, Popup, Tooltip }: any, leaflet: any) => (
 
   <>
 
