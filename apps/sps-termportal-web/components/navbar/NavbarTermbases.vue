@@ -11,7 +11,6 @@
     <Menu
       id="termbaseMenu"
       ref="termbaseMenu"
-      :key="orderedTermbases.length"
       :model="termbaseOptions"
       :popup="true"
     >
@@ -31,7 +30,6 @@
 
 <script setup lang="ts">
 const orderedTermbases = useOrderedTermbases();
-
 const termbaseMenu = ref();
 const termbaseOptions = computed(() =>
   orderedTermbases.value.map((tb) => {
