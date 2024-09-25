@@ -117,7 +117,7 @@ export default function MobileLayout() {
              onTouchEnd={handleTouchEnd}>
         { drawerContent && <>
             <div className="w-full flex justify-center"><div className="h-1 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
-            <div className="h-full overscroll-contain max-h-[calc(100dvh-3rem)] p-4 instance-info" ref={scrollableContent} style={{overflowY: snappedPosition == 100 ? 'auto' : 'hidden', touchAction: snappedPosition == 100 || scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
+            <div className="h-full overscroll-contain max-h-[calc(100dvh-3rem)] p-4 instance-info" ref={scrollableContent} style={{overflowY: currentPosition == 100 ? 'auto' : 'hidden', touchAction: currentPosition == 100  && scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
 
             { drawerContent == 'info' && <ExampleContent expanded={snappedPosition > 25}/> }
             { drawerContent == 'results' && <Results/> }
