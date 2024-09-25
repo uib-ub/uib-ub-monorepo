@@ -6,6 +6,10 @@ import NavBar from "./NavBar";
 import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
 import { Suspense } from "react";
 import PlausibleProvider from 'next-plausible'
+import { PiHouseFill } from "react-icons/pi";
+import SearchForm from "@/components/search/SearchForm";
+import { userAgent } from "next/server";
+import { headers } from "next/headers";
  
 const garamond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -33,6 +37,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const device = userAgent({headers: headers()}).device
+  const isMobile = device.type === 'mobile'
   return (
     <html lang="no" className={`${garamond.variable} ${opensans.className} h-full w-full`}>
       <head>
@@ -42,15 +48,15 @@ export default function RootLayout({
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[3001] focus:top-1 focus:py-3 focus:px-6 focus:bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
-        <header className="flex flex-col lg:flex-row lg:gap-6 py-2 px-1 lg:p-3 lg:px-4 text-neutral-900 w-full relative">
-          <div className="flex flex-wrap pl-3 md:justify-between h-full items-center">
+        <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md h-12 itemx-center !z-[4000]">
+
           
-          <Link href="/" className="text-2xl pt-1 small-caps font-serif h-full lg:pt-0">Stadnamnportalen</Link>
+          { isMobile ? <SearchForm showLink={true}/> : <Link href="/" className="text-2xl small-caps font-serif self-center lg:!ml-4">Stadnamnportalen</Link> }
+          
           <Suspense>
             <Menu/>
           </Suspense>
-          </div>
-          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex small-caps gap-3 font-semibold ml-auto`}/>
+          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex small-caps gap-3 font-semibold items-center mb-1`}/>
         </header>
         {children}
       </body>

@@ -5,7 +5,7 @@ import { useContext } from "react"
 export default function Results() {
     const { resultData, isLoading, searchError } = useContext(SearchContext)
     return <div>
-        <h1>Resultater</h1>
+
         <p>Her kommer resultatene</p>
         {
             isLoading ? <p>Laster...</p> :
@@ -19,6 +19,6 @@ export default function Results() {
 
         }
 
-        {JSON.stringify(resultData)}
+        
     </div>
 }

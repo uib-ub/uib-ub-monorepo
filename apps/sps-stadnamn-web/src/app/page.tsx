@@ -41,13 +41,13 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
 
   return (
     <>
-<main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow">
+<main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow carta-marina">
   <div className="flex flex-col gap-24 w-full">
   <div className="flex flex-col gap-12 w-full">
   <div className="flex flex-col gap-8 ">
-  <h1 className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center md:text-4xl lg:text-5xl">Stadnamnportalen</h1>
+  <h1 className="text-2xl sm:text-3xl self-center md:text-4xl lg:text-5xl">Stadnamnportalen</h1>
   
-  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-3" action="view/search">
+  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-3 mt-8" action="view/search">
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input id="search_input" className="col-span-4 rounded-sm h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass className="text-xl"/></IconButton>

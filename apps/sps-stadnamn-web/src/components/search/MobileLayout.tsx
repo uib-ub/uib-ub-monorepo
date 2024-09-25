@@ -4,6 +4,7 @@ import { PiFunnelFill, PiInfoFill, PiListBullets } from "react-icons/pi";
 import Results from "./Results";
 import SearchForm from "./SearchForm";
 import ExampleContent from "./ExampleContent";
+import MapExplorer from "./MapExplorer";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25); // Example initial value
@@ -108,14 +109,10 @@ export default function MobileLayout() {
 
 
     return <div className="h-full">
-        <div className="bg-accent-200 !h-full">
-            <SearchForm/>
-            {drawerContent}
-
-            </div>
+        
         
 
-        <div className={`bg-white fixed overscroll-none touch-pan-down overflow-hidden bottom-0 w-full  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
+        <div className={`mobile-interface bg-white fixed overscroll-none touch-pan-down overflow-hidden bottom-0 w-full  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
              style={{height: `${currentPosition}dvh`, touchAction: snappedPosition == 100 ? 'pan-y' : 'pan-down'}}
              onTouchStart={handleTouchStart} 
              onTouchMove={handleTouchMove}
@@ -139,5 +136,9 @@ export default function MobileLayout() {
             </div>
             
         </div>
+        <div className="absolute top-12 right-0 h-[calc(100dvh-6rem)] w-full">
+        <MapExplorer isMobile={true}/>
+        </div>
+
     </div>
 }

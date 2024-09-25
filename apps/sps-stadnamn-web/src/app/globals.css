@@ -61,6 +61,18 @@
     @apply  bg-[url('PhArrowSquareOut.svg')] bg-[length:.75em] bg-left-bottom bg-no-repeat ml-[.2em] inline-block h-[1em] w-[1em];
     
   }
+
+  .carta-marina::before {
+    @apply absolute inset-0 bg-center opacity-50 z-[-1];
+    content: '';
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 25%), url('/Carta_Marina.jpeg');
+    filter: saturate(50%);
+  }
+
+  .mobile-interface {
+    z-index: 5000;
+  }
+
   
 
 }
