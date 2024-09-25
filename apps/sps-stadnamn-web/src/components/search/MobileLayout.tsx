@@ -15,7 +15,7 @@ export default function MobileLayout() {
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
 
-    const [drawerContent, setDrawerContent] = useState('info')
+    const [drawerContent, setDrawerContent] = useState(null)
 
 
 
@@ -66,7 +66,8 @@ export default function MobileLayout() {
         }
         else {
             if (newPosition < 25) {
-                newPosition = 25
+                setDrawerContent(null)
+                newPosition = snappedPosition
             }
             else if (newPosition == 75) {
                 newPosition = swipeDirection == 'up' ? 100 : 50
@@ -100,8 +101,13 @@ export default function MobileLayout() {
 
     const swtichTab = (tab) => {
 
-        setCurrentPosition(50)
-        setDrawerContent(tab)
+        if (drawerContent == tab) {
+            setDrawerContent(null)
+        }
+        else {
+            setDrawerContent(tab)
+
+        }
 
     }
 
@@ -113,11 +119,11 @@ export default function MobileLayout() {
         
 
         <div className={`mobile-interface bg-white fixed overscroll-none touch-pan-down overflow-hidden bottom-0 w-full  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
-             style={{height: `${currentPosition}dvh`, touchAction: snappedPosition == 100 ? 'pan-y' : 'pan-down'}}
+             style={{height: `${drawerContent ? currentPosition : 0}dvh`}}
              onTouchStart={handleTouchStart} 
              onTouchMove={handleTouchMove}
              onTouchEnd={handleTouchEnd}>
-
+        { drawerContent && <>
             <div className="w-full flex justify-center"><div className="h-1 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
             <div className="h-full overscroll-contain max-h-[calc(100dvh-3rem)] p-4 instance-info" ref={scrollableContent} style={{overflowY: snappedPosition == 100 ? 'auto' : 'hidden', touchAction: snappedPosition == 100 || scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
 
@@ -125,6 +131,8 @@ export default function MobileLayout() {
             { drawerContent == 'results' && <Results/> }
             
             </div>
+            </>
+            }
             <div className="fixed bottom-0 left-0 bg-neutral-900 text-white w-full h-12 flex items-center justify-between">
 
                     <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
@@ -136,6 +144,7 @@ export default function MobileLayout() {
             </div>
             
         </div>
+
         <div className="absolute top-12 right-0 h-[calc(100dvh-6rem)] w-full">
         <MapExplorer isMobile={true}/>
         </div>
