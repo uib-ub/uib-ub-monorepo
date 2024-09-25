@@ -12,6 +12,7 @@ export default function MobileLayout() {
     const [startTouchY, setStartTouchY] = useState(0);
     const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down'>(null);
     const scrollableContent = useRef<HTMLDivElement>(null);
+    const [startTouchTime, setStartTouchTime] = useState<number>(0);
 
     const [drawerContent, setDrawerContent] = useState('info')
 
@@ -40,22 +41,42 @@ export default function MobileLayout() {
         }
 
         setStartTouchY(e.touches[0].clientY);
+        setStartTouchTime(Date.now());
         setSnapped(false);
     };
 
     const handleTouchEnd = (e) => {
         setSnapped(true);
 
-        let newPosition = Math.round(currentPosition / 25) * 25
-        if (newPosition < 25) {
-            newPosition = 25
+        // Detect quick swipe up or down, resulting in 25% or 100% height
+        const endTouchY = e.changedTouches[0].clientY;
+        const endTouchTime = Date.now();
+        const touchDuration = endTouchTime - startTouchTime;
+        const swipeDistance = startTouchY - endTouchY;
+        const isQuickSwipe = touchDuration < 100 && Math.abs(swipeDistance) > 50;
+        let newPosition = swipeDirection === 'up' ? Math.ceil(currentPosition / 25) * 25 : Math.floor(currentPosition / 25) * 25
+        if (isQuickSwipe) {
+            if (swipeDirection === 'up') {
+                newPosition = 100
+            }
+            if (swipeDirection === 'down') {
+                newPosition = 25
+            }
         }
-        else if (newPosition == 75) {
-            newPosition = swipeDirection == 'up' ? 100 : 50
+        else {
+            if (newPosition < 25) {
+                newPosition = 25
+            }
+            else if (newPosition == 75) {
+                newPosition = swipeDirection == 'up' ? 100 : 50
+            }
+            else if (newPosition > 100) {
+                newPosition = 100
+            }
+
         }
-        else if (newPosition > 100) {
-            newPosition = 100
-        }
+
+        
 
 
         setCurrentPosition(newPosition);
@@ -102,7 +123,7 @@ export default function MobileLayout() {
 
             <div className="w-full flex justify-center"><div className="h-1 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
             <div className="h-full overscroll-contain max-h-[calc(100dvh-3rem)] p-4 instance-info" ref={scrollableContent} style={{overflowY: snappedPosition == 100 ? 'auto' : 'hidden', touchAction: snappedPosition == 100 || scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
-            
+
             { drawerContent == 'info' && <ExampleContent expanded={snappedPosition > 25}/> }
             { drawerContent == 'results' && <Results/> }
             
