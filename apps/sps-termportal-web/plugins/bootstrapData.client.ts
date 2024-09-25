@@ -54,6 +54,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           }
         });
       } catch (error) {}
+      bootstrapData.value.loaded = true;
     })
   );
 });

@@ -125,4 +125,5 @@ export const useBootstrapData = () =>
       // "DOMENE-3AHelse_og_sosial": {},
       "DOMENE-3AOkonomiAdministrasjon": {},
     },
+    loaded: false,
   }));
