@@ -2,6 +2,7 @@
   "global": {
     "language": "Language | language",
     "termbase": "Termbase | termbase | Termbases | termbases",
+    "concept": "Concept | concept | Concepts | concepts",
     "skipLink": "Go to  main content",
     "collaborators": "Our collaborators",
     "readMore": "Read more...",
