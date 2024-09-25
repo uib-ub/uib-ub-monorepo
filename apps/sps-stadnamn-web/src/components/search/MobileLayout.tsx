@@ -4,6 +4,7 @@ import { PiFunnelFill, PiInfoFill, PiListBullets } from "react-icons/pi";
 import Results from "./Results";
 import ExampleContent from "./ExampleContent";
 import MapExplorer from "./MapExplorer";
+import { useQueryState } from "nuqs";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -14,7 +15,7 @@ export default function MobileLayout() {
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
 
-    const [drawerContent, setDrawerContent] = useState<string|null>(null)
+    const [drawerContent, setDrawerContent] = useQueryState('expanded', {history: 'push'});
 
 
 
@@ -35,7 +36,7 @@ export default function MobileLayout() {
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         if (e.target && isScrolling(e.target)) {
             return
-        }
+        }       
 
         setStartTouchY(e.touches[0].clientY);
         setStartTouchTime(Date.now());

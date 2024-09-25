@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMapKeys, baseMapNames, baseMaps } from "@/config/basemap-config";
-import { PiGps, PiGpsFill, PiMagnifyingGlassMinus, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlus, PiMagnifyingGlassPlusFill } from "react-icons/pi";
+import { PiGps, PiGpsFill, PiGpsFix, PiMagnifyingGlassMinus, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlus, PiMagnifyingGlassPlusFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
@@ -87,7 +87,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 <div className={`absolute ${isMobile ? 'top-24 right-0 flex-col p-2 gap-4' : 'bottom-0 w-full'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
     <IconButton onClick={zoomIn}  className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
     <IconButton onClick={zoomOut} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
-    <IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiGps/></IconButton>
+    <IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiGpsFix/></IconButton>
 </div>
 </>
 }
