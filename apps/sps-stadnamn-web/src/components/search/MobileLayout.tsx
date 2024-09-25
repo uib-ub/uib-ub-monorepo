@@ -1,11 +1,9 @@
 'use client'
 import { useRef, useState } from "react"
-import { PiFunnel, PiFunnelFill, PiInfoFill, PiListBullets, PiTable, PiTreeView } from "react-icons/pi";
+import { PiFunnelFill, PiInfoFill, PiListBullets } from "react-icons/pi";
 import Results from "./Results";
 import SearchForm from "./SearchForm";
 import ExampleContent from "./ExampleContent";
-import IconButton from "../ui/icon-button";
-
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25); // Example initial value
@@ -109,18 +107,13 @@ export default function MobileLayout() {
             { drawerContent == 'results' && <Results/> }
             
             </div>
-            <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 flex items-center justify-between">
+            <div className="fixed bottom-0 left-0 bg-neutral-900 text-white w-full h-12 flex items-center justify-between">
 
-                    <button aria-label="Informasjon"onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
-                    <button aria-label="Filtre" className="px-3"><PiFunnelFill className="text-3xl"/></button>
+                    <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
                     
+                    <button onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">10 000+</span></button>
                 
-                <button onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">10 000+</span></button>
-                
-                    <button aria-label="Tabellvisning" className="toolbar-button"><PiTable className="text-3xl"/></button>
-                    {true && <button aria-label="Hierarkisk visning" className="px-3"><PiTreeView className="text-3xl"/></button>}
-                
-                
+                    <button aria-label="Filtre" className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>
 
             </div>
             
