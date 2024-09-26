@@ -40,7 +40,7 @@ export default function Menu() {
 
 
     return (
-        <div ref={menuRef} className="lg:hidden !ml-auto">
+        <div ref={menuRef} className="xl:hidden !ml-auto">
             <IconButton aria-controls="menu_navbar" 
                         onBlur={handleBlur}
                         label="Meny"
@@ -54,7 +54,7 @@ export default function Menu() {
                      className="absolute !z-[3000] !top-[100%] left-0 w-full">
                 <NavBar 
                         onBlur={handleBlur}
-                        className=" h-fit bg-neutral-50 lg:hidden text-xl text-center py-6 small-caps flex flex-col w-full h-full font-semibold border-t-2 border-neutral-200 shadow-md"/>
+                        className=" h-fit bg-neutral-50 xl:hidden text-xl text-center py-6 small-caps flex flex-col w-full h-full font-semibold border-t-2 border-neutral-200 shadow-md"/>
                 </div>
                }
         </div>

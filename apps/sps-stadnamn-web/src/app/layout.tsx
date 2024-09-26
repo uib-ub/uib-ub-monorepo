@@ -9,7 +9,8 @@ import PlausibleProvider from 'next-plausible'
 import { PiHouseFill } from "react-icons/pi";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
-import MobileFormSection from "@/components/search/formSection/MobileFormSection";
+import MobileFormSection from "@/components/search/formSection/Form";
+import Form from "@/components/search/formSection/Form";
  
 const garamond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -50,13 +51,12 @@ export default function RootLayout({
       </a>
         <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md h-12 itemx-center !z-[4000]">
 
-          
-          { isMobile ? <MobileFormSection/> : <Link href="/" className="text-2xl small-caps font-serif self-center lg:!ml-4">Stadnamnportalen</Link> }
+          <Form isMobile={isMobile}/>
           
           <Suspense>
             <Menu/>
           </Suspense>
-          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex small-caps gap-3 font-semibold items-center mb-1`}/>
+          <NavBar className={`hidden xl:flex text-lg xl:text-xl px-4 items-center shrink-0 small-caps gap-3 font-semibold items-center mb-1 !min-w-[25svw] justify-end`}/>
         </header>
         {children}
       </body>

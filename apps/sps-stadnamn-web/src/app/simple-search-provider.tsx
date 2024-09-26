@@ -30,7 +30,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
             setIsLoading(true)
 
-            fetch(`/api/search?dataset=tot`)
+            fetch(`/api/search?dataset=tot&q=${searchParams.get('q')}`)
                 .then(response => response.json())
                 .then(es_data => {
 
@@ -38,7 +38,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 setSearchError(es_data)
                 return
             }
-
+            console.log("DATA", es_data)
             setResultData(es_data)
 
             }).then(() => setIsLoading(false)).catch(error => {

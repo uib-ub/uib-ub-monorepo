@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useState } from "react"
-import { PiFunnelFill, PiInfoFill, PiListBullets } from "react-icons/pi";
+import { PiDatabase, PiFunnelFill, PiInfoFill, PiListBullets } from "react-icons/pi";
 import Results from "./Results";
 import ExampleContent from "./ExampleContent";
 import MapExplorer from "./MapExplorer";
@@ -112,13 +112,13 @@ export default function MobileLayout() {
         
 
         <div className={`mobile-interface bg-white fixed overscroll-none touch-pan-down overflow-hidden bottom-0 w-full  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
-             style={{height: `${drawerContent ? currentPosition : 0}dvh`}}
+             style={{height: `${drawerContent ? currentPosition : 0}svh`}}
              onTouchStart={handleTouchStart} 
              onTouchMove={handleTouchMove}
              onTouchEnd={handleTouchEnd}>
         { drawerContent && <>
             <div className="w-full flex justify-center"><div className="h-1 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
-            <div className="h-full overscroll-contain max-h-[calc(100dvh-3rem)] p-4 instance-info" ref={scrollableContent} style={{overflowY: currentPosition == 100 ? 'auto' : 'hidden', touchAction: currentPosition == 100  && scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
+            <div className="h-full overscroll-contain max-h-[calc(100svh-3rem)] p-4 instance-info" ref={scrollableContent} style={{overflowY: currentPosition == 100 ? 'auto' : 'hidden', touchAction: currentPosition == 100  && scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
 
             { drawerContent == 'info' && <ExampleContent expanded={snappedPosition > 25}/> }
             { drawerContent == 'results' && <Results/> }
@@ -127,18 +127,16 @@ export default function MobileLayout() {
             </>
             }
             <div className="fixed bottom-0 left-0 bg-neutral-900 text-white w-full h-12 flex items-center justify-between">
-
-                    <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
-                    
                     <button onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">10 000+</span></button>
-                
+                    <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
                     <button aria-label="Filtre" className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>
+                    <button aria-label="Søkealternativer" onClick={() => swtichTab('options')} aria-current={drawerContent == 'options' ? 'page' : 'false'} className="toolbar-button"><PiDatabase className="text-3xl"/></button>
 
             </div>
             
         </div>
 
-        <div className="absolute top-12 right-0 h-[calc(100dvh-6rem)] w-full">
+        <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full">
         <MapExplorer isMobile={true}/>
         </div>
 

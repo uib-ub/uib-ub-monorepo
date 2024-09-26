@@ -156,8 +156,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   */
 
  
-    return <>
-    {resultData?.aggregations.viewport?.bounds || (center && zoom ) ? <>
+    return false &&  <>
+    {bounds?.length || (center && zoom ) ? <>
     <Map mapRef={mapRef} zoomControl={false} {...center && zoom ? {center, zoom} : {bounds}}
         className='w-full h-full'>
     {({ TileLayer, CircleMarker, Marker, Tooltip }: any, leaflet: any) => (
@@ -165,10 +165,9 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   <>
   { baseMap && <TileLayer {...baseMapProps[baseMap]}/>}
 
-  {resultData && resultData.hits.hits.map((hit: any) => {
+  {resultData?.hits?.hits?.filter((item: any) => item._source?.location).map((hit: any) => {
     const { _source, _id } = hit;
-    const { location } = _source;
-    return <Marker key={_id} position={[location.lat, location.lon]}>
+    return <Marker key={_id} position={[_source.location.coordinates]}>
       <Tooltip>{_source.name}</Tooltip>
     </Marker>
 
