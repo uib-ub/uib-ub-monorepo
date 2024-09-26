@@ -7,9 +7,9 @@ import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
 import { Suspense } from "react";
 import PlausibleProvider from 'next-plausible'
 import { PiHouseFill } from "react-icons/pi";
-import SearchForm from "@/components/search/SearchForm";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
+import MobileFormSection from "@/components/search/formSection/MobileFormSection";
  
 const garamond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -51,7 +51,7 @@ export default function RootLayout({
         <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md h-12 itemx-center !z-[4000]">
 
           
-          { isMobile ? <SearchForm showLink={true}/> : <Link href="/" className="text-2xl small-caps font-serif self-center lg:!ml-4">Stadnamnportalen</Link> }
+          { isMobile ? <MobileFormSection/> : <Link href="/" className="text-2xl small-caps font-serif self-center lg:!ml-4">Stadnamnportalen</Link> }
           
           <Suspense>
             <Menu/>

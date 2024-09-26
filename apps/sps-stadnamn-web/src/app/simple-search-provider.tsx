@@ -25,9 +25,6 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [isLoading, setIsLoading] = useState(true)
     const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
-    const params = useParams()
-
-    const searchParams = useSearchParams()
     const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded']) // Props not passed to the search API
     const refitBoundsParams =  useQueryStringWithout(['docs', 'popup', 'size', 'page', 'search', 'expanded'])
 
