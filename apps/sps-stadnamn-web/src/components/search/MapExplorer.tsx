@@ -15,16 +15,17 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 
+
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
-    const [layerControlCollapsed, setLayerControlCollapsed] = useState(true);
-    const controllerRef = useRef(new AbortController());
 
     const mapInstance = useRef<any>(null);
 
     const { resultData, isLoading, searchError, mapBounds } = useContext(SearchContext)
 
     const [baseMap, setBasemap] = useState<null|string>(null)
+
+    const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
 
 
     useEffect(() => {
@@ -84,7 +85,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     // Assuming mapInstance is a ref to your map instance
-                    mapInstance.current.setView([latitude, longitude], 13); // Zoom level 13 is just an example
+                    mapInstance.current.setView([latitude, longitude], 15); // Zoom level 13 is just an example
+                    setMyLocation([latitude, longitude]);
                 },
                 (error) => {
                     console.error("Error getting the location: ", error);
@@ -105,6 +107,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
   <>
   <TileLayer {...baseMapProps[baseMap]}/>
+
+  {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a"/>}
 
   </>)}
 
