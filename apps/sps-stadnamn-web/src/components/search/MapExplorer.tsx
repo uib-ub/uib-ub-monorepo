@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
 import { PiGps, PiGpsFill, PiGpsFix, PiMagnifyingGlassMinus, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlus, PiMagnifyingGlassPlusFill, PiStack } from "react-icons/pi";
@@ -14,6 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
 
 
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
@@ -21,11 +22,34 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     const mapInstance = useRef<any>(null);
 
-    const { resultData, isLoading, searchError, mapBounds } = useContext(SearchContext)
+    const { resultData, isLoading, searchError } = useContext(SearchContext)
 
     const [baseMap, setBasemap] = useState<null|string>(null)
 
     const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
+
+
+    const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
+    const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
+
+    const [bounds, setBounds] = useState<null|[[number, number], [number, number]]>(null)
+    useEffect(() => {
+        if (resultData && resultData.aggregations.viewport.bounds) {
+            const bounds = resultData.aggregations.viewport.bounds;
+            setBounds([[bounds.top_left.lat, bounds.top_left.lon], [bounds.bottom_right.lat, bounds.bottom_right.lon]])
+        }
+    }, [resultData])
+
+
+    const controllerRef = useRef(new AbortController());
+
+
+
+    
+
+
+
+
 
 
     useEffect(() => {
@@ -46,21 +70,26 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     }, [baseMap])
 
 
-    const mapRef = useCallback((node: Node) => {
+    const mapRef = useCallback((node: any) => {
         if (node !== null) {
           mapInstance.current = node;
-          /*
+          
           node.on('moveend', () => {
             controllerRef.current.abort();
             controllerRef.current = new AbortController();
-    
-            setLeafletBounds(node.getBounds());
+            
+            const bounds = node.getBounds();
+            const boundsCenter = bounds.getCenter();
+
+            setCenter([boundsCenter.lat, boundsCenter.lng]);
             setZoom(node.getZoom());
+            
+            
           });
-          */
+          
         }
     
-      }, []);
+      }, [setCenter, setZoom]);
 
     
 
@@ -69,6 +98,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         if (mapInstance.current) {
             const currentZoom = mapInstance.current.getZoom();
             mapInstance.current.setZoom(currentZoom + 1);
+        } else {
+            setZoom(prev => prev + 1);
         }
     };
     
@@ -76,8 +107,12 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         if (mapInstance.current) {
             const currentZoom = mapInstance.current.getZoom();
             mapInstance.current.setZoom(currentZoom - 1);
+        } else {
+            setZoom(prev => prev - 1);
         }
     };
+
+
 
     function getMyLocation() {
         if (navigator.geolocation) {
@@ -99,21 +134,62 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         }
     }
 
+    // Get bounds from resultdata
+    /*
+    useEffect(() => {
+      if (resultData && resultData.aggregations.viewport.bounds) {
+          const bounds = resultData.aggregations.viewport.bounds;
+          console.log("BOUNDS")
+          
+          const boundsCenter = [(bounds.top_left.lat + bounds.bottom_right.lat) / 2, (bounds.top_left.lon + bounds.bottom_right.lon) / 2];
+          setCenter(boundsCenter);
+
+          // Calculate zoom level
+          mapInstance?.current?.fitBounds([[bounds.top_left.lat, bounds.top_left.lon], [bounds.bottom_right.lat, bounds.bottom_right.lon]]);
+
+
+
+          
+        
+      }
+  }, [resultData, mapInstance.current, setCenter])
+  */
+
  
-    return mapBounds?.length && baseMap !== null ? <>
-    <Map mapRef={mapRef} zoomControl={false} bounds={mapBounds}
+    return <>
+    {resultData?.aggregations.viewport?.bounds || (center && zoom ) ? <>
+    <Map mapRef={mapRef} zoomControl={false} {...center && zoom ? {center, zoom} : {bounds}}
         className='w-full h-full'>
     {({ TileLayer, CircleMarker, Marker, Tooltip }: any, leaflet: any) => (
 
   <>
-  <TileLayer {...baseMapProps[baseMap]}/>
+  { baseMap && <TileLayer {...baseMapProps[baseMap]}/>}
+
+  {resultData && resultData.hits.hits.map((hit: any) => {
+    const { _source, _id } = hit;
+    const { location } = _source;
+    return <Marker key={_id} position={[location.lat, location.lon]}>
+      <Tooltip>{_source.name}</Tooltip>
+    </Marker>
+
+  }
+  )}
 
   {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a"/>}
 
   </>)}
 
 </Map>
-<div className={`absolute ${isMobile ? 'top-12 right-0 flex-col p-2 gap-4' : 'bottom-0 w-full'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
+</> : isLoading ?
+<div className="flex h-full items-center justify-center">
+              <div>
+                <Spinner status="Laster inn kartet" className="w-20 h-20"/>
+              </div>
+</div> 
+:  null
+    }
+    { baseMap != null &&
+    <div className={`absolute ${isMobile ? 'top-12 right-0 flex-col p-2 gap-4' : 'bottom-0 w-full'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
 
 <DropdownMenu>
     <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiStack/></button></DropdownMenuTrigger>
@@ -137,12 +213,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     
 
-</div>
-</> : isLoading ?
-<div className="flex h-full items-center justify-center">
-              <div>
-                <Spinner status="Laster inn kartet" className="w-20 h-20"/>
-              </div>
-</div> 
-:  null
+    </div>
+}
+    </>
 }

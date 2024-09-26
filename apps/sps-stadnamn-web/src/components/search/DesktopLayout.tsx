@@ -2,6 +2,7 @@
 import Results from "./Results"
 import MapExplorer from "./MapExplorer"
 import { useQueryState } from "nuqs"
+import DesktopSearchSection from "./formSection/DesktopSearchSection"
 
 
 export default function DesktopLayout() {
@@ -24,7 +25,9 @@ export default function DesktopLayout() {
         
         <div className="lg:absolute left-4 top-4 flex flex-col gap-2 lg:max-h-[90dvh] w-[40dvw] lg:w-[25dvw] !z-[3001]">
         <section aria-label="Søk" className="lg:bg-white rounded-md lg:shadow-md">
-            <h2 id="search-title"  className="p-4 w-full"><button className="w-full flex justify-start"aria-controls="search-content" aria-expanded={expanded == 'options'} onClick={() => toggleExpanded('options')}>Søk</button></h2>
+            <h2 id="search-title"  className="p-4 w-full sr-only"></h2>
+            <DesktopSearchSection />
+            <button className="w-full flex justify-start"aria-controls="search-content" aria-expanded={expanded == 'options'} onClick={() => toggleExpanded('options')}>Søkealternativer</button>
             { expanded == 'options' &&
                 <div id="search-content" className="lg:max-h-[40dvh] xl:max-h-[60dvh] lg:overflow-y-auto">
             

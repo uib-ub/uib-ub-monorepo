@@ -9,31 +9,28 @@ interface SearchContextData {
     resultData: ResultData | null;
     isLoading: boolean;
     searchError: Record<string, string> | null;
-    mapBounds?: [number, number][];
   }
  
   export const SearchContext = createContext<SearchContextData>({
     resultData: null,
     isLoading: true,
     searchError: null,
-    mapBounds: []
     });
 
  
 export default function SearchProvider({ children }: {  children: React.ReactNode }) {
     const [resultData, setResultData] = useState<ResultData | null>(null);
     const [isLoading, setIsLoading] = useState(true)
-    const [mapBounds, setMapBounds] = useState<[number, number][]>([]);
+
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
-    const filteredSearchParams = useQueryStringWithout(['docs', 'popup', 'search', 'expanded']) // Props not passed to the search API
-    const refitBoundsParams =  useQueryStringWithout(['docs', 'popup', 'size', 'page', 'search', 'expanded'])
+    const searchParams = useSearchParams()
 
 
     useEffect(() => {
 
             setIsLoading(true)
-            const chosenParams =  filteredSearchParams
-            fetch(`/api/search?dataset=tot${chosenParams ? '&' + chosenParams : ''}`)
+
+            fetch(`/api/search?dataset=tot`)
                 .then(response => response.json())
                 .then(es_data => {
 
@@ -42,15 +39,6 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 return
             }
 
-            if (!mapBounds.length || refitBoundsParams) {
-                if (es_data.aggregations?.viewport?.bounds) {
-                    setMapBounds([[es_data.aggregations.viewport.bounds.top_left.lat, es_data.aggregations.viewport.bounds.top_left.lon],
-                        [es_data.aggregations.viewport.bounds.bottom_right.lat, es_data.aggregations.viewport.bounds.bottom_right.lon]])
-                }
-                else {
-                    setMapBounds([])
-                }
-            }
             setResultData(es_data)
 
             }).then(() => setIsLoading(false)).catch(error => {
@@ -58,9 +46,9 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             })
         
         
-      }, [filteredSearchParams, mapBounds.length, refitBoundsParams])
+      }, [searchParams])
 
-  return <SearchContext.Provider value={{resultData, isLoading, mapBounds, searchError}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, isLoading, searchError}}>{children}</SearchContext.Provider>
 }
 
 

@@ -7,7 +7,7 @@ import SearchForm from './Form';
 
 
 
-export default function DesktopFormSection({showLink = false}: {showLink?: boolean}) {
+export default function DesktopSearchSection({showLink = false}: {showLink?: boolean}) {
     const pathname = usePathname()
     
     
