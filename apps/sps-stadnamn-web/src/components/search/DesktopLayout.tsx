@@ -2,7 +2,6 @@
 import Results from "./Results"
 import MapExplorer from "./MapExplorer"
 import { useQueryState } from "nuqs"
-import DesktopSearchSection from "./formSection/DesktopSearchSection"
 import { useContext } from "react"
 import { SearchContext } from "@/app/simple-search-provider";
 
