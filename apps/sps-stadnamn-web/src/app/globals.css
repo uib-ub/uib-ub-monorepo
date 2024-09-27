@@ -44,11 +44,11 @@
     scrollbar-width: thin;
   }
 
-  input[type='checkbox'] {
+  input[type='checkbox'], input[type='radio'] {
     accent-color: theme('colors.accent.900');
   }
 
-  input[type='checkbox']:checked:hover {
+  input[type='checkbox']:checked:hover, input[type='radio']:checked:hover {
     accent-color: theme('colors.accent.700') !important;
   }
 

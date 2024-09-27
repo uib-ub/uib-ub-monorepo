@@ -5,6 +5,7 @@ import { PiDatabase, PiDotsThreeVertical, PiMagnifyingGlass } from 'react-icons/
 
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
+import Options from '../Options';
 
 
 
@@ -48,12 +49,10 @@ export default function Form({isMobile}: {isMobile?: boolean}) {
 
         </form>
 
-        { !isMobile && expanded == 'options' && <article aria-labelledby="doc-title" className="absolute top-12  right-0 w-full rounded-b-md border-t shadow-md h-fit p-4 border-2 border-neutral-200 bg-white">
-                    <h2 id="options-title">Datasett</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac purus sit amet nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac purus sit amet nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac purus sit amet nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam.</p>
-                </article>
+        { !isMobile && expanded == 'options' && <section aria-labelledby="doc-title" className="absolute top-12  right-0 w-full rounded-b-md border-t shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-6rem)]">
+                    
+                    <Options/>
+                </section>
 
         }
 
