@@ -83,11 +83,11 @@ export default function Options() {
             <label className="flex gap-2">
             <input
                 type="radio"
-                value="Merknader"
+                value="merknader"
                 checked={field === 'merknader'}
                 onChange={(e) => setField('merknader')}
             />
-            Merknader
+            Fulltekstsøk
             </label>
             
             

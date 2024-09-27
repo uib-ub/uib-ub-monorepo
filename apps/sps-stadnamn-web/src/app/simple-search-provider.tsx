@@ -25,12 +25,18 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const searchParams = useSearchParams()
 
+    const searchUpdate = useQueryStringWithout(['docs', 'popup', 'search', 'expanded', 'zoom', 'center']) // Props not passed to the search API
+
+
+
+
+
 
     useEffect(() => {
 
             setIsLoading(true)
 
-            fetch(`/api/search?dataset=tot&q=${searchParams.get('q')}`)
+            fetch(`/api/search?${searchUpdate}`)
                 .then(response => response.json())
                 .then(es_data => {
 
@@ -46,7 +52,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             })
         
         
-      }, [searchParams])
+      }, [searchUpdate])
 
   return <SearchContext.Provider value={{resultData, isLoading, searchError}}>{children}</SearchContext.Provider>
 }

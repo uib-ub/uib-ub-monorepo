@@ -14,7 +14,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
+import { parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { useSearchParams } from "next/navigation";
 
 
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
@@ -23,29 +24,95 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const mapInstance = useRef<any>(null);
 
     const { resultData, isLoading, searchError } = useContext(SearchContext)
+    const controllerRef = useRef(new AbortController());
 
     const [baseMap, setBasemap] = useState<null|string>(null)
 
     const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
+    const searchParams = useSearchParams()
+    const [markers, setMarkers] = useState<any[]>([]);
+    const [resultCount, setResultCount] = useState(null); // Labels are only shown if the result count is less than 20
 
 
     const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
     const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
+    const [docs, setDocs] = useQueryState('docs', parseAsArrayOf(parseAsString));
 
     const [bounds, setBounds] = useState<null|[[number, number], [number, number]]>(null)
     useEffect(() => {
         if (resultData && resultData.aggregations.viewport.bounds) {
-            const bounds = resultData.aggregations.viewport.bounds;
-            setBounds([[bounds.top_left.lat, bounds.top_left.lon], [bounds.bottom_right.lat, bounds.bottom_right.lon]])
+            const resultBounds = resultData.aggregations.viewport.bounds;
+            setBounds([[resultBounds.top_left.lat, resultBounds.top_left.lon],
+              [resultBounds.bottom_right.lat, resultBounds.bottom_right.lon]])
+
+            mapInstance?.current?.fitBounds([[resultBounds.top_left.lat, resultBounds.top_left.lon], [resultBounds.bottom_right.lat, resultBounds.bottom_right.lon]]);
         }
+
     }, [resultData])
 
+    function groupMarkers(markers: any) {
+      const grouped = {};
+  
+      markers.forEach(marker => {
+        const lat = marker.fields.location[0].coordinates[1];
+        const lon = marker.fields.location[0].coordinates[0];
+        const key = `${lat},${lon}`;
+  
+        if (!grouped[key]) {
+          grouped[key] = { lat, lon, hits: [] };
+        }
+        grouped[key].hits.push({id: marker.fields.uuid, label: marker.fields.label});
+      });
+  
+      return Object.values(grouped);
+    }
 
-    const controllerRef = useRef(new AbortController());
 
-
-
-    
+    useEffect(() => {
+      // Check if the bounds are initialized
+      if (!isLoading && bounds?.length) {
+        //console.log("Fetching geodata", props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading)
+        const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
+  
+        // Fetch data based on the new bounds
+        const queryParams = "q=" + searchParams.get('q')
+        const query = `/api/geo?dataset=${'tot'}&${ queryParams?
+                                              queryParams + "&" : ""
+                                              }topLeftLat=${
+                                               topLeftLat
+                                              }&topLeftLng=${
+                                                topLeftLng
+                                              }&bottomRightLat=${
+                                                bottomRightLat
+                                              }&bottomRightLng=${
+                                                bottomRightLng
+                                              }`
+  
+        fetch(query, {
+          signal: controllerRef.current.signal,
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+  
+        })
+        .then(response => response.json())
+        .then(data => {
+          
+          setResultCount(data.hits.total.value);
+          const markers = groupMarkers(data.hits.hits);
+          setMarkers(markers)})
+  
+  
+          .catch(error => {
+            if (error.name !== 'AbortError') {
+              console.error('Fetch request failed:', error);
+            }
+          }
+        );
+  
+      }
+    }, [bounds, isLoading]);
 
 
 
@@ -73,18 +140,15 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const mapRef = useCallback((node: any) => {
         if (node !== null) {
           mapInstance.current = node;
-          
-          node.on('moveend', () => {
+          node.on('moveend', () => {  
             controllerRef.current.abort();
             controllerRef.current = new AbortController();
-            
+
             const bounds = node.getBounds();
             const boundsCenter = bounds.getCenter();
-
             setCenter([boundsCenter.lat, boundsCenter.lng]);
             setZoom(node.getZoom());
-            
-            
+            setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
           });
           
         }
@@ -156,7 +220,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   */
 
  
-    return false &&  <>
+    return <>
     {bounds?.length || (center && zoom ) ? <>
     <Map mapRef={mapRef} zoomControl={false} {...center && zoom ? {center, zoom} : {bounds}}
         className='w-full h-full'>
@@ -165,14 +229,32 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   <>
   { baseMap && <TileLayer {...baseMapProps[baseMap]}/>}
 
-  {resultData?.hits?.hits?.filter((item: any) => item._source?.location).map((hit: any) => {
-    const { _source, _id } = hit;
-    return <Marker key={_id} position={[_source.location.coordinates]}>
-      <Tooltip>{_source.name}</Tooltip>
-    </Marker>
+  {markers.map(marker => (
+              <CircleMarker role="button"
+                            pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
+                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}${(zoom > 14 || resultCount < 20) && markers.length < 100  ? 'labeled' : ''}`}
+                            center={[marker.lat, marker.lon]}
+                            radius={marker.hits.length == 1 ? 8 : marker.hits.length == 1 && 9 || marker.hits.length < 4 && 10 || marker.hits.length >= 4 && 12}
+                            eventHandlers={{click: () => {
+                              const uuids = marker.hits.map(item => item.id)
+                              setDocs(marker.hits.map(item => item.id))
+                              
+                            }}}>
 
-  }
-  )}
+                    {  (zoom > 14 || resultCount < 20) && markers.length < 100 ?
+
+                    <Tooltip className="!text-black !border-0 !shadow-none !bg-white !font-semibold !rounded-full !px-2 !pt-0 !pb-0 !mt-3 before:hidden"
+                             direction="bottom"
+                             permanent={true}
+                             eventHandlers={{click: () => {
+                              // TODO: open popup
+                            }}}>
+                          {marker.hits[0].label}{marker.hits.length > 1 ? `...` : ''}
+
+                      </Tooltip>  : null}
+
+              </CircleMarker>
+            ))}
 
   {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a"/>}
 
@@ -214,5 +296,6 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     </div>
 }
+{JSON.stringify(markers)}
     </>
 }

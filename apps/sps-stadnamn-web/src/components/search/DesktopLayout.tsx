@@ -40,7 +40,7 @@ export default function DesktopLayout() {
             </div>
         }
         </section>
-        { resultData?.hits.total.value &&
+        { resultData?.hits.total &&
         <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
             <h2 id="result-title" className="p-4 w-full"><button className="w-full flex justify-start"aria-controls="result-content" aria-expanded={expanded == 'results'} onClick={() => toggleExpanded('results')}>Treff</button></h2>
             { expanded == 'results' &&
@@ -53,7 +53,7 @@ export default function DesktopLayout() {
         }
         </div>
         <div className="lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
-        <article aria-labelledby="doc-title" className="lg:bg-white rounded-md lg:shadow-md break-words instance-info p-8">
+        <article aria-labelledby="doc-title" className="lg:bg-white rounded-md lg:shadow-md break-words p-8">
             <h2 id="doc-title">Berg</h2>
         </article>
         </div>
