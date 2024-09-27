@@ -2,8 +2,7 @@
 import { createContext } from 'react'
 import { useState, useEffect } from 'react';
 import { ResultData } from './types'
-import { useParams, useSearchParams } from 'next/navigation'
-import { useQueryStringWithout } from '@/lib/search-params';
+import { useSearchQuery } from '@/lib/search-params';
 
 interface SearchContextData {
     resultData: ResultData | null;
@@ -23,20 +22,14 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [isLoading, setIsLoading] = useState(true)
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
-    const searchParams = useSearchParams()
-
-    const searchUpdate = useQueryStringWithout(['docs', 'popup', 'search', 'expanded', 'zoom', 'center']) // Props not passed to the search API
-
-
-
+    const { searchQueryString } = useSearchQuery()
 
 
 
     useEffect(() => {
-
             setIsLoading(true)
 
-            fetch(`/api/search?${searchUpdate}`)
+            fetch(`/api/search?${searchQueryString}`)
                 .then(response => response.json())
                 .then(es_data => {
 
@@ -44,7 +37,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 setSearchError(es_data)
                 return
             }
-            console.log("DATA", es_data)
+
             setResultData(es_data)
 
             }).then(() => setIsLoading(false)).catch(error => {
@@ -52,7 +45,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             })
         
         
-      }, [searchUpdate])
+      }, [searchQueryString])
 
   return <SearchContext.Provider value={{resultData, isLoading, searchError}}>{children}</SearchContext.Provider>
 }

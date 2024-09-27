@@ -16,6 +16,8 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useSearchParams } from "next/navigation";
+import ngeohash from "ngeohash";
+import { useSearchQuery } from "@/lib/search-params";
 
 
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
@@ -37,6 +39,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
     const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
     const [docs, setDocs] = useQueryState('docs', parseAsArrayOf(parseAsString));
+    const [viewResults, setViewResults] = useState<any>(null)
+    const { searchQueryString } = useSearchQuery()
 
     const [bounds, setBounds] = useState<null|[[number, number], [number, number]]>(null)
     useEffect(() => {
@@ -45,7 +49,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
             setBounds([[resultBounds.top_left.lat, resultBounds.top_left.lon],
               [resultBounds.bottom_right.lat, resultBounds.bottom_right.lon]])
 
-            mapInstance?.current?.fitBounds([[resultBounds.top_left.lat, resultBounds.top_left.lon], [resultBounds.bottom_right.lat, resultBounds.bottom_right.lon]]);
+            mapInstance?.current?.fitBounds([[resultBounds.top_left.lat, resultBounds.top_left.lon], [resultBounds.bottom_right.lat, resultBounds.bottom_right.lon]], {padding: [100, 50]});
         }
 
     }, [resultData])
@@ -75,18 +79,21 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
   
         // Fetch data based on the new bounds
-        const queryParams = "q=" + searchParams.get('q')
-        const query = `/api/geo?dataset=${'tot'}&${ queryParams?
-                                              queryParams + "&" : ""
-                                              }topLeftLat=${
-                                               topLeftLat
-                                              }&topLeftLng=${
-                                                topLeftLng
-                                              }&bottomRightLat=${
-                                                bottomRightLat
-                                              }&bottomRightLng=${
-                                                bottomRightLng
-                                              }`
+        const queryParams = new URLSearchParams(searchQueryString);
+        queryParams.set('topLeftLat', topLeftLat.toString());
+        queryParams.set('topLeftLng', topLeftLng.toString());
+        queryParams.set('bottomRightLat', bottomRightLat.toString());
+        queryParams.set('bottomRightLng', bottomRightLng.toString());
+
+        if (zoom) {
+          queryParams.set('zoom', zoom.toString())
+        }
+        
+
+
+
+
+        const query = `/api/geo/cluster?${queryParams.toString()}`;
   
         fetch(query, {
           signal: controllerRef.current.signal,
@@ -100,6 +107,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         .then(data => {
           
           setResultCount(data.hits.total.value);
+          setViewResults(data)
           const markers = groupMarkers(data.hits.hits);
           setMarkers(markers)})
   
@@ -218,6 +226,15 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       }
   }, [resultData, mapInstance.current, setCenter])
   */
+  const calculateRadius = (docCount) => {
+    // Example scaling formula, adjust as needed
+    const minRadius = 3; // Minimum radius for a marker
+    const maxRadius = 20; // Maximum radius for a marker
+    const scaledRadius = Math.sqrt(docCount) * 10; // Simple square root scaling
+    return Math.max(minRadius, Math.min(scaledRadius, maxRadius)); // Clamp value between min and max
+  };
+
+
 
  
     return <>
@@ -228,6 +245,34 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
   <>
   { baseMap && <TileLayer {...baseMapProps[baseMap]}/>}
+
+  {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
+    // Geohash to lat/lon
+    //const { latitude: lat, longitude: lon } = ngeohash.decode(bucket.key);
+    const latSum = bucket.docs.hits.hits.reduce((acc: number, cur: any) => acc + cur.fields.location[0].coordinates[1], 0);
+    const lonSum = bucket.docs.hits.hits.reduce((acc: number, cur: any) => acc + cur.fields.location[0].coordinates[0], 0);
+    const itemCount = bucket.docs.hits.hits.length;
+    const lat = latSum / itemCount;
+    const lon = lonSum / itemCount;
+
+    const myCustomIcon = new leaflet.DivIcon({
+      className: 'my-custom-icon', // You can define styles in your CSS
+      html: `<div style="background-color: white; color: black; border-radius: 50%; width: ${calculateRadius(bucket.doc_count) * 2}px; font-size: ${calculateRadius(bucket.doc_count) * 0.8}px; height: ${calculateRadius(bucket.doc_count) * 2}px; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
+    });
+
+
+    if (true || bucket.doc_count > 1) {
+
+    return <Marker key={bucket.key} position={[lat, lon]} icon={myCustomIcon}/>
+    }
+    else if (bucket.docs?.hits?.hits?.length) {
+      const hit = bucket.docs.hits.hits[0]
+      return <CircleMarker key={hit.key} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} pathOptions={{color:'red', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}/>
+    }
+
+  }
+  )}
+
 
   {markers.map(marker => (
               <CircleMarker role="button"
@@ -296,6 +341,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     </div>
 }
-{JSON.stringify(markers)}
+{true && <div className="absolute bottom-0 left-0 z-[6000] w-[600px] h-[200px] overflow-auto bg-white">
+  {JSON.stringify(viewResults, null,  2)}
+</div>}
     </>
 }
