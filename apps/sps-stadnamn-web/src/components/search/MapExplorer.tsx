@@ -53,27 +53,11 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     }, [resultData])
 
-    function groupMarkers(markers: any) {
-      const grouped = {};
-  
-      markers.forEach(marker => {
-        const lat = marker.fields.location[0].coordinates[1];
-        const lon = marker.fields.location[0].coordinates[0];
-        const key = `${lat},${lon}`;
-  
-        if (!grouped[key]) {
-          grouped[key] = { lat, lon, hits: [] };
-        }
-        grouped[key].hits.push({id: marker.fields.uuid, label: marker.fields.label});
-      });
-  
-      return Object.values(grouped);
-    }
 
 
     useEffect(() => {
       // Check if the bounds are initialized
-      if (!isLoading && bounds?.length) {
+      if (!isLoading && bounds?.length && zoom && (zoom > 12 || resultData?.hits.total.value < 10000)) {
         //console.log("Fetching geodata", props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading)
         const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
   
@@ -83,6 +67,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         queryParams.set('topLeftLng', topLeftLng.toString());
         queryParams.set('bottomRightLat', bottomRightLat.toString());
         queryParams.set('bottomRightLng', bottomRightLng.toString());
+        queryParams.set('zoom', zoom.toString());
 
         if (zoom) {
           queryParams.set('zoom', zoom.toString())
@@ -105,11 +90,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         .then(response => response.json())
         .then(data => {
           
-          setResultCount(data.hits.total.value);
           setViewResults(data)
-          //const markers = groupMarkers(data.hits.hits);
-          setMarkers(markers)})
-  
+          })
   
           .catch(error => {
             if (error.name !== 'AbortError') {
@@ -118,6 +100,9 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
           }
         );
   
+      }
+      else {
+        setViewResults(null)
       }
     }, [bounds, isLoading]);
 
@@ -205,26 +190,6 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         }
     }
 
-    // Get bounds from resultdata
-    /*
-    useEffect(() => {
-      if (resultData && resultData.aggregations.viewport.bounds) {
-          const bounds = resultData.aggregations.viewport.bounds;
-          console.log("BOUNDS")
-          
-          const boundsCenter = [(bounds.top_left.lat + bounds.bottom_right.lat) / 2, (bounds.top_left.lon + bounds.bottom_right.lon) / 2];
-          setCenter(boundsCenter);
-
-          // Calculate zoom level
-          mapInstance?.current?.fitBounds([[bounds.top_left.lat, bounds.top_left.lon], [bounds.bottom_right.lat, bounds.bottom_right.lon]]);
-
-
-
-          
-        
-      }
-  }, [resultData, mapInstance.current, setCenter])
-  */
   const calculateRadius = (docCount, maxDocCount, minDocCount) => {
     const minRadius = .75; // Minimum radius for a marker
     const maxRadius = 1; // Maximum radius for a marker
@@ -256,6 +221,15 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
   <>
   { baseMap && <TileLayer {...baseMapProps[baseMap]}/>}
+
+  { viewResults?.medians?.map((item: any) => {
+    const myCustomIcon = new leaflet.DivIcon({
+      className: 'my-custom-icon', // You can define styles in your CSS
+      html: `<div class="bg-white text-neutral-900 drop-shadow-xl shadow-md font-bold rounded-md w-fit" style="display: flex; align-items: center; justify-content: center;">${item.adm}</div>`
+    });
+    return <Marker key={item.adm} position={[item.lat, item.lon]} icon={myCustomIcon}/>
+  })}
+
 
   {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
     const latitudes = bucket.docs.hits.hits.map(hit => hit.fields.location[0].coordinates[1]);
@@ -325,32 +299,6 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   )}
 
 
-  {markers.map(marker => (
-              <CircleMarker role="button"
-                            pathOptions={{color:'white', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}
-                            key={`${marker.lat} ${marker.lon} ${marker.hits.length}${(zoom > 14 || resultCount < 20) && markers.length < 100  ? 'labeled' : ''}`}
-                            center={[marker.lat, marker.lon]}
-                            radius={marker.hits.length == 1 ? 8 : marker.hits.length == 1 && 9 || marker.hits.length < 4 && 10 || marker.hits.length >= 4 && 12}
-                            eventHandlers={{click: () => {
-                              const uuids = marker.hits.map(item => item.id)
-                              setDocs(marker.hits.map(item => item.id))
-                              
-                            }}}>
-
-                    {  (zoom > 14 || resultCount < 20) && markers.length < 100 ?
-
-                    <Tooltip className="!text-black !border-0 !shadow-none !bg-white !font-semibold !rounded-full !px-2 !pt-0 !pb-0 !mt-3 before:hidden"
-                             direction="bottom"
-                             permanent={true}
-                             eventHandlers={{click: () => {
-                              // TODO: open popup
-                            }}}>
-                          {marker.hits[0].label}{marker.hits.length > 1 ? `...` : ''}
-
-                      </Tooltip>  : null}
-
-              </CircleMarker>
-            ))}
 
   {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a"/>}
 
