@@ -227,8 +227,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   }, [resultData, mapInstance.current, setCenter])
   */
   const calculateRadius = (docCount, maxDocCount, minDocCount) => {
-    const minRadius = 10; // Minimum radius for a marker
-    const maxRadius = 20; // Maximum radius for a marker
+    const minRadius = .75; // Minimum radius for a marker
+    const maxRadius = 1.25; // Maximum radius for a marker
   
     // Ensure docCount is within the range
     docCount = Math.max(minDocCount, Math.min(maxDocCount, docCount));
@@ -269,7 +269,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     const myCustomIcon = new leaflet.DivIcon({
       className: 'my-custom-icon', // You can define styles in your CSS
-      html: `<div class="bg-white text-neutral-900 shadow-lg font-semibold" style="border-radius: 50%; width: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}px; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}px; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}px; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
+      html: `<div class="bg-white text-neutral-900 shadow-lg font-semibold" style="border-radius: 50%; width: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
     });
 
 
