@@ -16,7 +16,6 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useSearchParams } from "next/navigation";
-import ngeohash from "ngeohash";
 import { useSearchQuery } from "@/lib/search-params";
 
 
@@ -38,7 +37,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
     const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
-    const [docs, setDocs] = useQueryState('docs', parseAsArrayOf(parseAsString));
+    const [doc, setDoc] = useQueryState('doc')
     const [viewResults, setViewResults] = useState<any>(null)
     const { searchQueryString } = useSearchQuery()
 
@@ -228,7 +227,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   */
   const calculateRadius = (docCount, maxDocCount, minDocCount) => {
     const minRadius = .75; // Minimum radius for a marker
-    const maxRadius = 1.25; // Maximum radius for a marker
+    const maxRadius = 1; // Maximum radius for a marker
   
     // Ensure docCount is within the range
     docCount = Math.max(minDocCount, Math.min(maxDocCount, docCount));
@@ -259,17 +258,60 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   { baseMap && <TileLayer {...baseMapProps[baseMap]}/>}
 
   {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
-    // Geohash to lat/lon
-    //const { latitude: lat, longitude: lon } = ngeohash.decode(bucket.key);
-    const latSum = bucket.docs.hits.hits.reduce((acc: number, cur: any) => acc + cur.fields.location[0].coordinates[1], 0);
-    const lonSum = bucket.docs.hits.hits.reduce((acc: number, cur: any) => acc + cur.fields.location[0].coordinates[0], 0);
+    const latitudes = bucket.docs.hits.hits.map(hit => hit.fields.location[0].coordinates[1]);
+    const longitudes = bucket.docs.hits.hits.map(hit => hit.fields.location[0].coordinates[0]);
+
+    const latSum = latitudes.reduce((acc, cur) => acc + cur, 0);
+    const lonSum = longitudes.reduce((acc, cur) => acc + cur, 0);
+
     const itemCount = bucket.docs.hits.hits.length;
     const lat = latSum / itemCount;
     const lon = lonSum / itemCount;
 
+    
+    // If no coordinates are different from the average
+    if (bucket.docs?.hits?.hits?.length != 1 && !latitudes.some(lat => lat !== latitudes[0]) && !longitudes.some(lon => lon !== longitudes[0])) {
+      const myCustomIcon = new leaflet.DivIcon({
+        className: 'my-custom-icon', // You can define styles in your CSS
+        html: `<div class="text-white" style="position: relative; top: -3rem; left: -1.5rem;"><img src="/markerBlackFill.svg" style="width: 3rem; height: 3rem;"/><span class="absolute top-[1.16rem] left-0 w-[3rem] text-center text-xs font-bold">${itemCount}</span></div>`
+      });
+      return <Marker key={bucket.key} className="drop-shadow-xl" icon={myCustomIcon} position={[lat, lon]}/>
+
+    }
+
+    
+    else if (bucket.docs?.hits?.hits?.length == 1 || zoom && zoom > 15) {
+      
+      
+      return <>{bucket.docs?.hits?.hits?.map(hit => {
+        const myCustomIcon = new leaflet.DivIcon({
+          className: 'my-custom-icon', // Ensure this class is defined in your CSS
+          html: `
+            <div style="display: flex; align-items: center; justify-content: center; position: relative; top: -2rem; height: 2rem;">
+              <img src="/markerBlack.svg" style="width: 2rem; height: 2rem;"/>
+              <div style="position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); background-color: white; opacity: 75%; white-space: nowrap; border-radius: 9999px; text-align: center; font-size: 12px; font-weight: bold; padding: 0 8px;">
+                ${hit.fields.label}
+              </div>
+            </div>`
+        });
+
+
+        return <Marker className="drop-shadow-xl" key={hit.key} icon={myCustomIcon}
+        position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}/>
+
+
+
+      }
+      )}</>
+    }
+
+    
+
+
+
     const myCustomIcon = new leaflet.DivIcon({
       className: 'my-custom-icon', // You can define styles in your CSS
-      html: `<div class="bg-white text-neutral-900 shadow-lg font-semibold" style="border-radius: 50%; width: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
+      html: `<div class="bg-white text-neutral-900 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
     });
 
 
@@ -353,7 +395,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     </div>
 }
-{true && <div className="absolute bottom-0 left-0 z-[6000] w-[600px] h-[200px] overflow-auto bg-white">
+{false && <div className="absolute bottom-0 left-0 z-[6000] w-[600px] h-[200px] overflow-auto bg-white">
   {JSON.stringify(viewResults, null,  2)}
 </div>}
     </>
