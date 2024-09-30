@@ -31,11 +31,7 @@
       <div>
         {{ label() }}
         <span :class="{ 'text-gray-400': searchDataPending.aggregate }">
-          ({{
-            searchDataStats[ftype as keyof SearchDataStats][
-              fvalue as LangCode | string | Matching | LabelPredicate
-            ]
-          }})
+          ({{ searchDataStats[ftype][fvalue] }})
         </span>
       </div>
     </label>
