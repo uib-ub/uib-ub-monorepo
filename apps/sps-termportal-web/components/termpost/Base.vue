@@ -3,7 +3,10 @@
     <Head v-if="mainp">
       <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
     </Head>
-    <h2 :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`" class="pb-4">
+    <h2
+      :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
+      class="pb-4 mt-3 md:mt-4 lg:mt-6"
+    >
       <AppLink
         class="text-3xl"
         :to="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
@@ -39,7 +42,7 @@
           />
         </div>
         <TermpostSymbolSection
-          v-if="displayInfo?.symbol"
+          v-if="displayInfo?.symbol && displayInfo?.symbol.length"
           :display-info="displayInfo"
         />
         <TermpostRelationSection
@@ -172,6 +175,7 @@ const displayInfo = computed(() => {
         )
       );
     }
+    info.pagetitle = pagetitle;
 
     return info;
   } else {
@@ -180,9 +184,9 @@ const displayInfo = computed(() => {
 });
 
 onMounted(() => {
-  if (window?.MathJax) {
+  setTimeout(() => {
     window.MathJax.typesetPromise();
-  }
+  }, 0);
 });
 
 onBeforeUnmount(() => {

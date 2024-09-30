@@ -32,3 +32,21 @@ export function cleanId(uri: string, rmNs = false) {
     return replaced;
   }
 }
+
+export const getCurrentDateArray = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDay();
+  return [year, month, day];
+};
+
+export function getDaysDiff(timestamp: string): number {
+  const currentDate = new Date();
+  const timestampDate = new Date(timestamp);
+
+  const diffTime = Math.abs(currentDate.getTime() - timestampDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays - 1;
+}

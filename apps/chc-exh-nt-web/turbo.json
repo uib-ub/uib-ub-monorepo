@@ -3,8 +3,8 @@
   "extends": [
     "//"
   ],
-  "pipeline": {
-    "api": {
+  "tasks": {
+    "build": {
       "outputs": [
         ".next/**",
         "dist/**"
@@ -21,6 +21,7 @@
         "NEXT_PUBLIC_BASE_PATH",
         "NEXT_PUBLIC_SANITY_DATASET",
         "NEXT_PUBLIC_SANITY_PROJECT_ID",
+        "NEXT_PUBLIC_STUDIO_URL",
         "NEXT_PUBLIC_BASE_PATH",
         "NEXT_PUBLIC_BASE_LANGUAGE",
         "NEXT_PUBLIC_VERCEL_ENV",

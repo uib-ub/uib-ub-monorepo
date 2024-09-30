@@ -21,6 +21,8 @@
       "da": "Danish | Danish",
       "de": "German | German",
       "en": "English | English",
+      "en-gb": "British English | British english",
+      "en-us": "American English | American English",
       "es": "Spanish | Spanish",
       "fi": "Finnish | Finnish",
       "fr": "French | French",
@@ -187,7 +189,9 @@
     "tilbake": "To search results",
     "noteTermbaseIsUnmaintained": "This is a historical resource and is not currently being updated",
     "visualization": "Visualization",
-    "imageAltLabel": "Visualization of the concept"
+    "imageAltLabel": "Visualization of the concept",
+    "version": "Version",
+    "browser": "External browser"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -216,5 +220,9 @@
     "conceptview": "Term entry",
     "dataDispLang": "Term entry languages",
     "dataDispLangComment": "Choose the language(s) you want to see in the term entry"
+  },
+  "misc": {
+    "snomedVersion": "SNOMED CT Norway Extension May 2024 v1.0",
+    "snomedBrowser": "SNOMED CT browser"
   }
 }

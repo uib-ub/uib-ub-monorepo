@@ -201,10 +201,22 @@ export function getAllKeys(obj: Object): string[] {
 export function lalof(key: string): string {
   const lazyLocales = useLazyLocales();
   const locale = useLocale();
-  const localeLen = Object.keys(languageOrder).length;
   const label = languageOrder[locale.value]
-    .slice(0, localeLen)
+    .filter((lc) => Object.keys(languageOrder).includes(lc))
     .map((lc) => lazyLocales.value?.[lc]?.[key])
     .find((value) => value !== undefined);
   return label ?? key;
+}
+
+export function htmlify(data: string): string {
+  try {
+    const pars = data
+      .split("\n\n")
+      .filter((p) => p)
+      .map((p) => `<p>${p}</p>`)
+      .join("");
+    return pars;
+  } catch (e) {
+    return data;
+  }
 }

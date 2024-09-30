@@ -1,5 +1,5 @@
 import { LangCode } from "./locale";
-import { LabelPredicate, Matching } from "~~/utils/vars";
+import { LabelPredicate, Matching, uiConfig } from "~~/utils/vars";
 import { Samling } from "~~/utils/vars-termbase";
 
 export interface SearchDataEntry {
@@ -34,9 +34,9 @@ export const useDomainData = () =>
   useState("domainData", () => ({
     "DOMENE-3ANaturvitenskapTeknologi": {},
     "DOMENE-3AHumaniora": {},
-    "DOMENE-3AOkonomiAdministrasjon": {},
     "DOMENE-3ASamfunnsfag": {},
-    //    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
+    // "DOMENE-3AHelse_og_sosial": {},
+    "DOMENE-3AOkonomiAdministrasjon": {},
   }));
 
 export const useSearchInterface = () =>
@@ -75,7 +75,9 @@ export const useSearchDataStats = () =>
   useState<SearchDataStats>("searchDataStats", () => ({}));
 
 export const useShowSearchFilter = () =>
-  useState<boolean>("showSearchFilter", () => false);
+  useState<boolean>("showSearchFilter", () =>
+    uiConfig.wideUiBreakpoints.includes(useBreakpoint().value)
+  );
 
 export interface SearchFilterData {
   lang: LangCode[];
@@ -93,6 +95,8 @@ export const useDataDisplayLanguages = () =>
     "nb",
     "nn",
     "en",
+    // "en-gb",
+    // "en-us",
     "ar",
     "da",
     "de",

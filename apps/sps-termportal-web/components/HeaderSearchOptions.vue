@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap gap-x-6 gap-y-2 py-1">
+  <div class="flex flex-wrap gap-x-6 gap-y-2 py-1 pl-1">
     <SearchDropdownWrapper target="language">
       <DropdownPV
         v-model="searchInterface.language"
@@ -16,6 +16,16 @@
         class="min-w-[6rem]"
       />
     </SearchDropdownWrapper>
+    <div
+      class="flex space-x-2 pt-1 hover:cursor-pointer group"
+      @click="searchInterface.useDomain = !searchInterface.useDomain"
+    >
+      <div>{{ $t("global.domain.domain") }}</div>
+      <div class="h-4 rotate-180 pb-6">
+        <InputSwitch v-model="searchInterface.useDomain" @click.stop="false" />
+      </div>
+      <div>{{ $t("global.termbase", 0) }}</div>
+    </div>
   </div>
 </template>
 
@@ -27,7 +37,12 @@ const localeLangOrder = useLocaleLangOrder();
 
 const optionsLanguage = computed(() => {
   const filteredLangs = deriveSearchOptions("language", "all");
-  const intersection = intersectUnique(localeLangOrder.value, filteredLangs);
+  const intersection = intersectUnique(
+    localeLangOrder.value.filter(
+      (lc) => !dataDisplayOnlyLanguages.includes(lc)
+    ),
+    filteredLangs
+  );
   const options = [
     {
       label: i18n.t("global.lang.all") + ` (${intersection.length})`,
@@ -44,7 +59,9 @@ const optionsLanguage = computed(() => {
 const optionsTranslate = computed(() => {
   const filteredTranslate = deriveSearchOptions("translate", "none");
   const intersection = intersectUnique(
-    localeLangOrder.value,
+    localeLangOrder.value.filter(
+      (lc) => !dataDisplayOnlyLanguages.includes(lc)
+    ),
     filteredTranslate
   );
   const options = [
@@ -89,7 +106,6 @@ function deriveSearchOptions(searchOption, defaultValue) {
   const currentValue = searchInterface.value[searchOption];
   let termbases = termbaseOrder;
   let options;
-
 
   if (searchOption !== "language") {
     termbases = filterTermbases(

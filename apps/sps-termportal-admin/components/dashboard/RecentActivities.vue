@@ -1,18 +1,23 @@
 <template>
   <section>
-    <h2 class="text-lg font-semibold pb-3 text-gray-800">Nylige aktiviteter</h2>
+    <div class="flex justify-between">
+      <h2 class="text-lg font-semibold pb-2 text-gray-800">
+        Nylige aktiviteter
+      </h2>
+      <AddButton :to="studioLinks.newActivity" target="_blank" />
+    </div>
     <ol class="space-y-0.5 text-lg ml-1">
       <li
         v-for="activity in procdata"
         :key="activity.label + activity.time"
-        class="flex space-x-4 hover:bg-gray-100 p-1"
+        class="flex space-x-4 hover:bg-gray-100 p-1 justify-between"
       >
         <AppLink
-          class="space-x-3 flex"
+          class="space-x-3 flex justify-between grow"
           :to="`/studio/structure/activity;${activity.id}`"
           target="_blank"
         >
-          <div class="w-[25rem]">{{ activity.label }}</div>
+          <div>{{ activity.label }}</div>
           <div>{{ activity.time }}</div>
         </AppLink>
         <div

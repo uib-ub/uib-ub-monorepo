@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <SideBar />
+    <!-- <SideBar /> -->
     <main class="space-y-8 pt-8">
       <section>
         <h1 class="mb-6 text-2xl">Domain Exploration</h1>

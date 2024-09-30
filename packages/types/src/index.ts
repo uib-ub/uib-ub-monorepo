@@ -1,11 +1,3 @@
-export type { DigitalObjectSchema } from './la/types/digital.d'
-export type { EventSchema } from './la/types/event.d'
-export type { GroupSchema } from './la/types/group.d'
-export type { VisualContentSchema } from './la/types/image.d'
-export type { HumanMadeObjectSchema } from './la/types/object.d'
-export type { PersonSchema } from './la/types/person.d'
-export type { PlaceSchema } from './la/types/place.d'
-export type { ProvenanceActivitySchema } from './la/types/provenance.d'
-export type { CollectionSchema } from './la/types/set.d'
-export type { TextSchema } from './la/types/text.d'
+export type { CollectionSchema, DigitalObjectSchema, EventSchema, GroupSchema, HumanMadeObjectSchema, Person as PersonSchema, PlaceSchema, ProvenanceActivitySchema, TextSchema, VisualContentSchema } from './la/types/linked_art.d'
+export { groupSchemaSchema as ZodGroupSchema, humanMadeObjectSchemaSchema as ZodHumanMadeObjectSchema, personSchema as ZodPersonSchema } from './la/zod/linked_art'
 

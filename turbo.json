@@ -1,14 +1,8 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "globalEnv": [],
-  "pipeline": {
+  "tasks": {
     "build": {
-      "dotEnv": [
-        ".env.production.local",
-        ".env.local",
-        ".env.production",
-        ".env"
-      ],
       "outputs": [
         "dist/**",
         ".next/**",
@@ -16,6 +10,13 @@
       ],
       "dependsOn": [
         "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
       ]
     },
     "generate#sps-termportalen-web": {
@@ -40,26 +41,6 @@
       "dependsOn": [
         "^build"
       ]
-    },
-    "dev#chc-exh-nt-web": {
-      "cache": false,
-      "dependsOn": [
-        "^build"
-      ],
-      "env": [
-        "NODE_ENV",
-        "NEXT_PUBLIC_STUDIO_URL",
-        "NEXT_PUBLIC_STUDIO_URL",
-        "NEXT_PUBLIC_SANITY_DATASET",
-        "NEXT_PUBLIC_SANITY_PROJECT_ID"
-      ]
-    },
-    "deploy": {
-      "cache": false,
-      "dependsOn": []
-    },
-    "clean": {
-      "cache": false
     }
   }
 }

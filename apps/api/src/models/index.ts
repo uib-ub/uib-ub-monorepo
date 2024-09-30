@@ -17,20 +17,20 @@ export const indexParamsSchema = z.object({
     }),
 })
 
+export const esPutSettingsSuccessSchema = z.object({
+  status: z.string(),
+  value: z.object({
+    acknowledged: z.boolean()
+  }),
+}).openapi('ES')
+
 export const esSuccessSchema = z.object({
   acknowledged: z.boolean(),
   shards_acknowledged: z.boolean().optional(),
   index: z.string().optional().openapi({ example: 'search-group-source-timestamp' }),
 }).openapi('ES')
 
-export const esSuccessesSchema = z.array(
-  z.object({
-    acknowledged: z.boolean(),
-    shards_acknowledged: z.boolean().optional(),
-    index: z.string().optional().openapi({ example: 'search-group-source-timestamp' }),
-  })
-).openapi('ES')
-
+export const esSuccessesSchema = z.array(esSuccessSchema).openapi('ES')
 
 export const esFailureSchema = z.object({
   error: z.string()
@@ -206,6 +206,6 @@ export type TBaseMetadata = {
   context: string[],
   newId: string,
   originalId: string,
-  productionTimespan?: any,
+  productionTimeSpan?: any,
   _label: any,
 }

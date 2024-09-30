@@ -68,10 +68,14 @@ export async function useFetchSearchData(options: SearchOptions) {
   searchFetchLatest.value = fetchTime;
   const situation = options.situation;
 
+  // Matomo Events
+  pushSearchEvents(options);
+
   if (situation === "initial" && route.path === "/search") {
-    if (route.path === "/search") {
-      searchFetchInitial.value = true;
-    }
+    searchFetchInitial.value = true;
+  }
+
+  if (situation === "initial" || situation === "options") {
     searchFilterData.value = searchFilterDataEmpty();
   }
 

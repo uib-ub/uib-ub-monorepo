@@ -42,54 +42,58 @@ const { data } = useLazyFetch(
 );
 
 const definitions = computed(() => {
-  return data?.value?.results?.bindings.map((e) => {
-    return {
-      concept: e.concept.value
-        .split("/")
-        .slice(-1)[0]
-        .split("-3A")
-        .slice(-1)[0],
-      link: e.concept.value.split("/").slice(-1)[0].split("-3A").join("/"),
-      def: e.defValue.value,
-      lang: e.lang.value,
-    };
-  });
+  if (data.value) {
+    return data?.value?.results?.bindings.map((e) => {
+      return {
+        concept: e.concept.value
+          .split("/")
+          .slice(-1)[0]
+          .split("-3A")
+          .slice(-1)[0],
+        link: e.concept.value.split("/").slice(-1)[0].split("-3A").join("/"),
+        def: e.defValue.value,
+        lang: e.lang.value,
+      };
+    });
+  }
 });
 
 const stats = computed(() => {
-  const statEntries = [];
+  if (data.value) {
+    const statEntries = [];
 
-  // Concepts with definitions
-  const conceptWithDef = new Set(
-    data?.value?.results?.bindings.map((e) => {
-      return e.concept.value;
-    })
-  );
-  statEntries.push([
-    "begreper har en definisjon",
-    conceptWithDef.size,
-    props.termbase.conceptCount,
-  ]);
-
-  const counts = {};
-  const langCodes = data?.value?.results?.bindings.map((e) => {
-    return e.lang.value;
-  });
-  if (langCodes) {
-    for (const num of langCodes) {
-      counts[num] = counts[num] ? counts[num] + 1 : 1;
-    }
-  }
-
-  Object.entries(counts).forEach(([key, value]) => {
+    // Concepts with definitions
+    const conceptWithDef = new Set(
+      data?.value.map((e) => {
+        return e.concept.value;
+      })
+    );
     statEntries.push([
-      `begreper har en definisjon i ${key}`,
-      value,
+      "begreper har en definisjon",
+      conceptWithDef.size,
       props.termbase.conceptCount,
     ]);
-  });
 
-  return statEntries;
+    const counts = {};
+    const langCodes = data?.value.map((e) => {
+      return e.lang.value;
+    });
+    if (langCodes) {
+      for (const num of langCodes) {
+        counts[num] = counts[num] ? counts[num] + 1 : 1;
+      }
+    }
+
+    Object.entries(counts).forEach(([key, value]) => {
+      statEntries.push([
+        `begreper har en definisjon i ${key}`,
+        value,
+        props.termbase.conceptCount,
+      ]);
+    });
+
+    return statEntries;
+  }
 });
 
 const exportCSV = () => {

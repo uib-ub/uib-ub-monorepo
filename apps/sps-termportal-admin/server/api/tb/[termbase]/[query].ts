@@ -1,3 +1,4 @@
+import { checkEsCache } from "~/server/utils/elsaticSearchUtils";
 import genExploreDefinitionsQuery from "~/server/utils/genExploreDefinitionsQuery";
 import genInsightTermbaseQuery from "~/server/utils/genInsightTermbaseQuery";
 import genOverviewQuery from "~/server/utils/genOverviewQuery";
@@ -15,15 +16,21 @@ export default defineEventHandler(async (event) => {
   const termbase = event.context.params?.termbase;
   const queryType = event.context.params?.query;
 
+  // Check escache for certain keys
+  const cachedData = await checkEsCache(queryType);
+  if (cachedData) {
+    return cachedData;
+  }
+
   const query = () => {
     switch (queryType) {
       case "qualitySemanticRelations":
         return genQualitySemanticRelationsQuery(termbase);
       case "exploreDefinitions":
         return genExploreDefinitionsQuery(termbase);
-      case "overview":
+      case "termbase_overview":
         return genOverviewQuery();
-      case "insightTermbase":
+      case "termbase_language_coverage":
         return genInsightTermbaseQuery();
       default:
         break;
@@ -40,5 +47,5 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  return data;
+  return data.value?.results?.bindings;
 });

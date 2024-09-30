@@ -14,7 +14,7 @@
         v-if="!Array.isArray(mainValue(d))"
         :lang="dataLang"
         class="max-w-prose"
-        v-html="mainValue(d)"
+        v-html="htmlify(mainValue(d))"
       />
       <AppLink
         v-else
@@ -100,19 +100,21 @@
           v-html="d.source?.['@value']"
         />
       </TermpostTermProp>
+      <!-- note -->
       <TermpostTermProp v-if="d.note" :label="$t('id.note')">
         <dd
           class="max-w-prose"
           :lang="d.note?.['@language']"
-          v-html="d.note?.['@value']"
+          v-html="htmlify(d.note?.['@value'])"
         />
         <dd v-if="d.note?.source" v-html="`(${d.note?.source})`" />
       </TermpostTermProp>
+      <!-- scopeNote -->
       <TermpostTermProp v-if="d.scopeNote" :label="$t('id.note')">
         <dd
           class="max-w-prose"
           :lang="d.scopeNote?.['@language']"
-          v-html="d.scopeNote?.['@value']"
+          v-html="htmlify(d.scopeNote?.['@value'])"
         />
         <dd v-if="d.scopeNote?.source" v-html="`(${d.scopeNote?.source})`" />
       </TermpostTermProp>

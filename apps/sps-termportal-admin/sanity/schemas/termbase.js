@@ -47,7 +47,39 @@ export default {
       fieldset: "basics",
     },
     tbstatus,
-    { name: "domain", type: "string", fieldset: "unpublished" },
+    {
+      name: "topdomain",
+      title: "Toppdomene",
+      type: "string",
+      fieldset: "unpublished",
+      options: {
+        list: [
+          {
+            title: "Naturvitenskap og teknologi",
+            value: "NaturvitenskapTeknologi",
+          },
+          { title: "Humaniora", value: "Humaniora" },
+          {
+            title: "Okonomi og Administrasjon",
+            value: "OkonomiAdministrasjon",
+          },
+          { title: "Samfunnsfag", value: "Samfunnsfag" },
+          { title: "Helse og sosial", value: "Helse_og_sosial" },
+        ],
+      },
+    },
+    {
+      name: "domain",
+      title: "Domene",
+      type: "string",
+      fieldset: "unpublished",
+    },
+    {
+      name: "size",
+      title: "Antall begreper",
+      type: "number",
+      fieldset: "unpublished",
+    },
     {
       name: "labelsOk",
       type: "boolean",
@@ -72,6 +104,13 @@ export default {
         ],
       },
       initialValue: "ingen",
+    },
+    {
+      name: "reminderInterval",
+      title: "Påminnelsesintervall",
+      type: "number",
+      fieldset: "status",
+      initialValue: 120,
     },
     note,
     responsibleStaff,

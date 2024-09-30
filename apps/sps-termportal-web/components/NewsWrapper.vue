@@ -15,7 +15,11 @@
 <script setup lang="ts">
 // behaviour needs to be documented:
 // https://git.app.uib.no/spraksamlingane/terminologi/terminologi-content/-/blob/main/admin/system-behaviour.md
-const langOrder = useLocaleLangOrder();
+const langOrder = computed(() => {
+  return useLocaleLangOrder().value.filter(
+    (lc) => !dataDisplayOnlyLanguages.includes(lc)
+  );
+});
 
 const query = `
 *[_type == "news"

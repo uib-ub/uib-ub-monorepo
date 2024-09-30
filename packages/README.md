@@ -1,11 +1,12 @@
-## Inspiration
+# Packages
 
-* https://digitalcollections.arts.ac.uk/
-* https://digitalcollections.nypl.org/
-* https://collection.cooperhewitt.org/
-* https://www.artic.edu/
+* assets
+* eslint-config
+* jsonld-contexts
+* tailwind-ui
+* termportal-ui
+* tsconfig
+* types
+* ui-react
+* utils
   
-
-### Archive views
-
-* https://wellcomecollection.org/works/a2242545

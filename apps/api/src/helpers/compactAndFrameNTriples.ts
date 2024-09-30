@@ -5,6 +5,7 @@ import { cleanDateDatatypes } from './cleaners/cleanDateDatatypes';
 import { convertToFloat } from './cleaners/convertToFloat';
 
 /**
+ * @deprecated
  * Compacts and frames the given data in NTriples format to JSON-LD format.
  * @param data - The data to be converted, in NTriples format.
  * @param context - The context to be used for compacting and framing.
@@ -33,7 +34,7 @@ const compactAndFrameNTriples = async (data: any, context: string, type: string)
       '@type': type,
       '@embed': '@always',
     });
-    return omitEmptyEs(await framed)
+    return omitEmptyEs(framed)
   } catch (e) {
     console.log(JSON.stringify(e, null, 2))
     return { error: true, message: e }
