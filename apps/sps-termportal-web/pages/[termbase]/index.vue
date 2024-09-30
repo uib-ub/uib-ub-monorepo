@@ -12,22 +12,20 @@
               {{ lalof(termbase + "-3A" + termbase) }}
             </AppLink>
           </h1>
-          <div
-            class="flex flex-col gap-x-5 gap-y-5 lg:flex-row justify-between"
-          >
+          <div class="flex flex-col gap-5 lg:flex-row justify-between">
             <!--Description-->
             <div class="max-w-prose basis-GRb space-y-2">
               <p v-for="p in description" :key="p" v-html="p" />
             </div>
             <!--deflist-->
             <aside
-              class="flex h-fit w-fit min-w-fit max-w-[25rem] flex-col gap-y-4 rounded-[7px] border border-gray-300 p-3"
+              class="flex h-fit w-fit min-w-fit max-w-[25rem] flex-col space-y-4 rounded-[7px] border border-gray-300 p-3"
             >
               <div>
                 <h2 id="tbcontact" class="text-lg font-semibold">
                   {{ $t("termbase.contactHeading") }}
                 </h2>
-                <dl aria-labelledby="tbcontact">
+                <dl aria-labelledby="tbcontact" class="space-y-0.5">
                   <div v-if="data?.publisher?.label?.['@value']" class="flex">
                     <dt class="w-32 shrink-0 font-semibold">
                       {{ $t("termbase.organisation") }}
@@ -68,7 +66,7 @@
                 <h2 id="tbtermbaseinfo" class="text-lg font-semibold">
                   {{ $t("global.termbase", 0) }}
                 </h2>
-                <dl aria-labelledby="tbtermbaseinfo">
+                <dl aria-labelledby="tbtermbaseinfo" class="space-y-0.5">
                   <div v-if="termbase === 'SNOMEDCT'" class="flex">
                     <dt class="w-32 shrink-0 font-semibold">
                       {{ $t("id.version") }}
