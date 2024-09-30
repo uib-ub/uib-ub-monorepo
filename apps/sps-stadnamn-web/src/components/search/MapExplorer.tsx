@@ -226,17 +226,29 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       }
   }, [resultData, mapInstance.current, setCenter])
   */
-  const calculateRadius = (docCount) => {
-    // Example scaling formula, adjust as needed
-    const minRadius = 3; // Minimum radius for a marker
+  const calculateRadius = (docCount, maxDocCount, minDocCount) => {
+    const minRadius = 10; // Minimum radius for a marker
     const maxRadius = 20; // Maximum radius for a marker
-    const scaledRadius = Math.sqrt(docCount) * 10; // Simple square root scaling
-    return Math.max(minRadius, Math.min(scaledRadius, maxRadius)); // Clamp value between min and max
+  
+    // Ensure docCount is within the range
+    docCount = Math.max(minDocCount, Math.min(maxDocCount, docCount));
+  
+    if (maxDocCount === minDocCount) return minRadius;
+  
+    // Use a logarithmic scale for a wider distribution
+    const logMax = Math.log(maxDocCount - minDocCount + 1);
+    const logValue = Math.log(docCount - minDocCount + 1);
+    const scaledRadius = (logValue / logMax) * (maxRadius - minRadius) + minRadius;
+  
+    return scaledRadius;
   };
 
 
+  const maxDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
+  const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
+  
 
- 
+
     return <>
     {bounds?.length || (center && zoom ) ? <>
     <Map mapRef={mapRef} zoomControl={false} {...center && zoom ? {center, zoom} : {bounds}}
@@ -257,7 +269,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     const myCustomIcon = new leaflet.DivIcon({
       className: 'my-custom-icon', // You can define styles in your CSS
-      html: `<div style="background-color: white; color: black; border-radius: 50%; width: ${calculateRadius(bucket.doc_count) * 2}px; font-size: ${calculateRadius(bucket.doc_count) * 0.8}px; height: ${calculateRadius(bucket.doc_count) * 2}px; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
+      html: `<div class="bg-white text-neutral-900 shadow-lg font-semibold" style="border-radius: 50%; width: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}px; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}px; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}px; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
     });
 
 
