@@ -107,7 +107,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
           
           setResultCount(data.hits.total.value);
           setViewResults(data)
-          const markers = groupMarkers(data.hits.hits);
+          //const markers = groupMarkers(data.hits.hits);
           setMarkers(markers)})
   
   
@@ -311,18 +311,15 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     const myCustomIcon = new leaflet.DivIcon({
       className: 'my-custom-icon', // You can define styles in your CSS
-      html: `<div class="bg-white text-neutral-900 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
+      html: `<div class="bg-white text-neutral-900 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${(calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2) + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0) }rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
     });
 
 
-    if (true || bucket.doc_count > 1) {
+    
 
     return <Marker key={bucket.key} position={[lat, lon]} icon={myCustomIcon}/>
-    }
-    else if (bucket.docs?.hits?.hits?.length) {
-      const hit = bucket.docs.hits.hits[0]
-      return <CircleMarker key={hit.key} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} pathOptions={{color:'red', weight: 2, opacity: 1, fillColor: 'black', fillOpacity: 1}}/>
-    }
+    
+
 
   }
   )}
