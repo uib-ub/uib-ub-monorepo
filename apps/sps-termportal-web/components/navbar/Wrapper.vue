@@ -1,7 +1,7 @@
 <template>
   <nav
     ref="navBar"
-    class="box-content h-12 w-full bg-white"
+    class="box-content h-[50px] w-full bg-white"
     :class="{ '': context != 'minimal' }"
   >
     <div class="mx-auto flex h-full grow items-center justify-between">

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap gap-x-6 gap-y-2 py-1 pl-1">
+  <div class="flex flex-wrap gap-x-6 gap-y-2 pb-1 pl-1">
     <SearchDropdownWrapper target="language">
       <DropdownPV
         v-model="searchInterface.language"
