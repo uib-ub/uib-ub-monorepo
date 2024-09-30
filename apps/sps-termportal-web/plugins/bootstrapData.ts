@@ -4,15 +4,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   /*
   Get labels, data and relations that are maintained in the CMS.
   */
-  useAsyncData("appConceptualDomains", () =>
+  const bootstrapData = useBootstrapData();
+  const data = useAsyncData("appConceptualDomains", () =>
     $fetch("/api/bootstrap", {
       headers: process.server
         ? { cookie: "session=" + useRuntimeConfig().apiKey }
         : undefined,
       retry: 1,
     }).then((data) => {
-      const bootstrapData = useBootstrapData();
-
       // lazy locales
       try {
         data.lalo.forEach((entry) => {
@@ -54,6 +53,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           }
         });
       } catch (error) {}
+
       bootstrapData.value.loaded = true;
     })
   );
