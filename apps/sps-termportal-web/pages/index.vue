@@ -33,7 +33,7 @@
         </div>
         <NewsWrapper :key="`news${locale}`" class="basis-5/12"></NewsWrapper>
       </div>
-      <CollaboratorsTP class="mt-8 xl:mt-14" />
+      <CollaboratorsTP class="mt-8 xl:mt-12" />
     </main>
   </div>
 </template>
