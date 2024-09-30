@@ -1,4 +1,4 @@
-import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Key, use, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
 import { PiGps, PiGpsFill, PiGpsFix, PiMagnifyingGlassMinus, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlus, PiMagnifyingGlassPlusFill, PiStack } from "react-icons/pi";
@@ -104,7 +104,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       else {
         setViewResults(null)
       }
-    }, [bounds, isLoading]);
+    }, [bounds, isLoading, zoom, searchQueryString, resultData?.hits.total.value]);
 
 
 
@@ -155,7 +155,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
             const currentZoom = mapInstance.current.getZoom();
             mapInstance.current.setZoom(currentZoom + 1);
         } else {
-            setZoom(prev => prev + 1);
+            setZoom(prev => prev ? prev + 1 : 1);
         }
     };
     
@@ -164,7 +164,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
             const currentZoom = mapInstance.current.getZoom();
             mapInstance.current.setZoom(currentZoom - 1);
         } else {
-            setZoom(prev => prev - 1);
+            setZoom(prev => prev ? prev - 1 : 1);
         }
     };
 
@@ -190,7 +190,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         }
     }
 
-  const calculateRadius = (docCount, maxDocCount, minDocCount) => {
+  const calculateRadius = (docCount: number, maxDocCount: number, minDocCount: number) => {
     const minRadius = .75; // Minimum radius for a marker
     const maxRadius = 1; // Maximum radius for a marker
   
@@ -232,11 +232,11 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
 
   {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
-    const latitudes = bucket.docs.hits.hits.map(hit => hit.fields.location[0].coordinates[1]);
-    const longitudes = bucket.docs.hits.hits.map(hit => hit.fields.location[0].coordinates[0]);
+    const latitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[1]);
+    const longitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[0]);
 
-    const latSum = latitudes.reduce((acc, cur) => acc + cur, 0);
-    const lonSum = longitudes.reduce((acc, cur) => acc + cur, 0);
+    const latSum = latitudes.reduce((acc: any, cur: any) => acc + cur, 0);
+    const lonSum = longitudes.reduce((acc: any, cur: any) => acc + cur, 0);
 
     const itemCount = bucket.docs.hits.hits.length;
     const lat = latSum / itemCount;
@@ -244,7 +244,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     
     // If no coordinates are different from the average
-    if (bucket.docs?.hits?.hits?.length != 1 && !latitudes.some(lat => lat !== latitudes[0]) && !longitudes.some(lon => lon !== longitudes[0])) {
+    if (bucket.docs?.hits?.hits?.length != 1 && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
       const myCustomIcon = new leaflet.DivIcon({
         className: 'my-custom-icon', // You can define styles in your CSS
         html: `<div class="text-white" style="position: relative; top: -3rem; left: -1.5rem;"><img src="/markerBlackFill.svg" style="width: 3rem; height: 3rem;"/><span class="absolute top-[1.16rem] left-0 w-[3rem] text-center text-xs font-bold">${itemCount}</span></div>`
@@ -257,7 +257,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     else if (bucket.docs?.hits?.hits?.length == 1 || zoom && zoom > 15) {
       
       
-      return <>{bucket.docs?.hits?.hits?.map(hit => {
+      return <>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; location: { coordinates: any[]; }[]; }; key: Key | null | undefined; }) => {
         const myCustomIcon = new leaflet.DivIcon({
           className: 'my-custom-icon', // Ensure this class is defined in your CSS
           html: `
