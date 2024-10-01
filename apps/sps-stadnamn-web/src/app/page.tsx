@@ -93,7 +93,7 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
   </div>
   <div className="flex flex-col items-center container gap-24">
   <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Nye datasett:</h2>
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Sist lagt til:</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
         <li key={index} className="card p-1 xl:col-span-1 items-start">

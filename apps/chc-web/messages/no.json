@@ -1,7 +1,7 @@
 {
   "Item": {
     "title": "Hei verden! Dette er objekt siden.",
-    "greeting": "Hei, hvem du nå er! Du er på en norsk side."
+    "greeting": "Hei, hvem du nå er! Du er på en norsk side. Prøver ut github actions her"
   },
   "SamlaTopCollection": {
     "title": "SAMLA samlinger (øverste nivå)"
