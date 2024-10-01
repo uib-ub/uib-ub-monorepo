@@ -1,4 +1,5 @@
 'use client'
+import { useRouter } from 'next/navigation'
 import {
     Tooltip,
     TooltipContent,
@@ -7,16 +8,26 @@ import {
   } from "@/components/ui/tooltip"
 
 
-export default function TooltipButton({ children, className, textClass, label, type, ...rest }: { children: React.ReactNode, className?: string, textClass?: string, label: string, [x: string]: any, type?: "button" | "submit" | "reset" }) {
+export default function IconButton({ children, textClass, textIcon, label, type, href, ...rest }: 
+    { children: React.ReactNode, className?: string, textClass?: string, textIcon?: boolean, label: string, href?: string, [x: string]: any, type?: "button" | "submit" | "reset" }) {
+    const router = useRouter();
+
+    const handleClick = (e: React.MouseEvent) => {
+        if (href) {
+            e.preventDefault();
+            router.push(href);
+        }
+    };
+    
     return (
 
         <TooltipProvider>
             <Tooltip>
-                <TooltipTrigger className={className} aria-label={label} type={type || "button"} {...rest}>
-                    {textClass ? <span className={textClass}>{label}</span> : null}
-                    <i  aria-hidden='true'>
-                        {children}
-                    </i>
+                <TooltipTrigger asChild>
+                    <button aria-label={label} type={type || "button"} onClick={handleClick} {...rest}>
+                    {textClass ? <span aria-hidden="true" className={textClass}>{label}</span> : null}
+                    {textIcon ? <span aria-hidden="true" className='flex'>{children}</span> : <i  aria-hidden='true'>{children}</i>}
+                    </button>
                 </TooltipTrigger>
                 <TooltipContent>
                 {label}

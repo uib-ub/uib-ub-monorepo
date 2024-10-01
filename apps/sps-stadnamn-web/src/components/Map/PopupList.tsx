@@ -1,63 +1,46 @@
 
-import IconButton  from '@/components/ui/icon-button'
 import { useSearchParams, useParams, useRouter } from 'next/navigation'
-import { PiArticleFill, PiInfoFill, PiLinkBold } from 'react-icons/pi'
-import AudioButton from '@/components/results/audioButton';
 import Link from 'next/link';
-import { resultRenderers } from '@/config/dataset-render-config';
+import { resultRenderers } from '@/config/result-renderers';
+import AudioButton from '@/components/results/audioButton'
+import ImageButton from '@/components/results/imageButton'
+import InfoButton from '@/components/results/infoButton'
+import ExternalLinkButton from '@/components/results/externalLinkButton'
+import ResultLink from '../results/resultLink';
 
 export default function PopupList({ docs, view }: { docs: any[], view: string} ) {
-    const searchParams = useSearchParams()
-    const dataset = docs[0]._index.split('-')[1];
-    const router = useRouter()
-    const params = useParams<{uuid: string; dataset: string}>()
 
-    const goToDoc = (uuid: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.delete('docs')
-      router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
-    }
 
-    const goToIIIF = (uuid: string, manifest: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.set('docs', String(uuid))
-      router.push(`/view/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
-    }
 
     const listItemRenderer = (doc: any) => {
+        const docDataset = doc._index.split('-')[2];
         return (
             <>
-            { dataset == view ?
+            <ResultLink doc={doc}>
+            { docDataset == view ?
                     <>
-                        {resultRenderers[view]?.title(doc)} | {resultRenderers[view]?.details(doc)}
+                        {resultRenderers[view]?.title(doc, 'map')}
                     </>
                     :
                     <>
-                        {doc._source.label}
+                        {resultRenderers[docDataset]?.title(doc, 'map')}
                     </>
                 } 
-                <div className='inline space-x-1 inline'>
+                </ResultLink>
+                <div className='inline whitespace-nowrap'>
+                    &nbsp;
                     {doc._source.image && 
-                        <IconButton 
-                            onClick={() => goToIIIF(doc._id, doc._source.image.manifest)} 
-                            label="Vis seddel">
-                            <PiArticleFill className="text-xl align-top text-neutral-700 inline"/>
-                        </IconButton> 
+                        <ImageButton doc={doc} iconClass='text-2xl align-top text-neutral-700 inline'/> 
                     }
                     {doc._source.audio && 
-                        <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${doc._source.audio.file}`} 
-                            className="text-2xl align-top inline text-neutral-700"/> 
+                        <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/hord/${doc._source.audio.file}`} 
+                            iconClass="text-2xl align-top inline text-neutral-700"/> 
                     }
                     {doc._source.link &&
-                        <Link href={doc._source.link} className="no-underline" target="_blank">
-                            <IconButton 
-                                label="Ekstern ressurs">
-                                <PiLinkBold className="text-xl align-top text-neutral-700 inline"/>
-                            </IconButton> 
-                        </Link>
+                        <ExternalLinkButton doc={doc} iconClass='text-2xl align-top text-neutral-700 inline'/>
                     }
-                    <IconButton label="Infoside" onClick={() => goToDoc(doc._source.uuid)}><PiInfoFill className='text-2xl align-top text-primary-600 inline'/></IconButton>
                 </div>
+                 { docDataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc, 'popup')}</p> }
                 
             </>
         )
@@ -67,7 +50,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
     const listRenderer = () => {
       return docs.map(doc => {
           return (
-          <li key={doc._id} className='text-lg inline space-x-1 py-2'>
+          <li key={doc._source.uuid} className='text-lg inline space-x-1 py-2'>
               {listItemRenderer(doc)}
           </li>
           )

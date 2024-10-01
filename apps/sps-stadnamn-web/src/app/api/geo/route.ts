@@ -2,16 +2,16 @@ export const runtime = 'edge'
 
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
-import { postQuery } from '../_utils/fetch';
+import { postQuery } from '../_utils/post';
 
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const { simple_query_string } = getQueryString(filteredParams)
-  const dataset = filteredParams.dataset == 'search' ? '*' : filteredParams.dataset;
+  const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
 
   const query: Record<string,any> = {
     size: 200,
-    fields: ["label", "location"],
+    fields: ["label", "location", "uuid"],
     _source: false,
 }
 
