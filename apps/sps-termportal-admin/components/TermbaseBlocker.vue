@@ -5,7 +5,7 @@
     </h2>
     <div class="space-y-5">
       <template v-for="tb in termbases" :key="tb.id">
-        <section v-if="tb.status !== '1. kjent' && tb.blocker.status !== 'ok'">
+        <section v-if="tb.blocker.status !== 'ok'">
           <h3 v-if="!inline" class="text-lg mb-1">
             {{ tb.label }}: {{ tb.status }}
           </h3>

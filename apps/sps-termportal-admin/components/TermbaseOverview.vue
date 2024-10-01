@@ -36,11 +36,7 @@
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.status }}</span>
-            <div
-              v-if="
-                data.status !== '1. kjent' && data.status !== '5. publisert'
-              "
-            >
+            <div v-if="data.status !== '5. publisert'">
               <Icon
                 v-if="data.blocker.status === 'ok'"
                 name="mdi:play"
@@ -329,7 +325,6 @@
 </template>
 
 <script setup lang="ts">
-import { timespan } from "@seidhr/sanity-plugin-timespan-input";
 import { FilterMatchMode } from "primevue/api";
 import { hiddenCollections } from "~/utils/constants";
 import { getDaysDiff } from "~/utils/utils";
@@ -385,6 +380,15 @@ function calcLastActivity(timespan: Object) {
     return -1;
   }
 }
+
+const dupeIds = computed(() => {
+  const ids = cmsdata.value?.map((tb) => tb.id);
+  const dupes = ids.reduce((acc, curr) => {
+    acc[curr] = (acc[curr] || 0) + 1;
+    return acc;
+  }, {});
+  return ids.filter((item) => dupes[item] > 1);
+});
 
 const merged = computed(() => {
   // enrich dbdata with cms data
@@ -477,6 +481,10 @@ function checkBlocker(tb) {
   if (tb.status) {
     const statusNumber = Number(tb.status[0]);
 
+    if (dupeIds.value.includes(tb.id)) {
+      blocker.hard.id = "Duplicate ID present.";
+    }
+
     // 2. planlagt or further
     if (statusNumber > 1) {
       // soft
@@ -491,7 +499,7 @@ function checkBlocker(tb) {
         blocker.hard.id = "No ID defined.";
       }
       // soft
-      if (!tb.domain && statusNumber < 5) {
+      if (!tb.domain && statusNumber < 4) {
         blocker.soft.domain = "No domain provided.";
       }
     }
@@ -509,6 +517,9 @@ function checkBlocker(tb) {
       }
       if (!tb.descriptions) {
         blocker.hard.descriptions = "Descriptions not approved.";
+      }
+      if (!tb.domain && statusNumber < 5) {
+        blocker.hard.domain = "No domain provided.";
       }
     }
 
