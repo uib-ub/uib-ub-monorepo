@@ -111,3 +111,7 @@ tsconfig.tsbuildinfo
 
 # Temporary ignore
 /apps/ub-dashboard/v1
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
