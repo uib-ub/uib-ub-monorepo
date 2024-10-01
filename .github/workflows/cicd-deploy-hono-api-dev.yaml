@@ -95,16 +95,11 @@ jobs:
           manage_kube_secret "esobserveapikeycred" "esObserveApiKey" "${{ secrets.OBSERVE_ES_APIKEY }}"
           manage_kube_secret "apieswritetokencred" "apiEsWriteToken" "${{ secrets.API_ES_WRITE_TOKEN }}"
 
+          # Deloy/update application
           DEPLOYMENT_NAME="hono-api"
           NAMESPACE="hono-api-dev"
-          # Check if the deployment already exists
-          if kubectl get deployment "$DEPLOYMENT_NAME" -n "$NAMESPACE" >/dev/null 2>&1; then
-            echo "Deployment $DEPLOYMENT_NAME already exists. Performing rolling restart..."
-            kubectl rollout restart deployment "$DEPLOYMENT_NAME" -n "$NAMESPACE"
-          else
-            echo "Deployment $DEPLOYMENT_NAME does not exist. Applying deployment..."
-            kubectl apply -k k8s-hono-api/$NAMESPACE -n "$NAMESPACE"
-          fi
+          echo "Applying deployment $DEPLOYMENT_NAME for namespace $NAMESPACE ..."
+          kubectl apply -k k8s-hono-api/$NAMESPACE -n "$NAMESPACE"
 
       - name: Wait For Deployment To Start
         run: sleep 10s

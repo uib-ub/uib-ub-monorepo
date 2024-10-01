@@ -6,17 +6,19 @@ metadata:
     cert-manager.io/cluster-issuer: lets-encrypt
 spec:
   tls:
-    - hosts:
-        - api-prod.testdu.uib.no
-      secretName: hono-api-ingress-tls
+  - hosts:
+    - api.ub.uib.no
+    # - api-prod.testdu.uib.no
+    secretName: hono-api-ingress-tls
   rules:
-    - host: api-prod.testdu.uib.no
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: hono-api
-                port:
-                  number: 80
+  # - host: api-prod.testdu.uib.no
+  - host: api.ub.uib.no
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hono-api
+            port:
+              number: 80
