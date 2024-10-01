@@ -52,7 +52,7 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
     <input id="search_input" className="col-span-4 rounded-sm h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass className="text-xl"/></IconButton>
     <Link href="/view/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden="true" className="mr-2"/>Utforsk kartet</Link>
-  </form> 
+  </form>
   
 
   { stats && <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-6 lg:gap-12">
@@ -93,7 +93,7 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
   </div>
   <div className="flex flex-col items-center container gap-24">
   <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Sist lagt til:</h2>
+    <h2 id="dataset_showcase" className="font-serif text-3xl">Nye datasett:</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
         <li key={index} className="card p-1 xl:col-span-1 items-start">
