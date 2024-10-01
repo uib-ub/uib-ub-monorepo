@@ -222,7 +222,6 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
     PREFIX ns: <http://spraksamlingane.no/terminlogi/named/>`;
 
   const queryEntries = () => `
-    #log: ${JSON.stringify(searchOptions)}
     ${queryPrefix()}
   
     SELECT DISTINCT ?uri ?predicate ?literal ?score ?context ?samling ${translate}

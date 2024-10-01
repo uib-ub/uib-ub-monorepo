@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap gap-x-6 gap-y-2 py-1 pl-1">
+  <div class="flex flex-wrap gap-x-6 gap-y-2 pb-1 pl-1">
     <SearchDropdownWrapper target="language">
       <DropdownPV
         v-model="searchInterface.language"
@@ -10,22 +10,27 @@
     </SearchDropdownWrapper>
     <SearchDropdownWrapper target="translate">
       <DropdownPV
-        :id="`translateDropdown`"
         v-model="searchInterface.translate"
+        aria-labelledby="translateDropdownLabel"
         :options="optionsTranslate"
         class="min-w-[6rem]"
       />
     </SearchDropdownWrapper>
-    <div
-      class="flex space-x-2 pt-1 hover:cursor-pointer group"
+    <button
+      class="rounded-[7px] flex space-x-2 px-2 pt-0.5 pb-1 tp-transition-shadow hover:cursor-pointer group border border-transparent hover:border-tpblue-300 focus:shadow-tphalo focus:border-tpblue-300 outline-none"
       @click="searchInterface.useDomain = !searchInterface.useDomain"
     >
       <div>{{ $t("global.domain.domain") }}</div>
       <div class="h-4 rotate-180 pb-6">
-        <InputSwitch v-model="searchInterface.useDomain" @click.stop="false" />
+        <InputSwitch
+          v-model="searchInterface.useDomain"
+          aria-labelledby="domainSwitchLabel"
+          @click.stop="false"
+        />
+        <span id="domainSwitchLabel" class="sr-only">Use domain search.</span>
       </div>
       <div>{{ $t("global.termbase", 0) }}</div>
-    </div>
+    </button>
   </div>
 </template>
 
@@ -34,6 +39,10 @@ import { useI18n } from "vue-i18n";
 const i18n = useI18n();
 const searchInterface = useSearchInterface();
 const localeLangOrder = useLocaleLangOrder();
+const orderedTermbases = useOrderedTermbases();
+
+// Order of language is not relevant
+const languageInfo = deriveLanguageInfo(languageOrder.nb);
 
 const optionsLanguage = computed(() => {
   const filteredLangs = deriveSearchOptions("language", "all");
@@ -104,7 +113,7 @@ function filterTermbases(termbases, filterTermbases, option, defaultValue) {
 function deriveSearchOptions(searchOption, defaultValue) {
   // TODO optimize, create list of languages of domains/termbases
   const currentValue = searchInterface.value[searchOption];
-  let termbases = termbaseOrder;
+  let termbases = orderedTermbases.value;
   let options;
 
   if (searchOption !== "language") {
@@ -135,7 +144,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
     );
     */
 
-    if (termbases.length !== termbaseOrder.length) {
+    if (termbases.length !== orderedTermbases.value.length) {
       const languages = [
         ...new Set(termbases.map((tb) => termbaseInfo[tb]).flat()),
       ];

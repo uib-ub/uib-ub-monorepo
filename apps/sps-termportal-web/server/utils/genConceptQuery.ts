@@ -19,7 +19,7 @@ export default function (base: string, termbase: string, id: string): string {
     "dct:replacedBy",
   ];
 
-  const query = `#log: ${JSON.stringify(log)}
+  const query = `
 ${prefix}
 PREFIX base: <${base}>
 
