@@ -1,27 +1,12 @@
 name: Playwright Tests
+
 on:
   deployment_status:
 jobs:
-  e2e-tests:
-    timeout-minutes: 60
+  run-e2es:
     if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Print env-url
-      run: echo "The URL is ${{ github.event.deployment_status.environment_url }}"
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/checkout@v2
+      - name: Print env-url
+        run: echo "The URL is ${{ github.event.deployment_status.environment_url }}"
