@@ -15,25 +15,33 @@
         <div class="xl:flex">
           <SearchFilter class="block xl:hidden" placement="main" />
           <main class="grow">
-            <h2 id="main" class="pb-2 pt-3 text-2xl">
-              <AppLink to="#main">
-                {{ $t("searchFilter.results-heading") }}</AppLink
-              >
-            </h2>
-            <ol
-              v-if="searchData.length > 0"
-              ref="scrollComponent"
-              aria-labelledby="main"
+            <div class="flex justify-between mb-2 mt-3">
+              <div class="flex space-x-6 text-2xl">
+                <h2 id="main" class="ml-0.5">
+                  <AppLink to="#main">
+                    {{ $t("searchFilter.results-heading") }}</AppLink
+                  >
+                </h2>
+                <UtilsTransitionOpacity>
+                  <IconSpinner
+                    v-if="searchDataPending.entries"
+                    size="0.8em"
+                    class="mt-0.5"
+                  />
+                </UtilsTransitionOpacity>
+              </div>
+              <div class="flex text-lg items-end">
+                <div class="w-16 pr-1 text-right">{{ count }}</div>
+                <div>{{ $t("searchFilter.results") }}</div>
+              </div>
+            </div>
+            <SearchResultsList />
+            <UtilsTransitionOpacity
+              v-if="false"
+              class="flex justify-center p-2"
             >
-              <SearchResultListEntry
-                v-for="entry in searchData"
-                :key="entry.link + '_' + entry.label"
-                :entry-data="entry"
-              />
-            </ol>
-            <TransitionOpacity v-if="false" class="flex justify-center p-2">
-              <SpinnerIcon v-if="pending && countFetchedMatches > 30" />
-            </TransitionOpacity>
+              <IconSpinner v-if="pending && countFetchedMatches > 30" />
+            </UtilsTransitionOpacity>
           </main>
         </div>
       </div>
@@ -42,96 +50,40 @@
 </template>
 
 <script setup lang="ts">
-import { Matching, SearchOptions, uiConfig } from "../utils/vars";
+import { uiConfig } from "../utils/vars";
 import { FetchType } from "../composables/useFetchSearchData";
 
 const route = useRoute();
 const searchData = useSearchData();
-const searchDataStats = useSearchDataStats();
 const allowSearchFetch = useAllowSearchFetch();
 const showSearchFilter = useShowSearchFilter();
 const breakpoint = useBreakpoint();
+const searchDataStats = useSearchDataStats();
 const countFetchedMatches = computed(() => {
   return countSearchEntries(searchData.value);
 });
 const searchterm = useSearchterm();
 const searchInterface = useSearchInterface();
-const count = computed(() => {
-  try {
-    return sum(Object.values(searchDataStats.value?.context || [])) || 0;
-  } catch (e) {
-    return 0;
-  }
-});
 
 const searchDataPending = useSearchDataPending();
 const pending = computed(() => {
   return !Object.values(searchDataPending.value).every((el) => !el);
 });
 
-const scrollComponent = ref(null);
-
-onMounted(() => {
-  window.addEventListener("scroll", fetchFurtherSearchData);
-});
-onUnmounted(() => {
-  window.removeEventListener("scroll", fetchFurtherSearchData);
-});
-
-const fetchFurtherSearchData = () => {
-  const element = scrollComponent.value;
-  if (count.value > countFetchedMatches.value && !pending.value) {
-    if (element.getBoundingClientRect().bottom * 0.75 < window.innerHeight) {
-      const offset: SearchOptions["offset"] = {};
-
-      if (searchInterface.value.term && searchInterface.value.term.length > 0) {
-        let newOffsetCalc;
-        let oldOffsetCalc = countFetchedMatches.value;
-        let fetchNextMatching = false;
-
-        for (const match of searchOptionsInfo.matching.default.flat()) {
-          if (
-            Object.keys(searchDataStats.value.matching || []).includes(match)
-          ) {
-            const matchCount =
-              searchDataStats.value.matching?.[match as Matching] || 0;
-            if (fetchNextMatching) {
-              offset[match as Matching] = 0;
-            }
-            if (oldOffsetCalc < 0) {
-              break;
-            }
-            newOffsetCalc = oldOffsetCalc - matchCount;
-            if (newOffsetCalc < 0) {
-              offset[match as Matching] = oldOffsetCalc;
-            }
-            const nextfetchCalc = matchCount - oldOffsetCalc;
-            if (
-              nextfetchCalc > 0 &&
-              nextfetchCalc < searchOptionsInfo.limit.default
-            ) {
-              fetchNextMatching = true;
-            }
-            oldOffsetCalc = newOffsetCalc;
-          }
-        }
-      } else {
-        offset.all = countFetchedMatches.value;
-      }
-
-      useFetchSearchData(
-        useGenSearchOptions("further", {
-          offset,
-          matching: [Object.keys(offset)],
-        })
-      );
-    }
+const count = computed(() => {
+  if (searchDataPending.value.aggregate) {
+    return countSearchEntries(searchData.value);
   }
-};
+  try {
+    return sum(Object.values(searchDataStats.value?.lang || []));
+  } catch (e) {
+    return 0;
+  }
+});
 
 const searchScrollBarPos = useSearchScrollBarPos();
 onBeforeUnmount(() => {
-  searchScrollBarPos.value = window.pageYOffset;
+  searchScrollBarPos.value = window.scrollY;
 });
 
 function considerSearchFetching(situation: FetchType) {

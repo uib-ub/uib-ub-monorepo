@@ -252,7 +252,6 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
     PREFIX ns: <http://spraksamlingane.no/terminlogi/named/>`;
 
   const queryAggregate = () => `
-    #log: ${JSON.stringify(searchOptions)}
     ${queryPrefix()}
   
     SELECT ${aggregateCategories.join(" ")}

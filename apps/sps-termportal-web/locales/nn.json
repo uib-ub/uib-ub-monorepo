@@ -2,6 +2,7 @@
   "global": {
     "language": "Språk | språk",
     "termbase": "Termbase | termbase | Termbasar  | termbasar",
+    "concept": "Omgrep | omgrep | Omgrep | omgrep",
     "skipLink": "Gå til hovudinnhald",
     "collaborators": "Samarbeidspartnarane våre",
     "readMore": "Les meir...",
@@ -223,7 +224,7 @@
     "dataDispLangComment": "Vel kva språk som skal visast i termpostane"
   },
   "misc": {
-    "snomedVersion": "SNOMED CT Norway Extension, mai 2024 v1.0",
+    "snomedVersion": "SNOMED CT Norway Extension",
     "snomedBrowser": "SNOMED CT nettlesar"
   }
 }

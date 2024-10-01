@@ -1,13 +1,7 @@
 export default function (namespace: string): string {
   const runtimeConfig = useRuntimeConfig();
-  const log = {
-    type: "termbase",
-    timestamp: new Date().toJSON(),
-    termbase: namespace,
-  };
 
-  const query = `#log: ${JSON.stringify(log)}
-  
+  const query = `
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
