@@ -1,12 +1,13 @@
-name: Playwright Tests
-
+name: End-to-end testing
 on:
   deployment_status:
 jobs:
-  run-e2es:
+  e2e:
     if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Print env-url
-        run: echo "The URL is ${{ github.event.deployment_status.environment_url }}"
+    - uses: actions/checkout@v3
+    - name: Print env-url
+      run: echo "The URL is ${{ github.event.deployment_status.environment_url }}"
+      
