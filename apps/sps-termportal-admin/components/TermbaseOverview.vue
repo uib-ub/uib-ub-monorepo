@@ -441,6 +441,7 @@ const merged = computed(() => {
           status: numberStatus(entry.status),
           labels: entry.labelsOk,
           descriptions: entry.descriptionsOk,
+          license: "",
           agreement: entry.licenseAgreementStatus,
           staff: entry.responsibleStaff,
           domain: entry.domain,
@@ -549,7 +550,7 @@ const licenses = computed(() => {
     return tb.license;
   });
 
-  return [...new Set(licenseArray)].sort().reverse();
+  return [...new Set(licenseArray)].sort();
 });
 
 const agreementStatuses = computed(() => {
