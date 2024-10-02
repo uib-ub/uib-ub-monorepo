@@ -40,7 +40,7 @@ export default function PopupList({ docs, view }: { docs: any[], view: string} )
                         <ExternalLinkButton doc={doc} iconClass='text-2xl align-top text-neutral-700 inline'/>
                     }
                 </div>
-                 { docDataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc, 'map')}</p> }
+                 { docDataset == view &&  <p className="!m-0">{resultRenderers[view]?.details(doc, 'popup')}</p> }
                 
             </>
         )

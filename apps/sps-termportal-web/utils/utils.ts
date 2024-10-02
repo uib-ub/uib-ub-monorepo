@@ -1,6 +1,7 @@
+import { useI18n } from "vue-i18n";
 import { SemanticRelation } from "./vars";
 import { LangCode } from "~/composables/locale";
-import { SearchDataEntry } from "~~/composables/states";
+import { SearchDataEntry } from "~/composables/states";
 
 /**
  * Return unique intersection of two Arrays, sorted by order of first.
@@ -155,9 +156,11 @@ export function parseRelationsRecursively(
   newKey: string
 ) {
   if (data?.[startId]?.[relation] && data[startId][relation].length > 0) {
+    const relations = data[startId][relation].slice().reverse();
+
     return Object.assign(
       {},
-      ...data[startId][relation].map((startId: string) => ({
+      ...relations.map((startId: string) => ({
         [startId]: {
           [newKey]: parseRelationsRecursively(data, startId, relation, newKey),
         },
@@ -199,12 +202,64 @@ export function getAllKeys(obj: Object): string[] {
  * @returns Localized label or key if not label present
  */
 export function lalof(key: string): string {
-  const lazyLocales = useLazyLocales();
+  const bootstrapData = useBootstrapData();
   const locale = useLocale();
-  const localeLen = Object.keys(languageOrder).length;
   const label = languageOrder[locale.value]
-    .slice(0, localeLen)
-    .map((lc) => lazyLocales.value?.[lc]?.[key])
+    .filter((lc) => Object.keys(languageOrder).includes(lc))
+    .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
     .find((value) => value !== undefined);
   return label ?? key;
 }
+
+export function htmlify(data: string): string {
+  try {
+    const pars = data
+      .split("\n\n")
+      .filter((p) => p)
+      .map((p) => `<p>${p}</p>`)
+      .join("");
+    return pars;
+  } catch (e) {
+    return data;
+  }
+}
+
+function flattenDict(dict: Object, nestingKey: string, level = 0): string[] {
+  let items: string[] = [];
+  for (const key in dict) {
+    items.push([key, level]);
+    if (typeof dict[key][nestingKey] === "object") {
+      items = items.concat(
+        flattenDict(dict[key][nestingKey], nestingKey, level + 1)
+      );
+    }
+  }
+  return items;
+}
+
+export function flattenOrderDomains(domains?) {
+  const bootstrapData = useBootstrapData();
+  if (bootstrapData.value.domain) {
+    const flatDomains = flattenDict(bootstrapData.value.domain, "subdomains");
+    if (!domains) {
+      return flatDomains;
+    } else {
+      return flatDomains
+        .filter((entry) => domains.includes(entry[0]))
+        .map((entry) => entry[0]); // TODO should be removed and handled down the line
+    }
+  } else {
+    return [];
+  }
+}
+
+export const getLangOptions = () => {
+  const locales = useLocales();
+  const i18n = useI18n();
+  return locales.map((loc) => ({
+    label: loc,
+    command: () => {
+      i18n.locale.value = loc;
+    },
+  }));
+};

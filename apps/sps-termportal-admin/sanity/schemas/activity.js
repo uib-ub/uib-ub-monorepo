@@ -1,6 +1,7 @@
 import { label, note, timespan } from "./props";
 import association from "./qualifiedPattern/association";
 import communication from "./qualifiedPattern/communication";
+import simpleUsage from "./qualifiedPattern/simpleUsage";
 import usage from "./qualifiedPattern/usage";
 
 export default {
@@ -10,13 +11,6 @@ export default {
   liveEdit: true,
   fields: [
     label,
-    note,
-    timespan,
-    {
-      name: "qualifiedUsage",
-      type: "array",
-      of: [usage],
-    },
     {
       name: "type",
       type: "string",
@@ -26,6 +20,20 @@ export default {
           return { title: activityTypes[key], value: key };
         }),
       },
+    },
+    note,
+    timespan,
+    {
+      name: "qualifiedUsage",
+      title: "Omfang",
+      type: "array",
+      of: [usage],
+    },
+    {
+      name: "usage",
+      title: "Gjør bruk av",
+      type: "array",
+      of: [simpleUsage],
     },
     {
       name: "qualifiedAssociation",

@@ -165,7 +165,6 @@ function validateLabel(label: any): boolean {
 }
 
 function getConceptLanguages(concept: any, languageProps: string[]) {
-  //  console.log(Object.keys(concept["prefLabel"]));
   const lang = languageProps.flatMap((prop) => {
     // only equivalence shouldn't be displayed
     if (concept?.[prop]) {

@@ -1,0 +1,109 @@
+name: Manually deploy hono api to hono-api-test env/namespace on microk8s
+
+on: workflow_dispatch # run manually
+
+jobs:
+  deploy-test:
+    name: Deploy to hono api test
+    environment:
+      name: hono-api-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v3
+
+      - name: Setup kubectl
+        env:
+          MICROK8S_CONFIG: ${{ secrets.MICROK8S_CONFIG }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${MICROK8S_CONFIG}" | base64 --decode > $HOME/.kube/config
+
+      - name: Check kubectl get node
+        run: kubectl get nodes -o wide
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: deploy apply pods to hono-api-test env
+        env:
+          REGISTRY: ghcr.io
+        run: |
+          # Check if the namespace 'hono-api-test' is already created, if not, create it.
+          NAMESPACE=$(kubectl get namespaces -o jsonpath="{.items[?(@.metadata.name=='hono-api-test')].metadata.name}")
+          if [ -z "$NAMESPACE" ]; then
+            echo "Namespace $NAMESPACE does not exist. Creating namespace..."
+            kubectl apply -f k8s-hono-api/hono-api-test/namespace.yaml
+          else
+            echo "Namespace $NAMESPACE already exists. Skipping creation."
+          fi 
+
+          function manage_kube_secret {
+            local secret_name=$1
+            local secret_key=$2
+            local secret_value=$3
+            local secret_type=${4:-generic}
+
+            if [ "$secret_name" == "regcred" ]; then
+              # Special handling for Github container registry secret
+              if ! kubectl -n hono-api-test get secret "$secret_name"; then
+                echo "Creating Github container registry secret $secret_name..."
+                kubectl -n hono-api-test create secret "$secret_type" "$secret_name" \
+                  --docker-username=${{ github.actor }} \
+                  --docker-password="$secret_value" \
+                  --docker-server=${{ env.REGISTRY }}
+              else
+                echo "Checking if Github container registry secret $secret_name needs to be updated..."
+                existing_pass=$(kubectl -n hono-api-test get secret "$secret_name" --template='{{index .data ".dockerconfigjson" | base64decode}}' | jq -r '.auths["ghcr.io"].password')
+                if [[ "$existing_pass" != "$secret_value" ]]; then
+                  echo "Updating Github registry secret $secret_name..."
+                  kubectl -n hono-api-test delete secret "$secret_name"
+                  kubectl -n hono-api-test create secret "$secret_type" "$secret_name" \
+                    --docker-username=${{ github.actor }} \
+                    --docker-password="$secret_value" \
+                    --docker-server=${{ env.REGISTRY }}
+                else
+                  echo "Github container registry secret $secret_name is up-to-date, no action required."
+                fi
+              fi
+            else
+              # General handling for other secrets using passed parameters
+              if ! kubectl -n hono-api-test get secret "$secret_name"; then
+                echo "Creating secret $secret_name..."
+                kubectl -n hono-api-test create secret "$secret_type" "$secret_name" --from-literal="$secret_key"="$secret_value"
+              else
+                echo "Checking if secret $secret_name needs to be updated..."
+                existing_value=$(kubectl -n hono-api-test get secret "$secret_name" --template="{{index .data \"$secret_key\" | base64decode}}")
+                if [[ "$existing_value" != "$secret_value" ]]; then
+                  echo "Updating secret $secret_name..."
+                  kubectl -n hono-api-test delete secret "$secret_name"
+                  kubectl -n hono-api-test create secret "$secret_type" "$secret_name" --from-literal="$secret_key"="$secret_value"
+                else
+                  echo "Secret $secret_name is up-to-date, no action required."
+                fi
+              fi
+            fi
+          }
+
+          # Handle secrets using the generic function
+          manage_kube_secret "regcred" ".dockerconfigjson" "${{ secrets.GHCR_PAT }}" "docker-registry"
+          manage_kube_secret "esapikeycred" "esApiKey" "${{ secrets.ES_APIKEY }}"
+          manage_kube_secret "esobserveapikeycred" "esObserveApiKey" "${{ secrets.OBSERVE_ES_APIKEY }}"
+          manage_kube_secret "apieswritetokencred" "apiEsWriteToken" "${{ secrets.API_ES_WRITE_TOKEN }}"
+
+          # Deloy/update application
+          DEPLOYMENT_NAME="hono-api"
+          NAMESPACE="hono-api-test"
+          echo "Applying deployment $DEPLOYMENT_NAME for namespace $NAMESPACE ..."
+          kubectl apply -k k8s-hono-api/$NAMESPACE -n "$NAMESPACE"
+
+      - name: Wait For Deployment To Start
+        run: sleep 10s
+
+      - name: Wait For Pods To Start
+        run: kubectl wait --for=condition=ready pod -l app=hono-api -n hono-api-test --timeout=10m

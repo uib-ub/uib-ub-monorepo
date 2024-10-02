@@ -24,8 +24,8 @@ function getActivationStatus(data, hierarchy) {
 
 export default function (situation: string, options?: SearchOptions) {
   const searchInterface = useSearchInterface();
-  const searchFilterData = useSearchFilterData();
-  const domainData = useDomainData();
+  const searchFilterSelection = useSearchFilterSelection();
+  const bootstrapData = useBootstrapData();
 
   const newOptions: SearchOptions = {
     type: "search",
@@ -33,7 +33,10 @@ export default function (situation: string, options?: SearchOptions) {
     situation,
     // searchOptionsInterface
     term: searchInterface.value.term || "",
-    language: [searchInterface.value.language],
+    language: [
+      searchInterface.value.language,
+      ...(searchInterface.value.language === "en" ? ["en-GB", "en-US"] : []),
+    ], // jena seems to store them in this format
     translate: searchInterface.value.translate,
     termbase: searchInterface.value.termbase,
     domain: [Object.keys(searchInterface.value.domain)[0]], // TODO domain
@@ -52,30 +55,32 @@ export default function (situation: string, options?: SearchOptions) {
   if (newOptions.useDomain) {
     const domainLst = getActivationStatus(
       searchInterface.value.domain,
-      domainData.value
+      bootstrapData.value.domain
     );
     newOptions.domain = domainLst;
   }
 
   if (situation === "filter" || situation === "further") {
-    if (searchFilterData.value.samling.length > 0) {
-      newOptions.termbase = searchFilterData.value.samling;
+    if (searchFilterSelection.value.samling.length > 0) {
+      newOptions.termbase = searchFilterSelection.value.samling;
     }
-    if (searchFilterData.value.lang.length > 0) {
-      newOptions.language = searchFilterData.value.lang;
+    if (searchFilterSelection.value.lang.length > 0) {
+      newOptions.language = searchFilterSelection.value.lang;
     }
-    if (searchFilterData.value.predicate.length > 0) {
-      newOptions.predicate = searchFilterData.value.predicate;
+    if (searchFilterSelection.value.predicate.length > 0) {
+      newOptions.predicate = searchFilterSelection.value.predicate;
     }
-    if (searchFilterData.value.matching.length > 0) {
-      newOptions.matching = searchFilterData.value.matching.map((e) => [e]);
+    if (searchFilterSelection.value.matching.length > 0) {
+      newOptions.matching = searchFilterSelection.value.matching.map((e) => [
+        e,
+      ]);
     }
     if (searchInterface.value.useDomain) {
-      if (searchFilterData.value.context.length > 0) {
-        newOptions.domain = searchFilterData.value.context;
+      if (searchFilterSelection.value.context.length > 0) {
+        newOptions.domain = searchFilterSelection.value.context;
       }
-    } else if (searchFilterData.value.context.length > 0) {
-      newOptions.termbase = searchFilterData.value.context.map((tb) => {
+    } else if (searchFilterSelection.value.context.length > 0) {
+      newOptions.termbase = searchFilterSelection.value.context.map((tb) => {
         return tb.split("-3A")[0];
       });
     }

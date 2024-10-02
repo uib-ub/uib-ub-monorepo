@@ -119,7 +119,7 @@ watch(selectedTermbase, () => {
   emits("update:modelValue", selectedTermbase.value);
 });
 
-const { data: dbdata } = await useLazyFetch("/api/tb/all/overview", {
+const { data: dbdata } = await useLazyFetch("/api/tb/all/termbase_overview", {
   query: { internal: true },
 });
 
@@ -141,35 +141,37 @@ function matchid(data, entry, key) {
 }
 
 const merged = computed(() => {
-  const enriched = dbdata.value?.results?.bindings
-    .map((e) => ({
-      label: e.label.value,
-      id: e.id.value,
-      conceptCount: e.concepts.value,
-      status: numberStatus(matchid(cmsdata, e, "status")),
-      staff: matchid(cmsdata, e, "responsibleStaff"),
-      _id: matchid(cmsdata, e, "_id"),
-    }))
-    .filter((termbase) => termbase.id !== "DOMENE");
+  if (dbdata.value) {
+    const enriched = dbdata.value
+      .map((e) => ({
+        label: e.label.value,
+        id: e.id.value,
+        conceptCount: e.concepts.value,
+        status: numberStatus(matchid(cmsdata, e, "status")),
+        staff: matchid(cmsdata, e, "responsibleStaff"),
+        _id: matchid(cmsdata, e, "_id"),
+      }))
+      .filter((termbase) => termbase.id !== "DOMENE");
 
-  if (enriched && cmsdata.value) {
-    const ids = dbdata.value?.results?.bindings.map((e) => e.id.value);
-    for (const entry of cmsdata.value) {
-      if (!ids.includes(entry.id)) {
-        const data = {
-          label: entry.label,
-          id: entry.id,
-          conceptCount: 0,
-          status: numberStatus(entry.status),
-          staff: entry.responsibleStaff,
-          _id: entry._id,
-        };
-        enriched.push(data);
+    if (enriched && cmsdata.value) {
+      const ids = dbdata.value.map((e) => e.id.value);
+      for (const entry of cmsdata.value) {
+        if (!ids.includes(entry.id)) {
+          const data = {
+            label: entry.label,
+            id: entry.id,
+            conceptCount: 0,
+            status: numberStatus(entry.status),
+            staff: entry.responsibleStaff,
+            _id: entry._id,
+          };
+          enriched.push(data);
+        }
       }
     }
-  }
 
-  return enriched;
+    return enriched;
+  }
 });
 
 const statuses = computed(() => {

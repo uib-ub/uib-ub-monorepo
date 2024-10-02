@@ -1,5 +1,5 @@
 import { SearchDataStats } from "./states";
-import { Matching, SearchOptions, searchFilterDataEmpty } from "~~/utils/vars";
+import { Matching, SearchOptions } from "~~/utils/vars";
 
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
@@ -23,6 +23,17 @@ export async function fetchSearchDataMatching(
   }
 }
 
+export function resetSearchFilterSelection() {
+  const searchFilterSelection = useSearchFilterSelection();
+  searchFilterSelection.value = {
+    lang: [],
+    samling: [],
+    predicate: [],
+    matching: [],
+    context: [],
+  };
+}
+
 export type FetchType = "initial" | "options" | "filter" | "further";
 async function fetchSearchDataAggregate(
   searchOptions: SearchOptions,
@@ -34,6 +45,10 @@ async function fetchSearchDataAggregate(
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
 
+  if (["initial", "options"].includes(situation)) {
+    resetSearchFilterSelection();
+  }
+
   const aggregate = await $fetch("/api/search/aggregate", {
     method: "POST",
     body: searchOptions,
@@ -41,7 +56,7 @@ async function fetchSearchDataAggregate(
   });
 
   if (currentFetch === searchFetchLatest.value) {
-    if (situation === "initial" || situation === "options") {
+    if (["initial", "options"].includes(situation)) {
       searchDataStats.value = aggregate;
     } else if (situation === "filter") {
       const zeroedStats = resetStats(searchDataStats.value, false);
@@ -60,7 +75,6 @@ export async function useFetchSearchData(options: SearchOptions) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
   const searchDataPending = useSearchDataPending();
-  const searchFilterData = useSearchFilterData();
   const searchFetchInitial = useSearchFetchInitial();
   const route = useRoute();
   let append = false;
@@ -68,11 +82,11 @@ export async function useFetchSearchData(options: SearchOptions) {
   searchFetchLatest.value = fetchTime;
   const situation = options.situation;
 
+  // Matomo Events
+  pushSearchEvents(options);
+
   if (situation === "initial" && route.path === "/search") {
-    if (route.path === "/search") {
-      searchFetchInitial.value = true;
-    }
-    searchFilterData.value = searchFilterDataEmpty();
+    searchFetchInitial.value = true;
   }
 
   if (

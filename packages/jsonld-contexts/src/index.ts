@@ -1,11 +1,12 @@
 import esMappingContext from './esMappingContext';
-import { iiifManifestContext } from './iiifManifest';
 import { iiifPresentation3Context } from './external/iiifPresentationContext';
 import { linkedArtContext } from './external/linkedArt';
+import { iiifManifestContext } from './iiifManifest';
 import { skaLegacyContext } from './legacy/skaContext';
 import { wabLegacyContext } from './legacy/wabContext';
 import shaclContext from './shaclContext';
 import ubbontContext from './ubbontContext';
+import ubChcContext from './ubCHCContext';
 
 export const CONTEXTS = {
   [`https://api.ub.uib.no/ns/ubbont/context.json`]: ubbontContext,
@@ -20,6 +21,7 @@ export const CONTEXTS = {
 
 export default {
   ubbontContext,
+  ubChcContext,
   esMappingContext,
   shaclContext,
   iiifManifestContext,

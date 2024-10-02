@@ -2,6 +2,7 @@
   "global": {
     "language": "Språk | språk",
     "termbase": "Termbase | termbase | Termbaser | termbaser",
+    "concept": "Begrep | begrep | Begrep | begrep",
     "skipLink": "Gå til hovedinnhold",
     "collaborators": "Våre samarbeidspartnere",
     "readMore": "Les mer...",
@@ -21,6 +22,8 @@
       "da": "Dansk | dansk",
       "de": "Tysk | tysk",
       "en": "Engelsk | engelsk",
+      "en-gb": "Britisk-engelsk | britisk-engelsk",
+      "en-us": "Amerikansk-engelsk | britisk-engelsk",
       "es": "Spansk | spansk",
       "fi": "Finsk | finsk",
       "fr": "Fransk | fransk",
@@ -188,7 +191,9 @@
     "tilbake": "Til søkeresultater",
     "noteTermbaseIsUnmaintained": "Dette er en historisk ressurs som p.t. ikke oppdateres.",
     "visualization": "Visualisering",
-    "imageAltLabel": "Visualisering av begrepet"
+    "imageAltLabel": "Visualisering av begrepet",
+    "version": "Versjon",
+    "browser": "Ekstern nettleser"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -217,5 +222,9 @@
     "conceptview": "Termpost",
     "dataDispLang": "Språk for termpost",
     "dataDispLangComment": "Velg hvilke språk som skal vises i termpostene"
+  },
+  "misc": {
+    "snomedVersion": "SNOMED CT Norway Extension",
+    "snomedBrowser": "SNOMED CT nettleser"
   }
 }

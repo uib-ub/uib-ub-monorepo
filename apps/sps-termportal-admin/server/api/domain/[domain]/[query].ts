@@ -14,12 +14,17 @@ export default defineEventHandler(async (event) => {
   const domain = decodeURI(event.context.params?.domain);
   const queryType = event.context.params?.query;
 
-  console.log(domain)
+  // Check escache for certain keys
+  const cachedData = await checkEsCache(queryType, domain);
+  if (cachedData) {
+    return cachedData;
+  }
+
   const query = () => {
     switch (queryType) {
-      case "domainOverview":
+      case "domain_overview":
         return genDomainOverviewQuery();
-      case "exploreDomainTermbases":
+      case "domain_termbases_direct":
         return genExploreDomainTermbasesQuery(domain);
       case "exploreDomainTermbasesRec":
         return genExploreDomainTermbasesRecQuery(domain);
@@ -38,5 +43,5 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  return data;
+  return data?.results?.bindings;
 });

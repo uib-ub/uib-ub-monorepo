@@ -1,56 +1,67 @@
 <template>
-  <div>
+  <div v-if="data">
     <Head v-if="mainp">
       <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
     </Head>
-    <h2 :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`" class="pb-4">
-      <AppLink
-        class="text-3xl"
-        :to="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
+    <div>
+      <h2
+        v-if="pagetitle"
+        :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
+        class="pb-4 mt-3 md:mt-4 lg:mt-6"
       >
-        <span v-html="pagetitle"></span
-      ></AppLink>
-      <div v-if="mainConcept?.memberOf">
         <AppLink
-          class="text-lg text-gray-600 underline hover:text-black"
-          :to="'/' + mainConcept?.memberOf.split('-3A')[1]"
+          class="text-3xl"
+          :to="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
         >
-          {{ lalof(mainConcept.memberOf) }}
-        </AppLink>
-      </div>
-    </h2>
-    <div class="lg:flex space-y-5 lg:space-y-0">
-      <div class="lg:order-last lg:ml-2 xl:ml-5">
-        <TermpostVisualizationSection
-          v-if="displayInfo?.image && displayInfo?.image[0] && pagetitle"
-          :display-info="displayInfo"
-          :pagetitle="pagetitle"
-        />
-      </div>
-      <div class="grid gap-y-7 shrink-0 lg:shrink lg:min-w-[30em]">
+          <span v-html="pagetitle"></span
+        ></AppLink>
         <div
-          v-for="lang in displayInfo?.displayLanguages"
-          :key="'disp_' + lang"
+          v-if="mainConcept?.memberOf"
+          class="text-lg text-gray-600 underline hover:text-black h-8"
         >
-          <TermpostLanguageSection
-            :concept="mainConcept"
-            :lang="lang"
-            :meta="data?.meta"
+          <client-only>
+            <AppLink
+              v-if="mainConcept.memberOf !== lalof(mainConcept.memberOf)"
+              :to="'/' + mainConcept?.memberOf.split('-3A')[1]"
+            >
+              {{ lalof(mainConcept.memberOf) }}
+            </AppLink>
+          </client-only>
+        </div>
+      </h2>
+      <div class="lg:flex space-y-5 lg:space-y-0">
+        <div class="lg:order-last lg:ml-2 xl:ml-5">
+          <TermpostVisualizationSection
+            v-if="displayInfo?.image && displayInfo?.image[0] && pagetitle"
+            :display-info="displayInfo"
+            :pagetitle="pagetitle"
           />
         </div>
-        <TermpostSymbolSection
-          v-if="displayInfo?.symbol"
-          :display-info="displayInfo"
-        />
-        <TermpostRelationSection
-          v-if="displayInfo?.semanticRelations"
-          :display-info="displayInfo"
-        />
-        <TermpostGeneralSection
-          v-if="displayInfo && mainConcept"
-          :concept="mainConcept"
-          :display-info="displayInfo"
-        />
+        <div class="grid gap-y-7 shrink-0 lg:shrink lg:min-w-[30em]">
+          <div
+            v-for="lang in displayInfo?.displayLanguages"
+            :key="'disp_' + lang"
+          >
+            <TermpostLanguageSection
+              :concept="mainConcept"
+              :lang="lang"
+              :meta="data?.meta"
+            />
+          </div>
+          <TermpostSymbolSection
+            v-if="displayInfo?.symbol && displayInfo?.symbol.length"
+            :display-info="displayInfo"
+          />
+          <TermpostRelationSection
+            v-if="displayInfo?.semanticRelations"
+            :display-info="displayInfo"
+          />
+          <TermpostGeneralSection
+            v-if="displayInfo && mainConcept"
+            :concept="mainConcept"
+            :display-info="displayInfo"
+          />
+        </div>
       </div>
     </div>
     <div v-if="error">Error</div>
@@ -77,6 +88,7 @@ if (process.client) {
 }
 
 const dataDisplayLanguages = useDataDisplayLanguages();
+const bootstrapData = useBootstrapData();
 
 const props = defineProps({
   // used to fetch data
@@ -92,22 +104,24 @@ const timer = setTimeout(() => {
   controller.abort();
 }, 6000);
 
-const { data, error } = await useAsyncData("concept" + props.conceptUrl, () =>
-  $fetch(`/api/concept/${props.conceptUrl}`, {
-    method: "GET",
-    headers: process.server
-      ? { cookie: "session=" + useRuntimeConfig().apiKey }
-      : undefined,
-    retry: 1,
-    signal: controller.signal,
-  }).then((value) => {
-    clearTimeout(timer);
-    return value;
-  })
+const { data, error } = await useLazyAsyncData(
+  "concept" + props.conceptUrl,
+  () =>
+    $fetch(`/api/concept/${props.conceptUrl}`, {
+      method: "GET",
+      headers: process.server
+        ? { cookie: "session=" + useRuntimeConfig().apiKey }
+        : undefined,
+      retry: 1,
+      signal: controller.signal,
+    }).then((value) => {
+      clearTimeout(timer);
+      return value;
+    })
 );
 
 const mainConcept = computed(() => {
-  return data.value.concept[props.mainConceptId];
+  return data.value?.concept[props.mainConceptId];
 });
 
 const pagetitle = computed(() => {
@@ -172,6 +186,7 @@ const displayInfo = computed(() => {
         )
       );
     }
+    info.pagetitle = pagetitle;
 
     return info;
   } else {
@@ -180,14 +195,14 @@ const displayInfo = computed(() => {
 });
 
 onMounted(() => {
-  if (window?.MathJax) {
+  setTimeout(() => {
     window.MathJax.typesetPromise();
-  }
+  }, 0);
 });
 
 onBeforeUnmount(() => {
   clearTimeout(timer);
-  if (!data.value[props.mainConceptId] && !controller.signal.aborted) {
+  if (!data.value?.[props.mainConceptId] && !controller.signal.aborted) {
     controller.abort();
   }
 });

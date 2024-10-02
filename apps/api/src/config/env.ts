@@ -11,17 +11,19 @@ const schema = z.object({
   PORT: withDevDefault(z.string(), '3009').transform(Number),
   ES_HOST: z.string().url(),
   ES_APIKEY: z.string(),
+  API_ES_WRITE_TOKEN: z.string(),
+  OBSERVE_ES_HOST: z.string().url(),
+  OBSERVE_ES_APIKEY: z.string(),
 });
 
 const parsed = schema.safeParse(process.env);
 
-if (!parsed.success) {
+if (parsed.success === false) {
   console.error(
     "❌ Invalid environment variables:",
     JSON.stringify(parsed.error.format(), null, 4)
   );
   throw new Error("Invalid environment variables");
-  //process.exit(1);
 }
 
 export const env = parsed.data;

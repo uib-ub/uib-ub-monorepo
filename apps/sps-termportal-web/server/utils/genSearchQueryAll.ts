@@ -47,7 +47,6 @@ export function genSearchQueryAll(
       }`;
 
   const outerQuery = `
-  #log: ${JSON.stringify(searchOptions)}
   PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
   PREFIX skosp: <http://www.data.ub.uib.no/ns/spraksamlingene/skos#>
   PREFIX base: <${runtimeConfig.public.base}>

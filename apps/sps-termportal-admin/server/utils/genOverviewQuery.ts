@@ -7,9 +7,12 @@ export default function () {
   SELECT ?id ?label (count(?concept) as ?concepts) ?license
   WHERE {
     GRAPH <urn:x-arq:UnionGraph> {
-      ?concept skosp:memberOf ?tb .
-      ?tb dct:identifier ?id .
-      ?tb rdfs:label ?label .
+      ?tb rdf:type skos:Collection ;
+          dct:identifier ?id ;
+          rdfs:label ?label .
+      OPTIONAL {
+        ?concept skosp:memberOf ?tb .
+      }
       OPTIONAL {
         ?tb dct:license ?license .
       }

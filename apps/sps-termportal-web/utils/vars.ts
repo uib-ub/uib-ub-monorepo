@@ -129,12 +129,4 @@ export const licenseLinks = {
     "https://urn.fi/urn:nbn:fi:lb-2019071724",
 };
 
-export const searchFilterDataEmpty = (): SearchFilterData => {
-  return {
-    lang: [],
-    samling: [],
-    predicate: [],
-    matching: [],
-    context: [],
-  };
-};
+export const uiConfig = { wideUiBreakpoints: ["xl", "2xl"] };
