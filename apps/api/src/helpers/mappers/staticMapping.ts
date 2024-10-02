@@ -1,6 +1,9 @@
+import { env } from '@config/env';
+import { getLanguage } from './getLanguage';
+
 export const institutions: { [key: string]: { id: string; type: string; _label: Record<string, string[]> } } = {
   uib: {
-    id: 'http://data.ub.uib.no/instance/organization/79543723-f0e9-40a6-bfb9-4830f080e887',
+    id: `${env.API_URL}/groups/79543723-f0e9-40a6-bfb9-4830f080e887`,
     type: 'Group',
     _label: {
       no: ['Universitetet i Bergen'],
@@ -8,7 +11,7 @@ export const institutions: { [key: string]: { id: string; type: string; _label: 
     },
   },
   ubb: {
-    id: "http://data.ub.uib.no/instance/organization/0f4d957a-5476-4e88-b2b6-71a06c1ecf9c",
+    id: `${env.API_URL}/groups/0f4d957a-5476-4e88-b2b6-71a06c1ecf9c`,
     type: "Group",
     _label: {
       no: ["Universitetsbiblioteket i Bergen"],
@@ -16,7 +19,7 @@ export const institutions: { [key: string]: { id: string; type: string; _label: 
     }
   },
   spes: {
-    id: "http://data.ub.uib.no/instance/organization/de88f626-4b67-4fef-9d88-6930e8b5c645",
+    id: `${env.API_URL}/groups/de88f626-4b67-4fef-9d88-6930e8b5c645`,
     type: "Group",
     _label: {
       no: ["Spesialsamlingene ved Universitetsbiblioteket i Bergen"],
@@ -24,14 +27,14 @@ export const institutions: { [key: string]: { id: string; type: string; _label: 
     }
   },
   sab: {
-    id: 'http://data.ub.uib.no/instance/organization/statsarkivet-i-bergen',
+    id: `${env.API_URL}/groups/statsarkivet-i-bergen`,
     type: 'Group',
     _label: {
       no: ['Statsarkivet i Bergen'],
     },
   },
   bba: {
-    id: 'http://data.ub.uib.no/instance/organization/3f0ed65b-8e5c-484e-8805-89619ee56a77',
+    id: `${env.API_URL}/groups/3f0ed65b-8e5c-484e-8805-89619ee56a77`,
     type: 'Group',
     _label: {
       no: ['Bergen byarkiv'],
@@ -49,7 +52,7 @@ export const aatHeightType = {
 }
 
 export const aatWidthtType = {
-  id: "http://vocab.getty.edu/aat/300055647",
+  id: "https://vocab.getty.edu/aat/300055647",
   type: "Type",
   _label: "Width"
 }
@@ -66,10 +69,22 @@ export const aatCircaType = {
   _label: "Circa"
 }
 
+export const aatReproductionsType = {
+  id: "https://vocab.getty.edu/aat/300015643",
+  type: "Type",
+  _label: "Reproductions (derivative objects)"
+}
+
 export const aatPhysicalDescriptionType = {
   id: "https://vocab.getty.edu/aat/300435452",
   type: "Type",
   _label: "Physical description",
+};
+
+export const aatCreationDateDescriptionType = {
+  id: "https://vocab.getty.edu/aat/300435447",
+  type: "Type",
+  _label: "Creation date description",
 };
 
 export const aatInternalNoteType = {
@@ -85,7 +100,7 @@ export const aatRelatedTextualReferencesType = {
 };
 
 export const aatDescriptionsType = {
-  id: "http://vocab.getty.edu/aat/300435416",
+  id: "https://vocab.getty.edu/aat/300435416",
   type: "Type",
   _label: "Description",
 };
@@ -109,25 +124,25 @@ export const aatProvenanceStatementsType = {
 };
 
 export const aatCountOfType = {
-  id: "http://vocab.getty.edu/aat/300404433",
+  id: "https://vocab.getty.edu/aat/300404433",
   type: "Type",
   _label: "Count Of"
 };
 
 export const aatPagesMeasurementUnitType = {
-  id: "http://vocab.getty.edu/aat/300194222",
+  id: "https://vocab.getty.edu/aat/300194222",
   type: "MeasurementUnit",
   _label: "Pages"
 };
 
 export const aatDigitalImageType = {
-  id: "http://vocab.getty.edu/aat/300215302",
+  id: "https://vocab.getty.edu/aat/300215302",
   type: "Type",
   _label: "Digital Image"
 }
 
 export const aatThumbnailsType = {
-  id: "http://fix.me",
+  id: "https://fix.me",
   type: "Type",
   _label: "Thumbnails"
 }
@@ -175,7 +190,7 @@ export const aatConstructedTitlesType = {
 }
 
 export const aatPrimaryNameType = {
-  id: "http://vocab.getty.edu/aat/300404670",
+  id: "https://vocab.getty.edu/aat/300404670",
   type: "Type",
   _label: "Primary Name"
 }
@@ -187,55 +202,61 @@ export const aatAlternativeTitlesType = {
 }
 
 export const aatProvenanceActivityType = {
-  id: "http://vocab.getty.edu/aat/300055863",
+  id: "https://vocab.getty.edu/aat/300055863",
   type: "Type",
   _label: "Provenance Activity"
 }
 
+export const aatPaginationStatementType = {
+  id: "https://vocab.getty.edu/aat/300435440",
+  type: "Type",
+  _label: "Pagination Statement",
+}
+
 export const aatPublishingType = {
-  id: "http://vocab.getty.edu/aat/300054686",
+  id: "https://vocab.getty.edu/aat/300054686",
   type: "Type",
   _label: "Publishing"
 }
 
 export const fixmeCorrespondanceType = {
-  id: "http://fix.me",
+  id: "https://fix.me",
   type: "Type",
   _label: "Correspondance"
 }
 
 export const aatBriefTextType = {
-  id: "http://vocab.getty.edu/aat/300418049",
+  id: "https://vocab.getty.edu/aat/300418049",
   type: "Type",
   _label: "Brief Text"
 }
 
 export const aatAcknowledgementsType = {
-  id: "http://vocab.getty.edu/aat/300026687",
+  id: "https://vocab.getty.edu/aat/300026687",
   type: "Type",
   _label: "Acknowledgements"
 }
 
 export const aatRightsType = {
-  id: "http://vocab.getty.edu/aat/300417696",
+  id: "https://vocab.getty.edu/aat/300417696",
   type: "Type",
   _label: "Rights (Legal Concept)"
 }
 
 export const aatIdentificationNumberType = {
-  id: "http://vocab.getty.edu/aat/300404626",
+  id: "https://vocab.getty.edu/aat/300404626",
   type: "Type",
   _label: "Identification Number"
 }
 
 export const aatTitlesType = {
-  id: "http://vocab.getty.edu/aat/300417193",
+  id: "https://vocab.getty.edu/aat/300417193",
   type: "Type",
   _label: "Titles (General, Names)"
 }
 
 export const aatCultureType = {
-  id: "http://vocab.getty.edu/aat/300055768",
+  id: "https://vocab.getty.edu/aat/300055768",
   type: "Type",
   _label: "Culture"
 }
@@ -322,16 +343,34 @@ export const aatSiblingsType = {
  * Rights and Licenses
  */
 export const ccPublicDomainMarkType = {
-  id: "http://creativecommons.org/publicdomain/zero/1.0/",
+  id: "https://creativecommons.org/publicdomain/zero/1.0/",
   type: "Type",
-  _label: {
-    no: ["CC0 1.0 Universal (CC0 1.0) Ingen opphavsrett"],
-    en: ["CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"],
-  }
+  _label: "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+  identified_by: [
+    {
+      type: 'Name',
+      content: {
+        no: ["CC0 1.0 Universal (CC0 1.0) Ingen opphavsrett"],
+        en: ["CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"],
+      }
+    }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is marked with the CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er merket med CC0 1.0 Universal (CC0 1.0) Ingen opphavsrett.",
+    }
+  ]
 }
 
 export const rsCopyrightUndeterminedType = {
-  id: "http://rightsstatements.org/vocab/UND/1.0/",
+  id: "https://rightsstatements.org/vocab/UND/1.0/",
   type: "Type",
   _label: "Copyright Undetermined",
   identified_by: [
@@ -342,11 +381,23 @@ export const rsCopyrightUndeterminedType = {
         no: 'Opphavsrett ikke fastsatt'
       }
     }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "The copyright status of this work is not known.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Opphavsrettsstatusen til dette verket er ikke kjent.",
+    }
   ]
 }
 
 export const rsInCopyrighttype = {
-  id: "http://rightsstatements.org/vocab/InC/1.0/",
+  id: "https://rightsstatements.org/vocab/InC/1.0/",
   type: "Type",
   _label: "In Copyright",
   identified_by: [
@@ -356,6 +407,18 @@ export const rsInCopyrighttype = {
         en: 'In Copyright',
         no: 'All rettigheter reservert'
       }
+    }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "All rights reserved.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "All rettigheter reservert.",
     }
   ]
 }
@@ -372,6 +435,18 @@ export const attributionNonCommercialNoDerivsType = {
         no: 'Navngivelse-IkkeKommersiell-IngenBearbeidelser'
       }
     }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse-IkkeKommersiell-IngenBearbeidelser 4.0 Internasjonal Lisens.",
+    }
   ]
 };
 export const attributionType = {
@@ -386,6 +461,18 @@ export const attributionType = {
         no: 'Navngivelse'
       }
     }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse 4.0 Internasjonal Lisens.",
+    }
   ]
 };
 export const attributionShareAlikeType = {
@@ -399,6 +486,18 @@ export const attributionShareAlikeType = {
         en: 'Attribution-ShareAlike',
         no: 'Navngivelse-DelPåSammeVilkår'
       }
+    }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse-DelPåSammeVilkår 4.0 Internasjonal Lisens.",
     }
   ]
 };
@@ -415,6 +514,18 @@ export const attributionNonCommercialType = {
         no: 'Navngivelse-IkkeKommersiell'
       }
     }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse-IkkeKommersiell 4.0 Internasjonal Lisens.",
+    }
   ]
 };
 
@@ -430,20 +541,44 @@ export const attributionNoDerivsType = {
         no: 'Navngivelse-IngenBearbeidelser'
       }
     }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is licensed under the Creative Commons Attribution-NoDerivs 4.0 International License.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket er lisensiert under Creative Commons Navngivelse-IngenBearbeidelser 4.0 Internasjonal Lisens.",
+    }
   ]
 };
 
 export const publicDomainType = {
   id: 'https://creativecommons.org/publicdomain/mark/1.0',
   type: 'Type',
-  _label: 'Public Domain',
+  _label: 'Public Domain Mark',
   identified_by: [
     {
       type: 'Name',
       content: {
-        en: 'Public Domain',
+        en: 'Public Domain Mark',
         no: 'Falt i det fri'
       }
+    }
+  ],
+  subject_of: [
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('en')],
+      content: "This work is marked with the Public Domain Mark.",
+    },
+    {
+      type: "LinguisticObject",
+      language: [getLanguage('no')],
+      content: "Dette verket har falt i det fri og er er merket med Public Domain Mark.",
     }
   ]
 };

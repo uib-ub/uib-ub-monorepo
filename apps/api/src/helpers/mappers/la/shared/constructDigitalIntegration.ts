@@ -1,8 +1,9 @@
+import { aatDigitalImageType, aatThumbnailsType, aatWebPageType } from '@/helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
-import { aatDigitalImageType, aatThumbnailsType, aatWebPageType } from '../../staticMapping';
 
 export const constructDigitalIntegration = (data: any) => {
   const {
+    type,
     thumbnail,
     image,
     subjectOfManifest,
@@ -38,91 +39,106 @@ export const constructDigitalIntegration = (data: any) => {
   let imgArray: any[] = []
   let seeAlsoArray: any[] = []
 
-  if (img) {
-    imgArray = [{
-      id: img[0],
-      type: 'VisualItem',
-      digitally_shown_by: {
-        type: 'DigitalObject',
-        _label: {
-          no: ['Digitalt objekt'],
-          en: ['Digital object'],
-        },
-        classified_as: [
-          aatDigitalImageType,
-          aatThumbnailsType,
-        ],
-        access_point: [{
-          id: img[0],
-          type: 'DigitalObject',
-        },]
-      }
-    }]
-  }
-
   if (seeAlso) {
     seeAlsoArray = seeAlso.map((item: any) => ({
       id: item['ubbont:hasURI'] ?? item.hasURI,
+      type: type,
       _label: item._label,
     }));
   }
 
+  if (img) {
+    imgArray = [{
+      type: 'VisualItem',
+      digitally_shown_by: [
+        {
+          type: 'DigitalObject',
+          _label: {
+            no: ['Digitalt objekt'],
+            en: ['Digital object'],
+          },
+          classified_as: [
+            aatDigitalImageType,
+            aatThumbnailsType,
+          ],
+          access_point: [{
+            id: img[0],
+            type: 'DigitalObject',
+          }]
+        }
+      ]
+    }]
+  }
+
   if (thumbnail) {
     thumbnailArray = [{
-      id: thumbnail,
       type: 'VisualItem',
-      digitally_shown_by: {
-        type: 'DigitalObject',
-        _label: {
-          no: ['Digitalt objekt'],
-          en: ['Digital object'],
-        },
-        classified_as: [
-          aatDigitalImageType,
-          aatThumbnailsType,
-        ],
-        access_point: [{
-          id: thumbnail,
+      digitally_shown_by: [
+        {
           type: 'DigitalObject',
-        },]
-      }
+          _label: {
+            no: ['Digitalt objekt'],
+            en: ['Digital object'],
+          },
+          classified_as: [
+            aatDigitalImageType,
+            aatThumbnailsType,
+          ],
+          access_point: [{
+            id: Array.isArray(thumbnail) ? thumbnail[0] : thumbnail,
+            type: 'DigitalObject',
+          }]
+        }
+      ]
     }]
   }
 
   if (image) {
     imageArray = [{
-      id: image,
       type: 'VisualItem',
-      digitally_shown_by: {
-        type: 'DigitalObject',
-        _label: {
-          no: ['Digitalt objekt'],
-          en: ['Digital object'],
-        },
-        classified_as: [
-          aatDigitalImageType,
-        ],
-        access_point: [{
-          id: image,
+      digitally_shown_by: [
+        {
           type: 'DigitalObject',
-        }],
-      }
+          _label: {
+            no: ['Digitalt objekt'],
+            en: ['Digital object'],
+          },
+          classified_as: [
+            aatDigitalImageType,
+          ],
+          access_point: [{
+            id: Array.isArray(image) ? image[0] : image,
+            type: 'DigitalObject',
+          }],
+        }
+      ]
     }]
   }
 
   if (subjectOfManifest) {
     subjectManifestOf = [
       {
-        id: subjectOfManifest,
-        type: 'DigitalObject',
+        type: 'LinguisticObject',
         _label: {
           no: ['Digitalt objekt'],
           en: ['Digital object'],
         },
-        conforms_to: [
+        digitally_carried_by: [
           {
-            id: "http://iiif.io/api/presentation",
-            type: "InformationObject"
+            type: "DigitalObject",
+            access_point: [
+              {
+                id: subjectOfManifest,
+                type: "DigitalObject"
+              }
+            ],
+            conforms_to: [
+              {
+                id: "https://iiif.io/api/presentation/",
+                type: "InformationObject"
+              }
+            ],
+            format: "application/ld+json;profile='https://iiif.io/api/presentation/3/context.json'"
           }
         ]
       }
@@ -132,11 +148,9 @@ export const constructDigitalIntegration = (data: any) => {
   // Always a string, as this is created by the query
   if (homepage) {
     subjectHomepageOf = [{
-      id: homepage,
       type: "LinguisticObject",
       digitally_carried_by: [
         {
-          id: homepage,
           type: "DigitalObject",
           classified_as: [
             aatWebPageType,
@@ -153,7 +167,7 @@ export const constructDigitalIntegration = (data: any) => {
     }]
   }
 
-  if (page) {
+  if (Array.isArray(page) && page.length > 0) {
     pageArray = page.map((item: any) => ({
       type: "LinguisticObject",
       _label: item._label,

@@ -41,8 +41,7 @@ export function decodeSearchOptions(options: any) {
     language: options.language.split(","),
     translate: options.translate || "",
     termbase: options.termbase ? options.termbase.split(",") : [],
-    domain:
-      options.domain || options.domain === "" ? [] : options.domain.split(","),
+    domain: options.domain ? options.domain.split(",") : [],
     useDomain: options.useDomain === "true",
     predicate: options.predicate ? options.predicate.split(",") : [],
     matching: options.matching ? options.matching.split(",") : [], // substructure lost

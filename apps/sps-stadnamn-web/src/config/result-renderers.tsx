@@ -196,10 +196,12 @@ export const resultRenderers: ResultRenderers = {
       return hit.highlight?.['rawData.merknader'][0] && formatHighlight(hit.highlight['rawData.merknader'][0])
     },
     details: (hit: any, display: string) => {
-      const source = hit._source
-      
+      const source = hit._source     
 
-      return  cadastreAdm(source.rawData.kommuneNr, source.rawData.bruka?.bruk?.gardsNr, source.rawData.bruka?.bruk?.bruksNr, "/", source, display)
+      return <>{cadastreAdm(source.rawData.kommuneNr, source.rawData.bruka?.bruk?.gardsNr, source.rawData.bruka?.bruk?.bruksNr, "/", source, display)}
+      {!hit.highlight && display == 'popup' && source.rawData?.merknader? 
+        <div>{source.rawData.merknader.slice(0,100)}{source.rawData.merknader.length > 100 ? '...' : ''}
+        </div> : ''}</>
     }
   },
   nbas: {

@@ -1,55 +1,63 @@
-FROM node:20-alpine AS base
+# Set bun image version
+ARG BUN_VERSION=1.1.8
 
-# The web Dockerfile is copy-pasted into our main docs at /docs/handbook/deploying-with-docker.
-# Make sure you update this Dockerfile, the Dockerfile in the web workspace and copy that over to Dockerfile in the docs.
+# Use node 20 buster as base image
+FROM node:20-buster AS base
 
-FROM base AS builder
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
-RUN apk update && \
-  apk add --no-cache libc6-compat
-# Set working directory
+# Install bash for base and clean cache for smaller image
+RUN apt-get update && apt-get install -y && apt-get clean bash
+
+# Install turbo for base
+RUN npm install -g turbo@latest
+
+# Install Bun for base
+RUN curl -fsSL https://bun.sh/install | bash
+RUN mv /root/.bun/bin/bun /usr/local/bin/
+# Ensure Bun environment
+ENV PATH="/usr/local/bin:$PATH"
+# Check Bun installation
+RUN bun -v
+
+# Set working directory for base
 WORKDIR /app
-RUN npm install -g turbo
+
+# Builder stage to compile the application
+FROM base AS builder
 COPY . .
+
+# Prune and prepare the application
 RUN turbo prune api --docker
 
-# Add lockfile and package.json's of isolated subworkspace
+# Installer stage to set up environment
 FROM base AS installer
-RUN apk add --no-cache libc6-compat
-RUN apk update && \
-  apk add --no-cache libc6-compat
-WORKDIR /app
-
-# First install dependencies (as they change less often)
-# COPY .gitignore .gitignore
-COPY --from=builder /app/out/.gitignore ./.gitignore
+COPY --from=builder /app/.gitignore ./.gitignore
 COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/package.json ./package.json
+COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
+
+# Install dependencies
 RUN npm install
 
-# Build the project and its dependencies
+# Copy build artifacts
 COPY --from=builder /app/out/full/ .
-COPY --from=builder /app/out/turbo.json ./turbo.json
-# COPY turbo.json turbo.json
+COPY --from=builder /app/turbo.json ./turbo.json
 
-# Uncomment and use build args to enable remote caching
-# ARG TURBO_TEAM
-# ENV TURBO_TEAM=$TURBO_TEAM
+# FROM bun image AS runner stage to run the application
+FROM oven/bun:${BUN_VERSION}-alpine AS runner
 
-# ARG TURBO_TOKEN
-# ENV TURBO_TOKEN=$TURBO_TOKEN
+RUN apk update && \
+  apk add --no-cache curl bash
 
-RUN turbo run build --filter=api...
-
-FROM base AS runner
+# Set working directory
 WORKDIR /app
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 honojs
-RUN adduser --system --uid 1001 honojs
+# Set up non-root user
+RUN addgroup --system honojs && \
+  adduser --system --ingroup honojs honojs --uid 1001
+
 USER honojs
+
+# Copy application from the installer stage
 COPY --from=installer /app .
 
-CMD node apps/api/dist/main.js
+CMD ["bun", "run", "./apps/api/src/main.ts"]

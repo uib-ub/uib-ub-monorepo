@@ -1,4 +1,3 @@
-import { defineConfig } from "sanity";
 import { ReferencedBy } from "sanity-plugin-document-reference-by";
 
 export const deskStructure = (S) =>
@@ -8,6 +7,7 @@ export const deskStructure = (S) =>
       S.documentTypeListItem("termbase"),
       S.documentTypeListItem("activity"),
       S.documentTypeListItem("news"),
+      S.documentTypeListItem("asset"),
       S.divider(),
       S.documentTypeListItem("person"),
       S.documentTypeListItem("group"),

@@ -28,7 +28,7 @@
         v-if="
           concept?.hasEquivalenceData?.[lang] &&
           concept?.hasEquivalenceData?.[lang][0]?.note &&
-          !concept?.hasEquivalenceData?.[lang][0]?.note['@value'].startsWith(
+          !concept?.hasEquivalenceData?.[lang][0]?.note['@value'].includes(
             'RTT'
           )
         "

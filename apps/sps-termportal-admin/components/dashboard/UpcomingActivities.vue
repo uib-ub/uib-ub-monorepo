@@ -1,8 +1,11 @@
 <template>
-  <section class="">
-    <h2 class="text-lg font-semibold pb-3 text-gray-800">
-      Forestående aktiviteter
-    </h2>
+  <section>
+    <div class="flex justify-between">
+      <h2 class="text-lg font-semibold pb-2 text-gray-800">
+        Forestående aktiviteter
+      </h2>
+      <AddButton :to="studioLinks.newActivity" target="_blank" />
+    </div>
     <ol class="space-y-0.5 text-lg ml-1">
       <li
         v-for="activity in procdata"
@@ -10,11 +13,11 @@
         class="hover:bg-gray-100 p-1"
       >
         <AppLink
-          class="space-x-3 flex"
+          class="space-x-3 flex justify-between"
           :to="`/studio/structure/activity;${activity.id}`"
           target="_blank"
         >
-          <div class="w-[18rem]">{{ activity.label }}</div>
+          <div>{{ activity.label }}</div>
           <div>{{ activity.time }}</div>
         </AppLink>
       </li>

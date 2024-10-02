@@ -241,6 +241,76 @@
   }
   
 
+
+  button[aria-current='page'], a[aria-current='page'] i {
+    @apply ring-accent-800 ring-2 rounded-full ring-offset-2;
+
+  }
+
+  button[aria-current='page'].snid-button {
+    @apply bg-accent-200 ring-1;
+  }
+
+  button[aria-current='page'].snid-button svg {
+    @apply text-accent-800;
+  }
+
+  .count-marker-highlight img {
+    @apply absolute bottom-1.5 left-1.5 w-16 h-16;
+    translate: -50%;
+  }
+
+
+  .count-marker-highlight {
+    @apply !z-[1000]
+  }
+
+  .count-marker-highlight span {
+    @apply absolute text-base bottom-[1.25rem] left-[0.125rem] text-white;
+  }
+
+  .count-marker img {
+    @apply absolute bottom-1.5 left-1.5 w-12 h-12;
+    translate: -50%;
+  }
+
+
+  .count-marker span {
+    @apply absolute bottom-[1.125rem] left-[0.125rem] text-white;
+  }
+
+
+  
+  .result-table {
+    @apply w-full text-left text-neutral-950 border shadow-sm border-neutral-300; 
+  }
+  
+  .result-table thead th {
+    @apply text-sm bg-neutral-50 p-4 border-b-2 border-neutral-200; 
+  }
+
+  .result-table thead button {
+    @apply text-neutral-950 
+  }
+  
+  .result-table tbody tr {
+    @apply border-b border-neutral-200; 
+  }
+
+ 
+  .result-table tbody th {
+    @apply px-4 py-1 border-neutral-200 font-normal; 
+  }
+  
+  .result-table tbody tr:nth-child(even) {
+    @apply bg-neutral-50;
+  }
+  
+  .result-table td {
+    @apply px-4 py-2;
+  }
+  
+
 }
 
 @layer utilities {

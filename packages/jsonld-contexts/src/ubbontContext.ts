@@ -241,7 +241,8 @@ const ubbontContext = {
     },
     "locationFor": {
       "@id": "ubbont:locationFor",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "hasPermantentLocation": {
       "@id": "ubbont:hasPermantentLocation",
@@ -548,7 +549,8 @@ const ubbontContext = {
     },
     "hasPart": {
       "@id": "dct:hasPart",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "Concept": {
       "@id": "skos:Concept"
@@ -766,6 +768,11 @@ const ubbontContext = {
       "@id": "ubbont:hasRepresentation",
       "@type": "@id"
     },
+    "hasResource": {
+      "@id": "ubbont:hasResource",
+      "@type": "@id",
+      "@container": "@set"
+    },
     "product": {
       "@id": "event:product",
       "@type": "@id",
@@ -928,7 +935,8 @@ const ubbontContext = {
       "@type": "@id"
     },
     "rodeNr": {
-      "@id": "ubbont:rodeNr"
+      "@id": "ubbont:rodeNr",
+      "@container": "@set"
     },
     "identifier": {
       "@id": "dct:identifier"
@@ -1038,6 +1046,12 @@ const ubbontContext = {
     },
     "hasTHView": {
       "@id": "ubbont:hasTHView"
+    },
+    "hasTifView": {
+      "@id": "ubbont:hasTifView"
+    },
+    "hasXSView": {
+      "@id": "ubbont:hasXSView"
     },
     "stores": {
       "@id": "ubbont:stores",
@@ -1379,7 +1393,8 @@ const ubbontContext = {
     },
     "reproduced": {
       "@id": "ubbont:reproduced",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "focalLength": {
       "@id": "exif:focalLength"
@@ -1446,7 +1461,8 @@ const ubbontContext = {
       "@type": "@id"
     },
     "extent": {
-      "@id": "dct:extent"
+      "@id": "dct:extent",
+      "@container": "@set"
     },
     "alternative": {
       "@id": "dct:alternative",

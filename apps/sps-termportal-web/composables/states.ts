@@ -1,5 +1,5 @@
 import { LangCode } from "./locale";
-import { LabelPredicate, Matching } from "~~/utils/vars";
+import { LabelPredicate, Matching, uiConfig } from "~~/utils/vars";
 import { Samling } from "~~/utils/vars-termbase";
 
 export interface SearchDataEntry {
@@ -29,15 +29,6 @@ export interface SearchInterface {
   termbase: Samling[];
   useDomain: boolean;
 }
-
-export const useDomainData = () =>
-  useState("domainData", () => ({
-    "DOMENE-3ANaturvitenskapTeknologi": {},
-    "DOMENE-3AHumaniora": {},
-    "DOMENE-3AOkonomiAdministrasjon": {},
-    "DOMENE-3ASamfunnsfag": {},
-    //    "DOMENE-3AHelse_og_sosial": { bases: ["KUNNBP"] },
-  }));
 
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
@@ -75,7 +66,9 @@ export const useSearchDataStats = () =>
   useState<SearchDataStats>("searchDataStats", () => ({}));
 
 export const useShowSearchFilter = () =>
-  useState<boolean>("showSearchFilter", () => false);
+  useState<boolean>("showSearchFilter", () =>
+    uiConfig.wideUiBreakpoints.includes(useBreakpoint().value)
+  );
 
 export interface SearchFilterData {
   lang: LangCode[];
@@ -84,8 +77,14 @@ export interface SearchFilterData {
   matching: Matching[];
   context: string[];
 }
-export const useSearchFilterData = () =>
-  useState<SearchFilterData>("searchFilterData", () => searchFilterDataEmpty());
+export const useSearchFilterSelection = () =>
+  useState<SearchFilterData>("searchFilterSelection", () => ({
+    lang: [],
+    samling: [],
+    predicate: [],
+    matching: [],
+    context: [],
+  }));
 export const useSearchFetchLatest = () =>
   useState<number>("searchFetchLatest", () => NaN);
 export const useDataDisplayLanguages = () =>
@@ -93,6 +92,8 @@ export const useDataDisplayLanguages = () =>
     "nb",
     "nn",
     "en",
+    "en-gb",
+    "en-us",
     "ar",
     "da",
     "de",
@@ -113,5 +114,16 @@ export const useConceptViewToggle = () =>
 export const useNavMenuExpanded = () =>
   useState<boolean>("navMenuExpanded", () => false);
 
-export const useLazyLocales = () =>
-  useState<Object>("lazyLocales", () => ({ nb: {}, nn: {}, en: {} }));
+export const useBootstrapData = () =>
+  useState<Object>("lazyLocales", () => ({
+    lalo: { nb: {}, nn: {}, en: {} },
+    termbase: {},
+    domain: {
+      "DOMENE-3ANaturvitenskapTeknologi": {},
+      "DOMENE-3AHumaniora": {},
+      "DOMENE-3ASamfunnsfag": {},
+      // "DOMENE-3AHelse_og_sosial": {},
+      "DOMENE-3AOkonomiAdministrasjon": {},
+    },
+    loaded: false,
+  }));

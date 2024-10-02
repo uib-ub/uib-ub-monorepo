@@ -1,6 +1,6 @@
+import { getLanguage } from '@/helpers/mappers/getLanguage';
+import { aatAlternativeTitlesType, aatConstructedTitlesType, aatFirstNameType, aatHistoricalTermsType, aatIsbnType, aatLastNameType, aatPreferredTermsType, aatPrimaryNameType } from '@/helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
-import { getLanguage } from '../../getLanguage';
-import { aatAlternativeTitlesType, aatConstructedTitlesType, aatFirstNameType, aatHistoricalTermsType, aatIsbnType, aatLastNameType, aatPreferredTermsType, aatPrimaryNameType } from '../../staticMapping';
 
 export const constructIdentifiers = (data: any) => {
   const {
@@ -50,18 +50,22 @@ export const constructIdentifiers = (data: any) => {
   delete data.isbn;
 
   let names: any[] = [];
+  let titles: any[] = [];
   let previousArray: any[] = [];
   let bibsysArray: any[] = [];
   let viafArray: any[] = [];
+  let isbnArray: any[] = [];
 
-  const isbnArray = [{
-    _label: `${isbn}`,
-    type: 'Identifier',
-    classified_as: [
-      aatIsbnType,
-    ],
-    content: isbn,
-  }];
+  if (isbn) {
+    isbnArray = [{
+      _label: `${isbn}`,
+      type: 'Identifier',
+      classified_as: [
+        aatIsbnType,
+      ],
+      content: isbn,
+    }];
+  }
 
   if (previousIdentifier) {
     previousArray = [{
@@ -70,7 +74,7 @@ export const constructIdentifiers = (data: any) => {
       classified_as: [
         aatHistoricalTermsType,
       ],
-      content: previousIdentifier,
+      content: Array.isArray(previousIdentifier) ? previousIdentifier.join(', ') : previousIdentifier,
     }];
   }
 
@@ -137,46 +141,63 @@ export const constructIdentifiers = (data: any) => {
             content: Array.isArray(familyName) ? familyName[0] : familyName,
           } : undefined)
         ],
-      },
-      ...(alternative ? (Object.entries(alternative).map(([key, value]: [string, any]) => {
-        return value.map((val: string) => {
-          return {
-            type: "Name",
-            classified_as: [
-              aatAlternativeTitlesType,
-              val.includes('[', 0) ? aatConstructedTitlesType : undefined,
-            ],
-            content: val,
-            language: [
-              getLanguage(key)
-            ]
-          };
-        })
-      }))[0] : []),
-      ...(altLabel ? (Object.entries(altLabel).map(([key, value]: [string, any]) => {
-        return value.map((val: string) => {
-          return {
-            type: "Name",
-            classified_as: [
-              aatAlternativeTitlesType,
-              val.includes('[', 0) ? aatConstructedTitlesType : undefined,
-            ],
-            content: val,
-            language: [
-              getLanguage(key)
-            ]
-          };
-        })
-      }))[0] : []),
-    ];
+      }
+    ]
   }
 
-  delete data.previousIdentifier;
+  titles = [
+    ...(_label ? (Object.entries(_label).map(([key, value]: [string, any]) => {
+      return value.map((val: string) => {
+        return {
+          type: "Name",
+          classified_as: [
+            aatPrimaryNameType,
+            val.includes('[', 0) ? aatConstructedTitlesType : undefined,
+          ],
+          content: val,
+          language: [
+            getLanguage(key)
+          ]
+        };
+      })
+    }))[0] : []),
+    ...(alternative ? (Object.entries(alternative).map(([key, value]: [string, any]) => {
+      return value.map((val: string) => {
+        return {
+          type: "Name",
+          classified_as: [
+            aatAlternativeTitlesType,
+            val.includes('[', 0) ? aatConstructedTitlesType : undefined,
+          ],
+          content: val,
+          language: [
+            getLanguage(key)
+          ]
+        };
+      })
+    }))[0] : []),
+    ...(altLabel ? (Object.entries(altLabel).map(([key, value]: [string, any]) => {
+      return value.map((val: string) => {
+        return {
+          type: "Name",
+          classified_as: [
+            aatAlternativeTitlesType,
+            val.includes('[', 0) ? aatConstructedTitlesType : undefined,
+          ],
+          content: val,
+          language: [
+            getLanguage(key)
+          ]
+        };
+      })
+    }))[0] : []),
+  ];
 
   return omitEmptyEs({
     ...data,
     identified_by: [
       ...names,
+      ...titles,
       ...id,
       ...previousArray,
       ...bibsysArray,

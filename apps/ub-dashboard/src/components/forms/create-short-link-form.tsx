@@ -2,15 +2,13 @@
 
 import { useRef } from 'react'
 // @ts-ignore
-import { useFormState } from 'react-dom'
+import { useFormState, useFormStatus } from 'react-dom'
 // @ts-ignore
-import { useFormStatus } from 'react-dom'
 import { createShortLink } from '@/actions/link-action'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Form } from '../ui/form'
 import { ArrowDownIcon } from '@radix-ui/react-icons'
 
 const initialState = {
@@ -42,7 +40,7 @@ export function CreateShortLinkForm() {
       className='flex flex-wrap gap-4  items-end'
       ref={ref}
       action={async (formData) => {
-        await formAction(formData)
+        formAction(formData)
         ref.current?.reset()
       }}
     >
@@ -57,9 +55,9 @@ export function CreateShortLinkForm() {
       <div>
         <SubmitButton />
       </div>
-      <p aria-live="polite" className="sr-only" role="status">
+      <output aria-live="polite" className="sr-only">
         {state?.message}
-      </p>
+      </output>
     </form>
   )
 }
