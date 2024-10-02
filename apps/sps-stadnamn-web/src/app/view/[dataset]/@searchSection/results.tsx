@@ -79,7 +79,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
     return <>
     <span className='text-xl text-center h-full font-semibold small-caps'>
       Treff
-      </span> { showLoading ? <Spinner className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
+      </span> { showLoading ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (hits.total.value || '0')  + (hits.total.value == 10000 ? "+" : '')}</span> }
     </>
   }
 
@@ -147,7 +147,7 @@ export default function Results({ hits, isLoading }: { hits: any, isLoading: boo
         
         {hit._source.audio && 
           <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${hit._source.audio.file}` } 
-                       className="text-xl xl:text-3xl text-neutral-700"/> 
+                       iconClass="text-xl xl:text-3xl text-neutral-700"/> 
         }
         {hit._source.link &&
         <Link href={hit._source.link} className="no-underline" target="_blank">

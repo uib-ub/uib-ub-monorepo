@@ -21,14 +21,18 @@ function modifyQuery(query: string) {
 export function getQueryString(params: { [key: string]: string | null }) {
 
   const simple_query_string = params.q ? {
-    "query_string": {
-      "query": modifyQuery(params.q),
-      "allow_leading_wildcard": true,
-      "default_operator": params.field && params.field != "label" ? "OR" : "AND",
-      "fields": [params.field || "label"]
+      query_string: {
+      query: modifyQuery(params.q),
+      allow_leading_wildcard: true,
+      default_operator: params.field ? 'AND' : 'OR',
+      fields: params.field ? [params.field] : ["label^3", "altLabels^2", "attestations.label"],
     }} : null
 
   const highlight = params.q && params.field && params.field != 'label' ? {
+    pre_tags: ["<mark>"],
+    post_tags: ["</mark>"],
+    boundary_scanner_locale: "nn-NO",
+    
     fields: {
         [params.field]: {}
     }

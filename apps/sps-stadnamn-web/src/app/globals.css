@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'PhoneticFont';
+  src: url('/fonts/no____.woff2') format('woff2');
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,7 +17,7 @@
   }
 
   html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
-    @apply xl:h-full xl:overflow-hidden;
+    @apply h-full overflow-hidden;
   }
 
   ::selection {
@@ -50,15 +56,21 @@
     @apply bg-accent-200 border border-accent-900 rounded-sm px-1;
   }
 
-
-
-
+  a[href^="http"]:not(.no-underline):not(.override-external-icon):not([aria-label]):not(a[href^="https://stadnamnportalen"]):not(a[href^="https://purl.org/stadnamn"]):after, .external-link:after {
+    content: "";
+    @apply  bg-[url('PhArrowSquareOut.svg')] bg-[length:.75em] bg-left-bottom bg-no-repeat ml-[.2em] inline-block h-[1em] w-[1em];
+    
+  }
+  
 
 }
 
 @layer components {
+  .breadcrumb-link {
+    @apply no-underline text-lg text-accent-700 hover:underline decoration-accent-700;
+  }
   .card {
-    @apply bg-white shadow rounded-sm;
+    @apply bg-white shadow-lg shadow-neutral-100 xl:border-2 xl:border-neutral-200 xl:rounded-sm;
   }
 
   .dataset-info p, .page-info p {
@@ -66,7 +78,7 @@
   }
 
   h1, .dataset-info h2, .instance-info h2 {
-    @apply text-xl sm:text-2xl lg:text-3xl text-neutral-900 md:text-3xl lg:text-4xl font-serif
+    @apply text-2xl lg:text-3xl text-neutral-900 md:text-3xl lg:text-4xl font-serif
   }
 
   .page-info h1 {
@@ -75,6 +87,10 @@
 
   .dataset-info h3, .instance-info h3, .page-info h2 {
     @apply text-lg sm:text-xl lg:text-2xl mt-4 text-neutral-900 font-serif py-2;
+  }
+
+  .dataset-info h4, .instance-info h4, .page-info h3 {
+    @apply text-lg sm:text-base lg:text-lg mt-4 text-neutral-900 font-semibold py-2;
   }
 
   .page-info h3 {
@@ -106,7 +122,11 @@
   }
 
   .icon-button {
-    @apply p-1 flex gap-1 shadow-none items-center text-neutral-900 hover:text-primary-700;
+    @apply p-1 flex gap-1 shadow-none items-center text-neutral-900 hover:text-primary-700 !font-sans;
+  }
+
+  .btn-outline[disabled] {
+    @apply text-neutral-500 bg-white border-neutral-300;
   }
 
 
@@ -122,15 +142,76 @@
     @apply text-gray-400;
   }
 
-  button[aria-current='page'] i {
+
+
+  button[aria-current='page'], a[aria-current='page'] i {
+    @apply ring-accent-800 ring-2 rounded-full ring-offset-2;
+
+  }
+
+  button[aria-current='page'].snid-button {
+    @apply bg-accent-200 ring-1;
+  }
+
+  button[aria-current='page'].snid-button svg {
     @apply text-accent-800;
-
   }
 
-  button[aria-current='page'] {
-    @apply ring-accent-800 ring-1 rounded-full;
-
+  .count-marker-highlight img {
+    @apply absolute bottom-1.5 left-1.5 w-16 h-16;
+    translate: -50%;
   }
+
+
+  .count-marker-highlight {
+    @apply !z-[1000]
+  }
+
+  .count-marker-highlight span {
+    @apply absolute text-base bottom-[1.25rem] left-[0.125rem] text-white;
+  }
+
+  .count-marker img {
+    @apply absolute bottom-1.5 left-1.5 w-12 h-12;
+    translate: -50%;
+  }
+
+
+  .count-marker span {
+    @apply absolute bottom-[1.125rem] left-[0.125rem] text-white;
+  }
+
+
+  
+  .result-table {
+    @apply w-full text-left text-neutral-950 border shadow-sm border-neutral-300; 
+  }
+  
+  .result-table thead th {
+    @apply text-sm bg-neutral-50 p-4 border-b-2 border-neutral-200; 
+  }
+
+  .result-table thead button {
+    @apply text-neutral-950 
+  }
+  
+  .result-table tbody tr {
+    @apply border-b border-neutral-200; 
+  }
+
+ 
+  .result-table tbody th {
+    @apply px-4 py-1 border-neutral-200 font-normal; 
+  }
+  
+  .result-table tbody tr:nth-child(even) {
+    @apply bg-neutral-50;
+  }
+  
+  .result-table td {
+    @apply px-4 py-2;
+  }
+  
 
 }
 

@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Stadnamportalen
+Frontend and REST API for Språksamlingane's place name collections.
 
-## Getting Started
+Leaflet implementation based on [next-leaflet-starter](https://github.com/colbyfayock/next-leaflet-starter)
 
-First, run the development server:
+Data for elasticsearch:
+https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive
+
+
+IIIF-data:
+https://git.app.uib.no/spraksamlingane/stadnamn/iiif.spraksamlingane.no
+
+
+
+## Develop locally
+
+
+
+## Environment variables
+
+The following environment variables are used in the application:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+SN_ENV=local
+#ES_ENDPOINT=https://search.ub.uib.no/
+#ES_TOKEN=
+ES_ENDPOINT=https://search.testdu.uib.no/search/ # Comment out when testing fallback
+ES_TOKEN=
+ES_ENDPOINT_TEST=https://search.testdu.uib.no/search/
+ES_TOKEN_TEST=
+
 ```
+Note that the test and production endpoints should be the same locally unless you are testing the fallback mechanism,
+as indices created for local development (without pushing changes and running the cicd pipeline in stadnamn-archive) will not be available in the production cluster.
+When SN_ENV is defined as prod in the vercel deployment, the test enpoint will serve as fallback.
+In preview deployments, the test endpoint will be used as the primary endpoint, while the production endpoint will serve as fallback.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Facets and fields
-
-* Search fields: fields that can be long or are nearly 1-1 for each entry, e. g. comments
-* Client facet/hierarchical facet: hierarchical facet that small enough to be handled client side - mainly administrative division
-* Server facet: Supports query patterns and one level of nesting
