@@ -18,9 +18,9 @@ export default function () {
       {
         SELECT ?label ?tb (COALESCE(count(DISTINCT ?concept), 0) as ?concepts )
         WHERE {
-            ?tb rdfs:label ?label .
-            ?concept skosp:memberOf ?tb .
-            FILTER ( lang(?label) = 'nb') .
+          ?tb rdfs:label ?label .
+          ?concept skosp:memberOf ?tb .
+          FILTER ( lang(?label) = 'nb') .
         }
         GROUP BY ?label ?tb
       }

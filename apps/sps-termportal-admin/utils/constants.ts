@@ -19,17 +19,17 @@ export const activityTypes = {
 export const studioBaseRoute = "/studio/structure";
 export const wikiPageLink = "https://wiki.terminologi.no/index.php?title=";
 
-export const activityColorMapping = {
-  2: { color: "#ff4d2e", description: "i dag eller i går" },
-  7: { color: "#FFA500", description: "mindre enn syv dager siden" },
-  30: { color: "#FFD700", description: "mindre enn 30 dager siden" },
-  1000: { color: "#69b9fe", description: "for mer enn 30 dager siden" },
+export const colorMappingStatus = {
+  error: { color: "text-red-500" },
+  warning: { color: "text-amber-400" },
+  ok: { color: "text-green-600" },
 };
 
-export const blockerColorMapping = {
-  hard: { color: "red" },
-  soft: { color: "orange" },
-  ok: { color: "green" },
+export const colorMappingFreshness = {
+  2: { color: "text-green-500", description: "i dag eller i går" },
+  7: { color: "text-teal-400", description: "mindre enn syv dager siden" },
+  30: { color: "text-tpblue-200", description: "mindre enn 30 dager siden" },
+  1000: { color: "text-tpblue-100", description: "for mer enn 30 dager siden" },
 };
 
 export const orderTopDomain = [
