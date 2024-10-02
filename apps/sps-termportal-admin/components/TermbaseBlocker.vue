@@ -16,8 +16,8 @@
                 <Icon
                   name="fa6-solid:triangle-exclamation"
                   size="1.1em"
-                  :color="blockerColorMapping.hard.color"
                   class="ml-[6px] mt-[-4px]"
+                  :class="colorMappingStatus.error.color"
                 />
               </h4>
               <h4 v-else class="font-semibold">
@@ -25,7 +25,7 @@
                 <Icon
                   name="mdi:stop"
                   size="1.6em"
-                  :color="blockerColorMapping.hard.color"
+                  :class="colorMappingStatus.error.color"
                 />
               </h4>
               <ul class="list-disc ml-4">
@@ -46,8 +46,8 @@
                 <Icon
                   name="fa6-solid:triangle-exclamation"
                   size="1.1em"
-                  :color="blockerColorMapping.soft.color"
                   class="ml-[6px] mt-[-4px]"
+                  :class="colorMappingStatus.warning.color"
                 />
               </h4>
               <h4 v-else class="font-semibold">
@@ -55,7 +55,7 @@
                 <Icon
                   name="mdi:pause"
                   size="1.6em"
-                  :color="blockerColorMapping.soft.color"
+                  :class="colorMappingStatus.warning.color"
                 />
               </h4>
               <ul class="list-disc ml-4">

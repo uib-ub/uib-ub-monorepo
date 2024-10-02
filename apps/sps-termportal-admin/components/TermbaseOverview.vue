@@ -41,19 +41,19 @@
                 v-if="data.blocker.status === 'ok'"
                 name="mdi:play"
                 size="1.6em"
-                :color="blockerColorMapping.ok.color"
+                :class="colorMappingStatus.ok.color"
               />
               <Icon
                 v-else-if="data.blocker.status === 'soft'"
                 name="mdi:pause"
                 size="1.6em"
-                :color="blockerColorMapping.soft.color"
+                :class="colorMappingStatus.warning.color"
               />
               <Icon
                 v-else-if="data.blocker.status === 'hard'"
                 name="mdi:stop"
                 size="1.6em"
-                :color="blockerColorMapping.hard.color"
+                :class="colorMappingStatus.error.color"
               />
             </div>
 
@@ -63,12 +63,12 @@
               "
               name="fa6-solid:triangle-exclamation"
               size="1.2em"
-              :color="
-                data.blocker.status === 'hard'
-                  ? blockerColorMapping.hard.color
-                  : blockerColorMapping.soft.color
-              "
               class="ml-[6px] mt-[3px]"
+              :class="
+                data.blocker.status === 'hard'
+                  ? colorMappingStatus.error.color
+                  : colorMappingStatus.warning.color
+              "
             />
           </div>
         </template>
@@ -113,14 +113,7 @@
               name="material-symbols:circle"
               size="1.2em"
               class="mr-1 mb-[4px]"
-              :class="{
-                'text-green-600': data.reminderCalc <= 0,
-                'text-yellow-400':
-                  data.reminderCalc < reportReminder.interval.error &&
-                  data.reminderCalc >= 0,
-                'text-red-500':
-                  data.reminderCalc > reportReminder.interval.error,
-              }"
+              :class="getReminderColorClass(data)"
             ></Icon>
             {{ data.reminderCalc }} d.
           </div>
@@ -326,7 +319,7 @@
 
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
-import { hiddenCollections } from "~/utils/constants";
+import { colorMappingStatus, hiddenCollections } from "~/utils/constants";
 import { getDaysDiff } from "~/utils/utils";
 
 const runtimeConfig = useRuntimeConfig();
@@ -476,6 +469,24 @@ const merged = computed(() => {
     return blocker;
   }
 });
+
+// {
+//                 'text-green-600': data.reminderCalc <= 0,
+//                 'text-yellow-400':
+//                   data.reminderCalc < reportReminder.interval.error &&
+//                   data.reminderCalc >= 0,
+//                 colorMappingStatus.error.color : data.reminderCalc > reportReminder.interval.error,
+//               }
+
+const getReminderColorClass = (data) => {
+  const { reminderCalc } = data;
+  const { error } = reportReminder.interval;
+
+  if (reminderCalc <= 0) return colorMappingStatus.ok.color;
+  if (reminderCalc < error && data.reminderCalc >= 0)
+    return colorMappingStatus.warning.color;
+  return colorMappingStatus.error.color;
+};
 
 function checkBlocker(tb) {
   const blocker = { hard: {}, soft: {}, status: "ok" };
