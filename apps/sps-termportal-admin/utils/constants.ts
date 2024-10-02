@@ -46,7 +46,7 @@ export const studioLinks = {
 
 export const esCachedQueries = [
   "termbase_overview",
-  // "termbase_language_coverage",
+  "termbase_language_coverage",
   "domain_overview",
 ];
 
