@@ -14,7 +14,9 @@
           class="flex items-center gap-x-1 px-4 text-lg font-semibold text-gray-600"
         >
           <NavbarLanguage />
-          <NavbarTermbases :key="'termbaseslst_' + orderedTermbases.length" />
+          <NavbarTermbases
+            :key="'termbaseslst_' + Object.keys(bootstrapData?.termbase).length"
+          />
           <NavBarLink to="/om">
             {{ $t("navBar.om") }}
           </NavBarLink>
@@ -35,6 +37,7 @@ import { useI18n } from "vue-i18n";
 
 const i18n = useI18n();
 const orderedTermbases = useOrderedTermbases();
+const bootstrapData = useBootstrapData();
 
 const defProps = defineProps({
   context: { type: String, required: true },
