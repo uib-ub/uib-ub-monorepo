@@ -1,14 +1,18 @@
 <template>
-  <div role="status">
+  <div role="status" class="flex items-center">
     <Icon
       class="tp-spin"
       name="icomoon-free:spinner8"
-      size="1.5em"
+      :size="size"
       aria-hidden="true"
     />
     <span class="sr-only">{{ $t("spinnerIcon.srText") }}</span>
   </div>
 </template>
+
+<script setup lang="ts">
+const props = defineProps({ size: { type: String, default: "1.5em" } });
+</script>
 
 <style scoped>
 .tp-spin {

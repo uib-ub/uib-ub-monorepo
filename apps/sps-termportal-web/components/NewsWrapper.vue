@@ -3,13 +3,15 @@
     <h2 id="news" class="pb-3 text-2xl">
       <AppLink to="#news">{{ $t("news.heading") }}</AppLink>
     </h2>
-    <dl class="news-wrapper space-y-4">
-      <template v-for="entry in data" :key="entry.date + entry.title">
-        <NewsEntry :title="entry.title" :date="entry.date">
-          <SanityContentWrapper :blocks="entry.content" />
-        </NewsEntry>
-      </template>
-    </dl>
+    <UtilsTransitionOpacitySection>
+      <dl v-if="data" class="news-wrapper space-y-4">
+        <template v-for="entry in data" :key="entry.date + entry.title">
+          <NewsEntry :title="entry.title" :date="entry.date">
+            <SanityContentWrapper :blocks="entry.content" />
+          </NewsEntry>
+        </template>
+      </dl>
+    </UtilsTransitionOpacitySection>
   </div>
 </template>
 <script setup lang="ts">

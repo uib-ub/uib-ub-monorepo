@@ -110,7 +110,7 @@ export default {
       title: "Påminnelsesintervall",
       type: "number",
       fieldset: "status",
-      initialValue: 120,
+      initialValue: reportReminder.interval.reminder,
     },
     note,
     responsibleStaff,

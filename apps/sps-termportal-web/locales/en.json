@@ -2,6 +2,7 @@
   "global": {
     "language": "Language | language",
     "termbase": "Termbase | termbase | Termbases | termbases",
+    "concept": "Concept | concept | Concepts | concepts",
     "skipLink": "Go to  main content",
     "collaborators": "Our collaborators",
     "readMore": "Read more...",
@@ -222,7 +223,7 @@
     "dataDispLangComment": "Choose the language(s) you want to see in the term entry"
   },
   "misc": {
-    "snomedVersion": "SNOMED CT Norway Extension May 2024 v1.0",
+    "snomedVersion": "SNOMED CT Norway Extension",
     "snomedBrowser": "SNOMED CT browser"
   }
 }

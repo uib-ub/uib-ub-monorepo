@@ -2,18 +2,19 @@
   <div class="group flex">
     <input
       :id="`filter-${placement}-${ftype}-${fvalue}`"
-      v-model="searchFilterData[ftype as keyof SearchDataStats]"
+      v-model="searchFilterSelection[ftype as keyof SearchDataStats]"
       class="peer cursor-pointer outline-none"
       type="checkbox"
       :value="fvalue"
+      @change="useFetchSearchData(useGenSearchOptions('filter'))"
     />
     <label
-      class="tp-transition-shadow flex cursor-pointer gap-x-1.5 rounded-[7px] border border-transparent px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
+      class="tp-transition-shadow flex cursor-pointer gap-x-2 rounded-[7px] border border-transparent px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
       :for="`filter-${placement}-${ftype}-${fvalue}`"
     >
-      <div class="-mt-[1px]">
+      <div class="-mt-[2px]">
         <Icon
-          v-if="searchFilterData[ftype].includes(fvalue)"
+          v-if="searchFilterSelection[ftype].includes(fvalue)"
           name="mdi:checkbox-marked-outline"
           size="1.3em"
           class="text-tpblue-400"
@@ -28,11 +29,10 @@
         />
       </div>
       <div>
-        {{ label() }} ({{
-          searchDataStats[ftype as keyof SearchDataStats][
-            fvalue as LangCode | Samling | Matching | LabelPredicate
-          ]
-        }})
+        {{ label() }}
+        <span :class="{ 'text-gray-400': searchDataPending.aggregate }">
+          ({{ searchDataStats[ftype][fvalue] }})
+        </span>
       </div>
     </label>
   </div>
@@ -43,11 +43,12 @@ import { useI18n } from "vue-i18n";
 import { SearchDataStats } from "~~/composables/states";
 import { Matching, LabelPredicate } from "~~/utils/vars";
 import { LangCode } from "~/composables/locale";
-import { Samling } from "~~/utils/vars-termbase";
 
 const i18n = useI18n();
-const searchFilterData = useSearchFilterData();
+const searchFilterSelection = useSearchFilterSelection();
 const searchDataStats = useSearchDataStats();
+const searchDataPending = useSearchDataPending();
+
 const props = defineProps({
   ftype: { type: String, required: true },
   fvalue: { type: String, required: true },
