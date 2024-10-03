@@ -49,7 +49,7 @@ export default function RootLayout({
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[3001] focus:top-1 focus:py-3 focus:px-6 focus:bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
-        <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md h-12 itemx-center !z-[4000]">
+        <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative md:shadow-md h-12 itemx-center !z-[4000]">
 
           <Form isMobile={isMobile}/>
           

@@ -58,7 +58,7 @@ export default function Form({isMobile}: {isMobile?: boolean}) {
 
         </div>
         </>
-     : <Link href="/" className="text-2xl pt-1 small-caps font-serif self-center lg:!mx-4">Stadnamnportalen</Link>
+     : <Link href="/" className="text-2xl p-1 px-4 small-caps font-serif self-center">Stadnamnportalen</Link>
           
 
 
