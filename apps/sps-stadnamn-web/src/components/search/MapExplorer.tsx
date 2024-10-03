@@ -257,7 +257,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     else if (bucket.docs?.hits?.hits?.length == 1 || zoom && zoom > 15) {
       
       
-      return <>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; location: { coordinates: any[]; }[]; }; key: Key | null | undefined; }) => {
+      return <>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: Key | null | undefined; }) => {
         const myCustomIcon = new leaflet.DivIcon({
           className: 'my-custom-icon', // Ensure this class is defined in your CSS
           html: `
@@ -270,7 +270,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         });
 
 
-        return <Marker className="drop-shadow-xl" key={hit.key} icon={myCustomIcon}
+        return <Marker className="drop-shadow-xl" key={hit.fields.uuid} icon={myCustomIcon}
         position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}/>
 
 
