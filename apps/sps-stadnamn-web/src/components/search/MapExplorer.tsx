@@ -220,15 +220,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     {({ TileLayer, CircleMarker, Marker, Tooltip }: any, leaflet: any) => (
 
   <>
-  { baseMap && <TileLayer {...baseMapProps[baseMap]}/>}
-
-  { viewResults?.medians?.map((item: any) => {
-    const myCustomIcon = new leaflet.DivIcon({
-      className: 'my-custom-icon', // You can define styles in your CSS
-      html: `<div class="bg-white text-neutral-900 drop-shadow-xl shadow-md font-bold rounded-md w-fit" style="display: flex; align-items: center; justify-content: center;">${item.adm}</div>`
-    });
-    return <Marker key={item.adm} position={[item.lat, item.lon]} icon={myCustomIcon}/>
-  })}
+  { baseMap && <TileLayer maxZoom={20} maxNativeZoom={18} {...baseMapProps[baseMap]}/>}
 
 
   {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {

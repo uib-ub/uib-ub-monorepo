@@ -10,6 +10,8 @@ export async function GET(request: Request) {
   const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
 
   const zoomLevels  = {
+    "20": 16,
+    "19": 16,
     "18": 16,
     "17": 15,
     "16": 15,
@@ -64,65 +66,7 @@ export async function GET(request: Request) {
     }
 }
 
-const geo_query = {}
-
-/*
-
-const geo_query = {geo_bounding_box: {
-    location: {
-        top_left: {
-          lat: filteredParams.topLeftLat ? parseFloat(filteredParams.topLeftLat) : 90,
-          lon: filteredParams.topLeftLng ? parseFloat(filteredParams.topLeftLng) : -180,
-        },
-        bottom_right: {
-          lat: filteredParams.bottomRightLat ? parseFloat(filteredParams.bottomRightLat) : -90,
-          lon: filteredParams.bottomRightLng ? parseFloat(filteredParams.bottomRightLng) : 180,
-        },
-    }}
-}
-    
-
-// Fix invalid bounding box - lat larger than 90 is set to 90 etc
-if (geo_query.geo_bounding_box.location.top_left.lat > 90) {
-    geo_query.geo_bounding_box.location.top_left.lat = 90
-}
-if (geo_query.geo_bounding_box.location.bottom_right.lat < -90) {
-    geo_query.geo_bounding_box.location.bottom_right.lat = -90
-}
-if (geo_query.geo_bounding_box.location.bottom_right.lon > 180) {
-    geo_query.geo_bounding_box.location.bottom_right.lon = 180
-}
-if (geo_query.geo_bounding_box.location.top_left.lon < -180) {
-    geo_query.geo_bounding_box.location.top_left.lon = -180
-}
-    
-
-
-
-if (simple_query_string || termFilters.length) {
-    query.query = {
-        "bool": {
-            "must": [geo_query],
-        }
-    }
-    if (simple_query_string) {
-        query.query.bool.must.push(simple_query_string)
-    }
-    if (termFilters.length) {
-        query.query.bool.filter = termFilters
-    }
-}
-else {
-    query.query = geo_query
-}
-
-*/
-//console.log("QUERY", query)
-
- 
-
   const data = await postQuery(dataset, query)
-  //console.log(data)
 
   return Response.json(data);
 }

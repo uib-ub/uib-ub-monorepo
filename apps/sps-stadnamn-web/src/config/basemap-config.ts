@@ -12,7 +12,7 @@ export const baseMaps: Record<string, any>[] = [
         name: 'Norgeskart', 
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',
-            attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+            attribution: '<a href="http://www.kartverket.no/">Kartverket</a>',
         }
     },
     {
@@ -20,7 +20,7 @@ export const baseMaps: Record<string, any>[] = [
         name: 'Norgeskart, gråtone',
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png',
-            attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+            attribution: '<a href="http://www.kartverket.no/">Kartverket</a>',
         }
         
     },
