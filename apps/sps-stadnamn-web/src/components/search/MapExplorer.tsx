@@ -119,7 +119,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
               const label = hit.fields.label
 
-              if (marker.label && marker.label !== label) {
+              if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
                 marker.label = marker.label + "..."
                 
               } else {
