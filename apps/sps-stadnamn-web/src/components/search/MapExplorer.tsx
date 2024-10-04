@@ -1,4 +1,4 @@
-import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
 import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLine, PiMapPinSimple, PiStack, PiStackSimple } from "react-icons/pi";
@@ -15,7 +15,6 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
-import { useSearchParams } from "next/navigation";
 import { useSearchQuery } from "@/lib/search-params";
 import { getLabelMarkerIcon } from "./markers";
 
@@ -335,18 +334,6 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         html: `<div class="bg-white text-neutral-950 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${(calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2) + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0) }rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
       });
 
-      function adjustBounds(bounds, percentage) {
-        const latDiff = bounds[1][0] - bounds[0][0]; // Difference in latitude
-        const lonDiff = bounds[1][1] - bounds[0][1]; // Difference in longitude
-      
-        // Adjust bounds by the percentage
-        bounds[0][0] -= latDiff * percentage; // Decrease min latitude
-        bounds[1][0] += latDiff * percentage; // Increase max latitude
-        bounds[0][1] -= lonDiff * percentage; // Decrease min longitude
-        bounds[1][1] += lonDiff * percentage; // Increase max longitude
-      
-        return bounds;
-      }
 
   
       return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon)/ 2]} icon={myCustomIcon}
@@ -354,8 +341,6 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
                   click: (e: any) => {
                     // get bounds from leaflet aggregation
                     const bounds = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
-                    const paddedBounds = adjustBounds(bounds, 0.5);
-
 
                     mapInstance.current.flyToBounds([ // 50% padding calculated here because leflet padding isn't working
                       [bucket.viewport.bounds.top_left.lat - ((bucket.viewport.bounds.bottom_right.lat - bucket.viewport.bounds.top_left.lat) * 0.5), bucket.viewport.bounds.top_left.lon - ((bucket.viewport.bounds.bottom_right.lon - bucket.viewport.bounds.top_left.lon) * 0.5)], 
