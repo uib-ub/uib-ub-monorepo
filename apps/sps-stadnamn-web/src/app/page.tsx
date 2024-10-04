@@ -42,16 +42,16 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
   return (
     <>
 <main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 pt-8 px-4 w-full flex-grow carta-marina">
-  <div className="flex flex-col gap-12 aspect-square px-16 w-fit self-center md:bg-white md:rounded-full md:bg-opacity-75 self align-middle items-center justify-center">
+  <div className="flex flex-col gap-12 md:p-8 md:py-16 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle items-center justify-center">
   <div className="flex flex-col gap-8">
   <div className="flex flex-col gap-8">
   <h1 className="text-2xl sm:text-3xl self-center md:text-4xl lg:text-5xl text-neutral-900">Stadnamnportalen</h1>
   
-  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-3 px-12" action="view/search">
+  <form className="grid grid-cols-5 md:grid-cols-10 items-center justify-center md:max-w-2xl md:mx-auto gap-3 md:px-8" action="view/search">
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
-    <input id="search_input" className="col-span-4 rounded-sm h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
+    <input id="search_input" className="col-span-4 md:col-span-7 rounded-md h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass className="text-xl"/></IconButton>
-    <Link href="/view/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden="true" className="mr-2"/>Utforsk kartet</Link>
+    <Link href="/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden="true" className="mr-2"/>Kart</Link>
   </form>
   
 
@@ -76,27 +76,28 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
 
   </div>
 
-  <div className="flex flex-col gap-6 justify-center">
-
-  <div className="flex justify-center flex-col lg:flex-row gap-8">
-  <div className="flex flex-col md:flex-row items-center gap-6 text-neutral-950 text-sm"><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
-  </div>
-  </div>
-  <div className="flex gap-4 text-sm text-center justify-center">
-  <div className="flex flex-col text-center"><span className="font-semibold">Språksamlingane</span>
-  <Link href="https://spraksamlingane.no" className="text-xs text-center">spraksamlingane.no</Link></div>
-  <div className="flex flex-col text-center"><span className="font-semibold">Digital utvikling</span>
-  <Link href="https://uib.no/digitalutvikling" className="text-xs text-center">uib.no/digitalutvikling</Link></div>
-  </div>
-  </div>
+  
 
 
   
   
 
 
+</div>
+<div className="flex items-center justify-center flex-col lg:flex-row gap-12">
+  <div className="flex flex-col md:flex-row items-center gap-6 text-neutral-950 "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
+  </div>
+  <div className="flex flex-col md:flex-row gap-6 jusitfy-between text-center">
+  <div className="flex flex-col"><span className="font-semibold">Språksamlingane</span>
+  <Link href="https://spraksamlingane.no" className="text-sm">spraksamlingane.no</Link></div>
+  <div className="flex flex-col"><span className="font-semibold">Digital utvikling</span>
+  <Link href="https://uib.no/digitalutvikling" className="text-sm">uib.no/digitalutvikling</Link></div>
+
+  </div>
   </div>
   <div className="flex flex-col items-center container gap-24">
+  
+
   <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-serif text-3xl">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
