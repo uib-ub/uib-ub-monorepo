@@ -1,7 +1,7 @@
-import { Key, use, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
-import { PiGps, PiGpsFill, PiGpsFix, PiMagnifyingGlassMinus, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlus, PiMagnifyingGlassPlusFill, PiStack } from "react-icons/pi";
+import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinSimple, PiStack, PiStackSimple } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/simple-search-provider";
 import Spinner from "../svg/Spinner";
@@ -14,9 +14,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
 import { useSearchParams } from "next/navigation";
 import { useSearchQuery } from "@/lib/search-params";
+import { getLabelMarkerIcon, getMultiMarker } from "./markers";
 
 
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
@@ -28,11 +29,9 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const controllerRef = useRef(new AbortController());
 
     const [baseMap, setBasemap] = useState<null|string>(null)
+    const [markerMode, setMarkerMode] = useState<null|string>(null)
 
     const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
-    const searchParams = useSearchParams()
-    const [markers, setMarkers] = useState<any[]>([]);
-    const [resultCount, setResultCount] = useState(null); // Labels are only shown if the result count is less than 20
 
 
     const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
@@ -54,20 +53,30 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     }, [resultData])
 
 
+    const getValidDegree = (degrees: number, maxValue: number): string => {
+      if (Math.abs(degrees) > Math.abs(maxValue)) {
+        return maxValue.toString()
+      }
+      return degrees.toString()
+    }
+
+
 
     useEffect(() => {
       // Check if the bounds are initialized
-      if (!isLoading && bounds?.length && zoom && (zoom > 12 || resultData?.hits.total.value < 10000)) {
+      if (!isLoading && bounds?.length) {
         //console.log("Fetching geodata", props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading)
         const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
   
         // Fetch data based on the new bounds
         const queryParams = new URLSearchParams(searchQueryString);
-        queryParams.set('topLeftLat', topLeftLat.toString());
-        queryParams.set('topLeftLng', topLeftLng.toString());
-        queryParams.set('bottomRightLat', bottomRightLat.toString());
-        queryParams.set('bottomRightLng', bottomRightLng.toString());
-        queryParams.set('zoom', zoom.toString());
+        queryParams.set('topLeftLat', getValidDegree(topLeftLat, 90));
+        queryParams.set('topLeftLng', getValidDegree(topLeftLng, -180));
+        queryParams.set('bottomRightLat', getValidDegree(bottomRightLat, -90));
+        queryParams.set('bottomRightLng', getValidDegree(bottomRightLng, 180));
+        if (zoom) {
+          queryParams.set('zoom', zoom.toString());
+        }
 
         if (zoom) {
           queryParams.set('zoom', zoom.toString())
@@ -77,7 +86,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
 
 
-        const query = `/api/geo/cluster?${queryParams.toString()}`;
+        const query = `/api/geo/${ (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (resultData?.hits.total.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
   
         fetch(query, {
           signal: controllerRef.current.signal,
@@ -89,8 +98,45 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         })
         .then(response => response.json())
         .then(data => {
+
+          if (data.hits.hits.length > 0) {
+
+            const clientGroups: any[] = []
+            const markerOutput = {hits: {total: {value: data.hits.total.value}, clientGroups}}
+            const markerLookup: Record<string,any> = {}
+
+            data.hits.hits.forEach((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
+              const lat = hit.fields.location[0].coordinates[1]
+              const lon = hit.fields.location[0].coordinates[0]
+              const uuid = hit.fields.uuid
+              let marker = markerLookup[lat + "_" + lon]
+              if (!marker) {
+                marker = {children: [], lat, lon, uuid}
+                markerLookup[lat + "_" + lon] = marker
+                markerOutput.hits.clientGroups.push(marker)
+              }
+
+
+              const label = hit.fields.label
+
+              if (marker.label && marker.label !== label) {
+                marker.label = marker.label + "..."
+                
+              } else {
+                marker.label = label
+              }
+                
+
+              marker.children.unshift(hit)
+            })
+
+            setViewResults(markerOutput)
+          }
+          else {
+            setViewResults(data)
+          }
           
-          setViewResults(data)
+          
           })
   
           .catch(error => {
@@ -104,7 +150,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       else {
         setViewResults(null)
       }
-    }, [bounds, isLoading, zoom, searchQueryString, resultData?.hits.total.value]);
+    }, [bounds, isLoading, zoom, searchQueryString, resultData?.hits.total.value, markerMode]);
 
 
 
@@ -127,6 +173,23 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
             localStorage.setItem('baseMap', baseMap)
         }
     }, [baseMap])
+
+    useEffect(() => {
+      if (markerMode === null) {
+          const storedMarkerMode = localStorage.getItem('markerMode')
+          if (storedMarkerMode && ['auto', 'cluster', 'sample'].includes(storedMarkerMode)) {
+              setMarkerMode(storedMarkerMode)
+          }
+              
+          else {
+              setMarkerMode('auto')
+              localStorage.removeItem('markerMode')
+          }
+      }
+      else {
+          localStorage.setItem('markerMode', markerMode)
+      }
+  }, [markerMode])
 
 
     const mapRef = useCallback((node: any) => {
@@ -210,14 +273,33 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
   const maxDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
   const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
-  
+
+  /*
+  const getMultiMarker = (docCount: number, label: string) => {
+    return {
+      className: '',
+      html: `<div class="text-white" style="position: relative; top: -3rem; left: -1.5rem;">
+                <img src="/markerBlackFill.svg" style="width: 3rem; height: 3rem;"/><span class="absolute top-[1.16rem] left-0 w-[3rem] text-center text-xs font-bold">${docCount}</span>
+                
+                <div style="position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); background-color: white; opacity: 75%; white-space: nowrap; border-radius: 9999px; text-align: center; font-size: 12px; font-weight: bold; padding: 0 8px;">
+                  ${label}
+                </div>
+                </div>`
+    }
+  }
+    */
+
 
 
     return <>
     {bounds?.length || (center && zoom ) ? <>
     <Map mapRef={mapRef} zoomControl={false} {...center && zoom ? {center, zoom} : {bounds}}
         className='w-full h-full'>
-    {({ TileLayer, CircleMarker, Marker, Tooltip }: any, leaflet: any) => (
+    {({ TileLayer, CircleMarker, Marker }: any, leaflet: any) => {
+
+
+
+      return (
 
   <>
   { baseMap && <TileLayer maxZoom={20} maxNativeZoom={18} {...baseMapProps[baseMap]}/>}
@@ -230,58 +312,32 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const latSum = latitudes.reduce((acc: any, cur: any) => acc + cur, 0);
     const lonSum = longitudes.reduce((acc: any, cur: any) => acc + cur, 0);
 
-    const itemCount = bucket.docs.hits.hits.length;
-    const lat = latSum / itemCount;
-    const lon = lonSum / itemCount;
+    const docCount = bucket.docs.hits.hits.length;
+    const lat = latSum / docCount;
+    const lon = lonSum / docCount;
 
     
     // If no coordinates are different from the average
     if (bucket.docs?.hits?.hits?.length != 1 && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
-      const myCustomIcon = new leaflet.DivIcon({
-        className: 'my-custom-icon', // You can define styles in your CSS
-        html: `<div class="text-white" style="position: relative; top: -3rem; left: -1.5rem;"><img src="/markerBlackFill.svg" style="width: 3rem; height: 3rem;"/><span class="absolute top-[1.16rem] left-0 w-[3rem] text-center text-xs font-bold">${itemCount}</span></div>`
-      });
-      return <Marker key={bucket.key} className="drop-shadow-xl" icon={myCustomIcon} position={[lat, lon]}/>
+      const icon = new leaflet.DivIcon(getMultiMarker(docCount, 'hello'))
+      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]}/>
 
     }
 
-    
     else if (bucket.docs?.hits?.hits?.length == 1 || zoom && zoom > 15) {
       
       
-      return <>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: Key | null | undefined; }) => {
-        const myCustomIcon = new leaflet.DivIcon({
-          className: 'my-custom-icon', // Ensure this class is defined in your CSS
-          html: `
-            <div style="display: flex; align-items: center; justify-content: center; position: relative; top: -2rem; height: 2rem;">
-              <img src="/markerBlack.svg" style="width: 2rem; height: 2rem;"/>
-              <div style="position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); background-color: white; opacity: 75%; white-space: nowrap; border-radius: 9999px; text-align: center; font-size: 12px; font-weight: bold; padding: 0 8px;">
-                ${hit.fields.label}
-              </div>
-            </div>`
-        });
-
-
-        return <Marker className="drop-shadow-xl" key={hit.fields.uuid} icon={myCustomIcon}
-        position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}/>
-
-
-
+      return <>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
+        const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black'))
+        return <Marker key={hit.fields.uuid} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} icon={icon}/>
       }
       )}</>
     }
 
-    
-
-
-
     const myCustomIcon = new leaflet.DivIcon({
-      className: 'my-custom-icon', // You can define styles in your CSS
-      html: `<div class="bg-white text-neutral-900 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${(calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2) + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0) }rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
+      className: '',
+      html: `<div class="bg-white text-neutral-950 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${(calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2) + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0) }rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
     });
-
-
-    
 
     return <Marker key={bucket.key} position={[lat, lon]} icon={myCustomIcon}/>
     
@@ -290,11 +346,25 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   }
   )}
 
+  {viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
+    
+    if (viewResults.hits.total.value < 200 || (zoom && zoom > 17)) {
+      const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
+
+      return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon}/>
+
+    }
+    return <CircleMarker key={group.uuid} center={[group.lat, group.lon]} radius={8} pathOptions={{color:'black', weight: 4, opacity: 1, fillColor: 'white', fillOpacity: 1}}/>
+
+  })}
+    
+
+
 
 
   {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a"/>}
 
-  </>)}
+  </>)}}
 
 </Map>
 </> : isLoading ?
@@ -305,33 +375,57 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 </div> 
 :  null
     }
-    { baseMap != null &&
+    
     <div className={`absolute ${isMobile ? 'top-12 right-0 flex-col p-2 gap-4' : 'bottom-0 w-full'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
 
 <DropdownMenu>
-    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiStack/></button></DropdownMenuTrigger>
+    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiStackSimple/></button></DropdownMenuTrigger>
     <DropdownMenuContent className="z-[4000] bg-white">
         <DropdownMenuLabel>Bakgrunnskart</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        { baseMap != null &&
         <DropdownMenuRadioGroup value={baseMap} onValueChange={setBasemap}>
           {baseMaps.map((item) => (
             <DropdownMenuRadioItem key={item.key} value={item.key} className="text-nowrap cursor-pointer">
               {item.name}
             </DropdownMenuRadioItem>
           ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    <IconButton onClick={zoomIn}  className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
-  <IconButton onClick={zoomOut} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
-    <IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiGpsFix/></IconButton>
+      </DropdownMenuRadioGroup>
+        }
+    </DropdownMenuContent>
+</DropdownMenu>
+<DropdownMenu>
+    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiMapPinSimple/></button></DropdownMenuTrigger>
+    <DropdownMenuContent className="z-[4000] bg-white">
+        <DropdownMenuLabel>Markører</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        { markerMode != null &&
+        <DropdownMenuRadioGroup value={markerMode} onValueChange={setMarkerMode}>
+          
+            <DropdownMenuRadioItem value='auto' className="text-nowrap cursor-pointer">
+              Tilpass ettter antall treff
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value='cluster' className="text-nowrap cursor-pointer">
+              Klynger
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value='sample' className="text-nowrap cursor-pointer">
+              Tilfeldig utvalg (maks 200)
+            </DropdownMenuRadioItem>
+
+      </DropdownMenuRadioGroup>
+      }
+    </DropdownMenuContent>
+</DropdownMenu>
+<IconButton onClick={zoomIn}  className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
+<IconButton onClick={zoomOut} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
+<IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiGpsFix/></IconButton>
     
     
 
     
 
     </div>
-}
+
 {false && <div className="absolute bottom-0 left-0 z-[6000] w-[600px] h-[200px] overflow-auto bg-white">
   {JSON.stringify(viewResults, null,  2)}
 </div>}

@@ -33,7 +33,6 @@ export async function GET(request: Request) {
   const query: Record<string,any> = {
     size: 0,
     fields: ["label", "location", "uuid"],
-    query: simple_query_string ? simple_query_string : { match_all: {} },
     _source: false,
     aggs: {
         tiles: {
@@ -42,12 +41,12 @@ export async function GET(request: Request) {
                 precision: filteredParams.zoom ? zoomLevels[filteredParams.zoom as keyof typeof zoomLevels] ?? 3 : 3,
                 bounds: {
                     top_left: {
-                        lat: filteredParams.topLeftLat ? parseFloat(filteredParams.topLeftLat) : 90,
-                        lon: filteredParams.topLeftLng ? parseFloat(filteredParams.topLeftLng) : -180,
+                        lat: filteredParams.topLeftLat,
+                        lon: filteredParams.topLeftLng,
                     },
                     bottom_right: {
-                        lat: filteredParams.bottomRightLat ? parseFloat(filteredParams.bottomRightLat) : -90,
-                        lon: filteredParams.bottomRightLng ? parseFloat(filteredParams.bottomRightLng) : 180,
+                        lat: filteredParams.bottomRightLat,
+                        lon: filteredParams.bottomRightLng,
                     }
                 }
                 
@@ -58,13 +57,29 @@ export async function GET(request: Request) {
                         size: filteredParams.zoom && parseInt(filteredParams.zoom) < 10 ? 3 : 10,
                         _source: ["label", "uuid"]
 
+                        }
                     }
                 }
             }
+
+        }
+    }
+    if (simple_query_string || termFilters.length) {
+        query.query = {
+            "bool": {}
         }
 
+        if (simple_query_string) {
+            query.query.bool.must = [simple_query_string]
+        }
+        
+        if (termFilters.length) {
+            query.query.bool.filter = termFilters
+        }
     }
-}
+    else {
+        query.query = { match_all: {} }
+    }
 
   const data = await postQuery(dataset, query)
 
