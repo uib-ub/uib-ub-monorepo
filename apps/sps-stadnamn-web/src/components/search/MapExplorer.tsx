@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
 import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLine, PiMapPinSimple, PiStack, PiStackSimple } from "react-icons/pi";
@@ -315,11 +315,11 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 15 && bucket.doc_count == bucket.docs.hits.hits.length)) {      
       
-      return <>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
+      return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
         const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black'))
         return <Marker key={hit.fields.uuid} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} icon={icon}/>
       }
-      )}</>
+      )}</Fragment>
     }
 
     else {
