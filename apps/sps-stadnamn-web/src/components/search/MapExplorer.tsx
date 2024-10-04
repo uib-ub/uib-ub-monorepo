@@ -269,6 +269,22 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     return scaledRadius;
   };
 
+  function adjustBounds(bounds: [[number, number], [number, number]], adjustmentFactor: number): [[number, number], [number, number]] {
+    // Calculate the center of the bounds
+    const centerLat = (bounds[0][0] + bounds[1][0]) / 2;
+    const centerLon = (bounds[0][1] + bounds[1][1]) / 2;
+  
+    // Calculate the distance from the center to each corner and apply the adjustment factor
+    const latDiff = (bounds[1][0] - bounds[0][0]) * (1 + adjustmentFactor) / 2;
+    const lonDiff = (bounds[1][1] - bounds[0][1]) * (1 + adjustmentFactor) / 2;
+  
+    // Calculate and return the new bounds
+    const newTopLeft: [number, number] = [centerLat - latDiff, centerLon - lonDiff];
+    const newBottomRight: [number, number] = [centerLat + latDiff, centerLon + lonDiff];
+  
+    return [newTopLeft, newBottomRight];
+  }
+
 
   const maxDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
   const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
@@ -288,7 +304,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   { baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapProps[baseMap]}/>}
 
 
-  {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
+  { viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
     const latitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[1]);
     const longitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[0]);
 
@@ -340,12 +356,27 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
                eventHandlers={{
                   click: (e: any) => {
                     // get bounds from leaflet aggregation
-                    const bounds = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
+                    console.log("ZOOM", zoom)
+                    
 
-                    mapInstance.current.flyToBounds([ // 50% padding calculated here because leflet padding isn't working
-                      [bucket.viewport.bounds.top_left.lat - ((bucket.viewport.bounds.bottom_right.lat - bucket.viewport.bounds.top_left.lat) * 0.5), bucket.viewport.bounds.top_left.lon - ((bucket.viewport.bounds.bottom_right.lon - bucket.viewport.bounds.top_left.lon) * 0.5)], 
-                      [bucket.viewport.bounds.bottom_right.lat + ((bucket.viewport.bounds.bottom_right.lat - bucket.viewport.bounds.top_left.lat) * 0.5), bucket.viewport.bounds.bottom_right.lon + ((bucket.viewport.bounds.bottom_right.lon - bucket.viewport.bounds.top_left.lon) * 0.5)]
-                    ], {duration: 0.25, maxZoom: 18});
+                    if (isMobile) { // Zoom one level instead of fly to bounds
+                      if (!zoom) {
+                        return null
+                      }
+                      mapInstance.current.setZoom(zoom + 1);
+                      mapInstance.current.panTo([centerLat, centerLon]);
+                    }
+                    else {
+                      const newBounds: [[number, number], [number, number]] = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
+                      //console.log("Fly to bounds", adjustBounds(newBounds, 0.5))
+                      mapInstance.current.flyToBounds(
+                        adjustBounds(newBounds, 0.5), {duration: 0.25, maxZoom: 18});
+
+                    }
+
+
+
+                    
 
                   }
                 }}/>
