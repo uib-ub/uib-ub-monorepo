@@ -1,7 +1,7 @@
 import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
-import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinSimple, PiStack, PiStackSimple } from "react-icons/pi";
+import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLine, PiMapPinSimple, PiStack, PiStackSimple } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/simple-search-provider";
 import Spinner from "../svg/Spinner";
@@ -385,7 +385,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     </DropdownMenuContent>
 </DropdownMenu>
 <DropdownMenu>
-    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiMapPinSimple/></button></DropdownMenuTrigger>
+    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiMapPinLine/></button></DropdownMenuTrigger>
     <DropdownMenuContent className="z-[4000] bg-white">
         <DropdownMenuLabel>Markører</DropdownMenuLabel>
         <DropdownMenuSeparator />
