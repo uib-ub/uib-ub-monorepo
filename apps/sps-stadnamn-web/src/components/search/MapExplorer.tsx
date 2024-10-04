@@ -17,7 +17,7 @@ import {
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
 import { useSearchParams } from "next/navigation";
 import { useSearchQuery } from "@/lib/search-params";
-import { getLabelMarkerIcon, getMultiMarker } from "./markers";
+import { getLabelMarkerIcon } from "./markers";
 
 
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
@@ -274,22 +274,6 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   const maxDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
   const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
 
-  /*
-  const getMultiMarker = (docCount: number, label: string) => {
-    return {
-      className: '',
-      html: `<div class="text-white" style="position: relative; top: -3rem; left: -1.5rem;">
-                <img src="/markerBlackFill.svg" style="width: 3rem; height: 3rem;"/><span class="absolute top-[1.16rem] left-0 w-[3rem] text-center text-xs font-bold">${docCount}</span>
-                
-                <div style="position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); background-color: white; opacity: 75%; white-space: nowrap; border-radius: 9999px; text-align: center; font-size: 12px; font-weight: bold; padding: 0 8px;">
-                  ${label}
-                </div>
-                </div>`
-    }
-  }
-    */
-
-
 
     return <>
     {bounds?.length || (center && zoom ) ? <>
@@ -318,8 +302,14 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     
     // If no coordinates are different from the average
-    if (bucket.docs?.hits?.hits?.length != 1 && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
-      const icon = new leaflet.DivIcon(getMultiMarker(docCount, 'hello'))
+    if (bucket.docs?.hits?.hits?.length > 1 && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
+
+      // Label: add dots if they are different
+      const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label);
+      const label = labels[0] + (labels.slice(1, labels.length).some((label: any) => label !== labels[0]) ? '...' : '');
+      
+      const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', docCount > 1 ? docCount : undefined))
+      
       return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]}/>
 
     }
