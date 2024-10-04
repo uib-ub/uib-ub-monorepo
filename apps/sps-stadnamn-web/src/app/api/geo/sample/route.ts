@@ -9,9 +9,8 @@ export async function GET(request: Request) {
   const { simple_query_string } = getQueryString(filteredParams)
   const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
 
-
   const query: Record<string,any> = {
-    size: filteredParams.zoom && parseInt(filteredParams.zoom) > 17 ? 500 : 200,
+    size: 200,
     fields: ["label", "location", "uuid"],
     _source: false,
   }

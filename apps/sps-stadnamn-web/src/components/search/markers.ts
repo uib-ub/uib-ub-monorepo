@@ -99,7 +99,7 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
                 ${buildMultiMarker(color, 'position:absolute;left-0;bottom:1.5rem;height:3rem')}
                 <span class="text-white !text-xs font-bold absolute top-0 left-0 w-[3rem] text-center ">${docCount}</span>
                 
-                <div style="position: absolute; top: 6px; left: 50%; transform: translateX(-50%); background-color: white; opacity: 75%; white-space: nowrap; border-radius: 9999px; text-align: center; font-size: 12px; font-weight: bold; padding: 0 8px;">
+                <div class="shadow-lg" style="position: absolute; top: 6px; left: 50%; transform: translateX(-50%); background-color: white; opacity: 75%; white-space: nowrap; border-radius: 9999px; text-align: center; font-size: 12px; font-weight: bold; padding: 0 8px;">
                   ${label}
                 </div>
                 </div>`

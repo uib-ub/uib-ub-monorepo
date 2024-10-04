@@ -10,25 +10,23 @@ export async function GET(request: Request) {
   const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
 
   const zoomLevels  = {
-    "20": 16,
-    "19": 16,
-    "18": 16,
-    "17": 15,
-    "16": 15,
-    "15": 15,
-    "14": 14,
+    "18": 20,
+    "17": 18,
+    "16": 17,
+    "15": 16,
+    "14": 15,
     "13": 14,
-    "12": 14,
-    "11": 13,
-    "10": 12,
-    "9": 11,
-    "8": 10,
-    "7": 9,
-    "6": 8,
-    "5": 7,
-    "4": 6,
-
+    "12": 13,
+    "11": 12,
+    "10": 11,
+    "9": 10,
+    "8": 9,
+    "7": 8,
+    "6": 7,
+    "5": 6,
+    "4": 5,
   }
+
 
   const query: Record<string,any> = {
     size: 0,
@@ -54,9 +52,14 @@ export async function GET(request: Request) {
             aggs: {
                 docs: {
                     top_hits: {
-                        size: filteredParams.zoom && parseInt(filteredParams.zoom) < 10 ? 3 : 10,
+                        size: filteredParams.zoom ? parseInt(filteredParams.zoom) == 18 ? 100 : parseInt(filteredParams.zoom) > 15 ? 10 : 3 : 3,
                         _source: ["label", "uuid"]
 
+                        }
+                    },
+                    viewport: {
+                        geo_bounds: {
+                            field: "location"
                         }
                     }
                 }

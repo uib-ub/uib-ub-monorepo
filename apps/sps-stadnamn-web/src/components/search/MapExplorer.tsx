@@ -286,7 +286,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       return (
 
   <>
-  { baseMap && <TileLayer maxZoom={20} maxNativeZoom={18} {...baseMapProps[baseMap]}/>}
+  { baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapProps[baseMap]}/>}
 
 
   {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
@@ -296,26 +296,25 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const latSum = latitudes.reduce((acc: any, cur: any) => acc + cur, 0);
     const lonSum = longitudes.reduce((acc: any, cur: any) => acc + cur, 0);
 
-    const docCount = bucket.docs.hits.hits.length;
-    const lat = latSum / docCount;
-    const lon = lonSum / docCount;
+    const hitCount = bucket.docs.hits.hits.length;
+    const lat = latSum / hitCount;
+    const lon = lonSum / hitCount;
 
     
     // If no coordinates are different from the average
-    if (bucket.docs?.hits?.hits?.length > 1 && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
+    if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 15) && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
 
       // Label: add dots if they are different
       const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label);
       const label = labels[0] + (labels.slice(1, labels.length).some((label: any) => label !== labels[0]) ? '...' : '');
       
-      const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', docCount > 1 ? docCount : undefined))
+      const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
       
       return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]}/>
 
     }
 
-    else if (bucket.docs?.hits?.hits?.length == 1 || zoom && zoom > 15) {
-      
+    else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 15 && bucket.doc_count == bucket.docs.hits.hits.length)) {      
       
       return <>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
         const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black'))
@@ -324,12 +323,51 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       )}</>
     }
 
-    const myCustomIcon = new leaflet.DivIcon({
-      className: '',
-      html: `<div class="bg-white text-neutral-950 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${(calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2) + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0) }rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
-    });
+    else {
+      // Calculate center of bounds
+      const centerLat = (bucket.viewport.bounds.top_left.lat + bucket.viewport.bounds.bottom_right.lat) / 2;
+      const centerLon = (bucket.viewport.bounds.top_left.lon + bucket.viewport.bounds.bottom_right.lon) / 2;
 
-    return <Marker key={bucket.key} position={[lat, lon]} icon={myCustomIcon}/>
+
+      
+      const myCustomIcon = new leaflet.DivIcon({
+        className: '',
+        html: `<div class="bg-white text-neutral-950 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${(calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2) + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0) }rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
+      });
+
+      function adjustBounds(bounds, percentage) {
+        const latDiff = bounds[1][0] - bounds[0][0]; // Difference in latitude
+        const lonDiff = bounds[1][1] - bounds[0][1]; // Difference in longitude
+      
+        // Adjust bounds by the percentage
+        bounds[0][0] -= latDiff * percentage; // Decrease min latitude
+        bounds[1][0] += latDiff * percentage; // Increase max latitude
+        bounds[0][1] -= lonDiff * percentage; // Decrease min longitude
+        bounds[1][1] += lonDiff * percentage; // Increase max longitude
+      
+        return bounds;
+      }
+
+  
+      return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon)/ 2]} icon={myCustomIcon}
+               eventHandlers={{
+                  click: (e: any) => {
+                    // get bounds from leaflet aggregation
+                    const bounds = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
+                    const paddedBounds = adjustBounds(bounds, 0.5);
+
+
+                    mapInstance.current.flyToBounds([ // 50% padding calculated here because leflet padding isn't working
+                      [bucket.viewport.bounds.top_left.lat - ((bucket.viewport.bounds.bottom_right.lat - bucket.viewport.bounds.top_left.lat) * 0.5), bucket.viewport.bounds.top_left.lon - ((bucket.viewport.bounds.bottom_right.lon - bucket.viewport.bounds.top_left.lon) * 0.5)], 
+                      [bucket.viewport.bounds.bottom_right.lat + ((bucket.viewport.bounds.bottom_right.lat - bucket.viewport.bounds.top_left.lat) * 0.5), bucket.viewport.bounds.bottom_right.lon + ((bucket.viewport.bounds.bottom_right.lon - bucket.viewport.bounds.top_left.lon) * 0.5)]
+                    ], {duration: 0.25, maxZoom: 18});
+
+                  }
+                }}/>
+
+    }
+
+    
     
 
 
@@ -338,13 +376,16 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
   {viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
     
-    if (viewResults.hits.total.value < 200 || (zoom && zoom > 17)) {
+    if (viewResults.hits.total.value < 200 || (zoom && zoom == 18)) {
       const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
 
       return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon}/>
 
     }
-    return <CircleMarker key={group.uuid} center={[group.lat, group.lon]} radius={8} pathOptions={{color:'black', weight: 4, opacity: 1, fillColor: 'white', fillOpacity: 1}}/>
+    else {
+      return <CircleMarker key={group.uuid} center={[group.lat, group.lon]} radius={8} pathOptions={{color:'black', weight: 4, opacity: 1, fillColor: 'white', fillOpacity: 1}}/>
+    }
+    
 
   })}
     
@@ -399,7 +440,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
               Klynger
             </DropdownMenuRadioItem>
             <DropdownMenuRadioItem value='sample' className="text-nowrap cursor-pointer">
-              Tilfeldig utvalg (maks 200)
+              Tilfeldig utvalg
             </DropdownMenuRadioItem>
 
       </DropdownMenuRadioGroup>
