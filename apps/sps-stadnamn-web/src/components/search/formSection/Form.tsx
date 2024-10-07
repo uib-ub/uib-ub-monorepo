@@ -36,7 +36,7 @@ export default function Form({isMobile}: {isMobile?: boolean}) {
                    value={searchParams.get('dataset') || 'search'}/>
             
             {!isMobile && <button type="button" onClick={() => setExpanded(prev => prev != 'options' ? 'options' : null)} className="flex border-l pl-4 items-center border-neutral-300 flex-nowrap">
-            <span className="whitespace-nowrap max-w-[20svw] truncate">Stadnamnsøk</span>
+            <span className="whitespace-nowrap max-w-[20svw] truncate">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
             <PiDotsThreeVertical className="text-2xl inline text-neutral-800"/>
             
             
