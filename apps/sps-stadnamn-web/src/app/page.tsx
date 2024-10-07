@@ -4,13 +4,17 @@ import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
-import { datasetTitles, datasetPresentation, datasetDescriptions, publishDates } from '@/config/metadata-config';
+import { datasetTitles, datasetPresentation, datasetDescriptions, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/Footer';
 import { fetchStats } from '@/app/api/_utils/actions';
 import { redirect } from "next/navigation";
+import { userAgent } from "next/server";
+import { headers } from "next/headers";
 
 
 export default async function Home({ searchParams } : { searchParams?: {q: string, d: string} }) {
+  const device = userAgent({headers: headers()}).device
+  const isMobile = device.type === 'mobile'
 
   // Redirect legacy search params from Toponymi
   if (searchParams?.q) {''
@@ -25,14 +29,14 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
-    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: isMobile ? datasetShortDescriptions[code] : datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
   }
   )
 
 
   const newest = Object.entries(publishDates).sort((a, b) => b[1].localeCompare(a[1])).slice(0, 2).map(entry => entry[0]).map(code => {
     const info = datasetPresentation[code]
-    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: isMobile? datasetShortDescriptions[code] : datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
   }
   )
 
