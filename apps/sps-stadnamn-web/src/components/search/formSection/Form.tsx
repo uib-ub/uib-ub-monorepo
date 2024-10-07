@@ -6,9 +6,10 @@ import { PiDatabase, PiDotsThreeVertical, PiMagnifyingGlass } from 'react-icons/
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import Options from '../Options';
+import { datasetTitles } from '@/config/metadata-config';
 
 
-export default function Form({isMobile}: {isMobile?: boolean}) {
+export default function Form({isMobile}: {isMobile: boolean}) {
     const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()
