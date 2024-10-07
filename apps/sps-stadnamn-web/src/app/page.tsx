@@ -47,9 +47,9 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
   <div className="flex flex-col gap-8">
   <h1 className="text-2xl sm:text-3xl self-center md:text-4xl lg:text-5xl text-neutral-900 sr-only md:not-sr-only">Stadnamnportalen</h1>
   
-  <form className="grid grid-cols-5 md:grid-cols-10 items-center justify-center md:max-w-2xl md:mx-auto gap-3 md:px-8" action="view/search">
+  <form className="grid grid-cols-5 md:grid-cols-9 items-center justify-center md:max-w-2xl md:mx-auto gap-3 md:px-8" action="view/search">
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
-    <input id="search_input" className="col-span-4 md:col-span-7 rounded-md h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
+    <input id="search_input" className="col-span-4 md:col-span-6 rounded-md h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass className="text-xl"/></IconButton>
     <Link href="/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden="true" className="mr-2"/>Kart</Link>
   </form>
