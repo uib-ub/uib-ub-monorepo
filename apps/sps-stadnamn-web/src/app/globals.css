@@ -100,7 +100,7 @@
   }
 
   h1, .dataset-info h2, .instance-info h2 {
-    @apply text-2xl lg:text-3xl text-neutral-900 md:text-3xl lg:text-4xl font-serif
+    @apply text-2xl lg:text-3xl text-neutral-900 md:text-3xl font-serif
   }
 
   .page-info h1 {
