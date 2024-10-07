@@ -354,29 +354,9 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   
       return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon)/ 2]} icon={myCustomIcon}
                eventHandlers={{
-                  click: (e: any) => {
-                    // get bounds from leaflet aggregation
-                    console.log("ZOOM", zoom)
-                    
-
-                    if (isMobile) { // Zoom one level instead of fly to bounds
-                      if (!zoom) {
-                        return null
-                      }
-                      mapInstance.current.setZoom(zoom + 1);
-                      mapInstance.current.panTo([centerLat, centerLon]);
-                    }
-                    else {
+                  click: (e: any) => {                 
                       const newBounds: [[number, number], [number, number]] = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
-                      //console.log("Fly to bounds", adjustBounds(newBounds, 0.5))
-                      mapInstance.current.flyToBounds(
-                        adjustBounds(newBounds, 0.5), {duration: 0.25, maxZoom: 18});
-
-                    }
-
-
-
-                    
+                      mapInstance.current.flyToBounds( isMobile ? newBounds : adjustBounds(newBounds, 0.5), {duration: 0.25, maxZoom: 18});
 
                   }
                 }}/>
