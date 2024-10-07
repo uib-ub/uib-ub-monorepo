@@ -100,6 +100,7 @@ const procdata = computed(() => {
   const tmp = data.value
     ?.map((person) => {
       const data = {
+        _id: person._id,
         label: person?.label,
         email: person?.email,
         institution: person?.institution,
@@ -112,6 +113,7 @@ const procdata = computed(() => {
     .filter((person) => person.termgroups.length > 0)
     .map((person) => {
       return {
+        _id: person._id,
         label: person.label,
         email: person.email,
         institution: person.institution
@@ -133,8 +135,10 @@ const procdata = computed(() => {
           .join(", "),
         start: person.termgroups
           .map((group) =>
-            group.qualifiedMembership.map((membership) =>
-              membership?.timespan?.beginOfTheBegin.substring(0, 10)
+            group.qualifiedMembership.map(
+              (membership) =>
+                membership?.timespan?.beginOfTheBegin?.substring(0, 10) ||
+                undefined
             )
           )
           .join(", "),
@@ -142,13 +146,18 @@ const procdata = computed(() => {
           .map((group) =>
             group.qualifiedMembership.map(
               (membership) =>
-                membership?.timespan?.endOfTheEnd?.substring(0, 10) || undefined
+                membership?.timespan?.endOfTheEnd?.substring(0, 10)
             )
           )
-          .filter((end) => !end)
           .join(", "),
         get active() {
-          return !this.end;
+          return !(
+            this.end &&
+            this.end
+              .split(", ")
+              .map((end) => !isInFuture(end))
+              .filter((end) => end).length > 0
+          );
         },
       };
     });
