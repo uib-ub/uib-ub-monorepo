@@ -1,17 +1,13 @@
 
 'use client'
 import { useState, useEffect} from 'react';
-import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions } from '@/config/metadata-config'
+import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
-import Link from 'next/link'
 import { PiArchiveFill, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretUp, PiCheck, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
-import { contentSettings } from '@/config/server-config';
-import type { Metadata } from 'next'
 import { useQueryState } from 'nuqs';
-import exp from 'constants';
 
 
-export default function Options() {
+export default function Options({isMobile}: {isMobile: boolean}) {
 
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -20,6 +16,9 @@ export default function Options() {
   const [field, setField] = useQueryState('field')
   const allFeatures = Object.keys(featureNames);
   const allTypes = Object.keys(typeNames);
+  const [expandedKeyInfo, setExpandedKeyInfo] = useState<string | null>(null)
+  const setActiveDataset = useQueryState('dataset')[1]
+  const setExpandedSection = useQueryState('expanded', {history: 'push'})[1]
 
   
   const icons: {[key: string]: JSX.Element} ={
@@ -70,7 +69,7 @@ export default function Options() {
 
   return (    
         <section className="flex flex-col py-4" aria-labelledby="page_heading">
-          <h1 className="text-xl">Søkjealternativ</h1>
+          <h1 className="text-xl">Søkealternativer</h1>
           <div className="flex mb-4 mt-2 gap-4">
           <label className="flex gap-2">
             <input
@@ -94,7 +93,7 @@ export default function Options() {
 
           </div>
 
-          <h2 id="page_heading" className="text-xl font-semibold text-neutral-900 small-caps">Søkjevisninger</h2>
+          <h2 id="page_heading" className="text-xl font-semibold text-neutral-900 small-caps">Søkevisninger</h2>
           <div className='flex flex-col mt-1 justify-between w-full'>
           <div className='flex flex-col'>
           <input
@@ -163,7 +162,7 @@ export default function Options() {
           
           <ul className="flex flex-col w-full divide-y mt-4">
             {filteredDatasets.map((dataset) => (
-          <li key={dataset} className="h-full md:my-6 sm:my-0 w-full grid grid-cols-4 relative">
+          <li key={dataset} className="h-full sm:my-0 w-full grid grid-cols-4 relative">
               <div className='flex flex-col sm:col-span-1 w-full my-4'>
               <Image src={datasetPresentation[dataset].img} alt="Illustrasjon" aria-describedby={dataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
               <small id={dataset + "_attribution"} className="text-neutral-700 text-xs p-1 sr-only">{datasetPresentation[dataset].imageAttribution}</small>
@@ -172,15 +171,28 @@ export default function Options() {
               <div className="p-2 md:p-4 col-span-3 flex flex-col">
                 <h3 className="md:text-lg font-semibold">{datasetTitles[dataset]}</h3>
                 <div className="text-sm space-y-4 break-words">
-                <p>{datasetDescriptions[dataset].slice(0,80)}</p>                
+                <p>{isMobile ? datasetShortDescriptions[dataset] : datasetDescriptions[dataset]}</p>          
+              </div>
+              <div className="flex gap-2 mt-auto pt-2">
+                <button className=" flex  items-center !pl-1" onClick={() => setExpandedKeyInfo(prev => prev == dataset ? null : dataset)}>
+                  {expandedKeyInfo == dataset ? <PiCaretUp className="mr-1" aria-hidden="true"/> : <PiCaretDown className="mr-1" aria-hidden="true"/>}
+                  Les mer</button>
+                <button className="btn btn-outline ml-auto" onClick={() => {
+                  setActiveDataset(dataset)
+                  setExpandedSection(null)
+
+                }}>Velg</button>
               </div>
              
+              </div>
+              <div id={'key_info_' + dataset}>
+                { expandedKeyInfo == dataset && 'Lorem ipsum dolor sit amet'}
               </div>
               
           </li>
         ))}
       </ul>
-      </div>
-    </section>
+      </div>    
+      </section>
   );
 }
