@@ -48,7 +48,7 @@ export default function Form({isMobile}: {isMobile?: boolean}) {
 
         { !isMobile && expanded == 'options' && <section aria-labelledby="doc-title" className="absolute top-12  right-0 w-full rounded-b-md border-t shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-6rem)] px-4">
                     
-                    <Options/>
+                    <Options isMobile={false}/>
                 </section>
 
         }

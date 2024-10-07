@@ -123,7 +123,7 @@ export default function MobileLayout() {
 
             { drawerContent == 'info' && <ExampleContent expanded={snappedPosition > 25}/> }
             { drawerContent == 'results' && <Results/> }
-            { drawerContent == 'options' && <Options/> }
+            { drawerContent == 'options' && <Options isMobile={true}/> }
             
             </div>
             </>
