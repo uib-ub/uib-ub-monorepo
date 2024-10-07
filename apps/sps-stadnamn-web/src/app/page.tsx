@@ -41,11 +41,11 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
 
   return (
     <>
-<main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 pt-8 px-4 w-full flex-grow carta-marina">
-  <div className="flex flex-col gap-12 md:p-8 md:py-16 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle items-center justify-center">
+<main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-14 items-center justify-center pb-24 pt-4 md:pt-8 px-4 w-full flex-grow carta-marina bg-neutral-100 md:bg-transparent">
+  <div className="flex flex-col gap-12 md:p-8 md:py-16 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle justify-center">
   <div className="flex flex-col gap-8">
   <div className="flex flex-col gap-8">
-  <h1 className="text-2xl sm:text-3xl self-center md:text-4xl lg:text-5xl text-neutral-900">Stadnamnportalen</h1>
+  <h1 className="text-2xl sm:text-3xl self-center md:text-4xl lg:text-5xl text-neutral-900 sr-only md:not-sr-only">Stadnamnportalen</h1>
   
   <form className="grid grid-cols-5 md:grid-cols-10 items-center justify-center md:max-w-2xl md:mx-auto gap-3 md:px-8" action="view/search">
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
@@ -98,7 +98,7 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
   <div className="flex flex-col items-center container gap-24">
   
 
-  <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
+  <section className="flex flex-col items-center gap-12 mt-24" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-serif text-3xl">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (

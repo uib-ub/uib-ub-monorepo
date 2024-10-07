@@ -108,7 +108,7 @@ export default function MobileLayout() {
 
 
 
-    return <div className="h-full">
+    return <div className="">
         
         
 
