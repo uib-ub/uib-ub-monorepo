@@ -2,7 +2,7 @@ import { contentSettings } from '@/config/server-config'
 import { postQuery } from './post'
 
 const detectEnv = (retry: boolean) => {
-    const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
+    const endpoint = (process.env.SN_ENV != 'local' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
     const token = endpoint == process.env.ES_ENDPOINT ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
     return { endpoint, token }
 }
