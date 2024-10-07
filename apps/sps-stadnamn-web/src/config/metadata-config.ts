@@ -41,7 +41,7 @@ export const datasetTitles: DatasetTitles = {
     ostf: "Bustadnavn i Østfold",
     sof: "Fylkesarkivet i Sogn og Fjordane",
     tot: "Totennavn",
-    ssr2016: "Sentralt stadnamnregister 2016",
+    ssr2016: "Kartverket 2016",
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -58,6 +58,23 @@ export const datasetDescriptions: Record<string, string> = {
   sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordane, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare.",
   tot: "Totennavn er en samling av navn på garder, bruk, småbruk, forsvunne stedsnavn, skogteiger og jorder fra hele Toten. Materialet baserer seg på kjeldemateriale samlet inn til Norsk stedsnavnarkiv ved Universitetet i Oslo. Arbeidet er utført av Trond Nygård på oppdrag for daværende Seksjon for navnegransking. Prosjektet ble sluttført i 2007. Kartfesting er uført på Språksamlingane i 2024.", 
   ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur."
+}
+
+
+export const datasetShortDescriptions: Record<string, string> = {
+  bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 begyggelser fra ti fylker i Norge.",
+  hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
+  rygh: "En digital publikasjon av omtrent 69 000 bosetningsnavn fra hele Norge unntatt Finnmark, inkludert historiske og språklige tolkninger",
+  ostf: "En 20-binds serie utgitt mellom 1994 og 2021, som dekker bosetningsnavn i det tidligere Østfold fylke.",
+  leks: "Er ei digital utgåve som forklarar opphavet til viktige stadnamn i Noreg, inkludert norske, samiske og kvenske namn, samt administrative inndelingar.",
+  nbas: "Inneholder omtrent 700 000 navn fra ulike samlinger, der hvert navnekort inkluderer navneformen, uttalen og informasjon om kommunen og fylket.",
+  m1838: "Norges første omfattende matrikkel fra 1800-tallet, som dekker hele landet unntatt Finnmark.",
+  mu1950: "Utkast til en ny nasjonal matrikkel som aldri ble fullført. Den dekket over 767 000 oppføringer av eiendommer fra landkommuner.",
+  m1886: "Regnes som Norges første moderne og introduserte gårds- og bruksnumre for hele landet bort sett fra Finnmark.",
+  skul: "Eit landsdekkjande prosjekt frå 1931–1935 der skulebarn samla inn over 1 million stadnamn frå 9 700 registrerte gardar i 13 fylke.",
+  sof: "Eit omfattande materiale som er resultatet av ei stor innsamling av stadnamn på 1980-talet frå Sogn og Fjordane og Møre og Romsdal.",
+  tot: "En samling av ulike stedsnavn fra Toten-regionen, basert på kildemateriale samlet inn for Norsk stadnamnarkiv ved Universitetet i Oslo.",
+  ssr2016: "Basert på Kartverket sitt første frie stadnamndatasett frå 2000. Databasen var i bruk fram til 2016 då Kartverket si noverande datastruktur vart lansert."
 }
 
 
