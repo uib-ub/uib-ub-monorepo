@@ -1,4 +1,4 @@
-# Stadnamportalen
+# Stadnamnportalen
 Frontend and REST API for Språksamlingane's place name collections.
 
 Leaflet implementation based on [next-leaflet-starter](https://github.com/colbyfayock/next-leaflet-starter)

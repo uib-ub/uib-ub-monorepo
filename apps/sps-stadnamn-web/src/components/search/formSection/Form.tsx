@@ -25,7 +25,7 @@ export default function Form({isMobile}: {isMobile?: boolean}) {
     
     
     return pathname == '/search' ? <>    
-        <Link href="/" className="text-2xl lg:min-w-[25svw] pt-1 small-caps font-serif sr-only lg:not-sr-only self-center lg:!px-4">Stadnamnportalen</Link>    
+        <Link href="/" className="text-lg lg:min-w-[25svw] pt-1 font-serif sr-only lg:not-sr-only self-center lg:!px-4 uppercase">Stadnamnportalen</Link>    
         <div className="relative h-full flex w-full">
         <form action="/search" onSubmit={handleSubmit} className="flex w-full items-center shrink bg-white px-2 border-x-2 border-neutral-200">
   
@@ -58,7 +58,7 @@ export default function Form({isMobile}: {isMobile?: boolean}) {
 
         </div>
         </>
-     : <Link href="/" className="text-md px-4 font-serif self-center">STADNAMNPORTALEN</Link>
+     : <Link href="/" className="text-md px-4 font-serif self-center uppercase">Stadnamnportalen</Link>
           
 
 
