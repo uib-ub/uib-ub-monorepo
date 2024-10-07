@@ -10,7 +10,7 @@ export default function Footer() {
           <Link href="/info/privacy" className="text-center px-4 py-2 w-full lg:w-auto">Personvern</Link>
           <Link href="/info/license" className="text-center px-4 py-2 w-full lg:w-auto">Opphavsrett</Link>
         </nav>
-        <div className="absolute bottom-1 right-1">{process.env.SN_ENV}</div>
+        <div className="absolute bottom-1 right-1">{process.env.SN_ENV} {process.env.VERCEL_GIT_COMMIT_SHA}</div>
       </footer>
     )
 }

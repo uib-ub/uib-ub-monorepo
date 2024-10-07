@@ -18,7 +18,8 @@
         "ES_ENDPOINT",
         "ES_TOKEN",
         "ES_ENDPOINT_TEST",
-        "ES_TOKEN_TEST"
+        "ES_TOKEN_TEST",
+        "VERCEL_GIT_COMMIT_SHA"
       ]
     }
   }
