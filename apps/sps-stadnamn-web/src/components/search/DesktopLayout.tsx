@@ -4,11 +4,14 @@ import MapExplorer from "./MapExplorer"
 import { useQueryState } from "nuqs"
 import { useContext } from "react"
 import { SearchContext } from "@/app/simple-search-provider";
+import { datasetTitles } from "@/config/metadata-config"
+import { useSearchParams } from "next/navigation"
 
 
 export default function DesktopLayout() {
 
     const { resultData } = useContext(SearchContext)
+    const searchParams = useSearchParams()
 
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
 
@@ -21,7 +24,8 @@ export default function DesktopLayout() {
         }
     }
     
-    return <div className="relative w-full h-[calc(100svh-3rem)]">
+    return <main id="main" className="relative w-full h-[calc(100svh-3rem)]">
+        <h1 className="sr-only">{datasetTitles[searchParams.get('dataset') || 'Stadnamnsøk']}</h1>
         
         <div className="flex gap-4 flex-col max-h-[90svh] lg:max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden bg-white rounded-md lg:bg-none shadow-md lg:shadodw-none">
 
@@ -66,6 +70,6 @@ export default function DesktopLayout() {
         </div>
 
 
-    </div>
+    </main>
 
 }

@@ -8,9 +8,6 @@ import { useQueryState } from 'nuqs';
 import Options from '../Options';
 
 
-
-
-
 export default function Form({isMobile}: {isMobile?: boolean}) {
     const pathname = usePathname()
     const router = useRouter()
@@ -25,12 +22,12 @@ export default function Form({isMobile}: {isMobile?: boolean}) {
     
     
     return pathname == '/search' ? <>    
-        <Link href="/" className="text-lg lg:min-w-[25svw] pt-1 font-serif sr-only lg:not-sr-only self-center lg:!px-4 uppercase">Stadnamnportalen</Link>    
+        <Link href="/" className="text-lg lg:min-w-[25svw] pt-1 font-serif sr-only lg:not-sr-only self-center lg:!px-4 uppercase">Stadnamnportalen</Link>   
         <div className="relative h-full flex w-full">
-        <form action="/search" onSubmit={handleSubmit} className="flex w-full items-center shrink bg-white px-2 border-x-2 border-neutral-200">
+        <form action="/search" onSubmit={handleSubmit} className="flex w-full items-center shrink bg-white px-2 border-x-2 border-neutral-200 group">
   
             
-            <PiMagnifyingGlass className="text-2xl shrink-0"/>
+            <PiMagnifyingGlass className="text-2xl shrink-0 ml-1 text-neutral-400 group-focus-within:text-neutral-900"/>
             <input type="text" name="q" className="px-4 bg-transparent focus:outline-none flex w-full shrink"/>
             
             
