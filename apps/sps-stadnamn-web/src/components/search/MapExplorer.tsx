@@ -379,7 +379,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     }
     else {
-      return <CircleMarker key={group.uuid} center={[group.lat, group.lon]} radius={8} pathOptions={{color:'black', weight: 4, opacity: 1, fillColor: 'white', fillOpacity: 1}}/>
+      return <CircleMarker key={group.uuid} center={[group.lat, group.lon]} radius={zoom && zoom < 10 ? 4 : 8} pathOptions={{color:'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: 'white', fillOpacity: 1}}/>
     }
     
 
