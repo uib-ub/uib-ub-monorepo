@@ -24,6 +24,8 @@
 </template>
 
 <script setup lang="ts">
+const localeLangOrder = useLocaleLangOrder();
+
 const props = defineProps({
   displayInfo: { type: Object, required: true },
   pagetitle: { type: String, required: true },
@@ -36,7 +38,7 @@ const caption = computed(() => {
     return acc;
   }, {});
 
-  for (const lang in languageOrder) {
+  for (const lang of localeLangOrder.value.slice(0, 3)) {
     if (Object.keys(captions).includes(lang)) {
       caption = captions[lang];
       break;
