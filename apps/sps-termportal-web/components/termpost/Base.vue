@@ -88,7 +88,7 @@ if (process.client) {
 }
 
 const dataDisplayLanguages = useDataDisplayLanguages();
-const bootstrapData = useBootstrapData();
+const localeLangOrder = useLocaleLangOrder();
 
 const props = defineProps({
   // used to fetch data
@@ -126,7 +126,10 @@ const mainConcept = computed(() => {
 
 const pagetitle = computed(() => {
   if (mainConcept.value) {
-    return getConceptDisplaytitle(mainConcept.value);
+    return getConceptDisplaytitle(
+      mainConcept.value,
+      localeLangOrder.value.slice(0, 3)
+    );
   } else {
     return "";
   }
