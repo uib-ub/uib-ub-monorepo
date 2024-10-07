@@ -77,6 +77,12 @@
     z-index: 5000;
   }
 
+
+  
+  .map-marker:hover > * {
+    opacity: 1 !important;
+  }
+
   
 
 }
@@ -313,7 +319,6 @@
   .result-table td {
     @apply px-4 py-2;
   }
-  
 
 }
 

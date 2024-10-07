@@ -81,7 +81,7 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
     return {
       className: '',
       html: `
-        <div style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
+        <div class="map-marker" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
           ${buildMarker('color', 'position:absolute;left-0;bottom:26px;height:32px')}
 
           <div style="display: flex; position: absolute; top: 6px; vertical-align: middle; left: 50%; transform: translateX(-50%); background-color: white; opacity: 90%; white-space: nowrap; border-radius: 9999px; text-align: center; font-size: .75rem; font-weight: bold; padding-top: 1px; padding-bottom: 1px; padding-left: 8px; padding-right: ${docCount ? '4px' : '8px'}">

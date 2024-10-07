@@ -325,7 +325,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       
       const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
       
-      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]}/>
+      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true}/>
 
     }
 
@@ -333,7 +333,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       
       return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
         const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black'))
-        return <Marker key={hit.fields.uuid} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} icon={icon}/>
+        return <Marker key={hit.fields.uuid} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} icon={icon} riseOnHover={true}/>
       }
       )}</Fragment>
     }
@@ -395,7 +395,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     if (viewResults.hits.total.value < 200 || (zoom && zoom == 18)) {
       const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
 
-      return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon}/>
+      return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true}/>
 
     }
     else {
