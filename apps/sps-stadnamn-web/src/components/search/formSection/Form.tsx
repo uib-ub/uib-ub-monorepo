@@ -17,8 +17,13 @@ export default function Form({isMobile}: {isMobile: boolean}) {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault()
-        const q = event.target.q.value
-        router.push(`/search?q=${q}&dataset=tot`)
+        const formParams = new URLSearchParams()
+        for (const [key, value] of new FormData(event.target)) {
+            formParams.append(key, value as string)
+        }
+        
+
+        router.push(`/search?${formParams.toString()}`)
     }
     
     

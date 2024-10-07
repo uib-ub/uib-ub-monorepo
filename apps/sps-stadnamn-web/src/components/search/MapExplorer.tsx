@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
-import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLine, PiMapPinSimple, PiStack, PiStackSimple } from "react-icons/pi";
+import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLine, PiStackSimple } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/simple-search-provider";
 import Spinner from "../svg/Spinner";
