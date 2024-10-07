@@ -50,3 +50,9 @@ export function getDaysDiff(timestamp: string): number {
 
   return diffDays - 1;
 }
+
+export function isInFuture(timestamp: string): boolean {
+  const now = new Date().getTime();
+  const timestampDate = new Date(timestamp).getTime();
+  return timestampDate > now;
+}
