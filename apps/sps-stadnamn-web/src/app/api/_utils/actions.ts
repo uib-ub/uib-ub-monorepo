@@ -7,6 +7,13 @@ const detectEnv = (retry: boolean) => {
     return { endpoint, token }
 }
 
+// Check endpoint for debugging purposes
+export async function fetchEndpoint(retry: boolean = true) {
+    'use server'
+    const { endpoint } = detectEnv(retry)
+    return endpoint
+}
+
 
 export async function fetchDoc(params: any, retry: boolean = true) {
     'use server'
