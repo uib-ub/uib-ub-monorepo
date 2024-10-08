@@ -35,7 +35,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
     const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
-    const [doc, setDoc] = useQueryState('doc')
+    const [doc, setDoc] = useQueryState('doc', {history: 'push'});
     const [viewResults, setViewResults] = useState<any>(null)
     const { searchQueryString } = useSearchQuery()
 
@@ -288,6 +288,12 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
   const maxDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
   const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
+  const openDocHandler = {
+    click: (e: any) => {
+      setDoc('test')
+      
+    }
+  }
 
 
     return <>
@@ -325,15 +331,21 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       
       const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
       
-      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true}/>
+      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={openDocHandler}/>
 
     }
 
     else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 15 && bucket.doc_count == bucket.docs.hits.hits.length)) {      
       
       return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
-        const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black'))
-        return <Marker key={hit.fields.uuid} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} icon={icon} riseOnHover={true}/>
+        const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'primary'))
+        return <Marker key={hit.fields.uuid} 
+                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} 
+                      icon={icon} 
+                      riseOnHover={true}
+                      eventHandlers={openDocHandler}
+                      />
+                      
       }
       )}</Fragment>
     }
