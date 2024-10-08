@@ -12,8 +12,11 @@ https://git.app.uib.no/spraksamlingane/stadnamn/iiif.spraksamlingane.no
 
 
 
-## Develop locally
-
+## Main libraries used
+* State management: [nuqs](https://nuqs.47ng.com/docs) (manages state in the url)
+* Map: [leaflet](https://leafletjs.com/) through [react-leaflet](https://react-leaflet.js.org/)
+* Image viewer: [open seadragon](https://openseadragon.github.io/)
+* Some of the UI components: [radix-ui](https://www.radix-ui.com/) (components copied from [shadcn](https://ui.shadcn.com/))
 
 
 ## Environment variables
