@@ -38,7 +38,9 @@ const caption = computed(() => {
     return acc;
   }, {});
 
-  for (const lang of localeLangOrder.value.slice(0, 3)) {
+  for (const lang of localeLangOrder.value
+    .filter((lc) => !dataDisplayOnlyLanguages.includes(lc))
+    .slice(0, 3)) {
     if (Object.keys(captions).includes(lang)) {
       caption = captions[lang];
       break;
