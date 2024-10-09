@@ -27,7 +27,7 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
        
         if (doc) {
 
-            fetch(`/api/doc?uuid=${doc}&dataset=${dataset}`).then(res => res.json()).then(data => {
+            fetch(`/api/uuid/${doc}`).then(res => res.json()).then(data => {
                 console.log(data)
                 if (data.hits?.hits?.length) {
                     setSelected(data.hits?.hits)
@@ -39,7 +39,7 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
         else if (point) {
             
 
-            fetch(`/api/doc?point=${point}&${searchQueryString}`).then(res => 
+            fetch(`/api/location?point=${point}&${searchQueryString}`).then(res => 
                 res.json()).then(data => {
                     console.log(data)
                     if (data.hits?.hits?.length) {
