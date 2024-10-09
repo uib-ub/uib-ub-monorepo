@@ -156,7 +156,7 @@
     @apply px-3 py-1
   }
 
-  header a {
+  header nav a, a.btn {
     @apply no-underline;
   }
 
