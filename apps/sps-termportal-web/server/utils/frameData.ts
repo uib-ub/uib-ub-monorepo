@@ -41,6 +41,7 @@ export default function (
       license: "dct:license",
       value: "prov:value",
       status: "euvoc:status",
+      audience: "dct:audience",
       versionInfo: "owl:versionInfo",
       opprinneligSpraak: "skosp:opprinneligSpraak",
       isOfAbbreviationType: "skosp:isOfAbbreviationType",
