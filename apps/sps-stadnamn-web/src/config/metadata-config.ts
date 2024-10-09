@@ -46,7 +46,7 @@ export const datasetTitles: DatasetTitles = {
 
 export const datasetDescriptions: Record<string, string> = {
   bsn: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig.",
-  hord: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg å lytte til den lokale uttalen.",
+  hord: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
   rygh: "Norske Gaardnavne er en digital utgivelse av bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning.",
   ostf: `Bustadnavn i Østfold er en utgivelse over bebyggelsesnavna (bustadnavna) i Østfold herredsvis (22 herred etter den gamle inndelinga). Navneforskerne Tom Schmidt og Margit Harsson ved Seksjon for navnegransking (UiO) sto for redigering og utgiving av serien, som bygger på et originalmanus av navnegranskeren Kåre Hoel (1922-1989), en navnegranskerkollega. Serien ble utgitt mellom 1994 og 2021 og består av i alt 20 bind. Verket er en sterkt utvidet og revidert utgave av Oluf Ryghs Norske Gaardnavne (bind 1 Smaalenenes Amt, 1897). Rygh begrenset seg i all hovedsak til navn på matrikkelgårdene, men nå er også navn på andre bebyggelser tatt opp til drøfting, samtidig som gårdsnavnene gis en fyldig behandling - både språklig og kulturhistorisk.`,
   leks: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg å søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
@@ -62,7 +62,7 @@ export const datasetDescriptions: Record<string, string> = {
 
 
 export const datasetShortDescriptions: Record<string, string> = {
-  bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 begyggelser fra ti fylker i Norge.",
+  bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "En digital publikasjon av omtrent 69 000 bosetningsnavn fra hele Norge unntatt Finnmark, inkludert historiske og språklige tolkninger",
   ostf: "En 20-binds serie utgitt mellom 1994 og 2021, som dekker bosetningsnavn i det tidligere Østfold fylke.",
@@ -107,6 +107,13 @@ export const licenses: Record<string, {name: string, url: string}> = {
 
 
 export const datasetPresentation: DatasetPresentation = {
+      search: {
+        img: "icon.svg",
+        alt: "Kart over Norge med stedsnavn",
+        imageAttribution: "Kartverket",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
       bsn: {
         img: "/datasets/ubb-spr-bp-0001_sm.jpg",
         alt: "En kvinnelig arkivar eller kontorist sitter ved et skrivebord foran en stor rekke arkivskuffer.",
