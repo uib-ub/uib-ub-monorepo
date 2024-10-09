@@ -343,7 +343,7 @@ export const aatSiblingsType = {
  * Rights and Licenses
  */
 export const ccPublicDomainMarkType = {
-  id: "https://creativecommons.org/publicdomain/zero/1.0/",
+  id: "http://creativecommons.org/publicdomain/zero/1.0/",
   type: "Type",
   _label: "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
   identified_by: [
@@ -424,7 +424,7 @@ export const rsInCopyrighttype = {
 }
 
 export const attributionNonCommercialNoDerivsType = {
-  id: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+  id: 'http://creativecommons.org/licenses/by-nc-nd/4.0/',
   type: 'Type',
   _label: 'CC BY-NC-ND 4.0',
   identified_by: [
@@ -450,7 +450,7 @@ export const attributionNonCommercialNoDerivsType = {
   ]
 };
 export const attributionType = {
-  id: 'https://creativecommons.org/licenses/by/4.0/',
+  id: 'http://creativecommons.org/licenses/by/4.0/',
   type: 'Type',
   _label: 'CC BY 4.0',
   identified_by: [
@@ -476,7 +476,7 @@ export const attributionType = {
   ]
 };
 export const attributionShareAlikeType = {
-  id: 'https://creativecommons.org/licenses/by-sa/4.0/',
+  id: 'http://creativecommons.org/licenses/by-sa/4.0/',
   type: 'Type',
   _label: 'CC BY-SA 4.0',
   identified_by: [
@@ -503,7 +503,7 @@ export const attributionShareAlikeType = {
 };
 
 export const attributionNonCommercialType = {
-  id: 'https://creativecommons.org/licenses/by-nc/4.0/',
+  id: 'http://creativecommons.org/licenses/by-nc/4.0/',
   type: 'Type',
   _label: 'CC NC 4.0',
   identified_by: [
@@ -530,7 +530,7 @@ export const attributionNonCommercialType = {
 };
 
 export const attributionNoDerivsType = {
-  id: 'https://creativecommons.org/licenses/by-nd/4.0/',
+  id: 'http://creativecommons.org/licenses/by-nd/4.0/',
   type: 'Type',
   _label: 'CC ND 4.0',
   identified_by: [
@@ -557,7 +557,7 @@ export const attributionNoDerivsType = {
 };
 
 export const publicDomainType = {
-  id: 'https://creativecommons.org/publicdomain/mark/1.0',
+  id: 'http://creativecommons.org/publicdomain/mark/1.0',
   type: 'Type',
   _label: 'Public Domain Mark',
   identified_by: [
