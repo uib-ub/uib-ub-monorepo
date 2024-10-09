@@ -6,6 +6,7 @@ import { useContext } from "react"
 import { SearchContext } from "@/app/simple-search-provider";
 import { datasetTitles } from "@/config/metadata-config"
 import { useSearchParams } from "next/navigation"
+import InfoContent from "./InfoContent"
 
 
 export default function DesktopLayout() {
@@ -57,9 +58,9 @@ export default function DesktopLayout() {
         }
         </div>
         <div className="lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
-        <article aria-labelledby="doc-title" className="lg:bg-white rounded-md lg:shadow-md break-words p-8">
-            <h2 id="doc-title">Berg</h2>
-        </article>
+        <div className="lg:bg-white rounded-md lg:shadow-md break-words p-8">
+            <InfoContent expanded={expanded == 'info'}/>
+        </div>
         </div>
 
 

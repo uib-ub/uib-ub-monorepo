@@ -28,7 +28,7 @@ export default function Form({isMobile}: {isMobile: boolean}) {
     
     
     return pathname == '/search' ? <>    
-        <Link href="/" className="text-lg lg:min-w-[25svw] pt-1 font-serif sr-only lg:not-sr-only self-center lg:!px-4 uppercase">Stadnamnportalen</Link>   
+        <Link href="/" className="text-lg lg:min-w-[25svw] pt-1 font-serif sr-only lg:not-sr-only self-center lg:!px-4 uppercase no-underline">Stadnamnportalen</Link>   
         <div className="relative h-full flex w-full">
         <form action="/search" onSubmit={handleSubmit} className="flex w-full items-center shrink bg-white px-2 border-x-2 border-neutral-200 group">
   
@@ -37,9 +37,9 @@ export default function Form({isMobile}: {isMobile: boolean}) {
             <input type="text" name="q" className="px-4 bg-transparent focus:outline-none flex w-full shrink"/>
             
             
-            <input type="hidden"   
-                   name="dataset" 
-                   value={searchParams.get('dataset') || 'search'}/>
+            {searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
+
+            
             
             {!isMobile && <button type="button" onClick={() => setExpanded(prev => prev != 'options' ? 'options' : null)} className="flex border-l pl-4 items-center border-neutral-300 flex-nowrap">
             <span className="whitespace-nowrap max-w-[20svw] truncate">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
@@ -61,7 +61,7 @@ export default function Form({isMobile}: {isMobile: boolean}) {
 
         </div>
         </>
-     : <Link href="/" className="text-md px-4 font-serif self-center uppercase">Stadnamnportalen</Link>
+     : <Link href="/" className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
           
 
 

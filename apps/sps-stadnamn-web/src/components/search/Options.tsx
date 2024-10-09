@@ -3,12 +3,14 @@
 import { useState, useEffect} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
-import { PiArchiveFill, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretUp, PiCheck, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
+import { PiArchiveFill, PiArrowUp, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretUp, PiCheck, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 
 export default function Options({isMobile}: {isMobile: boolean}) {
-
+  const searchParams = useSearchParams()
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [stats, setStats] = useState<any>(null);
@@ -17,8 +19,6 @@ export default function Options({isMobile}: {isMobile: boolean}) {
   const allFeatures = Object.keys(featureNames);
   const allTypes = Object.keys(typeNames);
   const [expandedKeyInfo, setExpandedKeyInfo] = useState<string | null>(null)
-  const setActiveDataset = useQueryState('dataset')[1]
-  const setExpandedSection = useQueryState('expanded', {history: 'push'})[1]
 
   
   const icons: {[key: string]: JSX.Element} ={
@@ -89,11 +89,11 @@ export default function Options({isMobile}: {isMobile: boolean}) {
             Fulltekstsøk
             </label>
             
-            
-
+            { searchParams.get('dataset') && <Link href="/search" className="btn btn-neutral flex ml-auto pl-2"><PiArrowUp className="text-lg mr-1"/> Overordna stadnamnsøk</Link>}
           </div>
+          
 
-          <h2 id="page_heading" className="text-xl font-semibold text-neutral-900 small-caps">Søkevisninger</h2>
+          <h2 id="page_heading" className="text-xl font-semibold text-neutral-900 small-caps">Søkevisninger for datasett</h2>
           <div className='flex flex-col mt-1 justify-between w-full'>
           <div className='flex flex-col'>
           <input
@@ -105,6 +105,7 @@ export default function Options({isMobile}: {isMobile: boolean}) {
             />
 
           </div>
+          
           <div className="flex gap-4 mt-2">
           <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'type' ? null : 'type')} aria-controls="dataset-type" aria-expanded={expandedOption == 'type'}>
             {expandedOption == 'type' ? <PiCaretUp aria-hidden="true"/> : <PiCaretDown aria-hidden="true"/>}
@@ -177,11 +178,8 @@ export default function Options({isMobile}: {isMobile: boolean}) {
                 <button className=" flex  items-center !pl-1" onClick={() => setExpandedKeyInfo(prev => prev == dataset ? null : dataset)}>
                   {expandedKeyInfo == dataset ? <PiCaretUp className="mr-1" aria-hidden="true"/> : <PiCaretDown className="mr-1" aria-hidden="true"/>}
                   Les mer</button>
-                <button className="btn btn-outline ml-auto" onClick={() => {
-                  setActiveDataset(dataset)
-                  setExpandedSection(null)
+                <Link className="ml-auto" href={`/search?dataset=${dataset}${searchParams.get('q') ? '&q=' + searchParams.get('q') : ''}`}>Velg</Link>
 
-                }}>Velg</button>
               </div>
              
               </div>

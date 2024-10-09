@@ -20,22 +20,16 @@ import { getLabelMarkerIcon } from "./markers";
 
 
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
-
-
     const mapInstance = useRef<any>(null);
-
     const { resultData, isLoading, searchError } = useContext(SearchContext)
     const controllerRef = useRef(new AbortController());
-
     const [baseMap, setBasemap] = useState<null|string>(null)
     const [markerMode, setMarkerMode] = useState<null|string>(null)
-
     const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
-
-
     const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
     const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
-    const [doc, setDoc] = useQueryState('doc', {history: 'push'});
+    const setDoc = useQueryState('doc', {history: 'push'})[1]
+    const setPoint = useQueryState('point', {history: 'push'})[1]
     const [viewResults, setViewResults] = useState<any>(null)
     const { searchQueryString } = useSearchQuery()
 
@@ -288,10 +282,24 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
   const maxDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
   const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
-  const openDocHandler = {
-    click: (e: any) => {
-      setDoc('test')
-      
+
+
+  const openDocHandler = (selected: string | [number, number], hits?: any[]) => {
+    return {
+      click: (e: any) => {
+
+        console.log(selected)
+        // if string
+        if (typeof selected === 'string') {
+          setPoint(null)
+          setDoc(selected)
+        }
+        else if (hits?.length) {
+          setDoc(null)
+          setPoint(selected.join(','))
+        }
+      }
+
     }
   }
 
@@ -331,19 +339,19 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       
       const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
       
-      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={openDocHandler}/>
+      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={openDocHandler([lat, lon], bucket.docs.hits.hits)}/>
 
     }
 
     else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 15 && bucket.doc_count == bucket.docs.hits.hits.length)) {      
       
       return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
-        const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'primary'))
+        const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black'))
         return <Marker key={hit.fields.uuid} 
                        position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} 
                       icon={icon} 
                       riseOnHover={true}
-                      eventHandlers={openDocHandler}
+                      eventHandlers={openDocHandler(hit.fields.uuid[0])}
                       />
                       
       }
@@ -385,7 +393,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   {viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
     
     if (viewResults.hits.total.value < 200 || (zoom && zoom == 18)) {
-      const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
+      const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'primary', group.children.length > 1 ? group.children.length : undefined))
 
       return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true}/>
 

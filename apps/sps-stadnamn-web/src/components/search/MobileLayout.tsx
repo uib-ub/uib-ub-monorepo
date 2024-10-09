@@ -2,10 +2,10 @@
 import { useRef, useState } from "react"
 import { PiDatabase, PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass } from "react-icons/pi";
 import Results from "./Results";
-import ExampleContent from "./ExampleContent";
 import MapExplorer from "./MapExplorer";
 import { useQueryState } from "nuqs";
 import Options from "./Options";
+import InfoContent from "./InfoContent";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -15,12 +15,8 @@ export default function MobileLayout() {
     const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down'>(null);
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
-
     const [drawerContent, setDrawerContent] = useQueryState('expanded', {history: 'push'});
 
-
-
-        
     const isScrolling = (target: EventTarget) => {
         if (snappedPosition == 100 && target instanceof Node && scrollableContent.current?.contains(target)) {
             return scrollableContent.current.scrollTop != 0
@@ -121,7 +117,7 @@ export default function MobileLayout() {
             <div className="w-full flex justify-center"><div className="h-1 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
             <div className="h-full overscroll-contain max-h-[calc(100svh-3rem)] p-4" ref={scrollableContent} style={{overflowY: currentPosition == 100 ? 'auto' : 'hidden', touchAction: currentPosition == 100  && scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
 
-            { drawerContent == 'info' && <ExampleContent expanded={snappedPosition > 25}/> }
+            { drawerContent == 'info' && <InfoContent expanded={snappedPosition > 25}/> }
             { drawerContent == 'results' && <Results/> }
             { drawerContent == 'options' && <Options isMobile={true}/> }
             
