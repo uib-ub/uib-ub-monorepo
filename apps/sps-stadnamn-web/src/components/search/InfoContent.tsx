@@ -1,13 +1,15 @@
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import DatasetInfo from "./DatasetInfo"
+import DocInfo from "./DocInfo"
 
 
 export default function InfoContent({expanded}: {expanded: boolean}) {
 
     const searchParams = useSearchParams()
     const router = useRouter()
-    const [info, setInfo] = useState<any[] | null>(null)
+    const [selected, setSelected] = useState<any[] | null>(null)
     const doc = searchParams.get('doc')
     const dataset = searchParams.get('dataset') || 'search'
     const point = searchParams.get('point')
@@ -22,7 +24,7 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
             fetch(`/api/doc?uuid=${doc}&dataset=${dataset}`).then(res => res.json()).then(data => {
                 console.log(data)
                 if (data.hits?.hits?.length) {
-                    setInfo(data.hits?.hits)
+                    setSelected(data.hits?.hits)
                 }
             })
 
@@ -33,9 +35,12 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
                 res.json()).then(data => {
                     console.log(data)
                     if (data.hits?.hits?.length) {
-                        setInfo(data.hits?.hits)
+                        setSelected(data.hits?.hits)
                     }
             })
+        }
+        else {
+            setSelected(null)
         }
             
     }
@@ -43,24 +48,21 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
 
     
     
-    if (!info) {
-        return <div className="p-4">Ingen informasjon</div>
+    if (!selected) {
+        return <DatasetInfo/>
     }
 
-    if (info.length == 0) {
-        return <div className="p-4">Ingen treff</div>
+    if (selected.length == 1) {
+        return <DocInfo doc={selected[0]}/>
     }
-    if (info.length == 1) {
-        return <article className="p-4"><h1>{info[0]._source.label}</h1></article>
-    }
-    if (info.length > 1) {
-        return <div className="p-4">{
-            info.map((hit: any) => {
-                return <div key={hit._id} className="p-4">
+    if (selected.length > 1) {
+        return <article className="p-0">{
+            selected.map((hit: any) => {
+                return <div key={hit._id} className="p-0">
                     <h2>{hit._source?.label}</h2>
                 </div>
             })
-        }</div>
+        }</article>
     }
 
 

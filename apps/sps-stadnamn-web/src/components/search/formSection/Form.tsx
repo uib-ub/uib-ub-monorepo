@@ -41,12 +41,15 @@ export default function Form({isMobile}: {isMobile: boolean}) {
 
             
             
-            {!isMobile && <button type="button" onClick={() => setExpanded(prev => prev != 'options' ? 'options' : null)} className="flex border-l pl-4 items-center border-neutral-300 flex-nowrap">
-            <span className="whitespace-nowrap max-w-[20svw] truncate">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
-            <PiDotsThreeVertical className="text-2xl inline text-neutral-800"/>
+            {isMobile ? <h1 className="sr-only">{datasetTitles[searchParams.get('dataset') || 'search']}</h1>
+            : <h1 className="text-lg font-sans text-neutral-900">
+                <button type="button" onClick={() => setExpanded(prev => prev != 'options' ? 'options' : null)} className="flex border-l pl-4 items-center border-neutral-300 flex-nowrap">
+                <span className="whitespace-nowrap max-w-[20svw] truncate uppercase">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
+                    <PiDotsThreeVertical className="text-2xl inline text-neutral-800"/>
             
-            
-            </button>}
+                </button>
+              </h1>
+                }
             
             <button className="sr-only" type="submit">Søk</button>
 

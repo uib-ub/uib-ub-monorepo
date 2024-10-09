@@ -29,7 +29,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
     const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
     const setDoc = useQueryState('doc', {history: 'push'})[1]
-    const setPoint = useQueryState('point', {history: 'push'})[1]
+    const [point, setPoint] = useQueryState('point', {history: 'push'})
     const [viewResults, setViewResults] = useState<any>(null)
     const { searchQueryString } = useSearchQuery()
 
@@ -287,8 +287,6 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   const openDocHandler = (selected: string | [number, number], hits?: any[]) => {
     return {
       click: (e: any) => {
-
-        console.log(selected)
         // if string
         if (typeof selected === 'string') {
           setPoint(null)
@@ -382,24 +380,24 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
                 }}/>
 
     }
-
-    
-    
-
-
   }
   )}
 
   {viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
     
     if (viewResults.hits.total.value < 200 || (zoom && zoom == 18)) {
-      const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'primary', group.children.length > 1 ? group.children.length : undefined))
+      const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
 
-      return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true}/>
+
+      return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={openDocHandler(group.children.length > 1 ? [group.lat, group.lon] : group.uuid[0], group.children)}/>
 
     }
     else {
-      return <CircleMarker key={group.uuid} center={[group.lat, group.lon]} radius={zoom && zoom < 10 ? 4 : 8} pathOptions={{color:'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: 'white', fillOpacity: 1}}/>
+      return <CircleMarker key={group.uuid} 
+                           center={[group.lat, group.lon]} 
+                           radius={zoom && zoom < 10 ? 4 : 8} 
+                           pathOptions={{color:'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: 'white', fillOpacity: 1}}
+                           eventHandlers={openDocHandler(group.children.length > 1 ? [group.lat, group.lon] : group.uuid[0], group.children)}/>
     }
     
 

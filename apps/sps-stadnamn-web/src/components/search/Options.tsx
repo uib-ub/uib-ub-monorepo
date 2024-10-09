@@ -3,7 +3,7 @@
 import { useState, useEffect} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
-import { PiArchiveFill, PiArrowUp, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretUp, PiCheck, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
+import { PiArchiveFill, PiArrowRight, PiArrowUp, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretRight, PiCaretUp, PiCheck, PiCheckFat, PiCheckFatFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -67,9 +67,22 @@ export default function Options({isMobile}: {isMobile: boolean}) {
     .filter(dataset => datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase()));
 
 
+  const datasetLink = (dataset: string) => {
+    const newSearchParams = new URLSearchParams();
+    const q = searchParams.get('q');
+    if (dataset != 'search') {
+      newSearchParams.set('dataset', dataset);
+    }
+    if (q) {
+      newSearchParams.set('q', q);
+    }
+    return "search?" + newSearchParams.toString();
+      
+  }
+
+
   return (    
         <section className="flex flex-col py-4" aria-labelledby="page_heading">
-          <h1 className="text-xl">Søkealternativer</h1>
           <div className="flex mb-4 mt-2 gap-4">
           <label className="flex gap-2">
             <input
@@ -89,11 +102,10 @@ export default function Options({isMobile}: {isMobile: boolean}) {
             Fulltekstsøk
             </label>
             
-            { searchParams.get('dataset') && <Link href="/search" className="btn btn-neutral flex ml-auto pl-2"><PiArrowUp className="text-lg mr-1"/> Overordna stadnamnsøk</Link>}
           </div>
           
 
-          <h2 id="page_heading" className="text-xl font-semibold text-neutral-900 small-caps">Søkevisninger for datasett</h2>
+          <h2 id="page_heading" className="text-xl font-semibold text-neutral-900 small-caps">Søkevisninger</h2>
           <div className='flex flex-col mt-1 justify-between w-full'>
           <div className='flex flex-col'>
           <input
@@ -163,9 +175,12 @@ export default function Options({isMobile}: {isMobile: boolean}) {
           
           <ul className="flex flex-col w-full divide-y mt-4">
             {filteredDatasets.map((dataset) => (
-          <li key={dataset} className="h-full sm:my-0 w-full grid grid-cols-4 relative">
+          <li key={dataset} className={`h-full sm:my-0 w-full grid grid-cols-4 relative ${searchParams.get('dataset') == dataset ? 'bg-accent-50' : ''}`}>
               <div className='flex flex-col sm:col-span-1 w-full my-4'>
-              <Image src={datasetPresentation[dataset].img} alt="Illustrasjon" aria-describedby={dataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
+                { dataset == 'search' ? 
+                <Image src={datasetPresentation[dataset].img} alt="Illustrasjon" aria-describedby={dataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square p-4 md:p-8 lg:p-12 bg-neutral-200"/>
+              : <Image src={datasetPresentation[dataset].img} alt="Illustrasjon" aria-describedby={dataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
+            }
               <small id={dataset + "_attribution"} className="text-neutral-700 text-xs p-1 sr-only">{datasetPresentation[dataset].imageAttribution}</small>
               </div>
               
@@ -175,16 +190,16 @@ export default function Options({isMobile}: {isMobile: boolean}) {
                 <p>{isMobile ? datasetShortDescriptions[dataset] : datasetDescriptions[dataset]}</p>          
               </div>
               <div className="flex gap-2 mt-auto pt-2">
-                <button className=" flex  items-center !pl-1" onClick={() => setExpandedKeyInfo(prev => prev == dataset ? null : dataset)}>
-                  {expandedKeyInfo == dataset ? <PiCaretUp className="mr-1" aria-hidden="true"/> : <PiCaretDown className="mr-1" aria-hidden="true"/>}
-                  Les mer</button>
-                <Link className="ml-auto" href={`/search?dataset=${dataset}${searchParams.get('q') ? '&q=' + searchParams.get('q') : ''}`}>Velg</Link>
+                <Link href={'/view/info' + dataset }  className=" flex  items-center !pl-1 no-underline" onClick={() => setExpandedKeyInfo(prev => prev == dataset ? null : dataset)}>
+                  
+                  Les mer <PiCaretRight className="text-primary-600"/></Link>
+                  {searchParams.get('dataset') == dataset || (dataset == 'search' && !searchParams.get('dataset')) ? <Link href={datasetLink(dataset)} className="ml-auto no-underline flex gap-2 text-accent-700" aria-current="page"><PiCheckFatFill/>Valgt</Link>
+                  :
+                <Link className="ml-auto" aria-current="false" href={datasetLink(dataset)}>Velg</Link>
+                  }
 
               </div>
              
-              </div>
-              <div id={'key_info_' + dataset}>
-                { expandedKeyInfo == dataset && 'Lorem ipsum dolor sit amet'}
               </div>
               
           </li>

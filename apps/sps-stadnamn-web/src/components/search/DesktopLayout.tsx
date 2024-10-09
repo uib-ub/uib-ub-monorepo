@@ -25,12 +25,9 @@ export default function DesktopLayout() {
         }
     }
     
-    return <main id="main" className="relative w-full h-[calc(100svh-3rem)]">
-        <h1 className="sr-only">{datasetTitles[searchParams.get('dataset') || 'Stadnamnsøk']}</h1>
-        
+    return <main id="main" className="relative w-full h-[calc(100svh-3rem)]">        
         <div className="flex gap-4 flex-col max-h-[90svh] lg:max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden bg-white rounded-md lg:bg-none shadow-md lg:shadodw-none">
 
-        
         <div className="lg:absolute left-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[90svh] w-[40svw] lg:w-[25svw] !z-[3001]">
         <section aria-labelledby="filter-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
             <h2 id="filter-title"  className="p-4 w-full"><button className="w-full flex justify-start"aria-controls="filter-content" aria-expanded={expanded == 'filters'} onClick={() => toggleExpanded('filters')}>Filtre</button></h2>
@@ -57,10 +54,10 @@ export default function DesktopLayout() {
         </section>
         }
         </div>
-        <div className="lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
-        <div className="lg:bg-white rounded-md lg:shadow-md break-words p-8">
+        <div className="info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
+        <article className="lg:bg-white rounded-md lg:shadow-md break-words p-8">
             <InfoContent expanded={expanded == 'info'}/>
-        </div>
+        </article>
         </div>
 
 
