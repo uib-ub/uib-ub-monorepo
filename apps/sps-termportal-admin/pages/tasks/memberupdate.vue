@@ -52,18 +52,17 @@
         <Column field="label" header="Navn" sortable></Column>
         <Column field="status" header="Status" sortable>
           <template #body="slotProps">
-            <div
-              class="w-7 h-7 rounded-2xl shrink-0"
-              :style="`background-color:
-              ${slotProps.data.status ? '#00CC00' : '#ff4d2e'}`"
+            <Icon
+              name="material-symbols:circle"
+              size="1.9em"
+              class=""
+              :class="
+                slotProps.data.status
+                  ? colorMappingStatus.ok.color
+                  : colorMappingStatus.error.color
+              "
             >
-              <Icon
-                v-if="slotProps.data.status"
-                name="material-symbols:done"
-                size="1.6em"
-                class="pl-[2px]"
-              ></Icon>
-            </div>
+            </Icon>
           </template>
         </Column>
         <Column header="">
@@ -110,27 +109,27 @@
 
       <!-- Text -->
       <div class="space-y-3">
-        <div class="flex space-x-4">
-          <div
-            class="w-7 h-7 rounded-2xl shrink-0"
-            :style="`background-color: #00CC00`"
+        <div class="flex space-x-4 items-center">
+          <Icon
+            name="material-symbols:circle"
+            size="1.9em"
+            class=""
+            :class="colorMappingStatus.ok.color"
           >
-            <Icon
-              name="material-symbols:done"
-              size="1.6em"
-              class="pl-[2px]"
-            ></Icon>
-          </div>
+          </Icon>
           <p>
             Termgroup has been registered in the activity - signifying its
             members have been updated.
           </p>
         </div>
-        <div class="flex space-x-4">
-          <div
-            class="w-7 h-7 rounded-2xl shrink-0"
-            :style="`background-color: #ff4d2e`"
-          ></div>
+        <div class="flex space-x-4 items-center">
+          <Icon
+            name="material-symbols:circle"
+            size="1.9em"
+            class=""
+            :class="colorMappingStatus.error.color"
+          >
+          </Icon>
           <p>Termgroup has not been registered in the activity.</p>
         </div>
       </div>
@@ -167,7 +166,7 @@ const queryActivity = `
 const { data: activities } = useLazySanityQuery(queryActivity);
 const activity = computed(() => activities.value?.[0]);
 const activityGroups = computed(() =>
-  activity.value?.groups?.map((g) => g.group._id)
+  activity.value?.groups?.map((g) => g?.group?._id)
 );
 
 const queryGroup = `
