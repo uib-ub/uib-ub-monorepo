@@ -42,13 +42,6 @@ export async function GET(request: Request) {
         }
 
         const data = await postQuery(filteredParams.dataset, query)
-
-
-        console.log("QUERY", query)
-        console.log("DATA", data)
-
-
-
         return Response.json(data);
     }
   
