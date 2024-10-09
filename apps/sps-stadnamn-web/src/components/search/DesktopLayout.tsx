@@ -13,6 +13,9 @@ export default function DesktopLayout() {
 
     const { resultData } = useContext(SearchContext)
     const searchParams = useSearchParams()
+    const doc = useQueryState('doc')[0]
+    const point = useQueryState('point')[0]
+
 
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
 
@@ -54,8 +57,8 @@ export default function DesktopLayout() {
         </section>
         }
         </div>
-        <div className="info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
-        <article className="lg:bg-white rounded-md lg:shadow-md break-words p-8">
+        <div className="info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001] scroll-container">
+        <article className="lg:bg-white rounded-md lg:shadow-md break-words p-8 overflow-y-auto">
             <InfoContent expanded={expanded == 'info'}/>
         </article>
         </div>

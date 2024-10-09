@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { PiDatabase, PiDotsThreeVertical, PiMagnifyingGlass } from 'react-icons/pi';
+import { PiDatabase, PiDotsThreeVertical, PiDotsThreeVerticalBold, PiMagnifyingGlass } from 'react-icons/pi';
 
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
@@ -44,8 +44,8 @@ export default function Form({isMobile}: {isMobile: boolean}) {
             {isMobile ? <h1 className="sr-only">{datasetTitles[searchParams.get('dataset') || 'search']}</h1>
             : <h1 className="text-lg font-sans text-neutral-900">
                 <button type="button" onClick={() => setExpanded(prev => prev != 'options' ? 'options' : null)} className="flex border-l pl-4 items-center border-neutral-300 flex-nowrap">
-                <span className="whitespace-nowrap max-w-[20svw] truncate uppercase">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
-                    <PiDotsThreeVertical className="text-2xl inline text-neutral-800"/>
+                <span className="whitespace-nowrap max-w-[20svw] truncate font-semibold text-neutral-800">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
+                    <PiDotsThreeVerticalBold className="text-2xl inline text-primary-600"/>
             
                 </button>
               </h1>

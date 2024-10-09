@@ -25,6 +25,7 @@ export function extractFacets(request: Request ) {
       case 'facetSearch':
       case 'facets':
       case 'zoom':
+      case 'point':
         filteredParams[key] = urlParams.get(key)!;
         break;
       default:

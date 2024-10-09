@@ -28,8 +28,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
     const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
     const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
-    const setDoc = useQueryState('doc', {history: 'push'})[1]
-    const [point, setPoint] = useQueryState('point', {history: 'push'})
+    const setDoc = useQueryState('doc', {history: 'push', scroll: true})[1]
+    const [point, setPoint] = useQueryState('point', {history: 'push', scroll: true})
     const [viewResults, setViewResults] = useState<any>(null)
     const { searchQueryString } = useSearchQuery()
 
