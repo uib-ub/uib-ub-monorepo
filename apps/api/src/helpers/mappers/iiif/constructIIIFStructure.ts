@@ -126,5 +126,5 @@ export function constructIIIFStructure(data: any) {
   const manifestV3: any = builder.toPresentation3({ id: manifest.id, type: 'Manifest' });
   manifestV3.identifier = data.identifier
 
-  return [item, manifestV3]
+  return manifestV3
 }
