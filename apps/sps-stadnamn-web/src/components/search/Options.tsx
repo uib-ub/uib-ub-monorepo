@@ -83,6 +83,7 @@ export default function Options({isMobile}: {isMobile: boolean}) {
 
   return (    
         <section className="flex flex-col py-4" aria-labelledby="page_heading">
+          <h2 id="page_heading" className="text-xl text-neutral-900">Søkealternativer</h2>
           <div className="flex mb-4 mt-2 gap-4">
           <label className="flex gap-2">
             <input
@@ -105,7 +106,7 @@ export default function Options({isMobile}: {isMobile: boolean}) {
           </div>
           
 
-          <h2 id="page_heading" className="text-xl font-semibold text-neutral-900 small-caps">Søkevisninger</h2>
+          <h3 className="text-xl font-semibold text-neutral-900 small-caps">Søkevisninger</h3>
           <div className='flex flex-col mt-1 justify-between w-full'>
           <div className='flex flex-col'>
           <input

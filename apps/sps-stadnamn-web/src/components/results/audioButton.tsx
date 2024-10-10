@@ -4,7 +4,7 @@ import { PiPlayCircleFill, PiPauseCircleFill } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 
 export default function AudioButton({ audioFile, iconClass }: { audioFile: string, iconClass: string }) {
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState<string|null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = (event: React.MouseEvent) => {
@@ -13,21 +13,21 @@ export default function AudioButton({ audioFile, iconClass }: { audioFile: strin
     if (audio.current) {
         if (playing) {
             audio.current.pause();
-            setPlaying(false);   
+            setPlaying(null);   
 
         }
         else {
             audio.current.play();
-            setPlaying(true); 
+            setPlaying(audioFile); 
         }   
     }
   };
 
   return (
     <>
-    <audio ref={audio} src={audioFile} onEnded={() => setPlaying(false)}/>
+    <audio ref={audio} src={audioFile} onEnded={() => setPlaying(null)}/>
     <IconButton onClick={togglePlay} label={playing? "Pause" : "Spill av lyd"}>
-      {playing ? <PiPauseCircleFill className={"align-text-bottom " + iconClass} /> : <PiPlayCircleFill className={iconClass} />}
+      {playing == audioFile  ? <PiPauseCircleFill className={"align-text-bottom " + iconClass} /> : <PiPlayCircleFill className={iconClass} />}
     </IconButton>
     </>
   );

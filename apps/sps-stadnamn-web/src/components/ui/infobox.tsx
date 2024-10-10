@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import PlaceType from "./place-type";
 
-export default async function InfoBox({ items: items, dataset }: { items: Record<string,any>[], dataset: string }) {
+export default function InfoBox({ items: items, dataset }: { items: Record<string,any>[], dataset: string }) {
     const filteredItems = items.filter(item =>  item.value?.length || (item.items?.length && item.items[0].value?.length));
 
     const subitemRenderer = (item: any) => {

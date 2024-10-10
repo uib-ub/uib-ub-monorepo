@@ -3,7 +3,7 @@ import { PiMagnifyingGlass } from "react-icons/pi";
 import { facetConfig } from "@/config/search-config";
 import { getValueByPath } from "@/lib/utils";
 
-export default async function FacetsInfobox({ dataset, source }: { dataset: string, source: Record<string,any> }) {
+export default function FacetsInfobox({ dataset, source }: { dataset: string, source: Record<string,any> }) {
 
     const items = facetConfig[dataset].filter(item => item.key != 'sosi').map((facet) => {
         const value = getValueByPath(source, facet.key);

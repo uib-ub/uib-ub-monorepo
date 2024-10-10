@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation"
 import { PiDatabaseFill, PiInfoBold, PiTagFill, PiWarningFill } from "react-icons/pi"
 import ClientThumbnail from "./ClientThumbnail"
 import Timeline from "./Timeline"
+import { infoPageRenderers } from "@/config/info-renderers"
+import AudioButton from "@/components/results/audioButton"
 
 export default function DocInfo({doc}: {doc: any}) {
     const docDataset = doc._index.split("-")[2]
@@ -15,8 +17,12 @@ export default function DocInfo({doc}: {doc: any}) {
       return Array.isArray(value) ? value.join("/") : value
     }
     
-    return <article className="instance-info flex flex-col gap-2">
-        <h2>{doc._source.label}</h2>
+    return <article className="instance-info flex flex-col gap-4">
+        <div className="flex gap-2"><h2>{doc._source.label}</h2>{doc._source.audio && 
+          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${doc._source.audio.file}` } 
+                       iconClass="text-3xl text-neutral-700 inline"/> 
+        }
+        </div>
         <div className="flex gap-2 flex-wrap">
         {
          doc._source.sosi && docDataset != 'search' && <Link className="flex items-center gap-1 bg-neutral-100 pl-3 pr-1 rounded-full text-neutral-900 no-underline external-link"
@@ -25,7 +31,6 @@ export default function DocInfo({doc}: {doc: any}) {
         </Link>
          
         }
-            
         
             {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && 
                 <>
@@ -49,7 +54,7 @@ export default function DocInfo({doc}: {doc: any}) {
                 </span>
             }
         
-        <Link href={"/search?dataset="+docDataset} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>
+        { dataset == 'search' && <Link href={"/search?expanded=info&dataset="+docDataset} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
         </div>
 
         { doc._source.attestations?.length && 
@@ -58,9 +63,10 @@ export default function DocInfo({doc}: {doc: any}) {
         <Timeline attestations={doc._source.attestations} />
       </>}
 
+        { false && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](doc._source) }
 
         { doc._source.image?.manifest && <div>
-        <h3>Seddel</h3>
+        <h3>Sedler</h3>
         <ClientThumbnail manifestId={doc._source.image?.manifest}/>
 
 
@@ -73,7 +79,7 @@ export default function DocInfo({doc}: {doc: any}) {
           : <div className="flex gap-1 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
 
-    <Link href="" className="flex whitespace-nowrap items-center gap-1 no-underline">
+    <Link href={"/uuid/" + doc._source.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
         <PiInfoBold aria-hidden="true"/>
         Infoside</Link>
         </div>
