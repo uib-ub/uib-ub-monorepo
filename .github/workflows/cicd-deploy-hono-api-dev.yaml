@@ -12,6 +12,7 @@ jobs:
       - name: Determine if this is a PR or a push to main
         id: determine_context
         run: |
+          echo "${{ github.event_name }}"
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "context=pr" >> $GITHUB_ENV
           fi
