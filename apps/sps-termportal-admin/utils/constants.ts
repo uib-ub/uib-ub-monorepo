@@ -16,6 +16,16 @@ export const activityTypes = {
   møte: "Møte osv.",
 };
 
+export const domainsUhr = {
+  humaniora: "Humaniora",
+  matnat: "Matematikk, naturvitenskap og teknologi",
+  samfunnsfag: "Samfunnsfag",
+  lærerutdanning: "Lærerutdanning",
+  kudiar: "Kunst, design og arkitektur",
+  helsesosial: "Helse og sosial",
+  okonadm: "Økonomi og administrasjon",
+};
+
 export const studioBaseRoute = "/studio/structure";
 export const wikiPageLink = "https://wiki.terminologi.no/index.php?title=";
 
