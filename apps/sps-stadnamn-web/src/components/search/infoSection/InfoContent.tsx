@@ -64,10 +64,10 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
     
     
 
-    if (selectedDoc) {
+    if (selectedDoc && doc) {
         return <DocInfo doc={selectedDoc}/>
     }
-    else if (docList?.length) {
+    else if (docList?.length && point) {
         return <article>{
             docList.map((hit: any) => {
                 return <div key={hit._id} className="p-0">
