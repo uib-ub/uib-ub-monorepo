@@ -36,28 +36,24 @@
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.status }}</span>
-            <div
-              v-if="
-                data.status !== '1. kjent' && data.status !== '5. publisert'
-              "
-            >
+            <div v-if="data.status !== '5. publisert'">
               <Icon
                 v-if="data.blocker.status === 'ok'"
                 name="mdi:play"
                 size="1.6em"
-                :color="blockerColorMapping.ok.color"
+                :class="colorMappingStatus.ok.color"
               />
               <Icon
                 v-else-if="data.blocker.status === 'soft'"
                 name="mdi:pause"
                 size="1.6em"
-                :color="blockerColorMapping.soft.color"
+                :class="colorMappingStatus.warning.color"
               />
               <Icon
                 v-else-if="data.blocker.status === 'hard'"
                 name="mdi:stop"
                 size="1.6em"
-                :color="blockerColorMapping.hard.color"
+                :class="colorMappingStatus.error.color"
               />
             </div>
 
@@ -67,12 +63,12 @@
               "
               name="fa6-solid:triangle-exclamation"
               size="1.2em"
-              :color="
-                data.blocker.status === 'hard'
-                  ? blockerColorMapping.hard.color
-                  : blockerColorMapping.soft.color
-              "
               class="ml-[6px] mt-[3px]"
+              :class="
+                data.blocker.status === 'hard'
+                  ? colorMappingStatus.error.color
+                  : colorMappingStatus.warning.color
+              "
             />
           </div>
         </template>
@@ -117,14 +113,7 @@
               name="material-symbols:circle"
               size="1.2em"
               class="mr-1 mb-[4px]"
-              :class="{
-                'text-green-600': data.reminderCalc <= 0,
-                'text-yellow-400':
-                  data.reminderCalc < reportReminder.interval.error &&
-                  data.reminderCalc >= 0,
-                'text-red-500':
-                  data.reminderCalc > reportReminder.interval.error,
-              }"
+              :class="getReminderColorClass(data)"
             ></Icon>
             {{ data.reminderCalc }} d.
           </div>
@@ -329,9 +318,8 @@
 </template>
 
 <script setup lang="ts">
-import { timespan } from "@seidhr/sanity-plugin-timespan-input";
 import { FilterMatchMode } from "primevue/api";
-import { hiddenCollections } from "~/utils/constants";
+import { colorMappingStatus, hiddenCollections } from "~/utils/constants";
 import { getDaysDiff } from "~/utils/utils";
 
 const runtimeConfig = useRuntimeConfig();
@@ -386,6 +374,15 @@ function calcLastActivity(timespan: Object) {
   }
 }
 
+const dupeIds = computed(() => {
+  const ids = cmsdata.value?.map((tb) => tb.id);
+  const dupes = ids.reduce((acc, curr) => {
+    acc[curr] = (acc[curr] || 0) + 1;
+    return acc;
+  }, {});
+  return ids.filter((item) => dupes[item] > 1);
+});
+
 const merged = computed(() => {
   // enrich dbdata with cms data
   const enriched = dbdata.value
@@ -437,6 +434,7 @@ const merged = computed(() => {
           status: numberStatus(entry.status),
           labels: entry.labelsOk,
           descriptions: entry.descriptionsOk,
+          license: "",
           agreement: entry.licenseAgreementStatus,
           staff: entry.responsibleStaff,
           domain: entry.domain,
@@ -472,10 +470,32 @@ const merged = computed(() => {
   }
 });
 
+// {
+//                 'text-green-600': data.reminderCalc <= 0,
+//                 'text-yellow-400':
+//                   data.reminderCalc < reportReminder.interval.error &&
+//                   data.reminderCalc >= 0,
+//                 colorMappingStatus.error.color : data.reminderCalc > reportReminder.interval.error,
+//               }
+
+const getReminderColorClass = (data) => {
+  const { reminderCalc } = data;
+  const { error } = reportReminder.interval;
+
+  if (reminderCalc <= 0) return colorMappingStatus.ok.color;
+  if (reminderCalc < error && data.reminderCalc >= 0)
+    return colorMappingStatus.warning.color;
+  return colorMappingStatus.error.color;
+};
+
 function checkBlocker(tb) {
   const blocker = { hard: {}, soft: {}, status: "ok" };
   if (tb.status) {
     const statusNumber = Number(tb.status[0]);
+
+    if (dupeIds.value.includes(tb.id)) {
+      blocker.hard.id = "Duplicate ID present.";
+    }
 
     // 2. planlagt or further
     if (statusNumber > 1) {
@@ -491,7 +511,7 @@ function checkBlocker(tb) {
         blocker.hard.id = "No ID defined.";
       }
       // soft
-      if (!tb.domain && statusNumber < 5) {
+      if (!tb.domain && statusNumber < 4) {
         blocker.soft.domain = "No domain provided.";
       }
     }
@@ -510,6 +530,9 @@ function checkBlocker(tb) {
       if (!tb.descriptions) {
         blocker.hard.descriptions = "Descriptions not approved.";
       }
+      if (!tb.domain && statusNumber < 5) {
+        blocker.hard.domain = "No domain provided.";
+      }
     }
 
     if (Object.keys(blocker.hard).length > 0) {
@@ -518,7 +541,7 @@ function checkBlocker(tb) {
       blocker.status = "soft";
     }
   } else {
-    blocker.hard.status = "No status registered";
+    blocker.hard.status = "No termbase status registered";
     blocker.status = "hard";
   }
 
@@ -538,7 +561,7 @@ const licenses = computed(() => {
     return tb.license;
   });
 
-  return [...new Set(licenseArray)].sort().reverse();
+  return [...new Set(licenseArray)].sort();
 });
 
 const agreementStatuses = computed(() => {

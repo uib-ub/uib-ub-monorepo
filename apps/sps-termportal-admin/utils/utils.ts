@@ -50,3 +50,16 @@ export function getDaysDiff(timestamp: string): number {
 
   return diffDays - 1;
 }
+
+export function isInFuture(timestamp: string): boolean {
+  const now = new Date().getTime();
+  const timestampDate = new Date(timestamp).getTime();
+  return timestampDate > now;
+}
+
+export function flattenList(list: Array<any>) {
+  return list?.reduce(
+    (a, b) => a.concat(Array.isArray(b) ? flattenList(b) : b),
+    []
+  );
+}

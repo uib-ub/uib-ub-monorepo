@@ -4,38 +4,45 @@
       <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
     </h3>
     <TermpostTermSection :flex="true">
-      <TermpostTermProp
-        v-if="lalof(concept?.memberOf)"
-        :flex="true"
-        :label="$t('id.collection')"
-      >
-        <TermpostTermDescription
-          prop="link"
+      <client-only>
+        <TermpostTermProp
+          v-if="concept?.memberOf"
           :flex="true"
-          :data="[{ target: [lalof(concept.memberOf), '/' + termbase] }]"
-        />
-      </TermpostTermProp>
-      <TermpostTermProp
-        v-if="concept?.domene"
-        :flex="true"
-        :label="$t('id.domain')"
-      >
-        <TermpostTermDescription :flex="true" :data="[lalof(concept.domene)]" />
-      </TermpostTermProp>
-      <TermpostTermProp
-        v-if="timeDisplay(concept?.startDate) || timeDisplay(concept?.endDate)"
-        :flex="true"
-        :label="$t('id.validityperiod')"
-      >
-        <TermpostTermDescription
+          :label="$t('id.collection')"
+        >
+          <TermpostTermDescription
+            prop="link"
+            :flex="true"
+            :data="[{ target: [lalof(concept.memberOf), '/' + termbase] }]"
+          />
+        </TermpostTermProp>
+        <TermpostTermProp
+          v-if="concept?.domene"
           :flex="true"
-          :data="[
-            `${timeDisplay(concept?.startDate)}-${timeDisplay(
-              concept.endDate
-            )}`,
-          ]"
-        />
-      </TermpostTermProp>
+          :label="$t('id.domain')"
+        >
+          <TermpostTermDescription
+            :flex="true"
+            :data="[lalof(concept.domene)]"
+          />
+        </TermpostTermProp>
+        <TermpostTermProp
+          v-if="
+            timeDisplay(concept?.startDate) || timeDisplay(concept?.endDate)
+          "
+          :flex="true"
+          :label="$t('id.validityperiod')"
+        >
+          <TermpostTermDescription
+            :flex="true"
+            :data="[
+              `${timeDisplay(concept?.startDate)}-${timeDisplay(
+                concept.endDate
+              )}`,
+            ]"
+          />
+        </TermpostTermProp>
+      </client-only>
       <TermpostTermProp
         v-if="displayInfo?.subject"
         :flex="true"
@@ -73,10 +80,7 @@
             <TermpostTermDescription
               v-if="scopeNote?.source"
               :flex="true"
-              :data="[
-                `
-                            (${scopeNote.source})`,
-              ]"
+              :data="[`(${scopeNote.source})`]"
             />
           </div>
         </TermpostTermProp>
@@ -92,17 +96,28 @@
         />
       </TermpostTermProp>
       <TermpostTermProp
-        v-if="termbase === 'SNOMEDCT'"
+        v-if="
+          termbase === 'SNOMEDCT' &&
+          bootstrapData.termbase.SNOMEDCT?.versionNotesLink
+        "
         :flex="true"
         :label="$t('id.version')"
       >
         <TermpostTermDescription
           :flex="true"
-          :data="[[$t('misc.snomedVersion'), snomedConfig.linkNotes]]"
+          :data="[
+            [
+              `${$t('misc.snomedVersion')}, ${localizeSnomedVersionLabel()}`,
+              bootstrapData.termbase.SNOMEDCT?.versionNotesLink,
+            ],
+          ]"
         />
       </TermpostTermProp>
       <TermpostTermProp
-        v-if="termbase === 'SNOMEDCT'"
+        v-if="
+          termbase === 'SNOMEDCT' &&
+          bootstrapData.termbase.SNOMEDCT?.versionNotesLink
+        "
         :flex="true"
         :label="$t('id.browser')"
       >
@@ -111,7 +126,10 @@
           :data="[
             [
               `${$t('misc.snomedBrowser')}: ${displayInfo.pagetitle.value}`,
-              snomedConfig.linkBrowser(route.params.id),
+              snomedConfig.linkBrowser(
+                bootstrapData.termbase.SNOMEDCT.versionEdition,
+                route.params.id
+              ),
             ],
           ]"
         />
@@ -121,9 +139,12 @@
 </template>
 
 <script setup lang="ts">
+import { localizeSnomedVersionLabel } from "~/composables/locale";
+
 const route = useRoute();
 const locale = useLocale();
-const termbase = route.params.termbase as Samling;
+const bootstrapData = useBootstrapData();
+const termbase = route.params.termbase;
 
 const props = defineProps({
   concept: { type: Object, required: true },

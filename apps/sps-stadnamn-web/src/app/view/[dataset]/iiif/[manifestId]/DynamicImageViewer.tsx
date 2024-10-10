@@ -86,7 +86,7 @@ const DynamicImageViewer = () => {
     <div className='h-full w-full flex flex-col'>
     <div className='h-full w-full relative'>
     {isLoading || !viewerRef.current? 
-    <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner className='w-20 h-20'/></div>
+    <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Laster bildevisning" className='w-20 h-20'/></div>
       : null
       }
     <div className='absolute bottom-0 flex z-[1000] flex gap-2 text-xl p-2 text-white w-full'>

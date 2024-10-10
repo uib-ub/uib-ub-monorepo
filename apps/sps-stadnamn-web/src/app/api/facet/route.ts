@@ -1,11 +1,11 @@
 export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
-import { postQuery } from '../_utils/fetch';
+import { postQuery } from '../_utils/post';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
   const { termFilters, filteredParams } = extractFacets(request)
-  const dataset = params.dataset == 'search' ? '*' : params.dataset;
+  const dataset = params.dataset// == 'search' ? '*' : params.dataset;
   const facets = params.facets?.split(',')
   const { simple_query_string } = getQueryString(filteredParams)
 
@@ -26,6 +26,7 @@ export async function GET(request: Request) {
               [facetField[1]]: {
                 terms: {
                   field: `${facetField.join('.')}`,
+                  missing: "_false",
                   size: params.facetSearch ? 10 : 50,
                   ...params.facetSort ? { order: { _key: params.facetSort } } : {},
                 },
@@ -38,6 +39,7 @@ export async function GET(request: Request) {
             [facets[i]]: {
               terms: {
                 field: `${facets[i]}.keyword`,
+                missing: "_false",
                 size: params.facetSearch ? 10 : 50,
                 ...params.facetSort ? { order: { _key: params.facetSort } } : {},
               },

@@ -1,6 +1,5 @@
 import { env } from '@config/env';
 import { IIIFBuilder } from '@iiif/builder';
-import { getPrimaryName, getRightsStatements } from '@thegetty/linkedart.js';
 import { getCopyright } from './getCopyright';
 import { getThumbnailVisualItem } from './getThumbnailVisualItem';
 
@@ -21,16 +20,14 @@ export function constructIIIFStructure(data: any) {
   const filesetID = fileset?._source.id
 
   const thumbnail = getThumbnailVisualItem(item._source)
-  const manifestID = `${env.API_URL}/items/${filesetID}`
+  const manifestID = `${env.API_URL}/items/${filesetID}?as=iiif`
   const homepage = `https://marcus.uib.no/items/${filesetID}`
-  const rightsStatement = getRightsStatements(item._source)
-  console.log("🚀 ~ constructIIIFStructure ~ rightsStatement:", rightsStatement)
 
   // Create the manifest
   const manifest = builder.createManifest(
     manifestID,
     (manifest: any) => {
-      manifest.setLabel(getPrimaryName(item._source) ?? "Mangler tittel");
+      manifest.setLabel(item._source._label ?? { "no": ["Mangler tittel"], "en": ["Missing title"] });
       if (thumbnail) {
         manifest.addThumbnail({
           id: thumbnail,
@@ -75,12 +72,28 @@ export function constructIIIFStructure(data: any) {
           en: ["Attribution"]
         },
         value: {
-
-          /* no: ["Tilgjengeliggjort av Universitetsbiblioteket i Bergen"],
-          en: ["Provided by University of Bergen Library"] */
+          no: ["Tilgjengeliggjort av Universitetsbiblioteket i Bergen"],
+          en: ["Provided by University of Bergen Library"]
         }
       });
       manifest.setRights(getCopyright(item._source, filesetID));
+      manifest.setMetadata([
+        {
+          label: {
+            no: ["Tittel"],
+            en: ["Title"]
+          },
+          value: { "no": ["Eksempel tittel"], "en": ["Example title"] }
+        },
+        {
+          label: {
+            no: ["Emneord"],
+            en: ["Keywords"]
+          },
+          value: { "no": ["Eksempel emneord"], "en": ["Example keywords"] }
+        }
+      ]);
+
       if (fileset) {
         fileset._source.data.hasPart.map((item: any) => {
           const root = `${env.API_URL}/items/${filesetID}`
@@ -88,7 +101,7 @@ export function constructIIIFStructure(data: any) {
           const annotationPageID = `${root}/canvas/${item.sequenceNr}/annotation-page/1`;
           const annotationID = `${root}/canvas/${item.sequenceNr}/annotation/1`;
           manifest.createCanvas(canvasID, (canvas: any) => {
-            canvas.setLabel(item._label.none[0] ?? "Mangler tittel");
+            canvas.setLabel({ no: [item._label.none[0] ?? "Mangler tittel"] });
             canvas.setWidth(1024);
             canvas.setHeight(1024);
             canvas.addThumbnail({
@@ -126,5 +139,5 @@ export function constructIIIFStructure(data: any) {
   const manifestV3: any = builder.toPresentation3({ id: manifest.id, type: 'Manifest' });
   manifestV3.identifier = data.identifier
 
-  return [item, manifestV3]
+  return manifestV3
 }

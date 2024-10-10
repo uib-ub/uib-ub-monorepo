@@ -2,6 +2,7 @@
   "global": {
     "language": "Språk | språk",
     "termbase": "Termbase | termbase | Termbasar  | termbasar",
+    "concept": "Omgrep | omgrep | Omgrep | omgrep",
     "skipLink": "Gå til hovudinnhald",
     "collaborators": "Samarbeidspartnarane våre",
     "readMore": "Les meir...",
@@ -92,6 +93,10 @@
       "delvis": "delvis ekvivalens til",
       "bredere": "breiare intensjon enn",
       "smalere": "smalare intensjon enn"
+    },
+    "audience": {
+      "termportalen:gp:prefLabel": "Anbefalt for allmennlege",
+      "termportalen:gp:altLabel": "Tillatt for allmennlege"
     }
   },
   "domainOverview": { "domainsAndBases": "Domene og termbasar" },
@@ -192,7 +197,8 @@
     "visualization": "Visualisering",
     "imageAltLabel": "Visualisering av omgrepet",
     "version": "Versjon",
-    "browser": "Ekstern nettlesar"
+    "browser": "Ekstern nettlesar",
+    "audience": "Målgruppemerknad"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -223,7 +229,7 @@
     "dataDispLangComment": "Vel kva språk som skal visast i termpostane"
   },
   "misc": {
-    "snomedVersion": "SNOMED CT Norway Extension, mai 2024 v1.0",
+    "snomedVersion": "SNOMED CT Norway Extension",
     "snomedBrowser": "SNOMED CT nettlesar"
   }
 }

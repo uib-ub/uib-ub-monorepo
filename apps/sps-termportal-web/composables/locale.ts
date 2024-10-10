@@ -1,5 +1,5 @@
 import { useI18n } from "vue-i18n";
-import { Samling } from "~/utils/vars-termbase";
+import { systemTermbases } from "~/utils/vars-termbase";
 
 export type LocalLangCode = "en" | "nb" | "nn";
 
@@ -104,19 +104,50 @@ export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
   ],
 };
 
+export const useOrderedTermbases = () => {
+  const bootstrapData = useBootstrapData();
+  const termbases = Object.keys(bootstrapData.value.termbase).filter(
+    (tb) => !systemTermbases.includes(tb)
+  );
+
+  const sortedTermbases = termbases.sort((a, b) => {
+    const labelA = lalof(`${a}-3A${a}`);
+    const labelB = lalof(`${b}-3A${b}`);
+
+    return labelA.localeCompare(labelB);
+  });
+
+  return toRef(() => sortedTermbases);
+};
+
+export function localizeSnomedVersionLabel() {
+  const bootstrapData = useBootstrapData();
+  const locale = useLocale();
+  const date = new Date(bootstrapData.value.termbase.SNOMEDCT.versionEdition);
+  const options = {
+    year: "numeric",
+    month: "long",
+    hour12: true,
+  };
+  return date.toLocaleString(locale.value, options);
+}
+
 // TODO refactor with lazy data
-function deriveLanguageInfo(languages: LangCode[]): {
+export function deriveLanguageInfo(languages: LangCode[]): {
   [key in LangCode]: Samling[];
 } {
+  const bootstrapData = useBootstrapData();
+  const orderedTermbases = useOrderedTermbases();
   return Object.assign(
     {},
     ...languages.map((lang) => ({
-      [lang]: termbaseOrder.filter((base) =>
-        termbaseInfo[base].includes(lang as LangCode)
+      [lang]: orderedTermbases.value.filter((termbase) =>
+        bootstrapData.value.termbase[termbase].language.includes(
+          lang as LangCode
+        )
       ),
     }))
   );
 }
 
-export const languageInfo = deriveLanguageInfo(languageOrder.nb);
 export const languageRtoL: Set<LangCode> = new Set(["ar"]);

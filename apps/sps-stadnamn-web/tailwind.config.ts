@@ -5,11 +5,16 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/config/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  safelist: [
+    "font-phonetic"
   ],
   theme: {
     extend: {
       fontFamily: {
-        garamond: ["EB Garamond"]
+        garamond: ["EB Garamond"],
+        phonetic: ["PhoneticFont"],
 
       },
       colors: {

@@ -13,6 +13,7 @@
         "^build"
       ],
       "env": [
+        "NODE_ENV",
         "SN_ENV",
         "ES_ENDPOINT",
         "ES_TOKEN",

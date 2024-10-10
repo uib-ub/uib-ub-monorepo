@@ -1,14 +1,15 @@
 <template>
   <header>
-    <div style="height: 48px">
-      <NavBar
+    <div style="height: 50px">
+      <NavbarWrapper
         ref="navBarRef"
+        :key="'navbar' + locale + orderedTermbases.length"
         :context="context"
         class="tp-transition-slow z-10"
         :class="{
           'fixed top-0 drop-shadow-md': fixPosition,
         }"
-        style="top: -52px"
+        style="top: -54px"
       />
     </div>
     <div v-if="context === 'full'" class="flex px-4 xl:pl-0 w-full">
@@ -31,6 +32,8 @@
 
 <script setup lang="ts">
 const route = useRoute();
+const locale = useLocale();
+const orderedTermbases = useOrderedTermbases();
 
 const context = computed(() => {
   if (route.path === "/") {

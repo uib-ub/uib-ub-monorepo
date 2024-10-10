@@ -14,24 +14,22 @@
             <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
               {{ $t("searchFilter.results-heading") }}
             </h2>
-            <ol ref="sidebar" class="overflow-y-auto" style="height: 0px">
-              <SearchResultListEntryShort
-                v-for="entry in searchData"
-                :key="entry.label + entry.link + entry.lang"
-                :entry-data="entry"
-              />
-            </ol>
+            <div ref="sidebar" class="overflow-y-auto" style="height: 0px">
+              <SearchResultsList context="sidebar" />
+            </div>
           </nav>
         </div>
         <!-- Termpost -->
         <div class="flex grow flex-col">
           <main ref="main" class="h-full">
-            <TermpostBase
-              v-if="conceptUrl && mainConceptId"
-              :concept-url="conceptUrl"
-              :main-concept-id="mainConceptId"
-              :mainp="true"
-            />
+            <UtilsTransitionOpacitySection>
+              <TermpostBase
+                v-if="conceptUrl && mainConceptId"
+                :concept-url="conceptUrl"
+                :main-concept-id="mainConceptId"
+                :mainp="true"
+              />
+            </UtilsTransitionOpacitySection>
           </main>
         </div>
       </div>
@@ -50,12 +48,6 @@ const sidebar = ref(null);
 const main = ref(null);
 const termbase = route.params.termbase as Samling;
 const idArray = route.params.id as Array<string>;
-
-onMounted(() => {
-  if (sidebar.value) {
-    sidebar.value.scrollTop = searchScrollBarPos.value;
-  }
-});
 
 function getConceptId(termbase, idArray) {
   let id: string;
@@ -77,6 +69,13 @@ const mainConceptId = getConceptId(termbase, idArray);
 useResizeObserver(main, (e) => {
   if (sidebar.value) {
     sidebar.value.style.height = `${main.value.offsetHeight - 88}px`;
+  }
+});
+
+onMounted(async () => {
+  await nextTick();
+  if (sidebar.value) {
+    sidebar.value.scrollTo(0, searchScrollBarPos.value);
   }
 });
 
