@@ -93,6 +93,10 @@
       "delvis": "delvis ekvivalens til",
       "bredere": "breiare intensjon enn",
       "smalere": "smalare intensjon enn"
+    },
+    "audience": {
+      "termportalen:gp:prefLabel": "Anbefalt for allmennlege",
+      "termportalen:gp:altLabel": "Tillatt for allmennlege"
     }
   },
   "domainOverview": { "domainsAndBases": "Domene og termbasar" },
@@ -193,7 +197,8 @@
     "visualization": "Visualisering",
     "imageAltLabel": "Visualisering av omgrepet",
     "version": "Versjon",
-    "browser": "Ekstern nettlesar"
+    "browser": "Ekstern nettlesar",
+    "audience": "Målgruppemerknad"
   },
   "index": { "title": "Termportalen" },
   "search": {
