@@ -21,7 +21,7 @@ export default {
       fieldset: "personbank",
     },
     {
-      name: "candidacy",
+      name: "qualifiedCandidacy",
       type: "array",
       fieldset: "personbank",
       of: [candidacy],
