@@ -1,6 +1,5 @@
 import { env } from '@config/env';
 import { IIIFBuilder } from '@iiif/builder';
-import { getRightsStatements } from '@thegetty/linkedart.js';
 import { getCopyright } from './getCopyright';
 import { getThumbnailVisualItem } from './getThumbnailVisualItem';
 
@@ -23,8 +22,6 @@ export function constructIIIFStructure(data: any) {
   const thumbnail = getThumbnailVisualItem(item._source)
   const manifestID = `${env.API_URL}/items/${filesetID}?as=iiif`
   const homepage = `https://marcus.uib.no/items/${filesetID}`
-  const rightsStatement = getRightsStatements(item._source)
-  console.log("🚀 ~ constructIIIFStructure ~ rightsStatement:", rightsStatement)
 
   // Create the manifest
   const manifest = builder.createManifest(
@@ -75,12 +72,28 @@ export function constructIIIFStructure(data: any) {
           en: ["Attribution"]
         },
         value: {
-
-          /* no: ["Tilgjengeliggjort av Universitetsbiblioteket i Bergen"],
-          en: ["Provided by University of Bergen Library"] */
+          no: ["Tilgjengeliggjort av Universitetsbiblioteket i Bergen"],
+          en: ["Provided by University of Bergen Library"]
         }
       });
       manifest.setRights(getCopyright(item._source, filesetID));
+      manifest.setMetadata([
+        {
+          label: {
+            no: ["Tittel"],
+            en: ["Title"]
+          },
+          value: { "no": ["Eksempel tittel"], "en": ["Example title"] }
+        },
+        {
+          label: {
+            no: ["Emneord"],
+            en: ["Keywords"]
+          },
+          value: { "no": ["Eksempel emneord"], "en": ["Example keywords"] }
+        }
+      ]);
+
       if (fileset) {
         fileset._source.data.hasPart.map((item: any) => {
           const root = `${env.API_URL}/items/${filesetID}`
