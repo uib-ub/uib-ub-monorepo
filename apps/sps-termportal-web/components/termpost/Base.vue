@@ -7,7 +7,7 @@
       <h2
         v-if="pagetitle"
         :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
-        class="pb-4 mt-3 md:mt-4 lg:mt-6"
+        class="pb-0 xl:pb-4 mt-3 md:mt-4 lg:mt-6"
       >
         <AppLink
           class="text-3xl"
@@ -37,7 +37,7 @@
             :pagetitle="pagetitle"
           />
         </div>
-        <div class="grid gap-y-7 shrink-0 lg:shrink lg:min-w-[30em]">
+        <div class="grid gap-y-3 lg:gap-y-4 shrink-0 lg:shrink lg:min-w-[30em]">
           <div
             v-for="lang in displayInfo?.displayLanguages"
             :key="'disp_' + lang"

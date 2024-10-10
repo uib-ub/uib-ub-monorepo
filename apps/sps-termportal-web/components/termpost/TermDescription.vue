@@ -4,7 +4,7 @@
     :key="d + 'key'"
     class="px-2"
     :class="{
-      'border-l-solid my-1 border-2 border-transparent border-l-gray-300 border-r-transparent hover:border-l-tpblue-200':
+      'border-l-solid my-1 lg:my-2 pt-[0px] border-2 border-transparent border-l-gray-300 border-r-transparent hover:border-l-tpblue-200':
         !flex,
     }"
   >
@@ -39,7 +39,7 @@
         prop !== 'equivalencenote'
       "
       class="grid-col-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1"
-      :class="{ 'mt-4': mainValue(d) }"
+      :class="{ 'mt-1.5': mainValue(d) }"
     >
       <TermpostTermProp
         v-if="d.isOfAbbreviationType"
