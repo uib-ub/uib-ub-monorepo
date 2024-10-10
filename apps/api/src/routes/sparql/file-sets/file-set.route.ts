@@ -6,7 +6,7 @@ import { HTTPException } from 'hono/http-exception'
 
 const route = new OpenAPIHono()
 
-const PersonSchema = z.record(z.string(), z.any()).openapi('Perosn')
+const PersonSchema = z.record(z.string(), z.any()).openapi('Person')
 
 export const getItem = createRoute({
   method: 'get',
