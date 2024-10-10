@@ -30,7 +30,7 @@ import { listenQuery } from 'sanity';
             </NuxtLink>
           </div>
           <ul
-            class="flex items-center space-x-7 text-lg font-semibold text-gray-500"
+            class="flex items-center space-x-2 xl:space-x-4 2xl:space-x-7 text-lg font-semibold text-gray-500"
           >
             <NavBarLink to="/overview">Overview</NavBarLink>
             <NavBarLink to="/insights">Insights</NavBarLink>
