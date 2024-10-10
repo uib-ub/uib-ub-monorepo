@@ -14,8 +14,12 @@ jobs:
         run: |
           echo "event name: ${{ github.event_name }}"
           echo "git ref: ${{ github.ref }}"
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "context=pr" >> $GITHUB_ENV
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ "${{ github.ref }}" == "refs/heads/main" || "${{ github.ref }}" == "refs/heads/master" ]]; then
+              echo "context=main" >> $GITHUB_ENV
+            else
+              echo "context=pr" >> $GITHUB_ENV
+            fi
           fi
       # Conditionally checkout the code based on the context (PR or main branch)
       - name: Checkout code for PR
@@ -26,7 +30,7 @@ jobs:
           fetch-depth: 3 # Fetch enough commit history to get the previous commits
 
       - name: Checkout code for main branch
-        if: github.ref == 'refs/heads/main'
+        if: env.context == 'main'
         uses: actions/checkout@v4
         with:
           fetch-depth: 3 # Fetch enough commit history to get the previous commits
