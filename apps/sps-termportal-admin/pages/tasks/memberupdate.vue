@@ -28,7 +28,7 @@
       <h2 class="text-xl pb-3 font-semibold">Termgrupper</h2>
       <DataTable
         ref="datatable"
-        v-model:selection="selectedTermbase"
+        v-model:selection="selectedTermgroup"
         v-model:expandedRows="expandedRows"
         selection-mode="single"
         :value="termgroupProc"
@@ -68,7 +68,7 @@
         <Column header="">
           <template #body="slotProps">
             <AppLink
-              :to="`${studioBaseRoute}/group;${slotProps.data.id}`"
+              :to="`${studioBaseRoute}/group;${slotProps.data._id}`"
               target="_blank"
               class="hover:bg-gray-100 p-1 rounded"
             >
@@ -148,7 +148,7 @@
 <script setup lang="ts">
 const datatable = ref();
 const expandedRows = ref();
-const selectedTermbase = ref();
+const selectedTermgroup = ref();
 
 const queryActivity = `
 *[_type == "activity"

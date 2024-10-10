@@ -60,6 +60,7 @@ export default function (
       },
       contactPoint: "dcat:contactPoint",
       hasTelephone: "vcard:hasTelephone",
+      audience: { "@id": "dct:audience", "@type": "@id" },
       hasEmail: { "@id": "vcard:hasEmail", "@type": "@id" },
       domene: { "@id": "skosp:domene", "@type": "@id" },
       publisere: { "@id": "skosp:publisere", "@type": "xsd:boolean" },

@@ -92,6 +92,10 @@
       "delvis": "partial equivalence to",
       "bredere": "Broader intension than",
       "smalere": "Narrower intension than"
+    },
+    "audience": {
+      "termportalen:gp:prefLabel": "Recommended for general practitioner",
+      "termportalen:gp:altLabel": "Allowed for general practitioner"
     }
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
@@ -192,7 +196,8 @@
     "visualization": "Visualization",
     "imageAltLabel": "Visualization of the concept",
     "version": "Version",
-    "browser": "External browser"
+    "browser": "External browser",
+    "audience": "Audience note"
   },
   "index": { "title": "Termportalen" },
   "search": {
