@@ -5,7 +5,7 @@ import Results from "./Results";
 import MapExplorer from "./MapExplorer";
 import { useQueryState } from "nuqs";
 import Options from "./Options";
-import InfoContent from "./InfoContent";
+import InfoContent from "./infoSection/InfoContent";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);

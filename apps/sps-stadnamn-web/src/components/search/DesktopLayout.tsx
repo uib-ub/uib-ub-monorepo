@@ -6,7 +6,7 @@ import { useContext, useState } from "react"
 import { SearchContext } from "@/app/simple-search-provider";
 import { datasetTitles } from "@/config/metadata-config"
 import { useSearchParams } from "next/navigation"
-import InfoContent from "./InfoContent"
+import InfoContent from "./infoSection/InfoContent"
 import { PiX, PiXBold } from "react-icons/pi"
 
 
@@ -58,9 +58,9 @@ export default function DesktopLayout() {
         </section>
         }
         </div>
-        <div className="placeholder:info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001] scroll-container">
+        <div className="placeholder:info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
         
-        <div className="lg:bg-white relative rounded-md lg:shadow-md break-words p-8 overflow-y-auto">
+        <div className="lg:bg-white relative rounded-md lg:shadow-md break-words px-8 pt-8 pb-4 overflow-y-auto">
             { doc && <button className="absolute right-2 top-2" onClick={() => setDoc(null)} aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
             { point && <button className="absolute right-2 top-2" onClick={() => setPoint(null)} aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
             <InfoContent expanded={expanded == 'info'}/>

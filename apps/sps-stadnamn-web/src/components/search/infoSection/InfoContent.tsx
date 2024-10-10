@@ -5,7 +5,7 @@ import DatasetInfo from "./DatasetInfo"
 import DocInfo from "./DocInfo"
 import { getSkeletonLength } from "@/lib/utils"
 import { useQueryState } from "nuqs"
-import Spinner from "../svg/Spinner"
+import Spinner from "../../svg/Spinner"
 import { useSearchQuery } from "@/lib/search-params"
 
 
@@ -13,7 +13,7 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
 
     const searchParams = useSearchParams()
     const doc = useQueryState('doc')[0]
-    const dataset = searchParams.get('dataset') || 'search'
+    const dataset = searchParams.get('dataset')
     const point = useQueryState('point')[0]
     const { searchQueryString } = useSearchQuery()
     const [ selectedDoc, setSelectedDoc ] = useState<any | null>(null)
@@ -28,7 +28,7 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
        
         if (doc) {
 
-            fetch(`/api/uuid/${doc}`).then(res => res.json()).then(data => {
+            fetch(`/api/doc?uuid=${doc}&dataset=${dataset || 'search'}`).then(res => res.json()).then(data => {
                 console.log(data)
                 if (data.hits?.hits?.length) {
                     setSelectedDoc(data.hits?.hits[0])
@@ -39,7 +39,7 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
 
         }
         else if (point) {
-            fetch(`/api/location?point=${point}&${searchQueryString}`).then(res => 
+            fetch(`/api/location?point=${point}&dataset=${dataset || 'search'}&${searchQueryString}`).then(res => 
                 res.json()).then(data => {
                     console.log(data)
                     if (data.hits?.hits?.length) {
