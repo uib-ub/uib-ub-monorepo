@@ -1,6 +1,6 @@
 import { DATA_SOURCES } from '@config/constants'
 import { cleanJsonld } from '@helpers/cleaners/cleanJsonLd'
-import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 import executeQuery from '@lib/executeQuery'
 import { sqb } from '@lib/sparqlQueryBuilder'
 import { PaginationParamsSchema, SourceParamsSchema } from '@models'
@@ -8,7 +8,6 @@ import { listFileSetsSparqlQuery } from '@services/sparql/queries'
 import { HTTPException } from 'hono/http-exception'
 import jsonld, { ContextDefinition } from 'jsonld'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
-import { z } from 'zod'
 
 const route = new OpenAPIHono()
 
