@@ -45,6 +45,7 @@ import { listenQuery } from 'sanity';
               </div>
             </NavBarLink>
             <NavBarLink to="/activities">Activities</NavBarLink>
+            <NavBarLink to="/personbase">Personbank</NavBarLink>
             <NavBarLink to="/docs">Documentation</NavBarLink>
             <NavBarLink to="/studio">Studio</NavBarLink>
           </ul>
