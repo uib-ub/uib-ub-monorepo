@@ -139,12 +139,16 @@
             <h2 class="text-lg py-1 font-semibold">Merknad</h2>
             <TpSanityContent :blocks="slotProps.data.note" />
           </div>
-          <div v-if="slotProps.data.scope">
-            <h2 class="text-lg py-1 font-semibold">Scope</h2>
-            <DataTable :value="slotProps.data.scope">
-              <Column field="scope" header="Scope" sortable />
-              <Column field="subscope" header="Subscope" sortable />
-            </DataTable>
+          <div v-if="slotProps.data.membership">
+            <h2 class="text-lg py-1 font-semibold">Grupper</h2>
+            <ul class="list-disc ml-5">
+              <li
+                v-for="membership in slotProps.data.membership"
+                :key="membership"
+              >
+                {{ membership }}
+              </li>
+            </ul>
           </div>
         </div>
       </template>
@@ -171,7 +175,13 @@ const filters = ref({
   refgroup: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 
-const query = `*[_type == "person" && defined(qualifiedCandidacy)]{...}`;
+const query = `
+*[_type == "person" && defined(qualifiedCandidacy)]
+ {
+  "membership": *[_type == "group" && references(^._id)]{ label },
+  ...
+  }
+`;
 
 const { data } = await useLazySanityQuery(query);
 
@@ -183,6 +193,7 @@ const procdata = computed(() => {
         _id: person._id,
         name: person?.label,
         note: person?.note,
+        membership: person?.membership?.map((membership) => membership.label),
         lastUpdated: person?.lastUpdated,
         domain: domainsUhr[cand?.domain],
       };
