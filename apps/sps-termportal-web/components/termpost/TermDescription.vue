@@ -25,7 +25,8 @@
     </div>
     <dl
       v-if="
-        (d?.note ||
+        (d?.audience ||
+          d?.note ||
           d?.scopeNote ||
           d?.isOfAbbreviationType ||
           d?.isAbbreviationOf ||
@@ -100,6 +101,13 @@
           v-html="d.source?.['@value']"
         />
       </TermpostTermProp>
+      <!-- audience -->
+      <TermpostTermProp v-if="d?.audience" :label="$t('id.audience')">
+        <dd class="max-w-prose">
+          {{ $t("global.audience." + d?.audience) }}
+        </dd>
+      </TermpostTermProp>
+
       <!-- note -->
       <TermpostTermProp v-if="d.note" :label="$t('id.note')">
         <dd
