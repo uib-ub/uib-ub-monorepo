@@ -2,8 +2,8 @@ import CopyLink from "@/app/view/[dataset]/doc/[uuid]/CopyLink"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useQueryState } from "nuqs"
-import { PiBookOpen, PiBookOpenBold, PiBookOpenFill, PiDatabase, PiDatabaseFill, PiMapPinArea, PiMapPinAreaFill, PiMountainsBold, PiMountainsFill, PiTag, PiTagFill, PiWarningFill, PiX } from "react-icons/pi"
+import { PiDatabaseFill, PiInfoBold, PiTagFill, PiWarningFill } from "react-icons/pi"
+import ClientThumbnail from "./ClientThumbnail"
 
 export default function DocInfo({doc}: {doc: any}) {
     const docDataset = doc._index.split("-")[2]
@@ -18,9 +18,8 @@ export default function DocInfo({doc}: {doc: any}) {
         <h2>{doc._source.label}</h2>
         <div className="flex gap-2 flex-wrap">
         {
-         doc._source.sosi && docDataset != 'search' && <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline external-link"
+         doc._source.sosi && docDataset != 'search' && <Link className="flex items-center gap-1 bg-neutral-100 pl-3 pr-1 rounded-full text-neutral-900 no-underline external-link"
          href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + doc._source.sosi}>
-            <PiMountainsFill aria-hidden="true"/>
             { doc._source.sosi}
         </Link>
          
@@ -34,7 +33,7 @@ export default function DocInfo({doc}: {doc: any}) {
                 </>
             
                 || doc._source.wikiAdm && docDataset != 'm1838' 
-                    &&  <Link  className="gap-1 flex align-middle bg-neutral-100 px-3 rounded-full text-neutral-900 no-underline external-link" href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>
+                    &&  <Link  className="gap-1 flex align-middle bg-neutral-100 pr-1 pl-3 rounded-full text-neutral-900 no-underline external-link" href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>
                         
                         <span className="max-w-[12rem] truncate">
                 {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
@@ -52,6 +51,13 @@ export default function DocInfo({doc}: {doc: any}) {
         <Link href={"/search?dataset="+docDataset} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>
         </div>
 
+        { doc._source.image?.manifest && <div>
+        <h3>Seddel</h3>
+        <ClientThumbnail manifestId={doc._source.image?.manifest}/>
+
+
+        </div>}
+
 
         <div className="flex gap-4 flex-wrap pt-4 pb-2 text-neutral-950">
         { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
@@ -60,8 +66,8 @@ export default function DocInfo({doc}: {doc: any}) {
       }
 
     <Link href="" className="flex whitespace-nowrap items-center gap-1 no-underline">
-        <PiBookOpenBold aria-hidden="true"/>
-        Åpne</Link>
+        <PiInfoBold aria-hidden="true"/>
+        Infoside</Link>
         </div>
         
 
