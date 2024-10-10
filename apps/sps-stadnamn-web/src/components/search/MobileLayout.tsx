@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useState } from "react"
-import { PiDatabase, PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass } from "react-icons/pi";
+import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass } from "react-icons/pi";
 import Results from "./Results";
 import MapExplorer from "./MapExplorer";
 import { useQueryState } from "nuqs";

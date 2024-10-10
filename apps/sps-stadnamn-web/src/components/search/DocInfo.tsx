@@ -1,13 +1,13 @@
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiDatabase, PiDatabaseFill, PiTag, PiTagFill } from "react-icons/pi"
+import { useQueryState } from "nuqs"
+import { PiDatabase, PiDatabaseFill, PiTag, PiTagFill, PiX } from "react-icons/pi"
 
 export default function DocInfo({doc}: {doc: any}) {
     const docDataset = doc._index.split("-")[2]
     const searchParams = useSearchParams()
     const dataset = searchParams.get('dataset') || 'search'
-
     
     return <article className="instance-info flex flex-col gap-2">
         <h2>{doc._source.label}</h2>

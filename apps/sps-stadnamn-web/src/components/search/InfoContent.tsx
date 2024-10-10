@@ -12,16 +12,17 @@ import { useSearchQuery } from "@/lib/search-params"
 export default function InfoContent({expanded}: {expanded: boolean}) {
 
     const searchParams = useSearchParams()
-    const [selected, setSelected] = useState<any[] | null>(null)
     const doc = useQueryState('doc')[0]
     const dataset = searchParams.get('dataset') || 'search'
     const point = useQueryState('point')[0]
-    const [isLoading, setIsLoading] = useState(true)
     const { searchQueryString } = useSearchQuery()
+    const [ selectedDoc, setSelectedDoc ] = useState<any | null>(null)
+    const [ docList, setDocList ] = useState<any[] | null>(null)
+
+    const [isLoading, setIsLoading] = useState(true)
     
 
     useEffect(() => {
-        console.log("RUNNING")
         setIsLoading(true)
         
        
@@ -30,51 +31,45 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
             fetch(`/api/uuid/${doc}`).then(res => res.json()).then(data => {
                 console.log(data)
                 if (data.hits?.hits?.length) {
-                    setSelected(data.hits?.hits)
+                    setSelectedDoc(data.hits?.hits[0])
+                    setDocList(null)
                     setIsLoading(false)
                 }
             })
 
         }
         else if (point) {
-            
-
             fetch(`/api/location?point=${point}&${searchQueryString}`).then(res => 
                 res.json()).then(data => {
                     console.log(data)
                     if (data.hits?.hits?.length) {
-                        setSelected(data.hits?.hits)
+                        setDocList(data.hits?.hits)
+                        setSelectedDoc(null)
                         setIsLoading(false)
                     }
             })
         }
         else {
-            setSelected(null)
+            setDocList(null)
+            setSelectedDoc(null)
+            setIsLoading(false)
         }
             
     }
-    , [doc, point, dataset])
+    , [doc, point, dataset, searchQueryString])
 
     
     
-    if (!selected || isLoading) {
-        return isLoading ? null &&
+    
+    
+    
 
-        <div className="w-full flex items-center">
-            <Spinner status="Laster inn data"/>
-
-
-        </div>
-        
-        :  <DatasetInfo/> 
+    if (selectedDoc) {
+        return <DocInfo doc={selectedDoc}/>
     }
-
-    if (doc) {
-        return <DocInfo doc={selected[0]}/>
-    }
-    else if (point) {
+    else if (docList?.length) {
         return <article>{
-            selected.map((hit: any) => {
+            docList.map((hit: any) => {
                 return <div key={hit._id} className="p-0">
                     <h2>{hit._source?.label}</h2>
                 </div>
@@ -84,6 +79,9 @@ export default function InfoContent({expanded}: {expanded: boolean}) {
         }
 
         </article>
+    }
+    else if (!isLoading) {
+        return  <DatasetInfo/> 
     }
 
 

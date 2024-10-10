@@ -32,6 +32,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const [point, setPoint] = useQueryState('point', {history: 'push', scroll: true})
     const [viewResults, setViewResults] = useState<any>(null)
     const { searchQueryString } = useSearchQuery()
+    const [ expanded, setExpanded ] = useQueryState('expanded', {history: 'push'})
 
     const [bounds, setBounds] = useState<null|[[number, number], [number, number]]>(null)
     useEffect(() => {
@@ -291,10 +292,12 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
         if (typeof selected === 'string') {
           setPoint(null)
           setDoc(selected)
+          setExpanded('info')
         }
         else if (hits?.length) {
           setDoc(null)
           setPoint(selected.join(','))
+          setExpanded('info')
         }
       }
 

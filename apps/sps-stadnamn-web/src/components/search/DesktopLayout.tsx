@@ -2,19 +2,20 @@
 import Results from "./Results"
 import MapExplorer from "./MapExplorer"
 import { useQueryState } from "nuqs"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { SearchContext } from "@/app/simple-search-provider";
 import { datasetTitles } from "@/config/metadata-config"
 import { useSearchParams } from "next/navigation"
 import InfoContent from "./InfoContent"
+import { PiX, PiXBold } from "react-icons/pi"
 
 
 export default function DesktopLayout() {
 
     const { resultData } = useContext(SearchContext)
     const searchParams = useSearchParams()
-    const doc = useQueryState('doc')[0]
-    const point = useQueryState('point')[0]
+    const [doc, setDoc] = useQueryState('doc')
+    const [point, setPoint] = useQueryState('point')
 
 
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
@@ -57,10 +58,13 @@ export default function DesktopLayout() {
         </section>
         }
         </div>
-        <div className="info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001] scroll-container">
-        <article className="lg:bg-white rounded-md lg:shadow-md break-words p-8 overflow-y-auto">
+        <div className="placeholder:info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001] scroll-container">
+        
+        <div className="lg:bg-white relative rounded-md lg:shadow-md break-words p-8 overflow-y-auto">
+            { doc && <button className="absolute right-2 top-2" onClick={() => setDoc(null)} aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
+            { point && <button className="absolute right-2 top-2" onClick={() => setPoint(null)} aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
             <InfoContent expanded={expanded == 'info'}/>
-        </article>
+        </div>
         </div>
 
 
