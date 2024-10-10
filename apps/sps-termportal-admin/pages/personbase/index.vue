@@ -123,7 +123,7 @@
         <template #body="slotProps">
           <NuxtLink
             v-if="slotProps.data._id"
-            :to="`${studioBaseRoute}/termbase;${slotProps.data._id}`"
+            :to="`${studioBaseRoute}/person;${slotProps.data._id}`"
             target="_blank"
             class="hover:bg-gray-100 p-1 rounded"
           >
@@ -171,7 +171,7 @@ const filters = ref({
   refgroup: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 
-const query = `*[_type == "person" && label == "Dag Helland"]{...}`;
+const query = `*[_type == "person" && defined(qualifiedCandidacy)]{...}`;
 
 const { data } = await useLazySanityQuery(query);
 
