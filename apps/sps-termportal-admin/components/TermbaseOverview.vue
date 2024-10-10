@@ -541,7 +541,7 @@ function checkBlocker(tb) {
       blocker.status = "soft";
     }
   } else {
-    blocker.hard.status = "No status registered";
+    blocker.hard.status = "No termbase status registered";
     blocker.status = "hard";
   }
 

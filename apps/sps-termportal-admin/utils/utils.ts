@@ -56,3 +56,10 @@ export function isInFuture(timestamp: string): boolean {
   const timestampDate = new Date(timestamp).getTime();
   return timestampDate > now;
 }
+
+export function flattenList(list: Array<any>) {
+  return list?.reduce(
+    (a, b) => a.concat(Array.isArray(b) ? flattenList(b) : b),
+    []
+  );
+}
