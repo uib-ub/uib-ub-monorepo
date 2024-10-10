@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { PiDatabaseFill, PiInfoBold, PiTagFill, PiWarningFill } from "react-icons/pi"
 import ClientThumbnail from "./ClientThumbnail"
+import Timeline from "./Timeline"
 
 export default function DocInfo({doc}: {doc: any}) {
     const docDataset = doc._index.split("-")[2]
@@ -51,6 +52,13 @@ export default function DocInfo({doc}: {doc: any}) {
         <Link href={"/search?dataset="+docDataset} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>
         </div>
 
+        { doc._source.attestations?.length && 
+      <>
+        <h3>Historikk</h3>
+        <Timeline attestations={doc._source.attestations} />
+      </>}
+
+
         { doc._source.image?.manifest && <div>
         <h3>Seddel</h3>
         <ClientThumbnail manifestId={doc._source.image?.manifest}/>
@@ -59,7 +67,7 @@ export default function DocInfo({doc}: {doc: any}) {
         </div>}
 
 
-        <div className="flex gap-4 flex-wrap pt-4 pb-2 text-neutral-950">
+        <div className="flex gap-4 flex-wrap pt-8 pb-2 text-neutral-950">
         { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
           <CopyLink uuid={doc._source.uuid}/> 
           : <div className="flex gap-1 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
