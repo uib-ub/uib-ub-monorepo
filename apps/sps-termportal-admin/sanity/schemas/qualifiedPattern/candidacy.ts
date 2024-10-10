@@ -5,7 +5,6 @@ export default {
   type: "object",
   fieldsets: [{ name: "scope", options: { columns: 2 } }],
   fields: [
-    // UHR domains
     {
       name: "domain",
       type: "string",
@@ -16,11 +15,8 @@ export default {
         }),
       },
     },
-    // freetext domain
     { name: "subdomain", type: "string" },
-    // termgroup
     { name: "termgroup", type: "boolean", initialValue: false },
-    // ref group
     { name: "refgroup", type: "boolean", initialValue: false },
   ],
   preview: {
