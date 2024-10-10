@@ -17,11 +17,17 @@ export async function GET(request: Request) {
         }
         
         const distance_query = { geo_distance: {
-            distance: '10m',
+            distance: '5m',
             location: {
                 lat: parseFloat(coordinates[0]),
                 lon: parseFloat(coordinates[1])
                 }
+            }
+        }
+
+        query.query = {
+            bool: {
+                must: [distance_query],
             }
         }
 
