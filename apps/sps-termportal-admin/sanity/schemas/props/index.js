@@ -50,13 +50,14 @@ export const note = {
   of: [blockContent],
 };
 
-export const label = { name: "label", type: "string" };
+export const label = { name: "label", type: "string", title: "Tittel" };
 
-export const email = { name: "email", type: "string" };
+export const email = { name: "email", type: "string", title: "E-post"};
 
 export const tbstatus = {
   name: "status",
   type: "string",
+  title: "Termbase status",
   options: {
     list: [
       { title: "Kjent", value: "kjent" },
@@ -73,10 +74,12 @@ export const tbstatus = {
 export const timespan = {
   name: "timespan",
   type: "Timespan",
+  title: "Tidsrom",
 };
 
 export const responsibleStaff = {
   name: "responsibleStaff",
   type: "reference",
+  title: "Ansvarlig ansatt",
   to: [{ type: "person" }],
 };

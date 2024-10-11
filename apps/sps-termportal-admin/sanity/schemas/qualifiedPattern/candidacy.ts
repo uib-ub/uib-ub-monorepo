@@ -3,6 +3,7 @@ import { domainsUhr } from "~/utils/constants";
 export default {
   name: "candidacy",
   type: "object",
+  title: "Interesseområde",
   fieldsets: [{ name: "scope", options: { columns: 2 } }],
   fields: [
     {
@@ -16,8 +17,18 @@ export default {
       },
     },
     { name: "subdomain", type: "string" },
-    { name: "termgroup", type: "boolean", initialValue: false },
-    { name: "refgroup", type: "boolean", initialValue: false },
+    {
+      name: "termgroup",
+      title: "Termgruppe",
+      type: "boolean",
+      initialValue: false,
+    },
+    {
+      name: "refgroup",
+      title: "Referansegruppe",
+      type: "boolean",
+      initialValue: false,
+    },
   ],
   preview: {
     select: {

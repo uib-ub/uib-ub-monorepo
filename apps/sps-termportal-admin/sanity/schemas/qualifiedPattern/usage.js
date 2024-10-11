@@ -6,6 +6,7 @@ export default {
     {
       name: "scope",
       type: "reference",
+      title: "Omfang",
       to: [{ type: "scope" }],
       options: {
         filter: "isPartOf == undefined",
@@ -20,6 +21,7 @@ export default {
     },
     {
       name: "group",
+      title: "Gruppe",
       type: "reference",
       to: [{ type: "group" }],
       hidden: ({ parent }) =>
@@ -28,6 +30,7 @@ export default {
     {
       name: "subscope",
       type: "reference",
+      title: "Underomfang", 
       to: [{ type: "scope" }],
       options: {
         filter: ({ parent, value }) => {
