@@ -1,5 +1,4 @@
 # Set bun image version
-#
 ARG BUN_VERSION=1.1.8
 
 # Use node 20 buster as base image
