@@ -2,6 +2,7 @@ import { timespan } from "../props";
 
 export default {
   name: "membership",
+  title: "Medlemskap",
   type: "object",
 
   fields: [
@@ -12,6 +13,7 @@ export default {
     },
     {
       name: "role",
+      title: "Rolle",
       type: "string",
       options: {
         list: [

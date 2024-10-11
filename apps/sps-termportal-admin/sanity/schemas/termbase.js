@@ -7,23 +7,18 @@ export default {
   liveEdit: true,
   fieldsets: [
     {
-      name: "status",
-      options: {
-        collapsible: true,
-        collapsed: false,
-        columns: 2,
-      },
-    },
-    {
       name: "basics",
+      title: "Generell informasjon",
       options: {
         columns: 2,
+        collapsible: true,
       },
     },
     {
       name: "unpublished",
       title: "Planleggingsdata",
       options: {
+        collapsible: true,
         columns: 2,
       },
       hidden: ({ document }) => document?.status === "publisert",
@@ -33,11 +28,15 @@ export default {
     label,
     {
       name: "id",
+      title: "ID",
       type: "string",
+      description:
+        "Minst tre bokstaver. Hovedsaklig brukt i teknisk sammenheng.",
     },
     {
       name: "type",
       type: "string",
+      title: "Termbase type",
       options: {
         list: [
           { title: "Aktiv", value: "aktiv" },
@@ -49,7 +48,7 @@ export default {
     tbstatus,
     {
       name: "topdomain",
-      title: "Toppdomene",
+      title: "Domene",
       type: "string",
       fieldset: "unpublished",
       options: {
@@ -70,32 +69,37 @@ export default {
     },
     {
       name: "domain",
-      title: "Domene",
+      title: "Subdomene",
       type: "string",
       fieldset: "unpublished",
     },
     {
       name: "size",
       title: "Antall begreper",
+      description: "Estimat",
       type: "number",
       fieldset: "unpublished",
     },
     {
       name: "labelsOk",
       type: "boolean",
+      title: "Termbase navn gjennomgått",
       initialValue: false,
-      fieldset: "status",
+      fieldset: "basics",
     },
     {
       name: "descriptionsOk",
       type: "boolean",
+      title: "Termbase beskrivelser gjennomgått", 
       initialValue: false,
-      fieldset: "status",
+      fieldset: "basics",
     },
     {
       name: "licenseAgreementStatus",
       type: "string",
-      fieldset: "status",
+      title: "Lisensavtale status",
+      description: "mellom termportalen og leverandør",
+      fieldset: "basics",
       options: {
         list: [
           { title: "Ingen", value: "ingen" },
@@ -108,8 +112,9 @@ export default {
     {
       name: "reminderInterval",
       title: "Påminnelsesintervall",
+      description: "Intervall beskrevet i dager",
       type: "number",
-      fieldset: "status",
+      fieldset: "basics",
       initialValue: reportReminder.interval.reminder,
     },
     note,
@@ -130,6 +135,7 @@ export default {
       name: "qualifiedAttribution",
       type: "array",
       title: "Termgruppe eller organisasjon",
+      description: "Gruppe som er ansvarlig eller eier ressurs",
       of: [attribution],
     },
   ],

@@ -13,6 +13,12 @@ export default {
   fields: [
     label,
     email,
+    {
+      name: "wikiUser",
+      title: "Redigeringsapp. bruker",
+      description: "Bruk versjon i wiki URL-en",
+      type: "string",
+    },
     note,
     {
       name: "lastUpdated",
@@ -23,6 +29,7 @@ export default {
     {
       name: "qualifiedCandidacy",
       type: "array",
+      title: "Interesseområde",
       fieldset: "personbank",
       of: [candidacy],
     },
