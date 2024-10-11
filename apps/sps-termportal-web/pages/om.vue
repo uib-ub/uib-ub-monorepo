@@ -36,6 +36,7 @@
               :path="`/${locale}/om/fagrad`"
               class="content-wrapper"
             />
+            <div></div>
             <ContentDoc
               :key="`mandat${locale}`"
               :head="false"
@@ -54,6 +55,7 @@
               :path="`/${locale}/om/history`"
               class="content-wrapper"
             />
+            <div></div>
             <ContentDoc
               :key="`publications${locale}`"
               :path="`/${locale}/om/publications`"
