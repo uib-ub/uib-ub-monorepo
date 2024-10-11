@@ -66,22 +66,18 @@ jobs:
           # Check if files in the deployment directory have changed
           if git diff --name-only ${{ env.PREV_COMMIT }} ${{ env.LATEST_COMMIT }} | grep '^k8s-hono-api/'; then
             echo "deployment_changes=true"
-            echo "deployment_changes=true" >> $GITHUB_ENV
             echo "deployment_changes=true" >> $GITHUB_OUTPUT
           else
             echo "deployment_changes=false"
-            echo "deployment_changes=false" >> $GITHUB_ENV
             echo "deployment_changes=false" >> $GITHUB_OUTPUT
           fi
 
           # Check if source code files have changed (apps/api, Dockerfile.api)
           if git diff --name-only ${{ env.PREV_COMMIT  }} ${{  env.LATEST_COMMIT }} | grep -E '^(apps/api/|Dockerfile.api)'; then
             echo "source_changes=true"
-          # echo "source_changes=true" >> $GITHUB_ENV
             echo "source_changes=true" >> $GITHUB_OUTPUT
           else
             echo "source_changes=false"
-          # echo "source_changes=false" >> $GITHUB_ENV
             echo "source_changes=false" >> $GITHUB_OUTPUT
           fi
 

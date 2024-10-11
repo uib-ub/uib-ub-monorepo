@@ -3,13 +3,92 @@ name: Manually deploy hono api to hono-api-prod env/namespace on microk8s
 on: workflow_dispatch # run manually
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      source_changes: ${{ steps.set_changes.outputs.source_changes }}
+      deployment_changes: ${{ steps.set_changes.outputs.deployment_changes }}
+    steps:
+      - name: Determine if this is a PR or a push to main
+        id: determine_context
+        run: |
+          echo "event name: ${{ github.event_name }}"
+          echo "git ref: ${{ github.ref }}"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ "${{ github.ref }}" == "refs/heads/main" || "${{ github.ref }}" == "refs/heads/master" ]]; then
+              echo "context=main" >> $GITHUB_ENV
+            else
+              echo "context=pr" >> $GITHUB_ENV
+            fi
+          fi
+      # Conditionally checkout the code based on the context (PR or main branch)
+      - name: Checkout code for PR
+        if: env.context == 'pr'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # Checkout the exact commit from the PR branch
+          fetch-depth: 3 # Fetch enough commit history to get the previous commits
+
+      - name: Checkout code for main branch
+        if: env.context == 'main'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 3 # Fetch enough commit history to get the previous commits
+
+      - name: show git log
+        run: git log -5 --oneline
+
+      - name: Get the correct commits to compare
+        id: get_commits
+        run: |
+          # This is a push to main, compare HEAD (latest) and HEAD~1 (previous)
+          LATEST_COMMIT=$(git rev-parse HEAD)
+          PREV_COMMIT=$(git rev-parse HEAD~1)
+          echo "LATEST_COMMIT=$LATEST_COMMIT" >> $GITHUB_ENV
+          echo "PREV_COMMIT=$PREV_COMMIT" >> $GITHUB_ENV
+
+          # TODO: DEBUG
+          echo "sha head $(git rev-parse HEAD)"
+          echo "sha head^ $(git rev-parse HEAD^)"
+          echo "sha head~0 $(git rev-parse HEAD~0)"
+          echo "sha head~1 $(git rev-parse HEAD~1)"
+          echo 'pull request head sha: ${{ github.event.pull_request.head.sha }}'
+
+      - name: Check for changes in deployment or source code
+        run: |
+          # Debugging: Print the commits being compared
+          echo "Latest Commit: ${{ env.LATEST_COMMIT }}"
+          echo "Commit Before Latest: ${{ env.PREV_COMMIT }}"
+
+      - name: Check for changes in deployment or source code
+        id: set_changes
+        run: |
+          # Check if files in the deployment directory have changed
+          if git diff --name-only ${{ env.PREV_COMMIT }} ${{ env.LATEST_COMMIT }} | grep '^k8s-hono-api/'; then
+            echo "deployment_changes=true"
+            echo "deployment_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "deployment_changes=false"
+            echo "deployment_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+          # Check if source code files have changed (apps/api, Dockerfile.api)
+          if git diff --name-only ${{ env.PREV_COMMIT  }} ${{  env.LATEST_COMMIT }} | grep -E '^(apps/api/|Dockerfile.api)'; then
+            echo "source_changes=true"
+            echo "source_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "source_changes=false"
+            echo "source_changes=false" >> $GITHUB_OUTPUT
+          fi
+
   deploy-prod:
+    needs: check-changes
     name: Deploy to hono api prod
     environment:
       name: hono-api-prod
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/main'
 
+    if: needs.check-changes.outputs.deployment_changes =='true' || needs.check-changes.outputs.source_changes =='true'
     steps:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
@@ -30,6 +109,11 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
+      - name: Check for changes in deployment or source code
+        run: |
+          echo "deployment changes needs: ${{ needs.check-changes.outputs.deployment_changes }}"
+          echo "source changes needs: ${{ needs.check-changes.outputs.source_changes }}"
+
       - name: deploy apply pods to hono-api-prod env
         env:
           REGISTRY: ghcr.io
@@ -41,7 +125,7 @@ jobs:
             kubectl apply -f k8s-hono-api/hono-api-prod/namespace.yaml
           else
             echo "Namespace $NAMESPACE already exists. Skipping creation."
-          fi 
+          fi
 
           function manage_kube_secret {
             local secret_name=$1
@@ -96,11 +180,24 @@ jobs:
           manage_kube_secret "esobserveapikeycred" "esObserveApiKey" "${{ secrets.OBSERVE_ES_APIKEY }}"
           manage_kube_secret "apieswritetokencred" "apiEsWriteToken" "${{ secrets.API_ES_WRITE_TOKEN }}"
 
+      - name: deploy hono-api-prod env if develoyment configuration changes
+        if: needs.check-changes.outputs.deployment_changes =='true'
+        run: |
           # Deloy/update application
           DEPLOYMENT_NAME="hono-api"
           NAMESPACE="hono-api-prod"
           echo "Applying deployment $DEPLOYMENT_NAME for namespace $NAMESPACE ..."
           kubectl apply -k k8s-hono-api/$NAMESPACE -n "$NAMESPACE"
+
+      # Always refresh deployment if source code changed
+      - name: Force Kubernetes to pull latest image if source code changed
+        if: needs.check-changes.outputs.source_changes =='true'
+        run: |
+          DEPLOYMENT_NAME="hono-api"
+          NAMESPACE="hono-api-prod"
+          echo "Forcing Kubernetes to pull the latest image..."
+          kubectl patch deployment "$DEPLOYMENT_NAME" -n "$NAMESPACE" \
+            -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/restartedAt\":\"$(date +%s)\"}}}}}"
 
       - name: Wait For Deployment To Start
         run: sleep 10s
