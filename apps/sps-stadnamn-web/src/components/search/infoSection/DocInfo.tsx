@@ -2,7 +2,7 @@ import CopyLink from "@/app/view/[dataset]/doc/[uuid]/CopyLink"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiDatabaseFill, PiInfoBold, PiTagFill, PiWarningFill } from "react-icons/pi"
+import { PiDatabaseFill, PiInfoFill, PiTagFill, PiWarningFill } from "react-icons/pi"
 import ClientThumbnail from "./ClientThumbnail"
 import Timeline from "./Timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
@@ -73,15 +73,19 @@ export default function DocInfo({doc}: {doc: any}) {
         </div>}
 
 
-        <div className="flex gap-4 flex-wrap pt-8 pb-2 text-neutral-950">
+        <div className="flex gap-4 flex-wrap pt-8 pb-2 text-neutral-900">
         { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
-          <CopyLink uuid={doc._source.uuid}/> 
+          <>
+            <CopyLink uuid={doc._source.uuid}/> 
+            <Link href={"/uuid/" + doc._source.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
+              <PiInfoFill aria-hidden="true"/>
+              Infoside
+            </Link>
+        </>
           : <div className="flex gap-1 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
 
-    <Link href={"/uuid/" + doc._source.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
-        <PiInfoBold aria-hidden="true"/>
-        Infoside</Link>
+   
         </div>
         
 
