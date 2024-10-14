@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
 import { sortConfig, datasetTitles } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
-import { createSerializer, parseAsInteger, useQueryState } from "nuqs";
+import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 
 
 
@@ -19,7 +19,9 @@ export default function Results() {
     const searchParams = useSearchParams()
     const serialize = createSerializer({
         from: parseAsInteger,
-        size: parseAsInteger
+        size: parseAsInteger,
+        doc: parseAsString,
+        center: parseAsArrayOf(parseAsFloat, ','),
     });
 
     const pathname = usePathname()
@@ -71,23 +73,7 @@ export default function Results() {
       router.push(pathname + "?" + params.toString())
     }
 
-    const showInMap = (uuid: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.set('docs', String(uuid))
-      router.push(`/view/${params.dataset}?${newSearchParams.toString()}`)
-    }
 
-    const goToDoc = (uuid: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.delete('docs')
-      router.push(`/view/${params.dataset}/doc/${uuid}?${newSearchParams.toString()}`)
-    }
-
-    const goToIIIF = (uuid: string, manifest: string) => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.set('docs', String(uuid))
-      router.push(`/view/${params.dataset}/iiif/${manifest}?${newSearchParams.toString()}`)
-    }
 
   const ResutlsTitle = () => {
     return <>
@@ -133,61 +119,16 @@ export default function Results() {
     </span>
     <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
 
-    <ul className='flex flex-col gap-1 mb-2 divide-y divide-neutral-400'>
+    <ul className='flex flex-col mb-2 divide-y divide-neutral-400'>
       {resultData?.map((hit: any, index:number) => (
-        <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow">
-            {index} {hit._id} 
-        {false && <div>{titleRenderer(hit)}
+        <li key={hit._id} className="my-0 flex flex-grow">
+        <Link className="w-full h-full py-2 px-2 hover:bg-neutral-50 no-underline" href={serialize(new URLSearchParams(searchParams), {doc: hit._source.uuid, ...hit._source.location ? {center: hit._source.location.coordinates} : {}})}>
+        <strong className="text-primary-600">{titleRenderer(hit)}</strong>
         <p>
           { detailsRenderer(hit) }
         </p>
-        </div>}
-        <div className='flex gap-1 ml-auto self-end'>
-        { params.dataset == 'search' &&  
-          <IconButton onClick={() => router.push(`/view/${hit._index.split('-')[1]}`)} 
-                      label={datasetTitles[hit._index.split('-')[1]]} 
-                      className="self-center px-1">
-                       <span className="not-italic font-semibold text-sm text-neutral-900">{hit._index.split('-')[1].toUpperCase()}</span>
-          </IconButton>
-        }
-
-        {hit._source.image && 
-          <IconButton 
-            onClick={() => goToIIIF(hit._id, hit._source.image.manifest)} 
-            label="Vis seddel" 
-            aria-current={searchParams.get('docs') == hit._id && pathname.includes('/iiif/') ? 'page': undefined}
-            className="p-1 text-neutral-700">
-              <PiArticleFill className="text-xl xl:text-3xl"/></IconButton> 
-        }
-        
-        {hit._source.audio && 
-          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${params.dataset}/${hit._source.audio.file}` } 
-                       iconClass="text-xl xl:text-3xl text-neutral-700"/> 
-        }
-        {hit._source.link &&
-        <Link href={hit._source.link} className="no-underline" target="_blank">
-          <IconButton 
-            label="Ekstern ressurs"
-            className="p-1 text-neutral-700 xl:text-xl">
-               <PiLinkBold className="text-xl xl:text-3xl"/>
-          </IconButton> 
         </Link>
-        }
-        {hit._source.location && 
-          <IconButton 
-            onClick={() => showInMap(hit._id)} 
-            label="Vis i kart" 
-            aria-current={searchParams.get('docs') == hit._id && pathname == `/view/${params.dataset}` ? 'page': undefined} 
-            className="p-1 text-neutral-700">
-              <PiMapPinFill className="text-xl xl:text-3xl"/></IconButton> 
-        }
-        <IconButton 
-          onClick={() => goToDoc(hit._id)} 
-          label="Infoside" 
-          aria-current={params.uuid == hit._id && pathname.includes('/doc/') ? 'page': undefined} 
-          className="p-1 text-primary-600">
-            <PiInfoFill className="text-xl xl:text-3xl"/></IconButton>
-        </div>
+       
         </li>
       ))}
     </ul>
