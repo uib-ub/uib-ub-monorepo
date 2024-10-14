@@ -9,9 +9,11 @@
       paginator
       :rows="15"
       filter-display="row"
+      :global-filter-fields="['label', 'email', 'group', 'role', 'institution']"
     >
       <template #header>
-        <div class="flex justify-end">
+        <div class="flex justify-between">
+          <InputText v-model="filters['global'].value" placeholder="Søk" />
           <Button class="h-10" label="Eksport" @click="exportData()" />
         </div>
       </template>
@@ -40,6 +42,7 @@
         </template>
       </Column>
       <Column header="Rolle" field="role" sortable />
+
       <Column header="Organisasjon" field="institution" sortable />
       <Column>
         <template #body="slotProps">
@@ -69,6 +72,7 @@ const exportData = () => {
 };
 
 const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   active: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 
@@ -141,15 +145,18 @@ const procdata = computed(() => {
                 undefined
             )
           )
+          .flat()
           .join(", "),
         end: person.termgroups
           .map((group) =>
-            group.qualifiedMembership.map(
-              (membership) =>
-                membership?.timespan?.endOfTheEnd?.substring(0, 10)
+            group.qualifiedMembership.map((membership) =>
+              membership?.timespan?.endOfTheEnd?.substring(0, 10)
             )
           )
+          .flat()
+          .filter((end) => end)
           .join(", "),
+
         get active() {
           return !(
             this.end &&

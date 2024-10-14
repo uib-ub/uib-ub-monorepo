@@ -57,7 +57,7 @@ export const email = { name: "email", type: "string", title: "E-post"};
 export const tbstatus = {
   name: "status",
   type: "string",
-  title: "Termbase status",
+  title: "Termbasestatus",
   options: {
     list: [
       { title: "Kjent", value: "kjent" },

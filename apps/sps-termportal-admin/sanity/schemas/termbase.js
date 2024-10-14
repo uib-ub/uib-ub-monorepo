@@ -36,7 +36,7 @@ export default {
     {
       name: "type",
       type: "string",
-      title: "Termbase type",
+      title: "Termbasetype",
       options: {
         list: [
           { title: "Aktiv", value: "aktiv" },
@@ -83,21 +83,21 @@ export default {
     {
       name: "labelsOk",
       type: "boolean",
-      title: "Termbase navn gjennomgått",
+      title: "Termbasenavn gjennomgått",
       initialValue: false,
       fieldset: "basics",
     },
     {
       name: "descriptionsOk",
       type: "boolean",
-      title: "Termbase beskrivelser gjennomgått", 
+      title: "Termbasebeskrivelser gjennomgått",
       initialValue: false,
       fieldset: "basics",
     },
     {
       name: "licenseAgreementStatus",
       type: "string",
-      title: "Lisensavtale status",
+      title: "Lisensavtalestatus",
       description: "mellom termportalen og leverandør",
       fieldset: "basics",
       options: {

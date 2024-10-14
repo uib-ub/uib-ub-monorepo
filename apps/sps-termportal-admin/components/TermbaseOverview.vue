@@ -375,7 +375,7 @@ function calcLastActivity(timespan: Object) {
 }
 
 const dupeIds = computed(() => {
-  const ids = cmsdata.value?.map((tb) => tb.id);
+  const ids = cmsdata.value?.map((tb) => tb.id).filter((id) => id);
   const dupes = ids.reduce((acc, curr) => {
     acc[curr] = (acc[curr] || 0) + 1;
     return acc;
