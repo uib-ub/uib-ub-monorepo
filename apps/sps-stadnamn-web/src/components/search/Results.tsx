@@ -122,8 +122,8 @@ export default function Results() {
     <ul className='flex flex-col mb-2 divide-y divide-neutral-400'>
       {resultData?.map((hit: any, index:number) => (
         <li key={hit._id} className="my-0 flex flex-grow">
-        <Link className="w-full h-full py-2 px-2 hover:bg-neutral-50 no-underline" href={serialize(new URLSearchParams(searchParams), {doc: hit._source.uuid, ...hit._source.location ? {center: hit._source.location.coordinates} : {}})}>
-        <strong className="text-primary-600">{titleRenderer(hit)}</strong>
+        <Link className="w-full h-full py-2 px-2 hover:bg-neutral-50 no-underline" href={serialize(new URLSearchParams(searchParams), {doc: hit._source.uuid, ...hit._source.location ? {center: hit._source.location.coordinates.toReversed()} : {}})}>
+        <strong className="text-neutral-950">{titleRenderer(hit)}</strong>
         <p>
           { detailsRenderer(hit) }
         </p>
