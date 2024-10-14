@@ -56,7 +56,8 @@ export async function GET(request: Request) {
 
     
   const query: Record<string,any> = {
-    "from": filteredParams.page ? (parseInt(filteredParams.page) - 1) * parseInt(filteredParams.size || '10') : 0,
+    "from": filteredParams.from ? parseInt(filteredParams.from) 
+      : filteredParams.page ? (parseInt(filteredParams.page) - 1) * parseInt(filteredParams.size || '10') : 0,
     "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
     ...highlight ? {highlight} : {},
     "aggs": {

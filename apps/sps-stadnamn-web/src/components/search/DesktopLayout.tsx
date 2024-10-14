@@ -2,22 +2,18 @@
 import Results from "./Results"
 import MapExplorer from "./MapExplorer"
 import { useQueryState } from "nuqs"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { SearchContext } from "@/app/simple-search-provider";
-import { datasetTitles } from "@/config/metadata-config"
-import { useSearchParams } from "next/navigation"
 import InfoContent from "./infoSection/InfoContent"
 import { PiX, PiXBold } from "react-icons/pi"
+import { useSearchQuery } from "@/lib/search-params"
 
 
 export default function DesktopLayout() {
 
-    const { resultData } = useContext(SearchContext)
-    const searchParams = useSearchParams()
+    const { showResults } = useSearchQuery()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
-
-
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
 
     const toggleExpanded = (panel: 'options' | 'filters' | 'results') => {
@@ -46,14 +42,11 @@ export default function DesktopLayout() {
             </div>
         }
         </section>
-        { resultData?.hits.total &&
+        { showResults &&
         <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
-            <h2 id="result-title" className="p-4 w-full"><button className="w-full flex justify-start"aria-controls="result-content" aria-expanded={expanded == 'results'} onClick={() => toggleExpanded('results')}>Treff</button></h2>
-            { expanded == 'results' &&
             <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
                 <Results />
             </div>
-        }
             
         </section>
         }
