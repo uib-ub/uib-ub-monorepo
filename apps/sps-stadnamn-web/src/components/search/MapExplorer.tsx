@@ -49,7 +49,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     useEffect(() => {
       if (center && mapInstance.current && !mapInstance.current.getBounds().contains(center)) {
-        mapInstance.current.flyTo(center, zoom, {duration: 0.25})
+        mapInstance.current.setView(center, zoom)
       }
   
       
