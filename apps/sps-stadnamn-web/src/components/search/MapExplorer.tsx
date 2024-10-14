@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
-import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLine, PiStackSimple } from "react-icons/pi";
+import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLine, PiMapPinLineFill, PiPerson, PiPersonFill, PiStackSimple, PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/simple-search-provider";
 import Spinner from "../svg/Spinner";
@@ -17,11 +17,13 @@ import {
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
 import { useSearchQuery } from "@/lib/search-params";
 import { getLabelMarkerIcon } from "./markers";
+import ErrorMessage from "../ErrorMessage";
 
 
 export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const mapInstance = useRef<any>(null);
-    const { resultData, isLoading, searchError } = useContext(SearchContext)
+    const { resultBounds, totalHits, searchError } = useContext(SearchContext)
+    const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(null)
     const controllerRef = useRef(new AbortController());
     const [baseMap, setBasemap] = useState<null|string>(null)
     const [markerMode, setMarkerMode] = useState<null|string>(null)
@@ -34,17 +36,18 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const { searchQueryString } = useSearchQuery()
     const [ expanded, setExpanded ] = useQueryState('expanded', {history: 'push'})
 
-    const [bounds, setBounds] = useState<null|[[number, number], [number, number]]>(null)
+
+    
     useEffect(() => {
-        if (resultData && resultData.aggregations.viewport.bounds) {
-            const resultBounds = resultData.aggregations.viewport.bounds;
-            setBounds([[resultBounds.top_left.lat, resultBounds.top_left.lon],
-              [resultBounds.bottom_right.lat, resultBounds.bottom_right.lon]])
-
-            mapInstance?.current?.fitBounds([[resultBounds.top_left.lat, resultBounds.top_left.lon], [resultBounds.bottom_right.lat, resultBounds.bottom_right.lon]], {padding: [100, 50]});
+        if (!resultBounds?.length) {
+          return;
         }
+        mapInstance?.current?.flyToBounds(resultBounds, {padding: [100, 50], duration: 0.5});
+        setBounds(resultBounds);
+        
+    }, [resultBounds])
 
-    }, [resultData])
+    
 
 
     const getValidDegree = (degrees: number, maxValue: number): string => {
@@ -58,9 +61,11 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
     useEffect(() => {
       // Check if the bounds are initialized
-      if (!isLoading && bounds?.length) {
-        //console.log("Fetching geodata", props.mapBounds, leafletBounds, mapQueryString, params.dataset, props.isLoading)
-        const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
+      if (!bounds?.length) {
+        return;
+      }
+
+        const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
   
         // Fetch data based on the new bounds
         const queryParams = new URLSearchParams(searchQueryString);
@@ -80,7 +85,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
 
 
-        const query = `/api/geo/${ (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (resultData?.hits.total.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
+        const query = `/api/geo/${ (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
   
         fetch(query, {
           signal: controllerRef.current.signal,
@@ -140,11 +145,8 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
           }
         );
   
-      }
-      else {
-        setViewResults(null)
-      }
-    }, [bounds, isLoading, zoom, searchQueryString, resultData?.hits.total.value, markerMode]);
+      //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
+    }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode]);
 
 
 
@@ -306,8 +308,13 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 
 
     return <>
-    {bounds?.length || (center && zoom ) ? <>
-    <Map mapRef={mapRef} zoomControl={false} {...center && zoom ? {center, zoom} : {bounds}}
+    {bounds?.length || (center && zoom ) || searchError ? <>
+    <Map mapRef={mapRef} 
+         zoomControl={false} 
+         {...center && zoom ? 
+            {center, zoom}
+            : bounds? {bounds} : {center: [63.4, 10.4], zoom: 5}
+          }
         className='w-full h-full'>
     {({ TileLayer, CircleMarker, Marker }: any, leaflet: any) => {
 
@@ -415,19 +422,17 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   </>)}}
 
 </Map>
-</> : isLoading ?
-<div className="flex h-full items-center justify-center">
-              <div>
-                <Spinner status="Laster inn kartet" className="w-20 h-20"/>
-              </div>
+</> : <div className="flex h-full items-center justify-center">
+<div>
+  <Spinner status="Laster inn kartet" className="w-20 h-20"/>
+</div>
 </div> 
-:  null
     }
     
     <div className={`absolute ${isMobile ? 'top-12 right-0 flex-col p-2 gap-4' : 'bottom-0 w-full'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
 
 <DropdownMenu>
-    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiStackSimple/></button></DropdownMenuTrigger>
+    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiStackSimpleFill/></button></DropdownMenuTrigger>
     <DropdownMenuContent className="z-[4000] bg-white">
         <DropdownMenuLabel>Bakgrunnskart</DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -443,7 +448,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     </DropdownMenuContent>
 </DropdownMenu>
 <DropdownMenu>
-    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiMapPinLine/></button></DropdownMenuTrigger>
+    <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiMapPinLineFill/></button></DropdownMenuTrigger>
     <DropdownMenuContent className="z-[4000] bg-white">
         <DropdownMenuLabel>Markører</DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -466,7 +471,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
 </DropdownMenu>
 <IconButton onClick={zoomIn}  className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
 <IconButton onClick={zoomOut} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
-<IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiGpsFix/></IconButton>
+<IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiPersonFill/></IconButton>
     
     
 

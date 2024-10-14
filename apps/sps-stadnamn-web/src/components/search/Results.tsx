@@ -29,7 +29,7 @@ export default function Results() {
     const titleRenderer = resultRenderers[params.dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
     const [ showLoading, setShowLoading ] = useState<boolean>(true)
-    const { resultData, isLoading } = useContext(SearchContext)
+    const { resultData, totalHits, isLoading } = useContext(SearchContext)
 
     const from = useQueryState('from', parseAsInteger)[0]
 
@@ -93,7 +93,7 @@ export default function Results() {
     return <>
     <span className='text-xl text-center h-full font-semibold small-caps'>
       Treff
-      </span> { showLoading ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (resultData?.hits.total.value || '0')  + (resultData?.hits.total.value == 10000 ? "+" : '')}</span> }
+      </span> { showLoading ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span> }
     </>
   }
 
@@ -134,7 +134,7 @@ export default function Results() {
     <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
 
     <ul className='flex flex-col gap-1 mb-2 divide-y divide-neutral-400'>
-      {resultData?.hits.hits.map((hit: any, index:number) => (
+      {resultData?.map((hit: any, index:number) => (
         <li key={hit._id} className="my-0 py-2 px-2 flex flex-grow">
             {index} {hit._id} 
         {false && <div>{titleRenderer(hit)}
@@ -194,7 +194,7 @@ export default function Results() {
 
 
     <nav className="center gap-2">
-      {resultData?.hits.total.value > 10 && <Link href={serialize(new URLSearchParams(searchParams), {size: parseInt(searchParams.get('size') ||'20'), from: from ? from + parseInt(searchParams.get('size') ||'20') : parseInt(searchParams.get('size') ||'20')})}>Next page</Link>}
+      {totalHits?.value > 10 && <Link href={serialize(new URLSearchParams(searchParams), {size: parseInt(searchParams.get('size') ||'20'), from: from ? from + parseInt(searchParams.get('size') ||'20') : parseInt(searchParams.get('size') ||'20')})}>Next page</Link>}
     </nav>
 
     </section>

@@ -6,23 +6,30 @@ import { useSearchQuery } from '@/lib/search-params';
 import { useSearchParams } from 'next/navigation';
 
 interface SearchContextData {
-    resultData: ResultData | null;
+    resultData: any[] | null;
     isLoading: boolean;
     searchError: Record<string, string> | null;
+    totalHits: Record<string, any> | null;
+    resultBounds: [[number, number], [number, number]] | null;
   }
  
   export const SearchContext = createContext<SearchContextData>({
     resultData: null,
     isLoading: true,
     searchError: null,
+    totalHits: null,
+    resultBounds: null
     });
 
  
 export default function SearchProvider({ children }: {  children: React.ReactNode }) {
-    const resultData = useRef<ResultData | null>(null)
+    const resultData = useRef<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const searchParams = useSearchParams()
     const prevQuery = useRef<string | null>(null)
+    const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
+
+    const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const { searchQueryString } = useSearchQuery()
@@ -32,27 +39,24 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
 
     useEffect(() => {
-            setIsLoading(true)
-            console.log("SEARCHING", searchQueryString, from, size)
+            //setIsLoading(true)
             const newQuery = new URLSearchParams(searchQueryString)
 
-            if (prevQuery?.current == searchQueryString && resultData?.current?.hits.hits.length == parseInt(from || '0') + parseInt(size || '20')) {
+            /*
+            if (prevQuery?.current == searchQueryString && resultData?.current?.length == parseInt(from || '0') + parseInt(size || '20')) {
                 setIsLoading(false)
                 return
 
             }
-            
+                */
             
             if (prevQuery?.current == searchQueryString && from && size) {
                 newQuery.set('from', from)
                 newQuery.set('size', size)
-                console.log("PREPARE APPEND")
-                console.log("NEW QUERY", newQuery.toString())
             }
             else {
-                console.log("DEFAULT")
                 newQuery.set('size', (parseInt(size || '20') + parseInt(from || '0')).toString())
-                console.log("NEW QUERY", newQuery.toString())
+                setIsLoading(true)
             }
 
             
@@ -66,30 +70,22 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             }
 
             // Append new data to existing data if from is set and previous query is the same
-            console.log(newQuery.toString())
-            if (prevQuery?.current == searchQueryString && from && resultData.current) {
-                resultData.current = {
-                    ...resultData.current,
-                    hits: {
-                        ...resultData.current.hits,
-                        hits: [
-                            ...resultData.current.hits.hits,
-                            ...es_data.hits.hits
-                        ]
-                    }
-                }
-                prevQuery.current = searchQueryString
+            if (prevQuery?.current == searchQueryString && from && resultData?.current?.length == parseInt(from)) {
+                resultData.current = [...resultData.current, ...es_data.hits.hits]
 
             }
             else {
-                resultData.current = es_data
-            }
-                
-    
- 
-            
+                console.log("CHANGING VIEWPORT")
+                const newBounds = es_data.aggregations?.viewport.bounds
+                setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
 
-            }).then(() => setIsLoading(false)).catch(error => {
+                setTotalHits(es_data.hits.total)
+                setIsLoading(false)
+                prevQuery.current = searchQueryString
+                resultData.current = es_data.hits.hits
+            }
+
+            }).catch(error => {
                 setSearchError({error})
             })
 
@@ -97,7 +93,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
       
 
-  return <SearchContext.Provider value={{resultData: resultData.current, isLoading, searchError}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData: resultData.current, resultBounds, totalHits, isLoading, searchError}}>{children}</SearchContext.Provider>
 }
 
 

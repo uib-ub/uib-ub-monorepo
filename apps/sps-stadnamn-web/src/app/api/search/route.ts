@@ -60,15 +60,16 @@ export async function GET(request: Request) {
       : filteredParams.page ? (parseInt(filteredParams.page) - 1) * parseInt(filteredParams.size || '10') : 0,
     "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
     ...highlight ? {highlight} : {},
-    "aggs": {
-      "viewport": {
-        "geo_bounds": {
-          "field": "location",
-          "wrap_longitude": true
-        },
-
+    ...(!filteredParams.from ? { // Calculating viewport is not necessary when paginating
+      "aggs": {
+        "viewport": {
+          "geo_bounds": {
+            "field": "location",
+            "wrap_longitude": true
+          },
+        }
       }
-    },
+    } : {}),
     "sort": sortArray
   }
 
@@ -93,6 +94,8 @@ export async function GET(request: Request) {
   //console.log("QUERY", JSON.stringify(query, null, 2))
 
   const data = await postQuery(dataset, query)
+
+  //console.log("DATA", data.hits.hits.length)
 
   return Response.json(data);
 }
