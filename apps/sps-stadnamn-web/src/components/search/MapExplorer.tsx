@@ -3,7 +3,7 @@ import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps} from "@/config/basemap-config";
 import {  PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLine, PiMapPinLineFill, PiPerson, PiPersonFill, PiStackSimple, PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
-import { SearchContext } from "@/app/simple-search-provider";
+import { SearchContext } from "@/app/map-search-provider";
 import Spinner from "../svg/Spinner";
 import {
     DropdownMenu,
@@ -20,7 +20,7 @@ import { getLabelMarkerIcon } from "./markers";
 import ErrorMessage from "../ErrorMessage";
 
 
-export default function MapExplorer({isMobile}: {isMobile: boolean}) {
+export default function MapExplorer({isMobile, selectedDocState}: {isMobile: boolean, selectedDocState: any}) {
     const mapInstance = useRef<any>(null);
     const { resultBounds, totalHits, searchError } = useContext(SearchContext)
     const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(null)
@@ -35,6 +35,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
     const [viewResults, setViewResults] = useState<any>(null)
     const { searchQueryString } = useSearchQuery()
     const [ expanded, setExpanded ] = useQueryState('expanded', {history: 'push'})
+    const [ selectedDoc, setSelectedDoc ] = selectedDocState
 
 
     
@@ -296,24 +297,28 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
   const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
 
 
-  const openDocHandler = (selected: string | [number, number], hits?: any[]) => {
+  const selectDocHandler = (hit: Record<string,any>) => {
     return {
       click: (e: any) => {
-        // if string
-        if (typeof selected === 'string') {
           setPoint(null)
-          setDoc(selected)
+          setDoc(hit.fields.uuid)
           setExpanded('info')
-        }
-        else if (hits?.length) {
-          setDoc(null)
-          setPoint(selected.join(','))
-          setExpanded('info')
-        }
+          setSelectedDoc(hit)
       }
-
     }
   }
+
+  const selectPointHandler = (selected: [number, number]) => {
+    return {
+      click: (e: any) => {
+        setDoc(null)
+        setPoint(selected.join(','))
+        setExpanded('info')
+        setSelectedDoc(null)
+        }
+      }
+    }
+  
 
 
     return <>
@@ -356,7 +361,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       
       const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
       
-      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={openDocHandler([lat, lon], bucket.docs.hits.hits)}/>
+      return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectPointHandler([lat, lon])}/>
 
     }
 
@@ -368,7 +373,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
                        position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} 
                       icon={icon} 
                       riseOnHover={true}
-                      eventHandlers={openDocHandler(hit.fields.uuid[0])}
+                      eventHandlers={selectDocHandler(hit)}
                       />
                       
       }
@@ -408,7 +413,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
       const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
 
 
-      return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={openDocHandler(group.children.length > 1 ? [group.lat, group.lon] : group.uuid[0], group.children)}/>
+      return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={group.children.length > 1 ? selectPointHandler([group.lat, group.lon]) : selectDocHandler(group.children[0])}/>
 
     }
     else {
@@ -416,7 +421,7 @@ export default function MapExplorer({isMobile}: {isMobile: boolean}) {
                            center={[group.lat, group.lon]} 
                            radius={zoom && zoom < 10 ? 4 : 8} 
                            pathOptions={{color:'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: 'white', fillOpacity: 1}}
-                           eventHandlers={openDocHandler(group.children.length > 1 ? [group.lat, group.lon] : group.uuid[0], group.children)}/>
+                           eventHandlers={group.children.length > 1 ? selectPointHandler([group.lat, group.lon]) : selectDocHandler(group.children[0])}/>
     }
     
 

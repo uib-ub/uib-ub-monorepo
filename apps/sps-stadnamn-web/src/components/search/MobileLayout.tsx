@@ -16,6 +16,7 @@ export default function MobileLayout() {
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const [drawerContent, setDrawerContent] = useQueryState('expanded', {history: 'push'});
+    const selectedDocState = useState<any | null>(null)
 
     const isScrolling = (target: EventTarget) => {
         if (snappedPosition == 100 && target instanceof Node && scrollableContent.current?.contains(target)) {
@@ -118,7 +119,7 @@ export default function MobileLayout() {
             <div className="h-full overscroll-contain max-h-[calc(100svh-3rem)] p-4" ref={scrollableContent} style={{overflowY: currentPosition == 100 ? 'auto' : 'hidden', touchAction: currentPosition == 100  && scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
 
             { drawerContent == 'info' && <InfoContent expanded={snappedPosition > 25}/> }
-            { drawerContent == 'results' && <Results/> }
+            { drawerContent == 'results' && <Results selectedDocState={selectedDocState}/> }
             { drawerContent == 'options' && <Options isMobile={true}/> }
             
             </div>
@@ -135,7 +136,7 @@ export default function MobileLayout() {
         </div>
 
         <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full">
-        <MapExplorer isMobile={true}/>
+        <MapExplorer isMobile={true} selectedDocState={selectedDocState}/>
         </div>
 
     </div>

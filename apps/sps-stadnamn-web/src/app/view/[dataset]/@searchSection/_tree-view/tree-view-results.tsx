@@ -94,7 +94,7 @@ export default function TreeViewResults({hits, isLoading}: {hits: any, isLoading
                         </li>
                     }
                     else if ( i == size) {
-                        return <li key={i} className="flex gap-4 px-2 py-8 mx-2 justify-center"><Link className="flex self-center gap-4 border rounded-sm border-neutral-300 mx-2 no-underline py-4 px-16 text-xl self-center" href={ nextPageUrl() }>Vis mer <PiCaretDown className="self-center" aria-hidden="true"/></Link></li>
+                        return <li key={i} className="flex gap-4 px-2 py-8 mx-2 justify-center"><Link className="flex gap-4 border rounded-sm border-neutral-300 mx-2 no-underline py-4 px-16 text-xl self-center" href={ nextPageUrl() }>Vis mer <PiCaretDown className="self-center" aria-hidden="true"/></Link></li>
 
                     
                 }

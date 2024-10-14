@@ -6,7 +6,7 @@ import { useSearchQuery } from '@/lib/search-params';
 import { useSearchParams } from 'next/navigation';
 
 interface SearchContextData {
-    resultData: any[] | null;
+    resultData: any;
     isLoading: boolean;
     searchError: Record<string, string> | null;
     totalHits: Record<string, any> | null;
@@ -41,6 +41,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     useEffect(() => {
             //setIsLoading(true)
             const newQuery = new URLSearchParams(searchQueryString)
+            console.log("QUERYING", prevQuery?.current, searchQueryString, from, size)
 
             /*
             if (prevQuery?.current == searchQueryString && resultData?.current?.length == parseInt(from || '0') + parseInt(size || '20')) {
@@ -51,6 +52,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 */
             
             if (prevQuery?.current == searchQueryString && from && size) {
+                console.log("SETTING SIZE")
                 newQuery.set('from', from)
                 newQuery.set('size', size)
             }
@@ -60,7 +62,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             }
 
             
-            fetch(`/api/search?${newQuery.toString()}`)
+            fetch(`/api/search/map?${newQuery.toString()}`)
             .then(response => response.json())
             .then(es_data => {
 
@@ -71,7 +73,9 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
             // Append new data to existing data if from is set and previous query is the same
             if (prevQuery?.current == searchQueryString && from && resultData?.current?.length == parseInt(from)) {
+                console.log("APPENDING DATA", resultData.current.length, es_data.hits.hits.length)
                 resultData.current = [...resultData.current, ...es_data.hits.hits]
+                console.log("NEW LENGTH", resultData.current.length)
 
             }
             else {
@@ -93,7 +97,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
       
 
-  return <SearchContext.Provider value={{resultData: resultData.current, resultBounds, totalHits, isLoading, searchError}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError}}>{children}</SearchContext.Provider>
 }
 
 

@@ -2,8 +2,8 @@
 import Results from "./Results"
 import MapExplorer from "./MapExplorer"
 import { useQueryState } from "nuqs"
-import { useContext } from "react"
-import { SearchContext } from "@/app/simple-search-provider";
+import { useContext, useState } from "react"
+import { SearchContext } from "@/app/map-search-provider";
 import InfoContent from "./infoSection/InfoContent"
 import { PiX, PiXBold } from "react-icons/pi"
 import { useSearchQuery } from "@/lib/search-params"
@@ -15,6 +15,7 @@ export default function DesktopLayout() {
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
+    const selectedDocState = useState<any | null>(null)
 
     const toggleExpanded = (panel: 'options' | 'filters' | 'results') => {
         if (expanded == panel) {
@@ -45,7 +46,7 @@ export default function DesktopLayout() {
         { showResults &&
         <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
             <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
-                <Results />
+                <Results selectedDocState={selectedDocState}/>
             </div>
             
         </section>
@@ -64,7 +65,7 @@ export default function DesktopLayout() {
         </div>
 
         <div className="lg:absolute bottom-top right-0 lg:h-full w-full">
-        <MapExplorer isMobile={false}/>
+        <MapExplorer isMobile={false} selectedDocState={selectedDocState}/>
         </div>
 
 

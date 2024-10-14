@@ -1,4 +1,4 @@
-import { SearchContext } from "@/app/simple-search-provider"
+import { SearchContext } from "@/app/map-search-provider"
 import { useContext } from "react"
 
 import Pagination from "../results/pagination";
@@ -8,14 +8,14 @@ import { useEffect, useState } from 'react';
 import AudioButton from "../results/audioButton";
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
-import { resultRenderers, defaultResultRenderer } from '@/config/dataset-render-config';
+import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers-map-search';
 import { sortConfig, datasetTitles } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 
 
 
-export default function Results() {
+export default function Results({selectedDocState}: {selectedDocState: any}) {
     const searchParams = useSearchParams()
     const serialize = createSerializer({
         from: parseAsInteger,
@@ -32,8 +32,19 @@ export default function Results() {
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
     const [ showLoading, setShowLoading ] = useState<boolean>(true)
     const { resultData, totalHits, isLoading } = useContext(SearchContext)
+    const [selectedDoc, setSelectedDoc] = selectedDocState
 
-    const from = useQueryState('from', parseAsInteger)[0]
+    const [from, setFrom] = useQueryState('from', parseAsInteger.withDefault(0))
+    const [size, setSize] = useQueryState('size', parseAsInteger.withDefault(20))
+
+    const [loadedData, setLoadedData] = useState<any[] | null>(null)
+
+  useEffect(() => {
+    // This effect updates loadedData once resultData has the necessary info
+    if (resultData?.current) {
+      setLoadedData(resultData.current);
+    }
+  }, [resultData]); 
 
 
     useEffect(() => {
@@ -72,6 +83,15 @@ export default function Results() {
         
       router.push(pathname + "?" + params.toString())
     }
+
+
+
+    const getCumulativeSize = () => {
+      const from = parseInt(searchParams.get('from') || '0')
+      return from + parseInt(searchParams.get('size') || '20')
+    }
+
+
 
 
 
@@ -120,22 +140,26 @@ export default function Results() {
     <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
 
     <ul className='flex flex-col mb-2 divide-y divide-neutral-400'>
-      {resultData?.map((hit: any, index:number) => (
-        <li key={hit._id} className="my-0 flex flex-grow">
-        <Link className="w-full h-full py-2 px-2 hover:bg-neutral-50 no-underline" href={serialize(new URLSearchParams(searchParams), {doc: hit._source.uuid, ...hit._source.location ? {center: hit._source.location.coordinates.toReversed()} : {}})}>
-        <strong className="text-neutral-950">{titleRenderer(hit)}</strong>
+      {Array.from({length: totalHits?.value ? Math.min(isLoading ? 20 : from + size, totalHits.value) + 1 : 0}, (_, i) => {
+        return <li className="my-0 flex flex-grow" key={loadedData?.[i]?._id + "_" +  i }>{loadedData?.[i] ? loadedData[i].fields.label : i}</li>
+      })}
+      {false && resultData?.current?.map((hit: any, index:number) => (
+        <li key={hit._id} >
+        <Link onClick={() => setSelectedDoc(hit)}
+              className="w-full h-full py-2 px-2 hover:bg-neutral-50 no-underline" 
+              href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
+        <strong className="text-neutral-950">{titleRenderer(hit, 'map')}</strong>
         <p>
-          { detailsRenderer(hit) }
+          { detailsRenderer(hit, 'map') }
         </p>
         </Link>
-       
         </li>
       ))}
     </ul>
 
 
     <nav className="center gap-2">
-      {totalHits?.value > 10 && <Link href={serialize(new URLSearchParams(searchParams), {size: parseInt(searchParams.get('size') ||'20'), from: from ? from + parseInt(searchParams.get('size') ||'20') : parseInt(searchParams.get('size') ||'20')})}>Next page</Link>}
+      {totalHits?.value > getCumulativeSize() && <Link href={serialize(new URLSearchParams(searchParams), {size: 50, from: getCumulativeSize()})}>Next page</Link>}
     </nav>
 
     </section>

@@ -1,4 +1,4 @@
-import SearchProvider from "@/app/simple-search-provider";
+import SearchProvider from "@/app/map-search-provider";
 import dynamic from "next/dynamic";
 import { headers } from "next/headers";
 import { userAgent } from "next/server";

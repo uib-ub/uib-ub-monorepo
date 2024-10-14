@@ -8,8 +8,7 @@ import Timeline from "./Timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audioButton"
 
-export default function DocInfo({doc}: {doc: any}) {
-    const docDataset = doc._index.split("-")[2]
+export default function DocInfo({docSource, docDataset}: {docSource: any, docDataset: string}) {
     const searchParams = useSearchParams()
     const dataset = searchParams.get('dataset') || 'search'
 
@@ -18,66 +17,66 @@ export default function DocInfo({doc}: {doc: any}) {
     }
     
     return <article className="instance-info flex flex-col gap-4">
-        <div className="flex gap-2"><h2>{doc._source.label}</h2>{doc._source.audio && 
-          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${doc._source.audio.file}` } 
+        <div className="flex gap-2"><h2>{docSource.label}</h2>{docSource.audio && 
+          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${docSource.audio.file}` } 
                        iconClass="text-3xl text-neutral-700 inline"/> 
         }
         </div>
         <div className="flex gap-2 flex-wrap">
         {
-         doc._source.sosi && docDataset != 'search' && <Link className="flex items-center gap-1 bg-neutral-100 pl-3 pr-1 rounded-full text-neutral-900 no-underline external-link"
-         href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + doc._source.sosi}>
-            { doc._source.sosi}
+         docSource.sosi && docDataset != 'search' && <Link className="flex items-center gap-1 bg-neutral-100 pl-3 pr-1 rounded-full text-neutral-900 no-underline external-link"
+         href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + docSource.sosi}>
+            { docSource.sosi}
         </Link>
          
         }
         
-            {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && 
+            {Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
                 <>
-                {[doc._source.adm1, doc._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
-                {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline" key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
+                {[docSource.adm1, docSource.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
+                {[docSource.adm1, docSource.adm2, docSource.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline" key={index} href={'http://www.wikidata.org/entity/' + docSource.wikiAdm[index]}>{item}</Link>)}
                 </>
             
-                || doc._source.wikiAdm && docDataset != 'm1838' 
-                    &&  <Link  className="gap-1 flex align-middle bg-neutral-100 pr-1 pl-3 rounded-full text-neutral-900 no-underline external-link" href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>
+                || docSource.wikiAdm && docDataset != 'm1838' 
+                    &&  <Link  className="gap-1 flex align-middle bg-neutral-100 pr-1 pl-3 rounded-full text-neutral-900 no-underline external-link" href={'http://www.wikidata.org/entity/' + docSource.wikiAdm}>
                         
                         <span className="max-w-[12rem] truncate">
-                {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
-                {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
-                {multivalue(doc._source.adm1)}
+                {docSource.adm3 && multivalue(docSource.adm3) + " – "}
+                {docSource.adm2 && multivalue(docSource.adm2) + ", "}
+                {multivalue(docSource.adm1)}
                 </span>
                 </Link>
-                || doc._source.adm1 && <span className="inline whitespace-nowrap">
-                {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
-                {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
-                {multivalue(doc._source.adm1)}
+                || docSource.adm1 && <span className="inline whitespace-nowrap">
+                {docSource.adm3 && multivalue(docSource.adm3) + " – "}
+                {docSource.adm2 && multivalue(docSource.adm2) + ", "}
+                {multivalue(docSource.adm1)}
                 </span>
             }
         
         { dataset == 'search' && <Link href={"/search?expanded=info&dataset="+docDataset} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
         </div>
 
-        { doc._source.attestations?.length && 
+        { docSource.attestations?.length && 
       <>
         <h3>Historikk</h3>
-        <Timeline attestations={doc._source.attestations} />
+        <Timeline attestations={docSource.attestations} />
       </>}
 
-        { false && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](doc._source) }
+        { false && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
-        { doc._source.image?.manifest && <div>
+        { docSource.image?.manifest && <div>
         <h3>Sedler</h3>
-        <ClientThumbnail manifestId={doc._source.image?.manifest}/>
+        <ClientThumbnail manifestId={docSource.image?.manifest}/>
 
 
         </div>}
 
 
         <div className="flex gap-4 flex-wrap pt-8 pb-2 text-neutral-900">
-        { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
+        { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
           <>
-            <CopyLink uuid={doc._source.uuid}/> 
-            <Link href={"/uuid/" + doc._source.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
+            <CopyLink uuid={docSource.uuid}/> 
+            <Link href={"/uuid/" + docSource.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
               <PiInfoFill aria-hidden="true"/>
               Infoside
             </Link>
