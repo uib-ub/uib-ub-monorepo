@@ -1,11 +1,10 @@
 'use client'
-import Results from "./Results"
+import Results from "./resultSection/Results"
 import MapExplorer from "./MapExplorer"
 import { useQueryState } from "nuqs"
-import { useContext, useState } from "react"
-import { SearchContext } from "@/app/map-search-provider";
+import { useState } from "react"
 import InfoContent from "./infoSection/InfoContent"
-import { PiX, PiXBold } from "react-icons/pi"
+import { PiXBold } from "react-icons/pi"
 import { useSearchQuery } from "@/lib/search-params"
 
 
@@ -46,7 +45,7 @@ export default function DesktopLayout() {
         { showResults &&
         <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
             <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
-                <Results selectedDocState={selectedDocState}/>
+                <Results setSelectedDoc={selectedDocState[1]}/>
             </div>
             
         </section>

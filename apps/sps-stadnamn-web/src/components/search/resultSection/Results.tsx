@@ -1,21 +1,18 @@
 import { SearchContext } from "@/app/map-search-provider"
 import { useContext } from "react"
-
-import Pagination from "../results/pagination";
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiMapPinFill, PiInfoFill, PiSortAscending, PiSortDescending, PiArticleFill, PiLinkBold, PiCaretUp, PiCaretDown } from 'react-icons/pi';
+import { PiSortAscending, PiSortDescending, PiCaretUp, PiCaretDown } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
-import AudioButton from "../results/audioButton";
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
-import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers-map-search';
-import { sortConfig, datasetTitles } from '@/config/dataset-config';
+import { sortConfig } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import ResultItem from "./ResultItem";
+import { useSearchQuery } from "@/lib/search-params";
 
 
-
-export default function Results({selectedDocState}: {selectedDocState: any}) {
+export default function Results({setSelectedDoc}: {setSelectedDoc: any}) {
     const searchParams = useSearchParams()
     const serialize = createSerializer({
         from: parseAsInteger,
@@ -28,30 +25,19 @@ export default function Results({selectedDocState}: {selectedDocState: any}) {
     const router = useRouter()
     const params = useParams<{uuid: string; dataset: string}>()
     const [isOpen, setIsOpen] = useState(false)
-    const titleRenderer = resultRenderers[params.dataset]?.title || defaultResultRenderer.title
-    const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
     const [ showLoading, setShowLoading ] = useState<boolean>(true)
-    const { resultData, totalHits, isLoading } = useContext(SearchContext)
-    const [selectedDoc, setSelectedDoc] = selectedDocState
-
-    const [from, setFrom] = useQueryState('from', parseAsInteger.withDefault(0))
+    const { resultData, totalHits, isLoading, searchError} = useContext(SearchContext)
+    const [additionalItems, setAdditionalItems] = useState<any[]>([])
     const [size, setSize] = useQueryState('size', parseAsInteger.withDefault(20))
+    const { searchQueryString } = useSearchQuery()
 
-    const [loadedData, setLoadedData] = useState<any[] | null>(null)
-
-  useEffect(() => {
-    // This effect updates loadedData once resultData has the necessary info
-    if (resultData?.current) {
-      setLoadedData(resultData.current);
-    }
-  }, [resultData]); 
 
 
     useEffect(() => {
       if (!isLoading) {
         setTimeout(() => {
           setShowLoading(false)
-        }, 200);
+        }, 100);
       }
       else {
         setShowLoading(true)
@@ -85,12 +71,25 @@ export default function Results({selectedDocState}: {selectedDocState: any}) {
     }
 
 
+    
+    useEffect(() => {
+      if (size > 20) {
+        const newParams = new URLSearchParams(searchQueryString)
+        newParams.set('size', (size - 20).toString())
+        newParams.set('from', '20')
+        console.log("QUERY", `http://localhost:3000/api/search/map?${newParams.toString()}`)
+        fetch(`/api/search/map?${newParams.toString()}`).then(response => response.json()).then(es_data => {
+          // Add conditionally to account for double fetches in nextjs strict mode
+          setAdditionalItems(es_data.hits?.hits)
+            
 
-    const getCumulativeSize = () => {
-      const from = parseInt(searchParams.get('from') || '0')
-      return from + parseInt(searchParams.get('size') || '20')
-    }
+        }
 
+        )
+      }
+    }, [size, searchQueryString])
+
+     
 
 
 
@@ -137,32 +136,46 @@ export default function Results({selectedDocState}: {selectedDocState: any}) {
       
     </div>
     </span>
-    <section id="result_list" className={`lg:py-1 ml-1 ${isOpen ? 'block' : 'hidden md:block'}`}>
 
-    <ul className='flex flex-col mb-2 divide-y divide-neutral-400'>
-      {Array.from({length: totalHits?.value ? Math.min(isLoading ? 20 : from + size, totalHits.value) + 1 : 0}, (_, i) => {
-        return <li className="my-0 flex flex-grow" key={loadedData?.[i]?._id + "_" +  i }>{loadedData?.[i] ? loadedData[i].fields.label : i}</li>
-      })}
-      {false && resultData?.current?.map((hit: any, index:number) => (
-        <li key={hit._id} >
-        <Link onClick={() => setSelectedDoc(hit)}
-              className="w-full h-full py-2 px-2 hover:bg-neutral-50 no-underline" 
-              href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
-        <strong className="text-neutral-950">{titleRenderer(hit, 'map')}</strong>
-        <p>
-          { detailsRenderer(hit, 'map') }
-        </p>
-        </Link>
-        </li>
+
+    <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
+      {resultData?.map((hit: any) => (
+        <ResultItem key={hit._id} hit={hit} setSelectedDoc={setSelectedDoc}/>
       ))}
+
+
+{totalHits && totalHits.value > resultData.length && <>
+  {Array.from({length: Math.min(totalHits.value - resultData.length, size - resultData.length) 
+    + (totalHits.value > size ? 1 : 0)
+  }, (_, i) => {
+    if (i == size - resultData.length && totalHits.value > size) {
+      return <li className="w-full flex justify-center py-4" key="load-more">
+        I: {i}  Size: {size}  Total: {totalHits.value}
+      <Link className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline" href={serialize(new URLSearchParams(searchParams), {size: size + 40})}>Vis flere</Link>
+    </li>
+    }
+    else {
+      const hit = additionalItems?.[i];
+      if (hit) {
+        return <ResultItem debugIndex={i} key={hit._id} hit={hit} setSelectedDoc={setSelectedDoc}/>
+      }
+      else {
+        return <li key={i}>LOADING {i} {size}</li>
+      }
+    }
+  }
+  )}
+</>}
+
+      
     </ul>
-
-
-    <nav className="center gap-2">
-      {totalHits?.value > getCumulativeSize() && <Link href={serialize(new URLSearchParams(searchParams), {size: 50, from: getCumulativeSize()})}>Next page</Link>}
-    </nav>
-
-    </section>
+      
+      {searchError ? <div className="flex justify-center">
+        <div role="status" aria-live="polite" className="text-primary-600"><strong>{searchError.status}</strong> Det har oppstått en feil</div>
+      </div>
+      : !isLoading && !resultData?.length &&  <div className="flex justify-center">
+      <div role="status" aria-live="polite" className="text-neutral-950">Ingen søkeresultater</div>
+    </div>}
     </section>
     )
 }
