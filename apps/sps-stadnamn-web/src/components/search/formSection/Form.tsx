@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import Options from '../Options';
 import { datasetTitles } from '@/config/metadata-config';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import IconButton from '@/components/ui/icon-button';
 
 
@@ -27,6 +27,21 @@ export default function Form({isMobile}: {isMobile: boolean}) {
         }
         router.push(`/search?${formParams.toString()}`)
     }
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setExpanded(null);
+            }
+        };
+    
+        document.addEventListener('keydown', handleKeyDown);
+    
+        // Cleanup function to remove the event listener
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [setExpanded]);
     
     return pathname == '/search' ? <>    
         <Link href="/" className="text-lg lg:min-w-[25svw] pt-1 font-serif sr-only lg:not-sr-only self-center lg:!px-4 uppercase no-underline">Stadnamnportalen</Link>   
@@ -63,7 +78,4 @@ export default function Form({isMobile}: {isMobile: boolean}) {
         </>
      : <Link href="/" className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
           
-
-
-
 }
