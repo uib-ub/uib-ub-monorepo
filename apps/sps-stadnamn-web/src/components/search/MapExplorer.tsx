@@ -487,14 +487,6 @@ export default function MapExplorer({isMobile, selectedDocState}: {isMobile: boo
 <IconButton onClick={zoomOut} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
 <IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiPersonFill/></IconButton>
     
-    
-
-    
-
     </div>
-
-{false && <div className="absolute bottom-0 left-0 z-[6000] w-[600px] h-[200px] overflow-auto bg-white">
-  {JSON.stringify(viewResults, null,  2)}
-</div>}
     </>
 }
