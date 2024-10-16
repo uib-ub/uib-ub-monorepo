@@ -10,6 +10,7 @@ import Spinner from '@/components/svg/Spinner';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./ResultItem";
 import { useSearchQuery } from "@/lib/search-params";
+import { getSkeletonLength } from "@/lib/utils";
 
 
 export default function Results({setSelectedDoc}: {setSelectedDoc: any}) {
@@ -150,17 +151,19 @@ export default function Results({setSelectedDoc}: {setSelectedDoc: any}) {
   }, (_, i) => {
     if (i == size - resultData.length && totalHits.value > size) {
       return <li className="w-full flex justify-center py-4" key="load-more">
-        I: {i}  Size: {size}  Total: {totalHits.value}
-      <Link className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline" href={serialize(new URLSearchParams(searchParams), {size: size + 40})}>Vis flere</Link>
-    </li>
+                <Link className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline" href={serialize(new URLSearchParams(searchParams), {size: size + 40})}>Vis flere</Link>
+              </li>
     }
     else {
       const hit = additionalItems?.[i];
-      if (hit) {
+      if ( hit) {
         return <ResultItem debugIndex={i} key={hit._id} hit={hit} setSelectedDoc={setSelectedDoc}/>
       }
       else {
-        return <li key={i}>LOADING {i} {size}</li>
+        return <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={i}>
+          <div className="bg-neutral-200 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
+          <div className="bg-neutral-200 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
+        </li>
       }
     }
   }

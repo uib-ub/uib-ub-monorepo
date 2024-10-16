@@ -17,7 +17,7 @@ export default function ResultItem({hit, setSelectedDoc, debugIndex}: {hit: any,
     const detailsRenderer = resultRenderers[params.dataset]?.details || defaultResultRenderer.details
 
 
-    return  <li className="my-0 flex flex-grow">
+    return  <li className="flex flex-grow">
             <Link onClick={() => setSelectedDoc(hit)}
                 className="w-full h-full py-2 px-2 hover:bg-neutral-50 no-underline" 
                 href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
