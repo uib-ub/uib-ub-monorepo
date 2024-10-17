@@ -64,7 +64,7 @@ export default function DesktopLayout() {
         </div>
 
         <div className="lg:absolute bottom-top right-0 lg:h-full w-full">
-        <MapExplorer isMobile={false} selectedDocState={selectedDocState} markerCount={markerCountState[0]}/>
+        <MapExplorer isMobile={false} selectedDocState={selectedDocState}/>
         </div>
 
 

@@ -137,7 +137,7 @@ export default function MobileLayout() {
         </div>
 
         <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full">
-        <MapExplorer isMobile={true} selectedDocState={selectedDocState} markerCount={markerCountState[0]}/>
+        <MapExplorer isMobile={true} selectedDocState={selectedDocState}/>
         </div>
 
     </div>

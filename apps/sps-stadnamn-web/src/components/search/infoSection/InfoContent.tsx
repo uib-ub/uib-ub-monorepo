@@ -28,19 +28,11 @@ export default function InfoContent({expanded, selectedDocState, markerCountStat
         point: parseAsArrayOf(parseAsFloat, ','),
     })
 
-    useEffect(() => {
-        console.log("DOC", doc)
-        console.log("ID", selectedDoc?._id)
-    }   
-    , [doc, selectedDoc])
-    
 
     useEffect(() => {
         if (doc) {
             setIsLoading(true)
-            console.log("SETTING DOC")
             fetch(`/api/doc?uuid=${doc}&dataset=${dataset || 'search'}`).then(res => res.json()).then(data => {
-                console.log("FETCH DONE", data.hits?.hits?.length)
                 if (data.hits?.hits?.length) {
                     setSelectedDoc(data.hits.hits[0])
                     setIsLoading(false)
@@ -79,26 +71,23 @@ export default function InfoContent({expanded, selectedDocState, markerCountStat
 
     if (point || doc) {
         return <>
-    
-        {docList?.length ? <ul className="list-none">
+        {selectedDoc?._source && <DocInfo selectedDoc={selectedDoc}/> }
+
+        {docList?.length && 
+            
+        
+        <div className="instance-info !pt-8">
+            <h2>På samme koordinat</h2>
+            <nav className="flex flex-wrap gap-2 mt-2">
             { docList?.map((hit: any, index: number) => {
-            return <li key={hit._id} className="mb-4">
-            <button className="flex items-center gap-2 bg-neutral-50 w-full p-2 px-4" aria-controls={hit._id + "_details"} onClick={() => setDoc(prevDoc => prevDoc == hit.fields.uuid ? null : hit.fields.uuid )}>
-                {
-                    hit.fields.uuid == doc ? <PiCaretUp/> : <PiCaretDown/>
-                }
-                {index+1}: {hit.fields.label}
-            </button>
-            <div id={hit._id + "_details"} className={hit.fields.uuid == doc ? 'pt-4' : 'hidden'}>
-                
-                {!isLoading && hit.fields.uuid == doc && selectedDoc?._source && <DocInfo selectedDoc={selectedDoc}/>}
-                </div>
-                </li>
+            return <Link key={hit._id} aria-current={doc == hit.fields.uuid ? 'page' : false} className={`flex flex-wrap gap-2 ${doc == hit.fields.uuid ? 'bg-accent-200' : 'bg-neutral-100'} rounded-full no-underline p-1 px-4`} href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid})}>
+                {hit.fields.label}
+            </Link>
             }
             )}
-            </ul>
-        :
-        selectedDoc?._source && <DocInfo selectedDoc={selectedDoc}/> 
+            </nav>
+            </div>
+
  
         }
         </>

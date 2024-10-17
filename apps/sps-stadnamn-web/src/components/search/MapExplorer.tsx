@@ -19,7 +19,7 @@ import { useSearchQuery } from "@/lib/search-params";
 import { getLabelMarkerIcon } from "./markers";
 
 
-export default function MapExplorer({ isMobile, selectedDocState, markerCount }: { isMobile: boolean, selectedDocState: any, markerCount: any }) {
+export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: boolean, selectedDocState: any }) {
   const mapInstance = useRef<any>(null);
   const { resultBounds, totalHits, searchError } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(null)
@@ -428,11 +428,11 @@ export default function MapExplorer({ isMobile, selectedDocState, markerCount }:
 
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
               
-              {selectedDoc?._source?.location?.[0]?.coordinates[1] && <Marker 
+              {selectedDoc?._source?.location?.coordinates?.[1] && <Marker 
                   zIndexOffset={1000}
                   position={[
-                    selectedDoc._source.location[0].coordinates[1],
-                    selectedDoc._source.location[0].coordinates[0]
+                    selectedDoc._source.location.coordinates[1],
+                    selectedDoc._source.location.coordinates[0]
                   ]} 
                   icon={new leaflet.DivIcon(getLabelMarkerIcon(selectedDoc._source.label, 'accent', 0, true))}/>
                 }
