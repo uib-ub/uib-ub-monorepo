@@ -17,6 +17,7 @@ export default function MobileLayout() {
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const [drawerContent, setDrawerContent] = useQueryState('expanded', {history: 'push'});
     const selectedDocState = useState<any | null>(null)
+    const markerCountState = useState<number | null>(null)
 
     const isScrolling = (target: EventTarget) => {
         if (snappedPosition == 100 && target instanceof Node && scrollableContent.current?.contains(target)) {
@@ -118,7 +119,7 @@ export default function MobileLayout() {
             <div className="w-full flex justify-center"><div className="h-1 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
             <div className="h-full overscroll-contain max-h-[calc(100svh-3rem)] p-4" ref={scrollableContent} style={{overflowY: currentPosition == 100 ? 'auto' : 'hidden', touchAction: currentPosition == 100  && scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
 
-            { drawerContent == 'info' && <InfoContent expanded={snappedPosition > 25}/> }
+            { drawerContent == 'info' && <InfoContent expanded={snappedPosition > 25} selectedDocState={selectedDocState} markerCountState={markerCountState}/> }
             { drawerContent == 'results' && <Results setSelectedDoc={selectedDocState[1]}/> }
             { drawerContent == 'options' && <Options isMobile={true}/> }
             
@@ -136,7 +137,7 @@ export default function MobileLayout() {
         </div>
 
         <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full">
-        <MapExplorer isMobile={true} selectedDocState={selectedDocState}/>
+        <MapExplorer isMobile={true} selectedDocState={selectedDocState} markerCount={markerCountState[0]}/>
         </div>
 
     </div>

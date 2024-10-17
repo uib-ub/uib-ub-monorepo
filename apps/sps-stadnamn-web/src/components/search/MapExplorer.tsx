@@ -19,7 +19,7 @@ import { useSearchQuery } from "@/lib/search-params";
 import { getLabelMarkerIcon } from "./markers";
 
 
-export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: boolean, selectedDocState: any }) {
+export default function MapExplorer({ isMobile, selectedDocState, markerCount }: { isMobile: boolean, selectedDocState: any, markerCount: any }) {
   const mapInstance = useRef<any>(null);
   const { resultBounds, totalHits, searchError } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(null)
@@ -34,6 +34,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
   const [expanded, setExpanded] = useQueryState('expanded', { history: 'push' })
+
   const [selectedDoc, setSelectedDoc] = selectedDocState
 
 
@@ -425,25 +426,18 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
               })}
 
-
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
               
-                
-              
-              { selectedDoc?.fields?.location?.[0] && selectedDoc?.fields?.location?.[1] && <CircleMarker center={[selectedDoc.fields.location[0].coordinates[1], selectedDoc.fields.location[0].coordinates[0]]} radius={20} color="#cf3c3a" />}
-              {selectedDoc?.fields?.location?.[0].coordinates[1] && <Marker 
+              {selectedDoc?._source?.location?.[0]?.coordinates[1] && <Marker 
                   zIndexOffset={1000}
                   position={[
-                    selectedDoc?.fields?.location?.[0].coordinates[1] || 59.9139, // Latitude
-                    selectedDoc?.fields?.location?.[0].coordinates[0] ||  10.7522 // Longitude
+                    selectedDoc._source.location[0].coordinates[1],
+                    selectedDoc._source.location[0].coordinates[0]
                   ]} 
-
-                  icon={new leaflet.DivIcon(getLabelMarkerIcon(selectedDoc.fields.label, 'accent', 0, true))}/>
-                  
+                  icon={new leaflet.DivIcon(getLabelMarkerIcon(selectedDoc._source.label, 'accent', 0, true))}/>
                 }
 
             </>)
-            
         }}
         
 

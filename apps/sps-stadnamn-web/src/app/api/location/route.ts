@@ -13,7 +13,8 @@ export async function GET(request: Request) {
 
         const query: Record<string,any> = {
             size: 1000,
-            _source: true
+            _source: false,
+            fields: ['uuid', 'label', 'location', 'adm1', 'adm2'],
         }
         
         const distance_query = { geo_distance: {

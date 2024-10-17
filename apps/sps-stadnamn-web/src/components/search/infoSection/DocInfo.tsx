@@ -8,9 +8,11 @@ import Timeline from "./Timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audioButton"
 
-export default function DocInfo({docSource, docDataset}: {docSource: any, docDataset: string}) {
+export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
     const searchParams = useSearchParams()
     const dataset = searchParams.get('dataset') || 'search'
+    const docDataset = selectedDoc._index.split("-")[2]
+    const docSource = selectedDoc._source
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value

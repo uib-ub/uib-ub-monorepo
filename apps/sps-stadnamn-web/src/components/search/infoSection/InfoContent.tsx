@@ -5,20 +5,20 @@ import DocInfo from "./DocInfo"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs"
 import { useSearchQuery } from "@/lib/search-params"
 import Link from "next/link"
-import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
+import { PiCaretDown, PiCaretLeft, PiCaretRight, PiCaretUp } from "react-icons/pi"
 
 
-export default function InfoContent({expanded, selectedDocState}: {expanded: boolean, selectedDocState: any}) {
+export default function InfoContent({expanded, selectedDocState, markerCountState}: {expanded: boolean, selectedDocState: any, markerCountState: any}) {
 
     const searchParams = useSearchParams()
-    const doc = useQueryState('doc')[0]
+    const [doc, setDoc] = useQueryState('doc', { history: 'push'})
     const dataset = searchParams.get('dataset')
     const point = useQueryState('point')[0]
     const { searchQueryString } = useSearchQuery()
-    const [ docSource, setDocSource ] = useState<any | null>(null)
     const [ docList, setDocList ] = useState<any[] | null>(null)
-    const [ docDataset, setDocDataset ] = useState<string | null>(null)
     const [listOffset, setListOffset] = useState(0)
+    const [selectedDoc, setSelectedDoc] = selectedDocState
+    const [markerCount, setMarkerCount] = markerCountState
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -27,71 +27,80 @@ export default function InfoContent({expanded, selectedDocState}: {expanded: boo
         dataset: parseAsString,
         point: parseAsArrayOf(parseAsFloat, ','),
     })
+
+    useEffect(() => {
+        console.log("DOC", doc)
+        console.log("ID", selectedDoc?._id)
+    }   
+    , [doc, selectedDoc])
     
 
     useEffect(() => {
-        setIsLoading(true)
-        
-       
         if (doc) {
+            setIsLoading(true)
+            console.log("SETTING DOC")
             fetch(`/api/doc?uuid=${doc}&dataset=${dataset || 'search'}`).then(res => res.json()).then(data => {
-                console.log(data)
+                console.log("FETCH DONE", data.hits?.hits?.length)
                 if (data.hits?.hits?.length) {
-                    setDocSource(data.hits?.hits[0]._source)
-                    setDocDataset(data.hits?.hits[0]._index.split("-")[2])
+                    setSelectedDoc(data.hits.hits[0])
                     setIsLoading(false)
                 }
             })
         }
         else {
-            setDocSource(null)
-            setDocDataset(null)
+            setSelectedDoc(null)
             setIsLoading(false)
         }
+    }   
+    , [doc, dataset, setSelectedDoc])
+
+    useEffect(() => {
         if (point) {
             fetch(`/api/location?point=${point}&dataset=${dataset || 'search'}&${searchQueryString}`).then(res => 
                 res.json()).then(data => {
-                    console.log(data)
                     if (data.hits?.hits?.length) {
                         setDocList(data.hits?.hits)
                         setIsLoading(false)
+                        setMarkerCount(data.hits?.total?.value)
                     }
             })
         }
         else {
             setDocList(null)
-            setIsLoading(false)
         }
+    }, [point, dataset, searchQueryString, setMarkerCount])
 
+    useEffect(() => {
         setListOffset(0)
-            
     }
-    , [doc, point, dataset, searchQueryString])
+    , [point])
 
     
-    
-    
-    
-    
 
-    if (docSource && doc && docDataset) {
+    if (point || doc) {
         return <>
-        {docList?.length && <nav className="flex flex-wrap gap-2 mb-8"> 
-            {listOffset > 0 && <button className="bg-primary-600 rounded-full px-1 text-white"  onClick={() => setListOffset(listOffset - 6)}><PiCaretLeft/></button>}
-            
-            {
-            docList.slice(listOffset, listOffset + 6).map((hit: any) => {
-                return <Link key={hit._id} className="px-4 bg-neutral-100 rounded-full  no-underline whitespace-nowrap" href={serialize({doc: hit._id, point: hit._source.location?.coordinates?.toReversed(),
-                     dataset: hit._index.split("-")[2]})}
-                          aria-current>
-                        {hit._source.label}
-                    </Link>
-            })
+    
+        {docList?.length ? <ul className="list-none">
+            { docList?.map((hit: any, index: number) => {
+            return <li key={hit._id} className="mb-4">
+            <button className="flex items-center gap-2 bg-neutral-50 w-full p-2 px-4" aria-controls={hit._id + "_details"} onClick={() => setDoc(prevDoc => prevDoc == hit.fields.uuid ? null : hit.fields.uuid )}>
+                {
+                    hit.fields.uuid == doc ? <PiCaretUp/> : <PiCaretDown/>
+                }
+                {index+1}: {hit.fields.label}
+            </button>
+            <div id={hit._id + "_details"} className={hit.fields.uuid == doc ? 'pt-4' : 'hidden'}>
+                
+                {!isLoading && hit.fields.uuid == doc && selectedDoc?._source && <DocInfo selectedDoc={selectedDoc}/>}
+                </div>
+                </li>
             }
-            {docList.length > listOffset + 6 && <button className="bg-primary-600 rounded-full min-h-6 px-1 text-white ml-auto"  onClick={() => setListOffset(listOffset + 6)}><PiCaretRight/></button>}
-            </nav>
+            )}
+            </ul>
+        :
+        selectedDoc?._source && <DocInfo selectedDoc={selectedDoc}/> 
+ 
         }
-        <DocInfo docSource={docSource} docDataset={docDataset}/>
         </>
     }
     else if (!isLoading) {

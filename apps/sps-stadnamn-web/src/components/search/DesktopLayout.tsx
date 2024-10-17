@@ -1,7 +1,7 @@
 'use client'
 import Results from "./resultSection/Results"
 import MapExplorer from "./MapExplorer"
-import { useQueryState } from "nuqs"
+import { useQueryState, useQueryStates } from "nuqs"
 import { useState } from "react"
 import InfoContent from "./infoSection/InfoContent"
 import { PiXBold } from "react-icons/pi"
@@ -15,6 +15,7 @@ export default function DesktopLayout() {
     const [point, setPoint] = useQueryState('point')
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
     const selectedDocState = useState<any | null>(null)
+    const markerCountState = useState<number | null>(null)
 
     const toggleExpanded = (panel: 'options' | 'filters' | 'results') => {
         if (expanded == panel) {
@@ -54,9 +55,8 @@ export default function DesktopLayout() {
         <div className="placeholder:info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
         
         <div className="lg:bg-white relative rounded-md lg:shadow-md break-words px-8 pt-8 pb-4 overflow-y-auto">
-            { doc && <button className="absolute right-2 top-2" onClick={() => setDoc(null)} aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
-            { point && <button className="absolute right-2 top-2" onClick={() => setPoint(null)} aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
-            <InfoContent expanded={expanded == 'info'}/>
+            { (doc || point) && <button className="absolute right-2 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
+            <InfoContent expanded={expanded == 'info'} selectedDocState={selectedDocState} markerCountState={markerCountState}/>
         </div>
         </div>
 
@@ -64,7 +64,7 @@ export default function DesktopLayout() {
         </div>
 
         <div className="lg:absolute bottom-top right-0 lg:h-full w-full">
-        <MapExplorer isMobile={false} selectedDocState={selectedDocState}/>
+        <MapExplorer isMobile={false} selectedDocState={selectedDocState} markerCount={markerCountState[0]}/>
         </div>
 
 
