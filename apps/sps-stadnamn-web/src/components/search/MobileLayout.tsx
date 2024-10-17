@@ -119,7 +119,7 @@ export default function MobileLayout() {
             <div className="w-full flex justify-center"><div className="h-1 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
             <div className="h-full overscroll-contain max-h-[calc(100svh-3rem)] p-4" ref={scrollableContent} style={{overflowY: currentPosition == 100 ? 'auto' : 'hidden', touchAction: currentPosition == 100  && scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
 
-            { drawerContent == 'info' && <InfoContent expanded={snappedPosition > 25} selectedDocState={selectedDocState} markerCountState={markerCountState}/> }
+            <div className={drawerContent != 'info' ? 'hidden' : undefined }><InfoContent  expanded={snappedPosition > 25} selectedDocState={selectedDocState}/></div>
             { drawerContent == 'results' && <Results setSelectedDoc={selectedDocState[1]}/> }
             { drawerContent == 'options' && <Options isMobile={true}/> }
             

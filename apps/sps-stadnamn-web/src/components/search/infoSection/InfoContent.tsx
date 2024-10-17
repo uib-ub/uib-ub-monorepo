@@ -8,7 +8,7 @@ import Link from "next/link"
 import { PiCaretDown, PiCaretLeft, PiCaretRight, PiCaretUp } from "react-icons/pi"
 
 
-export default function InfoContent({expanded, selectedDocState, markerCountState}: {expanded: boolean, selectedDocState: any, markerCountState: any}) {
+export default function InfoContent({expanded, selectedDocState}: {expanded: boolean, selectedDocState: any}) {
 
     const searchParams = useSearchParams()
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
@@ -18,7 +18,6 @@ export default function InfoContent({expanded, selectedDocState, markerCountStat
     const [ docList, setDocList ] = useState<any[] | null>(null)
     const [listOffset, setListOffset] = useState(0)
     const [selectedDoc, setSelectedDoc] = selectedDocState
-    const [markerCount, setMarkerCount] = markerCountState
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -53,14 +52,13 @@ export default function InfoContent({expanded, selectedDocState, markerCountStat
                     if (data.hits?.hits?.length) {
                         setDocList(data.hits?.hits)
                         setIsLoading(false)
-                        setMarkerCount(data.hits?.total?.value)
                     }
             })
         }
         else {
             setDocList(null)
         }
-    }, [point, dataset, searchQueryString, setMarkerCount])
+    }, [point, dataset, searchQueryString])
 
     useEffect(() => {
         setListOffset(0)

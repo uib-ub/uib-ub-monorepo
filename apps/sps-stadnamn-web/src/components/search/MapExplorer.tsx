@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/Map";
 import { baseMaps, baseMapKeys, baseMapProps } from "@/config/basemap-config";
-import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiPersonFill,  PiStackSimpleFill } from "react-icons/pi";
+import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrow, PiNavigationArrowFill, PiPersonFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/map-search-provider";
 import Spinner from "../svg/Spinner";
@@ -491,7 +491,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
       </DropdownMenu>
       <IconButton onClick={zoomIn} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill /></IconButton>
       <IconButton onClick={zoomOut} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill /></IconButton>
-      <IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiPersonFill /></IconButton>
+      <IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiNavigationArrowFill/></IconButton>
     </div>
   </>
 }

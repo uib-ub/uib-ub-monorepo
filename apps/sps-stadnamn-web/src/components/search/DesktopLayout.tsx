@@ -15,7 +15,6 @@ export default function DesktopLayout() {
     const [point, setPoint] = useQueryState('point')
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
     const selectedDocState = useState<any | null>(null)
-    const markerCountState = useState<number | null>(null)
 
     const toggleExpanded = (panel: 'options' | 'filters' | 'results') => {
         if (expanded == panel) {
@@ -56,7 +55,7 @@ export default function DesktopLayout() {
         
         <div className="lg:bg-white relative rounded-md lg:shadow-md break-words px-8 pt-8 pb-4 overflow-y-auto">
             { (doc || point) && <button className="absolute right-2 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
-            <InfoContent expanded={expanded == 'info'} selectedDocState={selectedDocState} markerCountState={markerCountState}/>
+            <InfoContent expanded={expanded == 'info'} selectedDocState={selectedDocState}/>
         </div>
         </div>
 
