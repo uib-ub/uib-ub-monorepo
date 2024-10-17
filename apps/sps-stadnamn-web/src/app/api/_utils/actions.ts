@@ -123,7 +123,12 @@ export async function fetchSOSI(sosiCode: string) {
     }
 }
 
-    const res = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-vocab`, query)
+    const [res, status] = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-vocab`, query)
+    if (status != 200) {
+        return {error: "Failed to fetch stats", status: status}
+    }
+
+
 
     //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
     const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
@@ -166,7 +171,10 @@ export async function fetchSNID(snid: string) {
         _source: false
     }
 
-    const res = await postQuery('search', query)
+    const [res, status] = await postQuery('search', query)
+    if (status != 200) {
+        return {error: "Failed to fetch SNID", status: status}
+    }
 
     return res.hits?.hits?.[0] || res
 
@@ -186,7 +194,10 @@ export async function fetchSNIDParent(uuid: string) {
         _source: false
     }
 
-    const res = await postQuery('search', query)
+    const [res, status] = await postQuery('search', query)
+    if (status != 200) {
+        return {error: "Failed to fetch parent", status: status}
+    }
 
     return res.hits?.hits?.[0] || res
 
@@ -221,6 +232,10 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
         _source: false
 
     }
-    return await postQuery(dataset, query)
+    const [res, status] = await postQuery(dataset, query)
+    if (status != 200) {
+        return {error: "Failed to fetch children", status: status}
+    }
+    return res
     
 }

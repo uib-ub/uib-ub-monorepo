@@ -15,11 +15,11 @@ export async function GET(request: Request) {
             }
         }
 
-        const data = await postQuery(dataset, query)
-        return Response.json(data);
+        const [data, status] = await postQuery(dataset, query)
+        return Response.json(data, { status: status })
     }
     else {
-        return new Response('INVALID_QUERY', { status: 400 });
+        return Response.json({error: 'INVALID_QUERY'}, { status: 400 });
     }
   
 }

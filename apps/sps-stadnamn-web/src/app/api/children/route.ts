@@ -32,8 +32,8 @@ export async function GET(request: Request) {
         }
 
 
-        const data = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
-        return Response.json(data)
+        const [data, status] = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
+        return Response.json(data, { status: status })
 
     }
 
@@ -48,10 +48,10 @@ export async function GET(request: Request) {
             _source: ["children"]
         }
 
-        const data = await postQuery("search", query)
+        const [data, status] = await postQuery("search", query)
 
         if (!data.hits.hits) {
-            return Response.json([])
+            return Response.json([], { status: 404 })
         }
 
         uuids = data.hits.hits[0]._source.children
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
     }
 
 
-    const data = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
+    const [data, status] = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
 
-    return Response.json(data)
+    return Response.json(data, { status: status })
   }

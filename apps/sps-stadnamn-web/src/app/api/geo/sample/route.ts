@@ -45,7 +45,8 @@ export async function GET(request: Request) {
         query.query = geo_query
     }
 
-    const data = await postQuery(dataset, query)
+    const [data, status] = await postQuery(dataset, query)
+    return Response.json(data, {status: status})
 
-  return Response.json(data);
+
 }

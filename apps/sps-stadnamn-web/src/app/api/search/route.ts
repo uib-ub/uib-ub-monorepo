@@ -93,9 +93,9 @@ export async function GET(request: Request) {
 
   //console.log("QUERY", JSON.stringify(query, null, 2))
 
-  const data = await postQuery(dataset, query)
+  const [data, status] = await postQuery(dataset, query)
 
   //console.log("DATA", data.hits.hits.length)
 
-  return Response.json(data);
+  return Response.json(data, {status: status})
 }

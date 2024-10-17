@@ -40,7 +40,7 @@ export async function GET(request: Request) {
         _source: false
 
     }
-    const data =  await postQuery(dataset, query)
-    return Response.json(data)
+    const [data, status] =  await postQuery(dataset, query)
+    return Response.json(data, { status: status })
 
 }

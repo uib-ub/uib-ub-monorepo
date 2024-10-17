@@ -1,8 +1,9 @@
 export async function postQuery(dataset: string, query: any, retry: boolean = true) {
     const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
     const token = endpoint == process.env.ES_ENDPOINT ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
-    
-    const res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search`, {
+    let res
+    try {
+        res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -10,18 +11,31 @@ export async function postQuery(dataset: string, query: any, retry: boolean = tr
         },
         body: JSON.stringify(query)
     });
+    }
+    catch (e) {
+        return [{error: e}, 500]
+    }
 
     
     if (!res.ok) {
-        const errorResponse = await res.json();
         if (retry) {
             return postQuery(dataset, query, false);
         } else {
-            console.log("ERROR", JSON.stringify(errorResponse, null, 2));
-            return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
+            const contentType = res.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                const errorResponse = await res.json();
+                return [errorResponse, res.status];
+
+            } else {
+                // Handle non-JSON responses
+                const textResponse = await res.text();
+                return [{error: textResponse}, res.status];
+            
+            }
         }
     }
-
-    const responseData = await res.json();
-    return responseData;
+    else {
+        const responseData = await res.json();
+        return [responseData, 200]
+    }
 }

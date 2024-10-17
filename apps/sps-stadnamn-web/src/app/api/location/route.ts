@@ -47,8 +47,8 @@ export async function GET(request: Request) {
             
         }
 
-        const data = await postQuery(filteredParams.dataset, query)
-        return Response.json(data);
+        const [data, status] = await postQuery(filteredParams.dataset, query)
+        return Response.json(data, { status: status })
     }
   
     else {

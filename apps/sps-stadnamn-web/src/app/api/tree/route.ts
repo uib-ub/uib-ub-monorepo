@@ -46,10 +46,8 @@ export async function GET(request: Request) {
     };
 
     
-    const response = await postQuery(dataset, query)
-    //console.log("QUERY", query)
-    //console.log("RESPONSE", response)
+    const [data, status] = await postQuery(dataset, query)
 
-    return Response.json(response)
+    return Response.json(data, { status: status })
 }
 

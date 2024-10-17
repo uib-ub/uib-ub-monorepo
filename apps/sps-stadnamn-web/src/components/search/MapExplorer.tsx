@@ -29,7 +29,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
   const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
   const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
   const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
-  const setDoc = useQueryState('doc', { history: 'push', scroll: true })[1]
+  const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
   const [point, setPoint] = useQueryState('point', { history: 'push', scroll: true })
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
@@ -104,7 +104,13 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
       },
 
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json(); 
+      })
+       
       .then(data => {
 
         if (data.hits.hits.length > 0) {
@@ -296,24 +302,17 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
   const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
 
 
-  const selectDocHandler = (hit: Record<string, any>) => {
+  const selectDocHandler = (hit: Record<string, any>, point?: [number, number]) => {
     return {
       click: (e: any) => {
         setPoint(null)
         setDoc(hit.fields.uuid)
+        if (point?.length) {
+          setPoint(point.join(','))
+
+        }
         setExpanded('info')
         setSelectedDoc(hit)
-      }
-    }
-  }
-
-  const selectPointHandler = (selected: [number, number]) => {
-    return {
-      click: (e: any) => {
-        setDoc(null)
-        setPoint(selected.join(','))
-        setExpanded('info')
-        setSelectedDoc(null)
       }
     }
   }
@@ -329,7 +328,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
           : bounds ? { bounds } : { center: [63.4, 10.4], zoom: 5 }
         }
         className='w-full h-full'>
-        {({ TileLayer, CircleMarker, Marker }: any, leaflet: any) => {
+        {({ TileLayer, CircleMarker, Marker, Tooltip }: any, leaflet: any) => {
 
 
 
@@ -360,7 +359,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
                   const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
 
-                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectPointHandler([lat, lon])} />
+                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits[0], [lat, lon])} />
 
                 }
 
@@ -412,7 +411,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
                   const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
 
 
-                  return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={group.children.length > 1 ? selectPointHandler([group.lat, group.lon]) : selectDocHandler(group.children[0])} />
+                  return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={group.children.length > 1 ? selectDocHandler(group.children[0], [group.lat, group.lon]) : selectDocHandler(group.children[0])} />
 
                 }
                 else {
@@ -420,20 +419,33 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
                     center={[group.lat, group.lon]}
                     radius={zoom && zoom < 10 ? 4 : 8}
                     pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: 'white', fillOpacity: 1 }}
-                    eventHandlers={group.children.length > 1 ? selectPointHandler([group.lat, group.lon]) : selectDocHandler(group.children[0])} />
+                    eventHandlers={group.children.length > 1 ? selectDocHandler(group.children[0], [group.lat, group.lon]) : selectDocHandler(group.children[0])} />
                 }
 
 
               })}
 
 
+              { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+              
+                
+              
+              { selectedDoc?.fields?.location?.[0] && selectedDoc?.fields?.location?.[1] && <CircleMarker center={[selectedDoc.fields.location[0].coordinates[1], selectedDoc.fields.location[0].coordinates[0]]} radius={20} color="#cf3c3a" />}
+              {selectedDoc?.fields?.location?.[0].coordinates[1] && <Marker 
+                  zIndexOffset={1000}
+                  position={[
+                    selectedDoc?.fields?.location?.[0].coordinates[1] || 59.9139, // Latitude
+                    selectedDoc?.fields?.location?.[0].coordinates[0] ||  10.7522 // Longitude
+                  ]} 
 
-
-
-              {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+                  icon={new leaflet.DivIcon(getLabelMarkerIcon(selectedDoc.fields.label, 'accent', 0, true))}/>
+                  
+                }
 
             </>)
+            
         }}
+        
 
       </Map>
     </> : <div className="flex h-full items-center justify-center">
@@ -486,8 +498,6 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
       <IconButton onClick={zoomIn} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill /></IconButton>
       <IconButton onClick={zoomOut} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill /></IconButton>
       <IconButton onClick={getMyLocation} className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiPersonFill /></IconButton>
-
-
     </div>
   </>
 }
