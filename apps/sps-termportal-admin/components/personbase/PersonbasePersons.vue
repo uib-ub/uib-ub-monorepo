@@ -10,7 +10,7 @@
       :rows="15"
       class="max-w-7xl"
       filter-display="row"
-      :global-filter-fields="['label']"
+      :global-filter-fields="['label', 'organization', 'groupDisplay']"
     >
       <template #header>
         <div class="flex flex-wrap justify-between gap-2">
@@ -28,7 +28,8 @@
           >
         </template>
       </Column>
-      <Column field="termgroupDisplay" header="Gruppe" sortable></Column>
+      <Column field="organization" header="Organisasjon" sortable></Column>
+      <Column field="groupDisplay" header="Gruppe" sortable></Column>
       <Column field="active" header="Aktiv" sortable data-type="boolean">
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
@@ -67,6 +68,7 @@
         </div>
       </dl>
     </div>
+    <pre>{{ procdata }}</pre>
   </div>
 </template>
 
@@ -84,15 +86,18 @@ const filters = ref({
 });
 const query = `
   *[_type == "person"]{
-    ...,
-    "termgroup": *[_type == "group" &&
+    id_,
+    label,
+    email,
+    "group": *[_type == "group" &&
                    references(^._id)
                  ]{
                   _id,
                   label,
                   qualifiedMembership[person._ref == ^.^._id]{role, timespan}
                  },
-    "contact": *[_type == "termbase" && references(^._id)]{ label }
+    "contact": *[_type == "termbase" && references(^._id)]{ label },
+    "organization": qualifiedDelegation[]{..., organization->}
     }
 `;
 
@@ -104,19 +109,27 @@ const procdata = computed(() => {
       _id: person._id,
       label: person.label,
       email: person.email,
-      termgroup: person.termgroup.filter(
+      group: person.group.filter(
         (group) =>
           !group?.qualifiedMembership[0]?.timespan?.endOfTheEnd ||
           isInFuture(group?.qualifiedMembership[0]?.timespan?.endOfTheEnd)
       ),
-      get termgroupDisplay() {
-        return this.termgroup
+      get groupDisplay() {
+        return this.group
           .map(
             (group) =>
               `${group.label} (${group?.qualifiedMembership[0].timespan?.edtf})`
           )
           .join(", ");
       },
+      organization: person?.organization
+        ?.filter(
+          (org) =>
+            !org?.timespan?.endOfTheEnd ||
+            isInFuture(org?.timespan?.endOfTheEnd)
+        )
+        .map((org) => `${org?.organization?.label} (${org?.timespan?.edtf})`)
+        .join(", "),
       contact: person.contact,
       get active() {
         return !!(this.termgroupDisplay || this.contact.length > 0);
