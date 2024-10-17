@@ -15,7 +15,7 @@ export default function CopyLink({ uuid }: { uuid: string }) {
 
     return (
         <span className="flex gap-4 flex-wrap">
-        { params.dataset && <Link href={process.env.NODE_ENV == 'development' ?  `/uuid/${uuid}` : `https://purl.org/stadnamn/uuid/${uuid}`} className="no-underline inline-flex gap-1 items-center whitespace-nowrap"><PiInfinityBold aria-hidden="true" className="inline"/>Varig side</Link>}
+        { params.dataset && <Link href={(process.env.NODE_ENV == 'development' || true) ?  `/uuid/${uuid}` : `https://purl.org/stadnamn/uuid/${uuid}`} className="no-underline inline-flex gap-1 items-center whitespace-nowrap"><PiInfinityBold aria-hidden="true" className="inline"/>Varig side</Link>}
         <button onClick={copyLink}>
         <span className="flex gap-1 items-center whitespace-nowrap">{linkCopied == uuid ? <PiCheckBold className="inline" aria-hidden="true"/> : <PiClipboardFill className="inline" aria-hidden="true"/>}Kopier varig lenke</span>
         
