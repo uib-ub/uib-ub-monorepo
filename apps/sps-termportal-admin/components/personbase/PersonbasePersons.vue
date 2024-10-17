@@ -7,7 +7,7 @@
       :value="procdata"
       removable-sort
       paginator
-      :rows="15"
+      :rows="10"
       class="max-w-7xl"
       filter-display="row"
       :global-filter-fields="['label', 'organization', 'groupDisplay']"
@@ -68,7 +68,6 @@
         </div>
       </dl>
     </div>
-    <pre>{{ procdata }}</pre>
   </div>
 </template>
 
@@ -110,9 +109,9 @@ const procdata = computed(() => {
       label: person.label,
       email: person.email,
       group: person.group.filter(
-        (group) =>
-          !group?.qualifiedMembership[0]?.timespan?.endOfTheEnd ||
-          isInFuture(group?.qualifiedMembership[0]?.timespan?.endOfTheEnd)
+        (gr) =>
+          !gr?.qualifiedMembership[0]?.timespan?.endOfTheEnd ||
+          isInFuture(gr?.qualifiedMembership[0]?.timespan?.endOfTheEnd)
       ),
       get groupDisplay() {
         return this.group
@@ -132,7 +131,7 @@ const procdata = computed(() => {
         .join(", "),
       contact: person.contact,
       get active() {
-        return !!(this.termgroupDisplay || this.contact.length > 0);
+        return !!(this.groupDisplay || this.contact.length > 0);
       },
     };
   });
