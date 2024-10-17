@@ -38,7 +38,8 @@ import { listenQuery } from 'sanity';
             <NavBarLink class="group hover:text-gray-800"
               >Explore
               <div
-                class="hidden bg-white group-hover:block absolute border border-solid rounded-md border-gray-300"
+                class="hidden mt-1 p-0.5 bg-white group-hover:block absolute border border-solid rounded-md border-gray-300 shadow-lg"
+                style="z-index: 200"
               >
                 <NavBarLink to="/explore/termbase">Termbase</NavBarLink>
                 <NavBarLink to="/explore/domain">Domain</NavBarLink>
