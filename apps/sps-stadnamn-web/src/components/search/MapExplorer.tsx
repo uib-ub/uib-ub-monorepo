@@ -341,10 +341,6 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
               {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
 
-                if (bucket.docs.hits.hits.some((hit: { fields: { uuid: string[]; }; }) => hit.fields.uuid == selectedDoc?._source?.uuid)) {
-                  return null
-                }
-
                 const latitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[1]);
                 const longitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[0]);
 
@@ -358,6 +354,11 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
                 // If no coordinates are different from the average
                 if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 15) && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
+                  
+                  if (selectedDoc?._source?.uuid && bucket.docs.hits.hits.some((hit: any) => hit.fields.uuid[0] == selectedDoc?._source?.uuid)) {
+                    return null
+                  }
+                  console.log(bucket.docs.hits.hits)
 
                   // Label: add dots if different labels
                   const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label);
@@ -371,9 +372,10 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
                 else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 15 && bucket.doc_count == bucket.docs.hits.hits.length)) {
 
-                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
+                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
                     const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black'))
-                    return <Marker key={hit.fields.uuid}
+
+                    return hit.fields.uuid[0] != doc && <Marker key={hit._id}
                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
                       icon={icon}
                       riseOnHover={true}
@@ -415,6 +417,10 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
                 if (viewResults.hits.total.value < 200 || (zoom && zoom == 18)) {
                   const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
+
+                  if (selectedDoc?._source?.uuid && group.children.some((hit: any) => hit.fields.uuid[0] == selectedDoc?._source?.uuid)) {
+                    return null
+                  }
 
 
                   return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={group.children.length > 1 ? selectDocHandler(group.children[0], [group.lat, group.lon]) : selectDocHandler(group.children[0])} />
