@@ -13,7 +13,7 @@ import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
 
 
-export default function Results({setSelectedDoc}: {setSelectedDoc: any}) {
+export default function Results() {
     const searchParams = useSearchParams()
     const serialize = createSerializer({
         from: parseAsInteger,

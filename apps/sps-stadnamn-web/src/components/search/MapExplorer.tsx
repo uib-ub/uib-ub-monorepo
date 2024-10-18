@@ -313,7 +313,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
         }
         setExpanded('info')
-        setSelectedDoc(hit)
+        setDoc(hit.fields.uuid[0])
       }
     }
   }

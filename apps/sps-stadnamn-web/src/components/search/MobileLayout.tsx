@@ -120,7 +120,7 @@ export default function MobileLayout() {
             <div className="h-full overscroll-contain max-h-[calc(100svh-3rem)] p-4" ref={scrollableContent} style={{overflowY: currentPosition == 100 ? 'auto' : 'hidden', touchAction: currentPosition == 100  && scrollableContent.current?.scrollTop && scrollableContent.current.scrollTop > 0 ? 'pan-y' : 'pan-down'}}>
 
             <div className={drawerContent != 'info' ? 'hidden' : undefined }><InfoContent  expanded={snappedPosition > 25} selectedDocState={selectedDocState}/></div>
-            { drawerContent == 'results' && <Results setSelectedDoc={selectedDocState[1]}/> }
+            { drawerContent == 'results' && <Results/> }
             { drawerContent == 'options' && <Options isMobile={true}/> }
             
             </div>

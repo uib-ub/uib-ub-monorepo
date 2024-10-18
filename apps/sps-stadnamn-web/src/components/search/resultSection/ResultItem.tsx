@@ -5,11 +5,12 @@ import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAs
 
 
 
-export default function ResultItem({hit, setSelectedDoc}: {hit: any, setSelectedDoc: any}) {
+export default function ResultItem({hit}: {hit: any}) {
     const searchParams = useSearchParams()
     const serialize = createSerializer({
         doc: parseAsString,
         center: parseAsArrayOf(parseAsFloat, ','),
+        point: parseAsArrayOf(parseAsFloat, ','),
     });
 
     const params = useParams<{uuid: string; dataset: string}>()
@@ -18,9 +19,8 @@ export default function ResultItem({hit, setSelectedDoc}: {hit: any, setSelected
 
 
     return  <li className="flex flex-grow">
-            <Link onClick={() => setSelectedDoc(hit)}
-                className="w-full h-full py-2 px-2 hover:bg-neutral-50 no-underline" 
-                href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
+            <Link className="w-full h-full py-2 px-2 md:px-4 hover:bg-neutral-50 no-underline" 
+                  href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid, point: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
             <strong className="text-neutral-950">{titleRenderer(hit, 'map')}</strong>
             <p>
             { detailsRenderer(hit, 'map') }

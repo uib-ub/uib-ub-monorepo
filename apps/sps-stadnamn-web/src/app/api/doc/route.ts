@@ -9,8 +9,8 @@ export async function GET(request: Request) {
         const query = {
             size: 1,
             query: {
-                terms: {
-                    uuid: [uuid]
+                term: {
+                    uuid: uuid
                 }
             }
         }
