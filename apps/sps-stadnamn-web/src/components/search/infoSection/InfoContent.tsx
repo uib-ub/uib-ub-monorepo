@@ -76,9 +76,9 @@ export default function InfoContent({expanded, selectedDocState}: {expanded: boo
         
         <div className="instance-info !pt-8">
             <h2>På samme koordinat</h2>
-            <nav className="flex flex-wrap gap-2 mt-2">
+            <nav className="flex md:flex-wrap w-full flex-col md:flex-row gap-2 mt-2">
             { docList?.map((hit: any, index: number) => {
-            return <Link key={hit._id} aria-current={doc == hit.fields.uuid ? 'page' : false} className={`flex flex-wrap gap-2 ${doc == hit.fields.uuid ? 'bg-accent-200' : 'bg-neutral-100'} rounded-full no-underline p-1 px-4`} href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid})}>
+            return <Link key={hit._id} aria-current={doc == hit.fields.uuid ? 'page' : false} className="flex flex-wrap chip gap-2 p-1 px-4 bg-neutral-100 rounded-full no-underline aria-[current=page]:text-white aria-[current=page]:bg-accent-800" href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid})}>
                 {hit.fields.label}
             </Link>
             }
