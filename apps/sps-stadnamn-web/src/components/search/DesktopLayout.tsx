@@ -45,7 +45,7 @@ export default function DesktopLayout() {
         { showResults &&
         <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
             <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
-                <Results setSelectedDoc={selectedDocState[1]}/>
+                <Results/>
             </div>
             
         </section>
