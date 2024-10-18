@@ -78,7 +78,6 @@ export default function InfoContent({expanded, selectedDocState}: {expanded: boo
             <h2>På samme koordinat</h2>
             <nav className="flex md:flex-wrap w-full flex-col md:flex-row gap-2 mt-2">
             { docList?.map((hit: any, index: number) => {
-                console.log("DOC", doc, hit.fields.uuid[0])
             return <Link key={hit._id} aria-current={doc == hit.fields.uuid[0] ? 'page' : false} className="flex flex-wrap chip gap-2 p-1 px-4 bg-neutral-100 rounded-full no-underline aria-[current=page]:text-white aria-[current=page]:bg-accent-800" href={serialize(new URLSearchParams(searchParams), {doc: hit.fields.uuid[0]})}>
                 {hit.fields.label}
             </Link>
