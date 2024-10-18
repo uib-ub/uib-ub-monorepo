@@ -23,11 +23,6 @@ export interface DatasetPresentation {
     }
   }
   
-export interface FacetConfigItem {
-    key: string;
-    label: string;
-    sort?: 'doc_count' | 'asc' | 'desc';
-  }
 
   export interface FieldConfigItem {
     key: string;

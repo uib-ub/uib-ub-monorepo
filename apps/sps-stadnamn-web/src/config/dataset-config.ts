@@ -150,23 +150,6 @@ export const fieldConfig: Record<string, schema.FieldConfigItem[]> = {
 }
 
 
-
-export const facetConfig: Record<string, schema.FacetConfigItem[]> = {
-    hord: [
-      {"key": "archive.institution", "label": "Arkivtilvising"},
-      {"key": "cadastre__gnr", "label": "Gardsnummer", "sort": "asc"},
-      {"key": "cadastre__bnr", "label": "Bruksnummer", "sort": "asc"},
-      {"key": "rawData.oppskrivar", "label": "Oppskrivar"},
-      {"key": "rawData.oppskrivingsTid", "label": "Oppskrivingstid"},
-    ],
-    mu1950: [
-      {"key": "rawData.eigar", "label": "Eigar"},
-      {"key": "rawData.koordinattype", "label": "Koordinattype"}
-    ],
-
-}
-
-
 export const sortConfig: Record<string, Record<string, string>[]> = {
   hord: [
     {"key": "label.keyword", "label": "stadnamn"},
