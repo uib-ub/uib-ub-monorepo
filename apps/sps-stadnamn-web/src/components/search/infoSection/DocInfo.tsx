@@ -7,12 +7,20 @@ import ClientThumbnail from "./ClientThumbnail"
 import Timeline from "./Timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audioButton"
+import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString } from "nuqs"
 
 export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
     const searchParams = useSearchParams()
     const dataset = searchParams.get('dataset') || 'search'
     const docDataset = selectedDoc._index.split("-")[2]
     const docSource = selectedDoc._source
+
+    const serialize = createSerializer({
+      infoDataset: parseAsString,
+      expanded: parseAsString,
+      doc: parseAsString,
+      point: parseAsArrayOf(parseAsFloat, ','),
+  })
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -55,7 +63,7 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
                 </span>
             }
         
-        { dataset == 'search' && <Link href={"/search?expanded=info&dataset="+docDataset} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
+        { dataset == 'search' && <Link href={serialize(new URLSearchParams(searchParams), {infoDataset: docDataset, expanded: 'info', doc: null, point: null})} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
         </div>
 
         { docSource.attestations?.length && 
