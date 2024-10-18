@@ -38,6 +38,10 @@ export default function DatasetInfo() {
                   {datasetPresentation[mainIndex].license.name}
                 </Link></p>
             </div>
+            {infoDataset !=  dataset && <div className="flex gap-2">
+                <Link href={`/search?dataset=${mainIndex}`} className="btn btn-primary">Søk i {datasetTitles[mainIndex]}</Link>
+                {subindex && <Link href={`/search?dataset=${infoDataset}`} className="btn btn-neutral">Søk i {datasetTitles[infoDataset]}</Link>}
+            </div>}
         </aside>
     )
 

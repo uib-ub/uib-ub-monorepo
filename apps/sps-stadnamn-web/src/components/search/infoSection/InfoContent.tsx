@@ -31,7 +31,7 @@ export default function InfoContent({expanded, selectedDocState}: {expanded: boo
     useEffect(() => {
         if (doc) {
             setIsLoading(true)
-            fetch(`/api/doc?uuid=${doc}&dataset=${dataset || 'search'}`).then(res => res.json()).then(data => {
+            fetch(`/api/doc?uuid=${doc}${dataset ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setSelectedDoc(data.hits.hits[0])
                     setIsLoading(false)
