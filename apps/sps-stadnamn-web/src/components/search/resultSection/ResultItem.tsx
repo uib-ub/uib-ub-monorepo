@@ -5,7 +5,7 @@ import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAs
 
 
 
-export default function ResultItem({hit, setSelectedDoc, debugIndex}: {hit: any, setSelectedDoc: any, debugIndex?: number}) {
+export default function ResultItem({hit, setSelectedDoc}: {hit: any, setSelectedDoc: any}) {
     const searchParams = useSearchParams()
     const serialize = createSerializer({
         doc: parseAsString,

@@ -107,7 +107,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
     })
       .then(response => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Request failed: ' + response.statusText);
         }
         return response.json(); 
       })
@@ -307,7 +307,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
     return {
       click: (e: any) => {
         setPoint(null)
-        setDoc(hit.fields.uuid)
+        setDoc(hit.fields.uuid[0])
         if (point?.length) {
           setPoint(point.join(','))
 
@@ -354,7 +354,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
                 // If no coordinates are different from the average
                 if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 15) && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
 
-                  // Label: add dots if they are different
+                  // Label: add dots if different labels
                   const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label);
                   const label = labels[0] + (labels.slice(1, labels.length).some((label: any) => label !== labels[0]) ? '...' : '');
 

@@ -157,7 +157,7 @@ export default function Results({setSelectedDoc}: {setSelectedDoc: any}) {
     else {
       const hit = additionalItems?.[i];
       if ( hit) {
-        return <ResultItem debugIndex={i} key={hit._id} hit={hit} setSelectedDoc={setSelectedDoc}/>
+        return <ResultItem key={hit._id} hit={hit} setSelectedDoc={setSelectedDoc}/>
       }
       else {
         return <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={i}>
