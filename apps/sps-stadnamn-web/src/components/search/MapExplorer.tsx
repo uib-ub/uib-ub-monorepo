@@ -321,7 +321,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
 
   return <>
-    {bounds?.length || (center && zoom) || searchError ? <>
+    {(bounds?.length || (center && zoom) || searchError || (totalHits && totalHits.value > 0)) ? <>
       <Map mapRef={mapRef}
         zoomControl={false}
         {...center && zoom ?

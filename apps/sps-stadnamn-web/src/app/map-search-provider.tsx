@@ -42,13 +42,19 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 return response.json()})
             .then(es_data => {
                 const newBounds = es_data.aggregations?.viewport.bounds
-                setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+                if (newBounds) {
+                    setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+                }
+                else if (es_data.hits.hits.length) {
+                    setResultBounds(null)
+                }
+
 
                 setTotalHits(es_data.hits.total)
                 setResultData(es_data.hits.hits)
                         
             }).catch(error => {
-                console.log(error)
+                console.error(error)
                 setSearchError({error: error.statusText, status: error.status})
 
             }).finally(() => {

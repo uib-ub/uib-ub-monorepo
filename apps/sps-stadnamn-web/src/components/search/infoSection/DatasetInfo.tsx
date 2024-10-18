@@ -9,7 +9,9 @@ import { useSearchParams } from 'next/navigation';
 
 export default function DatasetInfo() {
     const params = useSearchParams()
-    let [mainIndex, subindex] = (params.get('dataset') || 'search').split("_")
+    const dataset = params.get('dataset') || 'search'
+    const infoDataset = params.get('infoDataset') || dataset
+    let [mainIndex, subindex] = (infoDataset).split("_")
 
     function format_timestamp(timestamp: string) {
         const date = new Date(timestamp)

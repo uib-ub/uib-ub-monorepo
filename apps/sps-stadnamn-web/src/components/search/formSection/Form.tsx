@@ -1,8 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { PiDotsThreeVerticalBold, PiMagnifyingGlass, PiX } from 'react-icons/pi';
-
+import { PiDotsThreeVerticalBold, PiInfoFill, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import Options from '../Options';
@@ -27,6 +26,10 @@ export default function Form({isMobile}: {isMobile: boolean}) {
         }
         router.push(`/search?${formParams.toString()}`)
     }
+
+    useEffect(() => {
+        setInputValue(searchParams.get('q') || '')
+    }, [searchParams])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -75,6 +78,7 @@ export default function Form({isMobile}: {isMobile: boolean}) {
         }
 
         </div>
+        
         </>
      : <Link href="/" className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
           

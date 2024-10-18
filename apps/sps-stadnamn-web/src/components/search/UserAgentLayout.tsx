@@ -1,5 +1,4 @@
 import SearchProvider from "@/app/map-search-provider";
-import dynamic from "next/dynamic";
 import { headers } from "next/headers";
 import { userAgent } from "next/server";
 import MobileLayout from "./MobileLayout";
@@ -13,7 +12,7 @@ export default function UserAgentLayout() {
 
 
   return <SearchProvider>
-    {isMobile ? <MobileLayout/> : <DesktopLayout/>}
-  </SearchProvider>
+          {isMobile ? <MobileLayout/> : <DesktopLayout/>}
+        </SearchProvider>
 }
 

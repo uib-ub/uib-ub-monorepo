@@ -18,7 +18,7 @@ export async function GET(request: Request) {
         }
         
         const distance_query = { geo_distance: {
-            distance: '5m',
+            distance: '1m',
             location: {
                 lat: parseFloat(coordinates[0]),
                 lon: parseFloat(coordinates[1])

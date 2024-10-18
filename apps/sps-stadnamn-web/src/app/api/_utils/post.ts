@@ -13,6 +13,7 @@ export async function postQuery(dataset: string, query: any, retry: boolean = tr
     });
     }
     catch (e) {
+        console.error(e)
         return [{error: e}, 500]
     }
 
@@ -24,11 +25,13 @@ export async function postQuery(dataset: string, query: any, retry: boolean = tr
             const contentType = res.headers.get('Content-Type');
             if (contentType && contentType.includes('application/json')) {
                 const errorResponse = await res.json();
+                console.error(errorResponse);
                 return [errorResponse, res.status];
 
             } else {
                 // Handle non-JSON responses
                 const textResponse = await res.text();
+                console.error(textResponse);
                 return [{error: textResponse}, res.status];
             
             }

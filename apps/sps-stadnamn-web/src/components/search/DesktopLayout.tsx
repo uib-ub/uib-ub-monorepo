@@ -6,6 +6,7 @@ import { useState } from "react"
 import InfoContent from "./infoSection/InfoContent"
 import { PiXBold } from "react-icons/pi"
 import { useSearchQuery } from "@/lib/search-params"
+import StatusSection from "./StatusSection"
 
 
 export default function DesktopLayout() {
@@ -25,7 +26,9 @@ export default function DesktopLayout() {
         }
     }
     
-    return <main id="main" className="relative w-full h-[calc(100svh-3rem)]">        
+    return <main id="main" className="relative w-full h-[calc(100svh-3rem)]">   
+        <div className="absolute top-0 left-[25svw] max-w-[50svw] z-[2000] right-0 flex flex-col gap-2"><StatusSection isMobile={false}/></div>
+        
         <div className="flex gap-4 flex-col max-h-[90svh] lg:max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden bg-white rounded-md lg:bg-none shadow-md lg:shadodw-none">
 
         <div className="lg:absolute left-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[90svh] w-[40svw] lg:w-[25svw] !z-[3001]">

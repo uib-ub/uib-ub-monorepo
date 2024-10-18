@@ -17,7 +17,6 @@ export default function MobileLayout() {
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const [drawerContent, setDrawerContent] = useQueryState('expanded', {history: 'push'});
     const selectedDocState = useState<any | null>(null)
-    const markerCountState = useState<number | null>(null)
 
     const isScrolling = (target: EventTarget) => {
         if (snappedPosition == 100 && target instanceof Node && scrollableContent.current?.contains(target)) {

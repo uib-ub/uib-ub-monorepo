@@ -19,20 +19,16 @@ export async function GET(request: Request) {
 
     
   const query: Record<string,any> = {
-    "from": filteredParams.from ? parseInt(filteredParams.from) 
-      : filteredParams.page ? (parseInt(filteredParams.page) - 1) * parseInt(filteredParams.size || '10') : 0,
     "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
     ...highlight ? {highlight} : {},
-    ...(!filteredParams.from ? { // Calculating viewport is not necessary when paginating
-      "aggs": {
-        "viewport": {
-          "geo_bounds": {
-            "field": "location",
-            "wrap_longitude": true
-          },
-        }
+    "aggs": {
+      "viewport": {
+        "geo_bounds": {
+          "field": "location",
+          "wrap_longitude": true
+        },
       }
-    } : {}),
+    },
     "fields": ['uuid', 'label', 'location', 'adm1', 'adm2'],
     "sort": sortArray,
     "_source": false
@@ -55,7 +51,7 @@ export async function GET(request: Request) {
       }
     }
   }
-
+  
   const [data, status] = await postQuery(dataset, query)
   return Response.json(data, {status: status})
   
