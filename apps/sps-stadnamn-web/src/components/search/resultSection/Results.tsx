@@ -106,7 +106,7 @@ export default function Results() {
 
   return (
     <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
-    <span className="flex px-2 gap-2 flex-wrap">
+    <div className="flex px-2 gap-2 flex-wrap">
       <h2 id="result_heading" aria-live="polite">
         <button type="button" className="flex gap-2 items-center flex-nowrap md:hidden" onClick={() => setIsOpen(!isOpen)} aria-controls="result_list" aria-expanded={isOpen}>
           { isOpen? 
@@ -136,12 +136,12 @@ export default function Results() {
 
       
     </div>
-    </span>
+    </div>
 
 
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
       {resultData?.map((hit: any) => (
-        <ResultItem key={hit._id} hit={hit} setSelectedDoc={setSelectedDoc}/>
+        <ResultItem key={hit._id} hit={hit}/>
       ))}
 
 
@@ -157,7 +157,7 @@ export default function Results() {
     else {
       const hit = additionalItems?.[i];
       if ( hit) {
-        return <ResultItem key={hit._id} hit={hit} setSelectedDoc={setSelectedDoc}/>
+        return <ResultItem key={hit._id} hit={hit}/>
       }
       else {
         return <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={i}>
