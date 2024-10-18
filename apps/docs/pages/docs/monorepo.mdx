@@ -78,11 +78,11 @@ Monorepo merge strategy
 Vercel builds every app when a new branch is created. However, it provides a feature to ignore apps based on some logic: [Vercel docs](https://vercel.com/guides/how-do-i-use-the-ignored-build-step-field-on-vercel)
 
 We currently have the following behaviour configured in each app's **Vercel settings**: `Git>Ignored Build Step>Command`:
-Every app can define tags of the form `#docs` (docs), `#sps`, (group språksamlingane) `#tp` (termportalen) etc.
-Apps that don't include this command are always build.
+Every app can define tags of the form `docs/` (docs), `sps/`, (group språksamlingane) `tp/` (termportalen) etc.
+Apps that don't include this command are always built.
 
 ```bash
-if [[ "$VERCEL_GIT_COMMIT_REF" =~ .*#.* ]] && ! [[ "$VERCEL_GIT_COMMIT_REF" =~ .*#(docs).* ]] ;
+if [[ "$VERCEL_GIT_COMMIT_REF" =~ .*/.* ]] && ! [[ "$VERCEL_GIT_COMMIT_REF" =~ .*(docs)/.* ]] ;
 then
 	echo "- Tag not matched, build cancelled"; exit 0;
 else
@@ -91,31 +91,29 @@ fi
 ```
 
 Behaviour:
-- If no tag is present, i.e. no `#` is found in the branch name, no build is cancelled at this step
+- If no slash is present, no build is cancelled at this step
 - If a tag is defined in the branch name, building apps that don't have the tag is cancelled
 - `npx turbo-ignore` is called. See [docs](https://www.npmjs.com/package/turbo-ignore)
 
 Tags currently defined are:
 
-* **api**: `#api`
+* **api**: `api/`
   - Vercel project: **api-ub**
-* **chc-exh-nt-web**: `#exh`
+* **chc-exh-nt-web**: `exh/`
   - Vercel project: **exh-nt**
-* **chc-web**: `#chc`
+* **chc-web**: `chc/`
   - Vercel project: **chc-web**
-* **docs**: `#docs`
+* **docs**: `docs/`
   - Vercel project: **docs**
-* **link-shortener**: `#urls`
+* **link-shortener**: `urls/`
   - Vercel project: **ub-urls**
-* **sps-ordbokene-web**: `#sps` `#ob`
-  - Vercel project: **ordbokene-web**
-* **sps-termportal-web**: `#sps` `#tp` `#tpw`
+* **sps-termportal-web**: `/sps` `tp/` `tpw/`
   - Vercel project: **termportalen**
-* **sps-termportal-admin**: `#sps` `#tp` `#tpa`
+* **sps-termportal-admin**: `sps/` `tp/` `tpa/`
   - Vercel project: **termportalen-admin**
-* **ub-dashboard**: `#ubdash`
+* **ub-dashboard**: `ubdash/`
   - Vercel project: **ub-dashboard**
-* **sps-**: `#sps` `#sn` `#stadnamn`
+* **sps-stadnamn-web**: `sps/` `stadnamn/`
   - Vercel project: **stadnamn-web**
 
 ## Dependency graph
