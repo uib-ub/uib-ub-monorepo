@@ -10,7 +10,7 @@ import { useSearchQuery } from "@/lib/search-params"
 
 export default function DesktopLayout() {
 
-    const { showResults } = useSearchQuery()
+    const { searchFilterParamsString } = useSearchQuery()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
@@ -42,7 +42,7 @@ export default function DesktopLayout() {
             </div>
         }
         </section>
-        { showResults &&
+        { searchFilterParamsString &&
         <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
             <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
                 <Results/>

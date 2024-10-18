@@ -17,13 +17,13 @@ export function useQueryStringWithout(omit : string[]) {
  * 
  * @returns searchQuery: URLSearchParams object with the search query
  * @returns searchQueryString: searchQuery as a string
- * @returns showResults: whether the results section should be shown - it should not be shown id dataset is the only param
+ * @returns searchFilterParamsString: search params except dataset
 
  */
 export function useSearchQuery() {
     // Return params matching certain criteria
     // - q, size, page, starts with "rawData"
-    const fields = ['q'] // TODO: add fields depending on dataset
+    const fields = ['q', 'adm'] // TODO: add fields depending on dataset
     const searchParams = useSearchParams()
     const searchQuery = new URLSearchParams()
 
@@ -39,9 +39,9 @@ export function useSearchQuery() {
         }
     })
 
-    const showResults = Boolean(searchQuery.toString())
+    const searchFilterParamsString = searchQuery.toString()
     // Params that don't require the results section to be shown
     searchQuery.set('dataset', searchParams.get('dataset') || 'search')
 
-    return {searchQueryString: searchQuery.toString(), searchQuery, showResults}
+    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString}
 }
