@@ -340,6 +340,11 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
 
               {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
+
+                if (bucket.docs.hits.hits.some((hit: { fields: { uuid: string[]; }; }) => hit.fields.uuid == selectedDoc?._source?.uuid)) {
+                  return null
+                }
+
                 const latitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[1]);
                 const longitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[0]);
 
