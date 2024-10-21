@@ -85,7 +85,7 @@ const filters = ref({
 });
 const query = `
   *[_type == "person"]{
-    id_,
+    _id,
     label,
     email,
     "group": *[_type == "group" &&
