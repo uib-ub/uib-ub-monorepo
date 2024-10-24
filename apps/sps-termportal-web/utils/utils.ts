@@ -99,7 +99,7 @@ export function getRelationData(
           // Slashes are allowed on Pagenames, should be escaped
           // TODO might break links between concepts of external tbs
           // Termbase is part of URI (seperated by '-3A')
-          const link = "/" + target.replace("/", "%2F").replace("-3A", "/");
+          const link = "/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
             let relation = { target: [label, link] };
