@@ -21,8 +21,8 @@ export default function (binding: { [key: string]: any }): SearchDataEntry {
   if (!Object.keys(termbaseUriPatterns).includes(samling)) {
     link = binding.uri.value
       .replace(runtimeConfig.public.base, "")
-      .replace("/", "%2F") // Slashes are allowd in wiki pagenames, but cause problems with routing
-      .replace("-3A", "/");
+      .replaceAll("/", "%2F") // Slashes are allowd in wiki pagenames, but cause problems with routing
+      .replaceAll("-3A", "/");
   } else {
     const patterns =
       termbaseUriPatterns[samling as keyof typeof termbaseUriPatterns];
