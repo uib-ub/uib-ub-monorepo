@@ -51,10 +51,10 @@ const query = `
           *[_type == "group" && references(^._id)]
           {
             label,
-            qualifiedMembership[]{ timespan },
+            qualifiedMembership[person._ref == ^.^._id]{ timespan },
             "termbase": *[_type == "termbase" &&
                           references(^._id) &&
-                          (status == "opprettet" || status == "publisert")]{id}
+                          (status == "opprettet" || status == "publisert")]{ id }
           }
       }
   }
@@ -76,10 +76,23 @@ const procdata = computed(() => {
     .map((orga) => {
       const map = {
         label: orga.label,
-        count: orga.members.filter(
-          (member) =>
-            member.termgroups.map((tg) => tg.termbase).flat().length > 0
-        ).length,
+        count: orga.members
+          .filter(
+            (member) =>
+              member.termgroups.map((tg) => tg.termbase).flat().length > 0
+          )
+          .filter(
+            (member) =>
+              member.termgroups
+                .map((tg) =>
+                  tg.qualifiedMembership.filter(
+                    (mbs) =>
+                      !mbs?.timespan?.endOfTheEnd ||
+                      isInFuture(mbs?.timespan?.endOfTheEnd)
+                  )
+                )
+                .flat().length > 0
+          ).length,
       };
       return map;
     })
