@@ -122,7 +122,7 @@ export const useBootstrapData = () =>
       "DOMENE-3ANaturvitenskapTeknologi": {},
       "DOMENE-3AHumaniora": {},
       "DOMENE-3ASamfunnsfag": {},
-      // "DOMENE-3AHelse_og_sosial": {},
+      "DOMENE-3AHelse_og_sosial": {},
       "DOMENE-3AOkonomiAdministrasjon": {},
     },
     loaded: false,
