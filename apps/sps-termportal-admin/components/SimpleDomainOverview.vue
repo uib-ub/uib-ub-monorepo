@@ -1,6 +1,10 @@
 <template>
   <div class="space-y-2">
     <p>Select domain to display more information.</p>
+    <p>
+      Use <code class="bg-gray-200">^1</code> to search only for domains that
+      start with the number after the <code class="bg-gray-200">^</code>.
+    </p>
     <DataTable
       ref="datatable"
       v-model:filters="filters"
@@ -30,6 +34,22 @@
         </template>
       </Column>
       <Column sortable field="nb" header="Bokmål navn" />
+      <Column sortable field="labelsLen" header="Navner">
+        <template #body="{ data }">
+          <Icon
+            v-if="data?.labelsLen < 3"
+            name="fa6-solid:triangle-exclamation"
+            size="1.2em"
+            class="ml-[6px] mt-[3px]"
+            :class="
+              data.published
+                ? colorMappingStatus.error.color
+                : colorMappingStatus.warning.color
+            "
+          />
+          <div class=""></div>
+        </template>
+      </Column>
       <Column sortable field="concepts" header="Begreper" />
       <Column sortable field="conceptSum" header="Totalt antall begreper" />
       <Column field="published" header="publisert" data-type="boolean">
@@ -56,6 +76,20 @@
         </template>
       </Column>
     </DataTable>
+    <UtilsTableLegend>
+      <UtilsTableLegendEntry
+        legend-key="Navner"
+        legend-value="En advarsel betyr at mindre enn tre navner er definert."
+      />
+      <UtilsTableLegendEntry
+        legend-key="Begreper"
+        legend-value="Begreper som er direkte definert i domenet"
+      />
+      <UtilsTableLegendEntry
+        legend-key="Totalt antall Begreper"
+        legend-value="Begreper som er direkte definert i domenet eller i underdomener"
+      />
+    </UtilsTableLegend>
   </div>
 </template>
 
@@ -90,6 +124,7 @@ const preProc = computed(() => {
       return {
         id: cleanId(d.concept.value, true),
         nb: labels?.nb,
+        labelsLen: Object.keys(labels).length,
         nn: labels?.nn,
         en: labels?.en,
         published: d.published.value === "true",
@@ -180,7 +215,7 @@ const rowClass = (data) => {
 };
 
 const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  global: { value: "^", matchMode: FilterMatchMode.CONTAINS },
   published: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 </script>

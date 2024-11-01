@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   const queryType = event.context.params?.query;
 
   // Check escache for certain keys
-  const cachedData = await checkEsCache(queryType, domain);
+  const cachedData = await checkEsCache(queryType);
   if (cachedData) {
     return cachedData;
   }

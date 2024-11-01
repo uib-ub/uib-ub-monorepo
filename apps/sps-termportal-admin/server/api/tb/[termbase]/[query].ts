@@ -1,4 +1,4 @@
-import { checkEsCache } from "~/server/utils/elsaticSearchUtils";
+import { checkEsCache } from "~/server/utils/elasticSearchUtils";
 import genExploreDefinitionsQuery from "~/server/utils/genExploreDefinitionsQuery";
 import genInsightTermbaseQuery from "~/server/utils/genInsightTermbaseQuery";
 import genOverviewQuery from "~/server/utils/genOverviewQuery";
