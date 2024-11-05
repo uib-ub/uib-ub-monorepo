@@ -19,8 +19,9 @@ export async function generateMetadata( { params }: { params: Promise<{ dataset:
 
   
 
-export default async function Subpage( { params }: { params: { dataset: string, subpage: string } }) {
-    let [mainIndex, subindex] = params.dataset.split("_")
+export default async function Subpage( { params }: { params: Promise<{ dataset: string, subpage: string }> }) {
+    const { dataset, subpage } = await params
+    let [mainIndex, subindex] = dataset.split("_")
 
     function format_timestamp(timestamp: string) {
         const date = new Date(timestamp)
@@ -61,7 +62,7 @@ export default async function Subpage( { params }: { params: { dataset: string, 
                     {src && <MDXRemote source={src} />}
 
                     { subpages[mainIndex]?.length &&
-                    <SubpageNav items={subpages[mainIndex].map((subpage, index) => { return { label: subpage, href: `/view/${params.dataset}/info/${index+1}`} })}>
+                    <SubpageNav items={subpages[mainIndex].map((subpage, index) => { return { label: subpage, href: `/view/${dataset}/info/${index+1}`} })}>
                         <h3>Artikler</h3>
                     </SubpageNav>
                 }
