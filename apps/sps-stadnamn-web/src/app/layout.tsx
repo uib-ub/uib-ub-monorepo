@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Link from "next/link";
 import Menu from "./Menu";
 import NavBar from "./NavBar";
 import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
 import { Suspense } from "react";
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import PlausibleProvider from 'next-plausible'
-import { PiHouseFill } from "react-icons/pi";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
-import MobileFormSection from "@/components/search/formSection/Form";
 import Form from "@/components/search/formSection/Form";
  
 const garamond = Cormorant_Garamond({
