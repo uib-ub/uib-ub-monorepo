@@ -33,12 +33,13 @@ export const metadata: Metadata = {
   description: "Søketjeneste for norske stedstnavn",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const device = userAgent({headers: headers()}).device
+  const headersList = await headers();
+  const device = userAgent({ headers: headersList }).device;
   const isMobile = device.type === 'mobile'
   return (
     <html lang="no" className={`${garamond.variable} ${opensans.className} h-full w-full`}>

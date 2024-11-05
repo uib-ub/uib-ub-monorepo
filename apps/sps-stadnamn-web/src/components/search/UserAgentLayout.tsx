@@ -4,9 +4,10 @@ import { userAgent } from "next/server";
 import MobileLayout from "./MobileLayout";
 import DesktopLayout from "./DesktopLayout";
 
-export default function UserAgentLayout() {
+export default async function UserAgentLayout() {
 
-  const device = userAgent({headers: headers()}).device
+  const headersList = await headers()
+  const device = userAgent({headers: headersList}).device
   const isMobile = device.type === 'mobile'
 
 

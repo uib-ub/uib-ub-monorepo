@@ -12,15 +12,17 @@ import { userAgent } from "next/server";
 import { headers } from "next/headers";
 
 
-export default async function Home({ searchParams } : { searchParams?: {q: string, d: string} }) {
-  const device = userAgent({headers: headers()}).device
+export default async function Home({ searchParams } : { searchParams?: Promise<{q: string, d: string}> }) {
+  const headersList = await headers();
+  const device = userAgent({ headers: headersList }).device;
   const isMobile = device.type === 'mobile'
+  const { q: legacyQ, d: legacyD } = await searchParams || {}
 
   // Redirect legacy search params from Toponymi
-  if (searchParams?.q) {''
-    const newSearchParams: Record<string,string> = { q: searchParams.q }
-    if (searchParams.d) {
-      newSearchParams['datasets'] = searchParams.d
+  if (legacyQ) {
+    const newSearchParams: Record<string,string> = { q: legacyQ }
+    if (legacyD) {
+      newSearchParams['datasets'] = legacyD
     }
     redirect('/view/search?' + new URLSearchParams(newSearchParams).toString())
     

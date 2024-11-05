@@ -9,10 +9,11 @@ import Link from 'next/link';
 import { PiClockCounterClockwise } from 'react-icons/pi';
 import IconLink from '@/components/ui/icon-link';
 
-export async function generateMetadata( { params }: { params: { dataset: string, subpage: number } }) {
+export async function generateMetadata( { params }: { params: Promise<{ dataset: string, subpage: number }> }) {
+    const { dataset, subpage } = await params
     return {
-      title: "Om " + datasetTitles[params.dataset],
-      description: datasetDescriptions[params.dataset]
+      title: "Om " + datasetTitles[dataset],
+      description: datasetDescriptions[dataset]
     }
   }
 

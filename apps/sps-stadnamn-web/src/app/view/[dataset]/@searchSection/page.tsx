@@ -10,12 +10,10 @@ import { treeSettings } from '@/config/server-config';
 import ClientDisplay from './client-display';
 
 
-export default function SearchSection ( { params, searchParams }: { params: { dataset: string, uuid: string, manifestId: string }, searchParams: Record<string, string | string[]> & { adm1?: string, adm2?: string, adm3: string } }) {
+export default async function SearchSection ( { params, searchParams }: { params: Promise<{ dataset: string, uuid: string, manifestId: string }>, searchParams: Promise<Record<string, string | string[]> & { adm1?: string, adm2?: string, adm3: string }> }) {
+  const { dataset, uuid, manifestId } = await params
 
-    let [mainIndex, subindex] = params.dataset.split("_")
-    
-
-    
+    let [mainIndex, subindex] = dataset.split("_")
 
     return (
        <section className="card flex flex-col xl:col-span-1 gap-3 bg-white py-2 xl:pt-4 !px-0 xl:overflow-y-auto w-full max-h-full relative" aria-label="Søkepanel">
@@ -23,15 +21,15 @@ export default function SearchSection ( { params, searchParams }: { params: { da
         <div className='px-4 flex flex-wrap gap-y-2'>
           <h1 className='text-xl font-sans font-semibold flex gap-1'>
             <SearchToggle>
-              {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[params.dataset].charAt(0).toUpperCase() + datasetTitles[params.dataset].slice(1) : '')}
+              {datasetTitles[mainIndex] + (subindex ? ' | ' + datasetTitles[dataset].charAt(0).toUpperCase() + datasetTitles[dataset].slice(1) : '')}
             </SearchToggle>
             <IconLink className='align-middle' 
-                          href={`/view/${params.dataset}/info?${repeatingSearchParams(searchParams).toString()}`}
+                          href={`/view/${dataset}/info?${repeatingSearchParams(await searchParams).toString()}`}
                           label="Info"><PiInfoFill className="text-2xl text-primary-600"/></IconLink>
             
           </h1>
 
-          { treeSettings[params.dataset as string] && <TreeViewToggle/> }
+          { treeSettings[dataset] && <TreeViewToggle/> }
             
         </div>
         

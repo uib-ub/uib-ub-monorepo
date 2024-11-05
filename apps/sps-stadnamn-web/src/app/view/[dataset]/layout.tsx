@@ -2,10 +2,11 @@ import SearchProvider from "@/app/search-provider"
 
 import { datasetTitles, datasetDescriptions } from '@/config/metadata-config'
 
-export async function generateMetadata( { params }: { params: { dataset: string } }) {
+export async function generateMetadata( { params }: { params: Promise<{ dataset: string }> }) {
+  const { dataset } = await params
   return {
-    title: datasetTitles[params.dataset],
-    description: datasetDescriptions[params.dataset]
+    title: datasetTitles[dataset],
+    description: datasetDescriptions[dataset]
   }
 }
 
