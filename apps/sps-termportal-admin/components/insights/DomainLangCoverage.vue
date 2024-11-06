@@ -1,5 +1,5 @@
 <template>
-  <section class="space-y-4">
+  <section class="space-y-3">
     <h2 class="text-xl">Domains: Language coverage</h2>
     <div class="space-y-1">
       <p>
@@ -7,6 +7,10 @@
         published termbases.
       </p>
       <p>Listed domains are on the second level of our domain hierachy.</p>
+      <p>
+        Concepts from the termbase NHH are defined in the topdomain Økonomi og
+        administrasjon and not counted.
+      </p>
     </div>
     <div class="max-w-5xl">
       <DataTable

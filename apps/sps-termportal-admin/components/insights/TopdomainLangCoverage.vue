@@ -1,5 +1,5 @@
 <template>
-  <section class="space-y-4">
+  <section class="space-y-3">
     <h2 class="mb-3 text-xl">Topdomains: Language coverage</h2>
     <div class="space-y-1">
       <p>
