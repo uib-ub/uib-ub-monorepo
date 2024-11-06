@@ -1,14 +1,15 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">Upubliserte termbaser</h2>
-    <div class="max-w-4xl">
+    <div class="max-w-5xl">
       <DataTable
         ref="datatable"
         v-model:filters="filters"
-        :value="procdata"
+        :value="displayData"
         removable-sort
         sort-field="status"
         :sort-order="-1"
+        filter-display="row"
         paginator
         :rows="15"
         table-style="min-width: 1rem"
@@ -21,7 +22,38 @@
           </div>
         </template>
         <Column field="label" header="Navn" sortable></Column>
-        <Column field="status" header="Status" sortable></Column>
+        <Column
+          sortable
+          header="Status"
+          field="status"
+          filter-field="status"
+          :show-filter-menu="false"
+        >
+          <template #body="{ data }">
+            <div class="flex align-items-center gap-2">
+              <span>{{ data.status }}</span>
+            </div>
+          </template>
+          <template #filter="{ filterModel, filterCallback }">
+            <MultiSelect
+              v-model="filterModel.value"
+              :options="statuses"
+              option-label="name"
+              placeholder="Alle"
+              class="p-column-filter"
+              style="min-width: 10rem"
+              :max-selected-labels="0"
+              @change="filterCallback()"
+            >
+              <template #option="slotProps">
+                <div class="flex align-items-center gap-2">
+                  <span>{{ slotProps.option }}</span>
+                </div>
+              </template>
+            </MultiSelect>
+          </template>
+        </Column>
+        <Column field="topdomain" header="Topdomene" sortable></Column>
         <Column field="domain" header="Domene" sortable></Column>
       </DataTable>
     </div>
@@ -35,22 +67,32 @@ const query = `
 *[_type == "termbase" && status != 'publisert']{
   label,
   status,
+  topdomain,
   domain
 }
 `;
 
 const { data } = useLazySanityQuery(query);
 
-const procdata = computed(() => {
+const displayData = computed(() => {
   const mapped = data.value?.map((tb) => {
     const map = {
       label: tb.label,
       status: numberStatus(tb.status),
+      topdomain: topDomains[tb.topdomain],
       domain: tb.domain,
     };
     return map;
   });
   return mapped;
+});
+
+const statuses = computed(() => {
+  const statusArray = displayData.value?.map((tb) => {
+    return tb.status;
+  });
+
+  return [...new Set(statusArray)].sort().reverse();
 });
 
 const datatable = ref();
@@ -59,5 +101,6 @@ const exportData = () => {
 };
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  status: { value: null, matchMode: FilterMatchMode.IN },
 });
 </script>
