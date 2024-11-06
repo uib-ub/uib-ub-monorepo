@@ -2,11 +2,12 @@ import Link from "next/link"
 import { datasetTitles, publishDates} from "@/config/metadata-config"
 
 
-  export async function generateMetadata( { searchParams }: { searchParams: { dataset: string } }) {
-    if (searchParams.dataset) {
+  export async function generateMetadata( { searchParams }: { searchParams: Promise<{ dataset: string }> }) {
+    const { dataset } = await searchParams
+    if (dataset) {
         return {
-            title: 'Historikk: ' + datasetTitles[searchParams.dataset],
-            description: 'Endringshistorikk for datasettet ' + datasetTitles[searchParams.dataset]
+            title: 'Historikk: ' + datasetTitles[dataset],
+            description: 'Endringshistorikk for datasettet ' + datasetTitles[dataset]
         }
 
     }
@@ -19,14 +20,15 @@ import { datasetTitles, publishDates} from "@/config/metadata-config"
 }
 
 
-export default async function Updates({searchParams}: {searchParams: {dataset: string}}) {
+export default async function Updates({searchParams}: {searchParams: Promise<{dataset: string}>}) {
+    const { dataset } = await searchParams
 
     function format_timestamp(timestamp: string) {
         const date = new Date(timestamp)
         return date.toLocaleDateString()
     }
 
-  const updates = await fetch(`https://git.app.uib.no/api/v4/projects/26634/repository/commits?ref_name=main${searchParams.dataset ? `&path=lfs-data/elastic/${searchParams.dataset}_elastic.json` : ''}`)
+  const updates = await fetch(`https://git.app.uib.no/api/v4/projects/26634/repository/commits?ref_name=main${dataset ? `&path=lfs-data/elastic/${dataset}_elastic.json` : ''}`)
 
     if (!updates.ok) {
         return (
@@ -40,12 +42,12 @@ export default async function Updates({searchParams}: {searchParams: {dataset: s
         const data = await updates.json()
         return (
             <>
-                { searchParams.dataset ? 
+                { dataset ? 
                 <>
-                <h1>Historikk: {datasetTitles[searchParams.dataset]}</h1>
+                <h1>Historikk: {datasetTitles[dataset]}</h1>
                 
-                <p>Endringshistorikk for datasettet {datasetTitles[searchParams.dataset]} etter at det ble publisert i Stadnamnportalen.</p>
-                Lagt til: {format_timestamp(publishDates[searchParams.dataset])}
+                <p>Endringshistorikk for datasettet {datasetTitles[dataset]} etter at det ble publisert i Stadnamnportalen.</p>
+                Lagt til: {format_timestamp(publishDates[dataset])}
                 <h2>Oppdateringer:</h2>
                 </>
                     :
@@ -67,7 +69,7 @@ export default async function Updates({searchParams}: {searchParams: {dataset: s
                 
                 }
                 <div className="mt-6 flex gap-3 flex-col">
-                {searchParams.dataset && <Link href="/datasets/updates">Se historikk for alle datasett</Link>}
+                {dataset && <Link href="/datasets/updates">Se historikk for alle datasett</Link>}
                 <Link href={`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/commits/main?ref_type=heads`}>Se detaljer i GitLab</Link>
                 </div>
             </>

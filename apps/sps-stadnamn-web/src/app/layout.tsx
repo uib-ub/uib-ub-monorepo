@@ -45,6 +45,7 @@ export default async function RootLayout({
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
       </head>
       <body className="flex flex-col w-full h-full relative">
+        <NuqsAdapter>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[3001] focus:top-1 focus:py-3 focus:px-6 focus:bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
@@ -58,6 +59,7 @@ export default async function RootLayout({
           <NavBar className={`hidden xl:flex text-lg xl:text-xl px-4 items-center shrink-0 small-caps gap-3 font-semibold mb-1 !min-w-[25svw] justify-end`}/>
         </header>
         {children}
+        </NuqsAdapter>
       </body>
     </html>
   );

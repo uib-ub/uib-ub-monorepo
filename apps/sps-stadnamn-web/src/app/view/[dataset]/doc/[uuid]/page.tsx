@@ -15,22 +15,26 @@ import PlaceType from '@/components/ui/place-type'
 import { repeatingSearchParams } from '@/lib/utils'
 import ParentButton from './ParentButton'
 
-export async function generateMetadata( { params }: { params: { dataset: string } }) {
+export async function generateMetadata( { params }: { params: Promise<{ dataset: string }> }) {
+  const { dataset } = await params
   const doc = await fetchDoc(params)
 
   return {
-    title: (doc?._source.label ? doc._source.label + " | " : "") + datasetTitles[params.dataset] + " - Stadnamnportalen",
+    title: (doc?._source.label ? doc._source.label + " | " : "") + datasetTitles[dataset] + " - Stadnamnportalen",
     description: doc?._source.description
   }
 }
 
-export default async function DocumentView({ params, searchParams }: { params: { dataset: string, uuid: string }, searchParams: Record<string, string>}) { 
+export default async function DocumentView({ params, searchParams }: { params: Promise<{ dataset: string, uuid: string }>, searchParams: Promise<Record<string, string>>}) { 
+  const { dataset, uuid } = await params
+  const resolvedSearchParams = await searchParams
+  
 
   // If searchParams not empty
   const hasSearchParams = Object.keys(searchParams).length > 0
 
 
-  if (Array.isArray(params.dataset)) {
+  if (Array.isArray(dataset)) {
       throw new Error('Expected "dataset" to be a string, but received an array');
     }
 
@@ -52,7 +56,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
 
     return (
       <div className="relative h-full w-full">
-        {params.dataset == 'search' && docDataset == 'search' && <Link aria-label="Lukk" href={`/view/search?${hasSearchParams ? new URLSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+        {dataset == 'search' && docDataset == 'search' && <Link aria-label="Lukk" href={`/view/search?${hasSearchParams ? new URLSearchParams(resolvedSearchParams).toString() : ('docs=' + uuid)}`} 
               className="no-underline absolute top-5 right-6 z-[2001] text-xl">
           <PiX aria-hidden="true" className='text-neutral-900 inline'/>
           
@@ -61,16 +65,16 @@ export default async function DocumentView({ params, searchParams }: { params: {
         : 'instance-info h-full'
       }><div className='space-y-8 p-4 xl:p-8 overflow-y-auto h-full instance-info'>
         { docDataset != 'search' && <div className='flex flex-wrap gap-x-4 gap-y-2'>
-        { params.dataset != 'search' && <Link href={`/view/${params.dataset}?${hasSearchParams ? repeatingSearchParams(searchParams).toString() : ('docs=' + params.uuid)}`} 
+        { dataset != 'search' && <Link href={`/view/${dataset}?${hasSearchParams ? repeatingSearchParams(resolvedSearchParams).toString() : ('docs=' + uuid)}`} 
               className="no-underline inline">
           <PiCaretLeftBold aria-hidden="true" className='text-primary-600 inline mr-1'/>
           
-          { hasSearchParams && searchParams.search != 'hide' ? 
-          (searchParams.display == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet') : 
-          (searchParams.display == 'table' ? 'Vis i tabellen' : 'Vis på kartet')}
+          { hasSearchParams && resolvedSearchParams.search != 'hide' ? 
+          (resolvedSearchParams.display == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet') : 
+          (resolvedSearchParams.display == 'table' ? 'Vis i tabellen' : 'Vis på kartet')}
         </Link>}
         
-        <ParentButton uuid={doc._source.uuid} dataset={params.dataset}/>
+        <ParentButton uuid={doc._source.uuid} dataset={dataset}/>
         </div>
         }
         
@@ -104,8 +108,8 @@ export default async function DocumentView({ params, searchParams }: { params: {
       </div>
       
       
-      { docDataset != 'search' &&  params.dataset == 'search' && 
-        <span className='self-center'><Link className="no-underline flex gap-1 items-center" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-lg self-center"/>{ datasetTitles[docDataset]}</Link></span>
+      { docDataset != 'search' &&  dataset == 'search' && 
+        <span className='self-center'><Link className="no-underline flex gap-1 items-center" href={"/view/" + docDataset + "?docs=" + uuid}><PiDatabaseFill aria-hidden="true" className="text-lg self-center"/>{ datasetTitles[docDataset]}</Link></span>
       }
       
       { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
@@ -121,7 +125,7 @@ export default async function DocumentView({ params, searchParams }: { params: {
       
       { doc._source.image?.manifest && <div>
         <h3>Seddel</h3>
-        <ThumbnailLink doc={doc} dataset={params.dataset} searchParams={searchParams} />
+        <ThumbnailLink doc={doc} dataset={dataset} searchParams={searchParams} />
 
 
         </div>}
