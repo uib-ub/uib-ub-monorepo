@@ -48,6 +48,8 @@ export const orderTopDomain = [
   "Samfunnsfag",
   "OkonomiAdministrasjon",
   "Helse_og_sosial",
+  "Kunst_design_arkitektur",
+  "Lærerutdanning",
 ];
 
 export const studioLinks = {
@@ -58,6 +60,8 @@ export const esCachedQueries = [
   "termbase_overview",
   "termbase_language_coverage",
   "domain_overview",
+  "topdomain_language_coverage",
+  "domain_language_coverage",
 ];
 
 export const reportReminder = {

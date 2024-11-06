@@ -8,23 +8,8 @@
       <InsightsPeople />
       <InsightsReferenceGroup />
       <InsightsReferencePeople />
-      <section>
-        <h2 class="mb-3 text-xl">Number of domains</h2>
-        <div class="">Could be displayed as a nested list.</div>
-        <ul>
-          <li>- Add and mark lacking domains?</li>
-          <li>- Add count of termbases, concepts, terms?</li>
-        </ul>
-        <div class="">Include aggregation for inherited etc. data?</div>
-      </section>
-      <section>
-        <h2 class="mb-3 text-xl">Subdomain(s) lacking terminology</h2>
-        <div class="">Separate entry or combined with previous entries?</div>
-      </section>
-      <section>
-        <h2 class="mb-3 text-xl">Number of termbases by domain</h2>
-        <div class="">Combine with previous?</div>
-      </section>
+      <InsightsTopdomainLangCoverage />
+      <InsightsDomainLangCoverage />
       <InsightsTermbaseLangCoverage />
       <InsightsPublishedTbsYear />
       <InsightsPlannedTbs />
