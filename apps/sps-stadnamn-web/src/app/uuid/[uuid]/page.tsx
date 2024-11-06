@@ -10,7 +10,7 @@ import GroupedChildren from '@/components/results/grouped-children'
 import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
 import CopyLink from '@/app/view/[dataset]/doc/[uuid]/CopyLink'
 
-export async function generateMetadata( { params }: { params: { uuid: string } }) {
+export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
     const doc = await fetchDoc(params)
 
     return {
@@ -19,9 +19,9 @@ export async function generateMetadata( { params }: { params: { uuid: string } }
     }
 }
 
-export default async function LandingPage({ params }: { params: { uuid: string }}) {
-
-    const doc = await fetchDoc({uuid: params.uuid})
+export default async function LandingPage({ params }: { params: Promise<{ uuid: string }>}) {
+    const { uuid } = await params
+    const doc = await fetchDoc({uuid: uuid})
 
     if (doc.error) {
         return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
@@ -70,9 +70,9 @@ export default async function LandingPage({ params }: { params: { uuid: string }
       
       </span>
             { docDataset != 'search' ?
-            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-2xl"/>{ datasetTitles[docDataset]}</Link></div>
+            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + uuid}><PiDatabaseFill aria-hidden="true" className="text-2xl"/>{ datasetTitles[docDataset]}</Link></div>
             :
-            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Vis i stadnamnsøket</Link></div>
+            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + uuid}><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Vis i stadnamnsøket</Link></div>
 }
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](doc._source) : null }
 
