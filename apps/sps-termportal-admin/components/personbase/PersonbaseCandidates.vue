@@ -195,7 +195,7 @@ const procdata = computed(() => {
         note: person?.note,
         membership: person?.membership?.map((membership) => membership.label),
         lastUpdated: person?.lastUpdated,
-        domain: domainsUhr[cand?.domain],
+        domain: topDomains[cand?.domain],
       };
     });
   });

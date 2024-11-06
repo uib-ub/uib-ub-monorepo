@@ -16,16 +16,6 @@ export const activityTypes = {
   møte: "Møte osv.",
 };
 
-export const domainsUhr = {
-  humaniora: "Humaniora",
-  matnat: "Matematikk, naturvitenskap og teknologi",
-  samfunnsfag: "Samfunnsfag",
-  lærerutdanning: "Lærerutdanning",
-  kudiar: "Kunst, design og arkitektur",
-  helsesosial: "Helse og sosial",
-  okonadm: "Økonomi og administrasjon",
-};
-
 export const studioBaseRoute = "/studio/structure";
 export const wikiPageLink = "https://wiki.terminologi.no/index.php?title=";
 
@@ -40,6 +30,16 @@ export const colorMappingFreshness = {
   7: { color: "text-teal-300", description: "mindre enn syv dager siden" },
   30: { color: "text-tpblue-200", description: "mindre enn 30 dager siden" },
   1000: { color: "text-tpblue-100", description: "for mer enn 30 dager siden" },
+};
+
+export const topDomains = {
+  NaturvitenskapTeknologi: "Naturvitenskap og teknologi",
+  Humaniora: "Humaniora",
+  Samfunnsfag: "Samfunnsfag",
+  OkonomiAdministrasjon: "Okonomi og Administrasjon",
+  Helse_og_sosial: "Helse og sosial",
+  Kunst_design_arkitektur: "Kunst, design og arkitektur",
+  Lærerutdanning: "Lærerutdanning",
 };
 
 export const orderTopDomain = [

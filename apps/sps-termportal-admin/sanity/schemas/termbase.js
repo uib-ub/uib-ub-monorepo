@@ -1,3 +1,4 @@
+import { topDomains } from "~/utils/constants";
 import { label, note, responsibleStaff, tbstatus } from "./props";
 import attribution from "./qualifiedPattern/attribution";
 
@@ -19,9 +20,9 @@ export default {
       title: "Planleggingsdata",
       options: {
         collapsible: true,
+        collapsed: true,
         columns: 2,
       },
-      hidden: ({ document }) => document?.status === "publisert",
     },
   ],
   fields: [
@@ -52,19 +53,9 @@ export default {
       type: "string",
       fieldset: "unpublished",
       options: {
-        list: [
-          {
-            title: "Naturvitenskap og teknologi",
-            value: "NaturvitenskapTeknologi",
-          },
-          { title: "Humaniora", value: "Humaniora" },
-          {
-            title: "Okonomi og Administrasjon",
-            value: "OkonomiAdministrasjon",
-          },
-          { title: "Samfunnsfag", value: "Samfunnsfag" },
-          { title: "Helse og sosial", value: "Helse_og_sosial" },
-        ],
+        list: Object.entries(topDomains).map((domain) => {
+          return { value: domain[0], title: domain[1] };
+        }),
       },
     },
     {

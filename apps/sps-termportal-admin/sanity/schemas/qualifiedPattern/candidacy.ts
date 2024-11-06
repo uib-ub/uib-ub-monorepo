@@ -1,4 +1,4 @@
-import { domainsUhr } from "~/utils/constants";
+import { topDomains } from "~/utils/constants";
 
 export default {
   name: "candidacy",
@@ -11,8 +11,8 @@ export default {
       type: "string",
       title: "UHR domene",
       options: {
-        list: Object.keys(domainsUhr).map((key) => {
-          return { title: domainsUhr[key], value: key };
+        list: Object.keys(topDomains).map((key) => {
+          return { title: topDomains[key], value: key };
         }),
       },
     },
@@ -40,7 +40,7 @@ export default {
     prepare(selection) {
       let titleCombined = "";
       if (selection.title) {
-        titleCombined = domainsUhr[selection.title];
+        titleCombined = topDomains[selection.title];
       }
       if (selection.subdomain) {
         titleCombined += " / " + selection.subdomain;
