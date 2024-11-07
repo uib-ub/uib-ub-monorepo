@@ -29,19 +29,25 @@ export function useSearchQuery() {
 
 
     fields.forEach(field => {
-        if (searchParams.has(field)) {
-            searchQuery.set(field, searchParams.get(field)!)
-        }
+        const values = searchParams.getAll(field)
+        values.forEach(value => {
+            searchQuery.append(field, value)
+        })
     })
+
     searchParams.forEach((value, key) => {
         if (key.startsWith('rawData')) {
-            searchQuery.set(key, value)
+            searchQuery.append(key, value)
         }
     })
 
     const searchFilterParamsString = searchQuery.toString()
     // Params that don't require the results section to be shown
     searchQuery.set('dataset', searchParams.get('dataset') || 'search')
+    const field = searchParams.get('field')
+    if (field) {
+        searchQuery.set('field', field)
+    }
 
     return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString}
 }

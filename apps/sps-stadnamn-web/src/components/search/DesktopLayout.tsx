@@ -31,7 +31,7 @@ export default function DesktopLayout() {
         
         <div className="flex gap-4 flex-col max-h-[90svh] lg:max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden bg-white rounded-md lg:bg-none shadow-md lg:shadodw-none">
 
-        <div className="lg:absolute left-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[90svh] w-[40svw] lg:w-[25svw] !z-[3001]">
+        <div className="lg:absolute left-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[90svh] w-[40svw] lg:w-[25svw] !z-[3001]">
         <section aria-labelledby="filter-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
             <h2 id="filter-title"  className="p-4 w-full"><button className="w-full flex justify-start"aria-controls="filter-content" aria-expanded={expanded == 'filters'} onClick={() => toggleExpanded('filters')}>Filtre</button></h2>
             { expanded == 'filters' &&
@@ -54,7 +54,7 @@ export default function DesktopLayout() {
         </section>
         }
         </div>
-        <div className="placeholder:info-section lg:absolute right-0 top-0 p-4 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
+        <div className="placeholder:info-section lg:absolute right-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
         
         <div className="lg:bg-white relative rounded-md lg:shadow-md break-words px-8 pt-8 pb-4 overflow-y-auto">
             { (doc || point) && <button className="absolute right-2 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}

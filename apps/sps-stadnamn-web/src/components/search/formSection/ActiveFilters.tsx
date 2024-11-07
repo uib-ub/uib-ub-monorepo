@@ -1,15 +1,17 @@
 'use client'
-
 import WithinLabel from "@/app/view/[dataset]/@searchSection/_search-view/WithinLabel"
 import { facetConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { useSearchQuery } from "@/lib/search-params"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { PiX } from "react-icons/pi"
 
 
 export default function ActiveFilters() {
     const router = useRouter()
     const { searchFilterParamsString, searchQuery } = useSearchQuery()
+    const activeFilters = Array.from(searchQuery.entries())
+        .filter(([key, value]) => value && key !== 'q' && !(key == 'dataset' && value == 'search'))
     
 
     const getFieldLabel = (name: string, value: string) => {
@@ -41,24 +43,34 @@ export default function ActiveFilters() {
     
 
 
-    const removeFilter = (key: string) => {
-        const searchParams = new URLSearchParams(searchQuery)
+      const removeFilter = (key: string, value: string) => {
+        const searchParams = new URLSearchParams(searchFilterParamsString)
+        const values = searchParams.getAll(key)
+        
+        // Remove all values for this key
         searchParams.delete(key)
+        
+        // Add back all values except the one we want to remove
+        values.filter(v => v !== value)
+            .forEach(v => searchParams.append(key, v))
+    
         router.push(`/search?${searchParams.toString()}`)
     }
 
 
     return (
-        <div className="flex flex-wrap gap-2">
-            {Array.from(new URLSearchParams(searchFilterParamsString).keys()).map(key => (
-                <button key={key} onClick={() => removeFilter(key)} className="text-neutral-700 hover:text-neutral-900">
-                    Fjern {key}
-                </button>
-            ))
-            }
-        </div>
-
-    )
+      <div className="flex flex-wrap gap-2 mt-2">
+          {activeFilters.map(([key, value]) => (
+              <button 
+                  key={`${key}__${value}`} 
+                  onClick={() => removeFilter(key, value)} 
+                  className="text-neutral-950 bg-white shadow-md rounded-full pl-3 pr-2 py-1"
+              >
+                  {getFieldLabel(key, value)} <PiX className="inline text-lg" />
+              </button>
+          ))}
+      </div>
+  )
 
 
 
