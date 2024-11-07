@@ -3,9 +3,8 @@ import { useState, useEffect} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
 import Link from 'next/link'
-import { PiArchiveFill, PiArticleFill, PiBooksFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
+import { PiArchiveFill, PiArticleFill, PiBooksFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
 import { contentSettings } from '@/config/server-config';
-import type { Metadata } from 'next'
 
 
 export default function DatasetBrowser() {
@@ -56,6 +55,7 @@ export default function DatasetBrowser() {
 
   const filteredDatasets = Object.keys(datasetPresentation)
     .filter(dataset =>
+      dataset != 'search' &&
       selectedFilters.every(filter => 
         (datasetFeatures as {[key: string]: string[]})[dataset]?.includes(filter) || 
         (datasetTypes as {[key: string]: string[]})[dataset]?.includes(filter)
@@ -81,9 +81,10 @@ export default function DatasetBrowser() {
           </div>
           <div className='space-y-4'>
             <h2 className='text-xl'>Datasettype</h2>
+             
             
             <ul className="flex flex-wrap flex-col md:flex-row lg:flex-col xl:flex-row gap-x-6 gap-y-2 justify-equal">
-              {allTypes.map(type => {{
+              { allTypes.map(type => {{
                 const resultCount = filteredDatasets.filter(dataset => (datasetTypes as {[key: string]: string[]})[dataset]?.includes(type)).length;
                 if (resultCount > 0) {
                 return (
@@ -128,7 +129,7 @@ export default function DatasetBrowser() {
           <div>
           <div className="text-xl self-start mb-3" role="status" aria-live="polite">{filteredDatasets.length} av {Object.keys(datasetPresentation).length} datasett</div>
           <ul className="flex flex-col gap-y-6 w-full">
-            {filteredDatasets.map((dataset) => (
+            { filteredDatasets.map((dataset) => (
           <li key={dataset} className="card flex flex-col sm:flex-row h-full my-6 sm:my-0 w-full sm:grid sm:grid-cols-4 relative">
               <div className='flex flex-col sm:col-span-1 w-full'>
               <Image src={datasetPresentation[dataset].img} alt="Illustrasjon" aria-describedby={dataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
@@ -143,7 +144,7 @@ export default function DatasetBrowser() {
                   </div>}
                 </span>
                 <ul className='flex flex-wrap gap-2 my-2 text-neutral-900'>
-                {datasetTypes[dataset].map((type) => (
+                {datasetTypes[dataset]?.map((type) => (
                     <li key={type} className="flex items-center gap-1">
                     {icons[type]}
                     <span>{typeNames[type]}</span>
@@ -162,7 +163,7 @@ export default function DatasetBrowser() {
                 <div className="space-y-2">
                 <h4 className='font-semibold'>Ressurser</h4>
                 <ul className='flex flex-wrap gap-2 text-neutral-900'>
-                {datasetFeatures[dataset].map((feature) => (
+                {datasetFeatures[dataset]?.map((feature) => (
                     <li key={feature} className="flex items-center gap-1">
                     {icons[feature]}
                     <span>{featureNames[feature]}</span>
