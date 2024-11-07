@@ -11,7 +11,7 @@ export default function ActiveFilters() {
     const router = useRouter()
     const { searchFilterParamsString, searchQuery } = useSearchQuery()
     const activeFilters = Array.from(searchQuery.entries())
-        .filter(([key, value]) => value && key !== 'q' && !(key == 'dataset' && value == 'search'))
+        .filter(([key, value]) => value && key !== 'q' && key != 'dataset')
     
 
     const getFieldLabel = (name: string, value: string) => {
