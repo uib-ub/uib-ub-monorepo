@@ -90,6 +90,13 @@
         legend-value="Begreper som er direkte definert i domenet eller i underdomener"
       />
     </UtilsTableLegend>
+    <h3 class="text-2xl">Domain info</h3>
+    <dl>
+      <div v-for="lc in ['nb', 'nn', 'en']" :key="lc" class="flex">
+        <dt class="w-8">{{ lc }}:</dt>
+        <dd>{{ selectedDomain?.[lc] }}</dd>
+      </div>
+    </dl>
   </div>
 </template>
 
