@@ -68,7 +68,7 @@ route.openapi(getItem, async (c) => {
   if (as === 'iiif') {
     try {
       const data: TODO = await client.search({
-        index: [`search-chc-fileset*`, `search-chc-items_*`],
+        index: [`search-chc`],
         query: {
           match_phrase: {
             "id": id
@@ -123,6 +123,7 @@ route.openapi(getItem, async (c) => {
     return c.json({ error: true, message: "Ups, something went wrong!" }, 404)
   }
 })
+
 
 /**
  * Redirect .../:id/manifest to .../:id/manifest.json
