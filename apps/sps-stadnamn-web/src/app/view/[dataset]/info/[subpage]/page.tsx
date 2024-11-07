@@ -35,7 +35,7 @@ export default async function SubPage ( { params }: { params: Promise<{ dataset:
   return (
     <>
     <Breadcrumbs parentName={datasetTitles[mainIndex]} parentUrl={`/view/${dataset}/info`} currentName={subpages[mainIndex][subpage -1]} />
-    <MDXRemote source={src} /> 
+    <MDXRemote source={src} />
     </>
   )
 }
