@@ -14,6 +14,7 @@
       <InsightsPublishedTbsYear />
       <InsightsPlannedTbs />
       <InsightsBasicAnalytics />
+      <InsightsAnalyticsTermbaseVisits />
     </main>
   </div>
 </template>
