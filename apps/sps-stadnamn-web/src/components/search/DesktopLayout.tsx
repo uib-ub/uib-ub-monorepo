@@ -1,17 +1,17 @@
 'use client'
 import Results from "./resultSection/Results"
 import MapExplorer from "./MapExplorer"
-import { useQueryState, useQueryStates } from "nuqs"
+import { useQueryState } from "nuqs"
 import { useState } from "react"
 import InfoContent from "./infoSection/InfoContent"
 import { PiXBold } from "react-icons/pi"
-import { useSearchQuery } from "@/lib/search-params"
+import { useDataset, useSearchQuery } from "@/lib/search-params"
 import StatusSection from "./StatusSection"
 
 
 export default function DesktopLayout() {
-
-    const { searchFilterParamsString } = useSearchQuery()
+    const dataset = useDataset()
+    const { searchFilterParamsString } = useSearchQuery(dataset, "DesktopLayout")
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})

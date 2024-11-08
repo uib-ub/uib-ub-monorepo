@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
-import { useSearchQuery } from "@/lib/search-params";
+import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getLabelMarkerIcon } from "./markers";
 
 
@@ -32,7 +32,8 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
   const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
   const [point, setPoint] = useQueryState('point', { history: 'push', scroll: true })
   const [viewResults, setViewResults] = useState<any>(null)
-  const { searchQueryString } = useSearchQuery()
+  const dataset = useDataset()
+  const { searchQueryString } = useSearchQuery(dataset, "MapExplorer")
   const [expanded, setExpanded] = useQueryState('expanded', { history: 'push' })
 
   const [selectedDoc, setSelectedDoc] = selectedDocState

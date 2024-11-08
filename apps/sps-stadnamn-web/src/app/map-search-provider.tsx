@@ -1,9 +1,7 @@
 'use client'
 import { createContext, useRef } from 'react'
 import { useState, useEffect } from 'react';
-import { ResultData } from './types'
-import { useSearchQuery } from '@/lib/search-params';
-import { useSearchParams } from 'next/navigation';
+import { useDataset, useSearchQuery } from '@/lib/search-params';
 
 interface SearchContextData {
     resultData: any;
@@ -30,7 +28,8 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
-    const { searchQueryString } = useSearchQuery()
+    const dataset = useDataset()
+    const { searchQueryString } = useSearchQuery(dataset, "SearchProvider")
 
     useEffect(() => {
             setIsLoading(true)

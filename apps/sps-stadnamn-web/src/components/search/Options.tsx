@@ -3,14 +3,17 @@
 import { useState, useEffect} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
-import { PiArchiveFill, PiArrowRight, PiArrowUp, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretRight, PiCaretUp, PiCheck, PiCheckFat, PiCheckFatFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
+import { PiArchiveFill, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretRight, PiCaretUp, PiCheck, PiCheckFat, PiCheckFatFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { fieldConfig } from '@/config/search-config';
 import Link from 'next/link';
+import { useDataset } from '@/lib/search-params';
 
 
 export default function Options({isMobile}: {isMobile: boolean}) {
   const searchParams = useSearchParams()
+  const dataset = useDataset()
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [stats, setStats] = useState<any>(null);
@@ -83,30 +86,37 @@ export default function Options({isMobile}: {isMobile: boolean}) {
 
   return (    
         <section className="flex flex-col py-4" aria-labelledby="page_heading">
-          <h2 id="page_heading" className="text-xl text-neutral-900">Søkealternativer</h2>
+          { dataset && fieldConfig[dataset] ? <><h2 id="page_heading" className="text-xl text-neutral-900">Søkealternativer</h2>
           <div className="flex mb-4 mt-2 gap-4">
-          <label className="flex gap-2">
-            <input
+            <label className="flex gap-2">
+              <input
                 type="radio"
                 checked={field == null}
                 onChange={(e) => setField(null)}
-            />
-            Oppslagsord
+              />
+              Navn
             </label>
-            <label className="flex gap-2">
-            <input
-                type="radio"
-                value="merknader"
-                checked={field === 'merknader'}
-                onChange={(e) => setField('merknader')}
-            />
-            Fulltekstsøk
-            </label>
+            {fieldConfig[dataset].map(item => {
+              return (
+                <label key={item.key} className="flex gap-2">
+                  <input
+                      type="radio"
+                      checked={item.key == field}
+                      onChange={(e) => setField(item.key)}
+                  />
+                  {item.label}
+                </label>
+                
+              )
+            })}
             
           </div>
           
 
           <h3 className="text-xl font-semibold text-neutral-900 small-caps">Søkevisninger</h3>
+          </>
+          : <h2 id="page_heading" className="text-xl text-neutral-900">Søkevisninger</h2>
+          }
           <div className='flex flex-col mt-1 justify-between w-full'>
           <div className='flex flex-col'>
           <input

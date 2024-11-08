@@ -2,14 +2,15 @@
 import WithinLabel from "@/app/view/[dataset]/@searchSection/_search-view/WithinLabel"
 import { facetConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
-import { useSearchQuery } from "@/lib/search-params"
+import { useDataset, useSearchQuery } from "@/lib/search-params"
 import { useRouter } from "next/navigation"
 import { PiX } from "react-icons/pi"
 
 
 export default function ActiveFilters() {
     const router = useRouter()
-    const { searchFilterParamsString, searchQuery } = useSearchQuery()
+    const dataset = useDataset()
+    const { searchFilterParamsString, searchQuery } = useSearchQuery(dataset, "ActiveFilters")
     const activeFilters = Array.from(searchQuery.entries())
         .filter(([key, value]) => value && key !== 'q' && key != 'dataset')
     

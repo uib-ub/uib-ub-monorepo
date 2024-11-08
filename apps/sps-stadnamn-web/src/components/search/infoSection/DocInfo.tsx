@@ -2,12 +2,13 @@ import CopyLink from "@/app/view/[dataset]/doc/[uuid]/CopyLink"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiDatabaseFill, PiInfoFill, PiTagFill, PiWarningFill } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfoFill, PiTagFill, PiWarningFill } from "react-icons/pi"
 import ClientThumbnail from "./ClientThumbnail"
 import Timeline from "./Timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audioButton"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString } from "nuqs"
+import FacetTable from "@/components/ui/facet-table"
 
 export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
     const searchParams = useSearchParams()
@@ -66,11 +67,15 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
         { dataset == 'search' && <Link href={serialize(new URLSearchParams(searchParams), {infoDataset: docDataset, expanded: 'info', doc: null, point: null})} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
         </div>
 
-        { docSource.attestations?.length && 
+        { dataset == 'search' ? docSource.attestations?.length > 1 && 
       <>
         <h3>Historikk</h3>
         <Timeline attestations={docSource.attestations} />
-      </>}
+      </>
+      : null
+      }
+      <FacetTable dataset={docDataset} source={docSource}/>
+
 
         { false && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
@@ -89,6 +94,10 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
             <Link href={"/uuid/" + docSource.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
               <PiInfoFill aria-hidden="true"/>
               Infoside
+            </Link>
+            <Link href={"/uuid/" + docSource.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+              <PiBracketsCurly aria-hidden="true"/>
+              Json
             </Link>
         </>
           : <div className="flex gap-1 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset

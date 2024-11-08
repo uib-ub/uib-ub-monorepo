@@ -9,7 +9,7 @@ import { sortConfig } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./ResultItem";
-import { useSearchQuery } from "@/lib/search-params";
+import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
 
 
@@ -30,7 +30,8 @@ export default function Results() {
     const { resultData, totalHits, isLoading, searchError} = useContext(SearchContext)
     const [additionalItems, setAdditionalItems] = useState<any[]>([])
     const [size, setSize] = useQueryState('size', parseAsInteger.withDefault(20))
-    const { searchQueryString } = useSearchQuery()
+    const dataset = useDataset()
+    const { searchQueryString } = useSearchQuery(dataset, "Results")
 
 
 
@@ -78,7 +79,6 @@ export default function Results() {
         const newParams = new URLSearchParams(searchQueryString)
         newParams.set('size', (size - 20).toString())
         newParams.set('from', '20')
-        console.log("QUERY", `http://localhost:3000/api/search/map?${newParams.toString()}`)
         fetch(`/api/search/map?${newParams.toString()}`).then(response => response.json()).then(es_data => {
           // Add conditionally to account for double fetches in nextjs strict mode
           setAdditionalItems(es_data.hits?.hits)

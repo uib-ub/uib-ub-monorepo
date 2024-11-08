@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { PiCaretDown, PiCaretUp, PiDotsThreeVerticalBold, PiInfoFill, PiMagnifyingGlass, PiX } from 'react-icons/pi';
+import { PiCaretDown, PiCaretUp, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import Options from '../Options';

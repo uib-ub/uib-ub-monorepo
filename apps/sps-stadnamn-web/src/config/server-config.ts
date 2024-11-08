@@ -3,6 +3,7 @@ export interface ContentSettingsItem {
   adm?: number; // Deepest level of adm
   cadastre?: boolean; // If the dataset contains standardized cadastral data
   sort?: any[]; // Custom sort array
+  fields?: string[]; // Custom fields to include in the search
 }
 
 export interface TreeSettingsItem {
@@ -13,6 +14,23 @@ export interface TreeSettingsItem {
   filter?: any, 
   showNumber?: boolean,
   leaf?: string
+}
+
+export interface BaseResultFieldTypes {
+  label: string;
+  altLabels?: string[];
+  adm: string,
+  "cadastre.gnr"?: number[];
+  "cadastre.bnr"?: number[];
+}
+
+export type DatasetResultFieldTypes = {
+  hord: BaseResultFieldTypes & {
+    "rawData.bruka.bruk.gardsNr": string;
+    "rawData.bruka.bruk.bruksNr": string;
+    "rawData.kommuneNr": string;
+    "rawData.merknader": string;
+  };
 }
 
 export const treeSettings: Record<string, TreeSettingsItem> = {
@@ -53,6 +71,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       cadastre: true
     },
     hord: {
+      fields: ['rawData.merknader', 'rawData.kommuneNr', 'rawData.bruka.bruk.gardsNr', 'rawData.bruka.bruk.bruksNr'],
       display: 'map',
       adm: 3,
       cadastre: true
@@ -161,5 +180,8 @@ export const getSortArray = (dataset: string): (string | object)[] => {
 
     return sortArray
   }
+
+
+
   
 

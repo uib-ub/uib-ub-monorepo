@@ -1,4 +1,8 @@
+import { contentSettings, DatasetResultFieldTypes } from "./server-config"
+
+
 interface Renderer {
+  fields?: string[];
   title: (hit: any, display: string) => any;
   details: (hit: any, display: string) => any;
   snippet?: (hit: any, display: string) => any;
@@ -23,12 +27,6 @@ const formatHighlight = (highlight: string) => {
 
   return <div dangerouslySetInnerHTML={createMarkup(processedHighlight)}></div>;
 
-}
-
-
-const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
-  const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
-  return [...new Set(altLabels)].join(', ')
 }
 
 const defaultTitle = (hit: any) => {
@@ -98,7 +96,7 @@ const formatAdm = (source: Record<string, any>) => {
   return <>{adm3}{adm3 && ' – '}{adm2 && adm2 != adm1 && adm2 + ', '}{adm1}</>
 }
 
-const cadastreAdm = (knr: string, gnr: string, bnr: string, sep: string, source: Record<string,any>, display: string ) => {
+const cadastreAdm = (knr: string | undefined, gnr: string | undefined, bnr: string | undefined, sep: string, source: Record<string,any>, display: string ) => {
   const { cadastre } = source
 
 
@@ -144,7 +142,7 @@ export const resultRenderers: ResultRenderers = {
       return hit.highlight?.['content.html'][0] && formatHighlight(hit.highlight['content.html'][0])
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields.rawData.KNR, hit.fields.rawData?.GNR, hit.fields.rawData.BNR, "/", hit.fields, display)
+      return //cadastreAdm(hit.fields.rawData.KNR, hit.fields.rawData?.GNR, hit.fields.rawData.BNR, "/", hit.fields, display)
     }
   },
   leks: {
@@ -188,20 +186,19 @@ export const resultRenderers: ResultRenderers = {
   },
   hord: {
     title: (hit: any, display: string) => {
-      const source = hit.fields
-      const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
-      return <><span className="font-semibold">{source.label}{altLabels ? ', ':''}</span>{altLabels}</> 
+      const fields: DatasetResultFieldTypes['hord'] = hit.fields
+      return <><span className="font-semibold">{fields.label}{fields.altLabels ? ', ':''}</span>{fields.altLabels}</> 
     },
     snippet: (hit: any, display: string) => {
       return hit.highlight?.['rawData.merknader'][0] && formatHighlight(hit.highlight['rawData.merknader'][0])
     },
     details: (hit: any, display: string) => {
-      const source = hit.fields     
-
-      return <>{cadastreAdm(source.rawData.kommuneNr, source.rawData.bruka?.bruk?.gardsNr, source.rawData.bruka?.bruk?.bruksNr, "/", source, display)}
-      {!hit.highlight && display == 'popup' && source.rawData?.merknader? 
-        <div>{source.rawData.merknader.slice(0,100)}{source.rawData.merknader.length > 100 ? '...' : ''}
-        </div> : ''}</>
+      const fields: DatasetResultFieldTypes['hord'] = hit.fields  
+      return <>{cadastreAdm(fields["rawData.kommuneNr"], fields["rawData.bruka.bruk.gardsNr"], fields["rawData.bruka.bruk.bruksNr"], "/", fields, display)}
+      {!hit.highlight && fields["rawData.merknader"] ? 
+        <><br/>{fields["rawData.merknader"]?.slice(0,100)}{fields["rawData.merknader"]?.length > 100 ? '...' : ''}
+        </> : ''} 
+        </>
     }
   },
   nbas: {

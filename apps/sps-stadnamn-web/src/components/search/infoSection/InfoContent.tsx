@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import DatasetInfo from "./DatasetInfo"
 import DocInfo from "./DocInfo"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs"
-import { useSearchQuery } from "@/lib/search-params"
+import { useDataset, useSearchQuery } from "@/lib/search-params"
 import Link from "next/link"
 import { PiCaretDown, PiCaretLeft, PiCaretRight, PiCaretUp } from "react-icons/pi"
 
@@ -12,9 +12,9 @@ export default function InfoContent({expanded, selectedDocState}: {expanded: boo
 
     const searchParams = useSearchParams()
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
-    const dataset = searchParams.get('dataset')
     const point = useQueryState('point')[0]
-    const { searchQueryString } = useSearchQuery()
+    const dataset = useDataset()
+    const { searchQueryString } = useSearchQuery(dataset, "InfoContent")
     const [ docList, setDocList ] = useState<any[] | null>(null)
     const [listOffset, setListOffset] = useState(0)
     const [selectedDoc, setSelectedDoc] = selectedDocState
