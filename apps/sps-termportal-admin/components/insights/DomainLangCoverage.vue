@@ -18,6 +18,8 @@
         v-model:filters="filters"
         :value="displayData"
         removable-sort
+        sort-field="label"
+        :sort-order="1"
         table-style="min-width: 1rem"
         :global-filter-fields="['label']"
       >
