@@ -1,7 +1,7 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">People participating in Reference groups</h2>
-    <div class="max-w-7xl">
+  <InsightsWrapper>
+    <template #header>People participating in Reference groups</template>
+    <div class="max-w-6xl">
       <DataTable
         ref="datatable"
         v-model:filters="filters"
@@ -23,7 +23,7 @@
         <Column field="organization" header="Organisasjon" sortable></Column>
       </DataTable>
     </div>
-  </section>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

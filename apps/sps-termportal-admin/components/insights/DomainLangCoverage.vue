@@ -1,7 +1,7 @@
 <template>
-  <section class="space-y-3">
-    <h2 class="text-xl">Domains: Language coverage</h2>
-    <div class="space-y-1 max-w-3xl">
+  <InsightsWrapper>
+    <template #header>Domains: Language coverage</template>
+    <template #description>
       <p>
         Only includes published domains and counts published concepts from
         published termbases.
@@ -9,9 +9,9 @@
       <p>Listed domains are on the second level of our domain hierachy.</p>
       <p>
         Concepts from the termbase NHH are defined in the topdomain Økonomi og
-        administrasjon and not counted.
+        administrasjon and are not counted.
       </p>
-    </div>
+    </template>
     <div class="max-w-5xl">
       <DataTable
         ref="datatable"
@@ -36,7 +36,15 @@
         <Column field="en" header="med engelsk term" sortable />
       </DataTable>
     </div>
-  </section>
+    <template #legend>
+      <UtilsTableLegend>
+        <UtilsTableLegendEntry
+          legend-key="med engelsk term"
+          legend-value="Includes terms with language code en, en-GB, and en-US"
+        />
+      </UtilsTableLegend>
+    </template>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

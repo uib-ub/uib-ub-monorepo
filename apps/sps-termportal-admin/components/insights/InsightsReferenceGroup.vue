@@ -1,7 +1,7 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Referansegrupper</h2>
-    <div class="max-w-7xl">
+  <InsightsWrapper>
+    <template #header>Referansegrupper</template>
+    <div class="max-w-6xl">
       <DataTable
         v-model:filters="filters"
         :value="procdata"
@@ -21,7 +21,7 @@
         <Column field="termgroup" header="Termgruppe" sortable />
       </DataTable>
     </div>
-  </section>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

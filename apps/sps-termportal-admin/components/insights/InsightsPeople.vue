@@ -1,6 +1,6 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">People participating in Termgroups</h2>
+  <InsightsWrapper>
+    <template #header>People participating in Termgroups</template>
     <div class="max-w-7xl">
       <DataTable
         ref="datatable"
@@ -25,7 +25,7 @@
         <Column field="organization" header="Organisasjon" sortable></Column>
       </DataTable>
     </div>
-  </section>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

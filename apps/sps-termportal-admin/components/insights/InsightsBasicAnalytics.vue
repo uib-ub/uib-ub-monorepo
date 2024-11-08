@@ -1,7 +1,7 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Basic Analytics</h2>
-    <div class="space-y-4 max-w-3xl">
+  <InsightsWrapper>
+    <template #header>Basic Analytics</template>
+    <div class="max-w-3xl">
       <DataTable
         ref="datatable"
         :value="procdata"
@@ -22,7 +22,9 @@
         <Column field="pageviews" header="Pageviews" sortable></Column>
         <Column field="searches" header="Searches" sortable></Column>
       </DataTable>
-      <div class="max-w-2xl space-y-2">
+    </div>
+    <template #legend>
+      <div class="space-y-1.5">
         <p>
           People who use an ad blocker are not included in the data. This means
           the "real" events are undercounted. Depending on demographic etc.
@@ -45,8 +47,8 @@
           events provide more detailed information regarding searches.
         </p>
       </div>
-    </div>
-  </section>
+    </template>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

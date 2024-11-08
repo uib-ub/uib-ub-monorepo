@@ -1,6 +1,6 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Upubliserte termbaser</h2>
+  <InsightsWrapper>
+    <template #header>Upubliserte termbaser</template>
     <div class="max-w-5xl">
       <DataTable
         ref="datatable"
@@ -57,7 +57,7 @@
         <Column field="domain" header="Domene" sortable></Column>
       </DataTable>
     </div>
-  </section>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

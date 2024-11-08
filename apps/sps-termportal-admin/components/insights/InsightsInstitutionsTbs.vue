@@ -1,14 +1,14 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Institutions responsible for termbases</h2>
-    <div class="space-y-3 max-w-3xl">
-      <div class="max-w-2xl">
-        <p>
-          List of institutions registered as responsible for one or more
-          termbases. Only termbases that have the status 'opprettet' or
-          'publisert' are included in the count.
-        </p>
-      </div>
+  <InsightsWrapper>
+    <template #header> Institutions responsible for termbases </template>
+    <template #description>
+      <p>
+        List of institutions registered as responsible for one or more
+        termbases. Only termbases that have the status 'opprettet' or
+        'publisert' are included in the count.
+      </p>
+    </template>
+    <div class="max-w-3xl">
       <DataTable
         ref="datatable"
         v-model:filters="filters"
@@ -29,7 +29,7 @@
         <Column field="count" header="Termbaser" sortable></Column>
       </DataTable>
     </div>
-  </section>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">
