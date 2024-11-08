@@ -2,20 +2,37 @@
 import Results from "./resultSection/Results"
 import MapExplorer from "./MapExplorer"
 import { useQueryState } from "nuqs"
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import InfoContent from "./infoSection/InfoContent"
-import { PiXBold } from "react-icons/pi"
-import { useDataset, useSearchQuery } from "@/lib/search-params"
+import { PiCaretDownBold, PiCaretUpBold, PiXBold } from "react-icons/pi"
+import { useSearchQuery } from "@/lib/search-params"
 import StatusSection from "./StatusSection"
+import Facets from "./facetSection/Facets"
+import { SearchContext } from "@/app/map-search-provider"
+import Spinner from "../svg/Spinner"
 
 
 export default function DesktopLayout() {
-    const dataset = useDataset()
-    const { searchFilterParamsString } = useSearchQuery(dataset, "DesktopLayout")
+    const { searchFilterParamsString } = useSearchQuery()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
     const selectedDocState = useState<any | null>(null)
+    const { totalHits, isLoading} = useContext(SearchContext)
+
+    const [ showLoading, setShowLoading ] = useState<boolean>(true)
+    useEffect(() => {
+      if (!isLoading) {
+        setTimeout(() => {
+          setShowLoading(false)
+        }, 100);
+      }
+      else {
+        setShowLoading(true)
+      }
+    }
+    , [isLoading])
+
 
     const toggleExpanded = (panel: 'options' | 'filters' | 'results') => {
         if (expanded == panel) {
@@ -33,23 +50,34 @@ export default function DesktopLayout() {
 
         <div className="lg:absolute left-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[90svh] w-[40svw] lg:w-[25svw] !z-[3001]">
         <section aria-labelledby="filter-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
-            <h2 id="filter-title"  className="p-4 w-full"><button className="w-full flex justify-start"aria-controls="filter-content" aria-expanded={expanded == 'filters'} onClick={() => toggleExpanded('filters')}>Filtre</button></h2>
+            <h2 id="filter-title"  className="px-2 py-2 w-full"><button className="w-full flex justify-start text-center h-full font-semibold text-neutral-950"aria-controls="filter-content" aria-expanded={expanded == 'filters'} onClick={() => toggleExpanded('filters')}>
+                { expanded == 'filters' ? <PiCaretUpBold className="inline self-center mr-1 text-primary-600"/> : <PiCaretDownBold className="inline self-center mr-1  text-primary-600"/> }
+                Filtre</button></h2>
             { expanded == 'filters' &&
             <div id="filter-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac purus sit amet nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac purus sit amet nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac purus sit amet nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac purus sit amet nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac purus sit amet nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam. Nullam nec nisl nec nunc fermentum aliquam.</p>
-                
+                <Facets/>
             </div>
         }
         </section>
         { searchFilterParamsString &&
         <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
-            <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
-                <Results/>
+             <h2 id="filter-title"  className="px-2 py-2 w-full"><button className="w-full flex gap-2 justify-start text-center h-full font-semibold text-neutral-950"aria-controls="result-content" aria-expanded={expanded == 'results'} onClick={() => toggleExpanded('results')}>
+                { expanded == 'results' ? <PiCaretUpBold className="inline self-center  text-primary-600"/> : <PiCaretDownBold className="inline self-center  text-primary-600"/> }
+                Treff
+                { showLoading ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='inline self-center text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span> }
+                </button>
+                
+                
+                
+                </h2>
+                { expanded == 'results' ?
+            <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto border-t border-neutral-200">
+                <Results isMobile={false}/>
             </div>
+            : <div id="result-content" className="hidden lg:block lg:max-h-[40svh] xl:max-h-[30svh] lg:overflow-y-auto border-t border-neutral-200">
+            <Results isMobile={false}/>
+        </div>
+            }
             
         </section>
         }

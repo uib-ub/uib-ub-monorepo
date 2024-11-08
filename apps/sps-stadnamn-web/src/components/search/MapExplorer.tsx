@@ -32,8 +32,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
   const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
   const [point, setPoint] = useQueryState('point', { history: 'push', scroll: true })
   const [viewResults, setViewResults] = useState<any>(null)
-  const dataset = useDataset()
-  const { searchQueryString } = useSearchQuery(dataset, "MapExplorer")
+  const { searchQueryString } = useSearchQuery()
   const [expanded, setExpanded] = useQueryState('expanded', { history: 'push' })
 
   const [selectedDoc, setSelectedDoc] = selectedDocState

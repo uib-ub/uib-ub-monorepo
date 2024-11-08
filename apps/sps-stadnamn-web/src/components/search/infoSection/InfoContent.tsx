@@ -14,7 +14,7 @@ export default function InfoContent({expanded, selectedDocState}: {expanded: boo
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
     const point = useQueryState('point')[0]
     const dataset = useDataset()
-    const { searchQueryString } = useSearchQuery(dataset, "InfoContent")
+    const { searchQueryString } = useSearchQuery()
     const [ docList, setDocList ] = useState<any[] | null>(null)
     const [listOffset, setListOffset] = useState(0)
     const [selectedDoc, setSelectedDoc] = selectedDocState

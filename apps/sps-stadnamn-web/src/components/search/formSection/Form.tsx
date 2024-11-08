@@ -21,6 +21,12 @@ export default function Form({isMobile}: {isMobile: boolean}) {
     const handleSubmit = async (event: any) => {
         event.preventDefault()
         const formParams = new URLSearchParams()
+        if (expanded != 'filters') {
+            formParams.set('expanded', 'results')
+        }
+        else {
+            formParams.set('expanded', 'filters')
+        }
         for (const [key, value] of new FormData(event.target)) {
             formParams.append(key, value as string)
         }
@@ -53,7 +59,7 @@ export default function Form({isMobile}: {isMobile: boolean}) {
         {isMobile ? <h1 className="sr-only">{datasetTitles[searchParams.get('dataset') || 'search']}</h1>
             : <h1 className="text-lg font-sans">
                 <button type="button" onClick={() => setExpanded(prev => prev != 'options' ? 'options' : null)} className="flex gap-2 items-center border-neutral-300 flex-nowrap">
-                {expanded == 'options' ? <PiCaretUp className="text-2xl inline"/> : <PiCaretDown className="text-2xl inline"/>}
+                {expanded == 'options' ? <PiCaretUp className="text-2xl inline text-primary-600"/> : <PiCaretDown className="text-2xl inline text-primary-600"/>}
                 <span className="whitespace-nowrap max-w-[20svw] truncate font-semibold">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
                     
                 </button>

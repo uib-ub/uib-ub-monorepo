@@ -1,4 +1,4 @@
-import { useSearchParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { resultRenderers } from '@/config/result-renderers-map-search'
 
 export function useQueryWithout(omit : string[]) {
@@ -14,7 +14,8 @@ export function useQueryStringWithout(omit : string[]) {
 }
 
 export function useDataset() {
-    return useSearchParams().get('dataset') || 'search'
+    const searchParams = useSearchParams()
+    return searchParams?.get('dataset') || 'search'
 }
 
 
@@ -25,17 +26,20 @@ export function useDataset() {
  * @returns searchFilterParamsString: search params except dataset
 
  */
-export function useSearchQuery(dataset: string, debug: string) {
+export function useSearchQuery() {
+    const searchParams = useSearchParams()
+    const dataset = useDataset()
     // Return params matching certain criteria
     // - q, size, page, starts with "rawData"
     const fields = ['q', 'adm']
+
     // Add dataset specific fields
     const renderer = resultRenderers[dataset]
     if (renderer?.fields) {
         fields.push(...renderer.fields)
     }
 
-    const searchParams = useSearchParams()
+    
     const searchQuery = new URLSearchParams()
 
 
@@ -54,7 +58,9 @@ export function useSearchQuery(dataset: string, debug: string) {
 
     const searchFilterParamsString = searchQuery.toString()
     // Params that don't require the results section to be shown
-    searchQuery.set('dataset', useDataset())
+    if (searchParams.get('dataset')) {
+        searchQuery.set('dataset', dataset)
+    }
     const field = searchParams.get('field')
     if (field) {
         searchQuery.set('field', field)

@@ -10,7 +10,7 @@ import { PiX } from "react-icons/pi"
 export default function ActiveFilters() {
     const router = useRouter()
     const dataset = useDataset()
-    const { searchFilterParamsString, searchQuery } = useSearchQuery(dataset, "ActiveFilters")
+    const { searchFilterParamsString, searchQuery } = useSearchQuery()
     const activeFilters = Array.from(searchQuery.entries())
         .filter(([key, value]) => value && key !== 'q' && key != 'dataset')
     

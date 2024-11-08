@@ -189,7 +189,7 @@ export default function TableExplorer() {
                         checked={visibleColumns.includes('adm')}
                         onChange={(e) => handleCheckboxChange('adm', e.target.checked)}
                         />
-                        Distrikt
+                        Område
                     </label>
                 </div>}
                 { contentSettings[params.dataset as string]?.cadastre && <div>
@@ -228,7 +228,7 @@ export default function TableExplorer() {
                         
                         {
                             visibleColumns.includes('adm') && <th> 
-                                <SortButton field={Array.from({length: contentSettings[params.dataset as string]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Distrikt"/>
+                                <SortButton field={Array.from({length: contentSettings[params.dataset as string]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Område"/>
                             </th>
                         }
                         { showCadastre && visibleColumns.includes('cadastre') &&

@@ -13,7 +13,7 @@ import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
 
 
-export default function Results() {
+export default function Results({isMobile}: {isMobile: boolean}) {
     const searchParams = useSearchParams()
     const serialize = createSerializer({
         from: parseAsInteger,
@@ -26,26 +26,14 @@ export default function Results() {
     const router = useRouter()
     const params = useParams<{uuid: string; dataset: string}>()
     const [isOpen, setIsOpen] = useState(false)
-    const [ showLoading, setShowLoading ] = useState<boolean>(true)
     const { resultData, totalHits, isLoading, searchError} = useContext(SearchContext)
     const [additionalItems, setAdditionalItems] = useState<any[]>([])
     const [size, setSize] = useQueryState('size', parseAsInteger.withDefault(20))
-    const dataset = useDataset()
-    const { searchQueryString } = useSearchQuery(dataset, "Results")
+    const { searchQueryString } = useSearchQuery()
 
 
 
-    useEffect(() => {
-      if (!isLoading) {
-        setTimeout(() => {
-          setShowLoading(false)
-        }, 100);
-      }
-      else {
-        setShowLoading(true)
-      }
-    }
-    , [isLoading])
+    
 
 
     const sortResults = () => {
@@ -93,32 +81,16 @@ export default function Results() {
      
 
 
-
-
-  const ResutlsTitle = () => {
-    return <>
-    <span className='text-xl text-center h-full font-semibold small-caps'>
-      Treff
-      </span> { showLoading ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span> }
-    </>
-  }
-
-
   return (
-    <section className='flex flex-col gap-2 py-2' aria-labelledby='result_heading'>
+    <section className='flex flex-col gap-2 py-2'>
+      { isMobile &&
     <div className="flex px-2 gap-2 flex-wrap">
-      <h2 id="result_heading" aria-live="polite">
-        <button type="button" className="flex gap-2 items-center flex-nowrap md:hidden" onClick={() => setIsOpen(!isOpen)} aria-controls="result_list" aria-expanded={isOpen}>
-          { isOpen? 
-            <PiCaretUp aria-hidden={true} className="md:hidden"/>
-            :
-            <PiCaretDown aria-hidden={true} className="md:hidden"/> }
-        <ResutlsTitle/>
+       <h2 id="result_heading" aria-live="polite">
+      <span className='text-center h-full font-semibold uppercase px-2'>
+      Treff
+      </span><span className='text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span>
 
-        </button>
-        <span className='hidden md:inline'><ResutlsTitle/></span>
-
-      </h2>
+      </h2> 
       <div className="ml-auto flex items-end gap-4">
       {sortConfig[params.dataset] && 
       <span>
@@ -137,6 +109,7 @@ export default function Results() {
       
     </div>
     </div>
+    }
 
 
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>

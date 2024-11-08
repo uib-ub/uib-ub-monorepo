@@ -12,7 +12,7 @@ export default function StatusSection({isMobile}: {isMobile: boolean}) {
 
     return (isMobile || expanded != 'options') && <>
             <ActiveFilters/>
-            { resultData?.length && !resultBounds?.length && <div role="status" aria-live="polite" className="bg-neutral-950 rounded-md p-4 text-white opacity-90 flex gap-2 items-center"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinater</div>}
+            { resultData?.length && !resultBounds?.length && <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center self-center"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinater</div>}
         
     </>
 }

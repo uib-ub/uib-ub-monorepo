@@ -8,7 +8,7 @@ import { error } from 'console';
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const { simple_query_string } = getQueryString(filteredParams)
-  const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
+  const dataset = filteredParams.dataset || 'search' // == 'search' ? '*' : filteredParams.dataset;
 
   const zoomLevels  = {
     "18": 20,

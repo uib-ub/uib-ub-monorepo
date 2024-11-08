@@ -6,7 +6,7 @@ import { postQuery } from '../../_utils/post';
 import { contentSettings, getSortArray } from '@/config/server-config';
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
-  const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
+  const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
   const { highlight, simple_query_string } = getQueryString(filteredParams)
 
   let sortArray: (string | object)[] = []
