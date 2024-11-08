@@ -1,7 +1,7 @@
 <template>
   <section class="space-y-3">
     <h2 class="mb-3 text-xl">Topdomains SSB: Language coverage</h2>
-    <div class="space-y-1">
+    <div class="space-y-1.5 max-w-3xl">
       <p>
         Includes all SSB topdomains (from:
         <AppLinkText to="https://www.ssb.no/klass/klassifikasjoner/36"

@@ -1,7 +1,7 @@
 <template>
   <section>
     <h2 class="mb-3 text-xl">Basic Analytics</h2>
-    <div class="space-y-4 max-w-4xl">
+    <div class="space-y-4 max-w-3xl">
       <DataTable
         ref="datatable"
         :value="procdata"

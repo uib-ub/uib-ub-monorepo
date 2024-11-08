@@ -1,7 +1,7 @@
 <template>
   <section class="space-y-3">
     <h2 class="text-xl">Domains: Language coverage</h2>
-    <div class="space-y-1">
+    <div class="space-y-1 max-w-3xl">
       <p>
         Only includes published domains and counts published concepts from
         published termbases.
