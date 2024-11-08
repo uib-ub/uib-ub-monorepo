@@ -45,7 +45,6 @@ const query = `
         qualifiedAttribution[group._ref == ^.^._id]{...}
       }
     }
-  
     `;
 const { data } = useLazySanityQuery(query);
 
@@ -54,7 +53,9 @@ const procdata = computed(() => {
     ?.map((orga) => {
       const map = {
         label: orga.label,
-        count: orga.termbases.filter((tb) => tb.qualifiedAttribution).length,
+        count: orga.termbases.filter(
+          (tb) => tb.qualifiedAttribution && tb.qualifiedAttribution.length > 0
+        ).length,
       };
       return map;
     })
