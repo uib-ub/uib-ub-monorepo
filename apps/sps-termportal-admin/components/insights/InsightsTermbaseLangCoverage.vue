@@ -1,7 +1,7 @@
 <template>
   <section class="space-y-4">
     <h2 class="text-xl">Termbases: Language coverage</h2>
-    <div class="space-y-1">
+    <div class="space-y-1 max-w-3xl">
       <p>Only includes published termbases and counts published concepts.</p>
     </div>
     <div class="max-w-7xl">
@@ -10,6 +10,8 @@
         v-model:filters="filters"
         :value="displayData"
         removable-sort
+        sort-field="label"
+        :sort-order="1"
         table-style="min-width: 1rem"
         :global-filter-fields="['label']"
       >

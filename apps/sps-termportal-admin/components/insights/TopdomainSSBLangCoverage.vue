@@ -1,15 +1,21 @@
 <template>
   <section class="space-y-3">
-    <h2 class="text-xl">Domains: Language coverage</h2>
-    <div class="space-y-1 max-w-3xl">
+    <h2 class="mb-3 text-xl">Topdomains SSB: Language coverage</h2>
+    <div class="space-y-1.5 max-w-3xl">
       <p>
-        Only includes published domains and counts published concepts from
-        published termbases.
+        Includes all SSB topdomains (from:
+        <AppLinkText to="https://www.ssb.no/klass/klassifikasjoner/36"
+          >6. Universitets- og høgskoleutdanning, lavere nivå</AppLinkText
+        >
+        ) and only counts published concepts from published termbases.
       </p>
-      <p>Listed domains are on the second level of our domain hierachy.</p>
       <p>
-        Concepts from the termbase NHH are defined in the topdomain Økonomi og
-        administrasjon and not counted.
+        See
+        <AppLinkText
+          to="https://wiki.terminologi.no/index.php?title=DOMENE:SSB_Toppdomene"
+          >SSB-Topdomain wiki page</AppLinkText
+        >
+        for mapping details.
       </p>
     </div>
     <div class="max-w-5xl">
@@ -50,7 +56,9 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const { data } = await useLazyFetch("/api/domain/all/domain_language_coverage");
+const { data } = await useLazyFetch(
+  "/api/domain/all/topdomain_ssb_language_coverage"
+);
 
 const displayData = computed(() => {
   return data?.value?.map((domain) => {

@@ -2,7 +2,7 @@
   <section>
     <h2 class="mb-3 text-xl">Institutions participating in termgroups</h2>
     <div class="max-w-3xl space-y-3">
-      <div class="space-y-2 max-w-2xl">
+      <div class="space-y-2 max-w-3xl">
         <p>
           List of insitutions with a count of associated people in termgroups
           that have 'opprettet' or 'publisert' termbases.

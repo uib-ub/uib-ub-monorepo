@@ -1,7 +1,7 @@
 <template>
   <section class="space-y-3">
     <h2 class="mb-3 text-xl">Topdomains: Language coverage</h2>
-    <div class="space-y-1">
+    <div class="space-y-1 max-w-3xl">
       <p>
         Includes all topdomains and only counts published concepts from
         published termbases.
@@ -13,6 +13,8 @@
         v-model:filters="filters"
         :value="displayData"
         removable-sort
+        sort-field="label"
+        :sort-order="1"
         table-style="min-width: 1rem"
         :global-filter-fields="['label']"
       >

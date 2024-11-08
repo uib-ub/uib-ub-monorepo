@@ -10,6 +10,7 @@
       <InsightsReferencePeople />
       <InsightsTopdomainLangCoverage />
       <InsightsDomainLangCoverage />
+      <InsightsTopdomainSSBLangCoverage />
       <InsightsTermbaseLangCoverage />
       <InsightsPublishedTbsYear />
       <InsightsPlannedTbs />
@@ -18,24 +19,3 @@
     </main>
   </div>
 </template>
-
-<script setup lang="ts">
-const { data } = await useLazyFetch("/api/overview/fuseki");
-
-const termbases = computed(() => {
-  return data.value?.results?.bindings.map((e) => {
-    return {
-      label: e.label.value,
-      id: e.id.value,
-      conceptCount: e.concepts.value,
-    };
-  });
-});
-const columns = [
-  { field: "label", header: "Label" },
-  { field: "id", header: "ID" },
-  { field: "conceptCount", header: "Concepts" },
-];
-
-const selectedTermbase = ref();
-</script>
