@@ -3,8 +3,11 @@
     <h2 class="mb-3 text-xl">Topdomains SSB: Language coverage</h2>
     <div class="space-y-1">
       <p>
-        Includes all SSB topdomains and only counts published concepts from
-        published termbases.
+        Includes all SSB topdomains (from:
+        <AppLinkText to="https://www.ssb.no/klass/klassifikasjoner/36"
+          >6. Universitets- og høgskoleutdanning, lavere nivå</AppLinkText
+        >
+        ) and only counts published concepts from published termbases.
       </p>
       <p>
         See
@@ -21,6 +24,8 @@
         v-model:filters="filters"
         :value="displayData"
         removable-sort
+        sort-field="label"
+        :sort-order="1"
         table-style="min-width: 1rem"
         :global-filter-fields="['label']"
       >
