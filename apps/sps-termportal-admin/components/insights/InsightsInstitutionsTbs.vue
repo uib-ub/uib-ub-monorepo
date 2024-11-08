@@ -54,7 +54,8 @@ const procdata = computed(() => {
       const map = {
         label: orga.label,
         count: orga.termbases.filter(
-          (tb) => tb.qualifiedAttribution && tb.qualifiedAttribution.length > 0
+          (tb) =>
+            tb?.qualifiedAttribution && tb?.qualifiedAttribution?.length > 0
         ).length,
       };
       return map;
