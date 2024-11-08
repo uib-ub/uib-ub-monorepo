@@ -10,6 +10,7 @@
       <InsightsReferencePeople />
       <InsightsTopdomainLangCoverage />
       <InsightsDomainLangCoverage />
+      <InsightsTopdomainSSBLangCoverage />
       <InsightsTermbaseLangCoverage />
       <InsightsPublishedTbsYear />
       <InsightsPlannedTbs />

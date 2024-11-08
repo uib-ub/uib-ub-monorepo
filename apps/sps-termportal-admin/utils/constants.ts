@@ -61,6 +61,7 @@ export const esCachedQueries = [
   "termbase_language_coverage",
   "domain_overview",
   "topdomain_language_coverage",
+  "topdomain_ssb_language_coverage",
   "domain_language_coverage",
 ];
 
