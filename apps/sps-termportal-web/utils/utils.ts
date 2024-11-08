@@ -86,7 +86,8 @@ export function getConceptDisplaytitle(concept, langOrder): string | null {
 export function getRelationData(
   data: any,
   mainConceptId: string,
-  relationType: SemanticRelation
+  relationType: SemanticRelation,
+  langOrder: Array<LangCode>
 ): Array<Array<string>> | null {
   let relationData = null;
   // Check if concept with id has relation of relationtype
@@ -95,11 +96,12 @@ export function getRelationData(
       (target: string) => {
         try {
           // Pass concept object
-          const label = getConceptDisplaytitle(data[target]);
+          const label = getConceptDisplaytitle(data[target], langOrder);
           // Slashes are allowed on Pagenames, should be escaped
           // TODO might break links between concepts of external tbs
           // Termbase is part of URI (seperated by '-3A')
-          const link = "/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
+          const link =
+            "/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
             let relation = { target: [label, link] };

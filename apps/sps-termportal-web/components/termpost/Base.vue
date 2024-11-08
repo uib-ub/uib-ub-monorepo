@@ -152,7 +152,8 @@ const displayInfo = computed(() => {
       const relData = getRelationData(
         data.value?.concept,
         props.mainConceptId,
-        relationType
+        relationType,
+        localeLangOrder.value.slice(0, 3)
       );
       if (relData) {
         if (info.semanticRelations) {
