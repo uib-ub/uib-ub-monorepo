@@ -1,9 +1,9 @@
 <template>
-  <section class="space-y-4">
-    <h2 class="text-xl">Termbases: Language coverage</h2>
-    <div class="space-y-1 max-w-3xl">
+  <InsightsWrapper>
+    <template #header>Termbases: Language coverage</template>
+    <template #description>
       <p>Only includes published termbases and counts published concepts.</p>
-    </div>
+    </template>
     <div class="max-w-7xl">
       <DataTable
         ref="datatable"
@@ -34,7 +34,15 @@
         <!-- <Column field="den" header="med engelsk definisjon" sortable /> -->
       </DataTable>
     </div>
-  </section>
+    <template #legend>
+      <UtilsTableLegend>
+        <UtilsTableLegendEntry
+          legend-key="med engelsk term"
+          legend-value="Includes terms with language code en, en-GB, and en-US"
+        />
+      </UtilsTableLegend>
+    </template>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

@@ -42,6 +42,12 @@
         <Column field="en" header="med engelsk term" sortable />
       </DataTable>
     </div>
+    <UtilsTableLegend>
+      <UtilsTableLegendEntry
+        legend-key="med engelsk term"
+        legend-value="Includes terms with language code en, en-GB, and en-US"
+      />
+    </UtilsTableLegend>
   </section>
 </template>
 

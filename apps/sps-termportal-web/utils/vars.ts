@@ -56,7 +56,7 @@ export const semanticRelationTypes = {
   seeAlso: ["qualifiedSeeAlso", "concept"],
   replaces: ["qualifiedReplaces", "concept"],
   replacedBy: ["qualifiedReplacedBy", "concept"],
-};
+} as const;
 
 export interface SearchOptions {
   type: QueryType;

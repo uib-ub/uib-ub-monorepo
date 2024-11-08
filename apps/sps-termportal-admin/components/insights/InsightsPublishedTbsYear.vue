@@ -1,6 +1,6 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Published Termbases by Year</h2>
+  <InsightsWrapper>
+    <template #header>Published Termbases by Year</template>
     <div class="max-w-xl">
       <DataTable
         ref="datatable"
@@ -24,7 +24,7 @@
         <Column field="count" header="Antall" sortable></Column>
       </DataTable>
     </div>
-  </section>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

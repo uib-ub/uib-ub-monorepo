@@ -1,42 +1,41 @@
 <template>
-  <section class="space-y-3">
-    <h2 class="mb-3 text-xl">Analytics: Monthly views per termbase</h2>
-    <div class="space-y-1.5 max-w-3xl">
-      <p>
-        Views of termbase page or concept pages in one termbase per month.
-      </p>
+  <InsightsWrapper>
+    <template #header>Analytics: Monthly views per termbase</template>
+    <template #description>
+      <p>Views of termbase page or concept pages in one termbase per month.</p>
       <p>
         No number in a field means the termbase hasn't been public during that
         month. Data for the month a termbase was published usually doesn't
         contain visits for a whole month.
       </p>
-    </div>
-    <DataTable
-      ref="datatable"
-      v-model:filters="filters"
-      :value="displayData"
-      removable-sort
-      sort-field="label"
-      :sort-order="1"
-    >
-      <template #header>
-        <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData()" />
-        </div>
-      </template>
-      <Column field="label" header="Navn" sortable />
-      <Column
-        v-for="column in columnDefinitions"
-        :key="column.field"
-        :field="column.field"
-        :header="column.header"
-        sortable
+    </template>
+    <div>
+      <DataTable
+        ref="datatable"
+        v-model:filters="filters"
+        :value="displayData"
+        removable-sort
+        sort-field="label"
+        :sort-order="1"
       >
-      </Column>
-    </DataTable>
-    <pre>{{ labels }}</pre>
-  </section>
+        <template #header>
+          <div class="flex justify-between">
+            <InputText v-model="filters['global'].value" placeholder="Søk" />
+            <Button class="h-10" label="Eksport" @click="exportData()" />
+          </div>
+        </template>
+        <Column field="label" header="Navn" sortable />
+        <Column
+          v-for="column in columnDefinitions"
+          :key="column.field"
+          :field="column.field"
+          :header="column.header"
+          sortable
+        >
+        </Column>
+      </DataTable>
+    </div>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

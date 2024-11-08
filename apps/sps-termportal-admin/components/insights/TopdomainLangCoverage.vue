@@ -1,12 +1,12 @@
 <template>
-  <section class="space-y-3">
-    <h2 class="mb-3 text-xl">Topdomains: Language coverage</h2>
-    <div class="space-y-1 max-w-3xl">
+  <InsightsWrapper>
+    <template #header>Topdomains: Language coverage</template>
+    <template #description>
       <p>
         Includes all topdomains and only counts published concepts from
         published termbases.
       </p>
-    </div>
+    </template>
     <div class="max-w-5xl">
       <DataTable
         ref="datatable"
@@ -31,7 +31,15 @@
         <Column field="en" header="med engelsk term" sortable />
       </DataTable>
     </div>
-  </section>
+    <template #legend>
+      <UtilsTableLegend>
+        <UtilsTableLegendEntry
+          legend-key="med engelsk term"
+          legend-value="Includes terms with language code en, en-GB, and en-US"
+        />
+      </UtilsTableLegend>
+    </template>
+  </InsightsWrapper>
 </template>
 
 <script setup lang="ts">

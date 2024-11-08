@@ -38,7 +38,7 @@
         prop !== 'equivalence' &&
         prop !== 'equivalencenote'
       "
-      class="grid-col-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1"
+      class="grid-col-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1 ml-0 md:ml-2 lg:ml-3"
       :class="{ 'mt-1.5': mainValue(d) }"
     >
       <TermpostTermProp
