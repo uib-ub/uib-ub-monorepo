@@ -136,8 +136,6 @@ export default function MobileLayout() {
     }, [doc, setDrawerContent])
 
 
-    console.log(scrollableContent?.current?.scrollTop)
-
 
 
 

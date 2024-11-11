@@ -358,7 +358,6 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
                   if (selectedDoc?._source?.uuid && bucket.docs.hits.hits.some((hit: any) => hit.fields.uuid[0] == selectedDoc?._source?.uuid)) {
                     return null
                   }
-                  console.log(bucket.docs.hits.hits)
 
                   // Label: add dots if different labels
                   const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label);

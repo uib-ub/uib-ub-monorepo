@@ -57,7 +57,6 @@ export function extractFacets(request: Request ) {
           ...clientFacets.adm.filter((value: string) => value.slice(0,6) == "_false").map((value: string) => {
             // Split the value to separate the levels and remove the "_false" prefix
             const levels = value.slice(8).split('__').filter(val => val.length).reverse();
-            console.log("LEVELS", levels)
             const mustClauses = levels.map((level, index) => ({
               "term": { [`adm${index+1}.keyword`]: level }
             }));
