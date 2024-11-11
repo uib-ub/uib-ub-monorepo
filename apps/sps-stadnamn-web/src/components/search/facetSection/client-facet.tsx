@@ -17,6 +17,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const [isLoading, setIsLoading] = useState(true);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
   const clearedFilters = useQueryStringWithout([facetName, 'page'])
+  const searchParams = useSearchParams()
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
   const expandedFacets = new Set<string>();
@@ -86,8 +87,12 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     }
 
     //alert(new URLSearchParams(newParams).toString())
-    const newParamsString = new URLSearchParams(newParams).toString()
-    router.push(`?expanded=filters${newParamsString ? '&' + newParamsString : ''}`)
+    const facet = searchParams.get('facet')
+    if (facet) {
+      newParams.push(['facet', facet])
+    }
+    newParams.push(['expanded', 'filters'])    
+    router.push(`?${new URLSearchParams(newParams).toString()}`)
   }
 
   const sortBuckets = (buckets: any) => {

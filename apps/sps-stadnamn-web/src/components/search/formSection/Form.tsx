@@ -27,6 +27,12 @@ export default function Form({isMobile}: {isMobile: boolean}) {
         else {
             formParams.set('expanded', 'filters')
         }
+
+        const facet = searchParams.get('facet')
+        if (facet) {
+            formParams.set('facet', facet)
+        }
+        
         for (const [key, value] of new FormData(event.target)) {
             formParams.append(key, value as string)
         }
