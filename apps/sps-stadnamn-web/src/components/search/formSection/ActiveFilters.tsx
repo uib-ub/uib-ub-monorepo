@@ -2,14 +2,14 @@
 import WithinLabel from "@/app/view/[dataset]/@searchSection/_search-view/WithinLabel"
 import { facetConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
-import { useDataset, useSearchQuery } from "@/lib/search-params"
+import { useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiX } from "react-icons/pi"
 
 
 export default function ActiveFilters() {
     const router = useRouter()
-    const { searchFilterParamsString, searchQuery, facetFilters } = useSearchQuery()
+    const { searchQuery, facetFilters } = useSearchQuery()
     const searchParams = useSearchParams()
 
     
@@ -55,6 +55,10 @@ export default function ActiveFilters() {
         const expanded = searchParams.get('expanded')
         if (expanded) {
           newSearchParams.set('expanded', expanded)
+        }
+        const facet = searchParams.get('facet')
+        if (facet) {
+          newSearchParams.set('facet', facet)
         }
         
         // Add back all values except the one we want to remove
