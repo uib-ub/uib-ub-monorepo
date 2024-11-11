@@ -120,6 +120,7 @@ export default function MobileLayout() {
             setSnappedPosition(25)
             setSwipeDirection(null);
             setSnapped(true);
+            scrollableContent.current?.scrollTo(0, 0)
         }
         else if (drawerContent == 'results') {
             setCurrentPosition(75)
