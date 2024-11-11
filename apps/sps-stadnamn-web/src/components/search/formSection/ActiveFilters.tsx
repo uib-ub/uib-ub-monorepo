@@ -3,16 +3,16 @@ import WithinLabel from "@/app/view/[dataset]/@searchSection/_search-view/Within
 import { facetConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { PiX } from "react-icons/pi"
 
 
 export default function ActiveFilters() {
     const router = useRouter()
-    const dataset = useDataset()
-    const { searchFilterParamsString, searchQuery } = useSearchQuery()
-    const activeFilters = Array.from(searchQuery.entries())
-        .filter(([key, value]) => value && key !== 'q' && key != 'dataset')
+    const { searchFilterParamsString, searchQuery, facetFilters } = useSearchQuery()
+    const searchParams = useSearchParams()
+
+    
     
 
     const getFieldLabel = (name: string, value: string) => {
@@ -45,23 +45,29 @@ export default function ActiveFilters() {
 
 
       const removeFilter = (key: string, value: string) => {
-        const searchParams = new URLSearchParams(searchFilterParamsString)
-        const values = searchParams.getAll(key)
+        const newSearchParams = new URLSearchParams(searchQuery)
+        const values = newSearchParams.getAll(key)
         
         // Remove all values for this key
-        searchParams.delete(key)
+        newSearchParams.delete(key)
+
+        // Add expanded if it exists
+        const expanded = searchParams.get('expanded')
+        if (expanded) {
+          newSearchParams.set('expanded', expanded)
+        }
         
         // Add back all values except the one we want to remove
         values.filter(v => v !== value)
-            .forEach(v => searchParams.append(key, v))
+            .forEach(v => newSearchParams.append(key, v))
     
-        router.push(`/search?${searchParams.toString()}`)
+        router.push(`?${newSearchParams.toString()}`)
     }
 
 
     return (
       <div className="flex flex-wrap gap-2 mt-2">
-          {activeFilters.map(([key, value]) => (
+          {facetFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 

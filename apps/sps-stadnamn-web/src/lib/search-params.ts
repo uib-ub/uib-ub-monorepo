@@ -32,6 +32,7 @@ export function useSearchQuery() {
     // Return params matching certain criteria
     // - q, size, page, starts with "rawData"
     const fields = ['q', 'adm']
+    const facetFilters: [string, string][] = []
 
     // Add dataset specific fields
     const renderer = resultRenderers[dataset]
@@ -47,6 +48,9 @@ export function useSearchQuery() {
         const values = searchParams.getAll(field)
         values.forEach(value => {
             searchQuery.append(field, value)
+            if (field != 'q') {
+                facetFilters.push([field, value])
+            }
         })
     })
 
@@ -66,5 +70,12 @@ export function useSearchQuery() {
         searchQuery.set('field', field)
     }
 
-    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString}
+    const removeFilterParams = (key: string) => {
+        const outputUrl = new URLSearchParams(searchQuery)
+        outputUrl.delete(key)
+        return outputUrl.toString()
+    }
+
+
+    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams}
 }

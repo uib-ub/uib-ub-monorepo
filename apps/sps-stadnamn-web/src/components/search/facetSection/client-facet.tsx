@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams, useParams } from 'next/navigation';
-import { useQueryWithout, useQueryStringWithout, useDataset, useSearchQuery } from '@/lib/search-params';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useQueryStringWithout, useSearchQuery, useDataset } from '@/lib/search-params';
 import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple, PiFunnel } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 
@@ -9,15 +9,10 @@ import IconButton from '@/components/ui/icon-button';
 export default function ClientFacet({ showLoading, facetName }: { showLoading: (facet: string | null) => void, facetName: string }) {
   const router = useRouter()
   const dataset = useDataset()
+  const { searchQuery, removeFilterParams } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
-  //const paramsExceptFacet = useQueryStringWithout(['docs', 'view', 'manifest', facetName, 'page', 'size', 'sort', 'orderBy', 'dataset']);
-  const { searchQuery } = useSearchQuery()
-  // Without facetName
-  const paramsExceptFacet = searchQuery.toString().replace('&' + facetName, '')
-  
-
+  const paramsExceptFacet = removeFilterParams(facetName)
   const paramLookup = useSearchParams()
-  const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
@@ -34,10 +29,8 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   }
 
   useEffect(() => {
-    console.log("Q", `/api/facet?dataset=${dataset}&facets=adm1,adm2,adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`)
     fetch(`/api/facet?dataset=${dataset}&facets=adm1,adm2,adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.adm1)
-      console.log("Facet aggregation", es_data.aggregations?.adm1)
       setTimeout(() => {
         showLoading(null);
       }, 200);
@@ -47,8 +40,9 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     }, [paramsExceptFacet, dataset]
     )
 
-  const useClearFilter = () => {
-    router.push("/")
+  const clearFilter = () => {
+    
+    router.push(`?${clearedFilters}`, { scroll: false})
   }
 
 
@@ -63,7 +57,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const toggleAdm = (beingChecked: boolean, paramName: string, chosenPath: string[]) => {
     const chosenValue = chosenPath.join('__')
     let hasSibling = false
-    const newParams = searchParams.filter(urlParam => {
+    const newParams =  Array.from(searchQuery.entries()).filter(urlParam => {
       if (urlParam[0] != paramName) return true // Ignore other params
       if (urlParam[1] == chosenValue) return false // remove self
       const urlPath = urlParam[1].split('__')
@@ -91,7 +85,9 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
       newParams.push([paramName, chosenPath.slice(1).join('__')])
     }
 
-    router.push(`/view/${dataset}?${new URLSearchParams(newParams).toString()}`)
+    //alert(new URLSearchParams(newParams).toString())
+    const newParamsString = new URLSearchParams(newParams).toString()
+    router.push(`?expanded=filters${newParamsString ? '&' + newParamsString : ''}`)
   }
 
   const sortBuckets = (buckets: any) => {
@@ -126,14 +122,19 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const listItem = (item: any, index: number, baseName: string, path: string[], parentChecked: boolean) => {
     const childAggregation = baseName + (path.length + 1);
     const checked = isChecked(baseName, path);
-    const children = item[childAggregation]?.buckets
+    let children = item[childAggregation]?.buckets
+    children = children?.some((child: any) => child.key[0] != "_") ? children : []
     const filteredChildren = facetSearchQuery && children?.filter((subitem: any) => facetSearch(subitem, baseName, path.length +1))
+
+    
+    const label = path[0] == "_false" ? (path.length == 1 ? "[utan distrikt]" : "[utan underinndeling]") : item.key   
+ 
 
     return (
       <li key={item.key} className="my-0">
         <label>
           <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, baseName, path)}} className='mr-2' />
-          {item.key} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+          {label} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
 
       {children?.length && (checked || filteredChildren) ? 
@@ -141,6 +142,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
         {sortBuckets(filteredChildren || children).map((subitem, subindex) => {
           return listItem(subitem, subindex, baseName, [subitem.key, ...path], checked || parentChecked)
         })} 
+
       </ul> 
       : null}
       
@@ -157,7 +159,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
     <div className="flex flex-col gap-2 p-2 py-4 border-b border-neutral-300">
     <div className='flex gap-2'>
     <div className='relative grow'>
-      <input onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
+      <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
           className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
       <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
         <PiFunnel aria-hidden={true} className='text-neutral-900'/>
@@ -172,7 +174,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
       <IconButton className="text-xl" label="Sorter etter antall treff" onClick={() => setSortMode('doc_count')}><PiFunnelSimple/></IconButton>
     }
     {paramLookup.get(facetName) ?
-      <IconButton type="button" label="Fjern områdefiltre" onClick={useClearFilter} className="icon-button ml-auto">
+      <IconButton type="button" label="Fjern områdefiltre" onClick={clearFilter} className="icon-button ml-auto">
         <PiTrashFill className="text-xl text-neutral-800" aria-hidden="true"/>
       </IconButton>
       : null
