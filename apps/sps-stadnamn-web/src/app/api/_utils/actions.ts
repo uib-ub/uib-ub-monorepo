@@ -1,4 +1,3 @@
-import { contentSettings } from '@/config/server-config'
 import { postQuery } from './post'
 
 const detectEnv = (retry: boolean) => {
@@ -12,7 +11,6 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     'use server'
     const { endpoint, token } = detectEnv(retry)
 
-    let res
     // Post a search query for the document
     const query = {
         query: {
@@ -23,7 +21,7 @@ export async function fetchDoc(params: any, retry: boolean = true) {
     }
 
 
-    res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-*/_search`, {
+    const res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-*/_search`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
