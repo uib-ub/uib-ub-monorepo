@@ -4,7 +4,7 @@ import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass } from "
 import Results from "./resultSection/Results";
 import MapExplorer from "./MapExplorer";
 import { useQueryState } from "nuqs";
-import Options from "./Options";
+import Options from "./optionsSection/Options";
 import InfoContent from "./infoSection/InfoContent";
 import { useSearchQuery } from "@/lib/search-params";
 import Facets from "./facetSection/Facets";
