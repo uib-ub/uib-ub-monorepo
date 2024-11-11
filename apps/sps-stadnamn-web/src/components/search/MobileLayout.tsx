@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass } from "react-icons/pi";
 import Results from "./resultSection/Results";
 import MapExplorer from "./MapExplorer";
@@ -17,6 +17,7 @@ export default function MobileLayout() {
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const [drawerContent, setDrawerContent] = useQueryState('expanded', {history: 'push'});
     const selectedDocState = useState<any | null>(null)
+    const doc = useQueryState('doc')[0]
 
     const isScrolling = (target: EventTarget) => {
         if (snappedPosition == 100 && target instanceof Node && scrollableContent.current?.contains(target)) {
@@ -101,6 +102,25 @@ export default function MobileLayout() {
         }
 
     }
+
+    useEffect(() => {
+        if (drawerContent == 'info') {
+            setCurrentPosition(25)
+            setSnappedPosition(25)
+        }
+        else if (drawerContent == 'results') {
+            setCurrentPosition(100)
+            setSnappedPosition(100)
+        }
+    }, [drawerContent])
+
+    useEffect(() => {
+        if (doc) {
+            setDrawerContent('info')
+        }
+    }, [doc])
+
+
 
 
 

@@ -20,7 +20,25 @@ export default function DesktopLayout() {
     const selectedDocState = useState<any | null>(null)
     const { totalHits, isLoading} = useContext(SearchContext)
 
+    // Keep filters or expanded open when switching to a different section
+    const [expandedSection, setExpandedSection] = useState<string | null>(expanded === 'results' ? 'results' : expanded === 'filters' ? 'filters' : null)
+
     const [ showLoading, setShowLoading ] = useState<boolean>(true)
+
+    useEffect(() => {
+        if (expanded === 'results') {
+            setExpandedSection('results')
+        }
+        else if (expanded === 'filters') {
+            setExpandedSection('filters')
+        }
+        else if (expanded === null) {
+            setExpandedSection(null)
+        }
+    }, [expanded])
+
+
+
     useEffect(() => {
       if (!isLoading) {
         setTimeout(() => {
@@ -35,6 +53,7 @@ export default function DesktopLayout() {
 
 
     const toggleExpanded = (panel: 'options' | 'filters' | 'results') => {
+        
         if (expanded == panel) {
             setExpanded(null)
         }
@@ -50,10 +69,11 @@ export default function DesktopLayout() {
 
         <div className="lg:absolute left-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[90svh] w-[40svw] lg:w-[25svw] !z-[3001]">
         <section aria-labelledby="filter-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
-            <h2 id="filter-title"  className="px-2 py-2 w-full"><button className="w-full flex justify-start text-center h-full font-semibold text-neutral-950"aria-controls="filter-content" aria-expanded={expanded == 'filters'} onClick={() => toggleExpanded('filters')}>
-                { expanded == 'filters' ? <PiCaretUpBold className="inline self-center mr-1 text-primary-600"/> : <PiCaretDownBold className="inline self-center mr-1  text-primary-600"/> }
+            <h2 id="filter-title"  className="px-2 py-2 w-full">
+                <button className="w-full flex justify-start text-center h-full font-semibold text-neutral-950" aria-controls="filter-content" aria-expanded={expandedSection == 'filters'} onClick={() => toggleExpanded('filters')}>
+                { expandedSection == 'filters' ? <PiCaretUpBold className="inline self-center mr-1 text-primary-600"/> : <PiCaretDownBold className="inline self-center mr-1  text-primary-600"/> }
                 Filtre</button></h2>
-            { expanded == 'filters' &&
+            { expandedSection == 'filters' &&
             <div id="filter-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
                 <Facets/>
             </div>
@@ -62,7 +82,7 @@ export default function DesktopLayout() {
         { searchFilterParamsString &&
         <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
              <h2 id="filter-title"  className="px-2 py-2 w-full"><button className="w-full flex gap-2 justify-start text-center h-full font-semibold text-neutral-950"aria-controls="result-content" aria-expanded={expanded == 'results'} onClick={() => toggleExpanded('results')}>
-                { expanded == 'results' ? <PiCaretUpBold className="inline self-center  text-primary-600"/> : <PiCaretDownBold className="inline self-center  text-primary-600"/> }
+                { expandedSection == 'results' ? <PiCaretUpBold className="inline self-center  text-primary-600"/> : <PiCaretDownBold className="inline self-center  text-primary-600"/> }
                 Treff
                 { showLoading ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='inline self-center text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span> }
                 </button>
@@ -70,7 +90,7 @@ export default function DesktopLayout() {
                 
                 
                 </h2>
-                { expanded == 'results' ?
+                { expandedSection == 'results' ?
             <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto border-t border-neutral-200">
                 <Results isMobile={false}/>
             </div>
