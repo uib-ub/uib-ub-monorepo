@@ -114,7 +114,7 @@ export default function Results({isMobile}: {isMobile: boolean}) {
 
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
       {resultData?.map((hit: any) => (
-        <ResultItem key={hit._id} hit={hit}/>
+        <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
       ))}
 
 
@@ -130,7 +130,7 @@ export default function Results({isMobile}: {isMobile: boolean}) {
     else {
       const hit = additionalItems?.[i];
       if ( hit) {
-        return <ResultItem key={hit._id} hit={hit}/>
+        return <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
       }
       else {
         return <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={i}>

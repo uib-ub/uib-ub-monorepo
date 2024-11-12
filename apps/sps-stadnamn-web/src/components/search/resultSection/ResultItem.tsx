@@ -7,7 +7,7 @@ import { useRef, useEffect } from 'react';
 
 
 
-export default function ResultItem({hit}: {hit: any}) {
+export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
     const searchParams = useSearchParams()
     const dataset = useDataset()
     const doc = useQueryState('doc')[0]
@@ -26,10 +26,10 @@ export default function ResultItem({hit}: {hit: any}) {
 
     useEffect(() => {
         // Scroll into view if expanded changes to results
-        if (expanded == 'results' && doc == hit.fields.uuid && itemRef.current) {
+        if (isMobile && expanded == 'results' && doc == hit.fields.uuid && itemRef.current) {
             itemRef.current.scrollIntoView({behavior: 'instant', block: 'center'})
         }
-    }, [expanded, doc, hit.fields.uuid])
+    }, [expanded, doc, hit.fields.uuid, isMobile])
 
 
     return  <li className="flex flex-grow">
