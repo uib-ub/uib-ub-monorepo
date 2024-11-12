@@ -32,9 +32,7 @@ export default function DesktopLayout() {
         else if (expanded === 'filters') {
             setExpandedSection('filters')
         }
-        else if (expanded === null) {
-            setExpandedSection(null)
-        }
+
     }, [expanded])
 
 
@@ -56,6 +54,7 @@ export default function DesktopLayout() {
         
         if (expanded == panel) {
             setExpanded(null)
+            setExpandedSection(null)
         }
         else {
             setExpanded(panel)
