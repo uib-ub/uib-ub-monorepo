@@ -19,11 +19,13 @@ export default function DesktopLayout() {
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
     const selectedDocState = useState<any | null>(null)
     const { totalHits, isLoading} = useContext(SearchContext)
+    const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
+    
 
     // Keep filters or expanded open when switching to a different section
     const [expandedSection, setExpandedSection] = useState<string | null>(expanded === 'results' ? 'results' : expanded === 'filters' ? 'filters' : null)
 
-    const [ showLoading, setShowLoading ] = useState<boolean>(true)
+    const [ showLoading, setShowLoading ] = useState<string|null>(null)
 
     useEffect(() => {
         if (expanded === 'results') {
@@ -31,6 +33,7 @@ export default function DesktopLayout() {
         }
         else if (expanded === 'filters') {
             setExpandedSection('filters')
+            setFacetIsLoading(true)
         }
 
     }, [expanded])
@@ -38,16 +41,16 @@ export default function DesktopLayout() {
 
 
     useEffect(() => {
-      if (!isLoading) {
+      if (!isLoading && !facetIsLoading) {
         setTimeout(() => {
-          setShowLoading(false)
+          setShowLoading(null)
         }, 100);
       }
       else {
-        setShowLoading(true)
+        setShowLoading(expandedSection)
       }
     }
-    , [isLoading])
+    , [isLoading, expandedSection, facetIsLoading])
 
 
     const toggleExpanded = (panel: 'options' | 'filters' | 'results') => {
@@ -71,10 +74,14 @@ export default function DesktopLayout() {
             <h2 id="filter-title"  className="px-2 py-2 w-full">
                 <button className="w-full flex justify-start text-center h-full font-semibold text-neutral-950" aria-controls="filter-content" aria-expanded={expandedSection == 'filters'} onClick={() => toggleExpanded('filters')}>
                 { expandedSection == 'filters' ? <PiCaretUpBold className="inline self-center mr-1 text-primary-600"/> : <PiCaretDownBold className="inline self-center mr-1  text-primary-600"/> }
-                Filtre</button></h2>
+                Filtre
+                { showLoading == 'filters' && <Spinner status="Laster filtre" className='inline w-[1em] h-[1em}'/> }
+                </button> 
+                
+                </h2>
             { expandedSection == 'filters' &&
             <div id="filter-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
-                <Facets/>
+                <Facets setFacetIsLoading={setFacetIsLoading}/>
             </div>
         }
         </section>
@@ -83,7 +90,7 @@ export default function DesktopLayout() {
              <h2 id="filter-title"  className="px-2 py-2 w-full"><button className="w-full flex gap-2 justify-start text-center h-full font-semibold text-neutral-950"aria-controls="result-content" aria-expanded={expanded == 'results'} onClick={() => toggleExpanded('results')}>
                 { expandedSection == 'results' ? <PiCaretUpBold className="inline self-center  text-primary-600"/> : <PiCaretDownBold className="inline self-center  text-primary-600"/> }
                 Treff
-                { showLoading ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='inline self-center text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span> }
+                { showLoading == 'results' ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='inline self-center text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span> }
                 </button>
                 
                 

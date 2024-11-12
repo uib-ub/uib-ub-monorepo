@@ -6,7 +6,7 @@ import IconButton from '@/components/ui/icon-button';
 
 
 
-export default function ClientFacet({ showLoading, facetName }: { showLoading: (facet: string | null) => void, facetName: string }) {
+export default function ClientFacet({ setFacetIsLoading, facetName }: { setFacetIsLoading: (loading: boolean) => void, facetName: string }) {
   const router = useRouter()
   const dataset = useDataset()
   const { searchQuery, removeFilterParams } = useSearchQuery()
@@ -14,7 +14,6 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   const paramsExceptFacet = removeFilterParams(facetName)
   const paramLookup = useSearchParams()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
   const clearedFilters = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
@@ -32,10 +31,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
   useEffect(() => {
     fetch(`/api/facet?dataset=${dataset}&facets=adm1,adm2,adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.adm1)
-      setTimeout(() => {
-        showLoading(null);
-      }, 200);
-      setIsLoading(false);
+      setFacetIsLoading(false);
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paramsExceptFacet, dataset]
@@ -160,7 +156,7 @@ export default function ClientFacet({ showLoading, facetName }: { showLoading: (
 
   return (
     <>
-    { !isLoading &&
+    { true &&
     <div className="flex flex-col gap-2 p-2 py-4 border-b border-neutral-300">
     <div className='flex gap-2'>
     <div className='relative grow'>

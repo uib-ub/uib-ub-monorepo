@@ -8,14 +8,13 @@ import { contentSettings } from "@/config/server-config"
 import Spinner from "@/components/svg/Spinner"
 
 
-export default function Facets() {
+export default function Facets({setFacetIsLoading}: {setFacetIsLoading: (loading: boolean) => void}) {
     const dataset = useDataset()
-    const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
     const [expandedFacet, setExpandedFacet] = useQueryState('facet', {defaultValue: 'adm'})
 
     const toggleFacet = (facet: string) => {
         if (expandedFacet != facet) {
-          setLoadingFacet(facet)
+          setFacetIsLoading(true)
   
         }
         setExpandedFacet(currentFacet => currentFacet == facet? null : facet)
@@ -43,7 +42,7 @@ export default function Facets() {
           
         }
         </div>
-        { expandedFacet == 'adm' ? <ClientFacet facetName='adm' showLoading={(facet: string | null) => setLoadingFacet(facet)}/> : null}
+        { expandedFacet == 'adm' ? <ClientFacet facetName='adm' setFacetIsLoading={ setFacetIsLoading}/> : null}
         </>
       )
   }

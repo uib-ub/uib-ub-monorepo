@@ -1,7 +1,7 @@
 import { SearchContext } from "@/app/map-search-provider"
 import { useContext } from "react"
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiSortAscending, PiSortDescending, PiCaretUp, PiCaretDown } from 'react-icons/pi';
+import { PiSortAscending, PiSortDescending } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import { sortConfig } from '@/config/dataset-config';
 import Spinner from '@/components/svg/Spinner';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./ResultItem";
-import { useDataset, useSearchQuery } from "@/lib/search-params";
+import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
 
 
