@@ -11,7 +11,7 @@ import Spinner from "@/components/svg/Spinner"
 export default function Facets() {
     const dataset = useDataset()
     const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
-    const [expandedFacet, setExpandedFacet] = useQueryState('facet') //, {defaultValue: 'adm'})
+    const [expandedFacet, setExpandedFacet] = useQueryState('facet', {defaultValue: 'adm'})
 
     const toggleFacet = (facet: string) => {
         if (expandedFacet != facet) {
