@@ -90,13 +90,11 @@ export default function DesktopLayout() {
                 
                 
                 </h2>
-                { expandedSection == 'results' ?
-            <div id="result-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto border-t border-neutral-200">
+                { expandedSection == 'results' &&
+            <div id="result-content" className="lg:max-h-[50svh] xl:max-h-[60svh] lg:overflow-y-auto border-t border-neutral-200">
                 <Results isMobile={false}/>
             </div>
-            : <div id="result-content" className="hidden lg:block lg:max-h-[40svh] xl:max-h-[30svh] lg:overflow-y-auto border-t border-neutral-200">
-            <Results isMobile={false}/>
-        </div>
+            
             }
             
         </section>
