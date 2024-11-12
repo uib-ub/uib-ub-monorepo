@@ -108,7 +108,7 @@ export default function DesktopLayout() {
         </div>
         <div className="placeholder:info-section lg:absolute right-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
         
-        <div className="lg:bg-white relative rounded-md lg:shadow-md break-words px-8 pt-8 pb-4 overflow-y-auto">
+        <div className="lg:bg-white relative rounded-md lg:shadow-md break-words p-6 overflow-y-auto">
             { (doc || point) && <button className="absolute right-2 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
             <InfoContent expanded={expanded == 'info'} selectedDocState={selectedDocState}/>
         </div>

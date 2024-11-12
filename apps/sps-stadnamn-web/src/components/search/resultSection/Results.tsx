@@ -1,12 +1,8 @@
 import { SearchContext } from "@/app/map-search-provider"
 import { useContext } from "react"
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { PiSortAscending, PiSortDescending } from 'react-icons/pi';
 import { useEffect, useState } from 'react';
-import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
-import { sortConfig } from '@/config/dataset-config';
-import Spinner from '@/components/svg/Spinner';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./ResultItem";
 import { useSearchQuery } from "@/lib/search-params";
@@ -24,8 +20,6 @@ export default function Results({isMobile}: {isMobile: boolean}) {
 
     const pathname = usePathname()
     const router = useRouter()
-    const params = useParams<{uuid: string; dataset: string}>()
-    const [isOpen, setIsOpen] = useState(false)
     const { resultData, totalHits, isLoading, searchError} = useContext(SearchContext)
     const [additionalItems, setAdditionalItems] = useState<any[]>([])
     const [size, setSize] = useQueryState('size', parseAsInteger.withDefault(20))
@@ -82,36 +76,7 @@ export default function Results({isMobile}: {isMobile: boolean}) {
 
 
   return (
-    <section className='flex flex-col gap-2 py-2'>
-      { isMobile &&
-    <div className="flex px-2 gap-2 flex-wrap">
-       <h2 id="result_heading" aria-live="polite">
-      <span className='text-center h-full font-semibold uppercase px-2'>
-      Treff
-      </span><span className='text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span>
-
-      </h2> 
-      <div className="ml-auto flex items-end gap-4">
-      {sortConfig[params.dataset] && 
-      <span>
-        <label className="sr-only" htmlFor="sort_select">Sorter etter: </label>
-        <select id="sort_select" form="searchForm" name="orderBy" onChange={orderBy} value={searchParams.get('orderBy') || undefined}>
-          <option value="">relevans</option>
-          {sortConfig[params.dataset].map((sort: any) => (
-            <option key={sort.key} value={sort.key}>  {sort.label}</option>
-          ))}
-        </select>
-      </span>
-    }
-
-      <IconButton label={searchParams.get('sort') == 'desc'? 'Sorter synkende' : 'Sorter stigende'} onClick={sortResults}>{searchParams.get('sort') == 'desc'? <PiSortDescending className='text-xl'/> : <PiSortAscending className=' text-xl'/> }</IconButton>
-
-      
-    </div>
-    </div>
-    }
-
-
+    <>
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
       {resultData?.map((hit: any) => (
         <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
@@ -152,6 +117,6 @@ export default function Results({isMobile}: {isMobile: boolean}) {
       : !isLoading && !resultData?.length &&  <div className="flex justify-center">
       <div role="status" aria-live="polite" className="text-neutral-950">Ingen søkeresultater</div>
     </div>}
-    </section>
+    </>
     )
 }

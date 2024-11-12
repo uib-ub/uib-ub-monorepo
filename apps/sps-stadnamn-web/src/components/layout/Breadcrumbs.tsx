@@ -6,7 +6,7 @@ export default function Breadcrumbs({ parentUrl, parentName, currentName}: { par
     const parents = Array.isArray(parentName) ? parentName : [parentName]
     
     return (
-        <div className="flex flex-row items-center text-lg">
+        <div className="flex flex-row items-center overflow-hidden  text-lg mb-4">
             {parents.map((name, index) => (
                 <Fragment key={name}>
 
@@ -18,7 +18,7 @@ export default function Breadcrumbs({ parentUrl, parentName, currentName}: { par
 
             ))}
             
-            <span>{currentName}</span>
+            <span className="truncate overflow-hidden">{currentName}</span>
         </div>
     )
 }

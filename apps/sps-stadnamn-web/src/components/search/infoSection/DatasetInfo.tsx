@@ -35,7 +35,7 @@ export default function DatasetInfo() {
             </span>}
             <div className='flex flex-col gap-2'>
          
-                    <p>{subindex ? datasetShortDescriptions[subindex] : datasetShortDescriptions[mainIndex]}</p>
+                    {subindex ? <p>{datasetShortDescriptions[subindex]}</p> : <p>{datasetShortDescriptions[mainIndex]}</p>}
                     <p>© {datasetPresentation[mainIndex].attribution}. Lisens: <Link href={datasetPresentation[mainIndex].license.url}>
                   {datasetPresentation[mainIndex].license.name}
                 </Link></p>

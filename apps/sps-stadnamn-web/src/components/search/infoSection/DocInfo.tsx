@@ -27,7 +27,7 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
       return Array.isArray(value) ? value.join("/") : value
     }
     
-    return <article className="instance-info flex flex-col gap-4">
+    return <article className="instance-info flex flex-col gap-3">
         <div className="flex gap-2"><h2>{docSource.label}</h2>{docSource.audio && 
           <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${docSource.audio.file}` } 
                        iconClass="text-3xl text-neutral-700 inline"/> 

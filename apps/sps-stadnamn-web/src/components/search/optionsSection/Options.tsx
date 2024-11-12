@@ -1,9 +1,9 @@
 
 'use client'
-import { useState, useEffect} from 'react';
+import { useState} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
-import { PiArchiveFill, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretRight, PiCaretUp, PiCheck, PiCheckFat, PiCheckFatFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
+import { PiArchiveFill, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretRight, PiCaretUp, PiCheckFatFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
 import { fieldConfig } from '@/config/search-config';
@@ -16,7 +16,6 @@ export default function Options({isMobile}: {isMobile: boolean}) {
   const dataset = useDataset()
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [stats, setStats] = useState<any>(null);
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const [field, setField] = useQueryState('field')
   const allFeatures = Object.keys(featureNames);
@@ -38,13 +37,6 @@ export default function Options({isMobile}: {isMobile: boolean}) {
     "public": <PiGavelFill aria-hidden="true"/>
 
   };
-
-  useEffect(() => {
-    fetch('/api/stats').then(response => response.json()).then(data => {
-      setStats(data)
-    }).catch(() =>
-      setStats(null))}
-  , [])
 
 
 
@@ -201,7 +193,7 @@ export default function Options({isMobile}: {isMobile: boolean}) {
                 <p>{isMobile ? datasetShortDescriptions[dataset] : datasetDescriptions[dataset]}</p>          
               </div>
               <div className="flex gap-2 mt-auto pt-2">
-                <Link href={'/view/info' + dataset }  className=" flex  items-center !pl-1 no-underline" onClick={() => setExpandedKeyInfo(prev => prev == dataset ? null : dataset)}>
+                <Link href={dataset == 'search' ? '/info/search' : '/info/datasets/' + dataset }  className=" flex  items-center !pl-1 no-underline" onClick={() => setExpandedKeyInfo(prev => prev == dataset ? null : dataset)}>
                   
                   Les mer <PiCaretRight className="text-primary-600"/></Link>
                   {searchParams.get('dataset') == dataset || (dataset == 'search' && !searchParams.get('dataset')) ? <Link href={datasetLink(dataset)} className="ml-auto no-underline flex gap-2 text-accent-700" aria-current="page"><PiCheckFatFill/>Valgt</Link>

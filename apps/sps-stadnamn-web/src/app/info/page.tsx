@@ -28,7 +28,7 @@ export default function InfoPage() {
 
       <SubpageNav 
         items={[
-          { label: "Om Stadnamnsøk", href: "info/snid" },
+          { label: "Om Stadnamnsøk", href: "info/search" },
           { label: "Datasett", href: "info/datasets" },
           { label: "Personvern", href: "info/privacy" },
           { label: "Opphavsrett", href: "info/license" }

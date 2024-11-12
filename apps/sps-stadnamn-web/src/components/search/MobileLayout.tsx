@@ -23,7 +23,21 @@ export default function MobileLayout() {
     const selectedDocState = useState<any | null>(null)
     const doc = useQueryState('doc')[0]
     const { searchQueryString } = useSearchQuery()
-    const { totalHits } = useContext(SearchContext)
+    const { totalHits, isLoading } = useContext(SearchContext)
+    const [facetIsLoading, setFacetIsLoading] = useState(false)
+    const [ showLoading, setShowLoading ] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (!isLoading && !facetIsLoading) {
+          setTimeout(() => {
+            setShowLoading(false)
+          }, 100);
+        }
+        else {
+          setShowLoading(true)
+        }
+      }
+      , [isLoading, facetIsLoading])
 
     const isScrolling = (target: EventTarget) => {
         if (snappedPosition == 75 && target instanceof Node && scrollableContent.current?.contains(target)) {
@@ -159,10 +173,23 @@ export default function MobileLayout() {
             <div className="h-full bg-white max-h-[calc(100svh-3rem)] p-4 overscroll-contain" ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             <div className={drawerContent != 'info' ? 'hidden' : undefined }><InfoContent  expanded={snappedPosition > 25} selectedDocState={selectedDocState}/></div>
-            { drawerContent == 'results' && <Results isMobile={true}/> }
-            { drawerContent == 'options' && <Options isMobile={true}/> }
-            { drawerContent == 'filters' && <Facets/> }
+            { drawerContent == 'results' && 
+            <section className="flex flex-col gap-2">
+                <h2 id="result_heading" className="flex gap-2 flex-wrap px-1" aria-live="polite">
+                <span className='text-center h-full font-semibold uppercase'>
+                Treff
+                </span>
+                <span className='text-sm bg-neutral-100 rounded-full px-2 items-center flex'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span>
+                </h2> 
+            <Results isMobile={true}/>
+            </section>
             
+             }
+            { drawerContent == 'options' && <Options isMobile={true}/> }
+            { drawerContent == 'filters' && 
+            
+            <Facets setFacetIsLoading={setFacetIsLoading}/> 
+            }
             </div>
             </>
             }
