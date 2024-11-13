@@ -58,7 +58,7 @@
 
   a[href^="http"]:not(.no-underline):not(.override-external-icon):not([aria-label]):not(a[href^="https://stadnamnportalen"]):not(a[href^="https://purl.org/stadnamn"]):after, .external-link:after {
     content: "";
-    @apply  bg-[url('PhArrowSquareOut.svg')] bg-[length:.75em] bg-left-bottom bg-no-repeat ml-[.2em] inline-block h-[1em] w-[1em];
+    @apply  self-baseline mt-0.5 bg-[url('PhArrowSquareOut.svg')] bg-[length:.75em] bg-left-bottom bg-no-repeat ml-[.2em] inline-block h-[1em] w-[1em];
     
   }
 
