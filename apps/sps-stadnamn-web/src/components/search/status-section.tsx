@@ -2,7 +2,7 @@
 'use client'
 import { useContext } from 'react';
 import { SearchContext } from '@/app/map-search-provider';
-import ActiveFilters from './formSection/ActiveFilters';
+import ActiveFilters from './form/active-filters';
 import { useQueryState } from 'nuqs';
 import { PiInfoFill } from 'react-icons/pi';
 export default function StatusSection({isMobile}: {isMobile: boolean}) {

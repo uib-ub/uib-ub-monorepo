@@ -4,7 +4,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import fs from 'fs';
 import path from 'path';
 import { datasetTitles, subpages } from '@/config/metadata-config'
-import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import Breadcrumbs from '@/components/layout/breadcrumbs';
 
 export async function generateMetadata( { params }: { params: Promise<{ dataset: string, subpage: number }> }) {
   const { dataset, subpage } = await params

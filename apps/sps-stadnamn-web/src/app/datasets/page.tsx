@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Footer from '@/components/layout/Footer'
+import Footer from '@/components/layout/footer'
 import DatasetBrowser from './dataset-browser';
 
 export const metadata: Metadata = {

@@ -4,12 +4,12 @@ import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigat
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
-import ResultItem from "./ResultItem";
+import ResultItem from "./result-item";
 import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
 
 
-export default function Results({isMobile}: {isMobile: boolean}) {
+export default function SearchResults({isMobile}: {isMobile: boolean}) {
     const searchParams = useSearchParams()
     const serialize = createSerializer({
         from: parseAsInteger,

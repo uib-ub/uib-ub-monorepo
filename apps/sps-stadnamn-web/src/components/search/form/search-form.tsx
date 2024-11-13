@@ -4,13 +4,13 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { PiCaretDown, PiCaretUp, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
-import Options from '../optionsSection/Options';
+import Options from '../options/search-options';
 import { datasetTitles } from '@/config/metadata-config';
 import { useEffect, useRef, useState } from 'react';
 import IconButton from '@/components/ui/icon-button';
 
 
-export default function Form({isMobile}: {isMobile: boolean}) {
+export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()

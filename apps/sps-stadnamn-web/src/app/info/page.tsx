@@ -1,4 +1,4 @@
-import SubpageNav from '@/components/layout/SubpageNav'
+import SubpageNav from '@/components/layout/subpage-nav'
 
 export const metadata = { title: 'Info' }
 

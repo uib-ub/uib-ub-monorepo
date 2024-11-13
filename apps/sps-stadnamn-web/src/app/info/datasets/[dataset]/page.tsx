@@ -1,4 +1,4 @@
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { datasetFeatures, datasetPresentation, datasetTitles, featureNames } from "@/config/metadata-config"
 import { datasetDescriptions, datasetShortDescriptions, datasetTypes, typeNames } from "@/config/metadata-config"
 import { PiArticleFill, PiFileAudioFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill } from "react-icons/pi"

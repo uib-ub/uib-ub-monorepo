@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { useDataset } from '@/lib/search-params';
 
 
-export default function Options({isMobile}: {isMobile: boolean}) {
+export default function SearchOptions({isMobile}: {isMobile: boolean}) {
   const searchParams = useSearchParams()
   const dataset = useDataset()
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);

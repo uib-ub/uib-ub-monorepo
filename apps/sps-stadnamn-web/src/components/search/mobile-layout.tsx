@@ -1,14 +1,14 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
 import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass } from "react-icons/pi";
-import Results from "./resultSection/Results";
-import MapExplorer from "./MapExplorer";
+import Results from "./results/search-results";
+import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
-import Options from "./optionsSection/Options";
-import InfoContent from "./infoSection/InfoContent";
+import Options from "./options/search-options";
+import InfoContent from "./info/info-content";
 import { useSearchQuery } from "@/lib/search-params";
-import Facets from "./facetSection/Facets";
-import StatusSection from "./StatusSection";
+import Facets from "./facets/facet-section";
+import StatusSection from "./status-section";
 import { SearchContext } from "@/app/map-search-provider";
 
 export default function MobileLayout() {
@@ -187,7 +187,7 @@ export default function MobileLayout() {
              }
             { drawerContent == 'options' && <Options isMobile={true}/> }
             { drawerContent == 'filters' && 
-            
+
             <Facets setFacetIsLoading={setFacetIsLoading}/> 
             }
             </div>

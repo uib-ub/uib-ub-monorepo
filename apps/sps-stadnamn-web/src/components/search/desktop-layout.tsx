@@ -1,13 +1,13 @@
 'use client'
-import Results from "./resultSection/Results"
-import MapExplorer from "./MapExplorer"
+import Results from "./results/search-results"
+import MapExplorer from "./map-explorer"
 import { useQueryState } from "nuqs"
 import { useContext, useEffect, useState } from "react"
-import InfoContent from "./infoSection/InfoContent"
+import InfoContent from "./info/info-content"
 import { PiCaretDownBold, PiCaretUpBold, PiXBold } from "react-icons/pi"
 import { useSearchQuery } from "@/lib/search-params"
-import StatusSection from "./StatusSection"
-import Facets from "./facetSection/Facets"
+import StatusSection from "./status-section"
+import Facets from "./facets/facet-section"
 import { SearchContext } from "@/app/map-search-provider"
 import Spinner from "../svg/Spinner"
 

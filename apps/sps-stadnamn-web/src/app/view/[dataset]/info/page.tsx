@@ -1,6 +1,6 @@
 import { datasetDescriptions, datasetPresentation, datasetTitles, subpages, publishDates } from '@/config/metadata-config'
 import GoToSearchButtons from './GoToSearchButtons'
-import SubpageNav from '@/components/layout/SubpageNav'
+import SubpageNav from '@/components/layout/subpage-nav'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { contentSettings } from '@/config/server-config';
 import fs from 'fs';

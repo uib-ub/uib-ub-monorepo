@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import DatasetBrowser from './DatasetBrowser';
-import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import Breadcrumbs from '@/components/layout/breadcrumbs';
 
 export const metadata: Metadata = {
     title: 'Datasett',

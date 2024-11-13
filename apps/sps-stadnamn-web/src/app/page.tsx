@@ -5,7 +5,7 @@ import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
 import { datasetTitles, datasetPresentation, datasetDescriptions, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
-import Footer from '../components/layout/Footer';
+import Footer from '../components/layout/footer';
 import { fetchStats } from '@/app/api/_utils/actions';
 import { redirect } from "next/navigation";
 import { userAgent } from "next/server";

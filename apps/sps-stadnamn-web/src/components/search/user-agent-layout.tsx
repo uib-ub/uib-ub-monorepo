@@ -1,8 +1,8 @@
 import SearchProvider from "@/app/map-search-provider";
 import { headers } from "next/headers";
 import { userAgent } from "next/server";
-import MobileLayout from "./MobileLayout";
-import DesktopLayout from "./DesktopLayout";
+import MobileLayout from "./mobile-layout";
+import DesktopLayout from "./desktop-layout";
 
 export default async function UserAgentLayout() {
 

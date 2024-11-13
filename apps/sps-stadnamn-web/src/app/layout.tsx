@@ -8,7 +8,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import PlausibleProvider from 'next-plausible'
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
-import Form from "@/components/search/formSection/Form";
+import SearchForm from "@/components/search/form/search-form";
  
 const garamond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -51,7 +51,7 @@ export default async function RootLayout({
       </a>
         <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md !h-12 flex-none items-center !z-[4000]">
 
-          <Form isMobile={isMobile}/>
+          <SearchForm isMobile={isMobile}/>
           
           <Suspense>
             <Menu/>

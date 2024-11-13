@@ -1,4 +1,4 @@
-import CadastralSubdivisions from '@/app/view/[dataset]/doc/[uuid]/cadastral-subdivisions';
+import CadastralSubdivisions from '@/components/doc/cadastral-subdivisions';
 import InfoBox from '@/components/ui/infobox';
 import Link from 'next/link';
 import React from 'react';
