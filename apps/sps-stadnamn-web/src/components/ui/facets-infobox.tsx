@@ -59,7 +59,7 @@ export default function FacetsInfobox({ dataset, source }: { dataset: string, so
     }
 
     return (
-      <div className="flex flex-col sm:flex-row flex-wrap gap-8 p-4 bg-neutral-50">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-8 p-4 bg-neutral-50 border border-neutral-200">
         {filteredItems.map((item: Record<string,any> , index: number) => (
             <div key={index} className="flex flex-col">
                 <strong className="text-neutral-900">{item.title}</strong>

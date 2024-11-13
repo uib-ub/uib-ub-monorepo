@@ -84,7 +84,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     return <>
     {source.attestations && Object.keys(source.attestations).length > 1 && <div>
     
-    {source.attestations?.length && 
+    {source.attestations?.length > 1 && 
       <>
         <h3>Historikk</h3>
         {Timeline(source.attestations, !source.location)}
@@ -114,34 +114,17 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   rygh: (source: any) => {
     return <>
 
-    {source.content?.html && <div className="inline-flex flex-col md:flex-row gap-4 bg-neutral-50 border border-neutral-200 p-4">
-      <Link href={source.rawData.Lenke_til_originalside} className='whitespace-nowrap inline'>Bind {source.rawData.Bind}, s. {source.rawData.Side}</Link>
-    <HtmlString className='space-y-2 inline' htmlString={source.content.html} />
+    {source.content?.html && <div className="inline-flex flex-col bg-neutral-50 border border-neutral-200">
+     <div className='border-b border-neutral-200 p-4'><Link href={source.rawData.Lenke_til_originalside} className='whitespace-nowrap inline'>Bind {source.rawData.Bind}, s. {source.rawData.Side}</Link></div>
+    <HtmlString className='space-y-2 inline p-4' htmlString={source.content.html} />
 
     </div>
     }
-    <InfoBox dataset={'rygh'} items={[
-      {title: 'Stadnamn', value: source.label},
-      {title: 'Lokalitetstype', value: source.sosi, sosi: true},
-      {title: 'Herred', value: source.adm2},
-      {title: 'Amt', value: source.adm1},
-      {title: 'Kommunenummer', value: source.rawData.KNR},
-      {
-        title: 'Gardsnummer', 
-        items: [...new Set(source.cadastre?.map((item: {gnr: number, bnr?: number}) => item.gnr.toString()) as string[])].map((gnr: string) => ({
-          value: gnr, 
-          href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(gnr)}`
-        })),
-      },
-      {
-        title: 'Bruksnummer', 
-        items: source.cadastre?.map((item: {gnr: number, bnr: number}) => ({
-          value: item.bnr?.toString(), 
-          href: `/view/rygh?rawData.KNR=${encodeURIComponent(source.rawData.KNR)}&cadastre__gnr=${encodeURIComponent(item.gnr.toString())}&cadastre__bnr=${encodeURIComponent(item.bnr?.toString())}`
-        })),
-      },
-    
-    ]}/>
+    <div>
+      <h3>Detaljer</h3>
+      <FacetsInfobox dataset={'rygh'} source={source}/>
+    </div>
+
     </>
   },
   leks: (source: any) => {

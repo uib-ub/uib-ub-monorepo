@@ -67,20 +67,18 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
         { dataset == 'search' && <Link href={serialize(new URLSearchParams(searchParams), {infoDataset: docDataset, expanded: 'info', doc: null, point: null})} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
         </div>
 
-        { dataset == 'search' ? docSource.attestations?.length > 1 && 
-      <div>
-        <h3>Historikk</h3>
-        <Timeline attestations={docSource.attestations} />
-      </div>
-      : null
+      
+      { infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
+
+      {
+        docDataset == 'search' && <div>
+          <h3>Kilder</h3>
+          
+
+        </div>
       }
-      <div>
-        <h3>Data</h3>
-        <FacetsInfobox dataset={docDataset} source={docSource}/>
-      </div>
+      
 
-
-        { false && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
         { docSource.image?.manifest && <div>
         <h3>Sedler</h3>
