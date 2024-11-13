@@ -8,7 +8,7 @@ import Timeline from "./Timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audioButton"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString } from "nuqs"
-import FacetTable from "@/components/ui/facet-table"
+import FacetsInfobox from "@/components/ui/facets-infobox"
 
 export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
     const searchParams = useSearchParams()
@@ -68,13 +68,16 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
         </div>
 
         { dataset == 'search' ? docSource.attestations?.length > 1 && 
-      <>
+      <div>
         <h3>Historikk</h3>
         <Timeline attestations={docSource.attestations} />
-      </>
+      </div>
       : null
       }
-      <FacetTable dataset={docDataset} source={docSource}/>
+      <div>
+        <h3>Data</h3>
+        <FacetsInfobox dataset={docDataset} source={docSource}/>
+      </div>
 
 
         { false && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }

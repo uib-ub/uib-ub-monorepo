@@ -5,7 +5,9 @@ import { getValueByPath } from "@/lib/utils";
 
 export default function FacetTable({ dataset, source }: { dataset: string, source: Record<string,any> }) {
 
-    const items = facetConfig[dataset].filter(item => item.key != 'sosi').map((facet) => {
+    const items = facetConfig[dataset].filter(item => 
+      !['sosi', 'datasets'].includes(item.key) // Skip fields displayed in dedicated component
+    ).map((facet) => {
         const value = getValueByPath(source, facet.key);
         return {
           title: facet.label,

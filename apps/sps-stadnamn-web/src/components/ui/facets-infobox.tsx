@@ -5,7 +5,9 @@ import { getValueByPath } from "@/lib/utils";
 
 export default function FacetsInfobox({ dataset, source }: { dataset: string, source: Record<string,any> }) {
 
-    const items = facetConfig[dataset].filter(item => item.key != 'sosi').map((facet) => {
+    const items = facetConfig[dataset].filter(item => 
+      !['sosi', 'datasets'].includes(item.key) // Skip fields displayed in dedicated component
+    ).map((facet) => {
         const value = getValueByPath(source, facet.key);
         return {
           title: facet.label,
@@ -62,7 +64,7 @@ export default function FacetsInfobox({ dataset, source }: { dataset: string, so
             <div key={index} className="flex flex-col">
                 <strong className="text-neutral-900">{item.title}</strong>
                 {item.items?.length == 1 && <p>{subitemRenderer(item.items[0])}</p>}                
-                {item.items?.length > 1 && <ul> 
+                {item.items?.length > 1 && <ul className="!list-none flex flex-wrap gap-x-4 !mx-0 !px-0"> 
                   {item.items.map((subItem: any, subIndex: number) => (
                     <li key={subIndex}> {subitemRenderer(subItem)} </li>
                   ))}

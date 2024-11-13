@@ -36,9 +36,9 @@ export const fieldConfig: Record<string, FieldConfigItem[]> = {
     ],
   }
   
+const table = true
+const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarden", table}
 
-const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarden", table: true}
-  
   
   export const facetConfig: Record<string, FacetConfigItem[]> = {
       search: [
@@ -53,7 +53,7 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
 
       ],
       bsn: [
-        {key: "rawData.stnavn.loktype.type", label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table: true},
+        {key: "rawData.stnavn.loktype.type", label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table},
         {key: "rawData.stnavn.sted.gårdsnr", label: "Gardsnr"},
         {key: "rawData.stnavn.sted.bruksnr", label: "Bruksnr"},
         {key: "rawData.stnavn.oppslag.oppslord", label: "Oppslagsord"},
@@ -61,13 +61,12 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
         {key: "rawData.stnavn.oppslag.hovledd", label: "Hovudledd"},
       ],
       hord: [
-        {key: "archive.institution", label: "Arkivtilvising", table: true},
-        //{key: "label", label: "debug", table: true},
+        {key: "archive.institution", label: "Arkivtilvising", table},
         {key: "cadastre__gnr", label: "Gardsnummer", sort: "asc", type: "integer"},
         {key: "cadastre__bnr", label: "Bruksnummer", sort: "asc", type: "integer"},
-        {key: "rawData.oppskrivar", label: "Oppskrivar", table: true},
-        {key: "rawData.oppskrivingsTid", label: "Oppskrivingstid", table: true},
-        {key: "rawData.bildeNr", label: "Bildenummer", table: true},
+        {key: "rawData.oppskrivar", label: "Oppskrivar", table},
+        {key: "rawData.oppskrivingsTid", label: "Oppskrivingstid", table},
+        {key: "rawData.bildeNr", label: "Bildenummer", table},
 
       ],
       rygh: [
@@ -93,9 +92,9 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
         {key: "rawData.KNR", label: "Kommunenummer"},
         {key: "rawData.GNR", label: "Gardsnummer"},
         {key: "rawData.BNR", label: "Bruksnummer"},        
-        {key: "rawData.Eigar", label: "Eigar", table: true},
-        {key: "rawData.Mark", label: "Skyldmark", table: true},
-        {key: "rawData.Øre", label: "Skyldøre", table: true},
+        {key: "rawData.Eigar", label: "Eigar", table},
+        {key: "rawData.Mark", label: "Skyldmark", table},
+        {key: "rawData.Øre", label: "Skyldøre", table},
         {key: "gnidu", label: "GNIDu"},
         {key: "rawData.Koordinattype", label: "Koordinattype"},
       ],
