@@ -6,7 +6,7 @@ import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiInfoFill, PiTagFill, PiW
 import ClientThumbnail from "../../doc/client-thumbnail"
 import Timeline from "../../doc/timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
-import AudioButton from "@/components/results/audioButton"
+import AudioButton from "@/components/results/audio-button"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString } from "nuqs"
 import FacetsInfobox from "@/components/ui/facets-infobox"
 

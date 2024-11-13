@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Menu from "./Menu";
-import NavBar from "./NavBar";
+import Menu from "./menu";
+import NavBar from "./nav-bar";
 import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
 import { Suspense } from "react";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'

@@ -8,7 +8,7 @@ import { useQueryStringWithout } from '@/lib/search-params'
 import { facetConfig } from '@/config/search-config'
 import { contentSettings } from '@/config/server-config';
 import SortButton from './SortButton'
-import ResultRow from '@/components/results/ResultRow'
+import ResultRow from '@/components/results/result-row'
 import GroupedChildren from '../../../../components/results/grouped-children'
 
 

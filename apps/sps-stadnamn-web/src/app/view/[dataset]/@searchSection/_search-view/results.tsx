@@ -1,7 +1,7 @@
 import Pagination from '../../../../../components/results/pagination'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
 import { PiCaretDoubleUp, PiTable } from 'react-icons/pi';
-import ResultRow from '@/components/results/ResultRow';
+import ResultRow from '@/components/results/result-row';
 import Link from 'next/link';
 import { useState } from 'react';
 

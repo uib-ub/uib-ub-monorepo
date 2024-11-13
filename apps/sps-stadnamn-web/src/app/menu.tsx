@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from "react";
 import { PiList } from 'react-icons/pi';
-import NavBar from "./NavBar";
+import NavBar from "./nav-bar";
 import IconButton from "@/components/ui/icon-button";
 import { usePathname, useSearchParams } from "next/navigation";
 

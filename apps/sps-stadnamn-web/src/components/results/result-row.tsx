@@ -1,18 +1,18 @@
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
 import { useState } from 'react';
 import { PiCaretDown, PiCaretUp, PiX } from 'react-icons/pi';
-import AudioButton from '@/components/results/audioButton';
+import AudioButton from '@/components/results/audio-button';
 import IconButton from '@/components/ui/icon-button';
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { datasetTitles } from '@/config/metadata-config';
 import CoordinateButton from '@/components/results/coordinateButton';
 import ExternalLinkButton from '@/components/results/externalLinkButton';
-import ImageButton from '@/components/results/imageButton';
-import InfoButton from '@/components/results/infoButton';
+import ImageButton from '@/components/results/image-button';
+import InfoButton from '@/components/results/info-button';
 import GroupedChildren from './grouped-children';
 import Spinner from '@/components/svg/Spinner';
 import IconLink from '@/components/ui/icon-link';
-import ResultLink from './resultLink';
+import ResultLink from './result-link';
 
 
 

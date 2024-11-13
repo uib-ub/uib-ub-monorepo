@@ -2,11 +2,11 @@
 import { useSearchParams, useParams, useRouter } from 'next/navigation'
 import Link from 'next/link';
 import { resultRenderers } from '@/config/result-renderers';
-import AudioButton from '@/components/results/audioButton'
-import ImageButton from '@/components/results/imageButton'
-import InfoButton from '@/components/results/infoButton'
+import AudioButton from '@/components/results/audio-button'
+import ImageButton from '@/components/results/image-button'
+import InfoButton from '@/components/results/info-button'
 import ExternalLinkButton from '@/components/results/externalLinkButton'
-import ResultLink from '../results/resultLink';
+import ResultLink from '../results/result-link';
 
 export default function PopupList({ docs, view }: { docs: any[], view: string} ) {
 

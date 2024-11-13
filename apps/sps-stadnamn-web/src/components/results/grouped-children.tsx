@@ -1,15 +1,15 @@
 
 'use client'
 import { useState, useEffect } from 'react'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/error-message'
 import { datasetTitles } from '@/config/metadata-config'
 import { resultRenderers } from '@/config/result-renderers'
-import InfoButton from '@/components/results/infoButton'
+import InfoButton from '@/components/results/info-button'
 import CoordinateButton from '@/components/results/coordinateButton';
 import ExternalLinkButton from '@/components/results/externalLinkButton';
-import ImageButton from '@/components/results/imageButton';
+import ImageButton from '@/components/results/image-button';
 import Link from 'next/link'
-import ResultLink from './resultLink'
+import ResultLink from './result-link'
 
 
 export default function GroupedChildren({ snid, uuid, childList, landingPage, setExpandLoading}: { snid: string, uuid: string, childList: string[], landingPage?: boolean, setExpandLoading?: any}) {

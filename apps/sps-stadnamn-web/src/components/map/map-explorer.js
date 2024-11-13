@@ -1,10 +1,10 @@
 'use client'
 import { useEffect, useState, useCallback, useRef } from 'react';
-import Map from './Map'
+import Map from './map'
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation'
 import 'leaflet/dist/leaflet.css';
 import { useQueryStringWithout } from '@/lib/search-params'
-import PopupList from './PopupList'
+import PopupList from './popup-list'
 import { backgroundMap, baseMaps, baseMapNames, baseMapKeys } from '@/config/basemap-config'
 
 export default function MapExplorer(props) {

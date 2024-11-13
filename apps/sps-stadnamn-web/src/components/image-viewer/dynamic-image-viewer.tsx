@@ -4,7 +4,7 @@ import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHo
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
-import ErrorMessage from '../ErrorMessage';
+import ErrorMessage from '../error-message';
 
 const DynamicImageViewer = () => {
   const viewerRef = useRef<HTMLDivElement | null>(null);

@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
-import Map from "../Map/Map";
+import Map from "../Map/map";
 import { baseMaps, baseMapKeys, baseMapProps } from "@/config/basemap-config";
 import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrow, PiNavigationArrowFill, PiPersonFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";

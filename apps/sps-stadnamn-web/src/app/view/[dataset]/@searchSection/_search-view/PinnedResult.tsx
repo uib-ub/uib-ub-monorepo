@@ -1,4 +1,4 @@
-import ResultRow from "@/components/results/ResultRow";
+import ResultRow from "@/components/results/result-row";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

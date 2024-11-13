@@ -3,7 +3,7 @@
 'use client'
 import { PiCaretDown, PiCaretUp, PiMapPin  } from 'react-icons/pi';
 import CoordinateType from './coordinate-type';
-import EmbeddedMap from '@/components/Map/EmbeddedMap';
+import EmbeddedMap from '@/components/Map/embedded-map';
 import { useState } from 'react';
 
 function convertDMS(lat: number, lon: number): string {

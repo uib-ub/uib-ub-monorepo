@@ -1,13 +1,13 @@
 
 import { fetchDoc } from '@/app/api/_utils/actions'
-import ErrorMessage from '@/components/ErrorMessage'
+import ErrorMessage from '@/components/error-message'
 import { datasetTitles } from '@/config/metadata-config'
 import { infoPageRenderers } from '@/config/info-renderers'
 import OriginalData from '@/app/view/[dataset]/doc/[uuid]/original-data'
 import Link from 'next/link'
 import { PiDatabaseFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi'
 import GroupedChildren from '@/components/results/grouped-children'
-import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
+import ThumbnailLink from '@/components/image-viewer/thumbnail-link'
 import CopyLink from '@/components/doc/copy-link'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {

@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
-import Map from './Map'
+import Map from './map'
 import 'leaflet/dist/leaflet.css';
 import { baseMapProps, baseMapKeys } from '@/config/basemap-config'
 
