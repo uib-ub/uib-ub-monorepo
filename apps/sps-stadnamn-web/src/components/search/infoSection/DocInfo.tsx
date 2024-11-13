@@ -2,7 +2,7 @@ import CopyLink from "@/app/view/[dataset]/doc/[uuid]/CopyLink"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfoFill, PiTagFill, PiWarningFill } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiInfoFill, PiTagFill, PiWarningFill } from "react-icons/pi"
 import ClientThumbnail from "./ClientThumbnail"
 import Timeline from "./Timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
@@ -91,11 +91,11 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
         <div className="flex gap-4 flex-wrap pt-8 pb-2 text-neutral-900">
         { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
           <>
-            <CopyLink uuid={docSource.uuid}/> 
             <Link href={"/uuid/" + docSource.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
-              <PiInfoFill aria-hidden="true"/>
-              Infoside
+              <PiInfinity aria-hidden="true"/>
+              Varig side
             </Link>
+            <CopyLink uuid={docSource.uuid}/> 
             <Link href={"/uuid/" + docSource.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
               <PiBracketsCurly aria-hidden="true"/>
               Json
