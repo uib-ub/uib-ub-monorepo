@@ -33,7 +33,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     return <div className={className} dangerouslySetInnerHTML={createMarkup(htmlString)} />;
   }
 
-  const Timeline = (arr: { label: string; year: string }[], noCoordinates: boolean) => {
+  const Timeline = (arr: { label: string; year: string }[]) => {
     const grouped: Record<string,string[]> = {};
 
     arr?.forEach(item => {
@@ -87,7 +87,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.attestations?.length > 1 && 
       <>
         <h3>Historikk</h3>
-        {Timeline(source.attestations, !source.location)}
+        {Timeline(source.attestations)}
       </>}
     </div>
     }

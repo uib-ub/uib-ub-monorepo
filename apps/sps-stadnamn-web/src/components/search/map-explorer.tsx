@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Map from "../Map/map";
 import { baseMaps, baseMapKeys, baseMapProps } from "@/config/basemap-config";
-import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrow, PiNavigationArrowFill, PiPersonFill,  PiStackSimpleFill } from "react-icons/pi";
+import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/map-search-provider";
 import Spinner from "../svg/Spinner";
@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
-import { useDataset, useSearchQuery } from "@/lib/search-params";
+import { useSearchQuery } from "@/lib/search-params";
 import { getLabelMarkerIcon } from "./markers";
 
 
@@ -30,12 +30,12 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
   const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
   const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
   const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
-  const [point, setPoint] = useQueryState('point', { history: 'push', scroll: true })
+  const setPoint = useQueryState('point', { history: 'push', scroll: true })[1]
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
-  const [expanded, setExpanded] = useQueryState('expanded', { history: 'push' })
+  const setExpanded = useQueryState('expanded', { history: 'push' })[1]
 
-  const [selectedDoc, setSelectedDoc] = selectedDocState
+  const selectedDoc = selectedDocState[0]
 
 
 
@@ -305,7 +305,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
   const selectDocHandler = (hit: Record<string, any>, point?: [number, number]) => {
     return {
-      click: (e: any) => {
+      click: () => {
         setPoint(null)
         setDoc(hit.fields.uuid[0])
         if (point?.length) {
@@ -329,7 +329,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
           : bounds ? { bounds } : { center: [63.4, 10.4], zoom: 5 }
         }
         className='w-full h-full'>
-        {({ TileLayer, CircleMarker, Marker, Tooltip }: any, leaflet: any) => {
+        {({ TileLayer, CircleMarker, Marker }: any, leaflet: any) => {
 
 
 
@@ -401,7 +401,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
                   return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon) / 2]} icon={myCustomIcon}
                     eventHandlers={{
-                      click: (e: any) => {
+                      click: () => {
                         const newBounds: [[number, number], [number, number]] = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
                         mapInstance.current.flyToBounds(isMobile ? newBounds : adjustBounds(newBounds, 0.5), { duration: 0.25, maxZoom: 18 });
 

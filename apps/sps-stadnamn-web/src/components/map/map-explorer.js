@@ -164,7 +164,7 @@ export default function MapExplorer(props) {
            <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == baseMaps[0].key || !localStorage.getItem('baseLayer') || !baseMapKeys.includes(localStorage.getItem('baseLayer'))} name={baseMapNames[0]}>
               <TileLayer key={baseMaps[0].key} {...baseMaps[0].props} />
             </LayersControl.BaseLayer>
-            {baseMaps.slice(1).map((item, index) => (
+            {baseMaps.slice(1).map(item => (
               <LayersControl.BaseLayer checked={localStorage.getItem('baseLayer') == item.key} key={item.key} name={item.name}>
                 <TileLayer key={item.key} {...item.props} />
               </LayersControl.BaseLayer>

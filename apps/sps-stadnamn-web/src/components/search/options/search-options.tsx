@@ -3,7 +3,7 @@
 import { useState} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
-import { PiArchiveFill, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretRight, PiCaretUp, PiCheckFatFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
+import { PiCaretDown, PiCaretRight, PiCaretUp, PiCheckFatFill } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
 import { fieldConfig } from '@/config/search-config';
@@ -20,23 +20,9 @@ export default function SearchOptions({isMobile}: {isMobile: boolean}) {
   const [field, setField] = useQueryState('field')
   const allFeatures = Object.keys(featureNames);
   const allTypes = Object.keys(typeNames);
-  const [expandedKeyInfo, setExpandedKeyInfo] = useState<string | null>(null)
+  const setExpandedKeyInfo = useState<string | null>(null)[1]
 
   
-  const icons: {[key: string]: JSX.Element} ={
-    "image": <PiArticleFill aria-hidden="true"/>,
-    "audio": <PiFileAudioFill aria-hidden="true"/>,
-    "phonetic": <PiEarFill aria-hidden="true"/>,
-    "coordinates": <PiMapPinLineFill aria-hidden="true"/>,
-    "link": <PiLinkSimpleFill aria-hidden="true"/>,
-    "maps": <PiMapTrifoldFill aria-hidden="true"/>,
-    "base": <PiWallFill aria-hidden="true"/>,
-    "sprak": <PiArchiveFill aria-hidden="true"/>,
-    "encyclopedia": <PiBooksFill aria-hidden="true"/>,
-    "database": <PiDatabaseFill aria-hidden="true"/>,
-    "public": <PiGavelFill aria-hidden="true"/>
-
-  };
 
 
 
@@ -84,7 +70,7 @@ export default function SearchOptions({isMobile}: {isMobile: boolean}) {
               <input
                 type="radio"
                 checked={field == null}
-                onChange={(e) => setField(null)}
+                onChange={() => setField(null)}
               />
               Navn
             </label>
@@ -94,7 +80,7 @@ export default function SearchOptions({isMobile}: {isMobile: boolean}) {
                   <input
                       type="radio"
                       checked={item.key == field}
-                      onChange={(e) => setField(item.key)}
+                      onChange={() => setField(item.key)}
                   />
                   {item.label}
                 </label>

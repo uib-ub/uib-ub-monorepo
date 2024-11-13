@@ -1,5 +1,4 @@
 
-import EmbeddedMap from '@/components/Map/embedded-map'
 import ChildMap from '@/components/Map/child-map'
 import OriginalData from './original-data'
 import Link from 'next/link'
