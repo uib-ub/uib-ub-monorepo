@@ -1,6 +1,6 @@
 'use client'
 import WithinLabel from "@/app/view/[dataset]/@searchSection/_search-view/WithinLabel"
-import { facetConfig } from "@/config/search-config"
+import { facetConfig, globalFields } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -18,7 +18,7 @@ export default function ActiveFilters() {
     const getFieldLabel = (name: string, value: string) => {
         const dataset = searchQuery.get('dataset')
         const fieldConfig = dataset ? facetConfig[dataset]?.find(item => item.key == name) : null
-        const label = fieldConfig?.label || name
+        const label = fieldConfig?.label || globalFields[name]?.label || name
         const omitLabel = fieldConfig?.omitLabel || name == 'adm'
   
         const values = value.split('__')

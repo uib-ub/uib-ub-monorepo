@@ -15,6 +15,12 @@ export interface FacetConfigItem {
     label: string;
   }
 
+export const globalFields: Record<string, any> = {
+  "cadastre__gnr": {label: "Gardsnummer"},
+  "cadastre__bnr": {label: "Bruksnummer"},
+  
+}
+
  
 
 export const fieldConfig: Record<string, FieldConfigItem[]> = {
