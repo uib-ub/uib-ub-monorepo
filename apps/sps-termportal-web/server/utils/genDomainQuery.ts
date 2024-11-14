@@ -6,13 +6,15 @@ PREFIX base: <${base}>
 
 CONSTRUCT  {
     <${base}DOMENE-3AToppdomene> skos:narrower ?c;
-        rdf:type skos:Concept.
-    ?c skos:narrower ?c2;
-        rdf:type skos:Concept.
-    ?c2 skos:narrower ?c3;
-        rdf:type skos:Concept.
-    ?c3 skos:narrower ?c4;
-        rdf:type skos:Concept. }
+        rdf:type skos:Concept .
+    ?c skos:narrower ?c2 ;
+        rdf:type skos:Concept .
+    ?c2 skos:narrower ?c3 ;
+        rdf:type skos:Concept .
+    ?c3 skos:narrower ?c4 ;
+        rdf:type skos:Concept .
+    ?c4 skos:narrower ?c5 ;
+        rdf:type skos:Concept . }
 WHERE {
     GRAPH ?GRAPH {
         <${base}DOMENE-3AToppdomene> skos:narrower ?c.
@@ -22,7 +24,11 @@ WHERE {
                 OPTIONAL { ?c2 skos:narrower ?c3.
                     FILTER EXISTS { ?c3 ?p ?o } .
                     OPTIONAL { ?c3 skos:narrower ?c4.
-                        FILTER EXISTS { ?c3 ?p ?o } .}
+                        FILTER EXISTS { ?c3 ?p ?o } .
+                        OPTIONAL { ?c4 skos:narrower ?c5.
+                            FILTER EXISTS { ?c4 ?p ?o } .
+                        }
+                    }
                 }
             }
         }
