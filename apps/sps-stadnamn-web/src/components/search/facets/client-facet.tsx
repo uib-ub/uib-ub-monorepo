@@ -15,7 +15,7 @@ export default function ClientFacet({ setFacetIsLoading, facetName }: { setFacet
   const paramLookup = useSearchParams()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
-  const clearedFilters = useQueryStringWithout([facetName, 'page'])
+  const filterCleared = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
@@ -39,7 +39,7 @@ export default function ClientFacet({ setFacetIsLoading, facetName }: { setFacet
 
   const clearFilter = () => {
     
-    router.push(`?${clearedFilters}`, { scroll: false})
+    router.push(`?${filterCleared}`, { scroll: false})
   }
 
 
