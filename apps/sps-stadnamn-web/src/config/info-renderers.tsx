@@ -1,13 +1,16 @@
 import CadastralSubdivisions from '@/components/doc/cadastral-subdivisions';
 import InfoBox from '@/components/ui/infobox';
 import Link from 'next/link';
-import React from 'react';
+import React, { Fragment } from 'react';
 
 
-import FacetsInfobox from '@/components/ui/facets-infobox';
+import FacetsInfobox from '@/components/doc/facets-infobox';
 import { getValueByPath } from '@/lib/utils';
 import { treeSettings } from './server-config';
 import SearchParamsLink from '@/components/ui/search-params-link';
+import CollapsibleHeading from '@/components/doc/collapsible-heading';
+import SearchLink from '@/components/ui/search-link';
+import { PiMagnifyingGlass } from 'react-icons/pi';
 
 
 const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
@@ -113,6 +116,25 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   rygh: (source: any) => {
     return <>
+    { source.cadastre?.length > 0 &&
+ <div className='flex flex-wrap gap-2'>
+ 
+  <h3 className="font-semibold !text-base !m-0 !p-0 !font-sans">Matrikkel:</h3>
+   {source.cadastre?.map((item: any, index: number) => {
+    
+    return <Fragment key={index}>
+    
+        <SearchLink className="no-underline flex items-center" dataset="rygh" params={{"rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink>
+      { item.gnr && <>- <SearchLink className="no-underline flex items-center" dataset="rygh" params={{"cadastre__gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink> </>}
+      { item.bnr && <>{"/"} <SearchLink className="no-underline flex items-center" dataset="rygh" params={{"cadastre__gnr": item.gnr.toString(), "cadastre__bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink> </>}
+      
+
+
+  
+   </Fragment>
+   })}
+   </div>   
+    }
 
     {source.content?.html && <div className="inline-flex flex-col bg-neutral-50 border border-neutral-200">
      <div className='border-b border-neutral-200 p-4'><Link href={source.rawData.Lenke_til_originalside} className='whitespace-nowrap inline'>Bind {source.rawData.Bind}, s. {source.rawData.Side}</Link></div>
@@ -120,10 +142,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
     </div>
     }
-    <div>
-      <h3>Detaljer</h3>
+    <CollapsibleHeading title="Detaljer">
       <FacetsInfobox dataset={'rygh'} source={source}/>
-    </div>
+    </CollapsibleHeading>
 
     </>
   },
@@ -309,8 +330,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     }
     </div>
     <div>
-    <h3>Detaljer</h3>
-    <FacetsInfobox dataset={'m1886'} source={source}/>
+      <CollapsibleHeading title="Detaljer">
+      <FacetsInfobox dataset={'m1886'} source={source}/>
+      </CollapsibleHeading>
     </div>
 
     </>

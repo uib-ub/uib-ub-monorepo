@@ -2,13 +2,11 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiInfoFill, PiTagFill, PiWarningFill } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
-import Timeline from "../../doc/timeline"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString } from "nuqs"
-import FacetsInfobox from "@/components/ui/facets-infobox"
 
 export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
     const searchParams = useSearchParams()
@@ -35,7 +33,7 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
         </div>
         <div className="flex gap-2 flex-wrap">
         {
-         docSource.sosi && docDataset != 'search' && <Link className="flex items-center gap-1 bg-neutral-100 pl-3 pr-1 rounded-full text-neutral-900 no-underline external-link"
+         docSource.sosi && docDataset != 'search' && <Link className="flex items-center bg-neutral-100 pl-3 pr-1 rounded-full text-neutral-900 no-underline external-link"
          href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + docSource.sosi}>
             { docSource.sosi}
         </Link>
@@ -49,7 +47,7 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
                 </>
             
                 || docSource.wikiAdm && docDataset != 'm1838' 
-                    &&  <Link  className="gap-1 flex align-middle bg-neutral-100 pr-1 pl-3 rounded-full text-neutral-900 no-underline external-link" href={'http://www.wikidata.org/entity/' + docSource.wikiAdm}>
+                    &&  <Link  className="flex align-middle bg-neutral-100 pr-1 pl-3 rounded-full text-neutral-900 no-underline external-link" href={'http://www.wikidata.org/entity/' + docSource.wikiAdm}>
                         
                         <span className="max-w-[12rem] truncate">
                 {docSource.adm3 && multivalue(docSource.adm3) + " – "}
