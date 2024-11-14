@@ -78,9 +78,10 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
       rygh: [
         {key: "rawData.Lokalitetstype", label: "Lokalitetstype"},
         {key: "rawData.Bind", label: "Bind", type: "integer"},
-        {key: "rawData.Side", label: "Sidetall"},
-        {key: "rawData.Gnr", label: "Gardsnummer"},
-        {key: "rawData.Bnr", label: "Bruksnummer"},
+        {key: "rawData.Side", label: "Sidetall", additionalParams: ["rawData.Bind"]},
+        {key: "rawData.KNR", label: "Kommunenummer"},
+        {key: "rawData.Gnr", label: "Gardsnummer (rådata)", additionalParams: ["rawData.KNR"]},
+        {key: "rawData.Bnr", label: "Bruksnummer (rådata)", additionalParams: ["rawData.KNR", "rawData.Gnr"]},
       ],
       leks: [
         {key: "rawData.Lokalitetstype", label: "Lokalitetstype"},
