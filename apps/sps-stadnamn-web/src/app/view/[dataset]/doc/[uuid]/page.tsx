@@ -1,5 +1,5 @@
 
-import ChildMap from '@/components/Map/child-map'
+import ChildMap from '@/components/map/child-map'
 import OriginalData from './original-data'
 import Link from 'next/link'
 import { infoPageRenderers } from '@/config/info-renderers'
