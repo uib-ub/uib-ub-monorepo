@@ -1,5 +1,5 @@
-import { useParams, useSearchParams } from 'next/navigation'
-import { resultRenderers } from '@/config/result-renderers-map-search'
+import { useSearchParams } from 'next/navigation'
+import { facetConfig, globalFields } from '@/config/search-config';
 
 export function useQueryWithout(omit : string[]) {
     const params = useSearchParams()
@@ -31,14 +31,24 @@ export function useSearchQuery() {
     const dataset = useDataset()
     // Return params matching certain criteria
     // - q, size, page, starts with "rawData"
-    const fields = ['q', 'adm']
+    const fields = ['q', 'adm', ...Object.keys(globalFields)]
     const facetFilters: [string, string][] = []
 
     // Add dataset specific fields
+    /*
     const renderer = resultRenderers[dataset]
     if (renderer?.fields) {
         fields.push(...renderer.fields)
     }
+    */
+
+    facetConfig[dataset].forEach(facet => {
+        if (!fields.includes(facet.key)) {
+            fields.push(facet.key)
+        }
+    })
+
+
 
     
     const searchQuery = new URLSearchParams()
@@ -55,8 +65,9 @@ export function useSearchQuery() {
     })
 
     searchParams.forEach((value, key) => {
-        if (key.startsWith('rawData')) {
+        if (!fields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
             searchQuery.append(key, value)
+            facetFilters.push([key, value])
         }
     })
 
