@@ -65,7 +65,7 @@ export const datasetShortDescriptions: Record<string, string> = {
   search: "Overordna søk aggregert frå alle datasett",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
-  rygh: "En digital publikasjon av omtrent 69 000 bosetningsnavn fra hele Norge unntatt Finnmark, inkludert historiske og språklige tolkninger",
+  rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924.",
   ostf: "En 20-binds serie utgitt mellom 1994 og 2021, som dekker bosetningsnavn i det tidligere Østfold fylke.",
   leks: "Er ei digital utgåve som forklarar opphavet til viktige stadnamn i Noreg, inkludert norske, samiske og kvenske namn, samt administrative inndelingar.",
   nbas: "Inneholder omtrent 700 000 navn fra ulike samlinger, der hvert navnekort inkluderer navneformen, uttalen og informasjon om kommunen og fylket.",
