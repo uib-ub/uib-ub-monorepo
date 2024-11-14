@@ -23,6 +23,9 @@ export function getValueByPath (obj: any, path: string | undefined): any {
   if (obj[path]) {
     return obj[path]
   }
+  else if (path == "adm") {
+    return [obj.adm1, obj.adm2, obj.adm3].filter(Boolean).join('__')
+  }
   else {
     // Needed for nested fields in both field and _source
   if (path.split("__").length == 2) {
