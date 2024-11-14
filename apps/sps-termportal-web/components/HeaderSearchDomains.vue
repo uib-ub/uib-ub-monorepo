@@ -3,38 +3,38 @@
     <div ref="topWrapper">
       <div class="flex flex-wrap gap-x-1 gap-y-1 lg:flex-nowrap">
         <div
-          v-for="domain in Object.keys(bootstrapData.domain)"
-          :key="domain"
+          v-for="topdomain in Object.keys(bootstrapData.domain)"
+          :key="topdomain"
           class="group flex min-h-[2.3em]"
         >
           <input
-            :id="domain"
-            :value="searchInterface.domain[domain]"
+            :id="topdomain"
+            :value="searchInterface.domain[topdomain]"
             type="checkbox"
             class="peer outline-none"
-            @update="updateTopdomain(domain)"
-            @keydown.space="updateTopdomain(domain)"
+            @update="updateTopdomain(topdomain)"
+            @keydown.space="updateTopdomain(topdomain)"
           />
           <label
-            :for="domain"
+            :for="topdomain"
             class="tp-transition-shadow flex w-fit cursor-pointer items-center rounded-[7px] border border-gray-300 py-1 pl-1.5 pr-2 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
             :class="{
               'bg-tpblue-400 text-white': Object.keys(
                 searchInterface.domain
-              ).includes(domain),
+              ).includes(topdomain),
             }"
-            @click="updateTopdomain(domain)"
+            @click="updateTopdomain(topdomain)"
           >
             <div class="w-5 flex justify-center">
               <Icon
                 v-if="
-                  Object.keys(searchInterface.domain).includes(domain) ||
-                  noDomain
+                  Object.keys(searchInterface.domain).includes(topdomain) ||
+                  !domainSelected
                 "
                 name="mdi:checkbox-marked-outline"
                 size="1.2em"
                 :class="{
-                  'text-gray-400 group-hover:text-tpblue-400': noDomain,
+                  'text-gray-400 group-hover:text-tpblue-400': !domainSelected,
                 }"
                 aria-hidden="true"
               />
@@ -46,13 +46,13 @@
                 aria-hidden="true"
               />
             </div>
-            <span class="pl-1.5">{{ $t("global.domain." + domain) }}</span>
+            <span class="pl-1.5">{{ $t("global.domain." + topdomain) }}</span>
           </label>
         </div>
       </div>
       <div class="flex justify-center">
         <button
-          v-if="!noDomain"
+          v-if="domainSelected"
           class="absolute border border-t-white border-gray-300 rounded-b-md bg-white h-[1.1em] mt-[6px] flex justify-center w-16"
           @click="panel = !panel"
         >
@@ -112,7 +112,7 @@
                 />
                 <ul>
                   <li
-                    v-for="(v, sublabel) of v.subdomains"
+                    v-for="(_, sublabel) of v.subdomains"
                     :key="sublabel"
                     class="pl-6"
                   >
@@ -154,8 +154,8 @@ const panelTopdomains = computed(() =>
   intersectUnique(Object.keys(bootstrapData.value.domain), activeDomains.value)
 );
 
-const noDomain = computed(() => {
-  return Object.keys(searchInterface.value.domain).length === 0;
+const domainSelected = computed(() => {
+  return Object.keys(searchInterface.value.domain).length > 0;
 });
 
 const subdomainSpecified = computed(() => {

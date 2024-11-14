@@ -22,18 +22,18 @@
           "
           name="mdi:checkbox-marked-outline"
           size="1.2em"
-          class="text-tpblue-400"
+          class="text-tpblue-400 mb-0.5"
           aria-hidden="true"
         />
         <Icon
           v-else
           name="mdi:checkbox-blank-outline"
           size="1.2em"
-          class="text-tpblue-400"
+          class="text-tpblue-400 mb-0.5"
           aria-hidden="true"
         />
       </div>
-      <div class="pl-2">{{ lalof(label) }}</div>
+      <div class="pl-1.5">{{ lalof(label) }}</div>
     </label>
   </div>
 </template>
@@ -51,10 +51,8 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 function onChange(event) {
-  const eventValue = event.target.value;
   const domain = event.target.value;
   const newObject = { ...props.modelValue };
-  let newValue;
 
   // applies to second level domains
   if (props.topdomain) {
