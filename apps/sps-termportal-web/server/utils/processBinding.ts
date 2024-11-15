@@ -1,5 +1,5 @@
 import { SearchDataEntry } from "~~/composables/states";
-import { Samling, termbaseUriPatterns } from "~~/utils/vars-termbase";
+import { TermbaseId, termbaseUriPatterns } from "~~/utils/vars-termbase";
 
 /* Search data preprocessing
  */
@@ -11,7 +11,7 @@ import { Samling, termbaseUriPatterns } from "~~/utils/vars-termbase";
  */
 export default function (binding: { [key: string]: any }): SearchDataEntry {
   const runtimeConfig = useRuntimeConfig();
-  const samling = binding.samling.value.split("-3A")[0] as Samling;
+  const samling = binding.samling.value.split("-3A")[0] as TermbaseId;
 
   const predicate =
     binding.predicate.value.replace("http://www.w3.org/2008/05/skos-xl#", "") ||

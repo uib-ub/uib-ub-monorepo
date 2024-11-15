@@ -16,6 +16,7 @@
         class="min-w-[6rem]"
       />
     </SearchDropdownWrapper>
+
     <button
       class="rounded-[7px] flex space-x-2 px-2 pt-0.5 pb-1 tp-transition-shadow hover:cursor-pointer group border border-transparent hover:border-tpblue-300 focus:shadow-tphalo focus:border-tpblue-300 outline-none"
       @click="searchInterface.useDomain = !searchInterface.useDomain"
@@ -40,6 +41,7 @@ const i18n = useI18n();
 const searchInterface = useSearchInterface();
 const localeLangOrder = useLocaleLangOrder();
 const orderedTermbases = useOrderedTermbases();
+const bootstrapData = useBootstrapData();
 
 // Order of language is not relevant
 const languageInfo = deriveLanguageInfo(languageOrder.nb);
@@ -146,7 +148,11 @@ function deriveSearchOptions(searchOption, defaultValue) {
 
     if (termbases.length !== orderedTermbases.value.length) {
       const languages = [
-        ...new Set(termbases.map((tb) => termbaseInfo[tb]).flat()),
+        ...new Set(
+          termbases
+            .map((tb) => bootstrapData.value.termbase[tb].language)
+            .flat()
+        ),
       ];
       options = intersectUnique(localeLangOrder.value, languages);
     } else {

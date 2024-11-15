@@ -1,4 +1,4 @@
-import { Samling, Domains } from "./vars-termbase";
+import { TermbaseId, Domains } from "./vars-termbase";
 import { LangCode } from "~/composables/locale";
 
 export type QueryType = "search" | "concept" | "termbase";
@@ -65,7 +65,7 @@ export interface SearchOptions {
   term: string;
   language: (LangCode | "all")[];
   translate: LangCode | "none";
-  termbase: Samling[];
+  termbase: TermbaseId[];
   useDomain: boolean;
   domain: (Domains | "all")[];
   predicate: LabelPredicate[];

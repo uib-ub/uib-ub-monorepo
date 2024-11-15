@@ -1,4 +1,4 @@
-import { Samling } from "~/utils/vars-termbase";
+import { TermbaseId } from "~/utils/vars-termbase";
 
 export function genTQLangArgument(languages: string[]) {
   if (languages[0] === "all") {
@@ -10,7 +10,7 @@ export function genTQLangArgument(languages: string[]) {
   }
 }
 
-export function genTQGraphValue(termbases: (Samling | "all")[]) {
+export function genTQGraphValue(termbases: (TermbaseId | "all")[]) {
   if (termbases[0] === "all") {
     return ["<urn:x-arq:UnionGraph>"];
   } else {

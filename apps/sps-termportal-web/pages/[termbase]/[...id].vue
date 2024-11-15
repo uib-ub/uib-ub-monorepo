@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { Samling } from "~~/utils/vars-termbase";
+import { TermbaseId } from "~~/utils/vars-termbase";
 
 const route = useRoute();
 const searchScrollBarPos = useSearchScrollBarPos();
@@ -46,7 +46,7 @@ const searchData = useSearchData();
 
 const sidebar = ref(null);
 const main = ref(null);
-const termbase = route.params.termbase as Samling;
+const termbase = route.params.termbase as TermbaseId;
 const idArray = route.params.id as Array<string>;
 
 function getConceptId(termbase, idArray) {

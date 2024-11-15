@@ -1,5 +1,5 @@
 import { useI18n } from "vue-i18n";
-import { systemTermbases } from "~/utils/vars-termbase";
+import { systemTermbases, TermbaseId } from "~/utils/vars-termbase";
 
 export type LocalLangCode = "en" | "nb" | "nn";
 
@@ -134,7 +134,7 @@ export function localizeSnomedVersionLabel() {
 
 // TODO refactor with lazy data
 export function deriveLanguageInfo(languages: LangCode[]): {
-  [key in LangCode]: Samling[];
+  [key in LangCode]: TermbaseId[];
 } {
   const bootstrapData = useBootstrapData();
   const orderedTermbases = useOrderedTermbases();

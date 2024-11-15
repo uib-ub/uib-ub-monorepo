@@ -52,6 +52,7 @@
 <script setup lang="ts">
 import { uiConfig } from "../utils/vars";
 import { FetchType } from "../composables/useFetchSearchData";
+import { TermbaseId } from "~/utils/vars-termbase";
 
 const route = useRoute();
 const searchData = useSearchData();
@@ -158,7 +159,7 @@ onMounted(() => {
         // search termbases is a list
         else if (key === "termbase") {
           const tbs = route.query[value.q] as string;
-          searchInterface.value.termbase = tbs.split(",") as Samling[];
+          searchInterface.value.termbase = tbs.split(",") as TermbaseId[];
         }
         // searchdomain needs to be handled differently because state is a list
         else if (key === "domain") {
