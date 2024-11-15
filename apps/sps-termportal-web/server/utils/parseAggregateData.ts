@@ -1,9 +1,9 @@
 import { LabelPredicate, Matching } from "../../utils/vars";
-import { Samling } from "../../utils/vars-termbase";
 import { LangCode } from "~/composables/locale";
+import { TermbaseId } from "~/utils/vars-termbase";
 import { SearchDataStats } from "~~/composables/states";
 
-type AggregateKeys = LangCode | Samling | LabelPredicate | Matching;
+type AggregateKeys = LangCode | LabelPredicate | Matching | TermbaseId;
 export default function (
   obj: {
     [key in keyof SearchDataStats]: {
@@ -24,10 +24,12 @@ export default function (
   // Frontend shouldn't display distinction between cs and ci.
   // Combine them to "full"
   if (parsed?.matching?.["full-cs"] || parsed?.matching?.["full-ci"]) {
-    const count = (parsed?.matching?.["full-cs"] || 0) + (parsed?.matching?.["full-ci"] || 0)
-    parsed.matching.full = count
-    delete parsed.matching["full-cs"]
-    delete parsed.matching["full-ci"]
+    const count =
+      (parsed?.matching?.["full-cs"] || 0) +
+      (parsed?.matching?.["full-ci"] || 0);
+    parsed.matching.full = count;
+    delete parsed.matching["full-cs"];
+    delete parsed.matching["full-ci"];
   }
   return parsed;
 }

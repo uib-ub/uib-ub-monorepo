@@ -1,6 +1,6 @@
 import { LangCode } from "./locale";
 import { LabelPredicate, Matching, uiConfig } from "~~/utils/vars";
-import { Samling } from "~~/utils/vars-termbase";
+import { TermbaseId } from "~~/utils/vars-termbase";
 
 export interface SearchDataEntry {
   predicate: string;
@@ -15,7 +15,7 @@ export interface SearchDataEntry {
 
 export interface SearchDataStats {
   lang?: { [key in LangCode]: number };
-  samling?: { [key in Samling]: number };
+  samling?: { [key: TermbaseId]: number };
   predicate?: { [key in LabelPredicate]: number };
   matching?: { [key in Matching]: number };
   context?: { string: number };
@@ -26,7 +26,7 @@ export interface SearchInterface {
   language: LangCode | "all";
   translate: LangCode | "none";
   domain: Object;
-  termbase: Samling[];
+  termbase: TermbaseId[];
   useDomain: boolean;
 }
 
