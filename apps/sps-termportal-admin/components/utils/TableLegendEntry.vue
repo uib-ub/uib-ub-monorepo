@@ -1,6 +1,8 @@
 <template>
   <div class="flex space-x-2">
-    <dt class="font-semibold w-48">{{ legendKey }}</dt>
+    <dt class="font-semibold" :class="`w-${legendWidth}`">
+      {{ legendKey }}
+    </dt>
     <dd>{{ legendValue }}</dd>
   </div>
 </template>
@@ -9,5 +11,6 @@
 const props = defineProps({
   legendKey: { type: String, required: true },
   legendValue: { type: String, required: true },
+  legendWidth: { type: String, default: "48" },
 });
 </script>
