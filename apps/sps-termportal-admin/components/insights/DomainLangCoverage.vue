@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header>Domains: Language coverage</template>
     <template #description>
       <p>
@@ -44,7 +44,7 @@
         />
       </UtilsTableLegend>
     </template>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

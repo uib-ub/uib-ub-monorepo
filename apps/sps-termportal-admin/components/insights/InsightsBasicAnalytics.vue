@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header>Basic Analytics</template>
     <div class="max-w-3xl">
       <DataTable
@@ -48,7 +48,7 @@
         </p>
       </div>
     </template>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

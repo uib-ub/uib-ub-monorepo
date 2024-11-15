@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header>Institutions participating in termgroups</template>
     <template #description>
       <p>
@@ -31,7 +31,7 @@
         <Column field="count" header="Personer" sortable></Column>
       </DataTable>
     </div>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 
   <section></section>
 </template>

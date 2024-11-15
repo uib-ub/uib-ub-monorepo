@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header>Upubliserte termbaser</template>
     <div class="max-w-5xl">
       <DataTable
@@ -18,7 +18,7 @@
         <template #header>
           <div class="flex justify-between">
             <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <Button class="h-10" label="Eksport" @click="exportData()" />
           </div>
         </template>
         <Column field="label" header="Navn" sortable></Column>
@@ -57,7 +57,7 @@
         <Column field="domain" header="Domene" sortable></Column>
       </DataTable>
     </div>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

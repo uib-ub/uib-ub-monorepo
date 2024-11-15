@@ -1,7 +1,7 @@
 <template>
-  <section class="space-y-3">
-    <h2 class="mb-3 text-xl">Topdomains SSB: Language coverage</h2>
-    <div class="space-y-1.5 max-w-3xl">
+  <UtilsTableWrapper>
+    <template #header>Topdomains SSB: Language coverage</template>
+    <template #description>
       <p>
         Includes all SSB topdomains (from:
         <AppLinkText to="https://www.ssb.no/klass/klassifikasjoner/36"
@@ -17,7 +17,7 @@
         >
         for mapping details.
       </p>
-    </div>
+    </template>
     <div class="max-w-5xl">
       <DataTable
         ref="datatable"
@@ -32,7 +32,7 @@
         <template #header>
           <div class="flex justify-between">
             <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <Button class="h-10" label="Eksport" @click="exportData()" />
           </div>
         </template>
         <Column field="label" header="Navn" sortable />
@@ -42,13 +42,15 @@
         <Column field="en" header="med engelsk term" sortable />
       </DataTable>
     </div>
-    <UtilsTableLegend>
-      <UtilsTableLegendEntry
-        legend-key="med engelsk term"
-        legend-value="Includes terms with language code en, en-GB, and en-US"
-      />
-    </UtilsTableLegend>
-  </section>
+    <template #legend>
+      <UtilsTableLegend>
+        <UtilsTableLegendEntry
+          legend-key="med engelsk term"
+          legend-value="Includes terms with language code en, en-GB, and en-US"
+        />
+      </UtilsTableLegend> </template
+    >>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">
