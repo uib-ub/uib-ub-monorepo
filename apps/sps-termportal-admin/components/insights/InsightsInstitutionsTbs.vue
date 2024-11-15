@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header> Institutions responsible for termbases </template>
     <template #description>
       <p>
@@ -22,14 +22,14 @@
         <template #header>
           <div class="flex justify-between">
             <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <Button class="h-10" label="Eksport" @click="exportData()" />
           </div>
         </template>
         <Column field="label" header="Navn" sortable></Column>
         <Column field="count" header="Termbaser" sortable></Column>
       </DataTable>
     </div>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

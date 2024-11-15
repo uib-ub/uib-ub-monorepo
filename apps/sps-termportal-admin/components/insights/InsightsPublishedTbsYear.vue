@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header>Published Termbases by Year</template>
     <div class="max-w-xl">
       <DataTable
@@ -17,14 +17,14 @@
         <template #header>
           <div class="flex justify-between">
             <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <Button class="h-10" label="Eksport" @click="exportData()" />
           </div>
         </template>
         <Column field="year" header="År" sortable></Column>
         <Column field="count" header="Antall" sortable></Column>
       </DataTable>
     </div>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

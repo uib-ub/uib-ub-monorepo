@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header>People participating in Termgroups</template>
     <div class="max-w-7xl">
       <DataTable
@@ -25,7 +25,7 @@
         <Column field="organization" header="Organisasjon" sortable></Column>
       </DataTable>
     </div>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

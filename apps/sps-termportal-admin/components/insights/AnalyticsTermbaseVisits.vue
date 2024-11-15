@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header>Analytics: Monthly views per termbase</template>
     <template #description>
       <p>Views of termbase page or concept pages in one termbase per month.</p>
@@ -35,7 +35,7 @@
         </Column>
       </DataTable>
     </div>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

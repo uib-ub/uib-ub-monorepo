@@ -1,7 +1,14 @@
 <template>
   <section class="space-y-6">
     <h2 class="text-2xl">Definisjoner: {{ termbase.label }}</h2>
-    <ul>
+    <div class="space-y-1.5">
+      <p>
+        Fetch limit set to 5000, e.g. if 5000 definitions have been fetched it
+        is likely that the list doesn't contain all definitions.
+      </p>
+      <p>{{ definitions.length }} definitions fetched</p>
+    </div>
+    <ul v-if="definitions.length < 5000">
       <li v-for="entry in stats" :key="entry[1] + entry[2] + entry[0]">
         {{ entry[1] }}/{{ entry[2] }} {{ entry[0] }}
       </li>
@@ -14,6 +21,11 @@
       removable-sort
       table-style="min-width: 1rem"
     >
+      <template #header>
+        <div style="text-align: right">
+          <Button class="h-10" label="Eksport" @click="exportCSV()" />
+        </div>
+      </template>
       <Column field="concept" header="Begrep" sortable>
         <template #body="slotProps">
           <AppLink :to="`https://termportalen.no/${slotProps.data.link}`">{{
@@ -23,11 +35,6 @@
       </Column>
       <Column field="def" header="Definisjon" sortable></Column>
       <Column field="lang" header="Språk" sortable></Column>
-      <template #footer>
-        <div style="text-align: right">
-          <Button label="Eksport" @click="exportCSV($event)" />
-        </div>
-      </template>
     </DataTable>
   </section>
 </template>
@@ -43,7 +50,7 @@ const { data } = useLazyFetch(
 
 const definitions = computed(() => {
   if (data.value) {
-    return data?.value?.results?.bindings.map((e) => {
+    return data?.value.map((e) => {
       return {
         concept: e.concept.value
           .split("/")

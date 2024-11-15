@@ -1,5 +1,5 @@
 <template>
-  <InsightsWrapper>
+  <UtilsTableWrapper>
     <template #header>Termbases: Language coverage</template>
     <template #description>
       <p>Only includes published termbases and counts published concepts.</p>
@@ -18,7 +18,7 @@
         <template #header>
           <div class="flex justify-between">
             <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <Button class="h-10" label="Eksport" @click="exportData()" />
           </div>
         </template>
         <Column field="label" header="Navn" sortable />
@@ -42,7 +42,7 @@
         />
       </UtilsTableLegend>
     </template>
-  </InsightsWrapper>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

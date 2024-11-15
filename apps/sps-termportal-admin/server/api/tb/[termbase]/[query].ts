@@ -2,6 +2,7 @@ import { checkEsCache } from "~/server/utils/elasticSearchUtils";
 import genExploreDefinitionsQuery from "~/server/utils/genExploreDefinitionsQuery";
 import genInsightTermbaseQuery from "~/server/utils/genInsightTermbaseQuery";
 import genOverviewQuery from "~/server/utils/genOverviewQuery";
+import genQualityMissingDefinitions from "~/server/utils/genQualityMissingDefinitions";
 import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticRelationsQuery";
 
 export default defineEventHandler(async (event) => {
@@ -32,6 +33,8 @@ export default defineEventHandler(async (event) => {
         return genOverviewQuery();
       case "termbase_language_coverage":
         return genInsightTermbaseQuery();
+      case "missingDefinitions":
+        return genQualityMissingDefinitions(termbase);
       default:
         break;
     }
@@ -47,5 +50,5 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  return data.value?.results?.bindings;
+  return data?.results?.bindings;
 });

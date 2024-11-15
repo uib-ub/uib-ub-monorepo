@@ -12,7 +12,7 @@ export default function (termbase: string) {
       BIND ( lang(?defValue) as ?lang ) .
     }
   }
-  LIMIT 1000
+  LIMIT 5000
   `;
   return query;
 }
