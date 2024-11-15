@@ -1,12 +1,19 @@
 <template>
-  <section class="space-y-2">
-    <h2 class="mb-3 text-xl">Imported semantic relations</h2>
-    <p>Termbase MUST NOT have unspecified semantic relations.</p>
-    <p>
-      Only applies to imports from Språkrådets termwiki where we moved
-      unspecified links to the temporary semantic relation field.
-    </p>
+  <UtilsTableWrapper v-if="termbase?.conceptCount > 0">
+    <template #header>Imported semantic relations</template>
+    <template #description>
+      <p>
+        <span class="font-semibold">{{ relations?.length }}</span> concepts have
+        unspecified semantic relations.
+      </p>
+      <p>Termbase MUST NOT have unspecified semantic relations.</p>
+      <p>
+        Only applies to imports from Språkrådets termwiki where we moved
+        unspecified links to the temporary semantic relation field.
+      </p>
+    </template>
     <DataTable
+      v-if="relations?.length > 0"
       ref="datatable"
       :value="relations"
       paginator
@@ -14,6 +21,11 @@
       removable-sort
       table-style="min-width: 1rem"
     >
+      <template #header>
+        <div style="text-align: right">
+          <Button class="h-10" label="Eksport" @click="exportCSV()" />
+        </div>
+      </template>
       <Column field="link" header="Link" sortable>
         <template #body="slotProps">
           <AppLink :to="slotProps.data.link">{{
@@ -22,13 +34,8 @@
         </template>
       </Column>
       <Column field="relations" header="Semantic Relations" sortable></Column>
-      <template #footer>
-        <div style="text-align: right">
-          <Button label="Eksport" @click="exportCSV($event)" />
-        </div>
-      </template>
     </DataTable>
-  </section>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">

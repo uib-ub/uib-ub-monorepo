@@ -4,13 +4,16 @@ export default function (termbase: string) {
   const query = `
   ${prefix}
 
-  SELECT ?concept (GROUP_CONCAT(?relation; separator=";") AS ?relations)
+  SELECT ?concept
   WHERE {
     GRAPH ns:${termbase} {
-      ?concept skos:semanticRelation ?relation .
+      ?concept a skos:Concept .
+      FILTER NOT EXISTS {
+        ?concept skosno:definisjon ?definition .
+      }
     }
   }
-  GROUP BY ?concept
+  ORDER BY ?concept
   LIMIT 5000
   `;
   return query;
