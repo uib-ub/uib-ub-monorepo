@@ -147,15 +147,15 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   };
 
   const translate = searchOptions.translate !== "none" ? "?translate" : "";
-  // handles situation where 'en' is selected as target language and en-gb should
-  // works under the assumption that there are not 'en' AND 'en-gb'/'en-us' in same tb
+  // handles situation where 'en' is selected as target language and en-gb should be picked up
+  // works under the assumption that there are not 'en' AND 'en-gb' in same concept
   const translateOptional =
     searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
     ?label2 skosxl:literalForm ?translate .
     FILTER ( lang(?translate) = "${searchOptions.translate}" ${
           searchOptions.translate === "en"
-            ? "|| lang(?translate) = 'en-gb'"
+            ? "|| lang(?translate) = 'en-GB'"
             : ""
         })
     }`
