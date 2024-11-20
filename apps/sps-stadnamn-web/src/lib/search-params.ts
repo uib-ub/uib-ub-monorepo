@@ -1,5 +1,5 @@
 import { useSearchParams } from 'next/navigation'
-import { facetConfig, resultConfig } from '@/config/search-config';
+import { fieldConfig } from '@/config/search-config';
 
 export function useQueryWithout(omit : string[]) {
     const params = useSearchParams()
@@ -30,7 +30,7 @@ export function useSearchQuery() {
     const searchParams = useSearchParams()
     const dataset = useDataset()
 
-    const fields = ['q', ...resultConfig[dataset]]
+    const fields = ['q', ...Object.keys(fieldConfig[dataset])]
     const facetFilters: [string, string][] = []
 
     const searchQuery = new URLSearchParams()
