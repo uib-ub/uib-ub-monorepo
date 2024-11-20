@@ -150,9 +150,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   leks: (source: any) => {
     return <>
-    {source.content?.html && <div className="inline-flex flex-col md:flex-row gap-4 bg-neutral-50 border border-neutral-200 p-4">
-      <Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link>
-    <HtmlString className='space-y-2 inline' htmlString={source.content.html} />
+    {source.content?.html && <div className="inline-flex flex-col gap-4 bg-neutral-50 border border-neutral-200">
+      <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link></div>
+    <HtmlString className='space-y-2 inline px-4 pb-4' htmlString={source.content.html} />
 
     </div>
     }
