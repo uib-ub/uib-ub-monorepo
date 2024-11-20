@@ -27,8 +27,8 @@ const formatHighlight = (highlight: string) => {
 
 }
 
-const defaultTitle = (fields: any) => {
-  return <span className="font-semibold">{fields.label}</span>
+const defaultTitle = (hit: any) => {
+  return <span className="font-semibold">{hit.fields.label}</span>
 }
 
 const loktypeDetails = (loktype: string, hit: any) => {
@@ -121,10 +121,10 @@ export const resultRenderers: ResultRenderers = {
      // TODO: add kulturkode to the datasets?
      const placeType = hit.fields.placeType?.label
      if (placeType) {
-        return <>{defaultTitle(hit.fields)} {` (${placeType.toLowerCase()})`}</>
+        return <>{defaultTitle(hit)} {` (${placeType.toLowerCase()})`}</>
       }
       else {
-        return defaultTitle(hit.fields)
+        return defaultTitle(hit)
       }
     },
     details: (hit: any, display: string) => {
@@ -146,8 +146,8 @@ export const resultRenderers: ResultRenderers = {
   },
   leks: {
     title: (hit: any, display: string) => {
-      if (display == 'table') return defaultTitle(hit.fields)
-      return <>{defaultTitle(hit.fields)}{hit.fields.rawData?.Lokalitetstype ? ` (${hit.fields.rawData?.Lokalitetstype.toLowerCase()})` : ""}</>
+      if (display == 'table') return defaultTitle(hit)
+      return <>{defaultTitle(hit)}{hit.fields.rawData?.Lokalitetstype ? ` (${hit.fields.rawData?.Lokalitetstype.toLowerCase()})` : ""}</>
     },
     snippet: (hit: any, display: string) => {
       return hit.highlight?.['content.html']?.[0] && formatHighlight(hit.highlight['content.html']?.[0])
@@ -177,7 +177,7 @@ export const resultRenderers: ResultRenderers = {
       else {
         loktypes = loktypes?.type
       }
-      return <>{defaultTitle(hit.fields)} {loktypes && ` (${loktypes.toLowerCase()})`}</>
+      return <>{defaultTitle(hit)} {loktypes && ` (${loktypes.toLowerCase()})`}</>
     },
     details: (hit: any, display: string) => {
       const fields = hit.fields
@@ -204,8 +204,8 @@ export const resultRenderers: ResultRenderers = {
   },
   nbas: {
     title: (hit: any, display: string) => {
-      if (display == 'table') return defaultTitle(hit.fields)
-      return <>{defaultTitle(hit.fields)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
+      if (display == 'table') return defaultTitle(hit)
+      return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
     },
     details: (hit: any, display: string) => {
       return formatAdm(hit.fields)
@@ -213,7 +213,7 @@ export const resultRenderers: ResultRenderers = {
   },
   m1838: {
     title: (hit: any, display: string) => {
-      return <>{defaultTitle(hit.fields)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
+      return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
     },
     details: (hit: any, display: string) => {
       return cadastreAdm(hit.fields.rawData.KNR, hit.fields.rawData?.MNR, hit.fields.rawData?.LNR, ".", hit.fields, display)
@@ -221,9 +221,9 @@ export const resultRenderers: ResultRenderers = {
   },
   m1886: {
     title: (hit: any, display: string) => {
-      if (display == 'table') return defaultTitle(hit.fields)
-        return <>{defaultTitle(hit.fields)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
-      //return <>{defaultTitle(hit.fields)} {hit.fields.sosi && (" | " + hit.fields.sosi[0].toUpperCase() + hit.fields.sosi.slice(1))}</>
+      if (display == 'table') return defaultTitle(hit)
+        return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
+      //return <>{defaultTitle(hit)} {hit.fields.sosi && (" | " + hit.fields.sosi[0].toUpperCase() + hit.fields.sosi.slice(1))}</>
     },
     details: (hit: any, display: string) => {
       return cadastreAdm(hit.fields.rawData?.knr, hit.fields.rawData?.gnr, hit.fields.rawData?.bnr, "/", hit.fields, display)
@@ -231,9 +231,9 @@ export const resultRenderers: ResultRenderers = {
   },
   mu1950: {
     title: (hit: any, display: string) => {
-      if (display == 'table') return defaultTitle(hit.fields) 
-      return <>{defaultTitle(hit.fields)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
-      //return <>{defaultTitle(hit.fields)} {hit.fields.sosi && (" | " + hit.fields.sosi[0].toUpperCase() + hit.fields.sosi.slice(1))}</>
+      if (display == 'table') return defaultTitle(hit) 
+      return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
+      //return <>{defaultTitle(hit)} {hit.fields.sosi && (" | " + hit.fields.sosi[0].toUpperCase() + hit.fields.sosi.slice(1))}</>
     },
     details: (hit: any, display: string) => {
       return cadastreAdm(hit.fields.rawData?.KNR || hit.fields.knr, hit.fields.rawData?.GNR, hit.fields.rawData?.BNR, "/", hit.fields, display)
@@ -241,7 +241,7 @@ export const resultRenderers: ResultRenderers = {
   },
   skul: {
     title: (hit: any, display: string) => {
-      return <>{defaultTitle(hit.fields)} | {hit.fields.rawData?.knr}-{hit.fields.rawData?.gnr}{hit.fields.rawData?.bnr && '/'}{hit.fields.rawData?.bnr}</>
+      return <>{defaultTitle(hit)} | {hit.fields.rawData?.knr}-{hit.fields.rawData?.gnr}{hit.fields.rawData?.bnr && '/'}{hit.fields.rawData?.bnr}</>
     },
     details: (hit: any, display: string) => {
       return loktypeDetails(hit.fields.type && (hit.fields.type[0].toUpperCase() + hit.fields.sosi.slice(1)), hit)
