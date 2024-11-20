@@ -181,7 +181,6 @@ export const resultRenderers: ResultRenderers = {
     },
     details: (hit: any, display: string) => {
       const fields = hit.fields
-      return JSON.stringify(fields)
       return cadastreAdm(fields["tmp.knr"], fields["rawData.stnavn.sted.gårdsnr"], fields["rawData.stnavn.sted.bruksnr"], "/", fields, display)
     }
   },
