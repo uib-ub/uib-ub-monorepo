@@ -32,7 +32,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 }
 
 const defaultTitle = (hit: any) => {
-  return <span className="font-semibold">{hit._source.label}</span>
+  return <span className="font-semibold">{hit.fields.label}</span>
 }
 
 const loktypeDetails = (loktype: string, hit: any) => {
@@ -172,7 +172,7 @@ export const resultRenderers: ResultRenderers = {
   bsn: {
     title: (hit: any, display: string) => {
       // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
-      let loktypes = hit._source.rawData?.stnavn?.loktype
+      let loktypes = hit.fields['rawData.stnavn.loktype']
       if (Array.isArray(loktypes)) {
         loktypes = loktypes.map((type: any) => type.type).join(', ')
       }
@@ -182,8 +182,8 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)} {loktypes && ` (${loktypes.toLowerCase()})`}</>
     },
     details: (hit: any, display: string) => {
-      
-      return cadastreAdm(hit._source.tmp?.knr, hit._source.rawData?.stnavn?.sted?.gårdsnr, hit._source.rawData?.stnavn?.sted?.bruksnr, "/", hit._source, display)
+      const fields = hit.fields
+      return cadastreAdm(fields["tmp.knr"], fields["rawData.stnavn.sted.gårdsnr"], fields["rawDatah.stnavn.sted.bruksnr"], "/", fields, display)
     }
   },
   hord: {

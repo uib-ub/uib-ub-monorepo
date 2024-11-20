@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { PiCaretDown, PiCaretRight, PiCaretUp, PiCheckFatFill } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
-import { fieldConfig } from '@/config/search-config';
+import { fieldConfig, searchableFields } from '@/config/search-config';
 import Link from 'next/link';
 import { useDataset } from '@/lib/search-params';
 
@@ -64,7 +64,7 @@ export default function SearchOptions({isMobile}: {isMobile: boolean}) {
 
   return (    
         <section className="flex flex-col py-4" aria-labelledby="page_heading">
-          { dataset && fieldConfig[dataset] ? <><h2 id="page_heading" className="text-xl text-neutral-900">Søkealternativer</h2>
+          { dataset && searchableFields[dataset].length > 0 ? <><h2 id="page_heading" className="text-xl text-neutral-900">Søkealternativer</h2>
           <div className="flex mb-4 mt-2 gap-4">
             <label className="flex gap-2">
               <input
@@ -74,7 +74,7 @@ export default function SearchOptions({isMobile}: {isMobile: boolean}) {
               />
               Navn
             </label>
-            {fieldConfig[dataset].map(item => {
+            {searchableFields[dataset].map(item => {
               return (
                 <label key={item.key} className="flex gap-2">
                   <input

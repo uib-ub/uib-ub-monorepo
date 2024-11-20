@@ -1,11 +1,8 @@
 'use client'
 import { useQueryState } from "nuqs"
-import { useState } from "react"
-import { PiCaretDown, PiCaretUp } from "react-icons/pi"
 import { useDataset } from "@/lib/search-params"
 import ClientFacet from "./client-facet"
 import { contentSettings } from "@/config/server-config"
-import Spinner from "@/components/svg/Spinner"
 
 
 export default function Facets({setFacetIsLoading}: {setFacetIsLoading: (loading: boolean) => void}) {
@@ -43,6 +40,7 @@ export default function Facets({setFacetIsLoading}: {setFacetIsLoading: (loading
         }
         </div>
         { expandedFacet == 'adm' ? <ClientFacet facetName='adm' setFacetIsLoading={ setFacetIsLoading}/> : null}
+        { expandedFacet == 'other' ? <ClientFacet facetName='other' setFacetIsLoading={ setFacetIsLoading}/> : null}
         </>
       )
   }

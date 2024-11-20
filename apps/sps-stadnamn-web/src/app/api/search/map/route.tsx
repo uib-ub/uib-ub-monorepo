@@ -3,7 +3,8 @@ export const runtime = 'edge'
 import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
-import { contentSettings, getSortArray } from '@/config/server-config';
+import { getSortArray } from '@/config/server-config';
+import { resultConfig } from '@/config/search-config';
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
         },
       }
     },
-    "fields": ['uuid', 'label', 'location', 'adm1', 'adm2', ...(contentSettings[dataset].fields ?? [])],
+    "fields": resultConfig[dataset],
     "sort": sortArray,
     "_source": false
   }

@@ -16,23 +16,6 @@ export interface TreeSettingsItem {
   leaf?: string
 }
 
-export interface BaseResultFieldTypes {
-  label: string;
-  altLabels?: string[];
-  adm: string,
-  "cadastre.gnr"?: number[];
-  "cadastre.bnr"?: number[];
-}
-
-export type DatasetResultFieldTypes = {
-  hord: BaseResultFieldTypes & {
-    "rawData.bruka.bruk.gardsNr": string;
-    "rawData.bruka.bruk.bruksNr": string;
-    "rawData.kommuneNr": string;
-    "rawData.merknader": string;
-  };
-}
-
 export const treeSettings: Record<string, TreeSettingsItem> = {
   m1838: {
     subunit: "rawData.MNR",
@@ -55,8 +38,6 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     showNumber: true,
   }
 }
-
-
 
 
   export const contentSettings: Record<string, ContentSettingsItem> = {
@@ -120,6 +101,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       cadastre: false
     },
     rygh: {
+      fields: ['rawData.KNR', 'rawData.Gnr', 'rawData.Bnr', 'sosi'],
       display: 'map',
       adm: 2,
       cadastre: true

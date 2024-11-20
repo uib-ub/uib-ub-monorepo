@@ -3,7 +3,7 @@ import { PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import IconButton from "@/components/ui/icon-button";
 import { useState, useRef } from "react";
 import { useQueryStringWithout } from "@/lib/search-params";
-import { fieldConfig } from "@/config/search-config";
+import { fieldConfig, searchableFields } from "@/config/search-config";
 import Spinner from "@/components/svg/Spinner";
 
 export default function SearchBar({showLoading}: {showLoading?: boolean}) {
@@ -46,8 +46,8 @@ export default function SearchBar({showLoading}: {showLoading?: boolean}) {
             <div className="border border-neutral-500 relative w-full rounded-sm">
                 <div className="flex w-full h-full">
                 {fieldConfig[dataset] &&
-                <select name="field" value={searchParams.get('field') || fieldConfig[dataset][0].key} className="h-full mx-1"  onChange={changeField}>
-                    {fieldConfig[dataset].map((field: any) => <option key={field.key} value={field.key == 'label' ? '' : field.key}>{field.label}</option>)}
+                <select name="field" value={searchParams.get('field') || searchableFields[dataset][0].key} className="h-full mx-1"  onChange={changeField}>
+                    {searchableFields[dataset].map((field: any) => <option key={field.key} value={field.key == 'label' ? '' : field.key}>{field.label}</option>)}
                 </select>}
                 <input type="text" 
                    aria-label="Søk"

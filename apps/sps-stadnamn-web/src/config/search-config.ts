@@ -1,52 +1,190 @@
-export interface FacetConfigItem {
-    key: string;
-    label: string;
-    omitLabel?: boolean; // Omit label in filter chips
-    description?: string; // Description of facet
-    table?: boolean; // Show in table view by default
-    type?: 'integer' | 'keyword'; // Elasticsearch data type
-    sort?: 'doc_count' | 'asc' | 'desc'; // Default sort order in facet
-    additionalParams?: string[]; // Additional filters to apply when facet is clicked
-    docLink?: string; // Link to another document
-  }
-
   export interface FieldConfigItem {
-    key: string;
     label: string;
+    result?: boolean; // Show in result list
+    description?: string; // Description of field
+    searchable?: boolean; // Can be selected as search field
+    facet?: boolean;
+    omitLabel?: boolean;
+    table?: boolean; // Show in table view by default
+    sort?: 'asc' | 'desc';
+    type?: 'integer' | 'keyword';
+    additionalParams?: string[];
+    docLink?: string; // Link to another document
+
+
   }
-
-export const globalFields: Record<string, any> = {
-  "cadastre__gnr": {label: "Gardsnummer"},
-  "cadastre__bnr": {label: "Bruksnummer"},
-  
-}
-
  
+const [table, omitLabel, searchable, facet, result] = Array(5).fill(true);
 
-export const fieldConfig: Record<string, FieldConfigItem[]> = {
-    /* search: [ // Removed untid short descriptions have been generated
-      {key: "label", label: "Namn"},
-      {key: "description", label: "Beskriving"},
-    ], */
-    hord: [
-      {key: "rawData.merknader", label: "Merknader"},
-    ],
-    rygh: [
-      {key: "content.html", label: "Fulltekst"},
-    ],
-    leks: [
-      {key: "content.html", label: "Fulltekst"},
-    ],
-    leks_g: [
-      {key: "content.text", label: "Fulltekst"},
-    ],
+const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table}
+const cadastre = {"cadastre__gnr": {label: "Gardsnummer", sort: "asc" as const, type: "integer" as const}, "cadastre__bnr": {label: "Bruksnummer", sort: "asc" as const, type: "integer" as const}}
+const uuid = {label: "UUID", result}
+const label = {label: "Namn", result}
+const location = {label: "Koordinater"}
+const adm1 = {label: "Fylke", result}
+const adm2 = {label: "Kommune", result}
+const snid = {label: "Stadnamn ID", facet}
+
+export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
+    search: {
+      uuid, label, location, adm1, adm2,
+      //"description": {label: "Beskriving"}, // Removed untid short descriptions have been generated
+      "datasets": {label: "Datasett", facet, omitLabel},
+      snid,
+      "gnidu": {label: "GNIDu", facet},
+      "midu": {label: "MIDu", facet},
+      sosi,
+    },
+    bsn: {
+      uuid, label, location, adm1, adm2,
+      "rawData.komm": {label: "Kommentarer", searchable},
+      "rawData.stnavn.loktype.type": {label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table, facet},
+      "tmp.knr": {label: "Kommunenummer", facet, result},
+      "rawData.stnavn.sted.gårdsnr": {label: "Gardsnummer", facet, result},
+      "rawData.stnavn.sted.bruksnr": {label: "Bruksnummer", facet, result},
+      "rawData.stnavn.oppslag.oppslord": {label: "Oppslagsord", facet},
+      "rawData.stnavn.oppslag.utmledd": {label: "Utmerkingsledd", facet},
+      "rawData.stnavn.oppslag.hovledd": {label: "Hovudledd", facet},
+      ...cadastre
+    },
+
+    hord: {
+      uuid, label, location, adm1, adm2,
+      "rawData.merknader": {label: "Merknader", searchable},
+      "archive.institution": {label: "Arkivtilvising", table, facet},
+      "rawData.oppskrivar": {label: "Oppskrivar", table, facet},
+      "rawData.oppskrivingsTid": {label: "Oppskrivingstid", table, facet},
+      "rawData.bildeNr": {label: "Bildenummer", table, facet},
+      ...cadastre
+    },
+    rygh: {
+      uuid, label, location, adm1, adm2,
+      "content.html": {label: "Fulltekst", searchable},
+      "rawData.Lokalitetstype": {label: "Lokalitetstype", table, facet},
+      "rawData.Bind": {label: "Bind", table, facet},
+      "rawData.Side": {label: "Sidetall", table, facet, additionalParams: ["rawData.Bind"]},
+      "rawData.KNR": {label: "Kommunenummer", table, facet},
+      "rawData.Gnr": {label: "Gardsnummer", table, facet, additionalParams: ["rawData.KNR"]},
+      "rawData.Bnr": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.KNR", "rawData.Gnr"]},
+
+    },
+    leks: {
+      uuid, label, location, adm1, adm2,
+      "content.html": {label: "Fulltekst", searchable},
+      "rawData.Lokalitetstype": {label: "Lokalitetstype", table, facet},
+      "rawData.GNIDu": {label: "GNIDu", facet},
+      "rawData.Sisteledd": {label: "Sisteledd", facet},
+      "rawData.Kjelde": {label: "Kjelde", facet},
+    },
+    leks_g: {
+      uuid, label,
+      "content.text": {label: "Fulltekst", searchable},
+      "rawData.språk": {label: "Språk", facet},
+      "rawData.kjelde": {label: "Kjelde", facet},
+    },
+    mu1950: {
+      uuid, label, location, adm1, adm2,
+      "sosi": {label: "Lokalitetstype", facet},
+      "rawData.KNR": {label: "Kommunenummer", table, facet},
+      "rawData.GNR": {label: "Gardsnummer", table, facet, additionalParams: ["rawData.KNR"]},
+      "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.KNR", "rawData.GNR"]},
+      "rawData.Eigar": {label: "Eigar", table, facet},
+      "rawData.Mark": {label: "Skyldmark", table, facet},
+      "rawData.Øre": {label: "Skyldøre", table, facet},
+      "gnidu": {label: "GNIDu", facet},
+      "rawData.Koordinattype": {label: "Koordinattype", facet},
+    },
+    m1838: {
+      uuid, label, location, sosi,
+      "rawData.MNR": {label: "Matrikkelnummer", table, facet},
+      "rawData.LNR": {label: "Løpenummer", table, facet},
+      "rawData.1723_MNR": {label: "Matrikkelnummer 1723", table, facet},
+      "gnidu": {label: "GNIDu", facet},
+      "adm2": {label: "Prestegjeld"},
+      "adm1": {label: "Amt"},
+    },
+    m1886: {
+      uuid, label, location, sosi,
+      "rawData.knr": {label: "Kommunenummer", table, facet},
+      ...cadastre,
+      "gnidu": {label: "GNIDu", facet},
+      "midu": {label: "MIDu", facet}
+    },
+    skul: {
+      uuid, label, location, adm1, adm2,
+      "rawData.gnr": {label: "Gardsnummer", table, facet},
+      "rawData.bnr": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.gnr"]},
+      "rawData.knr": {label: "knr", table, facet},
+    },
+    nbas: {
+      uuid, label, location, adm1, adm2,
+      "content.html": {label: "Fulltekst", searchable},
+      "rawData.Lokalitetstype": {label: "Lokalitetstype", facet},
+      "rawData.Kjelde": {label: "Kjelde", facet},
+      "rawData.Språk": {label: "Språk", facet},
+      "gnidu": {label: "GNIDu", facet},
+      "midu": {label: "MIDu", facet}
+    },
+    ostf: {
+      uuid, label,
+      "rawData.Bindsortering": {label: "Bind", facet},
+    },
+    tot: {
+      uuid, label,
+      "rawData.GNR": {label: "Gardsnummer", table, facet},
+      "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.GNR"]},
+      "rawData.Kjelde": {label: "Kjelde", facet},
+      "rawData.Kjeldeform": {label: "Kjeldeform", facet},
+    },
+    ssr2016: {
+      uuid, label,
+      "rawData.Stedsnavn_lokalId": {label: "SSR-nummer", facet},
+      "rawData.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
+      "misc.language": {label: "Språk", facet},
+      "misc.status": {label: "Status 2016", facet},
+    },
   }
-  
-const table = true
-const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarden", table}
+
 
   
-  export const facetConfig: Record<string, FacetConfigItem[]> = {
+
+export const facetConfig: Record<string, FieldConfigItem[]> = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+  acc[dataset] = Object.entries(fields)
+    .filter(([_, config]) => config.facet)
+    .map(([key, config]) => ({
+      key,
+      ...config
+    }));
+  return acc;
+}, {} as Record<string, FieldConfigItem[]>);
+
+console.log("FACETCONFIG", facetConfig)
+
+// Fields needed for the result list
+export const resultConfig = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+  // Get all fields (dataset-specific + global) that have result: true
+  const resultFields = Object.entries(fields)
+    .filter(([_, config]) => config.result)
+    .map(([key]) => key);
+  
+  acc[dataset] = resultFields;
+  return acc;
+}, {} as Record<string, string[]>);
+
+
+export const searchableFields = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+  acc[dataset] = Object.entries(fields)
+    .filter(([_, config]) => config.searchable)
+    .map(([key, { label }]) => ({
+      key,
+      label
+    }));
+  return acc;
+}, {} as Record<string, { key: string, label: string }[]>);
+
+
+  
+  export const oldFacetConfig = {
       search: [
         {key: "datasets", label: "Datasett", omitLabel: true},
         //{key: "coordinateDataset", label: "DEBUG COORD"},
@@ -60,6 +198,7 @@ const sosi = {key: "sosi", label: "Lokalitetstype", description: "SOSI-standarde
       ],
       bsn: [
         {key: "rawData.stnavn.loktype.type", label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table},
+        {key: "tmp.knr", label: "Kommunenummer"},
         {key: "rawData.stnavn.sted.gårdsnr", label: "Gardsnr"},
         {key: "rawData.stnavn.sted.bruksnr", label: "Bruksnr"},
         {key: "rawData.stnavn.oppslag.oppslord", label: "Oppslagsord"},
