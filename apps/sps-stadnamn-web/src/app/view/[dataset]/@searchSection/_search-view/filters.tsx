@@ -2,14 +2,13 @@ import { useState } from 'react';
 import ClientFacet from './_facets/client-facet';
 import ServerFacet from './_facets/server-facet';
 import { PiCaretDown, PiCaretUp, PiX, PiTrashFill } from 'react-icons/pi';
-import { useRouter, useParams, useSearchParams, usePathname } from 'next/navigation';
+import { useRouter, useParams, usePathname } from 'next/navigation';
 import { useQueryWithout, useQueryStringWithout } from '@/lib/search-params';
 import Spinner from '@/components/svg/Spinner'
 import IconButton from '@/components/ui/icon-button';
 import { facetConfig } from '@/config/search-config';
 import { contentSettings } from '@/config/server-config';
 import { datasetTitles } from '@/config/metadata-config';
-import BooleanFacet from './_facets/bool-facet';
 import WithinLabel from './WithinLabel';
 
 
