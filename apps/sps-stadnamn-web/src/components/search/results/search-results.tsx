@@ -1,8 +1,8 @@
 'use client'
 import { SearchContext } from "@/app/map-search-provider"
-import { Fragment, useContext } from "react"
-import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useContext } from "react"
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./result-item";
@@ -22,9 +22,7 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     const pathname = usePathname()
     const router = useRouter()
     const { resultData, totalHits, isLoading, searchError} = useContext(SearchContext)
-    const [additionalItems, setAdditionalItems] = useState<any[]>([])
-    const [size, setSize] = useQueryState('size', parseAsInteger.withDefault(20))
-    const { searchQueryString } = useSearchQuery()
+    const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
 
 
 
@@ -67,7 +65,7 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
 
 
-{totalHits?.value && <>
+{totalHits?.value ? <>
   { Array.from({length: Math.min(size, totalHits?.value)}, (_, i) => {
     if (i == (size -1) && size < totalHits?.value && i < resultData.length) {
       const hit = resultData[i]
@@ -89,16 +87,16 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     }
   }
   )}
-</>}
+</> : null}
 
       
     </ul>
       
       {searchError ? <div className="flex justify-center">
-        <div role="status" aria-live="polite" className="text-primary-600"><strong>{searchError.status}</strong> Det har oppstått en feil</div>
+        <div role="status" aria-live="polite" className="text-primary-600 pb-4"><strong>{searchError.status}</strong> Det har oppstått en feil</div>
       </div>
       : !isLoading && !resultData?.length &&  <div className="flex justify-center">
-      <div role="status" aria-live="polite" className="text-neutral-950">Ingen søkeresultater</div>
+      <div role="status" aria-live="polite" className="text-neutral-950 pb-4">Ingen søkeresultater</div>
     </div>}
     </>
     )
