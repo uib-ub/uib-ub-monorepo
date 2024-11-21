@@ -20,7 +20,7 @@ export default function CadastralSubdivisions({bnrField, sortFields, dataset, so
     useEffect(() => {
         const fields = facetConfig[dataset].filter((field: Record<string,any>) => field.table && field.key !== bnrField)
          
-        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${source.uuid}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key).join(",")]}&sortFields=${sortFields.join(",")}`)
+        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${source.uuid}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields.join(",")}`)
             .then(response => response.json())
             .then(data => {
                 
