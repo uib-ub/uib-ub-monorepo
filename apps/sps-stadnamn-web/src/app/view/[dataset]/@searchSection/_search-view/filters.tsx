@@ -130,16 +130,6 @@ export default function Facets() {
 
     { facetConfig[params.dataset] && 
         <>
-        {false && <> <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
-          <button type="button" onClick={() => toggleFacet('bool')} className='flex w-full items-center gap-1'>
-          { expandedFacet == 'bool' ? <PiCaretUp className='text-neutral-950'/> : <PiCaretDown className='text-neutral-950'/>}
-          Ressurser
-          { loadingFacet == 'bool' ? <Spinner status="Laster inn fasetter" className='w-[1em] h-[1em}'/> : null}
-          
-          </button>
-        </h3>
-        { expandedFacet == 'bool' && <BooleanFacet showLoading={(facet: string | null) => setLoadingFacet(facet)}/>}
-        </>}
         
 
         <h3 className='lg:text-lg py-2 px-4 border-b border-neutral-300'>
