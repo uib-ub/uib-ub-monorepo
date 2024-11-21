@@ -5,7 +5,7 @@ import { resultRenderers, defaultResultRenderer } from '@/config/result-renderer
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs";
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
-import { PiDatabase } from 'react-icons/pi';
+import { PiArticle, PiDatabase, PiMapPin, PiTag, PiTagFill } from 'react-icons/pi';
 import { datasetTitles } from '@/config/metadata-config';
 
 
@@ -44,12 +44,28 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
                   href={serialize(new URLSearchParams(searchParams), { doc: 
                     hit.fields?.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid, point: null, attestationYear: null, attestationLabel: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
             <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
+            <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm"> {dataset == 'search' && ( hit.fields?.children?.length > 1 ? 
+            <span className="self-center flex gap-1 items-center">
+                <PiTag aria-hidden="true"/>
+                <span>{hit.fields.children.length} kilder</span>
+                </span>
+                
+            :<span className="self-center flex gap-1 items-center">
+                
+                
+                <PiDatabase aria-hidden="true"/>{hit.fields.datasets?.[0].toUpperCase()}
+                
+                </span>
+            )
+                
+             }
+            </div>
             
             {hit.highlight && snippetRenderer ? <> | {detailsRenderer(hit, 'map')} {snippetRenderer(hit, 'map')}  </>
             : <p>
             { detailsRenderer(hit, 'map') }
             </p>}
-            { dataset == 'search' && hit.fields?.children?.length == 1 && <span className="text-neutral-900 text-sm self-center flex gap-2 items-center"><PiDatabase aria-hidden="true"/>{datasetTitles[hit.fields.datasets[0]]}</span> }
+            
 
             </Link>
             </li>

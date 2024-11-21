@@ -21,19 +21,19 @@ const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, ta
 const cadastre = {"cadastre__gnr": {label: "Gardsnummer", sort: "asc" as const, type: "integer" as const}, "cadastre__bnr": {label: "Bruksnummer", sort: "asc" as const, type: "integer" as const}}
 const uuid = {label: "UUID", result}
 const label = {label: "Namn", result}
-const location = {label: "Koordinater"}
+const location = {label: "Koordinater", result}
 const adm = {label: "Administrativ enhet"}
 const adm1 = {label: "Fylke", result}
 const adm2 = {label: "Kommune", result}
 const snid = {label: "Stadnamn ID", facet}
 const link = {label: "Lenke", result}
-const image = {label: "Seddel", result}
+const image = {"image.manifest": {label: "Seddel", result}}
 
 
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
-      uuid, label, location, adm, adm1, adm2, link, image,
+      uuid, label, location, adm, adm1, adm2, link, ...image,
       //"description": {label: "Beskriving"}, // Removed untid short descriptions have been generated
       "datasets": {label: "Datasett", facet, omitLabel, result},
       "children": {label: "Underelement", result},
@@ -62,7 +62,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
 
     hord: {
-      uuid, label, location, adm, adm1, adm2, link, image,
+      uuid, label, location, adm, adm1, adm2, link, ...image,
       "rawData.merknader": {label: "Merknader", searchable},
       "archive.institution": {label: "Arkivtilvising", table, facet},
       "rawData.oppskrivar": {label: "Oppskrivar", table, facet},

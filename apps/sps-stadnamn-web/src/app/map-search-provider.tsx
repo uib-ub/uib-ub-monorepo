@@ -2,6 +2,7 @@
 import { createContext } from 'react'
 import { useState, useEffect } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
+import { parseAsInteger, useQueryState } from 'nuqs';
 
 interface SearchContextData {
     resultData: any;
@@ -29,10 +30,11 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const { searchQueryString } = useSearchQuery()
+    const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
 
     useEffect(() => {
             setIsLoading(true)
-            fetch(`/api/search/map?${searchQueryString}&size=20`)
+            fetch(`/api/search/map?${searchQueryString}&size=${size}`)
             .then(response => {
                 if (!response.ok) {
                     throw response
@@ -58,7 +60,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             }).finally(() => {
                 setIsLoading(false)
             })
-      }, [searchQueryString])
+      }, [searchQueryString, size])
 
 
   return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError}}>{children}</SearchContext.Provider>

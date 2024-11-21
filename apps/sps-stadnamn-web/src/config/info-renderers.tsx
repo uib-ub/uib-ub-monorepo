@@ -111,7 +111,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         
         {Timeline(source.attestations)}
       </>}
-      <CollapsibleHeading title="Kilder">
+      <CollapsibleHeading title="Kilder" quantity={source.children.length}>
           <SourceList snid={source.snid} uuid={source.uuid} childList={source.children}/>
         </CollapsibleHeading>
 
