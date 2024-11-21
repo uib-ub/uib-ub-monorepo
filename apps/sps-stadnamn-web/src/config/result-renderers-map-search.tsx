@@ -28,7 +28,7 @@ const formatHighlight = (highlight: string) => {
 }
 
 const defaultTitle = (hit: any) => {
-  return <span className="font-semibold">{hit.fields.label}</span>
+  return <span className="font-semibold">{multivalue(hit.fields?.label)}</span>
 }
 
 const loktypeDetails = (loktype: string, hit: any) => {
@@ -113,13 +113,13 @@ export const resultRenderers: ResultRenderers = {
   search: {
     title: defaultTitle,
     details: (hit: any, display: string) => {
-      return <>{hit.fields.adm2 && multivalue(hit.fields.adm2) + ", "}{multivalue(hit.fields.adm1)}{ hit.fields.adm1 == "[Uordna]" && <>&nbsp;<em>{hit.fields.adm2Fallback && hit.fields.adm2Fallback + ", " }{hit.fields.adm1Fallback}</em></> }</>
+      return <>{hit.fields?.adm2 && multivalue(hit.fields.adm2) + ", "}{multivalue(hit.fields.adm1)}{ hit.fields.adm1 == "[Uordna]" && <>&nbsp;<em>{hit.fields.adm2Fallback && hit.fields.adm2Fallback + ", " }{hit.fields.adm1Fallback}</em></> }</>
     }
   },
   sof: {
     title: (hit: any, display: string) => {
      // TODO: add kulturkode to the datasets?
-     const placeType = hit.fields.placeType?.label
+     const placeType = multivalue(hit.fields["placeType.label"])
      if (placeType) {
         return <>{defaultTitle(hit)} {` (${placeType.toLowerCase()})`}</>
       }
@@ -135,7 +135,7 @@ export const resultRenderers: ResultRenderers = {
     title: (hit: any, display: string) => {
       const fields = hit.fields
       if (display == 'table') return defaultTitle(fields)
-      return <>{defaultTitle(fields)}{fields.sosi && ` (${ fields?.sosi[0].toLowerCase()})`}</>
+      return <>{defaultTitle(hit)}{fields?.sosi && ` (${ fields.sosi[0].toLowerCase()})`}</>
     },
     snippet: (hit: any, display: string) => {
       return hit.highlight?.['content.html'][0] && formatHighlight(hit.highlight['content.html'][0])
@@ -153,7 +153,7 @@ export const resultRenderers: ResultRenderers = {
       return hit.highlight?.['content.html']?.[0] && formatHighlight(hit.highlight['content.html']?.[0])
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields.rawData.KNR, hit.fields.rawData?.GNR, hit.fields.rawData?.BNR, "/", hit.fields, display)
+      return cadastreAdm(hit.fields["rawData.KNR"], hit.fields["rawData.GNR"], hit.fields["rawData.BNR"], "/", hit.fields, display)
       
     }
   },
@@ -215,7 +215,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields.rawData.KNR, hit.fields.rawData?.MNR, hit.fields.rawData?.LNR, ".", hit.fields, display)
+      return cadastreAdm(hit.fields["rawData.KNR"], hit.fields["rawData.MNR"], hit.fields["rawData.LNR"], ".", hit.fields, display)
     }
   },
   m1886: {
@@ -253,7 +253,7 @@ export const resultRenderers: ResultRenderers = {
     details: (hit: any, display: string) => {
       // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
 
-      return <> {hit.fields.rawData.GNID}{hit.fields.rawData.GNID && ", "}{formatAdm(hit.fields)}</>
+      return <> {hit.fields["rawData.GNID"]}{hit.fields["rawData.GNID"] && ", "}{formatAdm(hit.fields)}</>
     }
   },
   tot: {

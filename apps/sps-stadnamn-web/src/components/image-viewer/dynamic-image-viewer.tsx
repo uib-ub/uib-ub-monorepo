@@ -91,7 +91,7 @@ const DynamicImageViewer = () => {
 
         viewer.current.addHandler('tile-load-failed', function(event) {
           // Log the error to the console
-          console.log(event)
+          //console.log(event)
           setError("TILE_LOAD_FAILED")
           
           //setError({message: event.message, tile: event.tile, code: event.});

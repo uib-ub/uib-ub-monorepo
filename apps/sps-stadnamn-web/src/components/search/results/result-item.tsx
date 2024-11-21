@@ -1,9 +1,12 @@
+'use client'
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers-map-search';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs";
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
+import { PiDatabase } from 'react-icons/pi';
+import { datasetTitles } from '@/config/metadata-config';
 
 
 
@@ -17,6 +20,8 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
         doc: parseAsString,
         center: parseAsArrayOf(parseAsFloat, ','),
         point: parseAsArrayOf(parseAsFloat, ','),
+        attestationYear: parseAsString,
+        attestationLabel: parseAsString,
         expanded: parseAsString,
     });
 
@@ -31,17 +36,20 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
         }
     }, [expanded, doc, hit.fields.uuid, isMobile])
 
+    
 
     return  <li className="flex flex-grow">
             <Link ref={itemRef} className="w-full h-full py-2 px-2 md:px-4 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100" 
                   aria-current={doc == hit.fields.uuid ? 'page' : undefined}
-                  href={serialize(new URLSearchParams(searchParams), { doc: hit.fields.uuid, point: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
-            <strong className="text-neutral-950">{titleRenderer(hit, 'map')}</strong>
+                  href={serialize(new URLSearchParams(searchParams), { doc: 
+                    hit.fields?.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid, point: null, attestationYear: null, attestationLabel: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
+            <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
             
             {hit.highlight && snippetRenderer ? <> | {detailsRenderer(hit, 'map')} {snippetRenderer(hit, 'map')}  </>
             : <p>
             { detailsRenderer(hit, 'map') }
             </p>}
+            { dataset == 'search' && hit.fields?.children?.length == 1 && <span className="text-neutral-900 text-sm self-center flex gap-2 items-center"><PiDatabase aria-hidden="true"/>{datasetTitles[hit.fields.datasets[0]]}</span> }
 
             </Link>
             </li>

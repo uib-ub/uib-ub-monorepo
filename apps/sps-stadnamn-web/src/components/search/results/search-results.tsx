@@ -1,3 +1,4 @@
+'use client'
 import { SearchContext } from "@/app/map-search-provider"
 import { useContext } from "react"
 import { useSearchParams, usePathname, useRouter, useParams } from 'next/navigation';

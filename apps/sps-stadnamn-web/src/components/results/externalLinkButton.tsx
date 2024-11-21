@@ -4,7 +4,7 @@ import IconLink from '../ui/icon-link';
 export default function ExternalLinkButton({doc, iconClass}: {doc: any, iconClass: string}) {
 
     return (
-        <IconLink href={doc._source.link} label="Ekstern ressurs" className="inline-flex items-center justify-center group text-neutral-700 xl:text-xl">
+        <IconLink href={doc.fields.link} label="Ekstern ressurs" className="inline-flex items-center justify-center group text-neutral-700 xl:text-xl">
             <PiLinkBold  className={"align-text-bottom " + iconClass}/> 
         </IconLink>
     )

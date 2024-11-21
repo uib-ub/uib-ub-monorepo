@@ -7,6 +7,7 @@ import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString } from "nuqs"
+import AttestationSource from "../results/attestation-source"
 
 export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
     const searchParams = useSearchParams()
@@ -24,10 +25,23 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
     }
+
+    const attestationLabel = searchParams.get('attestationLabel')
+    const attestationYear = searchParams.get('attestationYear')
+    if (attestationLabel) {
+
+      return <article className="instance-info flex flex-col gap-3">
+        <h2>{attestationLabel}</h2>
+        <AttestationSource uuid={docSource.uuid} snid={docSource.snid} childList={docSource.children} year={attestationYear} label={attestationLabel} />
+        
+      </article>
+    }
+
+
     
     return <article className="instance-info flex flex-col gap-3">
         <div className="flex gap-2"><h2>{docSource.label}</h2>{docSource.audio && 
-          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${dataset}/${docSource.audio.file}` } 
+          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${docDataset}/${docSource.audio.file}` } 
                        iconClass="text-3xl text-neutral-700 inline"/> 
         }
         </div>
@@ -62,15 +76,17 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
                 </span>
             }
         
-        { dataset == 'search' && <Link href={serialize(new URLSearchParams(searchParams), {infoDataset: docDataset, expanded: 'info', doc: null, point: null})} className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">{docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
+        { dataset == 'search' && 
+        <Link href={serialize(new URLSearchParams(searchParams), {infoDataset: docDataset, expanded: 'info', doc: null, point: null})} 
+              className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">
+                {docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
         </div>
 
       
       { infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
       {
-        docDataset == 'search' && <div>
-          <h3>Kilder</h3>
+        attestationLabel && <div>
           
 
         </div>

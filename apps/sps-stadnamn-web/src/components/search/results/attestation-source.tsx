@@ -4,23 +4,28 @@ import { useState, useEffect } from 'react'
 import ErrorMessage from '@/components/error-message'
 import { datasetTitles } from '@/config/metadata-config'
 import { resultRenderers } from '@/config/result-renderers-map-search'
-import InfoButton from '@/components/results/info-button'
 import CoordinateButton from '@/components/results/coordinateButton';
 import ExternalLinkButton from '@/components/results/externalLinkButton';
 import ImageButton from '@/components/results/image-button';
-import Link from 'next/link'
-import ResultLink from './result-link'
+import ResultLink from '@/components/results/result-link'
+import { useQueryState } from 'nuqs'
 
 
-export default function GroupedChildren({ snid, uuid, childList, landingPage, setExpandLoading}: { snid: string, uuid: string, childList: string[], landingPage?: boolean, setExpandLoading?: any}) {
+export default function AttestationSource({ snid, uuid, childList, label, year}: { snid: string, uuid: string, childList: string[], label: string, year: string | null}) {
     const [childDocs, setChildDocs] = useState<Record<string, any[]>>({})
     const [error, setError] = useState<any>(null)
+    const [doc, setDoc] = useQueryState('doc', {history: 'replace'})
 
     useEffect(() => {
         fetch(`/api/children?${snid ? 'snid=' + snid : (childList.length > 20 ? 'uuids=' + childList.join(',') : 'uuid=' + uuid) }`)
         .then(response => response.json())
         .then(data => {
         // group by index name
+        if (data.hits?.hits.length == 1) {
+          // Redirect to single document
+          setDoc(data.hits.hits[0].fields.uuid)
+
+        }
         const groupedChildren = data.hits?.hits?.reduce((acc: Record<string, any[]>, doc: Record<string, any>) => {
             const index = doc._index.split('-')[2]
             if (!acc[index]) {
@@ -32,20 +37,14 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
           , {})
 
           setChildDocs(groupedChildren)
-          if (setExpandLoading) {
-            setExpandLoading(false)
-          }
           
 
         }
         ).catch((error: any) => {
             setError(error)
-            if (setExpandLoading) {
-              setExpandLoading(false)
-            }
             
         })
-    }, [snid, uuid, childList, setExpandLoading])
+    }, [snid, uuid, childList, setDoc])
     
     //await fetchChildrenGrouped(childIdentifiers)
 
@@ -60,33 +59,32 @@ export default function GroupedChildren({ snid, uuid, childList, landingPage, se
 
 
     return childDocs && Object.keys(childDocs).length > 0 ?
-        <div className="p-2 mb-4 space-y-6 transform origin-center"> 
+        <div className="mb-8 space-y-4 transform origin-center"> 
         {Object.keys(childDocs).map((docDataset: string) => (
             <div key={docDataset} className='break-words'>
-                { !landingPage && <h3 className="small-caps text-xl border-b border-neutral-400 text-neutral-900 font-semibold">{datasetTitles[docDataset]}</h3>}
-                { landingPage && <h2 className="!text-lg mt-6">{datasetTitles[docDataset]}</h2> }
-                <ul className="list-none space-y-4 my-4">
+                <h4 className="border-b border-neutral-400 text-neutral-900 font-semibold">{datasetTitles[docDataset]}</h4>
+                <ul className="list-none space-y-2 my-2">
                   {childDocs[docDataset].map((doc: Record<string, any>, index: number) => {
-                    
-                    return landingPage ? (
-                    <li key={index} className='list-none'>
-                        <ResultLink doc={doc}>{resultRenderers[docDataset]?.title(doc, 'grouped') || docDataset} {resultRenderers[docDataset]?.details(doc, 'grouped')}</ResultLink>
-                    </li>
-                      )  :
-                    (
+                    try {
+                    return (
 
                     <li key={index} className='flex items-center'>
                         <ResultLink doc={doc}>{resultRenderers[docDataset]?.title(doc, 'grouped')} {resultRenderers[docDataset]?.details(doc, 'grouped')}</ResultLink>
 
                         <span className="space-x-1 mx-2">
-                        { doc._source.location && <CoordinateButton doc={doc} iconClass="text-2xl inline" parentUuid={uuid} />}
-                        { doc._source.link && <ExternalLinkButton doc={doc} iconClass="text-2xl inline" />}
-                        { doc._source.image && <ImageButton doc={doc} iconClass="text-2xl inline" />}
+                        { doc.fields.location && <CoordinateButton doc={doc} iconClass="text-2xl inline" parentUuid={uuid} />}
+                        { doc.fields.link && <ExternalLinkButton doc={doc} iconClass="text-2xl inline" />}
+                        { doc.fields.image && <ImageButton doc={doc} iconClass="text-2xl inline" />}
                         </span>
 
                     </li>
 
                     )
+                    } catch (e) {
+                      return <div>Error: {JSON.stringify(doc)}</div>
+                    }
+
+
                   })}
 
               

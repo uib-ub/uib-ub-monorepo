@@ -11,6 +11,7 @@ import SearchParamsLink from '@/components/ui/search-params-link';
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import SearchLink from '@/components/ui/search-link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
+import SourceList from '@/components/search/results/source-list';
 
 
 const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
@@ -25,6 +26,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
     return [...new Set(altLabels)].join(', ')
   }
+
 
 
   function createMarkup(htmlString: string) {
@@ -68,7 +70,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
           <div className={`ml-6 ${''}`}>
             <strong className='mb-1'>{year}:&nbsp;</strong>
                 {labels.map((label, i) => ( <span key={i}>
-                  {labels.length > 1 && i > 0 ? ', ' : ''}<span className=' list-none !py-0' key={i}>{label}</span>
+                  {labels.length > 1 && i > 0 ? ', ' : ''}<SearchParamsLink key={i} addParams={{"attestationYear": year, "attestationLabel": label}}>{label}</SearchParamsLink>
                   </span>
                 ))}
           </div>
@@ -84,16 +86,40 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   search: (source: any) => {
+    //const uniqueLabels = getUniqueAltLabels(source, source.label, ['altLabels', 'attestations.label'])
+    const uniqueLabels = new Set<string>(source.altLabels.filter((label: string) => label !== source.label))
+    source.attestations.forEach((item: any) => {
+      if (item.label !== source.label) {
+        uniqueLabels.add(item.label)
+      }
+    })
+
+
     return <>
-    {source.attestations && Object.keys(source.attestations).length > 1 && <div>
+    {uniqueLabels.size > 0 && <ul className='flex flex-wrap !list-none !p-0'>
+    {Array.from(uniqueLabels).map((label: string, index: number) => {
+      return <li key={index} className='whitespace-nowrap'>
+        <SearchParamsLink addParams={{attestationLabel: label}}>
+        {label}
+        </SearchParamsLink>{index < uniqueLabels.size - 1 ? ',' : ''}&nbsp;</li>
+    }
+    )}
+    </ul>}
     
-    {source.attestations?.length > 1 && 
+    {source.attestations.some((item: any) => item.label != source.label) && source.attestations?.length > 1 && 
       <>
-        <h3>Historikk</h3>
+        
         {Timeline(source.attestations)}
       </>}
-    </div>
-    }
+      <CollapsibleHeading title="Kilder">
+          <SourceList snid={source.snid} uuid={source.uuid} childList={source.children}/>
+        </CollapsibleHeading>
+
+      <CollapsibleHeading title="Detaljer">
+        <FacetsInfobox dataset={'search'} source={source}/>
+      </CollapsibleHeading>
+
+    
     
     </>
   },
@@ -266,15 +292,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   nbas: (source: any) => {
     return <>
-    <InfoBox dataset={'nbas'} 
-              items={[
-      {title: 'Stadnamn', value: source.rawData.oppslagsform},
-      {title: 'Lokalitetstype', value: source.rawData.lokalitetstype_sosi, sosi: true},
-      {title: 'Kommune', value: source.rawData.herred},
-      {title: 'Fylke', value: source.rawData.fylke},
-      {title: 'Kommunenummer', value: source.rawData.kommunenummer},
-      {title: 'GNIDu', value: source.rawData.gnidu},
-    ]}/>
+    <FacetsInfobox dataset={'nbas'} source={source}/>
     </>
   },  
   m1838: (source: any) => {

@@ -1,4 +1,5 @@
 export const runtime = 'edge'
+import { resultConfig } from "@/config/search-config";
 import { postQuery } from "../_utils/post";
 export async function GET(request: Request) {
 
@@ -18,11 +19,14 @@ export async function GET(request: Request) {
                                                 }
                                             }
 
+    const allFields = [...new Set(Object.values(resultConfig).flat())]
 
 
     if (snid) {
         const query = {
             size: 1000,
+            fields: allFields,
+            _source: false,
             query: {
                 term: {
                     "snid.keyword": snid
@@ -40,6 +44,7 @@ export async function GET(request: Request) {
     // If the list of children is too long to be passed as a query parameter
     if (!uuids) {
         const query = {
+            fields: allFields,
             query: {
                 term: {
                     "uuid": uuid
@@ -60,6 +65,8 @@ export async function GET(request: Request) {
  
     const query = {
         size: 1000,
+        fields: allFields,
+        _source: false,
         query: {
             terms: {
                 "uuid": uuids

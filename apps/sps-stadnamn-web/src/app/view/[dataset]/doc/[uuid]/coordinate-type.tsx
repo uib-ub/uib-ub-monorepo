@@ -9,7 +9,7 @@ export default function CoordinateType({source}: {source: Record<string, any>}) 
     const [coordinateData, setCoordinateData] = useState<Record<string, any>>({});
 
     useEffect(() => {
-        console.log(`/api/vocab/${source.coordinateType}`)
+        //console.log(`/api/vocab/${source.coordinateType}`)
         const fetchData = async () => {
          if (source.coordinateType) {
             const res = await fetch(`/api/vocab/${source.coordinateType}`);

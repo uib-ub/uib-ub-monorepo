@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
-import Map from './map'
+import Map from './map';
 import 'leaflet/dist/leaflet.css';
 import PopupList from './popup-list';
 import { baseMapKeys, baseMapProps } from '@/config/basemap-config'

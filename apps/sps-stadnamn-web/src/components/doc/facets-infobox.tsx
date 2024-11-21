@@ -1,3 +1,4 @@
+'use client'
 import Link from "next/link";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { facetConfig } from "@/config/search-config";
@@ -13,7 +14,7 @@ export default function FacetsInfobox({ dataset, source }: { dataset: string, so
   
 
     const items = facetConfig[dataset].filter(item => 
-      !['sosi', 'datasets'].includes(item.key) // Skip fields displayed in dedicated component
+      item.key && !['sosi', 'datasets'].includes(item.key) // Skip fields displayed in dedicated component
     ).map((facet) => {
         const value = getValueByPath(source, facet.key);
         return {
