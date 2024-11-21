@@ -87,8 +87,8 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   search: (source: any) => {
     //const uniqueLabels = getUniqueAltLabels(source, source.label, ['altLabels', 'attestations.label'])
-    const uniqueLabels = new Set<string>(source.altLabels.filter((label: string) => label !== source.label))
-    source.attestations.forEach((item: any) => {
+    const uniqueLabels = new Set<string>(source.altLabels?.filter((label: string) => label !== source.label))
+    source.attestations?.forEach((item: any) => {
       if (item.label !== source.label) {
         uniqueLabels.add(item.label)
       }
@@ -106,7 +106,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     )}
     </ul>}
     
-    {source.attestations.some((item: any) => item.label != source.label) && source.attestations?.length > 1 && 
+    {source.attestations?.some((item: any) => item.label != source.label) && source.attestations?.length > 1 && 
       <>
         
         {Timeline(source.attestations)}
