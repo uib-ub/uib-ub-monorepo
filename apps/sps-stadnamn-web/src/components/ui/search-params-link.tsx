@@ -13,7 +13,7 @@ export default function SearchParamsLink({ href, children, withoutParams, addPar
         Object.entries(addParams).forEach(([key, value]) => newParams.set(key, value))
     }
     // remove any params starting with _
-    for (let key of newParams.keys()) {
+    for (const key of newParams.keys()) {
         if (key.startsWith('_')) {
             newParams.delete(key)
         }

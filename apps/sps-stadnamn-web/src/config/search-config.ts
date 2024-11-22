@@ -11,11 +11,12 @@
     type?: 'integer' | 'keyword';
     additionalParams?: string[];
     docLink?: string; // Link to another document
+    cadastreTable?: boolean; // Show in cadastre table
 
 
   }
  
-const [table, omitLabel, searchable, facet, result] = Array(5).fill(true);
+const [table, omitLabel, searchable, facet, result, cadastreTable] = Array(6).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table}
 const cadastre = {"cadastre__gnr": {label: "Gardsnummer", sort: "asc" as const, type: "integer" as const}, "cadastre__bnr": {label: "Bruksnummer", sort: "asc" as const, type: "integer" as const}}
@@ -101,12 +102,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     mu1950: {
       uuid, label, location, adm, adm1, adm2,
       "sosi": {label: "Lokalitetstype", facet},
-      "rawData.KNR": {label: "Kommunenummer", table, facet},
-      "rawData.GNR": {label: "Gardsnummer", table, facet, additionalParams: ["rawData.KNR"]},
-      "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.KNR", "rawData.GNR"]},
-      "rawData.Eigar": {label: "Eigar", table, facet},
-      "rawData.Mark": {label: "Skyldmark", table, facet},
-      "rawData.Øre": {label: "Skyldøre", table, facet},
+      "rawData.KNR": {label: "Knr", table, facet},
+      "rawData.GNR": {label: "Gnr", table, facet, additionalParams: ["rawData.KNR"]},
+      "rawData.BNR": {label: "Bnr", table, facet, additionalParams: ["rawData.KNR", "rawData.GNR"]},
+      "rawData.Eigar": {label: "Eigar", table, facet, cadastreTable},
+      "rawData.Mark": {label: "Skyldmark", table, facet, cadastreTable},
+      "rawData.Øre": {label: "Skyldøre", table, facet, cadastreTable},
       "gnidu": {label: "GNIDu", facet},
       "rawData.Koordinattype": {label: "Koordinattype", facet},
     },
@@ -178,6 +179,8 @@ export const facetConfig: Record<string, FieldConfigItem[]> = Object.entries(fie
     }));
   return acc;
 }, {} as Record<string, FieldConfigItem[]>);
+
+
 
 
 // Fields needed for the result list
@@ -305,3 +308,7 @@ export const searchableFields = Object.entries(fieldConfig).reduce((acc, [datase
       ],
   
   }
+
+  console.log("FACET CONFIG", facetConfig["m1886"])
+  console.log()
+  console.log("OLD FACET CONFIG", oldFacetConfig["m1886"])

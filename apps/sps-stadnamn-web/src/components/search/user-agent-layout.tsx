@@ -13,7 +13,7 @@ export default async function UserAgentLayout() {
 
 
   return <SearchProvider>
-          {isMobile ? <MobileLayout/> : <DesktopLayout/>}
+          {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
         </SearchProvider>
 }
 

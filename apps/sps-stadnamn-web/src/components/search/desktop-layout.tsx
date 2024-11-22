@@ -10,9 +10,11 @@ import StatusSection from "./status-section"
 import Facets from "./facets/facet-section"
 import { SearchContext } from "@/app/map-search-provider"
 import Spinner from "../svg/Spinner"
-
+import CadastralSubdivisions from "../doc/cadastral-subdivisions"
 
 export default function DesktopLayout() {
+
+    
     const { searchFilterParamsString } = useSearchQuery()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
@@ -20,12 +22,16 @@ export default function DesktopLayout() {
     const selectedDocState = useState<any | null>(null)
     const { totalHits, isLoading} = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
+    const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit')
+    const [mode, setMOde] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
     
 
     // Keep filters or expanded open when switching to a different section
     const [expandedSection, setExpandedSection] = useState<string | null>(expanded === 'results' ? 'results' : expanded === 'filters' ? 'filters' : null)
 
     const [ showLoading, setShowLoading ] = useState<string|null>(null)
+
+    
 
     useEffect(() => {
         if (expanded === 'results') {
@@ -34,6 +40,9 @@ export default function DesktopLayout() {
         else if (expanded === 'filters') {
             setExpandedSection('filters')
             setFacetIsLoading(true)
+        }
+        else if (window && window.innerWidth < 1024) {
+            setExpandedSection(null)
         }
 
     }, [expanded])
@@ -53,7 +62,7 @@ export default function DesktopLayout() {
     , [isLoading, expandedSection, facetIsLoading])
 
 
-    const toggleExpanded = (panel: 'options' | 'filters' | 'results') => {
+    const toggleExpanded = (panel: 'options' | 'filters' | 'results' | 'cadastre') => {
         
         if (expanded == panel) {
             setExpanded(null)
@@ -67,10 +76,12 @@ export default function DesktopLayout() {
     return <main id="main" className="relative w-full h-[calc(100svh-3rem)]">   
         <div className="absolute top-0 left-[25svw] max-w-[50svw] z-[2000] right-0 flex flex-col gap-2"><StatusSection isMobile={false}/></div>
         
-        <div className="flex gap-4 flex-col max-h-[90svh] lg:max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden bg-white rounded-md lg:bg-none shadow-md lg:shadodw-none">
+        <div className="flex lg:gap-4 flex-col max-h-[90svh] lg:max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
 
-        <div className="lg:absolute left-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[90svh] w-[40svw] lg:w-[25svw] !z-[3001]">
-        <section aria-labelledby="filter-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
+        <div className="lg:absolute left-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[90svh] max-w-[40svw] lg:w-[25svw] !z-[3001] bg-white shadow-md lg:shadow-none rounded-br-md lg:rounded-none lg:bg-transparent">
+        { mode == 'search' && <>
+        
+        <section aria-labelledby="filter-title" className="bg-white lg:rounded-md lg:shadow-md break-words">
             <h2 id="filter-title"  className="px-2 py-2 w-full">
                 <button className="w-full flex justify-start text-center h-full font-semibold text-neutral-950" aria-controls="filter-content" aria-expanded={expandedSection == 'filters'} onClick={() => toggleExpanded('filters')}>
                 { expandedSection == 'filters' ? <PiCaretUpBold className="inline self-center mr-1 text-primary-600"/> : <PiCaretDownBold className="inline self-center mr-1  text-primary-600"/> }
@@ -84,9 +95,9 @@ export default function DesktopLayout() {
                 <Facets setFacetIsLoading={setFacetIsLoading}/>
             </div>
         }
-        </section>
-        { searchFilterParamsString &&
-        <section aria-labelledby="results-title" className="lg:bg-white rounded-md lg:shadow-md break-words">
+        </section> 
+        { searchFilterParamsString && 
+        <section aria-labelledby="results-title" className="bg-white rounded-md lg:shadow-md break-words">
              <h2 id="filter-title"  className="px-2 py-2 w-full"><button className="w-full flex gap-2 justify-start text-center h-full font-semibold text-neutral-950"aria-controls="result-content" aria-expanded={expanded == 'results'} onClick={() => toggleExpanded('results')}>
                 { expandedSection == 'results' ? <PiCaretUpBold className="inline self-center  text-primary-600"/> : <PiCaretDownBold className="inline self-center  text-primary-600"/> }
                 Treff
@@ -105,18 +116,42 @@ export default function DesktopLayout() {
             
         </section>
         }
+        </>}
+
+        { mode == 'tree' && 
+            <section aria-labelledby="cadastre-title" className="max-h-[100svh] lg:overflow-y-auto border-t border-neutral-200 bg-white rounded-md">
+            <Results isMobile={false}/>
+            </section>
+
+        }
         </div>
-        <div className="placeholder:info-section lg:absolute right-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[80svh] w-[40svw] lg:w-[25svw] !z-[3001]">
-        <div className="lg:bg-white relative rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar">
+       
+        {  <div className={`lg:absolute right-0 top-0 py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] ${mode == 'tree' ? 'lg:max-h-[40svh]' :  'lg:max-h-[50svh]'}`}>
+        <div className={`bg-white relative rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar ${ expanded != 'info' ? 'hidden lg:block' : ''}`}>
             { (doc || point) && <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
-            <InfoContent expanded={expanded == 'info'} selectedDocState={selectedDocState}/>
+            <InfoContent expanded={expanded == 'info' } selectedDocState={selectedDocState}/>
         </div>
+        </div> }
+        { cadastralUnit && <div className="lg:absolute p-2 right-0 bottom-4 flex flex-col gap-2 max-h-[50svh] w-[40svw] !z-[3001]">
+            <div className="bg-white rounded-md shadow-md p-4 pt-2 instance-info overflow-auto">
+            <button className="absolute right-4 top-4" onClick={() => {
+                if (expanded == "cadastre") {
+                    setExpanded("tree")
+                }
+                else {
+                    setCadastralUnit(null)
+                }
+            } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
+            
+         
+            <CadastralSubdivisions gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr']}/>
+            </div>
+            </div>}
+
         </div>
 
 
-        </div>
-
-        <div className="lg:absolute bottom-top right-0 lg:h-full w-full">
+        <div className="absolute top-0 right-0 h-full w-full">
         <MapExplorer isMobile={false} selectedDocState={selectedDocState}/>
         </div>
 

@@ -9,8 +9,9 @@ export default function StatusSection({isMobile}: {isMobile: boolean}) {
 
     const { resultData, resultBounds } = useContext(SearchContext)
     const expanded = useQueryState('expanded')[0]
+    const mode = useQueryState('mode')[0]
 
-    return (isMobile || expanded != 'options') && <>
+    return (isMobile || expanded != 'options') && mode == 'search' && <>
             <ActiveFilters/>
             { resultData?.length ? !resultBounds?.length && <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center self-center"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinater</div> : null}
         

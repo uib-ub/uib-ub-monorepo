@@ -305,9 +305,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <div>
     <h3>Eiendom</h3>
     { source.within && cadastreBreadcrumb(source, "m1838", "misc.gardLabel") }
-    { source.sosi == 'gard' &&
-      <CadastralSubdivisions bnrField="rawData.LNR" sortFields={['cadastralIndex']} dataset={'m1838'} source={source} />
-    }
     </div>
     <div>
     <h3>Detaljer</h3>
@@ -318,13 +315,10 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   mu1950: (source: any) => {
     return <>
-    <div>
+    {source.sosi != 'gard' && <div>
     <h3>Eiendom</h3>
     { source.within && cadastreBreadcrumb(source, "mu1950", "rawData.Gardsnamn") }
-    { source.sosi == 'gard' &&
-      <CadastralSubdivisions bnrField="rawData.BNR" sortFields={['cadastre.bnr']} dataset={'mu1950'} source={source} />
-    }
-    </div>
+    </div>}
 
     {source.sosi != 'gard' && 
       <div><h3>Detaljer</h3>
@@ -343,9 +337,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <div>
     <h3>Eiendom</h3>
     { source.within && cadastreBreadcrumb(source, "m1886", "rawData.gardsnamn") }
-    { source.sosi == 'gard' &&
-      <CadastralSubdivisions bnrField="rawData.bnr" sortFields={['cadastre.gnr', 'cadastre.bnr']} dataset={'m1886'} source={source} />
-    }
     </div>
     <div>
       <CollapsibleHeading title="Detaljer">

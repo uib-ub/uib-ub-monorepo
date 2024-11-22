@@ -2,25 +2,43 @@
 'use client'
 import Pagination from "@/components/results/pagination"
 import SearchParamsLink from "@/components/ui/search-params-link"
-import { facetConfig } from "@/config/search-config"
+import { facetConfig, fieldConfig } from "@/config/search-config"
 import { contentSettings } from "@/config/server-config"
+import { useDataset } from "@/lib/search-params"
 import Link from "next/link"
+import { createSerializer, parseAsString, useQueryState } from "nuqs"
 import { useEffect, useState } from "react"
-import { PiMagnifyingGlass } from "react-icons/pi"
+import { PiInfoFill, PiMagnifyingGlass } from "react-icons/pi"
+import SearchLink from "../ui/search-link"
+import IconButton from "../ui/icon-button"
 
 
-export default function CadastralSubdivisions({bnrField, sortFields, dataset, source}: { bnrField: string, sortFields: string[], dataset: string, source: any }) {
-
+export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: { gnrField: string, bnrField: string, sortFields: string[]}) {
+    const dataset = useDataset()
     const [hits, setHits] = useState<Record<string,any> | null>(null)
-    const fields = facetConfig[dataset].filter((field: Record<string,any>) => field.table && field.key !== bnrField)
+    const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
+        return { key, label: value.label }
+    })
     const [page, setPage] = useState(1)
     const [isLoading, setIsLoading] = useState(true)
+    const cadastralUnit = useQueryState('cadastralUnit')[0]
+    const [doc, setDoc] = useQueryState('doc', { history: 'push'})
+    const [expanded, setExpanded] = useQueryState('expanded', { history: 'push'})
+
+    const serialize = createSerializer({
+        within: parseAsString,
+        dataset: parseAsString,
+    })
+    
+
 
 
     useEffect(() => {
-        const fields = facetConfig[dataset].filter((field: Record<string,any>) => field.table && field.key !== bnrField)
-         
-        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${source.uuid}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields.join(",")}`)
+        const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
+            return { key, label: value.label }
+        })
+        
+        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields.join(",")}`)
             .then(response => response.json())
             .then(data => {
                 
@@ -33,62 +51,60 @@ export default function CadastralSubdivisions({bnrField, sortFields, dataset, so
             }
             )
         
-    }, [dataset, source.uuid, bnrField, sortFields])
+    }, [dataset, cadastralUnit, gnrField, bnrField, sortFields])
 
 
-    const gotoSearchUrl = () => {
-        const newSearchParams = new URLSearchParams()
-        newSearchParams.set('within', source.uuid)
-        newSearchParams.set('display', contentSettings[dataset].display)
 
-        return `/view/${dataset}?${newSearchParams.toString()}`
 
-    }
+
 
 
     return (
-<div className="space-y-4 w-full overflow-hidden">
-    {isLoading ? 
-    <div className="result-table max-h-[320px]">
-        <div className="animate-pulse bg-neutral-50 h-12 border-b border-neutral-200 border-b-2 border-neutral-200"></div>
-        <div className="h-8 border-b border-neutral-200"></div>
-        <div className="animate-pulse bg-neutral-50 h-8 border-b border-neutral-200"></div>
-    </div> :
-        hits && <>
-            <table className="result-table max-h-[320px] overflow-x-auto">
-                <caption className="sr-only">Underordna bruk</caption>
-                <thead>
-                    <tr>
-                        <th>Namn</th>
+        <div className="space-y-4 w-full overflow-auto">
+            {isLoading ? 
+            <div className="result-table max-h-[320px]">
+                <div className="animate-pulse bg-neutral-50 h-12 border-b border-neutral-200"></div>
+                <div className="h-8 border-b border-neutral-200"></div>
+                <div className="animate-pulse bg-neutral-50 h-8 border-b border-neutral-200"></div>
+            </div> :
+                hits && <>
+                    <div className="flex gap-4"><h2 className="!text-xl">2 Berg <IconButton label="Info" onClick={()=> { setDoc(cadastralUnit); setExpanded('info') }}><PiInfoFill className="text-primary-600"/></IconButton></h2>
+                    {hits.total.value > 1 && false && <Link href={serialize({dataset, within: cadastralUnit})} className="btn btn-outline no-underline btn-compact"><PiMagnifyingGlass className="text-xl mr-2" aria-hidden="true"/>Søk i brukene</Link>}
+                    </div>
+                    <div className="result-table">
+                        <div className="w-full">
+                            <table className="w-full">
+                            <caption className="sr-only">Underordna bruk</caption>
+                                <thead className="w-full">
+                                    <tr>
+                                        <th>Namn</th>
+                                        {fields.map((field: Record<string, any>) => (
+                                            <th className="sticky top-0 bg-white" key={field.key}>{field.label}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div className="w-full max-h-[40svh] overflow-y-auto">
+                            <table className="w-full">
+                                <tbody className="block">
+                                    {hits.hits.slice((page - 1) * 300, page * 300).map((hit: any) => (
+                                        <tr key={hit._id} className="table w-full table-fixed">
+                                            <td className="border p-2"><SearchParamsLink addParams={{ doc: hit.fields.uuid, expanded: 'info' }}>{hit.fields[bnrField]} {hit.fields.label}</SearchParamsLink></td>
+                                            {fields.map((field: Record<string, any>) => (
+                                                <td className="border p-2" key={field.key}>{hit.fields[field.key]}</td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {hits.total.value > 300 && <Pagination currentPage={page} setCurrentPage={setPage} totalPages={Math.ceil(hits.total.value / 300)} />}
+            
 
-                        {fields.map((field: Record<string,any>) => (
-                            <th key={field.key}>{field.label}</th>
-                        ))}
-                    </tr>
-
-                </thead>
-                <tbody> 
-                    {hits.hits.slice((page - 1) * 10, page * 10).map((hit: any) => (
-
-                        <tr key={hit._id}>
-                            <td><SearchParamsLink href={`/view/${dataset}/doc/${hit.fields.uuid}`}>{hit.fields[bnrField]} {hit.fields.label}</SearchParamsLink></td>
-                            {fields.map((field: Record<string,any>) => (
-                                <td key={field.key}>{hit.fields[field.key]}</td>
-                            ))}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        
-
-    
-            <div className="flex gap-4">{hits.total.value > 10 && <Pagination currentPage={page} setCurrentPage={setPage} totalPages={Math.ceil(hits.total.value / 10)} />}
-            {hits.total.value > 1 && <Link href={gotoSearchUrl()} className="btn btn-outline no-underline btn-compact"><PiMagnifyingGlass className="text-xl mr-2" aria-hidden="true"/>Søk i brukene</Link>}
-            </div>
-            </>
+                </>
             }
-            </div>
-    ) 
-    
+        </div>
+    );
 }
-

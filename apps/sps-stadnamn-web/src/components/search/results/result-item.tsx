@@ -42,7 +42,10 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
             <Link ref={itemRef} className="w-full h-full py-2 px-2 md:px-4 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100" 
                   aria-current={doc == hit.fields.uuid ? 'page' : undefined}
                   href={serialize(new URLSearchParams(searchParams), { doc: 
-                    hit.fields?.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid, point: null, attestationYear: null, attestationLabel: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
+                    hit.fields?.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid, 
+                    point: null, 
+                    expanded: 'info',
+                    attestationYear: null, attestationLabel: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
             <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
             {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 
             <span className="self-center flex gap-1 items-center">

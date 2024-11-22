@@ -8,6 +8,7 @@ import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAs
 import ResultItem from "./result-item";
 import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
+import CadastralItem from "./cadastral-item";
 
 
 export default function SearchResults({isMobile}: {isMobile: boolean}) {
@@ -23,6 +24,7 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     const router = useRouter()
     const { resultData, totalHits, isLoading, searchError} = useContext(SearchContext)
     const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
+
 
 
 
@@ -75,7 +77,7 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     }
     else if (i < resultData.length) {
       const hit = resultData[i]
-      return <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
+      return searchParams.get('mode') == 'tree' ? <CadastralItem key={hit._id} hit={hit} isMobile={isMobile}/> : <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
     }
     else {
 
