@@ -6,9 +6,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./result-item";
-import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
-import CadastralItem from "./cadastral-item";
 
 
 export default function SearchResults({isMobile}: {isMobile: boolean}) {
@@ -22,8 +20,9 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
 
     const pathname = usePathname()
     const router = useRouter()
-    const { resultData, totalHits, isLoading, searchError} = useContext(SearchContext)
+    const { resultData, totalHits, isLoading, searchError } = useContext(SearchContext)
     const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
+    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
 
 
 
@@ -66,7 +65,6 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     <>
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
 
-
 {totalHits?.value ? <>
   { Array.from({length: Math.min(size, totalHits?.value)}, (_, i) => {
     if (i == (size -1) && size < totalHits?.value && i < resultData.length) {
@@ -77,14 +75,15 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     }
     else if (i < resultData.length) {
       const hit = resultData[i]
-      return searchParams.get('mode') == 'tree' ? <CadastralItem key={hit._id} hit={hit} isMobile={isMobile}/> : <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
+      return <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
     }
     else {
-
       return <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={i}>
         <div className="bg-neutral-200 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
         <div className="bg-neutral-200 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
-      </li>
+        </li>
+      
+
       
     }
   }

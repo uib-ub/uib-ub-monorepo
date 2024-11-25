@@ -1,8 +1,9 @@
 import { datasetPresentation, datasetShortDescriptions, datasetTitles, publishDates } from '@/config/metadata-config'
 import Link from 'next/link';
-import { PiClockCounterClockwise } from 'react-icons/pi';
+import { PiCaretRight, PiClockCounterClockwise, PiInfoFill, PiMagnifyingGlass, PiTreeView } from 'react-icons/pi';
 import IconLink from '@/components/ui/icon-link';
 import { useSearchParams } from 'next/navigation';
+import { treeSettings } from '@/config/server-config';
 
 
   
@@ -12,6 +13,8 @@ export default function DatasetInfo() {
     const dataset = params.get('dataset') || 'search'
     const infoDataset = params.get('infoDataset') || dataset
     let [mainIndex, subindex] = (infoDataset).split("_")
+    const searchParams = useSearchParams()
+    const mode = searchParams.get('mode')
 
     function format_timestamp(timestamp: string) {
         const date = new Date(timestamp)
@@ -44,6 +47,19 @@ export default function DatasetInfo() {
                 <Link href={`/search?dataset=${mainIndex}`} className="btn btn-primary">Søk i {datasetTitles[mainIndex]}</Link>
                 {subindex && <Link href={`/search?dataset=${infoDataset}`} className="btn btn-neutral">Søk i {datasetTitles[infoDataset]}</Link>}
             </div>}
+
+            <div className="flex gap-4 flex-wrap pt-2 pb-2 text-neutral-900">
+            { treeSettings[dataset] && mode != 'tree' && <Link href={`?dataset=${dataset}&mode=tree`} onClick={
+                () => {
+                    // set current url as storedSearchQuery in localstorage
+                    localStorage?.setItem('storedSearchQuery', searchParams.toString())
+                }}
+                className="flex whitespace-nowrap items-center gap-1 no-underline"><PiTreeView aria-hidden="true"/> Matrikkelvisning</Link>}
+                { mode == 'tree' && <Link href={`?dataset=${dataset}`} className="flex whitespace-nowrap items-center gap-1 no-underline"><PiMagnifyingGlass aria-hidden="true"/> Søkevisning</Link>}
+                <Link href={`/info/datasets/${dataset}`}
+                      className="flex whitespace-nowrap items-center gap-1 no-underline ml-auto">
+                    Les mer<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
+            </div>
         </aside>
     )
 

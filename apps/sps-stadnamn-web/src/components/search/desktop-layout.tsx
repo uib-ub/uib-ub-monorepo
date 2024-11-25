@@ -1,5 +1,6 @@
 'use client'
-import Results from "./results/search-results"
+import SearchResults from "./results/search-results"
+import TreeResults from "./results/tree-results"
 import MapExplorer from "./map-explorer"
 import { useQueryState } from "nuqs"
 import { useContext, useEffect, useState } from "react"
@@ -23,7 +24,7 @@ export default function DesktopLayout() {
     const { totalHits, isLoading} = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
     const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit')
-    const [mode, setMOde] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
+    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
     
 
     // Keep filters or expanded open when switching to a different section
@@ -109,7 +110,7 @@ export default function DesktopLayout() {
                 </h2>
                 { expandedSection == 'results' &&
             <div id="result-content" className="lg:max-h-[50svh] xl:max-h-[60svh] lg:overflow-y-auto border-t border-neutral-200">
-                <Results isMobile={false}/>
+                <SearchResults isMobile={false}/>
             </div>
             
             }
@@ -119,8 +120,8 @@ export default function DesktopLayout() {
         </>}
 
         { mode == 'tree' && 
-            <section aria-labelledby="cadastre-title" className="max-h-[100svh] lg:overflow-y-auto border-t border-neutral-200 bg-white rounded-md">
-            <Results isMobile={false}/>
+            <section aria-labelledby="cadastre-title" className="max-h-[100svh] lg:overflow-y-auto border-t border-neutral-200 bg-white rounded-md shadow-md">
+            <TreeResults isMobile={false}/>
             </section>
 
         }

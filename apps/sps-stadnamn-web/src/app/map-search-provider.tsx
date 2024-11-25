@@ -33,6 +33,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
 
     useEffect(() => {
+        if (searchQueryString) {
             setIsLoading(true)
             fetch(`/api/search/map?${searchQueryString}&size=${size}`)
             .then(response => {
@@ -60,6 +61,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             }).finally(() => {
                 setIsLoading(false)
             })
+        }
       }, [searchQueryString, size])
 
 

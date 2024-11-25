@@ -29,29 +29,40 @@ export function useDataset() {
 export function useSearchQuery() {
     const searchParams = useSearchParams()
     const dataset = useDataset()
-
     const fields = ['q', ...Object.keys(fieldConfig[dataset])]
     const facetFilters: [string, string][] = []
-
     const searchQuery = new URLSearchParams()
-
-
-    fields.forEach(field => {
-        const values = searchParams.getAll(field)
-        values.forEach(value => {
-            searchQuery.append(field, value)
-            if (field != 'q') {
-                facetFilters.push([field, value])
+    const mode = searchParams.get('mode')
+    
+    if (mode == 'tree') {
+        searchQuery.append('sosi', 'gard')
+        const adm = searchParams.get('adm')
+        if (adm) {
+            searchQuery.append('adm', adm)
+        }
+    }
+    else {
+        fields.forEach(field => {
+            const values = searchParams.getAll(field)
+            values.forEach(value => {
+                searchQuery.append(field, value)
+                if (field != 'q') {
+                    facetFilters.push([field, value])
+                }
+            })
+        })
+    
+        searchParams.forEach((value, key) => {
+            if (!fields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
+                searchQuery.append(key, value)
+                facetFilters.push([key, value])
             }
         })
-    })
 
-    searchParams.forEach((value, key) => {
-        if (!fields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
-            searchQuery.append(key, value)
-            facetFilters.push([key, value])
-        }
-    })
+    }
+
+
+    
 
     const searchFilterParamsString = searchQuery.toString()
     // Params that don't require the results section to be shown
@@ -59,7 +70,7 @@ export function useSearchQuery() {
         searchQuery.set('dataset', dataset)
     }
     const field = searchParams.get('field')
-    if (field) {
+    if (field && mode != 'tree') {
         searchQuery.set('field', field)
     }
 
@@ -70,5 +81,5 @@ export function useSearchQuery() {
     }
 
 
-    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams}
+    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams }
 }
