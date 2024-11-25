@@ -134,15 +134,7 @@ export default function DesktopLayout() {
         </div>
         </div> }
         { cadastralUnit && <div className="lg:absolute p-2 right-0 bottom-4 flex flex-col gap-2 max-h-[50svh] w-[40svw] !z-[3001]">
-            <div className="bg-white rounded-md shadow-md p-4 pt-2 instance-info overflow-auto">
-            <button className="absolute right-4 top-4" onClick={() => {
-                if (expanded == "cadastre") {
-                    setExpanded("tree")
-                }
-                else {
-                    setCadastralUnit(null)
-                }
-            } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
+            <div className="rounded-md shadow-md bg-white overflow-auto">
             
          
             <CadastralSubdivisions gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr']}/>

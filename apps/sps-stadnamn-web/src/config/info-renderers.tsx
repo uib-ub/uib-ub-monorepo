@@ -306,24 +306,23 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <h3>Eiendom</h3>
     { source.within && cadastreBreadcrumb(source, "m1838", "misc.gardLabel") }
     </div>
-    <div>
-    <h3>Detaljer</h3>
+    <CollapsibleHeading title="Detaljer">
     <FacetsInfobox dataset={'m1838'} source={source}/>
-    </div>
+    </CollapsibleHeading>
+
     </>
 
   },
   mu1950: (source: any) => {
     return <>
-    {source.sosi != 'gard' && <div>
-    <h3>Eiendom</h3>
-    { source.within && cadastreBreadcrumb(source, "mu1950", "rawData.Gardsnamn") }
-    </div>}
+    <div className="flex flex-wrap gap-2">{source.sosi != 'gard' && source.within && cadastreBreadcrumb(source, "mu1950", "rawData.Gardsnamn") }
+    <SearchParamsLink addParams={{cadastralUnit: source.sosi == 'gard' ? source.uuid : source.within}}>Vis matrikkeltabell</SearchParamsLink>
+    </div>
 
     {source.sosi != 'gard' && 
-      <div><h3>Detaljer</h3>
+      <CollapsibleHeading title="Detaljer">
       <FacetsInfobox dataset={'mu1950'} source={source}/>
-      </div>}
+      </CollapsibleHeading>}
 
     </>
   },

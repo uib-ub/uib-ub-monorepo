@@ -28,6 +28,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                     addParams={{
                         expanded: 'cadastre',
                         cadastralUnit: hit.fields.uuid,
+                        doc: hit.fields.uuid,
                     ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}}}>
 
                     

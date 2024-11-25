@@ -24,11 +24,28 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
     const cadastralUnit = useQueryState('cadastralUnit')[0]
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
     const [expanded, setExpanded] = useQueryState('expanded', { history: 'push'})
+    const [selectedCadastralUnit, setSelectedCadastralUnit] = useState<any | null>(null)
 
     const serialize = createSerializer({
         within: parseAsString,
         dataset: parseAsString,
     })
+
+
+    useEffect(() => {
+        if (cadastralUnit) {
+            setIsLoading(true)
+            fetch(`/api/doc?uuid=${cadastralUnit}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
+                if (data.hits?.hits?.length) {
+                    setSelectedCadastralUnit(data.hits.hits[0])
+                }
+            })
+        }
+        else {
+            setSelectedCadastralUnit(null)
+        }
+    }   
+    , [cadastralUnit, dataset, setSelectedCadastralUnit])
     
 
 
@@ -60,51 +77,42 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
 
 
     return (
-        <div className="space-y-4 w-full overflow-auto">
-            {isLoading ? 
-            <div className="result-table max-h-[320px]">
-                <div className="animate-pulse bg-neutral-50 h-12 border-b border-neutral-200"></div>
-                <div className="h-8 border-b border-neutral-200"></div>
-                <div className="animate-pulse bg-neutral-50 h-8 border-b border-neutral-200"></div>
-            </div> :
-                hits && <>
-                    <div className="flex gap-4"><h2 className="!text-xl">2 Berg <IconButton label="Info" onClick={()=> { setDoc(cadastralUnit); setExpanded('info') }}><PiInfoFill className="text-primary-600"/></IconButton></h2>
-                    {hits.total.value > 1 && false && <Link href={serialize({dataset, within: cadastralUnit})} className="btn btn-outline no-underline btn-compact"><PiMagnifyingGlass className="text-xl mr-2" aria-hidden="true"/>Søk i brukene</Link>}
-                    </div>
-                    <div className="result-table !mt-1">
-                        <div className="w-full">
-                            <table className="w-full">
-                            <caption className="sr-only">Underordna bruk</caption>
-                                <thead className="w-full">
-                                    <tr>
-                                        <th>Namn</th>
+    <>
+        {isLoading ? 
+        <div className="result-table max-h-[320px]">
+            <div className="animate-pulse bg-neutral-50 h-12 border-b border-neutral-200"></div>
+            <div className="h-8 border-b border-neutral-200"></div>
+            <div className="animate-pulse bg-neutral-50 h-8 border-b border-neutral-200"></div>
+        </div> :
+            hits && cadastralUnit && <>
+                <h2 className="p-2 px-4 text-lg text-white bg-neutral-800 font-semibold !font-sans text">
+                    <SearchParamsLink className="no-underline hover:underline decoration-white" addParams={{ expanded: 'info', doc: cadastralUnit }}>{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}</SearchParamsLink>
+                </h2>
+                        <table className="w-full result-table border-x-0">
+                            <thead className="w-full">
+                                <tr className="">
+                                    <th className="">Namn</th>
+                                    {fields.map((field: Record<string, any>) => (
+                                        <th className="bg-white" key={field.key}>{field.label}</th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {hits.hits.slice((page - 1) * 300, page * 300).map((hit: any) => (
+                                    <tr key={hit._id}>
+                                        <td className="border p-2 border-x-0"><SearchParamsLink aria-current={doc==hit.fields.uuid ? 'page' : false} addParams={{ doc: hit.fields.uuid, expanded: 'info' }}>{hit.fields[bnrField]} {hit.fields.label}</SearchParamsLink></td>
                                         {fields.map((field: Record<string, any>) => (
-                                            <th className="sticky top-0 bg-white" key={field.key}>{field.label}</th>
+                                            <td className="border p-2" key={field.key}>{hit.fields[field.key]}</td>
                                         ))}
                                     </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div className="w-full max-h-[30svh] overflow-y-auto">
-                            <table className="w-full">
-                                <tbody className="block">
-                                    {hits.hits.slice((page - 1) * 300, page * 300).map((hit: any) => (
-                                        <tr key={hit._id} className="table w-full table-fixed">
-                                            <td className="border p-2"><SearchParamsLink addParams={{ doc: hit.fields.uuid, expanded: 'info' }}>{hit.fields[bnrField]} {hit.fields.label}</SearchParamsLink></td>
-                                            {fields.map((field: Record<string, any>) => (
-                                                <td className="border p-2" key={field.key}>{hit.fields[field.key]}</td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    {hits.total.value > 300 && <Pagination currentPage={page} setCurrentPage={setPage} totalPages={Math.ceil(hits.total.value / 300)} />}
-            
-
-                </>
-            }
-        </div>
-    );
+                                ))}
+                            </tbody>
+                        </table>
+          
+               
+                {hits.total.value > 300 && <Pagination currentPage={page} setCurrentPage={setPage} totalPages={Math.ceil(hits.total.value / 300)} />}
+            </>
+        }
+    </>
+);
 }
