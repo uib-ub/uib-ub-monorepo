@@ -6,8 +6,10 @@ import { postQuery } from "../_utils/post";
 export async function GET(request: Request) {
     // get params dataset and groupBy, and adm1 and adm2 if they exist
     const searchParams = new URL(request.url).searchParams;
-    const { dataset, adm1, adm2 } = Object.fromEntries(searchParams.entries())
-    const groupBy = adm1 ? 'adm2' : 'adm1'
+    const { dataset, adm } = Object.fromEntries(searchParams.entries())
+    const [adm1, adm2] = adm?.split("__") || [];
+    console.log("ADM1 and 2", adm1, adm2)
+    const groupBy = adm1 ? 'adm2' : 'adm1';
     
     const query = {
         size: 0,

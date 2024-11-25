@@ -1,5 +1,7 @@
 import { useSearchParams } from 'next/navigation'
 import { fieldConfig } from '@/config/search-config';
+import { contentSettings } from '@/config/server-config';
+import { parseAsInteger, useQueryState } from 'nuqs';
 
 export function useQueryWithout(omit : string[]) {
     const params = useSearchParams()
@@ -32,16 +34,11 @@ export function useSearchQuery() {
     const fields = ['q', ...Object.keys(fieldConfig[dataset])]
     const facetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
-    const mode = searchParams.get('mode')
+    const mode = searchParams.get('mode') || 'search'
+    let size = useQueryState('size', parseAsInteger.withDefault(20))[0]
     
-    if (mode == 'tree') {
-        searchQuery.append('sosi', 'gard')
-        const adm = searchParams.get('adm')
-        if (adm) {
-            searchQuery.append('adm', adm)
-        }
-    }
-    else {
+    
+    if (mode == 'search') {
         fields.forEach(field => {
             const values = searchParams.getAll(field)
             values.forEach(value => {
@@ -80,6 +77,19 @@ export function useSearchQuery() {
         return outputUrl.toString()
     }
 
+    // Tree params
+    if (mode == 'tree') {
+        searchQuery.append('sosi', 'gard')
+        const adm = searchParams.get('adm')
+        size = 0
+        if (adm) {
+            searchQuery.append('adm', adm)
+            if (adm.split("__").length == contentSettings[dataset].adm) {
+                size = 500
+            }
+        }
+    }
 
-    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams }
+
+    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams, size }
 }

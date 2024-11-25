@@ -29,40 +29,40 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
-    const { searchQueryString } = useSearchQuery()
-    const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
+    const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
 
     useEffect(() => {
-        if (searchQueryString) {
-            setIsLoading(true)
-            fetch(`/api/search/map?${searchQueryString}&size=${size}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw response
-                }
-                return response.json()})
-            .then(es_data => {
-                const newBounds = es_data.aggregations?.viewport.bounds
-                if (newBounds) {
-                    setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
-                }
-                else if (es_data.hits.hits.length) {
-                    setResultBounds(null)
-                }
+    
+        setIsLoading(true)
+        fetch(`/api/search/map?${searchQueryString}&size=${size}
+            `)
+        .then(response => {
+            if (!response.ok) {
+                throw response
+            }
+            return response.json()})
+        .then(es_data => {
+            const newBounds = es_data.aggregations?.viewport.bounds
+            if (newBounds) {
+                setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+            }
+            else if (es_data.hits.hits.length) {
+                setResultBounds(null)
+            }
 
 
-                setTotalHits(es_data.hits.total)
-                setResultData(es_data.hits.hits)
-                        
-            }).catch(error => {
-                console.error(error)
-                setSearchError({error: error.statusText, status: error.status})
+            setTotalHits(es_data.hits.total)
+            setResultData(es_data.hits.hits)
+                    
+        }).catch(error => {
+            console.error(error)
+            setSearchError({error: error.statusText, status: error.status})
 
-            }).finally(() => {
-                setIsLoading(false)
-            })
-        }
-      }, [searchQueryString, size])
+        }).finally(() => {
+            setIsLoading(false)
+        })
+        
+      }, [searchQueryString, size, searchFilterParamsString])
 
 
   return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError}}>{children}</SearchContext.Provider>

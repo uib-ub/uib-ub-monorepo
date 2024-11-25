@@ -5,13 +5,13 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
-import { useDataset } from "@/lib/search-params";
+import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
 import CadastralItem from "./cadastral-item";
-import Breadcrumbs from "@/components/layout/breadcrumbs";
-import { treeSettings } from "@/config/server-config";
+import { contentSettings, treeSettings } from "@/config/server-config";
 import SearchParamsLink from "@/components/ui/search-params-link";
 import { datasetTitles } from "@/config/metadata-config";
+import { PiCaretRightBold } from "react-icons/pi";
 
 
 export default function TreeResults({isMobile}: {isMobile: boolean}) {
@@ -28,16 +28,16 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     const [isLoadingTree, setIsLoadingTree] = useState<boolean>(false)
     const [cadastralData, setCadastralData] = useState<any>(null)
 
+    
+
 
     const { resultData, totalHits, isLoading, searchError } = useContext(SearchContext)
-    const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
+    const{ size } = useSearchQuery()
     
-
-    // Todo: adapt to datasets with adm3
-    const adm1 = searchParams.get('adm1')
-    const adm2 = searchParams.get('adm2')
-    
-    const aggregate = adm2 ? undefined : adm1 ? 'adm2' : 'adm1'
+    const adm = searchParams.get('adm')
+    const admItems = adm?.split("__").reverse()
+    const datasetDeepestAdm = contentSettings[dataset]?.adm
+    const aggregate = !admItems?.length || datasetDeepestAdm && admItems.length < datasetDeepestAdm
     const aggSort = treeSettings[dataset]?.aggSort
     
     
@@ -45,7 +45,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
       if (aggregate) {
         setIsLoadingTree(true)
     
-        fetch(`/api/tree?dataset=${dataset}${adm1 ? `&adm1=${adm1}` : ''}${adm2 ? `&adm2=${adm2}` : ''}`)
+        fetch(`/api/tree?dataset=${dataset}${adm ? `&adm=${adm}` : ''}`)
             .then(response => response.json())
             .then(data => {
               setIsLoadingTree(false)
@@ -60,7 +60,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
       }
     
         
-    }, [dataset, adm1, adm2, aggregate])
+    }, [dataset, adm, aggregate])
 
     
     
@@ -70,27 +70,34 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
 
   return (
     <>
+    { adm &&
+    <div className="px-4 py-2 text-lg flex">
+        <SearchParamsLink id="tree-title" className="breadcrumb-link" withoutParams={["adm", "size"]}>
+            Register
+            </SearchParamsLink>&nbsp;/&nbsp;
+        {admItems?.map((item, index) => {
+
+            return (
+                <div key={index}>
+                  {index > 0 && <span>&nbsp;/&nbsp;</span>}
+                  { index < admItems.length - 1 ?
+                
+                <SearchParamsLink className="breadcrumb-link" addParams={{adm: admItems.slice(0, index + 1).reverse().join("__")}}>
+                    {item}
+                </SearchParamsLink>
+                : 
+                <span>{item}</span>
+                }
+                </div>
+            )
+            })
+        }
+        </div>
+
+    }
     
     
 
-    {adm1 && 
-          <div className="px-4 py-2 text-lg">
-            <SearchParamsLink className="breadcrumb-link" withoutParams={["adm1", "adm2", "size"]}>
-            {datasetTitles[dataset]}
-            </SearchParamsLink>
-            <span className='mx-2'>/</span>
-            {adm2 ?
-              <>
-              <SearchParamsLink className="breadcrumb-link" withoutParams={["adm2", "size"]}>
-              {adm1}
-              </SearchParamsLink>
-              <span className='mx-2'>/</span>
-              {adm2}
-              </>
-            : adm1
-            }
-          </div>
-        }
 
     {isMobile && <h2>{datasetTitles[dataset]}</h2>}
     
@@ -98,7 +105,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
 
 
-{totalHits?.value ? <>
+{(!aggregate && totalHits?.value && <>
   { Array.from({length: Math.min(size, totalHits?.value)}, (_, i) => {
     if (i == (size -1) && size < totalHits?.value && i < resultData.length) {
       const hit = resultData[i]
@@ -118,11 +125,32 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     }
   }
   )}
-</> : null}
+</>)}
+{aggregate && cadastralData && <>
+  {cadastralData?.aggregations?.adm?.buckets?.length &&
+          <>
+          {aggregate && !isLoadingTree && cadastralData?.aggregations.adm.buckets
+                  .filter((item: any) => item.key != '_false')
+                  .sort((a: any, b: any)=> aggSort ? a.aggNum.buckets[0].key.localeCompare(b.aggNum.buckets[0].key) : a.aggNum.localeCompare(b.key))
+                  .map((admBucket: Record<string, any>) => {
+
+            return <li key={admBucket.key} className="flex flex-col gap-2">
+              <SearchParamsLink addParams={{adm: admBucket.key + (adm ? '__' + adm : '')}}
+                    
+                    className="lg:text-lg gap-2 px-4 mx-2 py-2 no-underline">
+                      {treeSettings[dataset].showNumber && (adm ? admBucket.aggNum.buckets[0].key : admBucket.aggNum.buckets[0].key.slice(0,2))} {admBucket.key}
+                      <PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/>
+              </SearchParamsLink>
+            </li>
+          })}
+          </>
+          }
+
+</>}
 
       
     </ul>
-      {(searchError || (!isLoading && !resultData?.length)) && <div className="flex justify-center">
+      {searchError  && <div className="flex justify-center">
         <div role="status" aria-live="polite" className="text-primary-600 pb-4">{searchError && <strong>{searchError?.status}</strong>} Det har oppstått en feil</div>
       </div>
         }
