@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
-import CadastralItem from "./cadastral-item";
+import TreeItem from "./tree-item";
 import { contentSettings, treeSettings } from "@/config/server-config";
 import SearchParamsLink from "@/components/ui/search-params-link";
 import { datasetTitles } from "@/config/metadata-config";
@@ -115,7 +115,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     }
     else if (i < resultData.length) {
       const hit = resultData[i]
-      return <CadastralItem key={hit._id} hit={hit} isMobile={isMobile}/>
+      return <TreeItem key={hit._id} hit={hit} isMobile={isMobile}/>
     }
     else {
       return <li className="h-10 flex flex-col mx-2 flex-grow justify-center gap-1" key={i}>

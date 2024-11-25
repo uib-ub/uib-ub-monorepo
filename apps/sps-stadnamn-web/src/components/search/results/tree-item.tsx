@@ -6,7 +6,7 @@ import { useRef, useEffect } from 'react';
 import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
 import SearchParamsLink from '@/components/ui/search-params-link';
 
-export default function CadastralItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
+export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
     const dataset = useDataset()
     const cadastralUnit = useQueryState('cadastralUnit')[0]
     const expanded = useQueryState('expanded')[0]
