@@ -34,7 +34,10 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
         }
         
         for (const [key, value] of new FormData(event.target)) {
-            formParams.append(key, value as string)
+            if (value) {
+                formParams.append(key, value as string)
+            }
+            
         }
         router.push(`/search?${formParams.toString()}`)
     }
