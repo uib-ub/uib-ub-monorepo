@@ -20,17 +20,11 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
         return { key, label: value.label }
     })
     const [page, setPage] = useState(1)
-    const [isLoading, setIsLoading] = useState(true)
     const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit')
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
-    const [expanded, setExpanded] = useQueryState('expanded', { history: 'push'})
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
     const [selectedCadastralUnit, setSelectedCadastralUnit] = useState<any | null>(null)
 
-    const serialize = createSerializer({
-        within: parseAsString,
-        dataset: parseAsString,
-    })
 
 
     useEffect(() => {

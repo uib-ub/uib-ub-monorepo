@@ -13,6 +13,7 @@ import { SearchContext } from "@/app/map-search-provider"
 import Spinner from "../svg/Spinner"
 import CadastralSubdivisions from "../doc/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
+import { DocContext } from "@/app/doc-provider"
 
 export default function DesktopLayout() {
 
@@ -33,6 +34,8 @@ export default function DesktopLayout() {
     const [expandedSection, setExpandedSection] = useState<string | null>(expanded === 'results' ? 'results' : expanded === 'filters' ? 'filters' : null)
 
     const [ showLoading, setShowLoading ] = useState<string|null>(null)
+
+    const { docLoading } = useContext(DocContext)
 
     
 
@@ -131,7 +134,7 @@ export default function DesktopLayout() {
        
         {  <div className={`lg:absolute right-0 top-0 py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] ${mode == 'tree' ? 'lg:max-h-[40svh]' :  'lg:max-h-[50svh]'}`}>
         <div className={`bg-white relative rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar ${ expanded != 'info' ? 'hidden lg:block' : ''}`}>
-            { (doc || point) && <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
+            { (doc || point) &&  <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
             <InfoContent/>
         </div>
         </div> }

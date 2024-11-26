@@ -89,7 +89,7 @@ export default function DocInfo() {
         </div>
       
       
-      { infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
+      { docDataset && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
       {
         attestationLabel && <div>
@@ -127,8 +127,8 @@ export default function DocInfo() {
 
    
         </div>
-        { docSource.sosi == 'gard' && cadastralUnit && cadastralUnit != docSource.uuid &&
-      <div className="flex justify-center"><SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" addParams={{cadastralUnit: docSource.uuid }}><PiTable aria-hidden="true"/> Matrikkeltabell {cadastralUnit}<br/>{docSource.uuid}</SearchParamsLink>
+        { docSource.sosi == 'gard' && (!cadastralUnit || cadastralUnit != docSource.uuid) &&
+      <div className="flex justify-center"><SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" addParams={{cadastralUnit: docSource.uuid }}><PiTable aria-hidden="true"/> Matrikkeltabell</SearchParamsLink>
     </div>
 
       }

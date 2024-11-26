@@ -8,6 +8,7 @@ import { useDataset, useSearchQuery } from "@/lib/search-params"
 import Link from "next/link"
 import { PiCaretDown, PiCaretLeft, PiCaretRight, PiCaretUp } from "react-icons/pi"
 import { DocContext } from "@/app/doc-provider"
+import Spinner from "@/components/svg/Spinner"
 
 
 export default function InfoContent() {
@@ -31,7 +32,6 @@ export default function InfoContent() {
 
 
 
-    
 
     if (point || doc) {
         return <>
@@ -56,7 +56,7 @@ export default function InfoContent() {
         }
         </>
     }
-    else if (!isLoading) {
+    else {
         return  <DatasetInfo/>
     }
 }
