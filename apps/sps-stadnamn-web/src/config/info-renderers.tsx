@@ -214,50 +214,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <CollapsibleHeading title="Detaljer">
     <FacetsInfobox dataset={'bsn'} source={source} />
     </CollapsibleHeading>
-    {false && <InfoBox dataset={'bsn'}
-             items={[
-                {title: 'Opppslagsform', value: source.label},
-                {title: 'Preposisjon', value: source.rawData?.original?.stnavn?.oppslag?.prep},
-                {title: 'Parform', value: source.rawData?.original?.stnavn?.parform_pf_navn},
-                {title: 'Stedstype', value: source.rawData?.supplemented?.type, sosi: true},
-                {title: 'Kommune', value: source.adm2},
-                {title: 'Kommunenummer', value: source.rawData?.supplemented?.knr},
-                {title: 'Fylke', value: source.adm1},
-                {
-                  title: 'Gardsnummer', 
-                  items: [{value: source.rawData?.original?.stnavn?.sted?.gårdsnr, hrefParams: {
-                    'adm2': source.adm2,
-                    'adm1': source.adm1,
-                    'rawData.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
-                  }}]
-                },
-                {
-                  title: 'Gardsnummer',
-                  items: [{value: !source.rawData?.original?.stnavn?.sted?.gårdsnr && source.rawData?.supplemented?.gnr, hrefParams: {
-                    'rawData.supplemented.knr': source.rawData?.supplemented?.knr,
-                    'rawData.supplemented.gnr': source.rawData?.supplemented?.gnr,
-                  }}]
-                },
-                {
-                  title: 'Bruksnummer',
-                  items: [{value: !source.rawData?.original && source.rawData?.original?.stnavn?.sted?.bruksnr, hrefParams: {
-                    'rawData.adm2': source.adm2,
-                    'rawData.adm1': source.adm1,
-                    'rawData.stnavn.sted__bruksnr': source.rawData?.original?.stnavn?.sted?.bruksnr,
-                    'rawData.stnavn.sted__gårdsnr': source.rawData?.original?.stnavn?.sted?.gårdsnr
-                  }}]
-                },
-                {
-                  title: 'Bruksnummer',
-                  items: [{value: !source.rawData?.original && source.rawData?.supplemented?.bnr, hrefParams: {
-                    'rawData.supplemented.knr': source.rawData?.supplemented?.knr,
-                    'rawData.supplemented.bnr': source.rawData?.supplemented?.bnr,
-                    'rawData.supplemented.gnr': source.rawData?.supplemented?.gnr
-                  }}]
-                },
-                {title: 'StedsnavnID', value: source.rawData?.supplemented?.snid, href: `/view/search?snid=${encodeURIComponent(source.rawData?.supplemented?.snid)}`},
-              ]}
-    />
     </>
   },
   hord: (source: any) => {
