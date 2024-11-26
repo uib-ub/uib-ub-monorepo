@@ -5,12 +5,12 @@ import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
 import ErrorMessage from '../error-message';
+import Footer from '../layout/footer';
 
 const DynamicImageViewer = () => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const viewer = useRef<OpenSeadragon.Viewer | null>(null);
   const [manifest, setManifest] = useState<any>(null);
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const {dataset, manifestId} = useParams();
@@ -21,12 +21,6 @@ const DynamicImageViewer = () => {
   const hasSearchParams = searchParams.toString()
   
 
-  const toggleCollapse = (value: boolean | ((prevState: boolean) => boolean)) => {
-    setIsCollapsed(value);
-    if (viewer.current) {
-      viewer.current.viewport.goHome()
-    }
-  }
 
   useEffect(() => {
     const fetchManifestAndInitializeViewer = async () => {
@@ -114,9 +108,9 @@ const DynamicImageViewer = () => {
   }, [manifestId, dataset]);
 
   return (
-    <div className='h-full w-full grid grid-cols-5'>
+    <div className='flex flex-col !h-full !w-full lg:grid lg:grid-cols-5'>
      
-    <div className='col-span-4 relative aspect-square sm:aspect-auto bg-neutral-50'>
+    <div className='w-full lg:col-span-4 relative !min-h-[40svh] bg-neutral-200'>
     { params.dataset &&
       <span className="absolute right-0 top-0 z-[1001] mx-3 my-2 rounded-full border-white text-white border bg-neutral-900 shadow-sm">
         <IconButton href={`/view/${dataset}${hasSearchParams ? '?' + searchParams.toString() : ''}`} className='p-2' label={searchParams.get('display') == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet'}>
@@ -156,15 +150,17 @@ const DynamicImageViewer = () => {
   </div>}
   
     </div>
-      <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}></div>
+    <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}></div>
     </div>
-    { manifest ?
+    {  manifest ?
 
-        <div className='space-y-2 text-sm text-gray-800 p-8 page-info bg-white border-l-2 border-neutral-200'>
+      <div className='space-y-2 text-sm text-gray-800 p-8 page-info bg-white break-words border-l-2 border-neutral-200'>
           <h1>{manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h1>
 
         <ul className="text-base !px-0">
-        {manifest.metadata?.map((item: Record<string, any>, index: number) => (
+        {manifest.metadata?.filter((item: Record<string, any>) => item.label?.no?.[0] != 'Skannede sedler') // Temporary filter removing unrendered anchor tag
+        
+        .map((item: Record<string, any>, index: number) => (
           <li key={index} className='flex flex-col'>
             <span className='font-semibold'>{item.label?.none?.[0] || item.label?.no?.[0] || item.label?.nb?.[0]}</span>
             <span>{item.value?.none?.[0]}</span>
