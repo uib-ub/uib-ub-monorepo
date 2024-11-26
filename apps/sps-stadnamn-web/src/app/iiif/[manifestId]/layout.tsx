@@ -1,9 +1,13 @@
-import ContentLayout from '@/components/layout/content-layout'
+
+import Footer from '@/components/layout/footer'
 
 export default function Page({ children }: { children: React.ReactNode }) {
   return (
-    <ContentLayout>
+
+    <main id="main" tabIndex={-1} className="flex-grow">
       {children}
-    </ContentLayout>
+      </main>
+
+ 
   )
 }

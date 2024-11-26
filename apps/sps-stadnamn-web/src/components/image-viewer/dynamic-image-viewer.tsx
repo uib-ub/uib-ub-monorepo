@@ -11,7 +11,6 @@ const DynamicImageViewer = () => {
   const viewer = useRef<OpenSeadragon.Viewer | null>(null);
   const [manifest, setManifest] = useState<any>(null);
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const {dataset, manifestId} = useParams();
@@ -31,7 +30,7 @@ const DynamicImageViewer = () => {
 
   useEffect(() => {
     const fetchManifestAndInitializeViewer = async () => {
-      setIsLoading(true);
+      //setIsLoading(true);
       // TODO: create api route that generates manifest from elasticsearch index  
       let response 
       try {
@@ -104,13 +103,6 @@ const DynamicImageViewer = () => {
           setCurrentPage(event.page);
         });
 
-        viewer.current.addHandler('open', function() {
-          if (viewer.current) {
-          viewer.current.addHandler('tile-drawing', function() {
-            setIsLoading(false);
-          });
-          }
-      });
 
       } else {
         viewer.current.open(tileSources);
@@ -122,9 +114,9 @@ const DynamicImageViewer = () => {
   }, [manifestId, dataset]);
 
   return (
-    <div className='h-full w-full flex flex-col'>
+    <div className='h-full w-full grid grid-cols-5'>
      
-    <div className='h-full w-full relative aspect-square sm:aspect-auto'>
+    <div className='col-span-4 relative aspect-square sm:aspect-auto bg-neutral-50'>
     { params.dataset &&
       <span className="absolute right-0 top-0 z-[1001] mx-3 my-2 rounded-full border-white text-white border bg-neutral-900 shadow-sm">
         <IconButton href={`/view/${dataset}${hasSearchParams ? '?' + searchParams.toString() : ''}`} className='p-2' label={searchParams.get('display') == 'table' ? 'Tilbake til tabellen' :'Tilbake til kartet'}>
@@ -132,7 +124,7 @@ const DynamicImageViewer = () => {
         </IconButton>
       </span>
     }
-    {error ? <div className="pt-10"><ErrorMessage error={{error}} message="Kunne ikke laste bildet"/></div> : isLoading || !viewerRef.current? 
+    {error ? <div className="pt-10"><ErrorMessage error={{error}} message="Kunne ikke laste bildet"/></div> : !viewerRef.current? 
     <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Laster inn bilde" className='w-20 h-20'/></div>
       : null
       }
@@ -145,9 +137,9 @@ const DynamicImageViewer = () => {
 
     </div>
 
-    <div className='absolute bottom-0 left-0 flex z-[1000] flex gap-2 text-xl p-2 text-white w-full'>
+    <div className='absolute bottom-0 left-0 flex z-[1000] gap-2 text-xl p-2 text-white w-full'>
 
-    <div className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
+    {numberOfPages > 1 && <div className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
       <IconButton 
         id="previous-button"
         label="Forrige side">
@@ -161,17 +153,17 @@ const DynamicImageViewer = () => {
         label="Neste side">
           <PiCaretRightFill/>
       </IconButton>
-  </div>
+  </div>}
   
     </div>
       <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}></div>
     </div>
-    { manifest && isCollapsed ?
+    { manifest ?
 
-        <aside id="iiif_info" className='space-y-2 text-sm text-gray-800 p-4'>
-          <h2 className='text-xl font-bold'> Seddel: {manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h2>
+        <div className='space-y-2 text-sm text-gray-800 p-8 page-info bg-white border-l-2 border-neutral-200'>
+          <h1>{manifest.label?.none?.[0] || manifest.label?.nb?.[0] || manifest.label?.nn?.[0]}</h1>
 
-        <ul className="flex flex-wrap gap-8">
+        <ul className="text-base !px-0">
         {manifest.metadata?.map((item: Record<string, any>, index: number) => (
           <li key={index} className='flex flex-col'>
             <span className='font-semibold'>{item.label?.none?.[0] || item.label?.no?.[0] || item.label?.nb?.[0]}</span>
@@ -179,7 +171,7 @@ const DynamicImageViewer = () => {
           </li>
         ))}
         </ul>
-      </aside>
+      </div>
     : null
     }
     </div>
