@@ -6,12 +6,13 @@ import { useQueryState } from "nuqs"
 import { useContext, useEffect, useState } from "react"
 import InfoContent from "./info/info-content"
 import { PiCaretDownBold, PiCaretUpBold, PiXBold } from "react-icons/pi"
-import { useSearchQuery } from "@/lib/search-params"
+import { useDataset, useSearchQuery } from "@/lib/search-params"
 import StatusSection from "./status-section"
 import Facets from "./facets/facet-section"
 import { SearchContext } from "@/app/map-search-provider"
 import Spinner from "../svg/Spinner"
 import CadastralSubdivisions from "../doc/cadastral-subdivisions"
+import { treeSettings } from "@/config/server-config"
 
 export default function DesktopLayout() {
 
@@ -25,6 +26,7 @@ export default function DesktopLayout() {
     const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
     const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit')
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
+    const dataset = useDataset()
     
 
     // Keep filters or expanded open when switching to a different section
