@@ -57,18 +57,17 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
             return { key, label: value.label }
         })
         setHits(null)
-        setIsLoading(true)
         fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields.join(",")}`)
             .then(response => response.json())
             .then(data => {
                 
                 setHits(data.hits)
-                setIsLoading(false)
+
                 console.log("DONE")
             }
             ).catch(error => {
                 console.error(error)
-                setIsLoading(false)
+
             }
             )
         
@@ -77,13 +76,8 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
 
     return (
     <>
-        {isLoading ? 
-        <div className="result-table max-h-[320px]">
-            <div className="animate-pulse bg-neutral-50 h-12 border-b border-neutral-200"></div>
-            <div className="h-8 border-b border-neutral-200"></div>
-            <div className="animate-pulse bg-neutral-50 h-8 border-b border-neutral-200"></div>
-        </div> :
-            hits && cadastralUnit && <>
+        {
+            hits && cadastralUnit && cadastralUnit == selectedCadastralUnit?._source?.uuid && <>
             <div className="flex bg-neutral-50">
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
                     <SearchParamsLink className="no-underline hover:underline " addParams={{ expanded: 'info', doc: cadastralUnit }}>{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}</SearchParamsLink>
