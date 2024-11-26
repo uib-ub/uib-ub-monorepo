@@ -2,18 +2,21 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTable, PiTagFill, PiWarningFill } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString } from "nuqs"
 import AttestationSource from "../results/attestation-source"
+import SearchParamsLink from "@/components/ui/search-params-link"
 
 export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
     const searchParams = useSearchParams()
     const dataset = searchParams.get('dataset') || 'search'
     const docDataset = selectedDoc._index.split("-")[2]
     const docSource = selectedDoc._source
+    const cadastralUnit = searchParams.get('cadastralUnit')
+    const mode = searchParams.get('mode')
 
     const serialize = createSerializer({
       infoDataset: parseAsString,
@@ -81,7 +84,11 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
               className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">
                 {docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
         </div>
+      { docSource.sosi == 'gard' && cadastralUnit != docSource.uuid && mode != 'tree' &&
+      <div className="flex"><SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" addParams={{cadastralUnit: docSource.sosi == 'gard' ? docSource.uuid : docSource.within}}><PiTable aria-hidden="true"/> Matrikkeltabell</SearchParamsLink>
+    </div>
 
+      }
       
       { infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
@@ -102,7 +109,7 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
         </div>}
 
 
-        <div className="flex gap-4 flex-wrap pt-8 pb-2 text-neutral-900">
+        <div className="flex gap-4 flex-wrap pt-4 pb-2 text-neutral-900">
         { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
           <>
             <Link href={"/uuid/" + docSource.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
@@ -117,6 +124,7 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
         </>
           : <div className="flex gap-1 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
       }
+
 
    
         </div>

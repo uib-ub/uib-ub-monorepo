@@ -95,6 +95,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
 
 
+
     const query = `/api/geo/${(markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
 
     fetch(query, {

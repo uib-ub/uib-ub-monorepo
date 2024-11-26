@@ -10,15 +10,14 @@ import { treeSettings } from './server-config';
 import SearchParamsLink from '@/components/ui/search-params-link';
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import SearchLink from '@/components/ui/search-link';
-import { PiMagnifyingGlass } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiTable } from 'react-icons/pi';
 import SourceList from '@/components/search/results/source-list';
 
 
 const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
   const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
-  const parentUrl = `/view/${docDataset}/doc/${source.within}`
   const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
-  return <div className="text-lg"><SearchParamsLink className="breadcrumb-link" href={parentUrl}>{parentLabel}</SearchParamsLink><span className="mx-2">/</span>{currentName}</div>
+  return <div className="text-lg"><SearchParamsLink className="breadcrumb-link" addParams={{doc: source.within}}>{parentLabel}</SearchParamsLink><span className="mx-2">/</span>{currentName}</div>
 }
 
 
@@ -315,14 +314,15 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   mu1950: (source: any) => {
     return <>
-    <div className="flex flex-wrap gap-2">{source.sosi != 'gard' && source.within && cadastreBreadcrumb(source, "mu1950", "rawData.Gardsnamn") }
-    <SearchParamsLink addParams={{cadastralUnit: source.sosi == 'gard' ? source.uuid : source.within}}>Vis matrikkeltabell</SearchParamsLink>
-    </div>
-
-    {source.sosi != 'gard' && 
+    {source.sosi != 'gard' &&
+      <>
+      { source.within && cadastreBreadcrumb(source, "mu1950", "rawData.Gardsnamn") }
       <CollapsibleHeading title="Detaljer">
       <FacetsInfobox dataset={'mu1950'} source={source}/>
-      </CollapsibleHeading>}
+      </CollapsibleHeading>
+      </>
+    }
+
 
     </>
   },
