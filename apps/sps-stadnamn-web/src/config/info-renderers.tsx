@@ -211,7 +211,10 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
      : source.rawData?.supplemented?.merknad && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.supplemented?.merknad}</div>
     }
     </div>
-    <InfoBox dataset={'bsn'}
+    <CollapsibleHeading title="Detaljer">
+    <FacetsInfobox dataset={'bsn'} source={source} />
+    </CollapsibleHeading>
+    {false && <InfoBox dataset={'bsn'}
              items={[
                 {title: 'Opppslagsform', value: source.label},
                 {title: 'Preposisjon', value: source.rawData?.original?.stnavn?.oppslag?.prep},
