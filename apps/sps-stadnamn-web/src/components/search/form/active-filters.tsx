@@ -1,5 +1,5 @@
 'use client'
-import WithinLabel from "@/app/view/[dataset]/@searchSection/_search-view/WithinLabel"
+import WithinLabel from "./within-label"
 import { fieldConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
