@@ -162,15 +162,6 @@ const DynamicImageViewer = () => {
           <PiCaretRightFill/>
       </IconButton>
   </div>
-  <IconButton 
-          label={isCollapsed ? "Skjul metadata" : "Vis metadata"}
-          textClass="text-base"
-          className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-4 flex gap-2"
-          aria-controls="iiif_info" 
-          aria-expanded={isCollapsed} 
-          onClick={() => toggleCollapse(!isCollapsed)}>
-            {isCollapsed ? <PiXCircleFill/>: <PiInfoFill className='self-center'/>}
-  </IconButton>
   
     </div>
       <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}></div>

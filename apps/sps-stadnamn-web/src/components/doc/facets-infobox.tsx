@@ -29,7 +29,7 @@ export default function FacetsInfobox({ dataset, source }: { dataset: string, so
             //hrefParams: {adm1: "test", adm2: "hello"}
             ...facet.additionalParams?.length ? {hrefParams: [facet.key, ...facet.additionalParams || []].reduce((acc, param) => ({
               ...acc,
-              [param]: getValueByPath(source, param)
+              [param as string]: getValueByPath(source, param)
             }), {})
           } :  {}
                 

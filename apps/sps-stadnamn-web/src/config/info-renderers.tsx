@@ -1,5 +1,3 @@
-import CadastralSubdivisions from '@/components/doc/cadastral-subdivisions';
-import InfoBox from '@/components/ui/infobox';
 import Link from 'next/link';
 import React, { Fragment } from 'react';
 
@@ -10,7 +8,7 @@ import { treeSettings } from './server-config';
 import SearchParamsLink from '@/components/ui/search-params-link';
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import SearchLink from '@/components/ui/search-link';
-import { PiMagnifyingGlass, PiTable } from 'react-icons/pi';
+import { PiMagnifyingGlass } from 'react-icons/pi';
 import SourceList from '@/components/search/results/source-list';
 
 
@@ -123,7 +121,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </>
   },
   sof: (source: any) => {
-    return <>
+    /*
     <InfoBox dataset={'sof'} items={[
       {title: 'Normert form', value: source.rawData.Normform},
       {title: 'Oppslagsform', value: source.rawData.OppsForm},
@@ -137,6 +135,11 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Oppskriver', value: source.rawData.Oppskrivar},
       {title: 'Informant', value: source.rawData.Informant}
     ]}/>
+
+    */
+    return <>
+    <FacetsInfobox dataset={'sof'} source={source}/>
+    
     </>
   },
   rygh: (source: any) => {
@@ -174,13 +177,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </>
   },
   leks: (source: any) => {
-    return <>
-    {source.content?.html && <div className="inline-flex flex-col gap-4 bg-neutral-50 border border-neutral-200">
-      <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link></div>
-    <HtmlString className='space-y-2 inline px-4 pb-4' htmlString={source.content.html} />
-
-    </div>
-    }
+    /*
     <InfoBox dataset={'leks'} items={[
       {title: 'Oppslagsform', value: source.label},
       {title: 'Lokalitetstype', value: source.rawData.Lokalitetstype},
@@ -195,6 +192,18 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         items: [{value: source.rawData.GNIDu, href: `/view/leks?rawData.gnidu=${encodeURIComponent(source.rawData.GNIDu)}`}]},
       {title: 'N50 Kartid', value: source.rawData.N50_kartid}
     ]}/>
+
+    */
+    return <>
+    {source.content?.html && <div className="inline-flex flex-col gap-4 bg-neutral-50 border border-neutral-200">
+      <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link></div>
+    <HtmlString className='space-y-2 inline px-4 pb-4' htmlString={source.content.html} />
+
+    </div>
+    }
+    <CollapsibleHeading title="Detaljer">
+    <FacetsInfobox dataset={'leks'} source={source}/>
+    </CollapsibleHeading>
   </>
   },
   leks_g: (source: any) => {
@@ -218,12 +227,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
   },
   hord: (source: any) => {
     const altLabels = getUniqueAltLabels(source.rawData, source.label, ['namn', 'oppslagsForm', 'normertForm', 'uttale'])
-    return <>
-    <div className='space-y-2'>
-    { altLabels && <div><strong className="text-neutral-900">Andre navneformer (inkl. uttale): </strong>{altLabels}</div>}
-    {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
-    </div>
-    {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
+    /*
     <InfoBox dataset={'hord'} items={[
       {title: 'Kommune', value: source.rawData.kommuneNamn}, 
       {title: 'Kommunenummer', value: source.rawData.kommuneNr}, 
@@ -246,6 +250,16 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       {title: 'Oppskrivar', value: source.rawData.oppskrivar},
       {title: 'Oppskrivingstid', value: source.rawData.oppskrivingsTid},
     ]}/>
+    */
+    return <>
+    <div className='space-y-2'>
+    { altLabels && <div><strong className="text-neutral-900">Andre navneformer (inkl. uttale): </strong>{altLabels}</div>}
+    {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
+    </div>
+    {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
+    <CollapsibleHeading title="Detaljer">
+    <FacetsInfobox dataset={'hord'} source={source}/>
+    </CollapsibleHeading>
     </>
   },
   nbas: (source: any) => {
@@ -305,19 +319,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </>
   },    
   ostf: (source: any) => {
-      return <>
-      { source.links?.length &&
-      <div>
-      <h3>Lenker</h3>
-      <ul className='!mt-0 !list-none !pl-0'>
-        {source.links.map((link: any, index: number) => (
-          <li key={index}><Link href={link} className=''>{link}</Link></li>
-        ))}
-
-      </ul>
-      </div>
-      }
-      <InfoBox dataset={'ostf'} 
+    /*
+    <InfoBox dataset={'ostf'} 
                 items={[
         {title: 'Oppslagsform', value: source.rawData['Oppslagsform/skriftform']},
         {title: 'Kommune', value: source.rawData["Herred for lokalitet"]},
@@ -330,6 +333,23 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         {title: 'StedsnavnID', value: source.rawData.SNID},
         {title: 'Unikt matrikkelnummer', items: source.gnidu?.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},
       ]}/>
+    */
+      return <>
+      { source.links?.length &&
+      <div>
+      <h3>Lenker</h3>
+      <ul className='!mt-0 !list-none !pl-0'>
+        {source.links.map((link: any, index: number) => (
+          <li key={index}><Link href={link} className=''>{link}</Link></li>
+        ))}
+
+      </ul>
+      </div>
+      }
+      <CollapsibleHeading title="Detaljer">
+      <FacetsInfobox dataset={'ostf'} source={source}/>
+      </CollapsibleHeading>
+      
       </>
     },
     ssr2016: (source: any) => {
