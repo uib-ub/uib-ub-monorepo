@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 
 export default function ClientThumbnail({ manifestId }: { manifestId: string }) {
@@ -23,5 +24,5 @@ export default function ClientThumbnail({ manifestId }: { manifestId: string }) 
         })
     }, [manifestId, height])
 
-    return thumbnailUrl && width && height && <Image width={width} height={height} src={thumbnailUrl} alt="Seddel" />
+    return thumbnailUrl && width && height && <Link href={"/iiif/" + manifestId}><Image width={width} height={height} src={thumbnailUrl} alt="Seddel" /></Link>
 }
