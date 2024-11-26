@@ -119,7 +119,7 @@ export default function DesktopLayout() {
         }
         </>}
 
-        { mode == 'tree' && 
+        { mode == 'tree' && treeSettings[dataset] &&
             <section aria-labelledby="tree-title" className="max-h-[100svh] lg:overflow-y-auto border-t border-neutral-200 bg-white rounded-md shadow-md">
             <TreeResults isMobile={false}/>
             </section>

@@ -129,7 +129,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
 {aggregate && cadastralData && <>
   {cadastralData?.aggregations?.adm?.buckets?.length &&
           <>
-          {aggregate && !isLoadingTree && cadastralData?.aggregations.adm.buckets
+          {aggregate && !isLoadingTree && !isLoading && cadastralData?.aggregations.adm.buckets
                   .filter((item: any) => item.key != '_false')
                   .sort((a: any, b: any)=> aggSort ? a.aggNum.buckets[0].key.localeCompare(b.aggNum.buckets[0].key) : a.aggNum.localeCompare(b.key))
                   .map((admBucket: Record<string, any>) => {
