@@ -6,17 +6,20 @@ import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTable, PiTagFill, PiWarn
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
-import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString } from "nuqs"
+import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs"
 import AttestationSource from "../results/attestation-source"
 import SearchParamsLink from "@/components/ui/search-params-link"
+import { useDataset } from "@/lib/search-params"
+import { useContext } from "react"
+import { DocContext } from "@/app/doc-provider"
 
-export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
+export default function DocInfo() {
     const searchParams = useSearchParams()
-    const dataset = searchParams.get('dataset') || 'search'
-    const docDataset = selectedDoc._index.split("-")[2]
-    const docSource = selectedDoc._source
-    const cadastralUnit = searchParams.get('cadastralUnit')
-    const mode = searchParams.get('mode')
+    const dataset = useDataset()
+    const { docDataset, docData } = useContext(DocContext)
+
+    const docSource = docData._source
+    const cadastralUnit = useQueryState('cadastralUnit')[0]
 
     const serialize = createSerializer({
       infoDataset: parseAsString,
@@ -124,8 +127,8 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
 
    
         </div>
-        { docSource.sosi == 'gard' && cadastralUnit != docSource.uuid &&
-      <div className="flex justify-center"><SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" addParams={{cadastralUnit: docSource.sosi == 'gard' ? docSource.uuid : docSource.within}}><PiTable aria-hidden="true"/> Matrikkeltabell</SearchParamsLink>
+        { docSource.sosi == 'gard' && cadastralUnit && cadastralUnit != docSource.uuid &&
+      <div className="flex justify-center"><SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" addParams={{cadastralUnit: docSource.uuid }}><PiTable aria-hidden="true"/> Matrikkeltabell {cadastralUnit}<br/>{docSource.uuid}</SearchParamsLink>
     </div>
 
       }

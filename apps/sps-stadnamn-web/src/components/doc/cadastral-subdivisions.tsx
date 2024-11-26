@@ -13,7 +13,7 @@ import SearchLink from "../ui/search-link"
 import IconButton from "../ui/icon-button"
 
 
-export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: { gnrField: string, bnrField: string, sortFields: string[]}) {
+export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: { gnrField: string, bnrField: string, sortFields: string}) {
     const dataset = useDataset()
     const [hits, setHits] = useState<Record<string,any> | null>(null)
     const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
@@ -57,7 +57,9 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
             return { key, label: value.label }
         })
         setHits(null)
-        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields.join(",")}`)
+        console.log("RENDERING")
+        console.log(dataset, cadastralUnit, gnrField, bnrField, sortFields)
+        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields}`)
             .then(response => response.json())
             .then(data => {
                 

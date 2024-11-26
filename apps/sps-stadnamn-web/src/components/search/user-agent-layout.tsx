@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { userAgent } from "next/server";
 import MobileLayout from "./mobile-layout";
 import DesktopLayout from "./desktop-layout";
+import DocProvider from "@/app/doc-provider";
 
 export default async function UserAgentLayout() {
 
@@ -13,7 +14,9 @@ export default async function UserAgentLayout() {
 
 
   return <SearchProvider>
-          {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
+          <DocProvider>
+            {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
+          </DocProvider>
         </SearchProvider>
 }
 

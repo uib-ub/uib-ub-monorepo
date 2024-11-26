@@ -132,14 +132,14 @@ export default function DesktopLayout() {
         {  <div className={`lg:absolute right-0 top-0 py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] ${mode == 'tree' ? 'lg:max-h-[40svh]' :  'lg:max-h-[50svh]'}`}>
         <div className={`bg-white relative rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar ${ expanded != 'info' ? 'hidden lg:block' : ''}`}>
             { (doc || point) && <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
-            <InfoContent expanded={expanded == 'info' } selectedDocState={selectedDocState}/>
+            <InfoContent/>
         </div>
         </div> }
         { cadastralUnit && <div className="lg:absolute p-2 right-0 bottom-4 flex flex-col gap-2 max-h-[50svh] w-[40svw] !z-[3001]">
             <div className="rounded-md shadow-md bg-white overflow-auto">
             
          
-            <CadastralSubdivisions gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr']}/>
+            <CadastralSubdivisions gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr'].join(",")}/>
             </div>
             </div>}
 
@@ -147,7 +147,7 @@ export default function DesktopLayout() {
 
 
         <div className="absolute top-0 right-0 h-full w-full">
-        <MapExplorer isMobile={false} selectedDocState={selectedDocState}/>
+        <MapExplorer isMobile={false}/>
         </div>
 
 

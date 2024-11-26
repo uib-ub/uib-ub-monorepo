@@ -172,7 +172,7 @@ export default function MobileLayout() {
             <div className="w-full flex justify-center items-center h-6 rounded-t-xl bg-white" style={{touchAction: 'none'}}><div className="h-2 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
             <div className="h-full bg-white max-h-[calc(100svh-3rem)] p-4 overscroll-contain" ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
-            <div className={drawerContent != 'info' ? 'hidden' : undefined }><InfoContent  expanded={snappedPosition > 25} selectedDocState={selectedDocState}/></div>
+            <div className={drawerContent != 'info' ? 'hidden' : undefined }><InfoContent/></div>
             { drawerContent == 'results' && 
             <section className="flex flex-col gap-2">
                 <h2 id="result_heading" className="flex gap-2 flex-wrap px-1" aria-live="polite">
@@ -204,7 +204,7 @@ export default function MobileLayout() {
         </div>
 
         <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full">
-        <MapExplorer isMobile={true} selectedDocState={selectedDocState}/>
+        <MapExplorer isMobile={true}/>
         </div>
 
     </div>

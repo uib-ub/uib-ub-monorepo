@@ -17,9 +17,10 @@ import {
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
 import { useSearchQuery } from "@/lib/search-params";
 import { getLabelMarkerIcon } from "./markers";
+import { DocContext } from "@/app/doc-provider";
 
 
-export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: boolean, selectedDocState: any }) {
+export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const mapInstance = useRef<any>(null);
   const { resultBounds, totalHits, searchError } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(null)
@@ -35,7 +36,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
   const { searchQueryString } = useSearchQuery()
   const setExpanded = useQueryState('expanded', { history: 'push' })[1]
 
-  const selectedDoc = selectedDocState[0]
+  const { docData } = useContext(DocContext)
   const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit', { history: 'push' })
 
 
@@ -364,7 +365,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
                 // If no coordinates are different from the average
                 if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 15) && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
                   
-                  if (selectedDoc?._source?.uuid && bucket.docs.hits.hits.some((hit: any) => hit.fields.uuid[0] == selectedDoc?._source?.uuid)) {
+                  if (docData?._source?.uuid && bucket.docs.hits.hits.some((hit: any) => hit.fields.uuid[0] == docData?._source?.uuid)) {
                     return null
                   }
 
@@ -426,7 +427,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
                 if (viewResults.hits.total.value < 200 || (zoom && zoom == 18)) {
                   const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
 
-                  if (selectedDoc?._source?.uuid && group.children.some((hit: any) => hit.fields.uuid[0] == selectedDoc?._source?.uuid)) {
+                  if (docData?._source?.uuid && group.children.some((hit: any) => hit.fields.uuid[0] == docData?._source?.uuid)) {
                     return null
                   }
 
@@ -447,13 +448,13 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
 
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
               
-              {selectedDoc?._source?.location?.coordinates?.[1] && <Marker 
+              {docData?._source?.location?.coordinates?.[1] && <Marker 
                   zIndexOffset={1000}
                   position={[
-                    selectedDoc._source.location.coordinates[1],
-                    selectedDoc._source.location.coordinates[0]
+                    docData._source.location.coordinates[1],
+                    docData._source.location.coordinates[0]
                   ]} 
-                  icon={new leaflet.DivIcon(getLabelMarkerIcon(selectedDoc._source.label, 'accent', 0, true))}/>
+                  icon={new leaflet.DivIcon(getLabelMarkerIcon(docData._source.label, 'accent', 0, true))}/>
                 }
 
             </>)
