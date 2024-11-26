@@ -36,6 +36,7 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
   const setExpanded = useQueryState('expanded', { history: 'push' })[1]
 
   const selectedDoc = selectedDocState[0]
+  const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit', { history: 'push' })
 
 
 
@@ -309,12 +310,19 @@ export default function MapExplorer({ isMobile, selectedDocState }: { isMobile: 
       click: () => {
         setPoint(null)
         setDoc(hit.fields.uuid[0])
+        console.log("HELLO",JSON.stringify(hit.fields))
+        if (cadastralUnit && hit.fields?.sosi?.[0]== 'gard') {
+          setExpanded('cadastre')
+          setCadastralUnit(hit.fields.uuid[0])
+        }
+        else if (cadastralUnit && cadastralUnit != hit.fields.within) {
+          setCadastralUnit(null)
+        }
+
         if (point?.length) {
           setPoint(point.join(','))
-
         }
         setExpanded('info')
-        setDoc(hit.fields.uuid[0])
       }
     }
   }

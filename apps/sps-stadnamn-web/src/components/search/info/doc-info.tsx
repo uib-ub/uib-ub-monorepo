@@ -84,11 +84,7 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
               className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">
                 {docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset]}</>}</Link>}
         </div>
-      { docSource.sosi == 'gard' && cadastralUnit != docSource.uuid && mode != 'tree' &&
-      <div className="flex"><SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" addParams={{cadastralUnit: docSource.sosi == 'gard' ? docSource.uuid : docSource.within}}><PiTable aria-hidden="true"/> Matrikkeltabell</SearchParamsLink>
-    </div>
-
-      }
+      
       
       { infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
@@ -128,6 +124,11 @@ export default function DocInfo({selectedDoc}: {selectedDoc: any}) {
 
    
         </div>
+        { docSource.sosi == 'gard' && cadastralUnit != docSource.uuid &&
+      <div className="flex justify-center"><SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" addParams={{cadastralUnit: docSource.sosi == 'gard' ? docSource.uuid : docSource.within}}><PiTable aria-hidden="true"/> Matrikkeltabell</SearchParamsLink>
+    </div>
+
+      }
         
 
 

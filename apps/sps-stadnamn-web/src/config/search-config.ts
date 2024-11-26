@@ -18,8 +18,10 @@
  
 const [table, omitLabel, searchable, facet, result, cadastreTable] = Array(6).fill(true);
 
-const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table}
-const cadastre = {"cadastre__gnr": {label: "Gardsnummer", sort: "asc" as const, type: "integer" as const}, "cadastre__bnr": {label: "Bruksnummer", sort: "asc" as const, type: "integer" as const}}
+const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
+const cadastre = {"cadastre__gnr": {label: "Gardsnummer", sort: "asc" as const, type: "integer" as const}, 
+                  "cadastre__bnr": {label: "Bruksnummer", sort: "asc" as const, type: "integer" as const}
+                }
 const uuid = {label: "UUID", result}
 const label = {label: "Namn", result}
 const location = {label: "Koordinater", result}
@@ -100,8 +102,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.kjelde": {label: "Kjelde", facet},
     },
     mu1950: {
-      uuid, label, location, adm, adm1, adm2,
-      "sosi": {label: "Lokalitetstype", facet},
+      uuid, label, location, adm, adm1, adm2, sosi,
       "rawData.KNR": {label: "Knr", table, facet},
       "rawData.GNR": {label: "Gnr", table, facet, additionalParams: ["rawData.KNR"]},
       "rawData.BNR": {label: "Bnr", table, facet, additionalParams: ["rawData.KNR", "rawData.GNR"]},

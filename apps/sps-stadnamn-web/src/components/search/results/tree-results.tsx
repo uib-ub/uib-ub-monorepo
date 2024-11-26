@@ -11,7 +11,7 @@ import TreeItem from "./tree-item";
 import { contentSettings, treeSettings } from "@/config/server-config";
 import SearchParamsLink from "@/components/ui/search-params-link";
 import { datasetTitles } from "@/config/metadata-config";
-import { PiCaretRightBold } from "react-icons/pi";
+import { PiCaretRightBold, PiFolder, PiFolderFill, PiHouse, PiHouseFill, PiTreeView, PiTreeViewFill } from "react-icons/pi";
 
 
 export default function TreeResults({isMobile}: {isMobile: boolean}) {
@@ -72,8 +72,8 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     <>
     { adm &&
     <div className="px-4 py-2 text-lg flex">
-        <SearchParamsLink id="tree-title" className="breadcrumb-link" withoutParams={["adm", "size"]}>
-            Register
+        <SearchParamsLink id="tree-title" className="breadcrumb-link self-center" withoutParams={["adm", "size"]}>
+            <PiTreeViewFill/>
             </SearchParamsLink>&nbsp;/&nbsp;
         {admItems?.map((item, index) => {
 

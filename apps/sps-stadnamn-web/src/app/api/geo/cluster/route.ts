@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 
   const query: Record<string,any> = {
     size: 0,
-    fields: ["label", "location", "uuid"],
+    fields: ["label", "location", "uuid", "sosi"],
     _source: false,
     aggs: {
         tiles: {

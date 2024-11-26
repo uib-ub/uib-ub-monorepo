@@ -35,7 +35,7 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
 
     useEffect(() => {
         if (cadastralUnit) {
-            //setSelectedCadastralUnit(null)
+            setSelectedCadastralUnit(null)
             fetch(`/api/doc?uuid=${cadastralUnit}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setSelectedCadastralUnit(data.hits.hits[0])
@@ -56,13 +56,15 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
         const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
             return { key, label: value.label }
         })
-        
+        setHits(null)
+        setIsLoading(true)
         fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields.join(",")}`)
             .then(response => response.json())
             .then(data => {
                 
                 setHits(data.hits)
                 setIsLoading(false)
+                console.log("DONE")
             }
             ).catch(error => {
                 console.error(error)
