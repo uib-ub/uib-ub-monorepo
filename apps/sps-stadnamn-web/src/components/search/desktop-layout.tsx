@@ -139,12 +139,11 @@ export default function DesktopLayout() {
         </div>
         </div> }
         { cadastralUnit && <div className="lg:absolute p-2 right-0 bottom-4 flex flex-col gap-2 max-h-[50svh] w-[40svw] !z-[3001]">
-            <div className="rounded-md shadow-md bg-white overflow-auto">
-            
-         
-            <CadastralSubdivisions gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr'].join(",")}/>
+                <div className="rounded-md shadow-md bg-white overflow-auto">
+                    <CadastralSubdivisions gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr'].join(",")}/>
+                </div>
             </div>
-            </div>}
+        }
 
         </div>
 
