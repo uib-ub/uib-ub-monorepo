@@ -2,7 +2,6 @@
 import { createContext } from 'react'
 import { useState, useEffect } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
-import { parseAsInteger, useQueryState } from 'nuqs';
 
 interface SearchContextData {
     resultData: any;

@@ -51,15 +51,11 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
             return { key, label: value.label }
         })
         setHits(null)
-        console.log("RENDERING")
-        console.log(dataset, cadastralUnit, gnrField, bnrField, sortFields)
         fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields}`)
             .then(response => response.json())
             .then(data => {
                 
                 setHits(data.hits)
-
-                console.log("DONE")
             }
             ).catch(error => {
                 console.error(error)
