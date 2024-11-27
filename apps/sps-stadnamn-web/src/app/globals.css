@@ -239,7 +239,7 @@
 
  
   .result-table tbody th {
-    @apply px-4 py-1 border-neutral-200 font-normal; 
+    @apply px-2 lg:px-4 py-1 border-neutral-200 font-normal; 
   }
 
   
@@ -254,7 +254,7 @@
 
   
   .result-table td {
-    @apply px-4 py-2;
+    @apply px-2 py-1 lg:px-4 lg:py-2;
   }
   
 

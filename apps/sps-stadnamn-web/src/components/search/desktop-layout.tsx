@@ -79,12 +79,12 @@ export default function DesktopLayout() {
         }
     }
 
-    return <main id="main" className="relative w-full h-[calc(100svh-3rem)]">   
+    return <main id="main" className="flex relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
         <div className="absolute top-0 left-[25svw] max-w-[50svw] z-[2000] right-0 flex flex-col gap-2"><StatusSection isMobile={false}/></div>
         
-        <div className="flex lg:gap-4 flex-col max-h-[90svh] lg:max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
+        <div className="flex lg:gap-4 flex-col h-full max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
 
-        <div className="lg:absolute left-0 top-0 p-2 flex flex-col gap-2 lg:max-h-[90svh] max-w-[40svw] lg:w-[25svw] !z-[3001] bg-white shadow-md lg:shadow-none rounded-br-md lg:rounded-none lg:bg-transparent">
+        <div className={`lg:absolute left-0 top-0 lg:p-2 flex-col gap-2 lg:max-h-[calc(100svh-4rem)] max-w-[40svw] lg:w-[25svw] !z-[3001] bg-white shadow-md lg:shadow-none rounded-br-md lg:rounded-none lg:bg-transparent`}>
         { mode == 'search' && <>
         
         <section aria-labelledby="filter-title" className="bg-white lg:rounded-md lg:shadow-md break-words">
@@ -125,30 +125,32 @@ export default function DesktopLayout() {
         </>}
 
         { mode == 'tree' && treeSettings[dataset] &&
-            <section aria-labelledby="tree-title" className="max-h-[100svh] lg:overflow-y-auto border-t border-neutral-200 bg-white rounded-md shadow-md">
+            <section aria-labelledby="tree-title" className={`h-full lg:max-h-[calc(100svh-4rem)] overflow-y-auto border-t border-neutral-200 bg-white rounded-md shadow-md `}>
             <TreeResults isMobile={false}/>
             </section>
 
         }
         </div>
        
-        {  <div className={`lg:absolute right-0 top-0 py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] ${mode == 'tree' ? 'lg:max-h-[40svh]' :  'lg:max-h-[50svh]'}`}>
-        <div className={`bg-white relative rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar ${ expanded != 'info' ? 'hidden lg:block' : ''}`}>
+        <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
+        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
+        <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar ${ expanded != 'info' ? 'flex lg:block' : ''}`}>
             { (doc || point) &&  <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
             <InfoContent/>
         </div>
-        </div> }
-        { cadastralUnit && <div className="lg:absolute p-2 right-0 bottom-4 flex flex-col gap-2 max-h-[50svh] w-[40svw] !z-[3001]">
-                <div className="rounded-md shadow-md bg-white overflow-auto">
+        </div>
+        { cadastralUnit && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+                <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
                     <CadastralSubdivisions gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr'].join(",")}/>
                 </div>
             </div>
         }
 
         </div>
+        </div>
 
 
-        <div className="absolute top-0 right-0 h-full w-full">
+        <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
         <MapExplorer isMobile={false}/>
         </div>
 

@@ -72,7 +72,7 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
             hits && cadastralUnit && cadastralUnit == selectedCadastralUnit?._source?.uuid && <>
             <div className="flex bg-neutral-50">
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
-                    <SearchParamsLink className="no-underline hover:underline " addParams={{ expanded: 'info', doc: cadastralUnit }}>{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}</SearchParamsLink>
+                    <SearchParamsLink addParams={{ expanded: 'info', doc: cadastralUnit }}>{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}</SearchParamsLink>
                 </h2>
                 <div className="float-right text-2xl flex gap-2 p-1 items-center ml-auto">
                 <SearchLink label="Bla i registeret" 
