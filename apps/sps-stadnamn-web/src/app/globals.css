@@ -222,7 +222,7 @@
 
   
   .result-table {
-    @apply w-full text-left text-neutral-950 border shadow-sm border-neutral-300; 
+    @apply w-full text-left text-neutral-950 border border-neutral-300; 
   }
   
   .result-table thead th {
