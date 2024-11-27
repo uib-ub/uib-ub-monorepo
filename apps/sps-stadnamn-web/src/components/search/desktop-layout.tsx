@@ -78,7 +78,7 @@ export default function DesktopLayout() {
             setExpanded(panel)
         }
     }
-    
+
     return <main id="main" className="relative w-full h-[calc(100svh-3rem)]">   
         <div className="absolute top-0 left-[25svw] max-w-[50svw] z-[2000] right-0 flex flex-col gap-2"><StatusSection isMobile={false}/></div>
         
