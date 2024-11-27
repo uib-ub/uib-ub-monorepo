@@ -84,7 +84,9 @@ export default function DesktopLayout() {
         
         <div className="flex lg:gap-4 flex-col h-full max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
 
-        <div className={`lg:absolute left-0 top-0 lg:p-2 flex-col gap-2 lg:max-h-[calc(100svh-4rem)] max-w-[40svw] lg:w-[25svw] !z-[3001] bg-white shadow-md lg:shadow-none rounded-br-md lg:rounded-none lg:bg-transparent`}>
+        <div className={`lg:absolute left-0 top-0 lg:p-2 flex-col gap-2 lg:max-h-[calc(100svh-4rem)] max-w-[40svw] lg:w-[25svw] !z-[3001] bg-white shadow-md lg:shadow-none rounded-br-md lg:rounded-none lg:bg-transparent 
+            ${mode == 'tree' && (expanded == 'info' || expanded == 'cadastre') ? 'hidden lg:flex' : 'flex'}`}>
+
         { mode == 'search' && <>
         
         <section aria-labelledby="filter-title" className="bg-white lg:rounded-md lg:shadow-md break-words">
@@ -125,7 +127,7 @@ export default function DesktopLayout() {
         </>}
 
         { mode == 'tree' && treeSettings[dataset] &&
-            <section aria-labelledby="tree-title" className={`h-full lg:max-h-[calc(100svh-4rem)] overflow-y-auto border-t border-neutral-200 bg-white rounded-md shadow-md `}>
+            <section aria-labelledby="tree-title" className={`h-full lg:max-h-[calc(100svh-4rem)] overflow-y-auto lg:border-t border-neutral-200 bg-white rounded-md lg:shadow-md `}>
             <TreeResults isMobile={false}/>
             </section>
 
@@ -133,8 +135,8 @@ export default function DesktopLayout() {
         </div>
        
         <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
-        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
-        <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar ${ expanded != 'info' ? 'flex lg:block' : ''}`}>
+        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'} ${(expanded == 'info' || expanded == 'cadastre')? '' : 'hidden lg:flex' }`}>
+        <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar`}>
             { (doc || point) &&  <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
             <InfoContent/>
         </div>
