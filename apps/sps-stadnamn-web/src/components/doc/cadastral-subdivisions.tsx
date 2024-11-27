@@ -74,7 +74,7 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
                     <SearchParamsLink aria-current={doc == selectedCadastralUnit?._source?.uuid ? 'page' : false} 
                                       className="aria-[current=page]:decoration-accent-700"
-                                      addParams={{ expanded: 'info', doc: cadastralUnit }}>{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}
+                                      add={{ expanded: 'info', doc: cadastralUnit }}>{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}
                     </SearchParamsLink>
 
                 </h2>
@@ -104,7 +104,7 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
                                         <td className="border p-2 border-x-0">
                                         <SearchParamsLink aria-current={doc==hit.fields.uuid ? 'page' : false} 
                                                               className="aria-[current=page]:decoration-accent-700"
-                                                              addParams={{ doc: hit.fields.uuid, expanded: 'info' }}>
+                                                              add={{ doc: hit.fields.uuid, expanded: 'info' }}>
                                         {hit.fields[bnrField]} {hit.fields.label}
                                             
                                                                 

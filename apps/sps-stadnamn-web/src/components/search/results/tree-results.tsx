@@ -63,7 +63,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     }, [dataset, adm, aggregate])
 
     
-    
+      
 
      
 
@@ -72,7 +72,9 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     <>
     { adm &&
     <div className="px-4 py-2 text-lg flex">
-        <SearchParamsLink id="tree-title" aria-label="Innholdsfortegnelse" className="breadcrumb-link self-center bg-neutral-800 text-white px-2 rounded-md text-base py-1" withoutParams={["adm", "size"]}>
+        <SearchParamsLink id="tree-title" aria-label="Innholdsfortegnelse" 
+                          className="breadcrumb-link self-center bg-neutral-800 text-white px-2 rounded-md text-base py-1" 
+                          remove={["adm", "size", "doc", "cadastralUnit"]}>
             <PiTreeViewFill aria-hidden="true"/>
             </SearchParamsLink>&nbsp;/&nbsp;
         {admItems?.map((item, index) => {
@@ -82,7 +84,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
                   {index > 0 && <span>&nbsp;/&nbsp;</span>}
                   { index < admItems.length - 1 ?
                 
-                <SearchParamsLink className="breadcrumb-link" addParams={{adm: admItems.slice(0, index + 1).reverse().join("__")}}>
+                <SearchParamsLink className="breadcrumb-link" remove={["doc", "cadastralUnit"]} add={{adm: admItems.slice(0, index + 1).reverse().join("__")}}>
                     {item}
                 </SearchParamsLink>
                 : 
@@ -135,7 +137,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
                   .map((admBucket: Record<string, any>) => {
 
             return <li key={admBucket.key} className="flex flex-col gap-2">
-              <SearchParamsLink addParams={{adm: admBucket.key + (adm ? '__' + adm : '')}}
+              <SearchParamsLink add={{adm: admBucket.key + (adm ? '__' + adm : '')}}
                     
                     className="lg:text-lg gap-2 px-4 mx-2 py-2 no-underline">
                       {treeSettings[dataset].showNumber && (adm ? admBucket.aggNum.buckets[0].key : admBucket.aggNum.buckets[0].key.slice(0,2))} {admBucket.key}

@@ -129,7 +129,7 @@ export default function DocInfo() {
         </div>
         { docSource.sosi == 'gard' &&
       <div className={`flex justify-center ${(!cadastralUnit || cadastralUnit != docSource.uuid) ? '' : 'lg:hidden'}`}>
-        <SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" addParams={{cadastralUnit: docSource.uuid }}>
+        <SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" add={{cadastralUnit: docSource.uuid }}>
           <PiTable aria-hidden="true"/> Matrikkeltabell
         </SearchParamsLink>
     </div>

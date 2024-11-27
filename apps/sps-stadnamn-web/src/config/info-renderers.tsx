@@ -15,7 +15,7 @@ import SourceList from '@/components/search/results/source-list';
 const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
   const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
   const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
-  return <div className="text-lg"><SearchParamsLink className="breadcrumb-link" addParams={{doc: source.within}}>{parentLabel}</SearchParamsLink><span className="mx-2">/</span>{currentName}</div>
+  return <div className="text-lg"><SearchParamsLink className="breadcrumb-link" add={{doc: source.within}}>{parentLabel}</SearchParamsLink><span className="mx-2">/</span>{currentName}</div>
 }
 
 
@@ -67,7 +67,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
           <div className={`ml-6 ${''}`}>
             <strong className='mb-1'>{year}:&nbsp;</strong>
                 {labels.map((label, i) => ( <span key={i}>
-                  {labels.length > 1 && i > 0 ? ', ' : ''}<SearchParamsLink key={i} addParams={{"attestationYear": year, "attestationLabel": label}}>{label}</SearchParamsLink>
+                  {labels.length > 1 && i > 0 ? ', ' : ''}<SearchParamsLink key={i} add={{"attestationYear": year, "attestationLabel": label}}>{label}</SearchParamsLink>
                   </span>
                 ))}
           </div>
@@ -96,7 +96,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {uniqueLabels.size > 0 && <ul className='flex flex-wrap !list-none !p-0'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
-        <SearchParamsLink addParams={{attestationLabel: label}}>
+        <SearchParamsLink add={{attestationLabel: label}}>
         {label}
         </SearchParamsLink>{index < uniqueLabels.size - 1 ? ',' : ''}&nbsp;</li>
     }

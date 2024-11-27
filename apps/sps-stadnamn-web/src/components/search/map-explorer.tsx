@@ -93,8 +93,10 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       queryParams.set('zoom', zoom.toString())
     }
 
-
-
+    if (cadastralUnit) {
+      queryParams.set('within', cadastralUnit)
+      queryParams.delete('sosi')
+    }
 
 
 
@@ -165,7 +167,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       );
 
     //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
-  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode]);
+  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, cadastralUnit]);
 
 
 
@@ -311,7 +313,6 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       click: () => {
         setPoint(null)
         setDoc(hit.fields.uuid[0])
-        console.log("HELLO",JSON.stringify(hit.fields))
         if (cadastralUnit && hit.fields?.sosi?.[0]== 'gard') {
           setExpanded('cadastre')
           setCadastralUnit(hit.fields.uuid[0])

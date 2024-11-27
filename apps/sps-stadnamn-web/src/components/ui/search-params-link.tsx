@@ -3,14 +3,14 @@
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 
-export default function SearchParamsLink({ href, children, withoutParams, addParams, ...rest }: { href?: string, withoutParams?: string[], addParams?: Record<string,string | null>, children: React.ReactNode, [x: string]: any }) {
+export default function SearchParamsLink({ href, children, remove, add, only, ...rest }: { href?: string, remove?: string[], add?: Record<string,string | null>, only?: Record<string, string>, children: React.ReactNode, [x: string]: any }) {
     const searchParams = useSearchParams()
     const newParams = new URLSearchParams(searchParams)
-    if (withoutParams) {
-        withoutParams.forEach(param => newParams.delete(param))
+    if (remove) {
+        remove.forEach(param => newParams.delete(param))
     }
-    if (addParams) {
-        Object.entries(addParams).forEach(([key, value]) => {
+    if (add) {
+        Object.entries(add).forEach(([key, value]) => {
             if (value != null) {
                 newParams.set(key, value)
             }
