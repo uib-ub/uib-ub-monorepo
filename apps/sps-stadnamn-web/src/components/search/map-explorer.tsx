@@ -469,7 +469,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
     </div>
     }
 
-    <div className={`absolute ${isMobile ? 'top-12 right-0 flex-col p-2 gap-4' : 'bottom-0 w-full'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
+    <div className={`absolute ${isMobile ? 'top-12 right-0 flex-col p-2 gap-4' : 'bottom-0 left-1/2 transform -translate-x-1/2'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiStackSimpleFill /></button></DropdownMenuTrigger>
