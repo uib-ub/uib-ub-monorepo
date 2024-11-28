@@ -97,15 +97,9 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
         </div>
 
     }
-    
-    
-
-
-    {isMobile && <h2>{datasetTitles[dataset]}</h2>}
-    
-
+    <h2 id="tree-title" className={`pb-2 px-4 flex gap-2 items-center text-xl font-serif text-neutral-950 ${searchParams.get('adm') ? 'sr-only' : ''}`}>Register</h2>
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
-
+  
 
 {(!aggregate && totalHits?.value && <>
   { Array.from({length: Math.min(size, totalHits?.value)}, (_, i) => {

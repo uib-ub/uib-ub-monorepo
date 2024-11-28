@@ -14,11 +14,13 @@ import Spinner from "../svg/Spinner"
 import CadastralSubdivisions from "../doc/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
 import { DocContext } from "@/app/doc-provider"
+import { useSearchParams } from "next/navigation"
 
 export default function DesktopLayout() {
 
     
     const { searchFilterParamsString } = useSearchQuery()
+    const searchParams = useSearchParams()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
     const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
@@ -127,7 +129,7 @@ export default function DesktopLayout() {
         </>}
 
         { mode == 'tree' && treeSettings[dataset] &&
-            <section aria-labelledby="tree-title" className={`h-full lg:max-h-[calc(100svh-4rem)] overflow-y-auto lg:border-t border-neutral-200 bg-white rounded-md lg:shadow-md `}>
+            <section aria-labelledby="tree-title" className={`h-full lg:max-h-[calc(100svh-4rem)] overflow-y-auto lg:border-t border-neutral-200 bg-white rounded-md lg:shadow-md ${searchParams.get('adm') ? '' : 'pt-4'}`}>
             <TreeResults isMobile={false}/>
             </section>
 

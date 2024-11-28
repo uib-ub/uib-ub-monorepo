@@ -45,7 +45,7 @@ export default function DocInfo() {
 
 
     
-    return <article className="instance-info flex flex-col gap-3">
+    return <article className="instance-info flex flex-col gap-3 mobile-padding">
         <div className="flex gap-2"><h2>{docSource.label}</h2>{docSource.audio && 
           <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${docDataset}/${docSource.audio.file}` } 
                        iconClass="text-3xl text-neutral-700 inline"/> 

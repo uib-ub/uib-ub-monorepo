@@ -300,6 +300,11 @@
     @apply absolute bottom-[1.125rem] left-[0.125rem] text-white;
   }
 
+
+  .mobile-interface .mobile-padding {
+    @apply px-4;
+  }
+
 }
 
 @layer utilities {
