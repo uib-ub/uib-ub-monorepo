@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import { PiMagnifyingGlass, PiTreeView, PiX } from "react-icons/pi"
 import SearchLink from "../ui/search-link"
 import IconButton from "../ui/icon-button"
+import { getValueByPath } from "@/lib/utils"
 
 
 export default function CadastralSubdivisions({isMobile}: { isMobile: boolean }) {
@@ -63,19 +64,20 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
         
     }, [dataset, cadastralUnit])
 
+    const title =  selectedCadastralUnit?._source && <>{getValueByPath(selectedCadastralUnit._source, treeSettings[dataset].subunit) || selectedCadastralUnit?._source?.cadastre?.[0]?.gnr.join(",")} {selectedCadastralUnit?._source?.label}</>
 
     return (
     <>
         {
             hits && cadastralUnit && cadastralUnit == selectedCadastralUnit?._source?.uuid && <>
             {isMobile?
-            <h2 className="px-2 pb-2">{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}</h2>
+            <h2 className="px-2 pb-2">{title}</h2>
             
             : <div className="flex bg-neutral-50 cadastre-header">
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
                     <SearchParamsLink aria-current={doc == selectedCadastralUnit?._source?.uuid ? 'page' : false} 
                                       className="aria-[current=page]:decoration-accent-700"
-                                      add={{ expanded: 'info', doc: cadastralUnit }}>{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}
+                                      add={{ expanded: 'info', doc: cadastralUnit }}>{title}
                     </SearchParamsLink>
 
                 </h2>
