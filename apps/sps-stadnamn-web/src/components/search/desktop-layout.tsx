@@ -143,7 +143,7 @@ export default function DesktopLayout() {
         </div>
         { cadastralUnit && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
-                    <CadastralSubdivisions gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr'].join(",")}/>
+                    <CadastralSubdivisions isMobile={false} gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr'].join(",")}/>
                 </div>
             </div>
         }

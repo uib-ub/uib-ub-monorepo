@@ -73,9 +73,9 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     { adm &&
     <div className="px-4 py-2 text-lg flex">
         <SearchParamsLink id="tree-title" aria-label="Innholdsfortegnelse" 
-                          className="breadcrumb-link self-center bg-neutral-800 text-white px-2 rounded-md text-base py-1" 
+                          className="breadcrumb-link self-center  text-base" 
                           remove={["adm", "size", "doc", "cadastralUnit"]}>
-            <PiTreeViewFill aria-hidden="true"/>
+            <PiHouseFill aria-hidden="true"/>
             </SearchParamsLink>&nbsp;/&nbsp;
         {admItems?.map((item, index) => {
 

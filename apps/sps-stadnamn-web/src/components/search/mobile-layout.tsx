@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass } from "react-icons/pi";
+import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass, PiTableFill, PiTreeView, PiTreeViewFill } from "react-icons/pi";
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
@@ -10,6 +10,8 @@ import { useSearchQuery } from "@/lib/search-params";
 import Facets from "./facets/facet-section";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/map-search-provider";
+import CadastralSubdivisions from "../doc/cadastral-subdivisions";
+import TreeResults from "./results/tree-results";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -22,10 +24,12 @@ export default function MobileLayout() {
     const [drawerContent, setDrawerContent] = useQueryState('expanded', {history: 'push'});
     const selectedDocState = useState<any | null>(null)
     const doc = useQueryState('doc')[0]
-    const { searchQueryString } = useSearchQuery()
+    const { searchFilterParamsString } = useSearchQuery()
     const { totalHits, isLoading } = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
+    const mode = useQueryState('mode', {defaultValue: 'search'})[0]
+    const cadastralUnit = useQueryState('cadastralUnit')[0]
 
     useEffect(() => {
         if (!isLoading && !facetIsLoading) {
@@ -170,33 +174,41 @@ export default function MobileLayout() {
              onTouchEnd={handleTouchEnd}>
         { drawerContent && <>
             <div className="w-full flex justify-center items-center h-6 rounded-t-xl bg-white" style={{touchAction: 'none'}}><div className="h-2 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
-            <div className="h-full bg-white max-h-[calc(100svh-3rem)] p-4 overscroll-contain" ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
+            <div className={`h-full bg-white max-h-[calc(100svh-3rem)] overscroll-contain pb-8 ${drawerContent == 'cadastre' ? 'py-4' : 'p-4'}`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             <div className={drawerContent != 'info' ? 'hidden' : undefined }><InfoContent/></div>
             { drawerContent == 'results' && 
-            <section className="flex flex-col gap-2">
-                <h2 id="result_heading" className="flex gap-2 flex-wrap px-1" aria-live="polite">
-                <span className='text-center h-full font-semibold uppercase'>
-                Treff
-                </span>
-                <span className='text-sm bg-neutral-100 rounded-full px-2 items-center flex'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span>
-                </h2> 
-            <Results isMobile={true}/>
-            </section>
+                <section className="flex flex-col gap-2">
+                    <h2 id="result_heading" className="flex gap-2 flex-wrap px-1" aria-live="polite">
+                    <span className='text-center h-full font-semibold uppercase'>
+                    Treff
+                    </span>
+                    <span className='text-sm bg-neutral-100 rounded-full px-2 items-center flex'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span>
+                    </h2> 
+                <Results isMobile={true}/>
+                </section>
             
              }
             { drawerContent == 'options' && <Options isMobile={true}/> }
             { drawerContent == 'filters' && 
-
-            <Facets setFacetIsLoading={setFacetIsLoading}/> 
+                <Facets setFacetIsLoading={setFacetIsLoading}/> 
+            }
+            { drawerContent == 'cadastre' && 
+                <CadastralSubdivisions isMobile={true} gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr'].join(",")}/>
+            }
+            { drawerContent == 'tree' &&
+                <TreeResults isMobile={true}/>
             }
             </div>
             </>
             }
+            
             <div className="fixed bottom-0 left-0 bg-neutral-900 text-white w-full h-12 flex items-center justify-between">
-                    {searchQueryString && <button onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span></button>}
+                    {mode == 'search' && searchFilterParamsString && <button aria-label='Søkeresultater' onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span></button>}
+                    {mode == 'tree' && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
+                    {cadastralUnit && <button aria-label="Kart" onClick={() => swtichTab('cadastre')} aria-current={drawerContent == 'map' ? 'page' : 'false'} className="toolbar-button"><PiTableFill className="text-3xl"/></button>}
                     <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
-                    <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>
+                    {mode == 'search' && <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>}
                     <button aria-label="Søkealternativer" onClick={() => swtichTab('options')} aria-current={drawerContent == 'options' ? 'page' : 'false'} className="toolbar-button"><PiListMagnifyingGlass className="text-3xl"/></button>
 
             </div>

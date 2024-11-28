@@ -4,6 +4,7 @@ import { PiCaretRight, PiClockCounterClockwise, PiInfoFill, PiMagnifyingGlass, P
 import IconLink from '@/components/ui/icon-link';
 import { useSearchParams } from 'next/navigation';
 import { treeSettings } from '@/config/server-config';
+import { useQueryState } from 'nuqs';
 
 
   
@@ -14,7 +15,7 @@ export default function DatasetInfo() {
     const infoDataset = params.get('infoDataset') || dataset
     let [mainIndex, subindex] = (infoDataset).split("_")
     const searchParams = useSearchParams()
-    const mode = searchParams.get('mode')
+    const mode = useQueryState('mode', {defaultValue: 'search'})[0]
 
     function format_timestamp(timestamp: string) {
         const date = new Date(timestamp)
@@ -31,7 +32,7 @@ export default function DatasetInfo() {
     }
 
     return (
-        <aside className="dataset-info">
+        <aside className="dataset-info pb-8 lg:pb-0">
             <h2>{datasetTitles[mainIndex]}</h2>
             {mainIndex != 'search' && <span className='flex items-center gap-1'>
                 Lagt til: {format_timestamp(publishDates[mainIndex])} <IconLink href={'/datasets/updates?dataset=' + mainIndex} label="Historikk"><PiClockCounterClockwise className="text-primary-600 text-xl"/></IconLink>
@@ -48,18 +49,22 @@ export default function DatasetInfo() {
                 {subindex && <Link href={`/search?dataset=${infoDataset}`} className="btn btn-neutral">Søk i {datasetTitles[infoDataset]}</Link>}
             </div>}
 
-            <div className="flex gap-4 flex-wrap pt-2 pb-2 text-neutral-900">
-            { treeSettings[dataset] && mode != 'tree' && <Link href={`?dataset=${dataset}&mode=tree`} onClick={
-                () => {
-                    // set current url as storedSearchQuery in localstorage
-                    localStorage?.setItem('storedSearchQuery', searchParams.toString())
-                }}
-                className="flex whitespace-nowrap items-center gap-1 no-underline"><PiTreeView aria-hidden="true"/> Matrikkelvisning</Link>}
-                { mode == 'tree' && <Link href={`?dataset=${dataset}`} className="flex whitespace-nowrap items-center gap-1 no-underline"><PiMagnifyingGlass aria-hidden="true"/> Søkevisning</Link>}
-                <Link href={`/info/datasets/${dataset}`}
-                      className="flex whitespace-nowrap items-center gap-1 no-underline ml-auto">
-                    Les mer<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
-            </div>
+            <nav className="flex gap-2 flex-wrap pt-2 pb-2">
+             <Link href={`?dataset=${dataset}&mode=tree`} 
+                    aria-current={mode == 'tree' ? 'page' : false}
+                    onClick={() => {
+                                    // set current url as storedSearchQuery in localstorage
+                                    localStorage?.setItem('storedSearchQuery', searchParams.toString())
+                                }}
+                    className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
+                        <PiTreeView aria-hidden="true"/> Register</Link>
+                <Link aria-current={mode == 'search' ? 'page' : false}
+                      href={`?dataset=${dataset}`} 
+                      className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
+                        <PiMagnifyingGlass aria-hidden="true"/> Søk
+                </Link>
+                <Link href={`/info/datasets/${dataset}`} className="flex whitespace-nowrap items-center gap-1 no-underline lg:ml-auto bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2">Les mer<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
+            </nav>
         </aside>
     )
 

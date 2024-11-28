@@ -13,7 +13,7 @@ import SearchLink from "../ui/search-link"
 import IconButton from "../ui/icon-button"
 
 
-export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: { gnrField: string, bnrField: string, sortFields: string}) {
+export default function CadastralSubdivisions({gnrField, bnrField, sortFields, isMobile}: { gnrField: string, bnrField: string, sortFields: string, isMobile: boolean }) {
     const dataset = useDataset()
     const [hits, setHits] = useState<Record<string,any> | null>(null)
     const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
@@ -70,7 +70,10 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
     <>
         {
             hits && cadastralUnit && cadastralUnit == selectedCadastralUnit?._source?.uuid && <>
-            <div className="flex bg-neutral-50 cadastre-header">
+            {isMobile?
+            <h2 className="px-2 pb-2">{selectedCadastralUnit?._source?.cadastre?.[0]?.gnr} {selectedCadastralUnit?._source?.label}</h2>
+            
+            : <div className="flex bg-neutral-50 cadastre-header">
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
                     <SearchParamsLink aria-current={doc == selectedCadastralUnit?._source?.uuid ? 'page' : false} 
                                       className="aria-[current=page]:decoration-accent-700"
@@ -88,11 +91,12 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
                 <IconButton label="Søk i brukene" onClick={() => setMode('tree')}><PiMagnifyingGlass aria-hidden="true"/></IconButton>
                 <IconButton label="Lukk" onClick={() => setCadastralUnit(null)}><PiX aria-hidden="true"/></IconButton>
                 </div>
-                </div>
+                </div>}
+                <div className="overflow-x-auto">
                         <table className="w-full result-table border-x-0">
                             <thead className="w-full">
                                 <tr>
-                                    <th className="">Namn</th>
+                                    <th>Namn</th>
                                     {fields.map((field: Record<string, any>) => (
                                         <th className="bg-white" key={field.key}>{field.label}</th>
                                     ))}
@@ -103,7 +107,7 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
                                     <tr key={hit._id} >
                                         <td className="border p-2 border-x-0">
                                         <SearchParamsLink aria-current={doc==hit.fields.uuid ? 'page' : false} 
-                                                              className="aria-[current=page]:decoration-accent-700"
+                                                              className="aria-[current=page]:decoration-accent-700 whitespace-nowrap lg:whitespace-normal"
                                                               add={{ doc: hit.fields.uuid, expanded: 'info' }}>
                                         {hit.fields[bnrField]} {hit.fields.label}
                                             
@@ -118,6 +122,7 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields}: 
                                 ))}
                             </tbody>
                         </table>
+                        </div>
           
                
                 {hits.total.value > 300 && <Pagination currentPage={page} setCurrentPage={setPage} totalPages={Math.ceil(hits.total.value / 300)} />}
