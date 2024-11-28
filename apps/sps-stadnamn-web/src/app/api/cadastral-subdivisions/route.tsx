@@ -1,19 +1,31 @@
 
 export const runtime = 'edge'
+import { fieldConfig } from '@/config/search-config';
 import { postQuery } from '../_utils/post';
+import { treeSettings } from '@/config/server-config';
 
 export async function GET(request: Request) {
 
     const url = new URL(request.url);
-    const sortFields = url.searchParams.get('sortFields')?.split(',');
     const uuid = url.searchParams.get('uuid');
     const dataset = url.searchParams.get('dataset');
-    const fields = url.searchParams.get('fields')?.split(',');
 
     // Handle missing parameters
-    if (!uuid || !dataset || !fields || !sortFields) {
-        return new Response("Missing parameters", { status: 400 });
+    if (!uuid || !dataset) {
+        return Response.json({error: "Missing parameters"}, { status: 400 });
     }
+
+    // Check if dataset is configured in fieldConfig
+    if (!fieldConfig[dataset]) {
+        return Response.json({error: "Invalid dataset"}, { status: 400 });
+    }
+
+    const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
+        return { key, label: value.label }
+    })
+
+    const sortFields = treeSettings[dataset].sort
+
 
     const query = {
         size: 1000,

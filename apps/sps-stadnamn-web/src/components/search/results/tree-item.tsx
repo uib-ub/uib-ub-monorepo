@@ -5,6 +5,7 @@ import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
 import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
 import SearchParamsLink from '@/components/ui/search-params-link';
+import { treeSettings } from '@/config/server-config';
 
 export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
     const dataset = useDataset()
@@ -12,6 +13,9 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
     const doc = useQueryState('doc')[0]
     const expanded = useQueryState('expanded')[0]
     const itemRef = useRef<HTMLAnchorElement>(null)
+
+    const docDataset = hit._index.split('-')[2]
+    const subunit = docDataset ? treeSettings[docDataset]?.subunit : undefined;
 
     useEffect(() => {
         // Scroll into view if expanded changes to results
@@ -32,7 +36,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                     ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}}}>
 
                     
-            <span className="text-neutral-950">{hit.fields?.cadastre[0].gnr[0]} {hit.fields.label}</span>
+            <span className="text-neutral-950">{ (subunit && hit.fields[subunit]) || hit.fields.cadastre[0].gnr.join(", ")} {hit.fields.label}</span>
 
             </SearchParamsLink>
             </li>

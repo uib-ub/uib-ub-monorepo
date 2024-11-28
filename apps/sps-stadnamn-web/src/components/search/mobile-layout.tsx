@@ -194,7 +194,7 @@ export default function MobileLayout() {
                 <Facets setFacetIsLoading={setFacetIsLoading}/> 
             }
             { drawerContent == 'cadastre' && 
-                <CadastralSubdivisions isMobile={true} gnrField="rawData.GNR" bnrField="rawData.BNR" sortFields={['cadastre.bnr'].join(",")}/>
+                <CadastralSubdivisions isMobile={true}/>
             }
             { drawerContent == 'tree' &&
                 <TreeResults isMobile={true}/>

@@ -2,18 +2,17 @@
 'use client'
 import Pagination from "@/components/results/pagination"
 import SearchParamsLink from "@/components/ui/search-params-link"
-import { facetConfig, fieldConfig } from "@/config/search-config"
-import { contentSettings } from "@/config/server-config"
+import { fieldConfig } from "@/config/search-config"
+import { treeSettings } from "@/config/server-config"
 import { useDataset } from "@/lib/search-params"
-import Link from "next/link"
-import { createSerializer, parseAsString, useQueryState } from "nuqs"
+import { useQueryState } from "nuqs"
 import { useEffect, useState } from "react"
-import { PiInfoFill, PiMagnifyingGlass, PiTree, PiTreeView, PiX } from "react-icons/pi"
+import { PiMagnifyingGlass, PiTreeView, PiX } from "react-icons/pi"
 import SearchLink from "../ui/search-link"
 import IconButton from "../ui/icon-button"
 
 
-export default function CadastralSubdivisions({gnrField, bnrField, sortFields, isMobile}: { gnrField: string, bnrField: string, sortFields: string, isMobile: boolean }) {
+export default function CadastralSubdivisions({isMobile}: { isMobile: boolean }) {
     const dataset = useDataset()
     const [hits, setHits] = useState<Record<string,any> | null>(null)
     const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
@@ -24,6 +23,8 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields, i
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
     const [selectedCadastralUnit, setSelectedCadastralUnit] = useState<any | null>(null)
+
+    const { subunit, leaf  } = treeSettings[dataset]
 
 
 
@@ -47,11 +48,8 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields, i
 
 
     useEffect(() => {
-        const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
-            return { key, label: value.label }
-        })
         setHits(null)
-        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}&fields=${["uuid", "label", bnrField, ...fields.map((field: Record<string,any>) => field.key)]}&sortFields=${sortFields}`)
+        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}`)
             .then(response => response.json())
             .then(data => {
                 
@@ -63,7 +61,7 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields, i
             }
             )
         
-    }, [dataset, cadastralUnit, gnrField, bnrField, sortFields])
+    }, [dataset, cadastralUnit])
 
 
     return (
@@ -109,7 +107,7 @@ export default function CadastralSubdivisions({gnrField, bnrField, sortFields, i
                                         <SearchParamsLink aria-current={doc==hit.fields.uuid ? 'page' : false} 
                                                               className="aria-[current=page]:decoration-accent-700 whitespace-nowrap lg:whitespace-normal"
                                                               add={{ doc: hit.fields.uuid, expanded: 'info' }}>
-                                        {hit.fields[bnrField]} {hit.fields.label}
+                                        {hit.fields[leaf]} {hit.fields.label}
                                             
                                                                 
                                                                 

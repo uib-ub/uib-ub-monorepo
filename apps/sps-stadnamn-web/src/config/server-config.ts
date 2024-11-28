@@ -7,13 +7,13 @@ export interface ContentSettingsItem {
 }
 
 export interface TreeSettingsItem {
-  subunit?: string, 
+  subunit: string, 
   subunitLabel?: string,
-  sort: string[], 
-  aggSort: string, 
+  sort: string[], // Sort cadastral units
+  aggSort: string, // Sort aggregated divisions above the cadastral unit (e. g. municipalities)
   filter?: any, 
   showNumber?: boolean,
-  leaf?: string
+  leaf: string
 }
 
 export const treeSettings: Record<string, TreeSettingsItem> = {
