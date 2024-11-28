@@ -1,5 +1,5 @@
 'use client'
-import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers-map-search';
+import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useQueryState } from "nuqs";
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
@@ -12,7 +12,6 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
     const doc = useQueryState('doc')[0]
     const expanded = useQueryState('expanded')[0]
     const itemRef = useRef<HTMLAnchorElement>(null)
-    const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
 
     useEffect(() => {
         // Scroll into view if expanded changes to results
@@ -33,7 +32,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                     ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}}}>
 
                     
-            <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
+            <span className="text-neutral-950">{hit.fields?.cadastre[0].gnr[0]} {hit.fields.label}</span>
 
             </SearchParamsLink>
             </li>

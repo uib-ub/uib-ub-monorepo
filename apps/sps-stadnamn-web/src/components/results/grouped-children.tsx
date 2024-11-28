@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import ErrorMessage from '@/components/error-message'
 import { datasetTitles } from '@/config/metadata-config'
-import { resultRenderers } from '@/config/result-renderers-map-search'
+import { resultRenderers } from '@/config/result-renderers'
 import InfoButton from '@/components/results/info-button'
 import CoordinateButton from '@/components/results/coordinateButton';
 import ExternalLinkButton from '@/components/results/externalLinkButton';

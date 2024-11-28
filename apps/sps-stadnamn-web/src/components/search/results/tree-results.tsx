@@ -97,7 +97,8 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
         </div>
 
     }
-    <h2 id="tree-title" className={`pb-2 px-4 flex gap-2 items-center text-xl font-serif text-neutral-950 ${searchParams.get('adm') ? 'sr-only' : ''}`}>Register</h2>
+    <h2 id="tree-title" className={`pb-2 px-4 flex gap-2 items-center text-xl font-serif text-neutral-950`}>
+      {adm?.split("__").length == 2 ? 'Garder' : adm ? 'Kommuner' : 'Fylker'}</h2>
     <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-400'>
   
 

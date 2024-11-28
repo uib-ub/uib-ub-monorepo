@@ -1,7 +1,7 @@
 'use client'
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers-map-search';
+import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs";
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';

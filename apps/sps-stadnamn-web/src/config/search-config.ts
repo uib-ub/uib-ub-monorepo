@@ -19,8 +19,8 @@
 const [table, omitLabel, searchable, facet, result, cadastreTable] = Array(6).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
-const cadastre = {"cadastre__gnr": {label: "Gardsnummer", sort: "asc" as const, type: "integer" as const}, 
-                  "cadastre__bnr": {label: "Bruksnummer", sort: "asc" as const, type: "integer" as const}
+const cadastre = {"cadastre__gnr": {label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const}, 
+                  "cadastre__bnr": {label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const}
                 }
 const uuid = {label: "UUID", result}
 const label = {label: "Namn", result}
@@ -103,9 +103,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     mu1950: {
       uuid, label, location, adm, adm1, adm2, sosi,
-      "rawData.KNR": {label: "Knr", table, facet},
-      "rawData.GNR": {label: "Gnr", table, facet, additionalParams: ["rawData.KNR"]},
-      "rawData.BNR": {label: "Bnr", table, facet, additionalParams: ["rawData.KNR", "rawData.GNR"]},
+      ...cadastre,
+      "rawData.KNR": {label: "Knr", table, facet, result},
+      "rawData.GNR": {label: "Gnr", table, facet, result, additionalParams: ["rawData.KNR"]},
+      "rawData.BNR": {label: "Bnr", table, facet, result, additionalParams: ["rawData.KNR", "rawData.GNR"]},
       "rawData.Eigar": {label: "Eigar", table, facet, cadastreTable},
       "rawData.Mark": {label: "Skyldmark", table, facet, cadastreTable},
       "rawData.Øre": {label: "Skyldøre", table, facet, cadastreTable},
@@ -189,7 +190,7 @@ export const resultConfig = Object.entries(fieldConfig).reduce((acc, [dataset, f
   // Get all fields (dataset-specific + global) that have result: true
   const resultFields = Object.entries(fields)
     .filter(([_, config]) => config.result)
-    .map(([key]) => key);
+    .map(([key]) => key.replace("__", "."));
   
   acc[dataset] = resultFields;
   return acc;
