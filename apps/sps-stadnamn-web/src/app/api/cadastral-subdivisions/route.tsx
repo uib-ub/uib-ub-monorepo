@@ -9,6 +9,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const uuid = url.searchParams.get('uuid');
     const dataset = url.searchParams.get('dataset');
+    
 
     // Handle missing parameters
     if (!uuid || !dataset) {
@@ -20,11 +21,15 @@ export async function GET(request: Request) {
         return Response.json({error: "Invalid dataset"}, { status: 400 });
     }
 
-    const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
-        return { key, label: value.label }
+    const { subunit, leaf } = treeSettings[dataset]
+
+    const cadastreTableFields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
+        return key
     })
 
     const sortFields = treeSettings[dataset].sort
+
+    console.log("FIELDS", cadastreTableFields)
 
 
     const query = {
@@ -34,14 +39,16 @@ export async function GET(request: Request) {
                 "within.keyword": uuid
             }
         },
-        fields: fields,    
+        fields: ["uuid", "label", subunit, leaf, ...cadastreTableFields],    
         sort: sortFields.map((field: string) => {
-            if (field.startsWith("cadastre.")) {
+            if (field.includes("__")) {
+                const processed_field = field.replace("__", ".")
+
                 return {
-                    [field]: {
+                    [processed_field]: {
                         order: "asc",
                         nested: {
-                            path: field.split('.')[0] // Assuming the field is in the format "cadastre.bnr"
+                            path: processed_field.split('.')[0] // Assuming the field is in the format "cadastre.bnr"
                         }
                     }
                 };
@@ -52,6 +59,7 @@ export async function GET(request: Request) {
         _source: false
 
     }
+    console.log("QUERY", query)
     const [data, status] =  await postQuery(dataset, query)
     return Response.json(data, { status: status })
 

@@ -104,9 +104,9 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                                 {hits.hits.slice((page - 1) * 300, page * 300).map((hit: any) => (
                                     <tr key={hit._id} >
                                         <td className="border p-2 border-x-0">
-                                        <SearchParamsLink aria-current={doc==hit.fields.uuid ? 'page' : false} 
+                                        <SearchParamsLink aria-current={doc==hit.fields?.uuid ? 'page' : false} 
                                                               className="aria-[current=page]:decoration-accent-700 whitespace-nowrap lg:whitespace-normal"
-                                                              add={{ doc: hit.fields.uuid, expanded: 'info' }}>
+                                                              add={{ doc: hit.fields?.uuid, expanded: 'info' }}>
                                         {hit.fields[leaf]} {hit.fields.label}
                                             
                                                                 
