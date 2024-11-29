@@ -1,5 +1,5 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiArchive, PiArchiveFill, PiDatabase, PiDatabaseFill, PiDatabaseThin, PiMapTrifold, PiMapTrifoldFill, PiTable, PiTableFill } from 'react-icons/pi';
+import { PiArchive, PiArchiveFill, PiBook, PiDatabase, PiDatabaseFill, PiDatabaseThin, PiMapTrifold, PiMapTrifoldFill, PiTable, PiTableFill } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
@@ -86,11 +86,13 @@ export default async function Home({ searchParams } : { searchParams?: Promise<{
 </div>
 
 
-    <nav className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full md:w-auto justify-center items-center gap-8 text-lg">
+    <nav className="grid grid-cols-1 lg:grid-cols-5 w-full lg:w-auto justify-center items-center gap-8 text-lg">
   <Link href="/search" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-2"><PiMapTrifold aria-hidden="true" className="text-6xl text-neutral-800"/><span>Kartvisning</span></Link>
+  <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-2"><PiBook aria-hidden="true" className="text-6xl text-neutral-800"/><span>Leksikon</span></Link>
   <Link href="/table" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-2"><PiTable aria-hidden="true" className="text-6xl text-neutral-800"/><span>Tabellvisning</span></Link>
   <Link href="/iiif" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-2"><PiArchive aria-hidden="true" className="text-6xl text-neutral-800"/><span>Arkivressurser</span></Link>
   <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-2"><PiDatabase aria-hidden="true" className="text-6xl text-neutral-800"/><span>Datasett</span></Link>
+  
   </nav>
 
 
