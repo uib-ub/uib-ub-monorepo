@@ -48,7 +48,7 @@ export default async function Home({ searchParams } : { searchParams?: Promise<{
   return (
     <>
 <main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-14 items-center justify-center pb-24 pt-4 md:pt-8 px-4 w-full flex-grow carta-marina bg-neutral-100 md:bg-transparent">
-  <div className="flex flex-col gap-12 md:p-8 md:py-16 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle justify-center">
+  <div className="flex flex-col gap-12 md:p-8 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
   <h1 className="text-2xl sm:text-3xl self-center md:text-4xl lg:text-4xl text-neutral-900 sr-only md:not-sr-only">Stadnamnportalen</h1>
@@ -86,12 +86,12 @@ export default async function Home({ searchParams } : { searchParams?: Promise<{
 </div>
 
 
-    <nav className="grid grid-cols-1 lg:grid-cols-5 w-full lg:w-auto justify-center items-center gap-8 text-lg">
-  <Link href="/search" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-2"><PiMapTrifold aria-hidden="true" className="text-6xl text-neutral-800"/><span>Kartvisning</span></Link>
-  <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-2"><PiBook aria-hidden="true" className="text-6xl text-neutral-800"/><span>Leksikon</span></Link>
-  <Link href="/table" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-2"><PiTable aria-hidden="true" className="text-6xl text-neutral-800"/><span>Tabellvisning</span></Link>
-  <Link href="/iiif" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-2"><PiArchive aria-hidden="true" className="text-6xl text-neutral-800"/><span>Arkivressurser</span></Link>
-  <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-2"><PiDatabase aria-hidden="true" className="text-6xl text-neutral-800"/><span>Datasett</span></Link>
+    <nav className="grid grid-cols-1 lg:grid-cols-5 w-full lg:w-auto justify-center items-center gap-4 lg:gap-8 text-xl lg:text-lg">
+  <Link href="/search" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiMapTrifold aria-hidden="true" className="text-6xl text-neutral-800"/><span>Kartvisning</span></Link>
+  <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiBook aria-hidden="true" className="text-6xl text-neutral-800"/><span>Leksikon</span></Link>
+  <Link href="/table" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiTable aria-hidden="true" className="text-6xl text-neutral-800"/><span>Tabellvisning</span></Link>
+  <Link href="/iiif" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiArchive aria-hidden="true" className="text-6xl text-neutral-800"/><span>Arkivressurser</span></Link>
+  <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiDatabase aria-hidden="true" className="text-6xl text-neutral-800"/><span>Datasett</span></Link>
   
   </nav>
 
