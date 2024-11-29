@@ -89,7 +89,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
             <button className="sr-only" type="submit">Søk</button>
         </form>
 
-        { !isMobile && expanded == 'options' && <section aria-labelledby="doc-title" className="absolute top-12  right-0 w-full rounded-b-md border-t shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-6rem)] px-4">        
+        { !isMobile && expanded == 'options' && <section aria-labelledby="doc-title" className="absolute top-12 pt-4  right-0 w-full rounded-b-md border-t shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-6rem)] px-4">        
                     <Options isMobile={false}/>
                 </section>
         }
