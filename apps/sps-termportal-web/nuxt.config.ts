@@ -44,6 +44,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiKey: uuidv4(),
     endpointUrl: "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",
+    elasticsearchUrl: process.env.NUXT_ELASTICSEARCH_URL,
+    elasticsearchApiKey: process.env.NUXT_ELASTICSEARCH_API_KEY,
     public: {
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
