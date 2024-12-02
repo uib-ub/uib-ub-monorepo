@@ -10,6 +10,8 @@ import IconButton from '@/components/ui/icon-button';
 import { searchableFields } from '@/config/search-config';
 import { useDataset } from '@/lib/search-params';
 import Form from 'next/form'
+import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
+import Options from './options';
 
 
 
@@ -22,7 +24,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
     const dataset = useDataset()
-    const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
+    
 
 
     const handleSubmit = async (event: any) => {
@@ -49,13 +51,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
         router.push(`?${formParams.toString()}`)
     }
 
-    const toggleFulltext = () => {
-        setFulltext(prev => prev == 'on' ? 'off' : 'on');
-        if (false && searchParams.get('q')) {
-            form.current?.submit();
-        }
-        
-    };
+    
 
     useEffect(() => {
         setInputValue(searchParams.get('q') || '')
@@ -79,9 +75,9 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     return pathname == '/search' ? <>    
         <div className=""><Link href="/" className="text-lg lg:min-w-[25svw] pt-1 font-serif sr-only lg:not-sr-only self-center lg:!px-4 uppercase no-underline">Stadnamnportalen</Link></div>   
         <div className="h-full flex w-full lg:w-1/2">
-        <Form ref={form} action="/search" className="flex w-full items-center gap-4 h-full">
+        <Form ref={form} action="/search" className="flex w-full items-center h-full">
         {isMobile ? <h1 className="sr-only">{datasetTitles[searchParams.get('dataset') || 'search']}</h1>
-            : <h1 className="text-lg font-sans">
+            : <h1 className="text-lg font-sans px-4">
                 <button type="button" onClick={() => setExpanded(prev => prev != 'datasets' ? 'datasets' : null)} className="flex gap-2 items-center border-neutral-300 flex-nowrap">
                 {expanded == 'datasets' ? <PiCaretUp className="text-2xl inline text-primary-600"/> : <PiCaretDown className="text-2xl inline text-primary-600"/>}
                 <span className="whitespace-nowrap max-w-[20svw] truncate font-semibold">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
@@ -100,11 +96,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
             <IconButton type="button" onClick={() => { setInputValue(''); input.current?.focus()}} label="Tøm søk" className="px-2"><PiX className="text-lg"/></IconButton> }
             </div>
             {searchableFields[dataset]?.length > 0 && 
-                <label className="flex items-center gap-2">
-                    <input type="checkbox" name="fulltext" checked={fulltext == 'on'} onChange={toggleFulltext}
-                    className="h-4 w-4"/>
-                    <span>Fulltekst</span>
-                </label> 
+                <Options isMobile={isMobile}/>
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
             <input type="hidden" name="expanded" value={expanded != 'filters' ? 'results' : 'filters'}/>

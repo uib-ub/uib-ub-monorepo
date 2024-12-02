@@ -55,7 +55,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     bsn: {
       uuid, label, location, adm, adm1, adm2,
-      "rawData.komm": {label: "Kommentarer", searchable},
+      "rawData.komm": {label: "Fulltekst", searchable},
       "rawData.stnavn.loktype.type": {label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table, facet},
       "tmp.knr": {label: "Kommunenummer", facet, result},
       "rawData.stnavn.sted.gårdsnr": {label: "Gardsnummer", facet, result, additionalParams: ["tmp.knr"]},
@@ -68,7 +68,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
     hord: {
       uuid, label, location, adm, adm1, adm2, link, ...image,
-      "rawData.merknader": {label: "Merknader", searchable},
+      "rawData.merknader": {label: "Fulltekst", searchable},
       "archive.institution": {label: "Arkivtilvising", table, facet},
       "rawData.oppskrivar": {label: "Oppskrivar", table, facet},
       "rawData.oppskrivingsTid": {label: "Oppskrivingstid", table, facet},

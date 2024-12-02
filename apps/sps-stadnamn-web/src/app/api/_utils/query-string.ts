@@ -48,7 +48,5 @@ export function getQueryString(params: { [key: string]: string | null }) {
     }
     } : null
 
-  console.log("HIGHLIGHT", highlight)
-
   return { highlight, simple_query_string}
 }
