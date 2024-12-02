@@ -214,7 +214,8 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields["rawData.KNR"], hit.fields["rawData.MNR"], hit.fields["rawData.LNR"], ".", hit.fields, display)
+      return  <>{hit.fields["rawData.MNR"]}{hit.fields["rawData.LNR"]?.[0] ? "." + hit.fields["rawData.LNR"][0] : ""}, {formatAdm(hit.fields)}</>
+       //cadastreAdm(hit.fields["rawData.KNR"], hit.fields["rawData.MNR"], hit.fields["rawData.LNR"], ".", hit.fields, display)
     }
   },
   m1886: {
@@ -224,7 +225,8 @@ export const resultRenderers: ResultRenderers = {
       //return <>{defaultTitle(hit)} {hit.fields.sosi && (" | " + hit.fields.sosi[0].toUpperCase() + hit.fields.sosi.slice(1))}</>
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields.rawData?.knr, hit.fields.rawData?.gnr, hit.fields.rawData?.bnr, "/", hit.fields, display)
+      //return JSON.stringify(hit.fields.cadastre)
+      return cadastreAdm(hit.fields["rawData.knr"], hit.fields["rawData.gnr"], hit.fields["rawData.bnr"], "/", hit.fields, display)
     }
   },
   mu1950: {
