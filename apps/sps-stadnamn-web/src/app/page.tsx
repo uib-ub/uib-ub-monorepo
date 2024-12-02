@@ -51,13 +51,15 @@ export default async function Home({ searchParams } : { searchParams?: Promise<{
   <div className="flex flex-col gap-12 md:p-8 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
-  <h1 className="text-2xl sm:text-3xl self-center md:text-4xl lg:text-4xl text-neutral-900 sr-only md:not-sr-only">Stadnamnportalen</h1>
+    <div className="flex flex-col gap-4">
+  <h1 className="self-center text-4xl text-neutral-900 sr-only md:not-sr-only">Stadnamnportalen</h1>
   
   <form className="grid grid-cols-4 md:grid-cols-6 items-center justify-center gap-3" action="search">
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input id="search_input" className="col-span-3 md:col-span-5 rounded-md h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
     <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass className="text-xl"/></IconButton>
   </form>
+  </div>
   
 
   { stats && <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col sm:flex-row gap-4 lg:gap-6">
