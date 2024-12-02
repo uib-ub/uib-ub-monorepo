@@ -5,7 +5,7 @@ interface Renderer {
   title: (hit: any, display: string) => any;
   details: (hit: any, display: string) => any;
   cadastre?: (hit: any) => any;
-  snippet?: (hit: any, display: string) => any;
+  snippet?: (hit: any) => any;
 }
 
 interface ResultRenderers {
@@ -18,14 +18,11 @@ function createMarkup(htmlString: string) {
   return {__html: decodedHtmlString};
 }
 
-
-
 const formatHighlight = (highlight: string) => {
   // Remove inomplete html tags
-  let processedHighlight = highlight.replace(/<[^>]*$/, '').replace(/^[^<]*>/, '')
+  const processedHighlight = highlight.replace(/<[^>]*$/, '').replace(/^[^<]*>/, '')
 
   return <div dangerouslySetInnerHTML={createMarkup(processedHighlight)}></div>;
-
 }
 
 const defaultTitle = (hit: any) => {
@@ -136,7 +133,7 @@ export const resultRenderers: ResultRenderers = {
       if (display == 'table') return defaultTitle(fields)
       return <>{defaultTitle(hit)}{fields?.sosi && ` (${ fields.sosi[0].toLowerCase()})`}</>
     },
-    snippet: (hit: any, display: string) => {
+    snippet: (hit: any) => {
       return hit.highlight?.['content.html'][0] && formatHighlight(hit.highlight['content.html'][0])
     },
     details: (hit: any, display: string) => {
@@ -148,7 +145,7 @@ export const resultRenderers: ResultRenderers = {
       if (display == 'table') return defaultTitle(hit)
       return <>{defaultTitle(hit)}{hit.fields.rawData?.Lokalitetstype ? ` (${hit.fields.rawData?.Lokalitetstype.toLowerCase()})` : ""}</>
     },
-    snippet: (hit: any, display: string) => {
+    snippet: (hit: any) => {
       return hit.highlight?.['content.html']?.[0] && formatHighlight(hit.highlight['content.html']?.[0])
     },
     details: (hit: any, display: string) => {
@@ -158,7 +155,7 @@ export const resultRenderers: ResultRenderers = {
   },
   leks_g: {
     title: defaultTitle,
-    snippet: (hit: any, display: string) => {
+    snippet: (hit: any) => {
       return hit.highlight?.['content.text'][0] && formatHighlight(hit.highlight['content.text'][0])
     },
     details: (hit: any, display: string) => {
@@ -187,10 +184,10 @@ export const resultRenderers: ResultRenderers = {
     title: (hit: any, display: string) => {
       const fields = hit.fields
       return <><span className="font-semibold">{fields.label}{fields.altLabels ? ', ':''}</span>{fields.altLabels}</> 
-    },
-    snippet: (hit: any, display: string) => {
-      return hit.highlight?.['rawData.merknader'][0] && formatHighlight(hit.highlight['rawData.merknader'][0])
-    },
+    }, /*
+    snippet: (hit: any) => {
+      return hit.highlight?.['rawData.merknader']?.[0] && formatHighlight(hit.highlight['rawData.merknader'][0])
+    }, */
     details: (hit: any, display: string) => {
       const fields = hit.fields  
       return <>{cadastreAdm(fields["rawData.kommuneNr"], fields["rawData.bruka.bruk.gardsNr"], fields["rawData.bruka.bruk.bruksNr"], "/", fields, display)}
@@ -277,6 +274,18 @@ export const resultRenderers: ResultRenderers = {
 
 export const defaultResultRenderer: Renderer = {
   title: defaultTitle,
+  snippet: (hit: any) => {
+    return formatHighlight(
+      Object.entries(hit.highlight)
+        .map(([key, value]) => {
+          if (Array.isArray(value) && value.every(item => typeof item === 'string')) {
+            return value.join('...');
+          }
+          return ''; // or handle the case where value is not a string array
+        })
+        .join('...')
+    );
+  },
   details: (hit: any, display: string) => {
     return <>{hit.fields.adm2}{hit.fields.adm1 && ', ' + hit.fields.adm1}</>
   }

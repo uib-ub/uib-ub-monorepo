@@ -56,7 +56,7 @@ export default async function RootLayout({
           <Suspense>
             <Menu/>
           </Suspense>
-          <NavBar className={`hidden xl:flex text-lg xl:text-xl px-4 items-center shrink-0 small-caps gap-3 font-semibold mb-1 !min-w-[25svw] justify-end`}/>
+          <NavBar className={`hidden xl:flex text-lg xl:text-xl px-4 items-center shrink-0 small-caps gap-3 font-semibold mb-1 justify-end`}/>
         </header>
         {children}
         </NuqsAdapter>

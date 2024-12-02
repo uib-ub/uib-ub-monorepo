@@ -66,9 +66,9 @@ export function useSearchQuery() {
     if (searchParams.get('dataset')) {
         searchQuery.set('dataset', dataset)
     }
-    const field = searchParams.get('field')
-    if (field && mode != 'tree') {
-        searchQuery.set('field', field)
+    const fulltext = searchParams.get('fulltext')
+    if (fulltext && mode != 'tree') {
+        searchQuery.set('fulltext', 'on')
     }
 
     const removeFilterParams = (key: string) => {

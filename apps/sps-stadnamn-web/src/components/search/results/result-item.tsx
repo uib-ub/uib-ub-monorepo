@@ -28,7 +28,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
-    const snippetRenderer = resultRenderers[dataset]?.snippet
+    const snippetRenderer = resultRenderers[dataset]?.snippet || defaultResultRenderer.snippet
 
     useEffect(() => {
         // Scroll into view if expanded changes to results
@@ -67,7 +67,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
             </div>
             }
             
-            {hit.highlight && snippetRenderer ? <> | {detailsRenderer(hit, 'map')} {snippetRenderer(hit, 'map')}  </>
+            {hit.highlight && snippetRenderer ? <> | {detailsRenderer(hit, 'map')} {snippetRenderer(hit)}  </>
             : <p>
             { detailsRenderer(hit, 'map') }
             </p>}

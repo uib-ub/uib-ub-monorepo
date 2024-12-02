@@ -31,6 +31,8 @@ const adm2 = {label: "Kommune", result}
 const snid = {label: "Stadnamn ID", facet}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
+const html = {"content.html": {label: "Fulltekst", searchable}}
+const text = {"content.text": {label: "Fulltekst", searchable}}
 
 
 
@@ -74,8 +76,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...cadastre
     },
     rygh: {
-      uuid, label, location, adm, adm1, adm2,
-      "content.html": {label: "Fulltekst", searchable},
+      uuid, label, location, adm, adm1, adm2, ...html,
       "rawData.Lokalitetstype": {label: "Lokalitetstype", table, facet},
       "rawData.Bind": {label: "Bind", table, facet},
       "rawData.Side": {label: "Sidetall", table, facet, additionalParams: ["rawData.Bind"]},
@@ -85,8 +86,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
     },
     leks: {
-      uuid, label, location, adm, adm1, adm2,
-      "content.html": {label: "Fulltekst", searchable},
+      uuid, label, location, adm, adm1, adm2,...html,
       "rawData.Lokalitetstype": {label: "Lokalitetstype", table, facet},
       "rawData.GNIDu": {label: "GNIDu", facet},
       "rawData.Sisteledd": {label: "Sisteledd", facet},
@@ -96,8 +96,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.KNR", "rawData.GNR"]},
     },
     leks_g: {
-      uuid, label,
-      "content.text": {label: "Fulltekst", searchable},
+      uuid, label, ...text,
       "rawData.språk": {label: "Språk", facet},
       "rawData.kjelde": {label: "Kjelde", facet},
     },
@@ -140,8 +139,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.knr": {label: "knr", table, facet},
     },
     nbas: {
-      uuid, label, location, adm, adm1, adm2, sosi,
-      "content.html": {label: "Fulltekst", searchable},
+      uuid, label, location, adm, adm1, adm2, sosi, ...html,
       "rawData.lokalitetstype_sosi": {label: "Lokalitetstype", facet},
       "rawData.herred": {label: "Kommune", facet},
       "rawData.fylke": {label: "Fylke", facet},

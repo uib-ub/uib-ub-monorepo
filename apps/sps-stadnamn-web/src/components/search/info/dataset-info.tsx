@@ -35,7 +35,7 @@ export default function DatasetInfo() {
         <aside className="dataset-info pb-8 lg:pb-0 mobile-padding">
             <h2>{datasetTitles[mainIndex]}</h2>
             {mainIndex != 'search' && <span className='flex items-center gap-1'>
-                Lagt til: {format_timestamp(publishDates[mainIndex])} <IconLink href={'/datasets/updates?dataset=' + mainIndex} label="Historikk"><PiClockCounterClockwise className="text-primary-600 text-xl"/></IconLink>
+                Lagt til: {format_timestamp(publishDates[mainIndex])} <IconLink href={'/info/updates?dataset=' + mainIndex} label="Historikk"><PiClockCounterClockwise className="text-primary-600 text-xl"/></IconLink>
             </span>}
             <div className='flex flex-col gap-2'>
          

@@ -4,18 +4,13 @@ import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
-import { datasetTitles, datasetPresentation, datasetDescriptions, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
+import { datasetTitles, datasetPresentation, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/footer';
 import { fetchStats } from '@/app/api/_utils/actions';
 import { redirect } from "next/navigation";
-import { userAgent } from "next/server";
-import { headers } from "next/headers";
 
 
 export default async function Home({ searchParams } : { searchParams?: Promise<{q: string, d: string}> }) {
-  const headersList = await headers();
-  const device = userAgent({ headers: headersList }).device;
-  const isMobile = device.type === 'mobile'
   const { q: legacyQ, d: legacyD } = await searchParams || {}
 
   // Redirect legacy search params from Toponymi
@@ -55,8 +50,10 @@ export default async function Home({ searchParams } : { searchParams?: Promise<{
   <h1 className="self-center text-4xl text-neutral-900 sr-only md:not-sr-only">Stadnamnportalen</h1>
   
   <form className="grid grid-cols-4 md:grid-cols-6 items-center justify-center gap-3" action="search">
+   
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input id="search_input" className="col-span-3 md:col-span-5 rounded-md h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
+    <input type="hidden" name="expanded" value="results"/>
     <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass className="text-xl"/></IconButton>
   </form>
   </div>

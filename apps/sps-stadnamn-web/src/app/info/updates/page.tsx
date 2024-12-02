@@ -69,7 +69,7 @@ export default async function Updates({searchParams}: {searchParams: Promise<{da
                 
                 }
                 <div className="mt-6 flex gap-3 flex-col">
-                {dataset && <Link href="/datasets/updates">Se historikk for alle datasett</Link>}
+                {dataset && <Link href="/info/updates">Se historikk for alle datasett</Link>}
                 <Link href={`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/commits/main?ref_type=heads`}>Se detaljer i GitLab</Link>
                 </div>
             </>

@@ -15,6 +15,7 @@ import CadastralSubdivisions from "../doc/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
 import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
+import Datasets from "./datasets/datasets"
 
 export default function DesktopLayout() {
 
@@ -70,7 +71,7 @@ export default function DesktopLayout() {
     , [isLoading, expandedSection, facetIsLoading])
 
 
-    const toggleExpanded = (panel: 'options' | 'filters' | 'results' | 'cadastre') => {
+    const toggleExpanded = (panel: 'datasets' | 'filters' | 'results' | 'cadastre') => {
         
         if (expanded == panel) {
             setExpanded(null)
@@ -85,13 +86,16 @@ export default function DesktopLayout() {
         <div className="absolute top-0 left-[25svw] max-w-[50svw] z-[2000] right-0 flex flex-col gap-2"><StatusSection isMobile={false}/></div>
         
         <div className="flex lg:gap-4 flex-col h-full max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
+        
 
         <div className={`lg:absolute left-0 top-0 lg:p-2 flex-col gap-2 lg:max-h-[calc(100svh-4rem)] max-w-[40svw] lg:w-[25svw] !z-[3001] bg-white shadow-md lg:shadow-none rounded-br-md lg:rounded-none lg:bg-transparent 
             ${mode == 'tree' && (expanded == 'info' || expanded == 'cadastre') ? 'hidden lg:flex' : 'flex'}`}>
 
+        
+
         { mode == 'search' && <>
         
-        <section aria-labelledby="filter-title" className="bg-white lg:rounded-md lg:shadow-md break-words">
+        <section aria-labelledby="filter-title" className={`bg-white lg:rounded-md lg:shadow-md break-words ${expanded == 'datasets' ? 'hidden' : ''}`}>
             <h2 id="filter-title"  className="px-2 py-2 w-full">
                 <button className="w-full flex justify-start text-center h-full font-semibold text-neutral-950" aria-controls="filter-content" aria-expanded={expandedSection == 'filters'} onClick={() => toggleExpanded('filters')}>
                 { expandedSection == 'filters' ? <PiCaretUpBold className="inline self-center mr-1 text-primary-600"/> : <PiCaretDownBold className="inline self-center mr-1  text-primary-600"/> }
@@ -107,7 +111,7 @@ export default function DesktopLayout() {
         }
         </section> 
         { searchFilterParamsString && 
-        <section aria-labelledby="results-title" className="bg-white rounded-md lg:shadow-md break-words">
+        <section aria-labelledby="results-title" className={`bg-white rounded-md lg:shadow-md break-words ${expanded == 'datasets' ? 'hidden' : ''}`}>
              <h2 id="filter-title"  className="px-2 py-2 w-full"><button className="w-full flex gap-2 justify-start text-center h-full font-semibold text-neutral-950"aria-controls="result-content" aria-expanded={expanded == 'results'} onClick={() => toggleExpanded('results')}>
                 { expandedSection == 'results' ? <PiCaretUpBold className="inline self-center  text-primary-600"/> : <PiCaretDownBold className="inline self-center  text-primary-600"/> }
                 Treff
@@ -153,10 +157,16 @@ export default function DesktopLayout() {
         </div>
         </div>
 
+        
+
 
         <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
         <MapExplorer isMobile={false}/>
         </div>
+        { expanded == 'datasets' && <section aria-labelledby="doc-title" className="absolute top-0 left-0 pt-4  right-0 rounded-b-md border-t w-[30svw] shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-3rem)] !z-[3001]">        
+                    <Datasets isMobile={false}/>
+                </section>
+        }
 
 
     </main>

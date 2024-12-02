@@ -54,6 +54,7 @@ export async function GET(request: Request) {
   }
   
   const [data, status] = await postQuery(dataset, query)
+  console.log(data)
   return Response.json(data, {status: status})
   
 }

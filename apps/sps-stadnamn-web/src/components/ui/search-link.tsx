@@ -20,7 +20,7 @@ export default function SearchLink({ href, children, remove, add, only, ...rest 
     const newParams = new URLSearchParams(only ? undefined : searchParams)
     if (only) {
         Object.entries(only).forEach(([key, value]) => {
-            if (value != null) {
+            if (value != null && value !== '') {
                 newParams.set(key, value)
             }
         }
@@ -31,7 +31,7 @@ export default function SearchLink({ href, children, remove, add, only, ...rest 
     }
     if (add) {
         Object.entries(add).forEach(([key, value]) => {
-            if (value != null) {
+            if (value != null && value !== '') {
                 newParams.set(key, value)
             }
         })

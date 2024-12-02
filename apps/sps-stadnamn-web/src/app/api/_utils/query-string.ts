@@ -1,3 +1,5 @@
+import { searchableFields } from "@/config/search-config";
+
 function modifyQuery(query: string) {
   const lowerCaseQuery = query.toLowerCase();
 
@@ -19,24 +21,34 @@ function modifyQuery(query: string) {
 }
 
 export function getQueryString(params: { [key: string]: string | null }) {
+  const fulltext = params.fulltext == 'on'
 
   const simple_query_string = params.q ? {
       query_string: {
       query: modifyQuery(params.q),
       allow_leading_wildcard: true,
-      default_operator: params.field ? 'AND' : 'OR',
-      fields: params.field ? [params.field] : ["label^3", "altLabels^2", "attestations.label"],
+      default_operator: params.fulltext ? 'AND' : 'OR',
+      fields: ["label^4", "altLabels^3", "attestations.label^2", ...fulltext && params.dataset ? searchableFields[params.dataset].map(item => item.key) : []]
     }} : null
 
-  const highlight = params.q && params.field && params.field != 'label' ? {
+  
+    //const test = fulltext && params.dataset ? Object.fromEntries(searchableFields[params.dataset].map(item => ([item.key, {}]))) : {}
+  
+
+  const highlight = params.q && fulltext ? {
     pre_tags: ["<mark>"],
     post_tags: ["</mark>"],
     boundary_scanner_locale: "nn-NO",
     
     fields: {
-        [params.field]: {}
+        "altLabels": {}, 
+        "attestations.label": {},
+        //...test,
+        ...(fulltext && params.dataset) ? Object.fromEntries(searchableFields[params.dataset].map(item => ([item.key, {}]))): {}
     }
     } : null
+
+  console.log("HIGHLIGHT", highlight)
 
   return { highlight, simple_query_string}
 }

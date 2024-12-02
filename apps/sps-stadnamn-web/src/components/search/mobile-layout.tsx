@@ -4,7 +4,7 @@ import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass, PiTable
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
-import Options from "./options/search-options";
+import Options from "./datasets/datasets";
 import InfoContent from "./info/info-content";
 import { useSearchQuery } from "@/lib/search-params";
 import Facets from "./facets/facet-section";
@@ -12,6 +12,8 @@ import StatusSection from "./status-section";
 import { SearchContext } from "@/app/map-search-provider";
 import CadastralSubdivisions from "../doc/cadastral-subdivisions";
 import TreeResults from "./results/tree-results";
+import DatasetList from "./datasets/datasets";
+import Datasets from "./datasets/datasets";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -189,7 +191,7 @@ export default function MobileLayout() {
                 </section>
             
              }
-            { drawerContent == 'options' && <Options isMobile={true}/> }
+            { drawerContent == 'datasets' && <Datasets isMobile={true}/> }
             { drawerContent == 'filters' && 
                 <Facets setFacetIsLoading={setFacetIsLoading}/> 
             }
@@ -209,7 +211,7 @@ export default function MobileLayout() {
                     {cadastralUnit && <button aria-label="Kart" onClick={() => swtichTab('cadastre')} aria-current={drawerContent == 'map' ? 'page' : 'false'} className="toolbar-button"><PiTableFill className="text-3xl"/></button>}
                     <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
                     {mode == 'search' && <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>}
-                    <button aria-label="Søkealternativer" onClick={() => swtichTab('options')} aria-current={drawerContent == 'options' ? 'page' : 'false'} className="toolbar-button"><PiListMagnifyingGlass className="text-3xl"/></button>
+                    <button aria-label="Søkealternativer" onClick={() => swtichTab('datasets')} aria-current={drawerContent == 'datasets' ? 'page' : 'false'} className="toolbar-button"><PiListMagnifyingGlass className="text-3xl"/></button>
 
             </div>
             
