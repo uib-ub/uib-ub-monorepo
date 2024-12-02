@@ -125,9 +125,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     m1886: {
       uuid, label, location, sosi, adm, adm1, adm2,
-      "rawData.knr": {label: "Kommunenummer", table, facet},
+      "rawData.knr": {label: "Kommunenummer", table, facet, result},
+      "rawData.gnr": {label: "Gardsnummer", table, facet, result, additionalParams: ["rawData.knr"]},
+      "rawData.bnr": {label: "Bruksnummer", table, facet, result, additionalParams: ["rawData.knr", "rawData.gnr"]},
       ...cadastre,
       "gnidu": {label: "GNIDu", facet},
+      
       "midu": {label: "MIDu", facet}
     },
     skul: {
