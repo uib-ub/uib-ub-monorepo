@@ -45,7 +45,9 @@ export default function SearchOptions({isMobile}: {isMobile: boolean}) {
         (datasetTypes as {[key: string]: string[]})[dataset]?.includes(filter)
       )
     )
-    .filter(dataset => datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase()));
+    .filter(dataset => datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase()) || datasetDescriptions[dataset]?.toLowerCase().includes(searchTerm.toLowerCase()))
+  
+
 
 
   const datasetLink = (dataset: string) => {
