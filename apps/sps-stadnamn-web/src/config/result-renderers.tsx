@@ -44,12 +44,10 @@ const multivalue = (value: string|string[]) => {
 
 function formatCadastre(cadastre: Record<string, any>[]): string {
   return cadastre.map(item => {
-      if (Array.isArray(item.gnr)) {
-          if (item.gnr.length > 1) {
-              return `${item.gnr[0]}-${item.gnr[1]}`;
-          } else {
-              return `${item.gnr[0]}`;
-          }
+      if (Array.isArray(item.gnr) && item.gnr.length > 1) {
+
+              return item.gnr.join(",")
+
       } else if (item.bnr) {
           if (Array.isArray(item.bnr)) {
               // Sort bnr to ensure correct range identification
