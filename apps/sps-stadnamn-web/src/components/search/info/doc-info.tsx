@@ -8,7 +8,7 @@ import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs"
 import AttestationSource from "../results/attestation-source"
-import SearchParamsLink from "@/components/ui/search-params-link"
+import SearchLink from "@/components/ui/search-link"
 import { useDataset } from "@/lib/search-params"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
@@ -129,9 +129,9 @@ export default function DocInfo() {
         </div>
         { docSource.sosi == 'gard' &&
       <div className={`flex justify-center ${(!cadastralUnit || cadastralUnit != docSource.uuid) ? '' : 'lg:hidden'}`}>
-        <SearchParamsLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" add={{cadastralUnit: docSource.uuid }}>
+        <SearchLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" add={{cadastralUnit: docSource.uuid }}>
           <PiTable aria-hidden="true"/> Matrikkeltabell
-        </SearchParamsLink>
+        </SearchLink>
     </div>
 
       }

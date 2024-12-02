@@ -4,7 +4,7 @@ import { useQueryState } from "nuqs";
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
 import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
-import SearchParamsLink from '@/components/ui/search-params-link';
+import SearchLink from '@/components/ui/search-link';
 import { treeSettings } from '@/config/server-config';
 
 export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
@@ -26,7 +26,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
 
 
     return  <li className="flex flex-grow">
-            <SearchParamsLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-4 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-200"
+            <SearchLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-4 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-200"
                     aria-current={(cadastralUnit == hit.fields.uuid || doc == hit.fields.uuid) ? 'page' : undefined}
                     remove={['doc', 'point', 'attestationYear', 'attestationLabel', 'center']}
                     add={{
@@ -38,7 +38,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                     
             <span className="text-neutral-950">{ (subunit && hit.fields[subunit]) || hit.fields.cadastre[0].gnr.join(", ")} {hit.fields.label}</span>
 
-            </SearchParamsLink>
+            </SearchLink>
             </li>
 }
 

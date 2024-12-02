@@ -5,17 +5,15 @@ import React, { Fragment } from 'react';
 import FacetsInfobox from '@/components/doc/facets-infobox';
 import { getValueByPath } from '@/lib/utils';
 import { treeSettings } from './server-config';
-import SearchParamsLink from '@/components/ui/search-params-link';
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
-import SearchLink from '@/components/ui/search-link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import SourceList from '@/components/search/results/source-list';
-
+import SearchLink from '@/components/ui/search-link';
 
 const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
   const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
   const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
-  return <div className="text-lg"><SearchParamsLink className="breadcrumb-link" add={{doc: source.within}}>{parentLabel}</SearchParamsLink><span className="mx-2">/</span>{currentName}</div>
+  return <div className="text-lg"><SearchLink className="breadcrumb-link" add={{doc: source.within}}>{parentLabel}</SearchLink><span className="mx-2">/</span>{currentName}</div>
 }
 
 
@@ -67,7 +65,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
           <div className={`ml-6 ${''}`}>
             <strong className='mb-1'>{year}:&nbsp;</strong>
                 {labels.map((label, i) => ( <span key={i}>
-                  {labels.length > 1 && i > 0 ? ', ' : ''}<SearchParamsLink key={i} add={{"attestationYear": year, "attestationLabel": label}}>{label}</SearchParamsLink>
+                  {labels.length > 1 && i > 0 ? ', ' : ''}<SearchLink key={i} add={{"attestationYear": year, "attestationLabel": label}}>{label}</SearchLink>
                   </span>
                 ))}
           </div>
@@ -96,9 +94,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {uniqueLabels.size > 0 && <ul className='flex flex-wrap !list-none !p-0'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
-        <SearchParamsLink add={{attestationLabel: label}}>
+        <SearchLink add={{attestationLabel: label}}>
         {label}
-        </SearchParamsLink>{index < uniqueLabels.size - 1 ? ',' : ''}&nbsp;</li>
+        </SearchLink>{index < uniqueLabels.size - 1 ? ',' : ''}&nbsp;</li>
     }
     )}
     </ul>}
@@ -149,12 +147,12 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
  
   <h3 className="font-semibold !text-base !m-0 !p-0 !font-sans">Matrikkel:</h3>
    {source.cadastre?.map((item: any, index: number) => {
-    
+    const dataset = "rygh"
     return <Fragment key={index}>
     
-        <SearchLink className="no-underline flex items-center" dataset="rygh" params={{"rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink>
-      { item.gnr && <>- <SearchLink className="no-underline flex items-center" dataset="rygh" params={{"cadastre__gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink> </>}
-      { item.bnr && <>{"/"} <SearchLink className="no-underline flex items-center" dataset="rygh" params={{"cadastre__gnr": item.gnr.toString(), "cadastre__bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink> </>}
+      <SearchLink className="no-underline flex items-center" href="/search" only={{dataset, "rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink>
+      { item.gnr && <>- <SearchLink className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink> </>}
+      { item.bnr && <>{"/"} <SearchLink className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "cadastre__bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink> </>}
       
 
 

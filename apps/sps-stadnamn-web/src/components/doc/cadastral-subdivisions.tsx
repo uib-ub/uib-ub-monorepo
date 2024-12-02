@@ -1,7 +1,6 @@
 
 'use client'
 import Pagination from "@/components/results/pagination"
-import SearchParamsLink from "@/components/ui/search-params-link"
 import { fieldConfig } from "@/config/search-config"
 import { treeSettings } from "@/config/server-config"
 import { useDataset } from "@/lib/search-params"
@@ -75,16 +74,16 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
             
             : <div className="flex bg-neutral-50 cadastre-header">
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
-                    <SearchParamsLink aria-current={doc == selectedCadastralUnit?._source?.uuid ? 'page' : false} 
+                    <SearchLink aria-current={doc == selectedCadastralUnit?._source?.uuid ? 'page' : false} 
                                       className="aria-[current=page]:decoration-accent-700"
                                       add={{ expanded: 'info', doc: cadastralUnit }}>{title}
-                    </SearchParamsLink>
+                    </SearchLink>
 
                 </h2>
                 <div className="float-right text-2xl flex gap-2 p-1 items-center ml-auto">
                 <SearchLink label="Bla i registeret" 
-                            dataset={dataset} 
-                            params={{cadastralUnit, 
+                            only={{cadastralUnit, 
+                                     dataset,
                                      doc, 
                                      mode: 'tree',
                                      adm: selectedCadastralUnit?._source.adm2 + "__" + selectedCadastralUnit?._source.adm1}}><PiTreeView aria-hidden="true"/></SearchLink>
@@ -106,14 +105,14 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                                 {hits.hits.slice((page - 1) * 300, page * 300).map((hit: any) => (
                                     <tr key={hit._id} >
                                         <td className="border p-2 border-x-0">
-                                        <SearchParamsLink aria-current={doc==hit.fields?.uuid ? 'page' : false} 
+                                        <SearchLink aria-current={doc==hit.fields?.uuid ? 'page' : false} 
                                                               className="aria-[current=page]:decoration-accent-700 whitespace-nowrap lg:whitespace-normal"
                                                               add={{ doc: hit.fields?.uuid, expanded: 'info' }}>
                                         {hit.fields[leaf]} {hit.fields.label}
                                             
                                                                 
                                                                 
-                                            </SearchParamsLink>
+                                            </SearchLink>
                                         </td>
                                         {fields.map((field: Record<string, any>) => (
                                             <td className="border p-2" key={field.key}>{hit.fields[field.key]}</td>

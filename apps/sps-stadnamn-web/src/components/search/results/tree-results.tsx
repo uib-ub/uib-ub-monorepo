@@ -9,7 +9,7 @@ import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
 import TreeItem from "./tree-item";
 import { contentSettings, treeSettings } from "@/config/server-config";
-import SearchParamsLink from "@/components/ui/search-params-link";
+import SearchLink from "@/components/ui/search-link";
 import { datasetTitles } from "@/config/metadata-config";
 import { PiCaretRightBold, PiFolder, PiFolderFill, PiHouse, PiHouseFill, PiTreeView, PiTreeViewFill } from "react-icons/pi";
 
@@ -72,11 +72,11 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
     <>
     { adm &&
     <div className="px-4 py-2 text-lg flex">
-        <SearchParamsLink id="tree-title" aria-label="Innholdsfortegnelse" 
+        <SearchLink id="tree-title" aria-label="Innholdsfortegnelse" 
                           className="breadcrumb-link self-center  text-base" 
                           remove={["adm", "size", "doc", "cadastralUnit"]}>
             <PiHouseFill aria-hidden="true"/>
-            </SearchParamsLink>&nbsp;/&nbsp;
+            </SearchLink>&nbsp;/&nbsp;
         {admItems?.map((item, index) => {
 
             return (
@@ -84,9 +84,9 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
                   {index > 0 && <span>&nbsp;/&nbsp;</span>}
                   { index < admItems.length - 1 ?
                 
-                <SearchParamsLink className="breadcrumb-link" remove={["doc", "cadastralUnit"]} add={{adm: admItems.slice(0, index + 1).reverse().join("__")}}>
+                <SearchLink className="breadcrumb-link" remove={["doc", "cadastralUnit"]} add={{adm: admItems.slice(0, index + 1).reverse().join("__")}}>
                     {item}
-                </SearchParamsLink>
+                </SearchLink>
                 : 
                 <span>{item}</span>
                 }
@@ -132,12 +132,12 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
                   .map((admBucket: Record<string, any>) => {
 
             return <li key={admBucket.key} className="flex flex-col gap-2">
-              <SearchParamsLink add={{adm: admBucket.key + (adm ? '__' + adm : '')}}
+              <SearchLink add={{adm: admBucket.key + (adm ? '__' + adm : '')}}
                     
                     className="lg:text-lg gap-2 px-4 mx-2 py-2 no-underline">
                       {treeSettings[dataset].showNumber && (adm ? admBucket.aggNum.buckets[0].key : admBucket.aggNum.buckets[0].key.slice(0,2))} {admBucket.key}
                       <PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/>
-              </SearchParamsLink>
+              </SearchLink>
             </li>
           })}
           </>
