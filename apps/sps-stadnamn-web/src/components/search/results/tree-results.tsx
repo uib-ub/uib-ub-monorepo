@@ -134,7 +134,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
             return <li key={admBucket.key} className="flex flex-col gap-2">
               <SearchLink add={{adm: admBucket.key + (adm ? '__' + adm : '')}}
                     
-                    className="lg:text-lg gap-2 px-4 mx-2 py-2 no-underline">
+                    className="lg:text-lg gap-2 px-4 py-2 no-underline">
                       {treeSettings[dataset].showNumber && (adm ? admBucket.aggNum.buckets[0].key : admBucket.aggNum.buckets[0].key.slice(0,2))} {admBucket.key}
                       <PiCaretRightBold aria-hidden="true" className='text-primary-600 inline align-middle ml-1'/>
               </SearchLink>
