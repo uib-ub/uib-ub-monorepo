@@ -1,67 +1,54 @@
 
 'use client'
-import { useState} from 'react';
-import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
-import Image from 'next/image'
-import { PiCaretDown, PiCaretRight, PiCaretUp, PiCheckFatFill } from 'react-icons/pi';
-import { useQueryState } from 'nuqs';
+import { useEffect, useState} from 'react';
+import { datasetTitles, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
+import { PiCaretRight } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
-import { fieldConfig, searchableFields } from '@/config/search-config';
 import Link from 'next/link';
-import { useDataset } from '@/lib/search-params';
 import SearchLink from '@/components/ui/search-link';
 
 
 export default function Datasets({isMobile}: {isMobile: boolean}) {
   const searchParams = useSearchParams()
-  const dataset = useDataset()
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [field, setField] = useQueryState('field')
-
+  const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredDatasets = Object.keys(datasetPresentation)
-    .filter(dataset => datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase()) || datasetDescriptions[dataset]?.toLowerCase().includes(searchTerm.toLowerCase()))
-  
+  useEffect(() => {
+    const titleMatch: string[] = []
+    const contentMatch: string[] = []
+    const no_subindices = Object.keys(datasetTitles).filter(dataset => !dataset.includes("_"))
+    // Datasets match
+    if (searchTerm?.length) {
+
+      no_subindices.forEach(dataset => {
+        if (datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase())) {
+          titleMatch.push(dataset)
+        }
+        else if (datasetDescriptions[dataset]?.toLowerCase().includes(searchTerm.toLowerCase())) {
+          contentMatch.push(dataset)
+        }
+      })
+
+      setFilteredDatasets([...titleMatch, ...contentMatch])
+    }
+    else {
+      setFilteredDatasets(no_subindices)
+    }
+  }
+  , [searchTerm])
+
+
+
 
 
 
   return (    
         <section className="flex flex-col mobile-padding" aria-labelledby="page_heading">
-          { false && dataset && searchableFields[dataset].length > 0 && <><h2 id="page_heading" className="text-xl text-neutral-900 px-4">Søkealternativer</h2>
-          <div className="flex mb-4 mt-2 gap-4 px-4">
-            <label className="flex gap-2">
-              <input
-                type="radio"
-                checked={field == null}
-                onChange={() => setField(null)}
-              />
-              Navn
-            </label>
-            {searchableFields[dataset].map(item => {
-              return (
-                <label key={item.key} className="flex gap-2">
-                  <input
-                      type="radio"
-                      checked={item.key == field}
-                      onChange={() => setField(item.key)}
-                  />
-                  {item.label}
-                </label>
-                
-              )
-            })}
-            
-          </div>
-          
-
-          <h3 className="text-xl font-semibold text-neutral-900 small-caps px-4">Søkevisninger</h3>
-          </>
-          }
           <h2 id="page_heading" className="text-xl font-serif px-4">Datasett</h2>
           <div className='flex flex-col mt-1 justify-between w-full px-4'>
           <div className='flex flex-col'>
