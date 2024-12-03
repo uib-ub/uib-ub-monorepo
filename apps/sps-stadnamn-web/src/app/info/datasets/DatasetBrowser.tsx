@@ -3,8 +3,7 @@
 import { useState, useEffect} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
-import { PiArchiveFill, PiArticleFill, PiBooksFill, PiCaretDown, PiCaretRight, PiCaretUp, PiCheck, PiCheckFat, PiCheckFatFill, PiDatabaseFill, PiEarFill, PiFileAudioFill, PiGavelFill, PiInfoFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiWallFill } from 'react-icons/pi';
-import { useQueryState } from 'nuqs';
+import { PiCaretDown, PiCaretRight, PiCaretUp } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -17,6 +16,44 @@ export default function DatasetBrowser({isMobile}: {isMobile: boolean}) {
 
   const allFeatures = Object.keys(featureNames);
   const allTypes = Object.keys(typeNames);
+
+  const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
+
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  useEffect(() => {
+    const titleMatch: string[] = []
+    const contentMatch: string[] = []
+    const first_filtering = Object.keys(datasetTitles).filter(dataset => !dataset.includes("_"))
+          .filter(dataset => dataset != 'search')
+          .filter(dataset =>
+            selectedFilters.every(filter => 
+              (datasetFeatures as {[key: string]: string[]})[dataset]?.includes(filter) || 
+              (datasetTypes as {[key: string]: string[]})[dataset]?.includes(filter)
+            )
+          )
+    // Datasets match
+    if (searchTerm?.length) {
+
+      first_filtering.forEach(dataset => {
+        if (datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase())) {
+          titleMatch.push(dataset)
+        }
+        else if (datasetDescriptions[dataset]?.toLowerCase().includes(searchTerm.toLowerCase())) {
+          contentMatch.push(dataset)
+        }
+      })
+
+      setFilteredDatasets([...titleMatch, ...contentMatch])
+    }
+    else {
+      setFilteredDatasets(first_filtering)
+    }
+  }
+  , [searchTerm, selectedFilters])
 
 
   useEffect(() => {
@@ -36,33 +73,8 @@ export default function DatasetBrowser({isMobile}: {isMobile: boolean}) {
     );
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const filteredDatasets = Object.keys(datasetPresentation)
-    .filter(dataset => dataset != 'search')
-    .filter(dataset =>
-      selectedFilters.every(filter => 
-        (datasetFeatures as {[key: string]: string[]})[dataset]?.includes(filter) || 
-        (datasetTypes as {[key: string]: string[]})[dataset]?.includes(filter)
-      )
-    )
-    .filter(dataset => datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase()) || datasetDescriptions[dataset]?.toLowerCase().includes(searchTerm.toLowerCase()))
 
 
-  const datasetLink = (dataset: string) => {
-    const newSearchParams = new URLSearchParams();
-    const q = searchParams.get('q');
-    if (dataset != 'search') {
-      newSearchParams.set('dataset', dataset);
-    }
-    if (q) {
-      newSearchParams.set('q', q);
-    }
-    return "search?" + newSearchParams.toString();
-      
-  }
 
 
   return (    
