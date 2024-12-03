@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { PiCaretDown, PiCaretRight, PiCaretUp } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import DatasetToolbar from '@/components/ui/dataset-toolbar';
 
 export default function DatasetBrowser({isMobile}: {isMobile: boolean}) {
   const searchParams = useSearchParams()
@@ -162,10 +163,8 @@ export default function DatasetBrowser({isMobile}: {isMobile: boolean}) {
                 <div className="text-sm space-y-4 break-words">
                 <p>{isMobile ? datasetShortDescriptions[dataset] : datasetDescriptions[dataset]}</p>          
               </div>
-              <div className="flex gap-2 mt-auto ml-auto pt-2">
-                <Link href={ "/info/datasets/" + dataset }  className=" flex  items-center !pl-1 no-underline">
-                  Les mer <PiCaretRight className="text-primary-600"/></Link>
-              </div>
+              
+              <DatasetToolbar dataset={dataset}/>
              
               </div>
               
