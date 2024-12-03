@@ -4,7 +4,7 @@ import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass, PiTable
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
-import Options from "./datasets/datasets";
+import Options from "./datasets/dataset-drawer";
 import InfoContent from "./info/info-content";
 import { useSearchQuery } from "@/lib/search-params";
 import Facets from "./facets/facet-section";
@@ -12,8 +12,9 @@ import StatusSection from "./status-section";
 import { SearchContext } from "@/app/map-search-provider";
 import CadastralSubdivisions from "../doc/cadastral-subdivisions";
 import TreeResults from "./results/tree-results";
-import DatasetList from "./datasets/datasets";
-import Datasets from "./datasets/datasets";
+import DatasetList from "./datasets/dataset-drawer";
+import Datasets from "./datasets/dataset-drawer";
+import DatasetDrawer from "./datasets/dataset-drawer";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -191,7 +192,7 @@ export default function MobileLayout() {
                 </section>
             
              }
-            { drawerContent == 'datasets' && <Datasets isMobile={true}/> }
+            { drawerContent == 'datasets' && <DatasetDrawer isMobile={true}/> }
             { drawerContent == 'filters' && 
                 <Facets setFacetIsLoading={setFacetIsLoading}/> 
             }

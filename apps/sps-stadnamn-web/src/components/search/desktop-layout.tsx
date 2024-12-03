@@ -15,7 +15,8 @@ import CadastralSubdivisions from "../doc/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
 import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
-import Datasets from "./datasets/datasets"
+import Datasets from "./datasets/dataset-drawer"
+import DatasetDrawer from "./datasets/dataset-drawer"
 
 export default function DesktopLayout() {
 
@@ -164,7 +165,7 @@ export default function DesktopLayout() {
         <MapExplorer isMobile={false}/>
         </div>
         { expanded == 'datasets' && <section id="dataset_list" aria-labelledby="doc-title" className="absolute top-0 left-0 pt-4  right-0 rounded-b-md border-t w-[30svw] shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-3rem)] !z-[3001]">        
-                    <Datasets isMobile={false}/>
+                    <DatasetDrawer isMobile={false}/>
                 </section>
         }
 

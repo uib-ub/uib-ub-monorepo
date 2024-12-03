@@ -8,7 +8,7 @@ import Link from 'next/link';
 import SearchLink from '@/components/ui/search-link';
 
 
-export default function Datasets({isMobile}: {isMobile: boolean}) {
+export default function DatasetDrawer({isMobile}: {isMobile: boolean}) {
   const searchParams = useSearchParams()
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
