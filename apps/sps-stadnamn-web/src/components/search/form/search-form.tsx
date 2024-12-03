@@ -78,7 +78,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
         <Form ref={form} action="/search" className="flex w-full items-center h-full">
         {isMobile ? <h1 className="sr-only">{datasetTitles[searchParams.get('dataset') || 'search']}</h1>
             : <h1 className="text-lg font-sans px-4">
-                <button type="button" onClick={() => setExpanded(prev => prev != 'datasets' ? 'datasets' : null)} className="flex gap-2 items-center border-neutral-300 flex-nowrap">
+                <button aria-expanded={expanded == 'datasets'} aria-controls="dataset_list" type="button" onClick={() => setExpanded(prev => prev != 'datasets' ? 'datasets' : null)} className="flex gap-2 items-center border-neutral-300 flex-nowrap">
                 {expanded == 'datasets' ? <PiCaretUp className="text-2xl inline text-primary-600"/> : <PiCaretDown className="text-2xl inline text-primary-600"/>}
                 <span className="whitespace-nowrap max-w-[20svw] truncate font-semibold">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
                     
