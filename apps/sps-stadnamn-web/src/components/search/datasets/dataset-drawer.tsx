@@ -77,7 +77,7 @@ export default function DatasetDrawer({isMobile}: {isMobile: boolean}) {
           <li key={dataset} className="flex w-full ">
 
               
-              <SearchLink only={{dataset, q: searchTerm, expanded: isMobile ? 'info': 'datasets' }} 
+              <SearchLink only={{dataset, q: searchParams.get('q'), expanded: isMobile ? 'info': 'datasets' }} 
                           className="w-full h-full py-2 px-2 md:px-4 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-200"
                           aria-current={searchParams.get('dataset') == dataset ? 'page' : undefined}>
                 <div className="font-semibold">{datasetTitles[dataset]}</div>
