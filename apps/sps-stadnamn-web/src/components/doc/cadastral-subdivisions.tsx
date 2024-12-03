@@ -21,7 +21,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
     const [page, setPage] = useState(1)
     const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit')
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
-    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
+    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const [within, setWithin] = useQueryState('within', {history: 'push'})
     const [selectedCadastralUnit, setSelectedCadastralUnit] = useState<any | null>(null)
 

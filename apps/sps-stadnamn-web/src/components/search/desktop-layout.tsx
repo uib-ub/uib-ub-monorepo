@@ -9,7 +9,7 @@ import { PiCaretDownBold, PiCaretUpBold, PiXBold } from "react-icons/pi"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
 import StatusSection from "./status-section"
 import Facets from "./facets/facet-section"
-import { SearchContext } from "@/app/map-search-provider"
+import { SearchContext } from "@/app/search-provider"
 import Spinner from "../svg/Spinner"
 import CadastralSubdivisions from "../doc/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
@@ -17,6 +17,7 @@ import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
 import Datasets from "./datasets/dataset-drawer"
 import DatasetDrawer from "./datasets/dataset-drawer"
+import TableExplorer from "./table/table-explorer"
 
 export default function DesktopLayout() {
 
@@ -30,7 +31,7 @@ export default function DesktopLayout() {
     const { totalHits, isLoading} = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
     const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit')
-    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
+    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const dataset = useDataset()
     
 
@@ -94,7 +95,7 @@ export default function DesktopLayout() {
 
         
 
-        { mode == 'search' && <>
+        { mode == 'map' && <>
         
         <section aria-labelledby="filter-title" className={`bg-white lg:rounded-md lg:shadow-md break-words ${expanded == 'datasets' ? 'hidden' : ''}`}>
             <h2 id="filter-title"  className="px-2 py-2 w-full">
@@ -140,7 +141,7 @@ export default function DesktopLayout() {
 
         }
         </div>
-       
+       { mode != 'table' &&
         <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
         <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'} ${(expanded == 'info' || expanded == 'cadastre')? '' : 'hidden lg:flex' }`}>
         <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar`}>
@@ -156,13 +157,15 @@ export default function DesktopLayout() {
         }
 
         </div>
+        }
         </div>
+    
 
         
 
 
         <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
-        <MapExplorer isMobile={false}/>
+        { mode == 'table' ? <TableExplorer/> : <MapExplorer isMobile={false}/>}
         </div>
         { expanded == 'datasets' && <section id="dataset_list" aria-labelledby="doc-title" className="absolute top-0 left-0 pt-4  right-0 rounded-b-md border-t w-[30svw] shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-3rem)] !z-[3001]">        
                     <DatasetDrawer isMobile={false}/>

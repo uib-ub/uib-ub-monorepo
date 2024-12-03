@@ -34,11 +34,11 @@ export function useSearchQuery() {
     const fields = ['q', ...Object.keys(fieldConfig[dataset])]
     const facetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
-    const mode = searchParams.get('mode') || 'search'
+    const mode = useQueryState('mode', {defaultValue: 'map'})[0]
     let size = useQueryState('size', parseAsInteger.withDefault(20))[0]
     
     
-    if (mode == 'search') {
+    if (mode != 'tree') {
         fields.forEach(field => {
             const values = searchParams.getAll(field)
             values.forEach(value => {

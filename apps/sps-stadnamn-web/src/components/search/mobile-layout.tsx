@@ -9,12 +9,13 @@ import InfoContent from "./info/info-content";
 import { useSearchQuery } from "@/lib/search-params";
 import Facets from "./facets/facet-section";
 import StatusSection from "./status-section";
-import { SearchContext } from "@/app/map-search-provider";
+import { SearchContext } from "@/app/search-provider";
 import CadastralSubdivisions from "../doc/cadastral-subdivisions";
 import TreeResults from "./results/tree-results";
 import DatasetList from "./datasets/dataset-drawer";
 import Datasets from "./datasets/dataset-drawer";
 import DatasetDrawer from "./datasets/dataset-drawer";
+import TableExplorer from "./table/table-explorer";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -31,7 +32,7 @@ export default function MobileLayout() {
     const { totalHits, isLoading } = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
-    const mode = useQueryState('mode', {defaultValue: 'search'})[0]
+    const mode = useQueryState('mode', {defaultValue: 'map'})[0]
     const cadastralUnit = useQueryState('cadastralUnit')[0]
 
     useEffect(() => {
@@ -207,20 +208,20 @@ export default function MobileLayout() {
             }
             
             <div className="fixed bottom-0 left-0 bg-neutral-900 text-white w-full h-12 flex items-center justify-between">
-                    {mode == 'search' && searchFilterParamsString && <button aria-label='Søkeresultater' onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span></button>}
+                    {mode == 'map' && searchFilterParamsString && <button aria-label='Søkeresultater' onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span></button>}
                     {mode == 'tree' && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
                     {cadastralUnit && <button aria-label="Kart" onClick={() => swtichTab('cadastre')} aria-current={drawerContent == 'map' ? 'page' : 'false'} className="toolbar-button"><PiTableFill className="text-3xl"/></button>}
                     <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
-                    {mode == 'search' && <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>}
+                    {mode == 'map' && <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>}
                     <button aria-label="Søkealternativer" onClick={() => swtichTab('datasets')} aria-current={drawerContent == 'datasets' ? 'page' : 'false'} className="toolbar-button"><PiListMagnifyingGlass className="text-3xl"/></button>
 
             </div>
             
         </div>
-
         <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full">
-        <MapExplorer isMobile={true}/>
+        { mode == 'table' ? <TableExplorer/> : <MapExplorer isMobile={true}/>}
         </div>
+
 
     </div>
 }

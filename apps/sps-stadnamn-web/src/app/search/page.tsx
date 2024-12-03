@@ -1,4 +1,4 @@
-import SearchProvider from "@/app/map-search-provider";
+import SearchProvider from "@/app/search-provider";
 import { headers } from "next/headers";
 import { userAgent } from "next/server";
 import MobileLayout from "@/components/search/mobile-layout";
@@ -10,9 +10,8 @@ export default async function UserAgentLayout() {
   const headersList = await headers()
   const device = userAgent({headers: headersList}).device
   const isMobile = device.type === 'mobile'
-
-
-
+  
+  
   return <SearchProvider>
           <DocProvider>
             {isMobile  ? <MobileLayout/> : <DesktopLayout/>}

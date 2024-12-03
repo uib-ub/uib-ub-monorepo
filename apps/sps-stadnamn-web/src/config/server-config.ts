@@ -52,7 +52,6 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       cadastre: true
     },
     hord: {
-      fields: ['rawData.merknader', 'rawData.kommuneNr', 'rawData.bruka.bruk.gardsNr', 'rawData.bruka.bruk.bruksNr'],
       display: 'map',
       adm: 3,
       cadastre: true
@@ -101,7 +100,6 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       cadastre: false
     },
     rygh: {
-      fields: ['rawData.KNR', 'rawData.Gnr', 'rawData.Bnr', 'sosi'],
       display: 'map',
       adm: 2,
       cadastre: true

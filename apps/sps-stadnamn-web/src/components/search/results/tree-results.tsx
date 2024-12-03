@@ -1,5 +1,5 @@
 'use client'
-import { SearchContext } from "@/app/map-search-provider"
+import { SearchContext } from "@/app/search-provider"
 import { useContext, useEffect } from "react"
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
@@ -24,7 +24,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
         center: parseAsArrayOf(parseAsFloat, ','),
     });
 
-    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
+    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const [isLoadingTree, setIsLoadingTree] = useState<boolean>(false)
     const [cadastralData, setCadastralData] = useState<any>(null)
 

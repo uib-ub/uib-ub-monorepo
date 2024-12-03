@@ -3,7 +3,7 @@ import Map from "../map/map";
 import { baseMaps, baseMapKeys, baseMapProps } from "@/config/basemap-config";
 import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
-import { SearchContext } from "@/app/map-search-provider";
+import { SearchContext } from "@/app/search-provider";
 import Spinner from "../svg/Spinner";
 import {
   DropdownMenu,

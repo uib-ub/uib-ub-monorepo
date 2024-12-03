@@ -5,6 +5,7 @@ import IconLink from '@/components/ui/icon-link';
 import { useSearchParams } from 'next/navigation';
 import { treeSettings } from '@/config/server-config';
 import { useQueryState } from 'nuqs';
+import DatasetToolbar from '@/components/ui/dataset-toolbar';
 
 
   
@@ -15,7 +16,7 @@ export default function DatasetInfo() {
     const infoDataset = params.get('infoDataset') || dataset
     let [mainIndex, subindex] = (infoDataset).split("_")
     const searchParams = useSearchParams()
-    const mode = useQueryState('mode', {defaultValue: 'search'})[0]
+    const mode = useQueryState('mode', {defaultValue: 'map'})[0]
 
     function format_timestamp(timestamp: string) {
         const date = new Date(timestamp)
@@ -49,22 +50,8 @@ export default function DatasetInfo() {
                 {subindex && <Link href={`/search?dataset=${infoDataset}`} className="btn btn-neutral">Søk i {datasetTitles[infoDataset]}</Link>}
             </div>}
 
-            <nav className="flex gap-2 flex-wrap pt-2 pb-2">
-             {treeSettings[dataset] && <Link href={`?dataset=${dataset}&mode=tree`} 
-                    aria-current={mode == 'tree' ? 'page' : false}
-                    onClick={() => {
-                                    // set current url as storedSearchQuery in localstorage
-                                    localStorage?.setItem('storedSearchQuery', searchParams.toString())
-                                }}
-                    className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
-                        <PiTreeView aria-hidden="true"/> Register</Link>}
-              {treeSettings[dataset] &&  <Link aria-current={mode == 'search' ? 'page' : false}
-                      href={`?dataset=${dataset}`} 
-                      className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
-                        <PiMagnifyingGlass aria-hidden="true"/> Søk
-                </Link>}
-                <Link href={`/info/datasets/${dataset}`} className="flex whitespace-nowrap items-center gap-1 no-underline lg:ml-auto bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2">Les mer<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
-            </nav>
+            <DatasetToolbar dataset={dataset}/>
+            
         </aside>
     )
 

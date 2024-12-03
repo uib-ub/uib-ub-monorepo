@@ -1,5 +1,5 @@
 'use client'
-import { SearchContext } from "@/app/map-search-provider"
+import { SearchContext } from "@/app/search-provider"
 import { useContext } from "react"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -22,7 +22,7 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     const router = useRouter()
     const { resultData, totalHits, isLoading, searchError } = useContext(SearchContext)
     const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
-    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'search'})
+    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
 
 
 
