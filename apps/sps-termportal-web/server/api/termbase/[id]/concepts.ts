@@ -7,7 +7,6 @@ export default defineEventHandler(async (event) => {
     const query = {
       index: `search-termp-w-${event.context.params.id}`,
       type: "_search",
-      from: body.from,
       body: {
         _source: [
           "id",
@@ -32,6 +31,7 @@ export default defineEventHandler(async (event) => {
             },
           },
         ],
+        from: body.from,
         size: body.fetchConcepts,
       },
     };
