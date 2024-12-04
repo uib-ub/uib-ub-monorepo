@@ -5,15 +5,17 @@
       <ol class="flex pb-2 pt-1.5 flex-wrap justify-center px-2">
         <li>
           <button
-            class="px-1.5 py-0.5 font-semibold hover:underline underline-offset-2"
+            class="px-1.5 py-0.5 text-lg hover:underline underline-offset-2"
+            :class="{ 'underline font-semibold': selectedChar === null }"
             @click="selectedChar = null"
           >
-            {{ "all" }}
+            {{ $t("global.all") }}
           </button>
         </li>
         <li v-for="[key] in displayAggData?.firstChar" :key="key">
           <button
-            class="hover:underline underline-offset-2 font-semibold px-[4px] py-0.5"
+            class="hover:underline underline-offset-2 text-lg px-[4px] py-0.5"
+            :class="{ 'underline font-semibold': selectedChar === key }"
             @click="selectedChar = key"
           >
             {{ key.toUpperCase() }}
@@ -40,7 +42,6 @@
         </li>
       </ol>
     </div>
-    {{ breakpoint }}
   </section>
 </template>
 
@@ -56,7 +57,7 @@ const selectedChar: Ref<string | null> = ref(null);
 
 const generalConfig = {
   min: { columnCount: 1, columnLength: 20 },
-  max: { columnCount: 2, columnLength: 20 },
+  max: { columnCount: 2, columnLength: 15 },
 };
 
 const breakpointDisplayConfig = computed(() => {
