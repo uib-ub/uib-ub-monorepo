@@ -6,13 +6,23 @@ export default defineEventHandler(async (event) => {
   if (event.context.params) {
     const query = {
       index: `search-termp-w-${event.context.params.id}`,
+      type: "_search",
       body: {
         _source: [
           "id",
           `displayLabel.${body.language}.value`,
           `displayLabel.${body.language}.language`,
         ],
-        query: { match_all: {} },
+        query: {
+          ...(body.selectedChar
+            ? {
+                term: {
+                  [`displayLabel.${body.language}.firstChar`]:
+                    body.selectedChar,
+                },
+              }
+            : { match_all: {} }),
+        },
         sort: [
           {
             [`displayLabel.${body.language}.value`]: {
@@ -21,7 +31,7 @@ export default defineEventHandler(async (event) => {
             },
           },
         ],
-        size: 10,
+        size: 45,
       },
     };
 
