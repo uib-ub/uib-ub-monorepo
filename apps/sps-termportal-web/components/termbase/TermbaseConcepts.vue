@@ -1,7 +1,7 @@
 <template>
   <section v-if="displayData && displayAggData" class="">
     <h2 class="text-xl">{{ $t("global.concept", 2) }}</h2>
-    <div class="flex justify-evenly">
+    <div>
       <ol class="flex pb-2 pt-1.5 flex-wrap justify-center px-2">
         <li>
           <button
@@ -12,17 +12,18 @@
             {{ $t("global.all") }}
           </button>
         </li>
-        <li v-for="[key] in displayAggData?.firstChar" :key="key">
+        <li v-for="charEntry in displayAggData?.firstChar" :key="charEntry[0]">
           <button
             class="hover:underline underline-offset-2 text-lg px-[4px] py-0.5"
-            :class="{ 'underline font-semibold': selectedChar === key }"
-            @click="selectedChar = key"
+            :class="{
+              'underline font-semibold': selectedChar?.[0] === charEntry[0],
+            }"
+            @click="selectedChar = charEntry"
           >
-            {{ key.toUpperCase() }}
+            {{ charEntry?.[0].toUpperCase() }}
           </button>
         </li>
       </ol>
-      <div></div>
     </div>
     <div class="flex space-x-12 justify-strech px-3 sm:px-1.5 md:px-0">
       <ol
@@ -42,6 +43,16 @@
         </li>
       </ol>
     </div>
+    <div>
+      <Paginator
+        v-model:first="page"
+        :rows="breakpointDisplayConfig?.displayConcepts"
+        :total-records="
+          selectedChar === null ? displayAggData.totalCount : selectedChar[1]
+        "
+        template="FirstPageLink PrevPageLink PageLinks NextPageLink"
+      ></Paginator>
+    </div>
   </section>
 </template>
 
@@ -53,7 +64,8 @@ const props = defineProps({
   termbaseId: { type: String, required: true },
 });
 
-const selectedChar: Ref<string | null> = ref(null);
+const selectedChar: Ref<string[] | null> = ref(null);
+const page = ref(0);
 
 const generalConfig = {
   min: { columnCount: 1, columnLength: 20 },
@@ -65,7 +77,8 @@ const breakpointDisplayConfig = computed(() => {
 
   const breakpointConfig: {
     numberLst: [number, number][];
-  } = { numberLst: [] };
+    displayConcepts: number;
+  } = { numberLst: [], displayConcepts: 0 };
 
   // calculate columns for concept list
   let startNumber = 0;
@@ -75,10 +88,15 @@ const breakpointDisplayConfig = computed(() => {
     startNumber = endNumber;
   }
 
+  // update how many concepts are displayed in one page
+  breakpointConfig.displayConcepts =
+    generalConfig[configKey].columnCount *
+    generalConfig[configKey].columnLength;
+
   return breakpointConfig;
 });
 
-const breakPointFetchConfig = computed(() => {
+const breakpointFetchConfig = computed(() => {
   const configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
 
   const breakpointConfig: {
@@ -88,11 +106,11 @@ const breakPointFetchConfig = computed(() => {
     selectedChar: string | null;
     from: number;
   } = {
-    fetchConcepts: 40,
+    fetchConcepts: 0,
     sortOrder: "asc",
     language: locale?.value,
-    selectedChar: selectedChar?.value,
-    from: 0,
+    selectedChar: selectedChar.value?.[0] || null,
+    from: page.value,
   };
 
   // calculate number of concepts to fetch
@@ -124,7 +142,7 @@ const { data, pending } = await useLazyFetch(
   `/api/termbase/${props.termbaseId.toLowerCase()}/concepts`,
   {
     method: "POST",
-    body: breakPointFetchConfig,
+    body: breakpointFetchConfig,
   }
 );
 
