@@ -7,6 +7,7 @@ import Menu from "primevue/menu";
 import OverlayPanel from "primevue/overlaypanel";
 import RadioButton from "primevue/radiobutton";
 import InputSwitch from "primevue/inputswitch";
+import Paginator from "primevue/paginator";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(PrimeVue, { ripple: true });
@@ -18,4 +19,5 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component("Menu", Menu);
   nuxtApp.vueApp.component("OverlayPanel", OverlayPanel);
   nuxtApp.vueApp.component("RadioButton", RadioButton);
+  nuxtApp.vueApp.component("Paginator", Paginator);
 });

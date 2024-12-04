@@ -5,22 +5,28 @@
     </Head>
     <div class="flex">
       <SideBar />
-      <UtilsTransitionOpacitySection>
-        <main v-if="data && bootstrapData.loaded">
-          <h1 id="main" class="pb-3 pt-5 text-2xl">
-            <AppLink to="#main">
-              {{ lalof(termbase + "-3A" + termbase) }}
-            </AppLink>
-          </h1>
-          <div class="flex flex-col gap-5 lg:flex-row justify-between">
-            <!--Description-->
-            <div class="max-w-prose basis-GRb space-y-2">
-              <p v-for="p in description" :key="p" v-html="p" />
+      <div class="space-y-5">
+        <UtilsTransitionOpacitySection>
+          <main v-if="data && bootstrapData.loaded">
+            <h1 id="main" class="pb-3 pt-5 text-2xl">
+              <AppLink to="#main">
+                {{ lalof(termbase + "-3A" + termbase) }}
+              </AppLink>
+            </h1>
+            <div class="flex flex-col gap-5 lg:flex-row justify-between">
+              <!--Description-->
+              <div class="max-w-prose basis-GRb space-y-2">
+                <p v-for="p in description" :key="p" v-html="p" />
+              </div>
+              <TermbaseInfoBox :data="data" :termbase-id="termbase" />
             </div>
-            <TermbaseInfoBox :data="data" :termbase-id="termbase" />
-          </div>
-        </main>
-      </UtilsTransitionOpacitySection>
+          </main>
+        </UtilsTransitionOpacitySection>
+        <TermbaseConcepts
+          :key="'concepts' + termbase"
+          :termbase-id="termbase"
+        ></TermbaseConcepts>
+      </div>
     </div>
   </div>
 </template>
