@@ -4,7 +4,7 @@ export function genEsQuery(query: Record<string, any>) {
   const apiKey = runtimeConfig.elasticsearchApiKey;
 
   const esQuery = {
-    url: `${url}/${query.index}/_search`,
+    url: `${url}/${query.index}/${query.type}`,
     params: {
       method: "POST",
       headers: {
