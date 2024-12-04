@@ -13,6 +13,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
     const doc = useQueryState('doc')[0]
     const expanded = useQueryState('expanded')[0]
     const itemRef = useRef<HTMLAnchorElement>(null)
+    const mode = useQueryState('mode', {defaultValue: 'map'})[0]
 
     const docDataset = hit._index.split('-')[2]
     const subunit = docDataset ? treeSettings[docDataset]?.subunit : undefined;
@@ -30,7 +31,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                     aria-current={(cadastralUnit == hit.fields.uuid || doc == hit.fields.uuid) ? 'page' : undefined}
                     remove={['doc', 'point', 'attestationYear', 'attestationLabel', 'center']}
                     add={{
-                        expanded: 'cadastre',
+                        expanded: mode == 'map' ? 'cadastre' : 'tree',
                         cadastralUnit: hit.fields.uuid,
                         doc: hit.fields.uuid,
                     ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}}}>

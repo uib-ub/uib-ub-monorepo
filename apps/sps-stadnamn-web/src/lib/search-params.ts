@@ -35,10 +35,12 @@ export function useSearchQuery() {
     const facetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
+    const expanded = useQueryState('expanded')[0]
     let size = useQueryState('size', parseAsInteger.withDefault(20))[0]
     
+    const treeView = expanded == 'tree' || expanded == 'cadastre'
     
-    if (mode != 'tree') {
+    if (!treeView) {
         fields.forEach(field => {
             const values = searchParams.getAll(field)
             values.forEach(value => {
@@ -67,7 +69,7 @@ export function useSearchQuery() {
         searchQuery.set('dataset', dataset)
     }
     const fulltext = searchParams.get('fulltext')
-    if (fulltext && mode != 'tree') {
+    if (fulltext && expanded != 'tree') {
         searchQuery.set('fulltext', 'on')
     }
 
@@ -78,7 +80,7 @@ export function useSearchQuery() {
     }
 
     // Tree params
-    if (mode == 'tree') {
+    if (treeView) {
         searchQuery.append('sosi', 'gard')
         const adm = searchParams.get('adm')
         size = 0

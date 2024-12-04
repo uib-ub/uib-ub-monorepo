@@ -62,7 +62,6 @@ export default function DesktopLayout() {
 
     return <main id="main" className="flex relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
 
-        <div className="absolute top-0 left-[25svw] max-w-[50svw] z-[2000] right-0 flex flex-col gap-2"><StatusSection isMobile={false}/></div>
         
         <div className="flex lg:gap-4 flex-col h-full max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
         
@@ -116,13 +115,18 @@ export default function DesktopLayout() {
         }
         </div>
     
-
-        
-
-
-        <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
-        { mode == 'table' ? <TableExplorer/> : <MapExplorer isMobile={false}/>}
+        <div className={`absolute top-0 left-[25svw] ${mode == 'table' ? 'w-[75svw]' : 'max-w-[50svw] z-[2000]'} flex flex-col gap-2`}><StatusSection isMobile={false}/>
+            {mode == 'table' &&
+                <div className="bg-white shadow-m p-4 rounded-md shadow-md mr-4">
+                    <TableExplorer/> 
+                </div>}
         </div>
+        { mode == 'map' &&
+            <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
+            
+                <MapExplorer isMobile={false}/>
+            </div>
+        }
 
 
     </main>
