@@ -1,16 +1,15 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { PiCaretDown, PiCaretUp, PiMagnifyingGlass, PiX } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
-import { parseAsBoolean, parseAsString, useQueryState } from 'nuqs';
+import { useQueryState } from 'nuqs';
 import { datasetTitles } from '@/config/metadata-config';
 import { useEffect, useRef, useState } from 'react';
 import IconButton from '@/components/ui/icon-button';
 import { searchableFields } from '@/config/search-config';
 import { useDataset } from '@/lib/search-params';
 import Form from 'next/form'
-import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import Options from './options';
 
 
@@ -24,6 +23,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
     const dataset = useDataset()
+    const setQuery = useQueryState('q')[1]
     
 
 
@@ -51,6 +51,11 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
         router.push(`?${formParams.toString()}`)
     }
 
+    const clearQuery = () => {
+        setInputValue(''); 
+        input.current?.focus()
+        setQuery(null)
+    }  
     
 
     useEffect(() => {
@@ -73,27 +78,18 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     }, [setExpanded]);
     
     return pathname == '/search' ? <>    
-        <div className=""><Link href="/" className="text-lg lg:min-w-[25svw] pt-1 font-serif sr-only lg:not-sr-only self-center lg:!px-4 uppercase no-underline">Stadnamnportalen</Link></div>   
-        <div className="h-full flex w-full lg:w-1/2">
+        <div className="sr-only xl:not-sr-only xl:w-[25svw] flex divide-x-2 divide-neutral-300 gap-2 overflow-clip items-center content-center"><Link href="/" className="text-base font-serif lg:!pl-4 uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-base text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
+        <div className="h-full flex grow">
         <Form ref={form} action="/search" className="flex w-full items-center h-full">
-        {isMobile ? <h1 className="sr-only">{datasetTitles[searchParams.get('dataset') || 'search']}</h1>
-            : <h1 className="text-lg font-sans px-4">
-                <button aria-expanded={expanded == 'datasets'} aria-controls="dataset_list" type="button" onClick={() => setExpanded(prev => prev != 'datasets' ? 'datasets' : null)} className="flex gap-2 items-center border-neutral-300 flex-nowrap">
-                {expanded == 'datasets' ? <PiCaretUp className="text-2xl inline text-primary-600"/> : <PiCaretDown className="text-2xl inline text-primary-600"/>}
-                <span className="whitespace-nowrap max-w-[20svw] truncate font-semibold">{datasetTitles[searchParams.get('dataset') || 'search']}</span>
-                    
-                </button>
-              </h1>
-            }
             
             <div className='flex w-full h-full items-center bg-white border-x-2 border-neutral-200 group px-2'>
             <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900"/>
-            <input type="text" ref={input} name="q" value={inputValue} onChange={(event) => setInputValue(event.target.value)} className="px-4 bg-transparent focus:outline-none flex w-full shrink"/>
+            <input required type="text" ref={input} name="q" value={inputValue} onChange={(event) => setInputValue(event.target.value)} className="px-4 bg-transparent focus:outline-none flex w-full shrink"/>
             
             {searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
             
             { inputValue && 
-            <IconButton type="button" onClick={() => { setInputValue(''); input.current?.focus()}} label="Tøm søk" className="px-2"><PiX className="text-lg"/></IconButton> }
+            <IconButton type="button" onClick={() => { clearQuery() }} label="Tøm søk" className="px-2"><PiX className="text-lg"/></IconButton> }
             </div>
             {searchableFields[dataset]?.length > 0 && 
                 <Options isMobile={isMobile}/>

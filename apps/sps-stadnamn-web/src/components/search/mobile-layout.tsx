@@ -1,12 +1,12 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass, PiTableFill, PiTreeView, PiTreeViewFill } from "react-icons/pi";
+import { PiDatabase, PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass, PiTableFill, PiTreeView, PiTreeViewFill } from "react-icons/pi";
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
 import Options from "./datasets/dataset-drawer";
 import InfoContent from "./info/info-content";
-import { useSearchQuery } from "@/lib/search-params";
+import { useDataset, useSearchQuery } from "@/lib/search-params";
 import Facets from "./facets/facet-section";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
@@ -16,6 +16,7 @@ import DatasetList from "./datasets/dataset-drawer";
 import Datasets from "./datasets/dataset-drawer";
 import DatasetDrawer from "./datasets/dataset-drawer";
 import TableExplorer from "./table/table-explorer";
+import { treeSettings } from "@/config/server-config";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -34,6 +35,7 @@ export default function MobileLayout() {
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
     const cadastralUnit = useQueryState('cadastralUnit')[0]
+    const dataset = useDataset()
 
     useEffect(() => {
         if (!isLoading && !facetIsLoading) {
@@ -193,9 +195,9 @@ export default function MobileLayout() {
                 </section>
             
              }
-            { drawerContent == 'datasets' && <DatasetDrawer isMobile={true}/> }
+            { drawerContent == 'datasets' && <DatasetDrawer/> }
             { drawerContent == 'filters' && 
-                <Facets setFacetIsLoading={setFacetIsLoading}/> 
+                <Facets/> 
             }
             { drawerContent == 'cadastre' && 
                 <CadastralSubdivisions isMobile={true}/>
@@ -209,11 +211,11 @@ export default function MobileLayout() {
             
             <div className="fixed bottom-0 left-0 bg-neutral-900 text-white w-full h-12 flex items-center justify-between">
                     {mode == 'map' && searchFilterParamsString && <button aria-label='Søkeresultater' onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span></button>}
-                    {mode == 'tree' && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
+                    {treeSettings[dataset] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
                     {cadastralUnit && <button aria-label="Kart" onClick={() => swtichTab('cadastre')} aria-current={drawerContent == 'map' ? 'page' : 'false'} className="toolbar-button"><PiTableFill className="text-3xl"/></button>}
                     <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>
                     {mode == 'map' && <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>}
-                    <button aria-label="Søkealternativer" onClick={() => swtichTab('datasets')} aria-current={drawerContent == 'datasets' ? 'page' : 'false'} className="toolbar-button"><PiListMagnifyingGlass className="text-3xl"/></button>
+                    <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={drawerContent == 'datasets' ? 'page' : 'false'} className="toolbar-button"><PiDatabase className="text-3xl"/></button>
 
             </div>
             

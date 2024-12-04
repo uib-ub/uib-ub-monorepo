@@ -62,7 +62,7 @@ export const datasetDescriptions: Record<string, string> = {
 
 
 export const datasetShortDescriptions: Record<string, string> = {
-  search: "Overordna søk aggregert frå alle datasett",
+  search: "Overordna søk aggregert frå alle datasetta",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924.",

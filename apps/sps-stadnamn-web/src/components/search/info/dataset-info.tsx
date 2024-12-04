@@ -33,24 +33,24 @@ export default function DatasetInfo() {
     }
 
     return (
-        <aside className="dataset-info pb-8 lg:pb-0 mobile-padding">
-            <h2>{datasetTitles[mainIndex]}</h2>
-            {mainIndex != 'search' && <span className='flex items-center gap-1'>
-                Lagt til: {format_timestamp(publishDates[mainIndex])} <IconLink href={'/info/updates?dataset=' + mainIndex} label="Historikk"><PiClockCounterClockwise className="text-primary-600 text-xl"/></IconLink>
-            </span>}
-            <div className='flex flex-col gap-2'>
+        <aside className="dataset-info mx-2 bg-neutral-50 p-4 border border-neutral-200" aria-label="Valgt datasett">
+            <span>
+            <strong className="text-base font-semibold ">{datasetTitles[mainIndex]} </strong>{" | "}
+            
          
-                    {subindex ? <p>{datasetShortDescriptions[subindex]}</p> : <p>{datasetShortDescriptions[mainIndex]}</p>}
-                    <p>© {datasetPresentation[mainIndex].attribution}. Lisens: <Link href={datasetPresentation[mainIndex].license.url}>
+                    { datasetShortDescriptions[mainIndex]}
+            </span>
+                    <p className='mt-4'>© {datasetPresentation[mainIndex].attribution}. <Link href={datasetPresentation[mainIndex].license.url}>
                   {datasetPresentation[mainIndex].license.name}
                 </Link></p>
-            </div>
+   
             {infoDataset !=  dataset && <div className="flex gap-2">
                 <Link href={`/search?dataset=${mainIndex}`} className="btn btn-primary">Søk i {datasetTitles[mainIndex]}</Link>
                 {subindex && <Link href={`/search?dataset=${infoDataset}`} className="btn btn-neutral">Søk i {datasetTitles[infoDataset]}</Link>}
             </div>}
+            <Link className="flex gap-1 items-center justify-self-end no-underline" href={"/info/datasets/" + dataset}>Les mer <PiCaretRight aria-hidden="true" className='text-primary-600'/></Link>
 
-            <DatasetToolbar dataset={dataset}/>
+            { false && <DatasetToolbar dataset={dataset}/>}
             
         </aside>
     )

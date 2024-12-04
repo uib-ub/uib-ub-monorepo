@@ -26,7 +26,7 @@ const formatHighlight = (highlight: string) => {
 }
 
 const defaultTitle = (hit: any) => {
-  return <span className="font-semibold">{multivalue(hit.fields?.label)}</span>
+  return <strong className="font-semibold">{multivalue(hit.fields?.label)}</strong>
 }
 
 const loktypeDetails = (loktype: string, hit: any) => {

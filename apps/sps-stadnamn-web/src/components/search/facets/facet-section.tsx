@@ -5,15 +5,12 @@ import ClientFacet from "./client-facet"
 import { contentSettings } from "@/config/server-config"
 
 
-export default function Facets({setFacetIsLoading}: {setFacetIsLoading: (loading: boolean) => void}) {
+export default function Facets() {
     const dataset = useDataset()
     const [expandedFacet, setExpandedFacet] = useQueryState('facet', {defaultValue: 'adm'})
 
     const toggleFacet = (facet: string) => {
-        if (expandedFacet != facet) {
-          setFacetIsLoading(true)
-  
-        }
+
         setExpandedFacet(currentFacet => currentFacet == facet? null : facet)
       }
 
@@ -39,8 +36,8 @@ export default function Facets({setFacetIsLoading}: {setFacetIsLoading: (loading
           
         }
         </div>
-        { expandedFacet == 'adm' ? <ClientFacet facetName='adm' setFacetIsLoading={ setFacetIsLoading}/> : null}
-        { expandedFacet == 'other' ? <ClientFacet facetName='other' setFacetIsLoading={ setFacetIsLoading}/> : null}
+        { expandedFacet == 'adm' ? <ClientFacet facetName='adm' /> : null}
+        { expandedFacet == 'other' ? <ClientFacet facetName='other'/> : null}
         </>
       )
   }

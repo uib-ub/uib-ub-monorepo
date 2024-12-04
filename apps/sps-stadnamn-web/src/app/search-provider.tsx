@@ -32,14 +32,12 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
     
-    const isTable = useSearchParams().get('mode') != 'table'
+    const isTable = useSearchParams().get('mode') == 'table'
 
 
     useEffect(() => {
-        
         setIsLoading(true)
-        fetch(`/api/search/${isTable ? 'table' : 'map'}?${searchQueryString}&size=${size}
-            `)
+        fetch(`/api/search/${isTable ? 'table' : 'map'}?${searchQueryString}&size=${size}`)
         .then(response => {
             if (!response.ok) {
                 throw response

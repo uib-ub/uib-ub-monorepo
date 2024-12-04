@@ -1,96 +1,35 @@
 
 'use client'
-import { useEffect, useState} from 'react';
-import { datasetTitles, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
-import { PiCaretRight } from 'react-icons/pi';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import SearchLink from '@/components/ui/search-link';
+import { useEffect, useState } from 'react';
+import DatasetInfo from '../info/dataset-info';
+import DatasetSelector from './dataset-selector';
+import { useDataset } from '@/lib/search-params';
+import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 
 
-export default function DatasetDrawer({isMobile}: {isMobile: boolean}) {
-  const searchParams = useSearchParams()
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
-
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
+export default function DatasetDrawer() {
+  const [datasetSelectorOpen, setDatasetSelectorOpen] = useState(false);
+  const dataset = useDataset()
 
   useEffect(() => {
-    const titleMatch: string[] = []
-    const contentMatch: string[] = []
-    const no_subindices = Object.keys(datasetTitles).filter(dataset => !dataset.includes("_"))
-    // Datasets match
-    if (searchTerm?.length) {
-
-      no_subindices.forEach(dataset => {
-        if (datasetTitles[dataset].toLowerCase().includes(searchTerm.toLowerCase())) {
-          titleMatch.push(dataset)
-        }
-        else if (datasetDescriptions[dataset]?.toLowerCase().includes(searchTerm.toLowerCase())) {
-          contentMatch.push(dataset)
-        }
-      })
-
-      setFilteredDatasets([...titleMatch, ...contentMatch])
-    }
-    else {
-      setFilteredDatasets(no_subindices)
-    }
+    setDatasetSelectorOpen(false)
   }
-  , [searchTerm])
-
-
-
-
-
+  , [dataset])
 
   return (    
-        <section className="flex flex-col mobile-padding" aria-labelledby="page_heading">
-          <h2 id="page_heading" className="text-xl font-serif px-4">Datasett</h2>
-          <div className='flex flex-col mt-1 justify-between w-full px-4'>
-          <div className='flex flex-col'>
-          <input
-              id='titleSearch'
-              className='rounded-sm border border-gray-400 text-base px-2 py-1'
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            <Link href="/info/datasets" className="ml-auto no-underline">Utforsk datasettene <PiCaretRight aria-hidden="true" className="text-primary-600 inline"/></Link>
-        
-
-          </div>
-
-          
-            
-            
-            
-   
-          </div>
-          <div>
-          
-          <ul className="flex flex-col w-full divide-y mt-4">
-            {filteredDatasets.map((dataset) => (
-          <li key={dataset} className="flex w-full ">
-
-              
-              <SearchLink only={{dataset, q: searchParams.get('q'), expanded: isMobile ? 'info': 'datasets' }} 
-                          className="w-full h-full py-2 px-2 md:px-4 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-200"
-                          aria-current={searchParams.get('dataset') == dataset ? 'page' : undefined}>
-                <div className="font-semibold">{datasetTitles[dataset]}</div>
-                
-                {datasetShortDescriptions[dataset]}      
-              </SearchLink>
-
-              
-              
-          </li>
-        ))}
-      </ul>
-      </div>    
+        <section className="flex gap-2 flex-col mobile-padding">
+          <h2 className="text-xl font-serif px-2">Datasett</h2>
+          <DatasetInfo/>
+          <h3 className="text-lg small-caps px-2 mt-4" >
+              <button aria-controls="dataset_selector" 
+                      className="flex gap-2 items-center"
+                      onClick={() => setDatasetSelectorOpen(!datasetSelectorOpen)}
+                      aria-expanded={datasetSelectorOpen}>
+                        {datasetSelectorOpen ? <PiCaretUp aria-hidden="true" className="text-primary-600"/> : <PiCaretDown aria-hidden="true" className="text-primary-600"/>}
+                        Velg datasett</button></h3>
+          <div id="dataset_selector">
+          {datasetSelectorOpen && <DatasetSelector/>   }
+          </div> 
       </section>
   );
 }

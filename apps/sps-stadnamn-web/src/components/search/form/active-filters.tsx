@@ -51,6 +51,9 @@ export default function ActiveFilters() {
         // Remove all values for this key
         newSearchParams.delete(key)
 
+        // Add back mode
+        newSearchParams.set('mode', searchParams.get('mode') || 'map')
+
         // Add expanded if it exists
         const expanded = searchParams.get('expanded')
         if (expanded) {
@@ -70,7 +73,7 @@ export default function ActiveFilters() {
 
 
     return (
-      <div className="flex flex-wrap gap-2 mt-2">
+      <div className="flex flex-wrap gap-2 items-center">
         { fulltext == 'on' && 
             <button onClick={() => setFulltext('off')} 
             className="text-neutral-950 bg-neutral-50 border-neutral-300 border shadow-md rounded-md gap-2 pl-4 pr-2 py-1 flex items-center">Fulltekst 

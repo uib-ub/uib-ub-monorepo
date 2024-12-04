@@ -6,10 +6,10 @@ import IconButton from '@/components/ui/icon-button';
 
 
 
-export default function ClientFacet({ setFacetIsLoading, facetName }: { setFacetIsLoading: (loading: boolean) => void, facetName: string }) {
+export default function ClientFacet({ facetName }: { facetName: string }) {
   const router = useRouter()
   const dataset = useDataset()
-  const { searchQuery, removeFilterParams } = useSearchQuery()
+  const { searchQuery, removeFilterParams, searchQueryString } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = removeFilterParams(facetName)
   const paramLookup = useSearchParams()
@@ -17,6 +17,7 @@ export default function ClientFacet({ setFacetIsLoading, facetName }: { setFacet
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
   const filterCleared = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
+  const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
   const expandedFacets = new Set<string>();
@@ -54,6 +55,7 @@ export default function ClientFacet({ setFacetIsLoading, facetName }: { setFacet
   const toggleAdm = (beingChecked: boolean, paramName: string, chosenPath: string[]) => {
     const chosenValue = chosenPath.join('__')
     let hasSibling = false
+
     const newParams =  Array.from(searchQuery.entries()).filter(urlParam => {
       if (urlParam[0] != paramName) return true // Ignore other params
       if (urlParam[1] == chosenValue) return false // remove self
@@ -88,6 +90,10 @@ export default function ClientFacet({ setFacetIsLoading, facetName }: { setFacet
       newParams.push(['facet', facet])
     }
     newParams.push(['expanded', 'filters'])    
+    if (searchParams.get('mode')) {
+      newParams.push(['mode', searchParams.get('mode') as string])
+    }
+    newParams.push(['expanded', 'filters'])  
     router.push(`?${new URLSearchParams(newParams).toString()}`)
   }
 

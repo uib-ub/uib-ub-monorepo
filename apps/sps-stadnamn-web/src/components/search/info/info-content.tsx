@@ -56,7 +56,4 @@ export default function InfoContent() {
         }
         </>
     }
-    else {
-        return  <DatasetInfo/>
-    }
 }

@@ -18,6 +18,8 @@ import { useSearchParams } from "next/navigation"
 import Datasets from "./datasets/dataset-drawer"
 import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
+import ModeSelector from "../tabs/mode-selector"
+import NavSelector from "../tabs/nav-selector"
 
 export default function DesktopLayout() {
 
@@ -36,7 +38,7 @@ export default function DesktopLayout() {
     
 
     // Keep filters or expanded open when switching to a different section
-    const [expandedSection, setExpandedSection] = useState<string | null>(expanded === 'results' ? 'results' : expanded === 'filters' ? 'filters' : null)
+    const [expandedSection, setExpandedSection] = useState<string>(searchFilterParamsString && mode != 'table' ? 'results' : 'filters')
 
     const [ showLoading, setShowLoading ] = useState<string|null>(null)
 
@@ -45,102 +47,56 @@ export default function DesktopLayout() {
     
 
     useEffect(() => {
-        if (expanded === 'results') {
-            setExpandedSection('results')
-        }
-        else if (expanded === 'filters') {
-            setExpandedSection('filters')
-            setFacetIsLoading(true)
-        }
-        else if (window && window.innerWidth < 1024) {
-            setExpandedSection(null)
+        if (expanded && ["results", "datasets", "tree", "filters"].includes(expanded)) {
+            setExpandedSection(expanded)
         }
 
     }, [expanded])
 
-
-
     useEffect(() => {
-      if (!isLoading && !facetIsLoading) {
-        setTimeout(() => {
-          setShowLoading(null)
-        }, 100);
-      }
-      else {
-        setShowLoading(expandedSection)
-      }
-    }
-    , [isLoading, expandedSection, facetIsLoading])
-
-
-    const toggleExpanded = (panel: 'datasets' | 'filters' | 'results' | 'cadastre') => {
-        
-        if (expanded == panel) {
-            setExpanded(null)
-            setExpandedSection(null)
+        if (mode == 'table' && expandedSection == 'results') {
+            setExpandedSection('filters')
         }
-        else {
-            setExpanded(panel)
-        }
-    }
+    }, [mode, expandedSection])
+
 
     return <main id="main" className="flex relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
+
         <div className="absolute top-0 left-[25svw] max-w-[50svw] z-[2000] right-0 flex flex-col gap-2"><StatusSection isMobile={false}/></div>
         
         <div className="flex lg:gap-4 flex-col h-full max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
         
 
-        <div className={`lg:absolute left-0 top-0 lg:p-2 flex-col gap-2 lg:max-h-[calc(100svh-4rem)] max-w-[40svw] lg:w-[25svw] !z-[3001] bg-white shadow-md lg:shadow-none rounded-br-md lg:rounded-none lg:bg-transparent 
-            ${mode == 'tree' && (expanded == 'info' || expanded == 'cadastre') ? 'hidden lg:flex' : 'flex'}`}>
+        <div className={`lg:absolute left-2 top-2 flex-col gap-2 max-h-[calc(100svh-6rem)] max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-md rounded-md`}>
 
-        
+        <NavSelector expandedSection={expandedSection}/>
+        <div className="overflow-y-auto stable-scrollbar ml-2 max-h-[calc(100svh-10rem)] py-4">
 
-        { mode == 'map' && <>
-        
-        <section aria-labelledby="filter-title" className={`bg-white lg:rounded-md lg:shadow-md break-words ${expanded == 'datasets' ? 'hidden' : ''}`}>
-            <h2 id="filter-title"  className="px-2 py-2 w-full">
-                <button className="w-full flex justify-start text-center h-full font-semibold text-neutral-950" aria-controls="filter-content" aria-expanded={expandedSection == 'filters'} onClick={() => toggleExpanded('filters')}>
-                { expandedSection == 'filters' ? <PiCaretUpBold className="inline self-center mr-1 text-primary-600"/> : <PiCaretDownBold className="inline self-center mr-1  text-primary-600"/> }
-                Filtre
-                { showLoading == 'filters' && <Spinner status="Laster filtre" className='inline w-[1em] h-[1em}'/> }
-                </button> 
-                
-                </h2>
-            { expandedSection == 'filters' &&
-            <div id="filter-content" className="lg:max-h-[40svh] xl:max-h-[60svh] lg:overflow-y-auto">
-                <Facets setFacetIsLoading={setFacetIsLoading}/>
-            </div>
-        }
-        </section> 
-        { searchFilterParamsString && 
-        <section aria-labelledby="results-title" className={`bg-white rounded-md lg:shadow-md break-words ${expanded == 'datasets' ? 'hidden' : ''}`}>
-             <h2 id="filter-title"  className="px-2 py-2 w-full"><button className="w-full flex gap-2 justify-start text-center h-full font-semibold text-neutral-950"aria-controls="result-content" aria-expanded={expanded == 'results'} onClick={() => toggleExpanded('results')}>
-                { expandedSection == 'results' ? <PiCaretUpBold className="inline self-center  text-primary-600"/> : <PiCaretDownBold className="inline self-center  text-primary-600"/> }
-                Treff
-                { showLoading == 'results' ? <Spinner status="Laster søkeresultater" className='inline w-[1em] h-[1em}'/> : <span className='inline self-center text-sm bg-neutral-100 rounded-full px-2'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span> }
-                </button>
-                
-                
-                
-                </h2>
-                { expandedSection == 'results' &&
-            <div id="result-content" className="lg:max-h-[50svh] xl:max-h-[60svh] lg:overflow-y-auto border-t border-neutral-200">
-                <SearchResults isMobile={false}/>
-            </div>
-            
-            }
-            
-        </section>
-        }
-        </>}
-
-        { mode == 'tree' && treeSettings[dataset] &&
-            <section aria-labelledby="tree-title" className={`h-full lg:max-h-[calc(100svh-4rem)] overflow-y-auto lg:border-t border-neutral-200 bg-white rounded-md lg:shadow-md ${searchParams.get('adm') ? '' : 'pt-4'}`}>
+        { expandedSection == 'tree' &&
             <TreeResults isMobile={false}/>
-            </section>
+        }
 
+        
+        { expandedSection == 'filters' &&
+                <Facets/>
+        }
+        { searchFilterParamsString && (expandedSection == 'results' || !expandedSection) &&
+            <SearchResults isMobile={false}/>
+
+        }
+        
+
+        
+         { expandedSection == 'datasets' &&     
+            <DatasetDrawer/>
+                
         }
         </div>
+       
+
+        </div>
+
+
        { mode != 'table' &&
         <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
         <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'} ${(expanded == 'info' || expanded == 'cadastre')? '' : 'hidden lg:flex' }`}>
@@ -149,7 +105,7 @@ export default function DesktopLayout() {
             <InfoContent/>
         </div>
         </div>
-        { cadastralUnit && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+        { cadastralUnit && expanded != 'datasets' && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
                     <CadastralSubdivisions isMobile={false}/>
                 </div>
@@ -167,10 +123,6 @@ export default function DesktopLayout() {
         <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
         { mode == 'table' ? <TableExplorer/> : <MapExplorer isMobile={false}/>}
         </div>
-        { expanded == 'datasets' && <section id="dataset_list" aria-labelledby="doc-title" className="absolute top-0 left-0 pt-4  right-0 rounded-b-md border-t w-[30svw] shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-3rem)] !z-[3001]">        
-                    <DatasetDrawer isMobile={false}/>
-                </section>
-        }
 
 
     </main>
