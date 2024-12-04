@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
     const query = {
       index: `search-termp-w-${event.context.params.id}`,
       type: "_search",
+      from: body.from,
       body: {
         _source: [
           "id",
@@ -31,13 +32,13 @@ export default defineEventHandler(async (event) => {
             },
           },
         ],
-        size: 45,
+        size: body.fetchConcepts,
       },
     };
 
     const esQuery = genEsQuery(query);
     const data = await $fetch(esQuery.url, esQuery.params);
 
-    return data?.hits?.hits;
+    return data?.hits?.hits.map((hit) => hit?._source);
   }
 });

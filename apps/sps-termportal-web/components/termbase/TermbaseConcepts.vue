@@ -130,9 +130,9 @@ const { data, pending } = await useLazyFetch(
 const displayData = computed(() => {
   return data.value?.map((concept) => {
     return {
-      link: idOrUriToRoute(props.termbaseId, concept._source.id),
-      label: concept._source.displayLabel[locale.value]?.value,
-      language: concept._source.displayLabel[locale.value]?.language,
+      link: idOrUriToRoute(props.termbaseId, concept.id),
+      label: concept.displayLabel[locale.value]?.value,
+      language: concept.displayLabel[locale.value]?.language,
     };
   });
 });
