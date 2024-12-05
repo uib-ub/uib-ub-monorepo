@@ -55,9 +55,9 @@ export default function ActiveFilters() {
         newSearchParams.set('mode', searchParams.get('mode') || 'map')
 
         // Add section if it exists
-        const section = searchParams.get('section')
-        if (section) {
-          newSearchParams.set('section', section)
+        const nav = searchParams.get('nav')
+        if (nav) {
+          newSearchParams.set('nav', nav)
         }
         const facet = searchParams.get('facet')
         if (facet) {

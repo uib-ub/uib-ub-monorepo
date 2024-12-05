@@ -33,10 +33,9 @@ export default function DatasetInfo() {
     }
 
     return (
-        <aside className="dataset-info mx-2 bg-neutral-50 p-4 border border-neutral-200" aria-label="Valgt datasett">
+        <div className="dataset-info px-2" aria-label="Valgt datasett">
             <span>
-            <strong className="text-base font-semibold ">{datasetTitles[mainIndex]} </strong>{" | "}
-            
+            <h2 className="">{datasetTitles[mainIndex]} </h2>            
          
                     { datasetShortDescriptions[mainIndex]}
             </span>
@@ -52,7 +51,7 @@ export default function DatasetInfo() {
 
             { false && <DatasetToolbar dataset={dataset}/>}
             
-        </aside>
+        </div>
     )
 
 

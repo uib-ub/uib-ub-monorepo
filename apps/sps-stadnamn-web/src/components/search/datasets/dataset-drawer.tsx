@@ -18,7 +18,6 @@ export default function DatasetDrawer() {
 
   return (    
         <section className="flex gap-2 flex-col mobile-padding">
-          <h2 className="text-xl font-serif px-2">Datasett</h2>
           <DatasetInfo/>
           <h3 className="text-lg small-caps px-2 mt-4" >
               <button aria-controls="dataset_selector" 

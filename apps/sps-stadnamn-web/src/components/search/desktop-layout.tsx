@@ -28,7 +28,7 @@ export default function DesktopLayout() {
     const searchParams = useSearchParams()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
-    const [section, setSection] = useQueryState('section', {history: 'push'})
+    
     const selectedDocState = useState<any | null>(null)
     const { totalHits, isLoading} = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
@@ -38,26 +38,13 @@ export default function DesktopLayout() {
     
 
     // Keep filters or expanded open when switching to a different section
-    const [leftSection, setLeftSection] = useState<string>(searchFilterParamsString && mode != 'table' ? 'results' : 'filters')
+    const [nav, setNav] = useQueryState('nav', {history: 'push', defaultValue: searchFilterParamsString && mode != 'table' ? 'results' : 'filters'})
 
     const [ showLoading, setShowLoading ] = useState<string|null>(null)
 
     const { docLoading } = useContext(DocContext)
 
     
-
-    useEffect(() => {
-        if (section && ["results", "datasets", "tree", "filters"].includes(section)) {
-            setLeftSection(section)
-        }
-
-    }, [section])
-
-    useEffect(() => {
-        if (mode == 'table' && leftSection == 'results') {
-            setLeftSection('filters')
-        }
-    }, [mode, leftSection])
 
 
     return <main id="main" className="flex relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
@@ -68,25 +55,25 @@ export default function DesktopLayout() {
 
         <div className={`lg:absolute left-2 top-2 flex-col gap-2 max-h-[calc(100svh-6rem)] max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-md rounded-md`}>
 
-        <NavSelector leftSection={leftSection}/>
+        <NavSelector leftSection={nav}/>
         <div className="overflow-y-auto stable-scrollbar ml-2 max-h-[calc(100svh-10rem)] py-4">
 
-        { leftSection == 'tree' &&
+        { nav == 'tree' &&
             <TreeResults isMobile={false}/>
         }
 
         
-        { leftSection == 'filters' &&
+        { nav == 'filters' &&
                 <Facets/>
         }
-        { searchFilterParamsString && (leftSection == 'results' || !leftSection) &&
+        { searchFilterParamsString && (nav == 'results' || !nav) &&
             <SearchResults isMobile={false}/>
 
         }
         
 
         
-         { leftSection == 'datasets' &&     
+         { nav == 'datasets' &&     
             <DatasetDrawer/>
                 
         }
@@ -96,15 +83,16 @@ export default function DesktopLayout() {
         </div>
 
 
-       { mode != 'table' &&
+       { mode != 'table' && nav != 'datasets' && (doc || point) &&
         <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
-        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'} ${(section == 'info' || section == 'cadastre')? '' : 'hidden lg:flex' }`}>
+        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
         <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar`}>
-            { (doc || point) &&  <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
+            <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
             <InfoContent/>
         </div>
         </div>
-        { cadastralUnit && section != 'datasets' && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+
+        { cadastralUnit && nav != 'datasets' && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
                     <CadastralSubdivisions isMobile={false}/>
                 </div>

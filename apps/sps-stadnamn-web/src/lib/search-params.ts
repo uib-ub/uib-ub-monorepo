@@ -34,10 +34,10 @@ export function useSearchQuery() {
     const fields = ['q', ...Object.keys(fieldConfig[dataset])]
     const facetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
-    const section = useQueryState('section')[0]
+    const nav = useQueryState('nav')[0]
     let size = useQueryState('size', parseAsInteger.withDefault(20))[0]
     
-    const treeView = section == 'tree' || section == 'cadastre'
+    const treeView = nav == 'tree'
     
     if (!treeView) {
         fields.forEach(field => {
@@ -68,7 +68,7 @@ export function useSearchQuery() {
         searchQuery.set('dataset', dataset)
     }
     const fulltext = searchParams.get('fulltext')
-    if (fulltext && section != 'tree') {
+    if (fulltext && nav != 'tree') {
         searchQuery.set('fulltext', 'on')
     }
 

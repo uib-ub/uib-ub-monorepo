@@ -18,7 +18,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()
-    const [section, setSection] = useQueryState('section')
+    const [nav, setNav] = useQueryState('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
@@ -40,7 +40,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
-                setSection(null);
+                setNav(null);
             }
         };
     
@@ -50,7 +50,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [setSection]);
+    }, [setNav]);
     
     return pathname == '/search' ? <>    
         <div className="sr-only xl:not-sr-only xl:w-[25svw] flex divide-x-2 divide-neutral-300 gap-2 overflow-clip items-center content-center"><Link href="/" className="text-base font-serif lg:!pl-4 uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-base text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
@@ -70,15 +70,9 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
                 <Options isMobile={isMobile}/>
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
-            <input type="hidden" name="section" value={section != 'filters' ? 'results' : 'filters'}/>
+            <input type="hidden" name="nav" value={nav != 'filters' ? 'results' : 'filters'}/>
             <button className="sr-only" type="submit">Søk</button>
         </Form>
-
-        { section == 'options' && <section aria-labelledby="doc-title" className="absolute top-12 left-10 pt-4  right-0 rounded-b-md border-t w-[30svw] shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-3rem)]">        
-                    
-                </section>
-        }
-
         </div>
         
         </>

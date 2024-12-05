@@ -8,7 +8,7 @@ import { createSerializer, parseAsString } from "nuqs";
 export default function FacetsInfobox({ dataset, source }: { dataset: string, source: Record<string,any> }) {
   const serialize = createSerializer({
     dataset: parseAsString,
-    expanded: parseAsString,
+    nav: parseAsString,
     ...Object.fromEntries(facetConfig[dataset].map((facet) => [facet.key, parseAsString]))
   })
   
@@ -45,7 +45,7 @@ export default function FacetsInfobox({ dataset, source }: { dataset: string, so
       return (
         
         <Link className="no-underline flex items-center gap-1" 
-                        href={item.hrefParams ? buildHref(item.hrefParams) : item.href || serialize({dataset,  [item.key]: item.value, expanded: 'results'})}>
+                        href={item.hrefParams ? buildHref(item.hrefParams) : item.href || serialize({dataset,  [item.key]: item.value, nav: 'results'})}>
                     {item.value}
                     <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
                   </Link>
@@ -56,7 +56,7 @@ export default function FacetsInfobox({ dataset, source }: { dataset: string, so
     const buildHref = (params: Record<string, string>) => {
       // Add parameter if value isn't null or empty string
       const newParams = Object.fromEntries(Object.entries(params).filter(([key, value]) => value !== null && value !== ''));
-      return serialize({dataset, expanded: 'results', ...newParams})
+      return serialize({dataset, nav: 'results', ...newParams})
     }
 
     return (

@@ -89,11 +89,11 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     if (facet) {
       newParams.push(['facet', facet])
     }
-    newParams.push(['section', 'filters'])    
+    newParams.push(['nav', 'filters'])    
     if (searchParams.get('mode')) {
       newParams.push(['mode', searchParams.get('mode') as string])
     }
-    newParams.push(['section', 'filters'])  
+    newParams.push(['nav', 'filters'])  
     router.push(`?${new URLSearchParams(newParams).toString()}`)
   }
 

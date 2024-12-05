@@ -34,7 +34,6 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const setPoint = useQueryState('point', { history: 'push', scroll: true })[1]
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
-  const setSection = useQueryState('section', { history: 'push' })[1]
 
   const { docData } = useContext(DocContext)
   const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit', { history: 'push' })
@@ -314,7 +313,6 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
         setPoint(null)
         setDoc(hit.fields.uuid[0])
         if (cadastralUnit && hit.fields?.sosi?.[0]== 'gard') {
-          setSection('cadastre')
           setCadastralUnit(hit.fields.uuid[0])
         }
         else if (cadastralUnit && cadastralUnit != hit.fields.within) {
@@ -324,7 +322,6 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
         if (point?.length) {
           setPoint(point.join(','))
         }
-        setSection('info')
       }
     }
   }
