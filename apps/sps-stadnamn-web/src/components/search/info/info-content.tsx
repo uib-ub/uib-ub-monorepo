@@ -18,9 +18,8 @@ export default function InfoContent() {
     const point = useQueryState('point')[0]
     const dataset = useDataset()
     const { searchQueryString, searchFilterParamsString } = useSearchQuery()
-    const [ docList, setDocList ] = useState<any[] | null>(null)
     const [listOffset, setListOffset] = useState(0)
-    const { docLoading, docData} = useContext(DocContext)
+    const { docLoading, docData, docList} = useContext(DocContext)
 
     const [isLoading, setIsLoading] = useState(true)
 
