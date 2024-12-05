@@ -204,7 +204,7 @@ export default function MobileLayout() {
         
         
 
-        <div className={`mobile-interface fixed  bottom-12 w-full rounded-t-xl bg-white  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
+        <div className={`mobile-interface fixed  bottom-12 w-full rounded-t-xl bg-white border-t-2 border-neutral-300  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
              style={{height: `${drawerContent ? currentPosition : 0}svh`}}
              onTouchStart={handleTouchStart} 
              onTouchMove={handleTouchMove}
