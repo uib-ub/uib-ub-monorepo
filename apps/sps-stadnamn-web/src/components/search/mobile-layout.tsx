@@ -251,7 +251,7 @@ export default function MobileLayout() {
             </div>
             
         </div>
-        <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full">
+        <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full bg-white">
         { mode == 'table' ? <TableExplorer/> : <MapExplorer isMobile={true}/>}
         </div>
 
