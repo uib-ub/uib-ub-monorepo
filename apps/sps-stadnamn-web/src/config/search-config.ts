@@ -198,6 +198,7 @@ export const resultConfig = Object.entries(fieldConfig).reduce((acc, [dataset, f
 }, {} as Record<string, string[]>);
 
 
+// TODO: make it hard coded and more customizable, and non-boolean
 export const searchableFields = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
   acc[dataset] = Object.entries(fields)
     .filter(([_, config]) => config.searchable)

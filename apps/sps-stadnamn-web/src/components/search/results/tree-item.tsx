@@ -11,7 +11,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
     const dataset = useDataset()
     const cadastralUnit = useQueryState('cadastralUnit')[0]
     const doc = useQueryState('doc')[0]
-    const expanded = useQueryState('expanded')[0]
+    const section = useQueryState('section')[0]
     const itemRef = useRef<HTMLAnchorElement>(null)
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
 
@@ -19,11 +19,11 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
     const subunit = docDataset ? treeSettings[docDataset]?.subunit : undefined;
 
     useEffect(() => {
-        // Scroll into view if expanded changes to results
-        if (isMobile && expanded == 'results' && (cadastralUnit == hit.fields.uuid || doc == hit.fields.uuid) && itemRef.current) {
+        // Scroll into view if section changes to results
+        if (isMobile && section == 'results' && (cadastralUnit == hit.fields.uuid || doc == hit.fields.uuid) && itemRef.current) {
             itemRef.current.scrollIntoView({behavior: 'instant', block: 'center'})
         }
-    }, [expanded, cadastralUnit, doc, hit.fields.uuid, isMobile])
+    }, [section, cadastralUnit, doc, hit.fields.uuid, isMobile])
 
 
     return  <li className="flex flex-grow">
@@ -31,7 +31,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                     aria-current={(cadastralUnit == hit.fields.uuid || doc == hit.fields.uuid) ? 'page' : undefined}
                     remove={['doc', 'point', 'attestationYear', 'attestationLabel', 'center']}
                     add={{
-                        expanded: mode == 'map' ? 'cadastre' : 'tree',
+                        section: mode == 'map' ? 'cadastre' : 'tree',
                         cadastralUnit: hit.fields.uuid,
                         doc: hit.fields.uuid,
                     ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}}}>

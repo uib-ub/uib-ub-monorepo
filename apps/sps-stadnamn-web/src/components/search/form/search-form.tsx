@@ -18,38 +18,13 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()
-    const [expanded, setExpanded] = useQueryState('expanded')
+    const [section, setSection] = useQueryState('section')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
     const dataset = useDataset()
     const setQuery = useQueryState('q')[1]
     
-
-
-    const handleSubmit = async (event: any) => {
-        event.preventDefault()
-        const formParams = new URLSearchParams()
-        if (expanded != 'filters') {
-            formParams.set('expanded', 'results')
-        }
-        else {
-            formParams.set('expanded', 'filters')
-        }
-
-        const facet = searchParams.get('facet')
-        if (facet) {
-            formParams.set('facet', facet)
-        }
-        
-        for (const [key, value] of new FormData(event.target)) {
-            if (value) {
-                formParams.append(key, value as string)
-            }
-            
-        }
-        router.push(`?${formParams.toString()}`)
-    }
 
     const clearQuery = () => {
         setInputValue(''); 
@@ -65,7 +40,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
-                setExpanded(null);
+                setSection(null);
             }
         };
     
@@ -75,7 +50,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [setExpanded]);
+    }, [setSection]);
     
     return pathname == '/search' ? <>    
         <div className="sr-only xl:not-sr-only xl:w-[25svw] flex divide-x-2 divide-neutral-300 gap-2 overflow-clip items-center content-center"><Link href="/" className="text-base font-serif lg:!pl-4 uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-base text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
@@ -95,11 +70,11 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
                 <Options isMobile={isMobile}/>
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
-            <input type="hidden" name="expanded" value={expanded != 'filters' ? 'results' : 'filters'}/>
+            <input type="hidden" name="section" value={section != 'filters' ? 'results' : 'filters'}/>
             <button className="sr-only" type="submit">Søk</button>
         </Form>
 
-        { expanded == 'options' && <section aria-labelledby="doc-title" className="absolute top-12 left-10 pt-4  right-0 rounded-b-md border-t w-[30svw] shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-3rem)]">        
+        { section == 'options' && <section aria-labelledby="doc-title" className="absolute top-12 left-10 pt-4  right-0 rounded-b-md border-t w-[30svw] shadow-md h-fit border-2 border-neutral-200 bg-white overflow-y-auto max-h-[calc(100svh-3rem)]">        
                     
                 </section>
         }

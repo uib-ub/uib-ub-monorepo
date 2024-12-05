@@ -77,7 +77,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
                     <SearchLink aria-current={doc == selectedCadastralUnit?._source?.uuid ? 'page' : false} 
                                       className="aria-[current=page]:decoration-accent-700"
-                                      add={{ expanded: 'info', doc: cadastralUnit }}>{title}
+                                      add={{ section: 'info', doc: cadastralUnit }}>{title}
                     </SearchLink>
 
                 </h2>
@@ -108,7 +108,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                                         <td className="border p-2 border-x-0">
                                         <SearchLink aria-current={doc==hit.fields?.uuid ? 'page' : false} 
                                                               className="aria-[current=page]:decoration-accent-700 whitespace-nowrap lg:whitespace-normal"
-                                                              add={{ doc: hit.fields?.uuid, expanded: 'info' }}>
+                                                              add={{ doc: hit.fields?.uuid, section: 'info' }}>
                                         {hit.fields[leaf]} {hit.fields.label}
                                             
                                                                 

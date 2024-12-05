@@ -54,10 +54,10 @@ export default function ActiveFilters() {
         // Add back mode
         newSearchParams.set('mode', searchParams.get('mode') || 'map')
 
-        // Add expanded if it exists
-        const expanded = searchParams.get('expanded')
-        if (expanded) {
-          newSearchParams.set('expanded', expanded)
+        // Add section if it exists
+        const section = searchParams.get('section')
+        if (section) {
+          newSearchParams.set('section', section)
         }
         const facet = searchParams.get('facet')
         if (facet) {

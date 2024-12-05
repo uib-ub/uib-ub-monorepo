@@ -11,7 +11,6 @@ import ModeSelector from '../tabs/mode-selector';
 export default function StatusSection({isMobile}: {isMobile: boolean}) {
 
     const { resultData, resultBounds, isLoading } = useContext(SearchContext)
-    const expanded = useQueryState('expanded')[0]
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
     const { facetFilters } = useSearchQuery()
     const searchParams = useSearchParams()

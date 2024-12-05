@@ -28,7 +28,7 @@ export default function DesktopLayout() {
     const searchParams = useSearchParams()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
-    const [expanded, setExpanded] = useQueryState('expanded', {history: 'push'})
+    const [section, setSection] = useQueryState('section', {history: 'push'})
     const selectedDocState = useState<any | null>(null)
     const { totalHits, isLoading} = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
@@ -38,7 +38,7 @@ export default function DesktopLayout() {
     
 
     // Keep filters or expanded open when switching to a different section
-    const [expandedSection, setExpandedSection] = useState<string>(searchFilterParamsString && mode != 'table' ? 'results' : 'filters')
+    const [leftSection, setLeftSection] = useState<string>(searchFilterParamsString && mode != 'table' ? 'results' : 'filters')
 
     const [ showLoading, setShowLoading ] = useState<string|null>(null)
 
@@ -47,17 +47,17 @@ export default function DesktopLayout() {
     
 
     useEffect(() => {
-        if (expanded && ["results", "datasets", "tree", "filters"].includes(expanded)) {
-            setExpandedSection(expanded)
+        if (section && ["results", "datasets", "tree", "filters"].includes(section)) {
+            setLeftSection(section)
         }
 
-    }, [expanded])
+    }, [section])
 
     useEffect(() => {
-        if (mode == 'table' && expandedSection == 'results') {
-            setExpandedSection('filters')
+        if (mode == 'table' && leftSection == 'results') {
+            setLeftSection('filters')
         }
-    }, [mode, expandedSection])
+    }, [mode, leftSection])
 
 
     return <main id="main" className="flex relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
@@ -68,25 +68,25 @@ export default function DesktopLayout() {
 
         <div className={`lg:absolute left-2 top-2 flex-col gap-2 max-h-[calc(100svh-6rem)] max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-md rounded-md`}>
 
-        <NavSelector expandedSection={expandedSection}/>
+        <NavSelector leftSection={leftSection}/>
         <div className="overflow-y-auto stable-scrollbar ml-2 max-h-[calc(100svh-10rem)] py-4">
 
-        { expandedSection == 'tree' &&
+        { leftSection == 'tree' &&
             <TreeResults isMobile={false}/>
         }
 
         
-        { expandedSection == 'filters' &&
+        { leftSection == 'filters' &&
                 <Facets/>
         }
-        { searchFilterParamsString && (expandedSection == 'results' || !expandedSection) &&
+        { searchFilterParamsString && (leftSection == 'results' || !leftSection) &&
             <SearchResults isMobile={false}/>
 
         }
         
 
         
-         { expandedSection == 'datasets' &&     
+         { leftSection == 'datasets' &&     
             <DatasetDrawer/>
                 
         }
@@ -98,13 +98,13 @@ export default function DesktopLayout() {
 
        { mode != 'table' &&
         <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
-        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'} ${(expanded == 'info' || expanded == 'cadastre')? '' : 'hidden lg:flex' }`}>
+        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'} ${(section == 'info' || section == 'cadastre')? '' : 'hidden lg:flex' }`}>
         <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar`}>
             { (doc || point) &&  <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>}
             <InfoContent/>
         </div>
         </div>
-        { cadastralUnit && expanded != 'datasets' && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+        { cadastralUnit && section != 'datasets' && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
                     <CadastralSubdivisions isMobile={false}/>
                 </div>

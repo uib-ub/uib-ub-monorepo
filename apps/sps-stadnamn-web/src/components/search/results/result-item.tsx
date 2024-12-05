@@ -14,7 +14,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
     const searchParams = useSearchParams()
     const dataset = useDataset()
     const doc = useQueryState('doc')[0]
-    const expanded = useQueryState('expanded')[0]
+    const section = useQueryState('section')[0]
     const itemRef = useRef<HTMLAnchorElement>(null)
     const serialize = createSerializer({
         doc: parseAsString,
@@ -23,7 +23,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
         cadastralUnit: parseAsString,
         attestationYear: parseAsString,
         attestationLabel: parseAsString,
-        expanded: parseAsString,
+        section: parseAsString,
     });
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
@@ -31,11 +31,11 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
     const snippetRenderer = resultRenderers[dataset]?.snippet || defaultResultRenderer.snippet
 
     useEffect(() => {
-        // Scroll into view if expanded changes to results
-        if (isMobile && expanded == 'results' && doc == hit.fields.uuid && itemRef.current) {
+        // Scroll into view if section changes to results
+        if (isMobile && section == 'results' && doc == hit.fields.uuid && itemRef.current) {
             itemRef.current.scrollIntoView({behavior: 'instant', block: 'center'})
         }
-    }, [expanded, doc, hit.fields.uuid, isMobile])
+    }, [section, doc, hit.fields.uuid, isMobile])
 
     
 
@@ -46,7 +46,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
                     hit.fields?.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid, 
                     point: null, 
                     cadastralUnit: null,
-                    expanded: 'info',
+                    section: 'info',
                     attestationYear: null, attestationLabel: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
             <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
             {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 

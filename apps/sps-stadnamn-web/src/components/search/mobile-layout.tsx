@@ -26,7 +26,7 @@ export default function MobileLayout() {
     const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down'>(null);
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
-    const [drawerContent, setDrawerContent] = useQueryState('expanded', {history: 'push'});
+    const [drawerContent, setDrawerContent] = useQueryState('section', {history: 'push'});
     const selectedDocState = useState<any | null>(null)
     const doc = useQueryState('doc')[0]
     const { searchFilterParamsString } = useSearchQuery()

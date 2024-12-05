@@ -53,7 +53,7 @@ export default async function Home({ searchParams } : { searchParams?: Promise<{
    
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input id="search_input" className="col-span-3 md:col-span-5 rounded-md h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
-    <input type="hidden" name="expanded" value="results"/>
+    <input type="hidden" name="section" value="results"/>
     <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass className="text-xl"/></IconButton>
   </form>
   </div>
