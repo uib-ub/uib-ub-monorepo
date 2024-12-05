@@ -83,7 +83,7 @@ export default function DesktopLayout() {
         </div>
 
 
-       { mode != 'table' && nav != 'datasets' && (doc || point) &&
+       { mode != 'table' && (doc || point) &&
         <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
         <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
         <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar`}>
@@ -92,7 +92,7 @@ export default function DesktopLayout() {
         </div>
         </div>
 
-        { cadastralUnit && nav != 'datasets' && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+        { cadastralUnit && treeSettings[dataset] && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
                     <CadastralSubdivisions isMobile={false}/>
                 </div>
