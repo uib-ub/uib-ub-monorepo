@@ -67,13 +67,13 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
     const title =  selectedCadastralUnit?._source && <>{getValueByPath(selectedCadastralUnit._source, treeSettings[dataset]?.subunit) || selectedCadastralUnit?._source?.cadastre?.[0]?.gnr.join(",")} {selectedCadastralUnit?._source?.label}</>
 
     return (
-    <>
+    <div className="bg-white">
         {
             hits && cadastralUnit && cadastralUnit == selectedCadastralUnit?._source?.uuid && <>
             {isMobile?
             <h2 className="px-2 pb-2">{title}</h2>
             
-            : <div className="flex bg-neutral-50 cadastre-header">
+            : <div className="flex bg-neutral-50 cadastre-header rounded-t-md">
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
                     <SearchLink aria-current={doc == selectedCadastralUnit?._source?.uuid ? 'page' : false} 
                                       className="aria-[current=page]:decoration-accent-700"
@@ -128,6 +128,6 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                 {hits.total.value > 300 && <Pagination currentPage={page} setCurrentPage={setPage} totalPages={Math.ceil(hits.total.value / 300)} />}
             </>
         }
-    </>
+    </div>
 );
 }

@@ -196,11 +196,7 @@ export default function MobileLayout() {
 
 
     return <div>
-        <div className="relative">
-        <div className="absolute left-1 z-[2000] right-0 flex flex-col gap-2"><StatusSection isMobile={true}/>
-        </div>
-        
-        </div>
+
         
         
 
@@ -239,6 +235,9 @@ export default function MobileLayout() {
             </div>
             </>
             }
+
+<div className="absolute left-1 z-[2000] right-0 flex flex-col gap-2">
+</div>
             
             <div className="fixed bottom-0 left-0 bg-neutral-900 text-white w-full h-12 flex items-center justify-between">
                     {mode == 'map' && searchFilterParamsString &&  <button aria-label='Søkeresultater' onClick={() => swtichTab('results')} aria-current={drawerContent == 'results' ? 'page' : 'false'} className="toolbar-button"><PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span></button>}
@@ -251,7 +250,9 @@ export default function MobileLayout() {
             </div>
             
         </div>
-        <div className="absolute top-12 right-0 h-[calc(100svh-6rem)] w-full bg-white">
+
+        <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
+        <StatusSection isMobile={true}/>
         { mode == 'table' ? <TableExplorer/> : <MapExplorer isMobile={true}/>}
         </div>
 

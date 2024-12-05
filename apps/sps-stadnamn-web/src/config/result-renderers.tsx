@@ -39,7 +39,7 @@ const multivalue = (value: string|string[]) => {
   return Array.isArray(value) ? value.join("/") : value
 }
 
-function formatCadastre(cadastre: Record<string, any>[]): string {
+export function formatCadastre(cadastre: Record<string, any>[]): string {
   return cadastre.map(item => {
       if (Array.isArray(item.gnr) && item.gnr.length > 1) {
 

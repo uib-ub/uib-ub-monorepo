@@ -241,11 +241,11 @@
   }
 
   .result-table tbody tr:has(td a[aria-current="page"]) {
-    @apply bg-accent-200;
+    @apply bg-accent-100;
   }
 
   .cadastre-header:has(h2 a[aria-current="page"]) {
-    @apply bg-accent-200;
+    @apply bg-accent-100;
   }
   
 

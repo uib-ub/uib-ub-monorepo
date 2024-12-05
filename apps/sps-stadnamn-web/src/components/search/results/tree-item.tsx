@@ -27,7 +27,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
 
 
     return  <li className="flex flex-grow">
-            <SearchLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-200"
+            <SearchLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline decoration-accent-700 aria-[current='page']:bg-accent-100 aria-[current='page']:underline"
                     aria-current={(cadastralUnit == hit.fields.uuid || doc == hit.fields.uuid) ? 'page' : undefined}
                     remove={['doc', 'point', 'attestationYear', 'attestationLabel', 'center']}
                     add={{
