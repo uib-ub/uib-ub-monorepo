@@ -17,6 +17,7 @@ interface Session {
 
 export const Header = async () => {
   const session: Session = (await getServerSession()) ?? {};
+  console.log("🚀 ~ Header ~ session:", session)
 
   const query = groq`*[_type in ["Actor", "Project", "Group", "Software"]] | order(label, asc) {
     "id": _id,

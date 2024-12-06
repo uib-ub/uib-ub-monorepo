@@ -11,6 +11,7 @@ const handler = NextAuth({
       clientId: process.env.DATAPORTEN_ID,
       clientSecret: process.env.DATAPORTEN_SECRET,
       profile: (profile) => {
+        console.log("🚀 ~ profile:", profile)
         return {
           ...profile,
           id: profile.sub,
