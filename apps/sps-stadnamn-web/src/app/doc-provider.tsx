@@ -10,6 +10,9 @@ interface DocContextData {
     docLoading: boolean;
     docDataset: string | null;
     docError: Record<string, string> | null;
+    parentData: any | null;
+    parentLoading: boolean;
+    parentError: Record<string, string> | null;
     
   }
  
@@ -19,6 +22,9 @@ interface DocContextData {
     docDataset: null,
     docLoading: true,
     docError: null,
+    parentData: null,
+    parentLoading: true,
+    parentError: null,
     });
 
  
@@ -28,22 +34,51 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const { searchQueryString } = useSearchQuery()
     const [ docList, setDocList ] = useState<any[] | null>(null)
     const [docData, setDocData] = useState<any | null>(null)
+    
     const doc = useQueryState('doc')[0]
-
     const [docLoading, setDocLoading] = useState(true)
     const [docDataset, setDocDataset] = useState<string | null>(null)
+    const [docError, setDocError] = useState<Record<string, string> | null>(null)
+
+    const within = useQueryState('within')[0]
+    const [parentData, setParentData] = useState<any | null>(null)
+    const [parentLoading, setParentLoading] = useState<boolean>(true)
+    const [parentError, setParentError] = useState<Record<string, string> | null>(null)
+    
+    useEffect(() => {
+        if (within) {
+            setDocLoading(true)
+            fetch(`/api/doc?uuid=${within}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`,  {cache: 'force-cache'}).then(res => res.json()).then(data => {
+                if (data.hits?.hits?.length) {
+                    setParentData(data.hits.hits[0])
+                    setParentLoading(false)
+                }
+            }).catch(err => {
+                setParentError(err)
+                setParentLoading(false)
+            })
+        }
+        else {
+            setParentData(null)
+            setParentLoading(false)
+        }
+    }   
+    , [within, dataset, setParentData])
 
 
 
     useEffect(() => {
         if (doc) {
             setDocLoading(true)
-            fetch(`/api/doc?uuid=${doc}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
+            fetch(`/api/doc?uuid=${doc}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`,  {cache: 'force-cache'}).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setDocData(data.hits.hits[0])
                     setDocDataset(data.hits.hits[0]._index.split('-')[2])
                     setDocLoading(false)
                 }
+            }).catch(err => {
+                setDocError(err)
+                setDocLoading(false)
             })
         }
         else {
@@ -77,6 +112,9 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         docDataset,
         docLoading,
         docError: null,
+        parentData,
+        parentLoading,
+        parentError
 
   }}>{children}</DocContext.Provider>
 }
