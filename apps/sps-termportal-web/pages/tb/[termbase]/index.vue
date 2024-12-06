@@ -22,10 +22,12 @@
             </div>
           </main>
         </UtilsTransitionOpacitySection>
+        <TermbaseSearch :termbase-id="termbase" />
         <TermbaseConcepts
+          v-if="data"
           :key="'concepts' + termbase"
           :termbase-id="termbase"
-        ></TermbaseConcepts>
+        />
       </div>
     </div>
   </div>

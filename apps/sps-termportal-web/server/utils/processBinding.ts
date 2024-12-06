@@ -17,7 +17,7 @@ export default function (binding: { [key: string]: any }): SearchDataEntry {
   return {
     predicate,
     label: binding.literal.value,
-    link: idOrUriToRoute(samling, binding.uri.value),
+    link: "/tb" + idOrUriToRoute(samling, binding.uri.value),
     lang: binding.lang.value.split(","),
     samling,
     context: binding.context.value,

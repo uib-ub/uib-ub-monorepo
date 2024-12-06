@@ -102,7 +102,7 @@ export function getRelationData(
           // TODO might break links between concepts of external tbs
           // Termbase is part of URI (seperated by '-3A')
           const link =
-            "/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
+            "/tb/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
             let relation = { target: [label, link] };

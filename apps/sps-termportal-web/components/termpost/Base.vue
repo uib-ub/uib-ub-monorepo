@@ -22,7 +22,7 @@
           <client-only>
             <AppLink
               v-if="mainConcept.memberOf !== lalof(mainConcept.memberOf)"
-              :to="'/' + mainConcept?.memberOf.split('-3A')[1]"
+              :to="'/tb/' + mainConcept?.memberOf.split('-3A')[1]"
             >
               {{ lalof(mainConcept.memberOf) }}
             </AppLink>

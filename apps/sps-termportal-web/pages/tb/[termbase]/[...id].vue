@@ -1,5 +1,6 @@
 <template>
   <div class="flex h-full">
+    <pre>{{ router.options.history.state.back }}</pre>
     <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
     <div class="flex">
       <SideBar />
@@ -41,6 +42,11 @@
 import { TermbaseId } from "~~/utils/vars-termbase";
 
 const route = useRoute();
+const router = useRouter();
+const termpostDisplayContext = useState(
+  "termpostDisplayContext",
+  () => "search"
+);
 const searchScrollBarPos = useSearchScrollBarPos();
 const searchData = useSearchData();
 
@@ -77,6 +83,10 @@ onMounted(async () => {
   if (sidebar.value) {
     sidebar.value.scrollTo(0, searchScrollBarPos.value);
   }
+  if (!router?.options?.history?.state?.back?.startsWith("/search")) {
+    termpostDisplayContext.value = "search";
+  }
+  console.log(router.options.history.state.back);
 });
 
 onBeforeUnmount(() => {
