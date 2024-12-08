@@ -24,22 +24,22 @@
     "@sidebase/nuxt-auth": "^0.6.0-rc.1",
     "@types/jsonld": "^1.5.8",
     "@vueuse/nuxt": "^10.5.0",
-    "eslint": "^8.32.0",
+    "eslint": "^9.16.0",
     "eslint-config-custom": "*",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-tsdoc": "^0.2.17",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-tsdoc": "^0.4.0",
     "jsonld": "^8.1.0",
     "next-auth": "4.21.1",
     "nuxt": "3.8.0",
     "nuxt-icon": "^0.6.1",
-    "prettier": "^2.8.3",
-    "prettier-plugin-tailwindcss": "^0.2.1",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9",
     "primevue": "^3.35.0",
     "sanity": "3.24.1",
     "sanity-plugin-document-reference-by": "^1.0.1",
     "sass": "^1.64.1",
     "termportal-ui": "*",
     "vite": "5.2.8",
-    "vitest": "^0.34.6"
+    "vitest": "^2.1.8"
   }
 }
