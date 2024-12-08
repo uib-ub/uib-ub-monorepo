@@ -34,11 +34,15 @@
 const route = useRoute();
 const locale = useLocale();
 const orderedTermbases = useOrderedTermbases();
+const termpostContext = useTermpostContext();
 
 const context = computed(() => {
   if (route.path === "/") {
     return "minimal";
-  } else if (route.path === "/search" || route.name === "termbase-id") {
+  } else if (
+    route.path === "/search" ||
+    (route.name === "tb-termbase-id" && termpostContext.value)
+  ) {
     return "full";
   } else {
     return "default";
