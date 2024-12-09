@@ -24,7 +24,7 @@ export const Header = async () => {
     "type": _type,
     label,
   }`
-  const data = await sanityFetch<any[]>({ query, tags: ["Actor", "Project", "Group", "Software"] })
+  const data = await sanityFetch({ query, tags: ["Actor", "Project", "Group", "Software"] })
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
