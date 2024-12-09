@@ -48,6 +48,8 @@ export default function DatasetSelector() {
           <div className='flex flex-col'>
           <input
               id='titleSearch'
+              autoFocus={true}
+              autoComplete="off"
               className='rounded-sm border border-gray-400 text-base px-2 py-1'
               type="text"
               value={searchTerm}
