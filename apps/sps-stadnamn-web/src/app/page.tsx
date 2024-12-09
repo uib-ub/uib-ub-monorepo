@@ -94,38 +94,38 @@ export default async function Home() {
   </div>
   </div>
   <div className="flex flex-col items-center container gap-24">
-  <section className="flex flex-col items-center gap-12" aria-labelledby="recently_added">
-    <h2 id="recently_added" className="font-serif text-3xl">Sist lagt til</h2>
+  <section className="flex flex-col  gap-6" aria-labelledby="recently_added">
+    <h2 id="recently_added" className="font-serif text-3xl text-neutral-900">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
-          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
-            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-t-lg md:rounded-l-lg md:rounded-t-none">
+          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}&nav=datasets`}>
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
             </div>
-            <div className="py-4 px-6 flex flex-col">
-              <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+            <div className="py-4 px-6 pb-0 flex flex-col">
+              <h3 className="text-2xl group-hover:underline decoration-2 decoration-primary-400 underline-offset-4">{card.title}</h3>
               <p className="pt-2 text-small">{card.description}</p>
-              <div id={card.code + "_attribution"} className="text-xs text-neutral-700 mt-auto">{card.imageAttribution}</div>
+              <div id={card.code + "_attribution"} className="text-xs text-neutral-700 mt-auto">Illustrasjon: {card.imageAttribution}</div>
             </div>
           </Link>
         </li>
       ))}
     </ul>
 </section>
-  <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalde datasett</h2>
+  <section className="flex flex-col gap-6" aria-labelledby="dataset_showcase">
+    <h2 id="dataset_showcase" className="font-serif text-3xl text-neutral-900">Utvalde datasett</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
-          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
-            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-t-lg md:rounded-l-lg md:rounded-t-none">
+          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}&nav=datasets`}>
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
             </div>
-            <div className="py-4 px-6 flex flex-col">
-              <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+            <div className="py-4 px-6 pb-0 flex flex-col">
+              <h3 className="text-2xl group-hover:underline decoration-2 decoration-primary-400 underline-offset-4">{card.title}</h3>
               <p className="pt-2 text-small">{card.description}</p>
-              <div id={card.code + "_attribution"} className="text-xs text-neutral-700 mt-auto">{card.imageAttribution}</div>
+              <div id={card.code + "_attribution"} className="text-xs text-neutral-700 mt-auto">Illustrasjon: {card.imageAttribution}</div>
             </div>
           </Link>
         </li>
