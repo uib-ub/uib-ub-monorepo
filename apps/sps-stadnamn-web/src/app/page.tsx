@@ -7,22 +7,9 @@ import Image from 'next/image';
 import { datasetTitles, datasetPresentation, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/footer';
 import { fetchStats } from '@/app/api/_utils/actions';
-import { redirect } from "next/navigation";
 
 
-export default async function Home({ searchParams } : { searchParams?: Promise<{q: string, d: string}> }) {
-  const { q: legacyQ, d: legacyD } = await searchParams || {}
-
-  // Redirect legacy search params from Toponymi
-  if (legacyQ) {
-    const newSearchParams: Record<string,string> = { q: legacyQ }
-    if (legacyD) {
-      newSearchParams['datasets'] = legacyD
-    }
-    redirect('/view/search?' + new URLSearchParams(newSearchParams).toString())
-    
-  }
-
+export default async function Home() {
 
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
