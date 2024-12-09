@@ -26,7 +26,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
   
   const adm = searchParams.get('adm')
   const [treeAdm, setTreeAdm] = useState<string | null>(adm)
-  const [groupBy, setGroupBy] = useState<string | null>(null)
+  const [groupBy, setGroupBy] = useState<string | null>('adm1')
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {

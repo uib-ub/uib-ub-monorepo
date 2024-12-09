@@ -131,7 +131,7 @@ export default function DocInfo() {
         { docSource.sosi == 'gard' && mode != 'table' &&
       <div className={`flex ${(!within || within != docSource.uuid) ? '' : 'lg:hidden'}`}>
         <SearchLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" add={{within: docSource.uuid }}>
-          <PiTable aria-hidden="true"/> Matrikkeltabell
+          <PiTable aria-hidden="true"/> Garder
         </SearchLink>
     </div>
 
