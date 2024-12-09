@@ -27,13 +27,13 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
   m1886: {
     subunit: "cadastre__gnr",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr"],
+    sort: ["cadastre__gnr", "cadastre__bnr"],
     aggSort: "rawData.knr.keyword"
   },
   mu1950: {
     subunit: "cadastre__gnr",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr"],
+    sort: ["cadastre__gnr", "cadastre__bnr"],
     aggSort: "knr.keyword",
     showNumber: true,
   }
