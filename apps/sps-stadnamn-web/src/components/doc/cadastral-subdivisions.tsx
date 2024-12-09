@@ -63,7 +63,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
         
     }, [dataset, within])
 
-    const title =  selectedWithin?._source && <>{getValueByPath(selectedWithin._source, treeSettings[dataset]?.subunit) || selectedWithin?._source?.cadastre?.[0]?.gnr.join(",")} {selectedWithin?._source?.label}</>
+    const title =  selectedWithin?._source && <>{getValueByPath(selectedWithin._source, treeSettings[dataset]?.subunit) || selectedWithin?._source?.cadastre?.[0]?.gnr?.join(",")} {selectedWithin?._source?.label}</>
 
     return (
     <div className="bg-white">
