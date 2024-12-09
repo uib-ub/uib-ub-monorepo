@@ -39,7 +39,7 @@ export async function GET(request: Request) {
                 "within.keyword": uuid
             }
         },
-        fields: ["uuid", "label", subunit, leaf, ...cadastreTableFields],    
+        fields: ["uuid", "label", subunit.replace("__", "."), leaf.replace("__", "."), ...cadastreTableFields],    
         sort: sortFields.map((field: string) => {
             if (field.includes("__")) {
                 const processed_field = field.replace("__", ".")

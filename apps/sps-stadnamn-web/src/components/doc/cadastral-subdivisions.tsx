@@ -103,7 +103,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                                         <SearchLink aria-current={doc==hit.fields?.uuid ? 'page' : false} 
                                                               className="aria-[current=page]:decoration-accent-700 whitespace-nowrap lg:whitespace-normal"
                                                               add={{ doc: hit.fields?.uuid }}>
-                                        {hit.fields[leaf]} {hit.fields.label}
+                                        {hit.fields[leaf] || hit.fields.cadastre?.[0]?.bnr.join(",")} {hit.fields.label}
                                             
                                                                 
                                                                 
