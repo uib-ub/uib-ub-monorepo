@@ -35,7 +35,7 @@ const termbaseOptions = computed(() =>
   orderedTermbases.value.map((tb) => {
     return {
       label: `${tb}-3A${tb}`,
-      route: `/${tb}`,
+      route: `/tb/${tb}`,
     };
   })
 );

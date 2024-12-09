@@ -114,6 +114,10 @@ export const useConceptViewToggle = () =>
 export const useNavMenuExpanded = () =>
   useState<boolean>("navMenuExpanded", () => false);
 
+export const useTermpostContext = () => useState("termpostContext", () => true);
+export const useHeaderDisplayScope = () =>
+  useState("headerDisplayScope", () => "default");
+
 export const useBootstrapData = () =>
   useState<Object>("lazyLocales", () => ({
     lalo: { nb: {}, nn: {}, en: {} },
