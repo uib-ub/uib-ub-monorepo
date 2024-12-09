@@ -51,6 +51,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
 
   useEffect(() => {
     if (docLoading || parentLoading) return
+    if (groupBy == 'adm1' && treeAdm) return // Workaround for invalid state
 
     const url = new URLSearchParams({dataset})
     if (groupBy) url.set('groupBy', groupBy)
