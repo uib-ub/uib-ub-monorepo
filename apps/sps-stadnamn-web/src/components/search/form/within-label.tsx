@@ -1,20 +1,20 @@
+import { DocContext } from "@/app/doc-provider"
+import { fieldConfig } from "@/config/search-config"
 import { treeSettings } from "@/config/server-config"
+import { useDataset } from "@/lib/search-params"
 import { getValueByPath } from "@/lib/utils"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
 
 
 export default function WithinLabel({within}: {within: string}) {
-    const params = useParams()
+    const dataset = useDataset()
 
-    const [source, setSource] = useState<any>(null)
+    const { parentData } = useContext(DocContext)
 
-    useEffect(() => {
-        fetch(`/api/docs?dataset=${params.dataset}&docs=${within}`).then(response => response.json()).then(data => setSource(data.hits?.hits[0]?._source))
-
-    }, [params.dataset, within])
+    const source = parentData?._source
 
 
-    return <>Under {source && getValueByPath(source, treeSettings[params.dataset as string]?.subunit || 'cadastre.gnr')} {source?.label}</>
+    return <>{source && getValueByPath(source, treeSettings[dataset]?.subunit || 'cadastre.gnr')} {source?.label}</>
 
 }

@@ -13,6 +13,7 @@ interface DocContextData {
     parentData: any | null;
     parentLoading: boolean;
     parentError: Record<string, string> | null;
+    docAdm: string | null;
     
   }
  
@@ -25,6 +26,7 @@ interface DocContextData {
     parentData: null,
     parentLoading: true,
     parentError: null,
+    docAdm: null,
     });
 
  
@@ -44,13 +46,15 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const [parentData, setParentData] = useState<any | null>(null)
     const [parentLoading, setParentLoading] = useState<boolean>(true)
     const [parentError, setParentError] = useState<Record<string, string> | null>(null)
-    
+    const [docAdm, setDocAdm] = useState<string | null>(null)
+
     useEffect(() => {
         if (within) {
-            setDocLoading(true)
+            setParentLoading(true)
             fetch(`/api/doc?uuid=${within}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`,  {cache: 'force-cache'}).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setParentData(data.hits.hits[0])
+                    setDocAdm(data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1)
                     setParentLoading(false)
                 }
             }).catch(err => {
@@ -74,6 +78,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
                 if (data.hits?.hits?.length) {
                     setDocData(data.hits.hits[0])
                     setDocDataset(data.hits.hits[0]._index.split('-')[2])
+                    setDocAdm(data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1)
                     setDocLoading(false)
                 }
             }).catch(err => {
@@ -114,7 +119,8 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         docError: null,
         parentData,
         parentLoading,
-        parentError
+        parentError,
+        docAdm
 
   }}>{children}</DocContext.Provider>
 }

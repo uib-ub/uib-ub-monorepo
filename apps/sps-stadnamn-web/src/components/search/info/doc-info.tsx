@@ -19,7 +19,7 @@ export default function DocInfo() {
     const { docDataset, docData } = useContext(DocContext)
 
     const docSource = docData._source
-    const cadastralUnit = useQueryState('cadastralUnit')[0]
+    const within = useQueryState('within')[0]
     const mode = useQueryState('mode')[0]
 
     const serialize = createSerializer({
@@ -129,8 +129,8 @@ export default function DocInfo() {
    
         </div>
         { docSource.sosi == 'gard' && mode != 'table' &&
-      <div className={`flex ${(!cadastralUnit || cadastralUnit != docSource.uuid) ? '' : 'lg:hidden'}`}>
-        <SearchLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" add={{cadastralUnit: docSource.uuid }}>
+      <div className={`flex ${(!within || within != docSource.uuid) ? '' : 'lg:hidden'}`}>
+        <SearchLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" add={{within: docSource.uuid }}>
           <PiTable aria-hidden="true"/> Matrikkeltabell
         </SearchLink>
     </div>

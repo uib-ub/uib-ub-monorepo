@@ -53,7 +53,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     }, [setNav]);
     
     return pathname == '/search' ? <>    
-        <div className="sr-only xl:not-sr-only xl:w-[25svw] flex divide-x-2 divide-neutral-300 gap-2 overflow-clip items-center content-center"><Link href="/" className="text-base font-serif lg:!pl-4 uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-base text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
+        <div className="sr-only xl:not-sr-only xl:w-[25svw] flex divide-x-2 divide-primary-300 gap-2 overflow-clip items-center content-center"><Link href="/" className="text-base font-serif lg:!pl-4 uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-base text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
         <div className="h-full flex grow">
         <Form ref={form} action="/search" className="flex w-full items-center h-full">
             

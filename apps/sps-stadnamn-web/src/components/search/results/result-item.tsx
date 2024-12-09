@@ -20,7 +20,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
         doc: parseAsString,
         center: parseAsArrayOf(parseAsFloat, ','),
         point: parseAsArrayOf(parseAsFloat, ','),
-        cadastralUnit: parseAsString,
+        within: parseAsString,
         attestationYear: parseAsString,
         attestationLabel: parseAsString,
         nav: parseAsString,
@@ -45,7 +45,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
                   href={serialize(new URLSearchParams(searchParams), { doc: 
                     hit.fields?.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid, 
                     point: null, 
-                    cadastralUnit: null,
+                    within: null,
                     attestationYear: null, attestationLabel: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
             <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
             {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 

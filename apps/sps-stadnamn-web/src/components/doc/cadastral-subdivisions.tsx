@@ -19,38 +19,37 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
         return { key, label: value.label }
     })
     const [page, setPage] = useState(1)
-    const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit')
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const [within, setWithin] = useQueryState('within', {history: 'push'})
-    const [selectedCadastralUnit, setSelectedCadastralUnit] = useState<any | null>(null)
+    const [selectedWithin, setSelectedWithin] = useState<any | null>(null)
 
     const { subunit, leaf  } = treeSettings[dataset]
 
 
 
     useEffect(() => {
-        if (cadastralUnit) {
-            setSelectedCadastralUnit(null)
-            fetch(`/api/doc?uuid=${cadastralUnit}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
+        if (within) {
+            setSelectedWithin(null)
+            fetch(`/api/doc?uuid=${within}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
-                    setSelectedCadastralUnit(data.hits.hits[0])
+                    setSelectedWithin(data.hits.hits[0])
                 }
                 
             })
         }
         else {
-            setSelectedCadastralUnit(null)
+            setSelectedWithin(null)
         }
     }   
-    , [cadastralUnit, dataset, setSelectedCadastralUnit])
+    , [within, dataset, setSelectedWithin])
     
 
 
 
     useEffect(() => {
         setHits(null)
-        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${cadastralUnit}`)
+        fetch(`/api/cadastral-subdivisions?dataset=${dataset}&uuid=${within}`)
             .then(response => response.json())
             .then(data => {
                 
@@ -62,35 +61,36 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
             }
             )
         
-    }, [dataset, cadastralUnit])
+    }, [dataset, within])
 
-    const title =  selectedCadastralUnit?._source && <>{getValueByPath(selectedCadastralUnit._source, treeSettings[dataset]?.subunit) || selectedCadastralUnit?._source?.cadastre?.[0]?.gnr.join(",")} {selectedCadastralUnit?._source?.label}</>
+    const title =  selectedWithin?._source && <>{getValueByPath(selectedWithin._source, treeSettings[dataset]?.subunit) || selectedWithin?._source?.cadastre?.[0]?.gnr.join(",")} {selectedWithin?._source?.label}</>
 
     return (
     <div className="bg-white">
         {
-            hits && cadastralUnit && cadastralUnit == selectedCadastralUnit?._source?.uuid && <>
-            {isMobile?
+            hits && within && within == selectedWithin?._source?.uuid && <>
+            {isMobile || mode == 'table' ?
             <h2 className="px-2 pb-2">{title}</h2>
             
             : <div className="flex bg-neutral-50 cadastre-header rounded-t-md">
                 <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
-                    <SearchLink aria-current={doc == selectedCadastralUnit?._source?.uuid ? 'page' : false} 
+                    <SearchLink aria-current={doc == selectedWithin?._source?.uuid ? 'page' : false} 
                                       className="aria-[current=page]:decoration-accent-700"
-                                      add={{ doc: cadastralUnit }}>{title}
+                                      add={{ doc: within }}>{title}
                     </SearchLink>
 
                 </h2>
+                {mode != 'table' && 
                 <div className="float-right text-2xl flex gap-2 p-1 items-center ml-auto">
                 <SearchLink label="Bla i registeret" 
-                            only={{cadastralUnit, 
+                            only={{within, 
                                      dataset,
                                      doc, 
                                      mode: 'tree',
-                                     adm: selectedCadastralUnit?._source.adm2 + "__" + selectedCadastralUnit?._source.adm1}}><PiTreeView aria-hidden="true"/></SearchLink>
+                                     adm: selectedWithin?._source.adm2 + "__" + selectedWithin?._source.adm1}}><PiTreeView aria-hidden="true"/></SearchLink>
                 <IconButton label="Søk i brukene" onClick={() => setMode('tree')}><PiMagnifyingGlass aria-hidden="true"/></IconButton>
-                <IconButton label="Lukk" onClick={() => setCadastralUnit(null)}><PiX aria-hidden="true"/></IconButton>
-                </div>
+                <IconButton label="Lukk" onClick={() => setWithin(null)}><PiX aria-hidden="true"/></IconButton>
+                </div>}
                 </div>}
                 <div className="overflow-x-auto">
                         <table className="w-full result-table border-x-0">

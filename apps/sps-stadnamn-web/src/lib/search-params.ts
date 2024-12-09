@@ -37,27 +37,25 @@ export function useSearchQuery() {
     const nav = useQueryState('nav')[0]
     let size = useQueryState('size', parseAsInteger.withDefault(20))[0]
     
-    const treeView = nav == 'tree'
-    
-    if (!treeView) {
-        fields.forEach(field => {
-            const values = searchParams.getAll(field)
-            values.forEach(value => {
-                searchQuery.append(field, value)
-                if (field != 'q') {
-                    facetFilters.push([field, value])
-                }
-            })
-        })
-    
-        searchParams.forEach((value, key) => {
-            if (!fields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
-                searchQuery.append(key, value)
-                facetFilters.push([key, value])
+
+    fields.forEach(field => {
+        const values = searchParams.getAll(field)
+        values.forEach(value => {
+            searchQuery.append(field, value)
+            if (field != 'q') {
+                facetFilters.push([field, value])
             }
         })
+    })
 
-    }
+    searchParams.forEach((value, key) => {
+        if (!fields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
+            searchQuery.append(key, value)
+            facetFilters.push([key, value])
+        }
+    })
+
+
 
 
     
@@ -79,7 +77,8 @@ export function useSearchQuery() {
     }
 
     // Tree params
-    if (treeView) {
+    /*
+    if (false && treeView) {
         searchQuery.append('sosi', 'gard')
         const adm = searchParams.get('adm')
         size = 0
@@ -90,6 +89,7 @@ export function useSearchQuery() {
             }
         }
     }
+    */
 
 
     return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams, size }

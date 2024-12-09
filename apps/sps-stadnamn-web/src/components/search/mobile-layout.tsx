@@ -38,7 +38,7 @@ export default function MobileLayout() {
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
-    const cadastralUnit = useQueryState('cadastralUnit')[0]
+    const within = useQueryState('within')[0]
     const dataset = useDataset()
 
 

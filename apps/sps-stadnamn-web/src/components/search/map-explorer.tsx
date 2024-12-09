@@ -36,7 +36,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const { searchQueryString } = useSearchQuery()
 
   const { docData } = useContext(DocContext)
-  const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit', { history: 'push' })
+  const [within, setwithin] = useQueryState('within', { history: 'push' })
 
 
 
@@ -92,8 +92,8 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       queryParams.set('zoom', zoom.toString())
     }
 
-    if (cadastralUnit) {
-      queryParams.set('within', cadastralUnit)
+    if (within) {
+      queryParams.set('within', within)
       queryParams.delete('sosi')
     }
 
@@ -166,7 +166,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       );
 
     //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
-  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, cadastralUnit]);
+  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, within]);
 
 
 
@@ -312,11 +312,11 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       click: () => {
         setPoint(null)
         setDoc(hit.fields.uuid[0])
-        if (cadastralUnit && hit.fields?.sosi?.[0]== 'gard') {
-          setCadastralUnit(hit.fields.uuid[0])
+        if (within && hit.fields?.sosi?.[0]== 'gard') {
+          setwithin(hit.fields.uuid[0])
         }
-        else if (cadastralUnit && cadastralUnit != hit.fields.within) {
-          setCadastralUnit(null)
+        else if (within && within != hit.fields.within) {
+          setwithin(null)
         }
 
         if (point?.length) {

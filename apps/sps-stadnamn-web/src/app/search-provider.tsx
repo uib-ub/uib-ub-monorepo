@@ -37,7 +37,14 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
     useEffect(() => {
         setIsLoading(true)
-        fetch(`/api/search/${isTable ? 'table' : 'map'}?${searchQueryString}&size=${size}`)
+        let url
+        if (isTable) {
+            url = `/api/search/table?${searchQueryString}&size=${size}`
+        }
+        else {
+            url = `/api/search/map?${searchQueryString}&size=${size}`
+        }
+        fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw response

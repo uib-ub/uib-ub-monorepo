@@ -13,7 +13,7 @@ import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
 
 export default function TableExplorer() {
-    const cadastralUnit = useQueryState('cadastralUnit')[0]
+    const within = useQueryState('within')[0]
     const nav = useQueryState('nav')[0]
     const dataset = useDataset()
     const searchParams = useSearchParams()
@@ -76,15 +76,7 @@ export default function TableExplorer() {
     
 
 
-    return <>
-       
-        { nav == 'tree' && cadastralUnit ?
-                <CadastralSubdivisions isMobile={false}/>
-            
-                :
-
-                
-                <div  className='flex flex-col py-2 gap-y-4 h-full overflow-y-auto'>
+    return <div  className='flex flex-col py-2 gap-y-4 h-full overflow-y-auto'>
                     <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
                     <div className='flex gap-2 mt-2 xl:mt-0'>
                     <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => setColumnSelectorOpen(!columnSelectorOpen)} aria-expanded={columnSelectorOpen} aria-controls={columnSelectorOpen ? 'column-selector' : undefined}>
@@ -218,8 +210,7 @@ export default function TableExplorer() {
                     </nav>
                     
                     </div>
-}
-    </>
+
 }
                     
                   

@@ -32,7 +32,7 @@ export default function DesktopLayout() {
     const selectedDocState = useState<any | null>(null)
     const { totalHits, isLoading} = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
-    const [cadastralUnit, setCadastralUnit] = useQueryState('cadastralUnit')
+    const [within, setwithin] = useQueryState('within')
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const dataset = useDataset()
     
@@ -58,7 +58,7 @@ export default function DesktopLayout() {
         <NavSelector leftSection={nav}/>
         <div className="overflow-y-auto stable-scrollbar ml-2 max-h-[calc(100svh-10rem)] py-4">
 
-        { nav == 'tree' &&
+        { nav == 'tree' && 
             <TreeResults isMobile={false}/>
         }
 
@@ -85,14 +85,14 @@ export default function DesktopLayout() {
 
        { mode != 'table' && (doc || point) &&
         <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
-        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${cadastralUnit ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
+        <div className={`py-2 lg:p-2 flex flex-col gap-2 lg:w-[25svw] !z-[3001] h-full ${within ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
         <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar`}>
             <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null)} } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
             <InfoContent/>
         </div>
         </div>
 
-        { cadastralUnit && treeSettings[dataset] && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+        { within && treeSettings[dataset] && <div className={`lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
                     <CadastralSubdivisions isMobile={false}/>
                 </div>

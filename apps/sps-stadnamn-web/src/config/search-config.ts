@@ -19,15 +19,16 @@
 const [table, omitLabel, searchable, facet, result, cadastreTable] = Array(6).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
-const cadastre = {"cadastre__gnr": {label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const}, 
+const cadastre = {"within": {label: "Gard"},
+                  "cadastre__gnr": {label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const}, 
                   "cadastre__bnr": {label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const}
                 }
 const uuid = {label: "UUID", result}
 const label = {label: "Namn", result}
 const location = {label: "Koordinater", result}
 const adm = {label: "Område"}
-const adm1 = {label: "Fylke", result}
-const adm2 = {label: "Kommune", result}
+const adm1 = {label: "Fylke", result} // Necessary for it to be included in fields
+const adm2 = {label: "Kommune", result} // Necessary for it to be included in fields
 const snid = {label: "Stadnamn ID", facet}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
@@ -68,6 +69,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
     hord: {
       uuid, label, location, adm, adm1, adm2, link, ...image,
+      "adm3": {label: "Tidligere kommune", result},
       "rawData.merknader": {label: "Fulltekst", searchable},
       "archive.institution": {label: "Arkivtilvising", table, facet},
       "rawData.oppskrivar": {label: "Oppskrivar", table, facet},
@@ -114,6 +116,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     m1838: {
       uuid, label, location, sosi, adm,
+      "within": {label: "Gard"},
       "rawData.MNR": {label: "Matrikkelnummer", result, table, facet},
       "rawData.LNR": {label: "Løpenummer", result, table, facet},
       "rawData.1723_MNR": {label: "Matrikkelnummer 1723", table, facet},
