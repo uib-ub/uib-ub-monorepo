@@ -163,7 +163,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   return (
     <>
     { true &&
-    <div className="flex flex-col gap-2 p-2 py-4 border-b border-neutral-300">
+    <div className="flex flex-col gap-2 p-2 py-4">
     <div className='flex gap-2'>
     <div className='relative grow'>
       <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
@@ -188,7 +188,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     }
     </div>
     { facetAggregation?.buckets ?
-    <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border rounded-sm bg-neutral-50 border-neutral-300'>
+    <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto border rounded-sm bg-neutral-50 border-neutral-300'>
       {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
         listItem(item, index, facetName, [item.key], false)
       ))}
