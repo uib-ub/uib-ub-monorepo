@@ -65,6 +65,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         else {
             setParentData(null)
             setParentLoading(false)
+            setDocAdm(null)
         }
     }   
     , [within, dataset, setParentData])
@@ -89,6 +90,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         else {
             setDocData(null)
             setDocLoading(false)
+            setDocAdm(null)
         }
     }   
     , [doc, dataset, setDocData])
