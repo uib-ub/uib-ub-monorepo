@@ -82,13 +82,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                 </h2>
                 {mode != 'table' && 
                 <div className="float-right text-2xl flex gap-2 p-1 items-center ml-auto">
-                <SearchLink label="Bla i registeret" 
-                            only={{within, 
-                                     dataset,
-                                     doc, 
-                                     mode: 'tree',
-                                     adm: selectedWithin?._source.adm2 + "__" + selectedWithin?._source.adm1}}><PiTreeView aria-hidden="true"/></SearchLink>
-                <IconButton label="Søk i brukene" onClick={() => setMode('tree')}><PiMagnifyingGlass aria-hidden="true"/></IconButton>
+
                 <IconButton label="Lukk" onClick={() => setWithin(null)}><PiX aria-hidden="true"/></IconButton>
                 </div>}
                 </div>}
