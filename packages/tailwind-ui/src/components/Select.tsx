@@ -63,38 +63,38 @@ export function Select({
           </Listbox.Button>
 
           <Transition
-            // @ts-ignore
             ref={container}
             as={Fragment}
-            className="border border-black/5 dark:border-white/20 z-20 max-h-64 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg dark:bg-neutral-800"
             leave="transition-opacity"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options static>
-              {options.map(option => (
-                <Listbox.Option
-                  key={option.key}
-                  value={option}
-                  className={({ active }) =>
-                    cn(
-                      active
-                        ? 'bg-primary-50 text-primary-500 dark:bg-primary-500/10'
-                        : 'text-gray-800 dark:text-gray-100',
-                      'flex relative cursor-pointer whitespace-nowrap py-1.5',
-                      'ltr:pl-3 ltr:pr-9 rtl:pr-3 rtl:pl-9'
-                    )
-                  }
-                >
-                  {option.name}
-                  {option.key === selected.key && (
-                    <span className="absolute inset-y-0 ltr:right-3 rtl:left-3 flex items-center">
-                      <CheckIcon />
-                    </span>
-                  )}
-                </Listbox.Option>
-              ))}
-            </Listbox.Options>
+            <div className="border border-black/5 dark:border-white/20 z-20 max-h-64 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg dark:bg-neutral-800">
+              <Listbox.Options static>
+                {options.map(option => (
+                  <Listbox.Option
+                    key={option.key}
+                    value={option}
+                    className={({ active }) =>
+                      cn(
+                        active
+                          ? 'bg-primary-50 text-primary-500 dark:bg-primary-500/10'
+                          : 'text-gray-800 dark:text-gray-100',
+                        'flex relative cursor-pointer whitespace-nowrap py-1.5',
+                        'ltr:pl-3 ltr:pr-9 rtl:pr-3 rtl:pl-9'
+                      )
+                    }
+                  >
+                    {option.name}
+                    {option.key === selected.key && (
+                      <span className="absolute inset-y-0 ltr:right-3 rtl:left-3 flex items-center">
+                        <CheckIcon />
+                      </span>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
           </Transition>
         </>
       )}

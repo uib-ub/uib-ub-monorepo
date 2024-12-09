@@ -9,7 +9,7 @@ module.exports = {
     `pages/**/*.{js,ts,jsx,tsx}`,
     `app/**/*.{js,ts,jsx,tsx}`,
     // include packages if not transpiling
-    "../../packages/**/*.{js,ts,jsx,tsx}",
+    "../../packages/**/!(node_modules)/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: 'class',
   theme: {

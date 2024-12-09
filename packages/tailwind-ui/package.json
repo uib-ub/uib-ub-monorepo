@@ -39,7 +39,7 @@
     "@popperjs/core": "^2.11.6",
     "class-variance-authority": "^0.3.0",
     "clsx": "^1.2.1",
-    "next": "latest",
+    "next": "^13",
     "next-themes": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
