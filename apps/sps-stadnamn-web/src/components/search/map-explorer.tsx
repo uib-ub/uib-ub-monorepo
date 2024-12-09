@@ -316,7 +316,8 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
           setwithin(hit.fields.uuid[0])
         }
         else if (within && within != hit.fields.within) {
-          setwithin(null)
+          console.log("within", within, JSON.stringify(hit.fields))
+          //setwithin(null)
         }
 
         if (point?.length) {

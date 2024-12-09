@@ -19,7 +19,7 @@
 const [table, omitLabel, searchable, facet, result, cadastreTable] = Array(6).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
-const cadastre = {"within": {label: "Gard"},
+const cadastre = {"within": {label: "Gard", result},
                   "cadastre__gnr": {label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const}, 
                   "cadastre__bnr": {label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const}
                 }
