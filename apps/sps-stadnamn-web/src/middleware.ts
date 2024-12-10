@@ -16,10 +16,10 @@ export async function middleware(request: NextRequest) {
     }
 
     if (path[1] == "uuid" && path[2].includes('.')) {
-        const dataset = path[1]
+
         const filename = path[2]
         const [uuid, extension] = filename.split('.')
-        const data = await fetchDoc({ uuid, dataset});
+        const data = await fetchDoc({ uuid});
 
         if (extension == 'geojson') {
             const geojson = {

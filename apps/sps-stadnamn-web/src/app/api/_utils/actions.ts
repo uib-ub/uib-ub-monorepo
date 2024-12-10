@@ -7,9 +7,9 @@ const detectEnv = (retry: boolean) => {
 }
 
 
-export async function fetchDoc(params: {uuid: string}, retry: boolean = true) {
+export async function fetchDoc(params: {uuid: string, dataset?: string}, retry: boolean = true) {
     'use server'
-    const { uuid } = params
+    const { uuid, dataset } = params
     const { endpoint, token } = detectEnv(retry)
 
     // Post a search query for the document
@@ -21,8 +21,7 @@ export async function fetchDoc(params: {uuid: string}, retry: boolean = true) {
         }
     }
 
-
-    const res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-*/_search`, {
+    const res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset ? dataset : '*'}/_search`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
