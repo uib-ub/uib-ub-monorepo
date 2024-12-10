@@ -11,6 +11,8 @@ import ThumbnailLink from '@/components/image-viewer/thumbnail-link'
 import CopyLink from '@/components/doc/copy-link'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
+
+    
     const doc = await fetchDoc(params)
 
     return {
@@ -21,7 +23,7 @@ export async function generateMetadata( { params }: { params: Promise<{ uuid: st
 
 export default async function LandingPage({ params }: { params: Promise<{ uuid: string }>}) {
     const { uuid } = await params
-    const doc = await fetchDoc({uuid: uuid})
+    const doc = await fetchDoc(params)
 
     if (doc.error) {
         return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
