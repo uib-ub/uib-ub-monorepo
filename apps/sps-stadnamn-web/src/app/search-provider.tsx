@@ -46,6 +46,10 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     
     const isTable = useSearchParams().get('mode') == 'table'
 
+    useEffect(() => {
+        setCurrentUrl("/search?" + searchParams.toString())
+    }, [searchParams])
+
 
     useEffect(() => {
         setIsLoading(true)
@@ -56,7 +60,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
         else {
             url = `/api/search/map?${searchQueryString}&size=${size}`
         }
-        setCurrentUrl("/search?" + searchParams.toString())
+        
         fetch(url)
         .then(response => {
             if (!response.ok) {
