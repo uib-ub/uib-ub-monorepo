@@ -1,22 +1,21 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { PiMagnifyingGlass, PiX } from 'react-icons/pi';
-import { useRouter } from 'next/navigation';
+import { PiCaretLeft, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
 import { datasetTitles } from '@/config/metadata-config';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import IconButton from '@/components/ui/icon-button';
 import { searchableFields } from '@/config/search-config';
 import { useDataset } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
+import { GlobalContext } from '@/app/global-provider';
 
 
 
 export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const pathname = usePathname()
-    const router = useRouter()
     const searchParams = useSearchParams()
     const [nav, setNav] = useQueryState('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
@@ -24,6 +23,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const form = useRef<HTMLFormElement | null>(null)
     const dataset = useDataset()
     const setQuery = useQueryState('q')[1]
+    const { currentUrl } = useContext(GlobalContext)
     
 
     const clearQuery = () => {
@@ -53,7 +53,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     }, [setNav]);
     
     return pathname == '/search' ? <>    
-        <div className="sr-only xl:not-sr-only xl:w-[25svw] flex divide-x-2 divide-primary-300 gap-2 overflow-clip items-center content-center"><Link href="/" className="text-base font-serif lg:!pl-4 uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-base text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
+        <div className="sr-only xl:not-sr-only flex !mx-4 divide-x-2 divide-primary-300 gap-2 overflow-clip items-center content-center"><Link href="/" className="text-base font-serif uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-base text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
         <div className="h-full flex grow">
         <Form ref={form} action="/search" className="flex w-full items-center h-full">
             
@@ -76,6 +76,11 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
         </div>
         
         </>
-     : <Link href="/" className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
+     : <>
+     <div className="flex gap-6">
+     <Link href="/" className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
+     {currentUrl && !isMobile && <Link href={currentUrl} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>}
+     </div>
+     </>
           
 }

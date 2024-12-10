@@ -36,6 +36,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
   const { docData } = useContext(DocContext)
   const [within, setwithin] = useQueryState('within', { history: 'push' })
+  const initialBoundsSet = useRef(false);
 
 
   
@@ -75,15 +76,12 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (!bounds && !resultBounds) {
+    if (!bounds) {
       return;
     }
-    console.log("MAP EXPLOREER", bounds, resultBounds)
 
-    const boundsToUse = bounds || resultBounds;
-    if (!boundsToUse) return; // TypeScript guard
 
-    const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = boundsToUse;
+    const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
 
     // Fetch data based on the new bounds
     const queryParams = new URLSearchParams(searchQueryString);
@@ -218,10 +216,8 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const mapRef = useCallback((node: any) => {
     if (node !== null) {
       mapInstance.current = node;
-      node.on('moveend', () => {
-        controllerRef.current.abort();
-        controllerRef.current = new AbortController();
 
+      node.on('moveend', () => {
         const bounds = node.getBounds();
         const boundsCenter = bounds.getCenter();
         setCenter([boundsCenter.lat, boundsCenter.lng]);
@@ -229,9 +225,17 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
         setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
       });
 
+      node.whenReady(() => {
+        if (!initialBoundsSet.current) {
+          const bounds = node.getBounds();
+          setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+          initialBoundsSet.current = true;
+        }
+      });
+
     }
 
-  }, [setCenter, setZoom, mapInstance]);
+  }, [mapInstance, setCenter, setZoom, setBounds]);
 
 
 

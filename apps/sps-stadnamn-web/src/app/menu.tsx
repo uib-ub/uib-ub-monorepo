@@ -1,15 +1,18 @@
 'use client'
-import { useState, useRef, useEffect } from "react";
-import { PiList } from 'react-icons/pi';
+import { useState, useRef, useEffect, useContext } from "react";
+import { PiCaretLeft, PiList, PiMagnifyingGlass } from 'react-icons/pi';
 import NavBar from "./nav-bar";
 import IconButton from "@/components/ui/icon-button";
 import { usePathname, useSearchParams } from "next/navigation";
+import { GlobalContext } from "./global-provider";
+import IconLink from "@/components/ui/icon-link";
 
 export default function Menu() {
     const [menuOpen, setMenuOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null);
     const pathName = usePathname();
     const searchParams = useSearchParams();
+    const { currentUrl } = useContext(GlobalContext)
 
     const handleBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
         if (menuRef.current) {
@@ -40,7 +43,10 @@ export default function Menu() {
 
 
     return (
-        <div ref={menuRef} className="xl:hidden !ml-auto">
+        <div ref={menuRef} className="xl:hidden !ml-auto flex gap-1 items-center">
+            { pathName !== '/' && pathName != '/search' && currentUrl && 
+                <IconLink href={currentUrl} label="Tilbake til søket"><PiCaretLeft className="text-3xl"/></IconLink>
+            }
             <IconButton aria-controls="menu_navbar" 
                         onBlur={handleBlur}
                         label="Meny"

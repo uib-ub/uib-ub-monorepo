@@ -30,7 +30,7 @@ export default async function Home() {
   return (
     <>
 <main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-24 items-center justify-center pb-24 pt-4 md:pt-8 px-4 w-full flex-grow carta-marina bg-neutral-100 md:bg-transparent">
-  <div className="flex flex-col gap-12 md:p-8 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle justify-center">
+  <div className="flex flex-col w-full xl:w-auto gap-12 md:p-8 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
     <div className="flex flex-col gap-4">

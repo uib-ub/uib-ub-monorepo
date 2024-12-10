@@ -1,9 +1,10 @@
 'use client'
-import { createContext, useRef } from 'react'
+import { createContext, useContext, useRef } from 'react'
 import { useState, useEffect } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
 import { useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
+import { GlobalContext } from './global-provider';
 
 interface SearchContextData {
     resultData: any;
@@ -32,12 +33,16 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [isLoading, setIsLoading] = useState(true)
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
     const mapInstance = useRef<any>(null);
+
+    const { setCurrentUrl} = useContext(GlobalContext)
     
 
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
+
+    const searchParams = useSearchParams()
     
     const isTable = useSearchParams().get('mode') == 'table'
 
@@ -51,6 +56,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
         else {
             url = `/api/search/map?${searchQueryString}&size=${size}`
         }
+        setCurrentUrl("/search?" + searchParams.toString())
         fetch(url)
         .then(response => {
             if (!response.ok) {
