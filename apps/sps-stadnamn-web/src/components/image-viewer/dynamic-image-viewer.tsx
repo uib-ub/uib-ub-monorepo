@@ -5,7 +5,6 @@ import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
 import ErrorMessage from '../error-message';
-import Footer from '../layout/footer';
 
 const DynamicImageViewer = () => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
