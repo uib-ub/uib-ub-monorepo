@@ -118,7 +118,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         docList,
         docDataset,
         docLoading,
-        docError: null,
+        docError,
         parentData,
         parentLoading,
         parentError,
