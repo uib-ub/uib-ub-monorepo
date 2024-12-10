@@ -17,7 +17,7 @@ export default function TableExplorer() {
     const nav = useQueryState('nav')[0]
     const dataset = useDataset()
     const searchParams = useSearchParams()
-    const { resultData, totalHits } = useContext(SearchContext)
+    const { tableData, totalHits } = useContext(SearchContext)
 
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const [visibleColumns, setVisibleColumns] = useState<string[]>([])
@@ -165,7 +165,7 @@ export default function TableExplorer() {
                             </tr>
                         </thead>
                         <tbody>
-                        { resultData?.map((hit: any) => (
+                        { tableData?.map((hit: any) => (
                             <Fragment key={hit._id}>
                             <tr>
                                 <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit.fields.uuid ? 'rowgroup' : 'row'}>

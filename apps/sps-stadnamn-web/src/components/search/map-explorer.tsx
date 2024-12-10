@@ -21,9 +21,8 @@ import { DocContext } from "@/app/doc-provider";
 
 
 export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
-  const mapInstance = useRef<any>(null);
-  const { resultBounds, totalHits, searchError } = useContext(SearchContext)
-  const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(null)
+  const { resultBounds, totalHits, searchError, mapInstance } = useContext(SearchContext)
+  const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
   const [markerMode, setMarkerMode] = useState<null | string>(null)
@@ -39,23 +38,27 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const [within, setwithin] = useQueryState('within', { history: 'push' })
 
 
-
+  
   useEffect(() => {
     if (!resultBounds?.length) {
       return;
     }
+    if (center && zoom) return
+
     mapInstance?.current?.flyToBounds(resultBounds, { padding: [100, 50], duration: 0.5 });
     setBounds(resultBounds);
 
-  }, [resultBounds])
+  }, [resultBounds, center, zoom, mapInstance])
+  
 
+
+  
   useEffect(() => {
     if (center && mapInstance.current && !mapInstance.current.getBounds().contains(center)) {
       mapInstance.current.setView(center, zoom)
-    }
-
-
-  }, [center, zoom]);
+    }}, [center, zoom, mapInstance]);
+    
+    
 
 
 
@@ -72,11 +75,15 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (!bounds?.length) {
+    if (!bounds && !resultBounds) {
       return;
     }
+    console.log("MAP EXPLOREER", bounds, resultBounds)
 
-    const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
+    const boundsToUse = bounds || resultBounds;
+    if (!boundsToUse) return; // TypeScript guard
+
+    const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = boundsToUse;
 
     // Fetch data based on the new bounds
     const queryParams = new URLSearchParams(searchQueryString);
@@ -166,7 +173,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       );
 
     //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
-  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, within]);
+  }, [bounds, resultBounds, searchError, zoom, searchQueryString, totalHits, markerMode, within]);
 
 
 
@@ -224,7 +231,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
     }
 
-  }, [setCenter, setZoom]);
+  }, [setCenter, setZoom, mapInstance]);
 
 
 
