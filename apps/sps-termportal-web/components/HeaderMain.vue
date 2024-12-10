@@ -14,7 +14,7 @@
     </div>
     <div v-if="headerDisplayScope === 'full'" class="flex px-4 xl:pl-0 w-full">
       <SideBar class="w-0" />
-      <div class="w-full max-w-7xl">
+      <div class="w-full max-w-6xl">
         <div class="flex justify-between">
           <HeaderSearchOptions />
           <button
@@ -32,7 +32,7 @@
       <SideBar class="w-0" />
       <div
         v-if="headerDisplayScope === 'default'"
-        class="flex justify-center max-w-7xl w-full mt-[-6px]"
+        class="flex justify-center max-w-6xl w-full mt-[-6px]"
       >
         <button
           class="absolute border border-t-white border-gray-300 rounded-b-md bg-white h-[1.1em] mt-[6px] flex justify-center w-16"
