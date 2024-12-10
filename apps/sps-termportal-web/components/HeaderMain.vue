@@ -72,7 +72,7 @@ watch(
       headerDisplayScope.value = "minimal";
     } else if (
       typeof route.name === "string" &&
-      ["tb-termbase", "om", "instillinger"].includes(route.name)
+      ["tb-termbase", "om", "innstillinger"].includes(route.name)
     ) {
       headerDisplayScope.value = "default";
     } else if (route.name === "search") {
