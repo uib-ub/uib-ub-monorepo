@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiInfoFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiXCircleFill, PiArrowLeft, PiArrowRight, PiCaretRightFill, PiCaretLeftFill, PiCaretLeftBold, PiXBold, PiWarning } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
