@@ -39,8 +39,6 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                         nav: 'tree',
                         mode: searchParams.get('mode'),
                         adm: searchParams.get('adm'),
-                        center: searchParams.get('center'),
-                        zoom: searchParams.get('zoom'),
 
                     }}>
 
