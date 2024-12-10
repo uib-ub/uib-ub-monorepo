@@ -73,7 +73,7 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
                 <Link className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline" href={serialize(new URLSearchParams(searchParams), {size: size + 40})}>Vis flere</Link>
               </li>
     }
-    else if (i < resultData.length) {
+    else if (i < resultData.length && (!isLoading || size > 20)) {
       const hit = resultData[i]
       return <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
     }
