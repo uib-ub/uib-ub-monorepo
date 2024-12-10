@@ -7,15 +7,16 @@ const detectEnv = (retry: boolean) => {
 }
 
 
-export async function fetchDoc(params: any, retry: boolean = true) {
+export async function fetchDoc(params: Promise<{uuid: string}>, retry: boolean = true) {
     'use server'
+    const { uuid } = await params
     const { endpoint, token } = detectEnv(retry)
 
     // Post a search query for the document
     const query = {
         query: {
             terms: {
-                "uuid": [params.uuid]
+                "uuid": [uuid]
             }
         }
     }
