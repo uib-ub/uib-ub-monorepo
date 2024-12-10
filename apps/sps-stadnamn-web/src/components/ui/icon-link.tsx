@@ -9,7 +9,7 @@ import {
 import Link from 'next/link';
 
 
-export default function IconLink({ children, textClass, textIcon, label, type, href, ...rest }: 
+export default function IconLink({ children, textClass, textIcon, label, href, ...rest }: 
     { children: React.ReactNode, textClass?: string, textIcon?: boolean, label: string, href: string, [x: string]: any }) {
     
     return (
