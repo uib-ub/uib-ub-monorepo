@@ -41,7 +41,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
 
     return  <li className="flex flex-grow">
             <Link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-700" 
-                  aria-current={doc == hit.fields.uuid ? 'page' : undefined}
+                  aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
                   href={serialize(new URLSearchParams(searchParams), { doc: 
                     hit.fields?.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid, 
                     point: null, 
