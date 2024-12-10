@@ -5,7 +5,7 @@ import MobileLayout from "@/components/search/mobile-layout";
 import DesktopLayout from "@/components/search/desktop-layout";
 import DocProvider from "@/app/doc-provider";
 
-export default async function UserAgentLayout() {
+export default async function SearchPage() {
 
   const headersList = await headers()
   const device = userAgent({headers: headersList}).device
