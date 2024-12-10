@@ -1,13 +1,13 @@
 <template>
-  <section v-if="displayData && displayAggData" class="">
+  <section v-if="displayData && displayAggData">
     <h2 class="text-xl">{{ $t("global.concept", 2) }}</h2>
     <div>
       <ol class="flex pb-2 pt-1.5 flex-wrap justify-center px-2">
         <li>
           <button
             class="px-1.5 py-0.5 text-lg hover:underline underline-offset-2"
-            :class="{ 'underline font-semibold': selectedChar === null }"
-            @click="selectedChar = null"
+            :class="{ 'underline font-semibold': query.char[0] === null }"
+            @click="query.char = [null, 0]"
           >
             {{ $t("global.all") }}
           </button>
@@ -16,9 +16,9 @@
           <button
             class="hover:underline underline-offset-2 text-lg px-[4px] py-0.5"
             :class="{
-              'underline font-semibold': selectedChar?.[0] === charEntry[0],
+              'underline font-semibold': query.char[0] === charEntry[0],
             }"
-            @click="selectedChar = charEntry"
+            @click="query.char = charEntry"
           >
             {{ charEntry?.[0].toUpperCase() }}
           </button>
@@ -34,7 +34,7 @@
         <li
           v-for="concept in displayData.slice(col[0], col[1])"
           :key="concept.link"
-          class="w-[17rem] xs:w-[26rem] sm:w-[17rem] md:w-[22.5rem] lg:w-[25rem]"
+          class="w-[20rem] xs:w-[27rem] sm:w-[17.5rem] md:w-[21.5rem] lg:w-[28rem] truncate"
         >
           <TermbaseConceptLink
             :concept="concept"
@@ -45,10 +45,10 @@
     </div>
     <div>
       <Paginator
-        v-model:first="page"
+        v-model:first="query.page"
         :rows="breakpointDisplayConfig?.displayConcepts"
         :total-records="
-          selectedChar === null ? displayAggData.totalCount : selectedChar[1]
+          query.char[0] === null ? displayAggData.totalCount : query.char[1]
         "
         template="FirstPageLink PrevPageLink PageLinks NextPageLink"
       ></Paginator>
@@ -58,14 +58,29 @@
 
 <script setup lang="ts">
 const locale = useLocale();
+const route = useRoute();
+const router = useRouter();
 const breakpoint = useBreakpoint();
 
 const props = defineProps({
   termbaseId: { type: String, required: true },
 });
 
-const selectedChar: Ref<string[] | null> = ref(null);
-const page = ref(0);
+const query = ref<{ char: [string | null, number]; page: number }>({
+  char: [null, 0],
+  page: 0,
+});
+
+watchEffect(() => {
+  const page = query.value.page || undefined;
+  const char = query.value.char;
+  router.push({
+    query: {
+      page: page?.toString(),
+      char: char[0] ? `${char[0]},${char[1]}` : undefined,
+    },
+  });
+});
 
 const generalConfig = {
   min: { columnCount: 1, columnLength: 20 },
@@ -73,7 +88,10 @@ const generalConfig = {
 };
 
 const breakpointDisplayConfig = computed(() => {
-  const configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
+  let configKey = "max";
+  if (process.client) {
+    configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
+  }
 
   const breakpointConfig: {
     numberLst: [number, number][];
@@ -97,8 +115,12 @@ const breakpointDisplayConfig = computed(() => {
 });
 
 const breakpointFetchConfig = computed(() => {
-  const configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
+  let configKey = "max";
+  if (process.client) {
+    configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
+  }
 
+  console.log(configKey);
   const breakpointConfig: {
     fetchConcepts: number;
     sortOrder: "asc" | "desc";
@@ -109,8 +131,8 @@ const breakpointFetchConfig = computed(() => {
     fetchConcepts: 0,
     sortOrder: "asc",
     language: locale?.value,
-    selectedChar: selectedChar.value?.[0] || null,
-    from: page.value,
+    selectedChar: query.value.char?.[0] || null,
+    from: query.value.page,
   };
 
   // calculate number of concepts to fetch
@@ -150,9 +172,30 @@ const displayData = computed(() => {
   return data.value?.map((concept) => {
     return {
       link: "/tb" + idOrUriToRoute(props.termbaseId, concept.id),
-      label: concept.displayLabel[locale.value]?.value,
-      language: concept.displayLabel[locale.value]?.language,
+      label: concept?.displayLabel?.[locale.value]?.value,
+      language: concept?.displayLabel?.[locale.value]?.language,
     };
+  });
+});
+
+onBeforeMount(() => {
+  if (
+    route.query.page &&
+    typeof route.query.page === "string" &&
+    parseInt(route.query.page) < 9000
+  ) {
+    query.value.page = parseInt(route.query.page);
+  }
+
+  if (route.query.char && typeof route.query.char === "string") {
+    const value = route.query.char.split(",");
+    query.value.char = [value[0], parseInt(value[1])];
+  }
+});
+
+onBeforeUnmount(() => {
+  router.push({
+    query: {},
   });
 });
 </script>

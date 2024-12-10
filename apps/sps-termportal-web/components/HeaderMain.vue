@@ -63,7 +63,7 @@
 const route = useRoute();
 const locale = useLocale();
 const orderedTermbases = useOrderedTermbases();
-const headerDisplayScope = ref("minimal");
+const headerDisplayScope = ref("default");
 
 watch(
   () => route.name,
@@ -78,7 +78,8 @@ watch(
     } else if (route.name === "search") {
       headerDisplayScope.value = "full";
     }
-  }
+  },
+  { immediate: true }
 );
 
 const navBarRef = ref(null);
