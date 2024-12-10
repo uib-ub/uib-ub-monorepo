@@ -103,7 +103,7 @@ export default async function Home() {
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
             </div>
-            <div className="py-4 px-6 pb-0 flex flex-col">
+            <div className="py-4 md:px-6 pb-0 flex flex-col">
               <h3 className="text-2xl group-hover:underline decoration-2 decoration-primary-400 underline-offset-4">{card.title}</h3>
               <p className="pt-2 text-small">{card.description}</p>
               <div id={card.code + "_attribution"} className="text-xs text-neutral-700 mt-auto">Illustrasjon: {card.imageAttribution}</div>
@@ -122,7 +122,7 @@ export default async function Home() {
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
             </div>
-            <div className="py-4 px-6 pb-0 flex flex-col">
+            <div className="py-4 md:px-6 pb-0 flex flex-col">
               <h3 className="text-2xl group-hover:underline decoration-2 decoration-primary-400 underline-offset-4">{card.title}</h3>
               <p className="pt-2 text-small">{card.description}</p>
               <div id={card.code + "_attribution"} className="text-xs text-neutral-700 mt-auto">Illustrasjon: {card.imageAttribution}</div>
