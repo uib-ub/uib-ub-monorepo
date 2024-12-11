@@ -1,4 +1,4 @@
-import { urlFor } from '../sanity'
+import { urlFor } from '../sanity.client'
 
 export const getOpenGraphImages = (openGraphImage, title) => {
   if (!openGraphImage) {

@@ -1,4 +1,4 @@
 import { config } from './sanity.config'
-import sanityClient from '@sanity/client'
+import { createClient } from '@sanity/client'
 
-export const imageClient = sanityClient(config)
+export const imageClient = createClient(config)

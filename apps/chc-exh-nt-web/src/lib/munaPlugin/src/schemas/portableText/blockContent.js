@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { FaPaperclip } from 'react-icons/fa'
 import { defineType } from 'sanity'
 /* 
@@ -6,8 +7,12 @@ import FootnoteRenderer from '../../previews/FootnoteRenderer'
 */
 
 const HighlightIcon = () => <span style={{ fontWeight: 'bold' }}>H</span>
-const HighlightRender = (props) => <span style={{ backgroundColor: 'yellow' }}>{props.children}</span>
+const HighlightRender = ({ children }) => <span style={{ backgroundColor: 'yellow' }}>{children}</span>
 //const footnoteIcon = () => <span style={{ fontWeight: 'bold' }}>F</span>
+
+HighlightRender.propTypes = {
+  children: PropTypes.node.isRequired
+}
 
 export default defineType({
   name: 'blockContent',

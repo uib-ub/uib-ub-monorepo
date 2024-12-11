@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { filterDataToSingleItem } from '../lib/functions'
+import { filterDataToSingleItem } from 'lib/functions'
 import { getClient } from '../lib/sanity.server'
 import { groq } from 'next-sanity'
 import { routeQuery } from '../lib/queries/routeQuery'
@@ -13,102 +13,7 @@ import SanityImage from '../components/SanityImage'
 import { ArrowTopRightOnSquareIcon, Bars4Icon } from '@heroicons/react/24/outline'
 import { Footer } from '../components/Footer'
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const routesQuery = groq`
-    *[ _type == "Route" && defined(slug.current) && defined(page)] {
-    "locales": [
-      {
-        "lang": page->.__i18n_lang,
-        "slug": [slug.current]
-      },
-      ...page->.__i18n_refs[]->{
-        "lang": __i18n_lang,
-        "slug": [^.slug.current]
-      }
-    ],
-  }`
-
-  const routes = await getClient().fetch(routesQuery)
-  const paths = routes?.map((route: any) => (
-    route.locales.map((locale: any) => ({
-      params: {
-        "slug": locale.slug,
-        "locale": locale.lang
-      }
-    }))
-  )) || []
-
-  return {
-    paths: paths[0],
-    fallback: 'blocking',
-  }
-}
-export const getStaticProps: GetStaticProps = async ({ params, locale, preview = false }) => {
-  const slug = typeof params?.slug === 'string' ? params.slug : params?.slug?.join('/')
-  const query = routeQuery
-  const queryParams = { slug: slug, language: locale }
-  const page = await getClient(preview).fetch(routeQuery, queryParams)
-
-  // Escape hatch, if our query failed to return data
-  if (!page) return { notFound: true }
-
-  // Helper function to reduce all returned documents down to just one
-  // const page = filterDataToSingleItem(data, preview)
-
-  return {
-    props: {
-      // Pass down the "preview mode" boolean to the client-side
-      preview,
-      // Pass down the initial content, and our query
-      data: { page, query, queryParams },
-      //messages: (await import(`../messages/${locale}.json`)).default
-    },
-  }
-}
-
-const Page: NextPage = ({ data, preview }: any) => {
-  const { locale, defaultLocale } = useRouter()
-  const { data: previewData } = usePreviewSubscription(data?.query, {
-    params: data?.queryParams ?? {},
-    // The hook will return this on first render
-    // This is why it's important to fetch *draft* content server-side!
-    initialData: data?.page,
-    // The passed-down preview context determines whether this function does anything
-    enabled: preview,
-  })
-
-  // Client-side uses the same query, so we may need to filter it down again
-  const page = filterDataToSingleItem(previewData, preview)
-  //console.log(JSON.stringify(page, null, 2))
-
-  const { mainNav, siteSettings: { label, description, identifiedBy } } = page
-  const title = identifiedBy.filter((name: any) => name.language[0] === locale)[0].title[0]
-
-  {/* If LinguisticDocument the content is in the body field */ }
-  const slug = page?.route[0]?.locale[0] ?? page?.route[0]?.fallback[0]
-  const linguisticDocumentBody = page?.route[0]?.locale[0]?.body ?? page?.route[0]?.fallback[0]?.body
-
-  const localeCaption = slug?.about?.caption?.filter((i: any) => i.language === locale)[0]?.body
-
-  const aboutImage = slug?.about ?
-    <SanityImage
-      image={slug.about.image}
-      type='responsive'
-      alt={slug.about.image?.alt ?? ''}
-      priority
-    /> : null
-
-  const heroImage = slug?.image ? <SanityImage
-    image={slug.image}
-    type='responsive'
-    alt={slug.image?.alt ?? ''}
-    priority
-  /> : null
-
-  // Notice the optional?.chaining conditionals wrapping every piece of content?
-  // This is extremely important as you can't ever rely on a single field
-  // of data existing when Editors are creating new documents.
-  // It'll be completely blank when they start!
+export const Page = ({ page, label, description, locale, defaultLocale }: { page: any, label: string, description: string, locale: string, defaultLocale: string }) => {
   return (
     <>
       <Head>
@@ -185,8 +90,5 @@ const Page: NextPage = ({ data, preview }: any) => {
           <Footer locale={locale} />
         </Pane>
       </Layout>
-    </>
-  )
+    </>)
 }
-
-export default Page

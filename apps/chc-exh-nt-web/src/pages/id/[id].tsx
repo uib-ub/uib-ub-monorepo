@@ -1,7 +1,7 @@
 import React from "react";
 import type { GetStaticProps, NextPage } from 'next'
 import { getClient } from '../../lib/sanity.server'
-import { usePreviewSubscription } from '../../lib/sanity'
+import { usePreviewSubscription } from '../../lib/sanity.client'
 import { mainNav, siteSettings, item } from '../../lib/queries/fragments'
 import { publicDocumentTypes } from '../../lib/constants'
 import Head from "next/head";
@@ -90,22 +90,21 @@ export const getStaticProps: GetStaticProps = async ({ params, locale, preview =
 
 export async function getStaticPaths() {
   const results = await getClient().fetch(idsQuery, { publicDocumentTypes })
-  //console.log('Results: ', results)
   return {
     paths: [
-      ...results?.map((item: any) => ({
+      ...results.map((item: any) => ({
         params: {
           id: item._id,
           locale: 'en'
         },
       })),
-      ...results?.map((item: any) => ({
+      ...results.map((item: any) => ({
         params: {
           id: item._id,
           locale: 'no'
         },
       }))
-    ] || [],
+    ],
     fallback: 'blocking',
   }
 }

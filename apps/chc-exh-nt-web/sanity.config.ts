@@ -4,16 +4,16 @@
 
 import { visionTool } from '@sanity/vision'
 import { defineConfig, Slug } from 'sanity'
-import { withDocumentI18nPlugin } from '@sanity/document-internationalization'
+import { documentInternationalization } from '@sanity/document-internationalization'
 import { imageHotspotArrayPlugin } from "sanity-plugin-hotspot-array"
 import { codeInput } from "@sanity/code-input";
 import { colorInput } from "@sanity/color-input";
 import { table } from '@sanity/table';
 import { dashboardTool, projectInfoWidget, projectUsersWidget } from "@sanity/dashboard";
-import { deskTool } from 'sanity/desk'
+import { structureTool } from 'sanity/structure'
 import { languageFilter } from '@sanity/language-filter'
 import { media } from 'sanity-plugin-media'
-import { vercelWidget } from "sanity-plugin-dashboard-widget-vercel";
+/* import { vercelWidget } from "sanity-plugin-dashboard-widget-vercel"; */
 import { schemaTypes } from './src/lib/munaPlugin/src'
 import SiteSettings from './src/lib/munaPlugin/src/schemas/classes/persistent/information/site/SiteSettings';
 import { structure, defaultDocumentNode } from './src/lib/deskStructure'
@@ -21,24 +21,6 @@ import { structure, defaultDocumentNode } from './src/lib/deskStructure'
 
 // @TODO: update next-sanity/studio to automatically set this when needed
 const basePath = '/exhibition/mer-enn-det-humanitare-blikket/studio'
-
-const i18nConfig = {
-  base: "no",
-  languages: [
-    {
-      "id": "no",
-      "title": "Bokmål"
-    },
-    {
-      "id": "en",
-      "title": "English"
-    },
-    {
-      "id": "ar",
-      "title": "Arabic"
-    },
-  ]
-}
 
 export default defineConfig({
   basePath,
@@ -51,14 +33,26 @@ export default defineConfig({
       ...schemaTypes
     ],
   },
-  plugins: withDocumentI18nPlugin([
-    deskTool({
+  plugins: [
+    structureTool({
       structure,
       defaultDocumentNode,
     }),
+    documentInternationalization({
+      // Required:
+      supportedLanguages: [
+        { id: 'no', title: 'Norwegian' },
+        { id: 'en', title: 'English' },
+        { id: 'ar', title: 'Arabic' },
+      ],
+      schemaTypes: ['Page', 'LinguisticDocument'],
+      // Optional:
+      weakReferences: false, // default false
+      languageField: 'language', // default "language"
+    }),
     dashboardTool({
       widgets: [
-        vercelWidget(),
+        //vercelWidget(),
         projectInfoWidget(),
         projectUsersWidget(),
       ]
@@ -86,10 +80,7 @@ export default defineConfig({
     visionTool({
       defaultApiVersion: '2022-08-08',
     }),
-  ], {
-    includeDeskTool: false,
-    ...i18nConfig
-  }),
+  ],
   document: {
     /* productionUrl: async (prev, { document }) => {
       const url = new URL('/api/preview', location.origin)
