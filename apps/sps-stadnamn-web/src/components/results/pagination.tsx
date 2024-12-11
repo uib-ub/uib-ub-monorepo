@@ -2,51 +2,27 @@
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
+import { parseAsInteger, useQueryState } from 'nuqs';
 
 export default function Pagination({ totalPages, currentPage = 1, setCurrentPage}: { totalPages: number, currentPage?: number, setCurrentPage?: (page: number) => void }) {
-  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const isClient = setCurrentPage !== undefined
-  currentPage = isClient ? currentPage : Number(searchParams.get('page')) || 1;
-  
-  
-
-  const paginationUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('page', String(page))
-    return pathname + "?" + params.toString()
-  }
-
-  const perPageUrl = (size: string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('size', String(size))
-    if (params.has('page')) {
-      params.set('page', '1')
-    }
-    return pathname + "?" + params.toString()
-  }
-
-  const firstAction = isClient ? {onClick: () => setCurrentPage(1)} : {href: paginationUrl(1)}
-  const lastAction = isClient ? {onClick: () => setCurrentPage(totalPages)} : {href: paginationUrl(totalPages)}
-  const nextAction = isClient ? {onClick: () => setCurrentPage(currentPage + 1)} : {href: paginationUrl(currentPage + 1)}
-  const prevAction = isClient ? {onClick: () => setCurrentPage(currentPage - 1)} : {href: paginationUrl(currentPage - 1)}
-
+  const [perPage, setPerPage] = useQueryState('perPage', parseAsInteger.withDefault(10))
+  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1))
 
  return  (
   <div className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
   
   <div className='flex gap-2 justify-even'>
   
-  {totalPages > 2 && <IconButton disabled={currentPage == 1} label="Første side" className='btn btn-outline btn-compact grow md:grow-0' textIcon {...firstAction}><PiCaretDoubleLeft/></IconButton>
+  {totalPages > 2 && <IconButton disabled={page == 1} onClick={() =>setPage(1)} label="Første side" className='btn btn-outline btn-compact grow md:grow-0' textIcon><PiCaretDoubleLeft/></IconButton>
   
 }
-  { <IconButton disabled={currentPage == 1} label="Forrige side" className='btn btn-outline btn-compact grow md:grow-0' textIcon {...prevAction}><PiCaretLeft/></IconButton>
-  
+  { <IconButton disabled={page == 1} onClick={() => setPage(page - 1)} label="Forrige side" className='btn btn-outline btn-compact grow md:grow-0' textIcon><PiCaretLeft/></IconButton>
+
   }
 
-  { currentPage > 1 ? <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400'>Side {currentPage} av {totalPages}</span>
-   : <span className='px-3 py-1 rounded-sm border-neutral-400'>Side {currentPage} av {totalPages}</span>
+  { currentPage > 1 ? <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400'>Side {page} av {totalPages}</span>
+   : <span className='px-3 py-1 rounded-sm border-neutral-400'>Side {page} av {totalPages}</span>
   }
   
 
@@ -54,17 +30,19 @@ export default function Pagination({ totalPages, currentPage = 1, setCurrentPage
 
   
   { 
-    <IconButton disabled={currentPage == totalPages} label="Neste side" className='btn btn-outline btn-compact grow md:grow-0' textIcon {...nextAction}><PiCaretRight/></IconButton>
+    <IconButton disabled={currentPage == totalPages} onClick={() =>setPage(page + 1)} label="Neste side" className='btn btn-outline btn-compact grow md:grow-0'><PiCaretRight/></IconButton>
   }
   { totalPages > 2 &&
-    <IconButton disabled={currentPage == totalPages} label="Siste side" className='btn btn-outline btn-compact grow md:grow-0' textIcon {...lastAction}><PiCaretDoubleRight/></IconButton>
+    <IconButton disabled={currentPage == totalPages} onClick={() => setPage(totalPages)} label="Siste side" className='btn btn-outline btn-compact grow md:grow-0' textIcon><PiCaretDoubleRight/></IconButton>
   }
   </div>
-  {!isClient && <div className="self-center">
+  <div className="self-center">
   <label htmlFor="per_page_select">Treff per side: </label>
-  <select id="per_page_select" name="size" value={parseInt(searchParams.get('size') || '10')} onChange={
+  <select id="per_page_select" name="size" value={perPage} onChange={
       (event) => {
-          router.push(perPageUrl(event.target.value))
+          setPage(1)
+          setPerPage(parseInt(event.target.value))
+          
       }
   }>
 {[10, 20, 50, 100].map((value) => (
@@ -74,7 +52,7 @@ export default function Pagination({ totalPages, currentPage = 1, setCurrentPage
 ))}
 
 </select>
-</div>}
+</div>
   
 </div>
     

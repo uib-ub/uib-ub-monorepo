@@ -67,13 +67,13 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
 
 {totalHits?.value ? <>
   { Array.from({length: Math.min(size, totalHits?.value)}, (_, i) => {
-    if (i == (size -1) && size < totalHits?.value && i < resultData.length) {
+    if (i == (size -1) && size < totalHits?.value && i < resultData?.length) {
       const hit = resultData[i]
       return <li className="w-full flex justify-center py-4" key={hit._id}>
                 <Link className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline" href={serialize(new URLSearchParams(searchParams), {size: size + 40})}>Vis flere</Link>
               </li>
     }
-    else if (i < resultData.length && (!isLoading || size > 20)) {
+    else if (i < resultData?.length && (!isLoading || size > 20)) {
       const hit = resultData[i]
       return <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
     }

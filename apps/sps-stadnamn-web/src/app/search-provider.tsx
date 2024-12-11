@@ -2,7 +2,7 @@
 import { createContext, useContext, useRef } from 'react'
 import { useState, useEffect } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
-import { useQueryState } from 'nuqs';
+import { parseAsInteger, useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
 
@@ -43,8 +43,11 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
 
     const searchParams = useSearchParams()
-    
     const isTable = useSearchParams().get('mode') == 'table'
+    const asc = useQueryState('asc')[0]
+    const desc = useQueryState('desc')[0]
+    const page = useQueryState('page', parseAsInteger.withDefault(1))[0]
+    const perPage = useQueryState('perPage', parseAsInteger.withDefault(10))[0]
 
     useEffect(() => {
         setCurrentUrl("/search?" + searchParams.toString())
@@ -55,7 +58,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
         setIsLoading(true)
         let url
         if (isTable) {
-            url = `/api/search/table?${searchQueryString}&size=${size}`
+            url = `/api/search/table?size=${perPage}${searchQueryString ? `&${searchQueryString}`: ''}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
         }
         else {
             url = `/api/search/map?${searchQueryString}&size=${size}`
@@ -96,7 +99,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
         })
         
         
-      }, [searchQueryString, size, searchFilterParamsString, isTable])
+      }, [searchQueryString, size, searchFilterParamsString, isTable, asc, desc, page, perPage])
 
 
   return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, mapInstance, tableData}}>{children}</SearchContext.Provider>

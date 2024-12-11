@@ -8,38 +8,37 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from "@/components/ui/tooltip"
+import { useQueryState } from "nuqs"
 
 
-export default function SortButton({ field, label, description }: { field: string, label: string, description?: string }) {
+export default function SortHeader({ field, label, description }: { field: string, label: string, description?: string }) {
     const searchParams = useSearchParams()
-    const router = useRouter()
-    const params = useParams()
+    const [desc, setDesc] = useQueryState('desc')
+    const [asc, setAsc] = useQueryState('asc')
+    const [page, setPage] = useQueryState('page')
+
 
     const sortToggle = (field: string) => {
-        const newParams = new URLSearchParams(searchParams)
-
-        newParams.delete('page')
-        
-        if (newParams.get('asc') == field) {
-            newParams.delete('asc')
-            newParams.set('desc', field)
+        if (page) {
+            setPage(null)
         }
-        else if (newParams.get('desc') == field) {
-            newParams.delete('desc')
+        if (asc == field) {
+            setAsc(null)
+            setDesc(field)
         }
-        else if (newParams.get('asc') != field) {
-            newParams.delete('asc')
-            newParams.delete('desc')
-            newParams.set('asc', field)
+        else if (desc == field) {
+            setDesc(null)
         }
-        router.push(`/view/${params.dataset}?${newParams.toString()}`)
+        else {
+            setAsc(field)
+        }
     }
 
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger className="flex gap-1 items-center" type="button" onClick={() => sortToggle(field)}>
-                    <span className="small-caps text-xl"> {label}</span>
+                    <span className="uppercase"> {label}</span>
                     { searchParams.get('asc') == field && <PiSortAscending className='text-xl inline ml-2' aria-hidden="true"/>}
                     { searchParams.get('desc') == field && <PiSortDescending className='text-xl inline ml-2' aria-hidden="true"/>}
                     

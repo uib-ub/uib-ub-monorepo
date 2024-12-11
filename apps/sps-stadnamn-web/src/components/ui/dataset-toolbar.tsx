@@ -18,10 +18,6 @@ export default function DatasetToolbar({ dataset }: { dataset: string }) {
 
                 {treeSettings[dataset] && <Link href={`/search?dataset=${dataset}&mode=tree`} 
                     aria-current={mode == 'tree' ? 'page' : false}
-                    onClick={() => {
-                                    // set current url as storedSearchQuery in localstorage
-                                    localStorage?.setItem('storedSearchQuery', searchParams.toString())
-                                }}
                     className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
                         <PiTreeView aria-hidden="true"/> Register</Link>}
 

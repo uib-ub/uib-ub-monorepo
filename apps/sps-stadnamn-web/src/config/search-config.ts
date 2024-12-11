@@ -1,5 +1,4 @@
   export interface FieldConfigItem {
-    key?: string;
     label: string;
     result?: boolean; // Show in result list
     description?: string; // Description of field
@@ -13,7 +12,10 @@
     docLink?: string; // Link to another document
     cadastreTable?: boolean; // Show in cadastre table
 
+  }
 
+  interface FacetConfigItem extends FieldConfigItem {
+    key: string; 
   }
  
 const [table, omitLabel, searchable, facet, result, cadastreTable] = Array(6).fill(true);
@@ -34,18 +36,22 @@ const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
 const html = {"content.html": {label: "Fulltekst", searchable}}
 const text = {"content.text": {label: "Fulltekst", searchable}}
+const labelDefaults = {
+  "altLabels": {label: "Andre navn", table, facet},
+  "attestations__label": {label: "Kildeformer", table, facet},
+}
 
 
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
-      uuid, label, location, adm, adm1, adm2, link, ...image,
+      uuid, label, location, adm, adm1, adm2, link, ...image, ...labelDefaults,
       //"description": {label: "Beskriving"}, // Removed untid short descriptions have been generated
       "datasets": {label: "Datasett", facet, omitLabel, result},
       "children": {label: "Underelement", result},
       snid,
       "gnidu": {label: "GNIDu", facet},
-      "midu": {label: "MIDu", facet},
+      //"midu": {label: "MIDu", facet}, Not present
       sosi,
       "rawData.adm1Fallback": {label: "Fylke", facet},
       "rawData.adm2Fallback": {label: "Kommune", facet},
@@ -176,7 +182,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
   
 
-export const facetConfig: Record<string, FieldConfigItem[]> = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+export const facetConfig: Record<string, FacetConfigItem[]> = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
   acc[dataset] = Object.entries(fields)
     .filter(([_, config]) => config.facet)
     .map(([key, config]) => ({
@@ -184,7 +190,7 @@ export const facetConfig: Record<string, FieldConfigItem[]> = Object.entries(fie
       ...config
     }));
   return acc;
-}, {} as Record<string, FieldConfigItem[]>);
+}, {} as Record<string, FacetConfigItem[]>);
 
 
 

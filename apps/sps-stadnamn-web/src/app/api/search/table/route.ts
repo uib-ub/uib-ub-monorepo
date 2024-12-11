@@ -3,8 +3,8 @@ export const runtime = 'edge'
 import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
-import { getSortArray } from '@/config/server-config';
-import { resultConfig } from '@/config/search-config';
+import { contentSettings, getSortArray } from '@/config/server-config';
+import { facetConfig, fieldConfig } from '@/config/search-config';
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
@@ -14,17 +14,29 @@ export async function GET(request: Request) {
     
     // Existing sorting logic
 
+  // Add sorting from URL parameters
+  if (filteredParams.asc) {
+    sortArray = filteredParams.asc.split(',').map(field => ({
+      [field]: { order: 'asc' }
+    }));
+  } else if (filteredParams.desc) {
+    sortArray = filteredParams.desc.split(',').map(field => ({
+      [field]: { order: 'desc' }
+    }));
+  }
+
+  // Fallback to default sorting if no sort parameters provided
   if (!sortArray.length) {
     sortArray = getSortArray(dataset)
   }
 
     
   const query: Record<string,any> = {
-    "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
+    "size":  filteredParams.size || 10,
+    "from": filteredParams.from || 0,
     ...highlight ? {highlight} : {},
-    "fields": resultConfig[dataset],
-    "sort": sortArray,
-    "_source": false
+    "sort": [...sortArray, {uuid: {order: 'asc'}}],
+    "_source": true
   }
 
   if (simple_query_string && termFilters.length) {
@@ -44,8 +56,9 @@ export async function GET(request: Request) {
       }
     }
   }
-  
+
   const [data, status] = await postQuery(dataset, query)
+
   return Response.json(data, {status: status})
   
 }

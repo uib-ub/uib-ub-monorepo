@@ -1,28 +1,31 @@
 import CadastralSubdivisions from "@/components/doc/cadastral-subdivisions"
-import { facetConfig } from "@/config/search-config"
+import { facetConfig, fieldConfig } from "@/config/search-config"
 import { contentSettings } from "@/config/server-config"
 import { useDataset } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/router"
 import { useQueryState } from "nuqs"
-import { Fragment, useContext, useState } from "react"
+import { Fragment, useContext, useEffect, useState } from "react"
 import { PiArrowCounterClockwise, PiCaretDown, PiCaretUp } from "react-icons/pi"
-import SortButton from "./sort-button"
+import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
+import Link from "next/link"
+import { getSkeletonLength } from "@/lib/utils"
 
 export default function TableExplorer() {
-    const within = useQueryState('within')[0]
-    const nav = useQueryState('nav')[0]
     const dataset = useDataset()
     const searchParams = useSearchParams()
-    const { tableData, totalHits } = useContext(SearchContext)
+    const { tableData, totalHits, isLoading } = useContext(SearchContext)
 
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
-    const [visibleColumns, setVisibleColumns] = useState<string[]>([])
     const localStorageKey = `visibleColumns_${dataset}`;
-    const [expandLoading, setExpandLoading] = useState<boolean>(false)
+
+    const setAsc = useQueryState('asc')[1]
+    const setDesc = useQueryState('desc')[1]
+
+    const [visibleColumns, setVisibleColumns] = useState<string[]>(['adm', ...facetConfig[dataset].filter(item => item.table).map(facet => facet.key)])
 
     // Hide adm if only one value is present and it has no sublevels
     const showCadastre = contentSettings[dataset]?.cadastre
@@ -56,12 +59,7 @@ export default function TableExplorer() {
         localStorage.removeItem(localStorageKey);
       }
 
-      const resetSort = () => {
-        const newSearchParams = new URLSearchParams(searchParams)
-        newSearchParams.delete('asc')
-        newSearchParams.delete('desc')
-        //router.push(`/view/${dataset}?${newSearchParams.toString
-        }
+
 
     const handleCheckboxChange = (columnId: string, isChecked: boolean) => {
         if (isChecked) {
@@ -72,7 +70,8 @@ export default function TableExplorer() {
             setVisibleColumns(prev => prev.filter(id => id !== columnId));
             localStorage.setItem(localStorageKey, JSON.stringify(visibleColumns.filter(id => id !== columnId)));
         }
-        }
+    }
+
     
 
 
@@ -95,7 +94,7 @@ export default function TableExplorer() {
         
                     }
                     { (searchParams.get('asc') || searchParams.get('desc')) &&
-                        <button type="button" className='btn btn-outline btn-compact pl-2' onClick={resetSort}>
+                        <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => {setAsc(null); setDesc(null)}}>
                         <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
                         Tilbakestill sortering
                     </button>
@@ -144,58 +143,72 @@ export default function TableExplorer() {
                         <thead>
                             <tr>
                                 <th>
-                                    <SortButton field="label.keyword" label="Treff" description='Oppslagsord'/>
+                                    <SortHeader field="label.keyword" label="Oppslagsord" description='Oppslagsord'/>
                                 </th>
                                 
                                 {
                                     visibleColumns.includes('adm') && <th> 
-                                        <SortButton field={Array.from({length: contentSettings[dataset]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Område"/>
+                                        <SortHeader field={Array.from({length: contentSettings[dataset]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Område"/>
                                     </th>
                                 }
                                 { showCadastre && visibleColumns.includes('cadastre') &&
                                     <th>
-                                    <SortButton field='adm1.keyword,adm2.keyword,cadastre__gnr,cadastre__bnr' label="Matrikkel" description="Gnr/Bnr kommunevis"/>
+                                    <SortHeader field='adm1.keyword,adm2.keyword,cadastre__gnr,cadastre__bnr' label="Matrikkel" description="Gnr/Bnr kommunevis"/>
                                     </th>
                                 }
-                                { facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key)).map((facet: any) => (
+                                { facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))?.map((facet: any) => (
                                     <th key={facet.key}>
-                                        <SortButton field={facet.type ? facet.key : facet.key + ".keyword"} label={facet.label} description={facet.description}/>
+                                        <SortHeader field={facet.type ? facet.key : facet.key.replace("__", ".") + ".keyword"} label={facet.label} description={facet.description}/>
                                     </th>
                                 )) }
                             </tr>
                         </thead>
                         <tbody>
-                        { tableData?.map((hit: any) => (
+                        { !isLoading ? tableData.map((hit: any) => (
                             <Fragment key={hit._id}>
                             <tr>
-                                <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit.fields.uuid ? 'rowgroup' : 'row'}>
-                                {JSON.stringify(hit.fields?.label)}
+                                <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'}>
+                                <Link href={`/uuid/${hit._source?.uuid}`}>{hit._source?.label}</Link>
+
+
+
                                 </th>
                                 {
-                                    visibleColumns.includes('adm') && <td>{joinWithSlash(hit.fields.adm2)}{hit.fields.adm3?.length && ' - ' + joinWithSlash(hit.fields.adm3)}{joinWithSlash(hit.fields.adm2) && ', '}{joinWithSlash(hit.fields.adm1)}</td>
+                                    visibleColumns.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{joinWithSlash(hit._source.adm1)}</td>
                                 }
                                 { showCadastre && visibleColumns.includes('cadastre') &&
                                     <td>
-                                        {hit.fields.cadastre && formatCadastre(hit.fields.cadastre)}
+                                        {hit._source.cadastre && formatCadastre(hit._source.cadastre)}
                                     </td>
                                 }
-                                { facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key)).map((facet: any) => (
+                                { facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))?.map((facet: any) => (
                                     facet.key.includes("__") ? 
                                         <td key={facet.key}>
-                                            {[...new Set(hit.fields[facet.key.split("__")[0]]
-                                                .map((k: Record<string, any>) => k[facet.key.split("__")[1]] || '-'))]
+                                            {[...new Set(hit._source[facet.key.split("__")[0]]
+                                                ?.map((k: Record<string, any>) => k[facet.key.split("__")[1]] || '-'))]
                                                 .join(', ')}
                                         </td>
                                     :
                                         <td key={facet.key}>
-                                            {getValueByKeyPath(facet.key, hit.fields)}
+                                            {getValueByKeyPath(facet.key, hit._source)}
                                         </td>
                                 ))}
                             </tr>
 
                             </Fragment>
-                        ))
-                    }
+                        )) : Array.from({length: 10}, (_, index_a) => (
+                            <tr key={index_a}>
+                            {Array.from({ length: visibleColumns.length + 1 }, (_, index_b) => (
+                                <td key={index_b}>
+                                    <div className="bg-neutral-200 rounded-full h-4 animate-pulse my-1" style={{width: `${getSkeletonLength(index_a + index_b, 4, 10)}rem`}}></div>
+                                </td>
+                            ))}
+                        
+                        </tr>
+                        ))}
+                        
+
+
         
                     
         
