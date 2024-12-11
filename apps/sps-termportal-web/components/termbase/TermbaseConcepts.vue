@@ -120,7 +120,6 @@ const breakpointFetchConfig = computed(() => {
     configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
   }
 
-  console.log(configKey);
   const breakpointConfig: {
     fetchConcepts: number;
     sortOrder: "asc" | "desc";

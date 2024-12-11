@@ -45,8 +45,15 @@ export const useAllowSearchFetch = () =>
 export const useSearchBarWasFocused = () =>
   useState<boolean>("searchBarWasFocused", () => false);
 export const useSearchterm = () => useState<string>("searchterm", () => "");
+export const useSearchtermTermbase = () =>
+  useState<string>("searchtermTermbase", () => "");
 export const useSearchLanguage = () =>
   useState<string>("searchLanguage", () => "");
+export const useSearchLanguageTermbase = () =>
+  useState<string>("searchLanguageTermbase", () => "all");
+export const useSearchTranslateTermbase = () =>
+  useState<string>("searchTranslateTermbase", () => "none");
+
 export const useSearchTermbase = () =>
   useState<Array<string>>("searchTermbase", () => []);
 export const useSearchData = () =>

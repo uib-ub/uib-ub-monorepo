@@ -5,7 +5,7 @@
     </Head>
     <div class="flex">
       <SideBar />
-      <div class="space-y-5">
+      <div class="space-y-6">
         <UtilsTransitionOpacitySection>
           <main v-if="data && bootstrapData.loaded">
             <h1 id="main" class="pb-3 pt-5 text-2xl">
@@ -22,7 +22,7 @@
             </div>
           </main>
         </UtilsTransitionOpacitySection>
-        <!-- <TermbaseSearch :termbase-id="termbase" /> -->
+        <TermbaseSearch v-if="data" :termbase-id="termbase" />
         <TermbaseConcepts
           v-if="data"
           :key="'concepts' + termbase"

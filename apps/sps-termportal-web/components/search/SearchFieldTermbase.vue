@@ -4,7 +4,7 @@
   >
     <AutoComplete
       id="navbarautocomplete"
-      v-model="searchterm"
+      v-model="searchtermTermbase"
       :suggestions="items"
       :placeholder="placeholder"
       :aria-label="placeholder"
@@ -27,54 +27,71 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
+const searchtermTermbase = useSearchtermTermbase();
+const searchLanguageTermbase = useSearchLanguageTermbase();
+const searchTranslateTermbase = useSearchTranslateTermbase();
 
 const items = ref([]);
 
-const props = defineProps({
-  termbaseSearch: { type: Boolean, default: false },
-});
+const props = defineProps({ termbaseId: { type: String, required: true } });
 
 const search = async (event) => {
   const term = event.query;
-  items.value = await useAutoCompleteSuggestions(term);
+  items.value = await useAutoCompleteSuggestions(
+    term,
+    props.termbaseId,
+    searchLanguageTermbase.value !== "all"
+      ? searchLanguageTermbase.value
+      : undefined
+  );
   // items.value = [...Array(10).keys()].map((item) => event.query + "-" + item);
 };
 
+const termbaselabel = lalof(`${props.termbaseId}-3A${props.termbaseId}`);
 const placeholder = computed(() => {
   return (
     i18n.t("searchBar.search") +
-    (searchInterface.value.language !== "all"
+    (searchLanguageTermbase.value !== "all"
       ? ` ${i18n.t("searchBar.inLanguage")} ${i18n.t(
-          `global.lang.${searchInterface.value.language}`,
+          `global.lang.${searchLanguageTermbase.value}`,
           2
         )}`
       : "") +
-    (searchInterface.value.termbase.length !== 0
-      ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t("global.termbase", 2)}`
-      : "")
-    // termbases ${i18n.t("global.samling." + searchInterface.value.termbase)}
-    //     : searchInterface.value.domain[0] !== "all"
-    //     ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t("global.domain.domain", 2)}
-    //       ${i18n.t("global.domain." + searchInterface.value.domain.slice(-1))}`
-    //     : "")
+    ` ${i18n.t("searchBar.inDomain")} ${i18n.t("global.termbase", 1)} ` +
+    termbaselabel
   );
 });
 
 const clearText = () => {
-  searchterm.value = "";
-  navbarautocomplete.focus();
+  searchtermTermbase.value = "";
+  // navbarautocomplete.focus();
 };
 
 function execSearch() {
   const allowSearchFetch = useAllowSearchFetch();
   const myparams = route.query;
-  searchInterface.value.term = searchterm.value;
+  searchterm.value = searchtermTermbase.value;
+  searchInterface.value.term = searchtermTermbase.value;
+  searchInterface.value.language = searchLanguageTermbase.value;
+  searchInterface.value.translate = searchTranslateTermbase.value;
+  searchInterface.value.useDomain = false;
+  searchInterface.value.termbase = [props.termbaseId];
   myparams.q = searchInterface.value.term;
+  myparams.tb = props.termbaseId;
+  myparams.ud = "false";
+  if (searchLanguageTermbase.value !== "all") {
+    myparams.ss = searchLanguageTermbase.value;
+  }
+  if (searchTranslateTermbase.value !== "none") {
+    myparams.ms = searchTranslateTermbase.value;
+  }
+
   allowSearchFetch.value = true;
   router.push({
     path: "/search",
@@ -82,6 +99,10 @@ function execSearch() {
     query: myparams,
   });
 }
+
+onMounted(() => {
+  searchtermTermbase.value = "";
+});
 </script>
 
 <style>
