@@ -16,19 +16,19 @@ export default function Facets() {
 
       return (
         <>
-        <div className="border-b border-neutral-300 flex gap-2">
+        <div className="flex flex-wrap items-center gap-1 mx-2">
         { contentSettings[dataset]?.adm && <>
           <h3>
-          <button type="button" role="tab" aria-selected={expandedFacet == 'adm'} onClick={() => toggleFacet('adm')}  className='flex w-full items-center pb-2 px-2 aria-selected:!pb-0 aria-selected:border-b-2 aria-selected:border-accent-800'>
+          <button type="button" role="tab" aria-selected={expandedFacet == 'adm'} onClick={() => toggleFacet('adm')}  className='flex w-full items-center px-4 py-1 rounded-full bg-neutral-100 aria-selected:bg-accent-800 aria-selected:text-white'>
           
           Område
           
           </button>
           </h3>
           <h3>
-          <button type="button" role="tab" aria-selected={expandedFacet == 'other'} onClick={() => toggleFacet('other')}  className='flex w-full items-center p px-2 aria-selected:!pb-0 aria-selected:border-b-2 aria-selected:border-accent-800'>
+          <button type="button" role="tab" aria-selected={expandedFacet == 'other'} onClick={() => toggleFacet('other')}  className='flex w-full items-center px-4 py-1 rounded-full bg-neutral-100 aria-selected:bg-accent-800 aria-selected:text-white'>
           
-          Andre filtre
+          Annet
           
           </button>
           </h3>
