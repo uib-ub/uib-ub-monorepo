@@ -46,6 +46,7 @@ const labelDefaults = {
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
       uuid, label, location, adm, adm1, adm2, link, ...image, ...labelDefaults,
+      "adm3": {label: "Sogn, bydel eller tidligere kommune", result},
       //"description": {label: "Beskriving"}, // Removed untid short descriptions have been generated
       "datasets": {label: "Datasett", facet, omitLabel, result},
       "children": {label: "Underelement", result},
