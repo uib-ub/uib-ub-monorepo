@@ -219,7 +219,7 @@ export default function TableExplorer() {
                     </div>
                     <nav className="center gap-2 mx-2 pb-4">
 
-                    { totalHits && totalHits.value > 10 && <Pagination totalPages={Math.ceil(totalHits.value / (Number(searchParams.get('size')) || 10))}/>}
+                    { totalHits && totalHits.value > 10 && <Pagination totalPages={Math.ceil(totalHits.value / (Number(searchParams.get('perPage')) || 10))}/>}
                     </nav>
                     
                     </div>

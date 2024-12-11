@@ -119,7 +119,6 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                         </div>
           
                
-                {hits.total.value > 300 && <Pagination currentPage={page} setCurrentPage={setPage} totalPages={Math.ceil(hits.total.value / 300)} />}
             </>
         }
     </div>
