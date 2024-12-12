@@ -93,6 +93,9 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
   </div>
 
   } 
+  { groupBy == 'adm1' && <h2 className="text-lg mx-4 my-2 font-serif">Fylker</h2> }
+  { groupBy == 'adm2' && <h2 className="text-lg mx-4 my-2 font-serif">Kommuner</h2> }
+  { !groupBy && <h2 className="text-lg mx-4 my-2 font-serif">Bruk</h2> }
 
   <ul className="flex flex-col">
 
