@@ -12,6 +12,7 @@ import SearchLink from "@/components/ui/search-link"
 import { useDataset } from "@/lib/search-params"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
+import { treeSettings } from "@/config/server-config"
 
 export default function DocInfo() {
     const searchParams = useSearchParams()
