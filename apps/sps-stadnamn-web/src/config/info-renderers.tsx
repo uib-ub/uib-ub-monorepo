@@ -91,12 +91,12 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
 
     return <>
-    {uniqueLabels.size > 0 && <ul className='flex flex-wrap !list-none !p-0'>
+    {uniqueLabels.size > 0 && <ul className='flex flex-wrap !list-none !p-0 gap-1 border-t-2 !pt-2'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
-        <SearchLink add={{attestationLabel: label}}>
+        <SearchLink add={{attestationLabel: label}} className="no-underline bg-neutral-100 rounded-md text-neutral-950 rounded-full px-2">
         {label}
-        </SearchLink>{index < uniqueLabels.size - 1 ? ',' : ''}&nbsp;</li>
+        </SearchLink></li>
     }
     )}
     </ul>}
@@ -106,9 +106,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         
         {Timeline(source.attestations)}
       </>}
-      <CollapsibleHeading title="Kilder" quantity={source.children.length}>
+      {false && <CollapsibleHeading title="Kilder" quantity={source.children.length}>
           <SourceList snid={source.snid} uuid={source.uuid} childList={source.children}/>
-        </CollapsibleHeading>
+        </CollapsibleHeading>}
 
       <CollapsibleHeading title="Detaljer">
         <FacetsInfobox dataset={'search'} source={source}/>
