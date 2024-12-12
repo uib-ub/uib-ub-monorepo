@@ -169,7 +169,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
    </div>   
     }
 
-    {source.content?.html && <div className="inline-flex flex-col bg-neutral-50 border border-neutral-200">
+    {source.content?.html && <div className="inline-flex flex-col inner-slate">
      <div className='border-b border-neutral-200 p-4'><Link href={source.rawData.Lenke_til_originalside} className='whitespace-nowrap inline'>Bind {source.rawData.Bind}, s. {source.rawData.Side}</Link></div>
     <HtmlString className='space-y-2 inline p-4' htmlString={source.content.html} />
 
@@ -200,9 +200,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
     */
     return <>
-    {source.content?.html && <div className="inline-flex flex-col gap-4 bg-neutral-50 border border-neutral-200">
+    {source.content?.html && <div className="inline-flex flex-col gap-4 inner-slate">
       <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link></div>
-    <HtmlString className='space-y-2 inline px-4 pb-4' htmlString={source.content.html} />
+    <HtmlString className='space-y-2 inline px-4 pb-4' htmlString={source.content.html.replace("/view/leks/doc/", "/search?dataset=leks&doc=")} />
 
     </div>
     }
