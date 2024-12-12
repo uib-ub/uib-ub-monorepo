@@ -85,9 +85,17 @@ export default function DocInfo() {
             }
         
         { dataset == 'search' && 
-        <Link href={serialize(new URLSearchParams(searchParams), {infoDataset: docDataset, doc: null, point: null})} 
+        <SearchLink only={{
+          nav: 'datasets',
+          dataset: docDataset,
+          mode: mode,
+          doc: docSource.uuid,
+          center: searchParams.get('center'),
+          zoom: searchParams.get('zoom')
+        }}
+         
               className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">
-                {docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset as string]}</>}</Link>}
+                {docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset as string]}</>}</SearchLink>}
         </div>
       
       
