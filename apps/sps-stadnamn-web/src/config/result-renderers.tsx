@@ -263,7 +263,7 @@ export const resultRenderers: ResultRenderers = {
   ssr2016: {
     title: defaultTitle,
     details: (hit: any, display: string) => {
-      return <>{hit.fields.adm2}{hit.fields.adm1 && ', ' + hit.fields.adm1}</>
+      return <>{formatAdm(hit.fields)}</>
     }
   },
 
