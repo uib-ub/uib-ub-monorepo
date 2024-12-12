@@ -115,7 +115,6 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
     const query = `/api/geo/${(markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
 
     fetch(query, {
-      cache: 'force-cache',
       signal: controllerRef.current.signal,
       method: 'GET',
       headers: {
@@ -331,7 +330,12 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
     return {
       click: () => {
         setPoint(null)
-        setDoc(hit.fields.uuid[0])
+        if (hit.fields.children?.length == 1) {
+          setDoc(hit.fields.children[0])
+        }
+        else {
+          setDoc(hit.fields.uuid[0])
+        }
         if (within && hit.fields?.sosi?.[0]== 'gard') {
           setwithin(hit.fields.uuid[0])
         }

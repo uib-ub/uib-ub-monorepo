@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
   const query: Record<string,any> = {
     size: filteredParams.zoom == '18' ? 1000 : 200,
-    fields: ["label", "location", "uuid", "sosi"],
+    fields: ["label", "location", "uuid", "sosi", "children"],
     _source: false,
   }
   const geo_query = {geo_bounding_box: {
