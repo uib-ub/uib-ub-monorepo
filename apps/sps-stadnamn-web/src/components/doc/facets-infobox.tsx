@@ -59,7 +59,7 @@ export default function FacetsInfobox({ dataset, source }: { dataset: string, so
       return serialize({dataset, nav: 'results', ...newParams})
     }
 
-    return (
+    return filteredItems?.length > 0 ? (
       <div className="flex flex-col sm:flex-row flex-wrap gap-8 p-4 inner-slate">
         {filteredItems.map((item: Record<string,any> , index: number) => (
             <div key={index} className="flex flex-col">
@@ -77,7 +77,7 @@ export default function FacetsInfobox({ dataset, source }: { dataset: string, so
             
      </div>
   
-    )
+    ) : null
   
   
   }
