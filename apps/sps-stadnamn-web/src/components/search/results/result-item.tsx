@@ -1,29 +1,18 @@
 'use client'
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs";
+import { useQueryState } from "nuqs";
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
 import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
+import SearchLink from '@/components/ui/search-link';
 
 
 
 export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
-    const searchParams = useSearchParams()
     const dataset = useDataset()
     const doc = useQueryState('doc')[0]
     const nav = useQueryState('nav')[0]
     const itemRef = useRef<HTMLAnchorElement>(null)
-    const serialize = createSerializer({
-        doc: parseAsString,
-        center: parseAsArrayOf(parseAsFloat, ','),
-        point: parseAsArrayOf(parseAsFloat, ','),
-        within: parseAsString,
-        attestationYear: parseAsString,
-        attestationLabel: parseAsString,
-        nav: parseAsString,
-    });
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
@@ -39,13 +28,17 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
     
 
     return  <li className="flex flex-grow">
-            <Link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-700" 
-                  aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
-                  href={serialize(new URLSearchParams(searchParams), { doc: 
-                    hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid, 
-                    point: null, 
-                    within: null,
-                    attestationYear: null, attestationLabel: null, ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}})}>
+        <SearchLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-700" 
+                    aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
+                    add={{
+                        doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
+                        point: null,
+                        within: null,
+                        attestationYear: null,
+                        attestationLabel: null,
+                        ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
+                    }}>
+
             <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
             {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 
             <span className="self-center flex gap-1 items-center">
@@ -71,7 +64,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
             </p>}
             
 
-            </Link>
+            </SearchLink>
             </li>
 }
 
