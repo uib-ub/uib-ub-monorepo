@@ -87,7 +87,7 @@ export function formatCadastre(cadastre: Record<string, any>[]): string {
 
 const formatAdm = (source: Record<string, any>) => {
   const {adm1, adm2, adm3} = source
-  return <>{adm3}{adm3 && ' – '}{adm2 && adm2 != adm1 && adm2 + ', '}{adm1}</>
+  return <>{adm3}{adm3 && ' – '}{multivalue(adm1).length > 0 && adm2 !== adm1 && adm2 + ', '}{adm1}</>
 }
 
 const cadastreAdm = (knr: string | undefined, gnr: string | undefined, bnr: string | undefined, sep: string, source: Record<string,any>, display: string ) => {
