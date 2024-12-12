@@ -50,7 +50,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 
   return (
-    <ul className='relative !mx-2 !px-0'>
+    <ul className='relative !mx-2 !px-0 p-2'>
       {timelineData.map((item, index) => {
         const [year, labels] = Object.entries(item)[0];
   
@@ -62,10 +62,10 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
           
           
 
-          <div className={`ml-6 ${''}`}>
-            <strong className='mb-1'>{year}:&nbsp;</strong>
+          <div className={`ml-6 gap-2 flex`}>
+            <strong className='bg-primary-100 rounded-full px-2'>{year}</strong>
                 {labels.map((label, i) => ( <span key={i}>
-                  {labels.length > 1 && i > 0 ? ', ' : ''}<SearchLink key={i} add={{"attestationYear": year, "attestationLabel": label}}>{label}</SearchLink>
+                  <SearchLink className="no-underline bg-neutral-100 text-neutral-950 rounded-full px-2" key={i} add={{"attestationYear": year, "attestationLabel": label}}>{label}</SearchLink>
                   </span>
                 ))}
           </div>
@@ -94,7 +94,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {uniqueLabels.size > 0 && <ul className='flex flex-wrap !list-none !p-0 gap-1 border-t-2 !pt-2'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
-        <SearchLink add={{attestationLabel: label}} className="no-underline bg-neutral-100 rounded-md text-neutral-950 rounded-full px-2">
+        <SearchLink add={{attestationLabel: label}} className="no-underline bg-neutral-100 rounded-full text-neutral-950 rounded-full px-2">
         {label}
         </SearchLink></li>
     }
