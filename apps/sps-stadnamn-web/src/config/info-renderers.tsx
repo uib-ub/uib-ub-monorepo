@@ -89,23 +89,30 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       }
     })
 
+    const hasAltLabels = uniqueLabels.size > 0
+    const hasAttestations = source.attestations?.some((item: any) => item.label != source.label) && source.attestations?.length > 1
+
 
     return <>
-    {uniqueLabels.size > 0 && <ul className='flex flex-wrap !list-none !p-0 gap-1 border-t-2 !pt-2'>
+    { hasAltLabels && hasAttestations &&
+    <div className="border-2 p-2 inner-slate">
+    {hasAltLabels && <ul className='flex flex-wrap !list-none !p-0 gap-1'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
-        <SearchLink add={{attestationLabel: label}} className="no-underline bg-neutral-100 rounded-full text-neutral-950 rounded-full px-2">
+        <SearchLink add={{attestationLabel: label}} className="no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-2">
         {label}
         </SearchLink></li>
     }
     )}
     </ul>}
     
-    {source.attestations?.some((item: any) => item.label != source.label) && source.attestations?.length > 1 && 
+    {hasAttestations && 
       <>
         
         {Timeline(source.attestations)}
       </>}
+      </div>
+      }
       {false && <CollapsibleHeading title="Kilder" quantity={source.children.length}>
           <SourceList snid={source.snid} uuid={source.uuid} childList={source.children}/>
         </CollapsibleHeading>}

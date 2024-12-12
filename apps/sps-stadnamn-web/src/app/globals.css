@@ -88,6 +88,10 @@
 }
 
 @layer components {
+
+  .inner-slate {
+    @apply border-2 border-neutral-200 shadow-inner rounded-md bg-neutral-50;
+  }
   .breadcrumb-link {
     @apply no-underline text-lg text-accent-700 hover:underline decoration-accent-700;
   }

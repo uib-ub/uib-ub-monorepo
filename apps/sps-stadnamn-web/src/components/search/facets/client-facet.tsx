@@ -188,7 +188,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     }
     </div>
     { facetAggregation?.buckets ?
-    <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto border rounded-md bg-neutral-50 border-neutral-300'>
+    <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
       {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
         listItem(item, index, facetName, [item.key], false)
       ))}

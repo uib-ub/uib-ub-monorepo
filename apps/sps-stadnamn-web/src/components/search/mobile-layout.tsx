@@ -206,8 +206,8 @@ export default function MobileLayout() {
              onTouchMove={handleTouchMove}
              onTouchEnd={handleTouchEnd}>
         { drawerContent && <>
-            <div className="w-full flex justify-center items-center h-6 rounded-t-xl bg-white" style={{touchAction: 'none'}}><div className="h-2 w-16 bg-neutral-300 mt-1 rounded-full"></div></div>
-            <div className={`h-full bg-white max-h-[calc(100svh-3rem)] overscroll-contain pb-8 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
+            <div className="w-full flex justify-center items-center h-6 rounded-t-xl bg-white" style={{touchAction: 'none'}}><div className="h-2 w-16 bg-neutral-300 rounded-full"></div></div>
+            <div className={`h-full bg-white border-t-2 border-neutral-200 shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-8 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             <div className={drawerContent != 'info' ? 'hidden' : undefined }><InfoContent/></div>
             { drawerContent == 'results' && 
