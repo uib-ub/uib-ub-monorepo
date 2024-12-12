@@ -9,6 +9,7 @@ import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import SourceList from '@/components/search/results/source-list';
 import SearchLink from '@/components/ui/search-link';
+import Timeline from '@/components/doc/timeline';
 
 const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
   const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
@@ -33,49 +34,6 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
     return <div className={className} dangerouslySetInnerHTML={createMarkup(htmlString)} />;
   }
 
-  const Timeline = (arr: { label: string; year: string }[]) => {
-    const grouped: Record<string,string[]> = {};
-
-    arr?.forEach(item => {
-        if (grouped[item.year]) {
-            grouped[item.year].push(item.label);
-        } else {
-            grouped[item.year] = [item.label];
-        }
-    });
-
-    const timelineData: Record<string, string[]>[] = Object.keys(grouped).map(year => {
-        return { [year]: grouped[year] };
-      });
-
-
-  return (
-    <ul className='relative !mx-2 !px-0 p-2'>
-      {timelineData.map((item, index) => {
-        const [year, labels] = Object.entries(item)[0];
-  
-        return (
-          <li key={index} className='flex items-center !pb-2 !pt-0 relative md:!pb-2'>
-
-          <div className={`bg-primary-300 absolute w-1 left-0 top-0 ${index === timelineData.length -1 ? 'h-2' : 'h-full'} ${index === 0 && 'mt-2'}`}></div>
-          <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-1`}></div>
-          
-          
-
-          <div className={`ml-6 gap-2 flex`}>
-            <strong className='bg-primary-100 rounded-full px-2'>{year}</strong>
-                {labels.map((label, i) => ( <span key={i}>
-                  <SearchLink className="no-underline bg-neutral-100 text-neutral-950 rounded-full px-2" key={i} add={{"attestationYear": year, "attestationLabel": label}}>{label}</SearchLink>
-                  </span>
-                ))}
-          </div>
-        </li>
-        );
-      }
-      )}
-    </ul>
-  );
-}
 
 
 
@@ -95,11 +53,11 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
     return <>
     { hasAltLabels && hasAttestations &&
-    <div className="border-2 p-2 inner-slate">
+    <div className="border-2 p-2 inner-slate flex flex-col">
     {hasAltLabels && <ul className='flex flex-wrap !list-none !p-0 gap-1'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
-        <SearchLink add={{attestationLabel: label}} className="no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-2">
+        <SearchLink add={{attestationLabel: label}} className="no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-3 py-1">
         {label}
         </SearchLink></li>
     }
@@ -111,6 +69,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         
         {Timeline(source.attestations)}
       </>}
+      <SearchLink add={{parent: source.snid}} className="no-underline self-end justify-center flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-md pl-4 pr-2 py-1">Kilder <span className='text-xs bg-primary-600 text-white rounded-full px-1'>{source.children.length}</span></SearchLink>
       </div>
       }
       {false && <CollapsibleHeading title="Kilder" quantity={source.children.length}>
