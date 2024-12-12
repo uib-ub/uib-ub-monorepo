@@ -128,10 +128,19 @@ export default function DocInfo() {
 
    
         </div>
-        { docSource.sosi == 'gard' && mode != 'table' &&
+        { docSource.sosi == 'gard' && mode != 'table' && treeSettings[dataset] &&
       <div className={`flex ${(!within || within != docSource.uuid) ? '' : 'lg:hidden'}`}>
-        <SearchLink className="flex items-center gap-1 font-semibold no-underline bg-neutral-100 p-2 px-4 mt-2" add={{within: docSource.uuid }}>
+        <SearchLink className="flex items-center gap-2 font-semibold rounded-md w-full no-underline bg-neutral-100 p-2 px-4 mt-2" add={{within: docSource.uuid }}>
           <PiTable aria-hidden="true"/> Garder
+        </SearchLink>
+    </div>
+
+      }
+
+{ dataset  == 'search' && docSource.children?.length > 0  &&
+      <div className={`flex ${(!within || within != docSource.uuid) ? '' : 'lg:hidden'}`}>
+        <SearchLink className="flex items-center gap-2 font-semibold rounded-md no-underline bg-neutral-100 p-2 px-4 mt-2" add={{snid: docSource.snid }}>
+          <PiTable aria-hidden="true"/> Kilder <span className="bg-neutral-700 rounded-full px-2 text-white text-sm">{docSource.children.length}</span>
         </SearchLink>
     </div>
 
