@@ -89,7 +89,7 @@ export default function DesktopLayout() {
        { mode != 'table' && (doc || point) &&
         <div className="lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
         <div className={`py-2 lg:p-2 flex flex-col gap-2 w-[30svw] 2xl:w-[25svw] !z-[3001] h-full ${within ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
-        <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-6 overflow-y-auto stable-scrollbar`}>
+        <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
             <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null); setAttestationLabel(null); setAttestationYear(null); } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
             <InfoContent/>
         </div>
