@@ -3,35 +3,23 @@ import SearchResults from "./results/search-results"
 import TreeResults from "./results/tree-results"
 import MapExplorer from "./map-explorer"
 import { useQueryState } from "nuqs"
-import { useContext, useEffect, useState } from "react"
 import InfoContent from "./info/info-content"
-import { PiCaretDownBold, PiCaretUpBold, PiXBold } from "react-icons/pi"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
 import StatusSection from "./status-section"
 import Facets from "./facets/facet-section"
-import { SearchContext } from "@/app/search-provider"
-import Spinner from "../svg/Spinner"
 import CadastralSubdivisions from "../doc/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
-import { DocContext } from "@/app/doc-provider"
-import { useSearchParams } from "next/navigation"
-import Datasets from "./datasets/dataset-drawer"
 import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
-import ModeSelector from "../tabs/mode-selector"
 import NavSelector from "../tabs/nav-selector"
+import { PiXBold } from "react-icons/pi"
 
 export default function DesktopLayout() {
 
     
     const { searchFilterParamsString } = useSearchQuery()
-    const searchParams = useSearchParams()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
-    
-    const selectedDocState = useState<any | null>(null)
-    const { totalHits, isLoading} = useContext(SearchContext)
-    const [facetIsLoading, setFacetIsLoading] = useState<boolean>(false)
     const [within, setwithin] = useQueryState('within')
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const dataset = useDataset()
@@ -39,10 +27,6 @@ export default function DesktopLayout() {
 
     // Keep filters or expanded open when switching to a different section
     const [nav, setNav] = useQueryState('nav', {history: 'push', defaultValue: searchFilterParamsString && mode != 'table' ? 'results' : 'filters'})
-
-    const [ showLoading, setShowLoading ] = useState<string|null>(null)
-
-    const { docLoading } = useContext(DocContext)
 
     const [attestationLabel, setAttestationLabel] = useQueryState('attestationLabel')
     const [attestationYear, setAttestationYear] = useQueryState('attestationYear')

@@ -5,8 +5,7 @@ import { resultRenderers, defaultResultRenderer } from '@/config/result-renderer
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs";
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
-import { PiArrowRight, PiArticle, PiDatabase, PiMapPin, PiTag, PiTagFill } from 'react-icons/pi';
-import { datasetTitles } from '@/config/metadata-config';
+import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
 
 
 
