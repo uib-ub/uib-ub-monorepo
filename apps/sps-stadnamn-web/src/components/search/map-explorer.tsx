@@ -336,12 +336,8 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
         else {
           setDoc(hit.fields.uuid[0])
         }
-        if (within && hit.fields?.sosi?.[0]== 'gard') {
-          setwithin(hit.fields.uuid[0])
-        }
-        else if (within && within != hit.fields.within) {
-          console.log("within", within, JSON.stringify(hit.fields))
-          //setwithin(null)
+        if (parent && hit.fields?.sosi?.[0]== 'gard') {
+          setParent(hit.fields.uuid[0])
         }
 
         if (point?.length) {
