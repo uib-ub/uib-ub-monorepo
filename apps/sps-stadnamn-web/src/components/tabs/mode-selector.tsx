@@ -1,9 +1,6 @@
-import { treeSettings } from "@/config/server-config";
-import { useDataset } from "@/lib/search-params";
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { PiCaretRight, PiDatabase, PiMagnifyingGlass, PiMapTrifold, PiMapTrifoldFill, PiTable, PiTableFill, PiTreeView } from "react-icons/pi";
+import { PiMapTrifold, PiMapTrifoldFill, PiTable, PiTableFill } from "react-icons/pi";
 import SearchLink from "../ui/search-link";
 
 export default function ModeSelector() {

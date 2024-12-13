@@ -2,7 +2,6 @@
 import { SearchContext } from "@/app/search-provider"
 import { useContext } from "react"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
 import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./result-item";
