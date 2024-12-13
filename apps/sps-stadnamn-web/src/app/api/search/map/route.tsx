@@ -30,7 +30,7 @@ export async function GET(request: Request) {
         },
       }
     },
-    "fields": resultConfig[dataset],
+    "fields": dataset == '*' ? [...new Set(Object.values(resultConfig).flat()), 'location'] : resultConfig[dataset],
     "sort": sortArray,
     "_source": false
   }

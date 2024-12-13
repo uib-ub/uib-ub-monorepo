@@ -4,10 +4,10 @@ import { treeSettings } from "@/config/server-config"
 import { useDataset } from "@/lib/search-params"
 import { getValueByPath } from "@/lib/utils"
 import { useParams } from "next/navigation"
-import { useContext, useEffect } from "react"
+import { useContext } from "react"
 
 
-export default function WithinLabel({within}: {within: string}) {
+export default function WithinLabel() {
     const dataset = useDataset()
 
     const { parentData } = useContext(DocContext)

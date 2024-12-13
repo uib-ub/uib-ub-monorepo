@@ -1,5 +1,5 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiArchive, PiArchiveFill, PiArchiveThin, PiBook, PiBookThin, PiDatabase, PiDatabaseFill, PiDatabaseThin, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldThin, PiTable, PiTableFill, PiTableThin } from 'react-icons/pi';
+import { PiArchiveThin, PiBookThin, PiDatabaseThin, PiMapTrifoldThin, PiTableThin } from 'react-icons/pi';
 import Link from 'next/link';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';

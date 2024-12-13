@@ -1,6 +1,5 @@
 import { useSearchParams } from 'next/navigation'
 import { fieldConfig } from '@/config/search-config';
-import { contentSettings } from '@/config/server-config';
 import { parseAsInteger, useQueryState } from 'nuqs';
 
 export function useQueryWithout(omit : string[]) {
@@ -34,7 +33,7 @@ export function useSearchQuery() {
     const fields = ['q', ...Object.keys(fieldConfig[dataset])]
     const facetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
-    const nav = useQueryState('nav')[0]
+    const nav = searchParams.get('nav')
     let size = useQueryState('size', parseAsInteger.withDefault(20))[0]
     
 

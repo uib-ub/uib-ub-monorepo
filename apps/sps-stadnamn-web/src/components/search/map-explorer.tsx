@@ -15,9 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
-import { useSearchQuery } from "@/lib/search-params";
+import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getLabelMarkerIcon } from "./markers";
 import { DocContext } from "@/app/doc-provider";
+import { ChildrenContext } from "@/app/children-provider";
 
 
 export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
@@ -33,9 +34,11 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const setPoint = useQueryState('point', { history: 'push', scroll: true })[1]
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
+  const dataset = useDataset()
+  const { childrenData } = useContext(ChildrenContext)
 
-  const { docData } = useContext(DocContext)
-  const [within, setwithin] = useQueryState('within', { history: 'push' })
+  const { docData, parentData } = useContext(DocContext)
+  const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const initialBoundsSet = useRef(false);
 
 
@@ -56,7 +59,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
     if (resultBounds?.length && !center) {
       mapInstance?.current?.flyToBounds(resultBounds, { padding: [100, 50], duration: 0.5 });
     }
-  }, [resultBounds, mapInstance])
+  }, [resultBounds, mapInstance, center, zoom])
   
   
 
@@ -80,14 +83,53 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
     return degrees.toString()
   }
 
+  useEffect(() => {
+    if (parent && childrenData?.length) {
+
+      const childrenWithCoordinates = childrenData.filter((child: any) => child.fields?.location?.[0]?.coordinates?.length)
+      const clientGroups: any[] = []
+      const markerOutput = { hits: { total: { value: childrenWithCoordinates.length }, clientGroups } }
+      const markerLookup: Record<string, any> = {}
+
+      childrenWithCoordinates.forEach((child: any) => {
+        const lat = child.fields?.location[0].coordinates[1]
+        const lon = child.fields?.location[0].coordinates[0]
+        const uuid = child.fields.uuid
+        let marker = markerLookup[lat + "_" + lon]
+        if (!marker) {
+          marker = { children: [], lat, lon, uuid }
+          markerLookup[lat + "_" + lon] = marker
+          markerOutput.hits.clientGroups.push(marker)
+        }
+
+        const label = child.fields.label
+
+        if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
+          marker.label = marker.label + "..."
+        } else {
+          marker.label = label
+        }
+
+        marker.children.unshift(child)
+      })
+
+      setViewResults(markerOutput)
+
+
+
+
+
+      
+    }
+  }, [parent, childrenData, dataset])
+
 
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (!bounds) {
+    if (parent || !bounds) {
       return;
     }
-
 
     const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
 
@@ -105,10 +147,6 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       queryParams.set('zoom', zoom.toString())
     }
 
-    if (within) {
-      queryParams.set('within', within)
-      queryParams.delete('sosi')
-    }
 
 
 
@@ -179,7 +217,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       );
 
     //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
-  }, [bounds, resultBounds, searchError, zoom, searchQueryString, totalHits, markerMode, within]);
+  }, [bounds, resultBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, parentData]);
 
 
 
@@ -467,7 +505,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
               
-              {docData?._source?.location?.coordinates?.[1] && <Marker 
+              { docData?._source?.location?.coordinates?.[1] && <Marker 
                   zIndexOffset={1000}
                   position={[
                     docData._source.location.coordinates[1],

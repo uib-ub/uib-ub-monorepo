@@ -6,8 +6,7 @@ import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTable, PiTagFill, PiWarn
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
-import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs"
-import AttestationSource from "../results/attestation-source"
+import AttestationSource from "../../children/attestation-source"
 import SearchLink from "@/components/ui/search-link"
 import { useDataset } from "@/lib/search-params"
 import { useContext } from "react"
@@ -20,15 +19,9 @@ export default function DocInfo() {
     const { docDataset, docData } = useContext(DocContext)
 
     const docSource = docData._source
-    const within = useQueryState('within')[0]
-    const mode = useQueryState('mode')[0]
+    const parent = searchParams.get('parent')
+    const mode = searchParams.get('mode') || 'map'
 
-    const serialize = createSerializer({
-      infoDataset: parseAsString,
-      nav: parseAsString,
-      doc: parseAsString,
-      point: parseAsArrayOf(parseAsFloat, ','),
-  })
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -138,8 +131,8 @@ export default function DocInfo() {
    
         </div>
         { docSource.sosi == 'gard' && mode != 'table' && treeSettings[dataset] &&
-      <div className={`flex ${(!within || within != docSource.uuid) ? '' : 'lg:hidden'}`}>
-        <SearchLink className="flex items-center gap-2 font-semibold rounded-md w-full no-underline bg-neutral-100 p-2 px-4 mt-2" add={{within: docSource.uuid }}>
+      <div className={`flex ${(!parent || parent != docSource.uuid) ? '' : 'lg:hidden'}`}>
+        <SearchLink className="flex items-center gap-2 font-semibold rounded-md w-full no-underline bg-neutral-100 p-2 px-4 mt-2" add={{parent: docSource.uuid }}>
           <PiTable aria-hidden="true"/> Garder
         </SearchLink>
     </div>

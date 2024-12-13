@@ -3,7 +3,6 @@ import { useContext, useEffect } from "react"
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDataset } from "@/lib/search-params";
-import { getSkeletonLength } from "@/lib/utils";
 import TreeItem from "./tree-item";
 import { treeSettings } from "@/config/server-config";
 import SearchLink from "@/components/ui/search-link";
@@ -32,8 +31,6 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
   useEffect(() => {
     setTreeAdm(adm)
     const [adm1, adm2] = adm?.split('__').reverse() || [null, null]
-    console.log("ADM1", adm1)
-    console.log("ADM2", adm2)
     setTreeAdm(adm)
     setGroupBy(adm2 ? null : adm1 ? 'adm2' : 'adm1')
   }, [adm])
@@ -41,8 +38,6 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
   useEffect(() => {
     if (docAdm) {
       const [adm1, adm2] = docAdm?.split('__').reverse() || [null, null]
-      console.log("ADM1", adm1)
-      console.log("ADM2", adm2)
       setTreeAdm(docAdm)
       setGroupBy(adm2 ? null : adm1 ? 'adm2' : 'adm1')
     }
@@ -95,7 +90,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
   } 
   { groupBy == 'adm1' && <h2 className="text-lg mx-4 my-2 font-serif">Fylker</h2> }
   { groupBy == 'adm2' && <h2 className="text-lg mx-4 my-2 font-serif">Kommuner</h2> }
-  { !groupBy && <h2 className="text-lg mx-4 my-2 font-serif">Bruk</h2> }
+  { !groupBy && <h2 className="text-lg mx-4 my-2 font-serif">Garder</h2> }
 
   <ul className="flex flex-col">
 

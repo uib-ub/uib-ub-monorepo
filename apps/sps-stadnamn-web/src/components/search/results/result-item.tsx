@@ -1,18 +1,22 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { useQueryState } from "nuqs";
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
 import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
 import SearchLink from '@/components/ui/search-link';
+import { useSearchParams } from 'next/navigation';
 
 
 
 export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
     const dataset = useDataset()
-    const doc = useQueryState('doc')[0]
-    const nav = useQueryState('nav')[0]
+    const searchParams = useSearchParams()
+    const doc = searchParams.get('doc')
+    const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null)
+    const docDataset = hit._index.split('-')[2]
+    const parent = searchParams.get('parent')
+
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
@@ -33,7 +37,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
                         point: null,
-                        within: null,
+                        parent: parent && docDataset == 'search' ? hit.fields.uuid : null,
                         attestationYear: null,
                         attestationLabel: null,
                         ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}

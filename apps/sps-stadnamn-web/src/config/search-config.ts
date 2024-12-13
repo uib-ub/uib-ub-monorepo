@@ -46,6 +46,7 @@ const labelDefaults = {
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
       uuid, label, location, adm, adm1, adm2, link, ...image, ...labelDefaults,
+      "within": {label: "Stadnamnkonsept", result},
       "adm3": {label: "Sogn, bydel eller tidligere kommune", result},
       //"description": {label: "Beskriving"}, // Removed untid short descriptions have been generated
       "datasets": {label: "Datasett", facet, omitLabel, result},
@@ -160,19 +161,19 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "midu": {label: "MIDu", facet}
     },
     ostf: {
-      uuid, label, adm, adm1, adm2,
+      uuid, label, location, adm, adm1, adm2,
       "rawData.Bindsortering": {label: "Bind", facet},
       "rawData.GNID": {label: "GNID", facet, result},
     },
     tot: {
-      uuid, label, adm, adm1, adm2,
+      uuid, label, location, adm, adm1, adm2,
       "rawData.GNR": {label: "Gardsnummer", table, facet},
       "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.GNR"]},
       "rawData.Kjelde": {label: "Kjelde", facet},
       "rawData.Kjeldeform": {label: "Kjeldeform", facet},
     },
     ssr2016: {
-      uuid, label, adm, adm1, adm2,
+      uuid, label, location, adm, adm1, adm2,
       "rawData.Stedsnavn_lokalId": {label: "SSR-nummer", facet},
       "rawData.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
       "misc.language": {label: "Språk", facet},

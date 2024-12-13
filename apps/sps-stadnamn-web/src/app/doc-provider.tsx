@@ -2,7 +2,7 @@
 import { createContext } from 'react'
 import { useState, useEffect } from 'react';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
-import { useQueryState } from 'nuqs';
+import { useSearchParams } from 'next/navigation';
 
 interface DocContextData {
     docData: any;
@@ -31,27 +31,29 @@ interface DocContextData {
 
  
 export default function DocProvider({ children }: {  children: React.ReactNode }) {
-    const point = useQueryState('point')[0]
+    const searchParams = useSearchParams()
+    const point = searchParams.get('point')
     const dataset = useDataset()
     const { searchQueryString } = useSearchQuery()
     const [ docList, setDocList ] = useState<any[] | null>(null)
     const [docData, setDocData] = useState<any | null>(null)
     
-    const doc = useQueryState('doc')[0]
+    
+    const doc = searchParams.get('doc')
     const [docLoading, setDocLoading] = useState(true)
     const [docDataset, setDocDataset] = useState<string | null>(null)
     const [docError, setDocError] = useState<Record<string, string> | null>(null)
 
-    const within = useQueryState('within')[0]
+    const parent = searchParams.get('parent')
     const [parentData, setParentData] = useState<any | null>(null)
     const [parentLoading, setParentLoading] = useState<boolean>(true)
     const [parentError, setParentError] = useState<Record<string, string> | null>(null)
     const [docAdm, setDocAdm] = useState<string | null>(null)
 
     useEffect(() => {
-        if (within) {
+        if (parent) {
             setParentLoading(true)
-            fetch(`/api/doc?uuid=${within}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`,  {cache: 'force-cache'}).then(res => res.json()).then(data => {
+            fetch(`/api/doc?uuid=${parent}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setParentData(data.hits.hits[0])
                     setDocAdm(data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1)
@@ -68,14 +70,14 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
             setDocAdm(null)
         }
     }   
-    , [within, dataset, setParentData])
+    , [parent, dataset, setParentData])
 
 
 
     useEffect(() => {
         if (doc) {
             setDocLoading(true)
-            fetch(`/api/doc?uuid=${doc}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`,  {cache: 'force-cache'}).then(res => res.json()).then(data => {
+            fetch(`/api/doc?uuid=${doc}${dataset != 'search' && dataset ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setDocData(data.hits.hits[0])
                     setDocDataset(data.hits.hits[0]._index.split('-')[2])

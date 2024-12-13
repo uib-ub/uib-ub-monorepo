@@ -7,23 +7,31 @@ import InfoContent from "./info/info-content"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
 import StatusSection from "./status-section"
 import Facets from "./facets/facet-section"
-import CadastralSubdivisions from "../doc/cadastral-subdivisions"
+import CadastralSubdivisions from "../children/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
 import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
 import NavSelector from "../tabs/nav-selector"
 import { PiXBold } from "react-icons/pi"
+import SourceList from "./results/source-list"
+import { useContext } from "react"
+import { DocContext } from "@/app/doc-provider"
+import Spinner from "../svg/Spinner"
+import { useSearchParams } from "next/navigation"
 
 export default function DesktopLayout() {
+    const searchParams = useSearchParams()
 
     
     const { searchFilterParamsString } = useSearchQuery()
     const [doc, setDoc] = useQueryState('doc')
     const [point, setPoint] = useQueryState('point')
-    const [within, setwithin] = useQueryState('within')
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const dataset = useDataset()
-    
+    const { parentLoading, parentData, docLoading } = useContext(DocContext)
+    const parent = searchParams.get('parent')
+
+
 
     // Keep filters or expanded open when switching to a different section
     const [nav, setNav] = useQueryState('nav', {history: 'push', defaultValue: searchFilterParamsString && mode != 'table' ? 'results' : 'filters'})
@@ -71,7 +79,7 @@ export default function DesktopLayout() {
 
 
        { mode != 'table' && (doc || point) &&
-        <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end h-full p-2 justify-between">
+        <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end h-full p-2 justify-between gap-2">
         <div className={`flex flex-col w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
         <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
             <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null); setAttestationLabel(null); setAttestationYear(null); } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>

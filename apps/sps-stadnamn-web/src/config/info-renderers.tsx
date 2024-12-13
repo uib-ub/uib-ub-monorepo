@@ -7,7 +7,6 @@ import { getValueByPath } from '@/lib/utils';
 import { treeSettings } from './server-config';
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import { PiMagnifyingGlass } from 'react-icons/pi';
-import SourceList from '@/components/search/results/source-list';
 import SearchLink from '@/components/ui/search-link';
 import Timeline from '@/components/doc/timeline';
 
@@ -69,12 +68,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         
         {Timeline(source.attestations)}
       </>}
-      <SearchLink add={{parent: source.snid}} className="no-underline self-end justify-center flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-md pl-4 pr-2 py-1">Kilder <span className='text-xs bg-primary-600 text-white rounded-full px-1'>{source.children.length}</span></SearchLink>
+      <SearchLink add={{parent: source.uuid}} className="no-underline self-end justify-center flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-md pl-4 pr-2 py-1">Kilder <span className='text-xs bg-primary-600 text-white rounded-full px-1'>{source.children.length}</span></SearchLink>
       </div>
       }
-      {false && <CollapsibleHeading title="Kilder" quantity={source.children.length}>
-          <SourceList snid={source.snid} uuid={source.uuid} childList={source.children}/>
-        </CollapsibleHeading>}
 
       <CollapsibleHeading title="Detaljer">
         <FacetsInfobox dataset={'search'} source={source}/>

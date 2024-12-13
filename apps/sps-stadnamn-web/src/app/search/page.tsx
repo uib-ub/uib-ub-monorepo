@@ -4,6 +4,7 @@ import { userAgent } from "next/server";
 import MobileLayout from "@/components/search/mobile-layout";
 import DesktopLayout from "@/components/search/desktop-layout";
 import DocProvider from "@/app/doc-provider";
+import ChildrenProvider from "../children-provider";
 
 export default async function SearchPage() {
 
@@ -13,9 +14,11 @@ export default async function SearchPage() {
   
   
   return <SearchProvider>
+        <ChildrenProvider>
           <DocProvider>
             {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
           </DocProvider>
+          </ChildrenProvider>
         </SearchProvider>
 }
 

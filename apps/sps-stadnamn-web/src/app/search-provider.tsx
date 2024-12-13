@@ -14,6 +14,7 @@ interface SearchContextData {
     totalHits: Record<string, any> | null;
     resultBounds: [[number, number], [number, number]] | null;
     mapInstance: any;
+    setResultBounds: (bounds: [[number, number], [number, number]] | null) => void;
   }
  
   export const SearchContext = createContext<SearchContextData>({
@@ -23,7 +24,8 @@ interface SearchContextData {
     searchError: null,
     totalHits: null,
     resultBounds: null,
-    mapInstance: null
+    mapInstance: null,
+    setResultBounds: () => {}
     });
 
  
@@ -34,7 +36,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
     const mapInstance = useRef<any>(null);
 
-    const { setCurrentUrl} = useContext(GlobalContext)
+    const { setCurrentUrl } = useContext(GlobalContext)
     
 
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
@@ -43,15 +45,16 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
 
     const searchParams = useSearchParams()
-    const isTable = useSearchParams().get('mode') == 'table'
-    const asc = useQueryState('asc')[0]
-    const desc = useQueryState('desc')[0]
+    const isTable = searchParams.get('mode') == 'table'
+    const asc = searchParams.get('asc')
+    const desc = searchParams.get('desc')
     const page = useQueryState('page', parseAsInteger.withDefault(1))[0]
     const perPage = useQueryState('perPage', parseAsInteger.withDefault(10))[0]
 
+
     useEffect(() => {
         setCurrentUrl("/search?" + searchParams.toString())
-    }, [searchParams])
+    }, [searchParams, setCurrentUrl])
 
 
     useEffect(() => {
@@ -102,7 +105,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
       }, [searchQueryString, size, searchFilterParamsString, isTable, asc, desc, page, perPage])
 
 
-  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, mapInstance, tableData}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, mapInstance, tableData, setResultBounds}}>{children}</SearchContext.Provider>
 }
 
 

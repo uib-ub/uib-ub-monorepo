@@ -1,22 +1,20 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiDatabase, PiFunnelFill, PiInfoFill, PiListBullets, PiListMagnifyingGlass, PiTableFill, PiTreeView, PiTreeViewFill } from "react-icons/pi";
+import { PiDatabase, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } from "react-icons/pi";
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
-import Options from "./datasets/dataset-drawer";
 import InfoContent from "./info/info-content";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
 import Facets from "./facets/facet-section";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
-import CadastralSubdivisions from "../doc/cadastral-subdivisions";
+import CadastralSubdivisions from "../children/cadastral-subdivisions";
 import TreeResults from "./results/tree-results";
-import DatasetList from "./datasets/dataset-drawer";
-import Datasets from "./datasets/dataset-drawer";
 import DatasetDrawer from "./datasets/dataset-drawer";
 import TableExplorer from "./table/table-explorer";
 import { treeSettings } from "@/config/server-config";
+import { useSearchParams } from "next/navigation";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -31,14 +29,14 @@ export default function MobileLayout() {
     const [nav, setNav] = useQueryState('nav')
 
     const selectedDocState = useState<any | null>(null)
-    const doc = useQueryState('doc')[0]
-    const point = useQueryState('point')[0]
+    const searchParams = useSearchParams()
+    const doc = searchParams.get('doc')
+    const point = searchParams.get('point')
     const { searchFilterParamsString } = useSearchQuery()
     const { totalHits, isLoading } = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
-    const within = useQueryState('within')[0]
     const dataset = useDataset()
 
 

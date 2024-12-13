@@ -1,5 +1,4 @@
 'use client'
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import { parseAsInteger, useQueryState } from 'nuqs';

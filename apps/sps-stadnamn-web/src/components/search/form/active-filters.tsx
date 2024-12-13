@@ -30,7 +30,7 @@ export default function ActiveFilters() {
         }
   
         if (name == 'within') {
-          return <WithinLabel within={value}/>
+          return <WithinLabel/>
         }
           
           

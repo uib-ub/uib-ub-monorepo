@@ -1,27 +1,21 @@
 'use client'
 import { useSearchParams } from "next/navigation"
-import { useContext, useEffect, useState } from "react"
-import DatasetInfo from "./dataset-info"
+import { useContext } from "react"
 import DocInfo from "./doc-info"
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQueryState } from "nuqs"
-import { useDataset, useSearchQuery } from "@/lib/search-params"
 import Link from "next/link"
-import { PiCaretDown, PiCaretLeft, PiCaretRight, PiCaretUp } from "react-icons/pi"
 import { DocContext } from "@/app/doc-provider"
-import Spinner from "@/components/svg/Spinner"
+import { getSkeletonLength } from "@/lib/utils"
 
 
 export default function InfoContent() {
 
     const searchParams = useSearchParams()
     const [doc, setDoc] = useQueryState('doc', { history: 'push'})
-    const point = useQueryState('point')[0]
-    const dataset = useDataset()
-    const { searchQueryString, searchFilterParamsString } = useSearchQuery()
-    const [listOffset, setListOffset] = useState(0)
+    const point = searchParams.get('point')
     const { docLoading, docData, docList} = useContext(DocContext)
+    
 
-    const [isLoading, setIsLoading] = useState(true)
 
     const serialize = createSerializer({
         doc: parseAsString,
@@ -34,6 +28,26 @@ export default function InfoContent() {
 
     if (point || doc) {
         return <>
+        {docLoading &&
+        <div className="w-full h-full flex justify-start flex flex-col gap-4 pt-1 pb-2">
+            <div className="h-8 w-32 bg-neutral-200 rounded-full animate-pulse"></div>
+            <div className="flex gap-2 pb-2">
+                <div className="h-5 w-24 bg-neutral-200 rounded-full animate-pulse"></div>
+                <div className="h-5 w-24 bg-neutral-200 rounded-full animate-pulse"></div>
+            </div>
+            {Array.from({length: 4}).map((_, index) => {
+                return <div key={index} style={{width: getSkeletonLength(index, 10, 20) + 'rem' }} className="h-4 bg-neutral-200 rounded-full animate-pulse"></div>
+            })}
+            <div className="flex gap-2 pt-4">
+                <div className="h-4 w-24 bg-neutral-200 rounded-full animate-pulse"></div>
+                <div className="h-4 w-24 bg-neutral-200 rounded-full animate-pulse"></div>
+                <div className="h-4 w-24 bg-neutral-200 rounded-full animate-pulse"></div>
+            </div>
+
+
+        </div>
+        
+        }
         {!docLoading && docData?._source && <DocInfo/> }
 
         {docList?.length && 
