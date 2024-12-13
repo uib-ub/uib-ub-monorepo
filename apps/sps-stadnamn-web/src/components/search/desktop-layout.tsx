@@ -71,17 +71,26 @@ export default function DesktopLayout() {
 
 
        { mode != 'table' && (doc || point) &&
-        <div className="pointer-events-none lg:absolute right-0 top-0 pb-4 flex flex-col justify-between items-end h-full">
-        <div className={`pointer-events-auto py-2 lg:p-2 flex flex-col gap-2 w-[30svw] 2xl:w-[25svw] !z-[3001] h-full ${within ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
+        <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end h-full p-2 justify-between">
+        <div className={`flex flex-col w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
         <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
             <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null); setAttestationLabel(null); setAttestationYear(null); } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
             <InfoContent/>
         </div>
         </div>
-
-        { within && treeSettings[dataset] && <div className={`pointer-events-auto lg:p-2 flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+        { parent && <div className={`flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
-                    <CadastralSubdivisions isMobile={false}/>
+
+                   { treeSettings[dataset] ? 
+                    parentLoading ? <div className="w-12 h-12 flex justify-center items-center"><Spinner status="laster garder" className="w-full h-full m-2 self-center" /></div> : 
+                    parentData?._id && <CadastralSubdivisions isMobile={false}/>
+                   : <div>
+                    <h2>Ingen tre</h2>
+                   </div>
+
+                   
+                   }
+                   { dataset == 'search' && <SourceList/>}
                 </div>
             </div>
         }
