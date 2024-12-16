@@ -80,16 +80,16 @@ export default function DesktopLayout() {
         </div>
 
 
-       { mode != 'table' && (doc || point) &&
-        <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end h-full p-2 justify-between gap-2">
-        <div className={`flex flex-col h-full w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
-        <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
-            <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null); setAttestationLabel(null); setAttestationYear(null); } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
+       { mode != 'table' && (doc || parent) &&
+        <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end p-2 justify-between gap-2 h-full">
+        <div className={`flex flex-col  w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh] lg:min-h-[25svh]' :  'lg:max-h-[calc(100svh - 2rem)] lg:min-h-[25svh]'}`}>
+        {doc && <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
+            <button className="absolute right-0 top-2" onClick={() => { setDoc(null); } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
             <InfoContent/>
+        </div>}
         </div>
-        </div>
-        { parent && <div className={`flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
-                <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto p-2">
+        { parent ? <div className={`flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+                <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
 
                    { treeSettings[dataset] ? 
                     (parentLoading || childrenLoading) ? <div className="w-12 h-12 flex justify-center items-center"><Spinner status="laster garder" className="w-full h-full m-2 self-center" /></div> : 
@@ -97,6 +97,7 @@ export default function DesktopLayout() {
                    :  dataset == 'search' && <SourceList/>}
                 </div>
             </div>
+            : null
         }
 
         </div>
