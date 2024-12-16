@@ -5,6 +5,7 @@ import { useDataset } from '@/lib/search-params';
 import { parseAsInteger } from 'nuqs';
 import { useQueryState } from 'nuqs';
 import { SearchContext } from './search-provider';
+import { DocContext } from './doc-provider';
 
 
 interface ChildrenContextData {
@@ -23,8 +24,12 @@ export const ChildrenContext = createContext<ChildrenContextData>({
 
 export default function ChildrenProvider({ children }: {  children: React.ReactNode }) {
 
+    
+
 
     const dataset = useDataset()
+
+    const { parentData, parentLoading } = useContext(DocContext)
     
     const [childrenData, setChildrenData] = useState<any>(null)
     const [childrenLoading, setChildrenLoading] = useState(true)
@@ -38,65 +43,100 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     const { setResultBounds } = useContext(SearchContext)
 
     const parent = searchParams.get('parent')
+
+
+
+    
     
 
+    useEffect(() => {
+        if (parent && dataset != 'search') {
+            setChildrenLoading(true)
+            const query = `dataset=${dataset}&within=${parent}`
+            let url = `/api/search/`
+            if (isTable) {
+                url += `table?size=${perPage}&${query}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
+            }
+            else {
+                url += `map?${query}&size=1000`
+            }
+
+            fetch(url).then(response => {
+                if (!response.ok) {
+                    throw response
+                }
+                return response.json()
+            }).then(data => {
+                if (isTable) {
+                    setChildrenData(data.hits.hits)
+                }
+                else {
+                    const newBounds = data.aggregations?.viewport.bounds
+                    setChildrenData(data.hits.hits)
+                    if (newBounds?.top_left?.lat && newBounds?.bottom_right?.lat) {
+                        setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+                    }
+
+                }
+            }).catch(error => {
+                console.error(error)
+                setChildrenError({error: error.statusText, status: error.status})
+            }).finally(() => {
+                setChildrenLoading(false)
+            })
+        }
+    }, [parentData, isTable, asc, desc, page, perPage, setResultBounds, parent, dataset])
+    
 
 
     useEffect(() => {
 
-        if (!parent) {
-            setChildrenData(null)
-            setChildrenLoading(false)
-            return
-        }
-
-        setChildrenLoading(true)    
-        const query = dataset == 'search' ? `dataset=*&snid=${parent}` : `dataset=${dataset}&within=${parent}`    
-        
-        let url = "/api/search/"
-        if (isTable) {
-            url += `table?size=${perPage}&${query}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
-        }
-        else {
-            url += `map?${query}&size=1000`
-        }
-        
-        fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw response
-            }
-            return response.json()})
-        .then(es_data => {
-            
-            if (isTable) {
-                setChildrenData(es_data.hits.hits)
-            }
-            else {
-                const newBounds = es_data.aggregations?.viewport.bounds
-                setChildrenData(es_data.hits.hits)
-
-                if (newBounds) {
-                    setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+        if (!parentLoading && parentData?._source?.children) {
+            setChildrenLoading(true)            
+            fetch("/api/children", {
+                method: 'POST',
+                body: JSON.stringify({children: parentData._source.children})
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw response
+                }
+                return response.json()})
+            .then(es_data => {
+                
+                if (isTable) {
+                    setChildrenData(es_data.hits.hits)
                 }
                 else {
-                    setResultBounds(null)
+                    const newBounds = es_data.aggregations?.viewport.bounds
+                    setChildrenData(es_data.hits.hits)
+
+                    if (newBounds?.top_left?.lat && newBounds?.bottom_right?.lat) {
+                        setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+                    }
+
                 }
+                
+                        
+            }).catch(error => {
+                console.error(error)
+                setChildrenError({error: error.statusText, status: error.status})
 
-            }
-            
-                    
-        }).catch(error => {
-            console.error(error)
-            setChildrenError({error: error.statusText, status: error.status})
+            }).finally(() => {
+                setChildrenLoading(false)
+            })
 
-        }).finally(() => {
-            setChildrenLoading(false)
-        })
+        }
+ 
+
+    }, [parentData, parentLoading, isTable, asc, desc, page, perPage, setResultBounds, dataset])
+    
+
+    
+
+    
         
-        
-        
-      }, [isTable, asc, desc, page, perPage, setResultBounds, parent, dataset])
+
 
 
 

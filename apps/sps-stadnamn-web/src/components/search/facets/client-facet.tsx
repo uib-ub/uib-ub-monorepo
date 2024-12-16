@@ -18,6 +18,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const filterCleared = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
+  const mode = searchParams.get('mode')
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
   const expandedFacets = new Set<string>();
@@ -89,9 +90,9 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     if (facet) {
       newParams.push(['facet', facet])
     }
-    newParams.push(['nav', 'filters'])    
-    if (searchParams.get('mode')) {
-      newParams.push(['mode', searchParams.get('mode') as string])
+
+    if (mode) {
+      newParams.push(['mode', mode])
     }
     newParams.push(['nav', 'filters'])  
     router.push(`?${new URLSearchParams(newParams).toString()}`)

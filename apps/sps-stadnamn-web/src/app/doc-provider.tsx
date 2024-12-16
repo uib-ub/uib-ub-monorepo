@@ -57,10 +57,10 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
                 if (data.hits?.hits?.length) {
                     setParentData(data.hits.hits[0])
                     setDocAdm(data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1)
-                    setParentLoading(false)
                 }
             }).catch(err => {
                 setParentError(err)
+            }).finally(() => {
                 setParentLoading(false)
             })
         }
@@ -70,7 +70,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
             setDocAdm(null)
         }
     }   
-    , [parent, dataset, setParentData])
+    , [parent, dataset])
 
 
 
@@ -82,10 +82,11 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
                     setDocData(data.hits.hits[0])
                     setDocDataset(data.hits.hits[0]._index.split('-')[2])
                     setDocAdm(data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1)
-                    setDocLoading(false)
                 }
             }).catch(err => {
                 setDocError(err)
+
+            }).finally(() => {
                 setDocLoading(false)
             })
         }

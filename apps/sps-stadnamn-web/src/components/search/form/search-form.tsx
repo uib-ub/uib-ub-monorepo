@@ -24,7 +24,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const dataset = useDataset()
     const setQuery = useQueryState('q')[1]
     const { currentUrl } = useContext(GlobalContext)
-    const mode = searchParams.get('mode') || 'map'
+    const mode = searchParams.get('mode')
     
 
     const clearQuery = () => {
@@ -71,8 +71,8 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
                 <Options isMobile={isMobile}/>
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
-            <input type="hidden" name="nav" value={nav != 'filters' && mode != 'table' ? 'results' : 'filters'}/>
-            {mode &&<input type="hidden" name="mode" value={mode || ''}/>}
+            <input type="hidden" name="nav" value={ mode == 'table' ? 'filters' : 'results'}/>
+            {mode && <input type="hidden" name="mode" value={mode || ''}/>}
             <button className="sr-only" type="submit">Søk</button>
         </Form>
         </div>

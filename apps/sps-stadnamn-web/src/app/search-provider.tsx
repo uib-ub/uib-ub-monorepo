@@ -83,10 +83,11 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 const newBounds = es_data.aggregations?.viewport.bounds
                 setResultData(es_data.hits.hits)
                 setTotalHits(es_data.hits.total)
-                if (newBounds) {
+                if (newBounds?.top_left?.lat && newBounds?.bottom_right?.lat) {
                     setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
                 }
                 else {
+                    console.log('no bounds')
                     setResultBounds(null)
                 }
 

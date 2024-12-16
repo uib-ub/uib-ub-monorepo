@@ -37,8 +37,8 @@ const image = {"image.manifest": {label: "Seddel", result}}
 const html = {"content.html": {label: "Fulltekst", searchable}}
 const text = {"content.text": {label: "Fulltekst", searchable}}
 const labelDefaults = {
-  "altLabels": {label: "Andre navn", table, facet},
-  "attestations__label": {label: "Kildeformer", table, facet},
+  "altLabels": {label: "Andre navn", table, facet, result},
+  "attestations": {label: "Kildeformer", table, result},
 }
 
 

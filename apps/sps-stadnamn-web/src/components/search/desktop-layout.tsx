@@ -18,6 +18,7 @@ import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import Spinner from "../svg/Spinner"
 import { useSearchParams } from "next/navigation"
+import { ChildrenContext } from "@/app/children-provider"
 
 export default function DesktopLayout() {
     const searchParams = useSearchParams()
@@ -29,6 +30,7 @@ export default function DesktopLayout() {
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const dataset = useDataset()
     const { parentLoading, parentData, docLoading } = useContext(DocContext)
+    const { childrenLoading } = useContext(ChildrenContext)
     const parent = searchParams.get('parent')
 
 
@@ -87,18 +89,12 @@ export default function DesktopLayout() {
         </div>
         </div>
         { parent && <div className={`flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
-                <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
+                <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto p-2">
 
                    { treeSettings[dataset] ? 
-                    parentLoading ? <div className="w-12 h-12 flex justify-center items-center"><Spinner status="laster garder" className="w-full h-full m-2 self-center" /></div> : 
+                    (parentLoading || childrenLoading) ? <div className="w-12 h-12 flex justify-center items-center"><Spinner status="laster garder" className="w-full h-full m-2 self-center" /></div> : 
                     parentData?._id && <CadastralSubdivisions isMobile={false}/>
-                   : <div>
-                    <h2>Ingen tre</h2>
-                   </div>
-
-                   
-                   }
-                   { dataset == 'search' && <SourceList/>}
+                   :  dataset == 'search' && <SourceList/>}
                 </div>
             </div>
         }

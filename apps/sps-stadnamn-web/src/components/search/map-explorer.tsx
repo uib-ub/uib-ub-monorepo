@@ -56,8 +56,8 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
 
   useEffect(() => {
-    if (resultBounds?.length && !center) {
-      mapInstance?.current?.flyToBounds(resultBounds, { padding: [100, 50], duration: 0.5 });
+    if (resultBounds?.length && !zoom) {
+      //mapInstance?.current?.flyToBounds(resultBounds, { padding: [100, 50], duration: 0.5 });
     }
   }, [resultBounds, mapInstance, center, zoom])
   
@@ -66,8 +66,8 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
   
   useEffect(() => {
-    if (center && mapInstance.current && !mapInstance.current.getBounds().contains(center)) {
-      mapInstance.current.setView(center, zoom)
+    if (center && !mapInstance?.current?.getBounds().pad(-0.5).contains(center)) {
+      mapInstance?.current?.setView(center, zoom)
     }}, [center, zoom, mapInstance]);
     
     

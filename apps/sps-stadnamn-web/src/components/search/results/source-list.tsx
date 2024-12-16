@@ -2,106 +2,49 @@
 'use client'
 import { useState, useEffect, useContext } from 'react'
 import ErrorMessage from '@/components/error-message'
-import { datasetTitles } from '@/config/metadata-config'
-import { resultRenderers } from '@/config/result-renderers'
-import CoordinateButton from '@/components/results/coordinateButton';
-import ExternalLinkButton from '@/components/results/externalLinkButton';
-import ImageButton from '@/components/results/image-button';
-import ResultLink from '@/components/results/result-link'
 import { DocContext } from '@/app/doc-provider'
-
+import { usePathname } from 'next/navigation'
+import { ChildrenContext } from '@/app/children-provider' 
+import { datasetTitles } from '@/config/metadata-config'
+import SourceItem from './source-item'
 
 export default function SourceList() {
-    const [childDocs, setChildDocs] = useState<Record<string, any[]>>({})
+    const { childrenData, childrenLoading, childrenError } = useContext(ChildrenContext)
     const [error, setError] = useState<any>(null)
     const { parentData } = useContext(DocContext)
-    const landingPage = false // TODO: reimplement static landing pages
-    const snid = parentData?._source?.snid
-
-
-    useEffect(() => {
-        fetch(`/api/children?snid=${snid}`)
-        .then(response => response.json())
-        .then(data => {
-        // group by index name
-        const groupedChildren = data.hits?.hits?.reduce((acc: Record<string, any[]>, doc: Record<string, any>) => {
-            const index = doc._index.split('-')[2]
-            if (!acc[index]) {
-                acc[index] = []
-            }
-            acc[index].push(doc)
-            return acc
-          }
-          , {})
-
-          setChildDocs(groupedChildren)
-          
-
-        }
-        ).catch((error: any) => {
-            setError(error)
-            
-        })
-    }, [snid])
-    
-    //await fetchChildrenGrouped(childIdentifiers)
+    const pathname = usePathname()
+    const landingPage = pathname.startsWith('/uuid')
 
 
 
-    // How doc can be retrieved from index name:
     
 
     if (error) {
       return <ErrorMessage error={error} message="Kunne ikke hente dokumentene"/>
     }
 
-    //return <>{JSON.stringify(parentData)}</>
 
-
-    return childDocs && Object.keys(childDocs).length > 0 ?
-        <div className="mb-8 space-y-4 transform origin-center p-4 instance-info"> 
+    return childrenData && Object.keys(childrenData).length > 0 ?
+        <div className="mb-8 instance-info"> 
         <h2 className="!text-2xl">Kilder</h2>
-        {Object.keys(childDocs).map((docDataset: string, index: number) => (
-            <div key={index} className='break-words'>
-                { !landingPage && <h4 className="border-b border-neutral-400 text-neutral-900 font-semibold">{datasetTitles[docDataset]}</h4>}
-                { landingPage && <h2 className="!text-lg mt-6">{datasetTitles[docDataset]}</h2> }
-                <ul className="list-none space-y-2 my-2">
-                  {childDocs[docDataset].map((doc: Record<string, any>, index: number) => {
-                    try {
-                    return landingPage ? (
-                    <li key={index} className='list-none'>
-                        <ResultLink doc={doc}>{resultRenderers[docDataset]?.title(doc, 'grouped') || docDataset} {resultRenderers[docDataset]?.details(doc, 'grouped')}</ResultLink>
-                    </li>
-                      )  :
-                    (
 
-                    <li key={index} className='flex items-center'>
-                        <ResultLink doc={doc}>{resultRenderers[docDataset]?.title(doc, 'grouped')} {resultRenderers[docDataset]?.details(doc, 'grouped')}</ResultLink>
-
-                        <span className="space-x-1 mx-2">
-                        { doc.fields.location && <CoordinateButton doc={doc} iconClass="text-2xl inline" parentUuid={parentData._source.uuid} />}
-                        { doc.fields.link && <ExternalLinkButton doc={doc} iconClass="text-2xl inline" />}
-                        { doc.fields.image && <ImageButton doc={doc} iconClass="text-2xl inline" />}
-                        </span>
-
-                    </li>
-
-                    )
-                    } catch (e) {
-                      return <div>Error: {JSON.stringify(doc)}</div>
-                    }
-
-
-                  })}
-
-              
-
-
-
-                </ul>
-                
-            </div>
-        ))}
+    {Object.entries<Record<string, any>[]>(childrenData.reduce((acc: Record<string, Record<string, any>[]>, doc: Record<string, any>) => {
+         // Group by dataset
+        const index = doc._index.split('-')[2]
+        if (!acc[index]) acc[index] = []
+        acc[index].push(doc)
+        return acc
+       
+    }, {})).map(([docDataset, docs]) => (
+        <div key={docDataset}>
+            <h3 className="!text-xl">{datasetTitles[docDataset]}</h3>
+            <ul className="!p-0">
+              {docs.map((doc: Record<string, any>) => (
+                <SourceItem key={doc._id} hit={doc} isMobile={false}/>
+              ))}
+            </ul>
         </div>
-    : null
+    ))}
+    </div>
+        : null
 }
