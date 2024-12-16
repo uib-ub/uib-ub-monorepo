@@ -80,7 +80,7 @@ export default function DesktopLayout() {
 
        { mode != 'table' && (doc || point) &&
         <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end h-full p-2 justify-between gap-2">
-        <div className={`flex flex-col w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
+        <div className={`flex flex-col h-full w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh]' :  'lg:max-h-[calc(100svh - 500px)]'}`}>
         <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
             <button className="absolute right-0 top-2" onClick={() => { setDoc(null); setPoint(null); setAttestationLabel(null); setAttestationYear(null); } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
             <InfoContent/>
