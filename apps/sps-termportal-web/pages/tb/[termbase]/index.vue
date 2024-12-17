@@ -38,8 +38,17 @@
               }"
               @click="expandTermbaseText = !expandTermbaseText"
             >
-              <span v-if="expandTermbaseText">{{ $t("global.readLess") }}</span>
-              <span v-else> {{ $t("global.readMore") }}</span>
+              <span
+                v-if="expandTermbaseText"
+                class="underline underline-offset-2 hover:decoration-2"
+                >{{ $t("global.readLess") }}</span
+              >
+              <span
+                v-else
+                class="underline underline-offset-2 hover:decoration-2"
+              >
+                {{ $t("global.readMore") }}</span
+              >
             </button>
           </main>
         </UtilsTransitionOpacitySection>
