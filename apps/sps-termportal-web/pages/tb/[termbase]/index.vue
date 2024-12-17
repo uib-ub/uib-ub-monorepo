@@ -13,13 +13,34 @@
                 {{ lalof(termbase + "-3A" + termbase) }}
               </AppLink>
             </h1>
-            <div class="flex flex-col gap-5 lg:flex-row justify-between">
-              <!--Description-->
-              <div class="max-w-prose basis-GRb space-y-2">
+            <div
+              class="flex lg:block flex-col-reverse overflow-hidden"
+              :style="`max-height: ${termbaseDescriptionHeight}px`"
+            >
+              <div
+                ref="termbaseInfoBox"
+                class="lg:float-right lg:mx-5 lg:mb-2 mt-6 lg:mt-0"
+              >
+                <TermbaseInfoBox
+                  ref="termbaseInfoBox"
+                  :data="data"
+                  :termbase-id="termbase"
+                />
+              </div>
+              <div ref="termbaseText" class="max-w-4xl space-y-2">
                 <p v-for="p in description" :key="p" v-html="p" />
               </div>
-              <TermbaseInfoBox :data="data" :termbase-id="termbase" />
             </div>
+            <button
+              class="w-full"
+              :class="{
+                'shadow-[0_-8px_11px_rgba(255,255,255,1)]': !expandTermbaseText,
+              }"
+              @click="expandTermbaseText = !expandTermbaseText"
+            >
+              <span v-if="expandTermbaseText">{{ $t("global.readLess") }}</span>
+              <span v-else> {{ $t("global.readMore") }}</span>
+            </button>
           </main>
         </UtilsTransitionOpacitySection>
         <TermbaseSearch v-if="data" :termbase-id="termbase" />
@@ -38,6 +59,19 @@ const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();
+
+const termbaseInfoBox = ref();
+const termbaseText = ref();
+const expandTermbaseText = ref(false);
+const termbaseDescriptionHeight = computed(() => {
+  if (termbaseInfoBox.value && termbaseText.value) {
+    if (expandTermbaseText.value) {
+      return termbaseText.value.clientHeight;
+    } else {
+      return termbaseInfoBox.value.clientHeight + 8;
+    }
+  }
+});
 
 const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
   key: `termbase_${termbase}`,

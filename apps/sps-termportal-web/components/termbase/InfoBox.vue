@@ -3,7 +3,7 @@
     class="flex h-fit w-fit min-w-fit max-w-[25rem] flex-col space-y-4 rounded-[7px] border lg:border-gray-300 border-transparent lg:px-3 lg:pb-3 lg:pt-2"
   >
     <div>
-      <h2 id="tbcontact" class="text-xl">
+      <h2 id="tbcontact" class="text-lg">
         {{ $t("termbase.contactHeading") }}
       </h2>
       <dl aria-labelledby="tbcontact" class="space-y-0.5">
@@ -42,7 +42,7 @@
       </dl>
     </div>
     <div>
-      <h2 id="tbtermbaseinfo" class="text-lg font-semibold">
+      <h2 id="tbtermbaseinfo" class="text-lg">
         {{ $t("global.termbase", 0) }}
       </h2>
       <dl aria-labelledby="tbtermbaseinfo" class="space-y-0.5">

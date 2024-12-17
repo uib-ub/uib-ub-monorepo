@@ -63,7 +63,7 @@ const placeholder = computed(() => {
           2
         )}`
       : "") +
-    ` ${i18n.t("searchBar.inDomain")} ${i18n.t("global.termbase", 1)} ` +
+    ` ${i18n.t("searchBar.inDomain")} ` +
     termbaselabel
   );
 });
