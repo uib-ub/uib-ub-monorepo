@@ -138,6 +138,7 @@ export default function TableExplorer() {
         
         
                     }
+                    <div className="border border-neutral-300 rounded-md">
                      <table className='result-table'>
                         <thead>
                             <tr>
@@ -167,7 +168,7 @@ export default function TableExplorer() {
                             <Fragment key={hit._id}>
                             <tr>
                                 <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'}>
-                                <Link href={`/uuid/${hit._source?.uuid}`}>{hit._source?.label}</Link>
+                                <Link className="no-underline whitespace-nowrap lg:whitespace-normal font-semibold" href={`/uuid/${hit._source?.uuid}`}>{hit._source?.label}</Link>
 
 
 
@@ -214,8 +215,9 @@ export default function TableExplorer() {
         
                         </tbody>
                     </table>
-                    
                     </div>
+                    </div>
+                    
                     <nav className="center gap-2 mx-2 pb-4">
 
                     { totalHits && totalHits.value > 10 && <Pagination totalPages={Math.ceil(totalHits.value / (Number(searchParams.get('perPage')) || 10))}/>}

@@ -18,6 +18,8 @@ export async function GET(request: Request) {
     sortArray = getSortArray(dataset)
   }
 
+  console.log("TERM FILTERS", termFilters)
+  console.log("FILTERED PARAMS", filteredParams)
     
   const query: Record<string,any> = {
     "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
@@ -30,7 +32,7 @@ export async function GET(request: Request) {
         },
       }
     },
-    "fields": dataset == '*' ? [...new Set(Object.values(resultConfig).flat()), 'location'] : resultConfig[dataset],
+    "fields": (dataset == '*' || filteredParams.size == '1000') ? [...new Set(Object.values(resultConfig).flat()), 'location'] : resultConfig[dataset],
     "sort": sortArray,
     "_source": false
   }

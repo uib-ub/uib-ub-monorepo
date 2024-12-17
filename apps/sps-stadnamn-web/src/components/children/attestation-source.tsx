@@ -17,7 +17,7 @@ export default function AttestationSource({ snid, uuid, childList, label, year}:
     const [doc, setDoc] = useQueryState('doc', {history: 'replace'})
 
     useEffect(() => {
-        fetch(`/api/children?${snid ? 'snid=' + snid : (childList.length > 20 ? 'uuids=' + childList.join(',') : 'uuid=' + uuid) }`)
+        fetch(`/api/children?dataset=search&${snid ? 'snid=' + snid : (childList.length > 20 ? 'uuids=' + childList.join(',') : 'uuid=' + uuid) }`)
         .then(response => response.json())
         .then(data => {
         // group by index name

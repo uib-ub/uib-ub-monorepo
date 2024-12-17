@@ -68,7 +68,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
         
         {Timeline(source.attestations)}
       </>}
-      <SearchLink add={{parent: source.uuid}} className="no-underline self-end justify-center flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-md pl-4 pr-2 py-1">Kilder <span className='text-xs bg-primary-600 text-white rounded-full px-1'>{source.children.length}</span></SearchLink>
+
+    
       </div>
       }
 

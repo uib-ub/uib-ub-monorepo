@@ -26,7 +26,6 @@ export async function POST(request: Request) {
     const query = {
         size: 1000,
         fields: allFields,
-        _source: true,
         query: {
             terms: {
                 "uuid": uuids
@@ -37,7 +36,6 @@ export async function POST(request: Request) {
 
 
     const [data, status] = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
-    console.log('data', data)
 
     return Response.json(data, { status: status })
   }

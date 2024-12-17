@@ -92,6 +92,26 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
     };
   }
 
+  export function getClusterMarker(docCount: number, width: number, height: number, fontSize: number, colorClasses?: string) {
+    return {
+      className: '',
+      html: `<div class="${colorClasses ? colorClasses : 'bg-white text-neutral-950'} -translate-x-1/3 -translate-y-1/3 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${width}rem; font-size: ${fontSize}rem; height: ${height}rem; display: flex; align-items: center; justify-content: center;">${docCount}</div>`
+    }
+  }
+  
+
+  export function getUnlabeledMarker(color: string, docCount?: number) {
+    const sizeAdjustment = 1.5;
+    return {
+      className: '',
+      html: `<div style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
+                ${buildMarker(color, `position:absolute;left-0;bottom:${26 * sizeAdjustment}px;height:${32 * sizeAdjustment}px`)}
+                </div>`
+    }
+  }
+
+
+
   export function getMultiMarker(docCount: number, label: string, color: string) {
     // <img src="/markerBlackFill.svg" style="width: 3rem; height: 3rem;"/>
     return {
@@ -106,3 +126,5 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
                 </div>`
     }
   }
+
+

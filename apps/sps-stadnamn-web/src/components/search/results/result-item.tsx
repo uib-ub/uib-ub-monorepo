@@ -36,17 +36,16 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
-                        point: null,
                         parent: parent && docDataset == 'search' ? hit.fields.uuid : null,
                         attestationYear: null,
                         attestationLabel: null,
                         ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
 
-            <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
+            <span className="text-neutral-950 flex items-center">{titleRenderer(hit, 'map')}</span>
             {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 
             <span className="self-center flex gap-1 items-center">
-                <PiTag aria-hidden="true"/>
+                <PiDatabase aria-hidden="true"/>
                 <span>{hit.fields.children.length} kilder</span>
                 </span>
                 

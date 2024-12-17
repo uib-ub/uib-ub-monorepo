@@ -29,7 +29,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 
     const dataset = useDataset()
 
-    const { parentData, parentLoading } = useContext(DocContext)
+    const { parentData, parentLoading, docData, setSameMarkerList } = useContext(DocContext)
     
     const [childrenData, setChildrenData] = useState<any>(null)
     const [childrenLoading, setChildrenLoading] = useState(true)
@@ -43,7 +43,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     const { setResultBounds } = useContext(SearchContext)
 
     const parent = searchParams.get('parent')
-
+    const doc = searchParams.get('doc')
 
 
     
@@ -135,7 +135,16 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     
 
     
-        
+    useEffect(() => {
+        if (parent && doc != parent && docData?._source?.location?.coordinates?.length == 2 && childrenData?.length) {
+            const currentCoordinates = docData._source.location.coordinates
+            const sameCoordinates = childrenData.filter((child: Record<string, any>) => child.fields?.location?.[0]?.coordinates?.every((coord: number, index: number) => coord == currentCoordinates[index]))
+            if (sameCoordinates.length > 1) {
+                setSameMarkerList(sameCoordinates)
+            }
+            
+        }
+    }, [parent, docData, childrenData, doc])
 
 
 

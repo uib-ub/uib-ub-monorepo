@@ -5,7 +5,7 @@ import { getQueryString } from "../_utils/query-string";
 export async function GET(request: Request) {
 
     const {termFilters, filteredParams} = extractFacets(request)
-    const coordinates = filteredParams?.point.split(',')
+    const coordinates = filteredParams?.point?.split(',')
     if (coordinates.length == 2) {
         
         const { simple_query_string } = getQueryString(filteredParams)
@@ -17,18 +17,28 @@ export async function GET(request: Request) {
             fields: ['uuid', 'label', 'location', 'adm1', 'adm2'],
         }
         
-        const distance_query = { geo_distance: {
+
+        const distance_query = { 
+            geo_distance: {
             distance: '1m',
             location: {
                 lat: parseFloat(coordinates[0]),
                 lon: parseFloat(coordinates[1])
                 }
+            },
+            
+        }
+
+        const exists_filter = {
+            exists: {
+                field: "location"
             }
         }
 
         query.query = {
             bool: {
                 must: [distance_query],
+                filter: [exists_filter]
             }
         }
 
@@ -48,12 +58,14 @@ export async function GET(request: Request) {
             
         }
 
-        const [data, status] = await postQuery(filteredParams.dataset, query)
+        //query.ignore_unmapped = true // Prevent error in datasets without location
+
+        const [data, status] = await postQuery(filteredParams.dataset || 'search', query)
         return Response.json(data, { status: status })
     }
   
     else {
-        return new Response('INVALID QUERY', { status: 400 })
+        return new Response('No coordinates provided', { status: 400 })
     }
   
       

@@ -19,6 +19,7 @@ import { DocContext } from "@/app/doc-provider"
 import Spinner from "../svg/Spinner"
 import { useSearchParams } from "next/navigation"
 import { ChildrenContext } from "@/app/children-provider"
+import DocSkeleton from "./info/doc-skeleton"
 
 export default function DesktopLayout() {
     const searchParams = useSearchParams()
@@ -26,7 +27,6 @@ export default function DesktopLayout() {
     
     const { searchFilterParamsString } = useSearchQuery()
     const [doc, setDoc] = useQueryState('doc')
-    const [point, setPoint] = useQueryState('point')
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const dataset = useDataset()
     const { parentLoading, parentData, docLoading } = useContext(DocContext)
@@ -40,6 +40,7 @@ export default function DesktopLayout() {
 
     const [attestationLabel, setAttestationLabel] = useQueryState('attestationLabel')
     const [attestationYear, setAttestationYear] = useQueryState('attestationYear')
+
 
     
 
@@ -83,10 +84,12 @@ export default function DesktopLayout() {
        { mode != 'table' && (doc || parent) &&
         <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end p-2 justify-between gap-2 h-full">
         <div className={`flex flex-col  w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh] lg:min-h-[25svh]' :  'lg:max-h-[calc(100svh - 2rem)] lg:min-h-[25svh]'}`}>
-        {doc && <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
+        {doc && !docLoading && <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
             <button className="absolute right-0 top-2" onClick={() => { setDoc(null); } } aria-label="lukk"><PiXBold className="text-2xl text-neutral-600" aria-hidden={true}/></button>
             <InfoContent/>
         </div>}
+        { docLoading && <div className="bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
+        
         </div>
         { parent ? <div className={`flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
@@ -94,7 +97,7 @@ export default function DesktopLayout() {
                    { treeSettings[dataset] ? 
                     (parentLoading || childrenLoading) ? <div className="w-12 h-12 flex justify-center items-center"><Spinner status="laster garder" className="w-full h-full m-2 self-center" /></div> : 
                     parentData?._id && <CadastralSubdivisions isMobile={false}/>
-                   :  dataset == 'search' && <SourceList/>}
+                   :  dataset == 'search' && <div className="p-2"><SourceList/></div>}
                 </div>
             </div>
             : null

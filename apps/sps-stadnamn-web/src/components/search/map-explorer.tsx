@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
-import { getLabelMarkerIcon } from "./markers";
+import { getClusterMarker, getLabelMarkerIcon, getMultiMarker, getUnlabeledMarker } from "./markers";
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
 
@@ -31,13 +31,12 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
   const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
   const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
-  const setPoint = useQueryState('point', { history: 'push', scroll: true })[1]
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
   const dataset = useDataset()
   const { childrenData } = useContext(ChildrenContext)
 
-  const { docData, parentData } = useContext(DocContext)
+  const { docData, parentData, setSameMarkerList, sameMarkerList } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const initialBoundsSet = useRef(false);
 
@@ -92,9 +91,9 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       const markerLookup: Record<string, any> = {}
 
       childrenWithCoordinates.forEach((child: any) => {
-        const lat = child.fields?.location[0].coordinates[1]
-        const lon = child.fields?.location[0].coordinates[0]
-        const uuid = child.fields.uuid
+        const lat = child.fields?.location[0].coordinates[1] || child._source.location.coordinates[1]
+        const lon = child.fields?.location[0].coordinates[0] || child._source.location.coordinates[0]
+        const uuid = child.fields.uuid || child._source.uuid
         let marker = markerLookup[lat + "_" + lon]
         if (!marker) {
           marker = { children: [], lat, lon, uuid }
@@ -102,7 +101,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
           markerOutput.hits.clientGroups.push(marker)
         }
 
-        const label = child.fields.label
+        const label = child.fields.label || child._source.label
 
         if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
           marker.label = marker.label + "..."
@@ -364,22 +363,24 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
 
 
-  const selectDocHandler = (hit: Record<string, any>, point?: [number, number]) => {
+  const selectDocHandler = (hits: Record<string, any>[]) => {
     return {
       click: () => {
-        setPoint(null)
-        if (hit.fields.children?.length == 1) {
-          setDoc(hit.fields.children[0])
+        if (hits?.[0]?.fields?.children?.length == 1) {
+          console.log("redirect to child")
+          setDoc(hits[0].fields.children[0])
         }
         else {
-          setDoc(hit.fields.uuid[0])
-        }
-        if (parent && hit.fields?.sosi?.[0]== 'gard') {
-          setParent(hit.fields.uuid[0])
+          console.log("select self", hits)
+          setDoc(hits?.[0]?.fields?.uuid[0])
         }
 
-        if (point?.length) {
-          setPoint(point.join(','))
+        if (hits.length > 1) {
+          setSameMarkerList(hits)
+        }
+        else {
+          
+          setSameMarkerList([])
         }
       }
     }
@@ -432,7 +433,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
                   const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
 
-                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits[0], [lat, lon])} />
+                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits)} />
 
                 }
 
@@ -445,7 +446,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
                       icon={icon}
                       riseOnHover={true}
-                      eventHandlers={selectDocHandler(hit)}
+                      eventHandlers={selectDocHandler([hit])}
                     />
 
                   }
@@ -458,15 +459,15 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
                   const centerLon = (bucket.viewport.bounds.top_left.lon + bucket.viewport.bounds.bottom_right.lon) / 2;
 
 
+                  // getClusterMarker(docCount: number, width: number, height: number, fontSize: number) {
+                  const clusterIcon = new leaflet.DivIcon(getClusterMarker(bucket.doc_count, 
+                                                                            calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2 + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0),
+                                                                            calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2,
+                                                                            calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8))
 
-                  const myCustomIcon = new leaflet.DivIcon({
-                    className: '',
-                    html: `<div class="bg-white text-neutral-950 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${(calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2) + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0)}rem; font-size: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8}rem; height: ${calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2}rem; display: flex; align-items: center; justify-content: center;">${bucket.doc_count}</div>`
-                  });
 
 
-
-                  return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon) / 2]} icon={myCustomIcon}
+                  return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon) / 2]} icon={clusterIcon}
                     eventHandlers={{
                       click: () => {
                         const newBounds: [[number, number], [number, number]] = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
@@ -482,14 +483,32 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
               {viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
 
                 if (viewResults.hits.total.value < 200 || (zoom && zoom == 18)) {
-                  const icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
+                  let icon
+                  if (parent) {
+
+                    
+                    if (group.children.length > 1) {
+                      icon = new leaflet.DivIcon(getClusterMarker(group.children.length, 
+                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5 + (group.children.length > 99 ? group.children.length.toString().length / 4 : 0),
+                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5,
+                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 1,
+                        'bg-primary-600 text-white border-2 border-white'))
+                    }
+                    else {
+                      icon = new leaflet.DivIcon(getUnlabeledMarker('primary', group.children.length))
+                    }
+                  }
+                  else {
+                    icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
+                  }
+                  
 
                   if (docData?._source?.uuid && group.children.some((hit: any) => hit.fields.uuid[0] == docData?._source?.uuid)) {
                     return null
                   }
 
 
-                  return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={group.children.length > 1 ? selectDocHandler(group.children[0], [group.lat, group.lon]) : selectDocHandler(group.children[0])} />
+                  return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children)} />
 
                 }
                 else {
@@ -497,7 +516,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
                     center={[group.lat, group.lon]}
                     radius={zoom && zoom < 10 ? 4 : 8}
                     pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: 'white', fillOpacity: 1 }}
-                    eventHandlers={group.children.length > 1 ? selectDocHandler(group.children[0], [group.lat, group.lon]) : selectDocHandler(group.children[0])} />
+                    eventHandlers={ selectDocHandler(group.children)} />
                 }
 
 
@@ -505,7 +524,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
               
-              { docData?._source?.location?.coordinates?.[1] && <Marker 
+              { docData?._source?.location?.coordinates?.[1] && doc != parent && <Marker 
                   zIndexOffset={1000}
                   position={[
                     docData._source.location.coordinates[1],

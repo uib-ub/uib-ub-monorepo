@@ -33,19 +33,19 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
 
 
 
-    const title =  <>{getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")} {parentData?._source?.label}</>
+    const gnr =  getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")
     return (
     <div className="bg-white">
         {
             !childrenLoading && <>
             {isMobile || mode == 'table' ?
-            <h2 className="px-2 pb-2">{title}</h2>
+            <h2 className="px-2 pb-2">{gnr} {parentData?._source?.label}</h2>
             
-            : <div className="flex bg-neutral-50 cadastre-header rounded-t-md">
-                <h2 className="p-2 px-4 text-lg  font-semibold !font-sans text">
+            : <div className="flex bg-white cadastre-header rounded-t-md">
+                <h2 className={`p-2 px-4 text-lg  !font-sans text`}>
                     <SearchLink aria-current={doc == parentData?._source?.uuid ? 'page' : false} 
-                                      className="aria-[current=page]:decoration-accent-700"
-                                      add={{ doc: parent }}>{title}
+                                      className="no-underline"
+                                      add={{ doc: parent }}><span className={`font-bold ${doc == parentData?._source?.uuid ? 'text-accent-700' : 'text-primary-600'}`}>{gnr}</span>     {parentData?._source?.label}
                     </SearchLink>
 
                 </h2>
@@ -55,31 +55,31 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                 <IconButton label="Lukk" onClick={() => setParent(null)}><PiX aria-hidden="true"/></IconButton>
                 </div>}
                 </div>}
-                <div className="overflow-x-auto">
-                        <table className="w-full result-table border-x-0">
+                <div className="overflow-x-auto border border-neutral-300 rounded-md mx-1">
+                        <table className="w-full result-table">
                             <thead className="w-full">
                                 <tr>
-                                    <th>Namn</th>
+                                    <th className="">Bruk</th>
                                     {fields.map((field: Record<string, any>) => (
-                                        <th className="bg-white" key={field.key}>{field.label}</th>
+                                        <th className="" key={field.key}>{field.label}</th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
                                 {childrenData.map((hit: any) => (
                                     <tr key={hit._id} >
-                                        <td className="border p-2 border-x-0">
-                                        <SearchLink aria-current={doc==hit.fields?.uuid ? 'page' : false} 
-                                                              className="aria-[current=page]:decoration-accent-700 whitespace-nowrap lg:whitespace-normal"
-                                                              add={{ doc: hit.fields?.uuid }}>
-                                        {hit.fields[leaf] || hit.fields.cadastre?.[0]?.bnr.join(",")} {hit.fields.label}
+                                        <th className="w-full h-full flex !p-0">
+                                        <SearchLink aria-current={doc==hit.fields?.uuid[0] ? 'page' : false} 
+                                                            className={`no-underline w-full p-1 px-2 h-full${doc == hit.fields?.uuid[0] ? 'border-l-4 bg-accent-700 text-white' : 'pl-4'} `}
+                                                            add={{ doc: hit.fields?.uuid[0] }}>
+                                        <span className={`font-bold ${doc == hit.fields?.uuid[0] ? 'text-white' : 'text-primary-600'}`}>{hit.fields[leaf] || hit.fields.cadastre?.[0]?.bnr.join(",")}</span> {hit.fields.label}
                                             
                                                                 
                                                                 
                                             </SearchLink>
-                                        </td>
+                                        </th>
                                         {fields.map((field: Record<string, any>) => (
-                                            <td className="border p-2" key={field.key}>{hit.fields[field.key]}</td>
+                                            <td className="p-2" key={field.key}>{hit.fields[field.key]}</td>
                                         ))}
                                     </tr>
                                 ))}

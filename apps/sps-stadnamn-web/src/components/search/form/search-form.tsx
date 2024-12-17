@@ -31,6 +31,12 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
         setInputValue(''); 
         input.current?.focus()
         setQuery(null)
+        if (nav == 'results') {
+            setNav('filters')
+        }
+
+
+
     }  
     
 

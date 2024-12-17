@@ -7,10 +7,7 @@ export async function GET(request: Request) {
     // get params dataset and groupBy, and adm1 and adm2 if they exist
     const searchParams = new URL(request.url).searchParams;
     const { dataset, adm, groupBy } = Object.fromEntries(searchParams.entries())
-    console.log("ADM", adm)
     const [adm1, adm2] = adm?.split('__').reverse() || [null, null]
-    console.log(adm1, adm2)
-    
     
     const query = {
         size: groupBy ? 0 : 500,

@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTable, PiTagFill, PiWarningFill } from "react-icons/pi"
+import { PiArrowRight, PiArrowRightBold, PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTable, PiTagFill, PiWarningFill } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -16,26 +16,16 @@ import { treeSettings } from "@/config/server-config"
 export default function DocInfo() {
     const searchParams = useSearchParams()
     const dataset = useDataset()
-    const { docDataset, docData } = useContext(DocContext)
+    const { docDataset, docData, parentData } = useContext(DocContext)
 
     const docSource = docData._source
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
+    const doc = searchParams.get('doc')
 
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
-    }
-
-    const attestationLabel = searchParams.get('attestationLabel')
-    const attestationYear = searchParams.get('attestationYear')
-    if (attestationLabel) {
-
-      return <article className="instance-info flex flex-col gap-3">
-        <h2>{attestationLabel}</h2>
-        <AttestationSource uuid={docSource.uuid} snid={docSource.snid} childList={docSource.children} year={attestationYear} label={attestationLabel} />
-        
-      </article>
     }
 
 
@@ -78,40 +68,31 @@ export default function DocInfo() {
             }
         
         { dataset == 'search' && 
-        <SearchLink only={{
-          nav: 'datasets',
-          dataset: docDataset,
-          mode: mode,
-          doc: docSource.uuid,
-          center: searchParams.get('center'),
-          zoom: searchParams.get('zoom')
-        }}
+        <Link href={docDataset == 'search' ? '/info/search' : `/search?dataset=${docDataset}&nav=datasets&doc=${docSource.uuid}`}
          
               className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">
-                {docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset as string]}</>}</SearchLink>}
+                {docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamnsøk</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset as string]}</>}</Link>
+        }
+
+        
+
         </div>
       
       
       { docDataset && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
-      {
-        attestationLabel && <div>
-          
-
-        </div>
-      }
       
 
 
         { docSource.image?.manifest && <div>
-        <h3>Sedler</h3>
+        <h3 className="!mt-0">Sedler</h3>
         <ClientThumbnail manifestId={docSource.image?.manifest}/>
 
 
         </div>}
 
 
-        <div className="flex gap-4 flex-wrap pt-4 pb-2 text-neutral-900">
+        <div className="flex gap-4 flex-wrap mt-2 pt-2 text-neutral-900 border-t border-neutral-200">
         { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
           <>
             <Link href={"/uuid/" + docSource.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
@@ -132,12 +113,27 @@ export default function DocInfo() {
         </div>
         { docSource.sosi == 'gard' && mode != 'table' && treeSettings[dataset] &&
       <div className={`flex ${(!parent || parent != docSource.uuid) ? '' : 'lg:hidden'}`}>
-        <SearchLink className="flex items-center gap-2 font-semibold rounded-md w-full no-underline bg-neutral-100 p-2 px-4 mt-2" add={{parent: docSource.uuid }}>
-          <PiTable aria-hidden="true"/> Garder
+        <SearchLink className="flex items-center gap-2 font-semibold rounded-md w-full no-underline border border-neutral-200 hover:bg-neutral-100 p-2 px-4 mt-2" add={{parent: docSource.uuid }}>
+          <PiTable aria-hidden="true" className="text-primary-600"/> Garder
         </SearchLink>
     </div>
 
       }
+
+      {docData._source.children?.length > 0 && parent != docData._source.uuid &&
+          <SearchLink add={{parent: docData._source.uuid}} 
+                      className="flex items-center gap-2 font-semibold rounded-md w-full no-underline border border-neutral-200 hover:bg-neutral-100 p-2 px-4 mt-2">
+                        
+                          Kilder <span className='text-xs bg-primary-600 text-white rounded-full px-1'>{docData._source.children.length}</span>
+          </SearchLink>}
+
+        {dataset == 'search' && parentData?._source && parent != doc && 
+        <SearchLink add={{doc: parentData._source.uuid}} className="flex items-center gap-2 font-semibold rounded-md w-full no-underline border border-neutral-200 hover:bg-neutral-100 p-2 px-4 mt-2">
+          <PiTagFill className="text-2xl text-neutral-800" aria-hidden="true"/>
+          <span className="text-neutral-950">Overordnet oppslag</span>
+        </SearchLink>
+        }
+
 
         
 

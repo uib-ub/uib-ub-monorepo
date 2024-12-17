@@ -104,7 +104,7 @@
   }
 
   h1, .dataset-info h2, .instance-info h2 {
-    @apply text-xl lg:text-2xl xl:text-3xl text-neutral-900 font-serif
+    @apply text-xl lg:text-2xl text-neutral-900 font-serif
   }
 
   .page-info h1 {
@@ -112,15 +112,15 @@
   }
 
   .dataset-info h3, .instance-info h3, .page-info h2 {
-    @apply text-lg sm:text-xl lg:text-2xl mt-4 text-neutral-900 font-serif py-2;
+    @apply text-lg mt-4 text-neutral-900 font-serif py-2;
   }
 
   .dataset-info h4, .instance-info h4, .page-info h3 {
-    @apply text-lg sm:text-base lg:text-lg mt-4 text-neutral-900 font-semibold py-2;
+    @apply text-base mt-4 text-neutral-900 font-semibold py-2;
   }
 
   .page-info h3 {
-    @apply text-base sm:text-base lg:text-lg mt-4 text-neutral-900 pt-2;
+    @apply mt-4 text-neutral-900 pt-2;
   }
 
   .dataset-info ul, .instance-info ul, .page-info ul {
@@ -219,30 +219,42 @@
 
   
   .result-table {
-    @apply w-full text-left text-neutral-950 border border-neutral-300; 
+    @apply w-full text-left text-neutral-950 rounded-md bg-neutral-100;
   }
   
   .result-table thead th {
-    @apply text-sm bg-neutral-50 px-4 py-3 border-b-2 border-neutral-200; 
+    @apply text-sm bg-transparent px-4 py-3;
   }
 
   .result-table thead button {
     @apply text-neutral-950 
   }
-  
-  .result-table tbody tr {
-    @apply border-b border-neutral-200; 
+
+  .result-table thead tr {
+    @apply border-b border-neutral-400;
   }
+  
+  .result-table tbody tr:not(:last-child) {
+    @apply border-b border-neutral-400; 
+  }
+
 
  
   .result-table tbody th {
-    @apply px-2 lg:px-4 py-1 border-neutral-200 font-normal; 
+    @apply px-2 lg:px-4 border-r border-neutral-400 py-1 bg-neutral-100 font-normal; 
   }
 
   
+  .result-table tbody tr:nth-child(odd) {
+    @apply bg-white;
+  }
+
   .result-table tbody tr:nth-child(even) {
     @apply bg-neutral-50;
   }
+  
+  
+
 
   .result-table tbody tr:has(td a[aria-current="page"]) {
     @apply bg-accent-100;
@@ -257,7 +269,14 @@
   .result-table td {
     @apply px-2 py-1 lg:px-4 lg:py-2;
   }
-  
+
+  .result-table tbody tr:last-child td:last-child {
+    @apply rounded-br-md;
+  }
+
+  .result-table tbody tr:last-child th {
+    @apply rounded-bl-md;
+  }
 
 
   .old-search button[aria-current='page'], .old-search a[aria-current='page'] i {

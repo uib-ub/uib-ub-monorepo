@@ -60,10 +60,10 @@ export function useSearchQuery() {
     
 
     const searchFilterParamsString = searchQuery.toString()
+    
     // Params that don't require the results section to be shown
-    if (searchParams.get('dataset')) {
-        searchQuery.set('dataset', dataset)
-    }
+    searchQuery.set('dataset', dataset)
+    
     const fulltext = searchParams.get('fulltext')
     if (fulltext && nav != 'tree') {
         searchQuery.set('fulltext', 'on')
