@@ -1,6 +1,6 @@
 <template>
   <li>
-    <AppLink :to="`/${entryData.link}`">
+    <AppLink :to="`${entryData.link}`">
       <section
         class="px-2 py-1.5 hover:bg-gray-200 lg:flex lg:py-2"
         :class="{
