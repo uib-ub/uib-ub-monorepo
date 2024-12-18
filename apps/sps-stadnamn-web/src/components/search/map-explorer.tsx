@@ -36,7 +36,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const dataset = useDataset()
   const { childrenData } = useContext(ChildrenContext)
 
-  const { docData, parentData, setSameMarkerList, sameMarkerList } = useContext(DocContext)
+  const { docData, parentData, setSameMarkerList, docLoading } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const initialBoundsSet = useRef(false);
 
@@ -431,7 +431,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                     const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black'))
 
-                    return hit.fields.uuid[0] != doc && <Marker key={hit._id}
+                    return (docLoading || hit.fields.uuid[0] != doc) && <Marker key={hit._id}
                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
                       icon={icon}
                       riseOnHover={true}
