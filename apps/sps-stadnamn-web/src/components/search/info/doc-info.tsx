@@ -6,7 +6,7 @@ import { PiArrowRight, PiArrowRightBold, PiBracketsCurly, PiDatabaseFill, PiInfi
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
-import SearchLink from "@/components/ui/search-link"
+import ParamLink from "@/components/ui/param-link"
 import { useDataset } from "@/lib/search-params"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"

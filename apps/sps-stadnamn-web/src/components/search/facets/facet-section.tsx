@@ -3,41 +3,42 @@ import { useQueryState } from "nuqs"
 import { useDataset } from "@/lib/search-params"
 import ClientFacet from "./client-facet"
 import { contentSettings } from "@/config/server-config"
+import ParamLink from "@/components/ui/param-link"
+import { useSearchParams } from "next/navigation"
 
 
 export default function Facets() {
     const dataset = useDataset()
-    const [expandedFacet, setExpandedFacet] = useQueryState('facet', {defaultValue: 'adm'})
+    const searchParams = useSearchParams()
+    const facet = searchParams.get('facet') || 'adm'
 
-    const toggleFacet = (facet: string) => {
 
-        setExpandedFacet(currentFacet => currentFacet == facet? null : facet)
-      }
+
 
       return (
         <>
-        <div className="flex flex-wrap items-center gap-1 mx-2">
+        <div role="tablist" className="flex flex-wrap items-center gap-1 mx-2">
         { contentSettings[dataset]?.adm && <>
           <h3>
-          <button type="button" role="tab" aria-selected={expandedFacet == 'adm'} onClick={() => toggleFacet('adm')}  className='flex w-full items-center px-4 py-1 rounded-full bg-neutral-100 aria-selected:bg-accent-800 aria-selected:text-white'>
+          <ParamLink type="button" role="tab" aria-selected={facet == 'adm'} add={{facet: 'adm'}} className='rounded-tabs'>
           
           Område
           
-          </button>
+          </ParamLink>
           </h3>
           <h3>
-          <button type="button" role="tab" aria-selected={expandedFacet == 'other'} onClick={() => toggleFacet('other')}  className='flex w-full items-center px-4 py-1 rounded-full bg-neutral-100 aria-selected:bg-accent-800 aria-selected:text-white'>
+          <ParamLink type="button" role="tab" aria-selected={facet == 'other'} add={{facet: 'other'}} className='rounded-tabs'>
           
           Annet
           
-          </button>
+          </ParamLink>
           </h3>
           </>
           
         }
         </div>
-        { expandedFacet == 'adm' ? <ClientFacet facetName='adm' /> : null}
-        { expandedFacet == 'other' ? <ClientFacet facetName='other'/> : null}
+        { facet == 'adm' ? <ClientFacet facetName='adm' /> : null}
+        { facet == 'other' ? <ClientFacet facetName='other'/> : null}
         </>
       )
   }

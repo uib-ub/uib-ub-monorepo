@@ -28,7 +28,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
     return  <li className="flex flex-grow">        
 
 
-            <SearchLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-700"
+            <ParamLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800"
                     aria-current={(parent == hit.fields.uuid || doc == hit.fields.uuid || docData?._source?.within == hit.fields.uuid) ? 'page' : undefined}
                     only={{
                         dataset: docDataset,
@@ -42,7 +42,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                     
             <span className="text-neutral-950">{ (subunit && hit.fields[subunit]) || hit.fields.cadastre?.[0]?.gnr.join(", ")} {hit.fields.label}</span>
 
-            </SearchLink>
+            </ParamLink>
             </li>
 }
 

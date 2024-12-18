@@ -6,7 +6,7 @@ import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsString, useQuery
 import Link from "next/link"
 import { DocContext } from "@/app/doc-provider"
 import { getSkeletonLength } from "@/lib/utils"
-import SearchLink from "@/components/ui/search-link"
+import ParamLink from "@/components/ui/param-link"
 
 
 export default function InfoContent() {
@@ -37,9 +37,9 @@ export default function InfoContent() {
         
         <nav className="flex md:flex-wrap w-full flex-col md:flex-row gap-2 mt-2">
         { sameMarkerList?.reverse().map((hit: any, index: number) => {
-        return <SearchLink key={hit._id} aria-current={[hit.fields?.uuid[0], hit.fields?.children?.[0]].includes(doc) ? 'page' : false} className="flex flex-wrap chip gap-2 p-1 px-4 bg-neutral-100 rounded-full no-underline aria-[current=page]:text-white aria-[current=page]:bg-accent-800" add={{doc: hit.fields.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid[0]}}>
+        return <ParamLink key={hit._id} role="tab" aria-selected={[hit.fields?.uuid[0], hit.fields?.children?.[0]].includes(doc)} className="rounded-tabs" add={{doc: hit.fields.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid[0]}}>
             {hit.fields.label}
-        </SearchLink>
+        </ParamLink>
         }
         )}
         </nav>

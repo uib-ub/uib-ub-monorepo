@@ -32,14 +32,13 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
     
 
     return  <li className="flex flex-grow">
-        <SearchLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-700" 
+        <ParamLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
+                    remove={['attestationYear', 'attestationLabel', ...(parent ? ['center', 'zoom'] : [])]}
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
                         parent: parent && docDataset == 'search' ? hit.fields.uuid : null,
-                        attestationYear: null,
-                        attestationLabel: null,
-                        ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
+                        ...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
 
             <span className="text-neutral-950 flex items-center">{titleRenderer(hit, 'map')}</span>

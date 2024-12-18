@@ -13,7 +13,7 @@ import Timeline from '@/components/doc/timeline';
 const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
   const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
   const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
-  return <div className="text-lg"><SearchLink className="breadcrumb-link" add={{doc: source.within}}>{parentLabel}</SearchLink><span className="mx-2">/</span>{currentName}</div>
+  return <div className="text-lg"><ParamLink className="breadcrumb-link" add={{doc: source.within}}>{parentLabel}</ParamLink><span className="mx-2">/</span>{currentName}</div>
 }
 
 
@@ -56,9 +56,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {hasAltLabels && <ul className='flex flex-wrap !list-none !p-0 gap-1'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
-        <SearchLink add={{attestationLabel: label}} className="no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-3 py-1">
+        <ParamLink add={{attestationLabel: label}} className="no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-3 py-1">
         {label}
-        </SearchLink></li>
+        </ParamLink></li>
     }
     )}
     </ul>}
@@ -113,9 +113,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     const dataset = "rygh"
     return <Fragment key={index}>
     
-      <SearchLink className="no-underline flex items-center" href="/search" only={{dataset, "rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink>
-      { item.gnr && <>- <SearchLink className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink> </>}
-      { item.bnr && <>{"/"} <SearchLink className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "cadastre__bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></SearchLink> </>}
+      <ParamLink className="no-underline flex items-center" href="/search" only={{dataset, "rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></ParamLink>
+      { item.gnr && <>- <ParamLink className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></ParamLink> </>}
+      { item.bnr && <>{"/"} <ParamLink className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "cadastre__bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></ParamLink> </>}
       
 
 

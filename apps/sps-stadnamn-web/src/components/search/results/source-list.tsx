@@ -10,7 +10,7 @@ import SourceItem from './source-item'
 import IconButton from '@/components/ui/icon-button'
 import { useQueryState } from 'nuqs'
 import { PiInfo, PiInfoFill, PiTag, PiTagFill, PiX } from 'react-icons/pi'
-import SearchLink from '@/components/ui/search-link'
+import ParamLink from '@/components/ui/param-link'
 
 export default function SourceList() {
     const { childrenData, childrenLoading, childrenError } = useContext(ChildrenContext)
@@ -45,6 +45,11 @@ export default function SourceList() {
                 
                 }
           </div>
+          <ParamLink className="flex gap-2 font-semibold w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
+                      add={{doc: parentData._source.uuid}}
+                      aria-current={doc == parentData._source.uuid ? 'page' : undefined}>
+                 <PiTagFill className={`text-sm text-${doc == parentData._source.uuid ? 'accent-800' : 'primary-600'} self-center`}/> {parentData._source.label}
+            </ParamLink>
 
     {Object.entries<Record<string, any>[]>(childrenData.reduce((acc: Record<string, Record<string, any>[]>, doc: Record<string, any>) => {
          // Group by dataset

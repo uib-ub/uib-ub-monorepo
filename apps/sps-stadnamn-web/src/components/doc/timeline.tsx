@@ -30,7 +30,7 @@ return (
         
 
         <div className={`ml-6`}>
-          <span><SearchLink add={{attestationYear: year}} className='no-underline font-semibold whitespace-nowrap py-0 px-2 mr-2 my-1 bg-primary-100 border border-primary-300 shadow-sm rounded-full'>{year}</SearchLink></span>
+          <span><ParamLink add={{attestationYear: year}} className='no-underline font-semibold whitespace-nowrap py-0 px-2 mr-2 my-1 bg-primary-100 border border-primary-300 shadow-sm rounded-full'>{year}</ParamLink></span>
               {labels.map((label, i) => ( 
                 <span key={i}>{i < labels.length && i > 0 ? ', ': ''}{label}</span>
                

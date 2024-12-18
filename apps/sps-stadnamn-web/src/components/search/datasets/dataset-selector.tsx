@@ -69,12 +69,12 @@ export default function DatasetSelector() {
           <li key={dataset} className="flex w-full ">
 
               
-              <SearchLink only={{dataset, q: searchParams.get('q'), nav: 'datasets' }} 
+              <ParamLink only={{dataset, q: searchParams.get('q'), nav: 'datasets' }} 
                           className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline">
                 <strong className="font-semibold">{datasetTitles[dataset]}</strong>{" | "}
                 
                 {datasetShortDescriptions[dataset]}      
-              </SearchLink>
+              </ParamLink>
 
               
               

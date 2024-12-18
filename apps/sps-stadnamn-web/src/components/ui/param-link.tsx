@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter} from "next/navigation"
 
 
 
@@ -15,8 +15,9 @@ type Props = (OnlyParams | AddParams | RemoveParams) & {
   [x: string]: any;
 };
 
-export default function SearchLink({ href, children, remove, add, only, ...rest }: Props) {
+export default function ParamLink({ href, type = 'link', children, remove, add, only, ...rest }: Props) {
     const searchParams = useSearchParams()
+    const router = useRouter()
     const newParams = new URLSearchParams(only ? undefined : searchParams)
     if (only) {
         Object.entries(only).forEach(([key, value]) => {
@@ -46,10 +47,12 @@ export default function SearchLink({ href, children, remove, add, only, ...rest 
     }
     */
 
+
     return (
         <Link href={(href || '') + "?" + newParams.toString()} {...rest}>
-            {children}
-        </Link>
+        {children}
+    </Link>
        
     )
+    
 }

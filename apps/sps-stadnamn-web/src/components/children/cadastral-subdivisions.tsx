@@ -43,10 +43,10 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
             
             : <div className="flex bg-white cadastre-header rounded-t-md">
                 <h2 className={`p-2 px-4 text-lg  !font-sans text`}>
-                    <SearchLink aria-current={doc == parentData?._source?.uuid ? 'page' : false} 
+                    <ParamLink aria-current={doc == parentData?._source?.uuid ? 'page' : false} 
                                       className="no-underline"
                                       add={{ doc: parent }}><span className={`font-bold ${doc == parentData?._source?.uuid ? 'text-accent-800' : 'text-primary-600'}`}>{gnr}</span>     {parentData?._source?.label}
-                    </SearchLink>
+                    </ParamLink>
 
                 </h2>
                 {mode != 'table' && 
@@ -69,14 +69,14 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                                 {childrenData.map((hit: any) => (
                                     <tr key={hit._id} >
                                         <th className="w-full h-full flex !p-0">
-                                        <SearchLink aria-current={doc==hit.fields?.uuid[0] ? 'page' : false} 
+                                        <ParamLink aria-current={doc==hit.fields?.uuid[0] ? 'page' : false} 
                                                             className={`no-underline w-full p-1 px-2 h-full${doc == hit.fields?.uuid[0] ? 'border-l-4 bg-accent-800 text-white' : 'pl-4'} `}
                                                             add={{ doc: hit.fields?.uuid[0] }}>
                                         <span className={`font-bold ${doc == hit.fields?.uuid[0] ? 'text-white' : 'text-primary-600'}`}>{hit.fields[leaf] || hit.fields.cadastre?.[0]?.bnr.join(",")}</span> {hit.fields.label}
                                             
                                                                 
                                                                 
-                                            </SearchLink>
+                                            </ParamLink>
                                         </th>
                                         {fields.map((field: Record<string, any>) => (
                                             <td className="p-2" key={field.key}>{hit.fields[field.key]} {field.key} {JSON.stringify(hit)}</td>
