@@ -1,6 +1,6 @@
 import { sanityFetch } from '@/src/sanity/lib/fetch'
 import { setRequestLocale } from 'next-intl/server'
-import { groq } from 'next-sanity'
+import { groq, stegaClean } from 'next-sanity'
 import { routeQuery } from '@/src/sanity/lib/queries/routeQuery'
 import { Link } from '@/src/i18n/routing'
 import React from 'react'
@@ -47,26 +47,21 @@ export default async function Page({ params }: { params: { lang: string, slug: s
 
   const data = await sanityFetch({ query: routeQuery, params: { slug: slug[0], language: lang }, perspective: 'published', stega: false })
   const page = data[0].translation.find((item: any) => item.language === lang) ?? data[0].translation.find((item: any) => item.language === 'no')
-
+  const localeCaption = page.about?.caption?.filter((i: any) => stegaClean(i.language) === lang)[0]?.body
   const t = await getTranslations('Page')
 
   return (
     <div className='p-5 pt-16'>
-      {/* <code>
-        <pre className='text-xs'>
-          {JSON.stringify(page.body, null, 2)}
-        </pre>
-      </code> */}
       <div className='flex flex-col gap-10 items-center'>
         {page?.about?.image && (
-          <figure className='w-full md:w-2/3 lg:w-1/2 max-h-[70vh] relative'>
-            <SanityImage
-              image={page?.about?.image}
-              className="w-full max-h-[65vh]"
-            />
-            {/* {localeCaption && (
-              localeCaption
-            )} */}
+          <figure className='w-full flex flex-col gap-2 md:w-2/3 lg:w-1/2 max-h-[70vh] relative'>
+            <Link href={`/id/${page?.about?.image?.preferredIdentifier}`}>
+              <SanityImage
+                image={page?.about?.image}
+                className="w-full max-h-[65vh]"
+              />
+            </Link>
+            {localeCaption && <figcaption className='text-sm font-light text-neutral-700 dark:text-neutral-300'><TextBlocks value={localeCaption} /></figcaption>}
           </figure>
         )}
 
