@@ -91,17 +91,26 @@ export default function DesktopLayout() {
         { docLoading && <div className="bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
         
         </div>
-        { parent ? <div className={`flex-col gap-2 max-w-[40svw] ] !z-[3001]`}>
+        {parent ? 
+            (parentLoading || childrenLoading) ? 
+
+            <div className="rounded-md shadow-md !z-[3001] bg-white w-12 h-12 flex justify-center items-center"><Spinner status={treeSettings[dataset] ? 'Laster garder' : 'Laster kilder'} className="w-full h-full m-2 self-center" /></div>
+
+        
+            :
+        <div className={`flex-col gap-2 max-w-[40svw] min-w-[20svw] !z-[3001]`}>
                 <div className="rounded-md shadow-md bg-white max-h-[40svh] overflow-auto">
 
-                   { treeSettings[dataset] ? 
-                    (parentLoading || childrenLoading) ? <div className="w-12 h-12 flex justify-center items-center"><Spinner status="laster garder" className="w-full h-full m-2 self-center" /></div> : 
-                    parentData?._id && <CadastralSubdivisions isMobile={false}/>
+                   { treeSettings[dataset] ?  
+                      parentData?._id && <CadastralSubdivisions isMobile={false}/>
                    :  dataset == 'search' && <div className="p-2"><SourceList/></div>}
                 </div>
             </div>
+
             : null
         }
+
+        
 
         </div>
         }
