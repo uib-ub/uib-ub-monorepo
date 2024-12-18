@@ -1,10 +1,11 @@
-import { useEffect, useState} from 'react';
+import { useContext, useEffect, useState} from 'react';
 import { datasetTitles, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import { PiCaretRight } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import SearchLink from '@/components/ui/search-link';
 import { useDataset } from '@/lib/search-params';
+import { GlobalContext } from '@/app/global-provider';
 
 
 
@@ -13,6 +14,7 @@ export default function DatasetSelector() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
   const dataset = useDataset()
+  const { isMobile } = useContext(GlobalContext)
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +50,7 @@ export default function DatasetSelector() {
           <div className='flex flex-col'>
           <input
               id='titleSearch'
-              autoFocus={true}
+              autoFocus={isMobile ? false : true }
               autoComplete="off"
               className='rounded-sm border border-gray-400 text-base px-2 py-1'
               type="text"
