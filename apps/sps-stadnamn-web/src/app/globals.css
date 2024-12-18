@@ -21,7 +21,7 @@
   }
 
   ::selection {
-    @apply bg-accent-700 rounded-sm text-white;
+    @apply bg-accent-600 rounded-sm text-white;
   }
 
 
@@ -93,7 +93,7 @@
     @apply border-2 border-neutral-200 shadow-inner rounded-md bg-neutral-50;
   }
   .breadcrumb-link {
-    @apply no-underline text-lg text-accent-700 hover:underline decoration-accent-700;
+    @apply no-underline text-lg text-accent-800 hover:underline decoration-accent-800;
   }
   .card {
     @apply bg-white shadow-lg shadow-neutral-100 xl:border-2 xl:border-neutral-200 xl:rounded-sm;
@@ -188,7 +188,7 @@
   }
 
   button.toolbar-button[aria-current='page'] .results-badge {
-    @apply bg-accent-700;
+    @apply bg-accent-800;
   }
 
 
@@ -237,6 +237,12 @@
   .result-table tbody tr:not(:last-child) {
     @apply border-b border-neutral-400; 
   }
+
+
+  .result-table th button, .result-table tbody th a {
+    @apply !text-neutral-950 !font-semibold;
+  }
+
 
 
  
@@ -319,6 +325,15 @@
 
   .mobile-interface .mobile-padding {
     @apply px-4;
+  }
+
+
+  .rectangular-external-link {
+    @apply font-semibold no-underline bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-md p-2 px-4 external-link
+  }
+
+  .rounded-tabs {
+    @apply flex items-center px-4 py-1 rounded-full bg-neutral-100 aria-selected:bg-accent-800 aria-selected:text-white no-underline
   }
 
 }
