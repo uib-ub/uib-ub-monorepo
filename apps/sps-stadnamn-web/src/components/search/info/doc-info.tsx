@@ -120,7 +120,8 @@ export default function DocInfo() {
       }
 
       {docData._source.children?.length > 0 && parent != docData._source.uuid &&
-          <SearchLink add={{parent: docData._source.uuid}} 
+          <SearchLink add={{parent: docData._source.uuid}}
+                      remove={['center', 'zoom']}
                       className="flex items-center gap-2 font-semibold rounded-md w-full no-underline border border-neutral-200 hover:bg-neutral-100 p-2 px-4 mt-2">
                         
                           Kilder <span className='text-xs bg-primary-600 text-white rounded-full px-1'>{docData._source.children.length}</span>
