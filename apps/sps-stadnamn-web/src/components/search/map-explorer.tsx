@@ -428,8 +428,8 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
                 else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 15 && bucket.doc_count == bucket.docs.hits.hits.length)) {
 
-                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black'))
+                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
+                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black'))
 
                     return hit.fields.uuid[0] != doc && <Marker key={hit._id}
                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
@@ -488,7 +488,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
                     }
                   }
                   else {
-                    icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, 'black', group.children.length > 1 ? group.children.length : undefined))
+                    icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, group.children.length == 1 && group.children[0].fields?.children?.length > 1 ? 'primary' : 'black', group.children.length > 1 ? group.children.length : undefined))
                   }
                   
 
@@ -503,8 +503,8 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
                 else {
                   return <CircleMarker key={group.uuid}
                     center={[group.lat, group.lon]}
-                    radius={zoom && zoom < 10 ? 4 : 8}
-                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: 'white', fillOpacity: 1 }}
+                    radius={(zoom && zoom < 10 ? 4 : 8) * (group.children.length > 1 || group.children[0].fields?.children?.length > 1 ? 1.25 : 1)}
+                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: group.children.length == 1 && group.children[0].fields?.children?.length > 1 ? '#cf3c3a' : 'white', fillOpacity: 1 }}
                     eventHandlers={ selectDocHandler(group.children)} />
                 }
 
