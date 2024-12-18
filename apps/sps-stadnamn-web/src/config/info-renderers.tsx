@@ -232,12 +232,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     return <>
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
     <div className="flex flex-wrap mt-3 gap-4">
-    <Link href={source.rawData.Lenke_til_skannet_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Skannet matrikkel</Link>
-    <Link href={source.rawData.Lenke_til_digital_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Digital matrikkel</Link>
-    </div>
-    <div>
-    <h3>Eiendom</h3>
-    { source.within && cadastreBreadcrumb(source, "m1838", "misc.gardLabel") }
+    <Link href={source.rawData.Lenke_til_skannet_matrikkel} className='rectangular-external-link'>Skannet matrikkel</Link>
+    <Link href={source.rawData.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Digital matrikkel</Link>
     </div>
     <CollapsibleHeading title="Detaljer">
     <FacetsInfobox dataset={'m1838'} source={source}/>
@@ -265,12 +261,8 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.rawData?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknader}</>}
 
     {source.rawData?.lenke_til_digital_matrikkel && <div className="flex flex-wrap mt-3 gap-4">
-    <Link href={source.rawData.lenke_til_digital_matrikkel} className='font-semibold no-underline bg-neutral-100 p-2 px-4 external-link'>Digital matrikkel</Link>
+    <Link href={source.rawData.lenke_til_digital_matrikkel} className='rectangular-external-link'>Digital matrikkel</Link>
     </div> }
-    <div>
-    <h3>Eiendom</h3>
-    { source.within && cadastreBreadcrumb(source, "m1886", "rawData.gardsnamn") }
-    </div>
     <div>
       <CollapsibleHeading title="Detaljer">
       <FacetsInfobox dataset={'m1886'} source={source}/>
@@ -299,7 +291,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       { source.links?.length &&
       <div>
       <h3>Lenker</h3>
-      <ul className='!mt-0 !list-none !pl-0'>
+      <ul className='!mt-0 !list-none !pl-0 !pt-0'>
         {source.links.map((link: any, index: number) => (
           <li key={index}><Link href={link} className=''>{link}</Link></li>
         ))}
