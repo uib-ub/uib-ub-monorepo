@@ -89,7 +89,6 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                     setResultBounds(paddedBounds)
                 }
                 else {
-                    console.log('no bounds')
                     setResultBounds(null)
                 }
 
