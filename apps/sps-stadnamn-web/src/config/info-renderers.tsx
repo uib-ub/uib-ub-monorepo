@@ -246,7 +246,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     return <>
     {source.sosi != 'gard' &&
       <>
-      { source.within && cadastreBreadcrumb(source, "mu1950", "rawData.Gardsnamn") }
       <CollapsibleHeading title="Detaljer">
       <FacetsInfobox dataset={'mu1950'} source={source}/>
       </CollapsibleHeading>
