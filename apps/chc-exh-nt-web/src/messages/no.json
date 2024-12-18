@@ -1,0 +1,33 @@
+{
+  "MainNav": {
+    "menu": "Meny"
+  },
+  "HomePage": {
+    "title": "Hei verden!",
+    "about": "Gå til 'Om oss'",
+    "content": "Innhold",
+    "marcus": "Denne utstillingen er en del av",
+    "marcusLinkText": "Marcus"
+  },
+  "Footer": {
+    "createdBy": "Nettutstillingen er laget av",
+    "supportedBy": "Støttet av"
+  },
+  "LocaleSwitcher": {
+    "label": "Endre språk",
+    "locale": "{locale, select, no {Norsk} en {English} ar {Arabic} other {Other}}"
+  },
+  "Page": {
+    "by": "av",
+    "combinator": "og"
+  },
+  "Bla": {
+    "title": "Bla",
+    "description": "Bla i alle bildene i utstillingen"
+  },
+  "Item": {
+    "production": "Laget av",
+    "subjects": "Emneord",
+    "palette": "Fargepalett"
+  }
+}
