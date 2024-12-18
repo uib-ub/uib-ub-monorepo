@@ -36,7 +36,7 @@ export default function DesktopLayout() {
 
 
     // Keep filters or expanded open when switching to a different section
-    const [nav, setNav] = useQueryState('nav', {history: 'push', defaultValue: searchFilterParamsString && mode != 'table' ? 'results' : 'filters'})
+    const [nav, setNav] = useQueryState('nav', {history: 'push', defaultValue: 'datasets'})
 
     const [attestationLabel, setAttestationLabel] = useQueryState('attestationLabel')
     const [attestationYear, setAttestationYear] = useQueryState('attestationYear')
