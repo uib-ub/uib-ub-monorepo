@@ -13,25 +13,29 @@ export interface TreeSettingsItem {
   aggSort: string, // Sort aggregated divisions above the cadastral unit (e. g. municipalities)
   filter?: any, 
   showNumber?: boolean,
-  leaf: string
+  leaf: string,
+  parentName: string
 }
 
 export const treeSettings: Record<string, TreeSettingsItem> = {
   m1838: {
     subunit: "rawData.MNR",
     subunitLabel: "Matrikkelnummer",
+    parentName: "misc.gardLabel",
     leaf: "rawData.LNR",
     sort: ["cadastralIndex"],
     aggSort: "rawData.Lenke_til_skannet_matrikkel.keyword"
   },
   m1886: {
     subunit: "cadastre__gnr",
+    parentName: "rawData.gardsnamn",
     leaf: "cadastre__bnr",
     sort: ["cadastre__gnr", "cadastre__bnr"],
     aggSort: "rawData.knr.keyword"
   },
   mu1950: {
     subunit: "cadastre__gnr",
+    parentName: "rawData.Gardsnamn",
     leaf: "cadastre__bnr",
     sort: ["cadastre__gnr", "cadastre__bnr"],
     aggSort: "knr.keyword",
