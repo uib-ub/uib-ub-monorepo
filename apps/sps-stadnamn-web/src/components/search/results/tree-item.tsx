@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useEffect, useContext } from 'react';
-import SearchLink from '@/components/ui/search-link';
+import ParamLink from '@/components/ui/param-link';
 import { treeSettings } from '@/config/server-config';
 import { useSearchParams } from 'next/navigation';
 import { DocContext } from '@/app/doc-provider';

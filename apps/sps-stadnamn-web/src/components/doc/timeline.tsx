@@ -1,4 +1,4 @@
-import SearchLink from "../ui/search-link";
+import ParamLink from "../ui/param-link";
 
 export default function Timeline(arr: { label: string; year: string }[]) {
   const grouped: Record<string,string[]> = {};

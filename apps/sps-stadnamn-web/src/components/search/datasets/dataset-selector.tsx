@@ -3,7 +3,7 @@ import { datasetTitles, datasetDescriptions, datasetShortDescriptions } from '@/
 import { PiCaretRight } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import SearchLink from '@/components/ui/search-link';
+import ParamLink from '@/components/ui/param-link';
 import { useDataset } from '@/lib/search-params';
 import { GlobalContext } from '@/app/global-provider';
 

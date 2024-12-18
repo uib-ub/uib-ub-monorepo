@@ -34,10 +34,11 @@ export default function SourceList() {
 
     return childrenData && parentData?._source?.uuid && Object.keys(childrenData).length > 0 ?
         <div className="mb-8 instance-info"> 
-        <div className= {`flex items-center gap-2 px-2`}>
-        <h2 className="">
-        Kilder — {parentData._source.label}  
+        <div className= {`flex items-center gap-2`}>
+        <h2 className="!text-xl">
+        Kilder  
             </h2>
+            
         {mode != 'table' && 
                 
 
@@ -60,7 +61,7 @@ export default function SourceList() {
        
     }, {})).map(([docDataset, docs]) => (
         <div key={docDataset}>
-            <h3 className="!text-xl border-b border-neutral-200 px-2 !pb-1">{datasetTitles[docDataset]}</h3>
+            <h3 className="!text-lg border-b border-neutral-200 px-2 !pb-1">{datasetTitles[docDataset]}</h3>
             <ul className="!p-0 divide-y divide-neutral-200">
               {docs.map((doc: Record<string, any>) => (
                 <SourceItem key={doc._id} hit={doc} isMobile={false}/>

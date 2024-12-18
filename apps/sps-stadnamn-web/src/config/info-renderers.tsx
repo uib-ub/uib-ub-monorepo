@@ -7,7 +7,7 @@ import { getValueByPath } from '@/lib/utils';
 import { treeSettings } from './server-config';
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import { PiMagnifyingGlass } from 'react-icons/pi';
-import SearchLink from '@/components/ui/search-link';
+import ParamLink from '@/components/ui/param-link';
 import Timeline from '@/components/doc/timeline';
 
 const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {

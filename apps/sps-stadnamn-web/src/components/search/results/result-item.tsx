@@ -3,7 +3,7 @@ import { resultRenderers, defaultResultRenderer } from '@/config/result-renderer
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
 import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
-import SearchLink from '@/components/ui/search-link';
+import ParamLink from '@/components/ui/param-link';
 import { useSearchParams } from 'next/navigation';
 
 
@@ -66,7 +66,7 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
             </p>}
             
 
-            </SearchLink>
+            </ParamLink>
             </li>
 }
 

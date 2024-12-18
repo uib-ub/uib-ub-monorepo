@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiArrowRight, PiArrowRightBold, PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTable, PiTagFill, PiWarningFill } from "react-icons/pi"
+import { PiArrowRight, PiArrowRightBold, PiArrowUp, PiArrowUpBold, PiBracketsCurly, PiDatabase, PiDatabaseFill, PiInfinity, PiTable, PiTableFill, PiTagFill, PiWarningFill, PiX } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -11,6 +11,9 @@ import { useDataset } from "@/lib/search-params"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { treeSettings } from "@/config/server-config"
+import IconButton from "@/components/ui/icon-button"
+import { useQueryState } from "nuqs"
+import CadastreBreadcrumb from "./cadastre-breadcrumb"
 
 export default function DocInfo() {
     const searchParams = useSearchParams()
@@ -20,7 +23,7 @@ export default function DocInfo() {
     const docSource = docData._source
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
-    const doc = searchParams.get('doc')
+    const [doc, setDoc] = useQueryState('doc')
 
 
     const multivalue = (value: string|string[]) => {
@@ -30,14 +33,50 @@ export default function DocInfo() {
 
     
     return <article className="instance-info flex flex-col gap-3 mobile-padding">
+        <div className="flex w-full flex-wrap gap-2">
+        {docData._source.children?.length > 0 &&
+          <ParamLink add={{parent: docData._source.uuid}}
+          arua-current={parent == docData._source.uuid ? 'page' : 'false'}
+                      remove={['center', 'zoom']}
+                      className="flex items-center gap-1 no-underline">
+                        
+                          {parent == docData._source.uuid ? <PiDatabaseFill className="text-accent-800" aria-hidden="true"/> : <PiDatabase className="text-neutral-900" aria-hidden="true"/>} Kilder <span className={`text-xs bg-neutral-50 text-neutral-900 border border-neutral-300 rounded-full px-1`}>{docData._source.children.length}</span>
+          </ParamLink>}
+
+
+          { dataset != 'search' && docData._source.within && docDataset && <CadastreBreadcrumb source={docData._source} docDataset={docDataset} subunitName={treeSettings[docDataset].parentName} /> }
+
+
+
+        {dataset == 'search' && parentData?._source && parent != doc && 
+        <ParamLink add={{doc: parentData._source.uuid}} className="flex items-center gap-1 no-underline">
+          {<PiArrowUpBold className="text-primary-600" aria-hidden="true"/>}
+          <span className="text-neutral-950 sr-only xl:not-sr-only">Stadnamnside</span>
+        </ParamLink>
+        }
+
+        { docSource.sosi == 'gard' && mode != 'table' && treeSettings[dataset] &&
+  
+                <ParamLink className="flex items-center gap-1 no-underline" add={{parent: docSource.uuid }}>
+                  {parent ? <PiTableFill aria-hidden="true" className="text-accent-800"/> : <PiTable aria-hidden="true" className="text-primary-600"/>} Matrikkeltabell
+                </ParamLink>
+  
+
+              }
+
+
+
+
+        <ParamLink className="flex items-center gap-1 no-underline ml-auto" remove={['doc']}><PiX className="text-primary-600" aria-hidden="true"/> Lukk</ParamLink>
+        </div>
         <div className="flex gap-2"><h2>{docSource.label}</h2>{docSource.audio && 
-          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/${docDataset}/${docSource.audio.file}` } 
-                       iconClass="text-3xl text-neutral-700 inline"/> 
+          <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/hord/${docSource.audio.file}` } 
+                       iconClass="text-3xl text-neutral-700 inline"/>             
         }
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-1 flex-wrap">
         {
-         docSource.sosi && docDataset != 'search' && <Link className="flex items-center bg-neutral-100 pl-3 pr-1 rounded-full text-neutral-900 no-underline external-link"
+         docSource.sosi && docDataset != 'search' && <Link className="flex items-center bg-neutral-50 border border-neutral-200 pl-3 pr-1 rounded-full text-neutral-950 no-underline external-link"
          href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + docSource.sosi}>
             { docSource.sosi}
         </Link>
@@ -51,7 +90,7 @@ export default function DocInfo() {
                 </>
             
                 || docSource.wikiAdm && docDataset != 'm1838' 
-                    &&  <Link  className="flex align-middle bg-neutral-100 pr-1 pl-3 rounded-full text-neutral-900 no-underline external-link" href={'http://www.wikidata.org/entity/' + docSource.wikiAdm}>
+                    &&  <Link  className="flex align-middle bg-neutral-50 border border-neutral-200 pr-1 pl-3 rounded-full text-neutral-950 no-underline external-link" href={'http://www.wikidata.org/entity/' + docSource.wikiAdm}>
                         
                         <span className="max-w-[12rem] truncate">
                 {docSource.adm3 && multivalue(docSource.adm3) + " – "}
@@ -69,8 +108,8 @@ export default function DocInfo() {
         { dataset == 'search' && 
         <Link href={docDataset == 'search' ? '/info/search' : `/search?dataset=${docDataset}&nav=datasets&doc=${docSource.uuid}`}
          
-              className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline">
-                {docDataset == 'search' ? <><PiTagFill aria-hidden="true"/> Stadnamnsøk</> : <><PiDatabaseFill aria-hidden="true"/>{datasetTitles[docDataset as string]}</>}</Link>
+              className="flex items-center gap-1 bg-neutral-50 border border-neutral-200 px-2 rounded-full text-neutral-950 no-underline">
+                {docDataset == 'search' ? <><PiTagFill aria-hidden="true" className="text-neutral-800"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true" className="text-neutral-800"/>{datasetTitles[docDataset as string]}</>}</Link>
         }
 
         
@@ -110,34 +149,6 @@ export default function DocInfo() {
 
    
         </div>
-        { docSource.sosi == 'gard' && mode != 'table' && treeSettings[dataset] &&
-      <div className={`flex ${(!parent || parent != docSource.uuid) ? '' : 'lg:hidden'}`}>
-        <SearchLink className="flex items-center gap-2 font-semibold rounded-md w-full no-underline border border-neutral-200 hover:bg-neutral-100 p-2 px-4 mt-2" add={{parent: docSource.uuid }}>
-          <PiTable aria-hidden="true" className="text-primary-600"/> Garder
-        </SearchLink>
-    </div>
-
-      }
-
-      {docData._source.children?.length > 0 && parent != docData._source.uuid &&
-          <SearchLink add={{parent: docData._source.uuid}}
-                      remove={['center', 'zoom']}
-                      className="flex items-center gap-2 font-semibold rounded-md w-full no-underline border border-neutral-200 hover:bg-neutral-100 p-2 px-4 mt-2">
-                        
-                          Kilder <span className='text-xs bg-primary-600 text-white rounded-full px-1'>{docData._source.children.length}</span>
-          </SearchLink>}
-
-        {dataset == 'search' && parentData?._source && parent != doc && 
-        <SearchLink add={{doc: parentData._source.uuid}} className="flex items-center gap-2 font-semibold rounded-md w-full no-underline border border-neutral-200 hover:bg-neutral-100 p-2 px-4 mt-2">
-          <PiTagFill className="text-2xl text-neutral-800" aria-hidden="true"/>
-          <span className="text-neutral-950">Overordnet oppslag</span>
-        </SearchLink>
-        }
-
-
-        
-
-
         </article>
 
 }
