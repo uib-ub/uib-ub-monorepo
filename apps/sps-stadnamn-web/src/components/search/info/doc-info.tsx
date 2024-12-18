@@ -6,7 +6,6 @@ import { PiArrowRight, PiArrowRightBold, PiBracketsCurly, PiDatabaseFill, PiInfi
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
-import AttestationSource from "../../children/attestation-source"
 import SearchLink from "@/components/ui/search-link"
 import { useDataset } from "@/lib/search-params"
 import { useContext } from "react"
