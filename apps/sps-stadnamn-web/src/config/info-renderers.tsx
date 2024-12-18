@@ -10,11 +10,6 @@ import { PiMagnifyingGlass } from 'react-icons/pi';
 import ParamLink from '@/components/ui/param-link';
 import Timeline from '@/components/doc/timeline';
 
-const cadastreBreadcrumb = (source: Record<string, any>, docDataset: string, subunitName: string) => {
-  const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
-  const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
-  return <div className="text-lg"><ParamLink className="breadcrumb-link" add={{doc: source.within}}>{parentLabel}</ParamLink><span className="mx-2">/</span>{currentName}</div>
-}
 
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
