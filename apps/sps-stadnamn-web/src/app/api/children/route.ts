@@ -8,18 +8,16 @@ export async function POST(request: Request) {
         return Response.json({error: "No uuids provided"}, { status: 400 })
     }
 
-
-    const searchParams = new URLSearchParams(new URL(request.url).search)
-    const geo = searchParams.get('geo') &&  {
-                                                aggs: {
-                                                    viewport: {
-                                                        geo_bounds: {
-                                                            field: "location",
-                                                            wrap_longitude: true
-                                                        }
-                                                    }
+    const geo = body.mode == 'map' &&  {
+                                        aggs: {
+                                            viewport: {
+                                                geo_bounds: {
+                                                    field: "location",
+                                                    wrap_longitude: true
                                                 }
                                             }
+                                        }
+                                    }
 
     const allFields = [...new Set(Object.values(resultConfig).flat())]
  

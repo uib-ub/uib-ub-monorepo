@@ -6,6 +6,8 @@ import { parseAsInteger } from 'nuqs';
 import { useQueryState } from 'nuqs';
 import { SearchContext } from './search-provider';
 import { DocContext } from './doc-provider';
+import { GlobalContext } from './global-provider';
+import { addPadding } from '@/lib/map-utils';
 
 
 interface ChildrenContextData {
@@ -44,6 +46,8 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 
     const parent = searchParams.get('parent')
     const doc = searchParams.get('doc')
+    const mode = searchParams.get('mode') || 'map'
+    const { isMobile } = useContext(GlobalContext)
 
 
     
@@ -74,7 +78,8 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                     const newBounds = data.aggregations?.viewport.bounds
                     setChildrenData(data.hits.hits)
                     if (newBounds?.top_left?.lat && newBounds?.bottom_right?.lat) {
-                        setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+                        const paddedBounds = addPadding([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]], isMobile)
+                        setResultBounds(paddedBounds)
                     }
 
                 }
@@ -93,9 +98,9 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 
         if (!parentLoading && parentData?._source?.children) {
             setChildrenLoading(true)            
-            fetch("/api/children", {
+            fetch("/api/children?", {
                 method: 'POST',
-                body: JSON.stringify({children: parentData._source.children})
+                body: JSON.stringify({children: parentData._source.children, mode})
             })
             .then(response => {
                 if (!response.ok) {
@@ -112,7 +117,8 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                     setChildrenData(es_data.hits.hits)
 
                     if (newBounds?.top_left?.lat && newBounds?.bottom_right?.lat) {
-                        setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+                        const paddedBounds = addPadding([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]], isMobile)
+                        setResultBounds(paddedBounds)
                     }
 
                 }

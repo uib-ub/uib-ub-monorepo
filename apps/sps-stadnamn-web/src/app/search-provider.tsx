@@ -5,6 +5,7 @@ import { useSearchQuery } from '@/lib/search-params';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
+import { addPadding } from '@/lib/map-utils';
 
 interface SearchContextData {
     resultData: any;
@@ -36,7 +37,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
     const mapInstance = useRef<any>(null);
 
-    const { setCurrentUrl } = useContext(GlobalContext)
+    const { setCurrentUrl, isMobile } = useContext(GlobalContext)
     
 
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
@@ -84,7 +85,8 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 setResultData(es_data.hits.hits)
                 setTotalHits(es_data.hits.total)
                 if (newBounds?.top_left?.lat && newBounds?.bottom_right?.lat) {
-                    setResultBounds([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]])
+                    const paddedBounds = addPadding([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]], isMobile)
+                    setResultBounds(paddedBounds)
                 }
                 else {
                     console.log('no bounds')

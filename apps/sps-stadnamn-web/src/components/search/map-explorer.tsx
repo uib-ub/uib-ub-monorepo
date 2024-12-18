@@ -43,22 +43,11 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
   
   useEffect(() => {
-    if (!resultBounds?.length) {
-      return;
-    }
-    if (center && zoom) return
-
-    
-    setBounds(resultBounds);
-
-  }, [resultBounds, center, zoom, mapInstance])
-
-
-  useEffect(() => {
     if (resultBounds?.length && !zoom) {
-      //mapInstance?.current?.flyToBounds(resultBounds, { padding: [100, 50], duration: 0.5 });
+
+      mapInstance?.current?.flyToBounds(resultBounds, { duration: 0.5});
     }
-  }, [resultBounds, mapInstance, center, zoom])
+  }, [resultBounds])
   
   
 
