@@ -22,7 +22,7 @@ import { ChildrenContext } from "@/app/children-provider";
 
 
 export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
-  const { resultBounds, totalHits, searchError, mapInstance } = useContext(SearchContext)
+  const { resultBounds, totalHits, searchError, mapInstance, isLoading } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
