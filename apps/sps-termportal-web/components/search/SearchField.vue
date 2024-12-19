@@ -32,6 +32,8 @@ const route = useRoute();
 const router = useRouter();
 const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
+const bootstrapData = useBootstrapData();
+const locale = useLocale();
 
 const items = ref([]);
 
@@ -46,23 +48,50 @@ const search = async (event) => {
 };
 
 const placeholder = computed(() => {
-  return (
-    i18n.t("searchBar.search") +
-    (searchInterface.value.language !== "all"
+  const language =
+    searchInterface.value.language !== "all"
       ? ` ${i18n.t("searchBar.inLanguage")} ${i18n.t(
           `global.lang.${searchInterface.value.language}`,
           2
         )}`
-      : "") +
-    (searchInterface.value.termbase.length !== 0
-      ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t("global.termbase", 2)}`
-      : "")
-    // termbases ${i18n.t("global.samling." + searchInterface.value.termbase)}
-    //     : searchInterface.value.domain[0] !== "all"
-    //     ? ` ${i18n.t("searchBar.inDomain")} ${i18n.t("global.domain.domain", 2)}
-    //       ${i18n.t("global.domain." + searchInterface.value.domain.slice(-1))}`
-    //     : "")
+      : "";
+
+  const topDomains = intersectUnique(
+    Object.keys(bootstrapData.value.domain),
+    Object.keys(searchInterface.value.domain)
   );
+
+  const domains = topDomains.map(
+    (domain) => bootstrapData.value?.lalo?.[locale.value]?.[domain]
+  );
+
+  const termbases = searchInterface.value.termbase.map((tb) => {
+    const key = `${tb}-3A${tb}`;
+    const label = languageOrder[locale.value]
+      .filter((lc) => Object.keys(languageOrder).includes(lc))
+      .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
+      .find((value) => value !== undefined);
+    return label ?? key;
+  });
+
+  const context = searchInterface.value.useDomain
+    ? // domain
+      Object.keys(searchInterface.value.domain).length > 0
+      ? // selected domains
+        topDomains.length === 1
+        ? // one domain selected
+          ` ${i18n.t("searchBar.inOneDomain")} ${domains.join(", ")}`
+        : // more than one domain
+          ` ${i18n.t("searchBar.inDomains")} ${domains.join(", ")}`
+      : // all domains
+        ` ${i18n.t("searchBar.inAllDomains")}`
+    : // termbase
+    searchInterface.value.termbase.length !== 0
+    ? // specified termbase(s)
+      ` ${i18n.t("searchBar.in")} ${termbases.join(", ")}`
+    : // all termbases
+      ` ${i18n.t("searchBar.inAllTermbases")} `;
+  return i18n.t("searchBar.search") + language + context;
 });
 
 const clearText = () => {

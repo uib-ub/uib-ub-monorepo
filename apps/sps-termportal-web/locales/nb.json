@@ -9,7 +9,8 @@
     "readLess": "Les mindre",
     "all": "alle",
     "domain": {
-      "domain": "Domene | domene",
+      "domain": "domene | domener",
+      "domainCap": "Domene | Domener",
       "DOMENE-3AHumaniora": "Humaniora",
       "DOMENE-3ANaturvitenskapTeknologi": "Naturvitenskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
@@ -113,8 +114,11 @@
   },
   "searchBar": {
     "search": "Søk",
-    "inDomain": "i",
+    "in": "i",
     "inLanguage": "på",
+    "inOneDomain": "",
+    "inDomains": "",
+    "inAllDomains": "",
     "language": "Søkespråk",
     "translate": "Målspråk",
     "termbase": "Termbase",
