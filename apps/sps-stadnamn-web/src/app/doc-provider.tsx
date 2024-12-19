@@ -78,14 +78,14 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     , [parent, dataset])
 
     // fetch snid uuid if the doc itself is not a snid
-    useEffect(() => { 0
-
+    useEffect(() => { 
 
         if (!doc || doc != docData?._source?.uuid || docDataset == 'search') {
             setSnidParent(null)
             
         }
         else {
+            
             fetch(`/api/snid?uuid=${doc}`).then(res => res.json()).then(data => {
                 if (data?.hits?.hits?.length && data.hits.hits[0].fields.children.length > 1) {
                     setSnidParent(data.hits.hits[0].fields.uuid[0])
