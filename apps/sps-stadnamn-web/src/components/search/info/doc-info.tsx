@@ -89,6 +89,10 @@ export default function DocInfo() {
         
         <ParamLink className="flex items-center gap-1 no-underline ml-auto" remove={['doc']}><PiX className="text-neutral-900" aria-hidden="true"/> Lukk</ParamLink>
         </div>
+
+        { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
+
+
         <div className="flex gap-2"><h2>{docSource.label}</h2>{docSource.audio && 
           <AudioButton audioFile={`https://iiif.test.ubbe.no/iiif/audio/hord/${docSource.audio.file}` } 
                        iconClass="text-3xl text-neutral-700 inline"/>             
