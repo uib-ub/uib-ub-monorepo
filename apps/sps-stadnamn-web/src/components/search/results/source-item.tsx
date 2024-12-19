@@ -16,6 +16,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const parent = searchParams.get('parent')
+    const zoom = searchParams.get('zoom')
 
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
