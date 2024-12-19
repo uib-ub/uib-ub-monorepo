@@ -84,7 +84,7 @@ export default function DesktopLayout() {
        { mode != 'table' && (doc || parent) &&
         <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end p-2 justify-between gap-2 h-full">
         <div className={`flex flex-col  w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh] lg:min-h-[25svh]' :  'lg:max-h-[calc(100svh - 2rem)] lg:min-h-[25svh]'}`}>
-        {doc && !docLoading && <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar`}>
+        {doc && !docLoading && <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words pr-4 pl-4 py-2 overflow-y-auto stable-scrollbar`}>
             <InfoContent/>
         </div>}
         { docLoading && <div className="bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
