@@ -44,8 +44,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   
   useEffect(() => {
     if (resultBounds?.length && !zoom) {
-
-      mapInstance?.current?.flyToBounds(resultBounds, { duration: 0.5});
+      mapInstance?.current?.fitBounds(resultBounds);
     }
   }, [resultBounds])
   
