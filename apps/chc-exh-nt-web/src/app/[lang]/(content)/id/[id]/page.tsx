@@ -74,8 +74,6 @@ export default async function ItemPage({ params }: PageProps) {
       .replace('/manifest', '?as=iiif')
   }
 
-  console.log("🚀 ~ ItemPage ~ sanitizedManifest:", await fetch('http://localhost:3000' + sanitizedManifest).then(res => res.json()))
-
   const renderManifestViewer = () => {
     try {
       const encodedManifest = (sanitizedManifest)
