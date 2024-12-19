@@ -3,12 +3,12 @@ import { siteSettings } from '@/src/sanity/lib/queries/fragments'
 import { sanityFetch } from '@/src/sanity/lib/fetch'
 import { setRequestLocale } from 'next-intl/server'
 import { getTranslations } from 'next-intl/server'
-import SanityImage from '@/src/app/components/SanityImage'
-import { MainNavContent } from '@/src/app/components/Header/MainNavContent'
-import { Footer } from '../../components/Footer'
-import { Pane } from '../../components/shells/Pane'
-import { PanesShell } from '../../components/shells/PanesShell'
-import { TextBlocks } from '../../components/TextBlocks'
+import SanityImage from '@/src/app/_components/SanityImage'
+import { MainNavContent } from '@/src/app/_components/Header/MainNavContent'
+import { Footer } from '../_components/Footer'
+import { Pane } from '../_components/shells/Pane'
+import { PanesShell } from '../_components/shells/PanesShell'
+import { TextBlocks } from '../_components/TextBlocks'
 
 async function getData(lang: string) {
   const data = await sanityFetch({ query: siteSettings, params: { language: lang } })
@@ -31,31 +31,39 @@ export default async function Home({ params }: { params: { lang: string } }) {
 
   return (
     <PanesShell className='m-0 flex sm:flex-col'>
-      <Pane intent='aside'>
-        <div className='flex flex-col justify-center items-center w-prose mt-5'>
-          <h2 className='max-sm:text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-3xl text-center font-sans font-bold pb-2 text-neutral-800 dark:text-neutral-100'>
-            {t('content')}
-          </h2>
-          <MainNavContent lang={lang} />
-        </div>
-      </Pane>
-
-      <Pane intent='content' className='p-0 md:p-0 overflow-y-auto snap-y snap-mandatory max-md:order-first'>
-        <div className="p-5 flex flex-col gap-5 w-full md:min-h-screen">
-          <div className='w-full max-h-[75vh] relative'>
+      <Pane intent='aside' padded={false}>
+        <div className='flex flex-col gap-3 md:mt-5'>
+          <div className='w-full relative md:hidden block'>
             <SanityImage
               image={image}
               className='w-full h-full object-cover'
               priority
             />
           </div>
-          <div className='flex flex-col'>
+          <h1 className="text-2xl sm:text-3xl font-bold font-sans">{title}</h1>
+          {subtitle && <div className="font-light font-sans">{subtitle}</div>}
+
+          <h2 className='max-sm:text-xl sm:text-2xl font-sans font-bold pb-2 text-neutral-800 dark:text-neutral-100'>
+            {t('content')}
+          </h2>
+          <MainNavContent lang={lang} />
+        </div>
+      </Pane>
+
+      <Pane intent='content' className='p-0 md:p-0 m-0 overflow-y-auto snap-y snap-mandatory hidden md:flex max-w-[1200px]'>
+        <div className='w-full relative justify-start'>
+          <SanityImage
+            image={image}
+            className='object-cover'
+            priority
+          />
+        </div>
+        {/* <div className='flex flex-col'>
             <h1 className="max-sm:text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-6xl text-center font-bold font-sans">{title}</h1>
             {subtitle && <div className="max-sm:text-xs sm:text-sm md:text-xl lg:text-xl xl:text-2xl text-center font-light font-sans">{subtitle}</div>}
-          </div>
-          <div className='flex flex-col gap-5 container max-w-[1600px] mx-auto pt-10'>
-            <TextBlocks value={linguisticDocumentBody} />
-          </div>
+          </div> */}
+        <div className='flex flex-col container max-w-[1600px] mx-auto'>
+          <TextBlocks value={linguisticDocumentBody} />
         </div>
 
         <Footer locale={lang} className='mx-auto hidden md:flex justify-center items-center h-screen' />

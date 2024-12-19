@@ -5,13 +5,13 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { cva, type VariantProps } from "class-variance-authority"
 
-import { Button } from "@/src/app/components/ui/button"
+import { Button } from "@/src/app/_components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/src/app/components/ui/dropdown-menu"
+} from "@/src/app/_components/ui/dropdown-menu"
 
 const themeSwitchVariants = cva("h-[1.2rem] w-[1.2rem] transition-all", {
   variants: {

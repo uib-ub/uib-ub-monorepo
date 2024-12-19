@@ -1,6 +1,6 @@
 "use client"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/src/app/components/ui/dialog'
-import { Button } from '@/src/app/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/src/app/_components/ui/dialog'
+import { Button } from '@/src/app/_components/ui/button'
 import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Bars4Icon } from '@heroicons/react/24/outline'

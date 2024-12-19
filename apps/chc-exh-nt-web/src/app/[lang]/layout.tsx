@@ -1,30 +1,30 @@
-import { ThemeProvider } from '@/src/app/components/providers/theme-provider'
+import { ThemeProvider } from '@/src/app/_components/providers/theme-provider'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Link, routing } from '../../../i18n/routing';
+import { Link, routing } from '@/src/i18n/routing';
 import { Merriweather_Sans, Newsreader } from 'next/font/google'
 import Script from 'next/script'
 import * as React from 'react'
 import '@/src/globals.css'
-import { MainNav } from '@/src/app/components/Header/MainNav';
-import LocaleSwitcher from '@/src/app/components/LocaleSwitcher'
+import { MainNav } from '@/src/app/_components/Header/MainNav';
+import LocaleSwitcher from '@/src/app/_components/LocaleSwitcher'
 import { siteSettings } from '@/src/sanity/lib/queries/fragments';
 import { sanityFetch } from '@/src/sanity/lib/fetch';
-import { MainNavContent } from '@/src/app/components/Header/MainNavContent';
-import { Footer } from '@/src/app/components/Footer';
-import { ThemeSwitch } from '../../components/ThemeSwitch';
+import { MainNavContent } from '@/src/app/_components/Header/MainNavContent';
+import { Footer } from '@/src/app/_components/Footer';
+import { ThemeSwitch } from '@/src/app/_components/ThemeSwitch';
 import { UiBUBMarcusLogo } from 'assets/src/react';
 import { PopoverTrigger } from '@radix-ui/react-popover';
-import { AppShell } from '../../components/shells/AppShell';
-import { PopoverContent } from '../../components/ui/popover';
-import { PanesShell } from '../../components/shells/PanesShell';
-import { Pane } from '../../components/shells/Pane';
-import { HeaderShell } from '../../components/shells/HeaderShell';
+import { AppShell } from '@/src/app/_components/shells/AppShell';
+import { PopoverContent } from '@/src/app/_components/ui/popover';
+import { PanesShell } from '@/src/app/_components/shells/PanesShell';
+import { Pane } from '@/src/app/_components/shells/Pane';
+import { HeaderShell } from '@/src/app/_components/shells/HeaderShell';
 import { UibIcon } from 'assets/src/react';
 import { Popover } from '@radix-ui/react-popover';
 import { ExternalLinkIcon } from 'lucide-react';
-import { urlFor, urlForImage } from '@/src/sanity/lib/utils';
+import { urlFor } from '@/src/sanity/lib/utils';
 import { stegaClean } from 'next-sanity';
 
 export function generateStaticParams() {
@@ -59,22 +59,25 @@ export async function generateMetadata({
   const data = await getData(lang);
   const { identifiedBy, image } = data;
 
-  const title = identifiedBy.filter((name: any) => name.language[0] === lang)[0].title;
-  const subtitle = identifiedBy.filter((name: any) => name.language[0] === lang)[0]?.subtitle;
+  const title = identifiedBy.filter((name: any) => name.language[0] === lang)?.[0]?.title;
+  const subtitle = identifiedBy.filter((name: any) => name.language[0] === lang)?.[0]?.subtitle;
 
   return {
-    title: stegaClean(title[0] ?? title),
-    description: stegaClean(subtitle[0] ?? subtitle),
+    title: {
+      default: stegaClean(title?.[0] ?? title),
+      template: `%s | ${stegaClean(title?.[0] ?? title)}`
+    },
+    description: stegaClean(subtitle?.[0] ?? subtitle),
     openGraph: {
-      title: stegaClean(title[0] ?? title),
-      description: stegaClean(subtitle[0] ?? subtitle),
+      title: stegaClean(title?.[0] ?? title),
+      description: stegaClean(subtitle?.[0] ?? subtitle),
       locale: lang,
       type: 'website'
     },
     twitter: {
       card: 'summary_large_image',
-      title: stegaClean(title[0] ?? title),
-      description: stegaClean(subtitle[0] ?? subtitle),
+      title: stegaClean(title?.[0] ?? title),
+      description: stegaClean(subtitle?.[0] ?? subtitle),
       images: [urlFor(image)?.url()]
     }
   }
@@ -139,11 +142,11 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages}>
             <AppShell>
               <PanesShell>
-                <Pane intent='sidebar' padded={true}>
+                <Pane intent='sidebar' padded={false}>
                   <UibIcon className='w-10 h-10' />
-                  {/* <MainNav layout='default'>
+                  <MainNav layout='sidebar'>
                     <MainNavContent lang={lang} />
-                  </MainNav> */}
+                  </MainNav>
 
                   <div className='grow' aria-hidden>&nbsp;</div>
                   <HeaderShell>

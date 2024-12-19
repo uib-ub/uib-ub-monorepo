@@ -4,8 +4,8 @@ import { AppShell } from '../shells/AppShell';
 import { PanesShell } from '../shells/PanesShell';
 import { Pane } from '../shells/Pane';
 import { HeaderShell } from '../shells/HeaderShell';
-import { Dialog, DialogTitle, DialogHeader, DialogContent, DialogTrigger } from '@/src/app/components/ui/dialog';
-import { Button } from '@/src/app/components/ui/button';
+import { Dialog, DialogTitle, DialogHeader, DialogContent, DialogTrigger } from '@/src/app/_components/ui/dialog';
+import { Button } from '@/src/app/_components/ui/button';
 import { ThemeSwitch } from '../ThemeSwitch';
 
 type Props = {

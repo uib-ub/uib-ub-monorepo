@@ -22,8 +22,8 @@
     "combinator": "and"
   },
   "Bla": {
-    "title": "Browse Page",
-    "description": "Browse all items in the exhibition"
+    "title": "Selected images",
+    "description": "Browse some of the images in the collection"
   },
   "Item": {
     "production": "Production",

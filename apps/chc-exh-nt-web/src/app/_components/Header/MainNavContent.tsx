@@ -24,7 +24,7 @@ export async function MainNavContent({ lang }: Readonly<{ lang: string }>) {
   const data = await getMenuData(lang)
 
   return (
-    <ul className='gap-5 text-md dark:text-neutral-300 text-neutral-700 p-5'>
+    <ul className='gap-5 text-md dark:text-neutral-300 text-neutral-700'>
       {data?.sections?.map((section: any) => (
         <React.Fragment key={section._key}>
           {section?.label && (

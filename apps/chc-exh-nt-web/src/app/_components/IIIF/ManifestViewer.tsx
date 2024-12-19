@@ -1,5 +1,9 @@
 "use client"
-import Viewer from '@samvera/clover-iiif/viewer'
+import dynamic from 'next/dynamic'
+
+const Viewer = dynamic(() => import('@samvera/clover-iiif/viewer'), {
+  ssr: false,
+})
 
 const customTheme = {
   colors: {
@@ -34,7 +38,7 @@ const customTheme = {
 };
 
 const ManifestViewer = (props: any) => {
-  return <Viewer {...props} />
+  return <Viewer {...props} theme={customTheme} />
 }
 
 export default ManifestViewer

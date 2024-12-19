@@ -10,20 +10,20 @@ export default function ItemView(props) {
 
   return (
     <div className='font-sans'>
-      <div className='relative w-full align-end'>
+      <div className='relative w-full h-full align-end'>
         {image && (
           <Link href={`/id/${_id}`} color='unset'>
             <SanityImage
               image={image}
               type='responsive'
-              style={{ objectFit: 'cover' }}
+              className='h-full w-full object-cover'
             />
           </Link>
         )}
         {!image && <div>Mangler illustrasjon</div>}
       </div>
 
-      <div className='mt-1 text-sm' >
+      {/* <div className='mt-1 text-sm' >
         {description && (
           <TextBlocks
             value={description}
@@ -45,7 +45,7 @@ export default function ItemView(props) {
             />
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   )
 }

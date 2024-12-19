@@ -18,7 +18,7 @@ export default function GridBlock(props) {
       )} */}
 
 
-      <div className='grid grid-cols-2 w-full gap-5'>
+      <div className='grid grid-cols-2 w-full'>
         {items && items.map((i) => (
           <div key={i._key} className="col-span-1">
             <ItemView {...i} />

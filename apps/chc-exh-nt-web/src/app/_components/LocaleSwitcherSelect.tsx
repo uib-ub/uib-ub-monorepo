@@ -4,13 +4,13 @@ import { useParams } from 'next/navigation';
 import React, { ReactNode, useTransition } from 'react';
 import { Locale, usePathname, useRouter } from '../../i18n/routing';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
-import { Button } from "@/src/app/components/ui/button";
+import { Button } from "@/src/app/_components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/src/app/components/ui/dropdown-menu";
+} from "@/src/app/_components/ui/dropdown-menu";
 
 type Props = {
   children: ReactNode;
