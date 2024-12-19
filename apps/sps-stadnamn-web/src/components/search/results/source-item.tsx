@@ -29,11 +29,10 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
-                        point: null,
                         parent: parent && docDataset == 'search' ? hit.fields.uuid : null,
                         attestationYear: null,
                         attestationLabel: null,
-                        ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
+                        ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed(), zoom} : {}
                     }}>
 
             <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
