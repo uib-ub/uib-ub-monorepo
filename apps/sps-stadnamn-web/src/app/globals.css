@@ -247,7 +247,7 @@
 
  
   .result-table tbody th {
-    @apply px-2 lg:px-4 border-r border-neutral-400 py-1 bg-neutral-100 font-normal; 
+    @apply px-2 lg:px-4 border-r border-neutral-400 py-1 bg-neutral-50 font-normal; 
   }
 
   
