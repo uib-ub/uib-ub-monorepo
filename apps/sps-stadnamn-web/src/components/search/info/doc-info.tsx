@@ -33,7 +33,7 @@ export default function DocInfo() {
 
     
     return <article className="instance-info flex flex-col gap-3 mobile-padding">
-        <div className="flex w-full flex-wrap gap-2">
+        <div className="flex w-full flex-wrap gap-2 border-b border-neutral-200 pb-2">
         {docData._source.children?.length > 0 &&
           <ParamLink add={{parent: docData._source.uuid}}
           arua-current={parent == docData._source.uuid ? 'page' : 'false'}
