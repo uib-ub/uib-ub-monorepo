@@ -15,6 +15,7 @@ interface DocContextData {
     parentLoading: boolean;
     parentError: Record<string, string> | null;
     docAdm: string | null;
+    snidParent: string | null;
     
   }
  
@@ -29,6 +30,7 @@ interface DocContextData {
     parentLoading: true,
     parentError: null,
     docAdm: null,
+    snidParent: null
     });
 
  
@@ -51,6 +53,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const [parentLoading, setParentLoading] = useState<boolean>(true)
     const [parentError, setParentError] = useState<Record<string, string> | null>(null)
     const [docAdm, setDocAdm] = useState<string | null>(null)
+    const [snidParent, setSnidParent] = useState<string | null>(null)
 
     useEffect(() => {
         if (parent) {
@@ -73,6 +76,26 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         }
     }   
     , [parent, dataset])
+
+    // fetch snid uuid if the doc itself is not a snid
+    useEffect(() => { 0
+
+
+        if (!doc || doc != docData?._source?.uuid || docDataset == 'search') {
+            setSnidParent(null)
+            
+        }
+        else {
+            fetch(`/api/snid?uuid=${doc}`).then(res => res.json()).then(data => {
+                if (data?.hits?.hits?.length && data.hits.hits[0].fields.children.length > 1) {
+                    setSnidParent(data.hits.hits[0].fields.uuid[0])
+                }
+                else {
+                    setSnidParent(null)
+                }
+        })
+    }
+    }, [doc, docDataset, docData?._source?.uuid])
 
 
 
@@ -134,7 +157,8 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         parentData,
         parentLoading,
         parentError,
-        docAdm
+        docAdm,
+        snidParent
 
   }}>{children}</DocContext.Provider>
 }
