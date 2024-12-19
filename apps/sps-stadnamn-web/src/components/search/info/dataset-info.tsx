@@ -39,7 +39,7 @@ export default function DatasetInfo() {
          
                     { datasetShortDescriptions[mainIndex]}
             </span>
-                    <p className='mt-2'>© {datasetPresentation[mainIndex].attribution}. <Link href={datasetPresentation[mainIndex].license.url}>
+                    <p className='mt-2'>© {datasetPresentation[mainIndex].attribution}. <Link className="whitespace-nowrap" href={datasetPresentation[mainIndex].license.url}>
                   {datasetPresentation[mainIndex].license.name}
                 </Link></p>
    
