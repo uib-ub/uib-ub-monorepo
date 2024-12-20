@@ -21,7 +21,7 @@
       class="rounded-[7px] flex space-x-2 px-2 pt-0.5 pb-1 tp-transition-shadow hover:cursor-pointer group border border-transparent hover:border-tpblue-300 focus:shadow-tphalo focus:border-tpblue-300 outline-none"
       @click="searchInterface.useDomain = !searchInterface.useDomain"
     >
-      <div>{{ $t("global.domain.domain") }}</div>
+      <div>{{ $t("global.domain.domainCap") }}</div>
       <div class="h-4 rotate-180 pb-6">
         <InputSwitch
           v-model="searchInterface.useDomain"
