@@ -6,5 +6,5 @@ const withNextra = nextra({
 })
 
 export default withNextra({
-  transpilePackages: ['tailwind-ui', 'ui-react']
+  transpilePackages: ['assets']
 })

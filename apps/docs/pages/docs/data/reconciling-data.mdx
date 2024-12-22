@@ -1,4 +1,4 @@
-import { useSSG } from 'nextra/ssg'
+import { useData } from 'nextra/hooks'
 import { useMDXComponents } from 'nextra/mdx'
 import { Steps } from 'nextra/components'
 
@@ -13,7 +13,7 @@ export const getStaticProps = async () => {
 }
  
 export const NextraRegistries = () => {
-  const data = useSSG()
+  const data = useData()
   return (
     <div>
       <h2>ConceptSchemes</h2>

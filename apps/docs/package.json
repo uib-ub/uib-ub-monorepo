@@ -17,30 +17,28 @@
     "start": "next start"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@theguild/remark-mermaid": "^0.2.0",
     "assets": "*",
-    "@heroicons/react": "^2.0.16",
-    "@theguild/remark-mermaid": "^0.0.5",
-    "clsx": "^1.2.1",
+    "clsx": "^2.1.1",
     "framer-motion": "^10",
-    "next": "^13.5.7",
-    "nextra": "^2.13.4",
-    "nextra-theme-docs": "^2.13.4",
-    "npm-to-yarn": "^2.2.1",
+    "next": "^15.1.2",
+    "nextra": "^3.3.0",
+    "nextra-theme-docs": "^3.3.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "ui-react": "*"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@napi-rs/simple-git": "^0.1.8",
     "@types/node": "18.13.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "autoprefixer": "^10.4.13",
+    "autoprefixer": "^10.4.20",
     "eslint-config-custom": "*",
-    "postcss": "^8.4.21",
-    "tailwindcss": "^3.2.7",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
     "tsconfig": "*",
-    "typescript": "^4.9.3"
+    "typescript": "^5.7.2"
   },
   "dependenciesMeta": {
     "nextra": {

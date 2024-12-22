@@ -1,14 +1,13 @@
-import { UiBIcon } from '@components/UiBIcon';
 import { useRouter } from 'next/router';
 import type { DocsThemeConfig } from 'nextra-theme-docs'
-import { UIBUBLeftEngLogo } from 'tailwind-ui';
+import { UibIcon, UibUbEn } from 'assets';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   docsRepositoryBase: 'https://github.com/uib-ub/uib-ub-monorepo',
   logo:
     <div style={{ display: 'flex', gap: '.5em' }}>
-      <UiBIcon className='fill-current' style={{ width: '1.5em', height: '1.5em' }} />
+      <UibIcon className='fill-current' style={{ width: '1.5em', height: '1.5em' }} />
       <span>Dev @ UiB-UB</span>
     </div>,
   project: {
@@ -33,7 +32,7 @@ export default {
   footer: {
     text:
       <div style={{ display: 'flex', gap: '.5em', alignItems: 'center' }}>
-        <UIBUBLeftEngLogo className='fill-current' style={{ width: '25em', height: 'auto' }} />
+        <UibUbEn className='fill-current' style={{ width: '25em', height: 'auto' }} />
         {/* <span>University of Bergen Library</span> */}
       </div>
   }

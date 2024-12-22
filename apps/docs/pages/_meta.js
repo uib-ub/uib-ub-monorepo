@@ -1,4 +1,4 @@
-{
+const meta = {
   "index": {
     "title": "Home",
     "type": "page",
@@ -23,3 +23,5 @@
     "newWindow": true
   }
 }
+
+export default meta

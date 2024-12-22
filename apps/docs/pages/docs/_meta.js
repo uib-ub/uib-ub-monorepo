@@ -1,4 +1,4 @@
-{
+const meta = {
   "index": "Introduction",
   "monorepo": "Monorepo",
   "platform": "Platform",
@@ -9,3 +9,5 @@
   "frontend": "Frontend",
   "data": "Data"
 }
+
+export default meta
