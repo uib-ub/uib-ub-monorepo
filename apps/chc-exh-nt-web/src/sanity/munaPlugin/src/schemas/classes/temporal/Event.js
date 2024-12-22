@@ -56,7 +56,6 @@ export default defineType({
     {
       name: 'hasType',
       title: 'Klassifisert som',
-      titleEN: 'Classified as',
       description: (
         <span>
           Hendelsestype som f.eks. Soppsanking. Legg til{' '}
@@ -84,7 +83,6 @@ export default defineType({
     {
       name: 'media',
       title: 'Media',
-      titleEN: 'Media',
       type: 'DigitalObjectImage',
       fieldset: 'timelineMedium',
       options: {
@@ -97,7 +95,6 @@ export default defineType({
       name: 'location',
       type: 'geopoint',
       title: 'Lokasjon',
-      titleEN: 'Location',
       description: 'Where the hell did this happen?!',
       options: {
         semanticSanity: {

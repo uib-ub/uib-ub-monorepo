@@ -8,7 +8,7 @@ import { documentInternationalization } from '@sanity/document-internationalizat
 import { languageFilter } from '@sanity/language-filter';
 import { table } from '@sanity/table';
 import { visionTool } from "@sanity/vision";
-import { PluginOptions, defineConfig } from "sanity";
+import { PluginOptions, SchemaTypeDefinition, defineConfig } from "sanity";
 import {
   defineDocuments,
   defineLocations,
@@ -22,7 +22,6 @@ import { apiVersion, dataset, projectId, studioUrl } from "@/src/sanity/lib/api"
 import { resolveHref } from "@/src/sanity/lib/utils";
 import { schemaTypes } from '@/src/sanity/munaPlugin/src';
 import SiteSettings from '@/src/sanity/munaPlugin/src/schemas/classes/persistent/information/site/SiteSettings';
-import process from 'process';
 
 const homeLocation = {
   title: "Home",
@@ -34,7 +33,7 @@ export default defineConfig({
   projectId,
   dataset,
   schema: {
-    types: schemaTypes
+    types: schemaTypes as SchemaTypeDefinition[]
   },
   document: {
     // Hide 'Settings' from new document options

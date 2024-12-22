@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@/src/app/_components/providers/theme-provider'
+import { ThemeProvider } from '@/src/components/providers/theme-provider'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -7,22 +7,20 @@ import { Merriweather_Sans, Newsreader } from 'next/font/google'
 import Script from 'next/script'
 import * as React from 'react'
 import '@/src/globals.css'
-import { MainNav } from '@/src/app/_components/Header/MainNav';
-import LocaleSwitcher from '@/src/app/_components/LocaleSwitcher'
+import { MainNav } from '@/src/components/Header/MainNav';
+import LocaleSwitcher from '@/src/components/LocaleSwitcher'
 import { siteSettings } from '@/src/sanity/lib/queries/fragments';
 import { sanityFetch } from '@/src/sanity/lib/fetch';
-import { MainNavContent } from '@/src/app/_components/Header/MainNavContent';
-import { Footer } from '@/src/app/_components/Footer';
-import { ThemeSwitch } from '@/src/app/_components/ThemeSwitch';
-import { UiBUBMarcusLogo } from 'assets/src/react';
-import { PopoverTrigger } from '@radix-ui/react-popover';
-import { AppShell } from '@/src/app/_components/shells/AppShell';
-import { PopoverContent } from '@/src/app/_components/ui/popover';
-import { PanesShell } from '@/src/app/_components/shells/PanesShell';
-import { Pane } from '@/src/app/_components/shells/Pane';
-import { HeaderShell } from '@/src/app/_components/shells/HeaderShell';
-import { UibIcon } from 'assets/src/react';
-import { Popover } from '@radix-ui/react-popover';
+import { MainNavContent } from '@/src/components/Header/MainNavContent';
+import { Footer } from '@/src/components/Footer';
+import { ThemeSwitch } from '@/src/components/ThemeSwitch';
+import { UiBUBMarcusLogo, UibIcon } from 'assets/src/react';
+import { Popover, PopoverTrigger } from '@radix-ui/react-popover';
+import { AppShell } from '@/src/components/shells/AppShell';
+import { PopoverContent } from '@/src/components/ui/popover';
+import { PanesShell } from '@/src/components/shells/PanesShell';
+import { Pane } from '@/src/components/shells/Pane';
+import { HeaderShell } from '@/src/components/shells/HeaderShell';
 import { ExternalLinkIcon } from 'lucide-react';
 import { urlFor } from '@/src/sanity/lib/utils';
 import { stegaClean } from 'next-sanity';
@@ -53,7 +51,7 @@ async function getData(lang: string) {
 export async function generateMetadata({
   params
 }: {
-  params: { lang: string }
+  params: Promise<{ lang: string }>
 }) {
   const { lang } = await params;
   const data = await getData(lang);

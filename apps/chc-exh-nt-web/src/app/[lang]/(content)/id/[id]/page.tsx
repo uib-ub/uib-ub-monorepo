@@ -1,21 +1,14 @@
 import { sanityFetch } from '@/src/sanity/lib/fetch'
 import { item } from '@/src/sanity/lib/queries/fragments'
 import { getTranslations } from 'next-intl/server'
-import { Description } from '@/src/app/_components/Props/Description'
+import { Description } from '@/src/components/Props/Description'
 import { CodeBracketSquareIcon, IdentificationIcon, SwatchIcon } from '@heroicons/react/24/outline'
-import ManifestViewer from "@/src/app/_components/IIIF/ManifestViewer"
-import { Subjects } from '@/src/app/_components/Props/Subjects'
-import { Palette } from '@/src/app/_components/Props/Palette'
+import ManifestViewer from "@/src/components/IIIF/ManifestViewer"
+import { Subjects } from '@/src/components/Props/Subjects'
+import { Palette } from '@/src/components/Props/Palette'
 import { getLabel } from '@/src/lib/utils'
-import { stegaClean } from "@sanity/client/stega"
-import { Footer } from '@/src/app/_components/Footer'
-
-interface PageProps {
-  params: {
-    lang: string
-    id: string
-  }
-}
+import { Footer } from '@/src/components/Footer'
+import { stegaClean } from 'next-sanity'
 
 const getItem = async (id: string, lang: string) => {
   const data = await sanityFetch({
@@ -27,7 +20,7 @@ const getItem = async (id: string, lang: string) => {
   return data.find((item: any) => item._id === id)
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: { params: Promise<{ lang: string, id: string }> }) {
   const { lang, id } = await params
   const item = await getItem(id, lang)
 
@@ -43,7 +36,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 }
 
-export default async function ItemPage({ params }: PageProps) {
+export default async function ItemPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
   const { lang, id } = await params
   const item = await getItem(id, lang)
   console.log("🚀 ~ ItemPage ~ item:", item)

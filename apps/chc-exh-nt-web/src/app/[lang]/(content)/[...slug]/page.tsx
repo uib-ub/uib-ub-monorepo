@@ -1,13 +1,12 @@
-import { Footer } from '@/src/app/_components/Footer'
+import { Footer } from '@/src/components/Footer'
 import { sanityFetch } from '@/src/sanity/lib/fetch'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { groq, stegaClean } from 'next-sanity'
 import { routeQuery } from '@/src/sanity/lib/queries/routeQuery'
 import { Link } from '@/src/i18n/routing'
 import React from 'react'
-import { TextBlocks } from '@/src/app/_components/TextBlocks'
-import { getTranslations } from 'next-intl/server'
-import SanityImage from '@/src/app/_components/SanityImage'
+import { TextBlocks } from '@/src/components/TextBlocks'
+import SanityImage from '@/src/components/SanityImage'
 import { urlFor } from '@/src/sanity/lib/utils'
 
 /* export async function generateStaticParams() {
@@ -28,17 +27,12 @@ import { urlFor } from '@/src/sanity/lib/utils'
   const routes = await sanityFetch({ query: routesQuery, perspective: 'published', stega: false })
   const paths = routes?.map((route: any) => (
     route.locales.map((locale: any) => ({
-      params: {
-        "slug": locale.slug,
-        "locale": locale.lang
-      }
+      lang: locale.lang,
+      slug: locale.slug
     }))
   )) || []
 
-  return {
-    paths: paths[0],
-    fallback: 'blocking',
-  }
+  return paths[0]
 } */
 
 async function getData(lang: string, slug: string[]) {
@@ -46,11 +40,7 @@ async function getData(lang: string, slug: string[]) {
   return data
 }
 
-export async function generateMetadata({
-  params
-}: {
-  params: { lang: string, slug: string[] }
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ lang: string, slug: string[] }> }) {
   const { lang, slug } = await params;
   const data = await getData(lang, slug);
   const page = data[0].translation.find((item: any) => item.language === lang) ?? data[0].translation.find((item: any) => item.language === 'no')
@@ -73,8 +63,7 @@ export async function generateMetadata({
   }
 }
 
-
-export default async function Page({ params }: { params: { lang: string, slug: string[] } }) {
+export default async function Page({ params }: { params: Promise<{ lang: string, slug: string[] }> }) {
   const { lang, slug } = await params
   const data = await getData(lang, slug);
   const page = data[0].translation.find((item: any) => item.language === lang) ?? data[0].translation.find((item: any) => item.language === 'no')

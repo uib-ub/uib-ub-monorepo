@@ -1,15 +1,9 @@
-import { Footer } from '@/src/app/_components/Footer'
-import SanityImage from '@/src/app/_components/SanityImage'
+import { Footer } from '@/src/components/Footer'
+import SanityImage from '@/src/components/SanityImage'
 import { Link } from '@/src/i18n/routing'
 import { sanityFetch } from '@/src/sanity/lib/fetch'
 import { items } from '@/src/sanity/lib/queries/fragments'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-
-interface PageProps {
-  params: {
-    lang: string
-  }
-}
 
 const getItems = async (lang: string) => {
   const data = await sanityFetch({
@@ -21,7 +15,7 @@ const getItems = async (lang: string) => {
   return data
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
   // Enable static rendering
   setRequestLocale(lang);
@@ -33,7 +27,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 }
 
-export default async function BlaPage({ params }: PageProps) {
+export default async function BlaPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
   const items = (await getItems(lang)).filter((item: any) => item.preferredIdentifier.startsWith('ubb'))
   // Enable static rendering

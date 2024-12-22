@@ -1,21 +1,20 @@
 import { siteSettings } from '@/src/sanity/lib/queries/fragments'
 /* import { Bars4Icon } from '@heroicons/react/24/outline' */
 import { sanityFetch } from '@/src/sanity/lib/fetch'
-import { setRequestLocale } from 'next-intl/server'
-import { getTranslations } from 'next-intl/server'
-import SanityImage from '@/src/app/_components/SanityImage'
-import { MainNavContent } from '@/src/app/_components/Header/MainNavContent'
-import { Footer } from '../_components/Footer'
-import { Pane } from '../_components/shells/Pane'
-import { PanesShell } from '../_components/shells/PanesShell'
-import { TextBlocks } from '../_components/TextBlocks'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
+import SanityImage from '@/src/components/SanityImage'
+import { MainNavContent } from '@/src/components/Header/MainNavContent'
+import { Footer } from '../../components/Footer'
+import { Pane } from '../../components/shells/Pane'
+import { PanesShell } from '../../components/shells/PanesShell'
+import { TextBlocks } from '../../components/TextBlocks'
 
 async function getData(lang: string) {
   const data = await sanityFetch({ query: siteSettings, params: { language: lang } })
   return data
 }
 
-export default async function Home({ params }: { params: { lang: string } }) {
+export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
   const t = await getTranslations('HomePage')
   const data = await getData(lang)

@@ -22,11 +22,6 @@ export default defineType({
   name: 'LocalizedText',
   type: 'object',
   title: 'Localized text',
-  options: {
-    semanticSanity: {
-      exclude: true
-    }
-  },
   fieldsets: [
     {
       title: 'Translations',
@@ -41,6 +36,6 @@ export default defineType({
     title: lang.title,
     name: lang.id,
     type: 'text',
-    fieldset: lang.id === i18nConfig.base ? null : 'translations',
+    fieldset: lang.id === i18nConfig.base ? undefined : 'translations',
   })),
 })
