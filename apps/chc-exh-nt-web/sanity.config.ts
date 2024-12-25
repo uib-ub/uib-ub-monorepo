@@ -8,7 +8,7 @@ import { documentInternationalization } from '@sanity/document-internationalizat
 import { languageFilter } from '@sanity/language-filter';
 import { table } from '@sanity/table';
 import { visionTool } from "@sanity/vision";
-import { PluginOptions, SchemaTypeDefinition, defineConfig } from "sanity";
+import { SchemaTypeDefinition, defineConfig } from "sanity";
 import {
   defineDocuments,
   defineLocations,
@@ -117,5 +117,5 @@ export default defineConfig({
     codeInput(),
     colorInput(),
     table(),
-  ].filter(Boolean) as PluginOptions[],
+  ].filter(Boolean),
 });
