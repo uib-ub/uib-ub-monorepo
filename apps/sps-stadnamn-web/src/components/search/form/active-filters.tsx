@@ -9,6 +9,8 @@ import { parseAsString, useQueryState } from "nuqs"
 import ParamLink from "@/components/ui/param-link"
 import { DocContext } from "@/app/doc-provider"
 import { useContext } from "react"
+import { treeSettings } from "@/config/server-config"
+import { getValueByPath } from "@/lib/utils"
 
 
 export default function ActiveFilters() {
@@ -76,6 +78,8 @@ export default function ActiveFilters() {
         router.push(`?${newSearchParams.toString()}`)
     }
 
+    const gnr =  parentData?._source && getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")
+
 
     return (
       <div className="flex flex-wrap gap-2 items-center">
@@ -93,7 +97,9 @@ export default function ActiveFilters() {
                   {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
-          {parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>Kilder<PiX className="inline text-lg" aria-hidden="true"/></button>}
+          {parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>
+            {treeSettings[dataset] ? gnr + ' ' +  parentData._source.label : 'Kilder'}
+            <PiX className="inline text-lg" aria-hidden="true"/></button>}
       </div>
   )
 
