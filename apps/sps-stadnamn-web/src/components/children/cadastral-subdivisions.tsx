@@ -35,7 +35,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
 
     const gnr =  getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")
     return (
-    <div className="bg-white">
+    <div className="">
         {
             !childrenLoading && <>
             {isMobile || mode == 'table' ?
