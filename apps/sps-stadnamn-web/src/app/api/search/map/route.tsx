@@ -4,7 +4,7 @@ import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
-import { resultConfig } from '@/config/search-config';
+import { fieldConfig, resultConfig } from '@/config/search-config';
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
@@ -32,7 +32,10 @@ export async function GET(request: Request) {
         },
       }
     },
-    "fields": (dataset == '*' || filteredParams.size == '1000') ? [...new Set(Object.values(resultConfig).flat()), 'location'] : resultConfig[dataset],
+    "fields": [
+      ...dataset == '*' ? new Set(Object.values(resultConfig).flat()) : resultConfig[dataset],
+      ...filteredParams.size == '1000' ? Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => key) : []
+    ],
     "sort": sortArray,
     "_source": false
   }
