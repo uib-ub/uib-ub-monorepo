@@ -251,13 +251,13 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       mapInstance.current = node;
 
       node.on('moveend', () => {
-        if (!isLoading) {
+        
           const bounds = node.getBounds();
           const boundsCenter = bounds.getCenter();
           setCenter([boundsCenter.lat, boundsCenter.lng]);
           setZoom(node.getZoom());
           setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
-        }
+        
       });
 
       node.whenReady(() => {
