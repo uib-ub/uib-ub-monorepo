@@ -2,7 +2,7 @@
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
-import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
+import { PiArrowRight, PiDatabase, PiFiles, PiTag } from 'react-icons/pi';
 import ParamLink from '@/components/ui/param-link';
 import { useSearchParams } from 'next/navigation';
 
