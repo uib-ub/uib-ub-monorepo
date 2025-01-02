@@ -41,11 +41,11 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
             {isMobile || mode == 'table' ?
             <h2 className="px-2 pb-2">{gnr} {parentData?._source?.label}</h2>
             
-            : <div className="flex bg-white cadastre-header rounded-t-md">
-                <h2 className={`p-2 px-4 text-lg  !font-sans text`}>
+            : <div className="flex rounded-t-md">
+                <h2 className={`p-2 px-2 text-lg  !font-sans text`}>
                     <ParamLink aria-current={doc == parentData?._source?.uuid ? 'page' : false} 
-                                      className="no-underline"
-                                      add={{ doc: parent }}><span className={`font-bold ${doc == parentData?._source?.uuid ? 'text-accent-800' : 'text-primary-600'}`}>{gnr}</span>     {parentData?._source?.label}
+                                      className="no-underline flex items-center gap-1"
+                                      add={{ doc: parent }}>{gnr}     {parentData?._source?.label} { doc == parentData?._source?.uuid ? <PiInfoFill className="text-accent-800" aria-hidden="true"/> : <PiInfo className="text-primary-600" aria-hidden="true"/>}
                     </ParamLink>
 
                 </h2>
