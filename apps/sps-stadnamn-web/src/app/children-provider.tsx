@@ -19,7 +19,7 @@ interface ChildrenContextData {
  
 export const ChildrenContext = createContext<ChildrenContextData>({
     childrenData: null,
-    childrenLoading: true,
+    childrenLoading: false,
     childrenError: null,
     });
 
@@ -34,7 +34,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     const { parentData, parentLoading, docData, setSameMarkerList } = useContext(DocContext)
     
     const [childrenData, setChildrenData] = useState<any>(null)
-    const [childrenLoading, setChildrenLoading] = useState(true)
+    const [childrenLoading, setChildrenLoading] = useState(false)
     const [childrenError, setChildrenError] = useState<Record<string, string> | null>(null)
     const searchParams = useSearchParams()
     const isTable = searchParams.get('mode') == 'table'
@@ -49,9 +49,6 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     const mode = searchParams.get('mode') || 'map'
     const { isMobile } = useContext(GlobalContext)
 
-
-    
-    
 
     useEffect(() => {
         if (parent && dataset != 'search') {

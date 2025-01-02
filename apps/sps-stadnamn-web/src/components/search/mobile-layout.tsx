@@ -4,7 +4,6 @@ import { PiDatabase, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } f
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
-import InfoContent from "./info/info-content";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
 import Facets from "./facets/facet-section";
 import StatusSection from "./status-section";
@@ -15,6 +14,12 @@ import DatasetDrawer from "./datasets/dataset-drawer";
 import TableExplorer from "./table/table-explorer";
 import { treeSettings } from "@/config/server-config";
 import { useSearchParams } from "next/navigation";
+import DocInfo from "./info/doc-info";
+import { DocContext } from "@/app/doc-provider";
+import SourceList from "./results/source-list";
+import { ChildrenContext } from "@/app/children-provider";
+import Spinner from "../svg/Spinner";
+import ParamLink from "../ui/param-link";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -33,6 +38,8 @@ export default function MobileLayout() {
     const doc = searchParams.get('doc')
     const { searchFilterParamsString } = useSearchQuery()
     const { totalHits, isLoading } = useContext(SearchContext)
+    const { docLoading, docData, parentData, parentLoading } = useContext(DocContext)
+    const { childrenLoading } = useContext(ChildrenContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
@@ -192,6 +199,9 @@ export default function MobileLayout() {
 
 
 
+
+
+
     return <div>
 
         
@@ -206,9 +216,38 @@ export default function MobileLayout() {
             <div className="w-full flex justify-center items-center h-6 rounded-t-xl bg-neutral-900" style={{touchAction: 'none'}}><div className="h-2 w-16 bg-neutral-300 rounded-full"></div></div>
             <div className={`h-full bg-white shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-8 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
-            <div className={drawerContent != 'info' ? 'hidden' : undefined }><InfoContent/></div>
+            {doc && !docLoading && docData?._source &&
+            <div className={drawerContent != 'info' ? 'hidden' : undefined }>
+
+                 <DocInfo/>
+
+                <ParamLink className="w-full" add={{parent: docData._source?.uuid}}>Legg til</ParamLink>
+
+                 {parent ? 
+                    (parentLoading || childrenLoading) ? 
+
+                    <div className="flex justify-center h-24 m-12"><Spinner status={treeSettings[dataset] ? 'Laster garder' : 'Laster kilder'} className="w-full h-full m-2 self-center" /></div>
+
+                
+                    :
+                <div className={`flex-col gap-2`}>
+                        <div className="">
+
+                        { treeSettings[dataset] ?  
+                            parentData?._id && <CadastralSubdivisions isMobile={true}/>
+                        :  dataset == 'search' && <div className="p-2"><SourceList/></div>}
+                        </div>
+                    </div>
+
+                    : null
+                }
+
+
+
+            </div>
+            }
             { drawerContent == 'results' && 
-                <section className="flex flex-col gap-2">
+                <section className="flex flex-col gap-2 !pt-4">
                     <h2 id="result_heading" className="flex gap-2 flex-wrap px-1" aria-live="polite">
                     <span className='text-center h-full font-semibold uppercase'>
                     Treff
