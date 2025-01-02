@@ -113,12 +113,12 @@ export default function DesktopLayout() {
             </div>
             }
             { treeSettings[dataset] && docData?._source?.sosi == 'gard' && (!parent || childrenLoading) &&
-            <div className="flex">
-                <h2 className="flex gap-2 no-underline justify-start items-center">
+            <div className="flex w-full">
+                <h2 className="flex gap-2 no-underline justify-start items-center w-full">
                     <ParamLink className="flex gap-2 no-underline p-2 px-4 justify-start items-center" add={{parent: docData?._source.uuid}}>
-                    <PiTable className="text-neutral-800 text-2xl"/><span className="text-xl">Matrikkeltabell</span>
+                    <PiTable className="text-neutral-800 text-2xl"/><span className="text-xl">Underordna bruk</span>
                     </ParamLink>
-                    {childrenLoading && <Spinner status="Laster matrikkeltabell"/>}
+                    {childrenLoading && <Spinner  className="ml-auto mr-2" status="Laster underordna bruk"/>}
                 </h2>
                 </div>
             
