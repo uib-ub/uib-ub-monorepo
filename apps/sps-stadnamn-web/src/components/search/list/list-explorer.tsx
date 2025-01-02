@@ -76,13 +76,13 @@ export default function ListExplorer() {
     
 
 
-    return <div  className='flex flex-col py-2 gap-y-4 h-full overflow-y-auto max-h-[calc(100vh-8rem)] '>
+    return <div  className='flex flex-col py-2 gap-4 h-full overflow-y-auto max-h-[calc(100vh-8rem)] '>
         
 
                     <ul className="flex flex-col divide-y divide-neutral-200 instance-info !pt-0">
                         {tableData?.map((item: any, index: number) => {
                             const docDataset = item._index.split('-')[2]
-                            return <li key={index} className="p-2 flex">
+                            return <li key={index} className="p-2 !py-4 flex">
                                 
                                 { item._source.image?.manifest && <ClientThumbnail manifestId={item._source.image?.manifest}/>}
                                 <div className="flex flex-col px-4">
