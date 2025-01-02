@@ -125,7 +125,7 @@ export default function DesktopLayout() {
             }
 
 
-            {parent && <div className="max-h-[40svh] min-w-[25svw] overflow-y-auto stable-scrollbar border-t border-neutral-200">
+            {parent && <div className="max-h-[40svh] min-w-[25svw] max-w-[35svw] overflow-y-auto stable-scrollbar">
             
             {treeSettings[dataset] ?  
                       parentData?._id && <CadastralSubdivisions isMobile={false}/>
