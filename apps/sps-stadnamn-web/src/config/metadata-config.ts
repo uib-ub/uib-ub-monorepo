@@ -9,6 +9,7 @@ export interface SubindexPresentation {
     imageAttribution?: string;
     description?: string;
     initPage?: string;
+    icon: string;
   }
 }
 
@@ -153,6 +154,7 @@ export const datasetPresentation: DatasetPresentation = {
         subindices: {
           leks_g: {
             initPage: "info",
+            icon: "base"
         }},
       },      
       nbas: {

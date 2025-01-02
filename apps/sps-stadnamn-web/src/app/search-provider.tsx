@@ -46,7 +46,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
 
     const searchParams = useSearchParams()
-    const isTable = searchParams.get('mode') == 'table'
+    const isTable = searchParams.get('mode') == 'table' || searchParams.get('mode') == 'list'
     const asc = searchParams.get('asc')
     const desc = searchParams.get('desc')
     const page = useQueryState('page', parseAsInteger.withDefault(1))[0]
@@ -104,7 +104,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
         })
         
         
-      }, [searchQueryString, size, searchFilterParamsString, isTable, asc, desc, page, perPage])
+      }, [searchQueryString, size, searchFilterParamsString, isTable, asc, desc, page, perPage, isMobile])
 
 
   return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, mapInstance, tableData, setResultBounds}}>{children}</SearchContext.Provider>

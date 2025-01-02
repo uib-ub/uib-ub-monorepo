@@ -49,7 +49,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                     </ParamLink>
 
                 </h2>
-                {mode != 'table' && 
+                {mode == 'map' && 
                 <div className="float-right text-2xl flex gap-2 p-1 items-center ml-auto">
 
                 <IconButton label="Lukk" onClick={() => setParent(null)}><PiX aria-hidden="true"/></IconButton>

@@ -2,29 +2,34 @@ import { treeSettings } from "@/config/server-config";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { PiCaretRight, PiMagnifyingGlass, PiTable, PiTreeView } from "react-icons/pi";
+import { PiCaretRight, PiMagnifyingGlass, PiWall } from "react-icons/pi";
+import { datasetPresentation, datasetTitles } from "@/config/metadata-config";
+
+const icons: {[key: string]: JSX.Element} ={
+    "base": <PiWall className="text-neutral-800" aria-hidden="true"/>,
+  };
 
 export default function DatasetToolbar({ dataset }: { dataset: string }) {
     const searchParams = useSearchParams()
     const mode = useQueryState('mode', { defaultValue: 'map' })[0]
     const pathname = usePathname()
 
-    return <nav className="mt-auto flex gap-2">
+    return <nav className="mt-auto flex flex-col md:flex-row gap-2">
               <Link aria-current={(pathname == '/search' && mode == 'map') ? 'page' : false}
                       href={`/search?dataset=${dataset}`} 
-                      className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
-                        <PiMagnifyingGlass aria-hidden="true"/> Søk
+                      className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-50 border border-neutral-200 rounded-md w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
+                        <PiMagnifyingGlass aria-hidden="true"/> Søkevisning
                 </Link>
+                {Object.entries(datasetPresentation[dataset]?.subindices || {}).map(([key, value]) => (
+                    <Link key={key} href={`/search?dataset=${key}&mode=table`} 
+                    className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-50 border border-neutral-200 rounded-md w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
+                        {icons[value.icon]} {datasetTitles[key][0].toUpperCase() + datasetTitles[key].slice(1)}
+                    </Link>
+                ))}
+                
 
-                {treeSettings[dataset] && <Link href={`/search?dataset=${dataset}&mode=tree`} 
-                    aria-current={mode == 'tree' ? 'page' : false}
-                    className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
-                        <PiTreeView aria-hidden="true"/> Register</Link>}
 
-            <Link href={`/info/datasets/${dataset}`} className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200"><PiTable aria-hidden="true"/>Tabell</Link>
-
-
-            <Link href={`/info/datasets/${dataset}`} className="flex whitespace-nowrap items-center gap-1 no-underline lg:ml-auto bg-neutral-100 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2">Les mer<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
+            <Link href={`/info/datasets/${dataset}`} className="flex whitespace-nowrap items-center rounded-md gap-1 no-underline bg-neutral-50 border border-neutral-200 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2">Les mer<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
 
         </nav>
     

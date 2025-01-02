@@ -33,7 +33,7 @@ export default function NavSelector({leftSection}: {leftSection: string | null})
                 </ParamLink>
 
                 
-                {!isLoading && searchFilterParamsString && mode != 'table' && <ParamLink aria-current={leftSection == 'results' ? 'page' : false}
+                {!isLoading && searchFilterParamsString && mode == 'map' && <ParamLink aria-current={leftSection == 'results' ? 'page' : false}
                       add={{nav: 'results'}}
                       className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-neutral-100 aria-[current=page]:text-neutral-950 aria-[current=page]:shadow-inner ${treeSettings[dataset] ? "ml-auto xl:ml-0" : ""}`}>
                         <PiListBullets aria-hidden="true"/>Treff

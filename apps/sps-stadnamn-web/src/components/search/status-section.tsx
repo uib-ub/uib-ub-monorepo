@@ -21,7 +21,7 @@ export default function StatusSection({isMobile}: {isMobile: boolean}) {
 
     {  <ActiveFilters/> }
     </div>
-    { (mode != 'table' && resultData?.length && !resultBounds?.length && !isLoading) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center self-center"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinater</div> : null}
+    { (mode == 'map' && resultData?.length && !resultBounds?.length && !isLoading) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center self-center"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinater</div> : null}
         
     
     </div>

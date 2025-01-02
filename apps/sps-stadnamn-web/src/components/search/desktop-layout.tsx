@@ -21,6 +21,7 @@ import { ChildrenContext } from "@/app/children-provider"
 import DocSkeleton from "./info/doc-skeleton"
 import DocInfo from "./info/doc-info"
 import ParamLink from "../ui/param-link"
+import ListExplorer from "./list/list-explorer"
 
 export default function DesktopLayout() {
     const searchParams = useSearchParams()
@@ -82,7 +83,7 @@ export default function DesktopLayout() {
         </div>
 
 
-       { mode != 'table' && (doc || parent) &&
+       { mode == 'map' && (doc || parent) &&
         <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end p-2 justify-between gap-2 h-full">
         <div className={`flex flex-col  w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? 'lg:max-h-[50svh] lg:min-h-[25svh]' :  'lg:max-h-[calc(100svh - 2rem)] lg:min-h-[25svh]'}`}>
         {doc && !docLoading && docData?._source && <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words pr-4 pl-4 py-2 overflow-y-auto stable-scrollbar`}>
@@ -140,10 +141,15 @@ export default function DesktopLayout() {
         }
         </div>
     
-        <div className={`absolute top-0 left-[25svw] ${mode == 'table' ? 'w-[75svw]' : 'max-w-[50svw] z-[2000]'} flex flex-col gap-2`}><StatusSection isMobile={false}/>
+        <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[50svw] z-[2000]': 'w-[75svw]' } flex flex-col gap-2`}><StatusSection isMobile={false}/>
             {mode == 'table' &&
                 <div className="bg-white rounded-md shadow-md mr-4">
                         <TableExplorer/>
+                </div>}
+
+            {mode == 'list' &&
+                <div className="bg-white rounded-md shadow-md mr-4">
+                        <ListExplorer/>
                 </div>}
         </div>
         { mode == 'map' &&

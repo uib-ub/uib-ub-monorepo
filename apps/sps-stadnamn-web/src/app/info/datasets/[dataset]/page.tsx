@@ -32,7 +32,7 @@ export default async function DatasetPage({params}: {params: Promise<{dataset: s
     const { dataset } = await params
     const info = datasetPresentation[dataset]
 
-    return <div className="flex flex-col md:flex-row gap-4">
+    return <div className="flex flex-col md:flex-row gap-4 dataset-info">
         <div className="xl:w-2/3">
         <Breadcrumbs parentUrl={["/info", "/info/datasets"]} parentName={["Informasjon", "Datasett"]} currentName={datasetTitles[dataset]}/>
         <h1>{datasetTitles[dataset]}</h1>
@@ -46,7 +46,7 @@ export default async function DatasetPage({params}: {params: Promise<{dataset: s
                 </ul>
         <p>{datasetDescriptions[dataset]}</p>
         <div className="space-y-2">
-                <h4 className='font-semibold'>Ressurser</h4>
+                <h4>Ressurser</h4>
                 <ul className='flex flex-wrap gap-2 !px-0 !pt-1 !mt-0 text-neutral-900'>
                 {datasetFeatures[dataset]?.map((feature) => (
                     <li key={feature} className="flex items-center gap-1">

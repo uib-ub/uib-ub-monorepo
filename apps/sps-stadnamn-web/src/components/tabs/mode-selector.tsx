@@ -1,6 +1,6 @@
 import { useSearchParams } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { PiMapTrifold, PiMapTrifoldFill, PiTable, PiTableFill } from "react-icons/pi";
+import { PiList, PiListBold, PiListFill, PiListThin, PiMapTrifold, PiMapTrifoldFill, PiTable, PiTableFill } from "react-icons/pi";
 import ParamLink from "../ui/param-link";
 
 export default function ModeSelector() {
@@ -21,6 +21,14 @@ export default function ModeSelector() {
                         className="flex  m-1 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-[current=page]:bg-neutral-100 aria-[current=page]:text-neutral-950 aria-[current=page]:shadow-inner">
                             {mode == 'table' ? <PiTableFill aria-hidden="true"/>  : <PiTable aria-hidden="true"/>}Tabell
             </ParamLink>
+
+            <ParamLink add={{mode: 'list', nav: searchParams.get('nav') == 'results' ? 'filters' : searchParams.get('nav')}} 
+                        aria-current={mode == 'list' ? 'page' : false}
+                        className="flex  m-1 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-[current=page]:bg-neutral-100 aria-[current=page]:text-neutral-950 aria-[current=page]:shadow-inner">
+                            {mode == 'list' ? <PiListBold aria-hidden="true"/>  : <PiListThin aria-hidden="true"/>}Liste
+            </ParamLink>
+
+
 
 
 

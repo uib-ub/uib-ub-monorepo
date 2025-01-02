@@ -16,10 +16,16 @@ import { useQueryState } from "nuqs"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
 import { GlobalContext } from "@/app/global-provider"
 
-export default function DocInfo() {
+export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
     const dataset = useDataset()
-    const { docDataset, docData, snidParent, sameMarkerList } = useContext(DocContext)
+    let { docDataset, docData, snidParent, sameMarkerList } = useContext(DocContext)
+    if (docParams) {
+        docDataset = docParams.docDataset
+        docData = docParams.docData
+        snidParent = docParams.snidParent
+        sameMarkerList = docParams.sameMarkerList
+    }
 
     const docSource = docData._source
     const parent = searchParams.get('parent')
@@ -100,7 +106,7 @@ export default function DocInfo() {
       
 
 
-        { docSource.image?.manifest && <div>
+        { docSource.image?.manifest && mode != 'list' && <div>
         <h3 className="!mt-0">Sedler</h3>
         <ClientThumbnail manifestId={docSource.image?.manifest}/>
 
