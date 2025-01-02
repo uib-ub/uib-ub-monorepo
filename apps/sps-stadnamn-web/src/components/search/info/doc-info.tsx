@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiArrowLeftBold, PiArrowRight, PiArrowRightBold, PiArrowUp, PiArrowUpBold, PiBracketsCurly, PiDatabase, PiDatabaseFill, PiInfinity, PiTableFill, PiTagFill, PiWarningFill, PiX, PiTag, PiTable, PiArrowArcLeftBold, PiArrowElbowUpLeftBold, PiArrowElbowLeftUpBold } from "react-icons/pi"
+import { PiArrowLeftBold, PiArrowRight, PiArrowRightBold, PiArrowUp, PiArrowUpBold, PiBracketsCurly, PiDatabase, PiDatabaseFill, PiInfinity, PiTableFill, PiTagFill, PiWarningFill, PiX, PiTag, PiTable, PiArrowArcLeftBold, PiArrowElbowUpLeftBold, PiArrowElbowLeftUpBold, PiMagnifyingGlass, PiTreeViewBold } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -14,16 +14,18 @@ import { treeSettings } from "@/config/server-config"
 import IconButton from "@/components/ui/icon-button"
 import { useQueryState } from "nuqs"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
+import { GlobalContext } from "@/app/global-provider"
 
 export default function DocInfo() {
     const searchParams = useSearchParams()
     const dataset = useDataset()
-    const { docDataset, docData, snidParent } = useContext(DocContext)
+    const { docDataset, docData, snidParent, sameMarkerList } = useContext(DocContext)
 
     const docSource = docData._source
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
     const [doc, setDoc] = useQueryState('doc')
+    const { isMobile } = useContext(GlobalContext)
 
 
     const multivalue = (value: string|string[]) => {
@@ -32,24 +34,18 @@ export default function DocInfo() {
 
 
     
-    return <article className="instance-info flex flex-col gap-3 mobile-padding">
-        <div className="flex w-full flex-wrap gap-2 border-b border-neutral-200 pb-2">
+    return <><article className="instance-info flex flex-col gap-3 mobile-padding">
+        { !isMobile && <div className="flex w-full flex-wrap gap-4 py-2">
         {docData._source.children?.length > 0 &&
           <ParamLink add={{parent: docData._source.uuid}}
           arua-current={parent == docData._source.uuid ? 'page' : 'false'}
                       remove={['center', 'zoom']}
                       className="flex items-center gap-1 no-underline text-neutral-950">
                         
-                          {parent == docData._source.uuid ? <PiDatabaseFill className="text-accent-800" aria-hidden="true"/> : <PiDatabase className="text-primary-600" aria-hidden="true"/>} Kilder <span className={`text-xs bg-neutral-50 text-neutral-900 border border-neutral-300 rounded-full px-1`}>{docData._source.children.length}</span>
+                          {parent == docData._source.uuid ? <PiTreeViewBold className="text-accent-800" aria-hidden="true"/> : <PiDatabase className="text-primary-600" aria-hidden="true"/>} Kilder <span className={`text-xs bg-neutral-50 text-neutral-900 border border-neutral-300 rounded-full px-1`}>{docData._source.children.length}</span>
           </ParamLink>}
 
 
-          { dataset != 'search' && docData?._source?.within && docDataset && 
-          <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" add={{doc: docData._source.within}}>
-            <PiArrowUpBold className="text-neutral-800" aria-hidden="true"/>
-            <span className="text-neutral-950 sr-only xl:not-sr-only">Gard</span>
-          </ParamLink>
-          }
           
           
 
@@ -65,16 +61,16 @@ export default function DocInfo() {
 
         { dataset == 'search' && docDataset != dataset &&
           <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: docDataset, doc}}>
-            <PiDatabase className="text-neutral-800" aria-hidden="true"/>
-            Kildevisning
+            <PiMagnifyingGlass className="text-neutral-800" aria-hidden="true"/>
+            Søk i datasettet
             
           </ParamLink>
         }
 
-        { docSource.sosi == 'gard' && mode != 'table' && treeSettings[dataset] &&
+        { mode != 'table' && treeSettings[dataset] &&
           
-          <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" add={{parent: docSource.uuid }}>
-            {parent ? <PiTableFill aria-hidden="true" className="text-accent-800"/> : <PiTable aria-hidden="true" className="text-neutral-800"/>} Bruk
+          <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" add={{parent: docSource.within || docSource.uuid }}>
+            {parent ? <PiTableFill aria-hidden="true" className="text-accent-800"/> : <PiTable aria-hidden="true" className="text-neutral-800"/>} Matrikkel
           </ParamLink>
 
         }
@@ -87,8 +83,8 @@ export default function DocInfo() {
         }
 
         
-        <ParamLink className="flex items-center gap-1 no-underline ml-auto" remove={['doc']}><PiX className="text-neutral-900" aria-hidden="true"/> Lukk</ParamLink>
-        </div>
+        <ParamLink className="flex items-center gap-1 no-underline ml-auto" remove={['doc', 'parent']}><PiX className="text-neutral-900" aria-hidden="true"/> Lukk</ParamLink>
+        </div>}
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
 
@@ -140,6 +136,8 @@ export default function DocInfo() {
 
         </div>
       
+
+      
       
       { docDataset && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
 
@@ -174,5 +172,28 @@ export default function DocInfo() {
    
         </div>
         </article>
+
+        {(sameMarkerList?.length && doc != parent) ?
+        
+    
+        <div className="instance-info !pt-4 mt-4 pb-4 border-t border-t-neutral-200">
+    
+        
+            <h2 className="!text-base font-semibold uppercase !font-sans">Alle treff på koordinatet</h2>
+            
+            <nav className="flex md:flex-wrap w-full flex-col md:flex-row gap-2 mt-2">
+            { sameMarkerList?.reverse().map((hit: any, index: number) => {
+            return <ParamLink key={hit._id} role="tab" aria-selected={[hit.fields?.uuid[0], hit.fields?.children?.[0]].includes(doc)} className="rounded-tabs" add={{doc: hit.fields.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid[0]}}>
+                {hit.fields.label}
+            </ParamLink>
+            }
+            )}
+            </nav>
+    
+            </div>
+            : null
+    
+        }
+        </>
 
 }
