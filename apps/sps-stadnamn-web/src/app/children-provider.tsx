@@ -87,7 +87,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                 setChildrenLoading(false)
             })
         }
-    }, [parentData, isTable, asc, desc, page, perPage, setResultBounds, parent, dataset])
+    }, [parentData, isTable, asc, desc, page, perPage, setResultBounds, parent, dataset, isMobile])
     
 
 
