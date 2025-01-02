@@ -98,7 +98,7 @@ export default function DesktopLayout() {
 
             
 
-             <><PiFiles className="text-neutral-800 text-2xl"/><span className="text-xl">Kilder</span><div className="!h-6 self-center text-base font-bold bg-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{childrenData?.length}</div></>
+             <><PiFiles className="text-neutral-800 text-2xl"/><span className="text-xl">Kilder</span><div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{docData?._source?.children?.length || childrenData?.length}</div></>
             
 
             
