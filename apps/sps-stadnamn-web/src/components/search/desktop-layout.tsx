@@ -107,7 +107,7 @@ export default function DesktopLayout() {
             </h2>
             
 
-            {parent && <ParamLink className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiTag className="text-neutral-800 text-2xl"/> {parentData?._source.label}</ParamLink>}
+            {parent && parent != doc && <ParamLink className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiArrowUpBold className="text-neutral-800 text-xl"/> Stadnamnoppslag</ParamLink>}
             {parent && <button onClick={() => setParent(null)} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></button>}
             
             </div>
