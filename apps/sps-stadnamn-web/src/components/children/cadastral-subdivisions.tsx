@@ -67,10 +67,10 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                             </thead>
                             <tbody>
                                 {childrenData.map((hit: any) => (
-                                    <tr key={hit._id} >
-                                        <th className="w-full h-full flex !p-0">
+                                    <tr key={hit._id}>
+                                        <th className="!w-full !h-full !p-0">
                                         <ParamLink aria-current={doc==hit.fields?.uuid[0] ? 'page' : false} 
-                                                            className={`no-underline w-full p-1 px-2 h-full${doc == hit.fields?.uuid[0] ? 'border-l-4 bg-accent-800' : 'pl-4'} `}
+                                                            className={`no-underline !flex !w-full p-2 !h-full grow ${doc == hit.fields?.uuid[0] ? 'border-l-4 bg-accent-800' : 'pl-4'} `}
                                                             add={{ doc: hit.fields?.uuid[0] }}>
                                         <span className={`${doc == hit.fields?.uuid[0] ? 'text-white' : 'text-black'}`}>{hit.fields[leaf] || hit.fields.cadastre?.[0]?.bnr.join(",")} {hit.fields.label}</span>
                                             
@@ -79,7 +79,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                                             </ParamLink>
                                         </th>
                                         {fields.map((field: Record<string, any>) => (
-                                            <td className="p-2" key={field.key}>{hit.fields[field.key]} {field.key} {JSON.stringify(hit)}</td>
+                                            <td className="p-2" key={field.key}>{hit.fields[field.key]}</td>
                                         ))}
                                     </tr>
                                 ))}
