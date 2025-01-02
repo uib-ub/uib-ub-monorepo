@@ -34,23 +34,6 @@ export default function SourceList() {
 
     return childrenData && parentData?._source?.uuid && Object.keys(childrenData).length > 0 ?
         <div className="mb-8 instance-info"> 
-        <div className= {`flex items-center gap-2`}>
-        <h2 className="!text-xl">
-        Kilder  
-            </h2>
-            
-        {mode != 'table' && 
-                
-
-                <IconButton className="ml-auto selv-top text-2xl" label="Lukk" onClick={() => setParent(null)}><PiX aria-hidden="true"/></IconButton>
-                
-                }
-          </div>
-          <ParamLink className="flex gap-2 font-semibold w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
-                      add={{doc: parentData._source.uuid}}
-                      aria-current={doc == parentData._source.uuid ? 'page' : undefined}>
-                 <PiTagFill className={`text-sm text-${doc == parentData._source.uuid ? 'accent-800' : 'primary-600'} self-center`}/> {parentData._source.label}
-            </ParamLink>
 
     {Object.entries<Record<string, any>[]>(childrenData.reduce((acc: Record<string, Record<string, any>[]>, doc: Record<string, any>) => {
          // Group by dataset
