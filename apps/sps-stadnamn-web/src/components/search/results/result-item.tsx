@@ -37,7 +37,8 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
                     remove={['attestationYear', 'attestationLabel', ...(parent ? ['center', 'zoom'] : [])]}
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
-                        parent: parent && docDataset == 'search' ? hit.fields.uuid : null,
+                        parent: parent ? 
+                        docDataset == 'search' ? hit.fields.uuid : hit.fields?.within : null,
                         ...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
 
