@@ -4,8 +4,11 @@ import { fieldConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiX } from "react-icons/pi"
+import { PiTagFill, PiX } from "react-icons/pi"
 import { parseAsString, useQueryState } from "nuqs"
+import ParamLink from "@/components/ui/param-link"
+import { DocContext } from "@/app/doc-provider"
+import { useContext } from "react"
 
 
 export default function ActiveFilters() {
@@ -14,6 +17,8 @@ export default function ActiveFilters() {
     const searchParams = useSearchParams()
     const dataset = useDataset()
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
+    const { parentData } = useContext(DocContext)
+    const [parent, setParent] = useQueryState('parent')
 
     const getFieldLabel = (name: string, value: string) => {
         
@@ -79,7 +84,7 @@ export default function ActiveFilters() {
             className="text-neutral-950 bg-neutral-50 border-neutral-300 border shadow-md rounded-md gap-2 pl-4 pr-2 py-1 flex items-center">Fulltekst 
             <PiX className="inline text-lg" aria-hidden="true"/></button> }
         
-          {facetFilters.map(([key, value]) => (
+          {!parentData && facetFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 
@@ -88,6 +93,7 @@ export default function ActiveFilters() {
                   {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
+          {parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>Kilder<PiX className="inline text-lg" aria-hidden="true"/></button>}
       </div>
   )
 

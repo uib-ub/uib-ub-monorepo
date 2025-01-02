@@ -19,7 +19,7 @@ export default function StatusSection({isMobile}: {isMobile: boolean}) {
     <div className="flex gap-2 mt-2">
     <ModeSelector/>
 
-    { mode != 'tree' && (facetFilters?.length > 0 || searchParams.get('fulltext') == 'on') && <ActiveFilters/> }
+    {  <ActiveFilters/> }
     </div>
     { (mode != 'table' && resultData?.length && !resultBounds?.length && !isLoading) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center self-center"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinater</div> : null}
         
