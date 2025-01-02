@@ -202,7 +202,7 @@ export default function MobileLayout() {
 
 
 
-    return <div>
+    return <div className="scroll-container">
 
         
         
