@@ -35,58 +35,14 @@ export default function DocInfo() {
 
     
     return <><article className="instance-info flex flex-col gap-3 mobile-padding">
-        { !isMobile && <div className="flex w-full flex-wrap gap-4 py-2">
-        {docData._source.children?.length > 0 &&
-          <ParamLink add={{parent: docData._source.uuid}}
-          arua-current={parent == docData._source.uuid ? 'page' : 'false'}
-                      remove={['center', 'zoom']}
-                      className="flex items-center gap-1 no-underline text-neutral-950">
-                        
-                          {parent == docData._source.uuid ? <PiTreeViewBold className="text-accent-800" aria-hidden="true"/> : <PiDatabase className="text-primary-600" aria-hidden="true"/>} Kilder <span className={`text-xs bg-neutral-50 text-neutral-900 border border-neutral-300 rounded-full px-1`}>{docData._source.children.length}</span>
-          </ParamLink>}
+      <div className="">
 
-
-          
-          
-
-
-
-
-        {dataset == 'search' && snidParent && 
-        <ParamLink add={{doc: snidParent}} className="flex items-center gap-1 no-underline">
-          {<PiArrowUpBold className="text-neutral-800" aria-hidden="true"/>}
-          <span className="text-neutral-950 sr-only xl:not-sr-only">Stedsnavnside</span>
-        </ParamLink>
-        }
-
-        { dataset == 'search' && docDataset != dataset &&
-          <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: docDataset, doc}}>
-            <PiMagnifyingGlass className="text-neutral-800" aria-hidden="true"/>
-            Søk i datasettet
-            
-          </ParamLink>
-        }
-
-        { mode != 'table' && treeSettings[dataset] &&
-          
-          <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" add={{parent: docSource.within || docSource.uuid }}>
-            {parent ? <PiTableFill aria-hidden="true" className="text-accent-800"/> : <PiTable aria-hidden="true" className="text-neutral-800"/>} Matrikkel
-          </ParamLink>
-
-        }
-
-        { dataset != 'search' && snidParent &&
-          <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: 'search', doc: snidParent}}>
-            <PiTag className="text-neutral-800" aria-hidden="true"/>
-            Stedsnavnside
-          </ParamLink>
-        }
-
-        
-        <ParamLink className="flex items-center gap-1 no-underline ml-auto" remove={['doc', 'parent']}><PiX className="text-neutral-900" aria-hidden="true"/> Lukk</ParamLink>
-        </div>}
+            <IconButton className="float-right absolute top-2 right-0 text-2xl" label="Lukk" onClick={() => setDoc(null)}><PiX aria-hidden="true"/></IconButton>
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
+        
+ 
+        </div>
 
 
         <div className="flex gap-2"><h2>{docSource.label}</h2>{docSource.audio && 
@@ -129,7 +85,7 @@ export default function DocInfo() {
         <Link href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
          
               className="flex items-center gap-1 bg-neutral-50 border border-neutral-200 px-2 rounded-full text-neutral-950 no-underline">
-                {docDataset == 'search' ? <><PiTagFill aria-hidden="true" className="text-neutral-800"/> Stadnamn</> : <><PiDatabaseFill aria-hidden="true" className="text-neutral-800"/>{datasetTitles[docDataset as string]}</>}</Link>
+                {docDataset == 'search' ? <><PiTagFill aria-hidden="true" className="text-neutral-800"/> Stadnamnoppslag</> : <><PiDatabaseFill aria-hidden="true" className="text-neutral-800"/>{datasetTitles[docDataset as string]}</>}</Link>
         }
 
         
@@ -160,13 +116,27 @@ export default function DocInfo() {
               Varig side
             </Link>
             <CopyLink uuid={docSource.uuid}/> 
+            </>
+            : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
+            }
+            {snidParent &&
+                <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: 'search', doc: snidParent}}>
+                  <PiTag className="text-neutral-800" aria-hidden="true"/>
+                  Stadnamnoppslag
+                </ParamLink>
+            }
+            {dataset == 'search' && docDataset != dataset &&
+                <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: docDataset, doc}}>
+                  <PiMagnifyingGlass className="text-neutral-800" aria-hidden="true"/>
+                  Søk i datasettet
+                  
+                </ParamLink>
+            }
             <Link href={"/uuid/" + docSource.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
               <PiBracketsCurly aria-hidden="true"/>
               Json
             </Link>
-        </>
-          : <div className="flex gap-1 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
-      }
+
 
 
    
