@@ -17,9 +17,6 @@ export async function GET(request: Request) {
   if (!sortArray.length) {
     sortArray = getSortArray(dataset)
   }
-
-  console.log("TERM FILTERS", termFilters)
-  console.log("FILTERED PARAMS", filteredParams)
     
   const query: Record<string,any> = {
     "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
