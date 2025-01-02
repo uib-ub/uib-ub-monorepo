@@ -45,7 +45,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                 <h2 className={`p-2 px-2 text-lg  !font-sans text`}>
                     <ParamLink aria-current={doc == parentData?._source?.uuid ? 'page' : false} 
                                       className="no-underline flex items-center gap-1"
-                                      add={{ doc: parent }}>{gnr}     {parentData?._source?.label} { doc == parentData?._source?.uuid ? <PiInfoFill className="text-accent-800" aria-hidden="true"/> : <PiInfo className="text-primary-600" aria-hidden="true"/>}
+                                      add={{ doc: parent }}>{gnr} {parentData?._source?.label} { doc == parentData?._source?.uuid ? <PiInfoFill className="text-accent-800" aria-hidden="true"/> : <PiInfo className="text-primary-600" aria-hidden="true"/>}
                     </ParamLink>
 
                 </h2>
