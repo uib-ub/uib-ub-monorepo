@@ -20,6 +20,7 @@ import SourceList from "./results/source-list";
 import { ChildrenContext } from "@/app/children-provider";
 import Spinner from "../svg/Spinner";
 import ParamLink from "../ui/param-link";
+import ListExplorer from "./list/list-explorer";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -207,14 +208,14 @@ export default function MobileLayout() {
         
         
 
-        <div className={`mobile-interface fixed  bottom-12 w-full rounded-t-xl bg-white  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
+        <div className={`mobile-interface fixed  bottom-12 w-full rounded-t-xl bg-neutral-900  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
              style={{height: `${drawerContent ? currentPosition : 0}svh`}}
              onTouchStart={handleTouchStart} 
              onTouchMove={handleTouchMove}
              onTouchEnd={handleTouchEnd}>
         { drawerContent && <>
             <div className="w-full flex justify-center items-center h-6 rounded-t-xl bg-neutral-900" style={{touchAction: 'none'}}><div className="h-2 w-16 bg-neutral-300 rounded-full"></div></div>
-            <div className={`h-full bg-white shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-8 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
+            <div className={`h-full bg-white rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-8 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {doc && !docLoading && docData?._source &&
             <div className={drawerContent != 'info' ? 'hidden' : undefined }>
@@ -287,9 +288,14 @@ export default function MobileLayout() {
             
         </div>
 
-        <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
+        <div className={`absolute top-12 right-0 w-full bg-transparent rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
         <StatusSection isMobile={true}/>
-        { mode == 'table' ? <TableExplorer/> : <MapExplorer isMobile={true}/>}
+        { mode == 'table' && <TableExplorer/>}
+        { mode == 'list' && <ListExplorer/>}
+        </div>
+
+        <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
+        { mode == 'map' && <MapExplorer isMobile={true}/>}
         </div>
 
 

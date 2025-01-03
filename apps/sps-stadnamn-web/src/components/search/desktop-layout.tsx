@@ -53,10 +53,10 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
         
 
-        <div className={`lg:absolute left-2 top-2 flex-col gap-2 max-h-[calc(100svh-6rem)] max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-md rounded-md`}>
+        <div className={`lg:absolute left-2 top-2 flex-col gap-2 max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-md rounded-md`}>
 
         <NavSelector leftSection={nav}/>
-        <div className="overflow-y-auto stable-scrollbar pl-2 max-h-[calc(100svh-10rem)] py-3 border-t border-neutral-200">
+        <div className="overflow-y-auto stable-scrollbar pl-2 max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200">
 
         { nav == 'tree' && 
             <TreeResults isMobile={false}/>
@@ -141,16 +141,10 @@ export default function DesktopLayout() {
         }
         </div>
     
-        <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[50svw] z-[2000]': 'w-[75svw]' } flex flex-col gap-2`}><StatusSection isMobile={false}/>
-            {mode == 'table' &&
-                <div className="bg-white rounded-md shadow-md mr-4">
-                        <TableExplorer/>
-                </div>}
+        <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[50svw] z-[2000]': 'w-[75svw] max-h-[calc(100svh-4rem)] top-2 mr-4 bg-white rounded-md shadow-md overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}><StatusSection isMobile={false}/>
+            {mode == 'table' && <TableExplorer/> }
 
-            {mode == 'list' &&
-                <div className="bg-white rounded-md shadow-md mr-4">
-                        <ListExplorer/>
-                </div>}
+            {mode == 'list' && <ListExplorer/> }
         </div>
         { mode == 'map' &&
             <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">

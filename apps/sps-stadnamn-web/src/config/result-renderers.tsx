@@ -1,5 +1,3 @@
-import { fieldConfig } from "./search-config";
-
 interface Renderer {
   fields?: string[];
   title: (hit: any, display: string) => any;

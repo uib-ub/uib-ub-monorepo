@@ -16,7 +16,7 @@ export default function StatusSection({isMobile}: {isMobile: boolean}) {
     const searchParams = useSearchParams()
 
     return <div className="flex flex-col gap-2"> 
-    <div className="flex gap-2 mt-2">
+    <div className={`flex gap-2 flex-wrap items-center ${(mode == 'map' || isMobile) ? 'mt-2' : ''} ${isMobile ? 'mx-2' : ''}`}>
     <ModeSelector/>
 
     {  <ActiveFilters/> }

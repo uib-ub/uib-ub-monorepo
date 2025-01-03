@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiArrowLeftBold, PiArrowRight, PiArrowRightBold, PiArrowUp, PiArrowUpBold, PiBracketsCurly, PiDatabase, PiDatabaseFill, PiInfinity, PiTableFill, PiTagFill, PiWarningFill, PiX, PiTag, PiTable, PiArrowArcLeftBold, PiArrowElbowUpLeftBold, PiArrowElbowLeftUpBold, PiMagnifyingGlass, PiTreeViewBold } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -12,9 +12,8 @@ import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { treeSettings } from "@/config/server-config"
 import IconButton from "@/components/ui/icon-button"
-import { useQueryState } from "nuqs"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
-import { GlobalContext } from "@/app/global-provider"
+import { useQueryState } from "nuqs"
 
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
@@ -31,7 +30,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
     const [doc, setDoc] = useQueryState('doc')
-    const { isMobile } = useContext(GlobalContext)
 
 
     const multivalue = (value: string|string[]) => {
