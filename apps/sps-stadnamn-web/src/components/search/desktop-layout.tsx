@@ -141,7 +141,8 @@ export default function DesktopLayout() {
         }
         </div>
     
-        <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[50svw] z-[2000]': 'w-[75svw] max-h-[calc(100svh-4rem)] top-2 mr-4 bg-white rounded-md shadow-md overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}><StatusSection isMobile={false}/>
+        <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[calc(50svw-0.5rem)] z-[2000]': 'w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] top-2 bg-white rounded-md shadow-md overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}>
+            <StatusSection isMobile={false}/>
             {mode == 'table' && <TableExplorer/> }
 
             {mode == 'list' && <ListExplorer/> }
