@@ -8,7 +8,7 @@ export interface SubindexPresentation {
     alt?: string;
     imageAttribution?: string;
     description?: string;
-    initPage?: string;
+    initMode?: string;
     icon: string;
   }
 }
@@ -22,7 +22,7 @@ export interface DatasetPresentation {
     attribution: string;
     links?: {title?: string, href: string, text?: string}[];
     subindices?: SubindexPresentation;
-    initPage?: string;
+    initMode?: string;
   }
 }
 
@@ -150,10 +150,9 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "Skanna av Språksamlingane",
         license: licenses.ccby4,
         attribution: "Berit Sandnes. Berika av Språksamlingane", 
-        initPage: "info",
         subindices: {
           leks_g: {
-            initPage: "info",
+            initMode: "list",
             icon: "base"
         }},
       },      
