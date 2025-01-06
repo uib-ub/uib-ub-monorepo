@@ -2,10 +2,13 @@
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import { parseAsInteger, useQueryState } from 'nuqs';
+import { SearchContext } from '@/app/search-provider';
+import { useContext } from 'react';
 
 export default function Pagination({ totalPages }: { totalPages: number}) {
   const [perPage, setPerPage] = useQueryState('perPage', parseAsInteger.withDefault(10))
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1))
+  const { totalHits } = useContext(SearchContext)
 
  return  (
   <div className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
@@ -18,9 +21,9 @@ export default function Pagination({ totalPages }: { totalPages: number}) {
 
   }
 
-  { page > 1 ? <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400'>Side {page} av {totalPages}</span>
-   : <span className='px-3 py-1 rounded-sm border-neutral-400'>Side {page} av {totalPages}</span>
-  }
+  { page > 1 ? <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400'>{(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value}{totalHits?.relation != 'eq' ? '+' : ''}</span>
+   : <span className='px-3 py-1 rounded-sm border-neutral-400'>{(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value}{totalHits?.relation != 'eq' ? '+' : ''}</span>}
+  
     
   { 
     <IconButton disabled={page == totalPages} onClick={() =>setPage(page + 1)} label="Neste side" className='btn btn-outline btn-compact grow md:grow-0'><PiCaretRight/></IconButton>
