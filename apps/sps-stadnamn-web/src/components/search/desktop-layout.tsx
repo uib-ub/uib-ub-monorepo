@@ -93,13 +93,13 @@ export default function DesktopLayout() {
         
         </div>
         { docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1 || (treeSettings[dataset] && docData?._source?.sosi == 'gard') || parent ?
-         <div className="rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start">
+         <div className={`rounded-md shadow-md !z-[3001] ${parent ? 'bg-white' : 'bg-primary-600'}  flex flex-col instance-info justify-start`}>
             { !treeSettings[dataset] &&<div className="flex">
-            <h2 className=""><ParamLink className="flex gap-2 no-underline p-2 px-4 justify-start items-center" add={{parent: docData?._source.uuid}}>
+            <h2><ParamLink className={`flex gap-2 no-underline p-2 px-4 justify-start items-center ${parent ? 'text-neutral-950' : 'text-white'}`} add={{parent: docData?._source.uuid}}>
 
             
 
-             <><PiFiles className="text-neutral-800 text-2xl"/><span className="text-xl">Kilder</span><div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{docData?._source?.children?.length || childrenData?.length}</div></>
+             <><PiFiles className="text-2xl"/><span className="text-xl">Kilder</span><div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{docData?._source?.children?.length || childrenData?.length}</div></>
             
 
             
