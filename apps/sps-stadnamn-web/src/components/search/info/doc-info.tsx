@@ -69,11 +69,11 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             {Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
                 <>
                 {[docSource.adm1, docSource.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
-                {[docSource.adm1, docSource.adm2, docSource.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-full text-neutral-900 no-underline" key={index} href={'http://www.wikidata.org/entity/' + docSource.wikiAdm[index]}>{item}</Link>)}
+                {[docSource.adm1, docSource.adm2, docSource.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-md text-neutral-900 no-underline" key={index} href={'http://www.wikidata.org/entity/' + docSource.wikiAdm[index]}>{item}</Link>)}
                 </>
             
                 || docSource.wikiAdm && docDataset != 'm1838' 
-                    &&  <Link  className="flex align-middle bg-neutral-50 border border-neutral-200 pr-1 pl-3 rounded-full text-neutral-950 no-underline external-link" href={'http://www.wikidata.org/entity/' + docSource.wikiAdm}>
+                    &&  <Link  className="flex align-middle bg-neutral-50 border border-neutral-200 pr-0 pl-2 rounded-md text-neutral-950 no-underline external-link" href={'http://www.wikidata.org/entity/' + docSource.wikiAdm}>
                         
                         <span className="max-w-[12rem] truncate">
                 {docSource.adm3 && multivalue(docSource.adm3) + " – "}
@@ -91,7 +91,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         { dataset == 'search' && 
         <Link href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
          
-              className="flex items-center gap-1 bg-neutral-50 border border-neutral-200 px-2 rounded-full text-neutral-950 no-underline">
+              className="flex items-center gap-1 bg-neutral-50 border border-neutral-200 px-2 rounded-md text-neutral-950 no-underline">
                 {docDataset == 'search' ? <><PiTagFill aria-hidden="true" className="text-neutral-800"/> Stadnamnoppslag</> : <><PiDatabaseFill aria-hidden="true" className="text-neutral-800"/>{datasetTitles[docDataset as string]}</>}</Link>
         }
 
