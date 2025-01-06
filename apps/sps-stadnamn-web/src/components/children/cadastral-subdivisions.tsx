@@ -38,7 +38,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
     <div className="">
         {
             !childrenLoading && <>
-            {isMobile || mode == 'table' ?
+            {(isMobile || mode == 'table') ?
             <h2 className="px-2 pb-2">{gnr} {parentData?._source?.label}</h2>
             
             : <div className="flex rounded-t-md">
