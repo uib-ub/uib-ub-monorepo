@@ -93,13 +93,13 @@ export default function DesktopLayout() {
         
         </div>
         { docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1 || (treeSettings[dataset] && docData?._source?.sosi == 'gard') || parent ?
-         <div className={`rounded-md shadow-md !z-[3001] ${parent ? 'bg-white' : 'bg-primary-600'}  flex flex-col instance-info justify-start`}>
+         <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start`}>
             { !treeSettings[dataset] &&<div className="flex">
-            <h2><ParamLink className={`flex gap-2 no-underline p-2 px-4 justify-start items-center ${parent ? 'text-neutral-950' : 'text-white'}`} add={{parent: docData?._source.uuid}}>
+            <h2><ParamLink className={`flex gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950`} add={{parent: docData?._source.uuid}}>
 
             
 
-             <><PiFiles className="text-2xl"/><span className="text-xl">Kilder</span><div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{docData?._source?.children?.length || childrenData?.length}</div></>
+             <><PiFilesFill className="text-2xl text-primary-600"/><span className="text-xl">Kilder</span><div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{docData?._source?.children?.length || childrenData?.length}</div></>
             
 
             
@@ -115,9 +115,9 @@ export default function DesktopLayout() {
             }
             { treeSettings[dataset] && docData?._source?.sosi == 'gard' && (!parent || childrenLoading) &&
             <div className="flex w-full">
-                <h2 className={`flex gap-2 no-underline justify-start items-center w-full ${parent ? 'text-neutral-950' : 'text-white'}`}>
+                <h2 className={`flex gap-2 no-underline justify-start items-center w-full text-neutral-950`}>
                     <ParamLink className="flex gap-2 no-underline p-2 px-4 justify-start items-center" add={{parent: docData?._source.uuid}}>
-                    <PiTable className={`text-2xl ${parent ? 'text-neutral-950' : 'text-white'}`}/><span className={`text-xl ${parent ? 'text-neutral-950' : 'text-white'}`}>Underordna bruk</span>
+                    <PiTableFill className={`text-2xl text-primary-600`}/><span className={`text-xl`}>Underordna bruk</span>
                     </ParamLink>
                     {childrenLoading && <Spinner  className="ml-auto mr-2" status="Laster underordna bruk"/>}
                 </h2>
