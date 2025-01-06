@@ -200,11 +200,6 @@ export default function MobileLayout() {
 
 
 
-
-
-
-
-
     return <div className="scroll-container">
 
         
@@ -222,11 +217,15 @@ export default function MobileLayout() {
                     {drawerContent == 'datasets' && 'Datasett'}
                     {drawerContent == 'filters' && 'Filtre'}
                     {drawerContent == 'tree' && 'Register'}
-                    {drawerContent == 'info' && parent && doc == parent && 'Kilder'}
-                    {drawerContent == 'info' && parent && doc != parent && 'Kilde'}
-                    {drawerContent == 'info' && !parent && 'Oppslag'}
+                    {drawerContent == 'info' ? <>
+                        {parent && doc == parent && !treeSettings[dataset] && 'Kilder'}
+                        {parent && doc == parent && treeSettings[dataset] && 'Bruk'}
+                        {parent && doc != parent && 'Kilde'}
+                        {!parent && 'Oppslag'}
+                    </> : null}
+                    
                 </h2>
-                <div className="absolute -translate-x-1/2 left-1/2 h-2 w-16 bg-neutral-300 rounded-full"></div></div>
+                <div className="absolute -translate-x-1/2 left-1/2 h-2 top-2 w-16 bg-neutral-300 rounded-full"></div></div>
             <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-5 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             { docLoading && <div className="flex"><DocSkeleton/></div>}
