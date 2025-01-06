@@ -156,7 +156,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         <div className="instance-info !pt-4 mt-4 pb-4 border-t border-t-neutral-200">
     
         
-            <h2 className="!text-base font-semibold uppercase !font-sans">Alle treff på koordinatet</h2>
+            <h2 className="!text-base font-semibold uppercase !font-sans px-1">Alle treff på koordinatet</h2>
             
             <nav className="flex md:flex-wrap w-full flex-col md:flex-row gap-2 mt-2">
             { sameMarkerList?.reverse().map((hit: any, index: number) => {
