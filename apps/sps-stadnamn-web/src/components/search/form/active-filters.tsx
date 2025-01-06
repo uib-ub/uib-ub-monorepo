@@ -99,7 +99,7 @@ export default function ActiveFilters() {
               </button>
           ))}
           {parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>
-            {treeSettings[dataset] ? gnr + ' ' +  parentData._source.label : 'Kilder'}
+            {treeSettings[dataset] ? gnr + ' ' +  parentData._source.label : 'Kilder: ' + parentData._source.label}
             <PiX className="inline text-lg" aria-hidden="true"/></button>}
       </>
   )
