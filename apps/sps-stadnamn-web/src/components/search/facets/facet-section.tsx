@@ -17,7 +17,7 @@ export default function Facets() {
 
       return (
         <>
-        <div role="tablist" className="flex flex-wrap items-center gap-1 mx-2">
+        <div role="tablist" className="flex flex-wrap items-center gap-1">
         { contentSettings[dataset]?.adm && <>
           <h3>
           <ParamLink type="button" role="tab" aria-selected={facet == 'adm'} add={{facet: 'adm'}} className='rounded-tabs'>

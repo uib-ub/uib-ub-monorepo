@@ -324,7 +324,7 @@
 
 
   .mobile-interface .mobile-padding {
-    @apply px-1;
+    @apply p-2;
   }
 
 

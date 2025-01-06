@@ -20,10 +20,10 @@ export default function DatasetDrawer() {
 
 
   return (    
-        <section className="flex gap-2 flex-col mobile-padding">
+        <section className="flex gap-2 flex-col">
           <DatasetInfo/>
           { isMobile ?
-          <h3 className="text-xl small-caps px-2 mt-4" >
+          <h3 className="text-xl px-2 mt-4" >
             Velg datasett
           </h3>
           :

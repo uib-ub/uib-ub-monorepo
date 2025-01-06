@@ -164,7 +164,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   return (
     <>
     { true &&
-    <div className="flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-2 py-2">
     <div className='flex gap-2'>
     <div className='relative grow'>
       <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 

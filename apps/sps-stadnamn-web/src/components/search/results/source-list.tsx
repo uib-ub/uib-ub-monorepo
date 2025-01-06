@@ -33,7 +33,7 @@ export default function SourceList() {
 
 
     return childrenData && parentData?._source?.uuid && Object.keys(childrenData).length > 0 ?
-        <div className="mb-8 instance-info"> 
+        <div className="xl:mb-8 instance-info"> 
 
     {Object.entries<Record<string, any>[]>(childrenData.reduce((acc: Record<string, Record<string, any>[]>, doc: Record<string, any>) => {
          // Group by dataset

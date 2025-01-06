@@ -67,15 +67,15 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
 
   return <>
   { treeAdm &&
-  <div className="px-4 py-2 text-lg flex">
+  <div className="pt-2 pb-4 mx-2 !text-base flex">
   <ParamLink id="tree-title" aria-label="Innholdsfortegnelse" 
                     className="breadcrumb-link self-center  text-base" 
                     only={{dataset, adm: null, nav: 'tree', mode: searchParams.get('mode')}}>
-      <PiHouseFill aria-hidden="true"/>
+      <PiHouseFill aria-hidden="true" className="text-base"/>
       </ParamLink>
       &nbsp;/&nbsp;
       {groupBy == 'adm2' ? <>{treeAdm}</>
-      : <ParamLink className="breadcrumb-link" only={{dataset, adm: treeAdm.split("__")[1], nav: 'tree', mode: searchParams.get('mode')}}>
+      : <ParamLink className="breadcrumb-link !text-base" only={{dataset, adm: treeAdm.split("__")[1], nav: 'tree', mode: searchParams.get('mode')}}>
               {treeAdm.split("__")[1]}
           </ParamLink>}
           {!groupBy && <>
@@ -88,9 +88,9 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
   </div>
 
   } 
-  { groupBy == 'adm1' && <h2 className="text-lg mx-4 my-2 font-serif">Fylker</h2> }
-  { groupBy == 'adm2' && <h2 className="text-lg mx-4 my-2 font-serif">Kommuner</h2> }
-  { !groupBy && <h2 className="text-lg mx-4 my-2 font-serif">Garder</h2> }
+  { groupBy == 'adm1' && <h2 className="text-lg m-2 font-serif">Fylker</h2> }
+  { groupBy == 'adm2' && <h2 className="text-lg m-2 font-serif">Kommuner</h2> }
+  { !groupBy && <h2 className="text-lg mx-2 font-serif">Garder</h2> }
 
   <ul className="flex flex-col">
 
