@@ -14,6 +14,7 @@ import { treeSettings } from "@/config/server-config"
 import IconButton from "@/components/ui/icon-button"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
 import { useQueryState } from "nuqs"
+import { GlobalContext } from "@/app/global-provider"
 
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
@@ -30,6 +31,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
     const [doc, setDoc] = useQueryState('doc')
+    const isMobile = useContext(GlobalContext).isMobile
 
 
     const multivalue = (value: string|string[]) => {
@@ -39,14 +41,15 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
     
     return <><article className="instance-info flex flex-col gap-3 mobile-padding">
-      <div className="">
+      {((dataset != 'search' && docData?._source?.within && docDataset) || !isMobile) && <div className="!mt-0">
 
-            <IconButton className="float-right absolute top-2 right-0 text-2xl" label="Lukk" onClick={() => setDoc(null)}><PiX aria-hidden="true"/></IconButton>
+            
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-        
+        <button className="float-right absolute top-2 right-0 text-2xl" aria-label="Lukk" onClick={() => setDoc(null)}><PiX aria-hidden="true"/></button>
  
-        </div>
+        </div>}
+      
 
 
         <div className="flex gap-2"><h2>{docSource.label}</h2>{docSource.audio && 
