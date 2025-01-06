@@ -59,7 +59,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>
         <div className="flex gap-1 flex-wrap">
         {
-         docSource.sosi && docDataset != 'search' && <Link className="flex items-center bg-neutral-50 border border-neutral-200 pl-3 pr-1 rounded-full text-neutral-950 no-underline external-link"
+         docSource.sosi && docDataset != 'search' && <Link className="flex items-center bg-neutral-50 border border-neutral-200 pl-2 pr-0 rounded-md text-neutral-950 no-underline external-link"
          href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + docSource.sosi}>
             { docSource.sosi}
         </Link>
