@@ -19,10 +19,11 @@ export default function ListExplorer() {
                             const docDataset = item._index.split('-')[2]
                             return <li key={index} className="p-2 !py-4 flex">
                                 
-                                { item._source.image?.manifest && <ClientThumbnail manifestId={item._source.image?.manifest}/>}
+                                
                                 <div className="flex flex-col px-4">
                                 <DocInfo docParams={{docDataset, docData: item, snidParent: null, sameMarkerList: []}}/>
                                 </div>
+                                { item._source.image?.manifest && <div className="ml-auto"><ClientThumbnail manifestId={item._source.image?.manifest}/></div>}
                                 
                             </li>
                       
