@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiDatabase, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } from "react-icons/pi";
+import { PiArrowLeft, PiDatabase, PiDatabaseFill, PiFiles, PiFilesFill, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill, PiX } from "react-icons/pi";
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
@@ -21,6 +21,7 @@ import { ChildrenContext } from "@/app/children-provider";
 import Spinner from "../svg/Spinner";
 import ParamLink from "../ui/param-link";
 import ListExplorer from "./list/list-explorer";
+import DocSkeleton from "./info/doc-skeleton";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -45,6 +46,7 @@ export default function MobileLayout() {
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
     const dataset = useDataset()
+    const parent = searchParams.get('parent')
 
 
 
@@ -214,15 +216,24 @@ export default function MobileLayout() {
              onTouchMove={handleTouchMove}
              onTouchEnd={handleTouchEnd}>
         { drawerContent && <>
-            <div className="w-full flex justify-center items-center h-6 rounded-t-xl bg-neutral-900" style={{touchAction: 'none'}}><div className="h-2 w-16 bg-neutral-300 rounded-full"></div></div>
-            <div className={`h-full bg-white rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-8 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
+            <div className="w-full flex  items-center h-8 pt-2 rounded-t-xl bg-neutral-900 relative px-2" style={{touchAction: 'none'}}>
+                <h2 className="uppercase text-base font-semibold font-sans text-neutral-50 tracking-wider">
+                    {drawerContent == 'results' && 'Treff'}
+                    {drawerContent == 'datasets' && 'Datasett'}
+                    {drawerContent == 'filters' && 'Filtre'}
+                    {drawerContent == 'tree' && 'Register'}
+                    {drawerContent == 'info' && parent && doc == parent && 'Kilder'}
+                    {drawerContent == 'info' && parent && doc != parent && 'Kilde'}
+                    {drawerContent == 'info' && !parent && 'Oppslag'}
+                </h2>
+                <div className="absolute -translate-x-1/2 left-1/2 h-2 w-16 bg-neutral-300 rounded-full"></div></div>
+            <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-5 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
+            { docLoading && <div className="flex"><DocSkeleton/></div>}
             {doc && !docLoading && docData?._source &&
-            <div className={drawerContent != 'info' ? 'hidden' : undefined }>
+            <div className={`${drawerContent != 'info' ? 'hidden' : ''}`}>
 
-                 <DocInfo/>
-
-                <ParamLink className="w-full" add={{parent: docData._source?.uuid}}>Legg til</ParamLink>
+                {(!parent || doc != parent) && <DocInfo/>}
 
                  {parent ? 
                     (parentLoading || childrenLoading) ? 
@@ -231,16 +242,24 @@ export default function MobileLayout() {
 
                 
                     :
-                <div className={`flex-col gap-2`}>
-                        <div className="">
+                
+                        <div className={`instance-info ${doc != parent ? '!pt-4 mt-4 pb-4 border-t border-t-neutral-200' : ''}`}>
 
                         { treeSettings[dataset] ?  
                             parentData?._id && <CadastralSubdivisions isMobile={true}/>
-                        :  dataset == 'search' && <div className="p-2"><SourceList/></div>}
+                        :  dataset == 'search' && <>{parent && parent != doc && <h2 className="!text-base font-semibold uppercase !font-sans px-1">Andre kilder</h2>}<SourceList/></>}
                         </div>
-                    </div>
+                    
 
                     : null
+                }
+                    { !docLoading && !childrenLoading && !parentLoading &&
+                    <div className="flex flex-col gap-1 py-4 px-2 w-full text-neutral-950">
+                    {!parent && treeSettings[dataset] && <ParamLink className="flex p-4 gap-2 w-full rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Underordna bruk</ParamLink>}
+                    {!parent && docData?._source?.children?.length > 0 && <ParamLink className="flex p-4 gap-2 w-full rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Kilder</ParamLink>}
+                    {parent && <ParamLink className="flex p-4 gap-2 w-full rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['parent']} add={{doc: parent}}><PiArrowLeft className="text-2xl text-primary-600"/>Stedsnavnoppslag</ParamLink>}
+                    <ParamLink className="flex p-4 gap-2 w-full rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}><PiX className="text-2xl"/>Lukk</ParamLink>
+                    </div>
                 }
 
 
@@ -248,13 +267,7 @@ export default function MobileLayout() {
             </div>
             }
             { drawerContent == 'results' && 
-                <section className="flex flex-col gap-2 !pt-4">
-                    <h2 id="result_heading" className="flex gap-2 flex-wrap px-1" aria-live="polite">
-                    <span className='text-center h-full font-semibold uppercase'>
-                    Treff
-                    </span>
-                    <span className='text-sm bg-neutral-100 rounded-full px-2 items-center flex'>{ (totalHits?.value || '0')  + (totalHits?.value == 10000 ? "+" : '')}</span>
-                    </h2> 
+                <section className="flex flex-col gap-2">
                 <Results isMobile={true}/>
                 </section>
             
