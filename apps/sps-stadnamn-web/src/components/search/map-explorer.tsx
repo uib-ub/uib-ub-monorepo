@@ -46,7 +46,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
     if (resultBounds?.length && !zoom) {
       mapInstance?.current?.fitBounds(resultBounds);
     }
-  }, [resultBounds])
+  }, [resultBounds, zoom, mapInstance])
   
   
 
