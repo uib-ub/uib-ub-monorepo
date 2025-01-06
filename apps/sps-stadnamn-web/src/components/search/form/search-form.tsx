@@ -77,7 +77,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
                 <Options isMobile={isMobile}/>
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
-            <input type="hidden" name="nav" value={ mode == 'table' ? 'filters' : 'results'}/>
+            <input type="hidden" name="nav" value={ mode == 'map' ? 'results' : 'filters'}/>
             {mode && <input type="hidden" name="mode" value={mode || ''}/>}
             <button className="sr-only" type="submit">Søk</button>
         </Form>
