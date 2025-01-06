@@ -139,7 +139,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
                     }
             })
         }
-    }, [dataset, searchQueryString, docData, parent])
+    }, [dataset, searchQueryString, docData, parent, doc, sameMarkerList])
 
 
     
