@@ -72,7 +72,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                                         <ParamLink aria-current={doc==hit.fields?.uuid[0] ? 'page' : false} 
                                                             className={`no-underline !flex !w-full p-2 !h-full grow ${doc == hit.fields?.uuid[0] ? 'border-l-4 bg-accent-800' : 'pl-4'} `}
                                                             add={{ doc: hit.fields?.uuid[0] }}>
-                                        <span className={`${doc == hit.fields?.uuid[0] ? 'text-white' : 'text-black'}`}>{hit.fields[leaf] || hit.fields.cadastre?.[0]?.bnr.join(",")} {hit.fields.label}</span>
+                                        <span className={`${doc == hit.fields?.uuid[0] ? 'text-white' : 'text-black'}`}>{hit.fields?.[leaf] || hit.fields?.cadastre?.[0]?.bnr.join(",")} {hit.fields?.label}</span>
                                             
                                                                 
                                                                 
