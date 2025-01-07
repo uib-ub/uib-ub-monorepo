@@ -1,10 +1,11 @@
 'use client'
-import { useQueryState } from "nuqs"
 import { useDataset } from "@/lib/search-params"
 import ClientFacet from "./client-facet"
 import { contentSettings } from "@/config/server-config"
 import ParamLink from "@/components/ui/param-link"
 import { useSearchParams } from "next/navigation"
+import ServerFacet from "./server-facet"
+import { useState } from "react"
 
 
 export default function Facets() {
@@ -12,7 +13,7 @@ export default function Facets() {
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet') || 'adm'
 
-
+    const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
 
 
       return (
@@ -26,20 +27,19 @@ export default function Facets() {
           
           </ParamLink>
           </h3>
-          <span>[Flere filtre kommer her]</span>
           <h3>
-          {false && <ParamLink type="button" role="tab" aria-selected={facet == 'other'} add={{facet: 'other'}} className='rounded-tabs'>
+          <ParamLink type="button" role="tab" aria-selected={facet == 'other'} add={{facet: 'other'}} className='rounded-tabs'>
           
           Annet
           
-          </ParamLink>}
+          </ParamLink>
           </h3>
           </>
           
         }
         </div>
         { facet == 'adm' ? <ClientFacet facetName='adm' /> : null}
-        { facet == 'other' ? <ClientFacet facetName='other'/> : null}
+        { facet == 'other' ? <ServerFacet showLoading={(facet: string | null) => setLoadingFacet(facet)}/> : null}
         </>
       )
   }
