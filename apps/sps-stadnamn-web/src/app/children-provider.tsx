@@ -54,14 +54,8 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
         if (parent && dataset != 'search') {
             setChildrenLoading(true)
             const query = `dataset=${dataset}&within=${parent}`
-            let url = `/api/search/`
-            if (isTable) {
-                url += `table?size=${perPage}&${query}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
-            }
-            else {
-                url += `map?${query}&size=1000`
-            }
-
+            const url = `/api/search/map?${query}&size=1000`
+            
             fetch(url).then(response => {
                 if (!response.ok) {
                     throw response
