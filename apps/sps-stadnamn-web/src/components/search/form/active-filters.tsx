@@ -98,7 +98,7 @@ export default function ActiveFilters() {
                   {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
-          {parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>
+          {mode == 'map' && parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>
             {treeSettings[dataset] ? gnr + ' ' +  parentData._source.label : 'Kilder: ' + parentData._source.label}
             <PiX className="inline text-lg" aria-hidden="true"/></button>}
       </>
