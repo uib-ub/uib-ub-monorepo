@@ -150,7 +150,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>
         </article>
 
-        {(sameMarkerList?.length && doc != parent) ?
+        {( mode == 'map' && sameMarkerList?.length && doc != parent) ?
         
     
         <div className="instance-info !pt-4 mt-4 pb-4 border-t border-t-neutral-200">
@@ -158,7 +158,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
             <h2 className="!text-base font-semibold uppercase !font-sans px-1">Alle treff på koordinatet</h2>
             
-            <nav className="flex md:flex-wrap w-full flex-col md:flex-row gap-2 mt-2">
+            <nav className="flex flex-wrap w-full gap-2 mt-2">
             { sameMarkerList?.reverse().map((hit: any, index: number) => {
             return <ParamLink key={hit._id} role="tab" aria-selected={[hit.fields?.uuid[0], hit.fields?.children?.[0]].includes(doc)} className="rounded-tabs" add={{doc: hit.fields.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid[0]}}>
                 {hit.fields.label}
