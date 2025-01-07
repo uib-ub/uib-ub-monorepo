@@ -11,7 +11,8 @@ import { treeSettings } from "@/config/server-config";
 import CadastralSubdivisions from "@/components/children/cadastral-subdivisions";
 import SourceList from "../results/source-list";
 import ParamLink from "@/components/ui/param-link";
-import { PiArrowLeft, PiCaretLeft, PiFilesFill, PiX } from "react-icons/pi";
+import { PiArrowLeft, PiCaretLeft, PiFilesFill, PiRows, PiTable, PiX } from "react-icons/pi";
+import { GlobalContext } from "@/app/global-provider";
 
 
 export default function DocExplorer({hidden}: {hidden: boolean}) {
@@ -22,6 +23,7 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
     const dataset = useDataset()
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
+    const { isMobile } = useContext(GlobalContext)
 
     
     return <>
@@ -50,7 +52,11 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
             {!parent && treeSettings[dataset] && docData?._source?.sosi == 'gard' && <ParamLink className="flex p-4 lg:p-2   gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Underordna bruk</ParamLink>}
             {!parent && docData?._source?.children?.length > 0 && <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Kilder</ParamLink>}
             {parent && !treeSettings[dataset] && <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['parent']} add={{doc: parent}}><PiArrowLeft className="text-2xl text-primary-600"/>Stedsnavnoppslag</ParamLink>}
-            <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}><PiX className="text-2xl text-primary-600"/>Lukk</ParamLink>
+            <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}>
+               { mode == 'table' &&<><PiTable className="text-2xl text-primary-600"/>Vis tabellen</>}
+               { mode == 'list' &&<><PiRows className="text-2xl text-primary-600"/>Vis trefflisten</>}
+               { mode == 'map' && isMobile && <><PiX className="text-2xl text-primary-600"/>Lukk</>}
+            </ParamLink>
             
             </div>
         }
