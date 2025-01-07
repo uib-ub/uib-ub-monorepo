@@ -1,8 +1,19 @@
 export default defineEventHandler(async (event) => {
   const query = {
     index: "search-termp-a-analytics-visits-tb",
-    query: {
-      match_all: {},
+    type: "_search",
+    body: {
+      query: {
+        match_all: {},
+      },
+      sort: [
+        {
+          date: {
+            order: "asc",
+          },
+        },
+      ],
+      size: 36,
     },
   };
 

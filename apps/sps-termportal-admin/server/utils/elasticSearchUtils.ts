@@ -5,9 +5,12 @@ export async function checkEsCache(queryType: string, addition?: string) {
   if (esCachedQueries.includes(key)) {
     const esPrep = {
       index: "search-termp-a-keyval",
-      query: {
-        term: {
-          key,
+      type: "_search",
+      body: {
+        query: {
+          term: {
+            key,
+          },
         },
       },
     };
@@ -19,21 +22,20 @@ export async function checkEsCache(queryType: string, addition?: string) {
   }
   return null;
 }
-
 export function genEsQuery(query: Record<string, any>) {
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.elasticsearchUrl;
   const apiKey = runtimeConfig.elasticsearchApiKey;
 
   const esQuery = {
-    url: `${url}/${query.index}/_search`,
+    url: `${url}/${query.index}/${query.type}`,
     params: {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `ApiKey ${apiKey}`,
       },
-      body: { query: query.query },
+      body: query.body,
     },
   };
 
