@@ -4,7 +4,7 @@ import { fieldConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiTagFill, PiX } from "react-icons/pi"
+import { PiPushPin, PiPushPinFill, PiTagFill, PiX } from "react-icons/pi"
 import { parseAsString, useQueryState } from "nuqs"
 import ParamLink from "@/components/ui/param-link"
 import { DocContext } from "@/app/doc-provider"
@@ -95,7 +95,7 @@ export default function ActiveFilters() {
                   onClick={() => removeFilter(key, value)} 
                   className={`text-neutral-950  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
               >
-                  {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
+                <PiPushPinFill className="inline text-lg text-neutral-800" aria-hidden="true"/> {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
           {mode == 'map' && parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>

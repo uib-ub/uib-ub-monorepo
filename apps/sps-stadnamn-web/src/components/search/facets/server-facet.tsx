@@ -1,28 +1,26 @@
-
-
-
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
-import { useQueryWithout, useQueryStringWithout, useDataset, useSearchQuery } from '@/lib/search-params';
+import { useQueryStringWithout, useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig } from '@/config/search-config';
-import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass } from 'react-icons/pi';
+import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass, PiFloppyDisk, PiPushPinFill, PiPushPin, PiPushPinSlash } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
+import { datasetTitles } from '@/config/metadata-config';
+import { useQueryState } from 'nuqs';
 
 
 export default function ServerFacet({ showLoading }: { showLoading: (facet: string | null) => void }) {
   const router = useRouter()
   const dataset = useDataset()
-  const paramLookup = useSearchParams()
-  const searchParams = useQueryWithout(['docs', 'view', 'manifest', 'page'])
+  const searchParams = useSearchParams()
+  const { searchQueryString, removeFilterParams } = useSearchQuery()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  const { removeFilterParams } = useSearchQuery()
   
   const [facetSearch, setFacetSearch] = useState('');
   
 
   const availableFacets = facetConfig[dataset]
-  const [selectedFacet, setSelectedFacet] = useState(availableFacets && availableFacets[0]?.key);
+  const [selectedFacet, setSelectedFacet] = useQueryState('selectedFacet', {defaultValue: availableFacets && availableFacets[0]?.key});
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = removeFilterParams(selectedFacet)
 
@@ -31,19 +29,34 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     setSortMode(facetConfig[dataset].find(item => item.key == facet)?.sort || 'doc_count')
   }
 
-  const toggleFilter = (beingChecked: boolean, facet: string, value: string) => {
-    const filteredParams = searchParams.filter(urlParam => !(urlParam[0] == facet && urlParam[1] == value))
+  const renderLabel = (key: string, label: string) => {
+    if (key == 'dataset') return datasetTitles[label]
+    return label
+  }
 
+  const toggleFilter = (beingChecked: boolean, facet: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    // Remove existing value if present
+    const existingValues = params.getAll(facet);
+    params.delete(facet);
+    
+    // Add back all values except the one we're toggling
+    existingValues
+      .filter(v => v !== value)
+      .forEach(v => params.append(facet, v));
+    
+    // Add the value if being checked
     if (beingChecked) {
-      if (filteredParams.length == searchParams.length) {
-      searchParams.push([facet, value])
-      }
-      router.push(`/view/${dataset}?${new URLSearchParams(searchParams).toString()}`)
+      params.append(facet, value);
     }
-    else {
-      router.push(`/view/${dataset}?${new URLSearchParams(filteredParams).toString()}`)
-    }
-}
+  
+    // Ensure nav and facet params are present
+    params.set('nav', 'filters');
+    params.set('facet', 'other');
+  
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
     
 
   useEffect(() => {
@@ -81,13 +94,13 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     <div className='flex flex-col xl:flex-row gap-2'>
     <select onChange={(e) => switchFacet(e.target.value)}>
         {availableFacets?.map((item, index) => (
-            <option key={index} value={item.key}>{item.label}</option>
+            <option key={index} value={item.key}>{renderLabel(item.key, item.label)}</option>
         ))}
     </select>
     <div className='flex gap-2'>
     <div className='relative grow'>
       <input onChange={(e) => setFacetSearch(e.target.value)} 
-          className="pl-6 w-full border rounded-sm border-neutral-300 px-1"/>
+          className="pl-6 w-full border rounded-sm border-neutral-300 px-1 grow"/>
       <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
         <PiMagnifyingGlass aria-hidden={true} className='text-neutral-900'/>
       </span>
@@ -100,6 +113,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     : 
     <IconButton className="text-xl" label="Sorter etter antall treff" onClick={() => setSortMode('doc_count')}><PiFunnelSimple/></IconButton>
     }
+    <IconButton className="text-xl" label="Fest filtrering" onClick={() => setSortMode('doc_count')}><PiPushPin/></IconButton>
     </div>
     </div>
     { facetAggregation?.buckets.length ?
@@ -107,7 +121,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
       {facetAggregation?.buckets.map((item: any, index: number) => (
         <li key={index}>
         <label>
-          <input type="checkbox" checked={paramLookup.getAll(selectedFacet).includes(item.key.toString()) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
+          <input type="checkbox" checked={searchParams.getAll(selectedFacet).includes(item.key.toString()) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
           {item.key} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
         </li>
