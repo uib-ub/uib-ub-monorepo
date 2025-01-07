@@ -11,6 +11,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null)
+    const mode = searchParams.get('mode')
     
     const { docData } = useContext(DocContext)
 
@@ -32,7 +33,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
                     aria-current={(parent == hit.fields.uuid || doc == hit.fields.uuid || docData?._source?.within == hit.fields.uuid) ? 'page' : undefined}
                     only={{
                         dataset: docDataset,
-                        ...(searchParams.get('mode') == 'table' || searchParams.get('parent')) ? {parent: hit.fields.uuid, doc: hit.fields.uuid} : {doc: hit.fields.uuid},
+                        ...(mode != 'map' || parent) ? {parent: hit.fields.uuid, doc: hit.fields.uuid} : {doc: hit.fields.uuid},
                         nav: 'tree',
                         mode: searchParams.get('mode'),
                         adm: searchParams.get('adm'),
