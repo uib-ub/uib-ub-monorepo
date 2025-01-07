@@ -72,12 +72,14 @@ export default async function Home() {
 </div>
 
 
-    <nav className="grid grid-cols-1 lg:grid-cols-4 w-full lg:w-auto justify-center items-center gap-4 lg:gap-8 text-xl lg:text-lg">
+    <nav className="grid grid-cols-1 lg:grid-cols-2 w-full lg:w-auto justify-center items-center gap-4 lg:gap-8 text-xl lg:text-lg">
   <Link href="/search?mode=map" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiMapTrifoldThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Utforsk kartet</span></Link>
-  <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiBookThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Leksikon [kommer snart]</span></Link>
-  <Link href="/iiif" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiArchiveThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Arkivressurser [kommer snart]</span></Link>
+  {false && <>
+  <Link href="/info/datasets" className="flex invisible lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiBookThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Leksikon [kommer snart]</span></Link>
+  <Link href="/iiif" className="flex invisible lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiArchiveThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Arkivressurser [kommer snart]</span></Link>
+  </>}
   <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiDatabaseThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Datasett</span></Link>
-  
+
   </nav>
 
 
