@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiArrowLeft, PiDatabase, PiDatabaseFill, PiFiles, PiFilesFill, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill, PiX } from "react-icons/pi";
+import { PiDatabaseFill, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } from "react-icons/pi";
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
@@ -14,14 +14,8 @@ import DatasetDrawer from "./datasets/dataset-drawer";
 import TableExplorer from "./table/table-explorer";
 import { treeSettings } from "@/config/server-config";
 import { useSearchParams } from "next/navigation";
-import DocInfo from "./info/doc-info";
-import { DocContext } from "@/app/doc-provider";
-import SourceList from "./results/source-list";
-import { ChildrenContext } from "@/app/children-provider";
-import Spinner from "../svg/Spinner";
-import ParamLink from "../ui/param-link";
 import ListExplorer from "./list/list-explorer";
-import DocSkeleton from "./info/doc-skeleton";
+import DocExplorer from "./info/doc-explorer";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -34,14 +28,11 @@ export default function MobileLayout() {
 
     const [drawerContent, setDrawerContent] = useState<string | null>(null)
     const [nav, setNav] = useQueryState('nav')
-
-    const selectedDocState = useState<any | null>(null)
+    
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const { searchFilterParamsString } = useSearchQuery()
     const { totalHits, isLoading } = useContext(SearchContext)
-    const { docLoading, docData, parentData, parentLoading } = useContext(DocContext)
-    const { childrenLoading } = useContext(ChildrenContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
@@ -228,43 +219,7 @@ export default function MobileLayout() {
                 <div className="absolute -translate-x-1/2 left-1/2 h-2 top-2 w-16 bg-neutral-300 rounded-full"></div></div>
             <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-5 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
-            { docLoading && <div className="flex"><DocSkeleton/></div>}
-            {doc && !docLoading && docData?._source &&
-            <div className={`${drawerContent != 'info' ? 'hidden' : ''}`}>
-
-                {(!parent || doc != parent) && <DocInfo/>}
-
-                 {parent ? 
-                    (parentLoading || childrenLoading) ? 
-
-                    <div className="flex justify-center h-24 m-12"><Spinner status={treeSettings[dataset] ? 'Laster garder' : 'Laster kilder'} className="w-full h-full m-2 self-center" /></div>
-
-                
-                    :
-                
-                        <div className={`instance-info ${doc != parent ? '!pt-4 mt-4 pb-4 border-t border-t-neutral-200' : ''}`}>
-
-                        { treeSettings[dataset] ?  
-                            parentData?._id && <CadastralSubdivisions isMobile={true}/>
-                        :  dataset == 'search' && <>{parent && parent != doc && <h2 className="!text-base font-semibold uppercase !font-sans px-1">Andre kilder</h2>}<SourceList/></>}
-                        </div>
-                    
-
-                    : null
-                }
-                    { !docLoading && !childrenLoading && !parentLoading &&
-                    <div className="flex flex-col gap-1 py-4 px-2 w-full text-neutral-950">
-                    {!parent && treeSettings[dataset] && <ParamLink className="flex p-4 gap-2 w-full rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Underordna bruk</ParamLink>}
-                    {!parent && docData?._source?.children?.length > 0 && <ParamLink className="flex p-4 gap-2 w-full rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Kilder</ParamLink>}
-                    {parent && <ParamLink className="flex p-4 gap-2 w-full rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['parent']} add={{doc: parent}}><PiArrowLeft className="text-2xl text-primary-600"/>Stedsnavnoppslag</ParamLink>}
-                    <ParamLink className="flex p-4 gap-2 w-full rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}><PiX className="text-2xl"/>Lukk</ParamLink>
-                    </div>
-                }
-
-
-
-            </div>
-            }
+            <DocExplorer hidden={drawerContent != 'info'}/>
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
                 <Results isMobile={true}/>

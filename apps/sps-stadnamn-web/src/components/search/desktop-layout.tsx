@@ -11,7 +11,7 @@ import { treeSettings } from "@/config/server-config"
 import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
 import NavSelector from "../tabs/nav-selector"
-import { PiArchive, PiArrowUp, PiArrowUpBold, PiArrowUpLeft, PiCaretDownBold, PiCaretUpBold, PiFiles, PiFileSqlThin, PiFilesThin, PiFolder, PiTable, PiTag, PiXBold } from "react-icons/pi"
+import { PiArchive, PiArrowUp, PiArrowUpBold, PiArrowUpLeft, PiCaretDownBold, PiCaretUpBold, PiFiles, PiFilesFill, PiFileSqlThin, PiFilesThin, PiFolder, PiTable, PiTableFill, PiTag, PiXBold } from "react-icons/pi"
 import SourceList from "./results/source-list"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
@@ -22,6 +22,7 @@ import DocSkeleton from "./info/doc-skeleton"
 import DocInfo from "./info/doc-info"
 import ParamLink from "../ui/param-link"
 import ListExplorer from "./list/list-explorer"
+import DocExplorer from "./info/doc-explorer"
 
 export default function DesktopLayout() {
     const searchParams = useSearchParams()
@@ -143,9 +144,12 @@ export default function DesktopLayout() {
     
         <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[calc(50svw-0.5rem)] z-[2000]': 'w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] top-2 bg-white rounded-md shadow-md overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}>
             <StatusSection isMobile={false}/>
-            {mode == 'table' && <TableExplorer/> }
 
-            {mode == 'list' && <ListExplorer/> }
+            {mode == 'table' && !doc && <TableExplorer/> }
+            {mode != 'map' && (parent || doc) &&  <DocExplorer hidden={false}/>}
+
+
+            {mode == 'list' && !doc && <ListExplorer/> }
         </div>
         { mode == 'map' &&
             <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
