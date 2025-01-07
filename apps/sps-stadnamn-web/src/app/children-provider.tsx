@@ -25,14 +25,8 @@ export const ChildrenContext = createContext<ChildrenContextData>({
 
 
 export default function ChildrenProvider({ children }: {  children: React.ReactNode }) {
-
-    
-
-
     const dataset = useDataset()
-
     const { parentData, parentLoading, docData, setSameMarkerList } = useContext(DocContext)
-    
     const [childrenData, setChildrenData] = useState<any>(null)
     const [childrenLoading, setChildrenLoading] = useState(false)
     const [childrenError, setChildrenError] = useState<Record<string, string> | null>(null)
@@ -141,7 +135,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
             }
             
         }
-    }, [parent, docData, childrenData, doc])
+    }, [parent, docData, childrenData, doc, setSameMarkerList])
 
 
 
