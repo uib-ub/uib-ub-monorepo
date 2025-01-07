@@ -17,6 +17,8 @@
         removable-sort
         sort-field="label"
         :sort-order="1"
+        paginator
+        :rows="12"
       >
         <template #header>
           <div class="flex justify-between">
