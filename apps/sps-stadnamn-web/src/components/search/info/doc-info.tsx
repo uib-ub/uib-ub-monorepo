@@ -46,7 +46,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-        {mode == 'map' && <button className="float-right absolute top-2 right-0 text-2xl" aria-label="Lukk" onClick={() => setDoc(null)}><PiX aria-hidden="true"/></button>}
+        {mode == 'map' && <button className="absolute top-2 right-2 text-2xl" aria-label="Lukk" onClick={() => setDoc(null)}><PiX aria-hidden="true"/></button>}
  
         </div>}
       

@@ -25,20 +25,17 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
 
     
     return <>
-    { docLoading && <div className="flex"><DocSkeleton/></div>}
+    { docLoading && <div className="flex px-4 mt-4"><DocSkeleton/></div>}
     {doc && !docLoading && docData?._source &&
-    <div className={`${hidden ? 'hidden' : ''}`}>
+    <div className={`${hidden ? 'hidden' : ''} instance-info ${doc != parent ? 'xl:!pt-4 xl:mt-2 pb-4' : ''} xl:px-4 gap-8 flex flex-col`}>
         {(!parent || doc != parent || mode != 'map') && <DocInfo/>}
 
-            {parent ? 
-            (parentLoading || childrenLoading) ? 
-
-            <div className="flex justify-center h-24 m-12"><Spinner status={treeSettings[dataset] ? 'Laster garder' : 'Laster kilder'} className="w-full h-full m-2 self-center" /></div>
-
-        
+        {parent ? 
+            childrenLoading ? 
+                <div className="flex justify-center h-24 m-12"><Spinner status={treeSettings[dataset] ? 'Laster garder' : 'Laster kilder'} className="w-full h-full m-2 self-center" /></div>
             :
         
-                <div className={`instance-info ${doc != parent ? '!pt-4 mt-4 pb-4 border-t border-t-neutral-200' : ''}`}>
+                <div >
 
                 { treeSettings[dataset] ?  
                     parentData?._id && <CadastralSubdivisions isMobile={true}/>
@@ -49,12 +46,11 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
             : null
         }
             { !docLoading && !childrenLoading && !parentLoading &&
-            <div className="flex flex-col lg:flex-row gap-1 xl:gap-2 py-4 px-2 w-full lg:w-auto text-neutral-950">
-            {mode != 'map' && <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}><PiArrowLeft className="text-2xl text-primary-600"/>Tilbake til søk</ParamLink>}
+            <div className="flex flex-col lg:flex-row gap-1 xl:gap-2 py-4 w-full lg:w-auto text-neutral-950">
             {!parent && treeSettings[dataset] && <ParamLink className="flex p-4 lg:p-2   gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Underordna bruk</ParamLink>}
             {!parent && docData?._source?.children?.length > 0 && <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Kilder</ParamLink>}
             {parent && !treeSettings[dataset] && <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['parent']} add={{doc: parent}}><PiArrowLeft className="text-2xl text-primary-600"/>Stedsnavnoppslag</ParamLink>}
-            {mode == 'map' && <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}><PiX className="text-2xl"/>Lukk</ParamLink>}
+            <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}><PiX className="text-2xl text-primary-600"/>Lukk</ParamLink>
             
             </div>
         }

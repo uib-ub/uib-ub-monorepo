@@ -12,6 +12,7 @@ import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
 import Link from "next/link"
 import { getSkeletonLength } from "@/lib/utils"
+import ParamLink from "@/components/ui/param-link"
 
 export default function TableExplorer() {
     const dataset = useDataset()
@@ -168,7 +169,7 @@ export default function TableExplorer() {
                             <Fragment key={hit._id}>
                             <tr>
                                 <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'}>
-                                <Link className="no-underline whitespace-nowrap lg:whitespace-normal font-semibold" href={`/uuid/${hit._source?.uuid}`}>{hit._source?.label}</Link>
+                                <ParamLink className="no-underline whitespace-nowrap lg:whitespace-normal font-semibold" add={{doc: hit._source?.uuid}}>{hit._source?.label}</ParamLink>
 
 
 

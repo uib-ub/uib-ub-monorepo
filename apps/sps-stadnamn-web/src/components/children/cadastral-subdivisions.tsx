@@ -35,11 +35,11 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
 
     const gnr =  getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")
     return (
-    <div className="">
+    <>
         {
             !childrenLoading && <>
             {(isMobile || mode == 'table') ?
-            <h2 className="px-2 pb-2">{gnr} {parentData?._source?.label}</h2>
+            <h2 className="pb-2">{gnr} {parentData?._source?.label}</h2>
             
             : <div className="flex rounded-t-md">
                 <h2 className={`p-2 px-2 text-lg  !font-sans text`}>
@@ -55,7 +55,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                 <IconButton label="Lukk" onClick={() => setParent(null)}><PiX aria-hidden="true"/></IconButton>
                 </div>}
                 </div>}
-                <div className="overflow-x-auto border border-neutral-300 rounded-md mx-2 mb-2">
+                <div className="overflow-x-auto border border-neutral-300 rounded-md mb-2">
                         <table className="w-full result-table">
                             <thead className="w-full">
                                 <tr>
@@ -90,6 +90,6 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                
             </>
         }
-    </div>
+    </>
 );
 }
