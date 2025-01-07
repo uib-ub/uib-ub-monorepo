@@ -57,7 +57,7 @@ export default function DesktopLayout() {
         <div className={`lg:absolute left-2 top-2 flex-col gap-2 max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-md rounded-md`}>
 
         <NavSelector leftSection={nav}/>
-        <div className="overflow-y-auto stable-scrollbar pl-2 max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200">
+        <div className="overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200">
 
         { nav == 'tree' && 
             <TreeResults isMobile={false}/>
