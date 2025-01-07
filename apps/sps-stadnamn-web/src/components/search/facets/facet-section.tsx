@@ -26,12 +26,13 @@ export default function Facets() {
           
           </ParamLink>
           </h3>
+          <span>[Flere filtre kommer her]</span>
           <h3>
-          <ParamLink type="button" role="tab" aria-selected={facet == 'other'} add={{facet: 'other'}} className='rounded-tabs'>
+          {false && <ParamLink type="button" role="tab" aria-selected={facet == 'other'} add={{facet: 'other'}} className='rounded-tabs'>
           
           Annet
           
-          </ParamLink>
+          </ParamLink>}
           </h3>
           </>
           
