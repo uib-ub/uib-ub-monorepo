@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useContext, useRef } from 'react'
 import { useState, useEffect } from 'react';
-import { useSearchQuery } from '@/lib/search-params';
+import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
@@ -37,13 +37,14 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
     const mapInstance = useRef<any>(null);
 
-    const { setCurrentUrl, isMobile } = useContext(GlobalContext)
+    const { setCurrentUrl, isMobile, setPinnedFilters, facetOptions } = useContext(GlobalContext)
+    const dataset = useDataset()
     
 
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
-    const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
+    const { searchQueryString, searchFilterParamsString, size, facetFilters } = useSearchQuery()
 
     const searchParams = useSearchParams()
     const isTable = searchParams.get('mode') == 'table' || searchParams.get('mode') == 'list'
@@ -55,7 +56,16 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
     useEffect(() => {
         setCurrentUrl("/search?" + searchParams.toString())
+        const filters = facetFilters.filter(([key, value]) => facetOptions[`${dataset}:${key}`]?.isPinned)
+        setPinnedFilters(filters)
     }, [searchParams, setCurrentUrl])
+
+    /*
+    useEffect(() => {
+        // Add list of filters to facetOptions if pinned
+        setPinnedFilters(facetFilters.filter(filter => facetOptions[filter[0]]?.isPinned))
+      }, [facetFilters])
+      */
 
 
     useEffect(() => {

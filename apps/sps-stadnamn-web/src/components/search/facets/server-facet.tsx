@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryStringWithout, useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig } from '@/config/search-config';
-import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass, PiFloppyDisk, PiPushPinFill, PiPushPin, PiPushPinSlash } from 'react-icons/pi';
+import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass, PiTrashFill } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
 import { datasetTitles } from '@/config/metadata-config';
 import { useQueryState } from 'nuqs';
+import PinFilter from './facet-toolbar';
+import FacetToolbar from './facet-toolbar';
+import { GlobalContext } from '@/app/global-provider';
 
 
 export default function ServerFacet({ showLoading }: { showLoading: (facet: string | null) => void }) {
@@ -17,6 +20,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   const [isLoading, setIsLoading] = useState(true);
   
   const [facetSearch, setFacetSearch] = useState('');
+  const {facetOptions, pinnedFilters} = useContext(GlobalContext)
   
 
   const availableFacets = facetConfig[dataset]
@@ -26,7 +30,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
 
   const switchFacet = (facet: string) => {
     setSelectedFacet(facet)
-    setSortMode(facetConfig[dataset].find(item => item.key == facet)?.sort || 'doc_count')
+    //setSortMode(facetConfig[dataset].find(item => item.key == facet)?.sort || 'doc_count')
   }
 
   const renderLabel = (key: string, label: string) => {
@@ -92,28 +96,27 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     { !isLoading &&
     <div className="flex flex-col gap-2 border-b border-neutral-300 py-4">
     <div className='flex flex-col xl:flex-row gap-2'>
-    <select onChange={(e) => switchFacet(e.target.value)}>
+    <select onChange={(e) => switchFacet(e.target.value)} className='border rounded-md border-neutral-300 p-1'>
         {availableFacets?.map((item, index) => (
             <option key={index} value={item.key}>{renderLabel(item.key, item.label)}</option>
         ))}
     </select>
     <div className='flex gap-2'>
     <div className='relative grow'>
-      <input onChange={(e) => setFacetSearch(e.target.value)} 
-          className="pl-6 w-full border rounded-sm border-neutral-300 px-1 grow"/>
-      <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
-        <PiMagnifyingGlass aria-hidden={true} className='text-neutral-900'/>
+      <input aria-label="Søk i fasett" onChange={(e) => setFacetSearch(e.target.value)}
+          className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
+      <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+        <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
       </span>
     </div>
 
-    {sortMode == 'doc_count' ?
-    <IconButton className="text-xl" label="Sorter stigende" onClick={() => setSortMode('asc')}><PiSortAscending/></IconButton>
-    : sortMode == 'asc' ?
-    <IconButton className="text-xl" label="Sorter synkende" onClick={() => setSortMode('desc')}><PiSortDescending/></IconButton>
-    : 
-    <IconButton className="text-xl" label="Sorter etter antall treff" onClick={() => setSortMode('doc_count')}><PiFunnelSimple/></IconButton>
-    }
-    <IconButton className="text-xl" label="Fest filtrering" onClick={() => setSortMode('doc_count')}><PiPushPin/></IconButton>
+
+
+
+
+
+
+    <FacetToolbar/>
     </div>
     </div>
     { facetAggregation?.buckets.length ?

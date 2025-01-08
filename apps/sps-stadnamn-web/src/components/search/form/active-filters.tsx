@@ -11,6 +11,7 @@ import { DocContext } from "@/app/doc-provider"
 import { useContext } from "react"
 import { treeSettings } from "@/config/server-config"
 import { getValueByPath } from "@/lib/utils"
+import { GlobalContext } from "@/app/global-provider"
 
 
 export default function ActiveFilters() {
@@ -21,6 +22,7 @@ export default function ActiveFilters() {
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const { parentData } = useContext(DocContext)
     const [parent, setParent] = useQueryState('parent')
+    const {facetOptions} = useContext(GlobalContext)
 
     const getFieldLabel = (name: string, value: string) => {
         
@@ -95,7 +97,7 @@ export default function ActiveFilters() {
                   onClick={() => removeFilter(key, value)} 
                   className={`text-neutral-950  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
               >
-                <PiPushPinFill className="inline text-lg text-neutral-800" aria-hidden="true"/> {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
+                {facetOptions[`${dataset}:${key}`]?.isPinned && <PiPushPinFill className="inline text-lg text-neutral-800" aria-hidden="true"/>} {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
           {mode == 'map' && parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>

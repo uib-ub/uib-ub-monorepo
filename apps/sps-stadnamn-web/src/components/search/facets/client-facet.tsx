@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQueryStringWithout, useSearchQuery, useDataset } from '@/lib/search-params';
 import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple, PiFunnel, PiFunnelFill } from 'react-icons/pi';
 import IconButton from '@/components/ui/icon-button';
+import PinFilter from './facet-toolbar';
+import FacetToolbar from './facet-toolbar';
+import { GlobalContext } from '@/app/global-provider';
 
 
 
@@ -14,11 +17,12 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const paramsExceptFacet = removeFilterParams(facetName)
   const paramLookup = useSearchParams()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
-  const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>('doc_count');
   const filterCleared = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
   const mode = searchParams.get('mode')
+  const {pinnedFilters, facetOptions} = useContext(GlobalContext)
+  const currentFacet = searchParams.get('facet') || 'adm'
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
   const expandedFacets = new Set<string>();
@@ -100,10 +104,10 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
   const sortBuckets = (buckets: any) => {
     const orderCompare = (a: string, b: string) => {
-      return sortMode === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
+      return facetOptions[`${dataset}:${currentFacet}`]?.sort === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
     }
     return [...buckets].sort((a, b) => {
-      if (sortMode === 'doc_count') {
+      if (facetOptions[`${dataset}:${currentFacet}`]?.sort === 'doc_count') {
         return parseInt(b.doc_count) - parseInt(a.doc_count);
       } else {
         if (a.label && b.label) {
@@ -169,24 +173,12 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     <div className='relative grow'>
       <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
           className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
-      <span className="absolute left-1 top-1/2 transform -translate-y-1/2">
-        <PiFunnel aria-hidden={true} className='text-neutral-500 text-2xl'/>
+      <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+        <PiFunnel aria-hidden={true} className='text-neutral-500 text-xl'/>
       </span>
     </div>
     
-    {sortMode == 'doc_count' ?
-      <IconButton className="text-xl" label="Sorter stigende" onClick={() => setSortMode('asc')}><PiSortAscending/></IconButton>
-    : sortMode == 'asc' ?
-      <IconButton className="text-xl" label="Sorter synkende" onClick={() => setSortMode('desc')}><PiSortDescending/></IconButton>
-    :
-      <IconButton className="text-xl" label="Sorter etter antall treff" onClick={() => setSortMode('doc_count')}><PiFunnelSimple/></IconButton>
-    }
-    {paramLookup.get(facetName) ?
-      <IconButton type="button" label="Fjern områdefiltre" onClick={clearFilter} className="icon-button ml-auto">
-        <PiTrashFill className="text-xl text-neutral-800" aria-hidden="true"/>
-      </IconButton>
-      : null
-    }
+    <FacetToolbar/>
     </div>
     { facetAggregation?.buckets ?
     <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
