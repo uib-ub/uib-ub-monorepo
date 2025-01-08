@@ -59,7 +59,6 @@ export default function GlobalProvider({ children, isMobile }: { children: React
 
   // Update localStorage when facet options change
   useEffect(() => {
-    console.log("CHANGED")
     localStorage.setItem('facetOptions', JSON.stringify(facetOptions));
   }, [facetOptions]);
 
