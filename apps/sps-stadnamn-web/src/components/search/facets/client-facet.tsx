@@ -121,7 +121,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
   const facetSearch = (item: any, baseName: string, level: number): boolean => {
     if (!facetSearchQuery && level == 1) return true
-    if (facetSearchQuery && item.key.toLowerCase().includes(facetSearchQuery)) return true
+    if (facetSearchQuery && new RegExp(`(^|\\s)${facetSearchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(item.key)) return true
     const childLevel = level +1
     if (item[baseName + childLevel]?.buckets.some((subitem: any) => facetSearch(subitem, baseName, childLevel))) {
       return true
