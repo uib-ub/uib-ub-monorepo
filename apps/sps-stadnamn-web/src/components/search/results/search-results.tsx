@@ -74,7 +74,7 @@ export default function SearchResults({isMobile}: {isMobile: boolean}) {
     }
     else if (i < resultData?.length && (!isLoading || size > 20)) {
       const hit = resultData[i]
-      return <ResultItem key={hit._id} hit={hit} isMobile={isMobile}/>
+      return <ResultItem key={hit._id} hit={hit}/>
     }
     else {
       return <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={i}>
