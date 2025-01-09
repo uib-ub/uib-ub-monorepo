@@ -8,12 +8,15 @@ import { SearchContext } from './search-provider';
 interface FacetOption {
   sort: 'doc_count' | 'asc' | 'desc';
   isPinned: boolean;
-  filters: string[][];
+  filters: Array<[string, string]>;
 }
 
-interface FacetOptions {
-  [key: string]: FacetOption; // Format: "dataset:facetName"
+interface DatasetOptions {
+  facets: Record<string, FacetOption>;
+  pinned: Array<[string, string]>;
 }
+
+interface FacetOptions extends Record<string, DatasetOptions> {}
 
 interface GlobalContextData {
   currentUrl: string | null;
@@ -21,9 +24,7 @@ interface GlobalContextData {
   isMobile: boolean;
   facetOptions: FacetOptions;
   updateFacetOption: (facetName: string, updates: Partial<FacetOption>) => void;
-  
   setPinnedFilters: (filters: [string, string][]) => void;
-  pinnedFilters: [string, string][]
 }
 
 export const GlobalContext = createContext<GlobalContextData>({
@@ -32,15 +33,12 @@ export const GlobalContext = createContext<GlobalContextData>({
   isMobile: false,
   facetOptions: {},
   updateFacetOption: () => {},
-  setPinnedFilters: () => {},
-  pinnedFilters: []
-  
+  setPinnedFilters: () => {}
 });
 
 export default function GlobalProvider({ children, isMobile }: { children: React.ReactNode, isMobile: boolean }) {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [facetOptions, setFacetOptions] = useState<FacetOptions>({});
-  const [pinnedFilters, setPinnedFilters] = useState<[string, string][]>([])
   const dataset = useDataset()
 
   // Load facet options from localStorage on mount
@@ -49,36 +47,42 @@ export default function GlobalProvider({ children, isMobile }: { children: React
     if (storedOptions) {
       setFacetOptions(JSON.parse(storedOptions));
     }
-    const storedPinnedFilters = localStorage.getItem('pinnedFilters');
-    if (storedPinnedFilters) {
-      setPinnedFilters(JSON.parse(storedPinnedFilters));
-    }
-
   }, []);
-
 
   // Update localStorage when facet options change
   useEffect(() => {
     localStorage.setItem('facetOptions', JSON.stringify(facetOptions));
   }, [facetOptions]);
 
-  useEffect(() => {
-    localStorage.setItem('pinnedFilters', JSON.stringify(pinnedFilters));
-  }, [pinnedFilters]);
-
   const updateFacetOption = (facetName: string, updates: Partial<FacetOption>) => {
-    const key = `${dataset}:${facetName}`;
     setFacetOptions(prev => ({
       ...prev,
-      [key]: {
-        ...(prev[key] || { sort: facetConfig[dataset].find(item => item.key == facetName)?.sort || 'doc_count', isPinned: false }),
-        ...updates
+      [dataset]: {
+        ...prev[dataset] || { facets: {}, pinned: [] },
+        facets: {
+          ...(prev[dataset]?.facets || {}),
+          [facetName]: {
+            ...(prev[dataset]?.facets?.[facetName] || { 
+              sort: facetConfig[dataset].find(item => item.key == facetName)?.sort || 'doc_count', 
+              isPinned: false,
+              filters: []
+            }),
+            ...updates
+          }
+        }
       }
     }));
   };
 
-
-    
+  const setPinnedFilters = (filters: [string, string][]) => {
+    setFacetOptions(prev => ({
+      ...prev,
+      [dataset]: {
+        ...prev[dataset] || { facets: {}, pinned: [] },
+        pinned: filters
+      }
+    }));
+  };
 
   return (
     <GlobalContext.Provider 
@@ -88,8 +92,7 @@ export default function GlobalProvider({ children, isMobile }: { children: React
         isMobile,
         facetOptions,
         updateFacetOption,
-        setPinnedFilters,
-        pinnedFilters
+        setPinnedFilters
       }}
     >
       {children}

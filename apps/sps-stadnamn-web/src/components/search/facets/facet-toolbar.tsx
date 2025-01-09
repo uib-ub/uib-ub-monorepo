@@ -18,8 +18,8 @@ export default function FacetToolbar() {
 
     const currentFacet = facet || facetConfig[dataset][0]?.key
 
-    const pinned = facetOptions[`${dataset}:${currentFacet}`]?.isPinned
-    const sortMode = facetOptions[`${dataset}:${currentFacet}`]?.sort
+    const pinned = facetOptions[dataset]?.facets?.[currentFacet]?.isPinned
+    const sortMode = facetOptions[dataset]?.facets?.[currentFacet]?.sort
     
 
 
@@ -37,7 +37,7 @@ export default function FacetToolbar() {
 
         <IconButton className="text-xl p-1" label={pinned ? "Ikke behold filtrering" : "Behold til senere"} onClick={() => {
             updateFacetOption(currentFacet, {isPinned: !pinned})
-            setPinnedFilters(facetFilters.filter(([key, value]) => key == currentFacet ? !pinned : facetOptions[`${dataset}:${key}`]?.isPinned))
+            setPinnedFilters(facetFilters.filter(([key, value]) => key == currentFacet ? !pinned : facetOptions[dataset]?.facets?.[key]?.isPinned))
         }}>
             {pinned ? <PiPushPinSlash/> : <PiPushPin/>}
         </IconButton>

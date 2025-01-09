@@ -23,7 +23,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const form = useRef<HTMLFormElement | null>(null)
     const dataset = useDataset()
     const setQuery = useQueryState('q')[1]
-    const { currentUrl, pinnedFilters } = useContext(GlobalContext)
+    const { currentUrl, facetOptions } = useContext(GlobalContext)
     const { facetFilters } = useSearchQuery()
     const mode = searchParams.get('mode') || 'map'
     
@@ -80,6 +80,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
             <input type="hidden" name="nav" value={ mode == 'map' ? 'results' : 'filters'}/>
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value}/>)}
+            {facetOptions[dataset]?.pinned.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value}/>)}
             {mode && <input type="hidden" name="mode" value={mode || ''}/>}
             <button className="sr-only" type="submit">Søk</button>
         </Form>

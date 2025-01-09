@@ -66,7 +66,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
       params.append(facet, value);
     }
 
-    setPinnedFilters(Array.from(params.entries()).filter(item => facetOptions[`${dataset}:${item[0]}`]?.isPinned))
+    setPinnedFilters(Array.from(params.entries()).filter(item => facetOptions[dataset]?.facets?.[item[0]]?.isPinned))
 
   
     router.push(`?${params.toString()}`, { scroll: false });

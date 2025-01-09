@@ -22,8 +22,11 @@ export default function ActiveFilters() {
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const { parentData } = useContext(DocContext)
     const [parent, setParent] = useQueryState('parent')
-    const {facetOptions, pinnedFilters, setPinnedFilters} = useContext(GlobalContext)
-    const unpinnedFilters = facetFilters.filter(([key, value]) => !facetOptions[`${dataset}:${key}`]?.isPinned)
+    const {facetOptions, setPinnedFilters} = useContext(GlobalContext)
+    const pinnedFilters = facetFilters.filter(([key, value]) => facetOptions[dataset]?.facets?.[key]?.isPinned)
+    const unpinnedFilters = facetFilters.filter(([key, value]) => 
+        !pinnedFilters.some(([pinnedKey, pinnedValue]) => pinnedKey === key && pinnedValue === value)
+    )
 
 
     const getFieldLabel = (name: string, value: string) => {
@@ -74,7 +77,10 @@ export default function ActiveFilters() {
         values.filter(v => v !== value)
             .forEach(v => newSearchParams.append(key, v))
 
-        setPinnedFilters(pinnedFilters.filter(([name, value]) => name !== key || value !== value))
+        // Update pinned filters if this was a pinned filter
+        if (pinnedFilters.some(([k, v]) => k === key && v === value)) {
+            setPinnedFilters(pinnedFilters.filter(([k, v]) => k !== key || v !== value))
+        }
       
         router.push(`?${newSearchParams.toString()}`)
     }
@@ -97,7 +103,6 @@ export default function ActiveFilters() {
 
     return (
       <>
-      <div className="bg-white fixed bottom-0 right-0 flex">{JSON.stringify(facetOptions, null, 2)}</div>  
         { fulltext == 'on' && 
             <button onClick={() => setFulltext('off')} 
             className="">Fulltekst 
@@ -106,9 +111,11 @@ export default function ActiveFilters() {
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 
-                  className={`text-neutral-950  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+                  className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
               >
-                <PiPushPinFill className="inline text-lg text-neutral-800" aria-hidden="true"/> {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
+                <PiPushPinFill className="inline text-lg text-neutral-800" aria-hidden="true"/>
+                {getFieldLabel(key, value)}
+                <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
           {unpinnedFilters.length > 1 && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}

@@ -2,8 +2,6 @@ import { useState, useEffect, useContext } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQueryStringWithout, useSearchQuery, useDataset } from '@/lib/search-params';
 import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple, PiFunnel, PiFunnelFill } from 'react-icons/pi';
-import IconButton from '@/components/ui/icon-button';
-import PinFilter from './facet-toolbar';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
 
@@ -20,7 +18,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const filterCleared = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
-  const {facetOptions, setPinnedFilters, pinnedFilters} = useContext(GlobalContext)
+  const {facetOptions, setPinnedFilters} = useContext(GlobalContext)
   const currentFacet = searchParams.get('facet') || 'adm'
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
@@ -93,17 +91,17 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       newParams.push([paramName, chosenPath.slice(1).join('__')])
     }
 
-    setPinnedFilters(newParams.filter(([name, value]) => facetOptions[`${dataset}:${name}`]?.isPinned))
+    setPinnedFilters(newParams.filter(([name, value]) => facetOptions[dataset]?.facets?.[name]?.isPinned))
 
     router.push(`?${new URLSearchParams(newParams).toString()}`)
   }
 
   const sortBuckets = (buckets: any) => {
     const orderCompare = (a: string, b: string) => {
-      return facetOptions[`${dataset}:${currentFacet}`]?.sort === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
+      return facetOptions[dataset]?.facets?.[currentFacet]?.sort === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
     }
     return [...buckets].sort((a, b) => {
-      if (facetOptions[`${dataset}:${currentFacet}`]?.sort === 'doc_count') {
+      if (facetOptions[dataset]?.facets?.[currentFacet]?.sort === 'doc_count') {
         return parseInt(b.doc_count) - parseInt(a.doc_count);
       } else {
         if (a.label && b.label) {
