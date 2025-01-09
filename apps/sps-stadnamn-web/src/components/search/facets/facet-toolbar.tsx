@@ -37,7 +37,7 @@ export default function FacetToolbar() {
 
         <IconButton className="text-xl p-1" label={pinned ? "Ikke behold filtrering" : "Behold til senere"} onClick={() => {
             updateFacetOption(currentFacet, {isPinned: !pinned})
-            setPinnedFilters(facetFilters.filter(([key, value]) => facetOptions[`${dataset}:${key}`]?.isPinned ? key != currentFacet : true))
+            setPinnedFilters(facetFilters.filter(([key, value]) => key == currentFacet ? !pinned : facetOptions[`${dataset}:${key}`]?.isPinned))
         }}>
             {pinned ? <PiPushPinSlash/> : <PiPushPin/>}
         </IconButton>

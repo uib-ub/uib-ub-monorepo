@@ -97,6 +97,7 @@ export default function ActiveFilters() {
 
     return (
       <>
+      <div className="bg-white fixed bottom-0 right-0 flex">{JSON.stringify(facetOptions, null, 2)}</div>  
         { fulltext == 'on' && 
             <button onClick={() => setFulltext('off')} 
             className="">Fulltekst 
