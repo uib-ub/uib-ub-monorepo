@@ -1,0 +1,21 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "extends": [
+    "//"
+  ],
+  "tasks": {
+    "build": {
+      "outputs": [
+        ".next/**",
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "SANITY_API_READ_TOKEN",
+        "SANITY_PREVIEW_SECRET"
+      ]
+    }
+  }
+}
