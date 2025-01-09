@@ -19,7 +19,7 @@
         ".env"
       ]
     },
-    "generate#sps-termportalen-web": {
+    "sps-termportal-web#generate": {
       "outputs": [
         "dist/**"
       ]
