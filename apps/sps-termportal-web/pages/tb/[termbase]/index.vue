@@ -13,9 +13,14 @@
                 {{ lalof(termbase + "-3A" + termbase) }}
               </AppLink>
             </h1>
+            <!-- Only apply termbaseDescriptionHeight on larger screens-->
             <div
               class="flex lg:block flex-col-reverse overflow-hidden"
-              :style="`max-height: ${termbaseDescriptionHeight}px`"
+              :style="
+                ['lg', 'xl', '2xl'].includes(breakpoint)
+                  ? `max-height: ${termbaseDescriptionHeight}px`
+                  : ''
+              "
             >
               <div
                 ref="termbaseInfoBox"
@@ -32,9 +37,11 @@
               </div>
             </div>
             <button
-              class="w-full"
+              v-if="['lg', 'xl', '2xl'].includes(breakpoint)"
+              class="w-full mt-1"
               :class="{
-                'shadow-[0_-8px_11px_rgba(255,255,255,1)]': !expandTermbaseText,
+                'shadow-[0_-10px_11px_rgba(255,255,255,1)]':
+                  !expandTermbaseText,
               }"
               @click="expandTermbaseText = !expandTermbaseText"
             >
@@ -68,10 +75,13 @@ const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();
+const breakpoint = useBreakpoint();
 
 const termbaseInfoBox = ref();
 const termbaseText = ref();
 const expandTermbaseText = ref(false);
+
+// Only picked up in larger screens. See check in template.
 const termbaseDescriptionHeight = computed(() => {
   if (termbaseInfoBox.value && termbaseText.value) {
     if (expandTermbaseText.value) {
