@@ -26,7 +26,7 @@ export const AccessPoint = defineType({
       name: 'value',
       title: 'Adresse',
       type: 'string',
-      validation: Rule => Rule.required().custom(isUniqueValue)
+      validation: (rule: any) => rule.required().custom(isUniqueValue)
     }),
     {
       ...labelSingleton,
@@ -56,7 +56,7 @@ export const AccessPoint = defineType({
       url: 'value',
       type: 'hasType.label'
     },
-    prepare(selection) {
+    prepare(selection: any) {
       const { title, url, type } = selection
 
       return {
