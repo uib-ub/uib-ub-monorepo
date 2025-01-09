@@ -9,7 +9,7 @@
         sort-field="date"
         :sort-order="-1"
         paginator
-        :rows="15"
+        :rows="12"
         table-style="min-width: 1rem"
       >
         <template #header>

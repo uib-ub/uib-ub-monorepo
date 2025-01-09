@@ -18,6 +18,8 @@
         "NX_DAEMON",
         "TURBO_REMOTE_ONLY",
         "TURBO_RUN_SUMMARY",
+        "SANITY_PROJECT_ID",
+        "SANITY_API_TOKEN",
         "VERCEL",
         "VERCEL_ENV",
         "VERCEL_GIT_COMMIT_AUTHOR_LOGIN",
