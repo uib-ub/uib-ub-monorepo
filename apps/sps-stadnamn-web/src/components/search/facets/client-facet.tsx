@@ -20,7 +20,6 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const filterCleared = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
-  const mode = searchParams.get('mode')
   const {facetOptions, setPinnedFilters, pinnedFilters} = useContext(GlobalContext)
   const currentFacet = searchParams.get('facet') || 'adm'
 

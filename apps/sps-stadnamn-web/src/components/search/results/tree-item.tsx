@@ -11,7 +11,7 @@ export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean})
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null)
-    const mode = searchParams.get('mode')
+    const mode = searchParams.get('mode') || 'map'
     
     const { docData } = useContext(DocContext)
 
