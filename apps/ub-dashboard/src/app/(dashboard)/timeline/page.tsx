@@ -73,7 +73,7 @@ type TimelinePageProps = {
 }
 
 export default async function TimelinePage() {
-  const data = await sanityFetch<TimelinePageProps>({ query, revalidate: 7200 })
+  const data = await sanityFetch({ query, revalidate: 7200 })
 
   return (
     <MainShell>

@@ -10,7 +10,7 @@ export default async function GroupPage({
 }: {
   params: any
 }) {
-  const data = await sanityFetch<GroupProps>({ query, params: { id: params.id }, tags: [`Group:${params.id}`] })
+  const data = await sanityFetch({ query, params: { id: params.id }, tags: [`Group:${params.id}`] })
 
   return (
     <MainShell>

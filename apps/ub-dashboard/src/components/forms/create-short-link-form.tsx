@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label'
 import { ArrowDownIcon } from '@radix-ui/react-icons'
 
 const initialState = {
-  message: null,
+  message: '',
 }
 
 function SubmitButton() {
@@ -56,7 +56,7 @@ export function CreateShortLinkForm() {
         <SubmitButton />
       </div>
       <output aria-live="polite" className="sr-only">
-        {state?.message}
+        {typeof state === 'object' && 'message' in state ? state.message : state}
       </output>
     </form>
   )

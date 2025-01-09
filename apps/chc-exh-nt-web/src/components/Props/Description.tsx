@@ -35,12 +35,40 @@ interface DescriptionProps {
   language: string
 }
 
-export const Description = ({ value, language }: DescriptionProps) => {
+export const Description = ({ value, language }: DescriptionProps): React.ReactNode => {
+  // Sanitize function that removes all invisible characters and normalizes the string
+  const sanitizeString = (str: string) => {
+    if (!str) return '';
+    return str
+      // Remove all invisible characters and control characters
+      .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\u2028\u2029]/g, '')
+      // Normalize unicode characters
+      .normalize('NFKD')
+      // Remove any remaining non-printable or hidden characters
+      .replace(/[^\x20-\x7E]/g, '')
+      // Remove whitespace
+      .trim();
+  };
+  const sanitizedLang = sanitizeString(language);
+
   const briefDescriptions = value
-    .filter((i: any) => i.hasType._id === 'd4b31289-91f4-484d-a905-b3fb0970413c') // filter on type "Brief description"
-    .filter((desc: any) => desc.language === language)[0]
+    .filter((i: any) => i.hasType._id === 'd4b31289-91f4-484d-a905-b3fb0970413c')
+    .filter((desc: any) => {
+      const sanitizedDescLang = sanitizeString(desc.language);
+      if (sanitizedDescLang === sanitizedLang) {
+        return desc;
+      }
+      if (sanitizedDescLang === 'no') {
+        return desc;
+      }
+      if (sanitizedDescLang === 'en') {
+        return desc;
+      }
+    })
+
+  const text = briefDescriptions[0] || null;
 
   return (
-    <TextBlocks value={briefDescriptions?.body} />
-  )
+    <TextBlocks value={text?.body} />
+  );
 }

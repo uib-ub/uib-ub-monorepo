@@ -6,7 +6,7 @@ import PreviewGraph from '../_components/preview-graph'
 import { sanityFetch } from '@/sanity/lib/fetch'
 
 export default async function GraphPage() {
-  const data = await sanityFetch<GraphProps>({ query, tags: [`Graph`] })
+  const data = await sanityFetch({ query, tags: [`Graph`] })
 
   return (
     <MainShell>

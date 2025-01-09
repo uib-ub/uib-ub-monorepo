@@ -7,7 +7,7 @@ import { MainShell } from '@/components/shared/main-shell'
 import { Suspense } from 'react'
 
 export default async function PersonsPage() {
-  const data = await sanityFetch<PersonListProps[]>({ query, revalidate: 7200 })
+  const data = await sanityFetch({ query, revalidate: 7200 })
 
   return (
     <MainShell>

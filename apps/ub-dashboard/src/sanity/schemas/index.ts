@@ -68,8 +68,9 @@ import { PageHeader } from './text/plugs/PageHeader'
 import { SingleLevelChart } from './text/plugs/SingleLevelChart'
 import { Table } from './text/plugs/Table'
 import { Video } from './text/plugs/Video'
+import { SchemaTypeDefinition } from 'sanity'
 
-export const schemaTypes = [
+export const schemaTypes: SchemaTypeDefinition[] = [
   AccessPoint,
   Activity,
   Actor,

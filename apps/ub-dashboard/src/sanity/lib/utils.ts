@@ -1,8 +1,8 @@
-import { DefineUrlResolverOptions, UrlResolver } from 'sanity-plugin-iframe-pane'
+/* import { DefineUrlResolverOptions, UrlResolver } from 'sanity-plugin-iframe-pane' */
 import { CustomValidatorResult, ValidationContext } from 'sanity'
 
 // Used to generate URLs for drafts and live previews
-export const PREVIEW_BASE_URL = '/api/draft'
+/* export const PREVIEW_BASE_URL = '/api/draft'
 
 export function defineUrlResolver(options: DefineUrlResolverOptions): UrlResolver {
   const { base, requiresSlug = [] } = options
@@ -21,7 +21,7 @@ export function defineUrlResolver(options: DefineUrlResolverOptions): UrlResolve
     }
     return url.toString()
   }
-}
+} */
 
 const uniqueValueQuery =
   '!defined(*[_type==$type && value==$value && !(_id in [$draftId, $publishedId])][0]._id)';

@@ -1,46 +1,25 @@
-import 'server-only'
-
 import type { QueryParams } from '@sanity/client'
-import { draftMode } from 'next/headers'
 
 import { client } from './client'
 
-export const token = process.env.SANITY_API_READ_TOKEN
+// eslint-disable-next-line no-process-env
+export const token = process.env.SANITY_API_READ_TOKEN!
 
-const DEFAULT_PARAMS = {} as QueryParams
-const DEFAULT_TAGS = [] as string[]
-
-export async function sanityFetch<QueryResponse>({
+export async function sanityFetch<QueryString extends string>({
   query,
-  params = DEFAULT_PARAMS,
-  tags = DEFAULT_TAGS,
-  revalidate,
+  params = {},
+  revalidate = 60, // default revalidation time in seconds
+  tags = [],
 }: {
-  query: string
+  query: QueryString
   params?: QueryParams
+  revalidate?: number | false
   tags?: string[]
-  revalidate?: number
-}): Promise<QueryResponse> {
-  const isDraftMode = draftMode().isEnabled
-
-  if (isDraftMode && !token) {
-    throw new Error(
-      'The `SANITY_API_READ_TOKEN` environment variable is required.',
-    )
-  }
-
-  return client.fetch<QueryResponse>(query, params, {
-    // We only cache if there's a revalidation webhook setup
-    cache: 'force-cache',
-    ...(isDraftMode && {
-      cache: undefined,
-      token: token,
-      perspective: 'previewDrafts',
-    }),
-    ...(revalidate && { cache: undefined }),
+}) {
+  return client.fetch(query, params, {
     next: {
-      ...(isDraftMode && { revalidate: 30 }),
-      ...(!revalidate ? tags : { revalidate }),
+      revalidate: tags.length ? false : revalidate, // for simple, time-based revalidation
+      tags, // for tag-based revalidation
     },
   })
 }

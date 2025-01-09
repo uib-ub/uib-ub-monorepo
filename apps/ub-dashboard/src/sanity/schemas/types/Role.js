@@ -1,7 +1,7 @@
 import { FaTag } from 'react-icons/fa'
 import { labelSingleton } from '../props'
 import { defaultFieldsets } from '../fieldsets'
-import { coalesceLabel } from '../helpers'
+import { coalesceLabel } from '../helpers/index.ts'
 
 export const Role = {
   name: 'Role',

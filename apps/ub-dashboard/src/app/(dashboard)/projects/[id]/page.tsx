@@ -10,7 +10,7 @@ export default async function ProjectPage({
 }: {
   params: any
 }) {
-  const data = await sanityFetch<ProjectProps>({ query, params: { id: params.id }, tags: [`Project:${params.id}`] })
+  const data = await sanityFetch({ query, params: { id: params.id }, tags: [`Project:${params.id}`] })
 
   return (
     <MainShell>

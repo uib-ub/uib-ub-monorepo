@@ -1,43 +1,62 @@
-import React, { ReactElement } from 'react'
-import { useTheme } from 'next-themes'
-import { Select } from 'tailwind-ui'
-import { useMounted } from '../hooks/use-mounted'
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'
+"use client"
 
-type ThemeSwitchProps = {
-  lite?: boolean
+import * as React from "react"
+import { Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { Button } from "@/src/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/src/components/ui/dropdown-menu"
+
+const themeSwitchVariants = cva("h-[1.2rem] w-[1.2rem] transition-all", {
+  variants: {
+    mode: {
+      light: "rotate-0 scale-100 dark:-rotate-90 dark:scale-0",
+      dark: "absolute rotate-90 scale-0 dark:rotate-0 dark:scale-100",
+    },
+    layout: {
+      sidebar: "",
+      header: "flex gap-2 align-middle",
+    },
+  },
+  defaultVariants: {
+    mode: "light",
+    layout: "sidebar",
+  },
+})
+
+interface ThemeSwitchProps extends VariantProps<typeof themeSwitchVariants> {
+  className?: string
 }
 
-export function ThemeSwitch({ lite }: ThemeSwitchProps): ReactElement {
-  const { theme, setTheme, systemTheme } = useTheme()
-  const renderedTheme = theme === 'system' ? systemTheme : theme
-  const mounted = useMounted()
-  const IconToUse = mounted && renderedTheme === 'dark' ? MoonIcon : SunIcon
+export function ThemeSwitch({ layout, className }: ThemeSwitchProps) {
+  const { setTheme } = useTheme()
 
   return (
-    <div className="relative">
-      <Select
-        title="Change theme"
-        onChange={(option: any) => {
-          setTheme(option.key)
-        }}
-        selected={{
-          key: theme || '',
-          name: (
-            <div className="flex items-center gap-2 capitalize">
-              <IconToUse className='w-4 h-4' />
-              <span className={lite ? 'md:hidden' : ''}>
-                {mounted ? theme : 'light'}
-              </span>
-            </div>
-          )
-        }}
-        options={[
-          { key: 'light', name: 'Light' },
-          { key: 'dark', name: 'Dark' },
-          { key: 'system', name: 'System' }
-        ]}
-      />
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+          <Sun className={themeSwitchVariants({ mode: "light" })} />
+          <Moon className={themeSwitchVariants({ mode: "dark" })} />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" side={layout === "sidebar" ? "right" : "bottom"}>
+        <DropdownMenuItem onClick={() => setTheme("light")}>
+          Light
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
+          Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>
+          System
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

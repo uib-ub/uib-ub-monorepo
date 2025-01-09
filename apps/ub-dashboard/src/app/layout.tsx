@@ -37,7 +37,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="no" className={`${mono.variable} ${sans.variable} ${serif.variable} ${fantasy.variable}`}>
+    <html lang="no" className={`${mono.variable} ${sans.variable} ${serif.variable} ${fantasy.variable}`} suppressHydrationWarning>
       <body>
         {children}
       </body>

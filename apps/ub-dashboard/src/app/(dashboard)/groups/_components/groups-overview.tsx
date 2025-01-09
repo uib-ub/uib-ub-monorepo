@@ -55,8 +55,8 @@ export const query = groq`*[_type in ['Group'] && !references('dd4c1492-5e15-4d1
 const Groups = ({ data }: { data: GroupsOverviewProps[] }) => {
   const nestedData = arrayToTree(data, { parentId: 'subGroupOf', dataField: null })
   const groupedByType = groupBy(nestedData, function (item) {
-    if (!item.hasType?.[0].label) return 'Uklassifisert'
-    return item.hasType[0].label
+    if (!item || !Array.isArray(item.hasType) || !item.hasType[0]) return 'Uklassifisert'
+    return item.hasType[0]?.label ?? 'Uklassifisert'
   })
 
   return (
