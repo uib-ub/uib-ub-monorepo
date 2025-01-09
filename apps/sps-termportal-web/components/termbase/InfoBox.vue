@@ -58,12 +58,15 @@
             </AppLink>
           </dd>
         </div>
-        <div v-if="bootstrapData?.termbase?.concepts" class="flex">
+        <div
+          v-if="bootstrapData?.termbase?.[termbaseId]?.concepts"
+          class="flex"
+        >
           <dt class="w-32 shrink-0 font-semibold">
             {{ $t("global.concept", 2) }}
           </dt>
           <dd>
-            {{ bootstrapData?.termbase?.concepts }}
+            {{ bootstrapData?.termbase?.[termbaseId]?.concepts }}
           </dd>
         </div>
         <div v-if="data?.license" class="flex">
