@@ -1,14 +1,15 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useDataset } from '@/lib/search-params';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useContext } from 'react';
 import { PiArrowRight, PiDatabase, PiFiles, PiTag } from 'react-icons/pi';
 import ParamLink from '@/components/ui/param-link';
 import { useSearchParams } from 'next/navigation';
+import { GlobalContext } from '@/app/global-provider';
 
 
 
-export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
+export default function ResultItem({hit}: {hit: any}) {
     const dataset = useDataset()
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
@@ -16,14 +17,17 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const parent = searchParams.get('parent')
-
+    const { isMobile } = useContext(GlobalContext)
+    console.log(['attestationYear', 'attestationLabel', ...isMobile ? 'parent' : [], ...(parent ? ['center', 'zoom'] : [])])
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
     const snippetRenderer = resultRenderers[dataset]?.snippet || defaultResultRenderer.snippet
 
+
     useEffect(() => {
         // Scroll into view if section changes to results
+
         if (isMobile && nav == 'results' && doc == hit.fields.uuid && itemRef.current) {
             itemRef.current.scrollIntoView({behavior: 'instant', block: 'center'})
         }
@@ -34,11 +38,10 @@ export default function ResultItem({hit, isMobile}: {hit: any, isMobile: boolean
     return  <li className="flex flex-grow">
         <ParamLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
-                    remove={['attestationYear', 'attestationLabel', ...(parent ? ['center', 'zoom'] : [])]}
+                    remove={['attestationYear', 'attestationLabel', ...isMobile ? ['parent'] : [], ...(parent ? ['center', 'zoom'] : [])]}
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
-                        parent: parent ? 
-                        docDataset == 'search' ? hit.fields.uuid : hit.fields?.within : null,
+                        ...(parent && !isMobile) ? {parent: docDataset == 'search' ? hit.fields.uuid : hit.fields?.within} : {},
                         ...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
 
