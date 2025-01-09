@@ -21,16 +21,16 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
-  const {facetOptions, pinnedFilters, setPinnedFilters} = useContext(GlobalContext)
+  const {facetOptions, setPinnedFilters} = useContext(GlobalContext)
   
 
   const availableFacets = facetConfig[dataset]
-  const [selectedFacet, setSelectedFacet] = useQueryState('selectedFacet', {defaultValue: availableFacets && availableFacets[0]?.key});
+  const [facet, setFacet] = useQueryState('facet', {defaultValue: availableFacets && availableFacets[0]?.key});
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
-  const paramsExceptFacet = removeFilterParams(selectedFacet)
+  const paramsExceptFacet = removeFilterParams(facet)
 
   const switchFacet = (facet: string) => {
-    setSelectedFacet(facet)
+    setFacet(facet)
     //setSortMode(facetConfig[dataset].find(item => item.key == facet)?.sort || 'doc_count')
   }
 
@@ -74,18 +74,18 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     
 
   useEffect(() => {
-    fetch(`/api/facet?facets=${selectedFacet}${
+    fetch(`/api/facet?facets=${facet}${
       facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
         paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
           sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
       
       // if selectedfacet is nested with __
-      if (selectedFacet.includes('__')) {
-        const [parent, child] = selectedFacet.split('__')
+      if (facet.includes('__')) {
+        const [parent, child] = facet.split('__')
         setFacetAggregation(es_data.aggregations?.[parent]?.[child])
       }
       else {
-        setFacetAggregation(es_data.aggregations?.[selectedFacet])
+        setFacetAggregation(es_data.aggregations?.[facet])
       }
 
       
@@ -95,7 +95,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
       setIsLoading(false);
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [paramsExceptFacet, dataset, selectedFacet, facetSearch, sortMode]
+    }, [paramsExceptFacet, dataset, facet, facetSearch, sortMode]
     )
 
   return (
@@ -110,7 +110,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     </select>
     <div className='flex gap-2'>
     <div className='relative grow'>
-      <input aria-label="Søk i fasett" onChange={(e) => selectedFacet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
+      <input aria-label="Søk i fasett" onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
       <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
         <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
@@ -126,8 +126,8 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
             (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(datasetTitles[item.key])) && (
         <li key={index}>
         <label>
-          <input type="checkbox" checked={searchParams.getAll(selectedFacet).includes(item.key.toString()) ? true : false} className='mr-2' name={selectedFacet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
-          {renderLabel(selectedFacet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+          <input type="checkbox" checked={searchParams.getAll(facet).includes(item.key.toString()) ? true : false} className='mr-2' name={facet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
+          {renderLabel(facet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
         </label>
         </li>
         ))}

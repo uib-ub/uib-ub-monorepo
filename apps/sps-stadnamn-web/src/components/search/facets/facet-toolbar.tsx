@@ -11,13 +11,12 @@ export default function FacetToolbar() {
     const dataset = useDataset()
     const {facetOptions, updateFacetOption} = useContext(GlobalContext)
     const searchParams = useSearchParams()
-    const selectedFacet = searchParams.get('selectedFacet')
     const facet = searchParams.get('facet') || 'adm'
     const {setPinnedFilters} = useContext(GlobalContext)
     const {facetFilters} = useSearchQuery()
     const router = useRouter()
 
-    const currentFacet = (facet == 'other' ? selectedFacet : facet) || facetConfig[dataset][0]?.key
+    const currentFacet = facet || facetConfig[dataset][0]?.key
 
     const pinned = facetOptions[`${dataset}:${currentFacet}`]?.isPinned
     const sortMode = facetOptions[`${dataset}:${currentFacet}`]?.sort
