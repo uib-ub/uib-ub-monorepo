@@ -22,7 +22,7 @@ export default function ActiveFilters() {
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const { parentData } = useContext(DocContext)
     const [parent, setParent] = useQueryState('parent')
-    const {facetOptions} = useContext(GlobalContext)
+    const {facetOptions, pinnedFilters, setPinnedFilters} = useContext(GlobalContext)
 
     const getFieldLabel = (name: string, value: string) => {
         
@@ -60,22 +60,18 @@ export default function ActiveFilters() {
         // Remove all values for this key
         newSearchParams.delete(key)
 
-        // Add back mode
-        newSearchParams.set('mode', searchParams.get('mode') || 'map')
-
-        // Add section if it exists
-        const nav = searchParams.get('nav')
-        if (nav) {
-          newSearchParams.set('nav', nav)
-        }
-        const facet = searchParams.get('facet')
-        if (facet) {
-          newSearchParams.set('facet', facet)
-        }
+        // Add back mode, nav and facet params if they exist
+        const keptParams = ['mode', 'nav', 'facet']
+        keptParams.forEach((param: string) => {
+          const value = searchParams.get(param)
+          if (value) newSearchParams.set(param, value)
+        })
         
         // Add back all values except the one we want to remove
         values.filter(v => v !== value)
             .forEach(v => newSearchParams.append(key, v))
+
+        setPinnedFilters(pinnedFilters.filter(([name, value]) => name !== key || value !== value))
       
         router.push(`?${newSearchParams.toString()}`)
     }

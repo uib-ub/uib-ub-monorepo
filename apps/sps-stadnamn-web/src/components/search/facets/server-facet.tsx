@@ -21,7 +21,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
-  const {facetOptions, pinnedFilters} = useContext(GlobalContext)
+  const {facetOptions, pinnedFilters, setPinnedFilters} = useContext(GlobalContext)
   
 
   const availableFacets = facetConfig[dataset]
@@ -46,20 +46,28 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     // Remove existing value if present
     const existingValues = params.getAll(facet);
     params.delete(facet);
+
+    // reset because different markers should be shown
+    params.delete('parent')
+    params.delete('zoom')
+    params.delete('center')
+    params.delete('doc')
     
     // Add back all values except the one we're toggling
     existingValues
       .filter(v => v !== value)
       .forEach(v => params.append(facet, v));
+
+    
+
     
     // Add the value if being checked
     if (beingChecked) {
       params.append(facet, value);
     }
-  
-    // Ensure nav and facet params are present
-    params.set('nav', 'filters');
-    params.set('facet', 'other');
+
+    setPinnedFilters(Array.from(params.entries()).filter(item => facetOptions[`${dataset}:${item[0]}`]?.isPinned))
+
   
     router.push(`?${params.toString()}`, { scroll: false });
   };
@@ -113,7 +121,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     </div>
     </div>
     { facetAggregation?.buckets.length ?
-    <ul role="status" aria-live="polite" className='flex flex-col gap-2 px-2 p-2 stable-scrollbar xl:overflow-y-auto xl:max-h-40 2xl:max-h-64 border rounded-sm bg-neutral-50 border-neutral-300'>
+    <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
       {facetAggregation?.buckets.map((item: any, index: number) => 
             (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(datasetTitles[item.key])) && (
         <li key={index}>

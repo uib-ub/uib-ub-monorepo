@@ -56,8 +56,8 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
     useEffect(() => {
         setCurrentUrl("/search?" + searchParams.toString())
-        const filters = facetFilters.filter(([key, value]) => facetOptions[`${dataset}:${key}`]?.isPinned)
-        setPinnedFilters(filters)
+        //const filters = facetFilters.filter(([key, value]) => facetOptions[`${dataset}:${key}`]?.isPinned)
+        //setPinnedFilters(filters)
     }, [searchParams, setCurrentUrl])
 
     /*

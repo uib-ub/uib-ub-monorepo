@@ -21,7 +21,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
   const mode = searchParams.get('mode')
-  const {pinnedFilters, facetOptions} = useContext(GlobalContext)
+  const {facetOptions, setPinnedFilters, pinnedFilters} = useContext(GlobalContext)
   const currentFacet = searchParams.get('facet') || 'adm'
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
@@ -61,7 +61,8 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     const chosenValue = chosenPath.join('__')
     let hasSibling = false
 
-    const newParams =  Array.from(searchQuery.entries()).filter(urlParam => {
+    const newParams =  Array.from(searchParams.entries()).filter(urlParam => {
+      if (['parent', 'zoom', 'center', 'doc'].includes(urlParam[0])) return false // remove child view
       if (urlParam[0] != paramName) return true // Ignore other params
       if (urlParam[1] == chosenValue) return false // remove self
       const urlPath = urlParam[1].split('__')
@@ -82,6 +83,10 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       }
       return true
     })
+
+
+
+
     if (beingChecked) {
       newParams.push([paramName, chosenValue]) // add self
     }
@@ -89,16 +94,8 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       newParams.push([paramName, chosenPath.slice(1).join('__')])
     }
 
-    //alert(new URLSearchParams(newParams).toString())
-    const facet = searchParams.get('facet')
-    if (facet) {
-      newParams.push(['facet', facet])
-    }
+    setPinnedFilters(newParams.filter(([name, value]) => facetOptions[`${dataset}:${name}`]?.isPinned))
 
-    if (mode) {
-      newParams.push(['mode', mode])
-    }
-    newParams.push(['nav', 'filters'])  
     router.push(`?${new URLSearchParams(newParams).toString()}`)
   }
 

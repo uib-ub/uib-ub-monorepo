@@ -253,7 +253,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
       node.on('moveend', () => {
         
           const bounds = node.getBounds();
-          console.log("bounds", bounds)
+          //console.log("bounds", bounds)
           const boundsCenter = bounds.getCenter();
           setCenter([boundsCenter.lat, boundsCenter.lng]);
           setZoom(node.getZoom());
