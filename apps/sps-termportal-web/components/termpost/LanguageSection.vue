@@ -78,9 +78,10 @@
         v-if="concept?.altLabel?.[lang]"
         :label="$t('id.altLabel')"
       >
+        <!-- Reverse order to display it in same way as in wiki -->
         <TermpostTermDescription
           prop="altLabel"
-          :data="concept?.altLabel[lang]"
+          :data="[...concept?.altLabel[lang]].reverse()"
           :data-lang="lang"
         >
         </TermpostTermDescription>
@@ -90,9 +91,10 @@
         v-if="concept?.hiddenLabel?.[lang]"
         :label="$t('id.hiddenLabel')"
       >
+        <!-- Reverse order to display it in same way as in wiki -->
         <TermpostTermDescription
           prop="altLabel"
-          :data="concept?.hiddenLabel[lang]"
+          :data="[...concept?.hiddenLabel[lang]].reverse()"
           :data-lang="lang"
         >
         </TermpostTermDescription>
