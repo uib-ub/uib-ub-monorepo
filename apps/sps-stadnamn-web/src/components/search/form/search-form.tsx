@@ -24,7 +24,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const dataset = useDataset()
     const setQuery = useQueryState('q')[1]
     const { currentUrl, pinnedFilters } = useContext(GlobalContext)
-    const mode = searchParams.get('mode')
+    const mode = searchParams.get('mode') || 'map'
     
 
     const clearQuery = () => {
