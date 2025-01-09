@@ -18,7 +18,6 @@ export default function ResultItem({hit}: {hit: any}) {
     const docDataset = hit._index.split('-')[2]
     const parent = searchParams.get('parent')
     const { isMobile } = useContext(GlobalContext)
-    console.log(['attestationYear', 'attestationLabel', ...isMobile ? 'parent' : [], ...(parent ? ['center', 'zoom'] : [])])
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
