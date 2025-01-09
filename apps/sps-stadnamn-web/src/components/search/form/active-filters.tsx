@@ -1,10 +1,10 @@
 'use client'
 import WithinLabel from "./within-label"
-import { fieldConfig } from "@/config/search-config"
+import { facetConfig, fieldConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiPushPin, PiPushPinFill, PiTagFill, PiX } from "react-icons/pi"
+import { PiPushPin, PiPushPinFill, PiTagFill, PiTrash, PiX } from "react-icons/pi"
 import { parseAsString, useQueryState } from "nuqs"
 import ParamLink from "@/components/ui/param-link"
 import { DocContext } from "@/app/doc-provider"
@@ -23,6 +23,8 @@ export default function ActiveFilters() {
     const { parentData } = useContext(DocContext)
     const [parent, setParent] = useQueryState('parent')
     const {facetOptions, pinnedFilters, setPinnedFilters} = useContext(GlobalContext)
+    const unpinnedFilters = facetFilters.filter(([key, value]) => !facetOptions[`${dataset}:${key}`]?.isPinned)
+
 
     const getFieldLabel = (name: string, value: string) => {
         
@@ -31,6 +33,7 @@ export default function ActiveFilters() {
         const omitLabel = fieldConfig?.omitLabel || name == 'adm'
   
         const values = value.split('__')
+        
   
         // Add any special cases here
         if (values[0] == "_false" && name == "adm") {
@@ -76,6 +79,18 @@ export default function ActiveFilters() {
         router.push(`?${newSearchParams.toString()}`)
     }
 
+    const clearFilters = () => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      
+
+      // Remove all unpinned facet params
+      unpinnedFilters.forEach(([key, value]) => {
+        newSearchParams.delete(key)
+      })
+
+      router.push(`?${newSearchParams.toString()}`)
+    }
+
     const gnr =  parentData?._source && getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")
 
     const mode = searchParams.get('mode') || 'map'
@@ -86,16 +101,26 @@ export default function ActiveFilters() {
             <button onClick={() => setFulltext('off')} 
             className="">Fulltekst 
             <PiX className="inline text-lg" aria-hidden="true"/></button> }
-        
-          {!parentData && facetFilters.map(([key, value]) => (
+            {!parentData && pinnedFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 
                   className={`text-neutral-950  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
               >
-                {facetOptions[`${dataset}:${key}`]?.isPinned && <PiPushPinFill className="inline text-lg text-neutral-800" aria-hidden="true"/>} {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
+                <PiPushPinFill className="inline text-lg text-neutral-800" aria-hidden="true"/> {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
+          {unpinnedFilters.length > 1 && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
+            {!parentData && unpinnedFilters.map(([key, value]) => (
+              <button 
+                  key={`${key}__${value}`} 
+                  onClick={() => removeFilter(key, value)} 
+                  className={`text-neutral-950  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+              >
+                {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
+              </button>
+          ))}
+          
           {mode == 'map' && parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>
             {treeSettings[dataset] ? gnr + ' ' +  parentData._source.label : 'Kilder: ' + parentData._source.label}
             <PiX className="inline text-lg" aria-hidden="true"/></button>}

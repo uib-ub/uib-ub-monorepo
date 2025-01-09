@@ -7,7 +7,7 @@ import { datasetTitles } from '@/config/metadata-config';
 import { useContext, useEffect, useRef, useState } from 'react';
 import IconButton from '@/components/ui/icon-button';
 import { searchableFields } from '@/config/search-config';
-import { useDataset } from '@/lib/search-params';
+import { useDataset, useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
@@ -24,6 +24,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const dataset = useDataset()
     const setQuery = useQueryState('q')[1]
     const { currentUrl, pinnedFilters } = useContext(GlobalContext)
+    const { facetFilters } = useSearchQuery()
     const mode = searchParams.get('mode') || 'map'
     
 
@@ -78,7 +79,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
             <input type="hidden" name="nav" value={ mode == 'map' ? 'results' : 'filters'}/>
-            {pinnedFilters.map(([key, value]) => <input type="hidden" key={`pinned-${key}-${value}`} name={key} value={value}/>)}
+            {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value}/>)}
             {mode && <input type="hidden" name="mode" value={mode || ''}/>}
             <button className="sr-only" type="submit">Søk</button>
         </Form>
