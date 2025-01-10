@@ -114,7 +114,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (parent || !bounds) {
+    if (parent || !bounds || isLoading) {
       return;
     }
 
