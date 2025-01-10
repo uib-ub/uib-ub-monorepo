@@ -268,7 +268,6 @@ const mapRef = useCallback((node: any) => {
                     [bounds.getSouth(), bounds.getEast()]]);
       
           isMovingRef.current = false;
-          setIsMoving(false);
         }
       });
 
