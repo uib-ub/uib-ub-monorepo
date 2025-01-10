@@ -246,15 +246,14 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   }, [markerMode])
 
 
-  const [isMoving, setIsMoving] = useState(false);
   const isMovingRef = useRef(false);
 
 const mapRef = useCallback((node: any) => {
     if (node !== null) {
+      mapInstance.current = node;
       
       node.on('movestart', () => {
         isMovingRef.current = true;
-        setIsMoving(true);
       });
       
       node.on('moveend', () => {
