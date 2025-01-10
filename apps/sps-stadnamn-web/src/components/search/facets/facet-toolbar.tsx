@@ -9,17 +9,16 @@ import { PiFunnelSimple, PiPushPin, PiPushPinFill, PiPushPinSlash, PiSortDescend
 
 export default function FacetToolbar() {
     const dataset = useDataset()
-    const {facetOptions, updateFacetOption} = useContext(GlobalContext)
+    const {facetOptions, updateFacetOption, updatePinnedFilters, pinnedFilters} = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet') || 'adm'
-    const {setPinnedFilters} = useContext(GlobalContext)
     const {facetFilters} = useSearchQuery()
     const router = useRouter()
 
     const currentFacet = facet || facetConfig[dataset][0]?.key
 
-    const pinned = facetOptions[dataset]?.facets?.[currentFacet]?.isPinned
-    const sortMode = facetOptions[dataset]?.facets?.[currentFacet]?.sort
+    const pinned = facetOptions[dataset]?.[currentFacet]?.pinningActive
+    const sortMode = facetOptions[dataset]?.[currentFacet]?.sort
     
 
 
@@ -36,8 +35,9 @@ export default function FacetToolbar() {
 
 
         <IconButton className="text-xl p-1" label={pinned ? "Ikke behold filtrering" : "Behold til senere"} onClick={() => {
-            updateFacetOption(currentFacet, {isPinned: !pinned})
-            setPinnedFilters(facetFilters.filter(([key, value]) => key == currentFacet ? !pinned : facetOptions[dataset]?.facets?.[key]?.isPinned))
+            updateFacetOption(currentFacet, {pinningActive: !pinned})
+            updatePinnedFilters(facetFilters.filter(item => pinned ? item[0] != currentFacet : true))
+
         }}>
             {pinned ? <PiPushPinSlash/> : <PiPushPin/>}
         </IconButton>
