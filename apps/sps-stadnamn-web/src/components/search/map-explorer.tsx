@@ -246,19 +246,30 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   }, [markerMode])
 
 
-  const mapRef = useCallback((node: any) => {
-    if (node !== null) {
-      mapInstance.current = node;
+  const [isMoving, setIsMoving] = useState(false);
+  const isMovingRef = useRef(false);
 
+const mapRef = useCallback((node: any) => {
+    if (node !== null) {
+      
+      node.on('movestart', () => {
+        isMovingRef.current = true;
+        setIsMoving(true);
+      });
+      
       node.on('moveend', () => {
-        
+        if (isMovingRef.current) {
           const bounds = node.getBounds();
-          //console.log("bounds", bounds)
           const boundsCenter = bounds.getCenter();
+          console.log("MOVEEND")
           setCenter([boundsCenter.lat, boundsCenter.lng]);
           setZoom(node.getZoom());
-          setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
-        
+          setBounds([[bounds.getNorth(), bounds.getWest()], 
+                    [bounds.getSouth(), bounds.getEast()]]);
+      
+          isMovingRef.current = false;
+          setIsMoving(false);
+        }
       });
 
       node.whenReady(() => {
