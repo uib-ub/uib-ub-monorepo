@@ -22,10 +22,12 @@ export default function ActiveFilters() {
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const { parentData } = useContext(DocContext)
     const [parent, setParent] = useQueryState('parent')
-    const {facetOptions, setPinnedFilters} = useContext(GlobalContext)
-    const pinnedFilters = facetFilters.filter(([key, value]) => facetOptions[dataset]?.facets?.[key]?.isPinned)
+    const {facetOptions, updatePinnedFilters, pinnedFilters} = useContext(GlobalContext)
+    const visibleUnpinnedFilters = facetFilters.filter(([key, value]) => 
+        pinnedFilters[dataset]?.some(([pinnedKey, pinnedValue]) => pinnedKey === key && pinnedValue === value)
+    )
     const unpinnedFilters = facetFilters.filter(([key, value]) => 
-        !pinnedFilters.some(([pinnedKey, pinnedValue]) => pinnedKey === key && pinnedValue === value)
+        !pinnedFilters[dataset]?.some(([pinnedKey, pinnedValue]) => pinnedKey === key && pinnedValue === value)
     )
 
 
@@ -78,9 +80,11 @@ export default function ActiveFilters() {
             .forEach(v => newSearchParams.append(key, v))
 
         // Update pinned filters if this was a pinned filter
-        if (pinnedFilters.some(([k, v]) => k === key && v === value)) {
-            setPinnedFilters(pinnedFilters.filter(([k, v]) => k !== key || v !== value))
+        if (facetOptions[dataset]?.[key]?.pinningActive) {
+          updatePinnedFilters(pinnedFilters[dataset]?.filter(([k, v]) => k !== key || v !== value) || [])
         }
+
+
       
         router.push(`?${newSearchParams.toString()}`)
     }
@@ -107,7 +111,7 @@ export default function ActiveFilters() {
             <button onClick={() => setFulltext('off')} 
             className="">Fulltekst 
             <PiX className="inline text-lg" aria-hidden="true"/></button> }
-            {!parentData && pinnedFilters.map(([key, value]) => (
+            {!parentData && visibleUnpinnedFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 
