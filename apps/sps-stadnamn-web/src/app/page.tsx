@@ -7,10 +7,10 @@ import Image from 'next/image';
 import { datasetTitles, datasetPresentation, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/footer';
 import { fetchStats } from '@/app/api/_utils/actions';
-
+import Form from "next/form";
+import StoredFilters from "./stored-filters";
 
 export default async function Home() {
-
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
     return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetShortDescriptions[code], subindices: info.subindices, initMode: info.initMode }
@@ -74,7 +74,7 @@ export default async function Home() {
 
 
     <nav className="grid grid-cols-1 lg:grid-cols-2 w-full lg:w-auto justify-center items-center gap-4 lg:gap-8 text-xl lg:text-lg">
-  <Link href="/search?mode=map" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiMapTrifoldThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Utforsk kartet</span></Link>
+  <Link href="/search" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiMapTrifoldThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Utforsk kartet</span></Link>
   {false && <>
   <Link href="/info/datasets" className="flex invisible lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiBookThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Leksikon [kommer snart]</span></Link>
   <Link href="/iiif" className="flex invisible lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiArchiveThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Arkivressurser [kommer snart]</span></Link>
