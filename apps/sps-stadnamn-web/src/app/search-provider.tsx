@@ -3,7 +3,7 @@ import { createContext, useContext, useRef } from 'react'
 import { useState, useEffect } from 'react';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
 import { addPadding } from '@/lib/map-utils';
 
@@ -37,8 +37,9 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
     const mapInstance = useRef<any>(null);
 
-    const { setCurrentUrl, isMobile, setPinnedFilters, facetOptions } = useContext(GlobalContext)
-    const dataset = useDataset()
+    
+
+    const { setCurrentUrl, isMobile, pinnedFilters } = useContext(GlobalContext)
     
 
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
@@ -52,6 +53,18 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const desc = searchParams.get('desc')
     const page = useQueryState('page', parseAsInteger.withDefault(1))[0]
     const perPage = useQueryState('perPage', parseAsInteger.withDefault(10))[0]
+    const router = useRouter()
+
+    const dataset = useDataset()
+
+    useEffect(() => {
+        
+        if (pinnedFilters[dataset]?.length > 0 && !searchFilterParamsString) {
+            const newParams = new URLSearchParams(searchParams)
+            const pinnedParams = new URLSearchParams(pinnedFilters[dataset])
+            router.replace(`?${newParams.toString()}${newParams.toString() ? '&' : ''}${pinnedParams.toString()}`, { scroll: false })
+        }
+    }, [dataset, pinnedFilters, searchFilterParamsString, router]);
 
 
     useEffect(() => {
