@@ -23,7 +23,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const form = useRef<HTMLFormElement | null>(null)
     const dataset = useDataset()
     const setQuery = useQueryState('q')[1]
-    const { currentUrl, facetOptions } = useContext(GlobalContext)
+    const { currentUrl } = useContext(GlobalContext)
     const { facetFilters } = useSearchQuery()
     const mode = searchParams.get('mode') || 'map'
     
