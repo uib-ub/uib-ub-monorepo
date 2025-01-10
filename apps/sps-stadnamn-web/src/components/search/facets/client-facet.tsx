@@ -10,7 +10,7 @@ import { GlobalContext } from '@/app/global-provider';
 export default function ClientFacet({ facetName }: { facetName: string }) {
   const router = useRouter()
   const dataset = useDataset()
-  const { searchQuery, removeFilterParams, searchQueryString, facetFilters } = useSearchQuery()
+  const { removeFilterParams, facetFilters } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = removeFilterParams(facetName)
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
@@ -22,7 +22,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
   const expandedFacets = new Set<string>();
-  for (const [key, value] of searchParams) {
+  for (const [key, value] of facetFilters) {
     if (key != facetName) continue
     const path = value.split('__')
     for (let i = 0; i < path.length; i++) {
