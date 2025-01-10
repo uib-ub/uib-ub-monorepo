@@ -21,7 +21,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
-  const {facetOptions, setPinnedFilters} = useContext(GlobalContext)
+  const {facetOptions, pinnedFilters, updatePinnedFilters} = useContext(GlobalContext)
   
 
   const availableFacets = facetConfig[dataset]
@@ -64,9 +64,16 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     // Add the value if being checked
     if (beingChecked) {
       params.append(facet, value);
+
     }
 
-    setPinnedFilters(Array.from(params.entries()).filter(item => facetOptions[dataset]?.facets?.[item[0]]?.isPinned))
+    if (facetOptions[dataset]?.[facet]?.pinningActive) {
+      updatePinnedFilters(beingChecked ? [...pinnedFilters[dataset], [facet, value]] 
+          : pinnedFilters[dataset]?.filter(([k, v]) => (k == facet && v == value) ? false : true))
+    }
+
+  
+
 
   
     router.push(`?${params.toString()}`, { scroll: false });
