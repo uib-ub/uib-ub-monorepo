@@ -10,20 +10,19 @@ import { GlobalContext } from '@/app/global-provider';
 export default function ClientFacet({ facetName }: { facetName: string }) {
   const router = useRouter()
   const dataset = useDataset()
-  const { searchQuery, removeFilterParams, searchQueryString } = useSearchQuery()
+  const { searchQuery, removeFilterParams, searchQueryString, facetFilters } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = removeFilterParams(facetName)
-  const paramLookup = useSearchParams()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const filterCleared = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
-  const {facetOptions, setPinnedFilters} = useContext(GlobalContext)
+  const {facetOptions, updatePinnedFilters } = useContext(GlobalContext)
   const currentFacet = searchParams.get('facet') || 'adm'
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
   const expandedFacets = new Set<string>();
-  for (const [key, value] of paramLookup) {
+  for (const [key, value] of searchParams) {
     if (key != facetName) continue
     const path = value.split('__')
     for (let i = 0; i < path.length; i++) {
@@ -47,7 +46,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
 
   const isChecked = (paramName: string, ownPath: string[]) => {
-    if (paramLookup.has(facetName, ownPath.join('__'))) return true
+    if (searchParams.has(facetName, ownPath.join('__'))) return true
     // Check if in expandedFacets
     if (expandedFacets.has(ownPath.join("__"))) return true
     return false
@@ -86,22 +85,26 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
     if (beingChecked) {
       newParams.push([paramName, chosenValue]) // add self
+
     }
     else if (chosenPath.length > 1 && !hasSibling) { // add parent if no siblings checked
       newParams.push([paramName, chosenPath.slice(1).join('__')])
     }
 
-    setPinnedFilters(newParams.filter(([name, value]) => facetOptions[dataset]?.facets?.[name]?.isPinned))
+    // Update pinned filters
+    updatePinnedFilters(newParams.filter(item => facetOptions[dataset]?.[item[0]]?.pinningActive))
+
+
 
     router.push(`?${new URLSearchParams(newParams).toString()}`)
   }
 
   const sortBuckets = (buckets: any) => {
     const orderCompare = (a: string, b: string) => {
-      return facetOptions[dataset]?.facets?.[currentFacet]?.sort === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
+      return facetOptions[dataset]?.[currentFacet]?.sort === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
     }
     return [...buckets].sort((a, b) => {
-      if (facetOptions[dataset]?.facets?.[currentFacet]?.sort === 'doc_count') {
+      if (facetOptions[dataset]?.[currentFacet]?.sort === 'doc_count') {
         return parseInt(b.doc_count) - parseInt(a.doc_count);
       } else {
         if (a.label && b.label) {
