@@ -11,11 +11,11 @@ import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
 
 
-export default function ServerFacet({ showLoading }: { showLoading: (facet: string | null) => void }) {
+export default function ServerFacet() {
   const router = useRouter()
   const dataset = useDataset()
   const searchParams = useSearchParams()
-  const { searchQueryString, removeFilterParams } = useSearchQuery()
+  const { removeFilterParams } = useSearchQuery()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -25,14 +25,16 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
   
 
   const availableFacets = facetConfig[dataset]
-  const [facet, setFacet] = useQueryState('facet', {defaultValue: availableFacets && availableFacets[0]?.key});
+  const facet = searchParams.get('facet') as string
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
-  const paramsExceptFacet = removeFilterParams(facet)
+  const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
 
-  const switchFacet = (facet: string) => {
-    setFacet(facet)
-    console.log("FACET", facet)
-    //setSortMode(facetConfig[dataset].find(item => item.key == facet)?.sort || 'doc_count')
+  const switchFacet = (event: ChangeEvent<HTMLSelectElement>) => {
+    const facet = event.target.value
+    event.preventDefault()
+    const newParams = new URLSearchParams(searchParams.toString())
+    newParams.set('facet', facet)
+    router.push(`?${newParams.toString()}`, { scroll: false });
   }
 
   const renderLabel = (key: string, label: string) => {

@@ -39,8 +39,8 @@ export default function Facets() {
           
         }
         </div>
-        { !facet || facet == 'adm' ? <ClientFacet facetName='adm' /> : 
-         <ServerFacet showLoading={(facet: string | null) => setLoadingFacet(facet)}/> }
+        { (!facet || facet == 'adm') ? <ClientFacet facetName='adm' /> : 
+         <ServerFacet/> }
         </>
       )
   }
