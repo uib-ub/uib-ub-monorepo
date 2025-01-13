@@ -83,9 +83,6 @@ export default function ActiveFilters() {
           if (searchParams.get('nav') == 'results' && facetFilters.length <= 1 && !searchParams.get('q')) {
             newSearchParams.set('nav', 'filters')
           }
-          else {
-            alert(newSearchParams.toString())
-          }
 
         // Update pinned filters if this was a pinned filter
         if (facetOptions[dataset]?.[key]?.pinningActive) {
