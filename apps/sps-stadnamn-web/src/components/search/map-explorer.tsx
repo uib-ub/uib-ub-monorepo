@@ -355,20 +355,85 @@ export default function MapExplorer() {
 
   return <>
     {(bounds?.length || (center && zoom) || searchError || (totalHits && totalHits.value > 0)) ? <>
-      <Map mapRef={mapRef}
+      <Map        
+        whenReady={(e: any) => {
+
+          
+            const bounds = e.target.getBounds();
+            if (!mapInstance.current) {
+              mapInstance.current = e.target
+            }
+            console.log("SETTING BOUNDS", bounds)
+            setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+          
+          
+        }}
         zoomControl={false}
         {...center && zoom ?
           { center, zoom }
-          : bounds ? { bounds } : { center: [63.4, 10.4], zoom: 5 }
+          : { center: [63.4, 10.4], zoom: 5 }
         }
         className='w-full h-full'>
-        {({ TileLayer, CircleMarker, Marker }: any, leaflet: any) => {
+        {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap }: any, leaflet: any) => {
+
+          function EventHandlers() {
+            const map = useMap();
+
+            useMapEvents({
+              moveend: () => {
+                if (isLoading) return
+                console.log("MOVEEND")
+                const bounds = map.getBounds();
+                const boundsCenter = bounds.getCenter();
+                setCenter([boundsCenter.lat, boundsCenter.lng]);
+                setZoom(map.getZoom());
+                setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+              },
+            })
+
+
+            /* The useffect CAUSES INFINITE LOOP
+
+
+            if (!isLoading && !zoom && !center) {
+              if (resultBounds?.length) {
+                //console.log("FITTING BOUNDS", resultBounds)
+                map.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
+              }
+              else {
+                // ADD MISSING PARAMS
+                //console.log("ADDING MISSING PARAMS", center, zoom)
+                const bounds = map.getBounds();
+                const boundsCenter = bounds.getCenter();
+                setCenter([boundsCenter.lat, boundsCenter.lng]);
+                setZoom(map.getZoom());
+              }
+            }
+
+
+            const [docLon, docLat] = docData?._source?.location?.coordinates || []
+
+            
+            useEffect(() => {
+              if (isLoading) return
+              if (docLon && docLat) {
+                console.log("FLYING TO DOC", docLon, docLat)
+                //map.flyTo([docLat, docLon], 15, { duration: 0.25, maxZoom: 18 });
+              }
+            }, [map, isLoading, docLon, docLat]) 
+            */
+          
+
+            return null
+          }
+
 
 
 
           return (
 
             <>
+              <EventHandlers />
               {baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapProps[baseMap]} />}
 
 
