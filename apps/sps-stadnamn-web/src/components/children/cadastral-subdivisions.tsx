@@ -12,9 +12,10 @@ import { getValueByPath } from "@/lib/utils"
 import { ChildrenContext } from "@/app/children-provider"
 import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
+import { GlobalContext } from "@/app/global-provider"
 
 
-export default function CadastralSubdivisions({isMobile}: { isMobile: boolean }) {
+export default function CadastralSubdivisions() {
     const dataset = useDataset()
     const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
         return { key, label: value.label }
@@ -29,6 +30,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
 
     
     const { parentData } = useContext(DocContext)
+    const { isMobile } = useContext(GlobalContext)
     const { childrenData, childrenLoading } = useContext(ChildrenContext)
 
 
@@ -52,7 +54,7 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                 {mode == 'map' && 
                 <div className="float-right text-2xl flex gap-2 p-1 items-center ml-auto">
 
-                <IconButton label="Lukk" onClick={() => setParent(null)}><PiX aria-hidden="true"/></IconButton>
+                <button aria-label="Lukk" onClick={() => setParent(null)}><PiX aria-hidden="true"/></button>
                 </div>}
                 </div>}
                 <div className="overflow-x-auto border border-neutral-300 rounded-md mb-2">
