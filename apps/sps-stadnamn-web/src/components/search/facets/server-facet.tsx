@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, ChangeEvent } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryStringWithout, useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig } from '@/config/search-config';
@@ -98,10 +98,6 @@ export default function ServerFacet() {
         setFacetAggregation(es_data.aggregations?.[facet])
       }
 
-      
-      setTimeout(() => {
-        showLoading(null);
-      }, 200);
       setIsLoading(false);
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,10 +109,9 @@ export default function ServerFacet() {
     { !isLoading &&
     <div className="flex flex-col gap-2 border-b border-neutral-300 py-4">
     <div className='flex flex-col gap-2'>
-    <select onChange={(e) => switchFacet(e.target.value)} className='border rounded-md border-neutral-300 p-1'>
-      
+    <select onChange={switchFacet} className='border rounded-md border-neutral-300 p-1'>
               {availableFacets?.map((item, index) => (
-            <option key={index} value={item.key}>{item.label} KEY: {item.key}</option>
+            <option key={index} value={item.key}>{item.label}</option>
         ))}
     </select>
     <div className='flex gap-2'>
