@@ -248,46 +248,6 @@ export default function MapExplorer() {
   }, [markerMode])
 
 
-  const isMovingRef = useRef(false);
-
-const mapRef = useCallback((node: any) => {
-    if (node !== null) {
-      mapInstance.current = node;
-      
-      node.on('movestart', () => {
-        isMovingRef.current = true;
-      });
-      
-      node.on('moveend', () => {
-        if (isMovingRef.current) {
-          const bounds = node.getBounds();
-          const boundsCenter = bounds.getCenter();
-          console.log("MOVEEND")
-          setCenter([boundsCenter.lat, boundsCenter.lng]);
-          console.log("SETTING ZOOM", node.getZoom())
-          setZoom(node.getZoom());
-          setBounds([[bounds.getNorth(), bounds.getWest()], 
-                    [bounds.getSouth(), bounds.getEast()]]);
-      
-          isMovingRef.current = false;
-        }
-      });
-
-      node.whenReady(() => {
-        if (!initialBoundsSet.current) {
-          const bounds = node.getBounds();
-          console.log("SETTING BOUNDS", bounds)
-          setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
-          initialBoundsSet.current = true;
-        }
-      });
-
-    }
-
-  }, [mapInstance, setCenter, setZoom, setBounds]);
-
-
-
 
   const zoomIn = () => {
     if (mapInstance.current) {
