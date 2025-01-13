@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/tooltip"
 import { ParamProps } from "./param-types"
 import Clickable from './clickable'
+import { useContext } from "react"
+import { GlobalContext } from "@/app/global-provider"
 
 type Props = ParamProps & {
     label: string
@@ -15,13 +17,20 @@ type Props = ParamProps & {
 export default function ClickableIcon({ 
     children, 
     label, 
+    type,
+    onClick,
     side="bottom",
     ...rest 
 }: Props) {
 
-    
-    return (
-        <TooltipProvider>
+    const { isMobile } = useContext(GlobalContext)
+
+    if (isMobile) {
+        return <button aria-label={label} type={type || "button"} onClick={onClick} {...rest}><i aria-hidden='true'>{children}</i></button>
+    }
+    else {
+        return (
+            <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
                     <Clickable 
@@ -36,5 +45,6 @@ export default function ClickableIcon({
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
-    );
+        );
+    }
 }
