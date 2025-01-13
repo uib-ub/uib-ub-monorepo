@@ -6,7 +6,6 @@ import { infoPageRenderers } from '@/config/info-renderers'
 import OriginalData from './original-data'
 import Link from 'next/link'
 import { PiDatabaseFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi'
-import GroupedChildren from '@/components/results/grouped-children'
 import ThumbnailLink from '@/components/image-viewer/thumbnail-link'
 import CopyLink from '@/components/doc/copy-link'
 
@@ -91,7 +90,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       
       { docDataset == 'search' &&
 
-        <GroupedChildren snid={doc._source.snid} uuid={doc._source.uuid} childList={doc._source.children} landingPage/>
+        <>CHILDREN HERE</>
 
 
       }
