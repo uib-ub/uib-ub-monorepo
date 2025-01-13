@@ -590,9 +590,9 @@ const mapRef = useCallback((node: any) => {
           }
         </DropdownMenuContent>
       </DropdownMenu>
-      <IconButton onClick={zoomIn} side="left" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill /></IconButton>
-      <IconButton onClick={zoomOut} side="left" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill /></IconButton>
-      <IconButton onClick={getMyLocation} side="left" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiNavigationArrowFill/></IconButton>
+      <IconButton onClick={zoomIn} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill /></IconButton>
+      <IconButton onClick={zoomOut} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill /></IconButton>
+      <IconButton onClick={getMyLocation} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiNavigationArrowFill/></IconButton>
     </div>
   </>
 }
