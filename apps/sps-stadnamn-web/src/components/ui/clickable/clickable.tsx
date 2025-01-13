@@ -33,6 +33,6 @@ export default function Clickable({ children, remove, add, only, link, href, ...
         return <Link href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`} {...rest}>{children}</Link>
     }
     else {
-        return <button onClick={() => router.push("?" + stringParams)} {...rest}>{children}</button>
+        return <button type="button" {...rest} onClick={() => router.push("?" + stringParams)} >{children}</button>
     }
 }
