@@ -64,7 +64,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             const pinnedParams = new URLSearchParams(pinnedFilters[dataset])
             router.replace(`?${newParams.toString()}${newParams.toString() ? '&' : ''}${pinnedParams.toString()}`, { scroll: false })
         }
-    }, [dataset, pinnedFilters, searchFilterParamsString, router]);
+    }, [dataset, pinnedFilters, searchFilterParamsString, router, searchParams]);
 
 
     useEffect(() => {
