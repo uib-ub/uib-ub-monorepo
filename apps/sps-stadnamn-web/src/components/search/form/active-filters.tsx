@@ -74,10 +74,19 @@ export default function ActiveFilters() {
           const value = searchParams.get(param)
           if (value) newSearchParams.set(param, value)
         })
+
         
         // Add back all values except the one we want to remove
         values.filter(v => v !== value)
             .forEach(v => newSearchParams.append(key, v))
+
+
+          if (searchParams.get('nav') == 'results' && facetFilters.length <= 1 && !searchParams.get('q')) {
+            newSearchParams.set('nav', 'filters')
+          }
+          else {
+            alert(newSearchParams.toString())
+          }
 
         // Update pinned filters if this was a pinned filter
         if (facetOptions[dataset]?.[key]?.pinningActive) {
