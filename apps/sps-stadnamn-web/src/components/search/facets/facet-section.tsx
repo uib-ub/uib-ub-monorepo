@@ -22,14 +22,14 @@ export default function Facets() {
         <div role="tablist" className="flex flex-wrap items-center gap-1">
         { contentSettings[dataset]?.adm && <>
           <h3>
-          <Clickable link type="button" role="tab" aria-selected={facet == 'adm'} remove={['facet']} className='rounded-tabs'>
+          <Clickable type="button" role="tab" aria-selected={facet == 'adm'} remove={['facet']} className='rounded-tabs'>
           
           Område
           
           </Clickable>
           </h3>
           <h3>
-          <Clickable link type="button" role="tab" aria-selected={facet != 'adm'} add={{facet: facetConfig[dataset][0]?.key}} className='rounded-tabs'>
+          <Clickable type="button" role="tab" aria-selected={facet != 'adm'} add={{facet: facetConfig[dataset][0]?.key}} className='rounded-tabs'>
           
           Annet
           
