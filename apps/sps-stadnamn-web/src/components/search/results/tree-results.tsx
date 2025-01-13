@@ -9,7 +9,7 @@ import Clickable from "@/components/ui/clickable/clickable";
 import { PiHouseFill } from "react-icons/pi";
 import { DocContext } from "@/app/doc-provider";
 
-export default function TreeResults({isMobile}: {isMobile: boolean}) {
+export default function TreeResults() {
   const [cadastralData, setCadastralData] = useState<any>(null)
   const [fetchError, setFetchError] = useState<any>(null)
 
@@ -105,7 +105,7 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
 
 
   : cadastralData?.hits?.hits?.map((item: Record<string, any>) => {
-    return <TreeItem key={item._id} hit={item} isMobile={isMobile}/>
+    return <TreeItem key={item._id} hit={item}/>
   })}
 
   </ul>

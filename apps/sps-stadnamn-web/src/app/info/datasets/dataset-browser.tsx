@@ -1,14 +1,15 @@
 
 'use client'
-import { useState, useEffect} from 'react';
+import { useState, useEffect, useContext} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
 import { PiCaretDown, PiCaretRight, PiCaretUp } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import DatasetToolbar from '@/components/ui/dataset-toolbar';
+import { GlobalContext } from '@/app/global-provider';
 
-export default function DatasetBrowser({isMobile}: {isMobile: boolean}) {
+export default function DatasetBrowser() {
   const searchParams = useSearchParams()
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -19,6 +20,7 @@ export default function DatasetBrowser({isMobile}: {isMobile: boolean}) {
   const allTypes = Object.keys(typeNames);
 
   const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
+  const { isMobile } = useContext(GlobalContext)
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

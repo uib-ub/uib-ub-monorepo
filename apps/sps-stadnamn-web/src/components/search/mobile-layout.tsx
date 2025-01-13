@@ -222,7 +222,7 @@ export default function MobileLayout() {
             <DocExplorer hidden={drawerContent != 'info'}/>
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
-                <Results isMobile={true}/>
+                <Results/>
                 </section>
             
              }
@@ -231,10 +231,10 @@ export default function MobileLayout() {
                 <Facets/> 
             }
             { drawerContent == 'cadastre' && 
-                <CadastralSubdivisions isMobile={true}/>
+                <CadastralSubdivisions/>
             }
             { drawerContent == 'tree' &&
-                <TreeResults isMobile={true}/>
+                <TreeResults/>
             }
             </div>
             </>
@@ -256,13 +256,13 @@ export default function MobileLayout() {
         </div>
 
         <div className={`absolute top-12 right-0 w-full bg-transparent rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
-        <StatusSection isMobile={true}/>
+        <StatusSection/>
         { mode == 'table' && <TableExplorer/>}
         { mode == 'list' && <ListExplorer/>}
         </div>
 
         <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
-        { mode == 'map' && <MapExplorer isMobile={true}/>}
+        { mode == 'map' && <MapExplorer/>}
         </div>
 
 

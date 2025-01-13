@@ -4,9 +4,11 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { treeSettings } from '@/config/server-config';
 import { useSearchParams } from 'next/navigation';
 import { DocContext } from '@/app/doc-provider';
+import { GlobalContext } from '@/app/global-provider';
 
-export default function TreeItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
+export default function TreeItem({hit}: {hit: any}) {
     const searchParams = useSearchParams()
+    const { isMobile } = useContext(GlobalContext)
     const parent = searchParams.get('parent')
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')

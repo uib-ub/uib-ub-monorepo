@@ -54,7 +54,7 @@ export default async function RootLayout({
       </a>
         <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md !h-12 flex-none items-center !z-[4000]">
 
-          <SearchForm isMobile={isMobile}/>
+          <SearchForm/>
           <Suspense>
             <Menu/>
           </Suspense>

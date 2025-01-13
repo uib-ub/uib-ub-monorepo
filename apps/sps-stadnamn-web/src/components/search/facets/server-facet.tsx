@@ -31,6 +31,7 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
 
   const switchFacet = (facet: string) => {
     setFacet(facet)
+    console.log("FACET", facet)
     //setSortMode(facetConfig[dataset].find(item => item.key == facet)?.sort || 'doc_count')
   }
 
@@ -109,10 +110,11 @@ export default function ServerFacet({ showLoading }: { showLoading: (facet: stri
     <>
     { !isLoading &&
     <div className="flex flex-col gap-2 border-b border-neutral-300 py-4">
-    <div className='flex flex-col xl:flex-row gap-2'>
+    <div className='flex flex-col gap-2'>
     <select onChange={(e) => switchFacet(e.target.value)} className='border rounded-md border-neutral-300 p-1'>
-        {availableFacets?.map((item, index) => (
-            <option key={index} value={item.key}>{item.label}</option>
+      
+              {availableFacets?.map((item, index) => (
+            <option key={index} value={item.key}>{item.label} KEY: {item.key}</option>
         ))}
     </select>
     <div className='flex gap-2'>

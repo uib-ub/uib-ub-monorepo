@@ -5,15 +5,12 @@ import { SearchContext } from '@/app/search-provider';
 import ActiveFilters from './form/active-filters';
 import { useQueryState } from 'nuqs';
 import { PiInfoFill } from 'react-icons/pi';
-import { useSearchQuery } from '@/lib/search-params';
-import { useSearchParams } from 'next/navigation';
 import ModeSelector from '../tabs/mode-selector';
-export default function StatusSection({isMobile}: {isMobile: boolean}) {
-
+import { GlobalContext } from '@/app/global-provider';
+export default function StatusSection() {
     const { resultData, resultBounds, isLoading } = useContext(SearchContext)
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
-    const { facetFilters } = useSearchQuery()
-    const searchParams = useSearchParams()
+    const { isMobile } = useContext(GlobalContext)
 
     return <div className="flex flex-col gap-2"> 
     <div className={`flex gap-2 flex-wrap items-center ${(mode == 'map' || isMobile) ? 'mt-2' : ''} ${isMobile ? 'mx-2' : ''}`}>

@@ -40,7 +40,7 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
                 <div >
 
                 { treeSettings[dataset] ?  
-                    parentData?._id && <CadastralSubdivisions isMobile={true}/>
+                    parentData?._id && <CadastralSubdivisions/>
                 :  dataset == 'search' && <>{parent && parent != doc && <h2 className="!text-base font-semibold uppercase !font-sans px-1">Andre kilder</h2>}<SourceList/></>}
                 </div>
             

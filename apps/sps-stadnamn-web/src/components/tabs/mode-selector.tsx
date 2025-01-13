@@ -1,7 +1,6 @@
 import { useSearchParams } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { PiList, PiListBold, PiListFill, PiListThin, PiMapTrifold, PiMapTrifoldFill, PiRows, PiRowsFill, PiTable, PiTableFill } from "react-icons/pi";
-import Clickable from "../ui/clickable/clickable";
+import { PiMapTrifold, PiMapTrifoldFill, PiRows, PiRowsFill, PiTable, PiTableFill } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 
 export default function ModeSelector() {

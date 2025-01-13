@@ -14,16 +14,16 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 
 
 
-export default function SearchForm({isMobile}: {isMobile: boolean}) {
+export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
+    const { isMobile, currentUrl } = useContext(GlobalContext)
     const [nav, setNav] = useQueryState('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
     const dataset = useDataset()
-    const setQuery = useQueryState('q')[1]
-    const { currentUrl } = useContext(GlobalContext)
+
     const { facetFilters } = useSearchQuery()
     const mode = searchParams.get('mode') || 'map'
     
@@ -74,7 +74,7 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
                             label="Tøm søk" className="px-2"><PiX className="text-lg"/></ClickableIcon> }
             </div>
             {searchableFields[dataset]?.length > 0 && 
-                <Options isMobile={isMobile}/>
+                <Options/>
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
             <input type="hidden" name="nav" value={ mode == 'map' ? 'results' : 'filters'}/>

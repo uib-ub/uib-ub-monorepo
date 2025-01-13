@@ -60,7 +60,7 @@ export default function DesktopLayout() {
         <div className="overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200">
 
         { nav == 'tree' && 
-            <TreeResults isMobile={false}/>
+            <TreeResults/>
         }
 
         
@@ -68,7 +68,7 @@ export default function DesktopLayout() {
                 <Facets/>
         }
         { searchFilterParamsString && nav == 'results' &&
-            <SearchResults isMobile={false}/>
+            <SearchResults/>
 
         }
         
@@ -143,7 +143,7 @@ export default function DesktopLayout() {
         </div>
     
         <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[calc(50svw-0.5rem)] z-[2000]': 'w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] top-2 bg-white rounded-md shadow-md overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}>
-            <StatusSection isMobile={false}/>
+            <StatusSection/>
 
             {mode == 'table' && !doc && <TableExplorer/> }
             {mode != 'map' && (parent || doc) &&  <DocExplorer hidden={false}/>}

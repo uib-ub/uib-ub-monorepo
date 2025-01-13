@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
-import { getClusterMarker, getLabelMarkerIcon, getMultiMarker, getUnlabeledMarker } from "./markers";
+import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
 import { GlobalContext } from "@/app/global-provider";

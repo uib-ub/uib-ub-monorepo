@@ -1,4 +1,3 @@
-import IconButton from "@/components/ui/icon-button";
 import { searchableFields } from "@/config/search-config";
 import { useDataset } from "@/lib/search-params";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
@@ -6,7 +5,7 @@ import { parseAsString, useQueryState } from "nuqs";
 import { PiFaders } from "react-icons/pi";
 
 
-export default function Options({isMobile}: {isMobile: boolean}) {
+export default function Options() {
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const dataset = useDataset()
     const toggleFulltext = () => {
