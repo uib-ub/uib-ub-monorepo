@@ -39,10 +39,6 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     }, [paramsExceptFacet, dataset]
     )
 
-  const clearFilter = () => {
-    
-    router.push(`?${filterCleared}`, { scroll: false})
-  }
 
 
   const isChecked = (paramName: string, ownPath: string[]) => {
