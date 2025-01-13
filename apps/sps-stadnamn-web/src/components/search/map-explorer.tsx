@@ -43,26 +43,6 @@ export default function MapExplorer() {
   const initialBoundsSet = useRef(false);
 
 
-  
-  useEffect(() => {
-    if (resultBounds?.length && !zoom) {
-      mapInstance?.current?.fitBounds(resultBounds);
-    }
-  }, [resultBounds, zoom, mapInstance])
-  
-  
-
-
-  
-  useEffect(() => {
-    if (center && !mapInstance?.current?.getBounds().pad(-0.5).contains(center)) {
-      mapInstance?.current?.setView(center, zoom)
-    }}, [center, zoom, mapInstance]);
-    
-    
-
-
-
 
 
   const getValidDegree = (degrees: number, maxValue: number): string => {
@@ -209,6 +189,28 @@ export default function MapExplorer() {
   }, [bounds, resultBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, parentData, isLoading]);
 
 
+
+useEffect(() => {
+  if (!mapInstance.current || isLoading || (zoom && center)) return
+  console.log("USEEFFECT", mapInstance.current, isLoading, zoom, center)
+    if (resultBounds?.length) {
+      console.log("FITTING BOUNDS", resultBounds)
+      mapInstance.current.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
+    }
+    else {
+      console.log("ADDING MISSING PARAMS", center, zoom)
+        const bounds = mapInstance.current.getBounds();
+        const boundsCenter = bounds.getCenter();
+        setCenter([boundsCenter.lat, boundsCenter.lng]);
+      setZoom(mapInstance.current.getZoom());
+    }
+  }, [mapInstance, isLoading, center, zoom, resultBounds, setCenter, setZoom])
+
+
+  useEffect(() => {
+    if (center && !mapInstance?.current?.getBounds().pad(-0.5).contains(center)) {
+      mapInstance?.current?.setView(center, zoom)
+    }}, [center, zoom, mapInstance]);
 
 
 
