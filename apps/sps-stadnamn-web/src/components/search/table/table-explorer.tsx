@@ -10,7 +10,6 @@ import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
-import Link from "next/link"
 import { getSkeletonLength } from "@/lib/utils"
 import Clickable from "@/components/ui/clickable/clickable"
 
