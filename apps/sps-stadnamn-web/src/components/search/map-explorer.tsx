@@ -553,7 +553,7 @@ const mapRef = useCallback((node: any) => {
     <div className={`absolute ${isMobile ? 'top-12 right-0 flex-col p-2 gap-4' : 'bottom-0 left-1/2 transform -translate-x-1/2'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiStackSimpleFill /></button></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild><IconButton label="Bakgrunnskart" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm"><PiStackSimpleFill /></IconButton></DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
           <DropdownMenuLabel>Bakgrunnskart</DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -569,7 +569,7 @@ const mapRef = useCallback((node: any) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild><button className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" aria-label="Bakgrunnskart"><PiMapPinLineFill /></button></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild><IconButton label="Markører" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm"><PiMapPinLineFill /></IconButton></DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
           <DropdownMenuLabel>Markører</DropdownMenuLabel>
           <DropdownMenuSeparator />
