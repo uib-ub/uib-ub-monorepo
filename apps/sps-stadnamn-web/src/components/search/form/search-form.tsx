@@ -5,12 +5,12 @@ import { PiCaretLeft, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
 import { datasetTitles } from '@/config/metadata-config';
 import { useContext, useEffect, useRef, useState } from 'react';
-import IconButton from '@/components/ui/icon-button';
 import { searchableFields } from '@/config/search-config';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
+import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 
 
 
@@ -31,13 +31,6 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
     const clearQuery = () => {
         setInputValue(''); 
         input.current?.focus()
-        setQuery(null)
-        if (nav == 'results') {
-            setNav('filters')
-        }
-
-
-
     }  
     
 
@@ -72,7 +65,13 @@ export default function SearchForm({isMobile}: {isMobile: boolean}) {
             {searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
             
             { inputValue && 
-            <IconButton type="button" onClick={() => { clearQuery() }} label="Tøm søk" className="px-2"><PiX className="text-lg"/></IconButton> }
+            <ClickableIcon type="button" 
+                            link
+                            onClick={() => { clearQuery() }} 
+                            remove={['q', 'center', 'zoom']}
+                            // Replace results with filters if no facetFilters
+                            add={{nav: nav == 'results' && facetFilters.length == 0 ? 'filters' : 'results'}}
+                            label="Tøm søk" className="px-2"><PiX className="text-lg"/></ClickableIcon> }
             </div>
             {searchableFields[dataset]?.length > 0 && 
                 <Options isMobile={isMobile}/>

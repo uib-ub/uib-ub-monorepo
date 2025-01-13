@@ -33,6 +33,12 @@ export default function Clickable({ children, remove, add, only, link, href, ...
         return <Link href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`} {...rest}>{children}</Link>
     }
     else {
-        return <button type="button" {...rest} onClick={() => router.push("?" + stringParams)} >{children}</button>
+        const handleClick = (event: React.MouseEvent) => {
+            if (rest.onClick) {
+                rest.onClick(event)
+            }
+            router.push("?" + stringParams)
+        }
+        return <button type="button" {...rest} onClick={handleClick} >{children}</button>
     }
 }
