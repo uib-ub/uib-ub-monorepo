@@ -19,9 +19,10 @@ import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getMultiMarker, getUnlabeledMarker } from "./markers";
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
+import { GlobalContext } from "@/app/global-provider";
 
 
-export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
+export default function MapExplorer() {
   const { resultBounds, totalHits, searchError, mapInstance, isLoading } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
@@ -35,6 +36,7 @@ export default function MapExplorer({ isMobile }: { isMobile: boolean }) {
   const { searchQueryString } = useSearchQuery()
   const dataset = useDataset()
   const { childrenData } = useContext(ChildrenContext)
+  const { isMobile } = useContext(GlobalContext)
 
   const { docData, parentData, setSameMarkerList, docLoading } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
