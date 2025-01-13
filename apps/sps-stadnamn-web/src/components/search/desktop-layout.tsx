@@ -154,7 +154,7 @@ export default function DesktopLayout() {
         { mode == 'map' &&
             <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
             
-                <MapExplorer isMobile={false}/>
+                <MapExplorer/>
             </div>
         }
 
