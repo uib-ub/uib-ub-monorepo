@@ -1,5 +1,5 @@
-import genTermbaseQuery from "../../utils/genTermbaseQuery";
-import frameData from "../../utils/frameData";
+import genTermbaseQuery from "../../../utils/genTermbaseQuery";
+import frameData from "../../../utils/frameData";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
