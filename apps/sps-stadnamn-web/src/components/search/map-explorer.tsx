@@ -206,7 +206,7 @@ export default function MapExplorer() {
       );
 
     //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
-  }, [bounds, resultBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, parentData]);
+  }, [bounds, resultBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, parentData, isLoading]);
 
 
 
