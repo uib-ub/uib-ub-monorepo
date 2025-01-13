@@ -1,16 +1,13 @@
 
 'use client'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useContext } from 'react'
 import ErrorMessage from '@/components/error-message'
 import { DocContext } from '@/app/doc-provider'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { ChildrenContext } from '@/app/children-provider' 
 import { datasetTitles } from '@/config/metadata-config'
 import SourceItem from './source-item'
-import IconButton from '@/components/ui/icon-button'
 import { useQueryState } from 'nuqs'
-import { PiInfo, PiInfoFill, PiTag, PiTagFill, PiX } from 'react-icons/pi'
-import ParamLink from '@/components/ui/clickable/param-link'
 
 export default function SourceList() {
     const { childrenData, childrenLoading, childrenError } = useContext(ChildrenContext)
@@ -18,10 +15,6 @@ export default function SourceList() {
     const { parentData } = useContext(DocContext)
     const pathname = usePathname()
     const landingPage = pathname.startsWith('/uuid')
-    const setParent = useQueryState('parent')[1]
-    const searchParams = useSearchParams()
-    const mode = searchParams.get('mode')
-    const doc = searchParams.get('doc')
 
 
 
