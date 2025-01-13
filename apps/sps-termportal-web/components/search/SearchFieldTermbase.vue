@@ -74,6 +74,9 @@ const clearText = () => {
 };
 
 function execSearch() {
+  // analytics feature event for termbase search
+  pushTermbaseSearchEvent(props.termbaseId);
+
   const allowSearchFetch = useAllowSearchFetch();
   const myparams = route.query;
   searchterm.value = searchtermTermbase.value;

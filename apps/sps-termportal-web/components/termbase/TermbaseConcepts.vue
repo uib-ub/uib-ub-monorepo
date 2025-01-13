@@ -71,16 +71,32 @@ const query = ref<{ char: [string | null, number]; page: number }>({
   page: 0,
 });
 
-watchEffect(() => {
-  const page = query.value.page || undefined;
-  const char = query.value.char;
-  router.push({
-    query: {
-      page: page?.toString(),
-      char: char[0] ? `${char[0]},${char[1]}` : undefined,
-    },
-  });
-});
+watch(
+  () => [query.value.page, query.value.char],
+  (newValues, oldValues) => {
+    const page = query.value.page || undefined;
+    const char = query.value.char;
+    router.push({
+      query: {
+        page: page?.toString(),
+        char: char[0] ? `${char[0]},${char[1]}` : undefined,
+      },
+    });
+
+    if (oldValues[0] === newValues[0]) {
+      pushTermbaseConceptListNavigationEvent(props.termbaseId, "char", {
+        page: query.value.page,
+        char,
+      });
+      // Don't trigger event when going back or when reset is triggered automatically
+    } else if (query.value.page !== 0) {
+      pushTermbaseConceptListNavigationEvent(props.termbaseId, "page", {
+        page: query.value.page,
+        char,
+      });
+    }
+  }
+);
 
 const generalConfig = {
   min: { columnCount: 1, columnLength: 20 },
@@ -190,11 +206,5 @@ onBeforeMount(() => {
     const value = route.query.char.split(",");
     query.value.char = [value[0], parseInt(value[1])];
   }
-});
-
-onBeforeUnmount(() => {
-  router.push({
-    query: {},
-  });
 });
 </script>
