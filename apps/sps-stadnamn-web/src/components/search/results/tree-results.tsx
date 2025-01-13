@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useDataset } from "@/lib/search-params";
 import TreeItem from "./tree-item";
 import { treeSettings } from "@/config/server-config";
-import ParamLink from "@/components/ui/param-link";
+import Clickable from "@/components/ui/clickable/clickable";
 import { PiHouseFill } from "react-icons/pi";
 import { DocContext } from "@/app/doc-provider";
 
@@ -68,16 +68,16 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
   return <>
   { treeAdm &&
   <div className="pt-2 pb-4 mx-2 !text-base flex">
-  <ParamLink id="tree-title" aria-label="Innholdsfortegnelse" 
+  <Clickable link id="tree-title" aria-label="Innholdsfortegnelse" 
                     className="breadcrumb-link self-center  text-base" 
                     only={{dataset, adm: null, nav: 'tree', mode: searchParams.get('mode')}}>
       <PiHouseFill aria-hidden="true" className="text-base"/>
-      </ParamLink>
+      </Clickable>
       &nbsp;/&nbsp;
       {groupBy == 'adm2' ? <>{treeAdm}</>
-      : <ParamLink className="breadcrumb-link !text-base" only={{dataset, adm: treeAdm.split("__")[1], nav: 'tree', mode: searchParams.get('mode')}}>
+      : <Clickable link className="breadcrumb-link !text-base" only={{dataset, adm: treeAdm.split("__")[1], nav: 'tree', mode: searchParams.get('mode')}}>
               {treeAdm.split("__")[1]}
-          </ParamLink>}
+          </Clickable>}
           {!groupBy && <>
           &nbsp;/&nbsp;
           
@@ -98,9 +98,9 @@ export default function TreeResults({isMobile}: {isMobile: boolean}) {
   .sort((a: any, b: any)=> treeSettings[dataset]?.aggSort ? a.aggNum.buckets[0].key.localeCompare(b.aggNum.buckets[0].key) : a.aggNum.localeCompare(b.key))
   .map((item: Record<string, any>) => {
     return <li key={item.key}>
-      <ParamLink className="no-underline px-4 p-2 inline-block" only={{dataset, adm: groupBy == 'adm2' ? item.key + "__" + treeAdm : item.key, nav: 'tree', mode: searchParams.get('mode')}}>
+      <Clickable link className="no-underline px-4 p-2 inline-block" only={{dataset, adm: groupBy == 'adm2' ? item.key + "__" + treeAdm : item.key, nav: 'tree', mode: searchParams.get('mode')}}>
       {treeSettings[dataset].showNumber && (treeAdm ? item.aggNum.buckets[0]?.key : item.aggNum.buckets[0]?.key.slice(0,2))} {item.key}
-        <span className="ml-auto bg-neutral-100 rounded-full px-2">{item.doc_count}</span></ParamLink></li>
+        <span className="ml-auto bg-neutral-100 rounded-full px-2">{item.doc_count}</span></Clickable></li>
   })
 
 

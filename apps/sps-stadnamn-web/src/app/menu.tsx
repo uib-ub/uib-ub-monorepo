@@ -5,7 +5,9 @@ import NavBar from "./nav-bar";
 import IconButton from "@/components/ui/icon-button";
 import { usePathname, useSearchParams } from "next/navigation";
 import { GlobalContext } from "./global-provider";
-import IconLink from "@/components/ui/icon-link";
+import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import Clickable from "@/components/ui/clickable/clickable";
+import Link from "next/link";
 
 export default function Menu() {
     const [menuOpen, setMenuOpen] = useState(false)
@@ -45,15 +47,15 @@ export default function Menu() {
     return (
         <div ref={menuRef} className="xl:hidden !ml-auto flex gap-1 items-center">
             { pathName !== '/' && pathName != '/search' && currentUrl && 
-                <IconLink href={currentUrl} label="Tilbake til søket"><PiCaretLeft className="text-3xl"/></IconLink>
+                <Link href={currentUrl} aria-label="Tilbake til søket"><PiCaretLeft className="text-3xl"/></Link>
             }
-            <IconButton aria-controls="menu_navbar" 
+            <button aria-controls="menu_navbar" 
                         onBlur={handleBlur}
-                        label="Meny"
+                        aria-label="Meny"
                         aria-expanded={menuOpen} 
                         className="p-1 px-2 rounded-sm items-center flex h-full" 
                         onClick={() => setMenuOpen(!menuOpen)}>
-                <PiList className="text-3xl"/></IconButton>
+                <PiList className="text-3xl"/></button>
             {menuOpen && 
                 <div 
                      id="menu_navbar" 

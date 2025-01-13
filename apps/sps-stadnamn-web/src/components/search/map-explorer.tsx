@@ -262,6 +262,7 @@ const mapRef = useCallback((node: any) => {
           const boundsCenter = bounds.getCenter();
           console.log("MOVEEND")
           setCenter([boundsCenter.lat, boundsCenter.lng]);
+          console.log("SETTING ZOOM", node.getZoom())
           setZoom(node.getZoom());
           setBounds([[bounds.getNorth(), bounds.getWest()], 
                     [bounds.getSouth(), bounds.getEast()]]);
@@ -273,6 +274,7 @@ const mapRef = useCallback((node: any) => {
       node.whenReady(() => {
         if (!initialBoundsSet.current) {
           const bounds = node.getBounds();
+          console.log("SETTING BOUNDS", bounds)
           setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
           initialBoundsSet.current = true;
         }
@@ -299,6 +301,7 @@ const mapRef = useCallback((node: any) => {
       const currentZoom = mapInstance.current.getZoom();
       mapInstance.current.setZoom(currentZoom - 1);
     } else {
+      console.log(mapInstance.current)
       setZoom(prev => prev ? prev - 1 : 1);
     }
   };

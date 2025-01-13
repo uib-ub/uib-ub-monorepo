@@ -2,7 +2,7 @@
 import { useDataset } from "@/lib/search-params"
 import ClientFacet from "./client-facet"
 import { contentSettings } from "@/config/server-config"
-import ParamLink from "@/components/ui/param-link"
+import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { useState } from "react"
@@ -22,18 +22,18 @@ export default function Facets() {
         <div role="tablist" className="flex flex-wrap items-center gap-1">
         { contentSettings[dataset]?.adm && <>
           <h3>
-          <ParamLink type="button" role="tab" aria-selected={facet == 'adm'} remove={['facet']} className='rounded-tabs'>
+          <Clickable link type="button" role="tab" aria-selected={facet == 'adm'} remove={['facet']} className='rounded-tabs'>
           
           Område
           
-          </ParamLink>
+          </Clickable>
           </h3>
           <h3>
-          <ParamLink type="button" role="tab" aria-selected={facet != 'adm'} add={{facet: facetConfig[dataset][0]?.key}} className='rounded-tabs'>
+          <Clickable link type="button" role="tab" aria-selected={facet != 'adm'} add={{facet: facetConfig[dataset][0]?.key}} className='rounded-tabs'>
           
           Annet
           
-          </ParamLink>
+          </Clickable>
           </h3>
           </>
           

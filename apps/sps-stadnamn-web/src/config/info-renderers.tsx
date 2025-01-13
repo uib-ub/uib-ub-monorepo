@@ -7,7 +7,7 @@ import { getValueByPath } from '@/lib/utils';
 import { treeSettings } from './server-config';
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import { PiMagnifyingGlass } from 'react-icons/pi';
-import ParamLink from '@/components/ui/param-link';
+import Clickable from '@/components/ui/clickable/clickable';
 import Timeline from '@/components/doc/timeline';
 
 
@@ -51,9 +51,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {hasAltLabels && <ul className='flex flex-wrap !list-none !p-0 gap-1'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
-        <ParamLink add={{attestationLabel: label}} className="no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-3 py-1">
+        <Clickable link add={{attestationLabel: label}} className="no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-3 py-1">
         {label}
-        </ParamLink></li>
+        </Clickable></li>
     }
     )}
     </ul>}
@@ -108,9 +108,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     const dataset = "rygh"
     return <Fragment key={index}>
     
-      <ParamLink className="no-underline flex items-center" href="/search" only={{dataset, "rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></ParamLink>
-      { item.gnr && <>- <ParamLink className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></ParamLink> </>}
-      { item.bnr && <>{"/"} <ParamLink className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "cadastre__bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></ParamLink> </>}
+      <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable>
+      { item.gnr && <>- <Clickable link className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
+      { item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "cadastre__bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
       
 
 

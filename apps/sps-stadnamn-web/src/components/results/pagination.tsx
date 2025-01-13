@@ -14,10 +14,10 @@ export default function Pagination({ totalPages }: { totalPages: number}) {
   <div className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
   <div className='flex gap-2 justify-even'>
   
-  {totalPages > 2 && <IconButton disabled={page == 1} onClick={() =>setPage(1)} label="Første side" className='btn btn-outline btn-compact grow md:grow-0' textIcon><PiCaretDoubleLeft/></IconButton>
+  {totalPages > 2 && <IconButton disabled={page == 1} onClick={() =>setPage(1)} label="Første side" className='btn btn-outline btn-compact grow md:grow-0' ><PiCaretDoubleLeft/></IconButton>
   
 }
-  { <IconButton disabled={page == 1} onClick={() => setPage(page - 1)} label="Forrige side" className='btn btn-outline btn-compact grow md:grow-0' textIcon><PiCaretLeft/></IconButton>
+  { <IconButton disabled={page == 1} onClick={() => setPage(page - 1)} label="Forrige side" className='btn btn-outline btn-compact grow md:grow-0'><PiCaretLeft/></IconButton>
 
   }
 
@@ -29,7 +29,7 @@ export default function Pagination({ totalPages }: { totalPages: number}) {
     <IconButton disabled={page == totalPages} onClick={() =>setPage(page + 1)} label="Neste side" className='btn btn-outline btn-compact grow md:grow-0'><PiCaretRight/></IconButton>
   }
   { totalPages > 2 &&
-    <IconButton disabled={page == totalPages} onClick={() => setPage(totalPages)} label="Siste side" className='btn btn-outline btn-compact grow md:grow-0' textIcon><PiCaretDoubleRight/></IconButton>
+    <IconButton disabled={page == totalPages} onClick={() => setPage(totalPages)} label="Siste side" className='btn btn-outline btn-compact grow md:grow-0'><PiCaretDoubleRight/></IconButton>
   }
   
   </div>

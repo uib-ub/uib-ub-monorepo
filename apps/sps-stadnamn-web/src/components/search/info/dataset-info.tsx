@@ -1,10 +1,7 @@
-import { datasetPresentation, datasetShortDescriptions, datasetTitles, publishDates } from '@/config/metadata-config'
+import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import Link from 'next/link';
-import { PiCaretRight, PiClockCounterClockwise, PiInfoFill, PiMagnifyingGlass, PiTreeView } from 'react-icons/pi';
-import IconLink from '@/components/ui/icon-link';
+import { PiCaretRight } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
-import { treeSettings } from '@/config/server-config';
-import { useQueryState } from 'nuqs';
 import DatasetToolbar from '@/components/ui/dataset-toolbar';
 
 
@@ -14,14 +11,7 @@ export default function DatasetInfo() {
     const params = useSearchParams()
     const dataset = params.get('dataset') || 'search'
     const infoDataset = params.get('infoDataset') || dataset
-    let [mainIndex, subindex] = (infoDataset).split("_")
-    const searchParams = useSearchParams()
-    const mode = useQueryState('mode', {defaultValue: 'map'})[0]
-
-    function format_timestamp(timestamp: string) {
-        const date = new Date(timestamp)
-        return date.toLocaleDateString("nb-NO");
-    }
+    const [mainIndex, subindex] = (infoDataset).split("_")
 
 
     let info = datasetPresentation[mainIndex]

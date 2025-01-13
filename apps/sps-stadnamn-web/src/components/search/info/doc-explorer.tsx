@@ -10,7 +10,7 @@ import Spinner from "@/components/svg/Spinner";
 import { treeSettings } from "@/config/server-config";
 import CadastralSubdivisions from "@/components/children/cadastral-subdivisions";
 import SourceList from "../results/source-list";
-import ParamLink from "@/components/ui/param-link";
+import Clickable from "@/components/ui/clickable/clickable";
 import { PiArrowLeft, PiCaretLeft, PiFilesFill, PiRows, PiTable, PiX } from "react-icons/pi";
 import { GlobalContext } from "@/app/global-provider";
 
@@ -49,14 +49,14 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
         }
             { !docLoading && !childrenLoading && !parentLoading &&
             <div className="flex flex-col lg:flex-row gap-1 xl:gap-2 py-4 w-full lg:w-auto text-neutral-950">
-            {!parent && treeSettings[dataset] && docData?._source?.sosi == 'gard' && <ParamLink className="flex p-4 lg:p-2   gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Underordna bruk</ParamLink>}
-            {!parent && docData?._source?.children?.length > 0 && <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Kilder</ParamLink>}
-            {parent && !treeSettings[dataset] && <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['parent']} add={{doc: parent}}><PiArrowLeft className="text-2xl text-primary-600"/>Stedsnavnoppslag</ParamLink>}
-            <ParamLink className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}>
+            {!parent && treeSettings[dataset] && docData?._source?.sosi == 'gard' && <Clickable link className="flex p-4 lg:p-2   gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Underordna bruk</Clickable>}
+            {!parent && docData?._source?.children?.length > 0 && <Clickable link className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" add={{parent: docData?._source?.uuid}}><PiFilesFill className="text-2xl text-primary-600"/>Kilder</Clickable>}
+            {parent && !treeSettings[dataset] && <Clickable link className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['parent']} add={{doc: parent}}><PiArrowLeft className="text-2xl text-primary-600"/>Stedsnavnoppslag</Clickable>}
+            <Clickable link className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}>
                { mode == 'table' &&<><PiTable className="text-2xl text-primary-600"/>Vis tabellen</>}
                { mode == 'list' &&<><PiRows className="text-2xl text-primary-600"/>Vis trefflisten</>}
                { mode == 'map' && isMobile && <><PiX className="text-2xl text-primary-600"/>Lukk</>}
-            </ParamLink>
+            </Clickable>
             
             </div>
         }

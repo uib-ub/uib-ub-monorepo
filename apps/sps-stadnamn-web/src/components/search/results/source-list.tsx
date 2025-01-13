@@ -10,7 +10,7 @@ import SourceItem from './source-item'
 import IconButton from '@/components/ui/icon-button'
 import { useQueryState } from 'nuqs'
 import { PiInfo, PiInfoFill, PiTag, PiTagFill, PiX } from 'react-icons/pi'
-import ParamLink from '@/components/ui/param-link'
+import ParamLink from '@/components/ui/clickable/param-link'
 
 export default function SourceList() {
     const { childrenData, childrenLoading, childrenError } = useContext(ChildrenContext)

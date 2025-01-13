@@ -3,7 +3,7 @@ import { resultRenderers, defaultResultRenderer } from '@/config/result-renderer
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
 import { PiArrowRight, PiDatabase, PiFiles, PiTag } from 'react-icons/pi';
-import ParamLink from '@/components/ui/param-link';
+import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 
@@ -35,7 +35,7 @@ export default function ResultItem({hit}: {hit: any}) {
     
 
     return  <li className="flex flex-grow">
-        <ParamLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
+        <Clickable link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
                     remove={['attestationYear', 'attestationLabel', ...isMobile ? ['parent'] : [], ...(parent ? ['center', 'zoom'] : [])]}
                     add={{
@@ -69,7 +69,7 @@ export default function ResultItem({hit}: {hit: any}) {
             </p>}
             
 
-            </ParamLink>
+            </Clickable>
             </li>
 }
 

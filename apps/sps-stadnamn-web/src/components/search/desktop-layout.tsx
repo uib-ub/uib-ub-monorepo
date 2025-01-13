@@ -20,7 +20,7 @@ import { useSearchParams } from "next/navigation"
 import { ChildrenContext } from "@/app/children-provider"
 import DocSkeleton from "./info/doc-skeleton"
 import DocInfo from "./info/doc-info"
-import ParamLink from "../ui/param-link"
+import Clickable from "../ui/clickable/clickable"
 import ListExplorer from "./list/list-explorer"
 import DocExplorer from "./info/doc-explorer"
 
@@ -96,7 +96,7 @@ export default function DesktopLayout() {
         { docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1 || (treeSettings[dataset] && docData?._source?.sosi == 'gard') || parent ?
          <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start`}>
             { !treeSettings[dataset] &&<div className="flex">
-            <h2><ParamLink className={`flex gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950`} add={{parent: docData?._source.uuid}}>
+            <h2><Clickable className={`flex gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950`} add={{parent: docData?._source.uuid}}>
 
             
 
@@ -105,11 +105,11 @@ export default function DesktopLayout() {
 
             
             
-            </ParamLink>
+            </Clickable>
             </h2>
             
 
-            {parent && parent != doc && <ParamLink className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiArrowUpBold className="text-neutral-800 text-xl"/> Stadnamnoppslag</ParamLink>}
+            {parent && parent != doc && <Clickable link className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiArrowUpBold className="text-neutral-800 text-xl"/> Stadnamnoppslag</Clickable>}
             {parent && <button onClick={() => setParent(null)} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></button>}
             
             </div>
@@ -117,9 +117,9 @@ export default function DesktopLayout() {
             { treeSettings[dataset] && docData?._source?.sosi == 'gard' && (!parent || childrenLoading) &&
             <div className="flex w-full">
                 <h2 className={`flex gap-2 no-underline justify-start items-center w-full text-neutral-950`}>
-                    <ParamLink className="flex gap-2 no-underline p-2 px-4 justify-start items-center" add={{parent: docData?._source.uuid}}>
+                    <Clickable link className="flex gap-2 no-underline p-2 px-4 justify-start items-center" add={{parent: docData?._source.uuid}}>
                     <PiTableFill className={`text-2xl text-primary-600`}/><span className={`text-xl`}>Underordna bruk</span>
-                    </ParamLink>
+                    </Clickable>
                     {childrenLoading && <Spinner  className="ml-auto mr-2" status="Laster underordna bruk"/>}
                 </h2>
                 </div>

@@ -3,7 +3,7 @@ import { datasetTitles, datasetDescriptions, datasetShortDescriptions } from '@/
 import { PiCaretRight } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import ParamLink from '@/components/ui/param-link';
+import Clickable from '@/components/ui/clickable/clickable';
 import { useDataset } from '@/lib/search-params';
 import { GlobalContext } from '@/app/global-provider';
 
@@ -69,12 +69,12 @@ export default function DatasetSelector() {
           <li key={dataset} className="flex w-full ">
 
               
-              <ParamLink only={{dataset, q: searchParams.get('q'), nav: 'datasets' }} 
+              <Clickable link only={{dataset, q: searchParams.get('q'), nav: 'datasets' }} 
                           className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline">
                 <strong className="font-semibold">{datasetTitles[dataset]}</strong>{" | "}
                 
                 {datasetShortDescriptions[dataset]}      
-              </ParamLink>
+              </Clickable>
 
               
               

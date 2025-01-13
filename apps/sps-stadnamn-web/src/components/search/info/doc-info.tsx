@@ -6,12 +6,11 @@ import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, 
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
-import ParamLink from "@/components/ui/param-link"
+import Clickable from "@/components/ui/clickable/clickable"
 import { useDataset } from "@/lib/search-params"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { treeSettings } from "@/config/server-config"
-import IconButton from "@/components/ui/icon-button"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
 import { useQueryState } from "nuqs"
 import { GlobalContext } from "@/app/global-provider"
@@ -127,17 +126,17 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
             }
             {snidParent &&
-                <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: 'search', doc: snidParent}}>
+                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: 'search', doc: snidParent}}>
                   <PiTag className="text-neutral-800" aria-hidden="true"/>
                   Stadnamnoppslag
-                </ParamLink>
+                </Clickable>
             }
             {dataset == 'search' && docDataset != dataset &&
-                <ParamLink className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: docDataset, doc}}>
+                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: docDataset, doc}}>
                   <PiMagnifyingGlass className="text-neutral-800" aria-hidden="true"/>
                   Søk i datasettet
                   
-                </ParamLink>
+                </Clickable>
             }
             <Link href={"/uuid/" + docSource.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
               <PiBracketsCurly aria-hidden="true"/>
@@ -160,9 +159,9 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             
             <nav className="flex flex-wrap w-full gap-2 mt-2">
             { sameMarkerList?.reverse().map((hit: any, index: number) => {
-            return <ParamLink key={hit._id} role="tab" aria-selected={[hit.fields?.uuid[0], hit.fields?.children?.[0]].includes(doc)} className="rounded-tabs" add={{doc: hit.fields.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid[0]}}>
+            return <Clickable link key={hit._id} role="tab" aria-selected={[hit.fields?.uuid[0], hit.fields?.children?.[0]].includes(doc)} className="rounded-tabs" add={{doc: hit.fields.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid[0]}}>
                 {hit.fields.label}
-            </ParamLink>
+            </Clickable>
             }
             )}
             </nav>

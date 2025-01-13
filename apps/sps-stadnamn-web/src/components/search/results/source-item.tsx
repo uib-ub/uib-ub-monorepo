@@ -3,7 +3,7 @@ import { resultRenderers, defaultResultRenderer } from '@/config/result-renderer
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
 import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
-import ParamLink from '@/components/ui/param-link';
+import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 
 
@@ -26,7 +26,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     
 
     return  <li className="flex flex-grow !p-0 !m-0">
-        <ParamLink ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
+        <Clickable link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
@@ -40,7 +40,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             
             
 
-            </ParamLink>
+            </Clickable>
             </li>
 }
 

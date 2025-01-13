@@ -6,7 +6,7 @@ import { useDataset } from "@/lib/search-params"
 import { useQueryState } from "nuqs"
 import { useContext, useState } from "react"
 import { PiInfo, PiInfoFill, PiX } from "react-icons/pi"
-import ParamLink from "../ui/param-link"
+import Clickable from "../ui/clickable/clickable"
 import IconButton from "../ui/icon-button"
 import { getValueByPath } from "@/lib/utils"
 import { ChildrenContext } from "@/app/children-provider"
@@ -43,10 +43,10 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
             
             : <div className="flex rounded-t-md">
                 <h2 className={`p-2 px-2 text-lg  !font-sans text`}>
-                    <ParamLink aria-current={doc == parentData?._source?.uuid ? 'page' : false} 
+                    <Clickable link aria-current={doc == parentData?._source?.uuid ? 'page' : false} 
                                       className="no-underline flex items-center gap-1"
                                       add={{ doc: parent }}>{gnr} {parentData?._source?.label} { doc == parentData?._source?.uuid ? <PiInfoFill className="text-accent-800" aria-hidden="true"/> : <PiInfo className="text-primary-600" aria-hidden="true"/>}
-                    </ParamLink>
+                    </Clickable>
 
                 </h2>
                 {mode == 'map' && 
@@ -69,14 +69,14 @@ export default function CadastralSubdivisions({isMobile}: { isMobile: boolean })
                                 {childrenData.map((hit: any) => (
                                     <tr key={hit._id}>
                                         <th className="!w-full !h-full !p-0">
-                                        <ParamLink aria-current={doc==hit.fields?.uuid[0] ? 'page' : false} 
+                                        <Clickable link aria-current={doc==hit.fields?.uuid[0] ? 'page' : false} 
                                                             className={`no-underline !flex !w-full p-2 !h-full grow ${doc == hit.fields?.uuid[0] ? 'border-l-4 bg-accent-800' : 'pl-4'} `}
                                                             add={{ doc: hit.fields?.uuid[0] }}>
                                         <span className={`${doc == hit.fields?.uuid[0] ? 'text-white' : 'text-black'}`}>{hit.fields?.[leaf] || hit.fields?.cadastre?.[0]?.bnr.join(",")} {hit.fields?.label}</span>
                                             
                                                                 
                                                                 
-                                            </ParamLink>
+                                            </Clickable>
                                         </th>
                                         {fields.map((field: Record<string, any>) => (
                                             <td className="p-2" key={field.key}>{hit.fields[field.key]}</td>
