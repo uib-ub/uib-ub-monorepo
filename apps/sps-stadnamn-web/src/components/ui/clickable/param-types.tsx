@@ -8,9 +8,6 @@ export type BaseParamProps = {
     children: React.ReactNode;
     link?: boolean;
     [x: string]: any;
-} & (
-    | { href: string; link: true }
-    | { href?: undefined; link?: boolean }
-);
+}
 
 export type ParamProps = BaseParamProps & (OnlyParams | AddParams | RemoveParams);
