@@ -495,7 +495,7 @@ useEffect(() => {
 
               {viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
 
-                if (totalHits?.value < 200 || (zoom && zoom > 16)) {
+                if (viewResults.hits.total.value < 200 || (zoom && zoom > 16)) {
                   let icon
                   if (parent) {
 
