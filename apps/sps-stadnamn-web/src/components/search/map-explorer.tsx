@@ -120,7 +120,7 @@ export default function MapExplorer() {
 
 
 
-    const query = `/api/geo/${(markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
+    const query = `/api/geo/${(markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (((zoom && zoom > 14 )|| totalHits?.value < 10000) ? 'cluster' : 'sample')}?${queryParams.toString()}`;
 
     fetch(query, {
       signal: controllerRef.current.signal,
