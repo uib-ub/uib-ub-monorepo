@@ -60,7 +60,17 @@ export default function SearchForm() {
             
             <div className='flex w-full h-full items-center bg-white border-x-2 border-neutral-200 group px-2'>
             <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900"/>
-            <input required type="text" ref={input} name="q" value={inputValue} onChange={(event) => setInputValue(event.target.value)} className="px-4 bg-transparent focus:outline-none flex w-full shrink"/>
+            <label htmlFor="search-input" className="sr-only">Søk</label>
+            <input 
+                id="search-input"
+                required 
+                type="text" 
+                ref={input} 
+                name="q" 
+                value={inputValue} 
+                onChange={(event) => setInputValue(event.target.value)} 
+                className="px-4 bg-transparent focus:outline-none flex w-full shrink"
+            />
             
             {searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
             
