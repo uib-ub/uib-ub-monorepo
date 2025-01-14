@@ -453,11 +453,12 @@ useEffect(() => {
                 }
                 // If point view
                 else if (markerMode === 'sample' && bucket.docs?.hits?.hits?.length > 1) {
+                  const primary = bucket.docs.hits.hits.some((hit: any) => hit.fields.children?.length && hit.fields.children.length > 1) 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                     return <CircleMarker key={hit.fields.uuid}
                     center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
-                    radius={(zoom && zoom < 10 ? 4 : 8) * (hit.fields?.children?.length && hit.fields.children.length > 1 ? 1.25 : 1)}
-                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: hit.fields?.children?.length && hit.fields.children.length > 1 ? '#cf3c3a' : 'white', fillOpacity: 1 }}
+                    radius={(zoom && zoom < 10 ? 4 : 8) * (primary ? 1.25 : 1)}
+                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? '#cf3c3a' : 'white', fillOpacity: 1 }}
                     eventHandlers={selectDocHandler([hit])} />
                   })}</Fragment>
                 }
@@ -535,10 +536,12 @@ useEffect(() => {
 
                 }
                 else {
+                  const primary = group.children.length == 1 && group.children[0].fields?.children?.length > 1
                   return <CircleMarker key={group.uuid}
+
                     center={[group.lat, group.lon]}
-                    radius={(zoom && zoom < 10 ? 4 : 8) * (group.children.length > 1 || group.children[0].fields?.children?.length > 1 ? 1.25 : 1)}
-                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: group.children.length == 1 && group.children[0].fields?.children?.length > 1 ? '#cf3c3a' : 'white', fillOpacity: 1 }}
+                    radius={(zoom && zoom < 10 ? 4 : 8) * (primary ? 1.25 : 1)}
+                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? '#cf3c3a' : 'white', fillOpacity: 1 }}
                     eventHandlers={ selectDocHandler(group.children)} />
                 }
 
