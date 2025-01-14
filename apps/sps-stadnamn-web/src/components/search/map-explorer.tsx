@@ -120,7 +120,7 @@ export default function MapExplorer() {
 
 
 
-    const query = `/api/geo/${(markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (((zoom && zoom > 14 )|| totalHits?.value < 10000) ? 'cluster' : 'sample')}?${queryParams.toString()}`;
+    const query = `/api/geo/${(zoom && zoom > 14 && 'cluster' ) || (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
 
     fetch(query, {
       signal: controllerRef.current.signal,
@@ -432,6 +432,8 @@ useEffect(() => {
                 const lat = latSum / hitCount;
                 const lon = lonSum / hitCount;
 
+                
+
 
                 // If no coordinates are different from the average
                 if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 14) && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
@@ -448,6 +450,16 @@ useEffect(() => {
 
                   return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits)} />
 
+                }
+                // If point view
+                else if (markerMode === 'sample' && bucket.docs?.hits?.hits?.length > 1) {
+                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
+                    return <CircleMarker key={hit.fields.uuid}
+                    center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
+                    radius={(zoom && zoom < 10 ? 4 : 8) * (hit.fields?.children?.length && hit.fields.children.length > 1 ? 1.25 : 1)}
+                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: hit.fields?.children?.length && hit.fields.children.length > 1 ? '#cf3c3a' : 'white', fillOpacity: 1 }}
+                    eventHandlers={selectDocHandler([hit])} />
+                  })}</Fragment>
                 }
 
                 else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 14 && bucket.doc_count == bucket.docs.hits.hits.length)) {
@@ -477,7 +489,6 @@ useEffect(() => {
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2 + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0),
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2,
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8))
-
 
 
                   return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon) / 2]} icon={clusterIcon}
@@ -585,13 +596,13 @@ useEffect(() => {
             <DropdownMenuRadioGroup value={markerMode} onValueChange={setMarkerMode}>
 
               <DropdownMenuRadioItem value='auto' className="text-nowrap cursor-pointer">
-                Tilpass ettter antall treff
+                Automatisk
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem value='cluster' className="text-nowrap cursor-pointer">
                 Klynger
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem value='sample' className="text-nowrap cursor-pointer">
-                Tilfeldig utvalg
+                Punkter
               </DropdownMenuRadioItem>
 
             </DropdownMenuRadioGroup>
