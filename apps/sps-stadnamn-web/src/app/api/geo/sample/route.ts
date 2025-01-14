@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
 
   const query: Record<string,any> = {
-    size: filteredParams.zoom == '18' ? 1000 : 200,
+    size: filteredParams.zoom == '18' ? 2000 : 200,
     fields: ["label", "location", "uuid", "sosi", "children"],
     _source: false,
   }
