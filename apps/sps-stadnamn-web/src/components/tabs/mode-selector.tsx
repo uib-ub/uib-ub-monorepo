@@ -2,10 +2,13 @@ import { useSearchParams } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { PiMapTrifold, PiMapTrifoldFill, PiRows, PiRowsFill, PiTable, PiTableFill } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
+import { useContext } from "react";
+import { GlobalContext } from "@/app/global-provider";
 
 export default function ModeSelector() {
     const mode = useQueryState('mode', { defaultValue: 'map' })[0]
     const searchParams = useSearchParams()
+    const { isMobile } = useContext(GlobalContext)
 
     return <div className={`flex ${mode == 'map' ? 'rounded-md shadow-md bg-white' : ''}`} role="tablist">
             <ClickableIcon aria-selected={mode == 'map' ? true : false}
