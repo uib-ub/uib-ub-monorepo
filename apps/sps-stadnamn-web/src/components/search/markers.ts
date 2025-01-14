@@ -77,16 +77,17 @@ const buildMultiMarker = (color: string, style: string) => {
 
 
 
-export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean) {
+export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean, hideLabel?: boolean) {
     const sizeAdjustment = selected ? 1.5 : 1;
     return {
       className: '',
       html: `
-        <div class="map-marker" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
+        <div class="map-marker group" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
           ${buildMarker(color, `position:absolute;left-0;bottom:${26 * sizeAdjustment}px;height:${32 * sizeAdjustment}px`)}
 
-          <div style="display: flex; position: absolute; top: 6px; vertical-align: middle; left: 50%; transform: translateX(-50%); background-color: white; opacity: ${selected? 100 : 90}%; white-space: nowrap; border-radius: 9999px; text-align: center; font-size: .75rem; font-weight: bold; padding-top: 1px; padding-bottom: 1px; padding-left: 8px; padding-right: ${docCount ? '4px' : '8px'}">
-            <div style="display: flex; align-items: center; max-width: 128px !important; min-width: 0; !important; display: flex; overflow: hidden; text-overflow: ellipsis">${label}</div>&nbsp;${docCount ? `<span class="!text-xs bg-neutral-100 border border-neutral-200 flex items-center py-0 my-[0.125rem] text-neutral-950 rounded-full px-1 text-center font-normal">${docCount}</span>` : ''}
+          <div class="${hideLabel ? 'invisible group-hover:visible' : 'visible'} absolute top-1.5 left-1/2 -translate-x-1/2 flex items-center bg-white/90 whitespace-nowrap rounded-full text-center text-xs font-bold py-0.5 px-2">
+            <div class="flex items-center max-w-32 min-w-0 overflow-hidden text-ellipsis">${label}</div>
+            ${docCount ? `<span class="ml-1 text-xs bg-neutral-100 border border-neutral-200 flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">${docCount}</span>` : ''}
           </div>
         </div>`
     };
