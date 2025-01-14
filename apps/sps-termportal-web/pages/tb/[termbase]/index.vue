@@ -7,7 +7,10 @@
       <SideBar />
       <div class="space-y-6">
         <UtilsTransitionOpacitySection>
-          <main v-if="data && bootstrapData.loaded">
+          <main
+            v-if="data && bootstrapData.loaded"
+            class="md:max-w-3xl lg:max-w-4xl"
+          >
             <h1 id="main" class="pb-3 pt-5 text-2xl">
               <AppLink to="#main">
                 {{ lalof(termbase + "-3A" + termbase) }}
@@ -24,7 +27,7 @@
             >
               <div
                 ref="termbaseText"
-                class="flex lg:block lg:flex-col flex-col-reverse md:max-w-3xl lg:max-w-4xl space-y-2"
+                class="flex lg:block lg:flex-col flex-col-reverse space-y-2"
               >
                 <div
                   ref="termbaseInfoBox"
