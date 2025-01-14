@@ -17,6 +17,7 @@ WHERE {
     {
       base:${namespace}-3A${namespace} ?p ?o.
       OPTIONAL {?o ?p2 ?o2.}
+      FILTER (?p NOT IN (skos:member) )
       FILTER NOT EXISTS {
         ?o a skos:Concept
       }
