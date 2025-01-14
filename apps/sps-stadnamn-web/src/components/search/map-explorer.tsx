@@ -1,6 +1,6 @@
-import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import Map from "../map/map";
-import { baseMaps, baseMapKeys, baseMapProps } from "@/config/basemap-config";
+import { baseMaps, baseMapKeys, baseMapProps, defaultBaseMap } from "@/config/basemap-config";
 import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/search-provider";
@@ -230,20 +230,28 @@ useEffect(() => {
 
   useEffect(() => {
     if (baseMap === null) {
-      const storedBasemap = localStorage.getItem('baseMap')
-      if (storedBasemap && baseMapKeys.includes(storedBasemap)) {
-        setBasemap(storedBasemap)
-      }
-
-      else {
-        setBasemap(baseMaps[0].key)
+      const storedSettings = localStorage.getItem('mapSettings')
+      const settings = storedSettings ? JSON.parse(storedSettings) : {}
+      
+      if (settings[dataset]?.baseMap && baseMapKeys.includes(settings[dataset].baseMap)) {
+        setBasemap(settings[dataset].baseMap)
+      } else {
+        setBasemap(defaultBaseMap[dataset] || baseMaps[0].key)
+        // Remove old format if it exists
         localStorage.removeItem('baseMap')
       }
+    } else {
+      const storedSettings = localStorage.getItem('mapSettings')
+      const settings = storedSettings ? JSON.parse(storedSettings) : {}
+      
+      settings[dataset] = {
+        ...settings[dataset],
+        baseMap: baseMap
+      }
+      
+      localStorage.setItem('mapSettings', JSON.stringify(settings))
     }
-    else {
-      localStorage.setItem('baseMap', baseMap)
-    }
-  }, [baseMap])
+  }, [baseMap, dataset])
 
   useEffect(() => {
     if (markerMode === null) {
