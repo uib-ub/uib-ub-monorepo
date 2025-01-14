@@ -10,6 +10,7 @@ import { userAgent } from "next/server";
 import { headers } from "next/headers";
 import SearchForm from "@/components/search/form/search-form";
 import GlobalProvider from "./global-provider";
+import { fetchSOSIVocab } from "./api/_utils/actions";
  
 const garamond = Cormorant_Garamond({
   subsets: ['latin'],
@@ -40,6 +41,10 @@ export default async function RootLayout({
   const headersList = await headers();
   const device = userAgent({ headers: headersList }).device;
   const isMobile = device.type === 'mobile'
+
+  const sosiVocab = await fetchSOSIVocab();
+
+
   return (
     <html lang="no" className={`${garamond.variable} ${opensans.className} h-full w-full`}>
       <head>
@@ -48,7 +53,7 @@ export default async function RootLayout({
       <body className="flex flex-col w-full h-full relative">
         
         <NuqsAdapter>
-        <GlobalProvider isMobile={isMobile}>
+        <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab}>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 focus:bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>

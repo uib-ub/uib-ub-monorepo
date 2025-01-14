@@ -66,6 +66,29 @@ export async function fetchSOSI(sosiCode: string) {
 
   }
 
+  export async function fetchSOSIVocab() {
+    'use server'
+    const res = await fetch("https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype.json", {
+        method: 'GET',
+        cache: 'force-cache'
+    })
+
+    if (!res.ok) {
+        // TODO: load backup json of all navneobjekttype from elasticsearch
+        return {};
+    }
+    const data = await res.json()
+    
+    // Map containeditems to an object with codevalue as key
+    const mappedData = data.containeditems.reduce((acc: any, item: any) => {
+        acc[item.codevalue] = item;
+        return acc;
+    }, {});
+    
+    return mappedData;
+
+  }
+
 
   export async function fetchStats() {
     'use server'

@@ -16,6 +16,7 @@ import { useQueryState } from "nuqs"
 import { GlobalContext } from "@/app/global-provider"
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import CoordinateInfo from "./coordinate-info"
+import ExternalLinkTooltip from "@/components/ui/clickable/external-link-tooltip"
 
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
@@ -32,8 +33,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
     const [doc, setDoc] = useQueryState('doc')
-    const isMobile = useContext(GlobalContext).isMobile
-
+    const { isMobile, sosiVocab } = useContext(GlobalContext)
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -50,6 +50,8 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         {mode == 'map' && <button className="absolute top-2 right-2 text-2xl" aria-label="Lukk" onClick={() => setDoc(null)}><PiX aria-hidden="true"/></button>}
  
         </div>}
+
+
       
 
 
@@ -60,10 +62,10 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>
         <div className="flex gap-1 flex-wrap">
         {
-         docSource.sosi && docDataset != 'search' && <Link className="flex items-center bg-neutral-50 border border-neutral-200 pl-2 pr-0 rounded-md text-neutral-950 no-underline external-link"
+         docSource.sosi && docDataset != 'search' && <ExternalLinkTooltip description={`SOSI-stadnarden${sosiVocab[docSource.sosi] ? `: ${sosiVocab[docSource.sosi]['description']}` : ''}`} className="flex items-center bg-neutral-50 border border-neutral-200 pl-2 pr-0 rounded-md text-neutral-950 no-underline external-link"
          href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + docSource.sosi}>
-            { docSource.sosi}
-        </Link>
+            { sosiVocab[docSource.sosi]?.label || docSource.sosi}
+        </ExternalLinkTooltip>
          
         }
         

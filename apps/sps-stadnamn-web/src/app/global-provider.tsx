@@ -1,9 +1,7 @@
 'use client'
 import { facetConfig } from '@/config/search-config';
-import { useDataset, useSearchQuery } from '@/lib/search-params';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react'
-import { SearchContext } from './search-provider';
+import { useDataset } from '@/lib/search-params';
+import { createContext, useEffect, useState } from 'react'
 
 interface FacetOption {
   sort: 'doc_count' | 'asc' | 'desc';
@@ -18,9 +16,10 @@ export const GlobalContext = createContext({
   pinnedFilters: {} as Record<string, [string, string][]>,
   updateFacetOption: (facetName: string, options: Partial<FacetOption>) => {},
   updatePinnedFilters: (filters: [string, string][]) => {},
+  sosiVocab: {} as Record<string, any>,
 });
 
-export default function GlobalProvider({ children, isMobile }: { children: React.ReactNode, isMobile: boolean }) {
+export default function GlobalProvider({ children, isMobile, sosiVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any> }) {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
   const [pinnedFilters, setPinnedFilters] = useState<Record<string, [string, string][]>>({});
@@ -40,6 +39,7 @@ export default function GlobalProvider({ children, isMobile }: { children: React
         setPinnedFilters(JSON.parse(storedPinnedFilters));
     }
   }, []);
+
 
   // Update localStorage when facet options change
   useEffect(() => {
@@ -85,6 +85,7 @@ export default function GlobalProvider({ children, isMobile }: { children: React
         updateFacetOption,
         pinnedFilters,
         updatePinnedFilters,
+        sosiVocab,
       }}
     >
       {children}
