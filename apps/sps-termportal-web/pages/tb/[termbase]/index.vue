@@ -15,7 +15,7 @@
             </h1>
             <!-- Only apply termbaseDescriptionHeight on larger screens-->
             <div
-              class="flex lg:block flex-col-reverse overflow-hidden"
+              class="flex lg:block overflow-hidden"
               :style="
                 ['lg', 'xl', '2xl'].includes(breakpoint)
                   ? `max-height: ${termbaseDescriptionHeight}px`
@@ -23,16 +23,15 @@
               "
             >
               <div
-                ref="termbaseInfoBox"
-                class="lg:float-right lg:mx-5 lg:mb-2 mt-6 lg:mt-0"
+                ref="termbaseText"
+                class="flex lg:block lg:flex-col flex-col-reverse md:max-w-3xl lg:max-w-4xl space-y-2"
               >
-                <TermbaseInfoBox
+                <div
                   ref="termbaseInfoBox"
-                  :data="data"
-                  :termbase-id="termbase"
-                />
-              </div>
-              <div ref="termbaseText" class="max-w-4xl space-y-2">
+                  class="lg:float-right lg:ml-3 lg:mb-2 mt-6 lg:mt-0"
+                >
+                  <TermbaseInfoBox :data="data" :termbase-id="termbase" />
+                </div>
                 <p v-for="p in description" :key="p" v-html="p" />
               </div>
             </div>
@@ -85,9 +84,9 @@ const expandTermbaseText = ref(false);
 const termbaseDescriptionHeight = computed(() => {
   if (termbaseInfoBox.value && termbaseText.value) {
     if (expandTermbaseText.value) {
-      return termbaseText.value.clientHeight;
+      return termbaseText.value.clientHeight + 8;
     } else {
-      return termbaseInfoBox.value.clientHeight + 8;
+      return termbaseInfoBox.value.clientHeight + 12;
     }
   }
 });
