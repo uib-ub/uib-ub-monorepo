@@ -14,6 +14,8 @@ import { treeSettings } from "@/config/server-config"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
 import { useQueryState } from "nuqs"
 import { GlobalContext } from "@/app/global-provider"
+import CollapsibleHeading from '@/components/doc/collapsible-heading';
+import CoordinateInfo from "./coordinate-info"
 
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
@@ -109,6 +111,15 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         { docSource.image?.manifest && mode != 'list' && <div>
         <h3 className="!mt-0">Sedler</h3>
         <ClientThumbnail manifestId={docSource.image?.manifest}/>
+
+
+        </div>}
+        { docSource.location && <div>
+          <CollapsibleHeading title="Koordinatinformasjon">
+        <CoordinateInfo source={docSource}/>
+      </CollapsibleHeading>
+
+        
 
 
         </div>}
