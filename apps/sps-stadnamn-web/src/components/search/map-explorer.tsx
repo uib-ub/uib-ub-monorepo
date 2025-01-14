@@ -465,7 +465,7 @@ useEffect(() => {
                 else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 14 && bucket.doc_count == bucket.docs.hits.hits.length)) {
 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
+                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 3 && (zoom && zoom < 17)) ? true : false))
 
                     return (docLoading || hit.fields.uuid[0] != doc) && <Marker key={hit._id}
                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
@@ -523,7 +523,7 @@ useEffect(() => {
                     }
                   }
                   else {
-                    icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, group.children.length == 1 && group.children[0].fields?.children?.length > 1 ? 'primary' : 'black', group.children.length > 1 ? group.children.length : undefined, false, (viewResults.hits.total.value > 100 && (zoom && zoom < 18)) ? true : false))
+                    icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, group.children.length == 1 && group.children[0].fields?.children?.length > 1 ? 'primary' : 'black', group.children.length > 1 ? group.children.length : undefined, false, (viewResults.hits.total.value > 100 && (zoom && zoom < 17)) ? true : false))
                   }
                   
 
