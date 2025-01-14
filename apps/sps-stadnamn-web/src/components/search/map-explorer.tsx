@@ -192,7 +192,7 @@ export default function MapExplorer() {
 
 
 useEffect(() => {
-  if (!mapInstance.current?._leaflet_pos || isLoading || (zoom && center)
+  if (!mapInstance.current || isLoading || (zoom && center)
   ) return
   console.log("USEEFFECT", mapInstance.current, isLoading, zoom, center)
     if (resultBounds?.length) {
@@ -213,10 +213,7 @@ useEffect(() => {
   useEffect(() => {
     // Only proceed if we have all required properties and the map is fully loaded
     if (!center || 
-        !mapInstance?.current || 
-        !mapInstance.current._loaded ||
-        !mapInstance.current._container ||  // Add this check
-        !mapInstance.current._leaflet_pos) {  // Add this check
+        !mapInstance?.current) {  // Add this check
       return;
     }
     
