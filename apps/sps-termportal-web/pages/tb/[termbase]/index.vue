@@ -28,7 +28,7 @@
               >
                 <div
                   ref="termbaseInfoBox"
-                  class="lg:float-right lg:ml-3 lg:mb-2 mt-6 lg:mt-0"
+                  class="lg:float-right lg:ml-3 lg:mb-2 mt-6 lg:mt-0 relative z-10 bg-white"
                 >
                   <TermbaseInfoBox :data="data" :termbase-id="termbase" />
                 </div>
@@ -39,8 +39,7 @@
               v-if="['lg', 'xl', '2xl'].includes(breakpoint)"
               class="w-full mt-1"
               :class="{
-                'shadow-[0_-10px_11px_rgba(255,255,255,1)]':
-                  !expandTermbaseText,
+                'shadow-[0_-10px_7px_rgba(255,255,255,1)]': !expandTermbaseText,
               }"
               @click="expandTermbaseText = !expandTermbaseText"
             >
@@ -86,7 +85,7 @@ const termbaseDescriptionHeight = computed(() => {
     if (expandTermbaseText.value) {
       return termbaseText.value.clientHeight + 8;
     } else {
-      return termbaseInfoBox.value.clientHeight + 12;
+      return termbaseInfoBox.value.clientHeight + 8;
     }
   }
 });
