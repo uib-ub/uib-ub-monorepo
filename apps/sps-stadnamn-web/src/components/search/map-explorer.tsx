@@ -191,7 +191,8 @@ export default function MapExplorer() {
 
 
 useEffect(() => {
-  if (!mapInstance.current || isLoading || (zoom && center)) return
+  if (!mapInstance.current?._leaflet_pos || isLoading || (zoom && center)
+  ) return
   console.log("USEEFFECT", mapInstance.current, isLoading, zoom, center)
     if (resultBounds?.length) {
       console.log("FITTING BOUNDS", resultBounds)
@@ -207,10 +208,22 @@ useEffect(() => {
   }, [mapInstance, isLoading, center, zoom, resultBounds, setCenter, setZoom])
 
 
+  
   useEffect(() => {
-    if (center && !mapInstance?.current?.getBounds().pad(-0.5).contains(center)) {
-      mapInstance?.current?.setView(center, zoom)
-    }}, [center, zoom, mapInstance]);
+    // Only proceed if we have all required properties and the map is fully loaded
+    if (!center || 
+        !mapInstance?.current || 
+        !mapInstance.current._loaded ||
+        !mapInstance.current._container ||  // Add this check
+        !mapInstance.current._leaflet_pos) {  // Add this check
+      return;
+    }
+    
+    const bounds = mapInstance.current.getBounds();
+    if (bounds && !bounds.pad(-0.5).contains(center)) {
+      mapInstance.current.setView(center, zoom);
+    }
+  }, [center, zoom, mapInstance]);
 
 
 
