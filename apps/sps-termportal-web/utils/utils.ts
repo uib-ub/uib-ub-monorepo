@@ -1,5 +1,6 @@
 import { useI18n } from "vue-i18n";
 import { SemanticRelation } from "./vars";
+import { termbaseUriPatterns } from "./vars-termbase";
 import { LangCode } from "~/composables/locale";
 import { SearchDataEntry } from "~/composables/states";
 
@@ -101,7 +102,7 @@ export function getRelationData(
           // TODO might break links between concepts of external tbs
           // Termbase is part of URI (seperated by '-3A')
           const link =
-            "/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
+            "/tb/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
             let relation = { target: [label, link] };
@@ -264,3 +265,30 @@ export const getLangOptions = () => {
     },
   }));
 };
+
+export function idOrUriToRoute(
+  termbaseId: string,
+  idOrUri: string
+): String | null {
+  if (!Object.keys(termbaseUriPatterns).includes(termbaseId)) {
+    const runtimeConfig = useRuntimeConfig();
+    return (
+      "/" +
+      idOrUri
+        .replace(runtimeConfig.public.base, "")
+        .replace("wiki:", "")
+        .replaceAll("/", "%2F") // Slashes are allowed in wiki pagenames, but cause problems with routing
+        .replace("-3A", "/")
+    );
+  } else {
+    const patterns =
+      termbaseUriPatterns[termbaseId as keyof typeof termbaseUriPatterns];
+    for (const pattern in patterns) {
+      if (idOrUri.startsWith(patterns[pattern])) {
+        const id = idOrUri.replace(patterns[pattern], "");
+        return `/${termbaseId}/${pattern}/${id}`;
+      }
+    }
+  }
+  return null;
+}

@@ -1,6 +1,6 @@
 <template>
   <li>
-    <AppLink :to="`/${entryData.link}`">
+    <AppLink :to="`${entryData.link}`">
       <section
         class="p-2 hover:bg-gray-300 lg:flex"
         :class="{ 'bg-gray-200': isCurrentEntry,

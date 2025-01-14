@@ -5,7 +5,12 @@
     "build": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build"],
-      "env": ["SANITY_PROJECT_ID", "SANITY_API_TOKEN"]
+      "env": [
+        "SANITY_PROJECT_ID",
+        "SANITY_API_TOKEN",
+        "NUXT_ELASTICSEARCH_URL",
+        "NUXT_ELASTICSEARCH_API_KEY"
+      ]
     }
   }
 }

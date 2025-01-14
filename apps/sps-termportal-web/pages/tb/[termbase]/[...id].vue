@@ -6,7 +6,7 @@
       <div class="flex">
         <!-- Search results -->
         <div
-          v-if="searchData.length > 0"
+          v-if="searchData.length > 0 && termpostContext"
           class="hidden max-w-[22em] shrink-0 flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw] pr-3 lg:pr-6"
         >
           <BackToSearch />
@@ -41,6 +41,8 @@
 import { TermbaseId } from "~~/utils/vars-termbase";
 
 const route = useRoute();
+const router = useRouter();
+const termpostContext = useTermpostContext();
 const searchScrollBarPos = useSearchScrollBarPos();
 const searchData = useSearchData();
 
@@ -76,6 +78,15 @@ onMounted(async () => {
   await nextTick();
   if (sidebar.value) {
     sidebar.value.scrollTo(0, searchScrollBarPos.value);
+  }
+  // Check if navigated from termbase page
+  if (
+    router?.options?.history?.state?.back?.split("/").length <= 3 &&
+    router?.options?.history?.state?.back?.startsWith("/tb/")
+  ) {
+    termpostContext.value = false;
+  } else {
+    termpostContext.value = true;
   }
 });
 

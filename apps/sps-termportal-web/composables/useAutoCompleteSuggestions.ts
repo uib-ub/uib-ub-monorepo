@@ -1,12 +1,23 @@
 import { pushAutocompleteEvents } from "~/utils/analyticsEvents";
 
-export default async function (searchterm: string) {
+export default async function (
+  searchterm: string,
+  termbaseId?: string,
+  language?: LangCode
+) {
   const data = ref([]);
   if (typeof searchterm === "string") {
+    const newOptions: SearchOptions = { term: searchterm };
+    if (termbaseId) {
+      newOptions.termbase = [termbaseId];
+      newOptions.useDomain = false;
+    }
+    if (language) {
+      newOptions.language = [language];
+    }
+
     if (searchterm.trim().length) {
-      const options = useGenSearchOptions("autocomplete", {
-        term: searchterm,
-      });
+      const options = useGenSearchOptions("autocomplete", newOptions);
 
       pushAutocompleteEvents(options);
       const params = new URLSearchParams(options).toString();
