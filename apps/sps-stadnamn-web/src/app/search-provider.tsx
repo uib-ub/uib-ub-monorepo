@@ -14,7 +14,6 @@ interface SearchContextData {
     searchError: Record<string, string> | null;
     totalHits: Record<string, any> | null;
     resultBounds: [[number, number], [number, number]] | null;
-    mapInstance: any;
     setResultBounds: (bounds: [[number, number], [number, number]] | null) => void;
   }
  
@@ -25,7 +24,6 @@ interface SearchContextData {
     searchError: null,
     totalHits: null,
     resultBounds: null,
-    mapInstance: null,
     setResultBounds: () => {}
     });
 
@@ -35,7 +33,6 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [tableData, setTableData] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
-    const mapInstance = useRef<any>(null);
 
     
 
@@ -122,7 +119,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
       }, [searchQueryString, size, searchFilterParamsString, isTable, asc, desc, page, perPage, isMobile])
 
 
-  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, mapInstance, tableData, setResultBounds}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, setResultBounds}}>{children}</SearchContext.Provider>
 }
 
 

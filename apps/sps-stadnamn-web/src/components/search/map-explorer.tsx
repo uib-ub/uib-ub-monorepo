@@ -23,7 +23,7 @@ import { GlobalContext } from "@/app/global-provider";
 
 
 export default function MapExplorer() {
-  const { resultBounds, totalHits, searchError, mapInstance, isLoading } = useContext(SearchContext)
+  const { resultBounds, totalHits, searchError, isLoading } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
@@ -41,6 +41,7 @@ export default function MapExplorer() {
   const { docData, parentData, setSameMarkerList, docLoading } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const initialBoundsSet = useRef(false);
+  const mapInstance = useRef<any>(null);
 
 
 
@@ -274,20 +275,17 @@ useEffect(() => {
 
   const zoomIn = () => {
     if (mapInstance.current) {
-      const currentZoom = mapInstance.current.getZoom();
-      mapInstance.current.setZoom(currentZoom + 1);
+      mapInstance.current.zoomIn();
     } else {
-      setZoom(prev => prev ? prev + 1 : 1);
+      setZoom(prev => (prev || 5) + 1);
     }
   };
-
+  
   const zoomOut = () => {
     if (mapInstance.current) {
-      const currentZoom = mapInstance.current.getZoom();
-      mapInstance.current.setZoom(currentZoom - 1);
+      mapInstance.current.zoomOut();
     } else {
-      console.log(mapInstance.current)
-      setZoom(prev => prev ? prev - 1 : 1);
+      setZoom(prev => Math.max((prev || 5) - 1, 1));
     }
   };
 
@@ -380,8 +378,6 @@ useEffect(() => {
     {(bounds?.length || (center && zoom) || searchError || (totalHits && totalHits.value > 0)) ? <>
       <Map        
         whenReady={(e: any) => {
-
-          
             const bounds = e.target.getBounds();
             if (!mapInstance.current) {
               mapInstance.current = e.target
@@ -412,40 +408,7 @@ useEffect(() => {
                 setZoom(map.getZoom());
                 setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
               },
-            })
-
-
-            /* The useffect CAUSES INFINITE LOOP
-
-
-            if (!isLoading && !zoom && !center) {
-              if (resultBounds?.length) {
-                //console.log("FITTING BOUNDS", resultBounds)
-                map.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
-              }
-              else {
-                // ADD MISSING PARAMS
-                //console.log("ADDING MISSING PARAMS", center, zoom)
-                const bounds = map.getBounds();
-                const boundsCenter = bounds.getCenter();
-                setCenter([boundsCenter.lat, boundsCenter.lng]);
-                setZoom(map.getZoom());
-              }
-            }
-
-
-            const [docLon, docLat] = docData?._source?.location?.coordinates || []
-
-            
-            useEffect(() => {
-              if (isLoading) return
-              if (docLon && docLat) {
-                console.log("FLYING TO DOC", docLon, docLat)
-                //map.flyTo([docLat, docLon], 15, { duration: 0.25, maxZoom: 18 });
-              }
-            }, [map, isLoading, docLon, docLat]) 
-            */
-          
+            })          
 
             return null
           }
