@@ -75,9 +75,7 @@ export default function SearchForm() {
             {searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
             
             { inputValue && 
-            <ClickableIcon type="button" 
-                            link
-                            onClick={() => { clearQuery() }} 
+            <ClickableIcon  onClick={() => { clearQuery() }} 
                             remove={['q', 'center', 'zoom']}
                             // Replace results with filters if no facetFilters
                             add={{nav: nav == 'results' && facetFilters.length == 0 ? 'filters' : 'results'}}

@@ -17,8 +17,6 @@ type Props = ParamProps & {
 export default function ClickableIcon({ 
     children, 
     label, 
-    type,
-    onClick,
     side="bottom",
     ...rest 
 }: Props) {
@@ -26,7 +24,7 @@ export default function ClickableIcon({
     const { isMobile } = useContext(GlobalContext)
 
     if (isMobile) {
-        return <button aria-label={label} type={type || "button"} onClick={onClick} {...rest}><i aria-hidden='true'>{children}</i></button>
+        return <Clickable aria-label={label} {...rest}><i aria-hidden='true'>{children}</i></Clickable>
     }
     else {
         return (
