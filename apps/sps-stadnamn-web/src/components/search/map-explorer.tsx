@@ -434,7 +434,7 @@ useEffect(() => {
 
                 
 
-
+                
                 // If no coordinates are different from the average
                 if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 14) && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
                   
@@ -462,7 +462,7 @@ useEffect(() => {
                   })}</Fragment>
                 }
 
-                else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 14 && bucket.doc_count == bucket.docs.hits.hits.length)) {
+                else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 16 && bucket.doc_count == bucket.docs.hits.hits.length)) {
 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                     const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 3 && (zoom && zoom < 17)) ? true : false))
@@ -489,7 +489,6 @@ useEffect(() => {
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2 + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0),
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2,
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8))
-
 
                   return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon) / 2]} icon={clusterIcon}
                     eventHandlers={{
