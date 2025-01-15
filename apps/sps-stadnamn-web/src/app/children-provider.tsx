@@ -14,6 +14,7 @@ interface ChildrenContextData {
     childrenData: any;
     childrenLoading: boolean;
     childrenError: Record<string, string> | null;
+    childrenBounds: number[][] | null;
     
   }
  
@@ -21,6 +22,7 @@ export const ChildrenContext = createContext<ChildrenContextData>({
     childrenData: null,
     childrenLoading: false,
     childrenError: null,
+    childrenBounds: null
     });
 
 
@@ -36,7 +38,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     const desc = searchParams.get('desc')
     const page = useQueryState('page', parseAsInteger.withDefault(1))[0]
     const perPage = useQueryState('perPage', parseAsInteger.withDefault(10))[0]
-    const { setResultBounds } = useContext(SearchContext)
+    const [childrenBounds, setChildrenBounds] = useState<number[][] | null>(null)
 
     const parent = searchParams.get('parent')
     const doc = searchParams.get('doc')
@@ -64,7 +66,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                     setChildrenData(data.hits.hits)
                     if (newBounds?.top_left && newBounds?.bottom_right) {
                         const paddedBounds = addPadding([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]], isMobile)
-                        setResultBounds(paddedBounds)
+                        setChildrenBounds(paddedBounds)
                     }
 
                 }
@@ -75,13 +77,19 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                 setChildrenLoading(false)
             })
         }
-    }, [parentData, isTable, asc, desc, page, perPage, setResultBounds, parent, dataset, isMobile])
+    }, [parentData, isTable, asc, desc, page, perPage, setChildrenBounds, parent, dataset, isMobile])
+
+
+    // Clear children bounds when parent changes
+    useEffect(() => {
+        setChildrenBounds(null)
+    }, [parent])
     
 
 
     useEffect(() => {
-
-        if (!parentLoading && parentData?._source?.children) {
+    
+        if (!parentLoading && parentData?._source?.children && parentData._source.uuid == parent) {
             setChildrenLoading(true)            
             fetch("/api/children?", {
                 method: 'POST',
@@ -92,8 +100,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                     throw response
                 }
                 return response.json()})
-            .then(es_data => {
-                
+            .then(es_data => {                
                 if (isTable) {
                     setChildrenData(es_data.hits.hits)
                 }
@@ -102,8 +109,9 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                     setChildrenData(es_data.hits.hits)
 
                     if (newBounds?.top_left && newBounds?.bottom_right) {
+                        console.log("SET CHILDREN BOUNDS", parent, parentData._source.uuid, newBounds)
                         const paddedBounds = addPadding([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]], isMobile)
-                        setResultBounds(paddedBounds)
+                        setChildrenBounds(paddedBounds)
                     }
 
                 }
@@ -120,7 +128,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
         }
  
 
-    }, [parentData, parentLoading, isTable, asc, desc, page, perPage, setResultBounds, dataset, isMobile, mode])
+    }, [parentData, parentLoading, isTable, asc, desc, page, perPage, setChildrenBounds, dataset, isMobile, mode, parent])
     
 
     
@@ -143,7 +151,8 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     return <ChildrenContext.Provider value={{
         childrenData,
         childrenLoading,
-        childrenError
+        childrenError,
+        childrenBounds
 
   }}>{children}</ChildrenContext.Provider>
 }

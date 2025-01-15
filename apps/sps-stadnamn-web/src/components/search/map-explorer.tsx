@@ -35,10 +35,10 @@ export default function MapExplorer() {
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
   const dataset = useDataset()
-  const { childrenData } = useContext(ChildrenContext)
+  const { childrenData, childrenLoading, childrenBounds } = useContext(ChildrenContext)
   const { isMobile } = useContext(GlobalContext)
 
-  const { docData, parentData, setSameMarkerList, docLoading } = useContext(DocContext)
+  const { docData, parentData, setSameMarkerList, docLoading, parentLoading } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const initialBoundsSet = useRef(false);
   const mapInstance = useRef<any>(null);
@@ -101,6 +101,8 @@ export default function MapExplorer() {
       return;
     }
 
+    //console.log(bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, childrenLoading, parentLoading, docLoading)
+
     const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
 
     // Fetch data based on the new bounds
@@ -113,9 +115,7 @@ export default function MapExplorer() {
       queryParams.set('zoom', zoom.toString());
     }
 
-    if (zoom) {
-      queryParams.set('zoom', zoom.toString())
-    }
+    console.log("QUERY", searchQueryString)
 
 
 
@@ -187,41 +187,33 @@ export default function MapExplorer() {
       );
 
     //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
-  }, [bounds, resultBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, parentData, isLoading]);
+  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading]);
 
 
 
 useEffect(() => {
-  if (!mapInstance.current || isLoading || (zoom && center)
-  ) return
-  console.log("USEEFFECT", mapInstance.current, isLoading, zoom, center)
-    if (resultBounds?.length) {
-      console.log("FITTING BOUNDS", resultBounds)
+  
+  //console.log("DEBUG", childrenBounds ,isLoading, zoom, parentLoading, childrenLoading)
+  if (!mapInstance.current || isLoading || parentLoading || childrenLoading) return
+  
+    if (doc && !parent && docData?._source?.location?.coordinates?.length) {
+      const bounds = mapInstance.current.getBounds();
+      const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
+        if (bounds && !bounds.contains(center)) {
+          mapInstance.current.setView(center, mapInstance.current.getZoom());
+        }
+    }
+    else if (childrenBounds?.length) {
+      mapInstance.current.flyToBounds(childrenBounds, { duration: 0.25, maxZoom: 18 });
+    }
+    else if (resultBounds?.length && !parent && !doc ) {
       mapInstance.current.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
     }
-    else {
-      console.log("ADDING MISSING PARAMS", center, zoom)
-        const bounds = mapInstance.current.getBounds();
-        const boundsCenter = bounds.getCenter();
-        setCenter([boundsCenter.lat, boundsCenter.lng]);
-      setZoom(mapInstance.current.getZoom());
-    }
-  }, [mapInstance, isLoading, center, zoom, resultBounds, setCenter, setZoom])
+
+  }, [mapInstance, isLoading, resultBounds, setCenter, parentLoading, childrenLoading, childrenBounds, parent, doc, docData])
 
 
-  
-  useEffect(() => {
-    // Only proceed if we have all required properties and the map is fully loaded
-    if (!center || 
-        !mapInstance?.current) {  // Add this check
-      return;
-    }
-    
-    const bounds = mapInstance.current.getBounds();
-    if (bounds && !bounds.pad(-0.5).contains(center)) {
-      mapInstance.current.setView(center, zoom);
-    }
-  }, [center, zoom, mapInstance]);
+
 
 
 
@@ -350,11 +342,9 @@ useEffect(() => {
     return {
       click: () => {
         if (hits?.[0]?.fields?.children?.length == 1) {
-          console.log("redirect to child")
           setDoc(hits[0].fields.children[0])
         }
         else {
-          console.log("select self", hits)
           setDoc(hits?.[0]?.fields?.uuid[0])
         }
 

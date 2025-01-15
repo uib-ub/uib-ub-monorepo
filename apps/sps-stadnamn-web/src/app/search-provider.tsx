@@ -14,7 +14,6 @@ interface SearchContextData {
     searchError: Record<string, string> | null;
     totalHits: Record<string, any> | null;
     resultBounds: [[number, number], [number, number]] | null;
-    setResultBounds: (bounds: [[number, number], [number, number]] | null) => void;
   }
  
   export const SearchContext = createContext<SearchContextData>({
@@ -24,7 +23,6 @@ interface SearchContextData {
     searchError: null,
     totalHits: null,
     resultBounds: null,
-    setResultBounds: () => {}
     });
 
  
@@ -119,7 +117,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
       }, [searchQueryString, size, searchFilterParamsString, isTable, asc, desc, page, perPage, isMobile])
 
 
-  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, setResultBounds}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData}}>{children}</SearchContext.Provider>
 }
 
 

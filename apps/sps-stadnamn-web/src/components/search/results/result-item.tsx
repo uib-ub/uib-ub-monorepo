@@ -37,11 +37,12 @@ export default function ResultItem({hit}: {hit: any}) {
     return  <li className="flex flex-grow">
         <Clickable link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
-                    remove={['attestationYear', 'attestationLabel', ...isMobile ? ['parent'] : [], ...(parent ? ['center', 'zoom'] : [])]}
+                    remove={['attestationYear', 'attestationLabel']}
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
                         ...(parent && !isMobile) ? {parent: docDataset == 'search' ? hit.fields.uuid : hit.fields?.within} : {},
-                        ...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
+
+                        //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
 
             <span className="text-neutral-950 flex items-center">{titleRenderer(hit, 'map')}</span>
