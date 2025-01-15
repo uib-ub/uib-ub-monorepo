@@ -106,7 +106,7 @@ export default function ActiveFilters() {
       router.push(`?${newSearchParams.toString()}`)
     }
 
-    const gnr =  parentData?._source && getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")
+    const gnr =  parentData?._source && getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || (Array.isArray(parentData?._source?.cadastre?.[0]?.gnr) ? parentData?._source?.cadastre?.[0]?.gnr?.join(",") : parentData?._source?.cadastre?.[0]?.gnr)
 
     const mode = searchParams.get('mode') || 'map'
 
