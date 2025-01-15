@@ -40,8 +40,8 @@ export default function MapExplorer() {
 
   const { docData, parentData, setSameMarkerList, docLoading, parentLoading } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
-  const initialBoundsSet = useRef(false);
   const mapInstance = useRef<any>(null);
+  const userHasMoved = useRef(false);
 
 
 
@@ -100,9 +100,6 @@ export default function MapExplorer() {
     if (parent || !bounds || isLoading) {
       return;
     }
-
-    //console.log(bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, childrenLoading, parentLoading, docLoading)
-
     const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
 
     // Fetch data based on the new bounds
@@ -114,11 +111,6 @@ export default function MapExplorer() {
     if (zoom) {
       queryParams.set('zoom', zoom.toString());
     }
-
-    console.log("QUERY", searchQueryString)
-
-
-
 
     const query = `/api/geo/${(zoom && zoom > 14 && 'cluster' ) || (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
 
@@ -190,10 +182,8 @@ export default function MapExplorer() {
   }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading]);
 
 
-
+// Fly to results, doc or children
 useEffect(() => {
-  
-  //console.log("DEBUG", childrenBounds ,isLoading, zoom, parentLoading, childrenLoading)
   if (!mapInstance.current || isLoading || parentLoading || childrenLoading) return
   
     if (doc && !parent && docData?._source?.location?.coordinates?.length) {
@@ -206,7 +196,8 @@ useEffect(() => {
     else if (childrenBounds?.length) {
       mapInstance.current.flyToBounds(childrenBounds, { duration: 0.25, maxZoom: 18 });
     }
-    else if (resultBounds?.length && !parent && !doc ) {
+    else if (resultBounds?.length && !parent && !doc && userHasMoved.current) {
+      console.log("FLYY")
       mapInstance.current.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
     }
 
@@ -369,7 +360,6 @@ useEffect(() => {
             if (!mapInstance.current) {
               mapInstance.current = e.target
             }
-            console.log("SETTING BOUNDS", bounds)
             setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
           
           
@@ -389,6 +379,7 @@ useEffect(() => {
               moveend: () => {
                 if (isLoading) return
                 console.log("MOVEEND")
+                userHasMoved.current = true;
                 const bounds = map.getBounds();
                 const boundsCenter = bounds.getCenter();
                 setCenter([boundsCenter.lat, boundsCenter.lng]);
