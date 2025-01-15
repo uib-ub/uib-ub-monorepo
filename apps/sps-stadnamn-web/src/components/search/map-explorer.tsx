@@ -112,7 +112,8 @@ export default function MapExplorer() {
       queryParams.set('zoom', zoom.toString());
     }
 
-    const query = `/api/geo/${(zoom && zoom > 10 && 'cluster' ) || (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
+    // Both cluster map and sample map use cluster data above zoom 10
+    const query = `/api/geo/${(zoom && zoom > (totalHits?.value < 10000 ? 10 : 14) && 'cluster' ) || (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
 
     fetch(query, {
       signal: controllerRef.current.signal,
@@ -485,7 +486,7 @@ useEffect(() => {
               }
               )}
 
-              {zoom && zoom < 11 && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
+              {zoom && zoom < (totalHits?.value < 10000 ? 11 : 15) && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
                   const primary = group.children.length == 1 && group.children[0].fields?.children?.length > 1
                   return <CircleMarker key={group.uuid}
                     center={[group.lat, group.lon]}
