@@ -51,7 +51,7 @@ export default function LeftWindow() {
                       aria-expanded={nav == 'results'}
                       {...nav == 'results' ? {remove: ['nav']} : {add: {nav: 'results'}}}
                       className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner ${treeSettings[dataset] ? "ml-auto xl:ml-0" : ""}`}>
-                        <PiListBullets aria-hidden="true"/>Treff
+                        {nav == 'results' ? <PiX aria-hidden="true"/> : <PiListBullets aria-hidden="true"/>}Treff
                         {nav == 'results' ? <span className="results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span>
                         : <span className="results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span>}
                 </Clickable>}
