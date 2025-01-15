@@ -69,23 +69,21 @@
 </template>
 
 <script setup lang="ts">
-if (process.client) {
-  useHead({
-    script: [
-      {
-        src: "/mathjax-config.js",
-        type: "text/javascript",
-        defer: true,
-      },
-      {
-        id: "MathJax-script",
-        type: "text/javascript",
-        src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
-        defer: true,
-      },
-    ],
-  });
-}
+useHead({
+  script: [
+    {
+      src: "/mathjax-config.js",
+      type: "text/javascript",
+      defer: true,
+    },
+    {
+      id: "MathJax-script",
+      type: "text/javascript",
+      src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+      defer: true,
+    },
+  ],
+});
 
 const dataDisplayLanguages = useDataDisplayLanguages();
 const localeLangOrder = useLocaleLangOrder();
@@ -196,12 +194,6 @@ const displayInfo = computed(() => {
   } else {
     return null;
   }
-});
-
-onMounted(() => {
-  setTimeout(() => {
-    window.MathJax.typesetPromise();
-  }, 0);
 });
 
 onBeforeUnmount(() => {
