@@ -39,7 +39,12 @@
               </div>
             </div>
             <button
-              v-if="['lg', 'xl', '2xl'].includes(breakpoint)"
+              v-if="
+                ['lg', 'xl', '2xl'].includes(breakpoint) &&
+                termbaseText &&
+                termbaseInfoBox &&
+                termbaseText.clientHeight > termbaseInfoBox.clientHeight
+              "
               class="w-full mt-1"
               :class="{
                 'shadow-[0_-10px_7px_rgba(255,255,255,1)]': !expandTermbaseText,
