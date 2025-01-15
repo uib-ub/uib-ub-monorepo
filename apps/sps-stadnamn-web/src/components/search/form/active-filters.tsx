@@ -127,7 +127,7 @@ export default function ActiveFilters() {
                 <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
-          {unpinnedFilters.length > 1 && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
+          {unpinnedFilters.length > 1 && !parent && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
             {!parentData && unpinnedFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
