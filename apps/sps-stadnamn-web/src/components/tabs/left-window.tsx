@@ -22,26 +22,33 @@ export default function LeftWindow() {
     return <><div className=" flex overflow-x-auto rounded-t-md rounded-md">
               <Clickable
                       {...nav == 'datasets' ? {remove: ['nav']} : {add: {nav: 'datasets'}}}
+                      aria-controls="left-window-content"
                       aria-expanded={nav == 'datasets'}
                       className="flex  m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
                         {nav == 'datasets' ? <PiX aria-hidden="true"/>  : <PiBinoculars aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only xl:not-sr-only"}>Perspektiv</span>
                 </Clickable>
                 
-                {  treeSettings[dataset] && <Clickable aria-expanded={nav == 'tree'}
+                {  treeSettings[dataset] && <Clickable 
+                      aria-controls="left-window-content"
+                      aria-expanded={nav == 'tree'}
                       {...nav == 'tree' ? {remove: ['nav']} : {add: {nav: 'tree'}}}
                       className="flex  m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
                         {nav == 'tree' ? <PiX aria-hidden="true"/>  : <PiTreeView aria-hidden="true"/>}<span className="sr-only">Register</span>
                 </Clickable>
                 }
                 
-                <Clickable aria-expanded={nav == 'filters'}
+                <Clickable 
+                      aria-controls="left-window-content"
+                      aria-expanded={nav == 'filters'}
                       {...nav == 'filters' ? {remove: ['nav']} : {add: {nav: 'filters'}}}
                       className={`flex  m-1 xl:ml-auto whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner`}>
                        {nav == 'filters' ? <PiX aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={ "sr-only xl:not-sr-only"}>Filtre</span>
                 </Clickable>
 
                 
-                {!isLoading && searchFilterParamsString && mode == 'map' && <Clickable aria-expanded={nav == 'results'}
+                {!isLoading && searchFilterParamsString && mode == 'map' && <Clickable 
+                      aria-controls="left-window-content"
+                      aria-expanded={nav == 'results'}
                       {...nav == 'results' ? {remove: ['nav']} : {add: {nav: 'results'}}}
                       className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner ${treeSettings[dataset] ? "ml-auto xl:ml-0" : ""}`}>
                         <PiListBullets aria-hidden="true"/>Treff
@@ -50,7 +57,7 @@ export default function LeftWindow() {
                 </Clickable>}
 
         </div>
-        <div className={`overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200 ${nav ? "" : "hidden"}`}>
+        <div id="left-window-content" className={`overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200 ${nav ? "" : "hidden"}`}>
 
         { nav == 'tree' && 
             <TreeResults/>
