@@ -1,6 +1,6 @@
 import { treeSettings } from "@/config/server-config";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
-import { PiDatabase, PiDatabaseFill, PiFunnel, PiFunnelFill, PiListBullets, PiTreeView, PiTreeViewFill } from "react-icons/pi";
+import { PiBinoculars, PiBinocularsFill, PiFunnel, PiFunnelFill, PiListBullets, PiTreeView, PiTreeViewFill } from "react-icons/pi";
 import Clickable from "../ui/clickable/clickable";
 import { SearchContext } from "@/app/search-provider";
 import { useContext } from "react";
@@ -17,7 +17,7 @@ export default function NavSelector({leftSection}: {leftSection: string | null})
                       role="tab"
                       add={{nav: 'datasets'}}
                       className="flex  m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-selected:bg-neutral-100 aria-selected:text-neutral-950 aria-selected:shadow-inner">
-                        {leftSection == 'datasets' ? <PiDatabaseFill aria-hidden="true"/>  : <PiDatabase aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only xl:not-sr-only"}>Datasett</span>
+                        {leftSection == 'datasets' ? <PiBinocularsFill aria-hidden="true"/>  : <PiBinoculars aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only xl:not-sr-only"}>Perspektiv</span>
                 </Clickable>
                 
                 {  treeSettings[dataset] && <Clickable aria-selected={leftSection == 'tree' ? true : false}
