@@ -448,7 +448,7 @@ useEffect(() => {
                 else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 16 && bucket.doc_count == bucket.docs.hits.hits.length)) {
 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 3 && (zoom && zoom < 17)) ? true : false))
+                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
 
                     return (docLoading || hit.fields.uuid[0] != doc) && <Marker key={hit._id}
                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
