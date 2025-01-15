@@ -112,7 +112,7 @@ export default function MapExplorer() {
       queryParams.set('zoom', zoom.toString());
     }
 
-    const query = `/api/geo/${(zoom && zoom > 14 && 'cluster' ) || (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
+    const query = `/api/geo/${(zoom && zoom > 10 && 'cluster' ) || (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
 
     fetch(query, {
       signal: controllerRef.current.signal,
@@ -485,48 +485,13 @@ useEffect(() => {
               }
               )}
 
-              {viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
-
-                if (viewResults.hits.total.value < 200 || (zoom && zoom > 16)) {
-                  let icon
-                  if (parent) {
-
-                    
-                    if (group.children.length > 1) {
-                      icon = new leaflet.DivIcon(getClusterMarker(group.children.length, 
-                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5 + (group.children.length > 99 ? group.children.length.toString().length / 4 : 0),
-                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5,
-                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 1,
-                        'bg-primary-600 text-white border-2 border-white'))
-                    }
-                    else {
-                      icon = new leaflet.DivIcon(getUnlabeledMarker('primary', group.children.length))
-                    }
-                  }
-                  else {
-                    icon = new leaflet.DivIcon(getLabelMarkerIcon(group.label, group.children.length == 1 && group.children[0].fields?.children?.length > 1 ? 'primary' : 'black', group.children.length > 1 ? group.children.length : undefined, false, (viewResults.hits.total.value > 100 && (zoom && zoom < 17)) ? true : false))
-                  }
-                  
-
-                  if (docData?._source?.uuid && group.children.some((hit: any) => hit.fields.uuid[0] == docData?._source?.uuid)) {
-                    return null
-                  }
-
-
-                  return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children)} />
-
-                }
-                else {
+              {zoom && zoom < 11 && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
                   const primary = group.children.length == 1 && group.children[0].fields?.children?.length > 1
                   return <CircleMarker key={group.uuid}
-
                     center={[group.lat, group.lon]}
                     radius={(zoom && zoom < 10 ? 4 : 8) * (primary ? 1.25 : 1)}
                     pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? '#cf3c3a' : 'white', fillOpacity: 1 }}
                     eventHandlers={ selectDocHandler(group.children)} />
-                }
-
-
               })}
 
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
