@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiDatabaseFill, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } from "react-icons/pi";
+import { PiBinocularsFill, PiDatabaseFill, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } from "react-icons/pi";
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
@@ -205,7 +205,7 @@ export default function MobileLayout() {
             <div className="w-full flex  items-center h-8 pt-2 rounded-t-xl bg-neutral-900 relative px-2" style={{touchAction: 'none'}}>
                 <h2 className="uppercase text-base font-semibold font-sans text-neutral-50 tracking-wider">
                     {drawerContent == 'results' && 'Treff'}
-                    {drawerContent == 'datasets' && 'Datasett'}
+                    {drawerContent == 'datasets' && 'Perspektiv'}
                     {drawerContent == 'filters' && 'Filtre'}
                     {drawerContent == 'tree' && 'Register'}
                     {drawerContent == 'info' ? <>
@@ -249,7 +249,7 @@ export default function MobileLayout() {
 
                     {doc && <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>}
                     { <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>}
-                    <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={drawerContent == 'datasets' ? 'page' : 'false'} className="toolbar-button"><PiDatabaseFill className="text-3xl"/></button>
+                    <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={drawerContent == 'datasets' ? 'page' : 'false'} className="toolbar-button"><PiBinocularsFill className="text-3xl"/></button>
 
             </div>
             

@@ -24,7 +24,7 @@ export default function DatasetDrawer() {
           <DatasetInfo/>
           { isMobile ?
           <h3 className="text-xl px-2 mt-4" >
-            Velg datasett
+            Velg søkevisning
           </h3>
           :
           <h3 className="text-lg px-2 mt-4" >
