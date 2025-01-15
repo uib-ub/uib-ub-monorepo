@@ -486,14 +486,39 @@ useEffect(() => {
               }
               )}
 
-              {zoom && zoom < (totalHits?.value < 10000 ? 11 : 15) && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
-                  const primary = group.children.length == 1 && group.children[0].fields?.children?.length > 1
+              {(zoom && zoom < (totalHits?.value < 10000 ? 11 : 15) || parent) && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
+                  
+                  if (parent) {
+                    let icon
+                    
+                    if (group.children.length > 1) {
+                      icon = new leaflet.DivIcon(getClusterMarker(group.children.length, 
+                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5 + (group.children.length > 99 ? group.children.length.toString().length / 4 : 0),
+                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5,
+                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 1,
+                        'bg-primary-600 text-white border-2 border-white'))
+                    }
+                    else {
+                      icon = new leaflet.DivIcon(getUnlabeledMarker('primary', group.children.length))
+                    }
+
+                    return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children)} />
+
+
+                  }
+
+                  else {
+                    const primary = group.children.length == 1 && group.children[0].fields?.children?.length > 1
                   return <CircleMarker key={group.uuid}
                     center={[group.lat, group.lon]}
                     radius={(zoom && zoom < 10 ? 4 : 8) * (primary ? 1.25 : 1)}
                     pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? '#cf3c3a' : 'white', fillOpacity: 1 }}
                     eventHandlers={ selectDocHandler(group.children)} />
+                  }
               })}
+
+                  
+                  
 
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
               
