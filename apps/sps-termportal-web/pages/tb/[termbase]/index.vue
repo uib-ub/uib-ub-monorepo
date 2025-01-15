@@ -3,9 +3,9 @@
     <Head>
       <Title>{{ lalof(termbase + "-3A" + termbase) }} | Termportalen</Title>
     </Head>
-    <div class="flex">
+    <div class="flex grow">
       <SideBar />
-      <div class="space-y-6">
+      <div class="space-y-6 grow max-w-4xl">
         <UtilsTransitionOpacitySection>
           <main
             v-if="data && bootstrapData.loaded"

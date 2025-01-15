@@ -34,7 +34,7 @@
         <li
           v-for="concept in displayData.slice(col[0], col[1])"
           :key="concept.link"
-          class="w-[20rem] xs:w-[27rem] sm:w-[17.5rem] md:w-[21.5rem] lg:w-[28rem] truncate"
+          class="w-[20rem] xs:w-[27rem] sm:w-[17.5rem] md:w-[21.5rem] lg:w-[27rem] truncate"
         >
           <TermbaseConceptLink
             :concept="concept"
