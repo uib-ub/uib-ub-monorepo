@@ -18,7 +18,7 @@ export default function Options() {
                 <PiFaders className="text-3xl" aria-hidden="true"/></button>
                     </DropdownMenuTrigger>
                 <DropdownMenuContent className="z-[4000] bg-white p-2 rounded-md shadow-md">
-                  <DropdownMenuLabel className="font-semibold px-4 py-2">Seøkealternativer:</DropdownMenuLabel>
+                  <DropdownMenuLabel className="font-semibold px-4 py-2">Søkealternativer:</DropdownMenuLabel>
                   <DropdownMenuSeparator />
 
                     <DropdownMenuRadioGroup value={fulltext} onValueChange={toggleFulltext}>
