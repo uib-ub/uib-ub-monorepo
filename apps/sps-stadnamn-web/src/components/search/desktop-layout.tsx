@@ -10,7 +10,7 @@ import CadastralSubdivisions from "../children/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
 import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
-import NavSelector from "../tabs/nav-selector"
+import NavSelector from "../tabs/left-window"
 import { PiArrowUpBold, PiFilesFill, PiTableFill, PiXBold } from "react-icons/pi"
 import SourceList from "./results/source-list"
 import { useContext } from "react"
@@ -23,6 +23,7 @@ import DocInfo from "./info/doc-info"
 import Clickable from "../ui/clickable/clickable"
 import ListExplorer from "./list/list-explorer"
 import DocExplorer from "./info/doc-explorer"
+import LeftWindow from "../tabs/left-window"
 
 export default function DesktopLayout() {
     const searchParams = useSearchParams()
@@ -39,7 +40,7 @@ export default function DesktopLayout() {
 
 
     // Keep filters or expanded open when switching to a different section
-    const nav = searchParams.get('nav') || 'datasets'
+    const nav = searchParams.get('nav')
 
     const [attestationLabel, setAttestationLabel] = useQueryState('attestationLabel')
     const [attestationYear, setAttestationYear] = useQueryState('attestationYear')
@@ -56,29 +57,8 @@ export default function DesktopLayout() {
 
         <div className={`lg:absolute left-2 top-2 flex-col gap-2 max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-md rounded-md`}>
 
-        <NavSelector leftSection={nav}/>
-        <div className="overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200">
-
-        { nav == 'tree' && 
-            <TreeResults/>
-        }
-
+        <LeftWindow/>
         
-        { nav == 'filters' &&
-                <Facets/>
-        }
-        { searchFilterParamsString && nav == 'results' &&
-            <SearchResults/>
-
-        }
-        
-
-        
-         { nav == 'datasets' &&     
-            <DatasetDrawer/>
-                
-        }
-        </div>
        
 
         </div>
