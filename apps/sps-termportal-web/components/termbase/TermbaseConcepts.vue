@@ -71,6 +71,21 @@ const query = ref<{ char: [string | null, number]; page: number }>({
   page: 0,
 });
 
+// Set correct query props when navigating to tb page
+// Needs to be before the watcher picks up changes
+if (
+  route.query.page &&
+  typeof route.query.page === "string" &&
+  parseInt(route.query.page) < 9000
+) {
+  query.value.page = parseInt(route.query.page);
+}
+
+if (route.query.char && typeof route.query.char === "string") {
+  const value = route.query.char.split(",");
+  query.value.char = [value[0], parseInt(value[1])];
+}
+
 watch(
   () => [query.value.page, query.value.char],
   (newValues, oldValues) => {
@@ -191,20 +206,5 @@ const displayData = computed(() => {
       language: concept?.displayLabel?.[locale.value]?.language,
     };
   });
-});
-
-onBeforeMount(() => {
-  if (
-    route.query.page &&
-    typeof route.query.page === "string" &&
-    parseInt(route.query.page) < 9000
-  ) {
-    query.value.page = parseInt(route.query.page);
-  }
-
-  if (route.query.char && typeof route.query.char === "string") {
-    const value = route.query.char.split(",");
-    query.value.char = [value[0], parseInt(value[1])];
-  }
 });
 </script>
