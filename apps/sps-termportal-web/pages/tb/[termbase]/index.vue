@@ -20,6 +20,7 @@
             <div
               class="flex lg:block overflow-hidden"
               :style="
+                termbaseDescriptionHeight &&
                 ['lg', 'xl', '2xl'].includes(breakpoint)
                   ? `max-height: ${termbaseDescriptionHeight}px`
                   : ''
