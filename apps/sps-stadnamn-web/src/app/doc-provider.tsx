@@ -126,9 +126,9 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     
 
     useEffect(() => {
-        
         if (!parent && !sameMarkerList && docData?._source?.location?.coordinates) {
-            const point = docData?._source?.location?.coordinates.reverse().join(',')
+            const coordinates = [...docData._source.location.coordinates]
+            const point = coordinates.reverse().join(',')
             fetch(`/api/location?point=${point}&${searchQueryString}`).then(res => 
                 res.json()).then(data => {
                     if (data.hits?.hits?.length && data.hits?.hits.some((hit: any) => hit.fields.uuid[0] != doc)) {
