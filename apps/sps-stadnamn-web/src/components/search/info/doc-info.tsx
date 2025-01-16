@@ -12,7 +12,6 @@ import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { treeSettings } from "@/config/server-config"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
-import { useQueryState } from "nuqs"
 import { GlobalContext } from "@/app/global-provider"
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import CoordinateInfo from "./coordinate-info"
@@ -32,7 +31,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const docSource = docData._source
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
-    const [doc, setDoc] = useQueryState('doc')
+    const doc = searchParams.get('doc')
     const { isMobile, sosiVocab } = useContext(GlobalContext)
 
     const multivalue = (value: string|string[]) => {
@@ -47,7 +46,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-        {mode == 'map' && <button className="absolute top-2 right-2 text-2xl" aria-label="Lukk" onClick={() => setDoc(null)}><PiX aria-hidden="true"/></button>}
+        {mode == 'map' && <Clickable remove={["doc"]} className="absolute top-2 right-2 text-2xl" aria-label="Lukk"><PiX aria-hidden="true"/></Clickable>}
  
         </div>}
 

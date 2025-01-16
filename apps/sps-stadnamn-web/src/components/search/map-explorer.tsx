@@ -188,6 +188,7 @@ useEffect(() => {
   if (!mapInstance.current || isLoading || parentLoading || childrenLoading) return
   
     if (doc && !parent && docData?._source?.location?.coordinates?.length) {
+      console.log("FLY 1")
       const bounds = mapInstance.current.getBounds();
       const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
         if (bounds && !bounds.contains(center)) {
@@ -195,10 +196,18 @@ useEffect(() => {
         }
     }
     else if (childrenBounds?.length) {
-      mapInstance.current.flyToBounds(childrenBounds, { duration: 0.25, maxZoom: 18 });
+      
+      console.log("FLY 2")
+      
+      const currentBounds = mapInstance.current.getBounds();
+      const [[lat1, lon1], [lat2, lon2]] = childrenBounds;
+      
+      if (!currentBounds.contains([[lat1, lon1], [lat2, lon2]])) {
+        mapInstance.current.flyToBounds(childrenBounds, { duration: 0.25, maxZoom: 18 });
+      }
     }
     else if (resultBounds?.length && !parent && !doc && userHasMoved.current) {
-      console.log("FLYY")
+      console.log("FLY 3")
       mapInstance.current.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
     }
 
