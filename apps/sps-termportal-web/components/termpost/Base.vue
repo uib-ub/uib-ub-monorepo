@@ -3,7 +3,7 @@
     <Head v-if="mainp">
       <Title> {{ pagetitle }} | {{ $t("index.title") }} </Title>
     </Head>
-    <div>
+    <div ref="termpostRef">
       <h2
         v-if="pagetitle"
         :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
@@ -69,24 +69,10 @@
 </template>
 
 <script setup lang="ts">
-useHead({
-  script: [
-    {
-      src: "/mathjax-config.js",
-      type: "text/javascript",
-      defer: true,
-    },
-    {
-      id: "MathJax-script",
-      type: "text/javascript",
-      src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
-      defer: true,
-    },
-  ],
-});
-
 const dataDisplayLanguages = useDataDisplayLanguages();
 const localeLangOrder = useLocaleLangOrder();
+
+const termpostRef = ref(null);
 
 const props = defineProps({
   // used to fetch data
@@ -95,6 +81,13 @@ const props = defineProps({
   mainConceptId: { type: String, required: true },
   // toggle if concept should be used to set head title and skiplink target
   mainp: { type: Boolean, default: false },
+});
+
+watch(termpostRef, () => {
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    ("has func");
+    window.MathJax.typesetPromise();
+  }
 });
 
 const controller = new AbortController();

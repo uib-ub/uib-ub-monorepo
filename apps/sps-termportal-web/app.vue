@@ -21,6 +21,19 @@ useHead({
   htmlAttrs: {
     lang: i18n.locale,
   },
+  script: [
+    {
+      src: "/mathjax-config.js",
+      type: "text/javascript",
+      defer: true,
+    },
+    {
+      id: "MathJax-script",
+      type: "text/javascript",
+      src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+      defer: true,
+    },
+  ],
 });
 
 const route = useRoute();
