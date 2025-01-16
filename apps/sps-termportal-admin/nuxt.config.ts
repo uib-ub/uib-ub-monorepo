@@ -15,8 +15,10 @@ export default defineNuxtConfig({
     },
     dataportenClientId: "",
     dataportenClientSecret: "",
-    dataportenAuthorizedUsers:
-      process.env.NUXT_DATAPORTEN_AUTHORIZED_USERS?.split(", "),
+    dataportenAuthorizedUsers: (
+      process.env.NUXT_DATAPORTEN_AUTHORIZED_USERS as string
+    ).split(", "),
+
     endpointUrl: "",
     endpointUrlInternal: "",
     elasticsearchUrl: process.env.NUXT_ELASTICSEARCH_URL,
