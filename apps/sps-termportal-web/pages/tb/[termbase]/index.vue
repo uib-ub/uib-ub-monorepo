@@ -3,9 +3,9 @@
     <Head>
       <Title>{{ lalof(termbase + "-3A" + termbase) }} | Termportalen</Title>
     </Head>
-    <div class="flex">
+    <div class="flex grow">
       <SideBar />
-      <div class="space-y-6">
+      <div class="space-y-6 grow max-w-4xl">
         <UtilsTransitionOpacitySection>
           <main
             v-if="data && bootstrapData.loaded"
@@ -20,6 +20,7 @@
             <div
               class="flex lg:block overflow-hidden"
               :style="
+                termbaseDescriptionHeight &&
                 ['lg', 'xl', '2xl'].includes(breakpoint)
                   ? `max-height: ${termbaseDescriptionHeight}px`
                   : ''
@@ -39,7 +40,12 @@
               </div>
             </div>
             <button
-              v-if="['lg', 'xl', '2xl'].includes(breakpoint)"
+              v-if="
+                ['lg', 'xl', '2xl'].includes(breakpoint) &&
+                termbaseText &&
+                termbaseInfoBox &&
+                termbaseText.clientHeight > termbaseInfoBox.clientHeight
+              "
               class="w-full mt-1"
               :class="{
                 'shadow-[0_-10px_7px_rgba(255,255,255,1)]': !expandTermbaseText,

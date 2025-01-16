@@ -34,7 +34,7 @@
         <li
           v-for="concept in displayData.slice(col[0], col[1])"
           :key="concept.link"
-          class="w-[20rem] xs:w-[27rem] sm:w-[17.5rem] md:w-[21.5rem] lg:w-[28rem] truncate"
+          class="w-[20rem] xs:w-[27rem] sm:w-[17.5rem] md:w-[21.5rem] lg:w-[27rem] truncate"
         >
           <TermbaseConceptLink
             :concept="concept"
@@ -70,6 +70,21 @@ const query = ref<{ char: [string | null, number]; page: number }>({
   char: [null, 0],
   page: 0,
 });
+
+// Set correct query props when navigating to tb page
+// Needs to be before the watcher picks up changes
+if (
+  route.query.page &&
+  typeof route.query.page === "string" &&
+  parseInt(route.query.page) < 9000
+) {
+  query.value.page = parseInt(route.query.page);
+}
+
+if (route.query.char && typeof route.query.char === "string") {
+  const value = route.query.char.split(",");
+  query.value.char = [value[0], parseInt(value[1])];
+}
 
 watch(
   () => [query.value.page, query.value.char],
@@ -191,20 +206,5 @@ const displayData = computed(() => {
       language: concept?.displayLabel?.[locale.value]?.language,
     };
   });
-});
-
-onBeforeMount(() => {
-  if (
-    route.query.page &&
-    typeof route.query.page === "string" &&
-    parseInt(route.query.page) < 9000
-  ) {
-    query.value.page = parseInt(route.query.page);
-  }
-
-  if (route.query.char && typeof route.query.char === "string") {
-    const value = route.query.char.split(",");
-    query.value.char = [value[0], parseInt(value[1])];
-  }
 });
 </script>
