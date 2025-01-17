@@ -1,7 +1,7 @@
 'use client'
 import { facetConfig } from '@/config/search-config';
 import { useDataset } from '@/lib/search-params';
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
 interface FacetOption {
   sort: 'doc_count' | 'asc' | 'desc';

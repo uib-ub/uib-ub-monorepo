@@ -20,7 +20,7 @@ import ExternalLinkTooltip from "@/components/ui/clickable/external-link-tooltip
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
     const dataset = useDataset()
-    let { docDataset, docData, snidParent, sameMarkerList } = useContext(DocContext)
+    let { docDataset, docData, snidParent, sameMarkerList, docView } = useContext(DocContext)
     if (docParams) {
         docDataset = docParams.docDataset
         docData = docParams.docData
@@ -42,11 +42,16 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     
     return <><article className="instance-info flex flex-col gap-3 mobile-padding">
       {((dataset != 'search' && docData?._source?.within && docDataset) || !isMobile) && <div className="!mt-0">
-
-            
-
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-        {mode == 'map' && <Clickable remove={["doc"]} className="absolute top-2 right-2 text-2xl" aria-label="Lukk"><PiX aria-hidden="true"/></Clickable>}
+        {mode == 'map' && 
+          <Clickable 
+            link
+            remove={["doc"]} 
+            add={docView?.current ? docView.current : {}} 
+            className="absolute top-2 right-2 text-2xl" 
+            aria-label="Lukk">
+            <PiX aria-hidden="true"/>
+        </Clickable>}
  
         </div>}
 

@@ -1,5 +1,5 @@
 'use client'
-import { createContext } from 'react'
+import { createContext, MutableRefObject, useRef } from 'react'
 import { useState, useEffect } from 'react';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { useSearchParams } from 'next/navigation';
@@ -16,10 +16,10 @@ interface DocContextData {
     parentError: Record<string, string> | null;
     docAdm: string | null;
     snidParent: string | null;
-    
-  }
- 
-  export const DocContext = createContext<DocContextData>({
+    docView: MutableRefObject<Record<string, string> | null> | null;
+}
+
+export const DocContext = createContext<DocContextData>({
     docData: null,
     sameMarkerList: null,
     setSameMarkerList: () => {},
@@ -30,10 +30,10 @@ interface DocContextData {
     parentLoading: true,
     parentError: null,
     docAdm: null,
-    snidParent: null
-    });
+    snidParent: null,
+    docView: null,
+});
 
- 
 export default function DocProvider({ children }: {  children: React.ReactNode }) {
     const searchParams = useSearchParams()
     const point = searchParams.get('point')
@@ -41,6 +41,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const { searchQueryString } = useSearchQuery()
     const [ sameMarkerList, setSameMarkerList ] = useState<any[] | null>(null)
     const [docData, setDocData] = useState<any | null>(null)
+    const docView = useRef<Record<string, string> | null>(null)
     
     
     const doc = searchParams.get('doc')
@@ -158,8 +159,8 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         parentLoading,
         parentError,
         docAdm,
-        snidParent
-
+        snidParent,
+        docView,
   }}>{children}</DocContext.Provider>
 }
 

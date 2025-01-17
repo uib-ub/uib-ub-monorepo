@@ -36,12 +36,13 @@ export default function MapExplorer() {
   const { searchQueryString } = useSearchQuery()
   const dataset = useDataset()
   const { childrenData, childrenLoading, childrenBounds } = useContext(ChildrenContext)
-  const { isMobile } = useContext(GlobalContext)
+  const { isMobile  } = useContext(GlobalContext)
 
-  const { docData, parentData, setSameMarkerList, docLoading, parentLoading } = useContext(DocContext)
+  const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const mapInstance = useRef<any>(null);
   const userHasMoved = useRef(false);
+
   //const prevPaddedBounds = useRef<[[number, number], [number, number]] | null>(null)
   //const prevZoom = useRef<number | null>(null)
 
@@ -209,12 +210,12 @@ useEffect(() => {
         mapInstance.current.flyToBounds(childrenBounds, { duration: 0.25, maxZoom: 18 });
       }
     }
-    else if (resultBounds?.length && !parent && !doc && userHasMoved.current) {
+    else if (resultBounds?.length && !parent && !doc && userHasMoved.current && !docView?.current) {
       console.log("FLY 3")
       mapInstance.current.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
     }
 
-  }, [mapInstance, isLoading, resultBounds, setCenter, parentLoading, childrenLoading, childrenBounds, parent, doc, docData])
+  }, [mapInstance, isLoading, resultBounds, setCenter, parentLoading, childrenLoading, childrenBounds, parent, doc, docData, docView])
 
 
 
@@ -401,9 +402,15 @@ useEffect(() => {
                 userHasMoved.current = true;
                 const bounds = map.getBounds();
                 const boundsCenter = bounds.getCenter();
+                const mapZoom = map.getZoom()
+                if (doc && docView && boundsCenter && mapZoom) {
+                  console.log("DOCVIEW", docView)
+                  docView.current = {center: [boundsCenter.lat, boundsCenter.lng].join(','), zoom: mapZoom.toString()}
+                }
                 setCenter([boundsCenter.lat, boundsCenter.lng]);
                 setZoom(map.getZoom());
                 setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+                
               },
             })          
 
