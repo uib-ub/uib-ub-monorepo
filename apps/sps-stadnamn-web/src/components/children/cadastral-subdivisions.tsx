@@ -28,7 +28,7 @@ export default function CadastralSubdivisions() {
     const { subunit, leaf  } = treeSettings[dataset]
 
     
-    const { parentData } = useContext(DocContext)
+    const { parentData, docView } = useContext(DocContext)
     const { isMobile } = useContext(GlobalContext)
     const { childrenData, childrenLoading } = useContext(ChildrenContext)
 
