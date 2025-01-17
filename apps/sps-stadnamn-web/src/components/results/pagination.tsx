@@ -21,8 +21,15 @@ export default function Pagination({ totalPages }: { totalPages: number}) {
 
   }
 
-  { page > 1 ? <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400'>{(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value}{totalHits?.relation != 'eq' ? '+' : ''}</span>
-   : <span className='px-3 py-1 rounded-sm border-neutral-400'>{(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value}{totalHits?.relation != 'eq' ? '+' : ''}</span>}
+  { page > 1 ? 
+    <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400'>
+      {(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value?.toLocaleString('no-NO')}{totalHits?.relation != 'eq' ? '+' : ''}
+    </span>
+    : 
+    <span className='px-3 py-1 rounded-sm border-neutral-400'>
+      {(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value?.toLocaleString('no-NO')}{totalHits?.relation != 'eq' ? '+' : ''}
+    </span>
+  }
   
     
   { 

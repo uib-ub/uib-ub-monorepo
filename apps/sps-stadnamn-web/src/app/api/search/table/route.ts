@@ -31,6 +31,7 @@ export async function GET(request: Request) {
 
     
   const query: Record<string,any> = {
+    "track_total_hits": 5000000,
     "size":  filteredParams.size || 10,
     "from": filteredParams.from || 0,
     ...highlight ? {highlight} : {},
