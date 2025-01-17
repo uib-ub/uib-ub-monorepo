@@ -33,7 +33,7 @@ export default function MapExplorer() {
   const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
   const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
   const [viewResults, setViewResults] = useState<any>(null)
-  const { searchQueryString } = useSearchQuery()
+  const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const dataset = useDataset()
   const { childrenData, childrenLoading, childrenBounds } = useContext(ChildrenContext)
   const { isMobile  } = useContext(GlobalContext)
@@ -45,8 +45,6 @@ export default function MapExplorer() {
 
   //const prevPaddedBounds = useRef<[[number, number], [number, number]] | null>(null)
   //const prevZoom = useRef<number | null>(null)
-
-
 
 
   const getValidDegree = (degrees: number, maxValue: number): string => {
@@ -482,8 +480,8 @@ useEffect(() => {
 
                 }
                 // If point view
-                else if (markerMode === 'sample' && bucket.docs?.hits?.hits?.length > 1) {
-                  const primary = bucket.docs.hits.hits.some((hit: any) => hit.fields.children?.length && hit.fields.children.length > 1) 
+                else if ((markerMode === 'sample' && bucket.docs?.hits?.hits?.length > 1) || (markerMode === 'auto' && !searchFilterParamsString?.length) ) {
+                  const primary = dataset != 'search' || bucket.docs.hits.hits.some((hit: any) => hit.fields.children?.length && hit.fields.children.length > 1) 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                     return <CircleMarker key={hit.fields.uuid}
                     center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
