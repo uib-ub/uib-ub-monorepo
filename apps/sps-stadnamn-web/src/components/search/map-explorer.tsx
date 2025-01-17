@@ -486,7 +486,7 @@ useEffect(() => {
                     return <CircleMarker key={hit.fields.uuid}
                     center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
                     radius={(zoom && zoom < 10 ? 4 : 5) * (primary ? 1 : 1)}
-                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? 'white' : 'white', fillOpacity: 1 }}
+                    pathOptions={{ color: primary ? 'black' : '#494646', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? 'white' : '#a39a95', fillOpacity: 1 }}
                     eventHandlers={selectDocHandler([hit])} />
                   })}</Fragment>
                 }
