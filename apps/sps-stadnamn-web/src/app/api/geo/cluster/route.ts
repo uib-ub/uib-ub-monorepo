@@ -38,11 +38,16 @@ export async function GET(request: Request) {
 
   const calculateProbability = (totalHits: number, zoom: number): number => {
 
-    if (totalHits < 100000) {
+    if (totalHits < 100000 || !zoom) {
       return 1
     }
 
     if (totalHits < 200000 && zoom > 12) {
+      return 1
+    }
+
+    // Return 1 if bottom of the screen above Norway or 
+    if (filteredParams.bottomRightLat && parseFloat(filteredParams.bottomRightLat) > 71) {
       return 1
     }
 
@@ -51,9 +56,9 @@ export async function GET(request: Request) {
 
     targetPoints = {
         6: 1000000,
-        7: 500000,
-        8: 100000,
-        9: 25000,
+        7: 10000,
+        8: 10000,
+        9: 10000,
         10: 10000,
         11: 25000,
         12: 100000,
@@ -64,11 +69,7 @@ export async function GET(request: Request) {
     console.log("TARGET POINTS", targetPoints)
     
     // Calculate probability to get roughly targetPoints
-    let probability = targetPoints / Number(totalHits);
-    
-    
-
-    
+    const probability = targetPoints / Number(totalHits);
     
     // Clamp probability to either 1 or between 0.001 and 0.5
     return Math.min(Math.max(probability, 0.001), 0.5);
@@ -128,7 +129,7 @@ export async function GET(request: Request) {
         }]
       }
     },
-    aggs: zoom < 6 || zoom > 15 ? aggs : { // filteredParams.markerSample == 'false' || zoom < 7
+    aggs: zoom < 6 || zoom > 15 || probability == 1 ? aggs : { // filteredParams.markerSample == 'false' || zoom < 7
       sample: {
         
         /*
