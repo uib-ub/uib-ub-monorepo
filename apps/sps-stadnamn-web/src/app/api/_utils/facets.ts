@@ -24,6 +24,7 @@ export function extractFacets(request: Request ) {
       case 'bottomRightLat':
       case 'bottomRightLng':
       case 'facetSearch':
+      case 'totalHits':
       case 'facets':
       case 'zoom':
       case 'point':

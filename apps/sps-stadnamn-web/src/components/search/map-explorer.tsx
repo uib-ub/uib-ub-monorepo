@@ -42,6 +42,8 @@ export default function MapExplorer() {
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const mapInstance = useRef<any>(null);
   const userHasMoved = useRef(false);
+  //const prevPaddedBounds = useRef<[[number, number], [number, number]] | null>(null)
+  //const prevZoom = useRef<number | null>(null)
 
 
 
@@ -97,23 +99,61 @@ export default function MapExplorer() {
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (parent || !bounds || isLoading) {
+    if (parent || !bounds || !totalHits || isLoading) {
       return;
     }
-    const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds;
+    //const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
+    const [[north, west], [south, east]] = bounds
 
+    /*
+    if (prevZoom.current) {
+      return
+    }
+   
+    if (zoom && prevZoom.current && Math.abs(zoom - prevZoom.current) < 6) {
+      console.log("HERE", zoom, prevZoom.current)
+      return
+    }
+    console.log("HERE2", zoom, prevZoom.current)
+     
+    
+    
+    //if (prevPaddedBounds.current && zoom && prevZoom.current && prevZoom.current == zoom) {
+
+      //const [[prevNorth, prevWest], [prevSouth, prevEast]] = prevPaddedBounds.current;
+      // Check if new bounds are within previous padded bounds
+      
+      if (north <= prevNorth && south >= prevSouth && 
+          west >= prevWest && east <= prevEast) {
+        return;
+      }
+    }
+      */
+    
     // Fetch data based on the new bounds
     const queryParams = new URLSearchParams(searchQueryString);
-    queryParams.set('topLeftLat', getValidDegree(topLeftLat, 90));
-    queryParams.set('topLeftLng', getValidDegree(topLeftLng, -180));
-    queryParams.set('bottomRightLat', getValidDegree(bottomRightLat, -90));
-    queryParams.set('bottomRightLng', getValidDegree(bottomRightLng, 180));
+    // Calculate padding based on height of bounds
+    //const yPadding = 0//Math.abs(north - south) /4 ;
+    //const xPadding = 0//Math.abs(east - west) /4 ;
+    const paddedTopLeftLat = getValidDegree(north, 90);
+    const paddedBottomRightLat = getValidDegree(south, -90);
+    const paddedTopLeftLng = getValidDegree(west, -180);
+    const paddedBottomRightLng = getValidDegree(east, 180);
+
+    queryParams.set('topLeftLat', paddedTopLeftLat);
+    queryParams.set('topLeftLng', paddedTopLeftLng); 
+    queryParams.set('bottomRightLat', paddedBottomRightLat);
+    queryParams.set('bottomRightLng', paddedBottomRightLng);
     if (zoom) {
       queryParams.set('zoom', zoom.toString());
     }
 
+    
+    //prevPaddedBounds.current = [[north + yPadding/2, west - xPadding/2], [south - yPadding/2, east + xPadding/2]]
+    //prevZoom.current = zoom
+
     // Both cluster map and sample map use cluster data above zoom 10
-    const query = `/api/geo/${(zoom && zoom > (totalHits?.value < 10000 ? 10 : 14) && 'cluster' ) || (markerMode === 'cluster' && 'cluster') || (markerMode === 'sample' && 'sample') || (totalHits?.value < 10000 ? 'cluster' : 'sample')}?${queryParams.toString()}`;
+    const query = `/api/geo/cluster?${queryParams.toString()}&totalHits=${totalHits?.value}`;
 
     fetch(query, {
       signal: controllerRef.current.signal,
@@ -131,44 +171,7 @@ export default function MapExplorer() {
       })
        
       .then(data => {
-
-        if (data.hits.hits.length > 0) {
-
-          const clientGroups: any[] = []
-          const markerOutput = { hits: { total: { value: data.hits.total.value }, clientGroups } }
-          const markerLookup: Record<string, any> = {}
-
-          data.hits.hits.forEach((hit: { fields: { label: any; uuid: string, location: { coordinates: any[]; }[]; }; key: string; }) => {
-            const lat = hit.fields.location[0].coordinates[1]
-            const lon = hit.fields.location[0].coordinates[0]
-            const uuid = hit.fields.uuid
-            let marker = markerLookup[lat + "_" + lon]
-            if (!marker) {
-              marker = { children: [], lat, lon, uuid }
-              markerLookup[lat + "_" + lon] = marker
-              markerOutput.hits.clientGroups.push(marker)
-            }
-
-
-            const label = hit.fields.label
-
-            if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
-              marker.label = marker.label + "..."
-
-            } else {
-              marker.label = label
-            }
-
-
-            marker.children.unshift(hit)
-          })
-
-          setViewResults(markerOutput)
-        }
-        else {
-          setViewResults(data)
-        }
-
+        setViewResults(data)
 
       })
 
@@ -334,9 +337,11 @@ useEffect(() => {
     return [newTopLeft, newBottomRight];
   }
 
+  const tiles = viewResults?.aggregations?.sample?.tiles?.buckets || viewResults?.aggregations?.tiles?.buckets
 
-  const maxDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
-  const minDocCount = viewResults?.aggregations?.tiles?.buckets.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
+
+  const maxDocCount = tiles?.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
+  const minDocCount = tiles?.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
 
 
   const selectDocHandler = (hits: Record<string, any>[]) => {
@@ -377,17 +382,21 @@ useEffect(() => {
         zoomControl={false}
         {...center && zoom ?
           { center, zoom }
-          : { center: [63.4, 10.4], zoom: 5 }
+          : resultBounds?.length ? 
+            { bounds: resultBounds }
+            : { center: [63.4, 10.4], zoom: 5 }
         }
         className='w-full h-full'>
-        {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap }: any, leaflet: any) => {
+        {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle }: any, leaflet: any) => {
 
           function EventHandlers() {
             const map = useMap();
 
             useMapEvents({
               moveend: () => {
-                if (isLoading) return
+                controllerRef.current.abort();
+                controllerRef.current = new AbortController();
+
                 console.log("MOVEEND")
                 userHasMoved.current = true;
                 const bounds = map.getBounds();
@@ -410,8 +419,31 @@ useEffect(() => {
               <EventHandlers />
               {baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapProps[baseMap]} />}
 
+              {true ? null : bounds && bounds?.length === 2 && (
+                <Rectangle 
+                  bounds={bounds}
+                  pathOptions={{ 
+                    color: '#ff0000', 
+                    weight: 2,
+                    fillOpacity: 0.1,
+                    dashArray: '5, 5'
+                  }}
+                />
+              )}
 
-              {viewResults?.aggregations?.tiles?.buckets.map((bucket: any) => {
+              {true ? null : resultBounds?.length === 2 && (
+                <Rectangle 
+                  bounds={resultBounds}
+                  pathOptions={{ 
+                    color: '#ff0000', 
+                    weight: 2,
+                    fillOpacity: 0.1,
+                    dashArray: '5, 5'
+                  }}
+                />
+              )}
+
+              {tiles?.map((bucket: any) => {
 
                 const latitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[1]);
                 const longitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[0]);
@@ -448,13 +480,13 @@ useEffect(() => {
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                     return <CircleMarker key={hit.fields.uuid}
                     center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
-                    radius={(zoom && zoom < 10 ? 4 : 8) * (primary ? 1.25 : 1)}
-                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? '#cf3c3a' : 'white', fillOpacity: 1 }}
+                    radius={(zoom && zoom < 10 ? 4 : 5) * (primary ? 1 : 1)}
+                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? 'white' : 'white', fillOpacity: 1 }}
                     eventHandlers={selectDocHandler([hit])} />
                   })}</Fragment>
                 }
 
-                else if (bucket.docs?.hits?.hits?.length == 1 || (zoom && zoom > 16 && bucket.doc_count == bucket.docs.hits.hits.length)) {
+                else if (zoom && bucket.doc_count == bucket.docs.hits.hits.length && (zoom > 16 || bucket.doc_count < 5)) {
 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                     const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
@@ -486,7 +518,7 @@ useEffect(() => {
                     eventHandlers={{
                       click: () => {
                         const newBounds: [[number, number], [number, number]] = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
-                        mapInstance.current.flyToBounds(isMobile ? newBounds : adjustBounds(newBounds, 0.5), { duration: 0.25, maxZoom: 18 });
+                        mapInstance.current.flyToBounds( newBounds, { duration: 0.1, maxZoom: 18 });
 
                       }
                     }} />
@@ -495,36 +527,24 @@ useEffect(() => {
               }
               )}
 
-              {(zoom && zoom < (totalHits?.value < 10000 ? 11 : 15) || parent) && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
-                  
-                  if (parent) {
-                    let icon
+              {parent && childrenData?.length > 0 && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
+                let icon
                     
-                    if (group.children.length > 1) {
-                      icon = new leaflet.DivIcon(getClusterMarker(group.children.length, 
-                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5 + (group.children.length > 99 ? group.children.length.toString().length / 4 : 0),
-                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5,
-                        calculateRadius(group.children.length, maxDocCount, minDocCount) * 1,
-                        'bg-primary-600 text-white border-2 border-white'))
-                    }
-                    else {
-                      icon = new leaflet.DivIcon(getUnlabeledMarker('primary', group.children.length))
-                    }
+                if (group.children.length > 1) {
+                  icon = new leaflet.DivIcon(getClusterMarker(group.children.length, 
+                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5 + (group.children.length > 99 ? group.children.length.toString().length / 4 : 0),
+                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5,
+                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 1,
+                    'bg-primary-600 text-white border-2 border-white'))
+                }
+                else {
+                  icon = new leaflet.DivIcon(getUnlabeledMarker('primary', group.children.length))
+                }
 
-                    return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children)} />
-
-
-                  }
-
-                  else {
-                    const primary = group.children.length == 1 && group.children[0].fields?.children?.length > 1
-                  return <CircleMarker key={group.uuid}
-                    center={[group.lat, group.lon]}
-                    radius={(zoom && zoom < 10 ? 4 : 8) * (primary ? 1.25 : 1)}
-                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? '#cf3c3a' : 'white', fillOpacity: 1 }}
-                    eventHandlers={ selectDocHandler(group.children)} />
-                  }
+                return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children)} />
               })}
+
+
 
                   
                   
