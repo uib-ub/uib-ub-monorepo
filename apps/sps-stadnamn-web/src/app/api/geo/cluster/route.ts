@@ -98,7 +98,7 @@ export async function GET(request: Request) {
                 top_hits: {
                     _source: ["label", "uuid"],
                     size: 10,//topHitsSize[filteredParams.zoom as keyof typeof topHitsSize] ?? 20,
-                    sort: dataset == 'search' ? [{"ranking": "desc"}, {"uuid": "asc"}] : {"uuid": "asc"} //sortArray.filter(sort => sort !== "_score")
+                    sort: dataset == 'search' ? [{"ranking": "asc"}, {"uuid": "asc"}] : {"uuid": "asc"} //sortArray.filter(sort => sort !== "_score")
                     
                     }
                 },
