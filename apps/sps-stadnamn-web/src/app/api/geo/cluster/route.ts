@@ -14,6 +14,7 @@ export async function GET(request: Request) {
   const sortArray = getSortArray(dataset)
   const zoom = parseInt(filteredParams.zoom)
   const totalHits = filteredParams.totalHits
+  console.log(filteredParams.bottomRightLat, filteredParams.bottomRightLng)
   
 
   const zoomLevels  = {
@@ -46,8 +47,13 @@ export async function GET(request: Request) {
       return 1
     }
 
-    // Return 1 if bottom of the screen above Norway or 
-    if (filteredParams.bottomRightLat && parseFloat(filteredParams.bottomRightLat) > 71) {
+    // Return 1 if bottom of the screen above Norway or showing yan mayen
+    // Bottom right for yan mayen: 67.68445072846762 12.568359375000002
+    if (filteredParams.bottomRightLat && parseFloat(filteredParams.bottomRightLat) > 71
+      ||
+      (filteredParams.bottomRightLng && parseFloat(filteredParams.bottomRightLng) < 12.568359375000002 && parseFloat(filteredParams.bottomRightLat) > 67.68445072846762)
+  
+  ) {
       return 1
     }
 
@@ -55,13 +61,12 @@ export async function GET(request: Request) {
     let targetPoints = 1000000;
 
     targetPoints = {
-        6: 1000000,
-        7: 10000,
-        8: 10000,
+        7: 1000,
+        8: 1000,
         9: 10000,
         10: 10000,
-        11: 25000,
-        12: 100000,
+        11: 2500,
+        12: 10000,
         13: 250000,
         14: 500000,
         15: 1000000
@@ -129,7 +134,7 @@ export async function GET(request: Request) {
         }]
       }
     },
-    aggs: zoom < 6 || zoom > 15 || probability == 1 ? aggs : { // filteredParams.markerSample == 'false' || zoom < 7
+    aggs: zoom < 7 || zoom > 15 || probability == 1 ? aggs : { // filteredParams.markerSample == 'false' || zoom < 7
       sample: {
         
         /*
