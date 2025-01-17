@@ -26,10 +26,6 @@ import DocExplorer from "./info/doc-explorer"
 import LeftWindow from "../tabs/left-window"
 
 export default function DesktopLayout() {
-    const searchParams = useSearchParams()
-
-    
-    const { searchFilterParamsString } = useSearchQuery()
     const [doc, setDoc] = useQueryState('doc')
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const dataset = useDataset()
@@ -37,16 +33,6 @@ export default function DesktopLayout() {
     const { childrenLoading, childrenData } = useContext(ChildrenContext)
 
     const [parent, setParent] = useQueryState('parent')
-
-
-    // Keep filters or expanded open when switching to a different section
-    const nav = searchParams.get('nav')
-
-    const [attestationLabel, setAttestationLabel] = useQueryState('attestationLabel')
-    const [attestationYear, setAttestationYear] = useQueryState('attestationYear')
-
-
-    
 
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   

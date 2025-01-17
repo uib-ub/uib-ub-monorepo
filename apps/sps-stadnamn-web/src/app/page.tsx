@@ -74,7 +74,7 @@ export default async function Home() {
 
 
     <nav className="grid grid-cols-1 lg:grid-cols-2 w-full lg:w-auto justify-center items-center gap-4 lg:gap-8 text-xl lg:text-lg">
-  <Link href="/search?nav=datasets" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiMapTrifoldThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Utforsk kartet</span></Link>
+  <Link href="/search" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiMapTrifoldThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Utforsk kartet</span></Link>
   {false && <>
   <Link href="/info/datasets" className="flex invisible lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiBookThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Leksikon [kommer snart]</span></Link>
   <Link href="/iiif" className="flex invisible lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiArchiveThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Arkivressurser [kommer snart]</span></Link>
@@ -101,7 +101,7 @@ export default async function Home() {
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
-          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}&nav=datasets`}>
+          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}`}>
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
             </div>
@@ -120,7 +120,7 @@ export default async function Home() {
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
-          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}&nav=datasets`}>
+          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}`}>
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
             </div>
