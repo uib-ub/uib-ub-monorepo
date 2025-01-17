@@ -39,7 +39,7 @@ export async function GET(request: Request) {
 
   const calculateProbability = (totalHits: number, zoom: number): number => {
 
-    if (totalHits < 100000 || !zoom) {
+    if (!zoom || zoom < 7 || zoom > 15 || totalHits < 100000) {
       return 1
     }
 
@@ -134,7 +134,7 @@ export async function GET(request: Request) {
         }]
       }
     },
-    aggs: zoom < 7 || zoom > 15 || probability == 1 ? aggs : { // filteredParams.markerSample == 'false' || zoom < 7
+    aggs: probability == 1 ? aggs : { // filteredParams.markerSample == 'false' || zoom < 7
       sample: {
         
         /*
