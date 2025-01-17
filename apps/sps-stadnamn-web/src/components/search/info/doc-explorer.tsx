@@ -54,7 +54,7 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
             {parent && !treeSettings[dataset] && <Clickable link className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['parent']} add={{doc: parent}}><PiArrowLeft className="text-2xl text-primary-600"/>Stedsnavnoppslag</Clickable>}
             <Clickable link className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}>
                { mode == 'table' &&<><PiTable className="text-2xl text-primary-600"/>Vis tabellen</>}
-               { mode == 'list' &&<><PiRows className="text-2xl text-primary-600"/>Vis trefflisten</>}
+               { mode == 'list' &&<><PiRows className="text-2xl text-primary-600"/>Vis trefflista</>}
                { mode == 'map' && isMobile && <><PiX className="text-2xl text-primary-600"/>Lukk</>}
             </Clickable>
             
