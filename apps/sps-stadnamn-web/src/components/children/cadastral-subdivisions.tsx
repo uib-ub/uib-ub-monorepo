@@ -53,7 +53,7 @@ export default function CadastralSubdivisions() {
                 {mode == 'map' && 
                 <div className="float-right text-2xl flex gap-2 p-1 items-center ml-auto">
 
-                <button aria-label="Lukk" onClick={() => setParent(null)}><PiX aria-hidden="true"/></button>
+                <Clickable aria-label="Lukk" remove={['parent']} add={docView?.current ? docView.current : {}}><PiX aria-hidden="true"/></Clickable>
                 </div>}
                 </div>}
                 <div className="overflow-x-auto border border-neutral-300 rounded-md mb-2">
