@@ -24,7 +24,7 @@ export default function DatasetDrawer() {
           <DatasetInfo/>
           { isMobile ?
           <h3 className="text-xl px-2 mt-4" >
-            Velg søkeperspektiv
+            Søkevisninger for datasett
           </h3>
           :
           <h3 className="text-lg px-2 mt-4" >
@@ -33,7 +33,7 @@ export default function DatasetDrawer() {
                       onClick={() => setDatasetSelectorOpen(!datasetSelectorOpen)}
                       aria-expanded={datasetSelectorOpen}>
                         {datasetSelectorOpen ? <PiCaretUp aria-hidden="true" className="text-primary-600"/> : <PiCaretDown aria-hidden="true" className="text-primary-600"/>}
-                        Velg søkeperspektiv</button></h3>
+                        Søkevisninger for datasett</button></h3>
           }
           <div id="dataset_selector">
           {(datasetSelectorOpen || isMobile) && <DatasetSelector/>   }

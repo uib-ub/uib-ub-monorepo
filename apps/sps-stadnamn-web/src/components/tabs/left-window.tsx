@@ -1,6 +1,6 @@
 import { treeSettings } from "@/config/server-config";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
-import { PiBinoculars, PiBinocularsFill, PiFunnel, PiFunnelFill, PiListBullets, PiTreeView, PiTreeViewFill, PiX } from "react-icons/pi";
+import { PiBinoculars, PiBinocularsFill, PiDatabase, PiFunnel, PiFunnelFill, PiListBullets, PiTreeView, PiTreeViewFill, PiX } from "react-icons/pi";
 import Clickable from "../ui/clickable/clickable";
 import { SearchContext } from "@/app/search-provider";
 import { useContext } from "react";
@@ -25,7 +25,7 @@ export default function LeftWindow() {
                       aria-controls="left-window-content"
                       aria-expanded={nav == 'datasets'}
                       className="flex  m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
-                        {nav == 'datasets' ? <PiX aria-hidden="true"/>  : <PiBinoculars aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only xl:not-sr-only"}>Perspektiv</span>
+                        {nav == 'datasets' ? <PiX aria-hidden="true"/>  : <PiDatabase aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only xl:not-sr-only"}>Datasett</span>
                 </Clickable>
                 
                 {  treeSettings[dataset] && <Clickable 
@@ -42,7 +42,7 @@ export default function LeftWindow() {
                       aria-expanded={nav == 'filters'}
                       {...nav == 'filters' ? {remove: ['nav']} : {add: {nav: 'filters'}}}
                       className={`flex  m-1 xl:ml-auto whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner`}>
-                       {nav == 'filters' ? <PiX aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={ "sr-only xl:not-sr-only"}>Filtre</span>
+                       {nav == 'filters' ? <PiX aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={ "sr-only xl:not-sr-only"}>Avgrens</span>
                 </Clickable>
 
                 
