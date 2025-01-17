@@ -66,7 +66,7 @@ export default function DesktopLayout() {
 
             
 
-             <><PiFilesFill className="text-2xl text-primary-600"/><span className="text-xl">Kilder</span><div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{docData?._source?.children?.length || childrenData?.length}</div></>
+             <><PiFilesFill className="text-2xl text-primary-600"/><span className="text-xl">Kjelder</span><div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{docData?._source?.children?.length || childrenData?.length}</div></>
             
 
             

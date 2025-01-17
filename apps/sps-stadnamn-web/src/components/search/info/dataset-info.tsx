@@ -40,7 +40,7 @@ export default function DatasetInfo() {
             </div>}
             <div className="flex gap-2 mt-2">
             {dataset == 'search' && <Clickable add={{nav: 'filters', facet: 'datasets'}} className="flex gap-1 items-center justify-self-end no-underline">Avgrens etter datasett<PiCaretRight aria-hidden="true" className='text-primary-600'/></Clickable>}
-            <Link className="flex gap-1 ml-auto items-center no-underline" href={"/info/datasets/" + dataset}>Les mer <PiCaretRight aria-hidden="true" className='text-primary-600'/></Link>
+            <Link className="flex gap-1 ml-auto items-center no-underline" href={"/info/datasets/" + dataset}>Les meir <PiCaretRight aria-hidden="true" className='text-primary-600'/></Link>
             </div>
             { false && <DatasetToolbar dataset={dataset}/>}
             

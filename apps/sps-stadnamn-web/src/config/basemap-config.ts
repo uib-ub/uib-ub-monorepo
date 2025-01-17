@@ -14,7 +14,7 @@ export const defaultBaseMap: Record<string, string> = {
 export const baseMaps: Record<string, any>[] = [
     {
         key: 'topo', 
-        name: 'Norgeskart', 
+        name: 'Noregskart', 
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',
             attribution: '<a href="http://www.kartverket.no/">Kartverket</a>',
@@ -22,7 +22,7 @@ export const baseMaps: Record<string, any>[] = [
     },
     {
         key: 'topograatone',
-        name: 'Norgeskart, gråtone',
+        name: 'Noregskart, gråtone',
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png',
             attribution: '<a href="http://www.kartverket.no/">Kartverket</a>',
@@ -31,7 +31,7 @@ export const baseMaps: Record<string, any>[] = [
     },
     {
         key: 'toporaster', 
-        name: 'Norgeskart, store bokstaver', 
+        name: 'Noregskart, store bokstaver', 
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png',
             attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
@@ -39,7 +39,7 @@ export const baseMaps: Record<string, any>[] = [
     },
     { // 
         key: 'word_map',
-        name: 'Verdenskart',
+        name: 'Verdskart',
         props: {
             url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
             attribution: '&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors &copy; <a href=&quot;https://carto.com/attributions&quot;>CARTO</a>'

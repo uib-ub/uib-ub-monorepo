@@ -598,9 +598,9 @@ useEffect(() => {
         </DropdownMenuContent>
       </DropdownMenu>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild><IconButton label="Markører" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm"><PiMapPinLineFill /></IconButton></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild><IconButton label="Markørar" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm"><PiMapPinLineFill /></IconButton></DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
-          <DropdownMenuLabel>Markører</DropdownMenuLabel>
+          <DropdownMenuLabel>Markørar</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {markerMode != null &&
             <DropdownMenuRadioGroup value={markerMode} onValueChange={setMarkerMode}>

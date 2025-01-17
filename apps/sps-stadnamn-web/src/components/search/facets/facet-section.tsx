@@ -31,7 +31,7 @@ export default function Facets() {
           <h3>
           <Clickable type="button" role="tab" aria-selected={facet != 'adm'} add={{facet: facetConfig[dataset][0]?.key}} className='rounded-tabs'>
           
-          Annet
+          Meir
           
           </Clickable>
           </h3>
