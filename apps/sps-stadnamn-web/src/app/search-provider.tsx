@@ -95,7 +95,13 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 setResultData(es_data.hits.hits)
                 setTotalHits(es_data.hits.total)
                 if (newBounds?.top_left && newBounds?.bottom_right) {
-                    const paddedBounds = addPadding([[newBounds.top_left.lat, newBounds.top_left.lon], [newBounds.bottom_right.lat, newBounds.bottom_right.lon]], isMobile)
+                    // Temporary fix for null island and similar errors
+                    const limitedBounds = [
+                      [newBounds.top_left.lat, Math.min(newBounds.top_left.lon, 33)], // East of Murmansk ~33°E
+                      [Math.max(newBounds.bottom_right.lat, 55.6), newBounds.bottom_right.lon] // South of Copenhagen ~55.6°N
+                    ] as [[number, number], [number, number]]
+                    
+                    const paddedBounds = addPadding(limitedBounds, isMobile)
                     setResultBounds(paddedBounds)
                 }
                 else {
