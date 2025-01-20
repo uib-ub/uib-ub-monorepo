@@ -343,17 +343,17 @@ useEffect(() => {
   const minDocCount = tiles?.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
 
 
-  const selectDocHandler = (hits: Record<string, any>[]) => {
+  const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
-        if (hits?.[0]?.fields?.children?.length == 1) {
-          setDoc(hits[0].fields.children[0])
+        if (selected.fields?.children?.length == 1) {
+          setDoc(selected.fields.children[0])
         }
         else {
-          setDoc(hits?.[0]?.fields?.uuid[0])
+          setDoc(selected?.fields?.uuid[0])
         }
 
-        if (hits.length > 1) {
+        if (hits && hits.length > 1) {
           setSameMarkerList(hits)
         }
         else {
@@ -460,56 +460,138 @@ useEffect(() => {
                 const lat = latSum / hitCount;
                 const lon = lonSum / hitCount;
 
-                // Average deviation from center
-                const latDeviation = latitudes.reduce((acc: any, cur: any) => acc + Math.abs(cur - lat), 0) / hitCount;
-                const lonDeviation = longitudes.reduce((acc: any, cur: any) => acc + Math.abs(cur - lon), 0) / hitCount;
+                const autoModeSample = markerMode === 'auto' && !searchFilterParamsString?.length
 
-                // Combined deviation that takes both lat and lon into account
-                const deviation = Math.sqrt(Math.pow(latDeviation, 2) + Math.pow(lonDeviation, 2));
-
-                // Adjust deviation threshold based on zoom level
-                const zoomFactor = zoom ? Math.pow(2, zoom + 14) : 1; // Higher zoom = larger factor
-                const deviationPercent = (deviation / Math.sqrt(Math.pow(lat, 2) + Math.pow(lon, 2))) * 100 * zoomFactor;
-
-                
-                // If no coordinates are different from the average
-                if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 14) && ((zoom && zoom < 18 && deviationPercent < 0.0001) || (!latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])))) {
-                  
-                  if (docData?._source?.uuid && bucket.docs.hits.hits.some((hit: any) => hit.fields.uuid[0] == docData?._source?.uuid)) {
-                    return null
-                  }
-
-                  // Label: add dots if different labels
-                  const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label);
-                  const label = labels[0] + (labels.slice(1, labels.length).some((label: any) => label !== labels[0]) ? '...' : '');
-
-                  const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
-
-                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits)} />
-
-                }
-                // If point view
-                else if ((markerMode === 'sample' && bucket.docs?.hits?.hits?.length > 1) || (markerMode === 'auto' && !searchFilterParamsString?.length) ) {
+                if ((markerMode === 'sample') || (autoModeSample && bucket.doc_count > bucket.docs.hits.hits.length) ) {
                   const primary = dataset != 'search' || bucket.docs.hits.hits.some((hit: any) => hit.fields.children?.length && hit.fields.children.length > 1) 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                     return <CircleMarker key={hit.fields.uuid}
                     center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
                     radius={(zoom && zoom < 10 ? 4 : 5) * (primary ? 1 : 1)}
                     pathOptions={{ color: primary ? 'black' : '#494646', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? 'white' : '#a39a95', fillOpacity: 1 }}
-                    eventHandlers={selectDocHandler([hit])} />
+                    eventHandlers={selectDocHandler(hit)} />
                   })}</Fragment>
                 }
 
-                else if (bucket.doc_count == 1 || (zoom && bucket.doc_count == bucket.docs.hits.hits.length && !((markerMode === 'cluster' || (markerMode === 'auto' && searchFilterParamsString?.length)) && deviationPercent > 0.01))) {
 
-                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, bucket.doc_count > 2 ? 'accent' : hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
+                // Check if any of the points are within 32 pixels of each other on the y axis. Use "some" to return the first hit
+                const tooClose = bucket.docs.hits.hits.length > 1 && bucket.docs.hits.hits.some((hit: any) => {
+                  const point = mapInstance.current.latLngToContainerPoint([
+                    hit.fields.location[0].coordinates[1],
+                    hit.fields.location[0].coordinates[0]
+                  ]);
 
+                  return bucket.docs.hits.hits.some((other: any) => {
+                    const otherPoint = mapInstance.current.latLngToContainerPoint([
+                      other.fields.location[0].coordinates[1],
+                      other.fields.location[0].coordinates[0]
+                    ]);
+                    return Math.abs(point.y - otherPoint.y) < 32;
+                  })
+      
+                });
+
+                /*
+                const closestDistances = bucket.docs.hits.hits.length > 1 && bucket.docs.hits.hits.map((hit: any, index: number) => {
+                  const point = mapInstance.current.latLngToContainerPoint([
+                    hit.fields.location[0].coordinates[1],
+                    hit.fields.location[0].coordinates[0]
+                  ]);
+                  
+                  let closestDistance = Infinity;
+                  let closestIndex = -1;
+                  
+                  bucket.docs.hits.hits.forEach((other: any, otherIndex: number) => {
+                    if (index === otherIndex) return;
+                    
+                    const otherPoint = mapInstance.current.latLngToContainerPoint([
+                      other.fields.location[0].coordinates[1],
+                      other.fields.location[0].coordinates[0]
+                    ]);
+                    
+                    const distance = Math.abs(point.y - otherPoint.y);
+                    if (distance < closestDistance) {
+                      closestDistance = distance;
+                      closestIndex = otherIndex;
+                    }
+                  });
+                  
+                  return {
+                    distance: closestDistance,
+                    index: index,
+                    closestIndex: closestIndex
+                  };
+                });
+
+                console.log(closestDistances)
+                */
+
+                const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label[0]);
+                const allLabelsSame = labels.every((label: any, index: number, array: any[]) => label === array[0]);
+
+                
+
+                if (bucket.docs?.hits?.hits?.length > 1 && tooClose && bucket.doc_count == bucket.docs?.hits?.hits?.length && (allLabelsSame || (zoom && zoom > 10))) { //} &&bucket.docs?.hits?.hits?.length > 1 && bucket.doc_count == bucket.docs?.hits?.hits?.length && (zoom && zoom > 8) && ((zoom && zoom < 18 && adjustedDeviation > 0 && adjustedDeviation < 0.1) || (!latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])))) {
+                  
+                  if (bucket.docs?.hits?.hits?.some((hit: any) => hit.fields.uuid[0] === doc || hit.fields.children?.includes(doc))) {
+                    // Return blue marker for other hits than doc
+                    return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
+                      
+
+                      return <CircleMarker key={hit._id} 
+                                           center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} 
+                                           radius={5} 
+                                           color="#00528d" 
+                                           eventHandlers={selectDocHandler(hit, bucket.docs.hits.hits)}/>
+                    })}</Fragment>
+                  }
+                  else {
+                    // Label: add dots if different labels
+                  const label = labels[0] + (allLabelsSame ? '' : '...');
+
+                  const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
+
+                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[bucket.docs.hits.hits[0].fields.location[0].coordinates[1], bucket.docs.hits.hits[0].fields.location[0].coordinates[0]]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits[0], bucket.docs.hits.hits)} />
+
+                  }
+
+
+                }
+                else if (bucket.doc_count == bucket.docs.hits.hits.length &&  bucket.doc_count < 5 && !tooClose) {  //(false && zoom && zoom > 10) || (bucket.doc_count == 1 || (zoom && (bucket.doc_count == bucket.docs.hits.hits.length || markerMode === 'sample' || (markerMode === 'auto' && searchFilterParamsString?.length)) && adjustedDeviation > 60))) {
+
+
+                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }, currentIndex: number) => {
+                    /*
+                    const point = mapInstance.current.latLngToContainerPoint([
+                      hit.fields.location[0].coordinates[1],
+                      hit.fields.location[0].coordinates[0]
+                    ]);
+  
+                    // Find others within 32 pixels in the y axis, and don't include the point itself
+                    
+                    const others = bucket.docs.hits.hits.filter((other: { _id: string, fields: { location: { coordinates: any[]; }[]; }; }, otherIndex: number) => {
+                      if (other._id == hit._id) return false
+                      const otherPoint = mapInstance.current.latLngToContainerPoint([
+                        other.fields.location[0].coordinates[1],
+                        other.fields.location[0].coordinates[0]
+                      ]);
+                      return Math.abs(otherPoint.y - point.y) < 36 && otherIndex > currentIndex
+                    });
+                    */
+
+
+
+                    
+
+                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
+                    
+
+                  
                     return (docLoading || hit.fields.uuid[0] != doc) && <Marker key={hit._id}
                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
                       icon={icon}
                       riseOnHover={true}
-                      eventHandlers={selectDocHandler([hit])}
+                      eventHandlers={selectDocHandler(hit)}
                     />
 
                   }
@@ -523,7 +605,7 @@ useEffect(() => {
 
 
                   // getClusterMarker(docCount: number, width: number, height: number, fontSize: number) {
-                  const clusterIcon = new leaflet.DivIcon(getClusterMarker(bucket.doc_count, 
+                  const clusterIcon = new leaflet.DivIcon(getClusterMarker(bucket.doc_count, //bucket.doc_count, 
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2 + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0),
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2,
                                                                             calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8))
@@ -570,7 +652,7 @@ useEffect(() => {
                   icon = new leaflet.DivIcon(getUnlabeledMarker('primary', group.children.length))
                 }
 
-                return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children)} />
+                return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children[0], group.children)} />
               })}
 
 
