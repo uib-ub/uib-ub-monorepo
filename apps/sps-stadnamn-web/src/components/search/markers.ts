@@ -79,15 +79,19 @@ const buildMultiMarker = (color: string, style: string) => {
 
 export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean, hideLabel?: boolean) {
     const sizeAdjustment = selected ? 1.5 : 1;
+    const colorValue = colorMapping[color] || color
     return {
       className: '',
       html: `
         <div class="map-marker group" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
-          ${buildMarker(color, `position:absolute;left-0;bottom:${26 * sizeAdjustment}px;height:${32 * sizeAdjustment}px`)}
-
-          <div class="${hideLabel ? 'invisible group-hover:visible' : 'visible'} absolute top-1.5 left-1/2 -translate-x-1/2 flex items-center bg-white/90 whitespace-nowrap rounded-full text-center text-xs font-bold py-0.5 px-2">
-            <div class="flex items-center max-w-32 min-w-0 overflow-hidden text-ellipsis">${label}</div>
-            ${docCount ? `<span class="ml-1 text-xs bg-neutral-100 border border-neutral-200 flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">${docCount}</span>` : ''}
+          <div class="absolute -top-8 left-1/2 -translate-x-1/2">
+            <div class="flex flex-col items-center">
+              <div class="flex items-center text-white whitespace-nowrap rounded-md text-center text-xs font-bold py-1 px-2 shadow-lg" style="background-color: ${colorValue}">
+                <div class="flex items-center max-w-32 min-w-0 overflow-hidden text-ellipsis">${label}</div>
+                ${docCount ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">${docCount}</span>` : ''}
+              </div>
+              <div class="w-0 h-0 drop-shadow-lg" style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid ${colorValue}; margin-top: -1px;"></div>
+            </div>
           </div>
         </div>`
     };
