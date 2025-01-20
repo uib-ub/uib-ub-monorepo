@@ -460,11 +460,20 @@ useEffect(() => {
                 const lat = latSum / hitCount;
                 const lon = lonSum / hitCount;
 
-                
+                // Average deviation from center
+                const latDeviation = latitudes.reduce((acc: any, cur: any) => acc + Math.abs(cur - lat), 0) / hitCount;
+                const lonDeviation = longitudes.reduce((acc: any, cur: any) => acc + Math.abs(cur - lon), 0) / hitCount;
+
+                // Combined deviation that takes both lat and lon into account
+                const deviation = Math.sqrt(Math.pow(latDeviation, 2) + Math.pow(lonDeviation, 2));
+
+                // Adjust deviation threshold based on zoom level
+                const zoomFactor = zoom ? Math.pow(2, zoom + 14) : 1; // Higher zoom = larger factor
+                const deviationPercent = (deviation / Math.sqrt(Math.pow(lat, 2) + Math.pow(lon, 2))) * 100 * zoomFactor;
 
                 
                 // If no coordinates are different from the average
-                if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 14) && !latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])) {
+                if (bucket.docs?.hits?.hits?.length > 1 && (zoom && zoom > 14) && ((zoom && zoom < 18 && deviationPercent < 0.0001) || (!latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])))) {
                   
                   if (docData?._source?.uuid && bucket.docs.hits.hits.some((hit: any) => hit.fields.uuid[0] == docData?._source?.uuid)) {
                     return null
@@ -491,10 +500,10 @@ useEffect(() => {
                   })}</Fragment>
                 }
 
-                else if (zoom && bucket.doc_count == bucket.docs.hits.hits.length && (zoom > 16 || bucket.doc_count < 5)) {
+                else if (bucket.doc_count == 1 || (zoom && bucket.doc_count == bucket.docs.hits.hits.length && !((markerMode === 'cluster' || (markerMode === 'auto' && searchFilterParamsString?.length)) && deviationPercent > 0.01))) {
 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
+                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, bucket.doc_count > 2 ? 'accent' : hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
 
                     return (docLoading || hit.fields.uuid[0] != doc) && <Marker key={hit._id}
                       position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
