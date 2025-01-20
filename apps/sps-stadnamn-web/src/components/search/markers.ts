@@ -96,6 +96,20 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
     };
   }
 
+  export function getHoverMarker(docCount: number, label: string, color: string) {
+    return {
+      className: '',
+      html: `<div class="group" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
+                <div class="group-hover:hidden">
+                  ${buildMarker(color, 'position:absolute;left-0;bottom:26px;height:32px')}
+                </div>
+                <div class="hidden group-hover:block">
+                  ${getLabelMarkerIcon(label, color, docCount).html}
+                </div>
+             </div>`
+    }
+  }
+
   export function getClusterMarker(docCount: number, width: number, height: number, fontSize: number, colorClasses?: string) {
     return {
       className: '',
