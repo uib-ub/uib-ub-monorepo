@@ -39,7 +39,7 @@ export async function GET(request: Request) {
 
   const calculateProbability = (totalHits: number, zoom: number): number => {
 
-    if (!zoom || zoom < 7 || zoom > 15 || totalHits < 100000) {
+    if (!zoom || zoom < 6 || zoom > 15 || totalHits < 100000) {
       return 1
     }
 
