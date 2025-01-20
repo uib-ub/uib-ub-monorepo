@@ -1,4 +1,3 @@
-
 const colorMapping: Record<string,string> = {
     'black': '#282524',
     'primary': '#cf3c3a',
