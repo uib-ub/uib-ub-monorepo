@@ -531,9 +531,24 @@ useEffect(() => {
                   return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon) / 2]} icon={clusterIcon}
                     eventHandlers={{
                       click: () => {
-                        const newBounds: [[number, number], [number, number]] = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
-                        mapInstance.current.flyToBounds( newBounds, { duration: 0.1, maxZoom: 18 });
-
+                        // If doc count is same as
+                        
+                        if (bucket.doc_count == bucket.docs.hits.hits.length || (zoom && zoom > 12)) {
+                          const newBounds: [[number, number], [number, number]] = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
+                          // Get zoom level for bounds
+                          const boundsZoom = mapInstance.current.getBoundsZoom(newBounds);
+                          // Fly to bounds if zoom level is different, otherwise zoom in one level
+                          if (boundsZoom != mapInstance.current.getZoom()) {
+                            mapInstance.current.flyToBounds(newBounds, { duration: 0.1, maxZoom: 18 });
+                          }
+                          else {
+                            mapInstance.current.setView([(centerLat + lat) / 2, (centerLon + lon) / 2], zoom ? zoom + 1 : 18);
+                          }
+                        }
+                        else {
+                          // Go to center of cluster and zoom in three levels
+                          mapInstance.current.setView([(centerLat + lat) / 2, (centerLon + lon) / 2], zoom ? zoom + 3 : 18);
+                        }
                       }
                     }} />
 
