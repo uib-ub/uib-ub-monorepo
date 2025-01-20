@@ -189,7 +189,7 @@ export default function MapExplorer() {
 useEffect(() => {
   if (!mapInstance.current || isLoading || parentLoading || childrenLoading) return
   
-    if (doc && !parent && docData?._source?.location?.coordinates?.length) {
+    if (doc && !parent && docData?._source?.location?.coordinates?.length && (docData?._source.uuid == doc || docData._source.children?.includes(doc))) {
       console.log("FLY 1")
       const bounds = mapInstance.current.getBounds();
       const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
