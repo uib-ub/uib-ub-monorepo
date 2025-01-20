@@ -450,6 +450,11 @@ useEffect(() => {
 
               {tiles?.map((bucket: any) => {
 
+                // Sort bucket by children length if dataset is search
+                if (dataset == 'search') {
+                  bucket.docs.hits.hits.sort((a: any, b: any) => (b.fields.children?.length || 0) - (a.fields.children?.length || 0));
+                }
+
                 const latitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[1]);
                 const longitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[0]);
 
