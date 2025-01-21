@@ -23,7 +23,7 @@ import { GlobalContext } from "@/app/global-provider";
 
 
 export default function MapExplorer() {
-  const { resultBounds, totalHits, searchError, isLoading } = useContext(SearchContext)
+  const { resultBounds, totalHits, searchError, isLoading, flyToResultsEnabled } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
@@ -208,12 +208,20 @@ useEffect(() => {
         mapInstance.current.flyToBounds(childrenBounds, { duration: 0.25, maxZoom: 18 });
       }
     }
-    else if (resultBounds?.length && !parent && !doc && userHasMoved.current && !docView?.current) {
-      console.log("FLY 3")
-      mapInstance.current.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
-    }
 
-  }, [mapInstance, isLoading, resultBounds, setCenter, parentLoading, childrenLoading, childrenBounds, parent, doc, docData, docView])
+  }, [mapInstance, isLoading, setCenter, parentLoading, childrenLoading, childrenBounds, parent, doc, docData])
+
+
+  // When resultBounds changes
+  useEffect(() => {
+    if (!flyToResultsEnabled?.current) return
+    if (resultBounds?.length) {
+      console.log("FLY 3")
+      mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
+      
+    }
+  }, [resultBounds])
+
 
 
 
@@ -371,6 +379,7 @@ useEffect(() => {
       <Map        
         whenReady={(e: any) => {
             const bounds = e.target.getBounds();
+            userHasMoved.current = true;
             if (!mapInstance.current) {
               mapInstance.current = e.target
             }
@@ -397,7 +406,7 @@ useEffect(() => {
                 controllerRef.current = new AbortController();
 
                 console.log("MOVEEND")
-                userHasMoved.current = true;
+                
                 const bounds = map.getBounds();
                 const boundsCenter = bounds.getCenter();
                 const mapZoom = map.getZoom()
@@ -468,12 +477,14 @@ useEffect(() => {
                 const autoModeSample = markerMode === 'auto' && !searchFilterParamsString?.length
 
                 if ((markerMode === 'sample') || (autoModeSample && bucket.doc_count > bucket.docs.hits.hits.length) ) {
-                  const primary = dataset != 'search' || bucket.docs.hits.hits.some((hit: any) => hit.fields.children?.length && hit.fields.children.length > 1) 
+                  
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
+                    const primary = hit.fields.children?.length && hit.fields.children.length > 1
                     return <CircleMarker key={hit.fields.uuid}
                     center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
-                    radius={(zoom && zoom < 10 ? 4 : 5) * (primary ? 1 : 1)}
-                    pathOptions={{ color: primary ? 'black' : '#494646', weight: zoom && zoom < 10 ? 2 : 3, opacity: 1, fillColor: primary ? 'white' : '#a39a95', fillOpacity: 1 }}
+                    weight={primary ? 3 : 2}
+                    radius={(zoom && zoom < 10 ? 3 : 4) * (primary ? 1.5 : 1)}
+                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: primary ? 0.95 : 0.75, fillColor: 'white', fillOpacity: 1 }}
                     eventHandlers={selectDocHandler(hit)} />
                   })}</Fragment>
                 }
@@ -542,13 +553,15 @@ useEffect(() => {
                     // Return blue marker for other hits than doc
                     return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                       
-
+                      const primary = hit.fields.children?.length && hit.fields.children.length > 1
+                      
                       return <CircleMarker key={hit._id} 
                                            center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} 
-                                           radius={5}
+                                           radius={primary ? 6 : 4}
                                            fillColor="white"
                                            fillOpacity={1}
-                                           color="#00528d"
+                                           color="black"
+                                           weight={primary ? 3 : 2}
                                            eventHandlers={selectDocHandler(hit, bucket.docs.hits.hits)}/>
                     })}</Fragment>
                   }
@@ -556,7 +569,7 @@ useEffect(() => {
                     // Label: add dots if different labels
                   const label = labels[0] + (allLabelsSame ? '' : '...');
 
-                  const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
+                  const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'white', bucket.doc_count > 1 ? bucket.doc_count : undefined))
 
                   return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits[0], bucket.docs.hits.hits)} />
 
@@ -590,7 +603,13 @@ useEffect(() => {
 
                     
 
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, hit.fields?.children?.length && hit.fields.children.length > 1 ? 'primary' : 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
+                    let icon
+                    if (dataset != 'search' || hit.fields?.children?.length && hit.fields.children.length > 1) {
+                      icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
+                    }
+                    else {
+                      icon = new leaflet.DivIcon(getUnlabeledMarker('black', false))
+                    }
                     
 
                   
@@ -656,7 +675,7 @@ useEffect(() => {
                     'bg-primary-600 text-white border-2 border-white'))
                 }
                 else {
-                  icon = new leaflet.DivIcon(getUnlabeledMarker('primary', group.children.length))
+                  icon = new leaflet.DivIcon(getUnlabeledMarker('primary', false))
                 }
 
                 return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children[0], group.children)} />
