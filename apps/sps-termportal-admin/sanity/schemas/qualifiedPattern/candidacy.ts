@@ -21,7 +21,7 @@ export default {
       name: "termgroup",
       title: "Termgruppe",
       type: "boolean",
-      initialValue: false,
+      initialValue: true,
     },
     {
       name: "refgroup",
