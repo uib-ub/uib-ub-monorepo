@@ -2,7 +2,7 @@
     label: string;
     result?: boolean; // Show in result list
     description?: string; // Description of field
-    searchable?: boolean; // Can be selected as search field
+    fulltext?: boolean; // Can be selected as search field
     facet?: boolean;
     omitLabel?: boolean;
     table?: boolean; // Show in table view by default
@@ -18,7 +18,7 @@
     key: string; 
   }
  
-const [table, omitLabel, searchable, facet, result, cadastreTable] = Array(6).fill(true);
+const [table, omitLabel, fulltext, facet, result, cadastreTable] = Array(6).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
 const cadastre = {"within": {label: "Gard", result},
@@ -34,8 +34,8 @@ const adm2 = {label: "Kommune", result} // Necessary for it to be included in fi
 const snid = {label: "Stadnamn ID", facet}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
-const html = {"content.html": {label: "Fulltekst", searchable}}
-const text = {"content.text": {label: "Fulltekst", searchable}}
+const html = {"content.html": {label: "Tekstinnhold", fulltext}}
+const text = {"content.text": {label: "Tekstinnhold", fulltext}}
 const labelDefaults = {
   "altLabels": {label: "Andre navn", table, facet, result},
   "attestations": {label: "Kildeformer", table, result},
@@ -66,7 +66,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     bsn: {
       uuid, label, location, adm, adm1, adm2,
-      "rawData.komm": {label: "Fulltekst", searchable},
+      "rawData.komm": {label: "Kommentarer", fulltext},
       "rawData.stnavn.loktype.type": {label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table, facet},
       "tmp.knr": {label: "Kommunenummer", facet, result},
       "rawData.stnavn.sted.gårdsnr": {label: "Gardsnummer", facet, result, additionalParams: ["tmp.knr"]},
@@ -80,7 +80,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     hord: {
       uuid, label, location, adm, adm1, adm2, link, ...image,
       "adm3": {label: "Tidligere kommune", result},
-      "rawData.merknader": {label: "Fulltekst", searchable},
+      "rawData.merknader": {label: "Merknader", fulltext},
       "archive.institution": {label: "Arkivtilvising", table, facet},
       "rawData.oppskrivar": {label: "Oppskrivar", table, facet},
       "rawData.oppskrivingsTid": {label: "Oppskrivingstid", table, facet},
@@ -212,9 +212,9 @@ export const resultConfig = Object.entries(fieldConfig).reduce((acc, [dataset, f
 
 
 // TODO: make it hard coded and more customizable, and non-boolean
-export const searchableFields = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+export const fulltextFields = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
   acc[dataset] = Object.entries(fields)
-    .filter(([_, config]) => config.searchable)
+    .filter(([_, config]) => config.fulltext)
     .map(([key, { label }]) => ({
       key,
       label
