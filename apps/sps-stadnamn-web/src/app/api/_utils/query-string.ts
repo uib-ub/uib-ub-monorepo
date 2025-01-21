@@ -28,7 +28,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
       query: modifyQuery(params.q),
       allow_leading_wildcard: true,
       default_operator: params.fulltext ? 'AND' : 'OR',
-      fields: ["label^4", "altLabels^3", "attestations.label^2", ...fulltext && params.dataset ? searchableFields[params.dataset].map(item => item.key) : []]
+      fields: ["label^4", "altLabels^3", "attestations.label^2", ...fulltext && params.dataset ? fulltextFields[params.dataset].map(item => item.key) : []]
     }} : null
 
   
@@ -44,7 +44,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
         "altLabels": {}, 
         "attestations.label": {},
         //...test,
-        ...(fulltext && params.dataset) ? Object.fromEntries(searchableFields[params.dataset].map(item => ([item.key, {}]))): {}
+        ...(fulltext && params.dataset) ? Object.fromEntries(fulltextFields[params.dataset].map(item => ([item.key, {}]))): {}
     }
     } : null
 

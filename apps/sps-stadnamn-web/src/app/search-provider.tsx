@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useRef } from 'react'
+import { createContext, useContext } from 'react'
 import { useState, useEffect } from 'react';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { parseAsInteger, useQueryState } from 'nuqs';

@@ -113,9 +113,10 @@ export default function ActiveFilters() {
     return (
       <>
         { fulltext == 'on' && 
-            <button onClick={() => setFulltext('off')} 
-            className="">Fulltekst 
-            <PiX className="inline text-lg" aria-hidden="true"/></button> }
+            <button className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => setFulltext('off')}>
+            Fulltekst 
+            <PiX className="inline text-lg" aria-hidden="true"/>
+            </button> }
             {!parentData && visibleUnpinnedFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
