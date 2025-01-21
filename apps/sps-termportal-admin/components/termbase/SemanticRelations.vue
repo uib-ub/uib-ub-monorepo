@@ -1,6 +1,6 @@
 <template>
-  <UtilsTableWrapper v-if="termbase?.conceptCount > 0">
-    <template #header>Imported semantic relations</template>
+  <UtilsTableWrapper v-if="termbase?.conceptCount > 0" class="max-w-4xl">
+    <template #header>Uspesifiserte begrepsrelasjoner</template>
     <template #description>
       <p>
         <span class="font-semibold">{{ relations?.length }}</span> concepts have
