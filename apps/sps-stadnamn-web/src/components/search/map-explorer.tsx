@@ -545,8 +545,10 @@ useEffect(() => {
 
                       return <CircleMarker key={hit._id} 
                                            center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} 
-                                           radius={5} 
-                                           color="#00528d" 
+                                           radius={5}
+                                           fillColor="white"
+                                           fillOpacity={1}
+                                           color="#00528d"
                                            eventHandlers={selectDocHandler(hit, bucket.docs.hits.hits)}/>
                     })}</Fragment>
                   }
@@ -556,7 +558,7 @@ useEffect(() => {
 
                   const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'black', bucket.doc_count > 1 ? bucket.doc_count : undefined))
 
-                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[bucket.docs.hits.hits[0].fields.location[0].coordinates[1], bucket.docs.hits.hits[0].fields.location[0].coordinates[0]]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits[0], bucket.docs.hits.hits)} />
+                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits[0], bucket.docs.hits.hits)} />
 
                   }
 

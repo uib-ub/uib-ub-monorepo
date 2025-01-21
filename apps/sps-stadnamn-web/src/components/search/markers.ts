@@ -89,7 +89,7 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
                 <div class="flex items-center max-w-32 min-w-0 overflow-hidden text-ellipsis">${label}</div>
                 ${docCount ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">${docCount}</span>` : ''}
               </div>
-              <div class="w-0 h-0 drop-shadow-lg" style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid ${colorValue}; margin-top: 0px;"></div>
+              ${!docCount ? `<div class="w-0 h-0 drop-shadow-lg" style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid ${colorValue}; margin-top: 0px;"></div>` : ''}
             </div>
           </div>
         </div>`
