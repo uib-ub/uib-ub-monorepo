@@ -1,6 +1,6 @@
 <template>
-  <UtilsTableWrapper v-if="termbase?.conceptCount > 0">
-    <template #header>Missing definitions</template>
+  <UtilsTableWrapper class="max-w-2xl">
+    <template #header>Manglende definisjoner</template>
     <template #description>
       <UtilsTableLegend>
         <UtilsTableLegendEntry
@@ -21,8 +21,8 @@
             concepts?.length === 0
               ? 0
               : concepts?.length == termbase?.conceptCount
-              ? 100
-              : ((concepts?.length / termbase.conceptCount) * 100).toFixed(2)
+                ? 100
+                : ((concepts?.length / termbase.conceptCount) * 100).toFixed(2)
           } %`"
           legend-value="of concepts are missing definitions"
           legend-width="16"
@@ -68,7 +68,8 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 const datatable = ref();
 
 const { data } = useLazyFetch(
-  `/api/tb/${props.termbase.id}/missingDefinitions`
+  `/api/tb/${props.termbase.id}/definitionsMissing`,
+  { query: { internal: true } }
 );
 
 const concepts = computed(() => {
