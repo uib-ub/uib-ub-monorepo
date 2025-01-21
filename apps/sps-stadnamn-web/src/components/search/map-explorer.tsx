@@ -97,7 +97,7 @@ export default function MapExplorer() {
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (parent || !bounds || !totalHits || isLoading) {
+    if (parent || !bounds?.length || !totalHits || isLoading) {
       return;
     }
     //const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
@@ -367,7 +367,7 @@ useEffect(() => {
 
 
   return <>
-    {(bounds?.length || (center && zoom) || searchError || (totalHits && totalHits.value > 0)) ? <>
+    {(resultBounds?.length || (center && zoom) || searchError) ? <>
       <Map        
         whenReady={(e: any) => {
             const bounds = e.target.getBounds();
@@ -375,15 +375,15 @@ useEffect(() => {
               mapInstance.current = e.target
             }
             setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+            setZoom(e.target.getZoom())
+            setCenter([bounds.getCenter().lat, bounds.getCenter().lng])
           
           
         }}
         zoomControl={false}
         {...center && zoom ?
           { center, zoom }
-          : resultBounds?.length ? 
-            { bounds: resultBounds }
-            : { center: [63.4, 10.4], zoom: 5 }
+          : { bounds: resultBounds }
         }
         className='w-full h-full'>
         {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle }: any, leaflet: any) => {
