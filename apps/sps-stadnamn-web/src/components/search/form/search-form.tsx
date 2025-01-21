@@ -17,7 +17,7 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, currentUrl } = useContext(GlobalContext)
+    const { isMobile, currentUrl, setAllowFlyTo, allowFlyTo } = useContext(GlobalContext)
     const [nav, setNav] = useQueryState('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
@@ -52,11 +52,14 @@ export default function SearchForm() {
             document.removeEventListener('keydown', handleKeyDown);
         };
     }, [setNav]);
-    
+
+
+
+
     return pathname == '/search' ? <>    
         <div className="sr-only xl:not-sr-only flex !mx-4 divide-x-2 divide-primary-300 gap-2 overflow-clip items-center content-center"><Link href="/" scroll={false} className="text-base font-serif uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-base text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
         <div className="h-full flex grow">
-        <Form ref={form} action="/search" className="flex w-full items-center h-full">
+        <Form ref={form} action="/search" className="flex w-full items-center h-full" onSubmit={() => setAllowFlyTo(true)}>
             
             <div className='flex w-full h-full items-center bg-white border-x-2 border-neutral-200 group px-2'>
             <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900"/>
@@ -96,7 +99,7 @@ export default function SearchForm() {
      : <>
      <div className="flex gap-6">
      <Link href="/" scroll={false} className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
-     {currentUrl && !isMobile && <Link scroll={false} href={currentUrl} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>}
+     {currentUrl && !isMobile && <Link scroll={false} href={currentUrl} onClick={() => setAllowFlyTo(false)} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>}
      </div>
      </>
           

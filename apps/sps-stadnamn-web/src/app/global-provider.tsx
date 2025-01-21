@@ -17,6 +17,8 @@ export const GlobalContext = createContext({
   updateFacetOption: (facetName: string, options: Partial<FacetOption>) => {},
   updatePinnedFilters: (filters: [string, string][]) => {},
   sosiVocab: {} as Record<string, any>,
+  allowFlyTo: false,
+  setAllowFlyTo: (allowFlyTo: boolean) => {},
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any> }) {
@@ -24,6 +26,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
   const [pinnedFilters, setPinnedFilters] = useState<Record<string, [string, string][]>>({});
   const dataset = useDataset()
+  const [allowFlyTo, setAllowFlyTo] = useState(false);
 
   // Load facet options from localStorage on mount
   useEffect(() => {
@@ -86,6 +89,8 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
         pinnedFilters,
         updatePinnedFilters,
         sosiVocab,
+        allowFlyTo,
+        setAllowFlyTo
       }}
     >
       {children}

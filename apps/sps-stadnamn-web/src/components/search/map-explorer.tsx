@@ -23,7 +23,7 @@ import { GlobalContext } from "@/app/global-provider";
 
 
 export default function MapExplorer() {
-  const { resultBounds, totalHits, searchError, isLoading, flyToResultsEnabled } = useContext(SearchContext)
+  const { resultBounds, totalHits, searchError, isLoading } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
@@ -36,12 +36,11 @@ export default function MapExplorer() {
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const dataset = useDataset()
   const { childrenData, childrenLoading, childrenBounds } = useContext(ChildrenContext)
-  const { isMobile  } = useContext(GlobalContext)
+  const { isMobile, allowFlyTo } = useContext(GlobalContext)
 
   const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const mapInstance = useRef<any>(null);
-  const userHasMoved = useRef(false);
 
   //const prevPaddedBounds = useRef<[[number, number], [number, number]] | null>(null)
   //const prevZoom = useRef<number | null>(null)
@@ -214,18 +213,11 @@ useEffect(() => {
 
   // When resultBounds changes
   useEffect(() => {
-    if (!flyToResultsEnabled?.current) return
-    if (resultBounds?.length) {
-      console.log("FLY 3")
+    if (resultBounds?.length && allowFlyTo) {
+      console.log("FLY 3");
       mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
-      
     }
-  }, [resultBounds])
-
-
-
-
-
+  }, [resultBounds, allowFlyTo]);
 
 
 
@@ -379,7 +371,6 @@ useEffect(() => {
       <Map        
         whenReady={(e: any) => {
             const bounds = e.target.getBounds();
-            userHasMoved.current = true;
             if (!mapInstance.current) {
               mapInstance.current = e.target
             }
