@@ -1,4 +1,4 @@
-import { searchableFields } from "@/config/search-config";
+import { fulltextFields } from "@/config/search-config";
 
 function modifyQuery(query: string) {
   const lowerCaseQuery = query.toLowerCase();
@@ -32,7 +32,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
     }} : null
 
   
-    //const test = fulltext && params.dataset ? Object.fromEntries(searchableFields[params.dataset].map(item => ([item.key, {}]))) : {}
+    //const test = fulltext && params.dataset ? Object.fromEntries(fulltextFields[params.dataset].map(item => ([item.key, {}]))) : {}
   
 
   const highlight = params.q && fulltext ? {
