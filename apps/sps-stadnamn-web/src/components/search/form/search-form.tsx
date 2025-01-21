@@ -5,7 +5,7 @@ import { PiCaretLeft, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { useQueryState } from 'nuqs';
 import { datasetTitles } from '@/config/metadata-config';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { searchableFields } from '@/config/search-config';
+import { fulltextFields } from '@/config/search-config';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
