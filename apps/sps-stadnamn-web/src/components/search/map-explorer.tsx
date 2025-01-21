@@ -669,7 +669,7 @@ useEffect(() => {
 
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
               
-              { docData?._source?.location?.coordinates?.[1] && doc != parent && <Marker 
+              { docData?._source?.location?.coordinates?.[1] && doc != parent && docData?._source?.uuid == doc && <Marker 
                   zIndexOffset={1000}
                   position={[
                     docData._source.location.coordinates[1],
