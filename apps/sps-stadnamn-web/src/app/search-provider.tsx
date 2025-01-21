@@ -40,7 +40,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
-    const { searchQueryString, searchFilterParamsString, size, facetFilters } = useSearchQuery()
+    const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
 
     const searchParams = useSearchParams()
     const isTable = searchParams.get('mode') == 'table' || searchParams.get('mode') == 'list'
