@@ -84,12 +84,13 @@ export default function SearchForm() {
                             add={{nav: nav == 'results' && facetFilters.length == 0 ? 'filters' : 'results'}}
                             label="Tøm søk" className="px-2"><PiX className="text-lg"/></ClickableIcon> }
             </div>
-            {searchableFields[dataset]?.length > 0 && 
+            {fulltextFields[dataset]?.length > 0 && 
                 <Options/>
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
             <input type="hidden" name="nav" value={ mode == 'map' ? 'results' : 'filters'}/>
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value}/>)}
+            {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''}/>}
             {mode && <input type="hidden" name="mode" value={mode || ''}/>}
             <button className="sr-only" type="submit">Søk</button>
         </Form>
