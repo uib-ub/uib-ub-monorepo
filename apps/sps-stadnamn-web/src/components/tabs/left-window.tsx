@@ -80,7 +80,7 @@ export default function LeftWindow() {
                        {nav == 'filters' && !windowCollapsed ? <PiX aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={"sr-only xl:not-sr-only"}>Avgrens</span>
                 </button>
 
-                {!isLoading && searchFilterParamsString && mode == 'map' && <button 
+                {searchFilterParamsString && mode == 'map' && <button 
                       onClick={() => handleTabClick('results')}
                       aria-controls="left-window-content"
                       aria-expanded={nav == 'results' && !windowCollapsed}
