@@ -645,8 +645,8 @@ useEffect(() => {
                           }
                         }
                         else {
-                          // Go to center of cluster and zoom in three levels
-                          mapInstance.current.setView([(centerLat + lat) / 2, (centerLon + lon) / 2], zoom ? zoom + 3 : 18);
+                          // Go to center of cluster and zoom in two levels
+                          mapInstance.current.setView([(centerLat + lat) / 2, (centerLon + lon) / 2], zoom ? zoom + 2 : 18);
                         }
                       }
                     }} />
