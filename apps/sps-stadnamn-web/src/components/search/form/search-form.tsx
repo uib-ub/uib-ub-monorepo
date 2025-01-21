@@ -17,7 +17,7 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, currentUrl, setAllowFlyTo, allowFlyTo } = useContext(GlobalContext)
+    const { isMobile, currentUrl, setAllowFlyTo } = useContext(GlobalContext)
     const [nav, setNav] = useQueryState('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
