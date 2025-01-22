@@ -62,7 +62,7 @@ export default function DesktopLayout() {
         { docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1 || (treeSettings[dataset] && docData?._source?.sosi == 'gard') || parent ?
          <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start`}>
             { !treeSettings[dataset] &&<div className="flex">
-            <h2><Clickable className={`flex gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950`} add={{parent: docData?._source.uuid}}>
+            <h2><Clickable className={`flex gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950 w-[25svw]`} add={{parent: docData?._source.uuid}}>
 
             
 
