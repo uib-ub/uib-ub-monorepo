@@ -102,6 +102,17 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
 
         </div>
+
+
+        { docDataset == 'search' && <>
+        {(docSource.datasets.includes('leks') || docSource.datasets.includes('rygh')) && 
+        <Etymology etymologyDataset={docSource.datasets.includes('leks') ? 'leks' : 'rygh'} uuids={[docSource.children]}/>
+        }
+        
+        
+        
+        </>}
+            
       
 
       

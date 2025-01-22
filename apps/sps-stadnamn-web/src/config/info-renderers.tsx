@@ -132,6 +132,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
     </>
   },
+  leks_etymology: (html: string) => { // Replace when the new encyclopedia is ready
+    return <HtmlString htmlString={html.replace("/view/leks/doc/", "/search?dataset=leks&doc=")} />
+  },
   leks: (source: any) => {
     /*
     <InfoBox dataset={'leks'} items={[
