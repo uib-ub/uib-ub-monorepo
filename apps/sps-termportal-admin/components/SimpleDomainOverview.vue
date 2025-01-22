@@ -16,6 +16,9 @@
       :row-class="rowClass"
       table-style="min-width: 1rem"
       :global-filter-fields="['hierarchy', 'nb']"
+      paginator
+      :rows="15"
+      :rowsPerPageOptions="[15, 25, 50, 100]"
     >
       <template #header>
         <div class="flex justify-between">

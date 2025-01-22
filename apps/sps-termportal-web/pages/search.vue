@@ -8,7 +8,7 @@
       <SideBar>
         <SearchFilter class="hidden xl:block" placement="sidebar" />
       </SideBar>
-      <div class="flex-1 max-w-7xl">
+      <div class="flex-1 max-w-6xl">
         <section>
           <SearchStatusBar />
         </section>

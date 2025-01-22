@@ -45,7 +45,7 @@
     </div>
     <div
       v-if="panel"
-      class="absolute z-10 mt-[6px] rounded-b-[7px] border border-gray-300 bg-white border-t-white p-2 shadow-lg"
+      class="absolute z-20 mt-[6px] rounded-b-[7px] border border-gray-300 bg-white border-t-white p-2 shadow-lg"
     >
       <div class="absolute top-0 right-0 flex mr-1 mt-1 space-x-2">
         <button

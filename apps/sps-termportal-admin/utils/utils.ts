@@ -63,3 +63,12 @@ export function flattenList(list: Array<any>) {
     []
   );
 }
+
+export function getReminderColorClass(data) {
+  const { error } = reportReminder.interval;
+
+  if (data.reminderCalc <= 0) return colorMappingStatus.ok.color;
+  if (data.reminderCalc < error && data.reminderCalc >= 0)
+    return colorMappingStatus.warning.color;
+  return colorMappingStatus.error.color;
+}

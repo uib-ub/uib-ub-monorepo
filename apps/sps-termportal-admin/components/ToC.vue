@@ -1,8 +1,8 @@
 <template>
-  <div v-if="groupedHeadings.length" class="">
-    <h2 class="font-semibold text-xl mb-3">Contents</h2>
+  <aside v-if="groupedHeadings.length" class="">
+    <h2 class="font-semibold text-xl mb-3">Innhold</h2>
     <ToCList :items="groupedHeadings"></ToCList>
-  </div>
+  </aside>
 </template>
 
 <script setup lang="ts">

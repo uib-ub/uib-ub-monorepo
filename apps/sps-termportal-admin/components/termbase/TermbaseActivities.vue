@@ -1,6 +1,8 @@
 <template>
   <div class="">
-    <h2 class="my-6 text-xl font-semibold">Termbase Activities</h2>
+    <AppLink to="#tbActivities">
+      <h2 id="tbActivities" class="my-6 text-2xl">Aktiviteter</h2>
+    </AppLink>
     <DataTable
       ref="datatable"
       v-model:filters="filters"

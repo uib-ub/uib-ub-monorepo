@@ -48,8 +48,8 @@
           legend-key="med engelsk term"
           legend-value="Includes terms with language code en, en-GB, and en-US"
         />
-      </UtilsTableLegend> </template
-    >>
+      </UtilsTableLegend>
+    </template>
   </UtilsTableWrapper>
 </template>
 

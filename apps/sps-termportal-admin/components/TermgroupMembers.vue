@@ -1,6 +1,8 @@
 <template>
   <section>
-    <h2 class="my-6 text-xl font-semibold">Termgroup members</h2>
+    <AppLink to="#tbmembers">
+      <h2 id="tbmembers" class="my-6 text-2xl">Termgruppe</h2>
+    </AppLink>
     <DataTable
       ref="datatable"
       v-model:filters="filters"

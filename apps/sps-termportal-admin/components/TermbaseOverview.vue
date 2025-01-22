@@ -210,10 +210,7 @@
             v-if="
               ['4. opprettet', '5. publisert'].includes(slotProps.data.status)
             "
-            :to="`${wikiPageLink}${slotProps.data.id.replace(
-              '*',
-              ''
-            )}:${slotProps.data.id.replace('*', '')}`"
+            :to="`${wikiPageLink}${slotProps.data.id}:${slotProps.data.id}`"
             target="_blank"
           >
             Wiki
@@ -228,6 +225,13 @@
             target="_blank"
           >
             Studio
+          </NuxtLink>
+        </template>
+      </Column>
+      <Column header="">
+        <template #body="slotProps">
+          <NuxtLink v-if="slotProps.data.id" :to="`/tb/${slotProps.data.id}`">
+            Detaljer
           </NuxtLink>
         </template>
       </Column>
@@ -331,6 +335,23 @@ const props = defineProps({
 });
 const emits = defineEmits(["update:modelValue"]);
 
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  status: { value: null, matchMode: FilterMatchMode.IN },
+  license: { value: null, matchMode: FilterMatchMode.IN },
+  agreement: { value: null, matchMode: FilterMatchMode.IN },
+  staff: { value: null, matchMode: FilterMatchMode.IN },
+});
+
+// TODO enable setting and getting responsible person from route
+// switching to email would be better, display can still be name
+// watch(
+//   () => filters.value.staff,
+//   () => {
+//     console.log(filters.value.staff.value);
+//   }
+// );
+
 watch(selectedTermbase, () => {
   emits("update:modelValue", selectedTermbase.value);
 });
@@ -362,8 +383,8 @@ function matchid(data, entry, key) {
 
 const getLicense = (value) =>
   value
-    ? licenseLabels[value.replace(runtimeConfig.public.base, "")] ??
-      value.replace(runtimeConfig.public.base, "")
+    ? (licenseLabels[value.replace(runtimeConfig.public.base, "")] ??
+      value.replace(runtimeConfig.public.base, ""))
     : "";
 
 function calcLastActivity(timespan: Object) {
@@ -478,16 +499,6 @@ const merged = computed(() => {
 //                 colorMappingStatus.error.color : data.reminderCalc > reportReminder.interval.error,
 //               }
 
-const getReminderColorClass = (data) => {
-  const { reminderCalc } = data;
-  const { error } = reportReminder.interval;
-
-  if (reminderCalc <= 0) return colorMappingStatus.ok.color;
-  if (reminderCalc < error && data.reminderCalc >= 0)
-    return colorMappingStatus.warning.color;
-  return colorMappingStatus.error.color;
-};
-
 function checkBlocker(tb) {
   const blocker = { hard: {}, soft: {}, status: "ok" };
   if (tb.status) {
@@ -578,14 +589,6 @@ const staffMembers = computed(() => {
   });
 
   return [...new Set(staffArray)].sort().reverse();
-});
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  status: { value: null, matchMode: FilterMatchMode.IN },
-  license: { value: null, matchMode: FilterMatchMode.IN },
-  agreement: { value: null, matchMode: FilterMatchMode.IN },
-  staff: { value: null, matchMode: FilterMatchMode.IN },
 });
 
 const datatable = ref();
