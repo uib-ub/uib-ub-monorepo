@@ -1,9 +1,10 @@
 import { checkEsCache } from "~/server/utils/elasticSearchUtils";
-import genExploreDefinitionsQuery from "~/server/utils/genExploreDefinitionsQuery";
+import genTermbaseDefinitions from "~/server/utils/genTermbaseDefinitions";
 import genInsightTermbaseQuery from "~/server/utils/genInsightTermbaseQuery";
 import genOverviewQuery from "~/server/utils/genOverviewQuery";
-import genQualityMissingDefinitions from "~/server/utils/genQualityMissingDefinitions";
+import genTermbaseDefinitionsMissing from "~/server/utils/genTermbaseDefinitionsMissing";
 import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticRelationsQuery";
+import genTermbaseSubjectValues from "~/server/utils/genTermbaseSubjectValues";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
@@ -27,14 +28,16 @@ export default defineEventHandler(async (event) => {
     switch (queryType) {
       case "qualitySemanticRelations":
         return genQualitySemanticRelationsQuery(termbase);
-      case "exploreDefinitions":
-        return genExploreDefinitionsQuery(termbase);
       case "termbase_overview":
         return genOverviewQuery();
+      case "definitions":
+        return genTermbaseDefinitions(termbase);
+      case "definitionsMissing":
+        return genTermbaseDefinitionsMissing(termbase);
       case "termbase_language_coverage":
         return genInsightTermbaseQuery();
-      case "missingDefinitions":
-        return genQualityMissingDefinitions(termbase);
+      case "subjectValues":
+        return genTermbaseSubjectValues(termbase);
       default:
         break;
     }

@@ -32,22 +32,12 @@ import { listenQuery } from 'sanity';
           <ul
             class="flex items-center space-x-2 xl:space-x-4 2xl:space-x-7 text-lg font-semibold text-gray-500"
           >
-            <NavBarLink to="/overview">Overview</NavBarLink>
-            <NavBarLink to="/insights">Insights</NavBarLink>
-            <NavBarLink to="/quality/termbase">Quality</NavBarLink>
-            <NavBarLink class="group hover:text-gray-800"
-              >Explore
-              <div
-                class="hidden mt-1 p-0.5 bg-white group-hover:block absolute border border-solid rounded-md border-gray-300 shadow-lg"
-                style="z-index: 200"
-              >
-                <NavBarLink to="/explore/termbase">Termbase</NavBarLink>
-                <NavBarLink to="/explore/domain">Domain</NavBarLink>
-              </div>
-            </NavBarLink>
-            <NavBarLink to="/activities">Activities</NavBarLink>
+            <NavBarLink to="/overview">Termbaser</NavBarLink>
+            <NavBarLink to="/domain">Domener</NavBarLink>
+            <NavBarLink to="/activities">Aktiviteter</NavBarLink>
             <NavBarLink to="/personbase">Personbank</NavBarLink>
-            <NavBarLink to="/docs">Documentation</NavBarLink>
+            <NavBarLink to="/insights">Statistikk</NavBarLink>
+            <NavBarLink to="/docs">Dokumentasjon</NavBarLink>
             <NavBarLink to="/studio">Studio</NavBarLink>
           </ul>
         </div>

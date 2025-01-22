@@ -69,7 +69,7 @@
     <div>
       <div
         v-if="panel"
-        class="absolute z-10 max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg mt-[6px]"
+        class="absolute z-20 max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg mt-[6px]"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
         <div class="absolute top-0 right-0 flex mr-1 mt-1 space-x-2">

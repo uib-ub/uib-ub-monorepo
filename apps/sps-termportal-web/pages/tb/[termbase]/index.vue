@@ -32,7 +32,7 @@
               >
                 <div
                   ref="termbaseInfoBox"
-                  class="lg:float-right lg:ml-3 lg:mb-2 mt-6 lg:mt-0 relative z-10 bg-white"
+                  class="lg:float-right lg:ml-3 lg:mb-2 mt-6 lg:mt-0 z-10 relative bg-white"
                 >
                   <TermbaseInfoBox :data="data" :termbase-id="termbase" />
                 </div>

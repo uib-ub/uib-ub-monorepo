@@ -1,42 +1,52 @@
 <template>
-  <section class="space-y-6">
-    <h2 class="text-2xl">Definisjoner: {{ termbase.label }}</h2>
-    <div class="space-y-1.5">
-      <p>
+  <UtilsTableWrapper class="max-w-6xl">
+    <template #header>Definisjoner</template>
+    <UtilsTableLegend>
+      <p v-if="definitions?.length == 5000">
         Fetch limit set to 5000, e.g. if 5000 definitions have been fetched it
         is likely that the list doesn't contain all definitions.
       </p>
-      <p>{{ definitions.length }} definitions fetched</p>
-    </div>
-    <ul v-if="definitions.length < 5000">
-      <li v-for="entry in stats" :key="entry[1] + entry[2] + entry[0]">
-        {{ entry[1] }}/{{ entry[2] }} {{ entry[0] }}
-      </li>
-    </ul>
-    <DataTable
-      ref="datatable"
-      :value="definitions"
-      paginator
-      :rows="15"
-      removable-sort
-      table-style="min-width: 1rem"
-    >
-      <template #header>
-        <div style="text-align: right">
-          <Button class="h-10" label="Eksport" @click="exportCSV()" />
-        </div>
-      </template>
-      <Column field="concept" header="Begrep" sortable>
-        <template #body="slotProps">
-          <AppLink :to="`https://termportalen.no/${slotProps.data.link}`">{{
-            slotProps.data.concept
-          }}</AppLink>
+      <UtilsTableLegendEntry
+        :legend-key="`${definitions?.length}`"
+        legend-value="definisjoner hentet"
+        legend-width="16"
+      />
+      <UtilsTableLegendEntry
+        v-for="stat in stats"
+        :key="stat[1] + stat[2] + stat[0]"
+        :legend-key="`${stat[1]}/${stat[2]}`"
+        :legend-value="`${stat[0]}`"
+        legend-width="16"
+      />
+    </UtilsTableLegend>
+    <div class="">
+      <DataTable
+        v-if="definitions?.length > 0"
+        ref="datatable"
+        :value="definitions"
+        paginator
+        :rows="15"
+        removable-sort
+        table-style="min-width: 1rem"
+      >
+        <template #header>
+          <div style="text-align: right">
+            <Button class="h-10" label="Eksport" @click="exportCSV()" />
+          </div>
         </template>
-      </Column>
-      <Column field="def" header="Definisjon" sortable></Column>
-      <Column field="lang" header="Språk" sortable></Column>
-    </DataTable>
-  </section>
+        <Column field="concept" header="Begrep" sortable>
+          <template #body="slotProps">
+            <AppLink
+              :to="`https://termportalen.no/tb/${slotProps.data.link}`"
+              >{{ slotProps.data.concept }}</AppLink
+            >
+          </template>
+        </Column>
+        <Column field="def" header="Definisjon" sortable></Column>
+        <Column field="lang" header="Språk" sortable></Column>
+      </DataTable>
+    </div>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">
@@ -44,9 +54,9 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 
 const datatable = ref();
 
-const { data } = useLazyFetch(
-  `/api/tb/${props.termbase.id}/exploreDefinitions`
-);
+const { data } = useLazyFetch(`/api/tb/${props.termbase.id}/definitions`, {
+  query: { internal: true },
+});
 
 const definitions = computed(() => {
   if (data.value) {

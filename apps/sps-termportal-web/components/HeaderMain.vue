@@ -5,7 +5,7 @@
         ref="navBarRef"
         :key="'navbar' + locale + orderedTermbases.length"
         :context="headerDisplayScope"
-        class="tp-transition-slow z-10"
+        class="tp-transition-slow z-50"
         :class="{
           'fixed top-0 drop-shadow-md': fixPosition,
         }"
@@ -84,29 +84,39 @@ watch(
 
 const navBarRef = ref(null);
 const fixPosition = ref(false);
-const fixedBarDisplayed = ref(false);
 
 function toggleNavBar(prevScrollpos: number) {
   const currentScrollPos = window.pageYOffset;
-  if (route.path !== "/" && prevScrollpos < currentScrollPos) {
-    if (currentScrollPos > 48 && !fixedBarDisplayed.value) {
-      fixPosition.value = true;
-    }
-    navBarRef.value.navBar.style.top = "-52px";
-    fixedBarDisplayed.value = false;
-  } else if (prevScrollpos > currentScrollPos) {
-    if (
-      currentScrollPos === 0 ||
-      (currentScrollPos < 200 && !fixedBarDisplayed.value)
-    ) {
-      fixedBarDisplayed.value = true;
-      fixPosition.value = false;
-      navBarRef.value.navBar.style.top = "0px";
-    }
+  if (route.path !== "/") {
+    // scrolling down
+    if (prevScrollpos < currentScrollPos) {
+      if (
+        currentScrollPos > 54 &&
+        navBarRef.value?.navBar?.style?.top === "0px"
+      ) {
+        navBarRef.value.navBar.style.top = "-54px";
+      }
+      // scroll up
+    } else {
+      // reset fixed display
+      if (
+        currentScrollPos === 0 ||
+        (currentScrollPos < 200 &&
+          navBarRef.value?.navBar?.style?.top === "-54px")
+      ) {
+        fixPosition.value = false;
+        navBarRef.value.navBar.style.top = "0px";
+      }
 
-    fixedBarDisplayed.value = true;
-    navBarRef.value.navBar.style.top = "0px";
+      // show navbar when further down on the page and when scrolling a certain height up
+      if (currentScrollPos > 200 && prevScrollpos - currentScrollPos > 105) {
+        console.log(prevScrollpos - currentScrollPos);
+        navBarRef.value.navBar.style.top = "0px";
+        fixPosition.value = true;
+      }
+    }
   }
+  // console.log("return scroll pos " + currentScrollPos);
   return currentScrollPos;
 }
 

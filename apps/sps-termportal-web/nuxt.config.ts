@@ -59,7 +59,7 @@ export default defineNuxtConfig({
     "/CMBIOLOGI": { redirect: "/tb/CMBIOLOGI" },
     "/KJEMI": { redirect: "/tb/KJEMI" },
     "/TOT": { redirect: "/tb/TOT" },
-    "/TOLKING": { redirect: "/tb/TOLKINGT" },
+    "/TOLKING": { redirect: "/tb/TOLKING" },
     "/RTT": { redirect: "/tb/RTT" },
     "/UDEUT": { redirect: "/tb/UDEUT" },
     "/UHR": { redirect: "/tb/UHR" },

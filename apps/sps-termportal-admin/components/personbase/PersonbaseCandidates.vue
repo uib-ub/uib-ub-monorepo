@@ -10,7 +10,7 @@
       :rows="15"
       class="max-w-7xl"
       filter-display="row"
-      :global-filter-fields="['name', 'domain', 'subdomain']"
+      :global-filter-fields="['name', 'organization', 'domain', 'subdomain']"
     >
       <template #header>
         <div class="flex flex-wrap justify-between gap-2">
@@ -30,6 +30,7 @@
       </template>
       <Column expander style="width: 5rem" />
       <Column field="name" header="Navn" sortable />
+      <Column field="organization" header="Organisasjon" sortable></Column>
       <Column
         field="domain"
         header="Domene"
@@ -179,6 +180,7 @@ const query = `
   *[_type == "person" && defined(qualifiedCandidacy)]
    {
     "membership": *[_type == "group" && references(^._id)]{ label },
+    "organization": qualifiedDelegation[]{..., organization->},
     ...
     }
   `;
@@ -194,6 +196,14 @@ const procdata = computed(() => {
         name: person?.label,
         note: person?.note,
         membership: person?.membership?.map((membership) => membership.label),
+        organization: person?.organization
+          ?.filter(
+            (org) =>
+              !org?.timespan?.endOfTheEnd ||
+              isInFuture(org?.timespan?.endOfTheEnd)
+          )
+          .map((org) => `${org?.organization?.label} (${org?.timespan?.edtf})`)
+          .join(", "),
         lastUpdated: person?.lastUpdated,
         domain: topDomains[cand?.domain],
       };
