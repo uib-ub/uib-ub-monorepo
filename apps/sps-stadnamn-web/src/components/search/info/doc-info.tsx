@@ -16,6 +16,7 @@ import { GlobalContext } from "@/app/global-provider"
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import CoordinateInfo from "./coordinate-info"
 import ExternalLinkTooltip from "@/components/ui/clickable/external-link-tooltip"
+import Etymology from "./etymology"
 
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
