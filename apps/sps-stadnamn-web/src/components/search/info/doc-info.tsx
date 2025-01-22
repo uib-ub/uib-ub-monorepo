@@ -124,7 +124,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
 
         { docSource.image?.manifest && mode != 'list' && <div>
-        <h3 className="!mt-0">Sedler</h3>
+        <h3 className="!mt-0 !py-0">Sedler</h3>
         <ClientThumbnail manifestId={docSource.image?.manifest}/>
 
 
