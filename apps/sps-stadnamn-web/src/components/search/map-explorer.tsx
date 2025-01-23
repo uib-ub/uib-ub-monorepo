@@ -367,7 +367,7 @@ useEffect(() => {
 
 
   return <>
-    {(resultBounds?.length || (center && zoom) || searchError) ? <>
+    {(resultBounds?.length || bounds?.length || (center && zoom) || searchError) ? <>
       <Map        
         whenReady={(e: any) => {
             const bounds = e.target.getBounds();
