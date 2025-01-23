@@ -7,7 +7,7 @@
       <h2
         v-if="pagetitle"
         :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
-        class="pb-0 xl:pb-4 mt-3 md:mt-4 lg:mt-6"
+        class="mt-3 pb-0 md:mt-4 lg:mt-6 xl:pb-4"
       >
         <AppLink
           class="text-3xl"
@@ -17,7 +17,7 @@
         ></AppLink>
         <div
           v-if="mainConcept?.memberOf"
-          class="text-lg text-gray-600 underline hover:text-black h-8"
+          class="h-8 text-lg text-gray-600 underline hover:text-black"
         >
           <client-only>
             <AppLink
@@ -29,7 +29,7 @@
           </client-only>
         </div>
       </h2>
-      <div class="lg:flex space-y-5 lg:space-y-0">
+      <div class="space-y-5 lg:flex lg:space-y-0">
         <div class="lg:order-last lg:ml-2 xl:ml-5">
           <TermpostVisualizationSection
             v-if="displayInfo?.image && displayInfo?.image[0] && pagetitle"
@@ -37,7 +37,7 @@
             :pagetitle="pagetitle"
           />
         </div>
-        <div class="grid gap-y-3 lg:gap-y-4 shrink-0 lg:shrink lg:min-w-[30em]">
+        <div class="grid shrink-0 gap-y-3 lg:min-w-[30em] lg:shrink lg:gap-y-4">
           <div
             v-for="lang in displayInfo?.displayLanguages"
             :key="'disp_' + lang"
@@ -85,7 +85,6 @@ const props = defineProps({
 
 watch(termpostRef, () => {
   if (window.MathJax && window.MathJax.typesetPromise) {
-    ("has func");
     window.MathJax.typesetPromise();
   }
 });

@@ -4,7 +4,7 @@ import { cookieDefaultOptions } from "~/utils/vars";
 /**
  * Set session cookie when not present or not up to date.
  *
- * @param event H3Event
+ * @param event - H3Event
  */
 function ensureToken(event: H3Event) {
   if (

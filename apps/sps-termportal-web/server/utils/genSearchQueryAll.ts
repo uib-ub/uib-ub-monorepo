@@ -64,12 +64,8 @@ export function genSearchQueryAll(
           ${innerQuery}
           ?uri skosp:memberOf ?s .
           ?uri ?predicate ?label .
-          BIND ( replace(str(?s), "${
-            runtimeConfig.public.base
-          }", "") as ?samling).
-          BIND ( replace(str(?con), "${
-            runtimeConfig.public.base
-          }", "") as ?context).
+          BIND ( replace(str(?s), "${runtimeConfig.public.base}", "") as ?samling).
+          BIND ( replace(str(?con), "${runtimeConfig.public.base}", "") as ?context).
           BIND ( lang(?lit) as ?l)
           Bind ( str(?lit) as ?literal)
         }

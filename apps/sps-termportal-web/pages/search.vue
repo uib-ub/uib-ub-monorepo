@@ -8,14 +8,14 @@
       <SideBar>
         <SearchFilter class="hidden xl:block" placement="sidebar" />
       </SideBar>
-      <div class="flex-1 max-w-6xl">
+      <div class="max-w-6xl flex-1">
         <section>
           <SearchStatusBar />
         </section>
         <div class="xl:flex">
           <SearchFilter class="block xl:hidden" placement="main" />
           <main class="grow">
-            <div class="flex justify-between mb-2 mt-3">
+            <div class="mb-2 mt-3 flex justify-between">
               <div class="flex space-x-6 text-2xl">
                 <h2 id="main" class="ml-0.5">
                   <AppLink to="#main">
@@ -30,7 +30,7 @@
                   />
                 </UtilsTransitionOpacity>
               </div>
-              <div class="flex text-lg items-end">
+              <div class="flex items-end text-lg">
                 <div class="w-16 pr-1 text-right">{{ count }}</div>
                 <div>{{ $t("searchFilter.results") }}</div>
               </div>
