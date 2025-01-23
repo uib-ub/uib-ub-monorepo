@@ -103,7 +103,7 @@ export async function GET(request: Request) {
               }
             }
           },
-          ...dataset === 'search' && !simple_query_string && !termFilters.length ? [{
+          ...dataset === 'search' && currentPlaceScoreThreshold && !simple_query_string && !termFilters.length ? [{
             range: {
               placeScore: {
                 gte: currentPlaceScoreThreshold
