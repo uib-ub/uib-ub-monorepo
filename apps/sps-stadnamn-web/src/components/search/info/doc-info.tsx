@@ -42,6 +42,16 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
     return <><article className="instance-info flex flex-col gap-3 mobile-padding">
       {((dataset != 'search' && docData?._source?.within && docDataset) || !isMobile) && <div className="!mt-0">
+
+        { dataset == 'search' && docDataset != 'search' && <div className="flex gap-1 text-neutral-800 uppercase font-semibold tracking-wider items-center">{datasetTitles[docDataset as string]}
+        <Link aria-label="Info om datasettet" href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
+              className="flex items-center">
+                <PiInfoFill aria-hidden="true" className="text-primary-600"/>
+                </Link>
+                </div>
+        }
+
+
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
         {mode == 'map' && 
           <Clickable 
@@ -91,16 +101,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                 {docSource.adm2 && multivalue(docSource.adm2) + ", "}
                 {multivalue(docSource.adm1)}
                 </span>
-            }
-        
-        { dataset == 'search' && 
-        <Link href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
-         
-              className="flex items-center gap-1 bg-neutral-50 border border-neutral-200 px-2 rounded-md text-neutral-950 no-underline">
-                {docDataset == 'search' ? <><PiTagFill aria-hidden="true" className="text-neutral-800"/> Stadnamnoppslag</> : <><PiDatabaseFill aria-hidden="true" className="text-neutral-800"/>{datasetTitles[docDataset as string]}</>}</Link>
-        }
-
-        
+            }       
 
         </div>
 
