@@ -3,13 +3,13 @@
     ref="container"
     :class="cx('root')"
     :style="sx('root')"
-    @click="onContainerClick"
-    v-bind="ptm('root')"
     data-pc-name="autocomplete"
+    v-bind="ptm('root')"
+    @click="onContainerClick"
   >
     <input
-      ref="focusInput"
       :id="inputId"
+      ref="focusInput"
       type="text"
       :class="[cx('input'), inputClass]"
       :style="inputStyle"
@@ -26,15 +26,15 @@
       :aria-expanded="overlayVisible"
       :aria-controls="id + '_list'"
       :aria-activedescendant="focused ? focusedOptionId : undefined"
+      v-bind="{ ...inputProps, ...ptm('input') }"
       @focus="onFocus"
       @blur="onBlur"
       @keydown="onKeyDown"
       @input="onInput"
       @change="onChange"
-      v-bind="{ ...inputProps, ...ptm('input') }"
     />
 
-    <Portal :appendTo="appendTo">
+    <Portal :append-to="appendTo">
       <transition
         name="p-connected-overlay"
         @enter="onOverlayEnter"
@@ -50,9 +50,9 @@
             ...panelStyle,
             'max-height': virtualScrollerDisabled ? scrollHeight : '',
           }"
+          v-bind="{ ...panelProps, ...ptm('panel') }"
           @click="onOverlayClick"
           @keydown="onOverlayKeyDown"
-          v-bind="{ ...panelProps, ...ptm('panel') }"
         >
           <slot
             name="header"
@@ -69,7 +69,7 @@
             :pt="ptm('virtualScroller')"
           >
             <template
-              v-slot:content="{
+              #content="{
                 styleClass,
                 contentRef,
                 items,
@@ -79,8 +79,8 @@
               }"
             >
               <ul
-                :ref="(el) => listRef(el, contentRef)"
                 :id="id + '_list'"
+                :ref="(el) => listRef(el, contentRef)"
                 :class="[cx('list'), styleClass]"
                 :style="contentStyle"
                 role="listbox"
@@ -125,6 +125,12 @@
                     :aria-posinset="
                       getAriaPosInset(getOptionIndex(i, getItemOptions))
                     "
+                    :data-p-highlight="isSelected(option)"
+                    :data-p-focus="
+                      focusedOptionIndex === getOptionIndex(i, getItemOptions)
+                    "
+                    :data-p-disabled="isOptionDisabled(option)"
+                    v-bind="getPTOptions(option, getItemOptions, i, 'item')"
                     @click="onOptionSelect($event, option)"
                     @mousemove="
                       onOptionMouseMove(
@@ -132,12 +138,6 @@
                         getOptionIndex(i, getItemOptions)
                       )
                     "
-                    :data-p-highlight="isSelected(option)"
-                    :data-p-focus="
-                      focusedOptionIndex === getOptionIndex(i, getItemOptions)
-                    "
-                    :data-p-disabled="isOptionDisabled(option)"
-                    v-bind="getPTOptions(option, getItemOptions, i, 'item')"
                   >
                     <slot
                       v-if="$slots.option"
@@ -166,7 +166,7 @@
                 </li>
               </ul>
             </template>
-            <template v-if="$slots.loader" v-slot:loader="{ options }">
+            <template v-if="$slots.loader" #loader="{ options }">
               <slot name="loader" :options="options"></slot>
             </template>
           </VirtualScroller>
@@ -231,6 +231,18 @@ import BaseAutoComplete from "./BaseAutoComplete.vue";
 
 export default {
   name: "AutoComplete",
+  directives: {
+    ripple: Ripple,
+  },
+  components: {
+    Button,
+    VirtualScroller,
+    Portal,
+    ChevronDownIcon,
+    TimesIcon,
+    SpinnerIcon,
+    TimesCircleIcon,
+  },
   extends: BaseAutoComplete,
   emits: [
     "update:modelValue",
@@ -266,6 +278,88 @@ export default {
       searching: false,
       searchterm: useSearchterm(),
     };
+  },
+  computed: {
+    visibleOptions() {
+      return this.optionGroupLabel
+        ? this.flatOptions(this.suggestions)
+        : this.suggestions || [];
+    },
+    inputValue() {
+      if (this.modelValue) {
+        if (typeof this.modelValue === "object") {
+          const label = this.getOptionLabel(this.modelValue);
+
+          return label != null ? label : this.modelValue;
+        } else {
+          return this.modelValue;
+        }
+      } else {
+        return "";
+      }
+    },
+    hasSelectedOption() {
+      return ObjectUtils.isNotEmpty(this.modelValue);
+    },
+    equalityKey() {
+      return this.dataKey; // TODO: The 'optionValue' properties can be added.
+    },
+    searchResultMessageText() {
+      return ObjectUtils.isNotEmpty(this.visibleOptions) && this.overlayVisible
+        ? this.searchMessageText.replaceAll("{0}", this.visibleOptions.length)
+        : this.emptySearchMessageText;
+    },
+    searchMessageText() {
+      return (
+        this.searchMessage || this.$primevue.config.locale.searchMessage || ""
+      );
+    },
+    emptySearchMessageText() {
+      return (
+        this.emptySearchMessage ||
+        this.$primevue.config.locale.emptySearchMessage ||
+        ""
+      );
+    },
+    selectionMessageText() {
+      return (
+        this.selectionMessage ||
+        this.$primevue.config.locale.selectionMessage ||
+        ""
+      );
+    },
+    emptySelectionMessageText() {
+      return (
+        this.emptySelectionMessage ||
+        this.$primevue.config.locale.emptySelectionMessage ||
+        ""
+      );
+    },
+    selectedMessageText() {
+      return this.hasSelectedOption
+        ? this.selectionMessageText.replaceAll(
+            "{0}",
+            this.multiple ? this.modelValue.length : "1"
+          )
+        : this.emptySelectionMessageText;
+    },
+    focusedOptionId() {
+      return this.focusedOptionIndex !== -1
+        ? `${this.id}_${this.focusedOptionIndex}`
+        : null;
+    },
+    focusedMultipleOptionId() {
+      return this.focusedMultipleOptionIndex !== -1
+        ? `${this.id}_multiple_option_${this.focusedMultipleOptionIndex}`
+        : null;
+    },
+    ariaSetSize() {
+      return this.visibleOptions.filter((option) => !this.isOptionGroup(option))
+        .length;
+    },
+    virtualScrollerDisabled() {
+      return !this.virtualScrollerOptions;
+    },
   },
   watch: {
     "$attrs.id": function (newValue) {
@@ -314,7 +408,7 @@ export default {
   },
   methods: {
     getOptionIndex(index, fn) {
-      return this.virtualScrollerDisabled ? index : fn && fn(index)["index"];
+      return this.virtualScrollerDisabled ? index : fn && fn(index).index;
     },
     getOptionLabel(option) {
       return this.field || this.optionLabel
@@ -483,7 +577,7 @@ export default {
 
         case "ShiftLeft":
         case "ShiftRight":
-          //NOOP
+          // NOOP
           break;
 
         default:
@@ -495,7 +589,7 @@ export default {
         clearTimeout(this.searchTimeout);
       }
 
-      let query = event.target.value;
+      const query = event.target.value;
 
       if (!this.multiple) {
         this.updateModel(event, query);
@@ -504,16 +598,14 @@ export default {
       if (query.length === 0) {
         this.hide();
         this.$emit("clear");
-      } else {
-        if (query.length >= this.minLength) {
-          this.focusedOptionIndex = -1;
+      } else if (query.length >= this.minLength) {
+        this.focusedOptionIndex = -1;
 
-          this.searchTimeout = setTimeout(() => {
-            this.search(event, query, "input");
-          }, this.delay);
-        } else {
-          this.hide();
-        }
+        this.searchTimeout = setTimeout(() => {
+          this.search(event, query, "input");
+        }, this.delay);
+      } else {
+        this.hide();
       }
     },
     onChange(event) {
@@ -595,17 +687,15 @@ export default {
 
       if (searchterm.value.length) {
         searchterm.value = "";
+      } else if (this.overlayVisible) {
+        this.hide(true);
       } else {
-        if (this.overlayVisible) {
-          this.hide(true);
-        } else {
-          DomHandler.focus(this.$refs.focusInput);
-          query = this.$refs.focusInput.value;
+        DomHandler.focus(this.$refs.focusInput);
+        query = this.$refs.focusInput.value;
 
-          if (this.dropdownMode === "blank") this.search(event, "", "dropdown");
-          else if (this.dropdownMode === "current")
-            this.search(event, query, "dropdown");
-        }
+        if (this.dropdownMode === "blank") this.search(event, "", "dropdown");
+        else if (this.dropdownMode === "current")
+          this.search(event, query, "dropdown");
       }
 
       this.$emit("dropdown-click", { originalEvent: event, query });
@@ -853,7 +943,7 @@ export default {
       ZIndexUtils.clear(el);
     },
     alignOverlay() {
-      let target = this.multiple
+      const target = this.multiple
         ? this.$refs.multiContainer
         : this.$refs.focusInput;
 
@@ -1013,12 +1103,12 @@ export default {
       return selectedIndex < 0 ? this.findLastOptionIndex() : selectedIndex;
     },
     search(event, query, source) {
-      //allow empty string but not undefined or null
+      // allow empty string but not undefined or null
       if (query === undefined || query === null) {
         return;
       }
 
-      //do not search blank values on input change
+      // do not search blank values on input change
       if (source === "input" && query.trim().length === 0) {
         return;
       }
@@ -1106,100 +1196,6 @@ export default {
     virtualScrollerRef(el) {
       this.virtualScroller = el;
     },
-  },
-  computed: {
-    visibleOptions() {
-      return this.optionGroupLabel
-        ? this.flatOptions(this.suggestions)
-        : this.suggestions || [];
-    },
-    inputValue() {
-      if (this.modelValue) {
-        if (typeof this.modelValue === "object") {
-          const label = this.getOptionLabel(this.modelValue);
-
-          return label != null ? label : this.modelValue;
-        } else {
-          return this.modelValue;
-        }
-      } else {
-        return "";
-      }
-    },
-    hasSelectedOption() {
-      return ObjectUtils.isNotEmpty(this.modelValue);
-    },
-    equalityKey() {
-      return this.dataKey; // TODO: The 'optionValue' properties can be added.
-    },
-    searchResultMessageText() {
-      return ObjectUtils.isNotEmpty(this.visibleOptions) && this.overlayVisible
-        ? this.searchMessageText.replaceAll("{0}", this.visibleOptions.length)
-        : this.emptySearchMessageText;
-    },
-    searchMessageText() {
-      return (
-        this.searchMessage || this.$primevue.config.locale.searchMessage || ""
-      );
-    },
-    emptySearchMessageText() {
-      return (
-        this.emptySearchMessage ||
-        this.$primevue.config.locale.emptySearchMessage ||
-        ""
-      );
-    },
-    selectionMessageText() {
-      return (
-        this.selectionMessage ||
-        this.$primevue.config.locale.selectionMessage ||
-        ""
-      );
-    },
-    emptySelectionMessageText() {
-      return (
-        this.emptySelectionMessage ||
-        this.$primevue.config.locale.emptySelectionMessage ||
-        ""
-      );
-    },
-    selectedMessageText() {
-      return this.hasSelectedOption
-        ? this.selectionMessageText.replaceAll(
-            "{0}",
-            this.multiple ? this.modelValue.length : "1"
-          )
-        : this.emptySelectionMessageText;
-    },
-    focusedOptionId() {
-      return this.focusedOptionIndex !== -1
-        ? `${this.id}_${this.focusedOptionIndex}`
-        : null;
-    },
-    focusedMultipleOptionId() {
-      return this.focusedMultipleOptionIndex !== -1
-        ? `${this.id}_multiple_option_${this.focusedMultipleOptionIndex}`
-        : null;
-    },
-    ariaSetSize() {
-      return this.visibleOptions.filter((option) => !this.isOptionGroup(option))
-        .length;
-    },
-    virtualScrollerDisabled() {
-      return !this.virtualScrollerOptions;
-    },
-  },
-  components: {
-    Button: Button,
-    VirtualScroller: VirtualScroller,
-    Portal: Portal,
-    ChevronDownIcon: ChevronDownIcon,
-    TimesIcon: TimesIcon,
-    SpinnerIcon: SpinnerIcon,
-    TimesCircleIcon: TimesCircleIcon,
-  },
-  directives: {
-    ripple: Ripple,
   },
 };
 </script>

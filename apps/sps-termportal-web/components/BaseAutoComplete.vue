@@ -163,6 +163,11 @@ const { load: loadStyle } = useStyle(styles, {
 export default {
   name: "BaseAutoComplete",
   extends: BaseComponent,
+  provide() {
+    return {
+      $parentInstance: this,
+    };
+  },
   props: {
     modelValue: null,
     suggestions: {
@@ -311,11 +316,11 @@ export default {
       type: Number,
       default: 0,
     },
-    "aria-label": {
+    ariaLabel: {
       type: String,
       default: null,
     },
-    "aria-labelledby": {
+    ariaLabelledby: {
       type: String,
       default: null,
     },
@@ -324,11 +329,6 @@ export default {
     classes,
     inlineStyles,
     loadStyle,
-  },
-  provide() {
-    return {
-      $parentInstance: this,
-    };
   },
 };
 </script>
