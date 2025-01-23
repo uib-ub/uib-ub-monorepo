@@ -1,5 +1,5 @@
-import { TermbaseId, Domains } from "./vars-termbase";
-import { LangCode } from "~/composables/locale";
+import type { TermbaseId, Domains } from "./vars-termbase";
+import type { LangCode } from "~/composables/locale";
 
 export type QueryType = "search" | "concept" | "termbase";
 export type SearchQueryType = "entries" | "aggregate";

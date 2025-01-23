@@ -1,4 +1,4 @@
-import { SearchOptions } from "~/utils/vars";
+import type { SearchOptions } from "~/utils/vars";
 
 export function genSearchQueryAll(
   searchOptions: SearchOptions,

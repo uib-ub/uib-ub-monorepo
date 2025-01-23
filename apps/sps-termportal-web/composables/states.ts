@@ -1,6 +1,6 @@
-import { LangCode } from "./locale";
-import { LabelPredicate, Matching, uiConfig } from "~~/utils/vars";
-import { TermbaseId } from "~~/utils/vars-termbase";
+import type { LangCode } from "./locale";
+import type { LabelPredicate, Matching, uiConfig } from "~~/utils/vars";
+import type { TermbaseId } from "~~/utils/vars-termbase";
 
 export interface SearchDataEntry {
   predicate: string;

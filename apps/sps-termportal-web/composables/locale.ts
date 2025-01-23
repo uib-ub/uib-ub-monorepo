@@ -1,5 +1,6 @@
 import { useI18n } from "vue-i18n";
-import { systemTermbases, TermbaseId } from "~/utils/vars-termbase";
+import { systemTermbases } from "~/utils/vars-termbase";
+import type { TermbaseId } from "~/utils/vars-termbase";
 
 export type LocalLangCode = "en" | "nb" | "nn";
 

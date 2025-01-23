@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { TermbaseId } from "~~/utils/vars-termbase";
+import type { TermbaseId } from "~~/utils/vars-termbase";
 
 const route = useRoute();
 const router = useRouter();

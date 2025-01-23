@@ -1,4 +1,4 @@
-import { Matching, LabelPredicate, SearchOptions } from "../../utils/vars";
+import type { Matching, LabelPredicate, SearchOptions } from "../../utils/vars";
 
 export function sanitizeTerm(term: string) {
   return term
