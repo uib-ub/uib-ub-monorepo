@@ -36,7 +36,6 @@ export async function GET(request: Request) {
   }
 
 
-
   const calculateProbability = (totalHits: number, zoom: number): number => {
 
     if (!zoom || zoom < 6 || zoom > 14 || totalHits < 100000) {
@@ -81,8 +80,6 @@ export async function GET(request: Request) {
   }
 
   const probability = calculateProbability(Number(totalHits), zoom)
-  console.log("PROBABILITY", probability)
-  //console.log("TOTAL HITS", totalHits)
 
   const aggs = {
     tiles: {
@@ -97,8 +94,11 @@ export async function GET(request: Request) {
             docs: {
                 top_hits: {
                     _source: ["label", "uuid"],
-                    size: zoom < 6 ? 15 : 10,//topHitsSize[filteredParams.zoom as keyof typeof topHitsSize] ?? 20,
-                    sort: dataset == 'search' ? [{"ranking": "asc"}, {"uuid": "asc"}] : {"uuid": "asc"} //sortArray.filter(sort => sort !== "_score")
+                    size: zoom < 6 ? 20 : zoom == 18 ? 100 : 10,//topHitsSize[filteredParams.zoom as keyof typeof topHitsSize] ?? 20,
+                    sort: dataset == 'search' ? [
+                        {"ranking": "asc"}, 
+                        {"uuid": "asc"}
+                    ] : {"uuid": "asc"} 
                     
                     }
                 },
@@ -118,41 +118,30 @@ export async function GET(request: Request) {
     _source: false,
     query: {
       bool: {
-        filter: [{
-          geo_bounding_box: {
-            location: {
-              top_left: {
-                lat: filteredParams.topLeftLat,
-                lon: filteredParams.topLeftLng,
-              },
-              bottom_right: {
-                lat: filteredParams.bottomRightLat,
-                lon: filteredParams.bottomRightLng,
+        filter: [
+          {
+            geo_bounding_box: {
+              location: {
+                top_left: {
+                  lat: filteredParams.topLeftLat,
+                  lon: filteredParams.topLeftLng,
+                },
+                bottom_right: {
+                  lat: filteredParams.bottomRightLat,
+                  lon: filteredParams.bottomRightLng,
+                }
               }
             }
-          }
-        }]
+          },
+        ]
       }
     },
     aggs: probability == 1 ? aggs : { // filteredParams.markerSample == 'false' || zoom < 7
       sample: {
-        
-        /*
-        sampler: {
-          shard_size: 300
-        },
-        */
-        
-        
-        
-        
         random_sampler: {
           probability,
           seed: 42
         },
-        
-        
-        
         aggs
       }
     }

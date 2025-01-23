@@ -41,6 +41,7 @@ export default function MapExplorer() {
   const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const mapInstance = useRef<any>(null);
+  const autoMode = markerMode === 'auto' ? (searchFilterParamsString?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
 
   //const prevPaddedBounds = useRef<[[number, number], [number, number]] | null>(null)
   //const prevZoom = useRef<number | null>(null)
@@ -151,7 +152,7 @@ export default function MapExplorer() {
     //prevZoom.current = zoom
 
     // Both cluster map and sample map use cluster data above zoom 10
-    const query = `/api/geo/cluster?${queryParams.toString()}&totalHits=${totalHits?.value}`;
+    const query = `/api/geo/${autoMode || markerMode}?${queryParams.toString()}&totalHits=${totalHits?.value}`;
 
     fetch(query, {
       signal: controllerRef.current.signal,
@@ -416,8 +417,6 @@ useEffect(() => {
           }
 
 
-
-
           return (
 
             <>
@@ -451,9 +450,6 @@ useEffect(() => {
               {tiles?.map((bucket: any) => {
 
                 // Sort bucket by children length if dataset is search
-                if (dataset == 'search') {
-                  bucket.docs.hits.hits.sort((a: any, b: any) => (b.fields.children?.length || 0) - (a.fields.children?.length || 0));
-                }
 
                 const latitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[1]);
                 const longitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[0]);
@@ -465,12 +461,20 @@ useEffect(() => {
                 const lat = latSum / hitCount;
                 const lon = lonSum / hitCount;
 
-                const autoModeSample = markerMode === 'auto' && !searchFilterParamsString?.length
 
-                if ((markerMode === 'sample') || (autoModeSample && bucket.doc_count > bucket.docs.hits.hits.length) ) {
+                if (markerMode === 'sample' || autoMode == 'sample') {
+
                   
-                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
+                    const topHit = bucket.docs?.hits?.hits?.[0]
+                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(topHit?.fields?.label[0], 'black', 0, true))
+                    const showLabel = dataset != 'search' || topHit?.fields?.children?.length && topHit?.fields?.children.length > 1
+                  
+                  
+                  return <Fragment key={bucket.key}>
+                    {showLabel && <Marker key={bucket.key} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(topHit)} position={[bucket.docs?.hits?.hits?.[0]?.fields?.location[0]?.coordinates[1], bucket.docs?.hits?.hits?.[0]?.fields?.location[0]?.coordinates[0]]} />}
+                    {bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                     const primary = hit.fields.children?.length && hit.fields.children.length > 1
+                    
                     return <CircleMarker key={hit.fields.uuid}
                     center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
                     weight={primary ? 3 : 2}
@@ -498,51 +502,18 @@ useEffect(() => {
       
                 });
 
-                /*
-                const closestDistances = bucket.docs.hits.hits.length > 1 && bucket.docs.hits.hits.map((hit: any, index: number) => {
-                  const point = mapInstance.current.latLngToContainerPoint([
-                    hit.fields.location[0].coordinates[1],
-                    hit.fields.location[0].coordinates[0]
-                  ]);
-                  
-                  let closestDistance = Infinity;
-                  let closestIndex = -1;
-                  
-                  bucket.docs.hits.hits.forEach((other: any, otherIndex: number) => {
-                    if (index === otherIndex) return;
-                    
-                    const otherPoint = mapInstance.current.latLngToContainerPoint([
-                      other.fields.location[0].coordinates[1],
-                      other.fields.location[0].coordinates[0]
-                    ]);
-                    
-                    const distance = Math.abs(point.y - otherPoint.y);
-                    if (distance < closestDistance) {
-                      closestDistance = distance;
-                      closestIndex = otherIndex;
-                    }
-                  });
-                  
-                  return {
-                    distance: closestDistance,
-                    index: index,
-                    closestIndex: closestIndex
-                  };
-                });
-
-                console.log(closestDistances)
-                */
-
                 const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label[0]);
                 const allLabelsSame = labels.every((label: any, index: number, array: any[]) => label === array[0]);
 
                 
 
-                if (bucket.docs?.hits?.hits?.length > 1 && tooClose && bucket.doc_count == bucket.docs?.hits?.hits?.length && (allLabelsSame || (zoom && zoom > 10))) { //} &&bucket.docs?.hits?.hits?.length > 1 && bucket.doc_count == bucket.docs?.hits?.hits?.length && (zoom && zoom > 8) && ((zoom && zoom < 18 && adjustedDeviation > 0 && adjustedDeviation < 0.1) || (!latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])))) {
+                if (bucket.docs?.hits?.hits?.length > 1 && tooClose && bucket.doc_count == bucket.docs?.hits?.hits?.length && (allLabelsSame || (zoom && zoom > 10)) || (zoom && zoom == 18 && bucket.doc_count != bucket.docs?.hits?.hits?.length)) { //} &&bucket.docs?.hits?.hits?.length > 1 && bucket.doc_count == bucket.docs?.hits?.hits?.length && (zoom && zoom > 8) && ((zoom && zoom < 18 && adjustedDeviation > 0 && adjustedDeviation < 0.1) || (!latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])))) {
                   
                   if (bucket.docs?.hits?.hits?.some((hit: any) => hit.fields.uuid[0] === doc || hit.fields.children?.includes(doc))) {
                     // Return blue marker for other hits than doc
-                    return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
+                    return <Fragment key={bucket.key}>
+                      
+                      {bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
                       
                       const primary = hit.fields.children?.length && hit.fields.children.length > 1
                       
@@ -572,28 +543,7 @@ useEffect(() => {
 
 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }, currentIndex: number) => {
-                    /*
-                    const point = mapInstance.current.latLngToContainerPoint([
-                      hit.fields.location[0].coordinates[1],
-                      hit.fields.location[0].coordinates[0]
-                    ]);
-  
-                    // Find others within 32 pixels in the y axis, and don't include the point itself
                     
-                    const others = bucket.docs.hits.hits.filter((other: { _id: string, fields: { location: { coordinates: any[]; }[]; }; }, otherIndex: number) => {
-                      if (other._id == hit._id) return false
-                      const otherPoint = mapInstance.current.latLngToContainerPoint([
-                        other.fields.location[0].coordinates[1],
-                        other.fields.location[0].coordinates[0]
-                      ]);
-                      return Math.abs(otherPoint.y - point.y) < 36 && otherIndex > currentIndex
-                    });
-                    */
-
-
-
-                    
-
                     let icon
                     if (dataset != 'search' || hit.fields?.children?.length && hit.fields.children.length > 1) {
                       icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
