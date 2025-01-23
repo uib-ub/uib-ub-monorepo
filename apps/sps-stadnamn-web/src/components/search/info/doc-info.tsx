@@ -123,12 +123,12 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       
 
 
-        { docSource.image?.manifest && mode != 'list' && <div>
+        { (docSource.images?.length > 0 || docSource.image.manifest) && mode != 'list' && <div>
         <h3 className="!mt-0 !py-0">Sedler</h3>
-        <ClientThumbnail manifestId={docSource.image?.manifest}/>
-
-
+        <ClientThumbnail images={docSource.images || [{manifest: docSource.image.manifest, dataset: docDataset}]}/>
         </div>}
+
+
         { docSource.location && <div>
           <CollapsibleHeading title="Koordinatinformasjon">
         <CoordinateInfo source={docSource}/>
