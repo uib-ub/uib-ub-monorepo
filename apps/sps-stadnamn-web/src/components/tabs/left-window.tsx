@@ -1,6 +1,6 @@
 import { treeSettings } from "@/config/server-config";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
-import { PiBinoculars, PiBinocularsFill, PiDatabase, PiFunnel, PiFunnelFill, PiListBullets, PiTreeView, PiTreeViewFill, PiX } from "react-icons/pi";
+import { PiBinoculars, PiBinocularsFill, PiCaretUp, PiDatabase, PiFunnel, PiFunnelFill, PiListBullets, PiTreeView, PiTreeViewFill, PiX } from "react-icons/pi";
 import Clickable from "../ui/clickable/clickable";
 import { SearchContext } from "@/app/search-provider";
 import { useContext, useState, useEffect } from "react";
@@ -60,7 +60,7 @@ export default function LeftWindow() {
                       aria-controls="left-window-content"
                       aria-expanded={nav == 'datasets' && !windowCollapsed}
                       className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
-                        {nav == 'datasets' && !windowCollapsed ? <PiX aria-hidden="true"/>  : <PiDatabase aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only xl:not-sr-only"}>Datasett</span>
+                        {nav == 'datasets' && !windowCollapsed ? <PiCaretUp aria-hidden="true"/>  : <PiDatabase aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only xl:not-sr-only"}>Datasett</span>
                 </button>
                 
                 {treeSettings[dataset] && <button 
@@ -68,7 +68,7 @@ export default function LeftWindow() {
                       aria-controls="left-window-content"
                       aria-expanded={nav == 'tree' && !windowCollapsed}
                       className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
-                        {nav == 'tree' && !windowCollapsed ? <PiX aria-hidden="true"/>  : <PiTreeView aria-hidden="true"/>}<span className="sr-only">Register</span>
+                        {nav == 'tree' && !windowCollapsed ? <PiCaretUp aria-hidden="true"/>  : <PiTreeView aria-hidden="true"/>}<span className="sr-only">Register</span>
                 </button>
                 }
                 
@@ -77,7 +77,7 @@ export default function LeftWindow() {
                       aria-controls="left-window-content"
                       aria-expanded={nav == 'filters' && !windowCollapsed}
                       className={`flex m-1 xl:ml-auto whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner`}>
-                       {nav == 'filters' && !windowCollapsed ? <PiX aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={"sr-only xl:not-sr-only"}>Avgrens</span>
+                       {nav == 'filters' && !windowCollapsed ? <PiCaretUp aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={"sr-only xl:not-sr-only"}>Avgrens</span>
                 </button>
 
                 {searchFilterParamsString && mode == 'map' && <button 
@@ -85,7 +85,7 @@ export default function LeftWindow() {
                       aria-controls="left-window-content"
                       aria-expanded={nav == 'results' && !windowCollapsed}
                       className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner ${treeSettings[dataset] ? "ml-auto xl:ml-0" : ""}`}>
-                        {nav == 'results' && !windowCollapsed ? <PiX aria-hidden="true"/> : <PiListBullets aria-hidden="true"/>}Treff
+                        {nav == 'results' && !windowCollapsed ? <PiCaretUp aria-hidden="true"/> : <PiListBullets aria-hidden="true"/>}Treff
                         {nav == 'results' ? <span className="results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>
                         : <span className="results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits?.relation == 'gte' ? '10 000+' : totalHits?.value || '0'}</span>}
                 </button>}
