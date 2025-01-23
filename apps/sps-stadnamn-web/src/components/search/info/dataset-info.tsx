@@ -39,7 +39,7 @@ export default function DatasetInfo() {
                 {subindex && <Link href={`/search?dataset=${infoDataset}`} className="btn btn-neutral">Søk i {datasetTitles[infoDataset]}</Link>}
             </div>}
             <div className="flex gap-2 mt-2">
-            {dataset == 'search' && <Clickable add={{nav: 'filters', facet: 'datasets'}} className="flex gap-1 items-center justify-self-end no-underline">Avgrens etter datasett<PiCaretRight aria-hidden="true" className='text-primary-600'/></Clickable>}
+            {dataset == 'search' && <Clickable add={{nav: 'filters', facet: 'datasets'}} className="flex gap-1 items-center justify-self-end no-underline"><PiFunnel aria-hidden="true" className=""/>Avgrens etter datasett</Clickable>}
             <Link className="flex gap-1 ml-auto items-center no-underline" href={"/info/datasets/" + dataset}>Les meir <PiCaretRight aria-hidden="true" className='text-primary-600'/></Link>
             </div>
             { false && <DatasetToolbar dataset={dataset}/>}
