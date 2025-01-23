@@ -509,7 +509,7 @@ useEffect(() => {
                     {bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }, index: number) => {
                     const primary = hit.fields.children?.length && hit.fields.children.length > 1
 
-                    if ((showOneLabel && index == 0) || !isTooClose(bucket.docs.hits.hits, mapInstance.current)) {
+                    if (showOneLabel ? index == 0 : dataset == 'search' ? zoom && zoom < 18 ? (primary && !isTooClose(bucket.docs.hits.hits.filter((hit: any) => hit.fields.children?.length && hit.fields.children.length > 1), mapInstance.current)) : !isTooClose(bucket.docs.hits.hits, mapInstance.current) : !isTooClose(bucket.docs.hits.hits, mapInstance.current)) {
                       return <Marker key={hit._id} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(hit)} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} />
                     }
                     
