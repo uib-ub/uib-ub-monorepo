@@ -365,7 +365,29 @@ useEffect(() => {
     }
   }
 
+  const isAllSame = (latitudes: number[], longitudes: number[], docCount: number) => {
+    return docCount > 1 && latitudes.every((lat) => lat === latitudes[0]) && 
+           longitudes.every((lon) => lon === longitudes[0]);
+  };
 
+  const isTooClose = (hits: any[], map: any) => {
+    if (hits.length <= 1) return false;
+
+    return hits.some((hit) => {
+      const point = map.latLngToContainerPoint([
+        hit.fields.location[0].coordinates[1],
+        hit.fields.location[0].coordinates[0]
+      ]);
+
+      return hits.some((other) => {
+        const otherPoint = map.latLngToContainerPoint([
+          other.fields.location[0].coordinates[1],
+          other.fields.location[0].coordinates[0]
+        ]);
+        return Math.abs(point.y - otherPoint.y) < 32;
+      });
+    });
+  };
 
   return <>
     {(resultBounds?.length || bounds?.length || (center && zoom) || searchError) ? <>
@@ -462,18 +484,34 @@ useEffect(() => {
                 const lon = lonSum / hitCount;
 
 
-                if (markerMode === 'sample' || autoMode == 'sample') {
+                if ((markerMode === 'sample' || autoMode == 'sample')) {
 
                   
                     const topHit = bucket.docs?.hits?.hits?.[0]
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(topHit?.fields?.label[0], 'black', 0, true))
-                    const showLabel = dataset != 'search' || topHit?.fields?.children?.length && topHit?.fields?.children.length > 1
+                    const allSame = isAllSame(latitudes, longitudes, bucket.doc_count)
+                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(topHit?.fields?.label[0], allSame ? 'white' : 'black', allSame ? bucket.doc_count : 0, true))
+                    const showOneLabel = dataset != 'search' || topHit?.fields?.children?.length && topHit?.fields?.children.length > 1 || (zoom && zoom < 16)
+
+
+                    if (allSame) {
+
+                      return <Marker 
+                        key={bucket.key} 
+                        position={[topHit.fields.location[0].coordinates[1], topHit.fields.location[0].coordinates[0]]} 
+                        icon={icon}
+                        eventHandlers={selectDocHandler(topHit, bucket.docs.hits.hits)} 
+                      />;
+                    }
                   
                   
                   return <Fragment key={bucket.key}>
-                    {showLabel && <Marker key={bucket.key} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(topHit)} position={[bucket.docs?.hits?.hits?.[0]?.fields?.location[0]?.coordinates[1], bucket.docs?.hits?.hits?.[0]?.fields?.location[0]?.coordinates[0]]} />}
-                    {bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
+                    
+                    {bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }, index: number) => {
                     const primary = hit.fields.children?.length && hit.fields.children.length > 1
+
+                    if ((showOneLabel && index == 0) || !isTooClose(bucket.docs.hits.hits, mapInstance.current)) {
+                      return <Marker key={hit._id} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(hit)} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} />
+                    }
                     
                     return <CircleMarker key={hit.fields.uuid}
                     center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
@@ -486,21 +524,7 @@ useEffect(() => {
 
 
                 // Check if any of the points are within 32 pixels of each other on the y axis. Use "some" to return the first hit
-                const tooClose = bucket.docs.hits.hits.length > 1 && bucket.docs.hits.hits.some((hit: any) => {
-                  const point = mapInstance.current.latLngToContainerPoint([
-                    hit.fields.location[0].coordinates[1],
-                    hit.fields.location[0].coordinates[0]
-                  ]);
-
-                  return bucket.docs.hits.hits.some((other: any) => {
-                    const otherPoint = mapInstance.current.latLngToContainerPoint([
-                      other.fields.location[0].coordinates[1],
-                      other.fields.location[0].coordinates[0]
-                    ]);
-                    return Math.abs(point.y - otherPoint.y) < 32;
-                  })
-      
-                });
+                const tooClose = isTooClose(bucket.docs.hits.hits, mapInstance.current);
 
                 const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label[0]);
                 const allLabelsSame = labels.every((label: any, index: number, array: any[]) => label === array[0]);
