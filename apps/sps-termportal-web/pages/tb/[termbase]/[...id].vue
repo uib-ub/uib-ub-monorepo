@@ -7,7 +7,7 @@
         <!-- Search results -->
         <div
           v-if="searchData.length > 0 && termpostContext"
-          class="hidden max-w-[22em] shrink-0 flex-col md:flex md:w-[28vw] lg:w-[22vw] xl:w-[18vw] pr-3 lg:pr-6"
+          class="hidden max-w-[22em] shrink-0 flex-col pr-3 md:flex md:w-[28vw] lg:w-[22vw] lg:pr-6 xl:w-[18vw]"
         >
           <BackToSearch />
           <nav aria-labelledby="sidebarresults">
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { TermbaseId } from "~~/utils/vars-termbase";
+import type { TermbaseId } from "~~/utils/vars-termbase";
 
 const route = useRoute();
 const router = useRouter();

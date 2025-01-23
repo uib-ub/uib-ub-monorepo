@@ -1,7 +1,7 @@
-import { LabelPredicate, Matching } from "../../utils/vars";
-import { LangCode } from "~/composables/locale";
-import { TermbaseId } from "~/utils/vars-termbase";
-import { SearchDataStats } from "~~/composables/states";
+import type { LabelPredicate, Matching } from "../../utils/vars";
+import type { LangCode } from "~/composables/locale";
+import type { TermbaseId } from "~/utils/vars-termbase";
+import type { SearchDataStats } from "~~/composables/states";
 
 type AggregateKeys = LangCode | LabelPredicate | Matching | TermbaseId;
 export default function (

@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --passWithNoTests",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
-    "_experimental-ingest-marcus-demo": "node scripts/ingester.mjs"
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
@@ -21,7 +20,6 @@
     "@types/react-dom": "^18.0.11",
     "@types/swagger-ui-react": "^4.11.0",
     "eslint-config-custom": "*",
-    "inquirer": "^9.1.5",
     "node-fetch-retry": "^2.0.1",
     "typescript": "^4.9.3"
   },

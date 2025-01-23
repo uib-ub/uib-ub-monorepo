@@ -1,4 +1,8 @@
-import { Matching, SearchOptions, SearchQueryType } from "../../utils/vars";
+import type {
+  Matching,
+  SearchOptions,
+  SearchQueryType,
+} from "../../utils/vars";
 
 import {
   getPredicateValues,

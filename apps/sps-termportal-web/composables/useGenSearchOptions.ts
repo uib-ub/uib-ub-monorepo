@@ -100,9 +100,9 @@ export default function (situation: string, options?: SearchOptions) {
       useDomain: merged.useDomain,
     };
     if (merged.useDomain) {
-      reduced["domain"] = merged.domain;
+      reduced.domain = merged.domain;
     } else {
-      reduced["termbase"] = merged.termbase;
+      reduced.termbase = merged.termbase;
     }
     return reduced;
   } else {

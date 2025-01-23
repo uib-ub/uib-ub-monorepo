@@ -110,13 +110,11 @@ function toggleNavBar(prevScrollpos: number) {
 
       // show navbar when further down on the page and when scrolling a certain height up
       if (currentScrollPos > 200 && prevScrollpos - currentScrollPos > 105) {
-        console.log(prevScrollpos - currentScrollPos);
         navBarRef.value.navBar.style.top = "0px";
         fixPosition.value = true;
       }
     }
   }
-  // console.log("return scroll pos " + currentScrollPos);
   return currentScrollPos;
 }
 

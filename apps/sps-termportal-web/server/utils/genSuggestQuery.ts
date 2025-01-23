@@ -1,4 +1,4 @@
-import { SearchOptions } from "../../utils/vars";
+import type { SearchOptions } from "../../utils/vars";
 import { sanitizeTerm } from "./genSearchEntryQuery";
 import { genTQLangArgument, genTQGraphValue } from "./genQueryUtils";
 

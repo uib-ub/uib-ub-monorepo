@@ -6,7 +6,7 @@ import { MainShell } from '@/components/shared/main-shell'
 import PreviewLinks from './_components/preview-links'
 
 export default async function LinksPage() {
-  const data = await sanityFetch<any[]>({ query, revalidate: 7200 })
+  const data = await sanityFetch({ query, revalidate: 7200 })
 
   return (
     <MainShell>

@@ -1,6 +1,5 @@
-import { SearchOptions } from "../../utils/vars";
+import type { SearchOptions } from "../../utils/vars";
 import { sanitizeTerm, getContextFilter } from "./genSearchEntryQuery";
-import { genTQLangArgument, genTQGraphValue } from "./genQueryUtils";
 
 export function genAutocompleteQuery(
   searchOptions: SearchOptions,

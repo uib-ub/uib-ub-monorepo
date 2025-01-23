@@ -77,8 +77,15 @@ const GroupView = ({ data, showActive }: { data: any, showActive: boolean }) => 
 }
 
 const GroupViewItem = ({ data, showActive, className }: { data: any, showActive: boolean, className?: string }) => {
+  const typeLabel = data?.hasType?.[0]?.label
+
   return (
-    <Card className={cn(`flex flex-col gap-1 border rounded-sm p-0`, className, bgColors[data.hasType[0].label], bgDarkColors[data.hasType[0].label])} key={data.id}>
+    <Card className={cn(
+      `flex flex-col gap-1 border rounded-sm p-0`,
+      className,
+      typeLabel && bgColors[typeLabel],
+      typeLabel && bgDarkColors[typeLabel]
+    )} key={data.id}>
       <CardHeader className='flex gap-1 p-4'>
         <CardTitle>
           <Link href={`/${path[data.type]}/${data.id}`} className='underline underline-offset-2'>
@@ -87,7 +94,7 @@ const GroupViewItem = ({ data, showActive, className }: { data: any, showActive:
         </CardTitle>
         <CardDescription className='mix-blend-difference'>{data.shortDescription}</CardDescription>
 
-        <Separator className={cn('my-3', borderColors[data.hasType[0].label])} />
+        <Separator className={cn('my-3', typeLabel && borderColors[typeLabel])} />
 
         <div className='flex gap-3'>
           {data?.hasType ? (
@@ -110,7 +117,7 @@ const GroupViewItem = ({ data, showActive, className }: { data: any, showActive:
             </Card>
           ) : null}
         </div>
-        <Separator className={cn('my-3', borderColors[data.hasType[0].label])} />
+        <Separator className={cn('my-3', typeLabel && borderColors[typeLabel])} />
       </CardHeader>
 
       {data?.hasMember?.length > 0 || data?.children?.length > 0 ? (

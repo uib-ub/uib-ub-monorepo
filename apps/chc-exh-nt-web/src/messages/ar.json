@@ -1,0 +1,33 @@
+{
+  "MainNav": {
+    "menu": "القائمة"
+  },
+  "HomePage": {
+    "title": "مرحبا بالعالم!",
+    "about": "الذهاب إلى 'عن الشركة'",
+    "content": "مرحبا بالعالم!",
+    "marcus": "هذه المعرض هو جزء من",
+    "marcusLinkText": "Marcus"
+  },
+  "Footer": {
+    "createdBy": "تم إنشاء المعرض بواسطة",
+    "supportedBy": "مدعوم من"
+  },
+  "LocaleSwitcher": {
+    "label": "تغيير اللغة",
+    "locale": "{locale, select, no {Norsk} en {English} ar {Arabic} other {Other}}"
+  },
+  "Page": {
+    "by": "بواسطة",
+    "combinator": "و"
+  },
+  "Bla": {
+    "title": "صور مختارة",
+    "description": "استكشف بعض الصور في المجموعة"
+  },
+  "Item": {
+    "production": "إنتاج",
+    "subjects": "عناوين الموضوع",
+    "palette": "صور الألوان"
+  }
+}

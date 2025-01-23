@@ -40,9 +40,7 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { SearchDataStats } from "~~/composables/states";
-import { Matching, LabelPredicate } from "~~/utils/vars";
-import { LangCode } from "~/composables/locale";
+import type { SearchDataStats } from "~~/composables/states";
 
 const i18n = useI18n();
 const searchFilterSelection = useSearchFilterSelection();

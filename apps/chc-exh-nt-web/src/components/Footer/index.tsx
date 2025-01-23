@@ -1,38 +1,41 @@
-import { CMILogo, FrittOrdLogo, NCHSLogo, UIBUBLeftEngLogo, UIBUBLeftNorLogo } from 'tailwind-ui';
+import { cn } from '@/src/lib/utils';
+import { CmiEn, FrittOrd, NchEn, UibUbCenteredEn, UibUbCenteredNo } from 'assets';
+import { getTranslations } from 'next-intl/server';
+
 
 interface FooterProps {
   locale?: string;
+  className?: string;
 }
 
-export const Footer = ({ locale }: FooterProps) => {
+export async function Footer({ locale, className }: FooterProps) {
+  const t = await getTranslations('Footer')
   return (
-    <footer className='mt-16 pb-32'>
-      <div className='flex flex-col items-center w-full'>
-        <p className='text-neutral-500 dark:text-neutral-300 font-light text-sm'>
-          {locale === 'no' ? 'Nettuststillingen er laget av' : 'The exhibition is created by'}
+    <footer className={cn('w-full p-5 bg-neutral-300 dark:bg-neutral-600', className)}>
+      <div className='flex md:flex-col flex-col items-center w-full'>
+        <p className='text-neutral-500 dark:text-neutral-300 font-light text-lg'>
+          {t('createdBy')}
         </p>
-        <div className='w-full md:max-w-[600px] self-center items-center content-center grid grid-cols-6 gap-x-10 gap-y-5'>
-          <div className='col-span-6 grid grid-cols-8'>
-            <div className='col-start-1 col-span-8 md:col-start-2 md:col-span-6'>
-              {locale === 'no' ? (<UIBUBLeftNorLogo className='text-black dark:text-white h-auto w-auto' />) : null}
-              {locale === 'en' ? (<UIBUBLeftEngLogo className='text-black dark:text-white h-auto w-auto' />) : null}
-            </div>
+        <div className='w-full max-w-[900px] grid grid-cols-12 gap-8 mt-6'>
+          <div className='col-span-12 md:col-span-8 md:col-start-3 flex justify-center'>
+            {locale === 'no' ? (<UibUbCenteredNo className='text-black dark:text-white w-3/4' />) : null}
+            {locale === 'en' ? (<UibUbCenteredEn className='text-black dark:text-white w-3/4' />) : null}
+            {locale === 'ar' ? (<UibUbCenteredEn className='text-black dark:text-white w-3/4' />) : null}
           </div>
-          <div className='col-span-3 max-sm:col-span-4 max-sm:col-start-2'>
-            <NCHSLogo className=' h-auto w-auto' />
+          <div className='col-span-12 md:col-span-6 flex justify-center'>
+            <NchEn className='w-full max-w-[200px]' />
           </div>
-          <div className='col-span-3 max-sm:col-span-4 max-sm:col-start-2 sm:w-3/4 sm:ml-auto'>
-            <CMILogo className='h-auto w-auto' />
+          <div className='col-span-12 md:col-span-6 flex justify-center'>
+            <CmiEn className='w-full max-w-[200px]' />
           </div>
-
-          <div className='col-span-6 mt-10 flex justify-center'>
-            <p className='text-neutral-500 dark:text-neutral-300 font-light text-sm'>
-              {locale === 'no' ? 'Støttet av' : 'Supported by'}
+          <div className='col-span-12 flex justify-center mt-10'>
+            <p className='text-neutral-500 dark:text-neutral-300 font-light text-lg'>
+              {t('supportedBy')}
             </p>
           </div>
-          <div className='col-span-6 grid grid-cols-6'>
-            <div className='col-start-2 col-span-4 md:col-start-3 md:col-span-2'>
-              <FrittOrdLogo className='h-auto w-auto' />
+          <div className='col-span-12 flex justify-center'>
+            <div className='w-1/3'>
+              <FrittOrd className='w-full' />
             </div>
           </div>
         </div>

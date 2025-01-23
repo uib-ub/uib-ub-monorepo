@@ -1,0 +1,33 @@
+{
+  "MainNav": {
+    "menu": "Menu"
+  },
+  "HomePage": {
+    "title": "Hello world!",
+    "about": "Go to the about page",
+    "content": "Content",
+    "marcus": "This exhibition is part of",
+    "marcusLinkText": "Marcus"
+  },
+  "Footer": {
+    "createdBy": "The exhibition is created by",
+    "supportedBy": "Supported by"
+  },
+  "LocaleSwitcher": {
+    "label": "Change language",
+    "locale": "{locale, select, no {Norsk} en {English} ar {Arabic} other {Other}}"
+  },
+  "Page": {
+    "by": "by",
+    "combinator": "and"
+  },
+  "Bla": {
+    "title": "Selected images",
+    "description": "Browse some of the images in the collection"
+  },
+  "Item": {
+    "production": "Production",
+    "subjects": "Subjects",
+    "palette": "Colour palette"
+  }
+}

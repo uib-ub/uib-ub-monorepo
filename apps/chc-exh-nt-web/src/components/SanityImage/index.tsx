@@ -1,61 +1,34 @@
-import Image, { ImageProps } from "next/image";
-import { imageClient } from "../../lib/sanity.image";
-import { useNextSanityImage } from "next-sanity-image";
+import { getImageDimensions } from '@sanity/asset-utils';
+import Image from "next/image";
 
-interface SanityImage {
-  _type: string;
-  asset: {
-    _ref: string;
-    _type: "reference";
-    metadata: any
-  };
-  caption: string;
+interface SanityImageProps {
+  image: any;
+  priority?: boolean;
+  className?: string;
 }
 
-type ImagePropsWithoutSrc = Omit<ImageProps, "src">;
+export default function SanityImage(props: SanityImageProps) {
+  const { image: source, priority, className } = props;
+  const alt = source?.alt ?? "An image without an alt, whoops";
 
-type SanityImageProps = {
-  image: SanityImage;
-  type?: string
-} & ImagePropsWithoutSrc;
-
-export default function SanityImage({
-  image,
-  type = 'responsive',
-  alt = '',
-  placeholder = 'blur',
-  style = {
-    objectFit: 'contain'
-  },
-  className
-}: SanityImageProps) {
-  const imageProps = useNextSanityImage(imageClient, image);
-
-  if (type === 'fill') {
-    return (
-      <Image
-        src={imageProps.src}
-        loader={imageProps.loader}
-        className={className}
-        alt={alt}
-        fill
-        sizes='(max-width: 768px) 100vw,
-              (max-width: 1200px) 50vw,
-              33vw'
-        style={style}
-      />
-
-    )
+  if (!source?.asset) {
+    return <div className="bg-zinc-400 dark:bg-zinc-800" />;
   }
 
+  const dimensions = getImageDimensions(source);
+
   return (
-    <Image
-      {...imageProps}
-      className={className}
-      style={{ width: '100%', height: 'auto' }}
-      alt={alt}
-      placeholder={placeholder}
-      blurDataURL={image?.asset.metadata.lqip}
-    />
+    <div className={`relative w-full ${className}`} style={{ aspectRatio: `${dimensions.width} / ${dimensions.height}` }}>
+      <Image
+        src={source.asset.url}
+        alt={alt}
+        fill
+        placeholder="blur"
+        blurDataURL={source.asset.metadata.lqip}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+        priority={priority}
+        className="object-contain"
+      />
+    </div>
   );
 }
