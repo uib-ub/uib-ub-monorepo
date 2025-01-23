@@ -116,7 +116,7 @@ export async function GET(request: Request) {
     aggs: zoom < 6 || zoom > 16 || parseInt(totalHits) < 10000 ? aggs : { 
       sample: {
         sampler: {
-          shard_size: 300
+          shard_size: 200
         },
         aggs
       }
