@@ -35,8 +35,6 @@ export async function GET(request: Request) {
     "4": 4,
   }
 
-
-
     const placeScoreThresholds = {
     4: 4,
     5: 4,
@@ -50,53 +48,8 @@ export async function GET(request: Request) {
     13: 1,
   };
 
-  const currentPlaceScoreThreshold = placeScoreThresholds[zoom as keyof typeof placeScoreThresholds] || 1;
+  const currentPlaceScoreThreshold = placeScoreThresholds[zoom as keyof typeof placeScoreThresholds];
 
-
-  const calculateProbability = (totalHits: number, zoom: number): number => {
-
-    if (!zoom || zoom < 6 || zoom > 14 || totalHits < 100000) {
-      return 1
-    }
-
-    if (totalHits < 200000 && zoom > 12) {
-      return 1
-    }
-
-    // Return 1 if bottom of the screen above Norway or showing yan mayen
-    // Bottom right for yan mayen: 67.68445072846762 12.568359375000002
-    if (filteredParams.bottomRightLat && parseFloat(filteredParams.bottomRightLat) > 71
-      ||
-      (filteredParams.bottomRightLng && parseFloat(filteredParams.bottomRightLng) < 12.568359375000002 && parseFloat(filteredParams.bottomRightLat) > 67.68445072846762)
-  
-  ) {
-      return 1
-    }
-
-    // Base target for number of points to show
-    let targetPoints = 1000000;
-
-    targetPoints = {
-        7: 1000,
-        8: 1000,
-        9: 10000,
-        10: 10000,
-        11: 2500,
-        12: 10000,
-        13: 250000,
-        14: 500000,
-        15: 1000000
-    }[zoom] || 100000
-    console.log("TARGET POINTS", targetPoints)
-    
-    // Calculate probability to get roughly targetPoints
-    const probability = targetPoints / Number(totalHits);
-    
-    // Clamp probability to either 1 or between 0.001 and 0.5
-    return Math.min(Math.max(probability, 0.001), 0.5);
-  }
-
-  const probability = calculateProbability(Number(totalHits), zoom)
 
   const aggs = {
     tiles: {
