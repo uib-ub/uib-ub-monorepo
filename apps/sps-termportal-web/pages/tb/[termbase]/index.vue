@@ -27,11 +27,11 @@
               "
             >
               <div
-                ref="termbaseText"
+                ref="termbaseTextRef"
                 class="flex flex-col-reverse space-y-2 lg:block lg:flex-col"
               >
                 <div
-                  ref="termbaseInfoBox"
+                  ref="termbaseInfoBoxRef"
                   class="relative z-10 mt-6 bg-white lg:float-right lg:mb-2 lg:ml-3 lg:mt-0"
                 >
                   <TermbaseInfoBox :data="data" :termbase-id="termbase" />
@@ -42,9 +42,9 @@
             <button
               v-if="
                 ['lg', 'xl', '2xl'].includes(breakpoint) &&
-                termbaseText &&
-                termbaseInfoBox &&
-                termbaseText.clientHeight > termbaseInfoBox.clientHeight
+                termbaseTextRef &&
+                termbaseInfoBoxRef &&
+                termbaseTextRef.clientHeight > termbaseInfoBoxRef.clientHeight
               "
               class="mt-1 w-full"
               :class="{
@@ -84,17 +84,20 @@ const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();
 const breakpoint = useBreakpoint();
 
-const termbaseInfoBox = ref();
-const termbaseText = ref();
+const termbaseInfoBoxRef = ref<HTMLElement | null>(null);
+const termbaseTextRef = ref<HTMLElement | null>(null);
 const expandTermbaseText = ref(false);
 
 // Only picked up in larger screens. See check in template.
 const termbaseDescriptionHeight = computed(() => {
-  if (termbaseInfoBox.value && termbaseText.value) {
+  if (
+    termbaseInfoBoxRef.value?.clientHeight &&
+    termbaseTextRef.value?.clientHeight
+  ) {
     if (expandTermbaseText.value) {
-      return termbaseText.value.clientHeight + 8;
+      return termbaseTextRef.value.clientHeight + 8;
     } else {
-      return termbaseInfoBox.value.clientHeight + 8;
+      return termbaseInfoBoxRef.value.clientHeight + 8;
     }
   }
 });
