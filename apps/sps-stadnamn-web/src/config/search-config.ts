@@ -12,6 +12,7 @@
     docLink?: string; // Link to another document
     cadastreTable?: boolean; // Show in cadastre table
     featuredFacet?: boolean; // Show in custom facet
+    child?: string; // Child facet. The parent facet is handled client side, the child is handled server side
 
   }
 
@@ -19,7 +20,7 @@
     key: string; 
   }
  
-const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet] = Array(7).fill(true);
+const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, superFacet] = Array(7).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
 const cadastre = {"within": {label: "Gard", result},
@@ -35,11 +36,11 @@ const adm2 = {label: "Kommune", result} // Necessary for it to be included in fi
 const snid = {label: "Stadnamn ID", facet}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
-const html = {"content.html": {label: "Tekstinnhold", fulltext}}
-const text = {"content.text": {label: "Tekstinnhold", fulltext}}
+const html = {"content.html": {label: "Tekstinnhald", fulltext}}
+const text = {"content.text": {label: "Tekstinnhald", fulltext}}
 const labelDefaults = {
-  "altLabels": {label: "Andre navn", table, facet, result},
-  "attestations": {label: "Kildeformer", table, result},
+  "altLabels": {label: "Andre namn", table, facet, result},
+  "attestations": {label: "Kjeldeformer", table, result},
 }
 
 
@@ -47,20 +48,18 @@ const labelDefaults = {
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
       uuid, label, location, adm, adm1, adm2, link, ...image, 
-      "datasets": {label: "Datasett", facet, omitLabel, result, featuredFacet},
-      "datasetTag": {label: "Datasettstype", facet, omitLabel},
+      "datasets": {label: "Kjelder", facet, omitLabel, result, featuredFacet},
+      "datasetTag": {label: "Datasettstype", facet, omitLabel, child: "datasets"},
       ...labelDefaults,
       "within": {label: "Stadnamnkonsept", result},
-      "adm3": {label: "Sogn, bydel eller tidligere kommune", result},
+      "adm3": {label: "Sogn, bydel eller tidlegare kommune", result},
       //"description": {label: "Beskriving"}, // Removed untid short descriptions have been generated
       
       "children": {label: "Underelement", result},
       snid,
       "gnidu": {label: "GNIDu", facet},
       //"midu": {label: "MIDu", facet}, Not present
-      sosi,
-      "rawData.adm1Fallback": {label: "Fylke", facet},
-      "rawData.adm2Fallback": {label: "Kommune", facet},
+      sosi
     },
     sof: {
       uuid, label, location, adm, adm1, adm2,

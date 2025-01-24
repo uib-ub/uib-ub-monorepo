@@ -120,7 +120,7 @@ export default function ServerFacet() {
     <div className="flex flex-col gap-2 border-b border-neutral-300 py-4">
     <div className='flex flex-col gap-2'>
     {!fieldConfig[dataset][facet].featuredFacet && <select onChange={switchFacet} value={facet} className='border rounded-md border-neutral-300 p-1'>
-              {availableFacets?.map((item, index) => (
+              {availableFacets.filter(f => !f.child && !f.featuredFacet)?.map((item, index) => (
             <option key={index} value={item.key}>{item.label}</option>
         ))}
     </select>}

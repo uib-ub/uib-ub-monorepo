@@ -41,7 +41,7 @@ export default function Facets() {
 
 
           <h3>
-          <Clickable type="button" role="tab" aria-selected={facet != 'adm' && !fieldConfig[dataset][facet].featuredFacet} add={{facet: availableFacets.find(f => !f.featuredFacet)?.key || null}} className='rounded-tabs'>
+          <Clickable type="button" role="tab" aria-selected={facet != 'adm' && !fieldConfig[dataset][facet].featuredFacet} add={{facet: availableFacets.find(f => !f.featuredFacet && !f.child)?.key || null}} className='rounded-tabs'>
           
           Meir
           
