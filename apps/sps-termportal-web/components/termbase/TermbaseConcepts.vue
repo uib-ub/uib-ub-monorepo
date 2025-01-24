@@ -2,6 +2,7 @@
   <section v-if="displayData && displayAggData">
     <h2 class="text-xl">{{ $t("global.concept", 2) }}</h2>
     <div>
+      <!-- Character list for navigation -->
       <ol class="flex flex-wrap justify-center px-2 pb-2 pt-1.5">
         <li>
           <button

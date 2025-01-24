@@ -5,7 +5,7 @@
     </Head>
     <div class="flex grow">
       <SideBar />
-      <div class="space-y-6 grow max-w-4xl">
+      <div class="max-w-4xl grow space-y-6">
         <UtilsTransitionOpacitySection>
           <main
             v-if="data && bootstrapData.loaded"
@@ -18,7 +18,7 @@
             </h1>
             <!-- Only apply termbaseDescriptionHeight on larger screens-->
             <div
-              class="flex lg:block overflow-hidden"
+              class="flex overflow-hidden lg:block"
               :style="
                 termbaseDescriptionHeight &&
                 ['lg', 'xl', '2xl'].includes(breakpoint)
@@ -28,11 +28,11 @@
             >
               <div
                 ref="termbaseText"
-                class="flex lg:block lg:flex-col flex-col-reverse space-y-2"
+                class="flex flex-col-reverse space-y-2 lg:block lg:flex-col"
               >
                 <div
                   ref="termbaseInfoBox"
-                  class="lg:float-right lg:ml-3 lg:mb-2 mt-6 lg:mt-0 z-10 relative bg-white"
+                  class="relative z-10 mt-6 bg-white lg:float-right lg:mb-2 lg:ml-3 lg:mt-0"
                 >
                   <TermbaseInfoBox :data="data" :termbase-id="termbase" />
                 </div>
@@ -46,7 +46,7 @@
                 termbaseInfoBox &&
                 termbaseText.clientHeight > termbaseInfoBox.clientHeight
               "
-              class="w-full mt-1"
+              class="mt-1 w-full"
               :class="{
                 'shadow-[0_-10px_7px_rgba(255,255,255,1)]': !expandTermbaseText,
               }"
