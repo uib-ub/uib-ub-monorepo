@@ -18,9 +18,14 @@ export default defineNuxtConfig({
       link: [{ rel: "icon", type: "image/svg", href: "/favicon.svg" }],
     },
   },
+  ssr: false,
   routeRules: {
-    "/": { ssr: false },
-    "/om": { ssr: false },
+    // "/": { ssr: false },
+    // "/search": { ssr: false },
+    // "/tb": { ssr: false },
+    // "/termbase": { ssr: false },
+    // "/om": { ssr: false },
+    // "/innstillinger": { ssr: false },
     "/api/**": {
       cors: true,
       headers: {
