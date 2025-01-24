@@ -16,6 +16,8 @@ export default function Facets() {
 
     const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
 
+    const availableFacets = facetConfig[dataset]
+
 
       return (
         <>
@@ -28,8 +30,18 @@ export default function Facets() {
           
           </Clickable>
           </h3>
+
+          {availableFacets.filter(f => f.featuredFacet).map(f => 
+            <h3 key={f.key}>
+              <Clickable type="button" role="tab" aria-selected={facet == f.key} add={{facet: f.key}} className='rounded-tabs'>
+                {f.label}
+              </Clickable>
+            </h3>
+          )}
+
+
           <h3>
-          <Clickable type="button" role="tab" aria-selected={facet != 'adm'} add={{facet: facetConfig[dataset][0]?.key}} className='rounded-tabs'>
+          <Clickable type="button" role="tab" aria-selected={facet != 'adm' && !availableFacets.find(f => f.key == facet)?.featuredFacet} add={{facet: availableFacets.find(f => !f.featuredFacet)?.key || null}} className='rounded-tabs'>
           
           Meir
           
