@@ -111,8 +111,7 @@ export default function MapExplorer() {
           added = true;
           break;
         }
-
-        if (yDist < 32 && xDist < 64) {
+        if (yDist < 32 && xDist < (64 + (4*firstHit.fields.label[0].length))) {
           added = true;
           if (zoom && zoom == 18) {
             group.grouped.push(hit);
