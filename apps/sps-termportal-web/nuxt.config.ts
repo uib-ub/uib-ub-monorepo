@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     "/tb/**": { ssr: false },
     "/termbase": { ssr: false },
     "/om": { ssr: false },
-    "/instillinger": { ssr: false },
+    "/innstillinger": { ssr: false },
     "/api/**": {
       cors: true,
       headers: {
