@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="flex h-fit w-fit min-w-fit max-w-[25rem] flex-col space-y-4 rounded-[7px] border lg:border-gray-300 border-transparent lg:px-3 lg:pb-2 lg:pt-1.5"
+    class="flex h-fit w-fit min-w-fit max-w-[25rem] flex-col space-y-4 rounded-[7px] border border-transparent lg:border-gray-300 lg:px-3 lg:pb-2 lg:pt-1.5"
   >
     <div>
       <h2 id="tbcontact" class="text-lg">
@@ -111,7 +111,8 @@
 </template>
 
 <script setup lang="ts">
-import { LangCode, localizeSnomedVersionLabel } from "~/composables/locale";
+import { localizeSnomedVersionLabel } from "~/composables/locale";
+import type { LangCode } from "~/composables/locale";
 
 const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();

@@ -2,11 +2,12 @@
   <section v-if="displayData && displayAggData">
     <h2 class="text-xl">{{ $t("global.concept", 2) }}</h2>
     <div>
-      <ol class="flex pb-2 pt-1.5 flex-wrap justify-center px-2">
+      <!-- Character list for navigation -->
+      <ol class="flex flex-wrap justify-center px-2 pb-2 pt-1.5">
         <li>
           <button
-            class="px-1.5 py-0.5 text-lg hover:underline underline-offset-2"
-            :class="{ 'underline font-semibold': query.char[0] === null }"
+            class="px-1.5 py-0.5 text-lg underline-offset-2 hover:underline"
+            :class="{ 'font-semibold underline': query.char[0] === null }"
             @click="query.char = [null, 0]"
           >
             {{ $t("global.all") }}
@@ -14,9 +15,9 @@
         </li>
         <li v-for="charEntry in displayAggData?.firstChar" :key="charEntry[0]">
           <button
-            class="hover:underline underline-offset-2 text-lg px-[4px] py-0.5"
+            class="px-[4px] py-0.5 text-lg underline-offset-2 hover:underline"
             :class="{
-              'underline font-semibold': query.char[0] === charEntry[0],
+              'font-semibold underline': query.char[0] === charEntry[0],
             }"
             @click="query.char = charEntry"
           >
@@ -25,7 +26,7 @@
         </li>
       </ol>
     </div>
-    <div class="flex space-x-12 justify-strech px-3 sm:px-1.5 md:px-0">
+    <div class="justify-strech flex space-x-12 px-3 sm:px-1.5 md:px-0">
       <ol
         v-for="col in breakpointDisplayConfig.numberLst"
         :key="col[0] + col[1]"
@@ -34,7 +35,7 @@
         <li
           v-for="concept in displayData.slice(col[0], col[1])"
           :key="concept.link"
-          class="w-[20rem] xs:w-[27rem] sm:w-[17.5rem] md:w-[21.5rem] lg:w-[27rem] truncate"
+          class="w-[20rem] truncate xs:w-[27rem] sm:w-[17.5rem] md:w-[21.5rem] lg:w-[27rem]"
         >
           <TermbaseConceptLink
             :concept="concept"
@@ -178,33 +179,44 @@ const { data: conceptsAggData } = await useLazyFetch(
   {
     method: "POST",
     body: { language: locale },
+    headers: process.server
+      ? { cookie: "session=" + useRuntimeConfig().apiKey }
+      : undefined,
+    retry: 1,
   }
 );
 
 const displayAggData = computed(() => {
-  return {
+  const tmp = {
     totalCount: conceptsAggData.value?.total_count.value,
     firstChar: conceptsAggData.value?.unique_values.buckets.map((bucket) => [
       bucket.key,
       bucket.doc_count,
     ]),
   };
+  return tmp;
 });
+
 const { data, pending } = await useLazyFetch(
   `/api/termbase/${props.termbaseId.toLowerCase()}/concepts`,
   {
     method: "POST",
     body: breakpointFetchConfig,
+    headers: process.server
+      ? { cookie: "session=" + useRuntimeConfig().apiKey }
+      : undefined,
+    retry: 1,
   }
 );
 
 const displayData = computed(() => {
-  return data.value?.map((concept) => {
+  const tmp = data.value?.map((concept) => {
     return {
       link: "/tb" + idOrUriToRoute(props.termbaseId, concept.id),
       label: concept?.displayLabel?.[locale.value]?.value,
       language: concept?.displayLabel?.[locale.value]?.language,
     };
   });
+  return tmp;
 });
 </script>
