@@ -1,3 +1,5 @@
+import { datasetTypes } from "@/config/metadata-config";
+
 export function extractFacets(request: Request ) {
   const urlParams = new URL(request.url).searchParams;
 
@@ -10,7 +12,7 @@ export function extractFacets(request: Request ) {
   for (const [key, value] of urlParams.entries()) {
     switch (key) {
       case 'q':
-      case 'display': // Display mode. For now table is the only possible value. Map is default
+      case 'display': // Remove?
       case 'dataset':
       case 'page':
       case 'asc':
@@ -28,6 +30,7 @@ export function extractFacets(request: Request ) {
       case 'facets':
       case 'zoom':
       case 'point':
+      case 'datasetTag':
         filteredParams[key] = urlParams.get(key)!;
         break;
       default:
@@ -39,6 +42,25 @@ export function extractFacets(request: Request ) {
     }
   }
 
+  // Handle dataset tag (non-categorical dataset type) filter for datasets
+  if (filteredParams.datasetTag) {
+    console.log("YES")
+    const datasetTag = filteredParams.datasetTag;
+    const matchingDatasets = Object.entries(datasetTypes)
+      .filter(([_, types]) => types.includes(datasetTag))
+      .map(([dataset]) => dataset);
+    
+    if (matchingDatasets.length > 0) {
+      termFilters.push({
+        "bool": {
+          "should": [{
+            "terms": { "datasets.keyword": matchingDatasets }
+          }],
+          "minimum_should_match": 1
+        }
+      });
+    }
+  }
 
   // Hierarchical facet 
   if (Object.keys(clientFacets).length) {

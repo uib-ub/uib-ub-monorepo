@@ -11,6 +11,7 @@
     additionalParams?: string[];
     docLink?: string; // Link to another document
     cadastreTable?: boolean; // Show in cadastre table
+    featuredFacet?: boolean; // Show in custom facet
 
   }
 
@@ -18,7 +19,7 @@
     key: string; 
   }
  
-const [table, omitLabel, fulltext, facet, result, cadastreTable] = Array(6).fill(true);
+const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet] = Array(7).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
 const cadastre = {"within": {label: "Gard", result},
@@ -47,6 +48,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
       uuid, label, location, adm, adm1, adm2, link, ...image, 
       "datasets": {label: "Datasett", facet, omitLabel, result, featuredFacet},
+      "datasetTag": {label: "Datasettstype", facet, omitLabel},
       ...labelDefaults,
       "within": {label: "Stadnamnkonsept", result},
       "adm3": {label: "Sogn, bydel eller tidligere kommune", result},

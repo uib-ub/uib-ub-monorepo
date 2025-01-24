@@ -1,7 +1,7 @@
 'use client'
 import WithinLabel from "./within-label"
 import { fieldConfig } from "@/config/search-config"
-import { datasetTitles } from "@/config/metadata-config"
+import { datasetTitles, typeNames } from "@/config/metadata-config"
 import { useDataset, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiPushPinFill, PiTrash, PiX } from "react-icons/pi"
@@ -34,7 +34,7 @@ export default function ActiveFilters() {
         
         const fieldSettings = fieldConfig[dataset][name]
         const label =  fieldSettings.label || name
-        const omitLabel = fieldConfig?.omitLabel || name == 'adm'
+        const omitLabel = fieldSettings?.omitLabel || name == 'adm'
   
         const values = value.split('__')
         
@@ -43,6 +43,10 @@ export default function ActiveFilters() {
         if (values[0] == "_false" && name == "adm") {
           if (values.length == 1) return "[utan distrikt]"
           return values[1] + " (utan underinndeling)"
+        }
+
+        if (name == 'datasetTag') {
+          return typeNames[value] || value
         }
   
         if (name == 'within') {

@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext, ChangeEvent } from 'react';
 import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
 import { useQueryStringWithout, useDataset, useSearchQuery } from '@/lib/search-params';
-import { facetConfig } from '@/config/search-config';
+import { facetConfig, fieldConfig } from '@/config/search-config';
 import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass, PiTrashFill } from 'react-icons/pi';
 
-import { datasetTitles } from '@/config/metadata-config';
+import { datasetTitles, typeNames, datasetTypes } from '@/config/metadata-config';
 import { useQueryState } from 'nuqs';
 
 import FacetToolbar from './facet-toolbar';
@@ -104,16 +104,61 @@ export default function ServerFacet() {
     }, [paramsExceptFacet, dataset, facet, facetSearch, sortMode]
     )
 
+  const filterDatasetsByTags = (item: any) => {
+    if (facet === 'datasets' && searchParams.getAll('datasetTag').length > 0) {
+      // Check if the dataset (item.key) has all the required dataset tags
+      return searchParams.getAll('datasetTag').every(tag => 
+        datasetTypes[item.key]?.includes(tag)
+      );
+    }
+    return true;
+  };
+
   return (
     <>
     { !isLoading &&
     <div className="flex flex-col gap-2 border-b border-neutral-300 py-4">
     <div className='flex flex-col gap-2'>
-    <select onChange={switchFacet} value={facet} className='border rounded-md border-neutral-300 p-1'>
+    {!fieldConfig[dataset][facet].featuredFacet && <select onChange={switchFacet} value={facet} className='border rounded-md border-neutral-300 p-1'>
               {availableFacets?.map((item, index) => (
             <option key={index} value={item.key}>{item.label}</option>
         ))}
-    </select>
+    </select>}
+    {dataset == 'search' && facet == 'datasets' && 
+    <div className='flex gap-2'>
+      <div className='flex flex-wrap gap-2'>
+        {Object.entries(typeNames)
+          .filter(([type]) => {
+            // Don't show already selected types
+            if (searchParams.getAll('datasetTag').includes(type)) return false;
+            
+            // Only show types that exist in the current facet buckets
+            return facetAggregation?.buckets
+              .filter(filterDatasetsByTags)
+              .some((item: any) => datasetTypes[item.key]?.includes(type));
+          })
+          .map(([type, label]) => (
+          <button 
+            key={type}
+            className='px-2 py-1 text-sm rounded-md border border-neutral-300 hover:bg-neutral-100'
+            onClick={() => {
+              setClientSearch('');
+              const params = new URLSearchParams(searchParams.toString());
+              const existingTags = params.getAll('datasetTag');
+              if (!existingTags.includes(type)) {
+                params.append('datasetTag', type);
+              }
+              router.push(`?${params.toString()}`, { scroll: false });
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+    
+    
+    }
     <div className='flex gap-2'>
     <div className='relative grow'>
       <input aria-label="Søk i fasett" onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
@@ -128,7 +173,9 @@ export default function ServerFacet() {
     </div>
     { facetAggregation?.buckets.length ?
     <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
-      {facetAggregation?.buckets.map((item: any, index: number) => 
+      {facetAggregation?.buckets
+        .filter(filterDatasetsByTags)
+        .map((item: any, index: number) => 
             (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(datasetTitles[item.key])) && (
         <li key={index}>
         <label>
