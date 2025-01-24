@@ -54,6 +54,86 @@ export default function MapExplorer() {
     return degrees.toString()
   }
 
+  const isTooClose = (hits: any[], map: any) => {
+    if (hits.length <= 1) return false;
+
+    return hits.some((hit) => {
+      const point = map.latLngToContainerPoint([
+        hit.fields.location[0].coordinates[1],
+        hit.fields.location[0].coordinates[0]
+      ]);
+
+      return hits.some((other) => {
+        const otherPoint = map.latLngToContainerPoint([
+          other.fields.location[0].coordinates[1],
+          other.fields.location[0].coordinates[0]
+        ]);
+        return Math.abs(point.y - otherPoint.y) < 32;
+      });
+    });
+  };
+
+  const yDistance = (lat1: number, lat2: number) => {
+  // Calculate vertical pixel distance between two latitude points using map projection
+  if (!mapInstance.current) return 0;
+  
+  const point1 = mapInstance.current.latLngToContainerPoint([lat1, 0]);
+  const point2 = mapInstance.current.latLngToContainerPoint([lat2, 0]); 
+  
+  return Math.abs(point1.y - point2.y);
+  }
+
+  const xDistance = (lon1: number, lon2: number) => {
+    // Calculate horizontal pixel distance between two longitude points using map projection
+    if (!mapInstance.current) return 0;
+    const point1 = mapInstance.current.latLngToContainerPoint([0, lon1]);
+    const point2 = mapInstance.current.latLngToContainerPoint([0, lon2]); 
+    return Math.abs(point1.x - point2.x);
+  }
+
+  const coordinatesSelected = (lat: number, lon: number) => {
+    return docData?._source?.location?.coordinates[1] == lat && docData?._source?.location?.coordinates[0] == lon
+  }
+
+  const clientCluster = (data: any) => {
+
+    const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
+
+    data.hits.hits.forEach((hit: any) => {
+      let added = false;
+      for (const group of markers) {
+        const firstHit = group.topHit
+        if (firstHit) {
+        const yDist = yDistance(firstHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
+        const xDist = xDistance(firstHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
+        if (yDist < 2 && xDist < 2) {
+          group.grouped.push(hit);
+          added = true;
+          break;
+        }
+
+        if (yDist < 32 && xDist < 64) {
+          added = true;
+          if (zoom && zoom == 18) {
+            group.grouped.push(hit);
+          }
+          else {
+            group.unlabeled.push(hit);
+          }
+        }
+
+      }
+    }
+    if (!added) {
+      markers.push({topHit: hit, grouped: [], unlabeled: []});
+    }
+    })
+
+    return {...data, hits: {markers}}
+  }
+
+
+
   useEffect(() => {
     if (parent && childrenData?.length) {
 
@@ -170,7 +250,7 @@ export default function MapExplorer() {
       })
        
       .then(data => {
-        setViewResults(data)
+        setViewResults((autoMode == 'sample' || markerMode == 'sample') ? clientCluster(data) : data)
 
       })
 
@@ -344,9 +424,12 @@ useEffect(() => {
   const minDocCount = tiles?.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
 
 
+
+
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
+        
         if (selected.fields?.children?.length == 1) {
           setDoc(selected.fields.children[0])
         }
@@ -365,29 +448,6 @@ useEffect(() => {
     }
   }
 
-  const isAllSame = (latitudes: number[], longitudes: number[], docCount: number) => {
-    return docCount > 1 && latitudes.every((lat) => lat === latitudes[0]) && 
-           longitudes.every((lon) => lon === longitudes[0]);
-  };
-
-  const isTooClose = (hits: any[], map: any) => {
-    if (hits.length <= 1) return false;
-
-    return hits.some((hit) => {
-      const point = map.latLngToContainerPoint([
-        hit.fields.location[0].coordinates[1],
-        hit.fields.location[0].coordinates[0]
-      ]);
-
-      return hits.some((other) => {
-        const otherPoint = map.latLngToContainerPoint([
-          other.fields.location[0].coordinates[1],
-          other.fields.location[0].coordinates[0]
-        ]);
-        return Math.abs(point.y - otherPoint.y) < 32;
-      });
-    });
-  };
 
   return <>
     {(resultBounds?.length || bounds?.length || (center && zoom) || searchError) ? <>
@@ -469,7 +529,20 @@ useEffect(() => {
                 />
               )}
 
-              {tiles?.map((bucket: any) => {
+              {(markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
+                return <Fragment key={marker.topHit._id}>
+                 {![marker.topHit, ...marker.grouped].some((item: any) => coordinatesSelected(item.fields.location[0].coordinates[1], item.fields.location[0].coordinates[0])) ? <Marker key={marker.topHit._id} 
+                          position={[marker.topHit.fields.location[0].coordinates[1], marker.topHit.fields.location[0].coordinates[0]]} 
+                          icon={new leaflet.DivIcon(getLabelMarkerIcon(marker.topHit.fields.label, 'black', marker.grouped.length ? marker.grouped.length +1 : undefined, true))} 
+                          riseOnHover={true} 
+                          eventHandlers={selectDocHandler(marker.topHit, [marker.topHit, ...marker.grouped])} />
+                          : null}
+                  
+                  {marker.unlabeled.map((hit: any) => <CircleMarker key={hit._id} center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} radius={5} pathOptions={{ color: 'white', weight: 2, fillColor: 'black', fillOpacity: 0.8 }} eventHandlers={selectDocHandler(hit)} />)}
+                </Fragment>
+              })}
+
+              {(markerMode == 'cluster' || autoMode == 'cluster' ) && tiles?.map((bucket: any) => {
 
                 // Sort bucket by children length if dataset is search
 
@@ -484,45 +557,6 @@ useEffect(() => {
                 const lon = lonSum / hitCount;
 
 
-                if ((markerMode === 'sample' || autoMode == 'sample')) {
-
-                  
-                    const topHit = bucket.docs?.hits?.hits?.[0]
-                    const allSame = isAllSame(latitudes, longitudes, bucket.doc_count)
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(topHit?.fields?.label[0], allSame ? 'white' : 'black', allSame ? bucket.doc_count : 0, true))
-                    const showOneLabel = dataset != 'search' || topHit?.fields?.children?.length && topHit?.fields?.children.length > 1 || (zoom && zoom < 16)
-
-
-                    if (allSame) {
-
-                      return <Marker 
-                        key={bucket.key} 
-                        position={[topHit.fields.location[0].coordinates[1], topHit.fields.location[0].coordinates[0]]} 
-                        icon={icon}
-                        eventHandlers={selectDocHandler(topHit, bucket.docs.hits.hits)} 
-                      />;
-                    }
-                  
-                  
-                  return <Fragment key={bucket.key}>
-                    
-                    {bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }, index: number) => {
-                    const primary = hit.fields.children?.length && hit.fields.children.length > 1
-
-                    if (showOneLabel ? index == 0 : dataset == 'search' ? zoom && zoom < 18 ? (primary && !isTooClose(bucket.docs.hits.hits.filter((hit: any) => hit.fields.children?.length && hit.fields.children.length > 1), mapInstance.current)) : !isTooClose(bucket.docs.hits.hits, mapInstance.current) : !isTooClose(bucket.docs.hits.hits, mapInstance.current)) {
-                      return <Marker key={hit._id} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(hit)} position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} />
-                    }
-                    
-                    return <CircleMarker key={hit.fields.uuid}
-                    center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
-                    weight={primary ? 3 : 2}
-                    radius={(zoom && zoom < 10 ? 3 : 4) * (primary ? 1.5 : 1)}
-                    pathOptions={{ color: 'black', weight: zoom && zoom < 10 ? 2 : 3, opacity: primary ? 0.95 : 0.75, fillColor: 'white', fillOpacity: 1 }}
-                    eventHandlers={selectDocHandler(hit)} />
-                  })}</Fragment>
-                }
-
-
                 // Check if any of the points are within 32 pixels of each other on the y axis. Use "some" to return the first hit
                 const tooClose = isTooClose(bucket.docs.hits.hits, mapInstance.current);
 
@@ -533,7 +567,7 @@ useEffect(() => {
 
                 if (bucket.docs?.hits?.hits?.length > 1 && tooClose && bucket.doc_count == bucket.docs?.hits?.hits?.length && (allLabelsSame || (zoom && zoom > 10)) || (zoom && zoom == 18 && bucket.doc_count != bucket.docs?.hits?.hits?.length)) { //} &&bucket.docs?.hits?.hits?.length > 1 && bucket.doc_count == bucket.docs?.hits?.hits?.length && (zoom && zoom > 8) && ((zoom && zoom < 18 && adjustedDeviation > 0 && adjustedDeviation < 0.1) || (!latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])))) {
                   
-                  if (bucket.docs?.hits?.hits?.some((hit: any) => hit.fields.uuid[0] === doc || hit.fields.children?.includes(doc))) {
+                  if (bucket.docs?.hits?.hits?.some((hit: any) => coordinatesSelected(hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]))) {
                     // Return blue marker for other hits than doc
                     return <Fragment key={bucket.key}>
                       

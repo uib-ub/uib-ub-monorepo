@@ -14,77 +14,26 @@ export async function GET(request: Request) {
   const sortArray = getSortArray(dataset)
   const zoom = parseInt(filteredParams.zoom)
   const totalHits = filteredParams.totalHits
-  console.log(filteredParams.bottomRightLat, filteredParams.bottomRightLng)
-  
-
-  const zoomLevels  = {
-    "18": 26,
-    "17": 18,
-    "16": 17,
-    "15": 16,
-    "14": 15,
-    "13": 14,
-    "12": 13,
-    "11": 12,
-    "10": 11,
-    "9": 10,
-    "8": 9,
-    "7": 8,
-    "6": 6,
-    "5": 5,
-    "4": 4,
-  }
-
-    const placeScoreThresholds = {
-    4: 4,
-    5: 4,
-    6: 4,
-    7: 4,
-    8: 3,
-    9: 3,
-    10: 3,
-    11: 2,
-    12: 2,
-    13: 1,
-  };
-
-  const currentPlaceScoreThreshold = placeScoreThresholds[zoom as keyof typeof placeScoreThresholds];
-
-
-  const aggs = {
-    tiles: {
-        geotile_grid: {
-            field: "location",
-            precision: filteredParams.zoom ? zoomLevels[filteredParams.zoom as keyof typeof zoomLevels] ?? 3 : 3,
-            //shard_size: 1
-
-            
-        },
-        aggs: {
-            docs: {
-                top_hits: {
-                    _source: ["label", "uuid"],
-                    size: zoom < 6 ? 20 : zoom == 18 ? 100 : 10,//topHitsSize[filteredParams.zoom as keyof typeof topHitsSize] ?? 20,
-                    sort: dataset == 'search' ? [
-                        {"ranking": "asc"}, 
-                        {"uuid": "asc"}
-                    ] : {"uuid": "asc"} 
-                    
-                    }
-                },
-                viewport: {
-                    geo_bounds: {
-                        field: "location"
-                    },
-                }
-            }
-        }
-    }
 
 
   const query: Record<string,any> = {
-    size: 0,
-    fields: ["label", "location", "uuid", "sosi", "children"],
+    size: zoom > 16 ? 300 : 100,
+    fields: ["label", "location", "uuid", "sosi", "children", "placeScore"],
+    sort: dataset === 'search' ? [
+      {
+        "placeScore": "desc"
+      },
+      {
+        "ranking": "asc"
+      },
+      {
+        "uuid": "asc"
+      }
+    ] : [
+      {
+        "uuid": "asc"
+      }
+    ],
     _source: false,
     query: {
       bool: {
@@ -103,24 +52,18 @@ export async function GET(request: Request) {
               }
             }
           },
-          ...dataset === 'search' && currentPlaceScoreThreshold && !simple_query_string && !termFilters.length ? [{
-            range: {
-              placeScore: {
-                gte: currentPlaceScoreThreshold
-              }
-            }
-          }] : []
         ]
       }
     },
-    aggs: zoom < 6 || zoom > 16 || parseInt(totalHits) < 10000 ? aggs : { 
-      sample: {
-        sampler: {
-          shard_size: 200
+    aggs: {
+      viewport: {
+        geo_bounds: {
+            field: "location"
         },
-        aggs
       }
     }
+      
+    
   }
 
   if (simple_query_string || termFilters.length) {
