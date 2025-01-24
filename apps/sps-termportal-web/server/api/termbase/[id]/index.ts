@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   if (event.context.params) {
     const query = genTermbaseQuery(event.context.params.id);
-    console.log(query);
+
     const data = await $fetch(url, {
       method: "post",
       body: query,
