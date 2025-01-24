@@ -178,33 +178,44 @@ const { data: conceptsAggData } = await useLazyFetch(
   {
     method: "POST",
     body: { language: locale },
+    headers: process.server
+      ? { cookie: "session=" + useRuntimeConfig().apiKey }
+      : undefined,
+    retry: 1,
   }
 );
 
 const displayAggData = computed(() => {
-  return {
+  const tmp = {
     totalCount: conceptsAggData.value?.total_count.value,
     firstChar: conceptsAggData.value?.unique_values.buckets.map((bucket) => [
       bucket.key,
       bucket.doc_count,
     ]),
   };
+  return tmp;
 });
+
 const { data, pending } = await useLazyFetch(
   `/api/termbase/${props.termbaseId.toLowerCase()}/concepts`,
   {
     method: "POST",
     body: breakpointFetchConfig,
+    headers: process.server
+      ? { cookie: "session=" + useRuntimeConfig().apiKey }
+      : undefined,
+    retry: 1,
   }
 );
 
 const displayData = computed(() => {
-  return data.value?.map((concept) => {
+  const tmp = data.value?.map((concept) => {
     return {
       link: "/tb" + idOrUriToRoute(props.termbaseId, concept.id),
       label: concept?.displayLabel?.[locale.value]?.value,
       language: concept?.displayLabel?.[locale.value]?.language,
     };
   });
+  return tmp;
 });
 </script>
