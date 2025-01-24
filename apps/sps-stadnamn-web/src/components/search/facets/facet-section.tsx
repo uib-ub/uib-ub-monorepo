@@ -6,7 +6,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { useState } from "react"
-import { facetConfig } from "@/config/search-config"
+import { facetConfig, fieldConfig } from "@/config/search-config"
 
 
 export default function Facets() {
