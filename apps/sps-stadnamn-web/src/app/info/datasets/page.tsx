@@ -5,7 +5,7 @@ import Breadcrumbs from '@/components/layout/breadcrumbs';
 
 export const metadata: Metadata = {
     title: 'Datasett',
-    description: 'Finn søkevisninger tilpassa dei einskilde datasetta',
+    description: 'Finn søkevisningar tilpassa dei einskilde datasetta',
   }
 
 
