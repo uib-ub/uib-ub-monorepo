@@ -6,7 +6,7 @@ import { Link, routing } from '@/src/i18n/routing';
 import { Merriweather_Sans, Newsreader } from 'next/font/google'
 import Script from 'next/script'
 import * as React from 'react'
-import '@/src/globals.css'
+import '@/src/app/globals.css'
 import { MainNav } from '@/src/components/Header/MainNav';
 import LocaleSwitcher from '@/src/components/LocaleSwitcher'
 import { siteSettings } from '@/src/sanity/lib/queries/fragments';

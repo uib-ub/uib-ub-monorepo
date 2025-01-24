@@ -8,7 +8,7 @@ type Props = {
 
 export const HeaderShell: React.FC<Props> = ({ className, children }) => {
   return (
-    <header className={`flex md:text-lg font-light md:rotate-180 md:mb-2 md:[writing-mode:vertical-rl] ${className} `}>
+    <header className={`flex text-xs sm:text-md md:text-lg font-light md:rotate-180 md:mb-2 md:[writing-mode:vertical-rl] ${className} `}>
       {children}
     </header >
   );

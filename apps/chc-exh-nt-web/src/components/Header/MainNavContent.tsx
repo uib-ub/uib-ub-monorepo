@@ -40,7 +40,7 @@ export async function MainNavContent({ lang }: Readonly<{ lang: string }>) {
                 </Link>
               }
               {section?.target?.link &&
-                <Link href={`${section?.target?.link}`}>
+                <Link href={`${section?.target?.link}`} locale={section?.target?.link === 'studio' ? 'false' : ''}>
                   {section?.target?.label?.[lang]}
                 </Link>
               }
