@@ -39,7 +39,7 @@ const myPortableTextComponents = () => {
 
     block: {
       normal: ({ children }: any) => (
-        <p className='col-start-auto col-end-auto md:col-start-3 md:col-end-4 block'>
+        <p className='col-start-1 col-end-6 md:col-start-3 md:col-end-4'>
           {children}
         </p>
       ),
