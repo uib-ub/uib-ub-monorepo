@@ -277,6 +277,6 @@ export const datasetTypes: Record<string, string[]> = {
   ostf: ["encyclopedia", "topo"],
   sof: ["database", "topo"],
   tot: ["database", "sprak", "topo"],
-  ssr2016: ["database"],
+  ssr2016: ["database", "public"],
 }
 
