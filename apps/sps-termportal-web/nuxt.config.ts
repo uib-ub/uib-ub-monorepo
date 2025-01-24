@@ -20,7 +20,11 @@ export default defineNuxtConfig({
   },
   routeRules: {
     "/": { ssr: false },
+    "/search": { ssr: false },
+    "/tb/**": { ssr: false },
+    "/termbase": { ssr: false },
     "/om": { ssr: false },
+    "/instillinger": { ssr: false },
     "/api/**": {
       cors: true,
       headers: {
