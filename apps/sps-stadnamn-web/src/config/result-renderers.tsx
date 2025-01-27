@@ -1,9 +1,18 @@
 interface Renderer {
   fields?: string[];
+  title?: (hit: any, display: string) => any;
+  details?: (hit: any, display: string) => any;
+  cadastre?: (hit: any) => any;
+  snippet?: (hit: any) => any;
+  sourceWindow?: (hit: any) => any;
+}
+
+interface DefaultRenderer {
   title: (hit: any, display: string) => any;
   details: (hit: any, display: string) => any;
   cadastre?: (hit: any) => any;
-  snippet?: (hit: any) => any;
+  snippet: (hit: any) => any;
+  sourceWindow: (hit: any) => any;
 }
 
 interface ResultRenderers {
@@ -235,12 +244,9 @@ export const resultRenderers: ResultRenderers = {
     }
   },
   skul: {
-    title: (hit: any, display: string) => {
-      return <>{defaultTitle(hit)} | {hit.fields.rawData?.knr}-{hit.fields.rawData?.gnr}{hit.fields.rawData?.bnr && '/'}{hit.fields.rawData?.bnr}</>
-    },
     details: (hit: any, display: string) => {
-      return loktypeDetails(hit.fields.type && (hit.fields.type[0].toUpperCase() + hit.fields.sosi.slice(1)), hit)
-    }
+      return cadastreAdm(hit.fields["rawData.knr"], hit.fields["rawData.gnr"], hit.fields["rawData.bnr"], "/", hit.fields, display)
+    },
   },
   ostf: {
     title: (hit: any, display: string) => {
@@ -270,7 +276,7 @@ export const resultRenderers: ResultRenderers = {
 }
 
 
-export const defaultResultRenderer: Renderer = {
+export const defaultResultRenderer: DefaultRenderer = {
   title: defaultTitle,
   snippet: (hit: any) => {
     return formatHighlight(
@@ -285,6 +291,9 @@ export const defaultResultRenderer: Renderer = {
     );
   },
   details: (hit: any, display: string) => {
-    return <>{hit.fields.adm2}{hit.fields.adm1 && ', ' + hit.fields.adm1}</>
+    return formatAdm(hit.fields)
+  },
+  sourceWindow: (hit: any) => {
+    return <>{hit.fields.label} {hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
   }
 }

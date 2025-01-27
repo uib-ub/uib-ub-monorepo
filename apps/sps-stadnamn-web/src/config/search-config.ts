@@ -148,9 +148,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     skul: {
       uuid, label, location, adm, adm1, adm2,
-      "rawData.gnr": {label: "Gardsnummer", table, facet},
-      "rawData.bnr": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.gnr"]},
-      "rawData.knr": {label: "knr", table, facet},
+      "rawData.gnr": {label: "Gardsnummer", table, result, facet},
+      "rawData.bnr": {label: "Bruksnummer", table, result, facet, additionalParams: ["rawData.gnr"]},
+      "rawData.knr": {label: "knr", table, result, facet},
     },
     nbas: {
       uuid, label, location, adm, adm1, adm2, sosi, ...html,

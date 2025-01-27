@@ -18,10 +18,8 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const parent = searchParams.get('parent')
     const zoom = searchParams.get('zoom')
 
-
-    const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
-    const snippetRenderer = resultRenderers[dataset]?.snippet || defaultResultRenderer.snippet
+    const sourceWindowRenderer = resultRenderers[dataset]?.sourceWindow || defaultResultRenderer.sourceWindow
 
     
 
@@ -36,7 +34,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                         ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed(), zoom} : {}
                     }}>
 
-            <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
+            <span className="text-neutral-950">{detailsRenderer(hit, 'map')}{sourceWindowRenderer(hit)}</span>
             
             
 
