@@ -30,7 +30,7 @@ export default async function Home() {
   return (
     <>
 <main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-24 items-center justify-center pb-24 pt-4 md:pt-8 px-4 w-full flex-grow carta-marina bg-neutral-100 md:bg-transparent">
-  <div className="flex flex-col w-full xl:w-auto gap-12 md:p-8 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 self align-middle justify-center">
+  <div className="flex flex-col w-full xl:w-auto gap-12 md:p-8 lg:py-8 w-fit self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 md:shadow-lg self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
     <div className="flex flex-col gap-4">
@@ -74,12 +74,12 @@ export default async function Home() {
 
 
     <nav className="grid grid-cols-1 lg:grid-cols-2 w-full lg:w-auto justify-center items-center gap-4 lg:gap-8 text-xl lg:text-lg">
-  <Link href="/search" className="flex lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiMapTrifoldThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Utforsk kartet</span></Link>
+  <Link href="/search" className="flex shadow-lg lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiMapTrifoldThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Utforsk kartet</span></Link>
   {false && <>
-  <Link href="/info/datasets" className="flex invisible lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiBookThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Leksikon [kommer snart]</span></Link>
-  <Link href="/iiif" className="flex invisible lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiArchiveThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Arkivressurser [kommer snart]</span></Link>
+  <Link href="/info/datasets" className="flex shadow-lg invisible lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiBookThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Leksikon [kommer snart]</span></Link>
+  <Link href="/iiif" className="flex shadow-lg invisible lg:flex-col col-span-1 w-full items-center no-underline bg-white opacity-90 rounded-md p-4 whitespace-nowrap gap-4 lg:gap-2"><PiArchiveThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Arkivressurser [kommer snart]</span></Link>
   </>}
-  <Link href="/info/datasets" className="flex lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiDatabaseThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Datasett</span></Link>
+  <Link href="/info/datasets" className="flex shadow-lg lg:flex-col col-span-1 w-full items-center bg-white opacity-90 rounded-md p-4 no-underline whitespace-nowrap gap-4 lg:gap-2"><PiDatabaseThin aria-hidden="true" className="text-6xl text-primary-600"/><span>Datasett</span></Link>
 
   </nav>
 
