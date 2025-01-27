@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import React, { ReactNode, useTransition } from 'react';
-import { Locale, usePathname, useRouter } from '../i18n/routing';
+import { usePathname, useRouter } from '../i18n/navigation';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
 import { Button } from "@/src/components/ui/button";
 import {
@@ -28,7 +28,7 @@ export default function LocaleSwitcherSelect({
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
 
-  function onLocaleSelect(nextLocale: Locale) {
+  function onLocaleSelect(nextLocale: string) {
     startTransition(() => {
       router.replace(
         pathname,
@@ -54,7 +54,7 @@ export default function LocaleSwitcherSelect({
           if (React.isValidElement(child)) {
             return (
               <DropdownMenuItem
-                onClick={() => onLocaleSelect(child.props.value as Locale)}
+                onClick={() => onLocaleSelect(child.props.value as string)}
               >
                 {child.props.children}
               </DropdownMenuItem>

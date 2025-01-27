@@ -1,4 +1,4 @@
-import { Link } from '@/src/i18n/routing'
+import { Link } from '@/src/i18n/navigation'
 import { TextBlocks } from '../..'
 
 export default function Source(props: any) {

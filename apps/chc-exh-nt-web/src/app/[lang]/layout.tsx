@@ -2,7 +2,8 @@ import { ThemeProvider } from '@/src/components/providers/theme-provider'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Link, routing } from '@/src/i18n/routing';
+import { routing } from '@/src/i18n/routing';
+import { Link } from '@/src/i18n/navigation';
 import { Merriweather_Sans, Newsreader } from 'next/font/google'
 import Script from 'next/script'
 import * as React from 'react'

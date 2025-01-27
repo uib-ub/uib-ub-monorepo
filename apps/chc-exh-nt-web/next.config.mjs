@@ -1,13 +1,8 @@
-import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
 
-const withNextIntl = createNextIntlPlugin();
-
-const config = {
+const nextConfig = {
   basePath: process.env.NEXT_PUBLIC_BASE_PATH,
-  env: {
-    SC_DISABLE_SPEEDY: "false",
-  },
+  transpilePackages: ['@samvera/clover-iiif'],
   images: {
     remotePatterns: [
       {
@@ -16,6 +11,7 @@ const config = {
       },
     ],
   },
-} satisfies NextConfig;
+};
 
-export default withNextIntl(config);
+const withNextIntl = createNextIntlPlugin();
+export default withNextIntl(nextConfig);

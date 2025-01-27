@@ -1,6 +1,6 @@
 'use server'
 
-import { Link } from '@/src/i18n/routing'
+import { Link } from '@/src/i18n/navigation'
 import { sanityFetch } from '@/src/sanity/lib/fetch'
 import { mainNav } from '@/src/sanity/lib/queries/fragments'
 import React from 'react'
@@ -24,7 +24,7 @@ export async function MainNavContent({ lang }: Readonly<{ lang: string }>) {
   const data = await getMenuData(lang)
 
   return (
-    <ul className='gap-5 text-md dark:text-neutral-300 text-neutral-700'>
+    <ul className='gap-5 text-md dark:text-neutral-300 text-neutral-700 max-w-lg'>
       {data?.sections?.map((section: any) => (
         <React.Fragment key={section._key}>
           {section?.label && (
@@ -40,7 +40,7 @@ export async function MainNavContent({ lang }: Readonly<{ lang: string }>) {
                 </Link>
               }
               {section?.target?.link &&
-                <Link href={`${section?.target?.link}`} locale={section?.target?.link === 'studio' ? 'false' : ''}>
+                <Link href={`${section?.target?.link}`}>
                   {section?.target?.label?.[lang]}
                 </Link>
               }

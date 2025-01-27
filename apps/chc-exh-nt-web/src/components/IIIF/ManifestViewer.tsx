@@ -1,6 +1,7 @@
 "use client"
 
 import { Viewer } from '@samvera/clover-iiif'
+
 const customTheme = {
   colors: {
     /**

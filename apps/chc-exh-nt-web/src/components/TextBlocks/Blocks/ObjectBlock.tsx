@@ -1,7 +1,7 @@
 import { TextBlocks } from '..'
 import Source from './shared/Source'
 import SanityImage from '../../SanityImage'
-import { Link } from '@/src/i18n/routing'
+import { Link } from '@/src/i18n/navigation'
 
 const FigCaption = ({ lang, children, label, description, item }: any) => {
   return (

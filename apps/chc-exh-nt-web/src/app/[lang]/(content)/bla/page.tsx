@@ -1,6 +1,6 @@
 import { Footer } from '@/src/components/Footer'
 import SanityImage from '@/src/components/SanityImage'
-import { Link } from '@/src/i18n/routing'
+import { Link } from '@/src/i18n/navigation'
 import { sanityFetch } from '@/src/sanity/lib/fetch'
 import { items } from '@/src/sanity/lib/queries/fragments'
 import { getTranslations, setRequestLocale } from 'next-intl/server'

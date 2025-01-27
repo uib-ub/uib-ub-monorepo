@@ -15,7 +15,7 @@ import {
   Gallery,
   PublicationBlock,
 } from './Blocks'
-import { Link } from '@/src/i18n/routing'
+import { Link } from '@/src/i18n/navigation'
 
 const myPortableTextComponents = () => {
   return {

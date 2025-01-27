@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function ItemPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
   const { lang, id } = await params
   const item = await getItem(id, lang)
-  console.log("🚀 ~ ItemPage ~ item:", item)
+
   const t = await getTranslations('Item')
 
   if (!item) {

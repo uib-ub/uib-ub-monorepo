@@ -1,5 +1,3 @@
-import Link from 'next/link'
-import React from 'react'
 import { FaCalendar } from 'react-icons/fa'
 import { defineType } from 'sanity'
 import { coalesceLabel, timespanAsString } from '../../../helpers'
@@ -56,15 +54,6 @@ export default defineType({
     {
       name: 'hasType',
       title: 'Klassifisert som',
-      description: (
-        <span>
-          Hendelsestype som f.eks. Soppsanking. Legg til{' '}
-          <Link target="blank" href={'/desk/andreTyper;EventType'}>
-            ny hendelsestype
-          </Link>
-          .
-        </span>
-      ),
       type: 'array',
       of: [
         {
