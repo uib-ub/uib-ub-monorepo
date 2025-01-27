@@ -49,7 +49,7 @@ export default function ResultItem({hit}: {hit: any}) {
             {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 
             <span className="self-center flex gap-1 items-center">
                 <PiFiles aria-hidden="true"/>
-                <span>{hit.fields.children.length} kilder</span>
+                <span>{hit.fields.children.length} kjelder</span>
                 </span>
                 
             :<span className="self-center flex gap-1 items-center">

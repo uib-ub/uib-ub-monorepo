@@ -34,14 +34,14 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
 
         {parent ? 
             childrenLoading ? 
-                <div className="flex justify-center h-24 m-12"><Spinner status={treeSettings[dataset] ? 'Laster garder' : 'Laster kilder'} className="w-full h-full m-2 self-center" /></div>
+                <div className="flex justify-center h-24 m-12"><Spinner status={treeSettings[dataset] ? 'Lastar garder' : 'Lastar kjelder'} className="w-full h-full m-2 self-center" /></div>
             :
         
                 <div >
 
                 { treeSettings[dataset] ?  
                     parentData?._id && <CadastralSubdivisions/>
-                :  dataset == 'search' && <>{parent && parent != doc && <h2 className="!text-base font-semibold uppercase !font-sans px-1">Andre kilder</h2>}<SourceList/></>}
+                :  dataset == 'search' && <>{parent && parent != doc && <h2 className="!text-base font-semibold uppercase !font-sans px-1">Andre kjelder</h2>}<SourceList/></>}
                 </div>
             
 
