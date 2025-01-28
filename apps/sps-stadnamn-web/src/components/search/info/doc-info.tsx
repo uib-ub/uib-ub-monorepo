@@ -46,25 +46,42 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
 
     return <><article className="instance-info flex flex-col gap-3 mobile-padding">
-      {((dataset != 'search' && docData?._source?.within && docDataset) || !isMobile) && <div className="!mt-0">
+      {(((docDataset && dataset != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
 
-        { dataset == 'search' && docDataset != 'search' && <div className="flex gap-1 text-neutral-800 uppercase font-semibold tracking-wider items-center">{datasetTitles[docDataset as string]}
-        <Link aria-label="Info om datasettet" href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
+        { dataset == 'search' && docDataset != 'search' && <div className="flex gap-1  items-center">
+          
+          <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
+          
+        <IconLink label="Om datasettet" 
+              href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
               className="flex items-center">
-                <PiInfoFill aria-hidden="true" className="text-primary-600"/>
-                </Link>
+                <PiInfoFill aria-hidden="true" className="text-lg text-primary-600"/>
+        </IconLink>
+        
+        
                 </div>
         }
+        
 
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-        {mode == 'map' && 
+        {mode == 'map' && !isMobile && 
+        <div className="absolute top-2 right-2 flex gap-2">
+          {snidParent && dataset == 'search' &&
+            <ClickableIcon label="Gå til stadnamnoppslag" 
+                           add={{doc: snidParent}} 
+                           aria-hidden="true" 
+                           className="flex items-center">
+                            {dataset == 'search' ? <PiCaretLeft className="text-2xl"/> :<PiTag className="text-2xl"/>}
+          </ClickableIcon>}
           <Clickable 
             remove={["doc"]} 
-            className="absolute top-2 right-2 text-2xl" 
+            className="text-2xl" 
             aria-label="Lukk">
             <PiX aria-hidden="true"/>
-        </Clickable>}
+        </Clickable>
+        </div>
+        }
  
         </div>}
 
