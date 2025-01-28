@@ -11,6 +11,7 @@ import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import Clickable from '@/components/ui/clickable/clickable';
 
 
 
@@ -62,7 +63,9 @@ export default function SearchForm() {
         <Form ref={form} action="/search" className="flex w-full items-center h-full" onSubmit={() => setAllowFlyTo(true)}>
             
             <div className='flex w-full h-full items-center bg-white border-x-2 border-neutral-200 group px-2'>
-            <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900"/>
+            {(!isMobile || dataset == 'search') ? <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
+            : <Clickable only={{dataset: 'search'}} aria-hidden="true" className="flex no-underline max-w-[50%] text-sm flex-nowrap items-center gap-1 bg-accent-700 text-white rounded-md px-2 py-1 whitespace-nowrap"><span className="truncate">{datasetTitles[dataset]}</span><PiX className="text-xs" aria-hidden="true"/></Clickable>
+            }
             <label htmlFor="search-input" className="sr-only">Søk</label>
             <input 
                 id="search-input"
@@ -72,7 +75,7 @@ export default function SearchForm() {
                 name="q" 
                 value={inputValue} 
                 onChange={(event) => setInputValue(event.target.value)} 
-                className="px-4 bg-transparent focus:outline-none flex w-full shrink"
+                className={`bg-transparent ${dataset == 'search' ? 'px-4' : 'pr-4 pl-2'} focus:outline-none flex w-full shrink`}
             />
             
             {searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
