@@ -59,7 +59,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </IconLink>
         
         
-                </div>
+        </div>
         }
         
 
