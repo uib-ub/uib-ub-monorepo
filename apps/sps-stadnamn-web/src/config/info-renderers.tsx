@@ -69,7 +69,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       }
 
       <CollapsibleHeading title="Detaljer">
-        <FacetsInfobox dataset={'search'} source={source}/>
+        <FacetsInfobox source={source}/>
       </CollapsibleHeading>
 
     
@@ -94,7 +94,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
     */
     return <>
-    <FacetsInfobox dataset={'sof'} source={source}/>
+    <FacetsInfobox source={source}/>
     
     </>
   },
@@ -127,7 +127,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </div>
     }
     <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox dataset={'rygh'} source={source}/>
+      <FacetsInfobox source={source}/>
     </CollapsibleHeading>
 
     </>
@@ -161,7 +161,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </div>
     }
     <CollapsibleHeading title="Detaljer">
-    <FacetsInfobox dataset={'leks'} source={source}/>
+    <FacetsInfobox source={source}/>
     </CollapsibleHeading>
   </>
   },
@@ -180,7 +180,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     }
     </div>
     <CollapsibleHeading title="Detaljer">
-    <FacetsInfobox dataset={'bsn'} source={source} />
+    <FacetsInfobox source={source} />
     </CollapsibleHeading>
     </>
   },
@@ -217,13 +217,13 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </div>
     {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
     <CollapsibleHeading title="Detaljer">
-    <FacetsInfobox dataset={'hord'} source={source}/>
+    <FacetsInfobox source={source}/>
     </CollapsibleHeading>
     </>
   },
   nbas: (source: any) => {
     return <>
-    <FacetsInfobox dataset={'nbas'} source={source}/>
+    <FacetsInfobox source={source}/>
     </>
   },  
   m1838: (source: any) => {
@@ -234,7 +234,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <Link href={source.rawData.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Digital matrikkel</Link>
     </div>
     <CollapsibleHeading title="Detaljer">
-    <FacetsInfobox dataset={'m1838'} source={source}/>
+    <FacetsInfobox source={source}/>
     </CollapsibleHeading>
 
     </>
@@ -245,7 +245,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.sosi != 'gard' &&
       <>
       <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox dataset={'mu1950'} source={source}/>
+      <FacetsInfobox source={source}/>
       </CollapsibleHeading>
       </>
     }
@@ -262,7 +262,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     </div> }
     <div>
       <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox dataset={'m1886'} source={source}/>
+      <FacetsInfobox source={source}/>
       </CollapsibleHeading>
     </div>
 
@@ -297,14 +297,14 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       </div>
       }
       <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox dataset={'ostf'} source={source}/>
+      <FacetsInfobox source={source}/>
       </CollapsibleHeading>
       
       </>
     },
     ssr2016: (source: any) => {
       return <>
-      <FacetsInfobox dataset={'ssr2016'} source={source}/>
+      <FacetsInfobox source={source}/>
       </>
     
     }
