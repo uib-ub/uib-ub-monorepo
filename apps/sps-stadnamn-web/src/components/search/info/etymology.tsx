@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo, useRef } from 'react';
 import { infoPageRenderers } from '@/config/info-renderers';
 import { DocContext } from '@/app/doc-provider';
 
@@ -12,37 +12,38 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { docLoading } = useContext(DocContext);
+    const uuidRef = useRef(uuids);
 
     const leks_etymology = infoPageRenderers['leks_etymology']
 
+    // Memoize the uuids array to maintain referential equality
+
     useEffect(() => {
-
-
-            setLoading(true);
-            fetch("/api/etymology", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ uuids, etymologyDataset })
-            })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                const hits = data.hits?.hits || [];
-                if (hits.length > 0) {
-                    const htmlContent = hits[0].fields['content.html'][0];
-                    setEtymology(htmlContent);
-                } else {
-                    setEtymology(null);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-        
-    }, [JSON.stringify(uuids)]);
+        setLoading(true);
+        console.log("FETCHING")
+        fetch("/api/etymology", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ uuids: uuidRef.current, etymologyDataset })
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            const hits = data.hits?.hits || [];
+            if (hits.length > 0) {
+                const htmlContent = hits[0].fields['content.html'][0];
+                setEtymology(htmlContent);
+            } else {
+                setEtymology(null);
+            }
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+    }, [uuidRef, etymologyDataset]);
 
     return (
         <div>
