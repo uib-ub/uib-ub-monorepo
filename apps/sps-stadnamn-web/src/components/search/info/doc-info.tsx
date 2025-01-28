@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft, PiArrowLeft } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -49,6 +49,12 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       {(((docDataset && dataset != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
 
         { dataset == 'search' && docDataset != 'search' && <div className="flex gap-1  items-center">
+          {parent && isMobile && <ClickableIcon label="Tilbake" 
+        add={{doc: parent}}
+        className="text-lg flex p-1 mr-3 rounded-md bg-neutral-50 border border-neutral-200 items-center no-underline"
+        aria-label="Tilbake">
+            <PiArrowLeft className="text-neutral-800 text-sm"/>
+        </ClickableIcon>}
           
           <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
@@ -60,6 +66,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
         
         </div>
+      
         }
         
 
