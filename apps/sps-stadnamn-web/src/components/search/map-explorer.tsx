@@ -96,8 +96,7 @@ export default function MapExplorer() {
     return docData?._source?.location?.coordinates[1] == lat && docData?._source?.location?.coordinates[0] == lon
   }
 
-  const clientCluster = (data: any) => {
-
+  const clientCluster = useCallback((data: any) => {
     const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
 
     data.hits.hits.forEach((hit: any) => {
@@ -130,7 +129,7 @@ export default function MapExplorer() {
     })
 
     return {...data, hits: {markers}}
-  }
+  }, [zoom])
 
 
 
@@ -262,7 +261,7 @@ export default function MapExplorer() {
       );
 
     //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
-  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading]);
+  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode, clientCluster]);
 
 
 // Fly to results, doc or children
