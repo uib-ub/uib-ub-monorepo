@@ -13,6 +13,7 @@ interface EtymologyProps {
 
 function stripHtmlAndLimitText(html: string) {
     const maxLength = 200;
+    const truncateThreshold = 300;
     
     // Add closing tags for any unclosed tags
     const openTags: string[] = [];
@@ -46,7 +47,7 @@ function stripHtmlAndLimitText(html: string) {
     }
 
     // Add closing tags in reverse order
-    const isTruncated = cleanHtml.length > maxLength;
+    const isTruncated = cleanHtml.length > truncateThreshold;
     if (isTruncated) {
         const lastSpace = cleanHtml.lastIndexOf(' ', maxLength);
         cleanHtml = cleanHtml.slice(0, lastSpace) + '...';
