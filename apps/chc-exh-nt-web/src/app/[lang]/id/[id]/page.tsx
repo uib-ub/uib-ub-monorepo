@@ -1,6 +1,8 @@
+export const dynamic = 'force-dynamic'
+
 import { sanityFetch } from '@/src/sanity/lib/fetch'
 import { item } from '@/src/sanity/lib/queries/fragments'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Description } from '@/src/components/Props/Description'
 import { CodeBracketSquareIcon, IdentificationIcon, SwatchIcon } from '@heroicons/react/24/outline'
 import ManifestViewer from "@/src/components/IIIF/ManifestViewer"
@@ -38,6 +40,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function ItemPage({ params }: { params: Promise<{ lang: string, id: string }> }) {
   const { lang, id } = await params
+  // Enable static rendering
+  setRequestLocale(lang);
   const item = await getItem(id, lang)
 
   const t = await getTranslations('Item')

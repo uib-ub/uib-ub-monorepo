@@ -1,3 +1,5 @@
+export const dynamic = 'force-static'
+
 import { Footer } from '@/src/components/Footer'
 import SanityImage from '@/src/components/SanityImage'
 import { Link } from '@/src/i18n/navigation'
@@ -19,6 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params
   // Enable static rendering
   setRequestLocale(lang);
+
   const t = await getTranslations({ locale: lang, namespace: 'Bla' })
 
   return {

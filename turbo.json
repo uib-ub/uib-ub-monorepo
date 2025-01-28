@@ -41,6 +41,9 @@
       "dependsOn": [
         "^build"
       ]
+    },
+    "start": {
+      "cache": true
     }
   }
 }

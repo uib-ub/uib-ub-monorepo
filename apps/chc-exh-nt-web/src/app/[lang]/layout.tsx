@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { ThemeProvider } from '@/src/components/providers/theme-provider'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
@@ -13,7 +15,6 @@ import LocaleSwitcher from '@/src/components/LocaleSwitcher'
 import { siteSettings } from '@/src/sanity/lib/queries/fragments';
 import { sanityFetch } from '@/src/sanity/lib/fetch';
 import { MainNavContent } from '@/src/components/Header/MainNavContent';
-import { Footer } from '@/src/components/Footer';
 import { ThemeSwitch } from '@/src/components/ThemeSwitch';
 import { UiBUBMarcusLogo, UibIcon } from 'assets/src/react';
 import { Popover, PopoverTrigger } from '@radix-ui/react-popover';

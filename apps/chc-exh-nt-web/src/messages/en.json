@@ -29,5 +29,12 @@
     "production": "Production",
     "subjects": "Subjects",
     "palette": "Colour palette"
+  },
+  "NotFoundPage": {
+    "title": "404 - Page not found"
+  },
+  "Error": {
+    "title": "500 - Something went wrong",
+    "retry": "Try again"
   }
 }

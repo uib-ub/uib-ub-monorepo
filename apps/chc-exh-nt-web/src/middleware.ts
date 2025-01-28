@@ -14,7 +14,8 @@ export const config = {
     '/',
     // Match all locale prefixes
     '/(no|en|ar)/:path*',
-    '/((?!api|_next|studio|favicon.ico|robots.txt|.*\\..*).*)',
+
+    '/((?!api|_next|_vercel|.*\\..*).*)',
   ]
 };
 

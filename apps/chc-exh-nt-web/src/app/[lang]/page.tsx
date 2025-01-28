@@ -16,10 +16,11 @@ async function getData(lang: string) {
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
-  const t = await getTranslations('HomePage')
-  const data = await getData(lang)
   // Enable static rendering
   setRequestLocale(lang);
+
+  const t = await getTranslations('HomePage')
+  const data = await getData(lang)
   const { identifiedBy, image } = data
 
   const page = data.frontpage.find((item: any) => item.language === lang) ?? data[0].translation.find((item: any) => item.language === 'no')

@@ -29,5 +29,13 @@
     "prettier": "^3.0.3",
     "turbo": "^2.0.6"
   },
-  "packageManager": "npm@9.8.1"
+  "packageManager": "npm@9.8.1",
+  "nohoist": [
+    "**/react",
+    "**/react-dom",
+    "**/next",
+    "**/react/**",
+    "**/react-dom/**",
+    "**/next/**"
+  ]
 }

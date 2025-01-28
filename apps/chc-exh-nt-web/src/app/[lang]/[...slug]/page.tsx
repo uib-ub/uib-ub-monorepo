@@ -42,6 +42,7 @@ async function getData(lang: string, slug: string[]) {
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string, slug: string[] }> }) {
   const { lang, slug } = await params;
+
   const data = await getData(lang, slug);
   const page = data[0].translation.find((item: any) => item.language === lang) ?? data[0].translation.find((item: any) => item.language === 'no')
 
@@ -65,12 +66,13 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function Page({ params }: { params: Promise<{ lang: string, slug: string[] }> }) {
   const { lang, slug } = await params
+  // Enable static rendering
+  setRequestLocale(lang)
+
   const data = await getData(lang, slug);
   const page = data[0].translation.find((item: any) => item.language === lang) ?? data[0].translation.find((item: any) => item.language === 'no')
   const localeCaption = page.about?.caption?.filter((i: any) => stegaClean(i.language) === lang)[0]?.body
 
-  // Enable static rendering
-  setRequestLocale(lang)
   const t = await getTranslations('Page')
 
   return (

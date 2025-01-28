@@ -29,5 +29,12 @@
     "production": "Laget av",
     "subjects": "Emneord",
     "palette": "Fargepalett"
+  },
+  "NotFoundPage": {
+    "title": "404 - Side ikke funnet"
+  },
+  "Error": {
+    "title": "500 - Noe gikk galt",
+    "retry": "Prøv igjen"
   }
 }
