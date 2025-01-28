@@ -1,5 +1,4 @@
 export function addPadding(bounds: [[number, number], [number, number]], isMobile: boolean): [[number, number], [number, number]] {
-    console.log("ISMOBILE", isMobile)
     if (isMobile) {
         const padding = bounds[1][0] - bounds[0][0]
         return [
