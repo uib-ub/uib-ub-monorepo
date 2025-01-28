@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState, useCallback } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, baseMapProps, defaultBaseMap } from "@/config/basemap-config";
 import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
@@ -37,6 +37,7 @@ export default function MapExplorer() {
   const dataset = useDataset()
   const { childrenData, childrenLoading, childrenBounds } = useContext(ChildrenContext)
   const { isMobile, allowFlyTo } = useContext(GlobalContext)
+  const programmaticChange = useRef(false)
 
   const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
@@ -270,6 +271,7 @@ useEffect(() => {
   
     if (doc && !parent && docData?._source?.location?.coordinates?.length && (docData?._source.uuid == doc || docData._source.children?.includes(doc))) {
       console.log("FLY 1")
+
       const bounds = mapInstance.current.getBounds();
       const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
         if (bounds && !bounds.contains(center)) {
@@ -293,11 +295,13 @@ useEffect(() => {
 
   // When resultBounds changes
   useEffect(() => {
-    if (resultBounds?.length && allowFlyTo) {
+    //console.log("RESULTBOUNDS", resultBounds)
+    if (resultBounds?.length && !zoom && !center) {
       console.log("FLY 3");
       mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
+
     }
-  }, [resultBounds, allowFlyTo]);
+  }, [resultBounds, zoom, center]);
 
 
 
@@ -343,12 +347,22 @@ useEffect(() => {
     }
   }, [markerMode])
 
+  useEffect(() => {
+    //console.log("ZOOM", programmaticChange.current)
+    if (!programmaticChange.current && center && zoom) {
+      mapInstance.current?.setView([center[0], center[1]], zoom)
+    }
+    programmaticChange.current = false
+
+  }, [zoom, center])
+
 
 
   const zoomIn = () => {
     if (mapInstance.current) {
       mapInstance.current.zoomIn();
     } else {
+      programmaticChange.current = true
       setZoom(prev => (prev || 5) + 1);
     }
   };
@@ -357,7 +371,9 @@ useEffect(() => {
     if (mapInstance.current) {
       mapInstance.current.zoomOut();
     } else {
+      programmaticChange.current = true
       setZoom(prev => Math.max((prev || 5) - 1, 1));
+      
     }
   };
 
@@ -457,6 +473,7 @@ useEffect(() => {
               mapInstance.current = e.target
             }
             setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+            programmaticChange.current = true
             setZoom(e.target.getZoom())
             setCenter([bounds.getCenter().lat, bounds.getCenter().lng])
           
@@ -478,7 +495,7 @@ useEffect(() => {
                 controllerRef.current.abort();
                 controllerRef.current = new AbortController();
 
-                console.log("MOVEEND")
+                //console.log("MOVEEND")
                 
                 const bounds = map.getBounds();
                 const boundsCenter = bounds.getCenter();
@@ -487,6 +504,7 @@ useEffect(() => {
                   console.log("DOCVIEW", docView)
                   docView.current = {center: [boundsCenter.lat, boundsCenter.lng].join(','), zoom: mapZoom.toString()}
                 }
+                programmaticChange.current = true
                 setCenter([boundsCenter.lat, boundsCenter.lng]);
                 setZoom(map.getZoom());
                 setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
