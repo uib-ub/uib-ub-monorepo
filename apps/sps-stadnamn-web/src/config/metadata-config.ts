@@ -241,7 +241,7 @@ export const typeNames: Record<string, string> = {
   "sprak": "Språksamlinganes arkiv",
   "encyclopedia": "Oppslagsverk",
   "database": "Database",
-  "public": "Offentlig register",
+  "public": "Offentleg register",
   "topo": "Djupinnsamling"
 }
 
