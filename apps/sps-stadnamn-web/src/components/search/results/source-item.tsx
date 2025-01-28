@@ -34,7 +34,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                         ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed(), zoom} : {}
                     }}>
 
-            <span className="text-neutral-950">{detailsRenderer(hit, 'map')}{sourceWindowRenderer(hit)}</span>
+            <span className="text-neutral-950">{sourceWindowRenderer(hit)}</span>
             
             
 
