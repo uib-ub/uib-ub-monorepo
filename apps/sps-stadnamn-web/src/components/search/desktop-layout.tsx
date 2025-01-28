@@ -75,7 +75,7 @@ export default function DesktopLayout() {
             </h2>
             
 
-            {parent && parent != doc && <Clickable link className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiArrowUpBold className="text-neutral-800 text-xl"/> Stadnamnoppslag</Clickable>}
+            {parent && parent != doc && <Clickable link className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiTagFill className="text-neutral-800 text-xl"/> Stadnamnoppslag</Clickable>}
             {parent && <Clickable link remove={["parent"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></Clickable>}
             
             </div>
