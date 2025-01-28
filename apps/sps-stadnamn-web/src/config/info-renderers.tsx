@@ -31,7 +31,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 
 
-export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
+export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Element)> = {
   search: (source: any) => {
     //const uniqueLabels = getUniqueAltLabels(source, source.label, ['altLabels', 'attestations.label'])
     const uniqueLabels = new Set<string>(source.altLabels?.filter((label: string) => label !== source.label))
@@ -68,36 +68,11 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
       </div>
       }
 
-      <CollapsibleHeading title="Detaljer">
-        <FacetsInfobox source={source}/>
-      </CollapsibleHeading>
-
     
     
     </>
   },
-  sof: (source: any) => {
-    /*
-    <InfoBox dataset={'sof'} items={[
-      {title: 'Normert form', value: source.rawData.Normform},
-      {title: 'Oppslagsform', value: source.rawData.OppsForm},
-      {title: 'Lydskrift', value: source.rawData.Fonskr},
-      {title: 'Kulturkode', value: source.rawData.Kulturkode},
-      {title: 'Kommunenummer', value: source.rawData.KommuneNr},
-      {title: 'Kommune', value: source.adm2},
-      {title: 'Fylke', value: source.adm1},
-      {title: 'Gardsnummer', value: source.rawData.Gardsnr},
-      {title: 'Bruksnummer', value: source.rawData.Bruksnr},
-      {title: 'Oppskriver', value: source.rawData.Oppskrivar},
-      {title: 'Informant', value: source.rawData.Informant}
-    ]}/>
-
-    */
-    return <>
-    <FacetsInfobox source={source}/>
-    
-    </>
-  },
+  sof: null,
   rygh: (source: any) => {
     return <>
     { source.cadastre?.length > 0 &&
@@ -126,9 +101,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
     </div>
     }
-    <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox source={source}/>
-    </CollapsibleHeading>
 
     </>
   },
@@ -160,9 +132,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
     </div>
     }
-    <CollapsibleHeading title="Detaljer">
-    <FacetsInfobox source={source}/>
-    </CollapsibleHeading>
   </>
   },
   leks_g: (source: any) => {
@@ -179,9 +148,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
      : source.rawData?.supplemented?.merknad && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.supplemented?.merknad}</div>
     }
     </div>
-    <CollapsibleHeading title="Detaljer">
-    <FacetsInfobox source={source} />
-    </CollapsibleHeading>
     </>
   },
   hord: (source: any) => {
@@ -216,16 +182,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
     </div>
     {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
-    <CollapsibleHeading title="Detaljer">
-    <FacetsInfobox source={source}/>
-    </CollapsibleHeading>
     </>
   },
-  nbas: (source: any) => {
-    return <>
-    <FacetsInfobox source={source}/>
-    </>
-  },  
+  nbas: null,
   m1838: (source: any) => {
     return <>
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}
@@ -233,9 +192,6 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     <Link href={source.rawData.Lenke_til_skannet_matrikkel} className='rectangular-external-link'>Skannet matrikkel</Link>
     <Link href={source.rawData.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Digital matrikkel</Link>
     </div>
-    <CollapsibleHeading title="Detaljer">
-    <FacetsInfobox source={source}/>
-    </CollapsibleHeading>
 
     </>
 
@@ -260,11 +216,7 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
     {source.rawData?.lenke_til_digital_matrikkel && <div className="flex flex-wrap mt-3 gap-4">
     <Link href={source.rawData.lenke_til_digital_matrikkel} className='rectangular-external-link'>Digital matrikkel</Link>
     </div> }
-    <div>
-      <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox source={source}/>
-      </CollapsibleHeading>
-    </div>
+
 
     </>
   },    
@@ -295,18 +247,9 @@ export const infoPageRenderers: Record<string, (source: any) => JSX.Element> = {
 
       </ul>
       </div>
-      }
-      <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox source={source}/>
-      </CollapsibleHeading>
-      
+      }      
       </>
     },
-    ssr2016: (source: any) => {
-      return <>
-      <FacetsInfobox source={source}/>
-      </>
-    
-    }
+    ssr2016: null
   
   }

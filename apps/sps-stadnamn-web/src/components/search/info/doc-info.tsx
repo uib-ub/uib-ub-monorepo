@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -17,11 +17,16 @@ import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import CoordinateInfo from "./coordinate-info"
 import ExternalLinkTooltip from "@/components/ui/clickable/external-link-tooltip"
 import Etymology from "./etymology"
+import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import IconLink from "@/components/ui/icon-link"
+import FacetsInfobox from "@/components/doc/facets-infobox"
+
+
 
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
     const dataset = useDataset()
-    let { docDataset, docData, snidParent, sameMarkerList, docView } = useContext(DocContext)
+    let { docDataset, docData, snidParent, sameMarkerList } = useContext(DocContext)
     if (docParams) {
         docDataset = docParams.docDataset
         docData = docParams.docData
@@ -119,7 +124,11 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
       
       
-      { docDataset && infoPageRenderers[docDataset] && infoPageRenderers[docDataset](docSource) }
+      { docDataset && infoPageRenderers[docDataset]?.( docSource) }
+
+      {docDataset != 'mu1950' && <CollapsibleHeading title="Detaljer">
+          <FacetsInfobox source={docSource} />
+      </CollapsibleHeading>}
 
       
 
