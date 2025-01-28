@@ -161,7 +161,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             </>
             : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
             }
-            {snidParent &&
+            {dataset != 'search' && snidParent &&
                 <Clickable link className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: 'search', doc: snidParent}}>
                   <PiTag className="text-neutral-800" aria-hidden="true"/>
                   Stadnamnoppslag
