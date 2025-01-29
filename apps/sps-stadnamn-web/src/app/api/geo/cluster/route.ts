@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   const sortArray = getSortArray(dataset)
   const zoom = parseInt(filteredParams.zoom)
   const totalHits = filteredParams.totalHits
-  console.log(filteredParams.bottomRightLat, filteredParams.bottomRightLng)
+  //console.log(filteredParams.bottomRightLat, filteredParams.bottomRightLng)
   
 
   const zoomLevels  = {
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
         14: 500000,
         15: 1000000
     }[zoom] || 100000
-    console.log("TARGET POINTS", targetPoints)
+    //console.log("TARGET POINTS", targetPoints)
     
     // Calculate probability to get roughly targetPoints
     const probability = targetPoints / Number(totalHits);

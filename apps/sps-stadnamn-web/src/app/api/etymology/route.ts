@@ -12,12 +12,12 @@ export async function POST(request: Request) {
     }
 
     // Log the uuids array to check its structure
-    console.log("UUIDs received:", uuids);
+    //console.log("UUIDs received:", uuids);
 
     // Flatten the uuids array if necessary
     if (Array.isArray(uuids[0])) {
         uuids = uuids.flat();
-        console.log("Flattened UUIDs:", uuids);
+        //console.log("Flattened UUIDs:", uuids);
     }
 
     const query = {
@@ -30,15 +30,17 @@ export async function POST(request: Request) {
         },
     };
 
-    console.log("Query being sent:", JSON.stringify(query, null, 2));
+    //console.log("Query being sent:", JSON.stringify(query, null, 2));
 
     const [data, status] = await postQuery(body.etymologyDataset, query);
 
+    /*
     if (!data) {
         console.error("No data returned from postQuery");
     } else {
         console.log("Data received:", data);
     }
+    */
 
     return Response.json(data, { status: status });
 }
