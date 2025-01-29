@@ -18,9 +18,20 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const parent = searchParams.get('parent')
     const zoom = searchParams.get('zoom')
 
-    const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
-    const sourceWindowRenderer = resultRenderers[dataset]?.sourceWindow || defaultResultRenderer.sourceWindow
 
+    const detailsRenderer = resultRenderers[docDataset]?.details || defaultResultRenderer.details
+    const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
+    const sourceWindowRenderer = resultRenderers[docDataset]?.sourceWindow || defaultResultRenderer.sourceWindow
+
+    // labels that either have a year or are different from the main label
+    const attestationsLabels = hit.fields.attestations?.map((att: {label: string}) => att.label) || []
+    const allLabels = hit.fields.altLabels?.filter((label: string) => label !== hit.fields.label && !attestationsLabels.includes(label))?.map((label: string) => {label}) || []
+    hit.fields.attestations?.forEach((att: {label: string, year: number}) => {
+        if (att?.year) {
+            allLabels.push({label: att.label, year: att?.year})
+        }
+    })
+    
     
 
     return  <li className="flex flex-grow !p-0 !m-0">
@@ -34,8 +45,10 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                         ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed(), zoom} : {}
                     }}>
 
-            <span className="text-neutral-950">{sourceWindowRenderer(hit)}</span>
-            
+            <span className="text-neutral-950">
+                {titleRenderer(hit, 'map')}</span> 
+                {allLabels?.map((item: {label: string, year?: number}, index: number) => <span key={index}>{item?.label}{item?.year ? ` (${item?.year})` : ''}</span>)}
+       
             
 
             </Clickable>

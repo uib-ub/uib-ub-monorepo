@@ -30,7 +30,7 @@ export default function DesktopLayout() {
     const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
     const dataset = useDataset()
     const { parentLoading, parentData, docLoading, docData, docView } = useContext(DocContext)
-    const { childrenLoading, childrenData } = useContext(ChildrenContext)
+    const { childrenLoading, childrenData, childrenCount, shownChildrenCount } = useContext(ChildrenContext)
 
     const [parent, setParent] = useQueryState('parent')
 
@@ -66,7 +66,15 @@ export default function DesktopLayout() {
 
             
 
-             <><PiFilesFill className="text-2xl text-primary-600"/><span className="text-xl">Kjelder</span><div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">{docData?._source?.children?.length || childrenData?.length}</div></>
+             <><PiFilesFill className="text-2xl text-primary-600"/>
+                <span className="text-xl">Kjelder</span>
+                { childrenCount > 0 &&
+                    <div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">
+                    {shownChildrenCount != (docData?._source?.children?.length || childrenData?.length) ? `${shownChildrenCount}/${docData?._source?.children?.length || childrenData?.length}` : shownChildrenCount}</div>
+                }
+                    
+                    
+                    </>
             
 
             
@@ -76,7 +84,7 @@ export default function DesktopLayout() {
             
 
             {parent && parent != doc && <Clickable link className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiTagFill className="text-neutral-800 text-xl"/> Stadnamnoppslag</Clickable>}
-            {parent && <Clickable link remove={["parent"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></Clickable>}
+            {parent && <Clickable link remove={["parent", "sourceDataset", "sourceLabel"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></Clickable>}
             
             </div>
             }

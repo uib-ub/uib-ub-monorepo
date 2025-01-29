@@ -1,7 +1,10 @@
+import { useSearchParams } from "next/navigation";
 import Clickable from "../ui/clickable/clickable";
 
 export default function Timeline(arr: { label: string; year: string }[]) {
   const grouped: Record<string,string[]> = {};
+  const searchParams = useSearchParams()
+  const doc = searchParams.get('doc')
 
   arr?.forEach(item => {
       if (grouped[item.year]) {
@@ -17,24 +20,23 @@ export default function Timeline(arr: { label: string; year: string }[]) {
 
 
 return (
-  <ul className='relative !mx-2 !px-0 p-2 mt-2'>
+  <ul className='relative !mx-2 !px-0 p-2'>
     {timelineData.map((item, index) => {
       const [year, labels] = Object.entries(item)[0];
 
       return (
         <li key={index} className='flex items-center !pb-4 !pt-0 relative'>
-
-        <div className={`bg-primary-300 absolute w-1 left-0 top-0 ${index === timelineData.length -1 ? 'h-2' : 'h-full'} ${index === 0 && 'mt-2'}`}></div>
-        <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-1`}></div>
         
+        <div className={`bg-primary-300 absolute w-1 left-0 top-1 ${index === timelineData.length -1 ? 'h-2' : 'h-full'} ${index === 0 && 'mt-2'}`}></div>
+        <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2`}></div>
         
-
-        <div className={`ml-6`}>
-          <span><Clickable link add={{attestationYear: year}} className='no-underline font-semibold whitespace-nowrap py-0 px-2 mr-2 my-1 bg-primary-100 border border-primary-300 shadow-sm rounded-full'>{year}</Clickable></span>
+        <div className={`ml-6 flex gap-1`}>
+        <span className='mr-2 my-1'>{year}</span>
+        <div className="flex flex-wrap gap-1 whitespace-nowrap">
               {labels.map((label, i) => ( 
-                <span key={i}>{i < labels.length && i > 0 ? ', ': ''}{label}</span>
-               
+                <span key={i}><Clickable add={{sourceLabel: label, parent: doc}} remove={["sourceLabel", "sourceDataset"]} className='no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-3 py-1 max-w-[15svw] truncate' key={i}>{label}</Clickable></span>
               ))}
+        </div>
         </div>
       </li>
       );

@@ -3,12 +3,9 @@ import React, { Fragment } from 'react';
 
 
 import FacetsInfobox from '@/components/doc/facets-infobox';
-import { getValueByPath } from '@/lib/utils';
-import { treeSettings } from './server-config';
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
-import Timeline from '@/components/doc/timeline';
 
 
 
@@ -32,46 +29,7 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 
 export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Element)> = {
-  search: (source: any) => {
-    //const uniqueLabels = getUniqueAltLabels(source, source.label, ['altLabels', 'attestations.label'])
-    const uniqueLabels = new Set<string>(source.altLabels?.filter((label: string) => label !== source.label))
-    source.attestations?.forEach((item: any) => {
-      if (item.label !== source.label) {
-        uniqueLabels.add(item.label)
-      }
-    })
-
-    const hasAltLabels = uniqueLabels.size > 0
-    const hasAttestations = source.attestations?.some((item: any) => item.label != source.label) && source.attestations?.length > 1
-
-
-    return <>
-    { hasAltLabels && hasAttestations &&
-    <div className="border-2 p-2 inner-slate flex flex-col">
-    {hasAltLabels && <ul className='flex flex-wrap !list-none !p-0 gap-1'>
-    {Array.from(uniqueLabels).map((label: string, index: number) => {
-      return <li key={index} className='whitespace-nowrap'>
-        <Clickable link add={{attestationLabel: label}} className="no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-3 py-1">
-        {label}
-        </Clickable></li>
-    }
-    )}
-    </ul>}
-    
-    {hasAttestations && 
-      <>
-        
-        {Timeline(source.attestations)}
-      </>}
-
-    
-      </div>
-      }
-
-    
-    
-    </>
-  },
+  search: null,
   sof: null,
   rygh: (source: any) => {
     return <>

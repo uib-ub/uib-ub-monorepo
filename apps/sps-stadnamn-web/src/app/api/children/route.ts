@@ -19,7 +19,7 @@ export async function POST(request: Request) {
                                         }
                                     }
 
-    const allFields = [...new Set(Object.values(resultConfig).flat())]
+    const allFields = [...new Set(Object.values(resultConfig).flat()), 'altLabels', 'attestations']
  
     const query = {
         size: 1000,

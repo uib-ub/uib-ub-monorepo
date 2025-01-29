@@ -25,6 +25,8 @@ export function extractFacets(request: Request ) {
       case 'topLeftLng':
       case 'bottomRightLat':
       case 'bottomRightLng':
+      case 'sourceLabel':
+      case 'sourceDataset':
       case 'facetSearch':
       case 'totalHits':
       case 'facets':
@@ -44,7 +46,6 @@ export function extractFacets(request: Request ) {
 
   // Handle dataset tag (non-categorical dataset type) filter for datasets
   if (filteredParams.datasetTag) {
-    console.log("YES")
     const datasetTag = filteredParams.datasetTag;
     const matchingDatasets = Object.entries(datasetTypes)
       .filter(([_, types]) => types.includes(datasetTag))

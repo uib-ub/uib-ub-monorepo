@@ -21,6 +21,8 @@ export default function ActiveFilters() {
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const { parentData } = useContext(DocContext)
     const [parent, setParent] = useQueryState('parent')
+    const [sourceLabel, setSourceLabel] = useQueryState('sourceLabel')
+    const [sourceDataset, setSourceDataset] = useQueryState('sourceDataset')
     const {facetOptions, updatePinnedFilters, pinnedFilters} = useContext(GlobalContext)
     const visibleUnpinnedFilters = facetFilters.filter(([key, value]) => 
         pinnedFilters[dataset]?.some(([pinnedKey, pinnedValue]) => pinnedKey === key && pinnedValue === value)
@@ -143,9 +145,17 @@ export default function ActiveFilters() {
               </button>
           ))}
           
-          {mode == 'map' && parentData?._source && <button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>
+          {mode == 'map' && parentData?._source && <><button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>
             {treeSettings[dataset] ? gnr + ' ' +  parentData._source.label : parentData._source.label}
+            <PiX className="inline text-lg" aria-hidden="true"/></button>
+            {sourceLabel && <button className="text-neutral-950 bg-white shadow-md rounded-full gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setSourceLabel(null)}>
+            {sourceLabel}
             <PiX className="inline text-lg" aria-hidden="true"/></button>}
+          {sourceDataset && <button className="text-neutral-950 bg-white shadow-md rounded-full gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setSourceDataset(null)}>
+            {sourceDataset}
+            <PiX className="inline text-lg" aria-hidden="true"/></button>}
+          </>
+            }
       </>
   )
 

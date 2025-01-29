@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation';
 import { useDataset } from '@/lib/search-params';
 import { parseAsInteger } from 'nuqs';
@@ -15,23 +15,31 @@ interface ChildrenContextData {
     childrenLoading: boolean;
     childrenError: Record<string, string> | null;
     childrenBounds: number[][] | null;
-    
+    groupedAndFilteredChildren: Record<string, any[]> | null;
+    childrenCount: number;
+    shownChildrenCount: number;
   }
  
 export const ChildrenContext = createContext<ChildrenContextData>({
     childrenData: null,
     childrenLoading: false,
     childrenError: null,
-    childrenBounds: null
+    childrenBounds: null,
+    groupedAndFilteredChildren: null,
+    childrenCount: 0,
+    shownChildrenCount: 0
     });
 
 
 export default function ChildrenProvider({ children }: {  children: React.ReactNode }) {
     const dataset = useDataset()
     const { parentData, parentLoading, docData, setSameMarkerList } = useContext(DocContext)
-    const [childrenData, setChildrenData] = useState<any>(null)
+    const [childrenData, setChildrenData] = useState<Record<string, any>[] | null>(null)
     const [childrenLoading, setChildrenLoading] = useState(false)
+    const [shownChildrenCount, setShownChildrenCount] = useState(0)
+    const [childrenCount, setChildrenCount] = useState(0)
     const [childrenError, setChildrenError] = useState<Record<string, string> | null>(null)
+    const [groupedAndFilteredChildren, setGroupedAndFilteredChildren] = useState<Record<string, any[]> | null>(null)
     const searchParams = useSearchParams()
     const isTable = searchParams.get('mode') == 'table'
     const asc = searchParams.get('asc')
@@ -43,6 +51,8 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     const parent = searchParams.get('parent')
     const doc = searchParams.get('doc')
     const mode = searchParams.get('mode') || 'map'
+    const sourceLabel = searchParams.get('sourceLabel')
+    const sourceDataset = searchParams.get('sourceDataset')
     const { isMobile } = useContext(GlobalContext)
 
 
@@ -88,6 +98,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 
 
     useEffect(() => {
+        if (dataset != 'search') return;
     
         if (!parentLoading && parentData?._source?.children && parentData._source.uuid == parent) {
             setChildrenLoading(true)            
@@ -100,7 +111,8 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                     throw response
                 }
                 return response.json()})
-            .then(es_data => {                
+            .then(es_data => {           
+                setChildrenCount(es_data.hits.hits.length)
                 if (isTable) {
                     setChildrenData(es_data.hits.hits)
                 }
@@ -131,6 +143,32 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     }, [parentData, parentLoading, isTable, asc, desc, page, perPage, setChildrenBounds, dataset, isMobile, mode, parent])
     
 
+    const filterAndGroupChildren = useCallback((data: any[]) => {
+        const matchingChildren = data.filter((doc: any) => {
+            if (sourceLabel && !([doc._source?.label, ...(doc._source?.altLabels || []), ...(doc._source?.attestations?.map((a: any) => a.label) || [])].includes(sourceLabel))) return false;
+            if (sourceDataset && !doc._index.includes(sourceDataset)) return false;
+            return true;
+        });
+
+        setShownChildrenCount(matchingChildren.length);
+
+        const filtered = Object.fromEntries(Object.entries(
+            matchingChildren
+                .reduce((acc: Record<string, Record<string, any>[]>, doc: Record<string, any>) => {
+                    const index = doc._index.split('-')[2]
+                    if (!acc[index]) acc[index] = []
+                    acc[index].push(doc)
+                    return acc
+                }, {})
+        ));
+        
+        setGroupedAndFilteredChildren(filtered);
+    }, [sourceLabel, sourceDataset]);
+
+    useEffect(() => {
+        if (!childrenData?.length || dataset != 'search') return;
+        filterAndGroupChildren(childrenData);
+    }, [filterAndGroupChildren, childrenData, dataset]);
     
 
     
@@ -147,12 +185,14 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 
 
 
-
     return <ChildrenContext.Provider value={{
         childrenData,
         childrenLoading,
         childrenError,
-        childrenBounds
+        childrenBounds,
+        groupedAndFilteredChildren,
+        childrenCount,
+        shownChildrenCount
 
   }}>{children}</ChildrenContext.Provider>
 }

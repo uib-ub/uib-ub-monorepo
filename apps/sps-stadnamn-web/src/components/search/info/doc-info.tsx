@@ -20,6 +20,7 @@ import Etymology from "./etymology"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import IconLink from "@/components/ui/icon-link"
 import FacetsInfobox from "@/components/doc/facets-infobox"
+import SearchDocInfo from "@/components/doc/search-doc-info"
 
 
 
@@ -133,19 +134,9 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             }       
 
         </div>
-
-
-        { docDataset == 'search' && <>
-        {(docSource.datasets.includes('leks') || docSource.datasets.includes('rygh')) && 
-        <Etymology etymologyDataset={docSource.datasets.includes('leks') ? 'leks' : 'rygh'} uuids={[docSource.children]}/>
-        }
-        
-        
-        
-        </>}
             
       
-
+      { docDataset == 'search' && <SearchDocInfo docSource={docSource}/> }
       
       
       { docDataset && infoPageRenderers[docDataset]?.( docSource) }
