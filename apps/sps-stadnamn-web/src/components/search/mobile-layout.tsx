@@ -17,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 import ListExplorer from "./list/list-explorer";
 import DocExplorer from "./info/doc-explorer";
 import { ChildrenContext } from "@/app/children-provider";
+import { DocContext } from "@/app/doc-provider";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -40,6 +41,7 @@ export default function MobileLayout() {
     const dataset = useDataset()
     const parent = searchParams.get('parent')
     const { childrenCount, shownChildrenCount } = useContext(ChildrenContext)
+    const { parentData } = useContext(DocContext)
 
 
 
@@ -211,7 +213,7 @@ export default function MobileLayout() {
                     {drawerContent == 'filters' && 'Avgrens'}
                     {drawerContent == 'tree' && 'Register'}
                     {drawerContent == 'info' ? <>
-                        {parent && doc == parent && !treeSettings[dataset] && <>Kjelder{childrenCount && (shownChildrenCount && shownChildrenCount != childrenCount ? `(${shownChildrenCount}/${childrenCount})` : childrenCount)}</>}
+                        {parent && doc == parent && !treeSettings[dataset] && <>Kjelder{parentData?._source.children?.length && (childrenCount && shownChildrenCount != parentData._source.children.length ? `(${shownChildrenCount}/${parentData._source.children.length})` : parentData._source.children.length)}</>}
                         {parent && doc == parent && treeSettings[dataset] && 'Bruk'}
                         {parent && doc != parent && 'Kjelde'}
                         {!parent && 'Oppslag'}
