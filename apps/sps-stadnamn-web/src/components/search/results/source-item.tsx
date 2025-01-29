@@ -25,7 +25,9 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
 
     // labels that either have a year or are different from the main label
     const attestationsLabels = hit.fields.attestations?.map((att: {label: string}) => att.label) || []
-    const allLabels = hit.fields.altLabels?.filter((label: string) => label !== hit.fields.label && !attestationsLabels.includes(label))?.map((label: string) => {label}) || []
+    const allLabels = hit.fields.altLabels?.filter((label: string) => 
+        label !== hit.fields.label && !attestationsLabels.includes(label)
+    )?.map((label: string) => label) || []
     hit.fields.attestations?.forEach((att: {label: string, year: number}) => {
         if (att?.year) {
             allLabels.push({label: att.label, year: att?.year})

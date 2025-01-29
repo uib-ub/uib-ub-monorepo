@@ -34,7 +34,7 @@ return (
         <span className='mr-2 my-1'>{year}</span>
         <div className="flex flex-wrap gap-1 whitespace-nowrap">
               {labels.map((label, i) => ( 
-                <span key={i}><Clickable add={{sourceLabel: label, parent: doc}} remove={["sourceLabel", "sourceDataset"]} className='no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full px-3 py-1 max-w-[15svw] truncate' key={i}>{label}</Clickable></span>
+                <span key={i}><Clickable add={{sourceLabel: label, parent: doc}} remove={["sourceLabel", "sourceDataset"]} className='no-underline bg-white border border-neutral-200 shadow-sm rounded-md text-neutral-950 px-3 py-1 max-w-[15svw] truncate' key={i}>{label}</Clickable></span>
               ))}
         </div>
         </div>
