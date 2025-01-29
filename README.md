@@ -12,7 +12,6 @@ It includes the following packages/apps:
 
 - `api`: the API for the Special collection at the University of Bergen Library, a [Next.js](https://nextjs.org) app
 - `chc-web`: the WIP Marcus website, a [Next.js](https://nextjs.org) app and a [Sanity](https://sanity.io) Studio.
-- `chc-exh-nt-web`: the exhibition _More than the humanitarian gaze_, a [Next.js](https://nextjs.org) app with a [Sanity](https://sanity.io) Studio.
 - `docs`: the documentation site, a [Nextra](https://nextra.site) app
 - `link-shortener`: WIP, a url redirect service with QR, a [Next.js](https://nextjs.org) app
 - `sps-termportal-web`: Termportalen.no, a [Nuxt.js](https://nuxtjs.org) app

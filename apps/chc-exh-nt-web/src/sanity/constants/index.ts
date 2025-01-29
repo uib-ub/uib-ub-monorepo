@@ -1,1 +1,0 @@
-export { publicDocumentTypes } from './publicDocumentTypes'
