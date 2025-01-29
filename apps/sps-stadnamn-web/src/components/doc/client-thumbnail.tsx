@@ -4,7 +4,7 @@ import { useDataset } from "@/lib/search-params"
 import Image from "next/image"
 import Link from "next/link"
 import { useContext, useEffect, useState } from "react"
-import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
+import { PiCaretLeft, PiCaretRight, PiDatabaseFill, PiFiles, PiFilesFill } from "react-icons/pi"
 
 export default function ClientThumbnail({ images }: { images: {manifest: string, dataset: string}[] }) {
     const [imgIndex, setImgIndex] = useState(0)
@@ -35,9 +35,10 @@ export default function ClientThumbnail({ images }: { images: {manifest: string,
     return <div className="flex flex-col gap-1">
         
         {thumbnailUrl && width && height && <Link href={"/iiif/" + images[imgIndex].manifest}><Image width={width} height={height} src={thumbnailUrl} alt="Seddel" /></Link>}
-        {dataset == 'search' && docDataset != images[imgIndex].dataset && <span className="text-sm text-neutral-700 self-center">Kjelde: {datasetTitles[images[imgIndex].dataset]}</span>}
+        <div className="flex">
+        {dataset == 'search' && docDataset != images[imgIndex].dataset && <span className="flex items-center gap-1 text-neutral-800">Kjelde: {datasetTitles[images[imgIndex].dataset]}</span>}
         {images.length > 1 && (
-          <div className="flex self-center">
+          <div className="flex ml-auto">
               <button 
                 onClick={() => setImgIndex(prev => prev > 0 ? prev - 1 : images.length - 1)}
                 className="btn btn-outline btn-compact grow md:grow-0"
@@ -60,5 +61,6 @@ export default function ClientThumbnail({ images }: { images: {manifest: string,
 
           </div>
         )}
+        </div>
     </div>
 }
