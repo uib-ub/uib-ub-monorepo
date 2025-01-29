@@ -40,9 +40,6 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
                         parent: parent && docDataset == 'search' ? hit.fields.uuid : null,
-                        attestationYear: null,
-                        attestationLabel: null,
-                        ...hit.fields.location?.[0].type == 'Point' ? {center: hit.fields.location[0].coordinates.toReversed(), zoom} : {}
                     }}>
 
             <span className="text-neutral-950">
