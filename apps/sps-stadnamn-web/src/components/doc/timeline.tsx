@@ -5,6 +5,7 @@ export default function Timeline(arr: { label: string; year: string }[]) {
   const grouped: Record<string,string[]> = {};
   const searchParams = useSearchParams()
   const doc = searchParams.get('doc')
+  const sourceLabel = searchParams.get('sourceLabel')
 
   arr?.forEach(item => {
       if (grouped[item.year]) {
@@ -33,9 +34,22 @@ return (
         <div className={`ml-6 flex gap-1`}>
         <span className='mr-2 my-1'>{year}</span>
         <div className="flex flex-wrap gap-1 whitespace-nowrap">
-              {labels.map((label, i) => ( 
-                <span key={i}><Clickable add={{sourceLabel: label, parent: doc}} remove={["sourceLabel", "sourceDataset"]} className='no-underline bg-white border border-neutral-200 shadow-sm rounded-md text-neutral-950 px-3 py-1 max-w-[15svw] truncate' key={i}>{label}</Clickable></span>
-              ))}
+              {labels.map((label, i) => { 
+                const isActive = sourceLabel === label;
+                return (
+                  <span key={i}>
+                    <Clickable 
+                      add={{sourceLabel: label, parent: doc}} 
+                      remove={["sourceLabel", "sourceDataset"]} 
+                      className={`no-underline border shadow-sm rounded-md px-3 py-1 max-w-[15svw] truncate
+                        ${isActive ? '!bg-accent-700 text-white border-accent-200' : 'bg-white border-neutral-200'}`}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {label}
+                    </Clickable>
+                  </span>
+                );
+              })}
         </div>
         </div>
       </li>
