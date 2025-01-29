@@ -30,8 +30,8 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
 
 
 
-    { (hasAltLabels || hasAttestations) &&
-    <div className="border-2 p-2 inner-slate flex flex-col">
+
+    <div className={` flex flex-col ${hasAltLabels || hasAttestations ? 'border-2 p-2 inner-slate' : ''}`}>
     {hasAltLabels && <ul className='flex flex-wrap !list-none !p-0 gap-1'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       return <li key={index} className='whitespace-nowrap'>
@@ -50,13 +50,14 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
 
       <ul className='flex flex-wrap gap-1 !list-none !p-0'>
         {docSource.datasets.map((dataset: string, index: number) => {
-          return <li key={index} className='whitespace-nowrap !m-0 !p-0'><Clickable link className='flex items-center gap-1 no-underline bg-white border border-neutral-200 shadow-sm rounded-full text-neutral-950 rounded-full pr-3 pl-2 py-1' add={{sourceDataset: dataset, parent: doc}} remove={["sourceLabel", "sourceDataset"]}><PiDatabaseFill className='text-neutral-700' />{datasetTitles[dataset]}</Clickable></li>
+          return <li key={index} className='whitespace-nowrap !m-0 !p-0'>
+            <Clickable link className={`flex items-center gap-1 no-underline bg-white border border-neutral-200 shadow-sm rounded-md text-neutral-950 rounded-full pr-3 pl-2 py-1 ${hasAltLabels || hasAttestations ? 'bg-white' : ''}`} add={{sourceDataset: dataset, parent: doc}} remove={["sourceLabel", "sourceDataset"]}><PiDatabaseFill className='text-neutral-700' />{datasetTitles[dataset]}</Clickable></li>
         })}
       </ul>
 
     
       </div>
-      }
+      
 
       
 
