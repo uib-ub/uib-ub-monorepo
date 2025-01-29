@@ -152,7 +152,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 
         setShownChildrenCount(matchingChildren.length);
 
-        const filtered = Object.fromEntries(Object.entries(
+        const filtered: Record<string, Record<string, any>[]> = Object.fromEntries(Object.entries(
             matchingChildren
                 .reduce((acc: Record<string, Record<string, any>[]>, doc: Record<string, any>) => {
                     const index = doc._index.split('-')[2]
