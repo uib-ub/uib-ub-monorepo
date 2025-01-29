@@ -20,6 +20,7 @@ import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./mark
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
 import { GlobalContext } from "@/app/global-provider";
+import { useSearchParams } from "next/navigation";
 
 
 export default function MapExplorer() {
@@ -38,6 +39,9 @@ export default function MapExplorer() {
   const { childrenData, childrenLoading, childrenBounds } = useContext(ChildrenContext)
   const { isMobile, allowFlyTo } = useContext(GlobalContext)
   const programmaticChange = useRef(false)
+  const searchParams = useSearchParams()
+  const sourceLabel = searchParams.get('sourceLabel')
+  const sourceDataset = searchParams.get('sourceDataset')
 
   const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
@@ -679,20 +683,35 @@ useEffect(() => {
               )}
 
               {parent && childrenData?.length > 0 && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
+                // Filter children based on sourceLabel
+                const filteredChildren = sourceLabel ? group.children.filter(child => {
+                  const matchesLabel = child.fields?.label?.[0] === sourceLabel || child._source?.label === sourceLabel;
+                  const matchesAltLabels = child.fields?.altLabels?.includes(sourceLabel) || child._source?.altLabels?.includes(sourceLabel);
+                  const matchesAttestations = child.fields?.attestations?.some((att: any) => att.label === sourceLabel) || 
+                                            child._source?.attestations?.some((att: any) => att.label === sourceLabel);
+                  return matchesLabel || matchesAltLabels || matchesAttestations;
+                }) : sourceDataset ? group.children.filter(child => {
+                  const docDataset = child._index?.split('-')[2] || child.fields?._index?.split('-')[2];
+                  return docDataset === sourceDataset;
+                }) : group.children;
+
+                // Skip rendering if no children match the filter
+                if (filteredChildren.length === 0) return null;
+
                 let icon
                     
-                if (group.children.length > 1) {
-                  icon = new leaflet.DivIcon(getClusterMarker(group.children.length, 
-                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5 + (group.children.length > 99 ? group.children.length.toString().length / 4 : 0),
-                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5,
-                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 1,
+                if (filteredChildren.length > 1) {
+                  icon = new leaflet.DivIcon(getClusterMarker(filteredChildren.length, 
+                    calculateRadius(filteredChildren.length, maxDocCount, minDocCount) * 2.5 + (filteredChildren.length > 99 ? filteredChildren.length.toString().length / 4 : 0),
+                    calculateRadius(filteredChildren.length, maxDocCount, minDocCount) * 2.5,
+                    calculateRadius(filteredChildren.length, maxDocCount, minDocCount) * 1,
                     'bg-primary-600 text-white border-2 border-white'))
                 }
                 else {
                   icon = new leaflet.DivIcon(getUnlabeledMarker('primary', false))
                 }
 
-                return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children[0], group.children)} />
+                return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(filteredChildren[0], filteredChildren)} />
               })}
 
 
