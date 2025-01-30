@@ -8,10 +8,10 @@
       @click="langMenu.toggle"
     >
       <div class="relative" aria-hidden="true">
-        <div class="absolute -bottom-[9px] -left-[8px]">
-          <span class="rounded-[5px] bg-white text-[0.6em]">
+        <div class="absolute -bottom-[8px] -left-[8px]">
+          <span class="rounded-[4px] bg-white text-[0.62em]">
             <span
-              class="h-1 text-small px-[3px] font-semibold uppercase group-hover:text-gray-700 group-focus:text-gray-700"
+              class="h-1 px-[3px] py-[0px] uppercase group-hover:text-gray-700 group-focus:text-gray-700"
               >{{ locale }}</span
             >
           </span>
