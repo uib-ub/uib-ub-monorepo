@@ -19,11 +19,11 @@ export async function POST(request: Request) {
                                         }
                                     }
 
-    const allFields = [...new Set(Object.values(resultConfig).flat()), 'altLabels', 'attestations']
+    const allFields = [...new Set(Object.values(resultConfig).flat()), 'altLabels', 'attestations', 'attestations.year', 'attestations.label']
  
     const query = {
         size: 1000,
-        fields: allFields,
+        _source: true,
         query: {
             terms: {
                 "uuid": uuids

@@ -2,9 +2,10 @@
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
-import { PiArrowRight, PiDatabase, PiTag } from 'react-icons/pi';
+import { PiArrowRight, PiDatabase, PiInfoFill, PiTag } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
+import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 
 
 
@@ -24,11 +25,11 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const sourceWindowRenderer = resultRenderers[docDataset]?.sourceWindow || defaultResultRenderer.sourceWindow
 
     // labels that either have a year or are different from the main label
-    const attestationsLabels = hit.fields.attestations?.map((att: {label: string}) => att.label) || []
-    const allLabels = hit.fields.altLabels?.filter((label: string) => 
-        label !== hit.fields.label && !attestationsLabels.includes(label)
-    )?.map((label: string) => label) || []
-    hit.fields.attestations?.forEach((att: {label: string, year: number}) => {
+    const attestationsLabels = hit._source.attestations?.map((att: {label: string}) => att.label) || []
+    const allLabels: {label: string, year?: number}[] = hit._source.altLabels?.filter((label: string) => 
+        label !== hit._source.label && !attestationsLabels.includes(label)
+    )?.map((label: string) => ({label})) || []
+    hit._source.attestations?.forEach((att: {label: string, year: number}) => {
         if (att?.year) {
             allLabels.push({label: att.label, year: att?.year})
         }
@@ -37,20 +38,39 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     
 
     return  <li className="flex flex-grow !p-0 !m-0">
-        <Clickable link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800" 
-                    aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
-                    add={{
-                        doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
-                        parent: parent && docDataset == 'search' ? hit.fields.uuid : null,
-                    }}>
+        <div className="w-full h-full py-2 flex items-center gap-2">
+        <ClickableIcon 
+                link
+                label="Opne"
+                aria-current={(doc == hit._source.uuid) ? 'page' : undefined}
+                ref={itemRef}
+                className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
+                add={{
+                    doc: hit._source?.children?.length === 1 ? hit._source.children[0] : hit._source.uuid,
+                    parent: parent && docDataset == 'search' ? hit._source.uuid : null,
+                }}
+            >
+                <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl" />
+            </ClickableIcon>
+            <div className="">
+                <strong>{hit._source.label}</strong>{hit._source.sosi && ` (${hit._source.sosi})`}
+                <div className="flex gap-1">
+                {allLabels?.map((item: {label: string, year?: number}, index: number) => (
+                    <span key={index} className="text-neutral-800">
+                        {item?.year ? (
+                            <span className="whitespace-nowrap">
+                                <span className="font-medium">{item.year}</span>: {item.label}
+                            </span>
+                        ) : (
+                            item.label
+                        )}
+                    </span>
+                ))}
+                </div>
+            </div>
 
-            <span className="text-neutral-950">
-                {titleRenderer(hit, 'map')}</span> 
-                {allLabels?.map((item: {label: string, year?: number}, index: number) => <span key={index}>{item?.label}{item?.year ? ` (${item?.year})` : ''}</span>)}
-       
             
-
-            </Clickable>
+        </div>
             </li>
 }
 

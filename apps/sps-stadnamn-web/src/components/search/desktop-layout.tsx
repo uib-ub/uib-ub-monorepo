@@ -61,12 +61,12 @@ export default function DesktopLayout() {
         </div>
         { docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1 || (treeSettings[dataset] && docData?._source?.sosi == 'gard') || parent ?
          <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start`}>
-            { !treeSettings[dataset] &&<div className="flex">
+            { !treeSettings[dataset] &&<div className={`flex ${parent ? 'border-b border-neutral-300' : ''}`}>
             <h2><Clickable className={`flex gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950 w-[25svw]`} add={{parent: docData?._source.uuid}}>
 
             
 
-             <><PiFilesFill className="text-2xl text-primary-600"/>
+             <>{!parent && <PiFilesFill className="text-2xl text-primary-600"/>}
                 <span className="text-xl">Kjelder</span>
                 { (childrenCount && childrenCount == childrenData?.length) ?
                     <div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">
@@ -102,7 +102,7 @@ export default function DesktopLayout() {
             }
 
 
-            {parent && <div className="max-h-[30svh] min-w-[25svw] max-w-[35svw] overflow-y-auto stable-scrollbar px-2">
+            {parent && <div className="max-h-[30svh] min-w-[25svw] overflow-y-auto stable-scrollbar px-2">
             
             {treeSettings[dataset] ?  
                       parentData?._id && <CadastralSubdivisions/>
