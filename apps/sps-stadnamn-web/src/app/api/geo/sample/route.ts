@@ -29,11 +29,18 @@ export async function GET(request: Request) {
       {
         "uuid": "asc"
       }
-    ] : [
+    ] : treeSettings[dataset]?.geoSort ? [
       {
-        "uuid": "asc"
+        [treeSettings[dataset].geoSort]: {
+          "missing": "_first",
+          "order": "asc"
+        }
       }
-    ],
+    ] : [{
+      "uuid": "asc"
+    }],
+    
+
     _source: false,
     query: {
       bool: {

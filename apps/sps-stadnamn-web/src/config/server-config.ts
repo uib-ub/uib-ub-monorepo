@@ -14,7 +14,8 @@ export interface TreeSettingsItem {
   filter?: any, 
   showNumber?: boolean,
   leaf: string,
-  parentName: string
+  parentName: string,
+  geoSort?: string
 }
 
 export const treeSettings: Record<string, TreeSettingsItem> = {
@@ -24,14 +25,16 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     parentName: "misc.gardLabel",
     leaf: "rawData.LNR",
     sort: ["cadastralIndex"],
-    aggSort: "rawData.Lenke_til_skannet_matrikkel.keyword"
+    aggSort: "rawData.Lenke_til_skannet_matrikkel.keyword",
+    geoSort: "rawData.LNR.keyword"
   },
   m1886: {
     subunit: "cadastre__gnr",
     parentName: "rawData.gardsnamn",
     leaf: "cadastre__bnr",
     sort: ["cadastre__gnr", "cadastre__bnr"],
-    aggSort: "rawData.knr.keyword"
+    aggSort: "rawData.knr.keyword",
+    geoSort: "rawData.bnr.keyword"
   },
   mu1950: {
     subunit: "cadastre__gnr",
@@ -40,6 +43,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     sort: ["cadastre__gnr", "cadastre__bnr"],
     aggSort: "knr.keyword",
     showNumber: true,
+    geoSort: "rawData.BNR.keyword"
   }
 }
 
