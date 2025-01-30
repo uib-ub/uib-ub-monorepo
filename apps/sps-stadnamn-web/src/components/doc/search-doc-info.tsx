@@ -66,10 +66,10 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               link 
               className={`
                 flex items-center gap-1 
-                no-underline border shadow-sm rounded-md rounded-full 
+                no-underline border rounded-md rounded-full 
                 pr-3 pl-2 py-1 
                 ${isActive ? '!bg-accent-700 text-white border-accent-200' : 'bg-white border-neutral-200'}
-                ${hasAltLabels || hasAttestations ? 'bg-white' : ''}
+                ${hasAltLabels || hasAttestations ? 'shadow-sm' : ''}
               `}
               add={{sourceDataset: dataset, parent: doc}}
               remove={["sourceLabel", "sourceDataset"]}
