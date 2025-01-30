@@ -112,7 +112,6 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
                 }
                 return response.json()})
             .then(es_data => {           
-                setChildrenCount(es_data.hits.hits.length)
                 if (isTable) {
                     setChildrenData(es_data.hits.hits)
                 }
@@ -143,6 +142,8 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
     }, [parentData, parentLoading, isTable, asc, desc, page, perPage, setChildrenBounds, dataset, isMobile, mode, parent])
     
 
+    
+
     const filterAndGroupChildren = useCallback((data: any[]) => {
         const matchingChildren = data.filter((doc: any) => {
             if (sourceLabel && !([doc._source?.label, ...(doc._source?.altLabels || []), ...(doc._source?.attestations?.map((a: any) => a.label) || [])].includes(sourceLabel))) return false;
@@ -151,6 +152,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
         });
 
         setShownChildrenCount(matchingChildren.length);
+        setChildrenCount(data.length)
 
         const filtered: Record<string, Record<string, any>[]> = Object.fromEntries(Object.entries(
             matchingChildren
@@ -163,13 +165,15 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
         ));
         
         setGroupedAndFilteredChildren(filtered);
-    }, [sourceLabel, sourceDataset]);
+    }, [sourceLabel, sourceDataset, childrenData]);
 
     useEffect(() => {
-        if (!childrenData?.length || dataset != 'search') return;
-        filterAndGroupChildren(childrenData);
-    }, [filterAndGroupChildren, childrenData, dataset]);
+        if (childrenData?.length && dataset == 'search') {
+            filterAndGroupChildren(childrenData);
+        }
+    }, [filterAndGroupChildren, dataset, childrenData]);
     
+
 
     
     useEffect(() => {

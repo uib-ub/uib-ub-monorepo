@@ -68,9 +68,10 @@ export default function DesktopLayout() {
 
              <><PiFilesFill className="text-2xl text-primary-600"/>
                 <span className="text-xl">Kjelder</span>
-                { (parent ? parentData : docData)?._source.children?.length > 0 &&
+                { (childrenCount && childrenCount == childrenData?.length) ?
                     <div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">
-                    {shownChildrenCount != ((parent ? parentData : docData)?._source?.children?.length || childrenData?.length) ? `${shownChildrenCount}/${(parent ? parentData : docData)?._source?.children?.length || childrenData?.length}` : (parent ? parentData : docData)?._source.children.length}</div>
+                    {childrenCount != shownChildrenCount ? `${shownChildrenCount}/${childrenCount}` : childrenCount}
+                    </div> : null
                 }
                     
                     
