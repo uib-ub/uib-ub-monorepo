@@ -21,6 +21,44 @@ import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
 import { GlobalContext } from "@/app/global-provider";
 import { useSearchParams } from "next/navigation";
+import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
+
+
+// Clusters where labels are shown if there is enough space
+const labelClusters = (currentMap: any, data: any, zoom: number | null) => {
+  const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
+
+  data.hits.hits.forEach((hit: any) => {
+    let added = false;
+    for (const group of markers) {
+      const firstHit = group.topHit
+      if (firstHit) {
+      const yDist = yDistance(currentMap, firstHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
+      const xDist = xDistance(currentMap, firstHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
+      if (yDist < 2 && xDist < 2) {
+        group.grouped.push(hit);
+        added = true;
+        break;
+      }
+      if (yDist < 32 && xDist < (64 + (4*firstHit.fields.label[0].length))) {
+        added = true;
+        if (zoom && zoom == 18) {
+          group.grouped.push(hit);
+        }
+        else {
+          group.unlabeled.push(hit);
+        }
+      }
+
+    }
+  }
+  if (!added) {
+    markers.push({topHit: hit, grouped: [], unlabeled: []});
+  }
+  })
+
+  return {...data, hits: {markers}}
+}
 
 
 export default function MapExplorer() {
@@ -36,8 +74,8 @@ export default function MapExplorer() {
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const dataset = useDataset()
-  const { childrenData, childrenLoading, childrenBounds } = useContext(ChildrenContext)
-  const { isMobile, allowFlyTo } = useContext(GlobalContext)
+  const { childrenData, childrenMarkers, childrenLoading, childrenBounds } = useContext(ChildrenContext)
+  const { isMobile } = useContext(GlobalContext)
   const programmaticChange = useRef(false)
   const searchParams = useSearchParams()
   const sourceLabel = searchParams.get('sourceLabel')
@@ -52,12 +90,7 @@ export default function MapExplorer() {
   //const prevZoom = useRef<number | null>(null)
 
 
-  const getValidDegree = (degrees: number, maxValue: number): string => {
-    if (Math.abs(degrees) > Math.abs(maxValue)) {
-      return maxValue.toString()
-    }
-    return degrees.toString()
-  }
+  
 
   const isTooClose = (hits: any[], map: any) => {
     if (hits.length <= 1) return false;
@@ -78,106 +111,13 @@ export default function MapExplorer() {
     });
   };
 
-  const yDistance = (lat1: number, lat2: number) => {
-  // Calculate vertical pixel distance between two latitude points using map projection
-  if (!mapInstance.current) return 0;
   
-  const point1 = mapInstance.current.latLngToContainerPoint([lat1, 0]);
-  const point2 = mapInstance.current.latLngToContainerPoint([lat2, 0]); 
-  
-  return Math.abs(point1.y - point2.y);
-  }
-
-  const xDistance = (lon1: number, lon2: number) => {
-    // Calculate horizontal pixel distance between two longitude points using map projection
-    if (!mapInstance.current) return 0;
-    const point1 = mapInstance.current.latLngToContainerPoint([0, lon1]);
-    const point2 = mapInstance.current.latLngToContainerPoint([0, lon2]); 
-    return Math.abs(point1.x - point2.x);
-  }
 
   const coordinatesSelected = (lat: number, lon: number) => {
     return docData?._source?.location?.coordinates[1] == lat && docData?._source?.location?.coordinates[0] == lon
   }
 
-  const clientCluster = useCallback((data: any) => {
-    const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
-
-    data.hits.hits.forEach((hit: any) => {
-      let added = false;
-      for (const group of markers) {
-        const firstHit = group.topHit
-        if (firstHit) {
-        const yDist = yDistance(firstHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
-        const xDist = xDistance(firstHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
-        if (yDist < 2 && xDist < 2) {
-          group.grouped.push(hit);
-          added = true;
-          break;
-        }
-        if (yDist < 32 && xDist < (64 + (4*firstHit.fields.label[0].length))) {
-          added = true;
-          if (zoom && zoom == 18) {
-            group.grouped.push(hit);
-          }
-          else {
-            group.unlabeled.push(hit);
-          }
-        }
-
-      }
-    }
-    if (!added) {
-      markers.push({topHit: hit, grouped: [], unlabeled: []});
-    }
-    })
-
-    return {...data, hits: {markers}}
-  }, [zoom])
-
-
-
-  useEffect(() => {
-    if (parent && childrenData?.length) {
-
-      const childrenWithCoordinates = childrenData.filter((child: any) => child.fields?.location?.[0]?.coordinates?.length)
-      const clientGroups: any[] = []
-      const markerOutput = { hits: { total: { value: childrenWithCoordinates.length }, clientGroups } }
-      const markerLookup: Record<string, any> = {}
-
-      childrenWithCoordinates.forEach((child: any) => {
-        const lat = child.fields?.location[0].coordinates[1] || child._source.location.coordinates[1]
-        const lon = child.fields?.location[0].coordinates[0] || child._source.location.coordinates[0]
-        const uuid = child.fields.uuid || child._source.uuid
-        let marker = markerLookup[lat + "_" + lon]
-        if (!marker) {
-          marker = { children: [], lat, lon, uuid }
-          markerLookup[lat + "_" + lon] = marker
-          markerOutput.hits.clientGroups.push(marker)
-        }
-
-        const label = child.fields.label || child._source.label
-
-        if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
-          marker.label = marker.label + "..."
-        } else {
-          marker.label = label
-        }
-
-        marker.children.unshift(child)
-      })
-
-      setViewResults(markerOutput)
-
-
-
-
-
-      
-    }
-  }, [parent, childrenData, dataset])
-
-
+  
 
   useEffect(() => {
     // Check if the bounds are initialized
@@ -187,30 +127,6 @@ export default function MapExplorer() {
     //const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
     const [[north, west], [south, east]] = bounds
 
-    /*
-    if (prevZoom.current) {
-      return
-    }
-   
-    if (zoom && prevZoom.current && Math.abs(zoom - prevZoom.current) < 6) {
-      console.log("HERE", zoom, prevZoom.current)
-      return
-    }
-    console.log("HERE2", zoom, prevZoom.current)
-     
-    
-    
-    //if (prevPaddedBounds.current && zoom && prevZoom.current && prevZoom.current == zoom) {
-
-      //const [[prevNorth, prevWest], [prevSouth, prevEast]] = prevPaddedBounds.current;
-      // Check if new bounds are within previous padded bounds
-      
-      if (north <= prevNorth && south >= prevSouth && 
-          west >= prevWest && east <= prevEast) {
-        return;
-      }
-    }
-      */
     
     // Fetch data based on the new bounds
     const queryParams = new URLSearchParams(searchQueryString);
@@ -253,7 +169,7 @@ export default function MapExplorer() {
       })
        
       .then(data => {
-        setViewResults((autoMode == 'sample' || markerMode == 'sample') ? clientCluster(data) : data)
+        setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(mapInstance.current, data, zoom) : data)
 
       })
 
@@ -264,8 +180,7 @@ export default function MapExplorer() {
       }
       );
 
-    //console.log("DEPENDENCY", bounds, searchError, geoViewport, zoom, searchQueryString, totalHits, markerMode)
-  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode, clientCluster]);
+  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode]);
 
 
 // Fly to results, doc or children
@@ -548,7 +463,7 @@ useEffect(() => {
                 />
               )}
 
-              {(markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
+              {!childrenMarkers?.length && (markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
                 return <Fragment key={marker.topHit._id}>
                  {![marker.topHit, ...marker.grouped].some((item: any) => coordinatesSelected(item.fields.location[0].coordinates[1], item.fields.location[0].coordinates[0])) ? <Marker key={marker.topHit._id} 
                           position={[marker.topHit.fields.location[0].coordinates[1], marker.topHit.fields.location[0].coordinates[0]]} 
@@ -682,36 +597,20 @@ useEffect(() => {
               }
               )}
 
-              {parent && childrenData?.length > 0 && viewResults?.hits?.clientGroups?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
-                // Filter children based on sourceLabel
-                const filteredChildren = sourceLabel ? group.children.filter(child => {
-                  const matchesLabel = child.fields?.label?.[0] === sourceLabel || child._source?.label === sourceLabel;
-                  const matchesAltLabels = child.fields?.altLabels?.includes(sourceLabel) || child._source?.altLabels?.includes(sourceLabel);
-                  const matchesAttestations = child.fields?.attestations?.some((att: any) => att.label === sourceLabel) || 
-                                            child._source?.attestations?.some((att: any) => att.label === sourceLabel);
-                  return matchesLabel || matchesAltLabels || matchesAttestations;
-                }) : sourceDataset ? group.children.filter(child => {
-                  const docDataset = child._index?.split('-')[2] || child.fields?._index?.split('-')[2];
-                  return docDataset === sourceDataset;
-                }) : group.children;
-
-                // Skip rendering if no children match the filter
-                if (filteredChildren.length === 0) return null;
-
+              {parent && childrenMarkers?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
                 let icon
-                    
-                if (filteredChildren.length > 1) {
-                  icon = new leaflet.DivIcon(getClusterMarker(filteredChildren.length, 
-                    calculateRadius(filteredChildren.length, maxDocCount, minDocCount) * 2.5 + (filteredChildren.length > 99 ? filteredChildren.length.toString().length / 4 : 0),
-                    calculateRadius(filteredChildren.length, maxDocCount, minDocCount) * 2.5,
-                    calculateRadius(filteredChildren.length, maxDocCount, minDocCount) * 1,
+                if (group.children.length > 1) {
+                  icon = new leaflet.DivIcon(getClusterMarker(group.children.length, 
+                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5 + (group.children.length > 99 ? group.children.length.toString().length / 4 : 0),
+                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5,
+                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 1,
                     'bg-primary-600 text-white border-2 border-white'))
                 }
                 else {
                   icon = new leaflet.DivIcon(getUnlabeledMarker('primary', false))
                 }
 
-                return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(filteredChildren[0], filteredChildren)} />
+                return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children[0], group.children)} />
               })}
 
 

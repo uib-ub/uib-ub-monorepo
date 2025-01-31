@@ -50,7 +50,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const [docError, setDocError] = useState<Record<string, string> | null>(null)
 
     const parent = searchParams.get('parent')
-    const [parentData, setParentData] = useState<any | null>(null)
+    const parentData = useRef<any | null>(null)
     const [parentLoading, setParentLoading] = useState<boolean>(true)
     const [parentError, setParentError] = useState<Record<string, string> | null>(null)
     const [docAdm, setDocAdm] = useState<string | null>(null)
@@ -61,7 +61,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
             setParentLoading(true)
             fetch(`/api/doc?uuid=${parent}${(dataset != 'search' && dataset) ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
-                    setParentData(data.hits.hits[0])
+                    parentData.current = data.hits.hits[0]
                     setDocAdm(data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1)
                 }
             }).catch(err => {
@@ -71,7 +71,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
             })
         }
         else {
-            setParentData(null)
+            parentData.current = null
             setParentLoading(false)
             setDocAdm(null)
         }
@@ -155,7 +155,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         docDataset,
         docLoading,
         docError,
-        parentData,
+        parentData: parentData.current,
         parentLoading,
         parentError,
         docAdm,

@@ -51,7 +51,7 @@ export default function DesktopLayout() {
 
 
        { mode == 'map' && (doc || parent) &&
-        <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end p-2 justify-between gap-2 h-full">
+        <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end p-2 justify-between gap-4 h-full">
         <div className={`flex flex-col  w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? ' lg:min-h-[25svh]' :  'lg:max-h-[calc(100svh - 2rem)] lg:min-h-[25svh]'}`}>
         {doc && !docLoading && docData?._source && <div className={`bg-white relative lg:rounded-md lg:shadow-md break-words pr-4 pl-4 py-2 overflow-y-auto stable-scrollbar`}>
             <DocInfo/>
@@ -60,8 +60,8 @@ export default function DesktopLayout() {
         
         </div>
         { docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1 || (treeSettings[dataset] && docData?._source?.sosi == 'gard') || parent ?
-         <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start`}>
-            { !treeSettings[dataset] &&<div className={`flex ${parent ? 'border-b border-neutral-300' : ''}`}>
+         <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start ${dataset == 'search' ? 'w-[30svw] 2xl:w-[25svw]' : ''}`}>
+            { !treeSettings[dataset] &&<div className={`flex w-full relative ${parent ? 'border-b border-neutral-300' : ''}`}>
             <h2><Clickable className={`flex gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950 w-[25svw]`} add={{parent: docData?._source.uuid}}>
 
             
@@ -85,7 +85,7 @@ export default function DesktopLayout() {
             
 
             {parent && parent != doc && <Clickable link className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiTagFill className="text-neutral-800 text-xl"/> Stadnamnoppslag</Clickable>}
-            {parent && <Clickable link remove={["parent", "sourceDataset", "sourceLabel"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></Clickable>}
+            {parent && <Clickable link remove={["parent", "sourceDataset", "sourceLabel"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 absolute right-0 top-0"><PiXBold/></Clickable>}
             
             </div>
             }
@@ -95,14 +95,14 @@ export default function DesktopLayout() {
                     <Clickable link className="flex gap-2 no-underline p-2 px-4 justify-start items-center" add={{parent: docData?._source.uuid}}>
                     <PiTableFill className={`text-2xl text-primary-600`}/><span className={`text-xl`}>Underordna bruk</span>
                     </Clickable>
-                    {childrenLoading && <Spinner  className="ml-auto mr-2" status="Laster underordna bruk"/>}
+                    {(childrenLoading || parentLoading) && <Spinner  className="ml-auto mr-2" status="Laster underordna bruk"/>}
                 </h2>
                 </div>
             
             }
 
 
-            {parent && <div className="max-h-[30svh] min-w-[25svw] overflow-y-auto stable-scrollbar px-2">
+            {parent && <div className="w-full max-h-[30svh]  overflow-y-auto stable-scrollbar px-2">
             
             {treeSettings[dataset] ?  
                       parentData?._id && <CadastralSubdivisions/>

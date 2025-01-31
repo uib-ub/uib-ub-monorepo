@@ -1,4 +1,3 @@
-
 'use client'
 import { fieldConfig } from "@/config/search-config"
 import { treeSettings } from "@/config/server-config"
@@ -12,6 +11,7 @@ import { ChildrenContext } from "@/app/children-provider"
 import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
 import { GlobalContext } from "@/app/global-provider"
+import { getValuesByPath } from "@/lib/utils"
 
 
 export default function CadastralSubdivisions() {
@@ -67,20 +67,24 @@ export default function CadastralSubdivisions() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {childrenData.map((hit: any) => (
+                                {childrenData?.map((hit: any) => (
                                     <tr key={hit._id}>
-                                        <th className="!w-full !h-full !p-0">
-                                        <Clickable link aria-current={doc==hit.fields?.uuid[0] ? 'page' : false} 
-                                                            className={`no-underline !flex !w-full p-2 !h-full grow ${doc == hit.fields?.uuid[0] ? 'border-l-4 bg-accent-800' : 'pl-4'} `}
-                                                            add={{ doc: hit.fields?.uuid[0] }}>
-                                        <span className={`${doc == hit.fields?.uuid[0] ? 'text-white' : 'text-black'}`}>{hit.fields?.[leaf] || hit.fields?.cadastre?.[0]?.bnr.join(",")} {hit.fields?.label}</span>
+                                        <th className="!p-0">
+                                        <Clickable link aria-current={doc==hit._source?.uuid ? 'page' : false} 
+                                                            className={`no-underline !flex !w-full p-2 !h-full ${doc == hit._source?.uuid ? 'border-l-4 bg-accent-800' : 'pl-2'} `}
+                                                            add={{ doc: hit._source?.uuid }}>
+                                        <span className={`${doc == hit._source?.uuid ? 'text-white' : 'text-black'}`}>
+                                            {Array.isArray(hit._source?.[leaf]) ? hit._source?.[leaf]?.join(", ") : hit._source?.[leaf]}{' '}
+                                            {Array.isArray(hit._source?.cadastre?.[0]?.bnr) ? hit._source?.cadastre?.[0]?.bnr?.join(", ") : hit._source?.cadastre?.[0]?.bnr}{' '}
+                                            {hit._source?.label}
+                                        </span>
                                             
                                                                 
                                                                 
                                             </Clickable>
                                         </th>
                                         {fields.map((field: Record<string, any>) => (
-                                            <td className="p-2" key={field.key}>{hit.fields[field.key]}</td>
+                                            <td className="p-2" key={field.key}>{getValueByPath(hit._source, field.key)}</td>
                                         ))}
                                     </tr>
                                 ))}

@@ -1,39 +1,54 @@
 export const runtime = 'edge'
 import { resultConfig } from "@/config/search-config";
 import { postQuery } from "../_utils/post";
+import { getSortArray } from "@/config/server-config";
 export async function POST(request: Request) {
     const body = await request.json()
     const uuids = body.children
-    if (!uuids) {
-        return Response.json({error: "No uuids provided"}, { status: 400 })
+    const mode = body.mode
+    const within = body.within 
+    const dataset = body.dataset
+
+    if (!mode) {
+        return Response.json({error: "Mode is required"}, { status: 400 })
+    }
+
+    if (!uuids && !(dataset && within)) {
+        return Response.json({error: "Either uuids or both dataset and within are required"}, { status: 400 })
     }
 
     const geo = body.mode == 'map' &&  {
-                                        aggs: {
-                                            viewport: {
-                                                geo_bounds: {
-                                                    field: "location",
-                                                    wrap_longitude: true
-                                                }
-                                            }
-                                        }
-                                    }
+        aggs: {
+            viewport: {
+                geo_bounds: {
+                    field: "location",
+                    wrap_longitude: true
+                }
+            }
+        }
+    }
 
-    const allFields = [...new Set(Object.values(resultConfig).flat()), 'altLabels', 'attestations', 'attestations.year', 'attestations.label']
  
     const query = {
         size: 1000,
         _source: true,
         query: {
-            terms: {
-                "uuid": uuids
-            }
+            ...(uuids ? {
+                terms: {
+                    "uuid": uuids
+                }
+            } : {
+                term: {
+                    "within.keyword": within
+                }
+            })
         },
+        ...(dataset ? {sort: getSortArray(dataset)} : {}),
         ...geo || {}
     }
 
 
-    const [data, status] = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
+    const [data, status] = await postQuery(dataset || `*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
 
     return Response.json(data, { status: status })
   }
