@@ -31,7 +31,7 @@ export default function SearchResults() {
     if (i == (size -1) && size < totalHits?.value && i < resultData?.length) {
       const hit = resultData[i]
       return <li className="w-full flex justify-center py-4" key={hit._id}>
-                <Link className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline" href={serialize(new URLSearchParams(searchParams), {size: size + 40})}>Vis flere</Link>
+                <Link className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline" href={serialize(new URLSearchParams(searchParams), {size: size + 40})}>Vis fleire</Link>
               </li>
     }
     else if (i < resultData?.length && (!isLoading || size > 20)) {
