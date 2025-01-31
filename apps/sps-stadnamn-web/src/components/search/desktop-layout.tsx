@@ -12,7 +12,7 @@ import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
 import NavSelector from "../tabs/left-window"
 import { PiArrowUpBold, PiFilesFill, PiTableFill, PiTagFill, PiXBold } from "react-icons/pi"
-import SourceList from "./results/source-list"
+import SourceList from "../children/source-list"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import Spinner from "../svg/Spinner"
@@ -31,8 +31,12 @@ export default function DesktopLayout() {
     const dataset = useDataset()
     const { parentLoading, parentData, docLoading, docData, docView } = useContext(DocContext)
     const { childrenLoading, childrenData, childrenCount, shownChildrenCount } = useContext(ChildrenContext)
+    const searchParams = useSearchParams()
+    const parent = searchParams.get('parent')
 
-    const [parent, setParent] = useQueryState('parent')
+    const showCadastralWindow = (treeSettings[dataset] && docData?._source?.sosi == 'gard')
+    const showSourceWindow = dataset == 'search' && docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1
+
 
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
@@ -59,55 +63,48 @@ export default function DesktopLayout() {
         { docLoading && <div className="bg-white relative lg:rounded-md lg:shadow-md break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
         
         </div>
-        { docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1 || (treeSettings[dataset] && docData?._source?.sosi == 'gard') || parent ?
+        { parent || showCadastralWindow || showSourceWindow ?
          <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start ${dataset == 'search' ? 'w-[30svw] 2xl:w-[25svw]' : ''}`}>
-            { !treeSettings[dataset] &&<div className={`flex w-full relative ${parent ? 'border-b border-neutral-300' : ''}`}>
-            <h2><Clickable className={`flex gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950 w-[25svw]`} add={{parent: docData?._source.uuid}}>
+            { showSourceWindow && 
+                <div className={`flex w-full items-center ${parent ? 'border-b border-neutral-300' : ''}`}>
+                    <h2><Clickable className={`flex ${parent ? 'w-full' : ''} gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950`} add={{parent: docData?._source.uuid}}>
 
-            
-
-             <>{!parent && <PiFilesFill className="text-2xl text-primary-600"/>}
-                <span className="text-xl">Kjelder</span>
-                { (childrenCount && childrenCount == childrenData?.length) ?
-                    <div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">
-                    {childrenCount != shownChildrenCount ? `${shownChildrenCount}/${childrenCount}` : childrenCount}
-                    </div> : null
-                }
+                    {!parent && <PiFilesFill className="text-2xl text-primary-600"/>}
+                        <span className="text-xl">Kjelder</span>
+                        { (childrenCount && childrenCount == childrenData?.length) ?
+                            <div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">
+                            {childrenCount != shownChildrenCount ? `${shownChildrenCount}/${childrenCount}` : childrenCount}
+                            </div> : null
+                        }
+                    </Clickable>
+                    </h2>
                     
+
+                    {parent && parent != doc && <Clickable link className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiTagFill className="text-neutral-800 text-xl"/> Stadnamnoppslag</Clickable>}
                     
-                    </>
-            
-
-            
-            
-            </Clickable>
-            </h2>
-            
-
-            {parent && parent != doc && <Clickable link className="flex gap-2 no-underline px-2 justify-start items-center" add={{doc: parent}}><PiTagFill className="text-neutral-800 text-xl"/> Stadnamnoppslag</Clickable>}
-            {parent && <Clickable link remove={["parent", "sourceDataset", "sourceLabel"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 absolute right-0 top-0"><PiXBold/></Clickable>}
-            
-            </div>
+                    {childrenLoading ? <Spinner  className="ml-auto mr-2" status="Lastar kjelder"/> : null}
+                    {parent && !childrenLoading && <Clickable link remove={["parent", "sourceDataset", "sourceLabel"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></Clickable>}
+                    
+                </div>
             }
-            { treeSettings[dataset] && docData?._source?.sosi == 'gard' && (!parent || childrenLoading) &&
+            { showCadastralWindow && (!parent || childrenLoading) &&
             <div className="flex w-full">
                 <h2 className={`flex gap-2 no-underline justify-start items-center w-full text-neutral-950`}>
                     <Clickable link className="flex gap-2 no-underline p-2 px-4 justify-start items-center" add={{parent: docData?._source.uuid}}>
                     <PiTableFill className={`text-2xl text-primary-600`}/><span className={`text-xl`}>Underordna bruk</span>
                     </Clickable>
-                    {(childrenLoading || parentLoading) && <Spinner  className="ml-auto mr-2" status="Laster underordna bruk"/>}
+                    {childrenLoading && <Spinner  className="ml-auto mr-2" status="Lastar underordna bruk"/>}
                 </h2>
                 </div>
             
             }
 
-
-            {parent && <div className="w-full max-h-[30svh]  overflow-y-auto stable-scrollbar px-2">
-            
-            {treeSettings[dataset] ?  
-                      parentData?._id && <CadastralSubdivisions/>
-                   :  dataset == 'search' && <SourceList/>}
-            </div>}
+            {parentData && !childrenLoading && !parentLoading && 
+                <div className="w-full max-h-[30svh]  overflow-y-auto stable-scrollbar px-2">
+                    {showCadastralWindow && <CadastralSubdivisions/>}
+                    {showSourceWindow && <SourceList/>}
+                </div>
+            }
         </div>
         : null
 

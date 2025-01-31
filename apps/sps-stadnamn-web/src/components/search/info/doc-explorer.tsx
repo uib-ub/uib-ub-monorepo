@@ -9,7 +9,7 @@ import { useDataset } from "@/lib/search-params";
 import Spinner from "@/components/svg/Spinner";
 import { treeSettings } from "@/config/server-config";
 import CadastralSubdivisions from "@/components/children/cadastral-subdivisions";
-import SourceList from "../results/source-list";
+import SourceList from "../../children/source-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import { PiArrowLeft, PiCaretLeft, PiFilesFill, PiRows, PiTable, PiTag, PiTagFill, PiX } from "react-icons/pi";
 import { GlobalContext } from "@/app/global-provider";

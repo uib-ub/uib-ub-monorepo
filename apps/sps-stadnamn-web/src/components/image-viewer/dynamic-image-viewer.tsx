@@ -112,7 +112,7 @@ const DynamicImageViewer = () => {
     <div className='w-full lg:col-span-4 relative !min-h-[40svh] bg-neutral-200'>
 
     {error ? <div className="pt-10"><ErrorMessage error={{error}} message="Kunne ikke laste bildet"/></div> : !viewerRef.current? 
-    <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Laster inn bilde" className='w-20 h-20'/></div>
+    <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Lastar inn bilde" className='w-20 h-20'/></div>
       : null
       }
     <div className='absolute top-0 flex z-[1000]  gap-2 text-xl p-2 text-white w-full'>

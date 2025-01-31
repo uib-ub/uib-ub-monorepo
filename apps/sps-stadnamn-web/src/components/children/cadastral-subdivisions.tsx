@@ -11,7 +11,6 @@ import { ChildrenContext } from "@/app/children-provider"
 import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
 import { GlobalContext } from "@/app/global-provider"
-import { getValuesByPath } from "@/lib/utils"
 
 
 export default function CadastralSubdivisions() {
@@ -28,17 +27,16 @@ export default function CadastralSubdivisions() {
     const { subunit, leaf  } = treeSettings[dataset]
 
     
-    const { parentData, docView } = useContext(DocContext)
+    const { parentData, docView, parentLoading } = useContext(DocContext)
     const { isMobile } = useContext(GlobalContext)
     const { childrenData, childrenLoading } = useContext(ChildrenContext)
+
 
 
 
     const gnr =  getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")
     return (
     <>
-        {
-            !childrenLoading && <>
             {(isMobile || mode == 'table') ?
             <h2 className="pb-2">{gnr} {parentData?._source?.label}</h2>
             
@@ -91,10 +89,6 @@ export default function CadastralSubdivisions() {
                             </tbody>
                         </table>
                         </div>
-          
-               
-            </>
-        }
     </>
-);
+    )
 }

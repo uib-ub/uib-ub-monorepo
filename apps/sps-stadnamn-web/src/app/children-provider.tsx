@@ -81,6 +81,9 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
         if (dataset != 'search' && !treeSettings[dataset]) return;
         if (dataset == 'search' && !parentData?._source?.children) return;
 
+        setChildrenLoading(true)    
+        setChildrenFetching(true)
+
         const requestBody: Record<string,any> = {mode}
         if (dataset == 'search') {
             requestBody.children = parentData?._source?.children
@@ -91,8 +94,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
         }
 
         childrenData.current = null
-        setChildrenLoading(true)    
-        setChildrenFetching(true)
+        
         fetch("/api/children", {
             method: 'POST',
             body: JSON.stringify(requestBody)
