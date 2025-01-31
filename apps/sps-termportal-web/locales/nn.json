@@ -108,7 +108,8 @@
     "menuButtonShow": "Utvid menyen",
     "menuButtonHide": "Skjul menyen",
     "language": "Visningsspråk",
-    "navigation": "Navigasjon" // TODO Check translation
+    "navigation": "Navigasjon", // TODO Check translation
+    "uibHomepage": "Universitetet i Bergen heimeside"
   },
   "news": {
     "heading": "Nyhende"
@@ -131,7 +132,13 @@
     "expandSubdomains": "Vis underdomene",
     "closeSubdomains": "Skjul underdomene",
     "expandTermbases": "Vis termbasar",
-    "closeTermbases": "Skjul termbasar"
+    "closeTermbases": "Skjul termbasar",
+    "expandDomainMenu": "Utvid domenemeny",
+    "closeDomainMenu": "Skjul domenemeny",
+    "resetDomainOptions": "Tilbakestill domeneval",
+    "expandTermbaseMenu": "Utvid termbasemeny",
+    "closeTermbaseMenu": "Skjul termbasemeny",
+    "resetTermbaseOptions": "Tilbakestill termbaseval"
   },
   "searchFilter": {
     "results": "treff",
@@ -140,7 +147,8 @@
     "filterTitleShow": "Vis filter",
     "filterTitleHide": "Skjul filter",
     "termproperty": "Termstatus",
-    "matching": "Treffmønster"
+    "matching": "Treffmønster",
+    "resetFilter": "Tilbakestill filter"
   },
   "footer": {
     "contact": "Kontakt oss",
