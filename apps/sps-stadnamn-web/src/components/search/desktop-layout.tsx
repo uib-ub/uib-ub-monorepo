@@ -100,7 +100,7 @@ export default function DesktopLayout() {
             }
 
             {parentData && !childrenLoading && !parentLoading && 
-                <div className="w-full h-full  overflow-y-auto stable-scrollbar px-2">
+                <div className="h-full  overflow-y-auto stable-scrollbar px-2">
                     {showCadastralWindow && <CadastralSubdivisions/>}
                     {showSourceWindow && <SourceList/>}
                 </div>
