@@ -27,14 +27,14 @@ export default function SourceList() {
     return !childrenLoading && !parentLoading && childrenData && parentData?._source?.uuid ? (
         <div className="xl:mb-8 instance-info"> 
             {Object.entries(sourceChildren || {}).map(([docDataset, docs]: [string, any[]]) => (
-                <div key={docDataset}>
+                <Fragment key={docDataset}>
                     <h3 className="!text-base uppercase  !font-sans border-b border-neutral-200 px-2 !pb-1 !mt-2">{datasetTitles[docDataset]}</h3>
                     <ul className="!p-0 divide-y divide-neutral-200">
                         {docs.map((doc: Record<string, any>) => (
                             <SourceItem key={doc._id} hit={doc} isMobile={false}/>
                         ))}
                     </ul>
-                </div>
+                </Fragment>
             ))}
         </div>
     ) : null
