@@ -242,7 +242,7 @@ export const typeNames: Record<string, string> = {
   "encyclopedia": "Oppslagsverk",
   "database": "Database",
   "public": "Offentleg register",
-  "topo": "Djupinnsamling"
+  "collection": "Djupinnsamling"
 }
 
 
@@ -265,18 +265,18 @@ export const datasetFeatures: Record<string, string[]> = {
 }
 
 export const datasetTypes: Record<string, string[]> = {
-  bsn: ["sprak", "topo"],
-  hord: ["sprak", "database", "topo"],
-  rygh: ["encyclopedia", "topo"],
-  nbas: ["sprak", "database", "topo"],
+  bsn: ["sprak", "collection"],
+  hord: ["sprak", "database", "collection"],
+  rygh: ["encyclopedia", "collection"],
+  nbas: ["sprak", "database"],
   m1838: ["public"],
   m1886: ["public"],
   mu1950: ["public", "sprak"],
-  skul: ["sprak", "topo"],
-  leks: ["encyclopedia", "topo"],
-  ostf: ["encyclopedia", "topo"],
-  sof: ["database", "topo"],
-  tot: ["database", "sprak", "topo"],
+  skul: ["sprak", "collection"],
+  leks: ["encyclopedia", "collection"],
+  ostf: ["encyclopedia", "collection"],
+  sof: ["database", "collection"],
+  tot: ["database", "sprak", "collection"],
   ssr2016: ["database", "public"],
 }
 
