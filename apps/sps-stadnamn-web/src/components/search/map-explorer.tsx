@@ -418,7 +418,6 @@ useEffect(() => {
                 const boundsCenter = bounds.getCenter();
                 const mapZoom = map.getZoom()
                 if (doc && docView && boundsCenter && mapZoom) {
-                  console.log("DOCVIEW", docView)
                   docView.current = {center: [boundsCenter.lat, boundsCenter.lng].join(','), zoom: mapZoom.toString()}
                 }
                 programmaticChange.current = true

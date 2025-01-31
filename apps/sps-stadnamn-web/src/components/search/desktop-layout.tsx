@@ -64,7 +64,7 @@ export default function DesktopLayout() {
         
         </div>
         { parent || showCadastralWindow || showSourceWindow ?
-         <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start ${dataset == 'search' ? 'w-[30svw] 2xl:w-[25svw]' : ''}`}>
+         <div className={`rounded-md shadow-md !z-[3001] bg-white  flex flex-col instance-info justify-start ${parent ? '!min-h-[30svh] max-h-[30svh]' : ''} ${dataset == 'search' ? 'w-[30svw] 2xl:w-[25svw]' : ''}`}>
             { showSourceWindow && 
                 <div className={`flex w-full items-center ${parent ? 'border-b border-neutral-300' : ''}`}>
                     <h2><Clickable className={`flex ${parent ? 'w-full' : ''} gap-2 no-underline p-2 px-4 justify-start items-center text-neutral-950`} add={{parent: docData?._source.uuid}}>
@@ -100,7 +100,7 @@ export default function DesktopLayout() {
             }
 
             {parentData && !childrenLoading && !parentLoading && 
-                <div className="w-full max-h-[30svh]  overflow-y-auto stable-scrollbar px-2">
+                <div className="w-full h-full  overflow-y-auto stable-scrollbar px-2">
                     {showCadastralWindow && <CadastralSubdivisions/>}
                     {showSourceWindow && <SourceList/>}
                 </div>
