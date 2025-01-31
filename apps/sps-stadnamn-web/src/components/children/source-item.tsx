@@ -54,7 +54,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             </ClickableIcon>
             <div className="">
                 <strong>{hit._source.label}</strong>{hit._source.sosi && ` (${hit._source.sosi})`}
-                <div className="flex gap-1">
+                <div className="flex flex-wrap gap-1">
                 {allLabels?.map((item: {label: string, year?: number}, index: number) => (
                     <span key={index} className="text-neutral-800">
                         {item?.year ? (
