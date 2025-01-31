@@ -107,7 +107,8 @@
     "menuButtonShow": "Extend menu",
     "menuButtonHide": "Hide menu",
     "language": "Display language",
-    "navigation": "Navigation"
+    "navigation": "Navigation",
+    "uibHomepage": "University of Bergen homepage"
   },
   "news": {
     "heading": "News"
@@ -130,7 +131,13 @@
     "expandSubdomains": "Show subdomains",
     "closeSubdomains": "Hide subdomains",
     "expandTermbases": "Show termbases",
-    "closeTermbases": "Hide termbases"
+    "closeTermbases": "Hide termbases",
+    "expandDomainMenu": "Extend domain menu",
+    "closeDomainMenu": "Hide domain menu",
+    "resetDomainOptions": "Reset domain selection",
+    "expandTermbaseMenu": "Extend termbase menu",
+    "closeTermbaseMenu": "Close termbase menu",
+    "resetTermbaseOptions": "Reset termbase selection"
   },
   "searchFilter": {
     "results": "results",
@@ -139,7 +146,8 @@
     "filterTitleShow": "Show filter",
     "filterTitleHide": "Hide filter",
     "termproperty": "Acceptability rating",
-    "matching": "Matching pattern"
+    "matching": "Matching pattern",
+    "resetFilter": "Reset filter"
   },
   "footer": {
     "contact": "Contact us",

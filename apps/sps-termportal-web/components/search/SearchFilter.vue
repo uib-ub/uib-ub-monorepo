@@ -24,6 +24,7 @@
         "
       >
         <IconReset size="1em" />
+        <span class="sr-only">{{ $t("searchFilter.resetFilter") }}</span>
       </button>
     </div>
     <div

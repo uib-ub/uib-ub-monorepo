@@ -12,9 +12,9 @@
   },
   "urls": [
     "localhost:3000",
-    "localhost:3000/about",
-    "localhost:3000/config",
-    "localhost:3000/MRT",
+    "localhost:3000/om",
+    "localhost:3000/innstillinger",
+    "localhost:3000/tb/MRT",
     {"url": "localhost:3000/search",
      "action": []}
   ]

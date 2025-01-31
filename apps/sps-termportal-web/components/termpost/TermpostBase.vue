@@ -83,11 +83,15 @@ const props = defineProps({
   mainp: { type: Boolean, default: false },
 });
 
-watch(termpostRef, () => {
-  if (window.MathJax && window.MathJax.typesetPromise) {
-    window.MathJax.typesetPromise();
-  }
-});
+watch(
+  termpostRef,
+  () => {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise();
+    }
+  },
+  { immediate: true }
+);
 
 const controller = new AbortController();
 const timer = setTimeout(() => {

@@ -25,7 +25,7 @@
             }"
             @click="updateTopdomain(topdomain)"
           >
-            <div class="w-5 flex justify-center">
+            <div class="flex w-5 justify-center">
               <Icon
                 v-if="
                   Object.keys(searchInterface.domain).includes(topdomain) ||
@@ -53,36 +53,38 @@
       <div class="flex justify-center">
         <button
           v-if="domainSelected"
-          class="absolute border border-t-white border-gray-300 rounded-b-md bg-white h-[1.1em] mt-[6px] flex justify-center w-16"
+          class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border border-gray-300 border-t-white bg-white"
           @click="panel = !panel"
         >
           <Icon
             name="mdi:chevron-down"
             size="1.6em"
-            class="text-gray-600 mt-[-7px]"
+            class="mt-[-7px] text-gray-600"
             aria-hidden="true"
           />
-          <span class="sr-only">Expand domain panel</span>
+          <span class="sr-only">{{ $t("searchBar.expandDomainMenu") }}</span>
         </button>
       </div>
     </div>
     <div>
       <div
         v-if="panel"
-        class="absolute z-20 max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg mt-[6px]"
+        class="absolute z-20 mt-[6px] max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
-        <div class="absolute top-0 right-0 flex mr-1 mt-1 space-x-2">
+        <div class="absolute right-0 top-0 mr-1 mt-1 flex space-x-2">
           <button
             v-if="subdomainSpecified"
-            class="p-0.5 text-gray-600 border border-transparent rounded-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+            class="rounded-sm border border-transparent p-0.5 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
             @click="resetSubdomainOptions()"
           >
             <IconReset class="text-lg" size="1.35em" />
-            <span class="sr-only">Reset domain options</span>
+            <span class="sr-only">{{
+              $t("searchBar.resetDomainOptions")
+            }}</span>
           </button>
           <button
-            class="border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 hover:text-gray-800 flex justify-center"
+            class="flex justify-center rounded-sm border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
             @click="panel = false"
           >
             <IconClose class="text-lg" />
