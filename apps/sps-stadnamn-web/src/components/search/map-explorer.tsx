@@ -170,6 +170,7 @@ export default function MapExplorer() {
        
       .then(data => {
         setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(mapInstance.current, data, zoom) : data)
+        console.log((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(mapInstance.current, data, zoom) : data)
 
       })
 
@@ -462,7 +463,7 @@ useEffect(() => {
                 />
               )}
 
-              {!childrenMarkers?.length && (markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
+              {(markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
                 return <Fragment key={marker.topHit._id}>
                  {![marker.topHit, ...marker.grouped].some((item: any) => coordinatesSelected(item.fields.location[0].coordinates[1], item.fields.location[0].coordinates[0])) ? <Marker key={marker.topHit._id} 
                           position={[marker.topHit.fields.location[0].coordinates[1], marker.topHit.fields.location[0].coordinates[0]]} 
