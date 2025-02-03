@@ -47,7 +47,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
           add={{sourceLabel: label, parent: doc}} 
           remove={["sourceLabel", "sourceDataset"]} 
           className={`no-underline border shadow-sm rounded-md px-3 py-1
-            ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'} text-neutral-950`}
+            ${isActive ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'} text-neutral-950`}
           aria-current={isActive ? 'page' : undefined}
         >
         {label}
@@ -74,7 +74,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 no-underline border rounded-md rounded-full 
                 pr-3 pl-2 py-2 xl:py-1 
                 w-full shadow-sm
-                ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}
+                ${isActive ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
               add={docSource.datasets.length > 1 ? {sourceDataset: dataset, parent: doc} : {parent: doc}}
               remove={["sourceLabel", "sourceDataset"]}
@@ -97,7 +97,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 w-full
                 no-underline border rounded-md rounded-full 
                 pr-3 pl-2 py-2 xl:py-1 text-black shadow-sm
-                ${parent && !sourceLabel && !sourceDataset ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}
+                ${parent && !sourceLabel && !sourceDataset ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
               remove={["sourceLabel", "sourceDataset"]}
               add={{parent: doc}}
@@ -106,7 +106,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               aria-controls={isMobile ? undefined : 'children-window'}
             >
                 <PiFilesFill className={`${parent && !sourceLabel && !sourceDataset ? 'text-white' : 'text-primary-600'} text-xl`} />
-              Alle kjeldene
+              Alle
             </Clickable>
           </li>
         )}

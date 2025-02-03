@@ -6,8 +6,9 @@ import { infoPageRenderers } from '@/config/info-renderers'
 import OriginalData from './original-data'
 import Link from 'next/link'
 import { PiDatabaseFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi'
-import ThumbnailLink from '@/components/image-viewer/thumbnail-link'
 import CopyLink from '@/components/doc/copy-link'
+import Thumbnail from '@/components/image-viewer/thumbnail'
+import Sources from './sources'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
     const { uuid } = await params
@@ -22,6 +23,7 @@ export async function generateMetadata( { params }: { params: Promise<{ uuid: st
 export default async function LandingPage({ params }: { params: Promise<{ uuid: string }>}) {
     const { uuid } = await params
     const doc = await fetchDoc({uuid})
+
 
     if (doc.error) {
         return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
@@ -39,7 +41,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
     // TODO: create shared component for uuid/ and view/doc/
     // TODO: create tabs for info, json, geojson and jsonld
     return (
-        <div className="instance-info flex flex-col flex-grow space-y-6">
+        <div className="page-info flex flex-col flex-grow space-y-6">
           <span>
             <h1>{doc._source.label}</h1>
             <div className="flex flex-wrap gap-4">
@@ -70,18 +72,25 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       
       </span>
             { docDataset != 'search' ?
-            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + uuid}><PiDatabaseFill aria-hidden="true" className="text-2xl"/>{ datasetTitles[docDataset]}</Link></div>
+            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/search?dataset=" + docDataset + "?doc=" + uuid}><PiDatabaseFill aria-hidden="true" className="text-2xl"/>{ datasetTitles[docDataset]}</Link></div>
             :
-            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + uuid}><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Vis i stadnamnsøket</Link></div>
+            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/search?doc=" + uuid}><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Vis i stadnamnsøket</Link></div>
 }
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](doc._source) : null }
 
       
-      {doc._source.image?.manifest && <div>
-        <h2>Seddel</h2>
-        <ThumbnailLink doc={doc}/>
+      {doc._source.images?.map((image: {manifest: string, dataset: string}) => {
+        return <div key={image.manifest}>
+        <h2>Sedler</h2>
+        <Link href={"/iiif/" + image.manifest} className="text-sm text-neutral-800 no-underline">
+        <Thumbnail manifestId={image.manifest} dataset={docDataset}/>
+              
+        <div>{datasetTitles[image.dataset]}</div>
+        </Link>
+        </div>
 
-        </div>}
+        
+      })}
         { doc._source.rawData ?
         <div>
         <OriginalData rawData={doc._source.rawData}/>
@@ -89,8 +98,13 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       : null}
       
       { docDataset == 'search' &&
+        <div>
+        <h2>Kjelder</h2>
+        <Sources uuids={doc._source.children}/>
+        </div>
 
-        <>CHILDREN HERE</>
+        
+
 
 
       }

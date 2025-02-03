@@ -18,7 +18,6 @@ export default function ClientThumbnail({ images }: { images: {manifest: string,
         const manifest = images[imgIndex].manifest
         const imgDataset = images[imgIndex].dataset
         const fetchThumbnail = async (url: string) => {
-            console.log(url)
             const response = await fetch(url)
             const data = await response.json()
             const [, originalWidth, originalHeight] = data?.thumbnail?.[0]?.id.match(/\/full\/(\d+),(\d+)\//) || []

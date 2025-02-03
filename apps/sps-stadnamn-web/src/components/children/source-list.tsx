@@ -9,14 +9,9 @@ import SourceItem from './source-item'
 import { useQueryState } from 'nuqs'
 
 export default function SourceList() {
-    const { childrenData, childrenLoading, childrenError, sourceChildren } = useContext(ChildrenContext)
+    const { childrenData, childrenLoading, sourceChildren } = useContext(ChildrenContext)
     const [error, setError] = useState<any>(null)
-    const [filteredData, setFilteredData] = useState<[string, Record<string, any>[]][]>([])
     const { parentData, parentLoading } = useContext(DocContext)
-    const pathname = usePathname()
-    const searchParams = useSearchParams()
-    const landingPage = pathname.startsWith('/uuid')
-
 
 
     if (error) {

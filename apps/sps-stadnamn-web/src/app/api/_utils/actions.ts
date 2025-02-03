@@ -7,7 +7,10 @@ const detectEnv = (retry: boolean) => {
 }
 
 
-export async function fetchDoc(params: {uuid: string, dataset?: string}, retry: boolean = true) {
+
+
+
+export async function fetchDoc(params: {uuid: string | string[], dataset?: string}, retry: boolean = true) {
     'use server'
     const { uuid, dataset } = params
     const { endpoint, token } = detectEnv(retry)
@@ -16,7 +19,7 @@ export async function fetchDoc(params: {uuid: string, dataset?: string}, retry: 
     const query = {
         query: {
             terms: {
-                "uuid": [uuid]
+                "uuid": Array.isArray(uuid) ? uuid : [uuid]
             }
         }
     }
@@ -46,7 +49,7 @@ export async function fetchDoc(params: {uuid: string, dataset?: string}, retry: 
     }
   const data = await res.json()
 
-  return data.hits.hits[0]
+  return Array.isArray(uuid) ? data.hits.hits : data.hits.hits[0]
 
   }
 

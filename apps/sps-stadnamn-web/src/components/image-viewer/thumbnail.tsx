@@ -1,36 +1,29 @@
-
 import Image from "next/image"
 
-export default async function Thumbnail({ manifestId }: { manifestId: string }) {
+export default async function Thumbnail({ manifestId, dataset }: { manifestId: string, dataset: string}) {
 
     async function fetchThumbnail() {
         'use server'
-
         // TODO: create api route that generates manifest from elasticsearch index  
-        let res 
-        try {
-            res = await fetch( `https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
-            if (res.status === 404) {
-                throw new Error("Not found")
-            }
-        }
-        catch {
-            res = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json`);
-        }
-
-
+        const res = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/${dataset === 'nbas' ? 'stadnamn/NBAS' : ''}/${manifestId}.json`);
         const data = res.ok ? await res.json() : null
+        const height = 128
+
+        const [, originalWidth, originalHeight] = data?.thumbnail?.[0]?.id.match(/\/full\/(\d+),(\d+)\//) || []
+            const newWidth = originalWidth ? Math.round((parseInt(originalWidth, 10) * height) / parseInt(originalHeight, 10)) : null
+            const baseUrl = data?.thumbnail?.[0]?.id.split('/full/')[0]
+            const newThumbnailUrl = `${baseUrl}/full/${newWidth},${height}/0/default.jpg`
+            
 
 
-
-
-        return data?.thumbnail?.[0]?.id
+        return {thumbnail: newThumbnailUrl, width: newWidth, height: height}
     
     }
 
 
-    const thumbnail = await fetchThumbnail()
+    const {thumbnail, width, height} = await fetchThumbnail()
 
-    return <Image width={200} height={200} src={thumbnail} alt="Seddel" />
-
-    }
+    return width ? (
+        <Image width={width} height={height} src={thumbnail} alt="Seddel" />
+    ) : null
+}

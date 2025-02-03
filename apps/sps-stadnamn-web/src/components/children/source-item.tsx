@@ -10,14 +10,11 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 
 
 export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
-    const dataset = useDataset()
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
-    const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const parent = searchParams.get('parent')
-    const zoom = searchParams.get('zoom')
 
 
     const detailsRenderer = resultRenderers[docDataset]?.details || defaultResultRenderer.details
@@ -51,7 +48,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                 }}
             >
                 <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl" />
-            </ClickableIcon>
+        </ClickableIcon>
             <div className="">
                 <strong>{hit._source.label}</strong>{hit._source.sosi && ` (${hit._source.sosi})`}
                 <div className="flex flex-wrap gap-1">
