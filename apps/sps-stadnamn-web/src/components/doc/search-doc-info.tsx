@@ -4,6 +4,8 @@ import Timeline from "../doc/timeline";
 import { datasetTitles } from "@/config/metadata-config";
 import { useSearchParams } from "next/navigation";
 import Etymology from "../search/info/etymology";
+import { useContext } from "react";
+import { GlobalContext } from "@/app/global-provider";
 
 
 
@@ -13,6 +15,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
     const parent = searchParams.get('parent')
     const sourceLabel = searchParams.get('sourceLabel')
     const sourceDataset = searchParams.get('sourceDataset')
+    const { isMobile } = useContext(GlobalContext)
     
     const attestationLabels = docSource.attestations?.map((item: any) => item.label)
     const uniqueLabels = new Set<string>(docSource.altLabels?.filter((label: string) => label !== docSource.label && !attestationLabels?.includes(label)))
@@ -75,10 +78,9 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               `}
               add={docSource.datasets.length > 1 ? {sourceDataset: dataset, parent: doc} : {parent: doc}}
               remove={["sourceLabel", "sourceDataset"]}
-              aria-expanded={parent ? true : false}
-              aria-controls="children-window"
-
-
+              link={isMobile ? undefined : true}
+              aria-expanded={isMobile ? undefined : parent ? true : false}
+              aria-controls={isMobile ? undefined :'children-window'}
             >
               <PiDatabaseFill className={`${isActive ? 'text-white' : 'text-neutral-700'}`} />
               {datasetTitles[dataset]}
@@ -99,8 +101,9 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               `}
               remove={["sourceLabel", "sourceDataset"]}
               add={{parent: doc}}
-              aria-expanded={parent ? true : false}
-              aria-controls="children-window"
+              link={isMobile ? undefined : true}
+              aria-expanded={isMobile ? undefined : parent ? true : false}
+              aria-controls={isMobile ? undefined : 'children-window'}
             >
               <PiFilesFill className={`${parent && !sourceLabel && !sourceDataset ? 'text-white' : 'text-neutral-700'}`} />
               Alle kjelder
