@@ -65,7 +65,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
       <ul className='flex flex-wrap gap-1 !list-none !p-0'>
         
         {docSource.datasets.map((dataset: string, index: number) => {
-          const isActive = sourceDataset === dataset
+          const isActive = parent && sourceDataset === dataset
           return <li key={index} className='whitespace-nowrap !m-0 !p-0'>
             <Clickable 
                
