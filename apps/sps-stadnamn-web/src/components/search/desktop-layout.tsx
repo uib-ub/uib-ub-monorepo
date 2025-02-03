@@ -80,10 +80,8 @@ export default function DesktopLayout() {
                         
                         <div className="text-xl flex items-center gap-1">
                             <div className="!max-w-[10svw] truncate">
-                                {treeSettings[dataset] ? 
-                                    `${getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")} ${parentData?._source?.label}` :
-                                    docData?._source.label
-                                }
+                                {treeSettings[dataset] && ((getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")) + " ")}
+                                {parentData?._source.label}
                             </div> 
                             | Kjelder
                         </div>

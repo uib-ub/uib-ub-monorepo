@@ -226,10 +226,12 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     
         }
         {treeSettings[dataset] && docSource.sosi === 'gard' && !parent &&
-                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950 border border-neutral-200 p-2 mb-2 rounded-md" add={{parent: doc}}>
+        <div className="border-t border-t-neutral-200 pt-3 mt-3 mb-2">
+                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950 border border-neutral-200 p-2 rounded-md" add={{parent: doc}}>
                   <PiTableFill className="text-primary-600" aria-hidden="true"/>
                   Vis underordna bruk
                 </Clickable>
+                </div>
             }
         </>
 
