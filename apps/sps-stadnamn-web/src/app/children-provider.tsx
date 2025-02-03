@@ -77,9 +77,11 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 
     // Load children in search dataset
     useEffect(() => {
-        if (!parent || parentLoading) return;
+        if (!parent) return;
+        if (parent != parentData?._source?.uuid) return;
         if (dataset != 'search' && !treeSettings[dataset]) return;
         if (dataset == 'search' && !parentData?._source?.children) return;
+
 
         setChildrenLoading(true)    
         setChildrenFetching(true)
