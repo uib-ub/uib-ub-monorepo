@@ -207,13 +207,16 @@ export default function MobileLayout() {
              onTouchEnd={handleTouchEnd}>
         { drawerContent && <>
             <div className="w-full flex  items-center h-8 pt-2 rounded-t-xl bg-neutral-900 relative px-2" style={{touchAction: 'none'}}>
-                <h2 className="uppercase text-base font-semibold font-sans text-neutral-50 tracking-wider">
+                <h2 className="flex items-center gap-2 uppercase text-base font-semibold font-sans text-neutral-50 tracking-wider">
                     {drawerContent == 'results' && 'Treff'}
                     {drawerContent == 'datasets' && 'Datasett'}
                     {drawerContent == 'filters' && 'Avgrens'}
                     {drawerContent == 'tree' && 'Register'}
                     {drawerContent == 'info' ? <>
-                        {parent && doc == parent && !treeSettings[dataset] && <>Kjelder{parentData?._source.children?.length && (childrenCount && shownChildrenCount != parentData._source.children.length ? `(${shownChildrenCount}/${parentData._source.children.length})` : parentData._source.children.length)}</>}
+                        {parent && doc == parent && !treeSettings[dataset] && <>Kjelder{parentData?._source.children?.length && 
+                            (childrenCount && shownChildrenCount != parentData._source.children.length ? 
+                               <span className="text-neutral-50 text-sm text-neutral-900 bg-white shadow-sm rounded-full !h-5 !min-w-5 px-2 flex items-center justify-center">{`${shownChildrenCount}/${parentData._source.children.length}`}</span> 
+                            : <div className="text-neutral-50 text-sm text-neutral-900 bg-white shadow-sm rounded-full !h-5 !min-w-5 flex items-center justify-center">{parentData._source.children.length}</div>)}</>}
                         {parent && doc == parent && treeSettings[dataset] && 'Bruk'}
                         {parent && doc != parent && 'Kjelde'}
                         {!parent && 'Oppslag'}
