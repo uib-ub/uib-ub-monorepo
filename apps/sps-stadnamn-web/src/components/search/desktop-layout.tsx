@@ -34,7 +34,7 @@ export default function DesktopLayout() {
     const searchParams = useSearchParams()
     const parent = searchParams.get('parent')
 
-    const showCadastralWindow = (treeSettings[dataset] && docData?._source?.sosi == 'gard')
+    const showCadastralWindow = (treeSettings[dataset] && (parent || docData?._source?.sosi == 'gard'))
     const showSourceWindow = dataset == 'search' && docData?._source?.children?.length > 1 || parentData?._source?.children?.length > 1
 
 
