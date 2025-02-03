@@ -210,8 +210,12 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             
             <nav className="flex flex-wrap w-full gap-2 mt-2">
             { sameMarkerList?.reverse().map((hit: any, index: number) => {
-            return <Clickable link key={hit._id} role="tab" aria-selected={[hit.fields?.uuid[0], hit.fields?.children?.[0]].includes(doc)} className="rounded-tabs" add={{doc: hit.fields.children?.length == 1 ? hit.fields.children[0] : hit.fields.uuid[0]}}>
-                {hit.fields.label}
+              const uuid = hit.fields?.uuid[0] || hit._source.uuid
+              const children = hit.fields?.children?.[0] || hit._source?.children
+              const label = hit.fields?.label || hit._source?.label
+
+            return <Clickable link key={hit._id} role="tab" aria-selected={[uuid, children].includes(doc)} className="rounded-tabs" add={{doc: children ? children : uuid}}>
+                {label}
             </Clickable>
             }
             )}
