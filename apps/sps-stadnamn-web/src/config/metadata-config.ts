@@ -27,7 +27,7 @@ export interface DatasetPresentation {
 }
 
 export const datasetTitles: DatasetTitles = {
-    search: "Stadnamnsøk",
+    search: "Overordna søk",
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
@@ -63,7 +63,7 @@ export const datasetDescriptions: Record<string, string> = {
 
 
 export const datasetShortDescriptions: Record<string, string> = {
-  search: "Eit overordna søk som kombinerer alle datasetta og slår saman resultat med tilnærma same namn. Du kan også utforske datasetta i eigne søkevisningar.",
+  search: "Eit overordna søk som kombinerer alle datasetta og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder. Du kan også utforske datasetta i eigne søkevisningar.",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924.",
