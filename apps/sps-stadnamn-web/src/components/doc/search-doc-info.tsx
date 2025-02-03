@@ -62,11 +62,11 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
         {Timeline(docSource.attestations)}
       </>}
 
-      <ul className='flex flex-wrap gap-1 !list-none !p-0'>
+      <ul className='flex flex-col xl:flex-row xl:flex-wrap gap-1 !list-none !p-0'>
         
         {docSource.datasets.map((dataset: string, index: number) => {
           const isActive = parent && sourceDataset === dataset
-          return <li key={index} className='whitespace-nowrap !m-0 !p-0 grow basis-0'>
+          return <li key={index} className='whitespace-nowrap !m-0 !p-0'>
             <Clickable 
                
               className={`
