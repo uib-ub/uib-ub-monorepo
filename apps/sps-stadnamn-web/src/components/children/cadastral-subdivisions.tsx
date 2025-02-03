@@ -34,7 +34,7 @@ export default function CadastralSubdivisions() {
                     <ul className="!p-0 divide-y divide-neutral-200">
                         {childrenData?.map((hit: any) => (
                             <li key={hit._id}>
-                                <span className="flex items-center gap-2 p-2">
+                                <span className="flex items-center gap-2">
                                     <ClickableIcon 
                                         link
                                         label="Opne"
