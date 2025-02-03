@@ -42,7 +42,7 @@ return (
                       add={{sourceLabel: label, parent: doc}} 
                       remove={["sourceLabel", "sourceDataset"]} 
                       className={`no-underline border shadow-sm rounded-md px-3 py-1 max-w-[15svw] truncate
-                        ${isActive ? '!bg-accent-700 text-white border-accent-200' : 'bg-white border-neutral-200'}`}
+                        ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}`}
                       aria-current={isActive ? 'page' : undefined}
                     >
                       {label}

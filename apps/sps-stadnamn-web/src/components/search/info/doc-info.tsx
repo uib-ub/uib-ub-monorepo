@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft, PiArrowLeft } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft, PiArrowLeft, PiTableFill } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -186,7 +186,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                 <Clickable link className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: docDataset, doc}}>
                   <PiMagnifyingGlass className="text-neutral-800" aria-hidden="true"/>
                   Søk i datasettet
-                  
                 </Clickable>
             }
             <Link href={"/uuid/" + docSource.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
@@ -198,6 +197,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
    
         </div>
+        
         </article>
 
         {( mode == 'map' && sameMarkerList?.length && doc != parent) ?
@@ -221,6 +221,12 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             : null
     
         }
+        {treeSettings[dataset] && docSource.sosi === 'gard' && !parent &&
+                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950 border border-neutral-200 p-2 mb-2 rounded-md" add={{parent: doc}}>
+                  <PiTableFill className="text-primary-600" aria-hidden="true"/>
+                  Vis underordna bruk
+                </Clickable>
+            }
         </>
 
 }

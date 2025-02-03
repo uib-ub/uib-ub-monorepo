@@ -11,6 +11,7 @@ import { ChildrenContext } from "@/app/children-provider"
 import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
 import { GlobalContext } from "@/app/global-provider"
+import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 
 
 export default function CadastralSubdivisions() {
@@ -20,66 +21,40 @@ export default function CadastralSubdivisions() {
     })
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
-    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
-    const [parent, setParent] = useQueryState('parent', {history: 'push'})
+    const { leaf  } = treeSettings[dataset]
 
-
-    const { subunit, leaf  } = treeSettings[dataset]
-
-    
-    const { parentData, docView, parentLoading } = useContext(DocContext)
-    const { isMobile } = useContext(GlobalContext)
     const { childrenData, childrenLoading } = useContext(ChildrenContext)
 
 
-
-
-    const gnr =  getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")
     return (
     <>
-            {(isMobile || mode == 'table') ?
-            <h2 className="pb-2">{gnr} {parentData?._source?.label}</h2>
-            
-            : <div className="flex rounded-t-md">
-                <h2 className={`py-2 pr-8 text-lg  !font-sans text`}>
-                    <Clickable link aria-current={doc == parentData?._source?.uuid ? 'page' : false} 
-                                      className="no-underline flex items-center gap-2"
-                                      add={{ doc: parent }}>
-                                        { doc == parentData?._source?.uuid ? <PiInfoFill className="text-accent-800" aria-hidden="true"/> : <PiInfo className="text-primary-600" aria-hidden="true"/>}
-                                        {gnr} {parentData?._source?.label} 
-                    </Clickable>
-
-                </h2>
-                {mode == 'map' && 
-                <div className="float-right text-2xl flex gap-2 p-1 items-center ml-auto">
-                    <Clickable aria-label="Lukk" remove={['parent']} add={docView?.current ? docView.current : {}}><PiX aria-hidden="true"/></Clickable>
-                </div>}
-            </div>}
 
             {fields.length === 0 ? (
                 <div className="instance-info">
                     <ul className="!p-0 divide-y divide-neutral-200">
                         {childrenData?.map((hit: any) => (
                             <li key={hit._id}>
-                                <Clickable link aria-current={doc==hit._source?.uuid ? 'page' : false} 
-                                    className="no-underline !flex !w-full p-2 !h-full items-center gap-2"
-                                    add={{ doc: hit._source?.uuid }}>
-                                    {doc == hit._source?.uuid ? 
-                                        <PiInfoFill className="text-accent-800 text-xl" aria-hidden="true"/> : 
-                                        <PiInfo className="text-primary-600 text-xl" aria-hidden="true"/>
-                                    }
+                                <span className="flex items-center gap-2 p-2">
+                                    <ClickableIcon 
+                                        link
+                                        label="Opne"
+                                        aria-current={doc == hit._source?.uuid ? 'page' : undefined}
+                                        className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
+                                        add={{ doc: hit._source?.uuid }}>
+                                        <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl" />
+                                    </ClickableIcon>
                                     <span>
                                         {Array.isArray(hit._source?.[leaf]) ? hit._source?.[leaf]?.join(", ") : hit._source?.[leaf]}{' '}
                                         {Array.isArray(hit._source?.cadastre?.[0]?.bnr) ? hit._source?.cadastre?.[0]?.bnr?.join(", ") : hit._source?.cadastre?.[0]?.bnr}{' '}
                                         {hit._source?.label}
                                     </span>
-                                </Clickable>
+                                </span>
                             </li>
                         ))}
                     </ul>
                 </div>
             ) : (
-                <div className="overflow-x-auto border border-neutral-300 rounded-md mb-2">
+                <div className="overflow-x-auto border border-neutral-300 rounded-md mb-2 mt-3">
                     <table className="w-full result-table">
                         <thead className="w-full">
                             <tr>
@@ -93,18 +68,21 @@ export default function CadastralSubdivisions() {
                             {childrenData?.map((hit: any) => (
                                 <tr key={hit._id}>
                                     <th className="!p-0">
-                                    <Clickable link aria-current={doc==hit._source?.uuid ? 'page' : false} 
-                                                className={`no-underline !flex !w-full p-2 !h-full items-center gap-2`}
+                                        <span className="flex items-center gap-2 p-2">
+                                            <ClickableIcon 
+                                                link
+                                                label="Opne"
+                                                aria-current={doc == hit._source?.uuid ? 'page' : undefined}
+                                                className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
                                                 add={{ doc: hit._source?.uuid }}>
-                                    { doc == hit._source?.uuid ? <PiInfoFill className="text-accent-800 text-xl" aria-hidden="true"/> : <PiInfo className="text-primary-600 text-xl" aria-hidden="true"/>}
-                                        {Array.isArray(hit._source?.[leaf]) ? hit._source?.[leaf]?.join(", ") : hit._source?.[leaf]}{' '}
-                                        {Array.isArray(hit._source?.cadastre?.[0]?.bnr) ? hit._source?.cadastre?.[0]?.bnr?.join(", ") : hit._source?.cadastre?.[0]?.bnr}{' '}
-                                        {hit._source?.label}
-                                    
-                                        
-                                                                
-                                                                
-                                        </Clickable>
+                                                <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl" />
+                                            </ClickableIcon>
+                                            <span>
+                                                {Array.isArray(hit._source?.[leaf]) ? hit._source?.[leaf]?.join(", ") : hit._source?.[leaf]}{' '}
+                                                {Array.isArray(hit._source?.cadastre?.[0]?.bnr) ? hit._source?.cadastre?.[0]?.bnr?.join(", ") : hit._source?.cadastre?.[0]?.bnr}{' '}
+                                                {hit._source?.label}
+                                            </span>
+                                        </span>
                                     </th>
                                     {fields.map((field: Record<string, any>) => (
                                         <td className="p-2" key={field.key}>{getValueByPath(hit._source, field.key)}</td>
