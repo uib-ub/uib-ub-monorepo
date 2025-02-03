@@ -63,7 +63,9 @@ export default function DesktopLayout() {
         
         </div>
         { parent && (dataset == 'search' || treeSettings[dataset]) ?
-         <div id="children-window" className={`rounded-md shadow-lg !z-[3001] bg-white  flex flex-col instance-info justify-start !min-h-[30svh] max-h-[30svh] ${dataset == 'search' ? 'w-[30svw] 2xl:w-[25svw]' : ''}`}>
+         <div id="children-window" className={`rounded-md shadow-lg !z-[3001] bg-white  flex flex-col instance-info  ${childrenLoading ? 'p-4 justify-center items-center' : 'justify-start'} min-h-[30svh] max-h-[30svh] ${dataset == 'search' ? 'w-[30svw] 2xl:w-[25svw]' : 'max-w-[45svw] min-w-[25svw]'}`}>
+            {childrenLoading ? <Spinner className="h-16 w-16 " status="Lastar kjelder"/> : <>
+            
             { parentData && (dataset == 'search' || treeSettings[dataset]) &&
                 <div className={`flex w-full items-center shadow-md`}>
                     
@@ -92,17 +94,20 @@ export default function DesktopLayout() {
                         }
                     </h2>
                     
-                    {childrenLoading ? <Spinner className="ml-auto mr-2" status="Lastar kjelder"/> : null}
+                    
                     {parent && !childrenLoading && <Clickable link remove={["parent", "sourceDataset", "sourceLabel"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></Clickable>}
                 </div>
             }
 
-            {parentData && !childrenLoading && !parentLoading && 
+            {parentData && 
                 <div className="h-full  overflow-y-auto stable-scrollbar px-2">
                     {treeSettings[dataset] && <CadastralSubdivisions/>}
                     {dataset == 'search' && <SourceList/>}
                 </div>
             }
+            </>
+            }
+         
         </div>
         : null
 
