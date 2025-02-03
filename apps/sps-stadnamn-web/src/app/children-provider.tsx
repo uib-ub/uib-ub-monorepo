@@ -136,6 +136,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 useEffect(() => {
     if (childrenFetching || !childrenData.current) return
     setChildrenLoading(true)
+    setChildrenCount(childrenData.current?.length)
 
     if (sourceLabel) {
         filteredChildren.current = childrenData.current.filter((child: Record<string, any>) => {
@@ -149,6 +150,8 @@ useEffect(() => {
     else {
         filteredChildren.current = childrenData.current
     }
+
+    setShownChildrenCount(filteredChildren.current?.length)
 
     if (!filteredChildren.current?.length) {
         console.log("NO FILTERED CHILDREN", JSON.stringify(childrenData.current))
