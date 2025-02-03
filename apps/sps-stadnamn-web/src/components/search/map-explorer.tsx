@@ -84,7 +84,7 @@ export default function MapExplorer() {
   const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const mapInstance = useRef<any>(null);
-  const autoMode = markerMode === 'auto' ? (searchFilterParamsString?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
+  const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
 
   //const prevPaddedBounds = useRef<[[number, number], [number, number]] | null>(null)
   //const prevZoom = useRef<number | null>(null)
