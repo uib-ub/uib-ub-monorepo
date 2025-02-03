@@ -463,7 +463,7 @@ useEffect(() => {
                 />
               )}
 
-              {(markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
+              {!parent &&(markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
                 return <Fragment key={marker.topHit._id}>
                  {![marker.topHit, ...marker.grouped].some((item: any) => coordinatesSelected(item.fields.location[0].coordinates[1], item.fields.location[0].coordinates[0])) ? <Marker key={marker.topHit._id} 
                           position={[marker.topHit.fields.location[0].coordinates[1], marker.topHit.fields.location[0].coordinates[0]]} 
@@ -476,7 +476,7 @@ useEffect(() => {
                 </Fragment>
               })}
 
-              {(markerMode == 'cluster' || autoMode == 'cluster' ) && tiles?.map((bucket: any) => {
+              {!parent && (markerMode == 'cluster' || autoMode == 'cluster' ) && tiles?.map((bucket: any) => {
 
                 // Sort bucket by children length if dataset is search
 
