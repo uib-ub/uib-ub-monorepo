@@ -69,7 +69,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               className={`
                 flex items-center gap-1 
                 no-underline border rounded-md rounded-full 
-                pr-3 pl-2 py-1 
+                pr-3 pl-2  
                 ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}
                 ${hasAltLabels || hasAttestations ? 'shadow-sm' : ''}
               `}

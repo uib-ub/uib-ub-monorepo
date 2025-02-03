@@ -4,7 +4,7 @@ import { treeSettings } from "@/config/server-config"
 import { useDataset } from "@/lib/search-params"
 import { useQueryState } from "nuqs"
 import { useContext, useState } from "react"
-import { PiInfo, PiInfoFill, PiX } from "react-icons/pi"
+import { PiFileFill, PiInfo, PiInfoFill, PiX } from "react-icons/pi"
 import Clickable from "../ui/clickable/clickable"
 import { getValueByPath } from "@/lib/utils"
 import { ChildrenContext } from "@/app/children-provider"
@@ -37,11 +37,11 @@ export default function CadastralSubdivisions() {
                                 <span className="flex items-center gap-2">
                                     <ClickableIcon 
                                         link
-                                        label="Opne"
+                                        label="Vis bruk"
                                         aria-current={doc == hit._source?.uuid ? 'page' : undefined}
                                         className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
                                         add={{ doc: hit._source?.uuid }}>
-                                        <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl" />
+                                        <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-xl" />
                                     </ClickableIcon>
                                     <span>
                                         {Array.isArray(hit._source?.[leaf]) ? hit._source?.[leaf]?.join(", ") : hit._source?.[leaf]}{' '}
@@ -71,7 +71,7 @@ export default function CadastralSubdivisions() {
                                         <span className="flex items-center gap-2 p-2">
                                             <ClickableIcon 
                                                 link
-                                                label="Opne"
+                                                label="Vis bruk"
                                                 aria-current={doc == hit._source?.uuid ? 'page' : undefined}
                                                 className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
                                                 add={{ doc: hit._source?.uuid }}>

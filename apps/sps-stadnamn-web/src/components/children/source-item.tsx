@@ -41,7 +41,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
         <div className="w-full h-full py-2 flex items-center gap-2">
         <ClickableIcon 
                 link
-                label="Opne"
+                label="Vis kjelde"
                 aria-current={(doc == hit._source.uuid) ? 'page' : undefined}
                 ref={itemRef}
                 className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"

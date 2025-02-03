@@ -71,7 +71,7 @@ export default function DesktopLayout() {
                         
                             <ClickableIcon
                                 link
-                                label="Opne stadnamnoppslag"
+                                label={dataset == 'search' ? "Vis stadnamnoppslag" : "Vis gard"}
                                 aria-current={doc == parent ? 'page' : undefined}
                                 className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
                                 add={{doc: parent}}>
