@@ -105,8 +105,8 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               aria-expanded={isMobile ? undefined : parent ? true : false}
               aria-controls={isMobile ? undefined : 'children-window'}
             >
-                <PiFilesFill className="text-xl text-primary-600" />
-              Alle kjelder
+                <PiFilesFill className={`${parent && !sourceLabel && !sourceDataset ? 'text-white' : 'text-primary-600'} text-xl`} />
+              Alle kjeldene
             </Clickable>
           </li>
         )}
