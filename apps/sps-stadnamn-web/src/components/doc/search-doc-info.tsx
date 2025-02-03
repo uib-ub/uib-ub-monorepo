@@ -65,17 +65,20 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
           const isActive = sourceDataset === dataset
           return <li key={index} className='whitespace-nowrap !m-0 !p-0'>
             <Clickable 
-              link 
+               
               className={`
                 flex items-center gap-1 
                 no-underline border rounded-md rounded-full 
-                pr-3 pl-2  
+                pr-3 pl-2 py-1 
                 ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}
                 ${hasAltLabels || hasAttestations ? 'shadow-sm' : ''}
               `}
               add={docSource.datasets.length > 1 ? {sourceDataset: dataset, parent: doc} : {parent: doc}}
               remove={["sourceLabel", "sourceDataset"]}
-              aria-current={isActive ? 'page' : undefined}
+              aria-expanded={parent ? true : false}
+              aria-controls="children-window"
+
+
             >
               <PiDatabaseFill className={`${isActive ? 'text-white' : 'text-neutral-700'}`} />
               {datasetTitles[dataset]}
@@ -86,7 +89,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
     {docSource.datasets.length > 1 && (
           <li className='whitespace-nowrap !m-0 !p-0'>
             <Clickable 
-              link 
+               
               className={`
                 flex items-center gap-1 
                 no-underline border rounded-md rounded-full 
@@ -96,7 +99,8 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               `}
               remove={["sourceLabel", "sourceDataset"]}
               add={{parent: doc}}
-              aria-current={parent && !sourceLabel && !sourceDataset ? 'page' : undefined}
+              aria-expanded={parent ? true : false}
+              aria-controls="children-window"
             >
               <PiFilesFill className={`${parent && !sourceLabel && !sourceDataset ? 'text-white' : 'text-neutral-700'}`} />
               Alle kjelder

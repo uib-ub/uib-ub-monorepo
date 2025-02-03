@@ -63,7 +63,7 @@ export default function DesktopLayout() {
         
         </div>
         { parent && (dataset == 'search' || treeSettings[dataset]) ?
-         <div className={`rounded-md shadow-lg !z-[3001] bg-white  flex flex-col instance-info justify-start !min-h-[30svh] max-h-[30svh] ${dataset == 'search' ? 'w-[30svw] 2xl:w-[25svw]' : ''}`}>
+         <div id="children-window" className={`rounded-md shadow-lg !z-[3001] bg-white  flex flex-col instance-info justify-start !min-h-[30svh] max-h-[30svh] ${dataset == 'search' ? 'w-[30svw] 2xl:w-[25svw]' : ''}`}>
             { parentData && (dataset == 'search' || treeSettings[dataset]) &&
                 <div className={`flex w-full items-center shadow-md`}>
                     
