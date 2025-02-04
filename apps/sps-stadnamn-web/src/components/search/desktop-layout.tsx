@@ -79,7 +79,7 @@ export default function DesktopLayout() {
                                 aria-current={doc == parent ? 'page' : undefined}
                                 className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
                                 add={{doc: parent}}>
-                                <PiInfoFill className={`text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl`} />
+                                <PiHouseFill className={`text-primary-600 group-aria-[current='page']:text-accent-800 text-xl`} />
                             </ClickableIcon>
                         
                         <div className="text-xl flex items-center gap-1">
