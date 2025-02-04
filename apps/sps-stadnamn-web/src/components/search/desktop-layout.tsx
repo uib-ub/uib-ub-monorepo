@@ -11,7 +11,7 @@ import { treeSettings } from "@/config/server-config"
 import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
 import NavSelector from "../tabs/left-window"
-import { PiArrowUpBold, PiFilesFill, PiInfoFill, PiTableFill, PiTagFill, PiXBold } from "react-icons/pi"
+import { PiArrowUpBold, PiFilesFill, PiHouseFill, PiInfoFill, PiTableFill, PiTagFill, PiTrash, PiTrashFill, PiXBold } from "react-icons/pi"
 import SourceList from "../children/source-list"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
@@ -35,6 +35,8 @@ export default function DesktopLayout() {
     const { childrenLoading, childrenData, childrenCount, shownChildrenCount } = useContext(ChildrenContext)
     const searchParams = useSearchParams()
     const parent = searchParams.get('parent')
+    const sourceLabel = searchParams.get('sourceLabel')
+    const sourceDataset = searchParams.get('sourceDataset')
 
 
 
@@ -93,6 +95,7 @@ export default function DesktopLayout() {
                             </div> : null
                         }
                     </h2>
+                    {(sourceLabel || sourceDataset) && <ClickableIcon label="Fjern filtrering" remove={["sourceDataset", "sourceLabel"]}><PiTrashFill className="text-neutral-800 text-2xl"/></ClickableIcon>}
                     
                     
                     {parent && !childrenLoading && <Clickable link remove={["parent", "sourceDataset", "sourceLabel"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></Clickable>}
