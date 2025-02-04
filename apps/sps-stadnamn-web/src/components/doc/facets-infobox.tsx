@@ -12,9 +12,11 @@ import { datasetTitles } from "@/config/metadata-config";
 
 export default function FacetsInfobox({ source }: { source: Record<string,any> }) {
   const { docDataset } = useContext(DocContext)
+  const dataset = useDataset()
+
   if (!docDataset) return null;
   
-  const dataset = useDataset()
+
   const serialize = createSerializer({
     dataset: parseAsString,
     nav: parseAsString,
