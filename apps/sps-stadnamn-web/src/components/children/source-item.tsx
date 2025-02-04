@@ -36,8 +36,12 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             >
                 <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-xl" />
             </ClickableIcon>
-            {sourceTitle(hit)}
-            {sourceDetails(hit)}
+            <div className="flex flex-col">
+                <div className="">
+                    {sourceTitle(hit)}
+                </div>
+                {sourceDetails(hit)}
+            </div>
         </div>
 }
 
