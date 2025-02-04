@@ -89,14 +89,14 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
         })}
 
     {docSource.datasets.length > 1 && (
-          <li className='whitespace-nowrap !m-0 !p-0 xl:grow xl:basis-0 w-full xl:w-auto'>
+          <li className='whitespace-nowrap !m-0 !p-0'>
             <Clickable 
                
               className={`
                 flex items-center gap-1 
-                w-full
                 no-underline border rounded-md rounded-full 
-                pr-3 pl-2 py-2 xl:py-1 text-black shadow-sm
+                pr-3 pl-2 py-2 xl:py-1 
+                w-full shadow-sm
                 ${parent && !sourceLabel && !sourceDataset ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
               remove={["sourceLabel", "sourceDataset"]}
@@ -106,7 +106,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               aria-controls={isMobile ? undefined : 'children-window'}
             >
                 <PiFilesFill className={`${parent && !sourceLabel && !sourceDataset ? 'text-white' : 'text-primary-600'} text-xl`} />
-              Alle
+              Alle kjelder
             </Clickable>
           </li>
         )}
