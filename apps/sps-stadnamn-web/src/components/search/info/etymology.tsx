@@ -104,17 +104,18 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
         if (!etymology) return null;
         const { html, isTruncated } = stripHtmlAndLimitText(etymology);
         return  (
-            <div className="inner-slate p-2 flex flex-col gap-2">
-                <div>{etymology_renderer?.(html)}</div>
-                
-                <Clickable
-                    link
-                    add={{doc: sourceDocUuid, parent: doc}}
-                    className="no-underline flex items-center gap-1"
-                >
-                    {isTruncated ? <>Les meir i {datasetTitles[etymologyDataset]}<PiCaretRight aria-hidden="true" className="text-primary-600"/></> 
-                    : <><PiFiles aria-hidden="true" className="text-primary-600"/>Kjelde: {datasetTitles[etymologyDataset]}</>}
-                </Clickable>
+            <div className="inner-slate p-2">
+                <div className="flex flex-wrap items-center gap-2">
+                    <div className="inline">{etymology_renderer?.(html)}</div>
+                    
+                    <Clickable
+                        link
+                        add={{doc: sourceDocUuid, parent: doc}}
+                        className="no-underline flex items-center gap-1 font-semibold">
+                        {isTruncated ? <>Les meir i {datasetTitles[etymologyDataset]}<PiCaretRight aria-hidden="true" className="text-primary-600"/></> 
+                        : <>{datasetTitles[etymologyDataset]} <PiCaretRight aria-hidden="true" className="text-primary-600"/></>}
+                    </Clickable>
+                </div>
             </div>
         );
     };
