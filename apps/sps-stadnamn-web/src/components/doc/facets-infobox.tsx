@@ -12,15 +12,17 @@ import { datasetTitles } from "@/config/metadata-config";
 
 export default function FacetsInfobox({ source }: { source: Record<string,any> }) {
   const { docDataset } = useContext(DocContext)
+  if (!docDataset) return null;
+  
   const dataset = useDataset()
   const serialize = createSerializer({
     dataset: parseAsString,
     nav: parseAsString,
-    ...Object.fromEntries(facetConfig[dataset].map((facet) => [facet.key, parseAsString]))
+    ...Object.fromEntries(facetConfig[docDataset].map((facet) => [facet.key, parseAsString]))
   })
   
 
-    const items = facetConfig[dataset].filter(item => 
+    const items = facetConfig[docDataset].filter(item => 
       item.key && !['sosi', 'datasets'].includes(item.key) // Skip fields displayed in dedicated component
     ).map((facet) => {
         const value = getValueByPath(source, facet.key);
@@ -92,7 +94,7 @@ export default function FacetsInfobox({ source }: { source: Record<string,any> }
             <Clickable
               link 
               only={{dataset: docDataset, doc: source.uuid}}
-              className="no-underline flex items-center gap-1"
+              className="no-underline flex items-center gap-2"
             >
               <PiFunnel aria-hidden={true} className="inline text-primary-600"/>
               Filtrer i søkevisning for {datasetTitles[docDataset]}
