@@ -51,6 +51,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const router = useRouter()
 
     const dataset = useDataset()
+    const searchParamsString = searchParams.toString()
 
     useEffect(() => {
         
@@ -62,9 +63,11 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     }, [dataset, pinnedFilters, searchFilterParamsString, router, searchParams]);
 
 
+    
     useEffect(() => {
-        setCurrentUrl("/search?" + searchParams.toString())
-    }, [searchParams, setCurrentUrl])
+        setCurrentUrl("/search?" + searchParamsString)
+    }, [searchParamsString])
+    
 
 
 
