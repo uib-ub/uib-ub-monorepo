@@ -37,35 +37,34 @@ export const xDistance = (currentMap: any, lon1: number, lon2: number) => {
 
 
 export const groupSameCoordinates = (data: any) => {
-    const childrenWithCoordinates = data.filter((child: any) => child._source?.location?.coordinates?.length)
-        const clientGroups: any[] = []
-        const markerLookup: Record<string, any> = {}
-        console.log("CHILDREN", childrenWithCoordinates)
-    
-        childrenWithCoordinates.forEach((child: any) => {
-            const lat = child._source?.location?.coordinates[1]
-            const lon = child._source?.location?.coordinates[0]
-            const uuid = child._source?.uuid
-            let marker = markerLookup[lat + "_" + lon]
-            if (!marker) {
+    const childrenWithCoordinates = data.filter((child: any) => child.fields.location[0].coordinates?.length)
+    const clientGroups: any[] = []
+    const markerLookup: Record<string, any> = {}
+
+    childrenWithCoordinates.forEach((child: any) => {
+        const lat = child.fields.location[0].coordinates[1]
+        const lon = child.fields.location[0].coordinates[0]
+        const uuid = child.fields.uuid[0]
+        let marker = markerLookup[lat + "_" + lon]
+        if (!marker) {
             marker = { children: [], lat, lon, uuid }
             markerLookup[lat + "_" + lon] = marker
             clientGroups.push(marker)
-            }
-    
-            const label = child._source.label
-    
-            if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
+        }
+
+        const label = child.fields.label[0]
+
+        if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
             marker.label = marker.label + "..."
-            } else {
+        } else {
             marker.label = label
-            }
-    
-            marker.children.unshift(child)
-        })
-    
-        return clientGroups
-    }
+        }
+
+        marker.children.unshift(child)
+    })
+
+    return clientGroups
+}
 
     
 export const getValidDegree = (degrees: number, maxValue: number): string => {
