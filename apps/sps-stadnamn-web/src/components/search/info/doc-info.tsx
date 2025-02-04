@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft, PiArrowLeft, PiTableFill } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft, PiArrowLeft, PiTableFill, PiInfinityBold, PiBracketsCurlyBold } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -169,7 +169,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
           <>
             <Link href={"/uuid/" + docSource.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
-              <PiInfinity aria-hidden="true"/>
+              <PiInfinityBold aria-hidden="true"/>
               Varig side
             </Link>
             <CopyLink uuid={docSource.uuid}/> 
@@ -178,7 +178,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             }
             {dataset != 'search' && snidParent &&
                 <Clickable link className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: 'search', doc: snidParent}}>
-                  <PiTag className="text-neutral-800" aria-hidden="true"/>
+                  <PiTagFill aria-hidden="true"/>
                   Stadnamnoppslag
                 </Clickable>
             }
@@ -189,7 +189,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                 </Clickable>
             }
             <Link href={"/uuid/" + docSource.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
-              <PiBracketsCurly aria-hidden="true"/>
+              <PiBracketsCurlyBold aria-hidden="true"/>
               Json
             </Link>
 
