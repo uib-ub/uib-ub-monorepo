@@ -75,6 +75,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.stnavn.oppslag.oppslord": {label: "Oppslagsord", facet},
       "rawData.stnavn.oppslag.utmledd": {label: "Utmerkingsledd", facet},
       "rawData.stnavn.oppslag.hovledd": {label: "Hovudledd", facet},
+      "rawData.stnavn.parform.pf_navn": {label: "Parform", facet},
+      "rawData.stnavn.gmlsform.navnform": {label: "Gammel navnform", facet},
       ...cadastre
     },
 
