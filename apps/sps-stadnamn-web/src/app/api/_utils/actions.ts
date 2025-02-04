@@ -1,4 +1,6 @@
+import { getSortArray, treeSettings } from '@/config/server-config'
 import { postQuery } from './post'
+import { fieldConfig } from '@/config/search-config'
 
 const detectEnv = (retry: boolean) => {
     const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
@@ -262,4 +264,58 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
     }
     return res
     
+}
+
+export async function fetchChildren(params: {
+    uuids?: string[],
+    mode?: string,
+    within?: string,
+    dataset?: string
+}): Promise<[any, number]> {
+    'use server'
+    const { uuids, mode, within, dataset } = params
+
+    if (!mode) {
+        return [{ error: "Mode is required" }, 400]
+    }
+
+    if (!uuids && !(dataset && within)) {
+        return [{ error: "Either uuids or both dataset and within are required" }, 400]
+    }
+
+    const geo = mode == 'map' && {
+        aggs: {
+            viewport: {
+                geo_bounds: {
+                    field: "location",
+                    wrap_longitude: true
+                }
+            }
+        }
+    }
+
+    const query = {
+        size: 1000,
+        _source: false,
+        fields: ["uuid","label", "attestations.label", "altLabels", "sosi",
+                ...dataset && treeSettings[dataset] ? Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => key) : [],
+                ...dataset && treeSettings[dataset] ? [treeSettings[dataset].leaf.replace("__", ".")] : []
+        ],
+        query: {
+            ...(uuids ? {
+                terms: {
+                    "uuid": uuids
+                }
+            } : {
+                term: {
+                    "within.keyword": within
+                }
+            })
+        },
+        ...(dataset ? {sort: getSortArray(dataset)} : {}),
+        ...geo || {}
+    }
+
+    const [res, status] = await postQuery(dataset || `*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
+    return [res, status] as [any, number]
 }

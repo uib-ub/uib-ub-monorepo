@@ -79,18 +79,17 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](doc._source) : null }
 
       
-      {doc._source.images?.map((image: {manifest: string, dataset: string}) => {
+      {doc._source.images?.length > 0 && <div><h2>Sedler</h2><div className="flex flex-wrap gap-4">{doc._source.images?.map((image: {manifest: string, dataset: string}) => {
         return <div key={image.manifest}>
-        <h2>Sedler</h2>
         <Link href={"/iiif/" + image.manifest} className="text-sm text-neutral-800 no-underline">
-        <Thumbnail manifestId={image.manifest} dataset={docDataset}/>
+        <Thumbnail manifestId={image.manifest} dataset={image.dataset}/>
               
         <div>{datasetTitles[image.dataset]}</div>
         </Link>
         </div>
 
         
-      })}
+      })}</div></div>}
         { doc._source.rawData ?
         <div>
         <OriginalData rawData={doc._source.rawData}/>

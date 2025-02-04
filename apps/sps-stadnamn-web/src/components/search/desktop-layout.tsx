@@ -71,7 +71,7 @@ export default function DesktopLayout() {
             { parentData && (dataset == 'search' || treeSettings[dataset]) &&
                 <div className={`flex w-full items-center shadow-md`}>
                     
-                    <h2 className="flex items-center gap-2 p-1 px-2">
+                    <h2 className="flex items-center gap-1 p-1 px-2">
                         
                             <ClickableIcon
                                 link

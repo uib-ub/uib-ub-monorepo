@@ -17,25 +17,12 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const parent = searchParams.get('parent')
 
 
-    const detailsRenderer = resultRenderers[docDataset]?.details || defaultResultRenderer.details
-    const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
-    const sourceWindowRenderer = resultRenderers[docDataset]?.sourceWindow || defaultResultRenderer.sourceWindow
-
-    // labels that are different from the main label
-    const labels = hit.fields.altLabels?.filter((label: string) => 
-        label !== hit.fields.label[0]
-    ) || []
-
-    // Fix: "attestations.label" is an array of strings, not objects
-    hit.fields["attestations.label"]?.forEach((attestation: string) => {
-        if (!labels.includes(attestation) && attestation !== hit.fields.label[0]) {
-            labels.push(attestation)
-        }
-    })
+    const sourceTitle = resultRenderers[docDataset]?.sourceTitle || defaultResultRenderer.sourceTitle
+    const sourceDetails = resultRenderers[docDataset]?.sourceDetails || defaultResultRenderer.sourceDetails
 
 
-    return  <li className="flex flex-grow !p-0 !m-0">
-        <div className="w-full h-full flex items-center gap-2">
+
+    return  <div className="w-full h-full flex items-center gap-2 py-1">
             <ClickableIcon 
                 link
                 label="Vis kjelde"
@@ -47,18 +34,10 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                     parent: parent && docDataset == 'search' ? hit.fields.uuid[0] : null,
                 }}
             >
-                <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl" />
+                <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-xl" />
             </ClickableIcon>
-            <div className="">
-                <strong>{hit.fields.label}</strong>
-                {hit.fields.sosi && ` (${hit.fields.sosi})`}
-                {labels?.length > 0 &&
-                    <span className="text-neutral-900">
-                        {" - " +labels?.join(', ')}
-                    </span>
-                }
-            </div>
+            {sourceTitle(hit)}
+            {sourceDetails(hit)}
         </div>
-    </li>
 }
 

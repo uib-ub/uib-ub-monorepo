@@ -26,7 +26,9 @@ export default function SourceList() {
                     <h3 className="!text-base uppercase  !font-sans border-b border-neutral-200 px-2 !pb-1 !mt-0">{datasetTitles[docDataset]}</h3>
                     <ul className="!p-0 divide-y divide-neutral-200 gap-2" aria-live="polite">
                         {docs.map((doc: Record<string, any>) => (
-                            <SourceItem key={doc._id} hit={doc} isMobile={false}/>
+                            <li key={doc._id} className="flex flex-grow !p-0 !m-0">
+                            <SourceItem hit={doc} isMobile={false}/>
+                            </li>
                         ))}
                     </ul>
                 </div>

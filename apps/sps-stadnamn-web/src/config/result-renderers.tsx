@@ -4,7 +4,8 @@ interface Renderer {
   details?: (hit: any, display: string) => any;
   cadastre?: (hit: any) => any;
   snippet?: (hit: any) => any;
-  sourceWindow?: (hit: any) => any;
+  sourceTitle?: (hit: any) => any;
+  sourceDetails?: (hit: any) => any;
 }
 
 interface DefaultRenderer {
@@ -12,7 +13,8 @@ interface DefaultRenderer {
   details: (hit: any, display: string) => any;
   cadastre?: (hit: any) => any;
   snippet: (hit: any) => any;
-  sourceWindow: (hit: any) => any;
+  sourceTitle: (hit: any) => any;
+  sourceDetails: (hit: any) => any;
 }
 
 interface ResultRenderers {
@@ -293,7 +295,29 @@ export const defaultResultRenderer: DefaultRenderer = {
   details: (hit: any, display: string) => {
     return formatAdm(hit.fields)
   },
-  sourceWindow: (hit: any) => {
-    return <>{hit.fields.label} {hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
+  sourceTitle: (hit: any) => {
+    // labels that are different from the main label
+      const labels = hit.fields.altLabels?.filter((label: string) => 
+        label !== hit.fields.label[0]
+    ) || []
+
+    // Fix: "attestations.label" is an array of strings, not objects
+    hit.fields["attestations.label"]?.forEach((attestation: string) => {
+        if (!labels.includes(attestation) && attestation !== hit.fields.label[0]) {
+            labels.push(attestation)
+        }
+    })
+    return <>
+    <strong>{hit.fields.label}</strong>
+                {hit.fields.sosi && ` (${hit.fields.sosi})`}
+                {labels?.length > 0 &&
+                    <span className="text-neutral-900">
+                        {" - " +labels?.join(', ')}
+                    </span>
+                }
+    </>
+  },
+  sourceDetails: (hit: any) => {
+    return ""
   }
 }
