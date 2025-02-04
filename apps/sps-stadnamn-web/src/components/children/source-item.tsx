@@ -21,53 +21,44 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const sourceWindowRenderer = resultRenderers[docDataset]?.sourceWindow || defaultResultRenderer.sourceWindow
 
-    // labels that either have a year or are different from the main label
-    const attestationsLabels = hit._source.attestations?.map((att: {label: string}) => att.label) || []
-    const allLabels: {label: string, year?: number}[] = hit._source.altLabels?.filter((label: string) => 
-        label !== hit._source.label && !attestationsLabels.includes(label)
-    )?.map((label: string) => ({label})) || []
-    hit._source.attestations?.forEach((att: {label: string, year: number}) => {
-        if (att?.year) {
-            allLabels.push({label: att.label, year: att?.year})
+    // labels that are different from the main label
+    const labels = hit.fields.altLabels?.filter((label: string) => 
+        label !== hit.fields.label[0]
+    ) || []
+
+    // Fix: "attestations.label" is an array of strings, not objects
+    hit.fields["attestations.label"]?.forEach((attestation: string) => {
+        if (!labels.includes(attestation) && attestation !== hit.fields.label[0]) {
+            labels.push(attestation)
         }
     })
-    
-    
+
 
     return  <li className="flex flex-grow !p-0 !m-0">
-        <div className="w-full h-full py-2 flex items-center gap-2">
-        <ClickableIcon 
+        <div className="w-full h-full flex items-center gap-2">
+            <ClickableIcon 
                 link
                 label="Vis kjelde"
-                aria-current={(doc == hit._source.uuid) ? 'page' : undefined}
+                aria-current={(doc == hit.fields.uuid[0]) ? 'page' : undefined}
                 ref={itemRef}
                 className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
                 add={{
-                    doc: hit._source?.children?.length === 1 ? hit._source.children[0] : hit._source.uuid,
-                    parent: parent && docDataset == 'search' ? hit._source.uuid : null,
+                    doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid[0],
+                    parent: parent && docDataset == 'search' ? hit.fields.uuid[0] : null,
                 }}
             >
                 <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl" />
-        </ClickableIcon>
+            </ClickableIcon>
             <div className="">
-                <strong>{hit._source.label}</strong>{hit._source.sosi && ` (${hit._source.sosi})`}
-                <div className="flex flex-wrap gap-1">
-                {allLabels?.map((item: {label: string, year?: number}, index: number) => (
-                    <span key={index} className="text-neutral-800">
-                        {item?.year ? (
-                            <span className="whitespace-nowrap">
-                                <span className="font-medium">{item.year}</span>: {item.label}
-                            </span>
-                        ) : (
-                            item.label
-                        )}
+                <strong>{hit.fields.label}</strong>
+                {hit.fields.sosi && ` (${hit.fields.sosi})`}
+                {labels?.length > 0 &&
+                    <span className="text-neutral-900">
+                        {" - " +labels?.join(', ')}
                     </span>
-                ))}
-                </div>
+                }
             </div>
-
-            
         </div>
-            </li>
+    </li>
 }
 

@@ -28,25 +28,24 @@ export default function CadastralSubdivisions() {
 
     return (
     <>
-
             {fields.length === 0 ? (
                 <div className="instance-info">
-                    <ul className="!p-0 divide-y divide-neutral-200">
+                    <ul className="!p-0 !pb-8 divide-y divide-neutral-200 gap-2">
                         {childrenData?.map((hit: any) => (
                             <li key={hit._id}>
                                 <span className="flex items-center gap-2">
                                     <ClickableIcon 
                                         link
                                         label="Vis bruk"
-                                        aria-current={doc == hit._source?.uuid ? 'page' : undefined}
+                                        aria-current={doc == hit.fields?.uuid?.[0] ? 'page' : undefined}
                                         className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
-                                        add={{ doc: hit._source?.uuid }}>
+                                        add={{ doc: hit.fields?.uuid?.[0] }}>
                                         <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-xl" />
                                     </ClickableIcon>
                                     <span>
-                                        {Array.isArray(hit._source?.[leaf]) ? hit._source?.[leaf]?.join(", ") : hit._source?.[leaf]}{' '}
-                                        {Array.isArray(hit._source?.cadastre?.[0]?.bnr) ? hit._source?.cadastre?.[0]?.bnr?.join(", ") : hit._source?.cadastre?.[0]?.bnr}{' '}
-                                        {hit._source?.label}
+                                        {Array.isArray(hit.fields?.[leaf]) ? hit.fields?.[leaf]?.join(", ") : hit.fields?.[leaf]?.[0]}{' '}
+                                        {Array.isArray(hit.fields?.['cadastre.bnr']) ? hit.fields?.['cadastre.bnr']?.join(", ") : hit.fields?.['cadastre.bnr']?.[0]}{' '}
+                                        {hit.fields?.label?.[0]}
                                     </span>
                                 </span>
                             </li>
@@ -72,20 +71,18 @@ export default function CadastralSubdivisions() {
                                             <ClickableIcon 
                                                 link
                                                 label="Vis bruk"
-                                                aria-current={doc == hit._source?.uuid ? 'page' : undefined}
+                                                aria-current={doc == hit.fields?.uuid?.[0] ? 'page' : undefined}
                                                 className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
-                                                add={{ doc: hit._source?.uuid }}>
+                                                add={{ doc: hit.fields?.uuid?.[0] }}>
                                                 <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-2xl" />
                                             </ClickableIcon>
                                             <span>
-                                                {Array.isArray(hit._source?.[leaf]) ? hit._source?.[leaf]?.join(", ") : hit._source?.[leaf]}{' '}
-                                                {Array.isArray(hit._source?.cadastre?.[0]?.bnr) ? hit._source?.cadastre?.[0]?.bnr?.join(", ") : hit._source?.cadastre?.[0]?.bnr}{' '}
-                                                {hit._source?.label}
+                                                {hit.fields?.[leaf] || hit.fields.cadastre[0].bnr.join(", ")}&nbsp;{hit.fields?.label?.[0]}
                                             </span>
                                         </span>
                                     </th>
                                     {fields.map((field: Record<string, any>) => (
-                                        <td className="p-2" key={field.key}>{getValueByPath(hit._source, field.key)}</td>
+                                        <td className="p-2" key={field.key}>{getValueByPath(hit.fields, field.key)?.[0]}</td>
                                     ))}
                                 </tr>
                             ))}

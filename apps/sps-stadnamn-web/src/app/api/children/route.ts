@@ -1,7 +1,7 @@
 export const runtime = 'edge'
-import { resultConfig } from "@/config/search-config";
+import { fieldConfig, resultConfig } from "@/config/search-config";
 import { postQuery } from "../_utils/post";
-import { getSortArray } from "@/config/server-config";
+import { getSortArray, treeSettings } from "@/config/server-config";
 export async function POST(request: Request) {
     const body = await request.json()
     const uuids = body.children
@@ -31,7 +31,11 @@ export async function POST(request: Request) {
  
     const query = {
         size: 1000,
-        _source: true,
+        _source: false,
+        fields: ["uuid","label", "attestations.label", "altLabels", "sosi",
+                    ...dataset && treeSettings[dataset] ? Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => key) : [],
+                    ...dataset && treeSettings[dataset] ? [treeSettings[dataset].leaf.replace("__", ".")] : []
+        ],
         query: {
             ...(uuids ? {
                 terms: {
