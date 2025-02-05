@@ -63,7 +63,7 @@ export const datasetDescriptions: Record<string, string> = {
 
 
 export const datasetShortDescriptions: Record<string, string> = {
-  search: "Overordna søk henter data frå alle datasetta og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder. Du kan også utforske og filtrere datasetta i eigne søkevisningar.",
+  search: "Overordna søk henter data frå alle datasetta og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder.",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924.",
@@ -72,7 +72,7 @@ export const datasetShortDescriptions: Record<string, string> = {
   nbas: "Inneholder omtrent 700 000 navn fra ulike samlinger, der hvert navnekort inkluderer navneformen, uttalen og informasjon om kommunen og fylket.",
   m1838: "Norges første omfattende matrikkel fra 1800-tallet, som dekker hele landet unntatt Finnmark.",
   mu1950: "Utkast til en ny nasjonal matrikkel som aldri ble fullført. Den dekket over 767 000 oppføringer av eiendommer fra landkommuner.",
-  m1886: "Regnes som Norges første moderne og introduserte gårds- og bruksnumre for hele landet bort sett fra Finnmark.",
+  m1886: "Regnes som Norges første moderne matrikkel, og introduserte gårds- og bruksnumre for hele landet bortsett fra Finnmark.",
   skul: "Eit landsdekkjande prosjekt frå 1931–1935 der skulebarn samla inn over 1 million stadnamn frå 9 700 registrerte gardar i 13 fylke.",
   sof: "Eit omfattande materiale som er resultatet av ei stor innsamling av stadnamn på 1980-talet frå Sogn og Fjordane og Møre og Romsdal.",
   tot: "En samling av ulike stedsnavn fra Toten-regionen, basert på kildemateriale samlet inn for Norsk stadnamnarkiv ved Universitetet i Oslo.",
