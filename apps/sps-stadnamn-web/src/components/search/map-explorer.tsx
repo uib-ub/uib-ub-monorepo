@@ -9,8 +9,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -22,6 +20,7 @@ import { ChildrenContext } from "@/app/children-provider";
 import { GlobalContext } from "@/app/global-provider";
 import { useSearchParams } from "next/navigation";
 import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
+import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 
 
 // Clusters where labels are shown if there is enough space
@@ -650,43 +649,65 @@ useEffect(() => {
     }
 
     <div className={`absolute ${isMobile ? 'top-12 right-0 flex-col p-2 gap-4' : 'bottom-0 left-1/2 transform -translate-x-1/2'} flex justify-center p-2 gap-2 text-white z-[3001]`}>
-
       <DropdownMenu>
-        <DropdownMenuTrigger asChild><IconButton label="Bakgrunnskart" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm"><PiStackSimpleFill /></IconButton></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
+          <IconButton label="Bakgrunnskart" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
+            <PiStackSimpleFill />
+          </IconButton>
+        </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
           <DropdownMenuLabel>Bakgrunnskart</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {baseMap != null &&
-            <DropdownMenuRadioGroup value={baseMap} onValueChange={setBasemap}>
-              {baseMaps.map((item) => (
-                <DropdownMenuRadioItem key={item.key} value={item.key} className="text-nowrap cursor-pointer">
-                  {item.name}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          }
+          {baseMap != null && baseMaps.map((item) => (
+            <DropdownMenuItem
+              key={item.key}
+              onClick={() => setBasemap(item.key)}
+              className={`flex items-center py-2 px-4 cursor-pointer justify-between ${baseMap === item.key ? "bg-neutral-100" : ""}`}
+              aria-selected={baseMap === item.key}
+            >
+              {item.name}
+              {baseMap === item.key && <span>✓</span>}
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild><IconButton label="Markørar" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm"><PiMapPinLineFill /></IconButton></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
+          <IconButton label="Markørar" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
+            <PiMapPinLineFill />
+          </IconButton>
+        </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
           <DropdownMenuLabel>Markørar</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {markerMode != null &&
-            <DropdownMenuRadioGroup value={markerMode} onValueChange={setMarkerMode}>
-
-              <DropdownMenuRadioItem value='auto' className="text-nowrap cursor-pointer">
+          {markerMode != null && (
+            <>
+              <DropdownMenuItem
+                onClick={() => setMarkerMode('auto')}
+                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'auto' ? "bg-neutral-100" : ""}`}
+                aria-selected={markerMode === 'auto'}
+              >
                 Automatisk
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value='cluster' className="text-nowrap cursor-pointer">
+                {markerMode === 'auto' && <span>✓</span>}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setMarkerMode('cluster')}
+                className={`flex items-center p-2 cursor-pointer justify-between ${markerMode === 'cluster' ? "bg-neutral-100" : ""}`}
+                aria-selected={markerMode === 'cluster'}
+              >
                 Klynger
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value='sample' className="text-nowrap cursor-pointer">
+                {markerMode === 'cluster' && <span>✓</span>}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setMarkerMode('sample')}
+                className={`flex items-center p-2 cursor-pointer justify-between ${markerMode === 'sample' ? "bg-neutral-100" : ""}`}
+                aria-selected={markerMode === 'sample'}
+              >
                 Punkter
-              </DropdownMenuRadioItem>
-
-            </DropdownMenuRadioGroup>
-          }
+                {markerMode === 'sample' && <span>✓</span>}
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <IconButton onClick={zoomIn} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill /></IconButton>
