@@ -82,7 +82,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               aria-expanded={isMobile ? undefined : parent ? true : false}
               aria-controls={isMobile ? undefined :'children-window'}
             >
-              <PiDatabaseFill className={`${isActive ? 'text-white' : 'text-neutral-700'}`} />
+              <PiDatabaseFill className={`${isActive ? 'text-white' : docSource.datasets.length > 1 ? 'text-neutral-700' : 'text-primary-600'}`} />
               {datasetTitles[dataset]}
             </Clickable>
             </li>
