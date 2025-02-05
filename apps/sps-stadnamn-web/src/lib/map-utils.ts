@@ -37,7 +37,7 @@ export const xDistance = (currentMap: any, lon1: number, lon2: number) => {
 
 
 export const groupSameCoordinates = (data: any) => {
-    const childrenWithCoordinates = data.filter((child: any) => child.fields.location[0].coordinates?.length)
+    const childrenWithCoordinates = data.filter((child: any) => child.fields.location?.[0]?.coordinates?.length)
     const clientGroups: any[] = []
     const markerLookup: Record<string, any> = {}
 
