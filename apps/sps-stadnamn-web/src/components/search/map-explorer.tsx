@@ -253,7 +253,7 @@ useEffect(() => {
     }
   }, [baseMap, dataset])
 
-  useEffect(() => {
+  useEffect(() => { 
     if (markerMode === null) {
       const storedMarkerMode = localStorage.getItem('markerMode')
       if (storedMarkerMode && ['auto', 'cluster', 'sample'].includes(storedMarkerMode)) {
