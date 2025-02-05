@@ -114,8 +114,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.kjelde": {label: "Kjelde", facet},
     },
     mu1950: {
-      uuid, label, adm, adm1, adm2, sosi,
+      uuid, label, adm, adm1, adm2, sosi, 
       ...cadastre,
+      "within": {label: "Gard", result},
       "rawData.KNR": {label: "Knr", table, facet, result},
       "rawData.GNR": {label: "Gnr", table, facet, result, additionalParams: ["rawData.KNR"]},
       "rawData.BNR": {label: "Bnr", table, facet, result, additionalParams: ["rawData.KNR", "rawData.GNR"]},
