@@ -82,6 +82,31 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       </span>
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](docData?._source) : null }
 
+
+           {(docDataset != 'mu1950' || docData._source.sosi != 'gard') && <div className="flex flex-wrap gap-24">
+        {facetConfig[docDataset]
+          ?.filter(item => item.key && !['sosi', 'datasets'].includes(item.key))
+          .map((facet) => {
+            const value = getValueByPath(docData._source, facet.key);
+            if (!value || (Array.isArray(value) && value.length === 0)) return null;
+            
+            return (
+              <div key={facet.key} className="flex flex-col !p-0">
+                <strong className="text-neutral-800">{facet.label}</strong>
+                {Array.isArray(value) ? (
+                  <ul className="!list-none flex flex-wrap gap-x-2 !m-0 !p-0">
+                    {value.map((item, idx) => (
+                      <li className="!p-0" key={idx}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="!p-0">{value}</p>
+                )}
+              </div>
+            );
+        })}
+      </div>}
+
           { docData?._source.location && <div>
           <CollapsibleHeading headingLevel="h2" title="Koordinatinformasjon">
             <CoordinateInfo source={docData?._source}/>
@@ -135,30 +160,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
     </aside>
      <aside className="bg-neutral-50 px-4 pb-4 pt-0 rounded-md">
-     <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0 pb-4">Detaljar</h2>
-      <div className="flex flex-col gap-2">
-        {facetConfig[docDataset]
-          ?.filter(item => item.key && !['sosi', 'datasets'].includes(item.key))
-          .map((facet) => {
-            const value = getValueByPath(docData._source, facet.key);
-            if (!value || (Array.isArray(value) && value.length === 0)) return null;
-            
-            return (
-              <div key={facet.key} className="flex flex-col !p-0">
-                <strong className="text-neutral-800">{facet.label}</strong>
-                {Array.isArray(value) ? (
-                  <ul className="!list-none flex flex-wrap gap-x-2 !m-0 !p-0">
-                    {value.map((item, idx) => (
-                      <li className="!p-0" key={idx}>{item}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="!p-0">{value}</p>
-                )}
-              </div>
-            );
-        })}
-      </div>
+     <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0 pb-4">Overordna søk</h2>
+      
     </aside>
     </div>
   </div>
