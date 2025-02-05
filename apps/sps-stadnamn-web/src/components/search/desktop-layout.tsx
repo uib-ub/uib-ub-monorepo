@@ -54,6 +54,16 @@ export default function DesktopLayout() {
 
         </div>
 
+        <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[calc(50svw-0.5rem)] z-[2000]': 'w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] top-2 bg-white rounded-md shadow-lg overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}>
+            <StatusSection/>
+
+            {mode == 'table' && !doc && <TableExplorer/> }
+            {mode != 'map' && (parent || doc) &&  <DocExplorer hidden={false}/>}
+
+
+            {mode == 'list' && !doc && <ListExplorer/> }
+        </div>
+
 
        { mode == 'map' && (doc || parent) &&
         <div className="lg:absolute right-0 top-0 pb-6 flex flex-col items-end p-2 justify-between gap-4 h-full">
@@ -120,15 +130,6 @@ export default function DesktopLayout() {
         }
         </div>
     
-        <div className={`absolute top-0 left-[25svw] ${mode == 'map' ? 'max-w-[calc(50svw-0.5rem)] z-[2000]': 'w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] top-2 bg-white rounded-md shadow-lg overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}>
-            <StatusSection/>
-
-            {mode == 'table' && !doc && <TableExplorer/> }
-            {mode != 'map' && (parent || doc) &&  <DocExplorer hidden={false}/>}
-
-
-            {mode == 'list' && !doc && <ListExplorer/> }
-        </div>
         { mode == 'map' &&
             <div className="absolute top-0 right-0 h-full w-[60svw] lg:w-full">
             
