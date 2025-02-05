@@ -48,8 +48,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
     // TODO: create shared component for uuid/ and view/doc/
     // TODO: create tabs for info, json, geojson and jsonld
     return (
-        <div className="page-info lg:grid lg:grid-cols-[1fr_300px] gap-6">
-          <div className="flex flex-col space-y-6">
+        <div className="page-info lg:grid lg:grid-cols-[1fr_300px]">
+          <div className="flex flex-col gap-12">
           {  docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
             <span>
               <h1>{docData?._source.label}</h1>
