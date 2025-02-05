@@ -270,7 +270,9 @@ useEffect(() => {
     }
   }, [markerMode])
 
+  /*
   useEffect(() => {
+    return
     //console.log("ZOOM", programmaticChange.current)
     if (!programmaticChange.current && center && zoom) {
       mapInstance.current?.setView([center[0], center[1]], zoom)
@@ -278,6 +280,7 @@ useEffect(() => {
     programmaticChange.current = false
 
   }, [zoom, center])
+  */
 
 
 
