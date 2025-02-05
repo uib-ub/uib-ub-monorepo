@@ -50,7 +50,6 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "datasets": {label: "Kjelder", facet, omitLabel, result, featuredFacet},
       "datasetTag": {label: "Datasettstype", facet, omitLabel, child: "datasets"},
       ...labelDefaults,
-      "within": {label: "Stadnamnkonsept", result},
       "adm3": {label: "Sogn, bydel eller tidlegare kommune", result},
       //"description": {label: "Beskriving"}, // Removed untid short descriptions have been generated
       
