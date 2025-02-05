@@ -228,7 +228,7 @@ useEffect(() => {
 
 
 
-  useEffect(() => {
+  useEffect(() => { 
     if (baseMap === null) {
       const storedSettings = localStorage.getItem('mapSettings')
       const settings = storedSettings ? JSON.parse(storedSettings) : {}
