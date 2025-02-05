@@ -48,6 +48,7 @@ export default function DatasetSelector() {
     return <>
         <div className='flex flex-col justify-between w-full px-2'>
           <div className='flex flex-col'>
+          <label htmlFor="titleSearch" className="sr-only">Søk i datasett</label>
           <input
               id='titleSearch'
               autoFocus={isMobile ? false : true }
