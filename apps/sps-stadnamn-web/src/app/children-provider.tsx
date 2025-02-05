@@ -139,10 +139,13 @@ useEffect(() => {
     setChildrenCount(childrenData.current?.length)
 
     if (sourceLabel) {
+        
         filteredChildren.current = childrenData.current.filter((child: Record<string, any>) => {
-            if ([child._source?.label, ...(child._source?.altLabels || []), ...(child._source?.attestations?.map((a: any) => a.label) || [])].some(label => label == sourceLabel)) return true;
+            if (child.fields.label?.[0] == sourceLabel) return true;
+            if (child.fields.altLabels?.some((label: string) => label == sourceLabel)) return true;
+            if (child.fields["attestations.label"]?.some((label: string) => label == sourceLabel)) return true;
             return false;
-        }) || null
+        })
     }
     else if (sourceDataset) {
         filteredChildren.current = childrenData.current.filter((child: Record<string, any>) => child._index.split('-')[2] == sourceDataset)
@@ -154,7 +157,7 @@ useEffect(() => {
     setShownChildrenCount(filteredChildren.current?.length)
 
     if (!filteredChildren.current?.length) {
-        console.log("NO FILTERED CHILDREN", JSON.stringify(childrenData.current))
+        setChildrenLoading(false)
         return
     }
 
