@@ -30,6 +30,11 @@ const labelClusters = (currentMap: any, data: any, zoom: number | null) => {
 
   data.hits.hits.forEach((hit: any) => {
     let added = false;
+    const cadastralParent = hit.fields.within?.[0]
+    if (cadastralParent?.length && data.hits.hits.some((hit: any) => hit.fields.uuid[0] == cadastralParent)) {
+      return
+    }
+
     for (const group of markers) {
       const firstHit = group.topHit
       if (firstHit) {
