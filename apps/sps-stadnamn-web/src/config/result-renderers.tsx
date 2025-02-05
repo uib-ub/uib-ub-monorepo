@@ -308,7 +308,7 @@ export const defaultResultRenderer: DefaultRenderer = {
         }
     })
     return <>
-    <strong>{hit.fields.label}</strong>
+    {hit.fields.label}
                 {hit.fields.sosi && ` (${hit.fields.sosi})`}
                 {labels?.length > 0 &&
                     <span className="text-neutral-900">
