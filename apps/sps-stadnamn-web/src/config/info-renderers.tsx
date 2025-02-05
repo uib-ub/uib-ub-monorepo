@@ -159,7 +159,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     {source.sosi != 'gard' &&
       <>
       <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox source={source}/>
+      <FacetsInfobox source={source} />
       </CollapsibleHeading>
       </>
     }

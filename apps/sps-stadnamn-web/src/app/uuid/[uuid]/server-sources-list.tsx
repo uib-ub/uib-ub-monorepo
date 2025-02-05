@@ -5,7 +5,7 @@ import { resultRenderers } from '@/config/result-renderers'
 import { defaultResultRenderer } from '@/config/result-renderers'
 import Link from 'next/link'
 
-export default async function Sources({ uuids }: { uuids: string[] }) {
+export default async function ServerSourcesList({ uuids }: { uuids: string[] }) {
     const [data, _status] = await fetchChildren({
         uuids: uuids,
         mode: 'list'

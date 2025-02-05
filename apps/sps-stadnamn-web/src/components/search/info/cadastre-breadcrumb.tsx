@@ -1,3 +1,4 @@
+'use client'
 import Clickable from "@/components/ui/clickable/clickable"
 import { treeSettings } from "@/config/server-config"
 import { getValueByPath } from "@/lib/utils"

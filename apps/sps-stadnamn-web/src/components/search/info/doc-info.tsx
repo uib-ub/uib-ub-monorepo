@@ -141,8 +141,8 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       
       { docDataset && infoPageRenderers[docDataset]?.( docSource) }
 
-      {docDataset != 'mu1950' && <CollapsibleHeading title="Detaljer">
-          <FacetsInfobox source={docSource} />
+      {docDataset != 'mu1950' && docDataset && docSource &&  <CollapsibleHeading title="Detaljar">
+          <FacetsInfobox source={docSource}/>
       </CollapsibleHeading>}
 
       
@@ -156,12 +156,8 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
         { docSource.location && <div>
           <CollapsibleHeading title="Koordinatinformasjon">
-        <CoordinateInfo source={docSource}/>
-      </CollapsibleHeading>
-
-        
-
-
+            <CoordinateInfo source={docSource}/>
+          </CollapsibleHeading>
         </div>}
 
 
