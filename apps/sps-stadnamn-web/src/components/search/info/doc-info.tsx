@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft, PiArrowLeft, PiTableFill, PiInfinityBold, PiBracketsCurlyBold } from "react-icons/pi"
+import { PiBracketsCurly, PiDatabaseFill, PiInfinity, PiTagFill, PiWarningFill, PiX, PiTag, PiMagnifyingGlass, PiInfoFill, PiArrowRight, PiArrowUp, PiArrowElbowLeftUp, PiMagnifyingGlassFill, PiInfoDuotone, PiInfo, PiCaretLeft, PiArrowLeft, PiTableFill, PiInfinityBold, PiBracketsCurlyBold, PiMagnifyingGlassBold } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
@@ -161,7 +161,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>}
 
 
-        <div className="flex gap-4 flex-wrap mt-2 pt-2 text-neutral950 border-t border-neutral-200">
+        <div className="flex gap-4 flex-wrap mt-2 pt-2 text-neutral-950 border-t border-neutral-200">
         { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
           <>
             <Link href={"/uuid/" + docSource.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
@@ -173,14 +173,14 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
             }
             {dataset != 'search' && snidParent &&
-                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: 'search', doc: snidParent}}>
+                <Clickable link className="flex items-center gap-1 no-underline" only={{dataset: 'search', doc: snidParent}}>
                   <PiTagFill aria-hidden="true"/>
                   Stadnamnoppslag
                 </Clickable>
             }
             {dataset == 'search' && docDataset != dataset &&
-                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950" only={{dataset: docDataset, doc}}>
-                  <PiMagnifyingGlass className="text-neutral-800" aria-hidden="true"/>
+                <Clickable link className="flex items-center gap-1 no-underline" only={{dataset: docDataset, doc}}>
+                  <PiMagnifyingGlassBold aria-hidden="true"/>
                   Søk i datasettet
                 </Clickable>
             }
