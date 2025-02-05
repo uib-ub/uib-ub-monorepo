@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
   const query: Record<string,any> = {
     size: zoom > 16 ? 300 : 100,
-    fields: ["label", "location", "uuid", "sosi", "children", "placeScore"],
+    fields: ["label", "location", "uuid", "sosi", "children", "placeScore", "within"],
     sort: dataset === 'search' ? [
       {
         "placeScore": "desc"

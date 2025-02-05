@@ -25,8 +25,9 @@ export function extractFacets(request: Request ) {
       case 'topLeftLng':
       case 'bottomRightLat':
       case 'bottomRightLng':
-      case 'sourceLabel':
-      case 'sourceDataset':
+      case 'doc': // Excludes children when searching for markers at the same coordinates
+      case 'sourceLabel': // Filter sources
+      case 'sourceDataset': // Filter sources
       case 'facetSearch':
       case 'totalHits':
       case 'facets':

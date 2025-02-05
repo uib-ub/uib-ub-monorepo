@@ -125,12 +125,13 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     , [doc, dataset, setDocData])
 
     
+    /*
 
     useEffect(() => {
         if (!parent && !sameMarkerList && docData?._source?.location?.coordinates) {
             const coordinates = [...docData._source.location.coordinates]
             const point = coordinates.reverse().join(',')
-            fetch(`/api/location?point=${point}&${searchQueryString}`).then(res => 
+            fetch(`/api/location?point=${point}&doc=${doc}&${searchQueryString}`).then(res => 
                 res.json()).then(data => {
                     if (data.hits?.hits?.length && data.hits?.hits.some((hit: any) => hit.fields.uuid[0] != doc)) {
                         setSameMarkerList(data.hits?.hits)
@@ -141,6 +142,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
             })
         }
     }, [dataset, searchQueryString, docData, parent, doc, sameMarkerList])
+    */
 
 
     

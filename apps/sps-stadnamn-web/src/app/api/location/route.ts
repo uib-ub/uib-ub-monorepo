@@ -35,10 +35,17 @@ export async function GET(request: Request) {
             }
         }
 
+        const must_not = filteredParams.doc ? [{
+            term: {
+                "within.keyword": filteredParams.doc
+            }
+        }] : undefined
+
         query.query = {
             bool: {
                 must: [distance_query],
-                filter: [exists_filter]
+                filter: [exists_filter],
+                must_not
             }
         }
 
@@ -46,6 +53,7 @@ export async function GET(request: Request) {
             query.query = {
                 bool: {
                     must: [distance_query],
+                    must_not
                 }
             }
 
