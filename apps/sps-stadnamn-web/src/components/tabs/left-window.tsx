@@ -62,7 +62,7 @@ export default function LeftWindow() {
                       onClick={() => handleTabClick('datasets')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('datasets')}
-                      className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
+                      className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
                         {isTabActive('datasets') ? <PiCaretUp aria-hidden="true"/>  : <PiDatabase aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only 2xl:not-sr-only"}>Datasett</span>
                 </button>
                 
@@ -70,7 +70,7 @@ export default function LeftWindow() {
                       onClick={() => handleTabClick('tree')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('tree')}
-                      className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
+                      className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
                         {isTabActive('tree') ? <PiCaretUp aria-hidden="true"/>  : <PiTreeView aria-hidden="true"/>}<span className="sr-only">Register</span>
                 </button>
                 }
@@ -79,7 +79,7 @@ export default function LeftWindow() {
                       onClick={() => handleTabClick('filters')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('filters')}
-                      className={`flex m-1 2xl:ml-auto whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner`}>
+                      className={`flex m-1 2xl:ml-auto whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 xl:px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner`}>
                        {isTabActive('filters') ? <PiCaretUp aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={"sr-only 2xl:not-sr-only"}>Avgrens</span>
                 </button>
 
@@ -87,7 +87,7 @@ export default function LeftWindow() {
                       onClick={() => handleTabClick('results')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('results')}
-                      className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner ${treeSettings[dataset] ? "ml-auto 2xl:ml-0" : "ml-0 2xl:ml-auto"}`}>
+                      className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 lg:px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner ml-auto 2xl:ml-0`}>
                         {isTabActive('results') ? <PiCaretUp aria-hidden="true"/> : <PiListBullets aria-hidden="true"/>}<span className="sr-only lg:not-sr-only">Treff</span>
                         {isTabActive('results') ? <span className="results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>
                         : <span className="results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>}
