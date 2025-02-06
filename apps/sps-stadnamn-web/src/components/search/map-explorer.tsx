@@ -43,6 +43,10 @@ export default function MapExplorer() {
   const sourceLabel = searchParams.get('sourceLabel')
   const sourceDataset = searchParams.get('sourceDataset')
 
+  if (searchParams.get('error') == 'true') {
+    throw new Error('Simulated client side error');
+  }
+
   const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
   const [parent, setParent] = useQueryState('parent', { history: 'push' })
   const mapInstance = useRef<any>(null);
