@@ -13,7 +13,7 @@
 
 @layer base {
   body {
-    @apply bg-neutral-50
+    @apply bg-neutral-50 text-neutral-950 antialiased;
   }
 
   html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
@@ -26,7 +26,7 @@
 
 
   a {
-    @apply underline decoration-2 decoration-primary-500 underline-offset-4;
+    @apply underline decoration-2 decoration-primary-500 underline-offset-4 transition-colors hover:decoration-primary-700;
 
   }
 
@@ -136,15 +136,19 @@
   }
 
   .btn {
-    @apply inline-flex items-center rounded-md justify-center px-4 py-2 shadow-sm text-sm font-medium text-white bg-neutral-700 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-600;
+    @apply inline-flex items-center rounded-md justify-center px-4 py-2 shadow-sm text-sm font-medium text-white 
+           bg-neutral-700 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-600
+           transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-200;
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-200 
+           shadow-primary-500/20 hover:shadow-lg hover:shadow-primary-500/30;
   }
 
   .btn-outline {
-    @apply bg-white text-neutral-950 border border-neutral-200 hover:bg-neutral-50 hover:border-neutral-600;
+    @apply bg-white text-neutral-950 border border-neutral-200 hover:bg-neutral-50 hover:border-neutral-600
+           transition-all duration-200;
   }
 
   .icon-button {
@@ -231,11 +235,11 @@
 
   
   .result-table {
-    @apply w-full text-left text-neutral-950 rounded-md bg-neutral-50;
+    @apply w-full text-left text-neutral-950 rounded-md bg-neutral-50 border border-neutral-200;
   }
   
   .result-table thead th {
-    @apply text-sm bg-transparent px-4 py-3;
+    @apply text-sm bg-neutral-100 px-4 py-3 font-semibold;
   }
 
   .result-table thead button {
@@ -345,7 +349,9 @@
   }
 
   .rounded-tabs {
-    @apply flex items-center px-4 py-1 rounded-full bg-neutral-100 aria-selected:bg-accent-800 aria-selected:text-white no-underline
+    @apply flex items-center px-4 py-1 rounded-full bg-neutral-100 
+           aria-selected:bg-accent-800 aria-selected:text-white no-underline
+           transition-all duration-200 hover:bg-neutral-200 aria-selected:hover:bg-accent-700;
   }
 
 }
