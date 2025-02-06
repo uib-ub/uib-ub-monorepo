@@ -68,7 +68,7 @@ export const datasetShortDescriptions: Record<string, string> = {
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924.",
   ostf: "En 20-binds serie utgitt mellom 1994 og 2021, som dekker bosetningsnavn i det tidligere Østfold fylke.",
-  leks: "Er ei digital utgåve som forklarar opphavet til viktige stadnamn i Noreg, inkludert norske, samiske og kvenske namn, samt administrative inndelingar.",
+  leks: "Digital utgåve av Norsk Stadnamnleksikon (1997) som forklarar opphavet til viktige stadnamn i Noreg, inkludert norske, samiske og kvenske namn, samt administrative inndelingar.",
   nbas: "Inneholder omtrent 700 000 navn fra ulike samlinger, der hvert navnekort inkluderer navneformen, uttalen og informasjon om kommunen og fylket.",
   m1838: "Norges første omfattende matrikkel fra 1800-tallet, som dekker hele landet unntatt Finnmark.",
   mu1950: "Utkast til en ny nasjonal matrikkel som aldri ble fullført. Den dekket over 767 000 oppføringer av eiendommer fra landkommuner.",
