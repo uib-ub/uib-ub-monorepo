@@ -12,6 +12,8 @@ interface SearchContextData {
     tableData: any;
     isLoading: boolean;
     searchError: Record<string, string> | null;
+    coordinatesError: boolean;
+    setCoordinatesError: (value: boolean) => void;
     totalHits: Record<string, any> | null;
     resultBounds: [[number, number], [number, number]] | null;
   }
@@ -21,6 +23,8 @@ interface SearchContextData {
     tableData: null,
     isLoading: true,
     searchError: null,
+    coordinatesError: false,
+    setCoordinatesError: () => {},
     totalHits: null,
     resultBounds: null,
     });
@@ -31,7 +35,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [tableData, setTableData] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
-
+    const [coordinatesError, setCoordinatesError] = useState(false)
     
 
     const { setCurrentUrl, isMobile, pinnedFilters } = useContext(GlobalContext)
@@ -113,7 +117,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                         [limitedBounds[1][0] - offset, limitedBounds[1][1] + offset]
                       ]
                     }
-                    
+                    setResultBounds(null)
                     setResultBounds(limitedBounds)
                 }
                 else {
@@ -131,7 +135,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             setIsLoading(false)
         })
         
-        
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, coordinatesError, setCoordinatesError}}>{children}</SearchContext.Provider>
       }, [searchQueryString, size, searchFilterParamsString, isTable, asc, desc, page, perPage, isMobile])
 
 
