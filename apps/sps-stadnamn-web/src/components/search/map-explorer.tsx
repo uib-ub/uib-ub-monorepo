@@ -175,7 +175,7 @@ export default function MapExplorer() {
 
       .catch(error => {
         if (error.name !== 'AbortError') {
-          console.error('Fetch request failed:', error);
+          console.log('Fetch request aborted:', error);
         }
       }
       );
