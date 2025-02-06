@@ -148,9 +148,9 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
     </div>
     <div className="flex flex-col lg:h-fit gap-4 my-4 lg:my-0">
     <aside className="bg-neutral-800 text-white px-4 pb-4 pt-0 rounded-md">
-      <h2 className="!text-neutral-100 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Frå datasett</h2>
+      <h2 className="!text-neutral-50 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Frå datasett</h2>
       <h3 className="!text-white !m-0 !p-0 font-serif !text-xl !font-normal">{datasetTitles[docDataset]}</h3>
-      <div className="text-sm text-neutral-100">{datasetShortDescriptions[docDataset]}</div>
+      <div className="text-sm text-neutral-50">{datasetShortDescriptions[docDataset]}</div>
 
       <div className="flex justify-stretch gap-2 mt-4 w-full">
       <Link href={"/search?dataset=" + docDataset + "&doc=" + uuid} className="btn btn-dark-outline">Vis i søket</Link>
