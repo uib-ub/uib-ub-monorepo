@@ -1,7 +1,7 @@
 import { Fragment, useContext, useEffect, useRef, useState, useCallback } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, baseMapProps, defaultBaseMap } from "@/config/basemap-config";
-import { PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
+import { PiCheckCircleFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/search-provider";
 import Spinner from "../svg/Spinner";
@@ -657,7 +657,7 @@ useEffect(() => {
               aria-selected={baseMap === item.key}
             >
               {item.name}
-              {baseMap === item.key && <span>✓</span>}
+              {baseMap === item.key && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
@@ -679,23 +679,23 @@ useEffect(() => {
                 aria-selected={markerMode === 'auto'}
               >
                 Automatisk
-                {markerMode === 'auto' && <span>✓</span>}
+                {markerMode === 'auto' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setMarkerMode('cluster')}
-                className={`flex items-center p-2 cursor-pointer justify-between ${markerMode === 'cluster' ? "bg-neutral-100" : ""}`}
+                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'cluster' ? "bg-neutral-100" : ""}`}
                 aria-selected={markerMode === 'cluster'}
               >
                 Klynger
-                {markerMode === 'cluster' && <span>✓</span>}
+                {markerMode === 'cluster' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setMarkerMode('sample')}
-                className={`flex items-center p-2 cursor-pointer justify-between ${markerMode === 'sample' ? "bg-neutral-100" : ""}`}
+                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'sample' ? "bg-neutral-100" : ""}`}
                 aria-selected={markerMode === 'sample'}
               >
                 Punkter
-                {markerMode === 'sample' && <span>✓</span>}
+                {markerMode === 'sample' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
               </DropdownMenuItem>
             </>
           )}
