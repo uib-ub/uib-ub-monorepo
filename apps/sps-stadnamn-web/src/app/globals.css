@@ -144,7 +144,7 @@
   }
 
   .btn-outline {
-    @apply bg-white text-neutral-950 border border-neutral-200 hover:bg-neutral-100 hover:border-neutral-600;
+    @apply bg-white text-neutral-950 border border-neutral-200 hover:bg-neutral-50 hover:border-neutral-600;
   }
 
   .icon-button {

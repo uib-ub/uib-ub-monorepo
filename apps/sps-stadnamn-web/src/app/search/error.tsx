@@ -1,6 +1,7 @@
 'use client' // Error boundaries must be Client Components
  
 import ErrorMessage from '@/components/error-message'
+import Spinner from '@/components/svg/Spinner'
 import { usePlausible } from 'next-plausible'
 import { useEffect, useState } from 'react'
 import { PiWarningCircle, PiWarningFill, PiSpinner, PiArrowClockwise, PiBugBeetle, PiCheckCircle } from 'react-icons/pi'
@@ -59,11 +60,12 @@ export default function Error({
               className="btn btn-outline flex-1 flex items-center justify-center gap-2"
             >
               {isResetting ? (
-                <PiSpinner className="animate-spin" aria-hidden="true" />
+                <Spinner status="Laster" className="animate-spin" aria-hidden="true" />
               ) : (
                 <PiArrowClockwise aria-hidden="true" />
               )}
-              {isResetting ? 'Laster...' : 'Last på nytt'}
+                Last på nytt
+
             </button>
             <button 
               onClick={handleReport}
