@@ -410,7 +410,7 @@ useEffect(() => {
         zoomControl={false}
         {...center && zoom ?
           { center, zoom }
-          : { bounds: resultBounds }
+          : { bounds: resultBounds || [[72, -5], [54, 25]] }
         }
         className='w-full h-full'>
         {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle }: any, leaflet: any) => {
