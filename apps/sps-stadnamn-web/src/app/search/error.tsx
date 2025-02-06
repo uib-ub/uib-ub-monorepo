@@ -4,7 +4,7 @@ import ErrorMessage from '@/components/error-message'
 import Spinner from '@/components/svg/Spinner'
 import { usePlausible } from 'next-plausible'
 import { useEffect, useState } from 'react'
-import { PiWarningCircle, PiWarningFill, PiSpinner, PiArrowClockwise, PiBugBeetle, PiCheckCircle } from 'react-icons/pi'
+import { PiWarningCircle, PiWarningFill, PiSpinner, PiArrowClockwise, PiBugBeetle, PiCheckCircle, PiCheck } from 'react-icons/pi'
  
 export default function Error({
   error,
@@ -70,14 +70,14 @@ export default function Error({
             <button 
               onClick={handleReport}
               disabled={isReported}
-              className="btn btn-outline flex-1 flex items-center justify-center gap-2"
+              className="btn btn-primary flex-1 flex items-center justify-center gap-2"
             >
               {isReported ? (
-                <PiCheckCircle aria-hidden="true" />
+                <PiCheck aria-hidden="true" />
               ) : (
                 <PiBugBeetle aria-hidden="true" />
               )}
-              {isReported ? 'Rapportert' : 'Rapporter'}
+              Rapporter
             </button>
           </div>
         </div>
