@@ -216,7 +216,7 @@ export async function fetchSNIDParent(uuid: string) {
                 "children.keyword": uuid,
             }
         },
-        fields: ["uuid", "snid"],
+        fields: ["uuid", "snid", "label", "datasets"],
         _source: false
     }
 

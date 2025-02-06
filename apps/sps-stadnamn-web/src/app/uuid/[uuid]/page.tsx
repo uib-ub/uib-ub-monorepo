@@ -16,6 +16,7 @@ import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
 import ServerSourcesList from './server-sources-list'
 import { getValueByPath } from '@/lib/utils'
 import { facetConfig } from '@/config/search-config'
+import ServerParent from './server-parent'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
     const { uuid } = await params
@@ -48,12 +49,12 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
     // TODO: create shared component for uuid/ and view/doc/
     // TODO: create tabs for info, json, geojson and jsonld
     return (
-        <div className="page-info lg:grid lg:grid-cols-[1fr_300px]">
+        <div className="page-info lg:grid lg:grid-cols-[1fr_300px] lg:gap-12">
           <div className="flex flex-col gap-12">
           {  docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
             <span>
               <h1>{docData?._source.label}</h1>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-6">
 
       {Array.isArray(docData?._source.wikiAdm) && docData?._source.wikiAdm?.length > 1 && 
         <>
@@ -159,10 +160,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
 
     </aside>
-     <aside className="bg-neutral-50 px-4 pb-4 pt-0 rounded-md">
-     <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0 pb-4">Overordna søk</h2>
-      
-    </aside>
+     {docDataset != 'search' && <ServerParent uuid={uuid}/>}
     </div>
   </div>
     )
