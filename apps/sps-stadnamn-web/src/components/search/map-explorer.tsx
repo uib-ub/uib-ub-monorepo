@@ -24,7 +24,7 @@ import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 
 
 export default function MapExplorer() {
-  const { resultBounds, totalHits, searchError, isLoading } = useContext(SearchContext)
+  const { resultBounds, totalHits, searchError, setCoordinatesError, isLoading } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
