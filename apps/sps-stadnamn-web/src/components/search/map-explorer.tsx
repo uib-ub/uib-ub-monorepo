@@ -23,48 +23,6 @@ import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 
 
-// Clusters where labels are shown if there is enough space
-const labelClusters = (currentMap: any, data: any, zoom: number | null) => {
-  const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
-
-  data.hits.hits.forEach((hit: any) => {
-    let added = false;
-    const cadastralParent = hit.fields.within?.[0]
-    if (cadastralParent?.length && data.hits.hits.some((hit: any) => hit.fields.uuid[0] == cadastralParent)) {
-      return
-    }
-
-    for (const group of markers) {
-      const firstHit = group.topHit
-      if (firstHit) {
-      const yDist = yDistance(currentMap, firstHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
-      const xDist = xDistance(currentMap, firstHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
-      if (yDist < 2 && xDist < 2) {
-        group.grouped.push(hit);
-        added = true;
-        break;
-      }
-      if (yDist < 32 && xDist < (64 + (4*firstHit.fields.label[0].length))) {
-        added = true;
-        if (zoom && zoom == 18) {
-          group.grouped.push(hit);
-        }
-        else {
-          group.unlabeled.push(hit);
-        }
-      }
-
-    }
-  }
-  if (!added) {
-    markers.push({topHit: hit, grouped: [], unlabeled: []});
-  }
-  })
-
-  return {...data, hits: {markers}}
-}
-
-
 export default function MapExplorer() {
   const { resultBounds, totalHits, searchError, isLoading } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
@@ -90,11 +48,45 @@ export default function MapExplorer() {
   const mapInstance = useRef<any>(null);
   const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
 
-  //const prevPaddedBounds = useRef<[[number, number], [number, number]] | null>(null)
-  //const prevZoom = useRef<number | null>(null)
+  const labelClusters = useCallback((data: any) => {
+    console.log("CLUSTERING")
+    const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
 
+    data.hits.hits.forEach((hit: any) => {
+      let added = false;
+      const cadastralParent = hit.fields.within?.[0]
+      if (cadastralParent?.length && data.hits.hits.some((hit: any) => hit.fields.uuid[0] == cadastralParent)) {
+        return
+      }
 
-  
+      for (const group of markers) {
+        const firstHit = group.topHit
+        if (firstHit) {
+          const yDist = yDistance(mapInstance.current, firstHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
+          const xDist = xDistance(mapInstance.current, firstHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
+          if (yDist < 2 && xDist < 2) {
+            group.grouped.push(hit);
+            added = true;
+            break;
+          }
+          if (yDist < 32 && xDist < (64 + (4*firstHit.fields.label[0].length))) {
+            added = true;
+            if (zoom && zoom == 18) {
+              group.grouped.push(hit);
+            }
+            else {
+              group.unlabeled.push(hit);
+            }
+          }
+        }
+      }
+      if (!added) {
+        markers.push({topHit: hit, grouped: [], unlabeled: []});
+      }
+    })
+
+    return {...data, hits: {markers}}
+  }, [])
 
   const isTooClose = (hits: any[], map: any) => {
     if (hits.length <= 1) return false;
@@ -173,8 +165,7 @@ export default function MapExplorer() {
       })
        
       .then(data => {
-        setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(mapInstance.current, data, zoom) : data)
-        console.log((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(mapInstance.current, data, zoom) : data)
+        setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
 
       })
 
@@ -185,7 +176,7 @@ export default function MapExplorer() {
       }
       );
 
-  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode]);
+  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode, labelClusters]);
 
 
 // Fly to results, doc or children
