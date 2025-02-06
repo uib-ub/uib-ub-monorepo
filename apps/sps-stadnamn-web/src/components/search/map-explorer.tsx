@@ -393,7 +393,7 @@ useEffect(() => {
 
 
   return <>
-    {(resultBounds?.length || (center && zoom) || searchError) ? <>
+    {(!isLoading || bounds || (center && zoom) || searchError) ? <>
       <Map        
         whenReady={(e: any) => {
             const bounds = e.target.getBounds();
