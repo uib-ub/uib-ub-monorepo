@@ -117,11 +117,11 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                         [limitedBounds[1][0] - offset, limitedBounds[1][1] + offset]
                       ]
                     }
-                    setResultBounds(null)
+                    
                     setResultBounds(limitedBounds)
                 }
                 else {
-                    setResultBounds([[72, -5], [54, 25]])
+                    setResultBounds(null)
                 }
 
             }
@@ -135,7 +135,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             setIsLoading(false)
         })
         
-  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, coordinatesError, setCoordinatesError}}>{children}</SearchContext.Provider>
+        
       }, [searchQueryString, size, searchFilterParamsString, isTable, asc, desc, page, perPage, isMobile])
 
 
