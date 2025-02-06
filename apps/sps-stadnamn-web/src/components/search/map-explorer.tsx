@@ -42,13 +42,13 @@ export default function MapExplorer() {
   const searchParams = useSearchParams()
   const sourceLabel = searchParams.get('sourceLabel')
   const sourceDataset = searchParams.get('sourceDataset')
+  const parent = searchParams.get('parent')
 
   if (searchParams.get('error') == 'true') {
     throw new Error('Simulated client side error');
   }
-
   const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
-  const [parent, setParent] = useQueryState('parent', { history: 'push' })
+  
   const mapInstance = useRef<any>(null);
   const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
 
