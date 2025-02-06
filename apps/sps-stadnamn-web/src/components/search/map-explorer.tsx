@@ -23,6 +23,48 @@ import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 
 
+// Clusters where labels are shown if there is enough space
+const labelClusters = (currentMap: any, data: any, zoom: number | null) => {
+  const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
+
+  data.hits.hits.forEach((hit: any) => {
+    let added = false;
+    const cadastralParent = hit.fields.within?.[0]
+    if (cadastralParent?.length && data.hits.hits.some((hit: any) => hit.fields.uuid[0] == cadastralParent)) {
+      return
+    }
+
+    for (const group of markers) {
+      const firstHit = group.topHit
+      if (firstHit) {
+      const yDist = yDistance(currentMap, firstHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
+      const xDist = xDistance(currentMap, firstHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
+      if (yDist < 2 && xDist < 2) {
+        group.grouped.push(hit);
+        added = true;
+        break;
+      }
+      if (yDist < 32 && xDist < (64 + (4*firstHit.fields.label[0].length))) {
+        added = true;
+        if (zoom && zoom == 18) {
+          group.grouped.push(hit);
+        }
+        else {
+          group.unlabeled.push(hit);
+        }
+      }
+
+    }
+  }
+  if (!added) {
+    markers.push({topHit: hit, grouped: [], unlabeled: []});
+  }
+  })
+
+  return {...data, hits: {markers}}
+}
+
+
 export default function MapExplorer() {
   const { resultBounds, totalHits, searchError, isLoading } = useContext(SearchContext)
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
@@ -81,73 +123,6 @@ export default function MapExplorer() {
 
   
 
-  const labelClusters = useCallback((currentMap: any, data: any, zoom: number | null, prev: any) => {
-    // Get min/max coordinates from previous markers if they exist
-    const prevBounds = prev?.hits?.markers?.reduce((acc: any, marker: any) => {
-      const lat = marker.topHit.fields.location[0].coordinates[1];
-      const lon = marker.topHit.fields.location[0].coordinates[0];
-      return {
-        minLat: Math.min(acc.minLat, lat),
-        maxLat: Math.max(acc.maxLat, lat),
-        minLon: Math.min(acc.minLon, lon),
-        maxLon: Math.max(acc.maxLon, lon)
-      };
-    }, { minLat: 90, maxLat: -90, minLon: 180, maxLon: -180 });
-
-    const markers: {topHit: any, grouped: any[], unlabeled: any[], animateDuration?: number}[] = []
-
-    data.hits.hits.forEach((hit: any) => {
-      let added = false;
-      const cadastralParent = hit.fields.within?.[0]
-      if (cadastralParent?.length && data.hits.hits.some((hit: any) => hit.fields.uuid[0] == cadastralParent)) {
-        return
-      }
-
-      for (const group of markers) {
-        const firstHit = group.topHit
-        if (firstHit) {
-          const yDist = yDistance(currentMap, firstHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
-          const xDist = xDistance(currentMap, firstHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
-          if (yDist < 2 && xDist < 2) {
-            group.grouped.push(hit);
-            added = true;
-            break;
-          }
-          if (yDist < 32 && xDist < (64 + (4*firstHit.fields.label[0].length))) {
-            added = true;
-            if (zoom && zoom == 18) {
-              group.grouped.push(hit);
-            }
-            else {
-              group.unlabeled.push(hit);
-            }
-          }
-        }
-      }
-      if (!added) {
-        const lat = hit.fields.location[0].coordinates[1];
-        const lon = hit.fields.location[0].coordinates[0];
-        
-        // Check if point is within previous bounds
-        const wasInPrevBounds = prevBounds && 
-          lat >= prevBounds.minLat && 
-          lat <= prevBounds.maxLat && 
-          lon >= prevBounds.minLon && 
-          lon <= prevBounds.maxLon;
-        
-        markers.push({
-          topHit: hit, 
-          grouped: [], 
-          unlabeled: [], 
-          animateDuration: wasInPrevBounds ? undefined : Math.floor(1 + Math.random() * 500)
-        });
-      }
-    })
-
-    return {...data, hits: {markers}}
-  }, []);
-
-
   useEffect(() => {
     // Check if the bounds are initialized
     if (parent || !bounds?.length || !totalHits || isLoading) {
@@ -198,12 +173,8 @@ export default function MapExplorer() {
       })
        
       .then(data => {
-        if (autoMode == 'sample' || markerMode == 'sample') {
-          setViewResults((prev: any) => labelClusters(mapInstance.current, data, zoom, prev))
-        }
-        else {
-          setViewResults(data)
-        }
+        setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(mapInstance.current, data, zoom) : data)
+        console.log((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(mapInstance.current, data, zoom) : data)
 
       })
 
@@ -214,7 +185,7 @@ export default function MapExplorer() {
       }
       );
 
-  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode, labelClusters]);
+  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode]);
 
 
 // Fly to results, doc or children
@@ -500,15 +471,10 @@ useEffect(() => {
               )}
 
               {!parent && (markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
-                if (marker.topHit.fields.label[0] == 'Austevoll') {
-                  console.log("DEBUG MARKER RENDERING")
-                }
-                return <Fragment key={"sample-marker-" + marker.topHit._id}>
-                 {![marker.topHit, ...marker.grouped].some((item: any) => coordinatesSelected(item.fields.location[0].coordinates[1], item.fields.location[0].coordinates[0])) ? 
-                      <Marker
-                          className="drop-shadow-xl"
+                return <Fragment key={marker.topHit._id}>
+                 {![marker.topHit, ...marker.grouped].some((item: any) => coordinatesSelected(item.fields.location[0].coordinates[1], item.fields.location[0].coordinates[0])) ? <Marker key={marker.topHit._id} 
                           position={[marker.topHit.fields.location[0].coordinates[1], marker.topHit.fields.location[0].coordinates[0]]} 
-                          icon={new leaflet.DivIcon(getLabelMarkerIcon(marker.topHit.fields.label, 'black', {docCount: marker.grouped.length ? marker.grouped.length +1 : undefined, animateDuration: marker.animateDuration}))} 
+                          icon={new leaflet.DivIcon(getLabelMarkerIcon(marker.topHit.fields.label, 'black', marker.grouped.length ? marker.grouped.length +1 : undefined, true))} 
                           riseOnHover={true} 
                           eventHandlers={selectDocHandler(marker.topHit, [marker.topHit, ...marker.grouped])} />
                           : null}
@@ -564,7 +530,7 @@ useEffect(() => {
                     // Label: add dots if different labels
                   const label = labels[0] + (allLabelsSame ? '' : '...');
 
-                  const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'white', {docCount: bucket.doc_count > 1 ? bucket.doc_count : undefined}))
+                  const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'white', bucket.doc_count > 1 ? bucket.doc_count : undefined))
 
                   return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits[0], bucket.docs.hits.hits)} />
 
@@ -579,7 +545,7 @@ useEffect(() => {
                     
                     let icon
                     if (dataset != 'search' || hit.fields?.children?.length && hit.fields.children.length > 1) {
-                      icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black', {hideLabel: (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false}))
+                      icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
                     }
                     else {
                       icon = new leaflet.DivIcon(getUnlabeledMarker('black', false))
@@ -667,7 +633,7 @@ useEffect(() => {
                     docData._source.location.coordinates[1],
                     docData._source.location.coordinates[0]
                   ]} 
-                  icon={new leaflet.DivIcon(getLabelMarkerIcon(docData._source.label, 'accent', {docCount: 0, selected: true}))}/>
+                  icon={new leaflet.DivIcon(getLabelMarkerIcon(docData._source.label, 'accent', 0, true))}/>
                 }
 
             </>)

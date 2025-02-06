@@ -74,27 +74,16 @@ const buildMultiMarker = (color: string, style: string) => {
     `
 }
 
-interface LabelMarkerOptions {
-  selected?: boolean;
-  hideLabel?: boolean;
-  animateDuration?: number;
-  docCount?: number;
-}
 
-export function getLabelMarkerIcon(label: string, color: string, options: LabelMarkerOptions) {
-    const { selected, hideLabel, animateDuration, docCount } = options;
+
+
+export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean, hideLabel?: boolean) {
     const sizeAdjustment = selected ? 1.5 : 1;
-    const colorValue = colorMapping[color] || color;
+    const colorValue = colorMapping[color] || color
     return {
       className: '',
       html: `
-        <div class="map-marker group" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px; ${animateDuration ? 'animation: fadeIn ' + animateDuration + 'ms ease-in-out forwards;' : ''}">
-          <style>
-            @keyframes fadeIn {
-              from { opacity: 0; }
-              to { opacity: 1; }
-            }
-          </style>
+        <div class="map-marker group" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
           <div class="absolute -top-7 left-1/2 -translate-x-1/2">
             <div class="flex flex-col items-center">
               <div class="flex items-center ${color == 'white' ? 'text-black' : 'text-white'} whitespace-nowrap rounded-md text-center text-xs tracking-wider font-semibold py-1 px-2 shadow-lg border" style="background-color: ${color == 'white' ? '#ffffffe6' : color == 'accent' ? colorValue : `${colorValue}cc`}; border-color: ${colorValue};">
@@ -108,7 +97,7 @@ export function getLabelMarkerIcon(label: string, color: string, options: LabelM
     };
   }
 
-export function getHoverMarker(docCount: number, label: string, color: string) {
+  export function getHoverMarker(docCount: number, label: string, color: string) {
     return {
       className: '',
       html: `<div class="group" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
@@ -116,13 +105,13 @@ export function getHoverMarker(docCount: number, label: string, color: string) {
                   ${buildMarker(color, 'position:absolute;left-0;bottom:26px;height:32px')}
                 </div>
                 <div class="hidden group-hover:block">
-                  ${getLabelMarkerIcon(label, color, {docCount: docCount}).html}
+                  ${getLabelMarkerIcon(label, color, docCount).html}
                 </div>
              </div>`
     }
   }
 
-export function getClusterMarker(docCount: number, width: number, height: number, fontSize: number, colorClasses?: string) {
+  export function getClusterMarker(docCount: number, width: number, height: number, fontSize: number, colorClasses?: string) {
     return {
       className: '',
       html: `<div class="${colorClasses ? colorClasses : 'bg-white text-neutral-950'} -translate-x-1/3 -translate-y-1/3 drop-shadow-xl shadow-md font-bold" style="border-radius: 50%; width: ${width}rem; font-size: ${fontSize}rem; height: ${height}rem; display: flex; align-items: center; justify-content: center;">${docCount}</div>`
@@ -130,7 +119,7 @@ export function getClusterMarker(docCount: number, width: number, height: number
   }
   
 
-export function getUnlabeledMarker(color: string, selected?: boolean) {
+  export function getUnlabeledMarker(color: string, selected?: boolean) {
     const sizeAdjustment = selected ? 1.5 : 1;
     return {
       className: '',
@@ -142,7 +131,7 @@ export function getUnlabeledMarker(color: string, selected?: boolean) {
 
 
 
-export function getMultiMarker(docCount: number, label: string, color: string) {
+  export function getMultiMarker(docCount: number, label: string, color: string) {
     // <img src="/markerBlackFill.svg" style="width: 3rem; height: 3rem;"/>
     return {
       className: '',
