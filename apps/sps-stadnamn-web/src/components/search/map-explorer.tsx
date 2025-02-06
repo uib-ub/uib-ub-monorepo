@@ -423,7 +423,6 @@ useEffect(() => {
                 controllerRef.current.abort();
                 controllerRef.current = new AbortController();
 
-                //console.log("MOVEEND")
                 
                 const bounds = map.getBounds();
                 const boundsCenter = bounds.getCenter();
