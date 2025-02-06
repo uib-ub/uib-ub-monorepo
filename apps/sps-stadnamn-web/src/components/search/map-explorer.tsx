@@ -169,22 +169,22 @@ export default function MapExplorer() {
         if (!response.ok) {
           throw new Error('Request failed: ' + response.statusText);
         }
-
         return response.json(); 
       })
        
       .then(data => {
+
         setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
+
+      })
+
+      .catch(error => {
         if (error.name != 'AbortError') {
           console.log("NAME", error.name)
           console.log("ERROR", error.stack)
           setCoordinatesError(true)
-
-
-      .catch(error => {
-        if (error.name !== 'AbortError') {
-          console.log('Fetch request aborted:', error);
         }
+
       }
       );
 
