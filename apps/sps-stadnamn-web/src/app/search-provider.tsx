@@ -99,16 +99,25 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 setTotalHits(es_data.hits.total)
                 if (newBounds?.top_left && newBounds?.bottom_right) {
                     // Temporary fix for null island and similar errors
-                    const limitedBounds = [
+                    let limitedBounds = [
                       [newBounds.top_left.lat, Math.min(newBounds.top_left.lon, 33)], // East of Murmansk ~33°E
                       [Math.max(newBounds.bottom_right.lat, 55.6), newBounds.bottom_right.lon] // South of Copenhagen ~55.6°N
                     ] as [[number, number], [number, number]]
+
+                    // Calculate bounds based on zoom level if bounds are a single point
+                    if (limitedBounds[0][0] === limitedBounds[1][0] && limitedBounds[0][1] === limitedBounds[1][1]) {
+                      // At zoom level 11, each degree is approximately 0.1 degrees
+                      const offset = 0.1;
+                      limitedBounds = [
+                        [limitedBounds[0][0] + offset, limitedBounds[0][1] - offset],
+                        [limitedBounds[1][0] - offset, limitedBounds[1][1] + offset]
+                      ]
+                    }
                     
-                    const paddedBounds = addPadding(limitedBounds, isMobile)
-                    setResultBounds(paddedBounds)
+                    setResultBounds(limitedBounds)
                 }
                 else {
-                    setResultBounds(null)
+                    setResultBounds([[72, -5], [54, 25]])
                 }
 
             }
