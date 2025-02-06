@@ -10,7 +10,7 @@ export default function ModeSelector() {
     const searchParams = useSearchParams()
     const { isMobile } = useContext(GlobalContext)
 
-    return <div className={`flex ${mode == 'map' ? 'rounded-md shadow-lg bg-white' : ''}`} role="tablist">
+    return <div className={`flex ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''}`} role="tablist">
             <ClickableIcon aria-selected={mode == 'map' ? true : false}
                       role="tab"
                       label="Kart"

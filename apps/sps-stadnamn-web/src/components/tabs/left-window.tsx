@@ -57,13 +57,13 @@ export default function LeftWindow() {
         }
     }
 
-    return <><div className="flex overflow-x-auto rounded-t-md rounded-md">
+    return <><div className="flex overflow-x-auto rounded-md">
               <button
                       onClick={() => handleTabClick('datasets')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('datasets')}
                       className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
-                        {isTabActive('datasets') ? <PiCaretUp aria-hidden="true"/>  : <PiDatabase aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only xl:not-sr-only"}>Datasett</span>
+                        {isTabActive('datasets') ? <PiCaretUp aria-hidden="true"/>  : <PiDatabase aria-hidden="true"/>}<span className={treeSettings[dataset] ? "sr-only" : "sr-only 2xl:not-sr-only"}>Datasett</span>
                 </button>
                 
                 {treeSettings[dataset] && <button 
@@ -79,22 +79,22 @@ export default function LeftWindow() {
                       onClick={() => handleTabClick('filters')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('filters')}
-                      className={`flex m-1 xl:ml-auto whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner`}>
-                       {isTabActive('filters') ? <PiCaretUp aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={"sr-only xl:not-sr-only"}>Avgrens</span>
+                      className={`flex m-1 2xl:ml-auto whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner`}>
+                       {isTabActive('filters') ? <PiCaretUp aria-hidden="true"/>  : <PiFunnel aria-hidden="true"/>}<span className={"sr-only 2xl:not-sr-only"}>Avgrens</span>
                 </button>
 
                 {searchFilterParamsString && mode == 'map' && <button 
                       onClick={() => handleTabClick('results')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('results')}
-                      className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner ${treeSettings[dataset] ? "ml-auto xl:ml-0" : ""}`}>
-                        {isTabActive('results') ? <PiCaretUp aria-hidden="true"/> : <PiListBullets aria-hidden="true"/>}Treff
+                      className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner ${treeSettings[dataset] ? "ml-auto 2xl:ml-0" : "ml-0 2xl:ml-auto"}`}>
+                        {isTabActive('results') ? <PiCaretUp aria-hidden="true"/> : <PiListBullets aria-hidden="true"/>}<span className="sr-only lg:not-sr-only">Treff</span>
                         {isTabActive('results') ? <span className="results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>
                         : <span className="results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>}
                 </button>}
 
         </div>
-        <div id="left-window-content" className={`overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
+        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
                 
 
         { nav == 'tree' && 
