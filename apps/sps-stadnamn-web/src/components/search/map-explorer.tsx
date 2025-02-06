@@ -124,6 +124,10 @@ export default function MapExplorer() {
     if (parent || !bounds?.length || !totalHits || isLoading) {
       return;
     }
+
+    setCoordinatesError(false)
+
+
     //const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
     const [[north, west], [south, east]] = bounds
 
@@ -165,13 +169,17 @@ export default function MapExplorer() {
         if (!response.ok) {
           throw new Error('Request failed: ' + response.statusText);
         }
+
         return response.json(); 
       })
        
       .then(data => {
         setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
+        if (error.name != 'AbortError') {
+          console.log("NAME", error.name)
+          console.log("ERROR", error.stack)
+          setCoordinatesError(true)
 
-      })
 
       .catch(error => {
         if (error.name !== 'AbortError') {
