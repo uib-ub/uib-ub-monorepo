@@ -90,7 +90,7 @@
 @layer components {
 
   .inner-slate {
-    @apply border-2 border-neutral-200 shadow-inner rounded-md bg-neutral-50;
+    @apply bg-neutral-50 border border-neutral-200 rounded-md shadow-inner;
   }
   .breadcrumb-link {
     @apply no-underline text-lg text-accent-800 hover:underline decoration-accent-800;
@@ -140,11 +140,11 @@
   }
 
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-200;
   }
 
   .btn-outline {
-    @apply bg-transparent text-neutral-900 hover:text-white border border-neutral-700 hover:border-neutral-800;
+    @apply bg-white text-neutral-950 border border-neutral-200 hover:bg-neutral-100 hover:border-neutral-600;
   }
 
   .icon-button {
