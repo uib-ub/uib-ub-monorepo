@@ -2,7 +2,7 @@ import { treeSettings } from "@/config/server-config";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { PiCaretRight, PiMagnifyingGlass, PiWall } from "react-icons/pi";
+import { PiCaretRight, PiMagnifyingGlass, PiTreeView, PiWall } from "react-icons/pi";
 import { datasetPresentation, datasetTitles } from "@/config/metadata-config";
 import { GlobalContext } from "@/app/global-provider";
 import { useContext } from "react";
