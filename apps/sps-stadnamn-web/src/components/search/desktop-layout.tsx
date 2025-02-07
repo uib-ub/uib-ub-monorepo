@@ -46,13 +46,13 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
         
 
-        <div className={`lg:absolute left-2 top-2 flex-col gap-2 max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${doc || parent ? 'hidden lg:flex' : ''}`}>
+        <section aria-label="Søkeverktøy" className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'hidden lg:flex' : 'flex'}`}>
 
         <LeftWindow/>
         
        
 
-        </div>
+        </section>
 
         <div className={`absolute ${mode == 'map' ? 'top-0 left-[40svw] lg:left-[25svw] max-w-[calc(60svw-0.5rem)] lg:max-w-[calc(50svw-0.5rem)] z-[2000]': 'top-2 left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] bg-white rounded-md shadow-lg overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}>
             <StatusSection/>
