@@ -4,7 +4,7 @@ import { useDataset } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import { Fragment, useContext, useState } from "react"
-import { PiArrowCounterClockwise, PiCaretDown, PiCaretUp, PiInfoFill } from "react-icons/pi"
+import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretUp, PiInfoFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
@@ -174,7 +174,7 @@ export default function TableExplorer() {
                                             label="Vis detaljer"
                                             className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent"
                                             add={{doc: hit._source?.uuid}}>
-                                            <PiInfoFill className="text-primary-600 text-2xl" />
+                                            <PiBookOpen className="text-primary-600 text-2xl" />
                                         </ClickableIcon>
                                         {hit._source?.label}
                                     </span>

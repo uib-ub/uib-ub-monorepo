@@ -1,6 +1,6 @@
 'use client'
 import { useContext } from "react";
-import { PiHouseFill, PiTrashFill, PiXBold } from "react-icons/pi";
+import { PiBookOpen, PiBookOpenFill, PiHouse, PiHouseFill, PiTag, PiTagFill, PiTrashFill, PiTreeView, PiXBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { treeSettings } from "@/config/server-config";
 import { getValueByPath } from "@/lib/utils";
@@ -26,22 +26,24 @@ export default function ChildrenWindow() {
     return <>
     <div className={`flex w-full items-center shadow-md`}>
                     
-    <h2 className="flex items-center gap-1 p-1 px-2">
+    <h2 className="flex items-center gap-1 p-1 px-2 !text-lg">
         
-            <ClickableIcon
+            <Clickable
                 link
-                label={dataset == 'search' ? "Vis stadnamnoppslag" : "Vis gard"}
                 aria-current={doc == parent ? 'page' : undefined}
-                className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
+                className="group p-1 flex gap-1 no-underline items-center rounded-full"
                 add={{doc: parent}}>
-                <PiHouseFill className={`text-primary-600 group-aria-[current='page']:text-accent-800 text-xl`} />
-            </ClickableIcon>
-        
-            <div className="text-xl flex items-center gap-1 flex-col lg:flex-row">
+                <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
+                    <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
+                </div>
                 <div className="max-w-[20svw] lg:!max-w-[10svw] truncate sr-only lg:not-sr-only">
                     {treeSettings[dataset] && ((getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")) + " ")}
                     {parentData?._source.label}
-                </div> 
+                </div>
+            </Clickable>
+        
+            <div className="flex items-center gap-1 flex-col lg:flex-row">
+                
                 <span className="sr-only lg:not-sr-only"> | </span>{treeSettings[dataset] ? 'Underordna bruk' : 'Kjelder'}
             </div>
             { (childrenCount && childrenCount == childrenData?.length) ?

@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiBinocularsFill, PiDatabaseFill, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } from "react-icons/pi";
+import { PiBinocularsFill, PiBookOpen, PiDatabase, PiDatabaseFill, PiFunnel, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } from "react-icons/pi";
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
@@ -259,9 +259,9 @@ export default function MobileLayout() {
                                     <PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span></button>}
                     {treeSettings[dataset] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
 
-                    {doc && <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiInfoFill className="text-3xl"/></button>}
-                    { <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnelFill className="text-3xl"/></button>}
-                    <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={drawerContent == 'datasets' ? 'page' : 'false'} className="toolbar-button"><PiDatabaseFill className="text-3xl"/></button>
+                    {doc && <button aria-label="Informasjon" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiBookOpen className="text-3xl"/></button>}
+                    { <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnel className="text-3xl"/></button>}
+                    <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={drawerContent == 'datasets' ? 'page' : 'false'} className="toolbar-button"><PiDatabase className="text-3xl"/></button>
 
             </div>
             

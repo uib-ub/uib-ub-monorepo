@@ -2,7 +2,7 @@
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
-import { PiArrowRight, PiDatabase, PiFiles, PiTag } from 'react-icons/pi';
+import { PiArchive, PiArrowRight, PiBooks, PiDatabase, PiFiles, PiTag } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
@@ -48,7 +48,7 @@ export default function ResultItem({hit}: {hit: any}) {
             <span className="text-neutral-950 flex items-center">{titleRenderer(hit, 'map')}</span>
             {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 
             <span className="self-center flex gap-1 items-center">
-                <PiFiles aria-hidden="true"/>
+                <PiBooks aria-hidden="true"/>
                 <span>{hit.fields.children.length} kjelder</span>
                 </span>
                 

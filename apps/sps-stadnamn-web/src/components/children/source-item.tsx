@@ -2,7 +2,7 @@
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect } from 'react';
-import { PiArrowRight, PiDatabase, PiInfoFill, PiTag } from 'react-icons/pi';
+import { PiArrowRight, PiBookOpen, PiBookOpenBold, PiBookOpenTextBold, PiDatabase, PiInfoFill, PiTag } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
@@ -23,25 +23,25 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
 
 
     return  <div className="w-full h-full flex items-center gap-2 py-1">
-            <ClickableIcon 
+            <Clickable 
                 link
                 label="Vis kjelde"
                 aria-current={(doc == hit.fields.uuid[0]) ? 'page' : undefined}
                 ref={itemRef}
-                className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent aria-[current='page']:border-accent-800"
+                className="group no-underline flex gap-1 items-center rounded-full"
                 add={{
                     doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid[0],
                     parent: parent && docDataset == 'search' ? hit.fields.uuid[0] : null,
                 }}
             >
-                <PiInfoFill className="text-primary-600 group-aria-[current='page']:text-accent-800 text-xl" />
-            </ClickableIcon>
-            <div className="flex flex-col">
-                <div className="">
-                    {sourceTitle(hit)}
+                <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
+                    <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
                 </div>
-                {sourceDetails(hit)}
-            </div>
+                {sourceTitle(hit)}
+            </Clickable>
+
+            {sourceDetails(hit)}
+            
         </div>
 }
 
