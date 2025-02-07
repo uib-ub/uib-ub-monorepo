@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import OpenSeadragon from 'openseadragon';
 import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
@@ -14,6 +14,7 @@ const DynamicImageViewer = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const {dataset, manifestId} = useParams();
   const [error, setError] = useState<any>(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const params = useParams();
   const searchParams = useSearchParams();
@@ -71,13 +72,9 @@ const DynamicImageViewer = () => {
           id: "openseadragon-viewer",
           prefixUrl: "path/to/openseadragon/images/",
           maxZoomPixelRatio: 3.0,
-          zoomInButton: "zoom-in-button-id",
-          zoomOutButton: "zoom-out-button-id",
-          homeButton: "home-button-id",
+          showNavigationControl: false,
+          showSequenceControl: false,
           sequenceMode: true,
-          nextButton: "next-button",
-          previousButton: "previous-button",
-          fullPageButton: "full-screen-button-id",
           tileSources
         });
 
@@ -96,7 +93,6 @@ const DynamicImageViewer = () => {
           setCurrentPage(event.page);
         });
 
-
       } else {
         viewer.current.open(tileSources);
         viewer.current.viewport.goHome();
@@ -105,6 +101,58 @@ const DynamicImageViewer = () => {
 
     fetchManifestAndInitializeViewer();
   }, [manifestId, dataset]);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isInFullScreen = !!document.fullscreenElement;
+      setIsFullScreen(isInFullScreen);
+      
+      // Sync OpenSeadragon's state with browser fullscreen state
+      if (!isInFullScreen && viewer.current?.isFullPage()) {
+        viewer.current.setFullPage(false);
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && viewer.current?.isFullPage()) {
+        viewer.current.setFullPage(false);
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(console.error);
+        }
+        setIsFullScreen(false);
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
+
+  const handleFullScreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+      setIsFullScreen(true);
+    } else {
+      document.exitFullscreen().catch((err) => {
+        console.error(`Error attempting to exit fullscreen: ${err.message}`);
+      });
+      setIsFullScreen(false);
+    }
+  }, []);
+
+  // Update the handleFullscreenClick function
+  const handleFullscreenClick = () => {
+    if (viewer.current) {
+      handleFullScreen();
+      viewer.current.setFullPage(!viewer.current.isFullPage());
+    }
+  };
 
   return (
     <div className='flex flex-col !h-full !w-full lg:grid lg:grid-cols-5'>
@@ -115,35 +163,63 @@ const DynamicImageViewer = () => {
     <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Lastar inn bilde" className='w-20 h-20'/></div>
       : null
       }
-    <div className='absolute top-0 flex z-[1000]  gap-2 text-xl p-2 text-white w-full'>
-
-      <IconButton id="zoom-in-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill/></IconButton>
-        <IconButton id="zoom-out-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill/></IconButton>
-        <IconButton id="home-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Nullstill zoom"><PiHouseFill/></IconButton>
-        <IconButton id="full-screen-button-id" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Fullskjerm"><PiCornersOut/></IconButton>
-
+    <div className='absolute top-0 flex z-[1000] gap-2 text-xl p-2 text-white w-full'>
+      <IconButton 
+        onClick={() => viewer.current?.viewport.zoomBy(1.5)} 
+        className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
+        label="Zoom inn">
+          <PiMagnifyingGlassPlusFill/>
+      </IconButton>
+      <IconButton 
+        onClick={() => viewer.current?.viewport.zoomBy(0.667)} 
+        className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
+        label="Zoom ut">
+          <PiMagnifyingGlassMinusFill/>
+      </IconButton>
+      <IconButton 
+        onClick={() => viewer.current?.viewport.goHome()} 
+        className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
+        label="Nullstill zoom">
+          <PiHouseFill/>
+      </IconButton>
+      <IconButton 
+        onClick={handleFullscreenClick} 
+        className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
+        label="Fullskjerm">
+          <PiCornersOut/>
+      </IconButton>
     </div>
 
     <div className='absolute bottom-0 left-0 flex z-[1000] gap-2 text-xl p-2 text-white w-full'>
-
-    {numberOfPages > 1 && <div className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
-      <IconButton 
-        id="previous-button"
-        label="Forrige side">
-          <PiCaretLeftFill/>
-      </IconButton>
-      <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
-
-    
-      <IconButton 
-        id="next-button"
-        label="Neste side">
-          <PiCaretRightFill/>
-      </IconButton>
-  </div>}
-  
+      {numberOfPages > 1 && <div className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
+        <IconButton 
+          onClick={() => viewer.current?.goToPage(currentPage - 1)}
+          label="Forrige side">
+            <PiCaretLeftFill/>
+        </IconButton>
+        <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
+        <IconButton 
+          onClick={() => viewer.current?.goToPage(currentPage + 1)}
+          label="Neste side">
+            <PiCaretRightFill/>
+        </IconButton>
+      </div>}
     </div>
-    <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}></div>
+    <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}>
+
+    {isFullScreen && (
+      <div className='fixed top-4 right-4 z-[9999] text-xl text-white'>
+        <IconButton 
+          onClick={handleFullscreenClick}
+          className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
+          label="Lukk">
+            <PiXBold/>
+        </IconButton>
+      </div>
+    )}
+
+
+    </div>
     </div>
     {  manifest ?
 
@@ -163,6 +239,8 @@ const DynamicImageViewer = () => {
       </div>
     : null
     }
+
+    
     </div>
     
   );
