@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -168,25 +168,25 @@ const DynamicImageViewer = () => {
         onClick={() => viewer.current?.viewport.zoomBy(1.5)} 
         className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
         label="Zoom inn">
-          <PiMagnifyingGlassPlusFill/>
+          <PiMagnifyingGlassPlusFill aria-hidden="true" />
       </IconButton>
       <IconButton 
         onClick={() => viewer.current?.viewport.zoomBy(0.667)} 
         className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
         label="Zoom ut">
-          <PiMagnifyingGlassMinusFill/>
+          <PiMagnifyingGlassMinusFill aria-hidden="true" />
       </IconButton>
       <IconButton 
         onClick={() => viewer.current?.viewport.goHome()} 
         className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
         label="Nullstill zoom">
-          <PiHouseFill/>
+          <PiArrowClockwise aria-hidden="true" />
       </IconButton>
       <IconButton 
         onClick={handleFullscreenClick} 
         className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
         label="Fullskjerm">
-          <PiCornersOut/>
+          <PiCornersOut aria-hidden="true" />
       </IconButton>
     </div>
 
@@ -195,13 +195,13 @@ const DynamicImageViewer = () => {
         <IconButton 
           onClick={() => viewer.current?.goToPage(currentPage - 1)}
           label="Forrige side">
-            <PiCaretLeftFill/>
+            <PiCaretLeftFill aria-hidden="true" />
         </IconButton>
         <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
         <IconButton 
           onClick={() => viewer.current?.goToPage(currentPage + 1)}
           label="Neste side">
-            <PiCaretRightFill/>
+            <PiCaretRightFill aria-hidden="true" />
         </IconButton>
       </div>}
     </div>
@@ -213,7 +213,7 @@ const DynamicImageViewer = () => {
           onClick={handleFullscreenClick}
           className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
           label="Lukk fullskjerm">
-            <PiXBold/>
+            <PiXBold aria-hidden="true" />
         </IconButton>
       </div>
     )}
