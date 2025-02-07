@@ -1,4 +1,4 @@
-import { PiDatabaseFill, PiFilesFill } from "react-icons/pi";
+import { PiArchive, PiArchiveFill, PiBookOpen, PiBooksFill, PiCaretLeft, PiCaretRight, PiDatabaseFill, PiFiles, PiFilesFill, PiInfoFill } from "react-icons/pi";
 import Clickable from "../ui/clickable/clickable";
 import Timeline from "../doc/timeline";
 import { datasetTitles } from "@/config/metadata-config";
