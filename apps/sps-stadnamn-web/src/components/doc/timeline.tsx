@@ -1,11 +1,15 @@
 import { useSearchParams } from "next/navigation";
 import Clickable from "../ui/clickable/clickable";
+import { GlobalContext } from "@/app/global-provider";
+import { useContext } from "react";
 
-export default function Timeline(arr: { label: string; year: string }[]) {
+export default function Timeline(arr: { label: string; year: string }[], parent: string) {
   const grouped: Record<string,string[]> = {};
   const searchParams = useSearchParams()
   const doc = searchParams.get('doc')
   const sourceLabel = searchParams.get('sourceLabel')
+  const mode = searchParams.get('mode') || 'map'
+  const { isMobile } = useContext(GlobalContext)
 
   arr?.forEach(item => {
       if (grouped[item.year]) {
@@ -39,11 +43,12 @@ return (
                 return (
                   <span key={i}>
                     <Clickable 
-                      add={{sourceLabel: label, parent: doc}} 
+                      add={{sourceLabel: label, parent: parent, doc: parent}} 
                       remove={["sourceLabel", "sourceDataset"]} 
                       className={`no-underline border shadow-sm rounded-md px-3 py-1 max-w-[50svw] xl:max-w-[15svw] truncate
                         ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}`}
                       aria-current={isActive ? 'page' : undefined}
+                      link={isMobile || mode != 'list' ? undefined : true}
                     >
                       {label}
                     </Clickable>

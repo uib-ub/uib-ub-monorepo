@@ -15,6 +15,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
     const parent = searchParams.get('parent')
     const sourceLabel = searchParams.get('sourceLabel')
     const sourceDataset = searchParams.get('sourceDataset')
+    const mode = searchParams.get('mode') || 'map'
     const { isMobile } = useContext(GlobalContext)
     
     const attestationLabels = docSource.attestations?.map((item: any) => item.label)
@@ -59,7 +60,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
     {hasAttestations && 
       <>
         
-        {Timeline(docSource.attestations)}
+        {Timeline(docSource.attestations, docSource.uuid)}
       </>}
 
       <ul className='flex flex-col xl:flex-row xl:flex-wrap gap-1 !list-none !p-0'>
@@ -76,9 +77,9 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 w-full shadow-sm
                 ${isActive ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
-              add={docSource.datasets.length > 1 ? {sourceDataset: dataset, parent: doc} : {parent: doc}}
+              add={docSource.datasets.length > 1 ? {sourceDataset: dataset, parent: docSource.uuid, doc: docSource.uuid} : {parent: docSource.uuid, doc: docSource.uuid}}
               remove={["sourceLabel", "sourceDataset"]}
-              link={isMobile ? undefined : true}
+              link={isMobile || mode != 'map' ? undefined : true}
               aria-expanded={isMobile ? undefined : parent ? true : false}
               aria-controls={isMobile ? undefined :'children-window'}
             >
@@ -100,8 +101,8 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 ${parent && !sourceLabel && !sourceDataset ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
               remove={["sourceLabel", "sourceDataset"]}
-              add={{parent: doc}}
-              link={isMobile ? undefined : true}
+              add={{parent: docSource.uuid, doc: docSource.uuid}}
+              link={isMobile || mode != 'map' ? undefined : true}
               aria-expanded={isMobile ? undefined : parent ? true : false}
               aria-controls={isMobile ? undefined : 'children-window'}
             >

@@ -1,17 +1,17 @@
-
 import { facetConfig } from "@/config/search-config"
 import { contentSettings } from "@/config/server-config"
 import { useDataset } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import { Fragment, useContext, useState } from "react"
-import { PiArrowCounterClockwise, PiCaretDown, PiCaretUp } from "react-icons/pi"
+import { PiArrowCounterClockwise, PiCaretDown, PiCaretUp, PiInfoFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
 import { getSkeletonLength } from "@/lib/utils"
 import Clickable from "@/components/ui/clickable/clickable"
+import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 
 export default function TableExplorer() {
     const dataset = useDataset()
@@ -167,11 +167,17 @@ export default function TableExplorer() {
                         { !isLoading ? tableData.map((hit: any) => (
                             <Fragment key={hit._id}>
                             <tr>
-                                <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'}>
-                                <Clickable link className="no-underline whitespace-nowrap lg:whitespace-normal font-semibold" add={{doc: hit._source?.uuid}}>{hit._source?.label}</Clickable>
-
-
-
+                                <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'} className="!p-0">
+                                    <span className="flex items-center gap-2 p-2">
+                                        <ClickableIcon 
+                                            link
+                                            label="Vis detaljer"
+                                            className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent"
+                                            add={{doc: hit._source?.uuid}}>
+                                            <PiInfoFill className="text-primary-600 text-2xl" />
+                                        </ClickableIcon>
+                                        {hit._source?.label}
+                                    </span>
                                 </th>
                                 {
                                     visibleColumns.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{joinWithSlash(hit._source.adm1)}</td>
@@ -199,7 +205,7 @@ export default function TableExplorer() {
                         )) : Array.from({length: 10}, (_, index_a) => (
                             <tr key={index_a}>
                             {Array.from({ length: visibleColumns.length + 1 }, (_, index_b) => (
-                                <td key={index_b}>
+                                <td key={index_b} className="!h-12">
                                     <div className="bg-neutral-200 rounded-full h-4 animate-pulse my-1" style={{width: `${getSkeletonLength(index_a + index_b, 4, 10)}rem`}}></div>
                                 </td>
                             ))}
