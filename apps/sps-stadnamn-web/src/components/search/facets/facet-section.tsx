@@ -23,30 +23,24 @@ export default function Facets() {
         <>
         <div role="tablist" className="flex flex-wrap items-center gap-1">
         { contentSettings[dataset]?.adm && <>
-          <h3>
+
           <Clickable type="button" role="tab" aria-selected={facet == 'adm'} remove={['facet']} className='rounded-tabs'>
           
           Område
           
           </Clickable>
-          </h3>
+
 
           {availableFacets.filter(f => f.featuredFacet).map(f => 
-            <h3 key={f.key}>
-              <Clickable type="button" role="tab" aria-selected={facet == f.key} add={{facet: f.key}} className='rounded-tabs'>
-                {f.label}
-              </Clickable>
-            </h3>
+            <Clickable key={f.key} type="button" role="tab" aria-selected={facet == f.key} add={{facet: f.key}} className='rounded-tabs'>
+              {f.label}
+            </Clickable>
           )}
 
-
-          <h3>
           <Clickable type="button" role="tab" aria-selected={facet != 'adm' && !fieldConfig[dataset][facet].featuredFacet} add={{facet: availableFacets.find(f => !f.featuredFacet && !f.child)?.key || null}} className='rounded-tabs'>
-          
           Meir
-          
           </Clickable>
-          </h3>
+
           </>
           
         }
