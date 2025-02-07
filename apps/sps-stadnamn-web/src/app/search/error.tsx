@@ -45,7 +45,7 @@ export default function Error({
       <div role="alert" aria-live="assertive" className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 space-y-6">
         <div className="flex items-center gap-3">
           <PiWarningFill aria-hidden="true" className="text-primary-600 text-2xl" />
-          <h2 className="text-xl font-serif">Det har oppstått en feil</h2>
+          <h2 className="text-xl font-serif">Det har oppstått ein feil</h2>
         </div>
 
         <div className="space-y-4">
