@@ -55,7 +55,7 @@ export default function SearchResults() {
     </ul>
       
       {searchError ? <div className="flex justify-center">
-        <div role="status" aria-live="polite" className="text-primary-600 pb-4"><strong>{searchError.status}</strong> Det har oppstått en feil</div>
+        <div role="status" aria-live="polite" className="text-primary-600 pb-4"><strong>{searchError.status}</strong> Det har oppstått ein feil</div>
       </div>
       : !isLoading && !resultData?.length &&  <div className="flex justify-center">
       <div role="status" aria-live="polite" className="text-neutral-950 pb-4">Ingen søkeresultater</div>
