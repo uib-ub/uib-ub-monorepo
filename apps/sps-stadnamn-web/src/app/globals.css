@@ -93,7 +93,7 @@
     @apply bg-neutral-50 border border-neutral-200 rounded-md shadow-inner;
   }
   .breadcrumb-link {
-    @apply no-underline text-lg text-accent-800 hover:underline decoration-accent-800;
+    @apply no-underline text-lg text-accent-800 hover:underline !decoration-accent-800;
   }
   .card {
     @apply bg-white shadow-lg shadow-neutral-100 xl:border-2 xl:border-neutral-200 xl:rounded-sm;
