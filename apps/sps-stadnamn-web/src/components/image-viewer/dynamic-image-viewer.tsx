@@ -212,7 +212,7 @@ const DynamicImageViewer = () => {
         <IconButton 
           onClick={handleFullscreenClick}
           className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
-          label="Lukk">
+          label="Lukk fullskjerm">
             <PiXBold/>
         </IconButton>
       </div>
