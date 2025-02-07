@@ -172,20 +172,22 @@ export default function ServerFacet() {
     </div>
     </div>
     { facetAggregation?.buckets.length ?
-    <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
-      {facetAggregation?.buckets
-        .filter(filterDatasetsByTags)
-        .map((item: any, index: number) => 
+    <fieldset>
+      <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[dataset][facet].label}`}</legend>
+      <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
+        {facetAggregation?.buckets
+          .filter(filterDatasetsByTags)
+          .map((item: any, index: number) => 
             (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(datasetTitles[item.key])) && (
-        <li key={index}>
-        <label>
-          <input type="checkbox" checked={searchParams.getAll(facet).includes(item.key.toString()) ? true : false} className='mr-2' name={facet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
-          {renderLabel(facet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
-        </label>
-        </li>
-        ))}
-
-    </ul>
+              <li key={index}>
+                <label>
+                  <input type="checkbox" checked={searchParams.getAll(facet).includes(item.key.toString()) ? true : false} className='mr-2' name={facet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
+                  {renderLabel(facet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+                </label>
+              </li>
+          ))}
+      </ul>
+    </fieldset>
     : <div role="status" aria-live="polite" className='px-2 p-2 rounded-sm bg-neutral-50 border border-neutral-300'>Ingen treff</div>
     }
     </div>

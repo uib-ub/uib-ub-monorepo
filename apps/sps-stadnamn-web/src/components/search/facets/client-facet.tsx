@@ -4,6 +4,7 @@ import { useQueryStringWithout, useSearchQuery, useDataset } from '@/lib/search-
 import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple, PiFunnel, PiFunnelFill } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
+import { fieldConfig } from '@/config/search-config';
 
 
 
@@ -162,27 +163,28 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     <>
     { true &&
     <div className="flex flex-col gap-2 py-2">
-    <div className='flex gap-2'>
-    <div className='relative grow'>
-      <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
-          className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
-      <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-        <PiFunnel aria-hidden={true} className='text-neutral-500 text-xl'/>
-      </span>
+      <div className='flex gap-2'>
+        <div className='relative grow'>
+          <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
+              className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
+          <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+            <PiFunnel aria-hidden={true} className='text-neutral-500 text-xl'/>
+          </span>
+        </div>
+        
+        <FacetToolbar/>
+      </div>
+      { facetAggregation?.buckets ?
+      <fieldset>
+        <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[dataset][facetName].label}`}</legend>
+        <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
+          {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
+            listItem(item, index, facetName, [item.key], false)
+          ))}
+        </ul>
+      </fieldset>
+      : <></>
+      }
     </div>
-    
-    <FacetToolbar/>
-    </div>
-    { facetAggregation?.buckets ?
-    <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
-      {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
-        listItem(item, index, facetName, [item.key], false)
-      ))}
-
-    </ul>
-    : <></>
-    }
-    </div>
-  } </>)
-
+    } </>)
 }
