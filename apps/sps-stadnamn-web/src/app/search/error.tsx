@@ -30,13 +30,13 @@ export default function Error({
   }
 
   const handleReport = () => {
-    plausible('error', {
-      props: {
+    const props = {
         message: error.message,
         stack: error.stack,
         digest: error.digest
-      }
-    })
+    }
+    console.log(props)
+    plausible('error', {props})
     setIsReported(true)
   }
  
