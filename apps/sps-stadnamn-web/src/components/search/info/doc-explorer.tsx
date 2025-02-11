@@ -28,20 +28,22 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
 
     
     return <>
-    { docLoading && <div className="flex px-4 mt-4 mb-8"><DocSkeleton/></div>}
+    
     {doc && !docLoading && docData?._source &&
     <div className={`${hidden ? 'hidden' : ''} instance-info ${doc != parent ? 'xl:!pt-4 xl:mt-2 pb-4' : ''} xl:px-4 flex flex-col gap-8`}>
+        
         <div className="flex flex-col lg:flex-row gap-8">
-            {(!parent || doc != parent || mode != 'map') && <DocInfo/>}
+        { docLoading && <div className="flex px-4 mt-4 mb-8"><DocSkeleton/></div>}
+            {(!parent || doc != parent || mode != 'map') && !docLoading && <DocInfo/>}
 
             {parent ? 
                 childrenLoading ? 
                     <div className="flex justify-center h-24 m-12"><Spinner status={treeSettings[dataset] ? 'Lastar garder' : 'Lastar kjelder'} className="w-full h-full m-2 self-center" /></div>
                 :
-                    <aside className="flex flex-col gap-2 ml-auto">
+                    <aside className={`flex flex-col gap-2 ml-auto border border-neutral-200 w-full border-t rounded-md`}>
                         { treeSettings[dataset] ?  
-                            parentData?._id && <CadastralSubdivisions/>
-                        :  dataset == 'search' && <>{parent && parent != doc && <h2 className="!text-base font-semibold uppercase !font-sans px-1">Andre kjelder</h2>}<ChildrenWindow/></>}
+                            parentData?._id && <CadastralSubdivisions/> 
+                        :  dataset == 'search' && <>{parent && parent != doc && <h2 className="!text-base font-semibold uppercase !font-sans px-1">Andre kjelder</h2>}<SourceList/></>}
                     </aside>
                 : null
             }
@@ -54,7 +56,7 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
         <Clickable link className="flex p-4 lg:p-2 gap-2 w-full lg:w-auto rounded-md bg-neutral-50 border border-neutral-200 h-full items-center no-underline" remove={['doc', 'parent']}>
            { mode == 'table' &&<><PiCaretLeft className="text-2xl text-primary-600"/>Vis trefftabellen</>}
            { mode == 'list' &&<><PiCaretLeft className="text-2xl text-primary-600"/>Vis trefflista</>}
-           { mode == 'map' && isMobile && <><PiX className="text-2xl text-primary-600"/>Lukk</>}
+           { mode == 'map' && <><PiX className="text-2xl text-primary-600"/>Lukk</>}
         </Clickable>
         
         </div>

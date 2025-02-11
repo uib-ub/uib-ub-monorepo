@@ -36,8 +36,8 @@ export default function TreeItem({hit}: {hit: any}) {
                     only={{
                         dataset: docDataset,
                         ...(mode != 'map' || parent) ? {parent: hit.fields.uuid, doc: hit.fields.uuid} : {doc: hit.fields.uuid},
+                        ...mode != 'map' ? {mode: 'doc'} : {mode: searchParams.get('mode')},
                         nav: 'tree',
-                        mode: searchParams.get('mode'),
                         adm: searchParams.get('adm'),
                         zoom: searchParams.get('zoom'),
                         center: searchParams.get('center'),

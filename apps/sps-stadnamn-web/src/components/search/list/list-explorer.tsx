@@ -18,13 +18,13 @@ export default function ListExplorer() {
                         {tableData?.map((item: any, index: number) => {
                             const docDataset = item._index.split('-')[2]
                             const images = item._source.image?.manifest ? {manifest: item._source.image?.manifest, dataset: docDataset} : item._source.images
-                            return <li key={index} className={`p-2 !py-4 flex ${isMobile ? 'flex-col gap-4' : ''}`}>
+                            return <li key={index} className={`p-2 !py-4 flex ${isMobile ? 'flex-col gap-4' : 'justify-between gap-4'}`}>
                                 
-                                { isMobile && images?.length && <div className="ml-auto"><ClientThumbnail images={images}/></div>}
-                                <div className="flex flex-col px-4">
+                                { isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail images={images}/></div>}
+                                <div className="flex flex-col px-4 w-full">
                                 <DocInfo docParams={{docDataset, docData: item, snidParent: null, sameMarkerList: []}}/>
                                 </div>
-                                { !isMobile && images?.length && <div className="ml-auto"><ClientThumbnail images={images}/></div>}
+                                { !isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail images={images}/></div>}
                                 
                             </li>
                       

@@ -6,6 +6,9 @@ import { useSearchParams } from "next/navigation";
 import Etymology from "../search/info/etymology";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
+import { useDataset } from "@/lib/search-params";
+import Link from "next/link";
+import ClickableIcon from "../ui/clickable/clickable-icon";
 
 
 
@@ -17,6 +20,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
     const sourceDataset = searchParams.get('sourceDataset')
     const mode = searchParams.get('mode') || 'map'
     const { isMobile } = useContext(GlobalContext)
+    const dataset = useDataset()
     
     const attestationLabels = docSource.attestations?.map((item: any) => item.label)
     const uniqueLabels = new Set<string>(docSource.altLabels?.filter((label: string) => label !== docSource.label && !attestationLabels?.includes(label)))
@@ -38,7 +42,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
 
 
 
-    <div className={` flex flex-col`}>
+    <div className={` flex flex-col gap-2`}>
     {hasAltLabels && <ul className='flex flex-wrap !list-none !p-0 gap-1'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       const isActive = sourceLabel === label
@@ -60,7 +64,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
     {hasAttestations && 
       <>
         
-        {Timeline(docSource.attestations, docSource.uuid)}
+        <Timeline arr={docSource.attestations} parent={docSource.uuid}/>
       </>}
 
       <ul className='flex flex-col xl:flex-row xl:flex-wrap gap-1 !list-none !p-0'>
@@ -77,7 +81,12 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 w-full shadow-sm
                 ${isActive ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
-              add={docSource.datasets.length > 1 ? {sourceDataset: dataset, parent: docSource.uuid, doc: docSource.uuid} : {parent: docSource.uuid, doc: docSource.uuid}}
+              add={{
+                ...(docSource.datasets.length > 1 ? {sourceDataset: dataset} : {}),
+                parent: docSource.uuid,
+                doc: docSource.uuid,
+                ...(mode != 'map' ? {mode: 'doc'} : {})
+              }}
               remove={["sourceLabel", "sourceDataset"]}
               link={isMobile || mode != 'map' ? undefined : true}
               aria-expanded={isMobile ? undefined : parent ? true : false}
@@ -97,16 +106,18 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 flex items-center gap-1 
                 no-underline border rounded-md rounded-full 
                 pr-3 pl-2 py-2 xl:py-1 
-                w-full shadow-sm
-                ${parent && !sourceLabel && !sourceDataset ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
+                w-full shadow-sm text-white
+                ${parent && !sourceLabel && !sourceDataset ? '!bg-accent-800 border-accent-900' : 'bg-primary-600 border-primary-200'}
               `}
               remove={["sourceLabel", "sourceDataset"]}
-              add={{parent: docSource.uuid, doc: docSource.uuid}}
+              add={{parent: docSource.uuid, doc: docSource.uuid,
+                ...mode != 'map' ? {mode: 'doc'} : {}}
+              }
               link={isMobile || mode != 'map' ? undefined : true}
               aria-expanded={isMobile ? undefined : parent ? true : false}
               aria-controls={isMobile ? undefined : 'children-window'}
             >
-                <PiBooksFill className={`${parent && !sourceLabel && !sourceDataset ? 'text-white' : 'text-primary-600'}`} />
+                
               Alle kjelder
             </Clickable>
           </li>

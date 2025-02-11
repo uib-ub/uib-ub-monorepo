@@ -64,7 +64,7 @@ export default function SearchForm() {
             
             <div className='flex w-full h-full items-center bg-white border-x-2 border-neutral-200 group px-2'>
             {(!isMobile || dataset == 'search') ? <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
-            : <Clickable only={{dataset: 'search'}} aria-hidden="true" className="flex no-underline max-w-[50%] text-sm flex-nowrap items-center gap-1 bg-accent-700 text-white rounded-md px-2 py-1 whitespace-nowrap"><span className="truncate">{datasetTitles[dataset]}</span><PiX className="text-xs" aria-hidden="true"/></Clickable>
+            : <Clickable only={{dataset: 'search', zoom: searchParams.get('zoom'), center: searchParams.get('center')}} aria-hidden="true" className="flex no-underline max-w-[50%] text-sm flex-nowrap items-center gap-1 bg-accent-700 text-white rounded-md px-2 py-1 whitespace-nowrap"><span className="truncate">{datasetTitles[dataset]}</span><PiX className="text-xs" aria-hidden="true"/></Clickable>
             }
             <label htmlFor="search-input" className="sr-only">Søk</label>
             <input 

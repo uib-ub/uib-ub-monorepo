@@ -1,5 +1,5 @@
 import { facetConfig } from "@/config/search-config"
-import { contentSettings } from "@/config/server-config"
+import { contentSettings, treeSettings } from "@/config/server-config"
 import { useDataset } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
@@ -24,6 +24,8 @@ export default function TableExplorer() {
 
     const setAsc = useQueryState('asc')[1]
     const setDesc = useQueryState('desc')[1]
+    const mode = searchParams.get('mode') || 'map'
+    const { isMobile } = useContext(GlobalContext)
 
     const [visibleColumns, setVisibleColumns] = useState<string[]>(['adm', ...facetConfig[dataset].filter(item => item.table).map(facet => facet.key)])
 
@@ -174,7 +176,14 @@ export default function TableExplorer() {
                                             link
                                             label="Vis detaljer"
                                             className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent"
-                                            add={{doc: hit._source?.uuid}}>
+                                            remove={['parent']}
+                                            add={{doc: hit._source?.uuid, 
+                                                  ...!isMobile && (mode == 'list' || mode == 'table') ? {mode: 'doc'} : {},
+                                                  ...(hit._source.children?.length || (treeSettings[dataset] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
+
+                                                  
+                                                  
+                                                  }}>
                                             <PiBookOpen className="text-primary-600 text-2xl" />
                                         </ClickableIcon>
                                         {hit._source?.label}
