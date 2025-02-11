@@ -17,7 +17,7 @@ export default function CollapsibleHeading(props: {
         
         {props.title} {open ? <PiCaretUp className="inline self-center text-primary-600" /> : <PiCaretDown className="inline self-center text-primary-600" />}</button></HeadingTag>
         
-    <div id={props.title + '-collapsible'} className={`${open ? 'block' : 'hidden'}`}>
+    <div id={props.title + '-collapsible'} className={`${open ? 'block py-2' : 'hidden'}`}>
         {props.children}
     </div>
   </div>;
