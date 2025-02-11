@@ -3,7 +3,7 @@ import Clickable from "../ui/clickable/clickable";
 import { GlobalContext } from "@/app/global-provider";
 import { useContext } from "react";
 
-export default function Timeline(arr: { label: string; year: string }[], parent: string) {
+export default function Timeline({arr, parent}: {arr: { label: string; year: string }[], parent: string}) {
   const grouped: Record<string,string[]> = {};
   const searchParams = useSearchParams()
   const doc = searchParams.get('doc')
