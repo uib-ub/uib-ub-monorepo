@@ -18,6 +18,9 @@ import ListExplorer from "./list/list-explorer";
 import DocExplorer from "./info/doc-explorer";
 import { ChildrenContext } from "@/app/children-provider";
 import { DocContext } from "@/app/doc-provider";
+import DocInfo from "./info/doc-info";
+import DocSkeleton from "./info/doc-skeleton";
+import ChildrenWindow from "../children/children-window";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -41,7 +44,7 @@ export default function MobileLayout() {
     const dataset = useDataset()
     const parent = searchParams.get('parent')
     const { childrenCount, shownChildrenCount } = useContext(ChildrenContext)
-    const { parentData } = useContext(DocContext)
+    const { parentData, docLoading } = useContext(DocContext)
 
 
 
@@ -224,9 +227,11 @@ export default function MobileLayout() {
                     
                 </h2>
                 <div className="absolute -translate-x-1/2 left-1/2 h-2 top-2 w-16 bg-neutral-300 rounded-full"></div></div>
-            <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-3rem)] overscroll-contain pb-5 pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
+            <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
-            <DocExplorer hidden={drawerContent != 'info'}/>
+            {drawerContent == 'info' && <>
+            {docLoading ? <DocSkeleton/> : <DocInfo/>}
+            </>}
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
                 <Results/>
@@ -268,9 +273,10 @@ export default function MobileLayout() {
         </div>
 
         <div className={`absolute top-12 right-0 w-full bg-transparent rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
-        <StatusSection/>
+        { mode != 'doc' && <StatusSection/>}
         { mode == 'table' && <TableExplorer/>}
         { mode == 'list' && <ListExplorer/>}
+        { mode == 'doc' && <ChildrenWindow/>}
         </div>
 
         <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">

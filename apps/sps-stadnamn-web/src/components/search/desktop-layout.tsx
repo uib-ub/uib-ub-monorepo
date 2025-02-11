@@ -10,8 +10,6 @@ import CadastralSubdivisions from "../children/cadastral-subdivisions"
 import { treeSettings } from "@/config/server-config"
 import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
-import NavSelector from "../tabs/left-window"
-import { PiArrowUpBold, PiFilesFill, PiHouseFill, PiInfoFill, PiTableFill, PiTagFill, PiTrash, PiTrashFill, PiXBold } from "react-icons/pi"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import Spinner from "../svg/Spinner"
@@ -19,13 +17,10 @@ import { useSearchParams } from "next/navigation"
 import { ChildrenContext } from "@/app/children-provider"
 import DocSkeleton from "./info/doc-skeleton"
 import DocInfo from "./info/doc-info"
-import Clickable from "../ui/clickable/clickable"
 import ListExplorer from "./list/list-explorer"
-import DocExplorer from "./info/doc-explorer"
 import LeftWindow from "../tabs/left-window"
-import ClickableIcon from "../ui/clickable/clickable-icon"
-import { getValueByPath } from "@/lib/utils"
 import ChildrenWindow from "../children/children-window"
+
 
 export default function DesktopLayout() {
     const [doc, setDoc] = useQueryState('doc')
@@ -54,13 +49,28 @@ export default function DesktopLayout() {
 
         </section>
 
-        <div className={`absolute ${mode == 'map' ? 'top-0 left-[40svw] lg:left-[25svw] max-w-[calc(60svw-0.5rem)] lg:max-w-[calc(50svw-0.5rem)] z-[2000]': 'top-2 left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] bg-white rounded-md shadow-lg overflow-y-auto stable-scrollbar' } flex flex-col gap-2 `}>
-            <StatusSection/>
+        <div className={`absolute 
+                ${(mode == 'doc' && parent) ? 'left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(50svw-1rem)]' 
+                                            :  'left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)]'} 
+                ${mode == 'map' ? 'top-0   lg:max-w-[calc(50svw-0.5rem)] z-[2000]'
+                                : 'top-2 bg-white rounded-md shadow-lg max-h-[calc(100svh-4rem)] overflow-y-auto stable-scrollbar' } 
+                flex flex-col pb-6`}>
+            {mode != 'doc' && <StatusSection/>}
 
-            {mode == 'table' && !doc && <TableExplorer/> }
-            {mode == 'list' && !doc && <ListExplorer/> }
-            {mode != 'map' && (parent || doc) &&  <DocExplorer hidden={false}/>}
+            {mode == 'table' && <TableExplorer/> }
+            {mode == 'list' && <ListExplorer/> }
+            {mode == 'doc' && <div className="px-6 pb-6 pt-3">
+                {docLoading ? <DocSkeleton/> : <DocInfo/>}
+            </div>}
         </div>
+
+        {(mode == 'doc' && parent) ?
+            <div className="lg:absolute lg:right-0 lg:top-0 lg:w-[25svw] h-[calc(100svh-4rem)] lg:m-2 rounded-md shadow-lg lg:gap-4 bg-white">
+                { (parentLoading || childrenLoading) ? <Spinner className="h-16 w-16 " status="Lastar kjelder"/> : <ChildrenWindow/>}
+            </div>
+        : null}
+
+
 
 
        { mode == 'map' && (doc || parent) &&
