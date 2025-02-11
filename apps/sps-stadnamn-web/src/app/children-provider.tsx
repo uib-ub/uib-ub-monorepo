@@ -181,37 +181,6 @@ useEffect(() => {
     }, [sourceLabel, sourceDataset, childrenFetching, dataset])
     
 
-    /*
-
-    const filterAndGroupChildren = useCallbacck((data: any[]) => {
-        const matchingChildren = data.filter((doc: any) => {
-            if (sourceLabel && !([doc._source?.label, ...(doc._source?.altLabels || []), ...(doc._source?.attestations?.map((a: any) => a.label) || [])].includes(sourceLabel))) return false;
-            if (sourceDataset && !doc._index.includes(sourceDataset)) return false;
-            return true;
-        });
-
-        setShownChildrenCount(matchingChildren.length);
-        setChildrenCount(data.length)
-
-        const filtered: Record<string, Record<string, any>[]> = Object.fromEntries(Object.entries(
-            matchingChildren
-                .reduce((acc: Record<string, Record<string, any>[]>, doc: Record<string, any>) => {
-                    const index = doc._index.split('-')[2]
-                    if (!acc[index]) acc[index] = []
-                    acc[index].push(doc)
-                    return acc
-                }, {})
-        ));
-        
-        setGroupedAndFilteredChildren(filtered);
-    }, [sourceLabel, sourceDataset, childrenData]);
-
-    useEffect(() => {
-        if (childrenData?.length && dataset == 'search') {
-            filterAndGroupChildren(childrenData);
-        }
-    }, [filterAndGroupChildren, dataset, childrenData]);
-    */
     
 
     useEffect(() => {
