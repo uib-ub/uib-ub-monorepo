@@ -154,19 +154,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     </>
 
   },
-  mu1950: (source: any) => {
-    return <>
-    {source.sosi != 'gard' &&
-      <>
-      <CollapsibleHeading title="Detaljer">
-      <FacetsInfobox source={source} />
-      </CollapsibleHeading>
-      </>
-    }
-
-
-    </>
-  },
+  mu1950: (source: any) => <></>,
   m1886: (source: any) => {
     return <>
     {source.rawData?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknader}</>}

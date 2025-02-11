@@ -47,7 +47,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     }
 
     const filteredFacets = useMemo(() => {
-        if (!docDataset || !docSource) return [];
+        if (!docDataset || !docSource || (docDataset == 'mu1950' && docSource.sosi == 'gard')) return [];
         return facetConfig[docDataset]?.filter(item => {
             if (!item.key || ['sosi', 'datasets'].includes(item.key)) return false;
             const value = docSource[item.key];
@@ -167,7 +167,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       
       { docDataset && infoPageRenderers[docDataset]?.( docSource) }
 
-      {docDataset != 'mu1950' && filteredFacets.length > 0 && 
+      { filteredFacets.length > 0 && 
         <CollapsibleHeading title="Detaljar">
             <FacetsInfobox source={docSource} filteredFacets={filteredFacets}/>
         </CollapsibleHeading>
