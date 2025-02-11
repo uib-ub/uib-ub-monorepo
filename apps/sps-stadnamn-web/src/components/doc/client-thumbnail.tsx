@@ -34,8 +34,12 @@ export default function ClientThumbnail({ images }: { images: {manifest: string,
     return <div className="flex flex-col gap-1">
         
         {thumbnailUrl && width && height && <Link href={"/iiif/" + images[imgIndex].manifest}><Image width={width} height={height} src={thumbnailUrl} alt="Seddel" /></Link>}
-        <div className="flex">
-        {dataset == 'search' && docDataset != images[imgIndex].dataset && <span className="flex items-center gap-1 text-neutral-800">Kjelde: {datasetTitles[images[imgIndex].dataset]}</span>}
+        <div className="flex gap-1 justify-between">
+        {dataset == 'search' && docDataset != images[imgIndex].dataset && (
+            <span className="flex items-center gap-2 text-neutral-800 min-w-0">
+                <span className="truncate">{datasetTitles[images[imgIndex].dataset]}</span>
+            </span>
+        )}
         {images.length > 1 && (
           <div className="flex ml-auto">
               <button 
