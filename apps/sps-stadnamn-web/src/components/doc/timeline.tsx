@@ -39,11 +39,15 @@ return (
         <span className='mr-2 my-1'>{year}</span>
         <div className="flex flex-wrap gap-1 whitespace-nowrap">
               {labels.map((label, i) => { 
-                const isActive = sourceLabel === label;
+                const isActive = sourceLabel === label && (mode == 'map' || mode == 'doc');
                 return (
                   <span key={i}>
                     <Clickable 
-                      add={{sourceLabel: label, parent: parent, doc: parent}} 
+                      add={{sourceLabel: label, 
+                            parent: parent, 
+                            doc: parent,
+                            ...(mode != 'map' ? {mode: 'doc'} : {})
+                          }} 
                       remove={["sourceLabel", "sourceDataset"]} 
                       className={`no-underline border shadow-sm rounded-md px-3 py-1 max-w-[50svw] xl:max-w-[15svw] truncate
                         ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}`}
