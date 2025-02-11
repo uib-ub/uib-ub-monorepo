@@ -48,7 +48,6 @@ export default function ResultItem({hit}: {hit: any}) {
             <span className="text-neutral-950 flex items-center">{titleRenderer(hit, 'map')}</span>
             {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 
             <span className="self-center flex gap-1 items-center">
-                <PiBooks aria-hidden="true"/>
                 <span>{hit.fields.children.length} kjelder</span>
                 </span>
                 
