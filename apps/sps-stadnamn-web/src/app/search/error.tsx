@@ -73,7 +73,7 @@ export default function Error({
               className="btn btn-primary flex-1 flex items-center justify-center gap-2"
             >
               {isReported && <PiCheck aria-hidden="true" />}
-              Rapporter
+              Send feilrapport
             </button>
           </div>
         </div>
