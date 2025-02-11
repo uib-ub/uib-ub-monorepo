@@ -10,7 +10,7 @@ import { useDataset } from "@/lib/search-params";
 import Clickable from "../ui/clickable/clickable";
 import { datasetTitles } from "@/config/metadata-config";
 
-export default function FacetsInfobox({ source }: { source: Record<string,any> }) {
+export default function FacetsInfobox({ source, filteredFacets }: { source: Record<string,any>, filteredFacets: any[] }) {
   const { docDataset } = useContext(DocContext)
   const dataset = useDataset()
 
@@ -24,9 +24,7 @@ export default function FacetsInfobox({ source }: { source: Record<string,any> }
   })
   
 
-    const items = facetConfig[docDataset].filter(item => 
-      item.key && !['sosi', 'datasets'].includes(item.key) // Skip fields displayed in dedicated component
-    ).map((facet) => {
+    const items = filteredFacets.map((facet) => {
         const value = getValueByPath(source, facet.key);
         return {
           title: facet.label,
@@ -49,8 +47,6 @@ export default function FacetsInfobox({ source }: { source: Record<string,any> }
       }
     )
     
-
-    const filteredItems = items.filter(item =>  (item.items?.length && item.items[0].value?.length));
 
     const subitemRenderer = (item: any) => {
       if (dataset == docDataset) {
@@ -75,11 +71,9 @@ export default function FacetsInfobox({ source }: { source: Record<string,any> }
       return serialize({dataset, nav: 'results', ...newParams})
     }
 
-    return filteredItems?.length > 0 && docDataset? (
-      
-        <div className="flex flex-col gap-4 p-4 inner-slate">
-          <div className="flex flex-col sm:flex-row flex-wrap gap-8">
-            {filteredItems.map((item: Record<string,any> , index: number) => (
+    return <div className="flex flex-col gap-4 p-4 inner-slate">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-8">
+            {items.map((item: Record<string,any> , index: number) => (
                 <div key={index} className="flex flex-col">
                     <strong className="text-neutral-900">{item.title}</strong>
                     {item.items?.length == 1 && <p>{subitemRenderer(item.items[0])}</p>}                
@@ -103,8 +97,6 @@ export default function FacetsInfobox({ source }: { source: Record<string,any> }
             </Clickable>
           )}
         </div>
-
-    ) : null
   
   
   }

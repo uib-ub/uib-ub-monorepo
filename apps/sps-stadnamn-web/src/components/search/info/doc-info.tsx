@@ -8,7 +8,7 @@ import { infoPageRenderers } from "@/config/info-renderers"
 import AudioButton from "@/components/results/audio-button"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useDataset } from "@/lib/search-params"
-import { useContext } from "react"
+import { useContext, useMemo } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { treeSettings } from "@/config/server-config"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
@@ -21,6 +21,7 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import IconLink from "@/components/ui/icon-link"
 import FacetsInfobox from "@/components/doc/facets-infobox"
 import SearchDocInfo from "@/components/doc/search-doc-info"
+import { facetConfig } from "@/config/search-config"
 
 
 
@@ -45,6 +46,14 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       return Array.isArray(value) ? value.join("/") : value
     }
 
+    const filteredFacets = useMemo(() => {
+        if (!docDataset || !docSource) return [];
+        return facetConfig[docDataset]?.filter(item => {
+            if (!item.key || ['sosi', 'datasets'].includes(item.key)) return false;
+            const value = docSource[item.key];
+            return value && (Array.isArray(value) ? value.length > 0 : value.length > 0);
+        });
+    }, [docDataset, docSource]);
 
     return <><article className="instance-info flex flex-col gap-3 mobile-padding">
       {(((docDataset && dataset != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
@@ -158,12 +167,11 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       
       { docDataset && infoPageRenderers[docDataset]?.( docSource) }
 
-      {docDataset != 'mu1950' && docDataset && docSource &&  <CollapsibleHeading title="Detaljar">
-          <FacetsInfobox source={docSource}/>
-      </CollapsibleHeading>}
-
-      
-
+      {docDataset != 'mu1950' && filteredFacets.length > 0 && 
+        <CollapsibleHeading title="Detaljar">
+            <FacetsInfobox source={docSource} filteredFacets={filteredFacets}/>
+        </CollapsibleHeading>
+      }
 
         { (docSource.images?.length > 0 || docSource.image?.manifest) && mode != 'list' && <div>
         <h3 className="!mt-0 !py-0">Sedler</h3>
