@@ -50,7 +50,7 @@ export default function Error({
 
         <div className="space-y-4">
           <div className="inner-slate p-4 rounded-md">
-            <p className="font-mono text-sm text-neutral-700 break-words">{error.message}</p>
+            <p className="font-mono text-sm text-neutral-700 break-words" lang="en">{error.message}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
