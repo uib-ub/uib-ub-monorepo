@@ -215,15 +215,7 @@ export default function MobileLayout() {
                     {drawerContent == 'datasets' && 'Datasett'}
                     {drawerContent == 'filters' && 'Avgrens'}
                     {drawerContent == 'tree' && 'Register'}
-                    {drawerContent == 'info' ? <>
-                        {parent && doc == parent && !treeSettings[dataset] && <>Kjelder{parentData?._source.children?.length && 
-                            (childrenCount && shownChildrenCount != parentData._source.children.length ? 
-                               <span className="text-neutral-50 text-sm text-neutral-900 bg-white shadow-sm rounded-full !h-5 !min-w-5 px-2 flex items-center justify-center">{`${shownChildrenCount}/${parentData._source.children.length}`}</span> 
-                            : <div className="text-neutral-50 text-sm text-neutral-900 bg-white shadow-sm rounded-full !h-5 !min-w-5 flex items-center justify-center">{parentData._source.children.length}</div>)}</>}
-                        {parent && doc == parent && treeSettings[dataset] && 'Bruk'}
-                        {parent && doc != parent && 'Kjelde'}
-                        {!parent && 'Oppslag'}
-                    </> : null}
+                    {drawerContent == 'info' && 'Oppslag'}
                     
                 </h2>
                 <div className="absolute -translate-x-1/2 left-1/2 h-2 top-2 w-16 bg-neutral-300 rounded-full"></div></div>
