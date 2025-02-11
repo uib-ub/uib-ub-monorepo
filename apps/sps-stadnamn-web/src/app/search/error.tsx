@@ -42,7 +42,7 @@ export default function Error({
  
   return (
     <main className="flex-1 flex lg:items-center justify-center p-4 bg-white lg:bg-transparent" >
-      <div role="alert" aria-live="assertive" className="w-full lg:bg-white lg:rounded-lg lg:shadow-lg p-8 space-y-6">
+      <div role="alert" aria-live="assertive" className="w-full max-w-xl lg:bg-white lg:rounded-lg lg:shadow-lg p-8 space-y-6">
         <div className="flex items-center gap-3">
           <PiWarningFill aria-hidden="true" className="text-primary-600 text-2xl" />
           <h2 className="text-xl font-serif">Det har oppstått ein feil</h2>
