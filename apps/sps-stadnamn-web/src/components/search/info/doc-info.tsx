@@ -39,7 +39,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const parent = searchParams.get('parent')
     const mode = searchParams.get('mode') || 'map'
     const doc = searchParams.get('doc')
-    const { isMobile, sosiVocab } = useContext(GlobalContext)
+    const { isMobile, sosiVocab, preferredTabs } = useContext(GlobalContext)
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -73,21 +73,38 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-        {mode == 'map' && !isMobile && 
-        <div className="absolute top-2 right-2 flex gap-2">
-          {snidParent && dataset == 'search' &&
+        {(mode == 'map' || (mode == 'doc' && !isMobile)) && 
+        <div className="absolute top-2 right-0 flex gap-2">
+          {snidParent && dataset == 'search' && mode != 'doc' &&
             <ClickableIcon label="Gå til stadnamnoppslag" 
                            add={{doc: snidParent}} 
                            aria-hidden="true" 
                            className="flex items-center">
                             {dataset == 'search' ? <PiCaretLeft className="text-2xl"/> :<PiTag className="text-2xl"/>}
           </ClickableIcon>}
-          <Clickable 
-            remove={["doc"]} 
-            className="text-2xl" 
-            aria-label="Lukk">
-            <PiX aria-hidden="true"/>
-        </Clickable>
+          
+
+          { mode == 'doc' ?
+                  <Clickable 
+                    remove={["mode"]} 
+                    add={preferredTabs[dataset] ? {mode: preferredTabs[dataset]} : {}}
+                    className=" flex items-center gap-1 text-lg btn btn-outline" 
+                    aria-label="Tilbake">
+                    <PiCaretLeft className="text-primary-600" aria-hidden="true"/>
+                    {preferredTabs[dataset] == 'table' && 'Tilbake til tabellen'}
+                    {preferredTabs[dataset] == 'list' && 'Tilbake til listen'}
+
+                  </Clickable>
+          :
+                <Clickable 
+                  remove={["doc"]} 
+                  className="text-2xl" 
+                  aria-label="Lukk">
+                  <PiX aria-hidden="true"/>
+                </Clickable>
+        }
+
+
         </div>
         }
  
@@ -221,9 +238,12 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             : null
     
         }
-        {treeSettings[dataset] && docSource.sosi === 'gard' && !parent &&
+        {treeSettings[dataset] && docSource.sosi === 'gard' && mode != 'doc' && (!parent || mode == 'list') &&
         <div className="border-t border-t-neutral-200 pt-3 mt-3 mb-2">
-                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950 border border-neutral-200 p-2 rounded-md" add={{parent: doc}}>
+                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950 border border-neutral-200 p-2 rounded-md" 
+                           add={{parent: docSource.uuid,
+                            ...mode != 'map' ? {doc: docSource.uuid, mode: 'doc'} : {}
+                           }}>
                   <PiTableFill className="text-primary-600" aria-hidden="true"/>
                   Vis underordna bruk
                 </Clickable>

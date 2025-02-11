@@ -18,7 +18,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, currentUrl, setAllowFlyTo } = useContext(GlobalContext)
+    const { isMobile, currentUrl, setAllowFlyTo, preferredTabs } = useContext(GlobalContext)
     const [nav, setNav] = useQueryState('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
@@ -94,7 +94,8 @@ export default function SearchForm() {
             <input type="hidden" name="nav" value={ mode == 'map' ? 'results' : 'filters'}/>
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value}/>)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''}/>}
-            {mode && <input type="hidden" name="mode" value={mode || ''}/>}
+            {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''}/>}
+            {mode == 'doc' && preferredTabs[dataset] && preferredTabs[dataset] != 'map' && <input type="hidden" name="mode" value={preferredTabs[dataset] || ''}/>}
             <button className="sr-only" type="submit">Søk</button>
         </Form>
         </div>

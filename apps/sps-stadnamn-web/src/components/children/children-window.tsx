@@ -1,6 +1,6 @@
 'use client'
 import { useContext } from "react";
-import { PiBookOpen, PiBookOpenFill, PiHouse, PiHouseFill, PiTag, PiTagFill, PiTrashFill, PiTreeView, PiXBold } from "react-icons/pi";
+import { PiBookOpen, PiBookOpenFill, PiHouse, PiHouseFill, PiTag, PiTagFill, PiTrashFill, PiTreeView, PiX, PiXBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { treeSettings } from "@/config/server-config";
 import { getValueByPath } from "@/lib/utils";
@@ -10,6 +10,7 @@ import Clickable from "../ui/clickable/clickable";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import CadastralSubdivisions from "./cadastral-subdivisions";
 import SourceList from "./source-list";
+import { GlobalContext } from "@/app/global-provider";
 
 
 
@@ -22,11 +23,14 @@ export default function ChildrenWindow() {
     const parent = searchParams.get('parent')
     const sourceLabel = searchParams.get('sourceLabel')
     const sourceDataset = searchParams.get('sourceDataset')
+    const { isMobile, preferredTabs } = useContext(GlobalContext)
+    const mode = searchParams.get('mode') || 'map'
 
     return <>
-    <div className={`flex w-full items-center shadow-md`}>
+    <div className="flex flex-col h-full">
+        <div className={`flex w-full items-center p-1 lg:p-0 shadow-md`}>
                     
-    <h2 className="flex items-center gap-1 p-1 px-2 !text-lg">
+    <h2 className="flex items-center gap-1 p-1 px-2 !text-base !font-sans">
         
             <Clickable
                 link
@@ -36,35 +40,47 @@ export default function ChildrenWindow() {
                 <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
                     <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
                 </div>
-                <div className="max-w-[20svw] lg:!max-w-[10svw] truncate sr-only lg:not-sr-only">
+                <div className="max-w-[20svw] lg:!max-w-[10svw] truncate font-semibold">
                     {treeSettings[dataset] && ((getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")) + " ")}
                     {parentData?._source.label}
                 </div>
             </Clickable>
         
-            <div className="flex items-center gap-1 flex-col lg:flex-row">
+            <div className="flex flex-nowrap gap-1 bg-neutral-100 rounded-full px-2">
                 
-                <span className="sr-only lg:not-sr-only"> | </span>{treeSettings[dataset] ? 'Underordna bruk' : 'Kjelder'}
-            </div>
-            { (childrenCount && childrenCount == childrenData?.length) ?
-                <div className="!h-6 self-center text-base flex items-center font-bold bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-full px-2 !font-sans">
+                
+                { (childrenCount && childrenCount == childrenData?.length) ?
+                <div className="!h-6 ">
                 {childrenCount != shownChildrenCount ? `${shownChildrenCount}/${childrenCount}` : childrenCount}
                 </div> : null
             }
+            {treeSettings[dataset] ? 'bruk' : 'kjelder'}
+            </div>
+           
         </h2>
         {(sourceLabel || sourceDataset) && <ClickableIcon label="Fjern filtrering" remove={["sourceDataset", "sourceLabel"]}><PiTrashFill className="text-neutral-800 text-2xl"/></ClickableIcon>}
         
         
-        {parent && !childrenLoading && <Clickable link remove={["parent", "sourceDataset", "sourceLabel"]} add={docView?.current ? docView.current : {}} className="text-neutral-800 text-2xl p-2 ml-auto"><PiXBold/></Clickable>}
-
+        {parent && !childrenLoading && 
+            <ClickableIcon 
+                label="Tilbake" 
+                remove={["parent", "sourceDataset", "sourceLabel", ...(mode == 'doc' ? ["mode"] : [])]} 
+                add={{...docView?.current ? docView.current : {},
+                ...(mode == 'doc' ? {mode: preferredTabs[dataset] || undefined} : {})}}
+                className="text-neutral-800 text-2xl p-2 ml-auto"
+            >
+                {isMobile ? <PiX className="text-neutral-800"/> : <PiXBold/>}
+            </ClickableIcon>
+        }
         
     </div>
     {parentData && 
-                <div className="h-full  overflow-y-auto stable-scrollbar px-2">
+                <div className={`h-full  overflow-y-auto stable-scrollbar px-2 ${isMobile ? 'pb-[30svh]' : 'pb-8'}`}>
                     {treeSettings[dataset] && <CadastralSubdivisions/>}
                     {dataset == 'search' && <SourceList/>}
                 </div>
             }
 
+    </div>
     </>
 }

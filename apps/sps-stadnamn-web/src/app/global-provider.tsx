@@ -19,6 +19,8 @@ export const GlobalContext = createContext({
   sosiVocab: {} as Record<string, any>,
   allowFlyTo: false,
   setAllowFlyTo: (allowFlyTo: boolean) => {},
+  preferredTabs: {} as Record<string, string>,
+  setPreferredTab: (dataset: string, tab: string) => {},
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any> }) {
@@ -27,6 +29,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
   const [pinnedFilters, setPinnedFilters] = useState<Record<string, [string, string][]>>({});
   const dataset = useDataset()
   const [allowFlyTo, setAllowFlyTo] = useState(false);
+  const [preferredTabs, setPreferredTabs] = useState<Record<string, string>>({});
 
   // Load facet options from localStorage on mount
   useEffect(() => {
@@ -41,6 +44,11 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
         console.log("Loading pinned filters from localStorage")
         setPinnedFilters(JSON.parse(storedPinnedFilters));
     }
+
+    const storedPreferredTabs = localStorage.getItem('preferredTabs');
+    if (storedPreferredTabs) {
+      setPreferredTabs(JSON.parse(storedPreferredTabs));
+    }
   }, []);
 
 
@@ -52,6 +60,10 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
   useEffect(() => {
     localStorage.setItem('pinnedFilters', JSON.stringify(pinnedFilters));
   }, [pinnedFilters]);
+
+  useEffect(() => {
+    localStorage.setItem('preferredTabs', JSON.stringify(preferredTabs));
+  }, [preferredTabs]);
 
   const updateFacetOption = (facetName: string, options: Partial<FacetOption>) => {
     setFacetOptions(prev => ({
@@ -76,7 +88,12 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
     }));
   };
 
- 
+  const setPreferredTab = (dataset: string, tab: string) => {
+    setPreferredTabs(prev => ({
+      ...prev,
+      [dataset]: tab
+    }));
+  };
 
   return (
     <GlobalContext.Provider 
@@ -90,7 +107,9 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
         updatePinnedFilters,
         sosiVocab,
         allowFlyTo,
-        setAllowFlyTo
+        setAllowFlyTo,
+        preferredTabs,
+        setPreferredTab
       }}
     >
       {children}

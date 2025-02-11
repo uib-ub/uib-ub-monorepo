@@ -8,6 +8,7 @@ import { treeSettings } from "@/config/server-config";
 import Clickable from "@/components/ui/clickable/clickable";
 import { PiHouseFill } from "react-icons/pi";
 import { DocContext } from "@/app/doc-provider";
+import { GlobalContext } from "@/app/global-provider";
 
 export default function TreeResults() {
   const [cadastralData, setCadastralData] = useState<any>(null)
@@ -15,6 +16,7 @@ export default function TreeResults() {
 
   const dataset = useDataset()
   const { docAdm, docLoading, parentLoading } = useContext(DocContext)
+  const { preferredTabs } = useContext(GlobalContext)
 
   const searchParams = useSearchParams()
   
@@ -98,9 +100,14 @@ export default function TreeResults() {
   .sort((a: any, b: any)=> treeSettings[dataset]?.aggSort ? a.aggNum.buckets[0].key.localeCompare(b.aggNum.buckets[0].key) : a.aggNum.localeCompare(b.key))
   .map((item: Record<string, any>) => {
     return <li key={item.key}>
-      <Clickable link className="no-underline px-4 p-2 inline-block" only={{dataset, adm: groupBy == 'adm2' ? item.key + "__" + treeAdm : item.key, nav: 'tree', mode: searchParams.get('mode')}}>
+      <Clickable link 
+                 className="no-underline px-4 p-2 inline-block" 
+                 only={{dataset, 
+                        adm: groupBy == 'adm2' ? item.key + "__" + treeAdm : item.key, 
+                        nav: 'tree', 
+                        mode: searchParams.get('mode') == 'doc' ? preferredTabs[dataset] : searchParams.get('mode')}}>  
       {treeSettings[dataset].showNumber && (treeAdm ? item.aggNum.buckets[0]?.key : item.aggNum.buckets[0]?.key.slice(0,2))} {item.key}
-        <span className="ml-auto bg-neutral-100 rounded-full px-2">{item.doc_count}</span></Clickable></li>
+        <span className="bg-neutral-100 rounded-full px-2 ml-2">{item.doc_count}</span></Clickable></li>
   })
 
 

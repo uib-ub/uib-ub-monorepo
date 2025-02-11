@@ -12,6 +12,7 @@ import { formatCadastre } from "@/config/result-renderers"
 import { getSkeletonLength } from "@/lib/utils"
 import Clickable from "@/components/ui/clickable/clickable"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import { GlobalContext } from "@/app/global-provider"
 
 export default function TableExplorer() {
     const dataset = useDataset()
