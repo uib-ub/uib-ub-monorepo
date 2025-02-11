@@ -12,31 +12,30 @@ export default function Pagination({ totalPages }: { totalPages: number}) {
 
  return  (
   <div className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
-  <div className='flex gap-2 justify-even'>
+  <div className='flex gap-2 justify-between items-center'>
   
-  {totalPages > 2 && <IconButton disabled={page == 1} onClick={() =>setPage(1)} label="Første side" className='btn btn-outline btn-compact grow md:grow-0' ><PiCaretDoubleLeft/></IconButton>
+  {totalPages > 2 && <IconButton disabled={page == 1} onClick={() =>setPage(1)} label="Første side" className='btn btn-outline btn-compact grow md:grow-0 aspect-square' ><PiCaretDoubleLeft/></IconButton>
   
 }
-  { <IconButton disabled={page == 1} onClick={() => setPage(page - 1)} label="Forrige side" className='btn btn-outline btn-compact grow md:grow-0'><PiCaretLeft/></IconButton>
+  { <IconButton disabled={page == 1} onClick={() => setPage(page - 1)} label="Forrige side" className='btn btn-outline btn-compact grow md:grow-0 aspect-square'><PiCaretLeft/></IconButton>
 
   }
 
   { page > 1 ? 
-    <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400'>
+    <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400 flex text-center'>
       {(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value?.toLocaleString('no-NO')}{totalHits?.relation != 'eq' ? '+' : ''}
     </span>
     : 
-    <span className='px-3 py-1 rounded-sm border-neutral-400'>
+    <span className='px-3 py-1 rounded-sm border-neutral-400 flex text-center'>
       {(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value?.toLocaleString('no-NO')}{totalHits?.relation != 'eq' ? '+' : ''}
     </span>
   }
-  
     
   { 
-    <IconButton disabled={page == totalPages} onClick={() =>setPage(page + 1)} label="Neste side" className='btn btn-outline btn-compact grow md:grow-0'><PiCaretRight/></IconButton>
+    <IconButton disabled={page == totalPages} onClick={() =>setPage(page + 1)} label="Neste side" className='btn btn-outline btn-compact grow md:grow-0 aspect-square'><PiCaretRight/></IconButton>
   }
   { totalPages > 2 &&
-    <IconButton disabled={page == totalPages} onClick={() => setPage(totalPages)} label="Siste side" className='btn btn-outline btn-compact grow md:grow-0'><PiCaretDoubleRight/></IconButton>
+    <IconButton disabled={page == totalPages} onClick={() => setPage(totalPages)} label="Siste side" className='btn btn-outline btn-compact grow md:grow-0 aspect-square'><PiCaretDoubleRight/></IconButton>
   }
   
   </div>
