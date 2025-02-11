@@ -41,8 +41,8 @@ export default function Error({
   }
  
   return (
-    <main className="flex-1 flex items-center justify-center p-4" >
-      <div role="alert" aria-live="assertive" className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 space-y-6">
+    <main className="flex-1 flex lg:items-center justify-center p-4 bg-white lg:bg-transparent" >
+      <div role="alert" aria-live="assertive" className="w-full lg:bg-white lg:rounded-lg lg:shadow-lg p-8 space-y-6">
         <div className="flex items-center gap-3">
           <PiWarningFill aria-hidden="true" className="text-primary-600 text-2xl" />
           <h2 className="text-xl font-serif">Det har oppstått ein feil</h2>
@@ -72,11 +72,7 @@ export default function Error({
               disabled={isReported}
               className="btn btn-primary flex-1 flex items-center justify-center gap-2"
             >
-              {isReported ? (
-                <PiCheck aria-hidden="true" />
-              ) : (
-                <PiBugBeetle aria-hidden="true" />
-              )}
+              {isReported && <PiCheck aria-hidden="true" />}
               Rapporter
             </button>
           </div>
