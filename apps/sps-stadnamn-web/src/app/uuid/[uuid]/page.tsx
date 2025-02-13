@@ -93,7 +93,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](docData?._source) : null }
 
 
-           {(docDataset != 'mu1950' || docData._source.sosi != 'gard') && <div className="flex flex-wrap gap-24">
+           {facetConfig[docDataset] && (docDataset != 'mu1950' || docData._source.sosi != 'gard') && <div className="flex flex-wrap gap-24">
         {facetConfig[docDataset]
           ?.filter(item => item.key && !['sosi', 'datasets'].includes(item.key))
           .map((facet) => {
