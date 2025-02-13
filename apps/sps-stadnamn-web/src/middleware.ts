@@ -1,7 +1,8 @@
 
 
 import type { NextRequest } from 'next/server'
-import { fetchDoc, fetchSNID } from './app/api/_utils/actions'
+import { fetchChildren, fetchDoc, fetchSNID } from './app/api/_utils/actions'
+import { defaultDoc2jsonld, doc2jsonld } from './config/rdf-config'
 export async function middleware(request: NextRequest) {
     // Extract uuid and extension from url
     
@@ -38,33 +39,19 @@ export async function middleware(request: NextRequest) {
         }
 
         if (extension == 'jsonld') {
-            const wktPoint = `POINT(${data._source.location.coordinates.join(' ')})`;
-            const jsonld = {
-                "@context": {
-                    "@vocab": "http://www.cidoc-crm.org/cidoc-crm/",
-                    "label": "P1_is_identified_by",
-                    "location": "P168_place_is_defined_by",
-                    "placeName": "P87_is_identified_by",
-                    "document": "P70_documents",
-                    "coordinates": "http://www.opengis.net/ont/geosparql#asWKT"
-                },
-                "id": `https://purl.org/stadnamn/uuid/${data._source.uuid}`,
-                "@type": "E31_Document",
-                "document": {
-                    "@id": "_:placeName",
-                    "@type": "E44_Place_Appellation",
-                    "label": data._source.label,
-                    "placeName": {
-                        "@id": "_:place",
-                        "@type": "E53_Place",
-                        "label": data._source.label,
-                        "location": {
-                            "@type": "E94_Space_Primitive",
-                            "coordinates": wktPoint
-                        }
-                    }
-                }
+            const docDataset = data._index.split('-')[2]
+            let children
+            if (data._source?.children?.length > 0) {
+                console.log("CHILDREN_1", data._source.children)
+                children = await fetchDoc({ uuid: data._source.children})
+                console.log("CHILDREN_2", children)
             }
+
+            console.log("CHILDREN_3", children)
+
+
+            const jsonld = doc2jsonld[docDataset as keyof typeof doc2jsonld] ? doc2jsonld[docDataset as keyof typeof doc2jsonld](data._source, children) : defaultDoc2jsonld(data._source, children)
+
             return Response.json(jsonld);
         }
         if (extension == 'json') {

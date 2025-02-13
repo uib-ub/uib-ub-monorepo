@@ -143,6 +143,9 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     </>
   },
   nbas: null,
+  nbas_reykjavik: (source: any) => {
+    return <p lang="en">Legacy data from the dataset prepared for the Nordic Spatial Humanities workshop in Reykjavik, 2023.</p>
+  },
   m1838: (source: any) => {
     return <>
     {source.rawData?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.merknad}</>}

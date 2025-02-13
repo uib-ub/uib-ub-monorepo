@@ -1,6 +1,6 @@
 import { fetchDoc } from '@/app/api/_utils/actions'
 import ErrorMessage from '@/components/error-message'
-import { datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
+import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import { infoPageRenderers } from '@/config/info-renderers'
 import OriginalData from './original-data'
 import Link from 'next/link'
@@ -17,25 +17,34 @@ import ServerSourcesList from './server-sources-list'
 import { getValueByPath } from '@/lib/utils'
 import { facetConfig } from '@/config/search-config'
 import ServerParent from './server-parent'
+import JsonLdTable from './json-ld-table'
+import { defaultDoc2jsonld, doc2jsonld } from '@/config/rdf-config'
+import { redirect } from 'next/navigation'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
     const { uuid } = await params
     const docData = await fetchDoc({uuid})
 
     return {
-        title: docData?._source.label,
-        description: docData?._source.description
+        title: docData?._source?.label || docData?._source.uuid,
+        ...(docData?._source?.description && {
+            description: docData._source.description
+        })
     }
 }
 
 export default async function LandingPage({ params }: { params: Promise<{ uuid: string }>}) {
     const { uuid } = await params
     const docData = await fetchDoc({uuid})
-
+    const children = docData._source.children ? await fetchDoc({ uuid: docData._source.children}) : []
 
     if (docData.error) {
         return <ErrorMessage error={docData} message="Kunne ikke hente dokumentet"/>
-      }
+    }
+
+    if (docData._source.uuid != uuid && docData._source.redirects.includes(uuid)) {
+        redirect(`/uuid/${docData._source.uuid}#${uuid}`)
+    }
 
     const docDataset = docData._index.split('-')[2]
 
@@ -53,7 +62,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
           <div className="flex flex-col gap-12">
           {  docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
             <span>
-              <h1>{docData?._source.label}</h1>
+              <h1>{docData?._source?.label || docData?._source.uuid}</h1>
               <div className="flex flex-wrap gap-6">
 
       {Array.isArray(docData?._source.wikiAdm) && docData?._source.wikiAdm?.length > 1 && 
@@ -115,6 +124,9 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         </div>}
 
 
+        
+
+
 
       
       {docData?._source.images?.length > 0 && <div><h2>Sedler</h2><div className="flex flex-wrap gap-4">{docData?._source.images?.map((image: {manifest: string, dataset: string}) => {
@@ -145,8 +157,22 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
 
       }
+
+      <div>
+      <h2>Linked Data</h2>
+      {<JsonLdTable jsonLd={doc2jsonld[docDataset as keyof typeof doc2jsonld] ? 
+          doc2jsonld[docDataset as keyof typeof doc2jsonld](docData._source, children) : 
+          defaultDoc2jsonld(docData._source, children)}/>}
+      </div>
+
+      
     </div>
-    <div className="flex flex-col lg:h-fit gap-4 my-4 lg:my-0">
+
+    
+
+    
+    
+    {datasetPresentation[docDataset] && <div className="flex flex-col lg:h-fit gap-4 my-4 lg:my-0">
     <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
       <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Datasett</h2>
       <h3 className="!m-0 !p-0 font-serif !text-xl !font-normal">{datasetTitles[docDataset]}</h3>
@@ -157,8 +183,12 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         <Link href={"/info/datasets/" + docDataset } className="btn btn-outline">Les meir</Link>
       </div>
     </aside>
-     {docDataset != 'search' && <ServerParent uuid={uuid}/>}
-    </div>
+     {docDataset != 'search' && facetConfig[docDataset] && <ServerParent uuid={uuid}/>}
+    </div>}
+
+    
+
+
   </div>
     )
 

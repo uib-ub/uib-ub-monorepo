@@ -33,6 +33,7 @@ export const datasetTitles: DatasetTitles = {
     rygh: "Norske Gaardnavne",
     nbas: "Den nasjonale stadnamnbasen",
     nbas_k: "innsamlingskart",
+    nbas_reykjavik: "Den nasjonale stadnamnbasen (Legacy data)",
     m1838: "Matrikkelen 1838", 
     m1886: "Matrikkelen 1886",
     mu1950: "Matrikkelutkastet 1950", 
