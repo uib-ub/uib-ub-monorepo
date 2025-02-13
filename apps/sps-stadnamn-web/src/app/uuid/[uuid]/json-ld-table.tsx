@@ -222,30 +222,23 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full">
-        <thead>
-          <tr lang="en">
-            <th className="px-4 py-3 text-left border-b border-neutral-200">Property</th>
-            <th className="px-4 py-3 text-left border-b border-neutral-200">Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(jsonLd).map(([key, value], index) => {
-            const uri = resolveUri(key)
-            return (
-              <tr key={index}>
-                <td lang="en" className="px-4 py-3 border-b border-neutral-200">
-                  <PropertyRenderer uri={uri} propertyKey={key} />
-                </td>
-                <td className="px-4 py-3 border-b border-neutral-200">
-                  <ValueRenderer uri={uri} value={value} propertyKey={key} />
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+    <div className="overflow-x-auto border-y border-neutral-300">
+      <dl className="min-w-full divide-y divide-neutral-300">
+
+        {Object.entries(jsonLd).map(([key, value], index) => {
+          const uri = resolveUri(key)
+          return (
+            <div key={index} className="flex">
+              <dt lang="en" className="px-4 py-3 w-1/4">
+                <PropertyRenderer uri={uri} propertyKey={key} />
+              </dt>
+              <dd className="px-4 py-3">
+                <ValueRenderer uri={uri} value={value} propertyKey={key} />
+              </dd>
+            </div>
+          )
+        })}
+      </dl>
     </div>
   )
 }
