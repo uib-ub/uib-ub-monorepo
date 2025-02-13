@@ -12,10 +12,17 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     'use server'
     const data = await fetch("https://linked.art/ns/v1/linked-art.json", {cache: 'force-cache'}).then(res => res.json()).catch(err => console.log(err))
     console.log("CONTEXT", data)
-    return data
+    return data?.["@context"] || {}
   }
   
-  const context = await getContext()
+  let context = await getContext()
+  if (Array.isArray(jsonLd["@context"])) {
+    context = {
+      ...context,
+      ...jsonLd["@context"][1]
+    }
+  }
+
 
 
   // Helper function to check if a value is a literal
@@ -25,39 +32,63 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
            typeof value === 'boolean'
   }
 
-  // Add helper function to resolve prefixed URIs
+  // Helper function to resolve URIs using context
   const resolveUri = (value: string): string => {
-    if (!value.includes(':')) return value
-    const [prefix, local] = value.split(':')
-    return jsonLd['@context']?.[prefix] ? 
-      `${jsonLd['@context'][prefix]}${local}` : 
-      value
+    // If it's already a full URI, return as is
+    if (value.startsWith('http')) return value
+
+    if (value.startsWith('@')) return value
+
+    
+    // If it's a prefixed value (e.g. crm:E1)
+    if (value.includes(':')) {
+      const [prefix, local] = value.split(':')
+      return resolveUri(context[prefix]) + local
+    }
+    
+    
+    // Resolve value
+    if (context?.[value]) {
+      const contextValue = context[value]
+      if (typeof contextValue === 'string') {
+        return contextValue
+      }
+      if (typeof contextValue === 'object' && '@id' in contextValue) {
+        return resolveUri(contextValue['@id'])
+      }
+    }
+    
+    return value
   }
 
-  // Helper function to extract UUID from either prefixed ID or full URL
-  const getUuid = (id: string): string | undefined => {
-    if (id.includes('/uuid/')) {
-      return id.split('/uuid/')[1];
-    }
-    if (id.includes(':')) {
-      return id.split(':').pop();
-    }
-    return id;
-  };
+  // Helper function to extract UUID from URI
+  const getUuid = (uri: string): string | undefined => {
+    const match = uri.match(/\/uuid\/([^/#]+)/)
+    return match ? match[1] : undefined
+  }
+
+  // Helper function to get parent UUID from current pathname
+  const getParentUuid = (uri: string): string | undefined => {
+    const baseUuid = getUuid(uri)
+    if (!baseUuid) return undefined
+    
+    const parentMatch = uri.match(/\/uuid\/([^/#]+)#/)
+    return parentMatch ? parentMatch[1] : undefined
+  }
 
   // Helper function to collect child UUIDs from a nested object
   const getChildUuids = (value: any): string[] => {
-    if (!value || typeof value !== 'object') return [];
+    if (!value || typeof value !== 'object') return []
     
-    const uuids: string[] = [];
+    const uuids: string[] = []
     Object.values(value).forEach(v => {
       if (typeof v === 'object' && v !== null && 'id' in v) {
-        const uuid = getUuid((v as { 'id': string })['id']);
-        if (uuid) uuids.push(uuid);
+        const uuid = getUuid((v as { id: string }).id)
+        if (uuid) uuids.push(uuid)
       }
-    });
-    return uuids;
-  };
+    })
+    return uuids
+  }
 
   // Helper function to render a value (either as text or link)
   const renderValue = (value: any, property?: string, parentUuid?: string) => {
@@ -78,8 +109,8 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     if (property === '@context' && typeof value === 'object' && value !== null && !Array.isArray(value)) {
       return (
         <div className="space-y-1">
-          {Object.entries(value).map(([prefix, uri]) => (
-            <div key={prefix} className="flex items-center gap-2">
+          {Object.entries(value).map(([prefix, uri], index) => (
+            <div key={index} className="flex items-center gap-2">
               <code lang="en">{prefix}</code>
               <span className="text-neutral-800 select-none"><PiArrowRight aria-hidden="true" /></span>
               <Link lang="en" href={uri as string}>{uri as string}</Link>
@@ -92,36 +123,32 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     // Handle nested objects
     if (typeof value === 'object' && value !== null) {
       if (value['id']) {
-        const currentUuid = getUuid(value['id']);
+        const uuid = getUuid(value['id'])
+        const currentParentUuid = parentUuid || getParentUuid(value['id'])
         
         if (Object.keys(value).length > 1) {
-          // Get child UUIDs from nested objects
-          const childUuids = getChildUuids(value);
+          const childUuids = getChildUuids(value)
           
           return (
-            <div className="space-y-2">
-              
+            <div className="space-y-2" key={value['id']}>
               <NestedResource 
+                key={value['id']}
                 uri={value['id']} 
-                parentUuid={parentUuid}
+                parentUuid={currentParentUuid}
                 childUuids={childUuids}
               >
                 <div className="pl-4 border-l-2 border-neutral-300 mt-2">
                   <table className="min-w-full bg-neutral-50 rounded-sm">
                     <tbody>
-                      {Object.entries(value)
-                        .filter(([k]) => k !== 'id')
-                        .map(([k, v]) => (
-                          <tr key={k}>
+                      {Object.keys(value)
+                        .filter(k => k !== 'id')
+                        .map(k => (
+                          <tr key={`${value['id']}-${k}`}>
                             <td lang="en" className="px-4 py-2 border-b border-neutral-200 text-sm">
-                              {k.startsWith('@') ? (
-                                k
-                              ) : (
-                                <Link href={resolveUri(k)}>{k}</Link>
-                              )}
+                              <PropertyRenderer uri={resolveUri(k)} propertyKey={k} />
                             </td>
                             <td className="px-4 py-2 border-b border-neutral-200 text-sm">
-                              {renderValue(v, k, currentUuid)}
+                              {renderValue(value[k], k, uuid)}
                             </td>
                           </tr>
                         ))}
@@ -163,9 +190,31 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     return null
   }
 
+  const PropertyRenderer = ({ uri, propertyKey }: { uri: string; propertyKey: string }) => {
+    return uri.startsWith('@') ? (
+      uri
+    ) : (
+      <Link href={uri}>{propertyKey}</Link>
+    )
+  }
+
+  const ValueRenderer = ({ 
+    uri, 
+    value, 
+    propertyKey 
+  }: { 
+    uri: string; 
+    value: any; 
+    propertyKey: string;
+  }) => {
+    if (uri === "@type") {
+      return <Link href={resolveUri(value)}>{value}</Link>
+    }
+    return renderValue(value, propertyKey)
+  }
+
   return (
     <div className="overflow-x-auto">
-      HERE{JSON.stringify(context)}
       <table className="min-w-full">
         <thead>
           <tr lang="en">
@@ -174,20 +223,19 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
           </tr>
         </thead>
         <tbody>
-          {Object.entries(jsonLd).map(([key, value]) => (
-            <tr key={key}>
-              <td lang="en" className="px-4 py-3 border-b border-neutral-200">
-                {key.startsWith('@') ? (
-                  key
-                ) : (
-                  <Link href={resolveUri(key)}>{key}</Link>
-                )}
-              </td>
-              <td className="px-4 py-3 border-b border-neutral-200">
-                {renderValue(value, key)}
-              </td>
-            </tr>
-          ))}
+          {Object.entries(jsonLd).map(([key, value], index) => {
+            const uri = resolveUri(key)
+            return (
+              <tr key={index}>
+                <td lang="en" className="px-4 py-3 border-b border-neutral-200">
+                  <PropertyRenderer uri={uri} propertyKey={key} />
+                </td>
+                <td className="px-4 py-3 border-b border-neutral-200">
+                  <ValueRenderer uri={uri} value={value} propertyKey={key} />
+                </td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>

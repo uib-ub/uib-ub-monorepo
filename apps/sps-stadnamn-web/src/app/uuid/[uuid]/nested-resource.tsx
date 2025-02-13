@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PiCaretDown, PiCaretUp } from "react-icons/pi";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 interface NestedResourceProps {
   uri: string;
@@ -15,16 +14,12 @@ interface NestedResourceProps {
 export default function NestedResource({ uri, children, parentUuid, childUuids = [] }: NestedResourceProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Extract UUID from URI if it's prefixed
-  const getUuid = (uri: string): string => {
-    if (uri.includes(':')) {
-      const [, uuid] = uri.split(':');
-      return uuid;
-    }
-    return uri;
+  // Extract UUID from URI
+  const getUuid = (uri: string): string | undefined => {
+    const match = uri.match(/\/uuid\/([^/#]+)/)
+    return match ? match[1] : undefined
   };
 
   // Check URL fragment on mount and when hash changes
@@ -34,33 +29,29 @@ export default function NestedResource({ uri, children, parentUuid, childUuids =
         const fragment = window.location.hash.slice(1) || '';
         const uuid = getUuid(uri);
         
-        // Expand if fragment matches uuid OR if fragment matches any child UUID
         if (fragment === uuid || childUuids.includes(fragment)) {
           setOpen(true);
         }
       }
     };
 
-    // Check hash on mount
     checkHash();
-
-    // Add hash change listener
     window.addEventListener('hashchange', checkHash);
-
-    // Clean up listener
     return () => window.removeEventListener('hashchange', checkHash);
   }, [uri, childUuids]);
 
   const uuid = getUuid(uri);
   const routeUuid = pathname.split('/').pop();
+  
+  // Build URLs with proper fragment handling
   const parentUrl = parentUuid ? 
     (parentUuid === routeUuid ? pathname : `${pathname}#${parentUuid}`) : 
     pathname;
-  const href = `${pathname}#${uuid}`;
+    
+  const href = uuid ? `${pathname}#${uuid}` : pathname;
 
   return (
     <div className="space-y-2">
-      HERE{parentUuid}STOP
       <div className="flex items-center gap-2">
         <button
           className="flex items-center gap-2 no-underline"
@@ -73,10 +64,8 @@ export default function NestedResource({ uri, children, parentUuid, childUuids =
               setOpen(true);
             }
           }}
-
           aria-expanded={open}
           aria-controls={`${uuid}-content`}
-
         >
           {uri}
           {open ? 
@@ -84,7 +73,6 @@ export default function NestedResource({ uri, children, parentUuid, childUuids =
             <PiCaretDown className="w-4 h-4 text-primary-600" aria-hidden="true" />
           }
         </button>
-        
       </div>
       
       <div 

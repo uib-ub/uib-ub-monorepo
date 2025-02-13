@@ -74,31 +74,22 @@ export const doc2jsonld = {
     },
     
     nbas_reykjavik: (source: any, children: any) => {
-        const sprak = "http://localhost:3000/uuid/" // data.spraksamlingane.no/id/
-        const stadnamn = "https://purl.org/stadnamn/uuid/"
-        const geo = "http://www.opengis.net/ont/geosparql#"
-        const sosi = "http://skjema.geonorge.no/SOSI/produktspesifikasjon/Stedsnavn/5.0/Navneobjekttype/"
-        const owl = "http://www.w3.org/2002/07/owl#"
-        const crm = "http://www.cidoc-crm.org/cidoc-crm/"
-        
-        // Initialize base object for name (E33_E41_Linguistic_Appellation)
         const baseObject: any = {
             "@context": [
                 "https://linked.art/ns/v1/linked-art.json",
                 {
-                "sameAs": owl + "sameAs",
-                "wktLiteral": geo + "wktLiteral",
-                "asWKT": geo + "asWKT",
-                "hasGeometry": geo + "hasGeometry"
-            }
+                    "owl": "http://www.w3.org/2002/07/owl#",
+                    "geo": "http://www.opengis.net/ont/geosparql#",
+                    "sosi": "http://skjema.geonorge.no/SOSI/produktspesifikasjon/Stedsnavn/5.0/Navneobjekttype/",
+                }
             ],
-            "id": stadnamn + source.uuid,
+            "id": "https://purl.org/stadnamn/uuid/" + source.uuid,
             "type": "Name",
             "_label": source.label,
             "identifies": {
-                "id": stadnamn + source.misc.place_uuid,
+                "id": "https://purl.org/stadnamn/uuid/" + source.misc.place_uuid,
                 "type": "Place",
-                "sameAs": sprak + source.misc.place_uuid
+                "owl:sameAs": "http://localhost:3000/uuid/" + source.misc.place_uuid
             }
         }
 
@@ -108,34 +99,33 @@ export const doc2jsonld = {
         // Add municipality reference
         if (source.misc.municipality_uuid) {
             place["approximated_by"] = {
-                "id": sprak + source.misc.municipality_uuid
+                "id": "http://localhost:3000/uuid/" + source.misc.municipality_uuid
             }
         }
 
         // Add coordinates if available
         if (source.rawData.X && source.rawData.Y) {
             place["approximated_by"] = {
-                "id": stadnamn + source.misc.coordinate_uuid,
+                "id": "https://purl.org/stadnamn/uuid/" + source.misc.coordinate_uuid,
                 "type": "Place",
-                "sameAs": sprak + source.misc.coordinate_uuid,
+                "owl:sameAs": "http://localhost:3000/uuid/" + source.misc.coordinate_uuid,
                 "classified_as": {
-                    "id": crm + "E47_Spatial_Coordinates"
+                    "id": "crm:E47_Spatial_Coordinates"
                 },
-                "asWKT": {
+                "geo:asWKT": {
                     "value": `POINT(${source.rawData.X} ${source.rawData.Y})`,
-                    "type": "wktLiteral"
+                    "type": "geo:wktLiteral"
                 }
             }
-            place["hasGeometry"] = {
-                "id": stadnamn + source.misc.coordinate_uuid,
-
+            place["geo:hasGeometry"] = {
+                "id": "https://purl.org/stadnamn/uuid/" + source.misc.coordinate_uuid,
             }
         }
 
         // Add place type if specified
         if (source.sosi && source.sosi !== "uspesifisert lokalitet") {
             place["classified_as"] = {
-                "id": sosi + source.sosi
+                "id": "sosi:" + source.sosi
             }
         }
 
