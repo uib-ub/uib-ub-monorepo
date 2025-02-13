@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { PiArrowRight } from 'react-icons/pi'
-import NestedResource from './nested-resource'
 
 interface JsonLdTableProps {
   jsonLd: Record<string, any>
@@ -124,38 +123,43 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     if (typeof value === 'object' && value !== null) {
       if (value['id']) {
         const uuid = getUuid(value['id'])
-        const currentParentUuid = parentUuid || getParentUuid(value['id'])
         
         if (Object.keys(value).length > 1) {
-          const childUuids = getChildUuids(value)
           
           return (
             <div className="space-y-2" key={value['id']}>
-              <NestedResource 
-                key={value['id']}
-                uri={value['id']} 
-                parentUuid={currentParentUuid}
-                childUuids={childUuids}
-              >
-                <div className="pl-4 border-l-2 border-neutral-300 mt-2">
-                  <table className="min-w-full bg-neutral-50 rounded-sm">
-                    <tbody>
-                      {Object.keys(value)
-                        .filter(k => k !== 'id')
-                        .map(k => (
-                          <tr key={`${value['id']}-${k}`}>
-                            <td lang="en" className="px-4 py-2 border-b border-neutral-200 text-sm">
-                              <PropertyRenderer uri={resolveUri(k)} propertyKey={k} />
-                            </td>
-                            <td className="px-4 py-2 border-b border-neutral-200 text-sm">
-                              {renderValue(value[k], k, uuid)}
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </NestedResource>
+              <div className="pl-4 border-l border-neutral-300">
+                <dl className="min-w-full divide-y divide-neutral-100">
+                  <div className="flex">
+                    <dt lang="en" className="px-4 py-2 text-sm font-medium w-1/4">id</dt>
+                    <dd className="px-4 py-2 text-sm">
+                      {value['id'].startsWith('_:') ? (
+                        <span>{value['id']}</span>
+                      ) : (
+                        <Link 
+                          lang="en" 
+                          href={value['id']} 
+                          className="hover:text-black underline"
+                        >
+                          {value['id']}
+                        </Link>
+                      )}
+                    </dd>
+                  </div>
+                  {Object.keys(value)
+                    .filter(k => k !== 'id')
+                    .map(k => (
+                      <div key={`${value['id']}-${k}`} className="flex">
+                        <dt lang="en" className="px-4 py-2 text-sm font-medium w-1/4">
+                          <PropertyRenderer uri={resolveUri(k)} propertyKey={k} />
+                        </dt>
+                        <dd className="px-4 py-2 text-sm">
+                          {renderValue(value[k], k, uuid)}
+                        </dd>
+                      </div>
+                    ))}
+                </dl>
+              </div>
             </div>
           )
         }
@@ -167,7 +171,7 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
           <div>
             <div>{value['@value']}</div>
             {value['@type'] && (
-              <div lang="en" className="text-sm text-neutral-900">
+              <div lang="en" className="text-sm ">
                 Type: <Link href={resolveUri(value['@type'])}>{value['@type']}</Link>
               </div>
             )}
@@ -191,10 +195,10 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
   }
 
   const PropertyRenderer = ({ uri, propertyKey }: { uri: string; propertyKey: string }) => {
-    return uri.startsWith('@') ? (
-      uri
+    return uri.startsWith('@') || uri.startsWith('_:') ? (
+      propertyKey
     ) : (
-      <Link href={uri}>{propertyKey}</Link>
+      <Link href={uri} className="hover:text-black underline">{propertyKey}</Link>
     )
   }
 

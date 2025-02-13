@@ -113,8 +113,8 @@ export const doc2jsonld = {
                     "id": "crm:E47_Spatial_Coordinates"
                 },
                 "geo:asWKT": {
-                    "value": `POINT(${source.rawData.X} ${source.rawData.Y})`,
-                    "type": "geo:wktLiteral"
+                    "@value": `POINT(${source.rawData.X} ${source.rawData.Y})`,
+                    "@type": "geo:wktLiteral"
                 }
             }
             place["geo:hasGeometry"] = {
