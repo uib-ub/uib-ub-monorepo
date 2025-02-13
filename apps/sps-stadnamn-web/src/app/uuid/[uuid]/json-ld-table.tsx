@@ -215,7 +215,7 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     value: any; 
     propertyKey: string;
   }) => {
-    if (uri === "@type") {
+    if (uri === "@type" || propertyKey === "type") {
       return <Link href={resolveUri(value)}>{value}</Link>
     }
     return renderValue(value, propertyKey)
