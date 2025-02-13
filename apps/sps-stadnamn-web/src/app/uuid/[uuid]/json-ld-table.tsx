@@ -154,7 +154,11 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
                           <PropertyRenderer uri={resolveUri(k)} propertyKey={k} />
                         </dt>
                         <dd className="px-4 py-2 text-sm">
-                          {renderValue(value[k], k, uuid)}
+                          {k === 'type' ? (
+                            <Link href={resolveUri(value[k])}>{value[k]}</Link>
+                          ) : (
+                            renderValue(value[k], k, uuid)
+                          )}
                         </dd>
                       </div>
                     ))}
