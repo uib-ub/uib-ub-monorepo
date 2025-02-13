@@ -20,8 +20,11 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
     // Post a search query for the document
     const query = {
         query: {
-            terms: {
-                "uuid": Array.isArray(uuid) ? uuid : [uuid]
+            bool: {
+                should: [
+                    Array.isArray(uuid) ? { terms: { uuid: uuid } } : { term: { uuid: uuid } },
+                    Array.isArray(uuid) ? { terms: { redirects: uuid } } : { term: { redirects: uuid } }
+                ]
             }
         }
     }
@@ -50,6 +53,7 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
         }
     }
   const data = await res.json()
+  console.log(data)
 
   return Array.isArray(uuid) ? data.hits.hits : data.hits.hits[0]
 

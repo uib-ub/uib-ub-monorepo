@@ -9,8 +9,11 @@ export async function GET(request: Request) {
         const query = {
             size: 1,
             query: {
-                term: {
-                    uuid: uuid
+                bool: {
+                    should: [
+                        { term: { uuid: uuid } },
+                        { term: { redirects: uuid } }
+                    ]
                 }
             }
         }
