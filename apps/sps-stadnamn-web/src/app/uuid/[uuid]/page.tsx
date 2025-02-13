@@ -161,15 +161,15 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
           defaultDoc2jsonld(docData._source, children)}/>}
       </div>
 
-      
-    </div>
-
-
       { docData?._source.rawData ?
         <div>
         <OriginalData rawData={docData?._source.rawData}/>
         </div>
       : null}
+
+      
+    </div>
+
     
 
     
