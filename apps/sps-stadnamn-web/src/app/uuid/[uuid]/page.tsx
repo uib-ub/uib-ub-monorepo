@@ -140,11 +140,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
         
       })}</div></div>}
-        { docData?._source.rawData ?
-        <div>
-        <OriginalData rawData={docData?._source.rawData}/>
-        </div>
-      : null}
+        
       
       { docDataset == 'search' &&
         <div>
@@ -168,6 +164,12 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       
     </div>
 
+
+      { docData?._source.rawData ?
+        <div>
+        <OriginalData rawData={docData?._source.rawData}/>
+        </div>
+      : null}
     
 
     
