@@ -125,46 +125,39 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
         const uuid = getUuid(value['id'])
         
         if (Object.keys(value).length > 1) {
-          
           return (
-            <div className="space-y-2" key={value['id']}>
-              <div className="pl-4 border-l border-neutral-300">
-                <dl className="min-w-full divide-y divide-neutral-100">
-                  <div className="flex">
-                    <dt lang="en" className="px-4 py-2 text-sm font-medium w-1/4">id</dt>
-                    <dd className="px-4 py-2 text-sm">
-                      {value['id'].startsWith('_:') ? (
-                        <span>{value['id']}</span>
+            <ul className="min-w-full divide-y divide-neutral-100 pl-4 border-l border-neutral-300 text-sm" key={value['id']}>
+              <li className="flex">
+                <span lang="en" className="w-1/4 px-4 py-2 font-medium">id</span>
+                {value['id'].startsWith('_:') ? (
+                  <span className="px-4 py-2">{value['id']}</span>
+                ) : (
+                  <Link 
+                    lang="en" 
+                    href={value['id']} 
+                    className="px-4 py-2 hover:text-black underline"
+                  >
+                    {value['id']}
+                  </Link>
+                )}
+              </li>
+              {Object.keys(value)
+                .filter(k => k !== 'id')
+                .map(k => (
+                  <li key={`${value['id']}-${k}`} className="flex">
+                    <div lang="en" className="w-1/4 px-4 py-2 font-medium">
+                      <PropertyRenderer uri={resolveUri(k)} propertyKey={k} />
+                    </div>
+                    <div className="px-4 py-2">
+                      {k === 'type' ? (
+                        <Link href={resolveUri(value[k])}>{value[k]}</Link>
                       ) : (
-                        <Link 
-                          lang="en" 
-                          href={value['id']} 
-                          className="hover:text-black underline"
-                        >
-                          {value['id']}
-                        </Link>
+                        renderValue(value[k], k, uuid)
                       )}
-                    </dd>
-                  </div>
-                  {Object.keys(value)
-                    .filter(k => k !== 'id')
-                    .map(k => (
-                      <div key={`${value['id']}-${k}`} className="flex">
-                        <dt lang="en" className="px-4 py-2 text-sm font-medium w-1/4">
-                          <PropertyRenderer uri={resolveUri(k)} propertyKey={k} />
-                        </dt>
-                        <dd className="px-4 py-2 text-sm">
-                          {k === 'type' ? (
-                            <Link href={resolveUri(value[k])}>{value[k]}</Link>
-                          ) : (
-                            renderValue(value[k], k, uuid)
-                          )}
-                        </dd>
-                      </div>
-                    ))}
-                </dl>
-              </div>
-            </div>
+                    </div>
+                  </li>
+                ))}
+            </ul>
           )
         }
         return <Link lang="en" href={resolveUri(value['id'])}>{value['id']}</Link>
@@ -222,23 +215,20 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto border-y border-neutral-300">
-      <dl className="min-w-full divide-y divide-neutral-300">
-
-        {Object.entries(jsonLd).map(([key, value], index) => {
-          const uri = resolveUri(key)
-          return (
-            <div key={index} className="flex">
-              <dt lang="en" className="px-4 py-3 w-1/4">
-                <PropertyRenderer uri={uri} propertyKey={key} />
-              </dt>
-              <dd className="px-4 py-3">
-                <ValueRenderer uri={uri} value={value} propertyKey={key} />
-              </dd>
-            </div>
-          )
-        })}
-      </dl>
-    </div>
+    <ul className="min-w-full divide-y divide-neutral-200 pl-4 border-y border-neutral-300 text-sm">
+      {Object.entries(jsonLd).map(([key, value], index) => {
+        const uri = resolveUri(key)
+        return (
+          <li key={index} className="flex">
+            <span lang="en" className="w-1/4 px-4 py-3">
+              <PropertyRenderer uri={uri} propertyKey={key} />
+            </span>
+            <span className="px-4 py-3">
+              <ValueRenderer uri={uri} value={value} propertyKey={key} />
+            </span>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
