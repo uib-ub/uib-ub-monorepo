@@ -4,7 +4,7 @@ export const defaultDoc2jsonld = (source: any, children: any) => {
     return {
         "@context": "https://linked.art/ns/v1/linked-art.json",
         "id": `https://purl.org/stadnamn/uuid/${source.uuid}`,
-        "type": "document",
+        "type": "Document",
         "_label": source.label
     };
 }
