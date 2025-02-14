@@ -82,10 +82,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         </span>
       
       }
-      { docDataset != 'nbas' && (docData?._source.datasets?.length > 1 || docData?._source.datasets?.[0] != 'nbas') ? 
-          <CopyLink uuid={docData?._source.uuid}/> 
-          : <div className="flex gap-1 items-center w-full"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
-      }
+
 
       </div>
       
