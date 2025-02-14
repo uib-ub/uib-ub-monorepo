@@ -155,7 +155,26 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       }
 
       <div>
-      <h2>Linked Data</h2>
+      <h2>Data</h2>
+
+      <div className="flex gap-4 flex-wrap my-2 mb-8 text-neutral-950">
+        <Link href={"/uuid/" + docData._source.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+              <PiBracketsCurlyBold aria-hidden="true"/>
+              Json
+        </Link>
+        <Link href={"/uuid/" + docData._source.uuid + ".jsonld"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+              <PiBracketsCurlyBold aria-hidden="true"/>
+              Json-LD
+        </Link>
+        {docData._source.location && <Link href={"/uuid/" + docData._source.uuid + ".geojson"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+              <PiBracketsCurlyBold aria-hidden="true"/>
+              GeoJSON
+        </Link>}
+        </div>
+
+      
+
+
       {<JsonLdTable jsonLd={doc2jsonld[docDataset as keyof typeof doc2jsonld] ? 
           doc2jsonld[docDataset as keyof typeof doc2jsonld](docData._source, children) : 
           defaultDoc2jsonld(docData._source, children)}/>}
