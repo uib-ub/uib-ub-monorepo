@@ -209,10 +209,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                   Søk i datasettet
                 </Clickable>
             }
-            <Link href={"/uuid/" + docSource.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
-              <PiBracketsCurlyBold aria-hidden="true"/>
-              Json
-            </Link>
 
 
 
