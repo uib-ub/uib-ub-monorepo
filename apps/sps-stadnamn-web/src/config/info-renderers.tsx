@@ -144,7 +144,9 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
   },
   nbas: null,
   nbas_reykjavik: (source: any) => {
-    return <p lang="en">Legacy data from the dataset prepared for the Nordic Spatial Humanities workshop in Reykjavik, 2023.</p>
+    return <>
+    <p lang="en">Legacy data from the Nordic Spatial Humanities project, and a preliminary transformation of the <Link href="/search?dataset=nbas">National Place Name Database</Link>.</p>
+    </>
   },
   m1838: (source: any) => {
     return <>
