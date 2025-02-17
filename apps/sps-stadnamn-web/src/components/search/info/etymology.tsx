@@ -5,6 +5,7 @@ import { datasetTitles } from '@/config/metadata-config';
 import { PiCaretRight, PiFiles, PiMagnifyingGlass } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
+import parse from 'html-react-parser';
 
 interface EtymologyProps {
     etymologyDataset: string;
@@ -103,10 +104,37 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
     const EtymologyContent = () => {
         if (!etymology) return null;
         const { html, isTruncated } = stripHtmlAndLimitText(etymology);
+
+        const logTouchEvent = (e: React.TouchEvent, name: string) => {
+            console.log(`Touch event '${name}' on:`, e.currentTarget);
+            console.log('Event propagation path:', e.nativeEvent.composedPath());
+        };
+
+        return <div>
+            <p>This is a test paragraph</p>
+                        <div>This is a test div</div>
+            <span>This is a test span</span>
+        </div>
+
+        
         return  (
-            <div className="inner-slate p-2">
-                <div className="flex flex-wrap items-center gap-2">
-                    <div className="inline">{etymology_renderer?.(html)}</div>
+            <div 
+                className="p-2" 
+                onTouchStart={(e) => logTouchEvent(e, 'outer div')}
+            >
+                <div 
+                    className="flex flex-wrap items-center gap-2"
+                    onTouchStart={(e) => logTouchEvent(e, 'flex container')}
+                >
+                    {false && <div className="inline">{etymology_renderer?.(html)}</div>}
+                    <div 
+                        className="inline"
+                        onTouchStart={(e) => logTouchEvent(e, 'content div')}
+                    >
+                        <p>This is a test paragraph</p>
+                        <div>This is a test div</div>
+                        <span>This is a test span</span>
+                    </div>
                     
                     <Clickable
                         link
@@ -118,8 +146,7 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
                 </div>
             </div>
         );
-    };
-    
+    };    
 
     return (
         <div>
@@ -129,8 +156,22 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
                     <div className="h-3 w-3/4 bg-neutral-200 rounded-full animate-pulse"></div>
                     <div className="h-3 w-2/3 bg-neutral-200 rounded-full animate-pulse"></div>
                 </div>
-            ) : (
-                <EtymologyContent/>
+            ) : etymology && (
+                <div className="p-2 inner-slate">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <div className="inline">
+                            {parse(stripHtmlAndLimitText(etymology).html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}
+                        </div>
+                        <Clickable
+                            link
+                            add={{doc: sourceDocUuid, parent: doc}}
+                            className="no-underline flex items-center gap-1 font-semibold">
+                            {stripHtmlAndLimitText(etymology).isTruncated 
+                                ? <>Les meir i {datasetTitles[etymologyDataset]}<PiCaretRight aria-hidden="true" className="text-primary-600"/></> 
+                                : <>{datasetTitles[etymologyDataset]} <PiCaretRight aria-hidden="true" className="text-primary-600"/></>}
+                        </Clickable>
+                    </div>
+                </div>
             )}
         </div>
     );
