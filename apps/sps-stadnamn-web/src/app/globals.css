@@ -142,8 +142,8 @@
   }
 
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-200 
-           shadow-primary-500/20 hover:shadow-lg hover:shadow-primary-500/30;
+    @apply bg-primary-700 text-white border border-primary-600 hover:bg-primary-800 hover:border-primary-900
+           transition-all duration-200;
   }
 
   .btn-outline {
