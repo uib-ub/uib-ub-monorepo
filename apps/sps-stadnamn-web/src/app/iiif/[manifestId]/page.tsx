@@ -1,8 +1,8 @@
 import { fetchManifest } from "@/app/api/_utils/actions"
 import ImageViewer from "./image-viewer";
 
-export default async function IIIFPage({params}: {params: {manifestId: string}}) {
-    const { manifestId } = params
+export default async function IIIFPage({params}: {params: Promise<{manifestId: string}>}) {
+    const { manifestId } = await params
     const manifest = await fetchManifest(manifestId)
     const isImage = manifest.items?.[0]?.items?.[0]?.items?.[0]?.body?.type === "Image";
     const isAudio = manifest.items?.[0]?.items?.[0]?.items?.[0]?.body?.type === "Sound";
