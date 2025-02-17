@@ -323,3 +323,28 @@ export async function fetchChildren(params: {
     const [res, status] = await postQuery(dataset || `*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
     return [res, status] as [any, number]
 }
+
+export async function fetchManifest(manifestId: string) {
+    'use server'
+    
+    try {
+        // Try first manifest URL pattern
+        const res = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/${manifestId}.json`);
+        if (res.ok) {
+            return await res.json();
+        }
+        if (res.status !== 404) {
+            throw new Error(`Failed to fetch manifest: ${res.status}`);
+        }
+
+        // Try second manifest URL pattern if first one returns 404
+        const fallbackRes = await fetch(`https://iiif.test.ubbe.no/iiif/manifest/stadnamn/NBAS/${manifestId}.json`);
+        if (!fallbackRes.ok) {
+            throw new Error('MANIFEST_NOT_FOUND');
+        }
+        return await fallbackRes.json();
+
+    } catch (error) {
+        return { error: error instanceof Error ? error.message : 'MANIFEST_NOT_FOUND' };
+    }
+}
