@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React, { Fragment } from 'react';
+import parse from 'html-react-parser';
 
 
 import FacetsInfobox from '@/components/doc/facets-infobox';
@@ -16,14 +17,6 @@ const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string
 
 
 
-  function createMarkup(htmlString: string) {
-    const decodedHtmlString = htmlString.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-    return {__html: decodedHtmlString};
-  }
-  
-  function HtmlString({htmlString, className}: {htmlString: string, className?: string}) {
-    return <div className={className} dangerouslySetInnerHTML={createMarkup(htmlString)} />;
-  }
 
 
 
@@ -55,7 +48,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
 
     {source.content?.html && <div className="inline-flex flex-col inner-slate">
      <div className='border-b border-neutral-200 p-4'><Link href={source.rawData.Lenke_til_originalside} className='whitespace-nowrap inline'>Bind {source.rawData.Bind}, s. {source.rawData.Side}</Link></div>
-    <HtmlString className='space-y-2 inline p-4' htmlString={source.content.html} />
+    <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
 
     </div>
     }
@@ -63,7 +56,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     </>
   },
   leks_etymology: (html: string) => { // Replace when the new encyclopedia is ready
-    return <HtmlString htmlString={html.replace("/view/leks/doc/", "/search?dataset=leks&doc=")} />
+    return <div className='space-y-2 inline p-4'>{parse(html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</div>
   },
   leks: (source: any) => {
     /*
@@ -86,7 +79,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     return <>
     {source.content?.html && <div className="inline-flex flex-col gap-4 inner-slate">
       <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link></div>
-    <HtmlString className='space-y-2 inline px-4 pb-4' htmlString={source.content.html.replace("/view/leks/doc/", "/search?dataset=leks&doc=")} />
+    <div className='space-y-2 inline px-4 pb-4'>{parse(source.content.html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</div>
 
     </div>
     }
@@ -94,7 +87,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
   },
   leks_g: (source: any) => {
     return <>
-    {source.content?.html && <HtmlString className='space-y-2' htmlString={source.content?.html} />}
+    {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
     </>
   },
 

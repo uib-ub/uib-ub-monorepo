@@ -5,7 +5,7 @@ import { datasetTitles } from '@/config/metadata-config';
 import { PiCaretRight, PiFiles, PiMagnifyingGlass } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
-import parse from 'html-react-parser';
+
 
 interface EtymologyProps {
     etymologyDataset: string;
@@ -148,6 +148,8 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
         );
     };    
 
+    const { html, isTruncated } = etymology ? stripHtmlAndLimitText(etymology) : { html: '', isTruncated: false };
+
     return (
         <div>
             {loading ? (
@@ -160,13 +162,13 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
                 <div className="p-2 inner-slate">
                     <div className="flex flex-wrap items-center gap-2">
                         <div className="inline">
-                            {parse(stripHtmlAndLimitText(etymology).html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}
+                            {etymology_renderer?.(html)}
                         </div>
                         <Clickable
                             link
                             add={{doc: sourceDocUuid, parent: doc}}
                             className="no-underline flex items-center gap-1 font-semibold">
-                            {stripHtmlAndLimitText(etymology).isTruncated 
+                            {isTruncated 
                                 ? <>Les meir i {datasetTitles[etymologyDataset]}<PiCaretRight aria-hidden="true" className="text-primary-600"/></> 
                                 : <>{datasetTitles[etymologyDataset]} <PiCaretRight aria-hidden="true" className="text-primary-600"/></>}
                         </Clickable>
