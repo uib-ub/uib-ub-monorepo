@@ -54,7 +54,7 @@ export default function ResultItem({hit}: {hit: any}) {
             :<span className="self-center flex gap-1 items-center">
                 
                 
-                <PiArrowRight aria-hidden="true"/><PiDatabase aria-hidden="true"/><span className="sr-only">Omdirigert til kilde</span>
+                <PiBookOpen aria-hidden="true"/>Kjelde
                 
                 </span>
             
