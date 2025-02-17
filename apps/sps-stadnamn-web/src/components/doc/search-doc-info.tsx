@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
 import { useDataset } from "@/lib/search-params";
 import AudioExplorer from "./audio-explorer";
+import ChildrenWindow from "../children/children-window";
 
 
 
@@ -42,10 +43,12 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
             
             
 
-
-
+  
+    
 
     <div className={` flex flex-col gap-2`}>
+
+    {!(isMobile && parent && mode == 'map') && <>
     {hasAltLabels && <ul className='flex flex-wrap !list-none !p-0 gap-1'>
     {Array.from(uniqueLabels).map((label: string, index: number) => {
       const isActive = sourceLabel === label
@@ -101,7 +104,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
             </li>
         })}
 
-    {docSource.datasets.length > 1 && (
+    { docSource.datasets.length > 1 && (
           <li className='whitespace-nowrap !m-0 !p-0'>
             <Clickable 
               className={`
@@ -127,6 +130,10 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
           </li>
         )}
       </ul>
+      </>
+      }
+      
+      {isMobile && mode == 'map' && parent && <div className="border border-neutral-200 rounded-md"><ChildrenWindow/></div>}
 
     
       </div>
