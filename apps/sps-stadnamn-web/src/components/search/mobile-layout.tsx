@@ -15,7 +15,6 @@ import TableExplorer from "./table/table-explorer";
 import { treeSettings } from "@/config/server-config";
 import { useSearchParams } from "next/navigation";
 import ListExplorer from "./list/list-explorer";
-import DocExplorer from "./info/doc-explorer";
 import { ChildrenContext } from "@/app/children-provider";
 import { DocContext } from "@/app/doc-provider";
 import DocInfo from "./info/doc-info";
