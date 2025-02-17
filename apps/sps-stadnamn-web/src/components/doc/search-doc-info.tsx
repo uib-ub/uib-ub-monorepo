@@ -30,6 +30,10 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
 
 
     return <>
+    {docSource.recordings?.length > 0 && dataset == 'search' &&
+          <AudioExplorer recordings={docSource.recordings}/>
+
+        }
 
     
     {(docSource.datasets.includes('leks') || docSource.datasets.includes('rygh')) && 
