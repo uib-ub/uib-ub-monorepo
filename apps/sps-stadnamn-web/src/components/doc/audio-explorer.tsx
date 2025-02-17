@@ -4,6 +4,14 @@ import { useState } from "react";
 import IconLink from "../ui/icon-link";
 import IconButton from "../ui/icon-button";
 
+
+
+/*
+Example with more than one recording
+http://localhost:3000/search?nav=results&facet=datasets&datasets=hord&center=59.97407120119033%2C8.756103515625&zoom=7&doc=03d42cc3-af24-3b21-acbc-f69973c9bcd7&parent=03d42cc3-af24-3b21-acbc-f69973c9bcd7
+
+*/
+
 export default function AudioExplorer({recordings}: {recordings: any[]}) {
     const [recordingIndex, setRecordingIndex] = useState(0)
     const [copiedId, setCopiedId] = useState<string|null>(null)
