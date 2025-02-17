@@ -19,6 +19,7 @@ export function extractFacets(request: Request ) {
       case 'desc':
       case 'fulltext':
       case 'facetSort':
+      case 'fields':
       case 'size':
       case 'from':
       case 'topLeftLat':

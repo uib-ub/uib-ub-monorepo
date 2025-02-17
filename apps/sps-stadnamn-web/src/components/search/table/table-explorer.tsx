@@ -1,10 +1,10 @@
 import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
-import { useDataset } from "@/lib/search-params"
+import { useDataset, useSearchQuery } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import { Fragment, useContext, useState } from "react"
-import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretUp, PiInfoFill } from "react-icons/pi"
+import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretUp, PiDownload, PiInfoFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
@@ -13,6 +13,7 @@ import { getSkeletonLength } from "@/lib/utils"
 import Clickable from "@/components/ui/clickable/clickable"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { GlobalContext } from "@/app/global-provider"
+import { DownloadButton } from "./download-button"
 
 export default function TableExplorer() {
     const dataset = useDataset()
@@ -22,8 +23,6 @@ export default function TableExplorer() {
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const localStorageKey = `visibleColumns_${dataset}`;
 
-    const setAsc = useQueryState('asc')[1]
-    const setDesc = useQueryState('desc')[1]
     const mode = searchParams.get('mode') || 'map'
     const { isMobile } = useContext(GlobalContext)
 
@@ -74,8 +73,6 @@ export default function TableExplorer() {
         }
     }
 
-    
-
 
     return <div  className='flex flex-col py-2 gap-y-4 h-full'>
                     <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
@@ -95,6 +92,7 @@ export default function TableExplorer() {
                     </button>
         
                     }
+                    <DownloadButton visibleColumns={visibleColumns} showCadastre={showCadastre ?? false} joinWithSlash={joinWithSlash} formatCadastre={(cadastre: string) => formatCadastre([{cadastre}])}/>
                     { (searchParams.get('asc') || searchParams.get('desc')) &&
                         <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => {setAsc(null); setDesc(null)}}>
                         <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
