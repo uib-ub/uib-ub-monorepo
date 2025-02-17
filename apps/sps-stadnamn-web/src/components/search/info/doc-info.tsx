@@ -55,16 +55,11 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         });
     }, [docDataset, docSource]);
 
-    return <><article className="instance-info flex flex-col gap-3 mobile-padding">
+    return <><article className={`instance-info flex flex-col gap-3 mobile-padding ${parent && isMobile ? 'relative' : ''}`}>
+
       {(((docDataset && dataset != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
 
         { dataset == 'search' && docDataset != 'search' && <div className="flex gap-1  items-center">
-          {parent && isMobile && <ClickableIcon label="Tilbake" 
-        add={{doc: parent}}
-        className="text-lg flex p-1 mr-3 rounded-md bg-neutral-50 border border-neutral-200 items-center no-underline"
-        aria-label="Tilbake">
-            <PiArrowLeft className="text-neutral-800 text-sm"/>
-        </ClickableIcon>}
           
           <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
@@ -74,7 +69,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                 <PiInfoFill aria-hidden="true" className="text-lg text-primary-600"/>
         </IconLink>
         
-        
         </div>
       
         }
@@ -83,13 +77,13 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
         {(mode == 'map' || (mode == 'doc' && !isMobile)) && 
-        <div className="absolute top-2 right-0 flex gap-2">
+        <div className={`absolute top-0 lg:top-2 right-0 flex gap-2`}>
           {snidParent && dataset == 'search' && mode != 'doc' &&
             <ClickableIcon label="Gå til stadnamnoppslag" 
                            add={{doc: snidParent}} 
                            aria-hidden="true" 
-                           className="flex items-center">
-                            {dataset == 'search' ? <PiCaretLeft className="text-2xl"/> :<PiTag className="text-2xl"/>}
+                           className={`${parent && isMobile ? 'btn btn-outline btn-compact' : ''}`}>
+                            {dataset == 'search' ? isMobile ? <PiArrowElbowLeftUp className="text-2xl"/> :<PiCaretLeft className="text-2xl"/> : <PiTag className="text-2xl"/>}
           </ClickableIcon>}
           
 
