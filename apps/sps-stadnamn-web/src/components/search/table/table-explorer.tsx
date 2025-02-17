@@ -10,7 +10,6 @@ import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
 import { getSkeletonLength } from "@/lib/utils"
-import Clickable from "@/components/ui/clickable/clickable"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { GlobalContext } from "@/app/global-provider"
 import { DownloadButton } from "./download-button"
@@ -19,6 +18,9 @@ export default function TableExplorer() {
     const dataset = useDataset()
     const searchParams = useSearchParams()
     const { tableData, totalHits, isLoading } = useContext(SearchContext)
+
+    const setAsc = useQueryState('asc')[1]
+    const setDesc = useQueryState('desc')[1]
 
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const localStorageKey = `visibleColumns_${dataset}`;
