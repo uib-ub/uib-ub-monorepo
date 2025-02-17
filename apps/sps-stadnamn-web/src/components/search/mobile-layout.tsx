@@ -209,7 +209,7 @@ export default function MobileLayout() {
              onTouchEnd={handleTouchEnd}>
         { drawerContent && <>
             <div className="w-full flex  items-center h-8 pt-2 rounded-t-xl bg-neutral-900 relative px-2" style={{touchAction: 'none'}}>
-                <h2 className="flex items-center gap-2 uppercase text-base font-semibold font-sans text-neutral-50 tracking-wider">
+                <h2 className="sr-only">
                     {drawerContent == 'results' && 'Treff'}
                     {drawerContent == 'datasets' && 'Datasett'}
                     {drawerContent == 'filters' && 'Avgrens'}
