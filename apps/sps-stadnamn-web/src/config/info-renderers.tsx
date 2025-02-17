@@ -56,7 +56,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     </>
   },
   leks_etymology: (html: string) => { // Replace when the new encyclopedia is ready
-    return <div className='space-y-2 inline p-4'>{parse(html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</div>
+    return <>{parse(html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</>
   },
   leks: (source: any) => {
     /*
