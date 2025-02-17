@@ -177,10 +177,10 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>}
 
 
-        <div className="flex gap-4 flex-wrap mt-2 pt-2 text-neutral-950 border-t border-neutral-200">
+        <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap mt-2 pt-4 lg:pt-2 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-4">
         { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
           <>
-            <Link href={"/uuid/" + docSource.uuid} className="flex whitespace-nowrap items-center gap-1 no-underline">
+            <Link href={"/uuid/" + docSource.uuid} className="flex p-1 lg:p-0 whitespace-nowrap items-center gap-2 lg:gap-1 no-underline">
               <PiInfinityBold aria-hidden="true"/>
               Varig side
             </Link>
@@ -189,13 +189,13 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
             }
             {dataset != 'search' && snidParent &&
-                <Clickable link className="flex items-center gap-1 no-underline" only={{dataset: 'search', doc: snidParent}}>
-                  <PiTagFill aria-hidden="true"/>
+                <Clickable link className="flex p-1 lg:p-0 items-center gap-2 lg:gap-1 no-underline" only={{dataset: 'search', doc: snidParent}}>
+                  <PiTag aria-hidden="true"/>
                   Stadnamnoppslag
                 </Clickable>
             }
             {dataset == 'search' && docDataset != dataset &&
-                <Clickable link className="flex items-center gap-1 no-underline" only={{dataset: docDataset, doc}}>
+                <Clickable link className="flex p-1 lg:p-0 items-center gap-2 lg:gap-1 no-underline" only={{dataset: docDataset, doc}}>
                   <PiMagnifyingGlassBold aria-hidden="true"/>
                   Søk i datasettet
                 </Clickable>

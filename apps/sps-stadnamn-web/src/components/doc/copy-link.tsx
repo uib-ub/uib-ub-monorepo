@@ -16,7 +16,7 @@ export default function CopyLink({ uuid }: { uuid: string }) {
     return (
         <span className="flex gap-4 flex-wrap">
         <button onClick={copyLink}>
-        <span className="flex gap-1 items-center whitespace-nowrap">{linkCopied == uuid ? <PiCheckBold className="inline" aria-hidden="true"/> : <PiLinkSimple className="inline" aria-hidden="true"/>}Kopier lenke</span>
+        <span className="flex gap-2 lg:gap-1 p-1 lg:p-0 items-center whitespace-nowrap">{linkCopied == uuid ? <PiCheckBold className="inline" aria-hidden="true"/> : <PiLinkSimple className="inline" aria-hidden="true"/>}Kopier lenke</span>
         </button>
         </span>
     );
