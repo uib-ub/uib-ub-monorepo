@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, useMemo, useRef } from 'react';
 import { infoPageRenderers } from '@/config/info-renderers';
 import { DocContext } from '@/app/doc-provider';
 import { datasetTitles } from '@/config/metadata-config';
-import { PiCaretRight, PiFiles, PiMagnifyingGlass } from 'react-icons/pi';
+import { PiBookOpen, PiCaretRight, PiFiles, PiMagnifyingGlass } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 
@@ -56,10 +56,7 @@ function stripHtmlAndLimitText(html: string) {
 
     cleanHtml += openTags.reverse().map(tag => `</${tag}>`).join('');
 
-    return {
-        html: cleanHtml,
-        isTruncated
-    };
+    return cleanHtml
 }
 
 export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
@@ -100,55 +97,9 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
             setLoading(false);
         });
     }, [uuidRef, etymologyDataset]);
+  
 
-    const EtymologyContent = () => {
-        if (!etymology) return null;
-        const { html, isTruncated } = stripHtmlAndLimitText(etymology);
-
-        const logTouchEvent = (e: React.TouchEvent, name: string) => {
-            console.log(`Touch event '${name}' on:`, e.currentTarget);
-            console.log('Event propagation path:', e.nativeEvent.composedPath());
-        };
-
-        return <div>
-            <p>This is a test paragraph</p>
-                        <div>This is a test div</div>
-            <span>This is a test span</span>
-        </div>
-
-        
-        return  (
-            <div 
-                className="p-2" 
-                onTouchStart={(e) => logTouchEvent(e, 'outer div')}
-            >
-                <div 
-                    className="flex flex-wrap items-center gap-2"
-                    onTouchStart={(e) => logTouchEvent(e, 'flex container')}
-                >
-                    {false && <div className="inline">{etymology_renderer?.(html)}</div>}
-                    <div 
-                        className="inline"
-                        onTouchStart={(e) => logTouchEvent(e, 'content div')}
-                    >
-                        <p>This is a test paragraph</p>
-                        <div>This is a test div</div>
-                        <span>This is a test span</span>
-                    </div>
-                    
-                    <Clickable
-                        link
-                        add={{doc: sourceDocUuid, parent: doc}}
-                        className="no-underline flex items-center gap-1 font-semibold">
-                        {isTruncated ? <>Les meir i {datasetTitles[etymologyDataset]}<PiCaretRight aria-hidden="true" className="text-primary-600"/></> 
-                        : <>{datasetTitles[etymologyDataset]} <PiCaretRight aria-hidden="true" className="text-primary-600"/></>}
-                    </Clickable>
-                </div>
-            </div>
-        );
-    };    
-
-    const { html, isTruncated } = etymology ? stripHtmlAndLimitText(etymology) : { html: '', isTruncated: false };
+    const html = etymology ? stripHtmlAndLimitText(etymology) : '';
 
     return (
         <div>
@@ -167,10 +118,9 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
                         <Clickable
                             link
                             add={{doc: sourceDocUuid, parent: doc}}
-                            className="no-underline flex items-center gap-1 font-semibold">
-                            {isTruncated 
-                                ? <>Les meir i {datasetTitles[etymologyDataset]}<PiCaretRight aria-hidden="true" className="text-primary-600"/></> 
-                                : <>{datasetTitles[etymologyDataset]} <PiCaretRight aria-hidden="true" className="text-primary-600"/></>}
+                            className="no-underline flex items-center gap-2 font-semibold">
+                            <PiBookOpen className="text-lg text-primary-600" aria-hidden="true"/>
+                            {datasetTitles[etymologyDataset]}
                         </Clickable>
                     </div>
                 </div>
