@@ -93,7 +93,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
           </ClickableIcon>}
           
 
-          { mode == 'doc' ?
+          {!isMobile && ( mode == 'doc' ?
                   <Clickable 
                     remove={["mode"]} 
                     add={preferredTabs[dataset] ? {mode: preferredTabs[dataset]} : {}}
@@ -111,7 +111,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                   aria-label="Lukk">
                   <PiX aria-hidden="true"/>
                 </Clickable>
-        }
+        )}
 
 
         </div>
