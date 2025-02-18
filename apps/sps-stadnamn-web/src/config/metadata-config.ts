@@ -142,7 +142,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/Østfold_gml_herredsinndeling.png",
         alt: "Verket bygger på den gamle herredsinndelinga i Østfold",
         imageAttribution: "Bustadnavn i Østfold",
-        attribution: "Kåre Hoel, Margit Harson og Tom Schmidt. Beriket av Språksamlingene", 
+        attribution: "Kåre Hoel, Margit Harsson og Tom Schmidt. Beriket av Språksamlingene", 
         license: licenses.ccby4,
       },
       leks: {
