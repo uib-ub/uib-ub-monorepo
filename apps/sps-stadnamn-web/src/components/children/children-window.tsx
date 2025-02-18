@@ -74,7 +74,7 @@ export default function ChildrenWindow() {
         
     </div>
     {parentData && 
-                <div className={`h-full  overflow-y-auto stable-scrollbar px-2 ${isMobile ? 'pb-[30svh]' : 'pb-8'}`}>
+                <div className={` ${isMobile ? 'h-full pb-[30svh]' : 'pb-8 px-2 overflow-y-auto stable-scrollbar'}`}>
                     {treeSettings[dataset] && <CadastralSubdivisions/>}
                     {dataset == 'search' && <SourceList/>}
                 </div>
