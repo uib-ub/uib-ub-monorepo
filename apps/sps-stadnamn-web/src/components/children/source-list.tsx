@@ -7,12 +7,13 @@ import { ChildrenContext } from '@/app/children-provider'
 import { datasetTitles } from '@/config/metadata-config'
 import SourceItem from './source-item'
 import { useQueryState } from 'nuqs'
+import { GlobalContext } from '@/app/global-provider'
 
 export default function SourceList() {
     const { childrenData, childrenLoading, sourceChildren } = useContext(ChildrenContext)
     const [error, setError] = useState<any>(null)
     const { parentData, parentLoading } = useContext(DocContext)
-
+    const { isMobile } = useContext(GlobalContext)
 
     if (error) {
       return <ErrorMessage error={error} message="Kunne ikke hente dokumentene"/>
@@ -27,7 +28,7 @@ export default function SourceList() {
                     <ul className="!p-0 divide-y divide-neutral-200 gap-2" aria-live="polite">
                         {docs.map((doc: Record<string, any>) => (
                             <li key={doc._id} className="flex flex-grow !p-0 !m-0">
-                            <SourceItem hit={doc} isMobile={false}/>
+                            <SourceItem hit={doc} isMobile={isMobile}/>
                             </li>
                         ))}
                     </ul>
