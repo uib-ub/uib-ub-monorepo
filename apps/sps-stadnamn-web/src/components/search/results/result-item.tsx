@@ -2,7 +2,7 @@
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
-import { PiArchive, PiArrowRight, PiBooks, PiDatabase, PiFiles, PiTag } from 'react-icons/pi';
+import { PiBookOpen } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
