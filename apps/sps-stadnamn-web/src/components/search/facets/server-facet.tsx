@@ -5,7 +5,6 @@ import { facetConfig, fieldConfig } from '@/config/search-config';
 import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass, PiTrashFill } from 'react-icons/pi';
 
 import { datasetTitles, typeNames, datasetTypes } from '@/config/metadata-config';
-import { useQueryState } from 'nuqs';
 
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
@@ -18,16 +17,48 @@ export default function ServerFacet() {
   const { removeFilterParams } = useSearchQuery()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const {facetOptions, pinnedFilters, updatePinnedFilters} = useContext(GlobalContext)
-  
-
   const availableFacets = facetConfig[dataset]
-  const facet = searchParams.get('facet') as string
+  const facet = searchParams.get('facet')
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
+
+  useEffect(() => {
+    // Handle redirect if invalid facet
+    if (!facet || !availableFacets.some(f => f.key === facet)) {
+      const defaultFacet = availableFacets[0]?.key;
+      if (defaultFacet) {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('facet', defaultFacet);
+        router.replace(`?${params.toString()}`, { scroll: false });
+      }
+      return
+    }
+
+    // Fetch data only if we have a valid facet
+    fetch(`/api/facet?facets=${facet}${
+      facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
+        paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
+          sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
+      
+      if (facet.includes('__')) {
+        const [parent, child] = facet.split('__')
+        setFacetAggregation(es_data.aggregations?.[parent]?.[child])
+      }
+      else {
+        setFacetAggregation(es_data.aggregations?.[facet])
+      }
+
+      setIsLoading(false);
+    })
+  }, [paramsExceptFacet, dataset, facet, facetSearch, sortMode, availableFacets, router, searchParams])
+
+  // Return null if we don't have a valid facet
+  if (!facet || !availableFacets.some(f => f.key === facet)) {
+    return null;
+  }
 
   const switchFacet = (event: ChangeEvent<HTMLSelectElement>) => {
     const facet = event.target.value
@@ -82,27 +113,6 @@ export default function ServerFacet() {
     router.push(`?${params.toString()}`, { scroll: false });
   };
     
-
-  useEffect(() => {
-    fetch(`/api/facet?facets=${facet}${
-      facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
-        paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
-          sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
-      
-      // if selectedfacet is nested with __
-      if (facet.includes('__')) {
-        const [parent, child] = facet.split('__')
-        setFacetAggregation(es_data.aggregations?.[parent]?.[child])
-      }
-      else {
-        setFacetAggregation(es_data.aggregations?.[facet])
-      }
-
-      setIsLoading(false);
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [paramsExceptFacet, dataset, facet, facetSearch, sortMode]
-    )
 
   const filterDatasetsByTags = (item: any) => {
     if (facet === 'datasets' && searchParams.getAll('datasetTag').length > 0) {
