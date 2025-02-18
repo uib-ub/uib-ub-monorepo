@@ -34,7 +34,7 @@ export function useSearchQuery() {
     const facetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const nav = searchParams.get('nav')
-    let size = useQueryState('size', parseAsInteger.withDefault(20))[0]
+    const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
     
 
     fields.forEach(field => {
