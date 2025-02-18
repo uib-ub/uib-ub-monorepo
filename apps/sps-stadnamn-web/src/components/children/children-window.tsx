@@ -64,9 +64,8 @@ export default function ChildrenWindow() {
         {parent && !childrenLoading && 
             <ClickableIcon 
                 label="Tilbake" 
-                remove={["parent", "sourceDataset", "sourceLabel", ...(mode == 'doc' ? ["mode"] : [])]} 
-                add={{...docView?.current ? docView.current : {},
-                ...(mode == 'doc' ? {mode: preferredTabs[dataset] || undefined} : {})}}
+                remove={["parent", "sourceDataset", "sourceLabel"]} 
+                add={{...docView?.current ? docView.current : {}}}
                 className="text-neutral-800 text-2xl p-2 ml-auto"
             >
                 {isMobile ? <PiX className="text-neutral-800"/> : <PiXBold/>}
