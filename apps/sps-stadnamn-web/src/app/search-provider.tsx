@@ -37,8 +37,11 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
     const [coordinatesError, setCoordinatesError] = useState(false)
     
-
-    const { setCurrentUrl, isMobile, pinnedFilters } = useContext(GlobalContext)
+    const searchParams = useSearchParams()
+    const dataset = useDataset()
+    const { setCurrentUrl, isMobile, pinnedFilters, preferredTabs } = useContext(GlobalContext)
+    const mode = searchParams.get('mode') || 'map'
+    const useTableData = mode != 'map' && preferredTabs[dataset] != 'map'
     
 
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
@@ -46,15 +49,15 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
 
-    const searchParams = useSearchParams()
-    const isTable = searchParams.get('mode') == 'table' || searchParams.get('mode') == 'list'
+    
+    
     const asc = searchParams.get('asc')
     const desc = searchParams.get('desc')
     const page = useQueryState('page', parseAsInteger.withDefault(1))[0]
     const perPage = useQueryState('perPage', parseAsInteger.withDefault(10))[0]
     const router = useRouter()
 
-    const dataset = useDataset()
+    
     const searchParamsString = searchParams.toString()
 
     useEffect(() => {
@@ -78,7 +81,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     useEffect(() => {
         setIsLoading(true)
         let url
-        if (isTable) {
+        if (useTableData) {
             url = `/api/search/table?size=${perPage}${searchQueryString ? `&${searchQueryString}`: ''}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
         }
         else {
@@ -93,7 +96,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             return response.json()})
         .then(es_data => {
             
-            if (isTable) {
+            if (useTableData) {
                 setTableData(es_data.hits.hits)
                 setTotalHits(es_data.hits.total)
             }
