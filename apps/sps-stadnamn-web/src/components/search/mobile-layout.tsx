@@ -44,6 +44,7 @@ export default function MobileLayout() {
     const parent = searchParams.get('parent')
     const { childrenCount, shownChildrenCount } = useContext(ChildrenContext)
     const { parentData, docLoading } = useContext(DocContext)
+    const { preferredTabs } = useContext(GlobalContext)
 
 
 
@@ -221,7 +222,8 @@ export default function MobileLayout() {
             <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'info' && <>
-            {docLoading ? <DocSkeleton/> : <DocInfo/>}
+            {!parent && (docLoading ? <DocSkeleton/> : <DocInfo/>)}
+            {parent && <ChildrenWindow/>}
             </>}
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
@@ -264,10 +266,9 @@ export default function MobileLayout() {
         </div>
 
         <div className={`absolute top-12 right-0 w-full bg-transparent rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
-        { mode != 'doc' && <StatusSection/>}
-        { mode == 'table' && <TableExplorer/>}
-        { mode == 'list' && <ListExplorer/>}
-        { mode == 'doc' && <ChildrenWindow/>}
+        <StatusSection/>
+        { (mode == 'table' || (mode=='doc' && preferredTabs[dataset] == 'table')) && <TableExplorer/>}
+        { (mode == 'list' || (mode=='doc' && preferredTabs[dataset] == 'list')) && <ListExplorer/>}
         </div>
 
         <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
