@@ -3,11 +3,35 @@
 import type { NextRequest } from 'next/server'
 import { fetchChildren, fetchDoc, fetchSNID } from './app/api/_utils/actions'
 import { defaultDoc2jsonld, doc2jsonld } from './config/rdf-config'
+import { datasetTitles } from './config/metadata-config'
+
+
+
 export async function middleware(request: NextRequest) {
     // Extract uuid and extension from url
     
     const url = new URL(request.url)
     const path = url.pathname.split('/')
+
+
+
+    if (path[1] == 'search') {
+        const dataset = url.searchParams.get('dataset') || 'search'
+
+        if (!datasetTitles[dataset]) {
+                return Response.redirect("http:localhost:3000/search", 302)
+        }
+
+    }
+
+    if (path[1] == 'view') {
+        const searchParams = new URLSearchParams(url.searchParams)
+        const dataset = path[2]
+        if (dataset != 'search') {
+            searchParams.set('dataset', dataset)
+        }
+        return Response.redirect("http:localhost:3000/search?" + searchParams.toString() , 302)
+    }
     
     if (path[1] == 'snid') {
         // redirect
@@ -58,12 +82,18 @@ export async function middleware(request: NextRequest) {
             return Response.json(data);
         }
     }
+
+
+    
 }
+
 
   export const config = {
     matcher: [
         '/uuid/:uuid*',
         '/snid/:snid*',
+        '/search',
+        '/view/:path*',
     ],
     
   }
