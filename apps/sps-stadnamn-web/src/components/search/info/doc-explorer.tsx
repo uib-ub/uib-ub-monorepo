@@ -13,7 +13,6 @@ import SourceList from "../../children/source-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import { PiArchiveFill, PiArrowLeft, PiBooksFill, PiCaretLeft, PiFilesFill, PiInfoFill, PiRows, PiTable, PiTableFill, PiTag, PiTagFill, PiTreeViewFill, PiX } from "react-icons/pi";
 import { GlobalContext } from "@/app/global-provider";
-import ChildrenWindow from "@/components/children/children-window";
 
 
 export default function DocExplorer({hidden}: {hidden: boolean}) {
