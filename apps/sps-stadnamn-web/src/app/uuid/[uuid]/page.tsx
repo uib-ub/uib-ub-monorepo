@@ -139,17 +139,6 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       })}</div></div>}
         
       
-      { docDataset == 'search' &&
-        <div>
-        <h2>Kjelder</h2>
-        <ServerSourcesList uuids={docData._source.children}/>
-        </div>
-
-        
-
-
-
-      }
 
       <div>
       <h2>Data</h2>
@@ -202,6 +191,15 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       </div>
     </aside>
      {docDataset != 'search' && <ServerParent uuid={uuid}/>}
+     { docDataset == 'search' && children.length > 0 && 
+      <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
+        <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Kjelder</h2>
+        <ServerSourcesList childrenData={children}/>
+      </aside>
+     }
+
+
+     
     </div>}
 
     
