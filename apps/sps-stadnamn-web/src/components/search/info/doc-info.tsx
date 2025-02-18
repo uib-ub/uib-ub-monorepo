@@ -195,7 +195,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             {dataset == 'search' && docDataset != dataset &&
                 <Clickable link className="flex p-1 lg:p-0 items-center gap-2 lg:gap-1 no-underline" only={{dataset: docDataset, doc}}>
                   <PiMagnifyingGlassBold aria-hidden="true"/>
-                  Søk i datasettet
+                  Søk i {datasetTitles[docDataset as string]}
                 </Clickable>
             }
 
