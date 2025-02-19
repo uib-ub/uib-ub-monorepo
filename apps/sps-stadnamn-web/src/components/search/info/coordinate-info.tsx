@@ -22,7 +22,7 @@ function convertDMS(lat: number, lon: number): string {
 export default function CoordinateInfo({source}: {source: Record<string, any>}) {
     return (
 
-        <div id="coordinate_info" className='space-y-6'>
+        <div id="coordinate_info" className='space-y-6 my-2'>
             <div className="flex items-center space-x-2">
                 <PiMapPin className="w-6 h-6" />
                 <a className="font-semibold" 
