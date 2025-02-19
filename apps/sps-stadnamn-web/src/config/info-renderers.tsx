@@ -129,7 +129,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     */
     return <>
     <div className='space-y-2'>
-    { altLabels && <div><strong className="text-neutral-900">Andre navneformer (inkl. uttale): </strong>{altLabels}</div>}
+    { altLabels && <div><strong className="text-neutral-900">Andre navneformer (kan inneholde fonemisk skrift): </strong>{altLabels}</div>}
     {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
     </div>
     {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
