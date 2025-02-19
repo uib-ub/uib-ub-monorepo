@@ -80,9 +80,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
     hord: {
       uuid, label, adm, adm1, adm2, link, ...image,
+      "archive.institution": {label: "Arkivtilvising", table, facet, featuredFacet},
       "adm3": {label: "Tidligere kommune", result},
       "rawData.merknader": {label: "Merknader", fulltext},
-      "archive.institution": {label: "Arkivtilvising", table, facet},
+      "rawData.kommuneNr": {label: "Kommunenummer", table, facet},
       "rawData.oppskrivar": {label: "Oppskrivar", table, facet},
       "rawData.oppskrivingsTid": {label: "Oppskrivingstid", table, facet},
       "rawData.bildeNr": {label: "Bildenummer", table, facet},
