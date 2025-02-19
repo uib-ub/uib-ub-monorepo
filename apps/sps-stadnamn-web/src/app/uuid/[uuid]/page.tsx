@@ -19,7 +19,7 @@ import { facetConfig } from '@/config/search-config'
 import ServerParent from './server-parent'
 import JsonLdTable from './json-ld-table'
 import { defaultDoc2jsonld, doc2jsonld } from '@/config/rdf-config'
-import { redirect } from 'next/navigation'
+import { redirect, notFound } from 'next/navigation'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
     const { uuid } = await params
@@ -36,6 +36,11 @@ export async function generateMetadata( { params }: { params: Promise<{ uuid: st
 export default async function LandingPage({ params }: { params: Promise<{ uuid: string }>}) {
     const { uuid } = await params
     const docData = await fetchDoc({uuid})
+    
+    if (!docData || !docData._source) {
+        notFound()
+    }
+    
     const children = docData._source.children ? await fetchDoc({ uuid: docData._source.children}) : []
 
     if (docData.error) {
