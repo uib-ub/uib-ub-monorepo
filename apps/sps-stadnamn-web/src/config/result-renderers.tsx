@@ -1,3 +1,5 @@
+import { getFieldValue } from "@/lib/utils";
+
 interface Renderer {
   fields?: string[];
   title?: (hit: any, display: string) => any;
@@ -35,11 +37,11 @@ const formatHighlight = (highlight: string) => {
 }
 
 const defaultTitle = (hit: any) => {
-  return <strong className="font-semibold">{multivalue(hit.fields?.label)}</strong>
+  return <strong className="font-semibold">{multivalue(getFieldValue(hit, 'label'))}</strong>
 }
 
 const loktypeDetails = (loktype: string, hit: any) => {
-  return <>{loktype}{loktype && ' – '} {hit.fields.adm2}{hit.fields.adm1 && ', ' + hit.fields.adm1}  </>
+  return <>{loktype}{loktype && ' – '} {getFieldValue(hit, 'adm2')}{getFieldValue(hit, 'adm1') && ', ' + getFieldValue(hit, 'adm1')}  </>
 }
 
 
@@ -94,16 +96,17 @@ export function formatCadastre(cadastre: Record<string, any>[]): string {
 }
 
 
-const formatAdm = (source: Record<string, any>) => {
-  const {adm1, adm2, adm3} = source
+const formatAdm = (hit: any) => {
+  const adm1 = getFieldValue(hit, 'adm1')
+  const adm2 = getFieldValue(hit, 'adm2')
+  const adm3 = getFieldValue(hit, 'adm3')
   return <>{adm3}{adm3 && ' – '}{multivalue(adm1)?.length > 0 && adm2 !== adm1 && adm2 + ', '}{adm1}</>
 }
 
-const cadastreAdm = (knr: string | undefined, gnr: string | undefined, bnr: string | undefined, sep: string, source: Record<string,any>, display: string ) => {
-  const { cadastre } = source
+const cadastreAdm = (knr: string | undefined, gnr: string | undefined, bnr: string | undefined, sep: string, hit: any, display: string ) => {
+  const cadastre = getFieldValue(hit, 'cadastre')
 
-
-  const admText = display != 'grouped' ? <>{(source.cadastre || gnr) && gnr != "0" && ', '}{formatAdm(source)}</> : ''
+  const admText = display != 'grouped' ? <>{(cadastre || gnr) && gnr != "0" && ', '}{formatAdm(hit)}</> : ''
   if (cadastre) {
     return <>{!knr && "Gnr" + (cadastre.bnr ? "/Bnr": "") + ": "}{knr}{knr && "-"}{formatCadastre(cadastre)}{admText}</>
   }
@@ -118,13 +121,12 @@ export const resultRenderers: ResultRenderers = {
   search: {
     title: defaultTitle,
     details: (hit: any, display: string) => {
-      return <>{hit.fields?.adm2 && multivalue(hit.fields.adm2) + ", "}{multivalue(hit.fields.adm1)}{ hit.fields.adm1 == "[Uordna]" && <>&nbsp;<em>{hit.fields.adm2Fallback && hit.fields.adm2Fallback + ", " }{hit.fields.adm1Fallback}</em></> }</>
+      return <>{getFieldValue(hit, 'adm2') && multivalue(getFieldValue(hit, 'adm2')) + ", "}{multivalue(getFieldValue(hit, 'adm1'))}{ getFieldValue(hit, 'adm1') == "[Uordna]" && <>&nbsp;<em>{getFieldValue(hit, 'adm2Fallback') && getFieldValue(hit, 'adm2Fallback') + ", " }{getFieldValue(hit, 'adm1Fallback')}</em></> }</>
     }
   },
   sof: {
     title: (hit: any, display: string) => {
-     // TODO: add kulturkode to the datasets?
-     const placeType = multivalue(hit.fields["placeType.label"])
+     const placeType = multivalue(getFieldValue(hit, 'placeType.label'))
      if (placeType) {
         return <>{defaultTitle(hit)} {` (${placeType.toLowerCase()})`}</>
       }
@@ -133,33 +135,31 @@ export const resultRenderers: ResultRenderers = {
       }
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields.rawData?.KommuneNr, hit.fields.rawData?.GardsNr, hit.fields.rawData?.BruksNr, "/", hit.fields, display)
+      return cadastreAdm(getFieldValue(hit, 'rawData.KommuneNr'), getFieldValue(hit, 'rawData.GardsNr'), getFieldValue(hit, 'rawData.BruksNr'), "/", hit, display)
     }
   },
   rygh: {
     title: (hit: any, display: string) => {
-      const fields = hit.fields
-      if (display == 'table') return defaultTitle(fields)
-      return <>{defaultTitle(hit)}{fields?.sosi && ` (${ fields.sosi[0].toLowerCase()})`}</>
+      if (display == 'table') return defaultTitle(hit)
+      return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && ` (${getFieldValue(hit, 'sosi').toLowerCase()})`}</>
     },
     snippet: (hit: any) => {
       return hit.highlight?.['content.html'][0] && formatHighlight(hit.highlight['content.html'][0])
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields["rawData.KNR"], hit.fields["rawData.Gnr"], hit.fields["rawData.Bnr"] || undefined, "/", hit.fields, display)
+      return cadastreAdm(getFieldValue(hit, 'rawData.KNR'), getFieldValue(hit, 'rawData.Gnr'), getFieldValue(hit, 'rawData.Bnr'), "/", hit, display)
     }
   },
   leks: {
     title: (hit: any, display: string) => {
       if (display == 'table') return defaultTitle(hit)
-      return <>{defaultTitle(hit)}{hit.fields.rawData?.Lokalitetstype ? ` (${hit.fields.rawData?.Lokalitetstype.toLowerCase()})` : ""}</>
+      return <>{defaultTitle(hit)}{getFieldValue(hit, 'rawData.Lokalitetstype') ? ` (${getFieldValue(hit, 'rawData.Lokalitetstype').toLowerCase()})` : ""}</>
     },
     snippet: (hit: any) => {
       return hit.highlight?.['content.html']?.[0] && formatHighlight(hit.highlight['content.html']?.[0])
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields["rawData.KNR"], hit.fields["rawData.GNR"], hit.fields["rawData.BNR"], "/", hit.fields, display)
-      
+      return cadastreAdm(getFieldValue(hit, 'rawData.KNR'), getFieldValue(hit, 'rawData.GNR'), getFieldValue(hit, 'rawData.BNR'), "/", hit, display)
     }
   },
   leks_g: {
@@ -173,9 +173,7 @@ export const resultRenderers: ResultRenderers = {
   },
   bsn: {
     title: (hit: any, display: string) => {
-      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
-      const fields = hit.fields
-      let loktypes = fields["rawData.stnavn.loktype"]
+      let loktypes = getFieldValue(hit, 'rawData.stnavn.loktype')
       if (Array.isArray(loktypes)) {
         loktypes = loktypes.map((type: any) => type.type).join(', ')
       }
@@ -185,23 +183,17 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)} {loktypes && ` (${loktypes.toLowerCase()})`}</>
     },
     details: (hit: any, display: string) => {
-      const fields = hit.fields
-      return cadastreAdm(fields["tmp.knr"], fields["rawData.stnavn.sted.gårdsnr"], fields["rawData.stnavn.sted.bruksnr"], "/", fields, display)
+      return cadastreAdm(getFieldValue(hit, 'tmp.knr'), getFieldValue(hit, 'rawData.stnavn.sted.gårdsnr'), getFieldValue(hit, 'rawData.stnavn.sted.bruksnr'), "/", hit, display)
     }
   },
   hord: {
     title: (hit: any, display: string) => {
-      const fields = hit.fields
-      return <><span className="font-semibold">{fields.label}{fields.altLabels ? ', ':''}</span>{fields.altLabels}</> 
-    }, /*
-    snippet: (hit: any) => {
-      return hit.highlight?.['rawData.merknader']?.[0] && formatHighlight(hit.highlight['rawData.merknader'][0])
-    }, */
+      return <><span className="font-semibold">{getFieldValue(hit, 'label')}{getFieldValue(hit, 'altLabels') ? ', ':''}</span>{getFieldValue(hit, 'altLabels')}</> 
+    },
     details: (hit: any, display: string) => {
-      const fields = hit.fields  
-      return <>{cadastreAdm(fields["rawData.kommuneNr"], fields["rawData.bruka.bruk.gardsNr"], fields["rawData.bruka.bruk.bruksNr"], "/", fields, display)}
-      {!hit.highlight && fields["rawData.merknader"] ? 
-        <><br/>{fields["rawData.merknader"]?.slice(0,100)}{fields["rawData.merknader"]?.length > 100 ? '...' : ''}
+      return <>{cadastreAdm(getFieldValue(hit, 'rawData.kommuneNr'), getFieldValue(hit, 'rawData.bruka.bruk.gardsNr'), getFieldValue(hit, 'rawData.bruka.bruk.bruksNr'), "/", hit, display)}
+      {!hit.highlight && getFieldValue(hit, 'rawData.merknader') ? 
+        <><br/>{getFieldValue(hit, 'rawData.merknader')?.slice(0,100)}{getFieldValue(hit, 'rawData.merknader')?.length > 100 ? '...' : ''}
         </> : ''} 
         </>
     }
@@ -209,67 +201,61 @@ export const resultRenderers: ResultRenderers = {
   nbas: {
     title: (hit: any, display: string) => {
       if (display == 'table') return defaultTitle(hit)
-      return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
+      return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return formatAdm(hit.fields)
+      return formatAdm(hit)
     }
   },
   m1838: {
     title: (hit: any, display: string) => {
-      return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
+      return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return  <>{hit.fields["rawData.MNR"]}{hit.fields["rawData.LNR"]?.[0] ? "." + hit.fields["rawData.LNR"][0] : ""}, {formatAdm(hit.fields)}</>
-       //cadastreAdm(hit.fields["rawData.KNR"], hit.fields["rawData.MNR"], hit.fields["rawData.LNR"], ".", hit.fields, display)
+      return <>{getFieldValue(hit, 'rawData.MNR')}{getFieldValue(hit, 'rawData.LNR')?.[0] ? "." + getFieldValue(hit, 'rawData.LNR')[0] : ""}, {formatAdm(hit)}</>
     }
   },
   m1886: {
     title: (hit: any, display: string) => {
       if (display == 'table') return defaultTitle(hit)
-        return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
-      //return <>{defaultTitle(hit)} {hit.fields.sosi && (" | " + hit.fields.sosi[0].toUpperCase() + hit.fields.sosi.slice(1))}</>
+      return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      //return JSON.stringify(hit.fields.cadastre)
-      return cadastreAdm(hit.fields["rawData.knr"], hit.fields["rawData.gnr"], hit.fields["rawData.bnr"], "/", hit.fields, display)
+      return cadastreAdm(getFieldValue(hit, 'rawData.knr'), getFieldValue(hit, 'rawData.gnr'), getFieldValue(hit, 'rawData.bnr'), "/", hit, display)
     }
   },
   mu1950: {
     title: (hit: any, display: string) => {
-      if (display == 'table') return defaultTitle(hit) 
-      return <>{defaultTitle(hit)}{hit.fields.sosi && <>&nbsp;{`(${hit.fields.sosi})`}</>}</>
-      //return <>{defaultTitle(hit)} {hit.fields.sosi && (" | " + hit.fields.sosi[0].toUpperCase() + hit.fields.sosi.slice(1))}</>
+      if (display == 'table') return defaultTitle(hit)
+      return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields.rawData?.KNR || hit.fields.knr, hit.fields.rawData?.GNR, hit.fields.rawData?.BNR, "/", hit.fields, display)
+      return cadastreAdm(getFieldValue(hit, 'rawData.KNR') || getFieldValue(hit, 'knr'), getFieldValue(hit, 'rawData.GNR'), getFieldValue(hit, 'rawData.BNR'), "/", hit, display)
     }
   },
   skul: {
     details: (hit: any, display: string) => {
-      return cadastreAdm(hit.fields["rawData.knr"], hit.fields["rawData.gnr"], hit.fields["rawData.bnr"], "/", hit.fields, display)
+      return cadastreAdm(getFieldValue(hit, 'rawData.knr'), getFieldValue(hit, 'rawData.gnr'), getFieldValue(hit, 'rawData.bnr'), "/", hit, display)
     },
   },
   ostf: {
     title: (hit: any, display: string) => {
-      return <><strong>{hit.fields.label}</strong> </>
+      return <><strong>{getFieldValue(hit, 'label')}</strong> </>
     },
     details: (hit: any, display: string) => {
-      // loktype is either an object or a list of objects. If it's a list, we want to join the types with a comma
-
-      return <> {hit.fields["rawData.GNID"]}{hit.fields["rawData.GNID"] && ", "}{formatAdm(hit.fields)}</>
+      return <> {getFieldValue(hit, 'rawData.GNID')}{getFieldValue(hit, 'rawData.GNID') && ", "}{formatAdm(hit)}</>
     }
   },
   tot: {
     title: defaultTitle,
     details: (hit: any, display: string) => {
-      return <>{hit.fields.adm2}{hit.fields.adm1 && ', ' + hit.fields.adm1}</>
+      return <>{getFieldValue(hit, 'adm2')}{getFieldValue(hit, 'adm1') && ', ' + getFieldValue(hit, 'adm1')}</>
       }
   },
   ssr2016: {
     title: defaultTitle,
     details: (hit: any, display: string) => {
-      return <>{formatAdm(hit.fields)}</>
+      return <>{formatAdm(hit)}</>
     }
   },
 
@@ -293,23 +279,21 @@ export const defaultResultRenderer: DefaultRenderer = {
     );
   },
   details: (hit: any, display: string) => {
-    return formatAdm(hit.fields)
+    return formatAdm(hit)
   },
   sourceTitle: (hit: any) => {
-    // labels that are different from the main label
-      const labels = hit.fields.altLabels?.filter((label: string) => 
-        label !== hit.fields.label[0]
+    const labels = getFieldValue(hit, 'altLabels')?.filter((label: string) => 
+      label !== getFieldValue(hit, 'label')
     ) || []
 
-    // Fix: "attestations.label" is an array of strings, not objects
-    hit.fields["attestations.label"]?.forEach((attestation: string) => {
-        if (!labels.includes(attestation) && attestation !== hit.fields.label[0]) {
+    getFieldValue(hit, 'attestations.label')?.forEach((attestation: string) => {
+        if (!labels.includes(attestation) && attestation !== getFieldValue(hit, 'label')) {
             labels.push(attestation)
         }
     })
     return <>
-    {hit.fields.label}
-                {hit.fields.sosi && ` (${hit.fields.sosi})`}
+    {getFieldValue(hit, 'label')}
+                {getFieldValue(hit, 'sosi') && ` (${getFieldValue(hit, 'sosi')})`}
                 {labels?.length > 0 &&
                     <span className="text-neutral-900">
                         {" - " +labels?.join(', ')}

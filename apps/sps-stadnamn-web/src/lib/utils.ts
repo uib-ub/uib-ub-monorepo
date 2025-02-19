@@ -57,3 +57,20 @@ export function getSkeletonLength(index: number, min: number, max: number): numb
   return Math.floor(baseSkeletonLengths[wrappedIndex] * (max - min) / 16 + min);
 }
 
+
+export function getFieldValue(hit: any, field: string) {
+  // If we have a hit with fields, use that
+  if (hit.fields?.[field]) {
+    return hit.fields[field];
+  }
+  
+  // If we have a hit with _source, use getValueByPath on the _source
+  if (hit._source) {
+    const sourceValue = hit._source[field] || getValueByPath(hit._source, field);
+    return sourceValue ? (Array.isArray(sourceValue) ? sourceValue : [sourceValue]) : null;
+  }
+  
+  // Otherwise treat the hit itself as the source object
+  const sourceValue = hit[field] || getValueByPath(hit, field);
+  return sourceValue ? (Array.isArray(sourceValue) ? sourceValue : [sourceValue]) : null;
+}
