@@ -81,7 +81,7 @@ export default function CadastralSubdivisions() {
                                                 </div>
                                             
                                             <span>
-                                                {hit.fields?.[leaf] || hit.fields.cadastre[0].bnr.join(", ")}&nbsp;{hit.fields?.label?.[0]}
+                                                {hit.fields?.[leaf] || hit.fields?.cadastre?.[0].bnr.join(", ")}&nbsp;{hit.fields?.label?.[0]}
                                             </span>
                                             </Clickable>
                                         </span>
