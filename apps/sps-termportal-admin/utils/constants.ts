@@ -37,7 +37,7 @@ export const topDomains = {
   NaturvitenskapTeknologi: "Naturvitenskap og teknologi",
   Humaniora: "Humaniora",
   Samfunnsfag: "Samfunnsfag",
-  OkonomiAdministrasjon: "Okonomi og Administrasjon",
+  OkonomiAdministrasjon: "Okonomi og administrasjon",
   Helse_og_sosial: "Helse og sosial",
   Kunst_design_arkitektur: "Kunst, design og arkitektur",
   Lærerutdanning: "Lærerutdanning",
