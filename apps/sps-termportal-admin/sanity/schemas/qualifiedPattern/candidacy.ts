@@ -9,7 +9,7 @@ export default {
     {
       name: "domain",
       type: "string",
-      title: "UHR domene",
+      title: "UHR-domene",
       options: {
         list: Object.keys(topDomains).map((key) => {
           return { title: topDomains[key], value: key };

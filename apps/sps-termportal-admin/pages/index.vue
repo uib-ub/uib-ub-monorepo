@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <SideBar />
+    <SideBar class="hidden 2xl:block" />
     <main class="">
       <header>
         <h1 class="mt-4 mb-8">
@@ -20,7 +20,7 @@
               <DashboardScheduledMemberUpdate />
             </DashboardScheduledActivities>
           </div>
-          <DashboardRecentActivities class="min-w-[32em]"/>
+          <DashboardRecentActivities class="min-w-[32em]" />
         </div>
       </div>
     </main>

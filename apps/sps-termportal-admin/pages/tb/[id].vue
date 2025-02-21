@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <!-- <SideBar /> -->
-    <main class="space-y-6 pt-8">
+    <main ref="mainRef" class="space-y-6 pt-8">
       <h1 class="text-2xl">{{ merged?.label }}</h1>
       <div id="content" ref="contentRef" class="space-y-8">
         <TermbaseInfoBox v-if="merged" :termbase="merged" />
@@ -11,25 +11,31 @@
             <TermbaseSubjectValues
               v-if="merged?.id && merged.conceptCount > 0"
               :key="`subjects${merged?.id}`"
-              headingLevel="h3"
+              heading-level="h3"
               :termbase="merged"
+            />
+            <TermbaseLanguageCoverage
+              v-if="merged?.id && merged.conceptCount > 0"
+              :key="`languageCoverage${merged?.id}`"
+              heading-level="h3"
+              :termbase-id="merged?.id"
             />
             <TermbaseDefinitionsExisting
               v-if="merged?.id && merged.conceptCount > 0"
               :key="`defs${merged?.id}`"
-              headingLevel="h3"
+              heading-level="h3"
               :termbase="merged"
             />
             <TermbaseDefinitionsMissing
               v-if="merged?.id && merged.conceptCount > 0"
               :key="`qualityMissingDefs${merged?.id}`"
-              headingLevel="h3"
+              heading-level="h3"
               :termbase="merged"
             />
             <TermbaseSemanticRelations
               v-if="merged?.id && merged.conceptCount > 0"
               :key="`semanticrelations${merged?.id}`"
-              headingLevel="h3"
+              heading-level="h3"
               :termbase="merged"
             />
           </div>
@@ -48,7 +54,7 @@
     </main>
     <ToC
       v-if="merged?.id"
-      :key="merged?.id + merged?._id"
+      :key="merged?.id + merged?._id + mainRef"
       class="ml-10 mt-[5rem] hidden lg:block"
       content-selector="#content"
     />
@@ -56,9 +62,13 @@
 </template>
 
 <script setup lang="ts">
+import { TermbaseLanguageCoverage } from "#components";
+
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
 const contentRef = ref();
+
+const mainRef = ref();
 
 const { data: dbdata } = await useLazyFetch("/api/tb/all/termbase_overview", {
   query: { internal: true },

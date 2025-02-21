@@ -1,6 +1,6 @@
-import { topDomains } from "~/utils/constants";
 import { label, note, responsibleStaff, tbstatus } from "./props";
 import attribution from "./qualifiedPattern/attribution";
+import { topDomains } from "~/utils/constants";
 
 export default {
   name: "termbase",
