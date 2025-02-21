@@ -60,6 +60,7 @@ export const tbstatus = {
   title: "Termbasestatus",
   options: {
     list: [
+      { title: "Uaktuell", value: "uaktuell"},
       { title: "Kjent", value: "kjent" },
       { title: "Planlagt", value: "planlagt" },
       { title: "Initialisert", value: "initialisert" },

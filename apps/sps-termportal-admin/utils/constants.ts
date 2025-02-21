@@ -1,4 +1,5 @@
 export const statusOrder = [
+  "uaktuell",
   "kjent",
   "planlagt",
   "initialisert",
