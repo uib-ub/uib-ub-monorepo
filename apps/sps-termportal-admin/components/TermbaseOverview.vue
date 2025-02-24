@@ -5,7 +5,7 @@
       ref="datatable"
       v-model:filters="filters"
       v-model:selection="selectedTermbase"
-      v-model:expandedRows="expandedRows"
+      v-model:expanded-rows="expandedRows"
       selection-mode="checkbox"
       :value="merged"
       removable-sort
@@ -14,6 +14,7 @@
       filter-display="row"
       table-style="min-width: 1rem"
       :global-filter-fields="['label', 'id', 'conceptCount']"
+      @row-click="onRowClick($event.data.id)"
     >
       <template #header>
         <div class="flex justify-between">
@@ -594,5 +595,9 @@ const staffMembers = computed(() => {
 const datatable = ref();
 const exportData = () => {
   datatable.value.exportCSV();
+};
+
+const onRowClick = (termbase) => {
+  navigateTo(`/tb/${termbase}`);
 };
 </script>
