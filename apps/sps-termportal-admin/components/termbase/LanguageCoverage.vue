@@ -3,7 +3,7 @@
     <template #header>Språk dekning</template>
     <UtilsTableLegend>
       <UtilsTableLegendEntry
-        :legend-key="`${procData?.[0]?.concepts}`"
+        :legend-key="`${procData?.[0]?.concepts || 0}`"
         legend-value="Publiserte begreper"
         legend-width="16"
       />
@@ -26,7 +26,7 @@
       </DataTable>
     </div>
     <template #legend>
-      <p>
+      <p v-if="procData.length > 0">
         The numbers express how many concepts have at least one term/definition
         in the respective language.
       </p>
@@ -45,7 +45,9 @@ function calcCoveragePerc(concepts, count) {
 }
 
 const procData = computed(() => {
-  const tb = data.value?.filter((tb) => tb.tbid.value === props.termbaseId)?.[0];
+  const tb = data.value?.filter(
+    (tb) => tb.tbid.value === props.termbaseId
+  )?.[0];
 
   if (tb) {
     return [
@@ -66,7 +68,7 @@ const procData = computed(() => {
         defperc: calcCoveragePerc(tb.concepts.value, tb.defnb.value),
       },
       {
-        label: "Norsk",
+        label: "Nynorsk",
         concepts: tb.concepts.value,
         term: tb.termsnn.value,
         termperc: calcCoveragePerc(tb.concepts.value, tb.termsnn.value),
