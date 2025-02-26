@@ -14,7 +14,7 @@
       filter-display="row"
       table-style="min-width: 1rem"
       :global-filter-fields="['label', 'id', 'conceptCount']"
-      @row-click="onRowClick($event.data.id)"
+      @row-click="onRowClick"
     >
       <template #header>
         <div class="flex justify-between">
@@ -323,6 +323,7 @@
 </template>
 
 <script setup lang="ts">
+import type { DataTableRowClickEvent } from "primevue/datatable";
 import { FilterMatchMode } from "primevue/api";
 import { colorMappingStatus, hiddenCollections } from "~/utils/constants";
 import { getDaysDiff } from "~/utils/utils";
@@ -597,7 +598,9 @@ const exportData = () => {
   datatable.value.exportCSV();
 };
 
-const onRowClick = (termbase) => {
-  navigateTo(`/tb/${termbase}`);
+const onRowClick = (event: DataTableRowClickEvent) => {
+  if (event.originalEvent.target?.textContent && event.data.id) {
+    navigateTo(`/tb/${event.data.id}`);
+  }
 };
 </script>
