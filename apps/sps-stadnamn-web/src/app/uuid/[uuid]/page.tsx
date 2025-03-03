@@ -169,7 +169,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       {<JsonLdTable jsonLd={doc2jsonld[docDataset as keyof typeof doc2jsonld] ? 
           doc2jsonld[docDataset as keyof typeof doc2jsonld](docData._source, children) : 
           defaultDoc2jsonld(docData._source, children)}/>}
-      </div>
+      </CollapsibleHeading>
 
       { docData?._source.rawData ?
         <div>
