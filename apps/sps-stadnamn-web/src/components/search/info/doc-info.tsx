@@ -176,28 +176,28 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>}
 
 
-        <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap mt-2 pt-4 lg:pt-2 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-4">
+        <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap mt-2 pt-4 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-2">
         
             {dataset != 'search' && snidParent &&
-                <Clickable link className="flex items-center gap-2 no-underline text-neutral-950 border border-neutral-200 py-1 px-3 rounded-md" only={{dataset: 'search', doc: snidParent}}>
-                  <PiTag aria-hidden="true" className="text-primary-600"/>
+                <Clickable link className="btn btn-neutral gap-2" only={{dataset: 'search', doc: snidParent}}>
+                  <PiTag aria-hidden="true" className="text-white"/>
                   Stadnamnoppslag
                 </Clickable>
             }
             {dataset == 'search' && docDataset != dataset &&
-                <Clickable link className="flex items-center gap-2 no-underline text-neutral-950 border border-neutral-200 py-1 px-3 rounded-md" only={{dataset: docDataset, doc}}>
-                  <PiMagnifyingGlassBold aria-hidden="true" className="text-primary-600"/>
+                <Clickable link className="btn btn-neutral gap-2" only={{dataset: docDataset, doc}}>
+                  <PiMagnifyingGlassBold aria-hidden="true" className="text-white"/>
                   Søk i {datasetTitles[docDataset as string]}
                 </Clickable>
             }
 
             {treeSettings[dataset] && docSource.sosi === 'gard' && mode != 'doc' && (!parent || mode == 'list') &&
 
-                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950 border border-neutral-200 px-3 py-1 rounded-md" 
+                <Clickable link className="btn btn-neutral gap-2" 
                            add={{parent: docSource.uuid,
                             ...mode != 'map' ? {doc: docSource.uuid, mode: 'doc'} : {}
                            }}>
-                  <PiTable className="text-primary-600" aria-hidden="true"/>
+                  <PiTable className="text-white" aria-hidden="true"/>
                   Vis underordna bruk
                 </Clickable>
             }
@@ -205,10 +205,9 @@ export default function DocInfo({docParams}: {docParams?: any}) {
           { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
           <>
             
-            <CopyLink uuid={docSource.uuid} className="border border-neutral-200 px-3 py-1 rounded-md"/> 
-            <Link href={"/uuid/" + docSource.uuid} className="flex items-center gap-2 no-underline text-neutral-950 border border-neutral-200 px-3 py-1 rounded-md">
+            <CopyLink uuid={docSource.uuid} className="btn btn-neutral"/> 
+            <Link href={"/uuid/" + docSource.uuid} className="btn btn-primary">
               Opne
-              <PiCaretRight className="text-primary-600" aria-hidden="true"/>
             </Link>
             </>
             : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
