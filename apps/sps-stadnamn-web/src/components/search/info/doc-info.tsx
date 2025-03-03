@@ -82,7 +82,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                            add={{doc: snidParent}} 
                            aria-hidden="true" 
                            className={`${parent && isMobile ? 'btn btn-outline btn-compact' : ''}`}>
-                            {dataset == 'search' ? isMobile ? <PiArrowElbowLeftUp className="text-2xl"/> :<PiCaretLeft className="text-2xl"/> : <PiTag className="text-2xl"/>}
+                            {dataset == 'search' ? isMobile ? <PiCaretLeft className="text-2xl"/> :<PiCaretLeft className="text-2xl"/> : <PiTag className="text-2xl"/>}
           </ClickableIcon>}
           
 
