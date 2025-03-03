@@ -57,7 +57,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
           link 
           add={{sourceLabel: label, parent: doc}} 
           remove={["sourceLabel", "sourceDataset"]} 
-          className={`no-underline border shadow-sm rounded-md px-3 py-1
+          className={`no-underline border rounded-md px-3 py-1
             ${isActive ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'} text-neutral-950`}
           aria-current={isActive ? 'page' : undefined}
         >
@@ -84,7 +84,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 flex items-center gap-1 
                 no-underline border rounded-md rounded-full 
                 pr-3 pl-2 py-2 xl:py-1 
-                w-full shadow-sm
+                w-full
                 ${isActive ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
               add={{
@@ -111,7 +111,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 flex items-center gap-1 
                 no-underline border rounded-md rounded-full 
                 pr-3 pl-2 py-2 xl:py-1 
-                w-full shadow-sm
+                w-full
                 ${parent && !sourceLabel && !sourceDataset ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
               remove={["sourceLabel", "sourceDataset"]}
