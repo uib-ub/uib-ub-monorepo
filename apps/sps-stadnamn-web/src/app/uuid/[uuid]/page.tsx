@@ -145,8 +145,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         
       
 
-      <div>
-      <h2>Data</h2>
+    
+      <CollapsibleHeading headingLevel="h2" title="Data">
 
       <div className="flex gap-4 flex-wrap my-2 mb-8 text-neutral-950">
         <Link href={"/uuid/" + docData._source.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
