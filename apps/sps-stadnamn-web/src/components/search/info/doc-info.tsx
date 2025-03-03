@@ -175,7 +175,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>}
 
 
-        <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap mt-2 pt-4 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-2">
+        <div className="flex gap-2 flex-wrap mt-2 pt-4 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-2">
         
             {dataset != 'search' && snidParent &&
                 <Clickable link className="btn btn-neutral gap-2" only={{dataset: 'search', doc: snidParent}}>
