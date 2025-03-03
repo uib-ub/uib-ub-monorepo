@@ -207,7 +207,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             
             <CopyLink uuid={docSource.uuid} className="border border-neutral-200 px-3 py-1 rounded-md"/> 
             <Link href={"/uuid/" + docSource.uuid} className="flex items-center gap-2 no-underline text-neutral-950 border border-neutral-200 px-3 py-1 rounded-md">
-              Åpne
+              Opne
               <PiCaretRight className="text-primary-600" aria-hidden="true"/>
             </Link>
             </>
