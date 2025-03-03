@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
             return Response.redirect("http:localhost:3000/uuid/" + path[4], 302)
         }
         if (path.length == 5 && path[3] == 'iiif') {
-            return Response.redirect("http:localhost:3000/iiif/" + path[4] + "/iiif", 302)
+            return Response.redirect("http:localhost:3000/iiif/" + path[4], 302)
         }
         if (dataset != 'search') {
             searchParams.set('dataset', dataset)
