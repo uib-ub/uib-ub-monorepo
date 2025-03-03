@@ -20,6 +20,7 @@ import ServerParent from './server-parent'
 import JsonLdTable from './json-ld-table'
 import { defaultDoc2jsonld, doc2jsonld } from '@/config/rdf-config'
 import { redirect, notFound } from 'next/navigation'
+import Etymology from '@/components/search/info/etymology'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
     const { uuid } = await params
@@ -90,6 +91,11 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
 
       </div>
+      {(docData?._source?.datasets?.includes('leks') || docData?._source?.datasets?.includes('rygh')) && 
+      <div className="mt-4">
+    <Etymology etymologyDataset={docData?._source?.datasets?.includes('leks') ? 'leks' : 'rygh'} uuids={[docData?._source.children]}/>
+    </div>
+    }
       
       </span>
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](docData?._source) : null }

@@ -1,3 +1,4 @@
+"use client"
 import { useContext, useEffect, useState, useMemo, useRef } from 'react';
 import { infoPageRenderers } from '@/config/info-renderers';
 import { DocContext } from '@/app/doc-provider';
@@ -5,6 +6,7 @@ import { datasetTitles } from '@/config/metadata-config';
 import { PiBookOpen, PiCaretRight, PiFiles, PiMagnifyingGlass } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 
 interface EtymologyProps {
@@ -102,7 +104,7 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
     const html = etymology ? stripHtmlAndLimitText(etymology) : '';
 
     return (
-        <div>
+        <>
             {loading ? (
                 <div className="w-full h-full flex flex-col gap-4 inner-slate p-2">
                     <div className="h-3 w-full bg-neutral-200 rounded-full animate-pulse"></div>
@@ -111,20 +113,26 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
                 </div>
             ) : etymology && (
                 <div className="p-2 inner-slate">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-col gap-2">
                         <div className="inline">
                             {etymology_renderer?.(html)}
                         </div>
-                        <Clickable
+                        {searchParams.get('doc') ? <Clickable
                             link
                             add={{doc: sourceDocUuid, parent: doc}}
                             className="no-underline flex items-center gap-2 font-semibold">
                             <PiBookOpen className="text-lg text-primary-600" aria-hidden="true"/>
                             {datasetTitles[etymologyDataset]}
                         </Clickable>
+                        : <Link href={"/uuid/" + sourceDocUuid} className="no-underline flex items-center gap-2 font-semibold">
+                            <PiBookOpen className="text-lg text-primary-600" aria-hidden="true"/>
+                            {datasetTitles[etymologyDataset]}
+                        </Link>
+                        
+                    }
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }
