@@ -49,7 +49,7 @@ return (
                             ...(mode != 'map' ? {mode: 'doc'} : {})
                           }} 
                       remove={["sourceLabel", "sourceDataset"]} 
-                      className={`no-underline border shadow-sm rounded-md px-3 py-1 max-w-[50svw] xl:max-w-[15svw] truncate
+                      className={`no-underline border rounded-md px-3 py-1 max-w-[50svw] xl:max-w-[15svw] truncate
                         ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}`}
                       aria-current={isActive ? 'page' : undefined}
                       link={isMobile || mode != 'list' ? undefined : true}
