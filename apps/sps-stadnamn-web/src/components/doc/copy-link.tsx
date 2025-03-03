@@ -4,20 +4,24 @@ import { PiCheckBold, PiClipboardBold, PiClipboardFill, PiInfinityBold, PiLinkSi
 import Link from 'next/link'
 import { useParams } from 'next/navigation';
 
-export default function CopyLink({ uuid }: { uuid: string }) {
+export default function CopyLink({ uuid, className }: { uuid: string, className?: string }) {
     const [linkCopied, setLinkCopied] = useState<string|null>(null);
     const params = useParams()
 
-  const copyLink = async () => {
-    await navigator.clipboard.writeText('https://stadnamnportalen.uib.no/uuid/' + uuid); //(`https://purl.org/stadnamn/uuid/${uuid}`);
-    setLinkCopied(uuid);
-  };
+    const copyLink = async () => {
+        await navigator.clipboard.writeText('https://stadnamnportalen.uib.no/uuid/' + uuid);
+        setLinkCopied(uuid);
+    };
 
     return (
-        <span className="flex gap-4 flex-wrap">
-        <button onClick={copyLink}>
-        <span className="flex gap-2 lg:gap-1 p-1 lg:p-0 items-center whitespace-nowrap">{linkCopied == uuid ? <PiCheckBold className="inline" aria-hidden="true"/> : <PiLinkSimple className="inline" aria-hidden="true"/>}Kopier lenke</span>
+        <button onClick={copyLink} className={className}>
+            <span className="flex items-center gap-1">
+                {linkCopied == uuid ? 
+                    <PiCheckBold className="text-primary-600" aria-hidden="true"/> : 
+                    <PiLinkSimple className="text-primary-600" aria-hidden="true"/>
+                }
+                Kopier lenke
+            </span>
         </button>
-        </span>
     );
 }

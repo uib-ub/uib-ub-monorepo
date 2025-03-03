@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiWarningFill, PiX, PiTag, PiInfoFill, PiArrowElbowLeftUp, PiCaretLeft, PiTableFill, PiInfinityBold, PiMagnifyingGlassBold } from "react-icons/pi"
+import { PiWarningFill, PiX, PiTag, PiInfoFill, PiArrowElbowLeftUp, PiCaretLeft, PiTableFill, PiInfinityBold, PiMagnifyingGlassBold, PiTable, PiCaretRight } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import Clickable from "@/components/ui/clickable/clickable"
@@ -176,28 +176,42 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>}
 
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap mt-2 pt-4 lg:pt-2 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-4">
-        { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
-          <>
-            <Link href={"/uuid/" + docSource.uuid} className="flex p-1 lg:p-0 whitespace-nowrap items-center gap-2 lg:gap-1 no-underline">
-              <PiInfinityBold aria-hidden="true"/>
-              Varig side
-            </Link>
-            <CopyLink uuid={docSource.uuid}/> 
-            </>
-            : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
-            }
+        <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap mt-2 pt-4 lg:pt-2 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-4">
+        
             {dataset != 'search' && snidParent &&
-                <Clickable link className="flex p-1 lg:p-0 items-center gap-2 lg:gap-1 no-underline" only={{dataset: 'search', doc: snidParent}}>
-                  <PiTag aria-hidden="true"/>
+                <Clickable link className="flex items-center gap-2 no-underline text-neutral-950 border border-neutral-200 py-1 px-3 rounded-md" only={{dataset: 'search', doc: snidParent}}>
+                  <PiTag aria-hidden="true" className="text-primary-600"/>
                   Stadnamnoppslag
                 </Clickable>
             }
             {dataset == 'search' && docDataset != dataset &&
-                <Clickable link className="flex p-1 lg:p-0 items-center gap-2 lg:gap-1 no-underline" only={{dataset: docDataset, doc}}>
-                  <PiMagnifyingGlassBold aria-hidden="true"/>
+                <Clickable link className="flex items-center gap-2 no-underline text-neutral-950 border border-neutral-200 py-1 px-3 rounded-md" only={{dataset: docDataset, doc}}>
+                  <PiMagnifyingGlassBold aria-hidden="true" className="text-primary-600"/>
                   Søk i {datasetTitles[docDataset as string]}
                 </Clickable>
+            }
+
+            {treeSettings[dataset] && docSource.sosi === 'gard' && mode != 'doc' && (!parent || mode == 'list') &&
+
+                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950 border border-neutral-200 px-3 py-1 rounded-md" 
+                           add={{parent: docSource.uuid,
+                            ...mode != 'map' ? {doc: docSource.uuid, mode: 'doc'} : {}
+                           }}>
+                  <PiTable className="text-primary-600" aria-hidden="true"/>
+                  Vis underordna bruk
+                </Clickable>
+            }
+
+          { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
+          <>
+            
+            <CopyLink uuid={docSource.uuid} className="border border-neutral-200 px-3 py-1 rounded-md"/> 
+            <Link href={"/uuid/" + docSource.uuid} className="flex items-center gap-2 no-underline text-neutral-950 border border-neutral-200 px-3 py-1 rounded-md">
+              Åpne
+              <PiCaretRight className="text-primary-600" aria-hidden="true"/>
+            </Link>
+            </>
+            : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
             }
 
 
@@ -232,17 +246,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             : null
     
         }
-        {treeSettings[dataset] && docSource.sosi === 'gard' && mode != 'doc' && (!parent || mode == 'list') &&
-        <div className="border-t border-t-neutral-200 pt-3 mt-3 mb-2">
-                <Clickable link className="flex items-center gap-1 no-underline text-neutral-950 border border-neutral-200 p-2 rounded-md" 
-                           add={{parent: docSource.uuid,
-                            ...mode != 'map' ? {doc: docSource.uuid, mode: 'doc'} : {}
-                           }}>
-                  <PiTableFill className="text-primary-600" aria-hidden="true"/>
-                  Vis underordna bruk
-                </Clickable>
-                </div>
-            }
+
         </>
 
 }
