@@ -88,7 +88,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
           {!isMobile && ( mode == 'doc' ?
                   <Clickable 
-                    remove={["mode"]} 
+                    remove={["mode", "sourceDataset", "sourceLabel", "parent"]} 
                     add={preferredTabs[dataset] ? {mode: preferredTabs[dataset]} : {}}
                     className=" flex items-center gap-1 text-lg btn btn-outline" 
                     aria-label="Tilbake">
