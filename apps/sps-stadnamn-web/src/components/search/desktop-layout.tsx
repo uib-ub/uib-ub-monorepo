@@ -66,7 +66,7 @@ export default function DesktopLayout() {
 
         {(mode == 'doc' && parent) ?
             <div className="lg:absolute lg:right-0 lg:top-0 lg:w-[25svw] h-[calc(100svh-4rem)] lg:m-2 rounded-md shadow-lg lg:gap-4 bg-white">
-                { (parentLoading || childrenLoading) ? <Spinner className="h-16 w-16 " status="Lastar kjelder"/> : <ChildrenWindow/>}
+                { (parentLoading || childrenLoading) ? <div className="flex justify-center items-center h-full"><Spinner className="h-16 w-16 " status="Lastar kjelder"/></div> : <ChildrenWindow/>}
             </div>
         : null}
 
