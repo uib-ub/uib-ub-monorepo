@@ -133,7 +133,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
       </>
       }
       
-      {isMobile && parent && <div className="border border-neutral-200 rounded-md"><ChildrenWindow/></div>}
+      
 
     
       </div>
