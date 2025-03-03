@@ -46,7 +46,7 @@ return (
                       add={{sourceLabel: label, 
                             parent: parent, 
                             doc: parent,
-                            ...(mode != 'map' ? {mode: 'doc'} : {})
+                            ...(mode != 'map' && !isMobile ? {mode: 'doc'} : {})
                           }} 
                       remove={["sourceLabel", "sourceDataset"]} 
                       className={`no-underline border rounded-md px-3 py-1 max-w-[50svw] xl:max-w-[15svw] truncate

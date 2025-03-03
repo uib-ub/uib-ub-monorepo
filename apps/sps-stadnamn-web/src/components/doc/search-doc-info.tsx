@@ -118,7 +118,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
               add={{
                 parent: docSource.uuid,
                 doc: docSource.uuid,
-                ...(mode != 'map' ? {mode: 'doc'} : {})
+                ...(mode != 'map' && !isMobile ? {mode: 'doc'} : {})
               }}
               link={isMobile || mode != 'map' ? undefined : true}
               aria-expanded={isMobile ? undefined : parent ? true : false}
