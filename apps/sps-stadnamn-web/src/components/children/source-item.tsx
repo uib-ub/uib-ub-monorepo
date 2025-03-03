@@ -1,7 +1,7 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useDataset } from '@/lib/search-params';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useContext } from 'react';
 import { PiArrowRight, PiBookOpen, PiBookOpenBold, PiBookOpenTextBold, PiDatabase, PiInfoFill, PiTag } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
@@ -18,6 +18,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const parent = searchParams.get('parent')
 
 
+
     const sourceTitle = resultRenderers[docDataset]?.sourceTitle || defaultResultRenderer.sourceTitle
     const sourceDetails = resultRenderers[docDataset]?.sourceDetails || defaultResultRenderer.sourceDetails
 
@@ -26,12 +27,11 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     return  <div className="w-full h-full flex items-center gap-2 py-1">
             <Clickable 
                 link
-                label="Vis kjelde"
                 aria-current={(doc == getFieldValue(hit, 'uuid')) ? 'page' : undefined}
                 ref={itemRef}
                 className="group no-underline flex gap-1 items-center rounded-full"
                 add={{
-                    doc: isMobile ? null : getFieldValue(hit, 'children')?.length === 1 ? getFieldValue(hit, 'children')[0] : getFieldValue(hit, 'uuid'),
+                    doc: getFieldValue(hit, 'children')?.length === 1 ? getFieldValue(hit, 'children')[0] : getFieldValue(hit, 'uuid'),
                     parent: parent && docDataset == 'search' ? getFieldValue(hit, 'uuid') : null,
                 }}
             >

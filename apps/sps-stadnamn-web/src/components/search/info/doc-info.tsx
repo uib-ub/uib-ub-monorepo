@@ -76,9 +76,8 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-        {(mode == 'map' || (mode == 'doc' && !isMobile)) && 
         <div className={`absolute top-0 lg:top-2 right-0 flex gap-2`}>
-          {snidParent && dataset == 'search' && mode != 'doc' &&
+          {snidParent && dataset == 'search' &&
             <ClickableIcon label="Gå til stadnamnoppslag" 
                            add={{doc: snidParent}} 
                            aria-hidden="true" 
@@ -109,7 +108,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
 
         </div>
-        }
+        
  
         </div>}
 
