@@ -13,6 +13,7 @@ import { getSkeletonLength } from "@/lib/utils"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { GlobalContext } from "@/app/global-provider"
 import { DownloadButton } from "./download-button"
+import Clickable from "@/components/ui/clickable/clickable"
 
 export default function TableExplorer() {
     const dataset = useDataset()
@@ -21,6 +22,7 @@ export default function TableExplorer() {
 
     const setAsc = useQueryState('asc')[1]
     const setDesc = useQueryState('desc')[1]
+    const doc = searchParams.get('doc')
 
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const localStorageKey = `visibleColumns_${dataset}`;
@@ -167,27 +169,24 @@ export default function TableExplorer() {
                             </tr>
                         </thead>
                         <tbody>
-                        { !isLoading ? tableData.map((hit: any) => (
+                        { !isLoading ? tableData?.map((hit: any) => (
                             <Fragment key={hit._id}>
                             <tr>
                                 <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'} className="!p-0">
-                                    <span className="flex items-center gap-2 p-2">
-                                        <ClickableIcon 
-                                            link
-                                            label="Vis detaljer"
-                                            className="group p-1 hover:bg-neutral-100 rounded-full border-2 border-transparent"
-                                            remove={['parent']}
-                                            add={{doc: hit._source?.uuid, 
-                                                  ...!isMobile && (mode == 'list' || mode == 'table') ? {mode: 'doc'} : {},
-                                                  ...(hit._source.children?.length || (treeSettings[dataset] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
-
-                                                  
-                                                  
-                                                  }}>
-                                            <PiBookOpen className="text-primary-600 text-2xl" />
-                                        </ClickableIcon>
+                                    <Clickable className="flex group items-center gap-2 p-2 no-underline"
+                                        link
+                                        remove={['parent']}
+                                        aria-current={doc == hit._source?.uuid}
+                                        add={{doc: hit._source?.uuid, 
+                                            ...!isMobile && (mode == 'list' || mode == 'table') ? {mode: 'doc'} : {},
+                                            ...(hit._source.children?.length || (treeSettings[dataset] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
+                                        }}
+                                    >
+                                        <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current=true]:border-accent-800 border-2 border-transparent">
+                                            <PiBookOpen aria-hidden="true" className="text-primary-600 group-aria-[current=true]:text-accent-800" />
+                                        </div>
                                         {hit._source?.label}
-                                    </span>
+                                    </Clickable>
                                 </th>
                                 {
                                     visibleColumns.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{joinWithSlash(hit._source.adm1)}</td>

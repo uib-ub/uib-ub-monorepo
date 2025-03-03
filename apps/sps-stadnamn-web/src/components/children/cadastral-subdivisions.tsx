@@ -46,7 +46,7 @@ export default function CadastralSubdivisions() {
                                     
                                     <span>
                                         {Array.isArray(hit.fields?.[leaf]) ? hit.fields?.[leaf]?.join(", ") : hit.fields?.[leaf]?.[0]}{' '}
-                                        {Array.isArray(hit.fields?.cadastre[0]?.bnr) ? hit.fields?.cadastre[0].bnr.join(", ") : hit.fields?.cadastre[0].bnr}{' '}
+                                        {Array.isArray(hit.fields?.cadastre?.[0]?.bnr) ? hit.fields?.cadastre?.[0].bnr.join(", ") : hit.fields?.cadastre?.[0].bnr}{' '}
                                         {hit.fields?.label?.[0]}
                                     </span>
                                     </Clickable>

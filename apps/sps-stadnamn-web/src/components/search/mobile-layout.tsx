@@ -20,6 +20,7 @@ import { DocContext } from "@/app/doc-provider";
 import DocInfo from "./info/doc-info";
 import DocSkeleton from "./info/doc-skeleton";
 import ChildrenWindow from "../children/children-window";
+import { GlobalContext } from "@/app/global-provider";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);

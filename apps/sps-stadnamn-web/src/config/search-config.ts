@@ -1,26 +1,25 @@
-  export interface FieldConfigItem {
-    label: string;
-    result?: boolean; // Show in result list
-    description?: string; // Description of field
-    fulltext?: boolean; // Can be selected as search field
-    facet?: boolean;
-    omitLabel?: boolean;
-    table?: boolean; // Show in table view by default
-    sort?: 'asc' | 'desc';
-    type?: 'integer' | 'keyword';
-    additionalParams?: string[];
-    docLink?: string; // Link to another document
-    cadastreTable?: boolean; // Show in cadastre table
-    featuredFacet?: boolean; // Show in custom facet
-    child?: string; // Child facet. The parent facet is handled client side, the child is handled server side
+export interface FieldConfigItem {
+  label?: string;
+  result?: boolean; // Show in result list
+  description?: string; // Description of field
+  fulltext?: boolean; // Can be selected as search field
+  facet?: boolean;
+  omitLabel?: boolean;
+  table?: boolean; // Show in table view by default
+  sort?: 'asc' | 'desc';
+  type?: 'integer' | 'keyword';
+  additionalParams?: string[];
+  docLink?: string; // Link to another document
+  cadastreTable?: boolean; // Show in cadastre table
+  featuredFacet?: boolean; // Show in custom facet
+  child?: string; // Child facet. The parent facet is handled client side, the child is handled server side
+}
 
-  }
-
-  interface FacetConfigItem extends FieldConfigItem {
-    key: string; 
-  }
+interface FacetConfigItem extends FieldConfigItem {
+  key: string; 
+}
  
-const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, superFacet] = Array(7).fill(true);
+const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, superFacet] = Array(8).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
 const cadastre = {"within": {label: "Gard", result},
@@ -41,8 +40,6 @@ const labelDefaults = {
   "altLabels": {label: "Andre namn", table, facet, result},
   "attestations": {label: "Kjeldeformer", table, result},
 }
-
-
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
@@ -186,9 +183,6 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
   }
 
-
-  
-
 export const facetConfig: Record<string, FacetConfigItem[]> = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
   acc[dataset] = Object.entries(fields)
     .filter(([_, config]) => config.facet)
@@ -198,9 +192,6 @@ export const facetConfig: Record<string, FacetConfigItem[]> = Object.entries(fie
     }));
   return acc;
 }, {} as Record<string, FacetConfigItem[]>);
-
-
-
 
 // Fields needed for the result list
 export const resultConfig = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
@@ -213,14 +204,13 @@ export const resultConfig = Object.entries(fieldConfig).reduce((acc, [dataset, f
   return acc;
 }, {} as Record<string, string[]>);
 
-
 // TODO: make it hard coded and more customizable, and non-boolean
 export const fulltextFields = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
   acc[dataset] = Object.entries(fields)
-    .filter(([_, config]) => config.fulltext)
+    .filter(([_, config]) => config.fulltext && config.label)
     .map(([key, { label }]) => ({
       key,
-      label
+      label: label!
     }));
   return acc;
 }, {} as Record<string, { key: string, label: string }[]>);

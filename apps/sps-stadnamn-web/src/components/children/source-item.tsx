@@ -6,6 +6,7 @@ import { PiArrowRight, PiBookOpen, PiBookOpenBold, PiBookOpenTextBold, PiDatabas
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import { getFieldValue } from '@/lib/utils';
 
 
 
@@ -26,12 +27,12 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             <Clickable 
                 link
                 label="Vis kjelde"
-                aria-current={(doc == hit.fields.uuid[0]) ? 'page' : undefined}
+                aria-current={(doc == getFieldValue(hit, 'uuid')) ? 'page' : undefined}
                 ref={itemRef}
                 className="group no-underline flex gap-1 items-center rounded-full"
                 add={{
-                    doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid[0],
-                    parent: parent && docDataset == 'search' ? hit.fields.uuid[0] : null,
+                    doc: isMobile ? null : getFieldValue(hit, 'children')?.length === 1 ? getFieldValue(hit, 'children')[0] : getFieldValue(hit, 'uuid'),
+                    parent: parent && docDataset == 'search' ? getFieldValue(hit, 'uuid') : null,
                 }}
             >
                 <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">

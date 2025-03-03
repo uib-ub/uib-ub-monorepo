@@ -54,7 +54,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
         if (visibleColumns.includes('adm')) headers.push('Område');
         if (showCadastre && visibleColumns.includes('cadastre')) headers.push('Matrikkel');
         facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))
-            ?.forEach(facet => headers.push(facet.label));
+            ?.forEach(facet => headers.push(facet?.label || ''));
 
         // Prepare CSV rows
         const rows = data.hits.hits.map((hit: any) => {

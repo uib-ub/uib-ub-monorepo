@@ -20,6 +20,7 @@ import IconLink from "@/components/ui/icon-link"
 import FacetsInfobox from "@/components/doc/facets-infobox"
 import SearchDocInfo from "@/components/doc/search-doc-info"
 import { facetConfig } from "@/config/search-config"
+import { getFieldValue } from "@/lib/utils"
 
 
 
@@ -46,10 +47,11 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
     const filteredFacets = useMemo(() => {
         if (!docDataset || !docSource || (docDataset == 'mu1950' && docSource.sosi == 'gard')) return [];
+        
         return facetConfig[docDataset]?.filter(item => {
             if (!item.key || ['sosi', 'datasets'].includes(item.key)) return false;
-            const value = docSource[item.key];
-            return value && (Array.isArray(value) ? value.length > 0 : value.length > 0);
+            const value = getFieldValue(docSource, item.key);
+            return value && value.length > 0;
         });
     }, [docDataset, docSource]);
 
@@ -119,7 +121,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>
         <div className="flex gap-1 flex-wrap">
         {
-         docSource.sosi && docDataset != 'search' && <ExternalLinkTooltip description={`SOSI-stadnarden${sosiVocab[docSource.sosi] ? `: ${sosiVocab[docSource.sosi]['description']}` : ''}`} className="flex items-center bg-neutral-50 border border-neutral-200 pl-2 pr-0 rounded-md text-neutral-950 no-underline external-link"
+         docSource.sosi && docDataset != 'search' && <ExternalLinkTooltip description={sosiVocab[docSource.sosi] ? `SOSI-standarden: ${sosiVocab[docSource.sosi]['description']}` : 'stadtype'} className="flex items-center bg-neutral-50 border border-neutral-200 pl-2 pr-0 rounded-md text-neutral-950 no-underline external-link"
          href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + docSource.sosi}>
             { sosiVocab[docSource.sosi]?.label || docSource.sosi}
         </ExternalLinkTooltip>
@@ -155,7 +157,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       
       
       { docDataset && infoPageRenderers[docDataset]?.( docSource) }
-
       { filteredFacets.length > 0 && 
         <CollapsibleHeading title="Detaljar">
             <FacetsInfobox source={docSource} filteredFacets={filteredFacets}/>

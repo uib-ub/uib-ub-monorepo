@@ -37,7 +37,7 @@ export default function Facets() {
             </Clickable>
           )}
 
-          <Clickable type="button" role="tab" aria-selected={facet != 'adm' && !fieldConfig[dataset][facet].featuredFacet} add={{facet: availableFacets.find(f => !f.featuredFacet && !f.child)?.key || null}} className='rounded-tabs'>
+          <Clickable type="button" role="tab" aria-selected={facet != 'adm' && !fieldConfig[dataset][facet]?.featuredFacet} add={{facet: availableFacets.find(f => !f.featuredFacet && !f.child)?.key || null}} className='rounded-tabs'>
           Meir
           </Clickable>
 
