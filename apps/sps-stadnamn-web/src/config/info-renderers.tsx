@@ -35,8 +35,8 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     return <Fragment key={index}>
     
       <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable>
-      { item.gnr && <>- <Clickable link className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
-      { item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" only={{dataset, "cadastre__gnr": item.gnr.toString(), "cadastre__bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
+      { item.gnr && <>- <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "rawData.Gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
+      { item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "rawData.Gnr": item.gnr.toString(), "rawData.Bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
       
 
 
