@@ -41,7 +41,7 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
                 :
                     <aside className={`flex flex-col gap-2 ml-auto border border-neutral-200 w-full border-t rounded-md`}>
                         { treeSettings[dataset] ?  
-                            parentData?._id && <CadastralSubdivisions/> 
+                            parentData?._id && <CadastralSubdivisions dataset={dataset} doc={doc} childrenData={docData?._source?.children} landingPage={false} /> 
                         :  dataset == 'search' && <>{parent && parent != doc && <h2 className="!text-base font-semibold uppercase !font-sans px-1">Andre kjelder</h2>}<SourceList/></>}
                     </aside>
                 : null
