@@ -41,7 +41,7 @@ export default function ChildrenWindow() {
                     <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
                 </div>
                 <div className="max-w-[20svw] lg:!max-w-[10svw] truncate font-semibold">
-                    {treeSettings[dataset] && ((getValueByPath(parentData._source, treeSettings[dataset]?.subunit) || parentData?._source?.cadastre?.[0]?.gnr?.join(",")) + " ")}
+                    {getGnr(parentData, dataset)}&nbsp;
                     {parentData?._source.label}
                 </div>
             </Clickable>
