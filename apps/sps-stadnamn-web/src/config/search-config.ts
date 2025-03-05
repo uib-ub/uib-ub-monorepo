@@ -115,7 +115,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       uuid, label, adm, adm1, adm2, sosi, 
       ...cadastre,
       "within": {label: "Gard", result},
-      "knbr": {label: "Knr", table, facet, result},
+      "knr": {label: "Knr", table, facet, result},
       "misc.GNR": {label: "Gnr", table, facet, result, additionalParams: ["knr"]},
       "misc.BNR": {label: "Bnr", table, facet, result, additionalParams: ["knr", "misc.GNR"]},
       "misc.Eigar": {label: "Eigar", table, facet, cadastreTable},
@@ -123,7 +123,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "misc.Øre": {label: "Skyldøre", table, facet, cadastreTable},
       "misc.Koordinattype": {label: "Koordinattype", facet},
       ...identifiers,
-    },
+    },  
     m1838: {
       uuid, label, sosi, adm,
       "within": {label: "Gard"},

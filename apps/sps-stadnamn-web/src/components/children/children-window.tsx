@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { PiBookOpen, PiBookOpenFill, PiHouse, PiHouseFill, PiTag, PiTagFill, PiTrashFill, PiTreeView, PiX, PiXBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { treeSettings } from "@/config/server-config";
-import { getValueByPath } from "@/lib/utils";
+import { getGnr, getValueByPath } from "@/lib/utils";
 import { ChildrenContext } from "@/app/children-provider";import { DocContext } from "@/app/doc-provider";
 import { useDataset } from "@/lib/search-params";
 import Clickable from "../ui/clickable/clickable";
@@ -75,7 +75,7 @@ export default function ChildrenWindow() {
     </div>
     {parentData && 
                 <div className={` ${isMobile ? 'h-full pb-[30svh]' : 'pb-8 px-2 overflow-y-auto stable-scrollbar'}`}>
-                    {treeSettings[dataset] && <CadastralSubdivisions/>}
+                    {treeSettings[dataset] && <CadastralSubdivisions dataset={dataset} doc={doc} childrenData={childrenData} landingPage={false}/>}
                     {dataset == 'search' && <SourceList/>}
                 </div>
             }

@@ -1,16 +1,13 @@
-import { fetchDoc } from '@/app/api/_utils/actions'
+import { fetchChildren, fetchDoc } from '@/app/api/_utils/actions'
 import ErrorMessage from '@/components/error-message'
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import { infoPageRenderers } from '@/config/info-renderers'
 import OriginalData from './original-data'
 import Link from 'next/link'
-import { PiBracketsCurlyBold, PiDatabaseFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi'
-import CopyLink from '@/components/doc/copy-link'
+import { PiBracketsCurlyBold } from 'react-icons/pi'
 import Thumbnail from '@/components/image-viewer/thumbnail'
 import CollapsibleHeading from '@/components/doc/collapsible-heading'
 import CoordinateInfo from '@/components/search/info/coordinate-info'
-import FacetsInfobox from '@/components/doc/facets-infobox'
-import CadastreBreadcrumb from '@/components/search/info/cadastre-breadcrumb'
 import { treeSettings } from '@/config/server-config'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
 import ServerSourcesList from './server-sources-list'
@@ -21,6 +18,8 @@ import JsonLdTable from './json-ld-table'
 import { defaultDoc2jsonld, doc2jsonld } from '@/config/rdf-config'
 import { redirect, notFound } from 'next/navigation'
 import Etymology from '@/components/search/info/etymology'
+import ServerCadastralSubdivisions from './server-cadastral-subdivisions'
+import CadastralSubdivisions from '@/components/children/cadastral-subdivisions'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
     const { uuid } = await params
@@ -37,12 +36,17 @@ export async function generateMetadata( { params }: { params: Promise<{ uuid: st
 export default async function LandingPage({ params }: { params: Promise<{ uuid: string }>}) {
     const { uuid } = await params
     const docData = await fetchDoc({uuid})
+    const docDataset = docData._index.split('-')[2]
     
     if (!docData || !docData._source) {
         notFound()
     }
     
-    const children = docData._source.children ? await fetchDoc({ uuid: docData._source.children}) : []
+    const children = await fetchChildren(
+        docData._source.children 
+            ? { uuids: docData._source.children }
+            : { within: docData._source.uuid, dataset: docDataset, mode: 'table' }
+    )
 
     if (docData.error) {
         return <ErrorMessage error={docData} message="Kunne ikke hente dokumentet"/>
@@ -52,7 +56,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         redirect(`/uuid/${docData._source.uuid}#${uuid}`)
     }
 
-    const docDataset = docData._index.split('-')[2]
+    
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -184,9 +188,13 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       : null}
 
       
+      {treeSettings[docDataset] && docData._source.sosi == 'gard' &&
+      <div className="mt-4"> 
+      <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Underordna bruk</h2>
+      <CadastralSubdivisions dataset={docDataset} doc={uuid} childrenData={children} landingPage={true}/>
+      </div>
+      }
     </div>
-
-    
 
     
     
@@ -208,13 +216,13 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         <ServerSourcesList childrenData={children}/>
       </aside>
      }
+     
 
 
      
     </div>}
 
     
-
 
   </div>
     )

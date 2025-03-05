@@ -1,3 +1,4 @@
+import { treeSettings } from "@/config/server-config"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
  
@@ -73,4 +74,28 @@ export function getFieldValue(hit: any, field: string) {
   // Otherwise treat the hit itself as the source object
   const sourceValue = hit[field] || getValueByPath(hit, field);
   return sourceValue ? (Array.isArray(sourceValue) ? sourceValue : [sourceValue]) : null;
+}
+
+export function getGnr(hit: any, dataset: string) {
+  const data = hit._source || hit.fields
+  if (!treeSettings[dataset] || !data) {
+    return null
+  }
+  const gnr = getFieldValue(hit, treeSettings[dataset]?.subunit) || data?.cadastre?.[0]?.gnr
+  if (Array.isArray(gnr)) {
+    return gnr.join(",")
+  }
+  return gnr
+}
+
+export function getBnr(hit: any, dataset: string) {
+  const data = hit._source || hit.fields
+  if (!treeSettings[dataset] || !data) {
+      return null
+    }
+  const bnr = getFieldValue(hit, treeSettings[dataset]?.leaf) || data?.cadastre?.[0]?.bnr
+  if (Array.isArray(bnr)) {
+    return bnr.join(",")
+  }
+  return bnr
 }
