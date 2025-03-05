@@ -18,7 +18,6 @@ import JsonLdTable from './json-ld-table'
 import { defaultDoc2jsonld, doc2jsonld } from '@/config/rdf-config'
 import { redirect, notFound } from 'next/navigation'
 import Etymology from '@/components/search/info/etymology'
-import ServerCadastralSubdivisions from './server-cadastral-subdivisions'
 import CadastralSubdivisions from '@/components/children/cadastral-subdivisions'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
