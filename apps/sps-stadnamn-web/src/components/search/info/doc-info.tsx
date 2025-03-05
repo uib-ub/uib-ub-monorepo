@@ -201,16 +201,16 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                 </Clickable>
             }
 
-          { docDataset != 'nbas' && (docSource.datasets?.length > 1 || docSource.datasets?.[0] != 'nbas') ? 
-          <>
+          
+        
             
-            <CopyLink uuid={docSource.uuid} className="btn btn-neutral"/> 
-            <Link href={"/uuid/" + docSource.uuid} className="btn btn-primary">
-              Opne
-            </Link>
-            </>
-            : <div className="flex gap-4 items-center w-full pb-4"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div>
-            }
+          <CopyLink uuid={docSource.uuid} className="btn btn-neutral"/> 
+          <Link href={"/uuid/" + docSource.uuid} className="btn btn-primary">
+            Opne
+          </Link>
+
+            
+            
 
 
 
