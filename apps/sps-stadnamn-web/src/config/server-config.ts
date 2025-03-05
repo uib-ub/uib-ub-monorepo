@@ -122,6 +122,11 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       adm: 2,
       cadastre: false // not cleaned yet
     },
+    ssr2020: {
+      display: 'map',
+      adm: 2,
+      cadastre: false // not cleaned yet
+    },
   }
 
 

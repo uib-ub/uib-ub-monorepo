@@ -194,6 +194,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       }      
       </>
     },
-    ssr2016: null
+    ssr2016: null,
+    ssr2020: null
   
   }

@@ -44,6 +44,7 @@ export const datasetTitles: DatasetTitles = {
     sof: "Fylkesarkivet i Sogn og Fjordane",
     tot: "Totennavn",
     ssr2016: "Kartverket 2016",
+    ssr2020: "Kartverket 2020",
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -59,7 +60,8 @@ export const datasetDescriptions: Record<string, string> = {
   skul: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms.",
   sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordane, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare.",
   tot: "Totennavn er en samling av navn på garder, bruk, småbruk, forsvunne stedsnavn, skogteiger og jorder fra hele Toten. Materialet baserer seg på kjeldemateriale samlet inn til Norsk stedsnavnarkiv ved Universitetet i Oslo. Arbeidet er utført av Trond Nygård på oppdrag for daværende Seksjon for navnegransking. Prosjektet ble sluttført i 2007. Kartfesting er uført på Språksamlingane i 2024.", 
-  ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur."
+  ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur.",
+  ssr2020: "Sentralt stadnamnregister, Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020."
 }
 
 
@@ -77,7 +79,8 @@ export const datasetShortDescriptions: Record<string, string> = {
   skul: "Eit landsdekkjande prosjekt frå 1931–1935 der skulebarn samla inn over 1 million stadnamn frå 9 700 registrerte gardar i 13 fylke.",
   sof: "Eit omfattande materiale som er resultatet av ei stor innsamling av stadnamn på 1980-talet frå Sogn og Fjordane og Møre og Romsdal.",
   tot: "En samling av ulike stedsnavn fra Toten-regionen, basert på kildemateriale samlet inn for Norsk stadnamnarkiv ved Universitetet i Oslo.",
-  ssr2016: "Basert på Kartverket sitt første frie stadnamndatasett frå 2000. Databasen var i bruk fram til 2016 då Kartverket si noverande datastruktur vart lansert."
+  ssr2016: "Basert på Kartverket sitt første frie stadnamndatasett frå 2000. Databasen var i bruk fram til 2016 då Kartverket si noverande datastruktur vart lansert.",
+  ssr2020: "Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020."
 }
 
 
@@ -96,6 +99,7 @@ export const publishDates: Record<string, string> = {
   sof: "2024-06-13",
   tot: "2024-08-26",
   ssr2016: "2024-09-10",
+  ssr2020: "2025-03-04"
 }
 
 
@@ -219,6 +223,13 @@ export const datasetPresentation: DatasetPresentation = {
         attribution: "Statens kartverk og Språksamlingane",
         license: licenses.ccby4,
       },
+      ssr2020: {
+        img: "/datasets/ssr2016.png",
+        alt: "Kartutsnitt over Kartverket",
+        imageAttribution: "Statens kartverk",
+        attribution: "Statens kartverk og Språksamlingane",
+        license: licenses.ccby4,
+      }
 
 }
 
@@ -263,6 +274,7 @@ export const datasetFeatures: Record<string, string[]> = {
   sof: ["link", "coordinates", "phonetic"],
   tot: ["phonetic"],
   ssr2016: ["link"],
+  ssr2020: ["link"],
 }
 
 export const datasetTypes: Record<string, string[]> = {
@@ -279,5 +291,6 @@ export const datasetTypes: Record<string, string[]> = {
   sof: ["database", "collection"],
   tot: ["database", "sprak", "collection"],
   ssr2016: ["database", "public"],
+  ssr2020: ["database", "public"],
 }
 
