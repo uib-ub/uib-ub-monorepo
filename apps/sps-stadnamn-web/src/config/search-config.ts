@@ -67,9 +67,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "tmp.knr": {label: "Kommunenummer", facet, result},
       "rawData.stnavn.sted.gårdsnr": {label: "Gardsnummer", facet, result, additionalParams: ["tmp.knr"]},
       "rawData.stnavn.sted.bruksnr": {label: "Bruksnummer", facet, result, additionalParams: ["tmp.knr", "rawData.stnavn.sted.gårdsnr"]},
+      "snid": {label: "Stadnamn ID", facet},
+      "gnidu": {label: "GNIDu", facet},
+      "midu": {label: "MIDu", facet},
       "rawData.stnavn.oppslag.oppslord": {label: "Oppslagsord", facet},
-      "rawData.stnavn.oppslag.utmledd": {label: "Utmerkingsledd", facet},
-      "rawData.stnavn.oppslag.hovledd": {label: "Hovudledd", facet},
       "rawData.stnavn.parform.pf_navn": {label: "Parform", facet},
       "rawData.stnavn.gmlsform.navnform": {label: "Gammel navnform", facet},
       ...cadastre
