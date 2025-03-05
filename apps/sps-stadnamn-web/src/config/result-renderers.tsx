@@ -230,7 +230,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(getFieldValue(hit, 'rawData.KNR') || getFieldValue(hit, 'knr'), getFieldValue(hit, 'rawData.GNR'), getFieldValue(hit, 'rawData.BNR'), "/", hit, display)
+      return cadastreAdm(getFieldValue(hit, 'knr'), getFieldValue(hit, 'misc.GNR'), getFieldValue(hit, 'misc.BNR'), "/", hit, display)
     }
   },
   skul: {
