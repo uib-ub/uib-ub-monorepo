@@ -212,7 +212,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return <>{getFieldValue(hit, 'rawData.MNR')}{getFieldValue(hit, 'rawData.LNR')?.[0] ? "." + getFieldValue(hit, 'rawData.LNR')[0] : ""}, {formatAdm(hit)}</>
+      return <>{getFieldValue(hit, 'misc.MNR')}{getFieldValue(hit, 'misc.LNR')?.[0] ? "." + getFieldValue(hit, 'misc.LNR')[0] : ""}, {formatAdm(hit)}</>
     }
   },
   m1886: {
@@ -221,7 +221,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')})`}</>}</>
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(getFieldValue(hit, 'rawData.knr'), getFieldValue(hit, 'rawData.gnr'), getFieldValue(hit, 'rawData.bnr'), "/", hit, display)
+      return cadastreAdm(getFieldValue(hit, 'knr'), getFieldValue(hit, 'misc.gnr'), getFieldValue(hit, 'misc.bnr'), "/", hit, display)
     }
   },
   mu1950: {

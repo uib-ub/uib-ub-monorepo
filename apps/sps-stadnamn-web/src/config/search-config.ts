@@ -32,6 +32,9 @@ const adm = {label: "Område"}
 const adm1 = {label: "Fylke", result} // Necessary for it to be included in fields
 const adm2 = {label: "Kommune", result} // Necessary for it to be included in fields
 const snid = {label: "Stadnamn ID", facet}
+const gnidu = {label: "GNIDu", facet}
+const midu = {label: "MIDu", facet}
+const identifiers = {snid, gnidu, midu}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
 const html = {"content.html": {label: "Tekstinnhald", fulltext}}
@@ -56,10 +59,6 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       //"midu": {label: "MIDu", facet}, Not present
       sosi
     },
-    sof: {
-      uuid, label, adm, adm1, adm2,
-      "placeType.label": {label: "Lokalitetstype", facet, result},
-    },
     bsn: {
       uuid, label, adm, adm1, adm2,
       "rawData.komm": {label: "Kommentarer", fulltext},
@@ -67,13 +66,11 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "tmp.knr": {label: "Kommunenummer", facet, result},
       "rawData.stnavn.sted.gårdsnr": {label: "Gardsnummer", facet, result, additionalParams: ["tmp.knr"]},
       "rawData.stnavn.sted.bruksnr": {label: "Bruksnummer", facet, result, additionalParams: ["tmp.knr", "rawData.stnavn.sted.gårdsnr"]},
-      "snid": {label: "Stadnamn ID", facet},
-      "gnidu": {label: "GNIDu", facet},
-      "midu": {label: "MIDu", facet},
       "rawData.stnavn.oppslag.oppslord": {label: "Oppslagsord", facet},
       "rawData.stnavn.parform.pf_navn": {label: "Parform", facet},
       "rawData.stnavn.gmlsform.navnform": {label: "Gammel navnform", facet},
-      ...cadastre
+      ...cadastre,
+      ...identifiers,
     },
 
     hord: {
@@ -85,7 +82,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.oppskrivar": {label: "Oppskrivar", table, facet},
       "rawData.oppskrivingsTid": {label: "Oppskrivingstid", table, facet},
       "rawData.bildeNr": {label: "Bildenummer", table, facet},
-      ...cadastre
+      ...cadastre,
+      ...identifiers,
     },
     rygh: {
       uuid, label, adm, adm1, adm2, ...html,
@@ -95,17 +93,18 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.KNR": {label: "Kommunenummer", table, facet},
       "rawData.Gnr": {label: "Gardsnummer", table, facet, additionalParams: ["rawData.KNR"]},
       "rawData.Bnr": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.KNR", "rawData.Gnr"]},
+      ...identifiers,
 
     },
     leks: {
       uuid, label, adm, adm1, adm2,...html,
       "rawData.Lokalitetstype": {label: "Lokalitetstype", table, facet},
-      "rawData.GNIDu": {label: "GNIDu", facet},
       "rawData.Sisteledd": {label: "Sisteledd", facet},
       "rawData.Kjelde": {label: "Kjelde", facet},
       "rawData.KNR": {label: "Kommunenummer", table, facet},
       "rawData.GNR": {label: "Gardsnummer", table, facet, additionalParams: ["rawData.KNR"]},
       "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.KNR", "rawData.GNR"]},
+      ...identifiers,
     },
     leks_g: {
       uuid, label, ...text,
@@ -116,41 +115,40 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       uuid, label, adm, adm1, adm2, sosi, 
       ...cadastre,
       "within": {label: "Gard", result},
-      "rawData.KNR": {label: "Knr", table, facet, result},
-      "rawData.GNR": {label: "Gnr", table, facet, result, additionalParams: ["rawData.KNR"]},
-      "rawData.BNR": {label: "Bnr", table, facet, result, additionalParams: ["rawData.KNR", "rawData.GNR"]},
-      "rawData.Eigar": {label: "Eigar", table, facet, cadastreTable},
-      "rawData.Mark": {label: "Skyldmark", table, facet, cadastreTable},
-      "rawData.Øre": {label: "Skyldøre", table, facet, cadastreTable},
-      "gnidu": {label: "GNIDu", facet},
-      "rawData.Koordinattype": {label: "Koordinattype", facet},
+      "knbr": {label: "Knr", table, facet, result},
+      "misc.GNR": {label: "Gnr", table, facet, result, additionalParams: ["knr"]},
+      "misc.BNR": {label: "Bnr", table, facet, result, additionalParams: ["knr", "misc.GNR"]},
+      "misc.Eigar": {label: "Eigar", table, facet, cadastreTable},
+      "misc.Mark": {label: "Skyldmark", table, facet, cadastreTable},
+      "misc.Øre": {label: "Skyldøre", table, facet, cadastreTable},
+      "misc.Koordinattype": {label: "Koordinattype", facet},
+      ...identifiers,
     },
     m1838: {
       uuid, label, sosi, adm,
       "within": {label: "Gard"},
-      "rawData.MNR": {label: "Matrikkelnummer", result, table, facet},
-      "rawData.LNR": {label: "Løpenummer", result, table, facet},
-      "rawData.1723_MNR": {label: "Matrikkelnummer 1723", table, facet},
-      "gnidu": {label: "GNIDu", facet},
+      "misc.MNR": {label: "Matrikkelnummer", result, table, facet},
+      "misc.LNR": {label: "Løpenummer", result, table, facet},
+      "miac.1723_MNR": {label: "Matrikkelnummer 1723", table, facet},
       "adm1": {label: "Amt", result},
       "adm2": {label: "Prestegjeld", result},
+      ...identifiers,
       
     },
     m1886: {
       uuid, label, sosi, adm, adm1, adm2,
-      "rawData.knr": {label: "Kommunenummer", table, facet, result},
-      "rawData.gnr": {label: "Gardsnummer", table, facet, result, additionalParams: ["rawData.knr"]},
-      "rawData.bnr": {label: "Bruksnummer", table, facet, result, additionalParams: ["rawData.knr", "rawData.gnr"]},
+      "misc.knr": {label: "Kommunenummer", table, facet, result},
+      "misc.gnr": {label: "Gardsnummer", table, facet, result, additionalParams: ["misc.knr"]},
+      "misc.bnr": {label: "Bruksnummer", table, facet, result, additionalParams: ["misc.knr", "misc.gnr"]},
       ...cadastre,
-      "gnidu": {label: "GNIDu", facet},
-      
-      "midu": {label: "MIDu", facet}
+      ...identifiers,
     },
     skul: {
       uuid, label, adm, adm1, adm2,
       "rawData.gnr": {label: "Gardsnummer", table, result, facet},
       "rawData.bnr": {label: "Bruksnummer", table, result, facet, additionalParams: ["rawData.gnr"]},
       "rawData.knr": {label: "knr", table, result, facet},
+      ...identifiers,
     },
     nbas: {
       uuid, label, adm, adm1, adm2, sosi, ...html,
@@ -160,13 +158,15 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.kommunenummer": {label: "Kommunenummer", facet},
       "rawData.Kjelde": {label: "Kjelde", facet},
       "rawData.Språk": {label: "Språk", facet},
-      "gnidu": {label: "GNIDu", facet},
-      "midu": {label: "MIDu", facet}
+      snid,
+      gnidu
+      
     },
     ostf: {
       uuid, label, adm, adm1, adm2,
       "rawData.Bindsortering": {label: "Bind", facet},
       "rawData.GNID": {label: "GNID", facet, result},
+      ...identifiers,
     },
     tot: {
       uuid, label, adm, adm1, adm2,
@@ -174,6 +174,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.GNR"]},
       "rawData.Kjelde": {label: "Kjelde", facet},
       "rawData.Kjeldeform": {label: "Kjeldeform", facet},
+      ...identifiers,
+    },
+    sof: {
+      uuid, label, adm, adm1, adm2,
+      "placeType.label": {label: "Lokalitetstype", facet, result},
+      ...identifiers,
     },
     ssr2016: {
       uuid, label, adm, adm1, adm2,
@@ -181,6 +187,11 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
       "misc.language": {label: "Språk", facet},
       "misc.status": {label: "Status 2016", facet},
+      ...identifiers,
+    },
+    ssr2020: {
+      uuid, label, adm, adm1, adm2,
+      ...identifiers,
     },
   }
 

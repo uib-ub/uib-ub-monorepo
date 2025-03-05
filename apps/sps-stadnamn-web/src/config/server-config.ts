@@ -20,30 +20,30 @@ export interface TreeSettingsItem {
 
 export const treeSettings: Record<string, TreeSettingsItem> = {
   m1838: {
-    subunit: "rawData.MNR",
+    subunit: "misc.MNR",
     subunitLabel: "Matrikkelnummer",
     parentName: "misc.gardLabel",
-    leaf: "rawData.LNR",
+    leaf: "misc.LNR",
     sort: ["cadastralIndex"],
-    aggSort: "rawData.Lenke_til_skannet_matrikkel.keyword",
-    geoSort: "rawData.LNR.keyword"
+    aggSort: "link.keyword",
+    geoSort: "misc.LNR.keyword"
   },
   m1886: {
     subunit: "cadastre__gnr",
-    parentName: "rawData.gardsnamn",
+    parentName: "misc.gardsnamn",
     leaf: "cadastre__bnr",
     sort: ["cadastre__gnr", "cadastre__bnr"],
-    aggSort: "rawData.knr.keyword",
-    geoSort: "rawData.bnr.keyword"
+    aggSort: "misc.knr.keyword",
+    geoSort: "misc.bnr.keyword"
   },
   mu1950: {
     subunit: "cadastre__gnr",
-    parentName: "rawData.Gardsnamn",
+    parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
     sort: ["cadastre__gnr", "cadastre__bnr"],
     aggSort: "knr.keyword",
     showNumber: true,
-    geoSort: "rawData.BNR.keyword"
+    geoSort: "misc.BNR.keyword"
   }
 }
 
