@@ -53,7 +53,7 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
         }
     }
   const data = await res.json()
-  console.log(data)
+  //console.log(data)
 
   return Array.isArray(uuid) ? data.hits.hits : data.hits.hits[0]
 
