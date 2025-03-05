@@ -303,7 +303,9 @@ export async function fetchChildren(params: {
         _source: false,
         fields: ["uuid","label", "attestations.label", "altLabels", "sosi", "location",
                 ...dataset && treeSettings[dataset] ? Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => key) : [],
-                ...dataset && treeSettings[dataset] ? [treeSettings[dataset].leaf.replace("__", ".")] : []
+                ...dataset && treeSettings[dataset] ? [treeSettings[dataset].leaf.replace("__", ".")] : [],
+                ...dataset && treeSettings[dataset] ? [treeSettings[dataset].subunit.replace("__", ".")] : [],
+
         ],
         query: {
             ...(uuids ? {
