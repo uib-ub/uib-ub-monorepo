@@ -237,7 +237,7 @@ export default function MobileLayout() {
                 <Facets/> 
             }
             { drawerContent == 'cadastre' && 
-                <CadastralSubdivisions/>
+                <CadastralSubdivisions dataset={dataset} doc={doc} childrenData={childrenData} landingPage={false}/>
             }
             { drawerContent == 'tree' &&
                 <TreeResults/>
