@@ -43,7 +43,7 @@ export default function MobileLayout() {
     const mode = useQueryState('mode', {defaultValue: 'map'})[0]
     const dataset = useDataset()
     const parent = searchParams.get('parent')
-    const { childrenCount, shownChildrenCount } = useContext(ChildrenContext)
+    const { childrenData } = useContext(ChildrenContext)
     const { parentData, docLoading } = useContext(DocContext)
     const { preferredTabs } = useContext(GlobalContext)
 
