@@ -3,12 +3,16 @@ import { fieldConfig } from "@/config/search-config"
 import { treeSettings } from "@/config/server-config"
 import { PiBookOpen } from "react-icons/pi"
 import Clickable from "../ui/clickable/clickable"
-import { getBnr, getFieldValue, getValueByPath } from "@/lib/utils"
+import { getBnr, getFieldValue } from "@/lib/utils"
 import Link from 'next/link'
 
 
 
-export default function CadastralSubdivisions({ dataset, doc, childrenData, landingPage }: { dataset: string, doc: string | undefined, childrenData: any[], landingPage: boolean }) {
+export default function CadastralSubdivisions({ dataset, doc, childrenData, landingPage }: { dataset: string, doc: string | null, childrenData: any[] | null, landingPage: boolean }) {
+    if (!doc || !childrenData) {
+        return null
+    }
+
     const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
         return { key, label: value.label }
     })
