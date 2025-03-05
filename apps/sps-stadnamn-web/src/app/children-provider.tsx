@@ -190,11 +190,11 @@ useEffect(() => {
             const sameCoordinates = children?.find((marker: any) => marker.lat == currentCoordinates[1] && marker.lon == currentCoordinates[0])
             //childrenData.current?.filter((child: Record<string, any>) => child.fields?.location?.[0]?.coordinates?.every((coord: number, index: number) => coord == currentCoordinates[index]))
             if (sameCoordinates && sameCoordinates?.children?.length > 1) {
-                setSameMarkerList(sameCoordinates.children)
+                setSameMarkerList([...sameCoordinates.children].sort((a, b) => a.fields.label[0].localeCompare(b.fields.label[0], 'nb')))
             }
             
         }
-    }, [parent, docData, childrenLoading, doc])
+    }, [parent, docData, childrenLoading, doc, setSameMarkerList])
 
 
     

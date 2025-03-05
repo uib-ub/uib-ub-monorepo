@@ -381,7 +381,7 @@ useEffect(() => {
         }
 
         if (hits && hits.length > 1) {
-          setSameMarkerList(hits)
+          setSameMarkerList([...hits].sort((a, b) => a.fields.label[0].localeCompare(b.fields.label[0], 'nb')))
         }
         else {
           
