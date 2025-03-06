@@ -8,7 +8,7 @@ import ModeSelector from '../tabs/mode-selector';
 import { GlobalContext } from '@/app/global-provider';
 import { useSearchParams, useRouter } from 'next/navigation';
 export default function StatusSection() {
-    const { resultData, resultBounds, isLoading, coordinatesError } = useContext(SearchContext)
+    const { resultData, resultBounds, isLoading, coordinatesError, searchError } = useContext(SearchContext)
     const searchParams = useSearchParams()
     const mode = searchParams.get('mode') || 'map'
     const { isMobile } = useContext(GlobalContext)
@@ -21,18 +21,15 @@ export default function StatusSection() {
 
     { (mode != 'doc') && <ActiveFilters/> }
     </div>
-    { (mode == 'map' && !isLoading && !resultBounds?.length) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}
-    { coordinatesError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
+    { (mode == 'map' && !isLoading && !resultBounds?.length && !searchError) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}
+    { searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
+        <PiWarningFill className="inline text-xl"/> 
+        <span>Kunne ikkje hente søkeresultat</span>
+      </div>
+    }
+    { !searchError && coordinatesError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
       <PiWarningFill className="inline text-xl"/> 
       <span>Kunne ikkje hente koordinatar</span>
-      <button 
-        className="btn btn-dark-outline ml-2 px-4 py-2" 
-        onClick={() => {
-          router.refresh()
-        }}
-      >
-        Prøv igjen
-      </button>
     </div>}
         
     
