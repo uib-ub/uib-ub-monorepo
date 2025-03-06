@@ -264,6 +264,15 @@ export const resultRenderers: ResultRenderers = {
       return <>{formatAdm(hit)}</>
     }
   },
+  nrk: {
+    title: (hit: any, display: string) => {
+      if (display == 'table') return defaultTitle(hit)
+      return <>{defaultTitle(hit)}{getFieldValue(hit, 'rawData.Kategori') && <>&nbsp;{`(${getFieldValue(hit, 'rawData.Kategori')})`}</>}</>
+    },
+    details: (hit: any, display: string) => {
+      return <>{formatAdm(hit)}</>
+    }
+  },
 
   
   
