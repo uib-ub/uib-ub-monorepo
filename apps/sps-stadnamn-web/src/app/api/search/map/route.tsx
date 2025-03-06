@@ -9,7 +9,30 @@ import { fieldConfig, resultConfig } from '@/config/search-config';
  * @swagger
  * /api/search/map:
  *   get:
- *     description: Returns search results with geographic bounds
+ *     tags:
+ *       - search
+ *     description: Returns search results with geographic bounds. Searches without a query will only return geographic bounds.
+ *     parameters:
+ *       - in: query
+ *         name: dataset
+ *         schema:
+ *           type: string
+ *         description: The dataset to search in. Defaults to 'search'
+ *       - in: query
+ *         name: size
+ *         schema:
+ *           type: integer
+ *         description: Number of results to return. Defaults to 10
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Search query string for filtering results
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *         description: Sort order for results
  *     responses:
  *       200:
  *         description: Search results with geographic bounds

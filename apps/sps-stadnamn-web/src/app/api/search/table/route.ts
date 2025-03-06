@@ -4,6 +4,73 @@ import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
+
+/**
+ * @swagger
+ * /api/search/table:
+ *   get:
+ *     tags:
+ *       - search
+ *     description: Returns paginated search results in a tabular format
+ *     parameters:
+ *       - in: query
+ *         name: dataset
+ *         schema:
+ *           type: string
+ *         description: The dataset to search in. Defaults to 'search'
+ *       - in: query
+ *         name: size
+ *         schema:
+ *           type: integer
+ *         description: Number of results to return per page. Defaults to 10
+ *       - in: query
+ *         name: from
+ *         schema:
+ *           type: integer
+ *         description: Starting index for pagination. Defaults to 0
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Search query string for filtering results
+ *       - in: query
+ *         name: asc
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of fields to sort in ascending order
+ *       - in: query
+ *         name: desc
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of fields to sort in descending order
+ *     responses:
+ *       200:
+ *         description: Search results in tabular format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 hits:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: object
+ *                       properties:
+ *                         value:
+ *                           type: integer
+ *                           description: Total number of matching results
+ *                         relation:
+ *                           type: string
+ *                           enum: [eq, gte]
+ *                           description: Whether the total is exact or estimated
+ *                     hits:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         description: Search result documents with requested fields
+ */
+
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
