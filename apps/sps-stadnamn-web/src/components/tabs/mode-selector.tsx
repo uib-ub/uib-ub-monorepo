@@ -1,6 +1,6 @@
 import { useSearchParams } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { PiMapTrifold, PiMapTrifoldFill, PiRows, PiRowsFill, PiTable, PiTableFill } from "react-icons/pi";
+import { PiBookOpen, PiBookOpenFill, PiMapTrifold, PiMapTrifoldFill, PiRows, PiRowsFill, PiTable, PiTableFill } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
@@ -9,6 +9,7 @@ import { useDataset } from "@/lib/search-params";
 export default function ModeSelector() {
     const searchParams = useSearchParams()
     const mode = searchParams.get('mode') || 'map'
+    const doc = searchParams.get('doc')
     const dataset = useDataset()
     const { isMobile, setPreferredTab } = useContext(GlobalContext)
 
