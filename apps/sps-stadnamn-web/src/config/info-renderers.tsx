@@ -195,6 +195,21 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       </>
     },
     ssr2016: null,
-    ssr2020: null
-  
+    ssr2020: null,
+    nrk: (source: any) => {
+      return <>
+      {(source.rawData.Uttale2 || source.rawData.Uttale1) && 
+      <div>
+      <h3 className='!m-0 !p-0'>Uttale</h3>
+      {source.rawData.Uttale2 && <div>{parse(source.rawData.Uttale2)}</div>}
+      {source.rawData.Uttale1 && <div>{parse(source.rawData.Uttale1)}</div>}
+      {source.rawData.UttaleNy && <div>{parse(source.rawData.UttaleNy)} (Ny uttale)</div>}
+      {source.rawData.Uttalemerknad && <div><strong>Uttalemerknad:</strong> {parse(source.rawData.Uttalemerknad)}</div>}
+      </div>
+      }
+
+
+ 
+     </>
+    }
   }

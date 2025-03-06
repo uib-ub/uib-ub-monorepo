@@ -127,6 +127,11 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       adm: 2,
       cadastre: false // not cleaned yet
     },
+    nrk: {
+      display: 'map',
+      adm: 2,
+      cadastre: false
+    }
   }
 
 

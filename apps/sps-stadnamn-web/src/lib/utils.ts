@@ -77,7 +77,7 @@ export function getFieldValue(hit: any, field: string) {
 }
 
 export function getGnr(hit: any, dataset: string) {
-  const data = hit._source || hit.fields
+  const data = hit?._source || hit?.fields
   if (!treeSettings[dataset] || !data) {
     return null
   }
@@ -89,7 +89,7 @@ export function getGnr(hit: any, dataset: string) {
 }
 
 export function getBnr(hit: any, dataset: string) {
-  const data = hit._source || hit.fields
+  const data = hit?._source || hit?.fields
   if (!treeSettings[dataset] || !data) {
       return null
     }

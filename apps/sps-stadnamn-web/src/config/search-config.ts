@@ -193,6 +193,23 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       uuid, label, adm, adm1, adm2,
       ...identifiers,
     },
+    nrk: {
+      uuid, label, adm, adm1, adm2,
+      "rawData.Kategori": { label: "Kategori", result, table, facet },
+      "rawData.IndeksNamn": { label: "Indeksnamn", result, table, facet },
+      "rawData.Namn": { label: "Namn", result, table },
+      "rawData.KorrektNamn": { label: "Korrekt namn", result, table },
+      "rawData.Uttale1": { label: "Uttale 1", table },
+      "rawData.Uttale2": { label: "Uttale 2", table },
+      "rawData.Uttalemerknad": { label: "Uttalemerknad", result, table, facet },
+      "rawData.Transkripsjonskvalitet": { label: "Transkripsjonskvalitet", result, table, facet },
+      "rawData.UttaleNy": { label: "Ny uttale", result, table, facet },
+      "rawData.UttalemerknadNy": { label: "Ny uttalemerknad", result, table },
+      "rawData.Kategorikode": { label: "Kategorikode", result, table, facet },
+      "rawData.SSRobjektID": { label: "SSR objekt ID", table },
+      "rawData.Kommunenummer": { label: "Kommunenummer", table, facet },
+      "rawData.SistEndra": { label: "Sist endra", table }
+    }
   }
 
 export const facetConfig: Record<string, FacetConfigItem[]> = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {

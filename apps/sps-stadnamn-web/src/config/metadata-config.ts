@@ -45,6 +45,7 @@ export const datasetTitles: DatasetTitles = {
     tot: "Totennavn",
     ssr2016: "Kartverket 2016",
     ssr2020: "Kartverket 2020",
+    nrk: "NRKs stadnamnregister"
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -61,7 +62,8 @@ export const datasetDescriptions: Record<string, string> = {
   sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordane, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare.",
   tot: "Totennavn er en samling av navn på garder, bruk, småbruk, forsvunne stedsnavn, skogteiger og jorder fra hele Toten. Materialet baserer seg på kjeldemateriale samlet inn til Norsk stedsnavnarkiv ved Universitetet i Oslo. Arbeidet er utført av Trond Nygård på oppdrag for daværende Seksjon for navnegransking. Prosjektet ble sluttført i 2007. Kartfesting er uført på Språksamlingane i 2024.", 
   ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur.",
-  ssr2020: "Sentralt stadnamnregister, Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020."
+  ssr2020: "Sentralt stadnamnregister, Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
+  nrk: "NRKs gamle stadnamnarkiv vart laga rundt 1960. Arkivet har tilrådd uttale for 2000 ulike stadnamn i Noreg. Nedanfor finn du tilrådd uttale frå det gamle arkivet. Ver merksam på at uttale av stadnamn kan endre seg over tid. Uttalen nedanfor var korrekt i 1960, men kan ha endra seg fram til våre dagar. Dersom du er usikker: Dobbeltsjekk med Norsk stadnamnleksikon og bruk sunn fornuft!"
 }
 
 
@@ -80,7 +82,8 @@ export const datasetShortDescriptions: Record<string, string> = {
   sof: "Eit omfattande materiale som er resultatet av ei stor innsamling av stadnamn på 1980-talet frå Sogn og Fjordane og Møre og Romsdal.",
   tot: "En samling av ulike stedsnavn fra Toten-regionen, basert på kildemateriale samlet inn for Norsk stadnamnarkiv ved Universitetet i Oslo.",
   ssr2016: "Basert på Kartverket sitt første frie stadnamndatasett frå 2000. Databasen var i bruk fram til 2016 då Kartverket si noverande datastruktur vart lansert.",
-  ssr2020: "Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020."
+  ssr2020: "Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
+  nrk: "NRKs stadnamnarkiv frå 1960 inneheld tilrådd uttale for 2000 stadnamn i Noreg. Uttalen kan ha endra seg sidan den gong."
 }
 
 
@@ -99,7 +102,8 @@ export const publishDates: Record<string, string> = {
   sof: "2024-06-13",
   tot: "2024-08-26",
   ssr2016: "2024-09-10",
-  ssr2020: "2025-03-04"
+  ssr2020: "2025-03-04",
+  nrk: "2025-03-06"
 }
 
 
@@ -229,6 +233,13 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "Statens kartverk",
         attribution: "Statens kartverk og Språksamlingane",
         license: licenses.ccby4,
+      },
+      nrk: {
+        img: "/datasets/nrk.png",
+        alt: "NRK",
+        imageAttribution: "NRK",
+        attribution: "NRK",
+        license: licenses.ccby4,
       }
 
 }
@@ -275,6 +286,7 @@ export const datasetFeatures: Record<string, string[]> = {
   tot: ["phonetic"],
   ssr2016: ["link"],
   ssr2020: ["link"],
+  nrk: ["phonetic"]
 }
 
 export const datasetTypes: Record<string, string[]> = {
@@ -292,5 +304,7 @@ export const datasetTypes: Record<string, string[]> = {
   tot: ["database", "sprak", "collection"],
   ssr2016: ["database", "public"],
   ssr2020: ["database", "public"],
+  nrk: ["database", "collection"],
+
 }
 
