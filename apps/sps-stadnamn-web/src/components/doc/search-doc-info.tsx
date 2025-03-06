@@ -91,7 +91,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
                 ...(docSource.datasets.length > 1 ? {sourceDataset: dataset} : {}),
                 parent: docSource.uuid,
                 doc: docSource.uuid,
-                ...(mode != 'map' ? {mode: 'doc'} : {})
+                ...(mode != 'map' && !isMobile ? {mode: 'doc'} : {})
               }}
               remove={["sourceLabel", "sourceDataset"]}
               link={isMobile || mode != 'map' ? undefined : true}
