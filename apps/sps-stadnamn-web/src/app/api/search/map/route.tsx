@@ -5,6 +5,15 @@ import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
 import { fieldConfig, resultConfig } from '@/config/search-config';
+/**
+ * @swagger
+ * /api/search/map:
+ *   get:
+ *     description: Returns search results with geographic bounds
+ *     responses:
+ *       200:
+ *         description: Search results with geographic bounds
+ */
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;

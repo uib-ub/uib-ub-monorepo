@@ -20,6 +20,7 @@
     "next": "^15.0.2",
     "next-mdx-remote": "^5.0.0",
     "next-plausible": "^3.12.3",
+    "next-swagger-doc": "^0.4.1",
     "nuqs": "^2.1.1",
     "openseadragon": "^5.0.0",
     "react": "^18",
