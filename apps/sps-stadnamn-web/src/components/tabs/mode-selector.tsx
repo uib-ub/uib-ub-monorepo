@@ -46,6 +46,13 @@ export default function ModeSelector() {
                         className="flex  m-1 h-8 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-950 aria-selected:shadow-inner">
                             {mode == 'list' ? <PiRowsFill className="text-2xl xl:text-xl" aria-hidden="true"/>  : <PiRows className="text-2xl xl:text-xl" aria-hidden="true"/>}
             </ClickableIcon>
+            { mode != 'map' && doc && <ClickableIcon add={{mode: 'doc'}} 
+                        role="tab"
+                        label="Dokument"
+                        aria-selected={mode == 'doc' ? true : false}
+                        className="flex  m-1 h-8 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-950 aria-selected:shadow-inner">
+                            {mode == 'doc' ? <PiBookOpenFill className="text-2xl xl:text-xl" aria-hidden="true"/>  : <PiBookOpen className="text-2xl xl:text-xl" aria-hidden="true"/>}
+            </ClickableIcon>}
 
         </div>
     
