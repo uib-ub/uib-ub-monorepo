@@ -42,19 +42,20 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
             </div>
             <span>
                 {getFieldValue(hit, leaf)?.join(", ")}{' '}
-                {getFieldValue(hit, 'cadastre.0.bnr')?.join(", ")}{' '}
+                {getBnr(hit, dataset)}{' '}
                 {getFieldValue(hit, 'label')?.[0]}
             </span>
         </>
     )
 
+
     return (
     <>
             {fields.length === 0 ? (
                 <div className="instance-info">
-                    <ul className="!p-0 !pb-8 divide-y divide-neutral-200 gap-2 list-none">
-                        {childrenData?.map((hit: any) => (
-                            <li key={hit._id}>
+                    <ul className="!p-0 !pb-8 divide-y divide-neutral-200 gap-2 !list-none">
+                        {childrenData?.map((hit: any, index: number) => (
+                            <li key={index}>
                                 <span className="flex items-center gap-2">
                                     <LinkWrapper uuid={getFieldValue(hit, 'uuid')?.[0]}>
                                         {renderLinkContent(hit)}
@@ -76,8 +77,8 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
                             </tr>
                         </thead>
                         <tbody>
-                            {childrenData?.map((hit: any) => (
-                                <tr key={hit._id}>
+                            {childrenData?.map((hit: any, index: number) => (
+                                <tr key={index}>
                                     <th className="!p-0">
                                         <span className="flex items-center gap-2 p-2">
                                             <LinkWrapper uuid={getFieldValue(hit, 'uuid')?.[0]}>
@@ -91,8 +92,8 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
                                             </LinkWrapper>
                                         </span>
                                     </th>
-                                    {fields.map((field: Record<string, any>) => (
-                                        <td className="p-2" key={field.key}>{getFieldValue(hit, field.key)}</td>
+                                    {fields.map((field: Record<string, any>, index: number) => (
+                                        <td className="p-2" key={index}>{getFieldValue(hit, field.key)}</td>
                                     ))}
                                 </tr>
                             ))}
