@@ -29,7 +29,7 @@ export default async function ServerParent({uuid}: {uuid: string}) {
 
         <div className="flex gap-2 mt-4 w-full">
             <Link href={"/uuid/" + parent.fields.uuid[0]} className="btn btn-outline">Opne</Link>
-            <Link href={"/search?dataset=search&doc=" + parent.fields.uuid[0]} className="btn btn-outline">Vis i søket</Link>
+            <Link href={"/search?dataset=search&doc=" + parent.fields.uuid[0]} className="btn btn-outline">Opne søkevisninga</Link>
             <Link href={"/info/search"} className="btn btn-outline">Les meir</Link>
         </div>
     </aside>
