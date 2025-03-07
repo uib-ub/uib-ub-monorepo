@@ -1,7 +1,7 @@
 
 
 import type { NextRequest } from 'next/server'
-import { fetchChildren, fetchDoc, fetchSNID } from './app/api/_utils/actions'
+import { fetchDoc, fetchSNID, fetchSNIDParent } from './app/api/_utils/actions'
 import { defaultDoc2jsonld, doc2jsonld } from './config/rdf-config'
 import { datasetTitles } from './config/metadata-config'
 
@@ -43,6 +43,13 @@ export async function middleware(request: NextRequest) {
         // redirect
         const snid = path[2]
         const data = await fetchSNID(snid);
+        return Response.redirect(`http:localhost:3000/uuid/${data.fields.uuid}`, 302);
+    }
+
+    if (path[1] == 'find-snid') {
+        // redirect
+        const uuid = path[2]
+        const data = await fetchSNIDParent(uuid);
         return Response.redirect(`http:localhost:3000/uuid/${data.fields.uuid}`, 302);
     }
 
@@ -98,6 +105,7 @@ export async function middleware(request: NextRequest) {
     matcher: [
         '/uuid/:uuid*',
         '/snid/:snid*',
+        '/find-snid/:uuid*',
         '/search',
         '/view/:path*',
     ],
