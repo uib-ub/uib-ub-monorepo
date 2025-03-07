@@ -156,30 +156,6 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       
 
     
-      <CollapsibleHeading headingLevel="h2" title="Data">
-
-      <div className="flex gap-4 flex-wrap my-2 mb-8 text-neutral-950">
-        <Link href={"/uuid/" + docData._source.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
-              <PiBracketsCurlyBold aria-hidden="true"/>
-              Json
-        </Link>
-        <Link href={"/uuid/" + docData._source.uuid + ".jsonld"} className="flex whitespace-nowrap items-center gap-1 no-underline">
-              <PiBracketsCurlyBold aria-hidden="true"/>
-              Json-LD
-        </Link>
-        {docData._source.location && <Link href={"/uuid/" + docData._source.uuid + ".geojson"} className="flex whitespace-nowrap items-center gap-1 no-underline">
-              <PiBracketsCurlyBold aria-hidden="true"/>
-              GeoJSON
-        </Link>}
-        </div>
-
-      
-
-
-      {<JsonLdTable jsonLd={doc2jsonld[docDataset as keyof typeof doc2jsonld] ? 
-          doc2jsonld[docDataset as keyof typeof doc2jsonld](docData._source, children) : 
-          defaultDoc2jsonld(docData._source, children)}/>}
-      </CollapsibleHeading>
 
       { docData?._source.rawData ?
         <div>
@@ -190,10 +166,37 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       
       {treeSettings[docDataset] && docData._source.sosi == 'gard' &&
       <div className="mt-4"> 
-      <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Underordna bruk</h2>
+      <h2 className="">Underordna bruk</h2>
       <CadastralSubdivisions dataset={docDataset} doc={uuid} childrenData={children} landingPage={true}/>
       </div>
       }
+
+<CollapsibleHeading headingLevel="h2" title="Data">
+
+<div className="flex gap-4 flex-wrap my-2 mb-8 text-neutral-950">
+  <Link href={"/uuid/" + docData._source.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+        <PiBracketsCurlyBold aria-hidden="true"/>
+        Json
+  </Link>
+  <Link href={"/uuid/" + docData._source.uuid + ".jsonld"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+        <PiBracketsCurlyBold aria-hidden="true"/>
+        Json-LD
+  </Link>
+  {docData._source.location && <Link href={"/uuid/" + docData._source.uuid + ".geojson"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+        <PiBracketsCurlyBold aria-hidden="true"/>
+        GeoJSON
+  </Link>}
+  </div>
+
+
+
+
+{<JsonLdTable jsonLd={doc2jsonld[docDataset as keyof typeof doc2jsonld] ? 
+    doc2jsonld[docDataset as keyof typeof doc2jsonld](docData._source, children) : 
+    defaultDoc2jsonld(docData._source, children)}/>}
+</CollapsibleHeading>
+
+
     </div>
 
     
