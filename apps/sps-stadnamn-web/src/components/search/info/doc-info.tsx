@@ -180,11 +180,11 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
         <div className="flex gap-2 flex-wrap mt-2 pt-4 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-2">
         
-            {dataset != 'search' && snidParent &&
-                <Clickable link className="btn btn-neutral gap-2" only={{dataset: 'search', doc: snidParent, ...(center ? {center, zoom} : {})}}>
-                  <PiMagnifyingGlassBold aria-hidden="true" className="text-white"/>
-                  Overordna søk
-                </Clickable>
+            {dataset != 'search' && docSource.snid &&
+                <Link className="btn btn-neutral gap-2" href={`/snid/${docSource.snid}`}>
+                  <PiTag aria-hidden="true" className="text-white"/>
+                  Stadnamside
+                </Link>
             }
             {dataset == 'search' && docDataset != dataset &&
                 <Clickable link className="btn btn-neutral gap-2" only={{dataset: docDataset, doc}}>
