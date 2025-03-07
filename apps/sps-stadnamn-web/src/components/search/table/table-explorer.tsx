@@ -188,19 +188,19 @@ export default function TableExplorer() {
                                             </div>
                                             {hit._source?.label}
                                         </Clickable>
-                                        <ClickableIcon
+                                        {hit._source?.location?.coordinates && <ClickableIcon
                                             className="p-1 hover:bg-neutral-100 rounded-full"
                                             link
                                             add={{
                                                 doc: hit._source?.uuid,
                                                 mode: 'map',
-                                                center: hit._source?.location?.coordinates,
+                                                center: hit._source.location.coordinates,
                                                 zoom: "8"
                                             }}
                                             label="Vis på kart"
                                         >
                                             <PiMapPinFill aria-hidden="true" className="text-neutral-700" />
-                                        </ClickableIcon>
+                                        </ClickableIcon>}
                                     </div>
                                 </th>
                                 {
