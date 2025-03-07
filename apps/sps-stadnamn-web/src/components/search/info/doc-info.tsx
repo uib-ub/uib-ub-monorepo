@@ -79,7 +79,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
         <div className={`absolute top-0 lg:top-2 right-0 flex gap-2`}>
-          {snidParent && dataset == 'search' &&
+          {snidParent && dataset == 'search' && mode == 'map' &&
             <ClickableIcon label="Gå til stadnamnoppslag" 
                            add={{doc: snidParent}} 
                            aria-hidden="true" 
