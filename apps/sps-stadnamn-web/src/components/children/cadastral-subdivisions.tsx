@@ -41,7 +41,6 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
                 <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
             </div>
             <span>
-                {getFieldValue(hit, leaf)?.join(", ")}{' '}
                 {getBnr(hit, dataset)}{' '}
                 {getFieldValue(hit, 'label')?.[0]}
             </span>

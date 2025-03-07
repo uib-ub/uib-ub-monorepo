@@ -10,7 +10,7 @@ import { PiBookOpen } from 'react-icons/pi'
 export default async function ServerSourcesList({ childrenData }: { childrenData: Record<string, any>[] }) {
 
     const groupedSources = childrenData.reduce((acc: Record<string, any[]>, source: any) => {
-        const docDataset = source._index.split("-")[2]
+        const docDataset = source._index?.split("-")[2]
         if (!acc[docDataset]) {
             acc[docDataset] = []
         }
