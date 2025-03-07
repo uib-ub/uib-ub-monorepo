@@ -160,8 +160,9 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       { docDataset && infoPageRenderers[docDataset]?.( docSource) }
       { filteredFacets.length > 0 && 
         <CollapsibleHeading title="Detaljar">
-            <FacetsInfobox source={docSource} filteredFacets={filteredFacets}/>
+            <FacetsInfobox source={docSource} docDataset={docDataset} filteredFacets={filteredFacets}/>
         </CollapsibleHeading>
+        
       }
 
         { (docSource.images?.length > 0 || docSource.image?.manifest) && mode != 'list' && <div>
