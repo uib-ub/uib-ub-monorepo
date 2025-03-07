@@ -55,8 +55,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     let hasSibling = false
 
     const newParams =  Array.from(searchParams.entries()).filter(urlParam => {
-      if (beingChecked && ['zoom', 'center'].includes(urlParam[0])) return false
-      if (['parent', 'doc'].includes(urlParam[0])) return false // remove child view
+      if (['parent', 'doc', 'zoom', 'center'].includes(urlParam[0])) return false // remove child view
       if (urlParam[0] != paramName) return true // Ignore other params
       if (urlParam[1] == chosenValue) return false // remove self
       const urlPath = urlParam[1].split('__')
