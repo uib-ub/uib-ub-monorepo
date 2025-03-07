@@ -13,16 +13,27 @@ export async function GET(request: Request) {
 
   let sortArray: (string | object)[] = []
     
-    // Existing sorting logic
+  // Convert field names with double underscores to nested field paths
+  const convertToNestedPath = (field: string) => {
+    if (field.includes('__')) {
+      const [parent, child] = field.split('__');
+      return {
+        [`${parent}.${child}`]: { order: 'asc', nested: { path: parent } }
+      };
+    }
+    return { [field]: { order: 'asc' } };
+  };
 
   // Add sorting from URL parameters
   if (filteredParams.asc) {
-    sortArray = filteredParams.asc.split(',').map(field => ({
-      [field]: { order: 'asc' }
-    }));
+    sortArray = filteredParams.asc.split(',').map(field => convertToNestedPath(field));
   } else if (filteredParams.desc) {
     sortArray = filteredParams.desc.split(',').map(field => ({
-      [field]: { order: 'desc' }
+      ...convertToNestedPath(field),
+      [Object.keys(convertToNestedPath(field))[0]]: { 
+        ...Object.values(convertToNestedPath(field))[0],
+        order: 'desc'
+      }
     }));
   }
 
