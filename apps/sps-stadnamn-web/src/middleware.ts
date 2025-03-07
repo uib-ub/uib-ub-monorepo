@@ -5,7 +5,7 @@ import { fetchDoc, fetchSNID, fetchSNIDParent } from './app/api/_utils/actions'
 import { defaultDoc2jsonld, doc2jsonld } from './config/rdf-config'
 import { datasetTitles } from './config/metadata-config'
 
-const baseUrl = process.env.NODE_ENV === 'production' ? 'https://stadnamnportalen.uib.no' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
+const baseUrl = process.env.VERCEL_ENV === 'production' ? 'https://stadnamnportalen.uib.no' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
 
 
 export async function middleware(request: NextRequest) {
