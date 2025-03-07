@@ -4,7 +4,7 @@ import { useDataset, useSearchQuery } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import { Fragment, useContext, useState } from "react"
-import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretUp, PiDownload, PiInfoFill } from "react-icons/pi"
+import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretUp, PiDownload, PiInfoFill, PiMapPin, PiMapPinFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
@@ -173,20 +173,35 @@ export default function TableExplorer() {
                             <Fragment key={hit._id}>
                             <tr>
                                 <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'} className="!p-0">
-                                    <Clickable className="flex group items-center gap-2 p-2 no-underline"
-                                        link
-                                        remove={['parent']}
-                                        aria-current={doc == hit._source?.uuid}
-                                        add={{doc: hit._source?.uuid, 
-                                            ...!isMobile && (mode == 'list' || mode == 'table') ? {mode: 'doc'} : {},
-                                            ...(hit._source.children?.length || (treeSettings[dataset] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
-                                        }}
-                                    >
-                                        <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current=true]:border-accent-800 border-2 border-transparent">
-                                            <PiBookOpen aria-hidden="true" className="text-primary-600 group-aria-[current=true]:text-accent-800" />
-                                        </div>
-                                        {hit._source?.label}
-                                    </Clickable>
+                                    <div className="flex gap-1 items-center">
+                                        <Clickable className="flex group items-center gap-2 p-2 no-underline"
+                                            link
+                                            remove={['parent']}
+                                            aria-current={doc == hit._source?.uuid}
+                                            add={{doc: hit._source?.uuid, 
+                                                ...!isMobile && (mode == 'list' || mode == 'table') ? {mode: 'doc'} : {},
+                                                ...(hit._source.children?.length || (treeSettings[dataset] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
+                                            }}
+                                        >
+                                            <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current=true]:border-accent-800 border-2 border-transparent">
+                                                <PiBookOpen aria-hidden="true" className="text-primary-600 group-aria-[current=true]:text-accent-800" />
+                                            </div>
+                                            {hit._source?.label}
+                                        </Clickable>
+                                        <ClickableIcon
+                                            className="p-1 hover:bg-neutral-100 rounded-full"
+                                            link
+                                            add={{
+                                                doc: hit._source?.uuid,
+                                                mode: 'map',
+                                                center: hit._source?.location?.coordinates,
+                                                zoom: "8"
+                                            }}
+                                            label="Vis på kart"
+                                        >
+                                            <PiMapPinFill aria-hidden="true" className="text-neutral-700" />
+                                        </ClickableIcon>
+                                    </div>
                                 </th>
                                 {
                                     visibleColumns.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{joinWithSlash(hit._source.adm1)}</td>
