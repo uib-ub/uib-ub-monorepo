@@ -36,9 +36,7 @@ export const DocContext = createContext<DocContextData>({
 
 export default function DocProvider({ children }: {  children: React.ReactNode }) {
     const searchParams = useSearchParams()
-    const point = searchParams.get('point')
     const dataset = useDataset()
-    const { searchQueryString } = useSearchQuery()
     const [ sameMarkerList, setSameMarkerList ] = useState<any[] | null>(null)
     const [docData, setDocData] = useState<any | null>(null)
     const docView = useRef<Record<string, string> | null>(null)
