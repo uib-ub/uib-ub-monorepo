@@ -40,6 +40,8 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const mode = searchParams.get('mode') || 'map'
     const doc = searchParams.get('doc')
     const { isMobile, sosiVocab, preferredTabs } = useContext(GlobalContext)
+    const center = searchParams.get('center')
+    const zoom = searchParams.get('zoom')
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -178,9 +180,9 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         <div className="flex gap-2 flex-wrap mt-2 pt-4 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-2">
         
             {dataset != 'search' && snidParent &&
-                <Clickable link className="btn btn-neutral gap-2" only={{dataset: 'search', doc: snidParent}}>
-                  <PiTag aria-hidden="true" className="text-white"/>
-                  Stadnamnoppslag
+                <Clickable link className="btn btn-neutral gap-2" only={{dataset: 'search', doc: snidParent, ...(center ? {center, zoom} : {})}}>
+                  <PiMagnifyingGlassBold aria-hidden="true" className="text-white"/>
+                  Overordna søk
                 </Clickable>
             }
             {dataset == 'search' && docDataset != dataset &&
