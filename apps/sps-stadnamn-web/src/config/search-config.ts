@@ -152,7 +152,6 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     nbas: {
       uuid, label, adm, adm1, adm2, sosi, ...html,
-      "rawData.lokalitetstype_sosi": {label: "Lokalitetstype", facet},
       "rawData.herred": {label: "Kommune", facet},
       "rawData.fylke": {label: "Fylke", facet},
       "rawData.kommunenummer": {label: "Kommunenummer", facet},
