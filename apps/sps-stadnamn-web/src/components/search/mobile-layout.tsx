@@ -268,12 +268,14 @@ export default function MobileLayout() {
 
         <div className={`absolute top-12 right-0 w-full bg-transparent rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
         <StatusSection/>
-        { (mode == 'table' || (mode=='doc' && preferredTabs[dataset] == 'table')) && <TableExplorer/>}
-        { (mode == 'list' || (mode=='doc' && preferredTabs[dataset] == 'list')) && <ListExplorer/>}
+        { mode == 'table' && <TableExplorer/>}
+        { mode == 'list'  && <ListExplorer/>}
+        {doc && mode == 'doc' && (docLoading ? <DocSkeleton/> : <DocInfo/>)}
         </div>
 
         <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
         { mode == 'map' && <MapExplorer/>}
+        
         </div>
 
 
