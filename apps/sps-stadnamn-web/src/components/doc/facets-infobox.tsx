@@ -10,12 +10,9 @@ import { useDataset } from "@/lib/search-params";
 import Clickable from "../ui/clickable/clickable";
 import { datasetTitles } from "@/config/metadata-config";
 
-export default function FacetsInfobox({ source, filteredFacets }: { source: Record<string,any>, filteredFacets: any[] }) {
-  const { docDataset } = useContext(DocContext)
+export default function FacetsInfobox({ source, docDataset, filteredFacets }: { source: Record<string,any>, docDataset: string | null, filteredFacets: any[] }) {
   const dataset = useDataset()
-
   if (!docDataset) return null;
-  
 
   const serialize = createSerializer({
     dataset: parseAsString,
