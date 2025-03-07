@@ -223,7 +223,7 @@ export default function MobileLayout() {
             <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'info' && <>
-            {doc && doc != parent && (docLoading ? <DocSkeleton/> : <DocInfo/>)}
+            {doc && doc != parent && mode != 'doc' && (docLoading ? <DocSkeleton/> : <DocInfo/>)}
             {parent && doc == parent && <ChildrenWindow/>}
             </>}
             { drawerContent == 'results' && 
