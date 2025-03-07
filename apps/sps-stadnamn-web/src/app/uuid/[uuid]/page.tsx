@@ -41,7 +41,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         notFound()
     }
     
-    const children = await fetchChildren(
+    const [children] = await fetchChildren(
         docData._source.children 
             ? { uuids: docData._source.children }
             : { within: docData._source.uuid, dataset: docDataset, mode: 'table' }
