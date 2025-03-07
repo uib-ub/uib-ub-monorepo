@@ -4,8 +4,6 @@ import { PiFunnel, PiMagnifyingGlass } from "react-icons/pi";
 import { facetConfig } from "@/config/search-config";
 import { getValueByPath } from "@/lib/utils";
 import { createSerializer, parseAsString } from "nuqs";
-import { DocContext } from "@/app/doc-provider";
-import { useContext } from "react";
 import { useDataset } from "@/lib/search-params";
 import Clickable from "../ui/clickable/clickable";
 import { datasetTitles } from "@/config/metadata-config";
@@ -67,7 +65,6 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
       const newParams = Object.fromEntries(Object.entries(params).filter(([key, value]) => value !== null && value !== ''));
       return serialize({dataset, nav: 'results', ...newParams})
     }
-
     return <div className="flex flex-col gap-4 p-4 inner-slate">
             <div className="flex flex-col sm:flex-row flex-wrap gap-8">
             {items.map((item: Record<string,any> , index: number) => (
@@ -79,6 +76,7 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
                         <li key={subIndex}> {subitemRenderer(subItem)} </li>
                       ))}
                     </ul> }
+                    
                     {!item.items &&  <p>{subitemRenderer(item)}</p>}
                 </div>
             ))}
