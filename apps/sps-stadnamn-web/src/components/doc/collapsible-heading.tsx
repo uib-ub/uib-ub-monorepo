@@ -15,7 +15,7 @@ export default function CollapsibleHeading(props: {
   const mode = searchParams.get('mode') || 'map'
   // If the route is uuid
   const landingPage = pathname.startsWith('/uuid/')
-  const alwaysOpen = landingPage || props.alwaysOpen || false
+  const alwaysOpen = landingPage || mode != 'map'
 
   
   const [open, setOpen] = useState(alwaysOpen);
