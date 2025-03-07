@@ -41,11 +41,12 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         notFound()
     }
     
-    const [children] = await fetchChildren(
+    const [response] = await fetchChildren(
         docData._source.children 
-            ? { uuids: docData._source.children }
+            ? { uuids: docData._source.children, mode: 'table' }
             : { within: docData._source.uuid, dataset: docDataset, mode: 'table' }
     )
+    const children = response?.hits?.hits || []
 
     if (docData.error) {
         return <ErrorMessage error={docData} message="Kunne ikke hente dokumentet"/>
