@@ -125,10 +125,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
 
                     return {
                         type: "Feature",
-                        geometry: {
-                            type: "Point",
-                            coordinates: hit.fields.location[0]
-                        },
+                        geometry: hit.fields.location[0],
                         properties
                     };
                 })
