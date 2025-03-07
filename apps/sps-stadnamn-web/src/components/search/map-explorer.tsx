@@ -25,7 +25,7 @@ import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 
 export default function MapExplorer() {
   const { resultBounds, totalHits, searchError, setCoordinatesError, isLoading } = useContext(SearchContext)
-  const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>()
+  const [markerBounds, setMarkerBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
   const [markerMode, setMarkerMode] = useState<null | string>(null)
@@ -121,7 +121,7 @@ export default function MapExplorer() {
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (parent || !bounds?.length || !totalHits || isLoading) {
+    if (parent || !markerBounds?.length || !totalHits || isLoading) {
       return;
     }
 
@@ -129,7 +129,7 @@ export default function MapExplorer() {
 
 
     //const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
-    const [[north, west], [south, east]] = bounds
+    const [[north, west], [south, east]] =  markerBounds
 
     
     // Fetch data based on the new bounds
@@ -188,7 +188,7 @@ export default function MapExplorer() {
       }
       );
 
-  }, [bounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode, labelClusters]);
+  }, [ markerBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode, labelClusters, setCoordinatesError]);
 
 
 // Fly to results, doc or children
@@ -220,13 +220,13 @@ useEffect(() => {
 
   // When resultBounds changes
   useEffect(() => {
-    //console.log("RESULTBOUNDS", resultBounds)
-    if (resultBounds?.length && !zoom && !center) {
+    if (resultBounds?.length && !zoom && !center && !isLoading) {
       console.log("FLY 3");
+      console.log("FLYING TO", resultBounds)
       mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
 
     }
-  }, [resultBounds, zoom, center]);
+  }, [resultBounds, zoom, center, isLoading]);
 
 
 
@@ -393,17 +393,19 @@ useEffect(() => {
 
 
   return <>
-    {(!isLoading || bounds || (center && zoom) || searchError) ? <>
+    {(!isLoading || markerBounds || (center && zoom) || searchError) ? <>
       <Map        
         whenReady={(e: any) => {
-            const bounds = e.target.getBounds();
+            const currentBounds = e.target.getBounds();
+            setMarkerBounds([[currentBounds.getNorth(), currentBounds.getWest()], [currentBounds.getSouth(), currentBounds.getEast()]]);
             if (!mapInstance.current) {
               mapInstance.current = e.target
             }
-            setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+            
             programmaticChange.current = true
+            console.log("SET ZOOM 1")
             setZoom(e.target.getZoom())
-            setCenter([bounds.getCenter().lat, bounds.getCenter().lng])
+            setCenter([currentBounds.getCenter().lat, currentBounds.getCenter().lng])
           
           
         }}
@@ -433,7 +435,8 @@ useEffect(() => {
                 programmaticChange.current = true
                 setCenter([boundsCenter.lat, boundsCenter.lng]);
                 setZoom(map.getZoom());
-                setBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+                console.log("SET ZOOM 2")
+                setMarkerBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
                 
               },
             })          
@@ -448,9 +451,9 @@ useEffect(() => {
               <EventHandlers />
               {baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapProps[baseMap]} />}
 
-              {true ? null : bounds && bounds?.length === 2 && (
+              {true ? null : markerBounds && markerBounds?.length === 2 && (
                 <Rectangle 
-                  bounds={bounds}
+                  bounds={markerBounds}
                   pathOptions={{ 
                     color: '#ff0000', 
                     weight: 2,
