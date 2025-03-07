@@ -5,6 +5,7 @@ import { fetchDoc, fetchSNID, fetchSNIDParent } from './app/api/_utils/actions'
 import { defaultDoc2jsonld, doc2jsonld } from './config/rdf-config'
 import { datasetTitles } from './config/metadata-config'
 
+const baseUrl = process.env.NODE_ENV === 'production' ? 'https://stadnamnportalen.uib.no' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
 
 
 export async function middleware(request: NextRequest) {
@@ -19,7 +20,7 @@ export async function middleware(request: NextRequest) {
         const dataset = url.searchParams.get('dataset') || 'search'
 
         if (!datasetTitles[dataset]) {
-                return Response.redirect("http:localhost:3000/search", 302)
+                return Response.redirect(baseUrl + "/search", 302)
         }
 
     }
@@ -28,29 +29,29 @@ export async function middleware(request: NextRequest) {
         const searchParams = new URLSearchParams(url.searchParams)
         const dataset = path[2]
         if (path.length == 5 && path[3] == 'doc') {
-            return Response.redirect("http:localhost:3000/uuid/" + path[4], 302)
+            return Response.redirect(baseUrl + "/uuid/" + path[4], 302)
         }
         if (path.length == 5 && path[3] == 'iiif') {
-            return Response.redirect("http:localhost:3000/iiif/" + path[4], 302)
+            return Response.redirect(baseUrl + "/iiif/" + path[4], 302)
         }
         if (dataset != 'search') {
             searchParams.set('dataset', dataset)
         }
-        return Response.redirect("http:localhost:3000/search?" + searchParams.toString() , 302)
+        return Response.redirect(baseUrl + "/search?" + searchParams.toString() , 302)
     }
     
     if (path[1] == 'snid') {
         // redirect
         const snid = path[2]
         const data = await fetchSNID(snid);
-        return Response.redirect(`http:localhost:3000/uuid/${data.fields.uuid}`, 302);
+        return Response.redirect(baseUrl + "/uuid/" + data.fields.uuid, 302);
     }
 
     if (path[1] == 'find-snid') {
         // redirect
         const uuid = path[2]
         const data = await fetchSNIDParent(uuid);
-        return Response.redirect(`http:localhost:3000/uuid/${data.fields.uuid}`, 302);
+        return Response.redirect(baseUrl + "/uuid/" + data.fields.uuid, 302);
     }
 
     if (path[1] == "uuid" && path[2].includes('.')) {
