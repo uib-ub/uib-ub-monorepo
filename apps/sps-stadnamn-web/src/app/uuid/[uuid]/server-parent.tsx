@@ -6,6 +6,10 @@ import { PiCaretRight } from "react-icons/pi"
 
 export default async function ServerParent({uuid}: {uuid: string}) {
     const parent = await fetchSNIDParent(uuid)
+
+    if (!parent?.fields?.label) {
+        return null
+    }
     
 
     return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
