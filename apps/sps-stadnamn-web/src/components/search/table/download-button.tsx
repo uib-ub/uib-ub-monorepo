@@ -114,7 +114,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
       <AlertDialogHeader>
         <AlertDialogTitle>Last ned data</AlertDialogTitle>
         <AlertDialogDescription className="space-y-4">
-          <p>Nedlasting av csv med kolonnene du har valgt er begrenset til 10 000 rader. Alternativt kan du laste ned det fullstendige datasettet som JSON.</p>
+          Nedlasting av csv med kolonnene du har valgt er begrenset til 10 000 rader. Alternativt kan du laste ned det fullstendige datasettet som JSON.
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
