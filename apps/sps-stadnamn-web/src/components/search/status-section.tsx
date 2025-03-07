@@ -1,4 +1,3 @@
-
 'use client'
 import { useContext } from 'react';
 import { SearchContext } from '@/app/search-provider';
@@ -7,6 +6,8 @@ import { PiAlarmFill, PiInfoFill, PiWarningFill } from 'react-icons/pi';
 import ModeSelector from '../tabs/mode-selector';
 import { GlobalContext } from '@/app/global-provider';
 import { useSearchParams, useRouter } from 'next/navigation';
+import SortSelector from './sort/sort-selector'
+
 export default function StatusSection() {
     const { resultData, resultBounds, isLoading, coordinatesError, searchError } = useContext(SearchContext)
     const searchParams = useSearchParams()
@@ -18,6 +19,7 @@ export default function StatusSection() {
     return <div className="flex flex-col gap-2"> 
     <div className={`flex gap-1 flex-wrap items-center ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''} ${isMobile ? 'mx-1 mt-1' : ''}`}>
     <ModeSelector/>
+    {mode == 'list' && <SortSelector/>}
 
     { (mode != 'doc') && <ActiveFilters/> }
     </div>
