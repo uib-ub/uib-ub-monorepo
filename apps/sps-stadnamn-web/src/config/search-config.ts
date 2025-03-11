@@ -98,12 +98,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     leks: {
       uuid, label, adm, adm1, adm2,...html,
-      "rawData.Lokalitetstype": {label: "Lokalitetstype", table, facet},
-      "rawData.Sisteledd": {label: "Sisteledd", facet},
-      "rawData.Kjelde": {label: "Kjelde", facet},
-      "rawData.KNR": {label: "Kommunenummer", table, facet},
-      "rawData.GNR": {label: "Gardsnummer", table, facet, additionalParams: ["rawData.KNR"]},
-      "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.KNR", "rawData.GNR"]},
+      "misc.Lokalitetstype": {label: "Lokalitetstype", table, facet},
+      "misc.Sisteledd": {label: "Sisteledd", facet},
+      "misc.Kjelde": {label: "Kjelde", facet},
+      "misc.KNR": {label: "Kommunenummer", table, facet},
+      "misc.GNR": {label: "Gardsnummer", table, facet, additionalParams: ["misc.KNR"]},
+      "misc.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["misc.KNR", "misc.GNR"]},
       ...identifiers,
     },
     leks_g: {
