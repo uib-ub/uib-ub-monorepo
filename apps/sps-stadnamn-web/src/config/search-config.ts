@@ -128,6 +128,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       uuid, label, sosi, adm,
       "within": {label: "Gard"},
       "misc.MNR": {label: "Matrikkelnummer", result, table, facet},
+      "knr": {label: "Kommunenummer", facet, result},
+
       "misc.LNR": {label: "Løpenummer", result, table, facet},
       "miac.1723_MNR": {label: "Matrikkelnummer 1723", table, facet},
       "adm1": {label: "Amt", result},
