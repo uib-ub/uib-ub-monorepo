@@ -77,9 +77,11 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     leks: {
       display: 'map',
       adm: 2,
+      sort: ["_score", "label.keyword"],
     },
     leks_g: {
       display: 'table',
+      sort: ["_score", "label.keyword"],
     },
     m1838: {
       display: 'map',
