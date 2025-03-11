@@ -407,64 +407,6 @@ const spec = {
         }
       }
     },
-    "/api/download": {
-      get: {
-        tags: ["document"],
-        summary: "Download documents in bulk",
-        parameters: [
-          {
-            name: "dataset",
-            in: "query",
-            description: "The dataset to download from. Defaults to 'search'",
-            schema: { type: "string" }
-          },
-          {
-            name: "size",
-            in: "query",
-            description: "Number of results to return. Defaults to 10000",
-            schema: { type: "integer" }
-          },
-          {
-            name: "from",
-            in: "query",
-            description: "Starting index for pagination",
-            schema: { type: "integer" }
-          },
-          {
-            name: "fields",
-            in: "query",
-            description: "Comma-separated list of fields to include",
-            schema: { type: "string" }
-          },
-          {
-            name: "q",
-            in: "query",
-            description: "Search query string",
-            schema: { type: "string" }
-          }
-        ],
-        responses: {
-          "200": {
-            description: "Bulk download results",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    hits: {
-                      type: "array",
-                      items: {
-                        type: "object"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/geo": {
       get: {
         tags: ["geo"],
