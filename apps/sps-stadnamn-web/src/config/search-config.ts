@@ -190,6 +190,16 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     ssr2020: {
       uuid, label, adm, adm1, adm2,
+      "misc.Stedsnummer": {label: "Stedsnummer", facet, result}, 
+      "misc.Språk": {label: "Språk", facet},
+      "misc.Status_skrivemåte": {label: "Status", facet},
+      "misc.KNR": {label: "Kommunenummer", facet},
+      "misc.Navneobjekthovedgruppe": {label: "Hovedgruppe", facet},
+      "misc.Navneobjektgruppe": {label: "Gruppe", facet},
+      "misc.Kjelde": {label: "Kjelde", facet},
+      "misc.År": {label: "År", facet},
+      "misc.Lenke": {label: "Lenke", result},
+      sosi,
       ...identifiers,
     },
     nrk: {
