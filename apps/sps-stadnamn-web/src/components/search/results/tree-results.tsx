@@ -97,7 +97,7 @@ export default function TreeResults() {
   <ul className="flex flex-col">
 
   {groupBy ? cadastralData?.aggregations?.[groupBy]?.buckets
-  .sort((a: any, b: any)=> treeSettings[dataset]?.aggSort ? a.aggNum.buckets[0].key.localeCompare(b.aggNum.buckets[0].key) : a.aggNum.localeCompare(b.key))
+  .sort((a: any, b: any)=> treeSettings[dataset]?.aggSort ? a.aggNum.buckets[0]?.key.localeCompare(b.aggNum.buckets[0]?.key) : a.aggNum.localeCompare(b?.key))
   .map((item: Record<string, any>) => {
     return <li key={item.key}>
       <Clickable link 
