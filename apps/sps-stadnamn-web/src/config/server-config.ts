@@ -44,7 +44,17 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     aggSort: "knr.keyword",
     showNumber: true,
     geoSort: "misc.BNR.keyword"
+  },
+  /*
+  rygh: {
+    subunit: "rawData.Gnr",
+    parentName: "label",
+    leaf: "rawData.Bnr",
+    sort: ["rawData.Gnr", "rawData.Bnr"],
+    aggSort: "rawData.KNR.keyword",
+    showNumber: true
   }
+    */
 }
 
 
