@@ -395,11 +395,13 @@ useEffect(() => {
   // Add this state for toggling the grid
   const [showH3Grid, setShowH3Grid] = useState(false);
 
-  // Add this function before the return statement
+  // Add state for H3 resolution
+  const [h3Resolution, setH3Resolution] = useState(8);
+
+  // Modify getH3Cells to use the resolution state
   const getH3Cells = useCallback((bounds: any) => {
     if (!bounds) return [];
     
-    // Only show grid if zoomed in enough
     const zoomLevel = mapInstance.current?.getZoom() || 0;
     if (zoomLevel < 10) return [];
     
@@ -408,7 +410,6 @@ useEffect(() => {
     const west = bounds.getWest();
     const east = bounds.getEast();
     
-    // Create a polygon of the bounds
     const bboxPolygon = [
       [north, west],
       [north, east],
@@ -417,15 +418,13 @@ useEffect(() => {
       [north, west]
     ];
     
-    // Get hexagons within bounds using resolution 7
-    const hexagons = h3.polygonToCells(bboxPolygon, 7);
+    const hexagons = h3.polygonToCells(bboxPolygon, h3Resolution);
     
-    // Convert hexagons to boundaries
     return hexagons.map((hexId: string) => {
       const boundary = h3.cellToBoundary(hexId);
       return boundary;
     });
-  }, []);
+  }, [h3Resolution]);
 
   return <>
     {(!isLoading || markerBounds || (center && zoom) || searchError) ? <>
@@ -723,6 +722,34 @@ useEffect(() => {
               {baseMap === item.key && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
             </DropdownMenuItem>
           ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Overlegg</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => setShowH3Grid(!showH3Grid)}
+            className={`flex items-center py-2 px-4 cursor-pointer justify-between ${showH3Grid ? "bg-neutral-100" : ""}`}
+          >
+            Rutenett
+            {showH3Grid && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
+          </DropdownMenuItem>
+          {showH3Grid && (
+            <div className="px-4 py-2 flex items-center gap-2">
+              <button 
+                onClick={() => setH3Resolution(Math.max(6, h3Resolution - 1))}
+                className="p-1 rounded bg-neutral-100 hover:bg-neutral-200 disabled:opacity-50"
+                disabled={h3Resolution <= 6}
+              >
+                -
+              </button>
+              <span className="text-sm">Res: {h3Resolution}</span>
+              <button 
+                onClick={() => setH3Resolution(Math.min(9, h3Resolution + 1))}
+                className="p-1 rounded bg-neutral-100 hover:bg-neutral-200 disabled:opacity-50"
+                disabled={h3Resolution >= 9}
+              >
+                +
+              </button>
+            </div>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <DropdownMenu>
@@ -767,13 +794,6 @@ useEffect(() => {
       <IconButton onClick={zoomIn} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill /></IconButton>
       <IconButton onClick={zoomOut} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill /></IconButton>
       <IconButton onClick={getMyLocation} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiNavigationArrowFill/></IconButton>
-      {false &&<IconButton 
-        onClick={() => setShowH3Grid(!showH3Grid)} 
-        side="top" 
-        className={`p-2 rounded-full border ${showH3Grid ? 'bg-primary-600' : 'bg-neutral-900'} border-white shadow-sm`} 
-        label="Toggle H3 Grid">
-        <PiStackSimpleFill />
-      </IconButton>}
     </div>
   </>
 }
