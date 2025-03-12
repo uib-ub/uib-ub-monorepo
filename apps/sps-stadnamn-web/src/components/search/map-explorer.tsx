@@ -21,6 +21,7 @@ import { GlobalContext } from "@/app/global-provider";
 import { useSearchParams } from "next/navigation";
 import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import * as h3 from "h3-js";
 
 
 export default function MapExplorer() {
@@ -391,6 +392,40 @@ useEffect(() => {
     }
   }
 
+  // Add this state for toggling the grid
+  const [showH3Grid, setShowH3Grid] = useState(false);
+
+  // Add this function before the return statement
+  const getH3Cells = useCallback((bounds: any) => {
+    if (!bounds) return [];
+    
+    // Only show grid if zoomed in enough
+    const zoomLevel = mapInstance.current?.getZoom() || 0;
+    if (zoomLevel < 10) return [];
+    
+    const north = bounds.getNorth();
+    const south = bounds.getSouth();
+    const west = bounds.getWest();
+    const east = bounds.getEast();
+    
+    // Create a polygon of the bounds
+    const bboxPolygon = [
+      [north, west],
+      [north, east],
+      [south, east],
+      [south, west],
+      [north, west]
+    ];
+    
+    // Get hexagons within bounds using resolution 7
+    const hexagons = h3.polygonToCells(bboxPolygon, 7);
+    
+    // Convert hexagons to boundaries
+    return hexagons.map((hexId: string) => {
+      const boundary = h3.cellToBoundary(hexId);
+      return boundary;
+    });
+  }, []);
 
   return <>
     {(!isLoading || markerBounds || (center && zoom) || searchError) ? <>
@@ -415,7 +450,7 @@ useEffect(() => {
           : { bounds: resultBounds || [[72, -5], [54, 25]] }
         }
         className='w-full h-full'>
-        {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle }: any, leaflet: any) => {
+        {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon }: any, leaflet: any) => {
 
           function EventHandlers() {
             const map = useMap();
@@ -450,6 +485,20 @@ useEffect(() => {
             <>
               <EventHandlers />
               {baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapProps[baseMap]} />}
+
+              {/* Add H3 grid overlay */}
+              {showH3Grid && mapInstance.current && getH3Cells(mapInstance.current.getBounds()).map((polygon, index) => (
+                <Polygon
+                  key={index}
+                  positions={polygon}
+                  pathOptions={{
+                    color: '#666',
+                    weight: 1,
+                    opacity: 0.5,
+                    fillOpacity: 0.1
+                  }}
+                />
+              ))}
 
               {true ? null : markerBounds && markerBounds?.length === 2 && (
                 <Rectangle 
@@ -718,6 +767,13 @@ useEffect(() => {
       <IconButton onClick={zoomIn} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill /></IconButton>
       <IconButton onClick={zoomOut} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill /></IconButton>
       <IconButton onClick={getMyLocation} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiNavigationArrowFill/></IconButton>
+      {false &&<IconButton 
+        onClick={() => setShowH3Grid(!showH3Grid)} 
+        side="top" 
+        className={`p-2 rounded-full border ${showH3Grid ? 'bg-primary-600' : 'bg-neutral-900'} border-white shadow-sm`} 
+        label="Toggle H3 Grid">
+        <PiStackSimpleFill />
+      </IconButton>}
     </div>
   </>
 }
