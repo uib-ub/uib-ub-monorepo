@@ -103,32 +103,6 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
             </Clickable>
             </li>
         })}
-
-    { docSource.datasets.length > 1 && (
-          <li className='whitespace-nowrap !m-0 !p-0'>
-            <Clickable 
-              className={`
-                flex items-center gap-1 
-                no-underline border rounded-md rounded-full 
-                pr-3 pl-2 py-2 xl:py-1 
-                w-full
-                ${parent && !sourceLabel && !sourceDataset ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
-              `}
-              remove={["sourceLabel", "sourceDataset"]}
-              add={{
-                parent: docSource.uuid,
-                doc: docSource.uuid,
-                ...(mode != 'map' && !isMobile ? {mode: 'doc'} : {})
-              }}
-              link={isMobile || mode != 'map' ? undefined : true}
-              aria-expanded={isMobile ? undefined : parent ? true : false}
-              aria-controls={isMobile ? undefined : 'children-window'}
-            >
-              <PiBooksFill className={`${parent && !sourceLabel && !sourceDataset ? 'text-white' : 'text-primary-600'}`} />
-              Alle kjelder
-            </Clickable>
-          </li>
-        )}
       </ul>
       </>
       }

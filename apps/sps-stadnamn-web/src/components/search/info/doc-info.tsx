@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiWarningFill, PiX, PiTag, PiInfoFill, PiArrowElbowLeftUp, PiCaretLeft, PiTableFill, PiInfinityBold, PiMagnifyingGlassBold, PiTable, PiCaretRight, PiTagFill } from "react-icons/pi"
+import { PiWarningFill, PiX, PiTag, PiInfoFill, PiArrowElbowLeftUp, PiCaretLeft, PiTableFill, PiInfinityBold, PiMagnifyingGlassBold, PiTable, PiCaretRight, PiTagFill, PiBooksFill } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import Clickable from "@/components/ui/clickable/clickable"
@@ -42,6 +42,8 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const { isMobile, sosiVocab, preferredTabs } = useContext(GlobalContext)
     const center = searchParams.get('center')
     const zoom = searchParams.get('zoom')
+    const sourceLabel = searchParams.get('sourceLabel')
+    const sourceDataset = searchParams.get('sourceDataset')
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -188,29 +190,48 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             }
             {dataset == 'search' && docDataset != dataset &&
                 <Clickable link className="btn btn-neutral gap-2" only={{dataset: docDataset, doc}}>
-                  <PiMagnifyingGlassBold aria-hidden="true" className="text-white"/>
                   {datasetTitles[docDataset as string]}
                 </Clickable>
             }
 
-            {treeSettings[dataset] && docSource.sosi === 'gard' && mode != 'doc' && (!parent || mode == 'list') &&
-
-                <Clickable link className="btn btn-neutral gap-2" 
-                           add={{parent: docSource.uuid,
-                            ...mode != 'map' ? {doc: docSource.uuid, mode: 'doc'} : {}
-                           }}>
-                  <PiTable className="text-white" aria-hidden="true"/>
-                  Vis underordna bruk
-                </Clickable>
-            }
+            
 
           
         
             
           <CopyLink uuid={docSource.uuid} className="btn btn-neutral"/> 
-          <Link href={"/uuid/" + docSource.uuid} className="btn btn-primary">
-            Opne
+          
+          <Link href={"/uuid/" + docSource.uuid} className="btn btn-neutral">
+            Varig side
           </Link>
+
+          { !parent && docSource.datasets.length > 1 && (
+            <Clickable 
+              className="btn btn-primary gap-2"
+              remove={["sourceLabel", "sourceDataset"]}
+              add={{
+                parent: docSource.uuid,
+                doc: docSource.uuid,
+                ...(mode != 'map' && !isMobile ? {mode: 'doc'} : {})
+              }}
+              link={isMobile || mode != 'map' ? undefined : true}
+              aria-expanded={isMobile ? undefined : parent ? true : false}
+              aria-controls={isMobile ? undefined : 'children-window'}
+            >
+              Kjelder
+            </Clickable>
+
+        )}
+
+        {treeSettings[dataset] && docSource.sosi === 'gard' && mode != 'doc' && (!parent || mode == 'list') &&
+
+        <Clickable link className="btn btn-primary gap-2" 
+                  add={{parent: docSource.uuid,
+                    ...mode != 'map' ? {doc: docSource.uuid, mode: 'doc'} : {}
+                  }}>
+          Underordna bruk
+        </Clickable>
+        }
 
             
             

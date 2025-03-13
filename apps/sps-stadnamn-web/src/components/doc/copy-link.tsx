@@ -18,7 +18,7 @@ export default function CopyLink({ uuid, className }: { uuid: string, className?
             <span className="flex items-center gap-2">
                 {linkCopied == uuid ? 
                     <PiCheckBold className="text-white" aria-hidden="true"/> : 
-                    <PiLinkSimple className="text-white" aria-hidden="true"/>
+                    null
                 }
                 Kopier lenke
             </span>
