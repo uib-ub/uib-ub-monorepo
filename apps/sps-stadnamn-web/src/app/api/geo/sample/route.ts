@@ -34,7 +34,8 @@ export async function GET(request: Request) {
         [treeSettings[dataset].geoSort]: {
           "missing": "_first",
           "order": "asc"
-        }
+        },
+        "uuid": "asc"
       }
     ] : [{
       "uuid": "asc"
