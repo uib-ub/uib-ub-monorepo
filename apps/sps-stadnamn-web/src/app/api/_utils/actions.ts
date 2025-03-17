@@ -318,7 +318,7 @@ export async function fetchChildren(params: {
                 }
             })
         },
-        ...(dataset ? {sort: getSortArray(dataset)} : {}),
+        ...(dataset ? {sort: treeSettings[dataset]?.sort?.map(field => field.includes("__") ? {[field.replace("__", ".")]: {nested: {path: field.split("__")[0]}}} : field) || getSortArray(dataset)} : {}),
         ...geo || {}
     }
 
