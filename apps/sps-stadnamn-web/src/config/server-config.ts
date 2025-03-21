@@ -153,7 +153,33 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       display: 'map',
       adm: 2,
       cadastre: false
-    }
+    },
+    gn2019: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    ft1900: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    ft1910: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    m2010: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    
+    
   }
 
 
