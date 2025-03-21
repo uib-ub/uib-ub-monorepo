@@ -184,13 +184,12 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
             {dataset != 'search' && docSource.snid &&
                 <Link className="btn btn-neutral gap-2" href={`/find-snid/${docSource.uuid}`}>
-                  <PiTag aria-hidden="true" className="text-white"/>
                   Stadnamnside
                 </Link>
             }
             {dataset == 'search' && docDataset != dataset &&
                 <Clickable link className="btn btn-neutral gap-2" only={{dataset: docDataset, doc}}>
-                  {datasetTitles[docDataset as string]}
+                  Eiga søkevisning
                 </Clickable>
             }
 
