@@ -113,11 +113,6 @@ export async function fetchSOSI(sosiCode: string) {
                                 "_index": `search-stadnamn-${process.env.SN_ENV}-search`
                             }
                         },
-                        {
-                            "exists": {
-                                "field": "snid"
-                            }
-                        }
                     ]
                 }
             },
