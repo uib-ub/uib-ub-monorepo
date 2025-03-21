@@ -403,7 +403,13 @@ useEffect(() => {
     if (!bounds) return [];
     
     const zoomLevel = mapInstance.current?.getZoom() || 0;
-    if (zoomLevel < 10) return [];
+    // Don't show high resolution grids when zoomed out
+    if (zoomLevel < 5) return [];
+    if (zoomLevel < 7 && h3Resolution > 4) return [];
+    if (zoomLevel < 9 && h3Resolution > 5) return [];
+    if (zoomLevel < 11 && h3Resolution > 6) return [];
+    if (zoomLevel < 13 && h3Resolution > 7) return [];
+    if (zoomLevel < 15 && h3Resolution > 8) return [];
     
     const north = bounds.getNorth();
     const south = bounds.getSouth();
@@ -492,12 +498,43 @@ useEffect(() => {
                   positions={polygon}
                   pathOptions={{
                     color: '#666',
-                    weight: 1,
-                    opacity: 0.5,
-                    fillOpacity: 0.1
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0
                   }}
                 />
               ))}
+
+              {/* Add blue hexagon for parent h3 cell */}
+              {parentData?._source?.h3 && (
+                <>
+                  <Polygon
+                    positions={h3.cellToBoundary(parentData._source.h3)}
+                    pathOptions={{
+                      color: '#0066ff',
+                      weight: 2,
+                      opacity: 1,
+                      fillOpacity: 0.5
+                    }}
+                  />
+                  {/* Add surrounding hexagons with lighter color */}
+                  {h3.gridDisk(parentData._source.h3, 1)
+                    .filter(hexId => hexId !== parentData._source.h3)
+                    .map(hexId => (
+                      <Polygon
+                        key={hexId}
+                        positions={h3.cellToBoundary(hexId)}
+                        pathOptions={{
+                          color: '#0066ff',
+                          weight: 1,
+                          opacity: 0.5,
+                          fillOpacity: 0.2
+                        }}
+                      />
+                    ))
+                  }
+                </>
+              )}
 
               {true ? null : markerBounds && markerBounds?.length === 2 && (
                 <Rectangle 
