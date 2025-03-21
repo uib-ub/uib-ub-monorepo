@@ -6,12 +6,11 @@ import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
 import ErrorMessage from '../error-message';
 
-const DynamicImageViewer = ({manifest}: {manifest: Record<string, any>}) => {
+const DynamicImageViewer = ({canvases}: {canvases: Record<string, any>[]}) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const viewer = useRef<OpenSeadragon.Viewer | null>(null);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const {dataset, manifestId} = useParams();
   const [error, setError] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -22,17 +21,18 @@ const DynamicImageViewer = ({manifest}: {manifest: Record<string, any>}) => {
       // TODO: create api route that generates manifest from elasticsearch index  
       setCurrentPage(0)
 
-      const tileSources = manifest.items.map((item: { items: { items: { body: any; }[]; }[]; }) => {
-        const imageService = item.items[0].items[0].body;
+      const tileSources = canvases.map((item: any) => {
         return {
           "@context": "http://iiif.io/api/image/2/context.json",
-          "@id": imageService.id,
-          "height": imageService.height,
-          "width": imageService.width,
+          "@id": "https://iiif.test.ubbe.no/iiif/image/" + item.image,
+          "height": item.height,
+          "width": item.width,
           "profile": [ "http://iiif.io/api/image/2/level2.json" ],
           "protocol": "http://iiif.io/api/image"
         };
       });
+
+      console.log("TILES", tileSources)
 
       setNumberOfPages(tileSources.length);
 
@@ -44,7 +44,7 @@ const DynamicImageViewer = ({manifest}: {manifest: Record<string, any>}) => {
           showNavigationControl: false,
           showSequenceControl: false,
           sequenceMode: true,
-          tileSources
+          tileSources: tileSources as any
         });
 
         viewer.current.addHandler('tile-load-failed', function(event) {
@@ -67,7 +67,7 @@ const DynamicImageViewer = ({manifest}: {manifest: Record<string, any>}) => {
         viewer.current.viewport.goHome();
       }
 
-  }, [manifest]);
+  }, [canvases]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
