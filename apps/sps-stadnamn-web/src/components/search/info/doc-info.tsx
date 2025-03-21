@@ -204,7 +204,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             Varig side
           </Link>
 
-          { !parent && docSource.datasets.length > 1 && (
+          { !parent && docSource.datasets?.length > 1 && (
             <Clickable 
               className="btn btn-primary gap-2"
               remove={["sourceLabel", "sourceDataset"]}
