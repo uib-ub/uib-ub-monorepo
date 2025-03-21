@@ -211,5 +211,8 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
 
  
      </>
-    }
+    },
+    ft1900: null,
+    ft1910: null,
+    m2010: null
   }
