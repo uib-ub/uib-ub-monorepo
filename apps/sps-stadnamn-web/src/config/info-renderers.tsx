@@ -194,6 +194,11 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       }      
       </>
     },
+    tot: (source: any) => {
+      return <>
+      {source.misc?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.Kommentar}</>}
+      </>
+    },
     ssr2016: null,
     ssr2020: null,
     nrk: (source: any) => {
