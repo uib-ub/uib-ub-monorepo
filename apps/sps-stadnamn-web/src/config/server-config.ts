@@ -69,8 +69,10 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
   export const contentSettings: Record<string, ContentSettingsItem> = {
     search: {
       display: 'map',
-      adm: 3,
-      sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] //  "ranking" added in order to favor results with snid and multiple attestations
+      adm: 0,
+      sort: ["_score", "label.keyword"]
+      //adm: 3,
+      //sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] //  "ranking" added in order to favor results with snid and multiple attestations
     },
     bsn: {
       display: 'map',
