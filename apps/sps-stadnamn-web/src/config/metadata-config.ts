@@ -45,7 +45,11 @@ export const datasetTitles: DatasetTitles = {
     tot: "Totennavn",
     ssr2016: "Kartverket 2016",
     ssr2020: "Kartverket 2020",
-    nrk: "NRKs stadnamnregister"
+    nrk: "NRKs gamle stadnamnarkiv",
+    gn2019: "Geonames 2019",
+    ft1900: "Folketellingen 1900",
+    ft1910: "Folketellingen 1910",
+    m2010: "Matrikkelen 2010"
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -63,7 +67,8 @@ export const datasetDescriptions: Record<string, string> = {
   tot: "Totennavn er en samling av navn på garder, bruk, småbruk, forsvunne stedsnavn, skogteiger og jorder fra hele Toten. Materialet baserer seg på kjeldemateriale samlet inn til Norsk stedsnavnarkiv ved Universitetet i Oslo. Arbeidet er utført av Trond Nygård på oppdrag for daværende Seksjon for navnegransking. Prosjektet ble sluttført i 2007. Kartfesting er uført på Språksamlingane i 2024.", 
   ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur.",
   ssr2020: "Sentralt stadnamnregister, Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
-  nrk: "NRKs gamle stadnamnarkiv vart laga rundt 1960. Arkivet har tilrådd uttale for 2000 ulike stadnamn i Noreg. I datasettet finn du tilrådd uttale frå det gamle arkivet. Ver merksam på at uttale av stadnamn kan endre seg over tid, og at uttalen som var tilrådd på 1960-talet ikkje nødvendigvis samsvarar med uttalen i dag."
+  nrk: "NRKs gamle stadnamnarkiv vart laga rundt 1960. Arkivet har tilrådd uttale for 2000 ulike stadnamn i Noreg. I datasettet finn du tilrådd uttale frå det gamle arkivet. Ver merksam på at uttale av stadnamn kan endre seg over tid, og at uttalen som var tilrådd på 1960-talet ikkje nødvendigvis samsvarar med uttalen i dag.",
+  m2010: "Matrikkelen 2010 er eit datasett utvikla av Språksamlingane, basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret) - eit offentleg register over faste eigedomar i Noreg. Registeret vart ført av Statens kartverk for kvar kommune med opplysningar om alle grunneigedomar, festegrunnar som hadde eige grunnboksblad i tinglysingsregisteret, samt anna som hadde eige grunnboksblad, til dømes eigarseksjonar. I tillegg til eigedomen si nemning og stadfesting inneheldt GAB-registeret opplysningar om kva for ein eigedom den var utskild frå, arealet, eigarforhold, adresse og bygningsdata. GAB-registeret er i dag avløyst av matrikkelen."
 }
 
 
@@ -83,7 +88,8 @@ export const datasetShortDescriptions: Record<string, string> = {
   tot: "En samling av ulike stedsnavn fra Toten-regionen, basert på kildemateriale samlet inn for Norsk stadnamnarkiv ved Universitetet i Oslo.",
   ssr2016: "Basert på Kartverket sitt første frie stadnamndatasett frå 2000. Databasen var i bruk fram til 2016 då Kartverket si noverande datastruktur vart lansert.",
   ssr2020: "Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
-  nrk: "NRKs stadnamnarkiv frå 1960 inneheld tilrådd uttale for 2000 stadnamn i Noreg. Uttalen kan ha endra seg sidan den gong."
+  nrk: "NRKs stadnamnarkiv frå 1960 inneheld tilrådd uttale for 2000 stadnamn i Noreg. Uttalen kan ha endra seg sidan den gong.",
+  m2010: "Eit datasett basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret), som var eit offentleg register over faste eigedomar i Noreg."
 }
 
 
@@ -103,7 +109,11 @@ export const publishDates: Record<string, string> = {
   tot: "2024-08-26",
   ssr2016: "2024-09-10",
   ssr2020: "2025-03-04",
-  nrk: "2025-03-06"
+  nrk: "2025-03-06",
+  gn2019: "2025-03-13",
+  ft1900: "2025-03-13",
+  ft1910: "2025-03-13",
+  m2010: "2025-03-13"
 }
 
 
@@ -240,8 +250,35 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "NRK",
         attribution: "NRK",
         license: licenses.ccby4,
+      },
+      gn2019: {
+        img: "/datasets/geonames.png",
+        alt: "Geonames",
+        imageAttribution: "Geonames",
+        attribution: "Geonames",
+        license: licenses.ccby4,
+      },
+      ft1900: {
+        img: "/datasets/ft1900.png",
+        alt: "Folketellingen 1900",
+        imageAttribution: "Folketellingen 1900",
+        attribution: "Folketellingen 1900",
+        license: licenses.ccby4,
+      },
+      ft1910: {
+        img: "/datasets/ft1910.png",
+        alt: "Folketellingen 1910",
+        imageAttribution: "Folketellingen 1910",
+        attribution: "Folketellingen 1910",
+        license: licenses.ccby4,
+      },
+      m2010: {
+        img: "/datasets/m2010.png",
+        alt: "Matrikkelen 2010",
+        imageAttribution: "Matrikkelen 2010",
+        attribution: "Matrikkelen 2010",
+        license: licenses.ccby4,
       }
-
 }
 
 export const subpages: Record<string, string[]> = {
@@ -286,7 +323,8 @@ export const datasetFeatures: Record<string, string[]> = {
   tot: ["phonetic"],
   ssr2016: ["link"],
   ssr2020: ["link"],
-  nrk: ["phonetic"]
+  nrk: ["phonetic"],
+  gn2019: ["link"]
 }
 
 export const datasetTypes: Record<string, string[]> = {
@@ -305,6 +343,8 @@ export const datasetTypes: Record<string, string[]> = {
   ssr2016: ["database", "public"],
   ssr2020: ["database", "public"],
   nrk: ["database", "collection"],
+  gn2019: ["database", "public"],
+  m2010: ["database", "public"]
 
 }
 

@@ -173,10 +173,20 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     tot: {
       uuid, label, adm, adm1, adm2,
-      "rawData.GNR": {label: "Gardsnummer", table, facet},
-      "rawData.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.GNR"]},
-      "rawData.Kjelde": {label: "Kjelde", facet},
-      "rawData.Kjeldeform": {label: "Kjeldeform", facet},
+      "misc.GNR": {label: "Gardsnummer", table, facet},
+      "misc.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["misc.GNR"]},
+      "misc.KNR": {label: "Kommunenummer", table, facet},
+      "misc.Kommuneenhet": {label: "Kommune", table, facet},
+      "misc.Namn på": {label: "Namn på", table, facet},
+      "misc.Tidl namn på": {label: "Tidlegare namn på", table, facet},
+      "misc.Uttale": {label: "Uttale", table, facet},
+      "misc.Kommentar_Uttale": {label: "Uttalekommentar", table, facet},
+      "misc.Prep": {label: "Preposisjon", table, facet},
+      "misc.Informant": {label: "Informant", table, facet},
+      "misc.Innsamlar": {label: "Innsamlar", table, facet},
+      "misc.Kommentar": {label: "Kommentar", table},
+      "misc.Kjelde": {label: "Kjelde", facet},
+      "misc.Kjeldeform": {label: "Kjeldeform", facet},
       ...identifiers,
     },
     sof: {
@@ -186,8 +196,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     ssr2016: {
       uuid, label, adm, adm1, adm2,
-      "rawData.Stedsnavn_lokalId": {label: "SSR-nummer", facet},
-      "rawData.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
+      "misc.Stedsnavn_lokalId": {label: "SSR-nummer", facet},
+      "misc.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
       "misc.language": {label: "Språk", facet},
       "misc.status": {label: "Status 2016", facet},
       ...identifiers,
@@ -222,6 +232,22 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.SSRobjektID": { label: "SSR objekt ID", table },
       "rawData.Kommunenummer": { label: "Kommunenummer", table, facet },
       "rawData.SistEndra": { label: "Sist endra", table }
+    },
+    gn2019: {
+      uuid, label, adm, adm1, adm2,
+      ...identifiers,
+    },
+    ft1900: {
+      uuid, label, adm, adm1, adm2,
+      ...identifiers,
+    },
+    ft1910: {
+      uuid, label, adm, adm1, adm2,
+      ...identifiers,
+    },
+    m2010: {
+      uuid, label, adm, adm1, adm2, sosi,
+      ...identifiers,
     }
   }
 

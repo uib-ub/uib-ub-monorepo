@@ -45,6 +45,14 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     showNumber: true,
     geoSort: "misc.BNR.keyword"
   },
+  m2010: {
+    subunit: "cadastre__gnr",
+    parentName: "misc.Gardsnamn",
+    leaf: "cadastre__bnr",
+    sort: ["cadastre__gnr", "cadastre__bnr"],
+    aggSort: "knr.keyword",
+    geoSort: "misc.BNR.keyword"
+  },
   /*
   rygh: {
     subunit: "rawData.Gnr",

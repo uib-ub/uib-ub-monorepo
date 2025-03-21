@@ -273,6 +273,12 @@ export const resultRenderers: ResultRenderers = {
       return <>{formatAdm(hit)}</>
     }
   },
+  gn2019: {
+    title: defaultTitle,
+    details: (hit: any, display: string) => {
+      return <>{formatAdm(hit)}</>
+    }
+  }
 
   
   
