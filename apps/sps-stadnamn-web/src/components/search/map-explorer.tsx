@@ -771,9 +771,9 @@ useEffect(() => {
           {showH3Grid && (
             <div className="px-4 py-2 flex items-center gap-2">
               <button 
-                onClick={() => setH3Resolution(Math.max(6, h3Resolution - 1))}
+                onClick={() => setH3Resolution(Math.max(0, h3Resolution - 1))}
                 className="p-1 rounded bg-neutral-100 hover:bg-neutral-200 disabled:opacity-50"
-                disabled={h3Resolution <= 6}
+                disabled={h3Resolution <= 0}
               >
                 -
               </button>
