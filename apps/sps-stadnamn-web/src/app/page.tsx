@@ -58,7 +58,7 @@ export default async function Home() {
       <span className="text-2xl">{stats?.datasetCount?.toLocaleString('nb-NO')}</span>
     </li>
     <li className="flex flex-col items-center text-base">
-      Oppslag i datasetta
+      Kjeldeoppslag
       <span className="text-2xl">{stats?.datasetDocs?.toLocaleString('nb-NO')}</span>
     </li>
     
