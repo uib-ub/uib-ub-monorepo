@@ -28,7 +28,7 @@ export default function ClientThumbnail({ images }: { images: {manifest: string,
             setThumbnailUrl(newThumbnailUrl)
         }
 
-        fetchThumbnail(`https://iiif.test.ubbe.no/iiif/manifest${imgDataset == 'nbas' ? '/stadnamn/NBAS' : ''}/${manifest}.json`)
+        fetchThumbnail(`https://iiif.test.ubbe.no/iiif/manifest${imgDataset == 'bsn' ? '' : `/stadnamn/${imgDataset.toUpperCase()}`}/${manifest}.json`)
     }, [imgIndex, height])
 
     return <div className="flex flex-col gap-1">

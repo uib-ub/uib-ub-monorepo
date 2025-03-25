@@ -6,6 +6,7 @@ import Link from "next/link";
 import Thumbnail from "@/components/image-viewer/thumbnail";
 import ClientThumbnail from "@/components/doc/client-thumbnail";
 import Image from "next/image";
+import { resolveLanguage } from "./iiif-utils";
 
 export default function CollectionExplorer({manifest}: {manifest: any}) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -49,8 +50,8 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                         homeUrl="/iiif"
                         homeLabel="Arkivressurser"
                         parentUrl={manifest.collections?.slice().reverse().map((item: any) => item.uuid)} 
-                        parentName={manifest.collections?.slice().reverse().map((item: any) => item.label)} 
-                        currentName={manifest.label} 
+                        parentName={manifest.collections?.slice().reverse().map((item: any) => resolveLanguage(item.label))} 
+                        currentName={resolveLanguage(manifest.label)} 
                     />
                 </div>
             }
@@ -71,7 +72,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {results.map((result, index) => (
+                {false && results.map((result, index) => (
                     <Link 
                         href={`/iiif/${result.uuid}`} 
                         key={index} 
@@ -80,17 +81,17 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                         {result.type === 'Collection' ? (
                             <>
                                 <PiArchiveThin aria-hidden="true" className="text-6xl" />
-                                {result.label}
+                                {resolveLanguage(result.label)}
                             </>
                         ) : (
                             <>
                                 <Image 
                                     src={`https://iiif.test.ubbe.no/iiif/image/${result.canvases[0].image}/full/${result.canvases[0].width},${result.canvases[0].height}/0/default.jpg`} 
-                                    alt={result.label} 
+                                    alt={resolveLanguage(result.label)} 
                                     width={result.canvases[0].width} 
                                     height={result.canvases[0].height} 
                                 />
-                                <span aria-hidden="true">{result.label}</span>
+                                <span aria-hidden="true">{resolveLanguage(result.label)}</span>
                             </>
                         )}
                     </Link>

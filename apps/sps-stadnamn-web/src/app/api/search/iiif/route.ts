@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     mustConditions.push({
       "simple_query_string": {
         "query": q,
-        "fields": ["label^3", "metadata.value^2", "canvases.label"],
+        "fields": ["label.*^3", "metadata.value.*^2", "canvases.label.*"],
         "default_operator": "or"
       }
     });
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
         "must_not": mustNotConditions
       }
     },
-    "sort": ["originalOrder", "label.keyword"],
+    //"sort": ["originalOrder", "label.keyword"],
     ...(q ? { "size": 100 } : {"size": 100})
   };
 

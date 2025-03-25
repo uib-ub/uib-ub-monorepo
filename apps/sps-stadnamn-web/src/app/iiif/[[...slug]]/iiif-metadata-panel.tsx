@@ -1,31 +1,51 @@
 'use client'
-
 import IconButton from "@/components/ui/icon-button"
 import IconLink from "@/components/ui/icon-link"
 import Link from "next/link"
-import { useState } from "react"
 import { PiArchive, PiArrowLeft, PiCopyright, PiCopyrightFill, PiInfo, PiInfoFill, PiTreeView, PiTreeViewFill } from "react-icons/pi"
+import { resolveLanguage } from "./iiif-utils"
+import ParentCollectionExplorer from "./parent-collection-explorer"
+import { useState, useEffect } from 'react'
 
-export default function IIIFToolbar({ manifest }: { manifest: any }) {
-    const [activeTab, setActiveTab] = useState<string>("info")
+export default function IIIFMetadataPanel({ manifest }: { manifest: any }) {
+    const [activeTab, setActiveTab] = useState<string>(() => {
+        // Only access localStorage during client-side execution
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('iiifActiveTab') || 'info'
+        }
+        return 'info' // Default value for server-side rendering
+    })
+
+    // Remove the initial useEffect since we're handling initialization in useState
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('iiifActiveTab', activeTab)
+        }
+    }, [activeTab])
+
+    // Function to handle tab switching
+    const handleTabChange = (tabName: string) => {
+        setActiveTab(tabName)
+    }
+
     return <div className='flex flex-col h-full'>
             { <div className='flex border-b border-neutral-200 flex-shrink-0'>
                 <IconButton label="Informasjon" href="#" 
                           aria-selected={activeTab === "info"}
                           className='p-4 hover:bg-neutral-100 text-gray-600'
-                          onClick={() => setActiveTab("info")}>
+                          onClick={() => handleTabChange("info")}>
                     {activeTab === "info" ? <PiInfoFill className="text-xl text-accent-700"/> : <PiInfo className="text-xl"/>}
                 </IconButton>
-                {manifest?.collections?.length > 0 && <IconButton label="Naviger i samlinga" href="#" 
+                {manifest?.collections?.length > 0 && <IconButton label="Naviger i overordna samling" href="#" 
                           aria-selected={activeTab === "arkiv"}
                           className='p-4 hover:bg-neutral-100 text-gray-600'
-                          onClick={() => setActiveTab("arkiv")}>
+                          onClick={() => handleTabChange("arkiv")}>
                     {activeTab === "arkiv" ? <PiTreeViewFill className="text-xl text-accent-700"/> : <PiTreeView className="text-xl"/>}
                 </IconButton>}
                 <IconButton label="Opphavsrett" href="#" 
                           aria-selected={activeTab === "attribution"}
                           className='p-4 hover:bg-neutral-100 text-gray-600'
-                          onClick={() => setActiveTab("attribution")}>
+                          onClick={() => handleTabChange("attribution")}>
                     {activeTab === "attribution" ? <PiCopyrightFill className="text-xl text-accent-700"/> : <PiCopyright className="text-xl"/>}
                 </IconButton>
             </div>}
@@ -34,17 +54,17 @@ export default function IIIFToolbar({ manifest }: { manifest: any }) {
                 <>
                 {activeTab === "info" && (
                     <>
-                        <h1>{manifest.label}</h1>
-                        {manifest.summary && <p>{manifest.summary}</p>}
+                        <h1>{resolveLanguage(manifest.label)}</h1>
+                        {manifest.summary && <p>{resolveLanguage(manifest.summary)}</p>}
                         <ul className="text-base !px-0">
                     {manifest?.metadata?.filter((item: Record<string, any>) => 
                         item.label?.no?.[0] != 'Skannede sedler'
                     ).map((item: Record<string, any>, index: number) => (
                         <li key={index} className='flex flex-col'>
                             <span className='font-semibold'>
-                                {item.label}
+                                {resolveLanguage(item.label)}
                             </span>
-                            <span>{item.value}</span>
+                            <span>{resolveLanguage(item.value)}</span>
                             </li>
                             ))}
                         </ul>
@@ -52,8 +72,8 @@ export default function IIIFToolbar({ manifest }: { manifest: any }) {
                 )}
                 {activeTab === "arkiv" && (
                     <div>
-                        <h2>Arkiv</h2>
-                        <pre>{JSON.stringify(manifest, null, 2)}</pre>
+                        <h2>{resolveLanguage(manifest.collections?.[0]?.label)}</h2>
+                        <ParentCollectionExplorer partOf={manifest.partOf} />
                     </div>
                 )}
                 {activeTab === "attribution" && (

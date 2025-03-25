@@ -1,11 +1,8 @@
 import { fetchDoc, fetchManifest } from "@/app/api/_utils/actions"
 import ImageViewer from "./image-viewer";
 import { PiArchive, PiArchiveThin, PiCopyright, PiInfo } from "react-icons/pi";
-import IconLink from "@/components/ui/icon-link";
-import IIIFToolbar from "./iiif-toolbar";
-import Thumbnail from "@/components/image-viewer/thumbnail";
-import Link from "next/link";
 import CollectionExplorer from "./collection-explorer";
+import IIIFMetadataPanel from "./iiif-metadata-panel";
 
 export default async function IIIFPage({params}: {params: Promise<{slug: string[]}>}) {
     const { slug } = await params
@@ -20,9 +17,9 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
     
     
     return (
-        <div className="h-full w-full">            
-            <div className='flex flex-col !h-full !w-full lg:grid lg:grid-cols-5'>                
-                <IIIFToolbar manifest={manifest}/>
+        <div className="h-full w-full">     
+            <div className='flex flex-col !h-full !w-full lg:grid lg:grid-cols-5'>             
+                <IIIFMetadataPanel manifest={manifest}/>
                 <div className='w-full lg:col-span-4 relative !min-h-[40svh] bg-neutral-200'>
                     {isImage && <ImageViewer canvases={manifest.canvases} />}
                     {isAudio && <div className="flex items-center justify-center h-full">
