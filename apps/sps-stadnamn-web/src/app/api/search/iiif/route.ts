@@ -9,6 +9,7 @@ export async function GET(request: Request) {
   const collection = url.searchParams.get('collection') || '';
   const q = url.searchParams.get('q') || '';
   const type = url.searchParams.get('type') || '';
+  const size = url.searchParams.get('size') || 20;
 
   // Build query conditions
   const mustConditions = [];
@@ -36,7 +37,7 @@ export async function GET(request: Request) {
   if (q) {
     mustConditions.push({
       "simple_query_string": {
-        "query": q,
+        "query": q + "*",
         "fields": ["label.*^3", "metadata.value.*^2", "canvases.label.*"],
         "default_operator": "or"
       }
@@ -46,13 +47,7 @@ export async function GET(request: Request) {
   // If no collection and no q, filter for top-level collections
   if (!collection && !q) {
     // Add Collection type if no specific type is requested
-    if (!type) {
-      mustConditions.push({
-        "term": {
-          "type": "Collection"
-        }
-      });
-    }
+
     
     // Exclude items with partOf
     mustNotConditions.push({
@@ -70,8 +65,16 @@ export async function GET(request: Request) {
         "must_not": mustNotConditions
       }
     },
-    //"sort": ["originalOrder", "label.keyword"],
-    ...(q ? { "size": 100 } : {"size": 100})
+    "sort": q ? ["_score"] : ["order"],
+    "size": size,
+    "aggs": {
+      "types": {
+        "terms": {
+          "field": "type",
+          "size": 2  // Set to a high number to get all types
+        }
+      }
+    }
   };
 
   const [data, status] = await postQuery('iiif_*', query)

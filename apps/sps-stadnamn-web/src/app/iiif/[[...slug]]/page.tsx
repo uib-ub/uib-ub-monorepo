@@ -1,6 +1,6 @@
 import { fetchDoc, fetchIIIFNeighbours, fetchManifest } from "@/app/api/_utils/actions"
 import ImageViewer from "./image-viewer";
-import { PiArchive, PiArchiveThin, PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight, PiCopyright, PiDatabase, PiInfo } from "react-icons/pi";
+import { PiArchive, PiArchiveFill, PiArchiveThin, PiArticle, PiArticleFill, PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight, PiCopyright, PiDatabase, PiInfo } from "react-icons/pi";
 import CollectionExplorer from "./collection-explorer";
 import IIIFMetadataPanel from "./iiif-metadata-panel";
 import Link from "next/link";
@@ -50,7 +50,9 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                                 <PiCaretLeft aria-hidden="true"/>
                             </div>}
                             <div className="flex-1 text-center px-3 py-1 rounded-sm border-neutral-400">
-                                {manifest.order}/{neighbours.total}
+                                <span className="flex items-center justify-center gap-1">
+                                    {manifest.type == 'Collection' ? <PiArchiveFill className="text-accent-700 text-xl" aria-hidden="true"/> : <PiArticleFill className="text-accent-700 text-xl" aria-hidden="true"/>} {manifest.order}/{neighbours.total}
+                                </span>
                             </div>
                             {neighbours.data.succeeding ? <Link 
                                 className={`btn btn-outline btn-compact !p-2`} 
@@ -87,7 +89,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                             Your browser does not support the audio element.
                         </audio>
                     </div>}
-                    {isCollection && <CollectionExplorer manifest={manifest} manifestDataset={manifestDataset} />}
+                    {isCollection && <CollectionExplorer manifest={manifest}/>}
 
                 </div>
                 

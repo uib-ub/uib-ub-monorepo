@@ -414,7 +414,7 @@ export async function fetchIIIFNeighbours(order: number, partOf: string) {
       succeeding: neighboursData.hits.hits.find((hit: any) => hit.fields.order == order + 1)?.fields.uuid,
       last: lastItemData.hits.hits[0]?.fields.uuid
     },
-    debug: neighboursData.hits.hits,
+    //debug: lastItemData,
     total: lastItemData.hits.hits[0]?.fields.order,
     status: neighboursStatus
   }
