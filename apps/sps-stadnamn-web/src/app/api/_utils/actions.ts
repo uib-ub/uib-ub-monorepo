@@ -345,3 +345,77 @@ export async function fetchManifest(manifestId: string) {
         return { error: error instanceof Error ? error.message : 'MANIFEST_NOT_FOUND' };
     }
 }
+
+
+
+export async function fetchIIIFNeighbours(order: number, partOf: string) {
+  'use server'
+  
+  // Query for neighbors and first item
+  const neighboursQuery = {
+    size: 3,
+    query: {
+      bool: {
+        must: [
+          {
+            term: {
+              "partOf": partOf
+            }
+          }
+        ],
+        should: [
+          {
+            term: {
+              "order": order - 1  // Get previous item
+            }
+          },
+          {
+            term: {
+              "order": order + 1 // Get next item
+            }
+          },
+          {
+            term: {
+              "order": 1 // Get first item
+            }
+          }
+        ],
+        minimum_should_match: 1
+      }
+    },
+    fields: ["uuid", "order"],
+    _source: false,
+  }
+
+  // Separate query to get the last item
+  const lastItemQuery = {
+    size: 1,
+    query: {
+      term: {
+        "partOf": partOf
+      }
+    },
+    sort: [
+      {
+        "order": "desc"
+      }
+    ],
+    fields: ["uuid", "order"],
+    _source: false,
+  }
+
+  const [neighboursData, neighboursStatus] = await postQuery('iiif_*', neighboursQuery)
+  const [lastItemData, lastItemStatus] = await postQuery('iiif_*', lastItemQuery)
+  
+  return {
+    data: {
+      first: neighboursData.hits.hits.find((hit: any) => hit.fields.order == 1)?.fields.uuid,
+      preceding: neighboursData.hits.hits.find((hit: any) => hit.fields.order == order - 1)?.fields.uuid,
+      succeeding: neighboursData.hits.hits.find((hit: any) => hit.fields.order == order + 1)?.fields.uuid,
+      last: lastItemData.hits.hits[0]?.fields.uuid
+    },
+    debug: neighboursData.hits.hits,
+    total: lastItemData.hits.hits[0]?.fields.order,
+    status: neighboursStatus
+  }
+}

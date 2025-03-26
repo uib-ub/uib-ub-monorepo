@@ -6,7 +6,7 @@ import Spinner from '@/components/svg/Spinner';
 import { useParams, useSearchParams } from 'next/navigation';
 import ErrorMessage from '../error-message';
 
-const DynamicImageViewer = ({canvases}: {canvases: Record<string, any>[]}) => {
+const DynamicImageViewer = ({canvases, manifestDataset}: {canvases: Record<string, any>[], manifestDataset: string}) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const viewer = useRef<OpenSeadragon.Viewer | null>(null);
   const [numberOfPages, setNumberOfPages] = useState(0);
@@ -24,7 +24,7 @@ const DynamicImageViewer = ({canvases}: {canvases: Record<string, any>[]}) => {
       const tileSources = canvases.map((item: any) => {
         return {
           "@context": "http://iiif.io/api/image/2/context.json",
-          "@id": "https://iiif.test.ubbe.no/iiif/image/" + item.image,
+          "@id": `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${item.image}`,
           "height": item.height,
           "width": item.width,
           "profile": [ "http://iiif.io/api/image/2/level2.json" ],

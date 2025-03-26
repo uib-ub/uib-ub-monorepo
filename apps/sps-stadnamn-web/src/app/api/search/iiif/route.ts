@@ -27,7 +27,7 @@ export async function GET(request: Request) {
   if (collection) {
     mustConditions.push({
       "term": {
-        [q ? "collections.uuid" : "partOf"]: collection
+        ["partOf"]: collection
       }
     });
   }

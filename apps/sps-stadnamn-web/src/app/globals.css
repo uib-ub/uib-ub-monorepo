@@ -167,7 +167,7 @@
     @apply bg-neutral-700 text-neutral-400 border-neutral-600;
   }
 
-  .btn-outline[disabled] {
+  .btn-outline[disabled], .btn-outlinte.disabled {
     @apply text-neutral-500 bg-white border-neutral-300;
   }
 
@@ -176,11 +176,15 @@
     @apply px-3 py-1
   }
 
+  .btn-compact.disabled {
+    @apply text-neutral-500 bg-white border-neutral-300;
+  }
+
   header nav a, a.btn {
     @apply no-underline;
   }
 
-  button[disabled] i {
+  button[disabled] i, .btn.disabled i {
     @apply text-gray-400;
   }
 

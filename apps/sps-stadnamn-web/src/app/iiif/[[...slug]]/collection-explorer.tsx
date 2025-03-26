@@ -8,10 +8,11 @@ import ClientThumbnail from "@/components/doc/client-thumbnail";
 import Image from "next/image";
 import { resolveLanguage } from "./iiif-utils";
 
-export default function CollectionExplorer({manifest}: {manifest: any}) {
+export default function CollectionExplorer({manifest, manifestDataset}: {manifest: any, manifestDataset: string}) {
     const [searchQuery, setSearchQuery] = useState('');
     const [results, setResults] = useState<any[]>([]);
     // Store the original collections data to use for breadcrumbs
+    const height = 240
 
     useEffect(() => {
         const params = new URLSearchParams();
@@ -72,11 +73,11 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {false && results.map((result, index) => (
+                { results.map((result, index) => (
                     <Link 
                         href={`/iiif/${result.uuid}`} 
                         key={index} 
-                        className="flex flex-col items-center gap-2 no-underline bg-white shadow-md hover:bg-neutral-50 p-2 rounded-md overflow-auto"
+                        className="flex flex-col items-center gap-2 no-underline bg-white shadow-md hover:bg-neutral-50 p-2 pt-4 rounded-md overflow-auto"
                     >
                         {result.type === 'Collection' ? (
                             <>
@@ -86,10 +87,11 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                         ) : (
                             <>
                                 <Image 
-                                    src={`https://iiif.test.ubbe.no/iiif/image/${result.canvases[0].image}/full/${result.canvases[0].width},${result.canvases[0].height}/0/default.jpg`} 
+                                    className="bg-neutral-800 border border-neutral-200"
+                                    src={`https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${result.canvases[0].image}/full/${result.canvases[0].width},${result.canvases[0].height}/0/default.jpg`} 
                                     alt={resolveLanguage(result.label)} 
-                                    width={result.canvases[0].width} 
-                                    height={result.canvases[0].height} 
+                                    width={320}
+                                    height={240}
                                 />
                                 <span aria-hidden="true">{resolveLanguage(result.label)}</span>
                             </>
