@@ -13,7 +13,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
     const [searchQuery, setSearchQuery] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [results, setResults] = useState<any[]>([]);
-    const [size, setSize] = useState(20);
+    const [size, setSize] = useState(40);
     const [loading, setLoading] = useState(false);
     const [typeCounts, setTypeCounts] = useState<any>([]);
     const [total, setTotal] = useState(0);
@@ -83,7 +83,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
     };
 
     return (
-        <div ref={containerRef} className="flex flex-col gap-4 p-4 overflow-y-auto max-h-[calc(100vh-3rem)]">
+        <div ref={containerRef} className="flex flex-col gap-4 p-4 overflow-y-auto max-h-[calc(100vh-3rem)] stable-scrollbar">
             <div className="flex gap-2">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && 
@@ -98,8 +98,8 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                 </div>
             }
 
-            {typeCounts && <div className="flex items-center gap-2">
-                {typeCounts?.map((type: any) => (
+            {typeCounts && manifest && <div className="flex items-center gap-2">
+                {typeCounts.map((type: any) => (
                     <div key={type.key} className="flex items-center gap-2 text-neutral-900 px-2 py-1 rounded-md">
                         {type.key == 'Collection' ? <PiArchiveFill aria-hidden="true" className="text-xl" /> : <PiArticleFill aria-hidden="true" className="text-xl" />}
                         <span>{type.doc_count}</span>
@@ -109,6 +109,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
 
             </div>}
             
+
                 <div className='flex max-w-md items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
                     <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
                     <label htmlFor="search-input" className="sr-only">Søk</label>
@@ -135,6 +136,17 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                         )}
                     </div>
                 </div>
+                {typeCounts && !manifest && <div className="flex items-center gap-2">
+                {typeCounts.map((type: any) => (
+                    <div key={type.key} className="flex items-center gap-2 text-neutral-900 px-2 py-1 rounded-md">
+                        {type.key == 'Collection' ? <PiArchiveFill aria-hidden="true" className="text-xl" /> : <PiArticleFill aria-hidden="true" className="text-xl" />}
+                        <span>{type.doc_count}</span>
+                    </div>
+                ))}
+
+
+            </div>}
+
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -162,7 +174,14 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                                     width={Math.round((data.canvases[0].width / data.canvases[0].height) * height)}
                                     height={height}
                                 />
-                                <span aria-hidden="true">{resolveLanguage(data.label)}</span>
+                                <span className="flex items-center gap-1">
+                                    
+                                    
+                                    {resolveLanguage(data.label)}
+                                    {data.canvases.length > 1 && <span className="flex items-center gap-1 ml-auto">({data.canvases.length} sedler)</span>}
+                                    
+                                    </span>
+                                    
                             </>
                         )}
                   
