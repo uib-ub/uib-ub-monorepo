@@ -94,7 +94,7 @@
               <p>{{ $t("innstillinger.dataDispLangComment") }}</p>
             </div>
             <div
-              class="grid w-fit grid-flow-row grid-cols-2 gap-x-6 gap-y-0.5 pt-2 xs:grid-cols-3"
+              class="w-fit grid-flow-col grid-rows-9 gap-x-3 gap-y-1.5 pt-2 sm:grid sm:grid-rows-6"
             >
               <div
                 v-for="lang in localeLangOrder"
