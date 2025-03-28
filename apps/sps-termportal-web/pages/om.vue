@@ -74,7 +74,7 @@
               :key="`get-started${locale}`"
               :head="false"
               :path="`/${locale}/om/get-started`"
-              class="content-wrapper plain-list-indent"
+              class="content-wrapper"
             />
           </AccordionTab>
           <AccordionTab>
@@ -85,7 +85,7 @@
               :key="`links${locale}`"
               :head="false"
               :path="`/${locale}/om/links`"
-              class="content-wrapper plain-list-indent"
+              class="content-wrapper"
             />
           </AccordionTab>
         </Accordion>
