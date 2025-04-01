@@ -32,7 +32,7 @@
     <div class="flex justify-center">
       <!-- Expand all termbases panel -->
       <button
-        class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border border-gray-300 border-t-white bg-white"
+        class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-[2px] border-gray-200 border-t-white bg-white"
         @click="panel = !panel"
       >
         <Icon
@@ -71,7 +71,7 @@
         {{ $t("global.termbase", 2) }}
       </div>
       <div
-        class="grid grid-flow-row grid-cols-1 gap-x-8 gap-y-0 md:grid-cols-2"
+        class="grid grid-flow-row grid-cols-1 grid-rows-14 gap-x-2 gap-y-0 lg:grid-flow-col"
       >
         <div v-for="tb of orderedTermbases" :key="tb" class="flex max-w-md">
           <input

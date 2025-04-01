@@ -18,7 +18,7 @@
     </SearchDropdownWrapper>
 
     <button
-      class="rounded-[7px] flex space-x-2 px-2 pt-0.5 pb-1 tp-transition-shadow hover:cursor-pointer group border border-transparent hover:border-tpblue-300 focus:shadow-tphalo focus:border-tpblue-300 outline-none"
+      class="tp-transition-shadow group ml-[-0.6rem] flex space-x-2 rounded-[7px] border border-transparent px-2 pb-1 pt-0.5 outline-none hover:cursor-pointer hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo"
       @click="searchInterface.useDomain = !searchInterface.useDomain"
     >
       <div>{{ $t("global.domain.domainCap") }}</div>
