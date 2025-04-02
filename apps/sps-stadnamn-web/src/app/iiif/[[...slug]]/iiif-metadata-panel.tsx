@@ -41,7 +41,7 @@ const addLinks = (text: string | any) => {
 export default function IIIFMetadataPanel({ manifest }: { manifest: any }) {
 
 
-    return <div className='flex flex-col'>
+    return <div className='flex flex-col pb-12'>
                 {manifest ?
                 <>
                 

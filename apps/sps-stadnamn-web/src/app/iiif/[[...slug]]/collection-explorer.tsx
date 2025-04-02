@@ -9,6 +9,7 @@ import Image from "next/image";
 import { resolveLanguage } from "./iiif-utils";
 import Spinner from "@/components/svg/Spinner";
 import FileCard from "./file-card";
+import IIIFTypeCounts from "./iiif-type-counts";
 
 
 export default function CollectionExplorer({manifest}: {manifest: any}) {
@@ -85,12 +86,12 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
     };
 
     return (
-        <div ref={containerRef} className="flex flex-col gap-4 p-4 overflow-y-auto max-h-[calc(100vh-3rem)] stable-scrollbar">
-            <div className="flex gap-2">
+        <div ref={containerRef} className="flex flex-col gap-4 p-4 lg:overflow-y-auto lg:max-h-[calc(100vh-3rem)] stable-scrollbar">
+            <div className="flex flex-col lg:flex-row gap-2">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && 
-                <div className="w-full min-h-[40px]">
-                    <Breadcrumbs 
+                <div className="w-full min-h-[40px] pb-4 lg:pb-0">
+                    <Breadcrumbs
                         homeUrl="/iiif"
                         homeLabel="Arkivressurser"
                         parentUrl={manifest.collections?.slice().reverse().map((item: any) => item.uuid)} 
@@ -100,17 +101,10 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                 </div>
             }
 
-            <div className="flex items-center gap-4 ml-auto">
-                {typeCounts && <div className="flex items-center gap-2">
-                    {typeCounts.map((type: any) => (
-                        <div key={type.key} className="flex items-center gap-2 text-neutral-900 px-2 py-1 rounded-md">
-                            {type.key == 'Collection' ? <PiArchiveFill aria-hidden="true" className="text-xl" /> : <PiFileFill aria-hidden="true" className="text-xl" />}
-                            <span>{type.doc_count}</span>
-                        </div>
-                    ))}
-                </div>}
+            <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto">
+            {typeCounts && <div className="hidden lg:block"><IIIFTypeCounts typeCounts={typeCounts}/></div>}
 
-                <div className='flex w-80 items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
+                <div className='flex w-full lg:w-80 items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
                     <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
                     <label htmlFor="search-input" className="sr-only">Søk</label>
                     <input
@@ -137,6 +131,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                     </div>
                 </div>
             </div>
+            {typeCounts && <div className="block lg:hidden"><IIIFTypeCounts typeCounts={typeCounts}/></div>}
             
 
             </div>
@@ -155,7 +150,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             </div>
             {loading && (
                 <div className="flex w-full justify-center items-center">
-                    {true && <Spinner status="Laster mer innhold..." className="w-12 h-12 my-12"/>}
+                    <Spinner status="Laster mer innhold..." className="w-12 h-12 my-12"/>
                 </div>
             )}
         </div>
