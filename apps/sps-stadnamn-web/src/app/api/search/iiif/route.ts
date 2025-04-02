@@ -26,19 +26,27 @@ export async function GET(request: Request) {
   
   // Add collection filter if provided
   if (collection) {
-    mustConditions.push({
-      "term": {
-        ["partOf"]: collection
-      }
-    });
+    if (q) {
+      mustConditions.push({
+        "term": {
+          ["collections.uuid"]: collection
+        }
+      });
+    } else {
+      mustConditions.push({
+        "term": {
+          ["partOf"]: collection
+        }
+      });
+    }
   }
   
   // Add search query if provided
   if (q) {
     mustConditions.push({
       "simple_query_string": {
-        "query": q + "*",
-        "fields": ["label.*^3", "metadata.value.*^2", "canvases.label.*"],
+        "query": `${q} ${q}*`,
+        "fields": ["label.*^3", "metadata.value.*^2", "canvases.label.*", "summary.*"],
         "default_operator": "or"
       }
     });
@@ -67,11 +75,13 @@ export async function GET(request: Request) {
     },
     "sort": q ? ["_score"] : ["order"],
     "size": size,
+    "fields": ["uuid", "order", "canvases.image", "canvases.height", "canvases.width", "type", "label.no", "label.none", "label.en", "audio.uuid"],
+    "_source": false,
     "aggs": {
       "types": {
         "terms": {
           "field": "type",
-          "size": 2  // Set to a high number to get all types
+          "size": 2
         }
       }
     }

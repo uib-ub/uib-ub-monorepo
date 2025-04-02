@@ -1,13 +1,15 @@
 'use client'
 import Breadcrumbs from "@/components/layout/breadcrumbs"
-import { PiArchive, PiArchiveFill, PiArchiveThin, PiArticle, PiArticleFill, PiHouse, PiMagnifyingGlass, PiX } from "react-icons/pi"
-import { useState, useEffect, useRef } from "react"
+import { PiArchive, PiArchiveFill, PiArchiveThin, PiArticle, PiArticleFill, PiFileAudio, PiFileAudioThin, PiFileFill, PiHouse, PiMagnifyingGlass, PiSpeakerSlashThin, PiX } from "react-icons/pi"
+import { useState, useEffect, useRef, Fragment } from "react"
 import Link from "next/link";
 import Thumbnail from "@/components/image-viewer/thumbnail";
 import ClientThumbnail from "@/components/doc/client-thumbnail";
 import Image from "next/image";
 import { resolveLanguage } from "./iiif-utils";
 import Spinner from "@/components/svg/Spinner";
+import FileCard from "./file-card";
+
 
 export default function CollectionExplorer({manifest}: {manifest: any}) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -53,8 +55,8 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
         if (!containerRef.current || loading || total <= size) return;
         
         const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-        if (scrollHeight - scrollTop <= clientHeight * 1.5) {
-            setSize(prev => prev + 40);
+        if (scrollHeight - scrollTop <= clientHeight * 3) {
+            setSize(prev => prev + 100);
             setLoading(true);
         }
     };
@@ -98,19 +100,17 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                 </div>
             }
 
-            {typeCounts && manifest && <div className="flex items-center gap-2">
-                {typeCounts.map((type: any) => (
-                    <div key={type.key} className="flex items-center gap-2 text-neutral-900 px-2 py-1 rounded-md">
-                        {type.key == 'Collection' ? <PiArchiveFill aria-hidden="true" className="text-xl" /> : <PiArticleFill aria-hidden="true" className="text-xl" />}
-                        <span>{type.doc_count}</span>
-                    </div>
-                ))}
+            <div className="flex items-center gap-4 ml-auto">
+                {typeCounts && <div className="flex items-center gap-2">
+                    {typeCounts.map((type: any) => (
+                        <div key={type.key} className="flex items-center gap-2 text-neutral-900 px-2 py-1 rounded-md">
+                            {type.key == 'Collection' ? <PiArchiveFill aria-hidden="true" className="text-xl" /> : <PiFileFill aria-hidden="true" className="text-xl" />}
+                            <span>{type.doc_count}</span>
+                        </div>
+                    ))}
+                </div>}
 
-
-            </div>}
-            
-
-                <div className='flex max-w-md items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
+                <div className='flex w-80 items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
                     <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
                     <label htmlFor="search-input" className="sr-only">Søk</label>
                     <input
@@ -136,64 +136,28 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                         )}
                     </div>
                 </div>
-                {typeCounts && !manifest && <div className="flex items-center gap-2">
-                {typeCounts.map((type: any) => (
-                    <div key={type.key} className="flex items-center gap-2 text-neutral-900 px-2 py-1 rounded-md">
-                        {type.key == 'Collection' ? <PiArchiveFill aria-hidden="true" className="text-xl" /> : <PiArticleFill aria-hidden="true" className="text-xl" />}
-                        <span>{type.doc_count}</span>
-                    </div>
-                ))}
-
-
-            </div>}
+            </div>
+            
 
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 { results.map((result, index) => {
-                    const data = result._source
                     const itemDataset = result._index.split('-')[2].split('_')[1]
                     return (
-                    <Link 
-                        href={`/iiif/${data.uuid}`} 
-                        key={index} 
-                        className="flex flex-col items-center gap-2 no-underline bg-white shadow-md hover:bg-neutral-50 p-2 pt-4 rounded-md overflow-auto"
-                    >
-                        {data.type === 'Collection' && (
-                            <>
-                                <PiArchiveThin aria-hidden="true" className="text-6xl" />
-                                {resolveLanguage(data.label)}
-                            </>
-                        )}
-                        {data.type == 'Manifest' && (
-                            <>
-                                <Image 
-                                    className="bg-neutral-800 border border-neutral-200 object-cover object-center"
-                                    src={`https://iiif.test.ubbe.no/iiif/image/stadnamn/${itemDataset.toUpperCase()}/${data.canvases[0].image}/full/${Math.round((data.canvases[0].width / data.canvases[0].height) * 240)},${240}/0/default.jpg`} 
-                                    alt={resolveLanguage(data.label)} 
-                                    width={Math.round((data.canvases[0].width / data.canvases[0].height) * height)}
-                                    height={height}
-                                />
-                                <span className="flex items-center gap-1">
-                                    
-                                    
-                                    {resolveLanguage(data.label)}
-                                    {data.canvases.length > 1 && <span className="flex items-center gap-1 ml-auto">({data.canvases.length} sedler)</span>}
-                                    
-                                    </span>
-                                    
-                            </>
-                        )}
-                  
-                    </Link>
-                )})}
+                        <Fragment key={index}>
+                            <FileCard fields={result.fields} itemDataset={itemDataset}/>
+                        </Fragment>
+                    )})}
                 
-                {loading && (
-                    <div className="col-span-full text-center py-4">
-                        <Spinner status="Laster mer innhold..." className="w-10 h-10" />
-                    </div>
-                )}
+                
+               
             </div>
+            {loading && (
+                <div className="flex w-full justify-center items-center">
+                    {true && <Spinner status="Laster mer innhold..." className="w-12 h-12 my-12"/>}
+                </div>
+            )}
         </div>
     )
 }
