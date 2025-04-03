@@ -65,7 +65,9 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                         parentUrl={manifest.collections?.slice().reverse().slice(0, -1).map((item: any) => item.uuid)} 
                         parentName={manifest.collections?.slice().reverse().slice(0, -1).map((item: any) => resolveLanguage(item.label))} 
                     />
-                    <Link href={`/iiif/${manifest.collections?.[0].uuid}`} className="text-accent-900 w-full flex gap-2 items-center lg:w-auto font-semibold bg-accent-100 px-4 py-2 lg:px-2 text-lg lg:text-base lg:py-1 rounded-md no-underline"><PiArchiveFill className="w-4 h-4 text-2xl lg:text-xl text-accent-900" />{resolveLanguage(manifest.collections?.[0].label)}</Link>
+                    <Link href={`/iiif/${manifest.collections?.[0].uuid}`} className=" w-full lg:w-auto flex gap-2 items-center text-accent-800 no-underline text-xl lg:text-base p-2 lg:p-0">
+                        {resolveLanguage(manifest.collections?.[0].label)}
+                    </Link>
                     
                 
                 {neighbours.data && neighbours.total > 1 && <div className="flex items-center gap-2 lg:ml-auto p-6 lg:p-0">
