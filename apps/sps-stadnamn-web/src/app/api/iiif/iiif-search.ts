@@ -1,15 +1,9 @@
 export const runtime = 'edge'
 
-import { postQuery } from '../../_utils/post';
+import { postQuery } from '../_utils/post';
 
-export async function GET(request: Request) {
+export async function fetchIIIFSearch(collection: string, q: string, type: string, size: number) {
   
-  // extract parameters from the request using standard URL parsing
-  const url = new URL(request.url);
-  const collection = url.searchParams.get('collection') || '';
-  const q = url.searchParams.get('q') || '';
-  const type = url.searchParams.get('type') || '';
-  const size = url.searchParams.get('size') || 20;
 
   // Build query conditions
   const mustConditions = [];
@@ -87,7 +81,7 @@ export async function GET(request: Request) {
     }
   };
 
-  const [data, status] = await postQuery('iiif_*', query)
+  const [response, status] = await postQuery('iiif_*', query)
 
-  return Response.json(data, {status: status})
+  return {response, status}
 }

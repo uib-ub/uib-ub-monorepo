@@ -1,12 +1,23 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiDownloadSimple } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams, usePathname } from 'next/navigation';
 import ErrorMessage from '../error-message';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
-const DynamicImageViewer = ({canvases, manifestDataset}: {canvases: Record<string, any>[], manifestDataset: string}) => {
+const DynamicImageViewer = ({canvases, manifestDataset, manifestId}: {canvases: Record<string, any>[], manifestDataset: string, manifestId: string}) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const viewer = useRef<OpenSeadragon.Viewer | null>(null);
   const [numberOfPages, setNumberOfPages] = useState(0);
@@ -121,6 +132,37 @@ const DynamicImageViewer = ({canvases, manifestDataset}: {canvases: Record<strin
     }
   };
 
+  const handleDownload = useCallback(async (format: string, allPages?: boolean) => {
+    if (viewer.current && canvases[currentPage]) {
+      try {
+        const params = new URLSearchParams({
+          uuid: manifestId,
+          format,
+          ...((!allPages && currentPage !== undefined) && { page: currentPage.toString() })
+        });
+        
+        const response = await fetch(`/api/iiif/download?${params.toString()}`);
+        if (!response.ok) throw new Error('Download failed');
+
+        const contentDisposition = response.headers.get('Content-Disposition');
+        const matches = contentDisposition?.match(/filename\*=UTF-8''([^;]+)/);
+        const filename = matches ? decodeURIComponent(matches[1]) : 'download';
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
+        
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error downloading:', error);
+      }
+    }
+  }, [currentPage, canvases, manifestId]);
+
   return (
     <div className='w-full h-full relative'>
       {error ? <div className="pt-10"><ErrorMessage error={{error}} message="Kunne ikke laste bildet"/></div> : !viewerRef.current? 
@@ -146,6 +188,51 @@ const DynamicImageViewer = ({canvases, manifestDataset}: {canvases: Record<strin
           label="Nullstill zoom">
             <PiArrowClockwise aria-hidden="true" />
         </IconButton>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <IconButton 
+              className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
+              label="Last ned">
+                <PiDownloadSimple aria-hidden="true" />
+            </IconButton>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogCancel className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+              <PiXBold className="text-xl" aria-hidden="true"/>
+              <span className="sr-only">Close</span>
+            </AlertDialogCancel>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Last ned bilde</AlertDialogTitle>
+              <AlertDialogDescription>
+                Vel ønska format for nedlasting av bildet.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <div className="flex flex-row gap-2 justify-center w-full">
+                <AlertDialogAction 
+                  className="btn btn-outline"
+                  onClick={() => handleDownload('jpg', false)}
+                >
+                  JPG
+                </AlertDialogAction>
+                <AlertDialogAction 
+                  className="btn btn-outline"
+                  onClick={() => handleDownload('pdf', false)}
+                >
+                  PDF{numberOfPages > 1 ? ' - denne sida' : ''}
+                </AlertDialogAction>
+                {numberOfPages > 1 && (
+                  <AlertDialogAction 
+                    className="btn btn-outline"
+                    onClick={() => handleDownload('pdf', true)}
+                  >
+                    PDF - alle sider
+                  </AlertDialogAction>
+                )}
+              </div>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <IconButton 
           onClick={handleFullscreenClick} 
           className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 

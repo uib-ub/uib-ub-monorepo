@@ -1,5 +1,5 @@
 export const runtime = 'edge'
-import { fetchIIIFNeighbours } from '../_utils/actions';
+import { fetchIIIFNeighbours } from '../neighbours';
 
 export async function GET(request: Request) {
     // Get uuid and partOf from params
