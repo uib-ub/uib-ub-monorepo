@@ -22,6 +22,7 @@ export async function middleware(request: NextRequest) {
         if (!datasetTitles[dataset]) {
                 return Response.redirect(baseUrl + "/search", 302)
         }
+        return
 
     }
 
