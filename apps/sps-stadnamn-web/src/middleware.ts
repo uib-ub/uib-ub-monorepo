@@ -1,5 +1,3 @@
-
-
 import type { NextRequest } from 'next/server'
 import { fetchDoc, fetchSNID, fetchSNIDParent } from './app/api/_utils/actions'
 import { defaultDoc2jsonld, doc2jsonld } from './config/rdf-config'
