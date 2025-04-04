@@ -105,6 +105,7 @@ export async function middleware(request: NextRequest) {
         '/find-snid/:uuid*',
         '/search',
         '/view/:path*',
+        '/iiif/:path*',
     ],
     
   }
