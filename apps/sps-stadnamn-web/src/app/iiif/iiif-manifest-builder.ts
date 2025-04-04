@@ -160,6 +160,7 @@ export async function buildManifest(request: Request, type: string) {
         const manifest: Record<string, any> = {
             "@context": "http://iiif.io/api/presentation/3/context.json",
             "id": `https://stadnamnportalen.uib.no/iiif/manifest/${doc._source.uuid}`,
+            "partOf": `https://stadnamnportalen.uib.no/iiif/collection/${doc._source.partOf}`,
             "rights": datasetPresentation[manifestDataset].license.url,
             "type": "Manifest",
             "label": source.label,
