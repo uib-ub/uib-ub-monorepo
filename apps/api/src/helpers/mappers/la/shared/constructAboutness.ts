@@ -2,6 +2,7 @@ import { getLanguage } from '@/helpers/mappers/getLanguage';
 import { mapToGeneralClass, Publication } from '@/helpers/mappers/mapToGeneralClass';
 import { aatAbstractsType, aatCreationDateDescriptionType, aatDescriptionsType, aatDisplayBiographyType, aatInternalNoteType, aatPaginationStatementType, aatPhysicalConditionsType, aatPhysicalDescriptionType, aatProvenanceStatementsType, aatPublishingType, aatRelatedTextualReferencesType } from '@/helpers/mappers/staticMapping';
 import { env } from '@config/env';
+import { coalesceLabel } from '@helpers/mappers/coalesceLabel';
 import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
 import isEqual from 'lodash/isEqual';
 import { NodeHtmlMarkdown } from 'node-html-markdown';
@@ -376,7 +377,7 @@ export const constructAboutness = async (data: any) => {
       return {
         id: event.id,
         type: event.type,
-        _label: event._label
+        _label: coalesceLabel(event._label),
       }
     });
   }
@@ -398,7 +399,7 @@ export const constructAboutness = async (data: any) => {
       return {
         id: concept.id,
         type: "Place",
-        _label: concept._label
+        _label: coalesceLabel(concept._label),
       }
     });
   }
@@ -408,7 +409,7 @@ export const constructAboutness = async (data: any) => {
       return {
         id: concept.id,
         type: "Type",
-        _label: concept._label
+        _label: coalesceLabel(concept._label),
       }
     });
   }
@@ -418,7 +419,7 @@ export const constructAboutness = async (data: any) => {
       return {
         id: actor.id,
         type: "Type",
-        _label: actor._label
+        _label: coalesceLabel(actor._label),
       }
     });
   }
@@ -433,7 +434,7 @@ export const constructAboutness = async (data: any) => {
           return {
             id: creator.id,
             type: creator.type,
-            _label: creator._label,
+            _label: coalesceLabel(creator._label),
           }
         }) : [],
       } : [],
@@ -462,7 +463,7 @@ export const constructAboutness = async (data: any) => {
       return {
         id: concept.id,
         type: "Type",
-        _label: concept._label
+        _label: coalesceLabel(concept._label),
       }
     });
   }
@@ -473,7 +474,7 @@ export const constructAboutness = async (data: any) => {
       return {
         id: place.id,
         type: "Type",
-        _label: place._label
+        _label: coalesceLabel(place._label),
       }
     });
   }
@@ -484,7 +485,7 @@ export const constructAboutness = async (data: any) => {
       return {
         id: place.id,
         type: "Type",
-        _label: place._label
+        _label: coalesceLabel(place._label),
       }
     });
   }
@@ -493,15 +494,12 @@ export const constructAboutness = async (data: any) => {
     carriesArray = [{
       id: `${env.API_URL}/text/${crypto.randomUUID()}`, // TODO: use an id that we can use to create this LinguisticObject
       type: "LinguisticObject",
-      _label: {
-        no: [`Tekstlig innhold`],
-        en: [`Text content`],
-      },
+      _label: `Tekstlig innhold`,
       carried_out_by: editor ? editor.map((editor: any) => {
         return {
           id: editor.id,
           type: editor.type,
-          _label: editor._label,
+          _label: coalesceLabel(editor._label),
         }
       }
       ) : [],
@@ -515,9 +513,7 @@ export const constructAboutness = async (data: any) => {
       language: language ? [getLanguage(language.identifier)] : [],
       used_for: isPublication ? [{
         type: "Activity",
-        _label: {
-          no: [`Publiseringen av "${data._label.no}"`]
-        },
+        _label: `Publiseringen av "${coalesceLabel(data?.label)}"`,
         classified_as: [
           aatPublishingType,
         ],
@@ -526,14 +522,14 @@ export const constructAboutness = async (data: any) => {
           return {
             id: place.id,
             type: 'Place',
-            _label: place._label,
+            _label: coalesceLabel(place._label),
           }
         }) : [],
         carried_out_by: publisher ? publisher.map((publisher: any) => {
           return {
             id: publisher.id,
             type: "Group",
-            _label: publisher._label,
+            _label: coalesceLabel(publisher._label),
           }
         }) : []
       }] : [],

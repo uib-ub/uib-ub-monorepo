@@ -9,7 +9,7 @@ import { sqb } from '@lib/sparqlQueryBuilder'
 import { AsParamsSchema, LegacyGroupSchema, TODO } from '@models'
 import { personOrGroupSparqlQuery } from '@services/sparql/queries'
 import { toLinkedArtGroupTransformer } from '@transformers/group.transformer'
-import { toUbbontTransformer } from '@transformers/item.transformer'
+import { ItemTransformer } from '@routes/sparql/items/item.transformer'
 import { HTTPException } from 'hono/http-exception'
 import { ContextDefinition, JsonLdDocument } from 'jsonld'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
@@ -31,7 +31,11 @@ export const getItem = createRoute({
     200: {
       content: {
         'application/json': {
-          schema: ZodGroupSchema.openapi('Group', { type: 'object' })
+          schema: z.object({
+            id: z.string(),
+            type: z.string(),
+            _label: z.string().optional()
+          }).openapi('Group')
         },
       },
       description: 'Retrieve a group.',
@@ -55,10 +59,10 @@ route.openapi(getItem, async (c) => {
   switch (as) {
     case 'la':
       transformer = toLinkedArtGroupTransformer
-      schema = ZodGroupSchema
+      schema = ZodGroupSchema as any
       break;
     case 'ubbont':
-      transformer = toUbbontTransformer
+      transformer = ItemTransformer.toUbbont
       break;
     default:
       throw new HTTPException(400, { message: 'Invalid value for "as" parameter' });

@@ -1,4 +1,5 @@
 import { env } from '@config/env';
+import { coalesceLabel } from '@helpers/mappers/coalesceLabel';
 import omitEmptyEs from 'omit-empty-es';
 
 export const constructCollection = (data: any) => {
@@ -14,7 +15,7 @@ export const constructCollection = (data: any) => {
     return {
       id: id,
       type: 'Set',
-      _label: collection._label,
+      _label: coalesceLabel(collection._label),
     };
   })
 

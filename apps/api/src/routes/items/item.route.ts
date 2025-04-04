@@ -76,20 +76,20 @@ route.openapi(getItem, async (c) => {
         }
       })
 
+
       if (data.hits?.total.value === 0) {
         return c.json({ error: true, message: 'Not found' }, 404)
       }
 
-      if (data.hits?.total.value > 2) {
-        return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
-      }
+      const fileset = data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-fileset'))._source.data
 
-      // if the data.hits.hits does not have an object with _index that starts with search-chc-fileset, we respond that this item has not been digitized
-      if (!data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-fileset'))) {
+      if (!fileset) {
         return c.json({ error: true, message: 'Item has not been digitized' }, 404)
       }
 
-      return c.json(await toManifestTransformer(data.hits.hits))
+      const item = data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-items'))._source
+
+      return c.json(await toManifestTransformer(item, fileset))
     } catch (error) {
       console.error(error)
       return c.json({ error: true, message: "Ups, something went wrong!" }, 404)
@@ -98,8 +98,7 @@ route.openapi(getItem, async (c) => {
 
   try {
     const data: TODO = await client.search({
-      index: `search-chc-items_*`,
-      ignore_unavailable: true,
+      index: `search-chc`,
       query: {
         match_phrase: {
           "id": id
@@ -111,13 +110,13 @@ route.openapi(getItem, async (c) => {
       return c.json({ error: true, message: 'Not found' }, 404)
     }
 
-    if (data.hits?.total.value > 1) {
+    const item = data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-items'))._source
+
+    if (item > 1) {
       return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
     }
 
-    return c.json(data.hits.hits.map((hit: any) => {
-      return reorderDocument(hit._source as Document, desiredOrder)
-    })[0])
+    return c.json(reorderDocument(item as Document, desiredOrder))
   } catch (error) {
     console.error(error)
     return c.json({ error: true, message: "Ups, something went wrong!" }, 404)

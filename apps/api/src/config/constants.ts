@@ -42,13 +42,8 @@ PREFIX as: <http://www.w3.org/ns/activitystreams#>
  */
 export const DATA_SOURCES = [
   {
-    name: "marcus",
-    url: "https://sparql.ub.uib.no/sparql/query?query=",
-    type: "sparql",
-  },
-  {
-    name: "ska",
-    url: "https://sparql.ub.uib.no/skeivtarkiv/query?query=",
+    name: "spes",
+    url: "https://sparql.ub.uib.no/spes/query?query=",
     type: "sparql",
   },
   {

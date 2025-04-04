@@ -3,7 +3,7 @@ import { isObjectEmpty } from '@lib/isObjectEmpty';
 import * as jsonld from 'jsonld';
 import contexts from 'jsonld-contexts';
 
-const SKA_API = DATA_SOURCES.filter((service) => service.name === 'ska')[0].url;
+const SKA_API = DATA_SOURCES.filter((service) => service.name === 'spes')[0].url;
 
 export async function getSkaObjects() {
   const query = `

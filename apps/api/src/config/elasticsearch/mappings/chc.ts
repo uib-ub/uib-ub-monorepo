@@ -27,29 +27,12 @@ const timespanComponent: MappingProperty = {
 
 const labelComponent = (field?: string): MappingProperty => {
   return {
-    "type": "object",
-    "properties": {
-      "en": {
-        "type": "text",
-        "analyzer": "english",
-        "copy_to": field ?? '_label_all',
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 512
-          }
-        }
-      },
-      "no": {
-        "type": "text",
-        "analyzer": "norwegian",
-        "copy_to": field ?? '_label_all',
-        "fields": {
-          "keyword": {
-            "type": "keyword",
-            "ignore_above": 512
-          }
-        }
+    "type": "text",
+    "copy_to": field ?? '_label_all',
+    "fields": {
+      "keyword": {
+        "type": "keyword",
+        "ignore_above": 512
       }
     }
   }

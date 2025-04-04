@@ -16,6 +16,7 @@ export const constructIdentifiers = (data: any) => {
     firstName,
     familyName,
     isbn,
+    title,
   } = data;
 
   if (
@@ -30,7 +31,8 @@ export const constructIdentifiers = (data: any) => {
     !name &&
     !firstName &&
     !familyName &&
-    !isbn
+    !isbn &&
+    !title
   ) {
     return data;
   }
@@ -146,7 +148,7 @@ export const constructIdentifiers = (data: any) => {
   }
 
   titles = [
-    ...(_label ? (Object.entries(_label).map(([key, value]: [string, any]) => {
+    ...(title ? (Object.entries(title).map(([key, value]: [string, any]) => {
       return value.map((val: string) => {
         return {
           type: "Name",

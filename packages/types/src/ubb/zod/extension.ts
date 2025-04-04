@@ -1,12 +1,7 @@
 import { crmE55TypeSchema, crmE7ActivitySchema, crmE8AcquisitionSchema, crmP104IIsSubjectToSchema, crmP50HasCurrentKeeperSchema } from 'src/la/zod/linked_art';
-import { z } from 'zod';
+import { z } from "@hono/zod-openapi";
 
 export const langLabelSchema = z.record(z.string(), z.array(z.string()));
-
-export const rdfsLabelSchemaExtension = z.union([
-  z.string(),
-  langLabelSchema
-]);
 
 export const UBBClassExtension = z.object({
   _available: z.string().optional(),

@@ -1,4 +1,5 @@
 import { env } from '@config/env';
+import { coalesceLabel } from '@helpers/mappers/coalesceLabel';
 import { aatProvenanceActivityType, institutions } from '@helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
 
@@ -63,7 +64,7 @@ export const constructProvenance = (data: any) => {
       return {
         id: id,
         type: type,
-        _label: actor._label
+        _label: coalesceLabel(actor._label),
       }
     });
   }

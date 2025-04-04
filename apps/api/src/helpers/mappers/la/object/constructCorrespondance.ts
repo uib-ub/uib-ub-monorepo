@@ -1,5 +1,6 @@
 import { fixmeCorrespondanceType } from '@/helpers/mappers/staticMapping';
 import { env } from '@config/env';
+import { coalesceLabel } from '@helpers/mappers/coalesceLabel';
 import omitEmptyEs from 'omit-empty-es';
 
 /**
@@ -50,7 +51,7 @@ export const constructCorrespondance = (data: any) => {
       return {
         id: id,
         type: type,
-        _label: source._label,
+        _label: coalesceLabel(source._label),
       }
     }),
     recipient: targetArray?.map((source: any) => {
@@ -59,7 +60,7 @@ export const constructCorrespondance = (data: any) => {
       return {
         id: id,
         type: type,
-        _label: source._label,
+        _label: coalesceLabel(source._label),
       }
     }),
     part: [
@@ -73,7 +74,7 @@ export const constructCorrespondance = (data: any) => {
           {
             id: data.id,
             type: data.type,
-            _label: data._label,
+            _label: coalesceLabel(data._label),
           }
         ],
         moved_from: originPlace?.map((place: any) => {
@@ -81,7 +82,7 @@ export const constructCorrespondance = (data: any) => {
           return {
             id: id,
             type: 'Place',
-            _label: place._label,
+            _label: coalesceLabel(place._label),
           }
         }),
         moved_to: placeDelivery?.map((place: any) => {
@@ -89,7 +90,7 @@ export const constructCorrespondance = (data: any) => {
           return {
             id: id,
             type: 'Place',
-            _label: place._label,
+            _label: coalesceLabel(place._label),
           }
         }),
       }

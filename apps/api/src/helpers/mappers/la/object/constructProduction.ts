@@ -1,5 +1,6 @@
 import { env } from '@config/env';
 import { getTimeSpan } from '@helpers/mappers/la/shared/constructTimeSpan';
+import { coalesceLabel } from '@helpers/mappers/coalesceLabel';
 import { checkIntervalValidity } from '@lib/checkIntervalValidity';
 import omitEmptyEs from 'omit-empty-es';
 
@@ -48,7 +49,7 @@ export const constructProduction = (data: any) => {
       return {
         id: id,
         type: type,
-        _label: actor._label,
+        _label: coalesceLabel(actor._label),
       }
     })
   }
@@ -60,7 +61,7 @@ export const constructProduction = (data: any) => {
       return {
         id: id,
         type: type,
-        _label: actor._label,
+        _label: coalesceLabel(actor._label),
       }
     })
   };
@@ -72,7 +73,7 @@ export const constructProduction = (data: any) => {
       return {
         id: id,
         type: type,
-        _label: actor._label,
+        _label: coalesceLabel(actor._label),
       }
     })
   };
@@ -89,7 +90,7 @@ export const constructProduction = (data: any) => {
         return {
           id: technique.id,
           type: 'Type',
-          _label: technique._label,
+          _label: coalesceLabel(technique._label),
         }
       }) ?? undefined,
       commissioner: commissionedBy?.map((actor: any) => {
@@ -98,7 +99,7 @@ export const constructProduction = (data: any) => {
         return {
           id: id,
           type: type,
-          _label: actor._label,
+          _label: coalesceLabel(actor._label),
         }
       }) ?? undefined,
       timespan: timespan ?? undefined,

@@ -113,12 +113,6 @@ app.doc31('/openapi', c => ({
       email: 'support@uib.no'
     },
   },
-  tags: [
-    {
-      name: 'Items',
-      description: 'Items',
-    },
-  ],
   servers: [
     {
       url: c.req.url.includes('localhost') ? new URL(c.req.url).origin : new URL(c.req.url).origin.replace('http', 'https'), // TODO: On vercel we get http, but we want https.

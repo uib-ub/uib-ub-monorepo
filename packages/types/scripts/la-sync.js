@@ -1,6 +1,6 @@
 const tiged = require('tiged');
 
-const emitter = tiged('git@github.com:uib-ub/la-json-validator/schema#master', {
+const emitter = tiged('git@github.com:uib-ub/la-json-validator/schema#local', {
   cache: true,
   force: true,
   verbose: true,

@@ -2,6 +2,8 @@ import { env } from '@config/env';
 import { IIIFBuilder } from '@iiif/builder';
 import { getCopyright } from './getCopyright';
 import { getThumbnailVisualItem } from './getThumbnailVisualItem';
+import { getBehavior } from '../mapClassToClassifiedAs';
+import { getLanguage } from '../getLanguage';
 
 /**
  * Constructs a IIIF manifest
@@ -10,24 +12,103 @@ import { getThumbnailVisualItem } from './getThumbnailVisualItem';
  * @param {string} API 
  * @returns {object} IIIF manifest
  */
-export function constructIIIFStructure(data: any) {
+export function constructIIIFStructure(item: any, fileset: any) {
   // Initiate the builder
   const builder = new IIIFBuilder();
 
-  const item = data.filter(i => i._index.startsWith('search-chc-items'))[0]
-  const fileset = data.filter(i => i._index.startsWith('search-chc-fileset'))[0]
+  const filesetID = fileset.id.split('/').pop()
+  console.log("🚀 ~ constructIIIFStructure ~ filesetID:", filesetID)
 
-  const filesetID = fileset?._source.id
-
-  const thumbnail = getThumbnailVisualItem(item._source)
+  const thumbnail = getThumbnailVisualItem(item)
   const manifestID = `${env.API_URL}/items/${filesetID}?as=iiif`
   const homepage = `https://marcus.uib.no/items/${filesetID}`
+
+  //const mainType = get
+  const getLabel = (item: any): { [key: string]: string[] } => {
+    const names = item.identified_by?.filter((name: any) =>
+      name.type === 'Name' &&
+      name.classified_as?.some((type: any) =>
+        type._label === 'Primary Name' || type._label === 'Translated Name'
+      )
+    ) ?? [];
+
+    const label: { [key: string]: string[] } = {};
+
+    if (names.length > 0) {
+      names.forEach((name: any) => {
+        const lang = name.language?.[0]?._label === 'Norwegian' ? 'no' : 'en';
+        if (!label[lang]) label[lang] = [];
+        label[lang].push(name.content);
+      });
+    }
+
+    return label;
+  }
+
+  type PreziMetadata = {
+    label: Record<string, string[]>
+    value: Record<string, string[]>
+  }
+
+  const getTitles = (identifiedBy: any): PreziMetadata => {
+    const titles = identifiedBy.filter((name: any) => name.type === 'Name' &&
+      name.classified_as?.some((type: any) =>
+        type._label === 'Primary Name' || type._label === 'Translated Name'
+      )
+    )
+
+    // Initialize value object
+    const value: Record<string, string[]> = {}
+
+    // Group titles by language
+    titles.forEach((title: any) => {
+      const lang = getLanguage(title.language?.[0]?.id) as string
+      if (!value[lang]) {
+        value[lang] = []
+      }
+      value[lang].push(title.content)
+    })
+
+    // If no titles were found, default to empty arrays
+    if (Object.keys(value).length === 0) {
+      value.no = []
+      value.en = []
+    }
+
+    return {
+      label: {
+        no: ['Tittel'],
+        en: ['Title']
+      },
+      value
+    }
+  }
+
+  const getIdentifiers = (identifiedBy: any): PreziMetadata => {
+    const identifiers = identifiedBy.filter((name: any) => name.type === 'Identifier')
+
+    return {
+      label: {
+        no: ['Identifikator'],
+        en: ['Identifier'],
+      },
+      value: {
+        none: identifiers.map((identifier: any) => identifier.content)
+      }
+    }
+  }
 
   // Create the manifest
   const manifest = builder.createManifest(
     manifestID,
     (manifest: any) => {
-      manifest.setLabel(item._source._label ?? { "no": ["Mangler tittel"], "en": ["Missing title"] });
+
+      const label = getLabel(item);
+
+      manifest.setLabel(Object.keys(label).length > 0 ? label : {
+        "no": ["Mangler tittel"],
+        "en": ["Missing title"]
+      });
       if (thumbnail) {
         manifest.addThumbnail({
           id: thumbnail,
@@ -37,7 +118,7 @@ export function constructIIIFStructure(data: any) {
           height: 250,
         });
       }
-      manifest.addBehavior("paged");
+      manifest.addBehavior(getBehavior(item.classified_as[0].id));
       manifest.setHomepage({
         id: homepage,
         type: "Text",
@@ -47,9 +128,9 @@ export function constructIIIFStructure(data: any) {
         },
         format: "text/html"
       });
-      /* manifest.setSeeAlso([
+      manifest.setSeeAlso([
         {
-          id: `${API}/items/${data.identifier}`,
+          id: `${env.API_URL}/items/${filesetID}?as=json`,
           type: "Dataset",
           label: {
             en: ["Object description in JSON format"],
@@ -58,14 +139,14 @@ export function constructIIIFStructure(data: any) {
           format: "application/ld+json"
         },
         {
-          id: `${SOURCE}describe<${data.seeAlso}>&output=json`,
+          id: `${env.API_URL}/items/${filesetID}?as=ubbont`,
           type: "Dataset",
           label: {
             en: ["Object description in RDF"],
             no: ["Objekt beskrivelse i RDF"]
           }
         }
-      ]); */
+      ]);
       manifest.setRequiredStatement({
         label: {
           no: ["Kreditering"],
@@ -76,26 +157,14 @@ export function constructIIIFStructure(data: any) {
           en: ["Provided by University of Bergen Library"]
         }
       });
-      manifest.setRights(getCopyright(item._source, filesetID));
+      manifest.setRights(getCopyright(item, filesetID));
       manifest.setMetadata([
-        {
-          label: {
-            no: ["Tittel"],
-            en: ["Title"]
-          },
-          value: { "no": ["Eksempel tittel"], "en": ["Example title"] }
-        },
-        {
-          label: {
-            no: ["Emneord"],
-            en: ["Keywords"]
-          },
-          value: { "no": ["Eksempel emneord"], "en": ["Example keywords"] }
-        }
+        getTitles(item.identified_by),
+        getIdentifiers(item.identified_by),
       ]);
 
       if (fileset) {
-        fileset._source.data.hasPart.map((item: any) => {
+        (fileset.hasPart).map((item: any) => {
           const root = `${env.API_URL}/items/${filesetID}`
           const canvasID = `${root}/canvas/${item.sequenceNr}`
           const annotationPageID = `${root}/canvas/${item.sequenceNr}/annotation-page/1`;
@@ -137,7 +206,7 @@ export function constructIIIFStructure(data: any) {
 
 
   const manifestV3: any = builder.toPresentation3({ id: manifest.id, type: 'Manifest' });
-  manifestV3.identifier = data.identifier
+  manifestV3.identifier = item.identifier
 
   return manifestV3
 }

@@ -3,7 +3,7 @@ import { env } from '@config/env'
 import { bulkIndexData } from '@helpers/indexers/bulkIndexData'
 import { flatMapManifestsForBulkIndexing } from '@helpers/indexers/flatMapManifestsForBulkIndexing'
 import { resolveManifests } from '@helpers/indexers/resolveManifests'
-import { getItems } from '@services/sparql/marcus/items.service'
+import { getItems } from '@routes/sparql/items/items.service'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
 import isEmpty from 'lodash/isEmpty'
@@ -21,7 +21,6 @@ route.get('/manifests',
     const limitInt = parseInt(limit)
 
     const API_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-    const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
     const IIIF_CONTEXT = `${env.PROD_URL}/ns/manifest/context.json`
 
     return streamSSE(c, async (stream) => {
@@ -45,7 +44,7 @@ route.get('/manifests',
 
         // Sample time for fetch and index step
         const t0 = performance.now();
-        const data = await getItems(API_URL, CONTEXT, currentPage, limitInt);
+        const data = await getItems(API_URL, currentPage, limitInt);
         // TODO: get true boolean from SPARQL
         const isDigitized = data.filter((item: any) => item.isDigitized === 'true');
         totalFetched += isDigitized.length;

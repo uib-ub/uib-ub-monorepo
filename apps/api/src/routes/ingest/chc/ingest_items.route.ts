@@ -4,11 +4,12 @@ import { env } from '@config/env'
 import { bulkIndexData } from '@helpers/indexers/bulkIndexData'
 import { convertAndValidateLaItem } from '@helpers/indexers/convertAndValidateLaItem'
 import { flatMapDataForBulkIndexing } from '@helpers/indexers/flatMapDataForBulkIndexing'
-import { getItems, resolveItems } from '@services/sparql/marcus/items.service'
+import { getItems } from '@routes/sparql/items/items.service'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
 import pretty from 'pretty-time'
 import { getIndexFromAlias } from '../../../lib/getIndexFromAlias'
+import { resolveItems } from '@routes/sparql/items/item.service'
 
 const route = new Hono()
 
@@ -17,7 +18,7 @@ let isRunning = false
 
 route.get('/items',
   async (c) => {
-    const { index, limit = '100', page = '0', source, reindex } = c.req.query()
+    const { index, limit = '100', page = '0', source, overwrite = 'false' } = c.req.query()
 
     if (!source) {
       return c.text('Missing query parameters', 400)
@@ -27,18 +28,18 @@ route.get('/items',
       return c.text('Ingest already running', 400)
     }
 
+    const limitInt = parseInt(limit)
+    const pageInt = parseInt(page)
+    const overwriteBool = overwrite === 'true'
+
     // Set isRunning to true to prevent multiple ingestions at the same time
     isRunning = true
 
     // Get the index name
-    const useIndex = index ?? await getIndexFromAlias(CHCSEARCHALIAS, INDICIES.items, reindex != undefined ? true : false)
+    const useIndex = index ?? await getIndexFromAlias(CHCSEARCHALIAS, INDICIES.items, overwriteBool)
     console.log("Using index:", useIndex)
 
-    const limitInt = parseInt(limit)
-    const pageInt = parseInt(page)
-
     const SOURCE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-    const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
 
     console.log('Starting ingester')
 
@@ -67,7 +68,7 @@ route.get('/items',
 
         // Fetch ids
         const t0 = process.hrtime.bigint();
-        const data = await getItems(SOURCE_URL, CONTEXT, status.currentPage, limitInt);
+        const data = await getItems(SOURCE_URL, status.currentPage, limitInt);
         const t1 = process.hrtime.bigint();
         console.log('├── Fetched ids:', data.length, 'items in', pretty(Number(t1) - Number(t0)));
 
@@ -76,21 +77,21 @@ route.get('/items',
         try {
           // Resolve ids
           const t2 = process.hrtime.bigint();
-          const resolved = await resolveItems(data, SOURCE_URL);
+          const resolved = await resolveItems(data, source, 'la');
           const t3 = process.hrtime.bigint();
-          console.log('├── Resolved', data.length, 'items in', pretty(Number(t3) - Number(t2)));
+          console.log('├── Resolved', resolved.length, 'items in', pretty(Number(t3) - Number(t2)));
 
-          // Convert and validate items
-          const t4 = process.hrtime.bigint();
-          const converted = await Promise.all(resolved.map((item: any) => {
-            return convertAndValidateLaItem(item);
-          }));
-          const t5 = process.hrtime.bigint();
-          console.log('├── Converted', converted.length, 'items in', pretty(Number(t5) - Number(t4)));
+          /*           // Convert and validate items
+                    const t4 = process.hrtime.bigint();
+                    const converted = await Promise.all(resolved.map((item: any) => {
+                      return convertAndValidateLaItem(item);
+                    }));
+                    const t5 = process.hrtime.bigint();
+                    console.log('├── Converted', converted.length, 'items in', pretty(Number(t5) - Number(t4))); */
 
           // Prepare bulk payload
           const t6 = process.hrtime.bigint();
-          const bulkPayload = flatMapDataForBulkIndexing(converted, useIndex);
+          const bulkPayload = flatMapDataForBulkIndexing(resolved, useIndex);
           const t7 = process.hrtime.bigint();
           console.log('├── Prepared the payload for bulk indexing.', bulkPayload.length / 2, 'items in', pretty(Number(t7) - Number(t6)));
 
@@ -134,7 +135,7 @@ route.get('/items',
           });
 
           // Update aliases
-          if (reindex != undefined) {
+          if (!overwriteBool) {
             try {
               await client.indices.updateAliases({
                 body: {
