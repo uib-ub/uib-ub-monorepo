@@ -67,7 +67,7 @@ export default async function IIIFInfoSection({manifest, neighbours, manifestDat
                                 <div className="flex flex-col gap-2 p-4 w-full bg-white">
                                     <h1>Arkivressurser</h1>
                                     <p>Digitalisert arkivmateriale som så langt det er mulig er delt inn og sortert i tråd med det fysiske materialet.</p>
-                                    <p>I noen datasett har vi brukt mer enn én ordning av materialet, for eksempel med og uten gruppering av sedler på oppslagsord. De samme skannede sedlene kan derfor forekomme i to mappeer.</p>
+                                    <p>I noen datasett har vi brukt mer enn én ordning av materialet, for eksempel med og uten gruppering av sedler på oppslagsord. De samme skannede sidene kan derfor forekomme i to elementer.</p>
                                 </div>
 
                                 {stats && (
