@@ -141,7 +141,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                     const itemDataset = result._index.split('-')[2].split('_')[1]
                     return (
                         <Fragment key={index}>
-                            <FileCard fields={result.fields} itemDataset={itemDataset}/>
+                            <FileCard item={result._source} itemDataset={itemDataset}/>
                         </Fragment>
                     )})}
                 

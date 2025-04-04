@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-const DynamicImageViewer = ({canvases, manifestDataset, manifestId}: {canvases: Record<string, any>[], manifestDataset: string, manifestId: string}) => {
+const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Record<string, any>[], manifestDataset: string, manifestId: string}) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const viewer = useRef<OpenSeadragon.Viewer | null>(null);
   const [numberOfPages, setNumberOfPages] = useState(0);
@@ -32,18 +32,16 @@ const DynamicImageViewer = ({canvases, manifestDataset, manifestId}: {canvases: 
       // TODO: create api route that generates manifest from elasticsearch index  
       setCurrentPage(0)
 
-      const tileSources = canvases.map((item: any) => {
+      const tileSources = images.map((image: any) => {
         return {
           "@context": "http://iiif.io/api/image/2/context.json",
-          "@id": `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${item.image}`,
-          "height": item.height,
-          "width": item.width,
+          "@id": `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}`,
+          "height": image.height,
+          "width": image.width,
           "profile": [ "http://iiif.io/api/image/2/level2.json" ],
           "protocol": "http://iiif.io/api/image"
         };
       });
-
-      console.log("TILES", tileSources)
 
       setNumberOfPages(tileSources.length);
 
@@ -78,7 +76,7 @@ const DynamicImageViewer = ({canvases, manifestDataset, manifestId}: {canvases: 
         viewer.current.viewport.goHome();
       }
 
-  }, [canvases]);
+  }, [images]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -133,7 +131,7 @@ const DynamicImageViewer = ({canvases, manifestDataset, manifestId}: {canvases: 
   };
 
   const handleDownload = useCallback(async (format: string, allPages?: boolean) => {
-    if (viewer.current && canvases[currentPage]) {
+    if (viewer.current && images[currentPage]) {
       try {
         const params = new URLSearchParams({
           uuid: manifestId,
@@ -161,7 +159,7 @@ const DynamicImageViewer = ({canvases, manifestDataset, manifestId}: {canvases: 
         console.error('Error downloading:', error);
       }
     }
-  }, [currentPage, canvases, manifestId]);
+  }, [currentPage, images, manifestId]);
 
   return (
     <div className='w-full h-full relative'>

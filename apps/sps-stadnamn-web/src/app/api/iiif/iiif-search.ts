@@ -69,8 +69,7 @@ export async function fetchIIIFSearch(collection: string, q?: string, type?: str
     },
     "sort": q ? ["_score"] : ["order"],
     "size": size || 1000,
-    "fields": ["uuid", "order", "canvases.image", "canvases.height", "canvases.width", "type", "label.no", "label.none", "label.en", "audio.uuid"],
-    "_source": false,
+    "_source": ["uuid", "order", "images", "type", "label", "audio"],
     "aggs": {
       "types": {
         "terms": {

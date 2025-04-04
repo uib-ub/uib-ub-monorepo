@@ -15,16 +15,14 @@ export async function fetchIIIFNeighbours(order: number, partOf: string) {
         top_hits: {
           size: 1,
           sort: [{"order": "asc"}],
-          _source: false,
-          fields: ["uuid", "order"]
+          _source: ["uuid", "order"]
         }
       },
       last_item: {
         top_hits: {
           size: 1,
           sort: [{"order": "desc"}],
-          _source: false,
-          fields: ["uuid", "order"]
+          _source: ["uuid", "order"]
         }
       }
     }
@@ -33,7 +31,7 @@ export async function fetchIIIFNeighbours(order: number, partOf: string) {
 
 
   // Fix the property access path for aggregations
-  const lastItemPosition = minMaxData.aggregations?.last_item?.hits?.hits?.[0]?.fields?.order?.[0]
+  const lastItemPosition = minMaxData.aggregations?.last_item?.hits?.hits?.[0]?._source?.order
 
   
   
@@ -53,8 +51,7 @@ export async function fetchIIIFNeighbours(order: number, partOf: string) {
         "order": "asc"
       }
     ],
-    fields: ["uuid", "order", "canvases.image", "canvases.height", "canvases.width", "label.no", "label.none", "label.en", "type", "audio.uuid"],
-    _source: false,
+    _source: ["uuid", "order", "images", "label", "type", "audio"],
   }
 
   
@@ -65,11 +62,11 @@ export async function fetchIIIFNeighbours(order: number, partOf: string) {
   
   return {
     data: {
-      first: minMaxData.aggregations?.first_item?.hits?.hits?.[0]?.fields?.uuid?.[0],
-      previous: neighboursData.hits.hits.find((hit: any) => hit.fields.order?.[0] == order - 1)?.fields?.uuid?.[0],
-      next: neighboursData.hits.hits.find((hit: any) => hit.fields.order?.[0] == order + 1)?.fields?.uuid?.[0],
+      first: minMaxData.aggregations?.first_item?.hits?.hits?.[0]?._source?.uuid,
+      previous: neighboursData.hits.hits.find((hit: any) => hit._source.order == order - 1)?._source?.uuid,
+      next: neighboursData.hits.hits.find((hit: any) => hit._source.order == order + 1)?._source?.uuid,
       neighbours: neighboursData.hits.hits,
-      last: minMaxData.aggregations?.last_item?.hits?.hits?.[0]?.fields?.uuid?.[0]
+      last: minMaxData.aggregations?.last_item?.hits?.hits?.[0]?._source?.uuid
     },
     total: lastItemPosition,
     status: neighboursStatus

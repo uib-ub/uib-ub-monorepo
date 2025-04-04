@@ -18,7 +18,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
     const manifest = manifestDoc?._source
     const neighbours = (manifest?.order && manifest?.partOf) ? await fetchIIIFNeighbours(manifest.order, manifest.partOf) : {data: null, total: 0}
     const manifestDataset = manifestDoc?._index?.split('-')?.[2]?.split('_')?.[1]
-    const isImage = manifest?.type == "Manifest" && manifest?.canvases?.[0]?.image
+    const isImage = manifest?.type == "Manifest" && manifest?.images
     const isCollection = !slug?.[0] || manifest?.type === "Collection";
     
     
@@ -37,7 +37,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
             
                           
                 <div className={`w-full lg:col-span-4 !min-h-[40svh] ${manifest?.type == 'Manifest' ? 'max-h-[60svh] lg:max-h-full' : 'lg:max-h-[calc(100svh-3rem)]'} bg-neutral-200`}>
-                    {isImage && <ImageViewer canvases={manifest.canvases} manifestDataset={manifestDataset} manifestId={manifest.uuid}/>}
+                    {isImage && <ImageViewer images={manifest.images} manifestDataset={manifestDataset} manifestId={manifest.uuid}/>}
                     {manifest?.audio && <div className="flex flex-col gap-4 items-center justify-center h-full hidden lg:flex">
                         <h2 className="text-2xl text-neutral-900 font-semibold">{resolveLanguage(manifest.audio.label)}</h2>
                         
@@ -97,7 +97,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                 <nav className="grid grid-cols-2 lg:flex items-center gap-2 w-full px-4">
                     {neighbours.data.neighbours.map((neighbour: any, index: number) => (
                             <div key={index} className="flex-1">
-                                <FileCard fields={neighbour.fields} itemDataset={manifestDataset} currentItem={manifest?.uuid}/>
+                                <FileCard item={neighbour._source} itemDataset={manifestDataset} currentItem={manifest?.uuid}/>
                             </div>
                     ))}
                 </nav>

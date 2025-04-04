@@ -1,41 +1,40 @@
 import Link from "next/link";
 import { PiArchiveDuotone, PiArchiveFill, PiArchiveThin, PiFileAudioThin } from "react-icons/pi";
 import Image from "next/image";
-import { resolveLanguage, resolveLanguageField } from "../iiif-utils";
+import { resolveLanguage } from "../iiif-utils";
 
 
 
-export default function FileCard({fields, itemDataset, currentItem}: {fields: any, itemDataset: string, currentItem?: string}) {
+export default function FileCard({item, itemDataset, currentItem}: {item: any, itemDataset: string, currentItem?: string}) {
+
     const height = 160
     const width = 240
     const aspectRatio = height / width
-    console.log(fields?.["canvases.image"]?.length)
-    const canvasWidth = fields?.["canvases.width"]?.[0]
-    const canvasHeight = fields?.["canvases.height"]?.[0]
-    const canvasCount = fields?.["canvases.image"]?.length
-    const image = fields?.["canvases.image"]?.[0]  
-    const type = fields?.["type"]?.[0]
+    const canvasWidth = item?.images?.[0]?.width
+    const canvasHeight = item?.images?.[0]?.height
+    const canvasCount = item?.images?.length
+    const image = item?.images?.[0].uuid
+    const type = item?.type
     const thumbnail = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${itemDataset.toUpperCase()}/${image}/0,0,${canvasWidth},${Math.round(canvasWidth*aspectRatio)}/${width*2},${height*2}/0/default.jpg`
 
     return <Link
-    href={`/iiif/${fields.uuid}`} 
+    href={`/iiif/${item.uuid}`} 
     className="flex flex-col items-center gap-2 no-underline bg-white shadow-md p-2 pt-4 rounded-md aria-[current=page]:bg-accent-900 aria-[current=page]:text-white"
-    aria-current={fields.uuid == currentItem ? "page" : undefined}
->
+    aria-current={item.uuid == currentItem ? "page" : undefined}>
     {type === 'Collection' && (
         <>
             <div className="flex items-center justify-center"><PiArchiveThin aria-hidden="true" className="text-8xl w-full h-full p-6" /></div>
-            {resolveLanguageField(fields)}
+            {resolveLanguage(item.label)}
         </>
     )}
-    
-    {type == 'Manifest' && canvasCount > 0 && (
+    {type == 'Manifest' && item.images && (
         <>
+        
         <div className="relative">
             <Image 
                 className="bg-neutral-800 border border-neutral-200"
                 src={thumbnail} 
-                alt={resolveLanguageField(fields)} 
+                alt={resolveLanguage(item.label)} 
                 width={width}
                 height={height}
             />
@@ -48,7 +47,7 @@ export default function FileCard({fields, itemDataset, currentItem}: {fields: an
             <span className="flex items-center gap-1 truncate">
                 
                 
-                {resolveLanguageField(fields)}
+                {resolveLanguage(item.label)}
                 
                 
                 </span>
@@ -56,13 +55,13 @@ export default function FileCard({fields, itemDataset, currentItem}: {fields: an
         </>
     )}
     {
-        type == 'Manifest' && fields["audio.uuid"] && (
+        type == 'Manifest' && item.audio && (
             <>
                 <div className="flex-1 flex items-center justify-center">
                     <div className="flex items-center justify-center"><PiFileAudioThin aria-hidden="true" className="w-full h-full p-6 text-8xl" /></div>
                 </div>
                 <span className="flex items-center gap-1 truncate">
-                    {resolveLanguageField(fields)}
+                    {resolveLanguage(item.label)}
                 </span>
             </>
         )
