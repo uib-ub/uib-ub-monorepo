@@ -207,6 +207,9 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
             </AlertDialogHeader>
             <AlertDialogFooter>
               <div className="flex flex-row gap-2 justify-center w-full">
+                <AlertDialogCancel className="btn btn-outline">
+                  Avbryt
+                </AlertDialogCancel>
                 <AlertDialogAction 
                   className="btn btn-outline"
                   onClick={() => handleDownload('jpg', false)}
