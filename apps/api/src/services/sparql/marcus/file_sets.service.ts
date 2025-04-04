@@ -3,7 +3,7 @@ import { sqb } from '@lib/sparqlQueryBuilder'
 import jsonld from 'jsonld'
 import { CONTEXTS } from 'jsonld-contexts'
 import { listFileSetsSparqlQuery } from '../queries'
-import { fileSetService } from './file_set.service'
+import { getFileSet } from '@routes/sparql/file-sets/file_set.service'
 
 export async function getFileSets(url: string, context: string, page?: number, limit?: number): Promise<any> {
   if (!url) { throw Error }
@@ -31,7 +31,7 @@ export async function getFileSets(url: string, context: string, page?: number, l
 
 export async function resolveFileSets(ids: any, source: string): Promise<any> {
   try {
-    const promises = ids.map((item: { id: string, identifier: string }) => fileSetService(item.identifier, source))
+    const promises = ids.map((item: { id: string, identifier: string }) => getFileSet(item.identifier, source))
     const data = await Promise.all(promises);
     return data;
   } catch (error) {

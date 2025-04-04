@@ -3,7 +3,7 @@ import { env } from '@config/env';
 import { cleanDateDatatypes } from '@helpers/cleaners/cleanDateDatatypes';
 import { convertToFloat } from '@helpers/cleaners/convertToFloat';
 import { useFrame } from '@helpers/useFrame';
-import { toLinkedArtItemTransformer } from '@transformers/item.transformer';
+import { ItemTransformer } from '@routes/sparql/items/item.transformer';
 import { HTTPException } from 'hono/http-exception';
 import { ContextDefinition, JsonLdDocument } from 'jsonld';
 import ubbontContext from 'jsonld-contexts/src/ubbontContext';
@@ -29,7 +29,7 @@ export const convertAndValidateLaItem = async (data: any): Promise<any> => {
 
     delete framed['@context'];
 
-    const response = await toLinkedArtItemTransformer(
+    const response = await ItemTransformer.toLinkedArt(
       framed,
       `${env.API_URL}/ns/ubbont/context.json`
     );

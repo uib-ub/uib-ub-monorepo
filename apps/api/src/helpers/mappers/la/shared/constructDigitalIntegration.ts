@@ -1,6 +1,6 @@
 import { aatDigitalImageType, aatThumbnailsType, aatWebPageType } from '@/helpers/mappers/staticMapping';
 import omitEmptyEs from 'omit-empty-es';
-
+import { coalesceLabel } from '@helpers/mappers/coalesceLabel';
 export const constructDigitalIntegration = (data: any) => {
   const {
     type,
@@ -43,7 +43,7 @@ export const constructDigitalIntegration = (data: any) => {
     seeAlsoArray = seeAlso.map((item: any) => ({
       id: item['ubbont:hasURI'] ?? item.hasURI,
       type: type,
-      _label: item._label,
+      _label: item._label?.no[0] ?? item._label?.en[0] ?? 'Ukjent',
     }));
   }
 
@@ -53,10 +53,7 @@ export const constructDigitalIntegration = (data: any) => {
       digitally_shown_by: [
         {
           type: 'DigitalObject',
-          _label: {
-            no: ['Digitalt objekt'],
-            en: ['Digital object'],
-          },
+          _label: 'Digitalt objekt',
           classified_as: [
             aatDigitalImageType,
             aatThumbnailsType,
@@ -76,10 +73,7 @@ export const constructDigitalIntegration = (data: any) => {
       digitally_shown_by: [
         {
           type: 'DigitalObject',
-          _label: {
-            no: ['Digitalt objekt'],
-            en: ['Digital object'],
-          },
+          _label: 'Digitalt objekt',
           classified_as: [
             aatDigitalImageType,
             aatThumbnailsType,
@@ -99,10 +93,7 @@ export const constructDigitalIntegration = (data: any) => {
       digitally_shown_by: [
         {
           type: 'DigitalObject',
-          _label: {
-            no: ['Digitalt objekt'],
-            en: ['Digital object'],
-          },
+          _label: 'Digitalt objekt',
           classified_as: [
             aatDigitalImageType,
           ],
@@ -119,10 +110,7 @@ export const constructDigitalIntegration = (data: any) => {
     subjectManifestOf = [
       {
         type: 'LinguisticObject',
-        _label: {
-          no: ['Digitalt objekt'],
-          en: ['Digital object'],
-        },
+        _label: 'Digitalt objekt',
         digitally_carried_by: [
           {
             type: "DigitalObject",
@@ -170,7 +158,7 @@ export const constructDigitalIntegration = (data: any) => {
   if (Array.isArray(page) && page.length > 0) {
     pageArray = page.map((item: any) => ({
       type: "LinguisticObject",
-      _label: item._label,
+      _label: coalesceLabel(item._label),
       digitally_carried_by: [
         {
           type: "DigitalObject",

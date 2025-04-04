@@ -8,7 +8,7 @@ import executeQuery from '@lib/executeQuery'
 import { sqb } from '@lib/sparqlQueryBuilder'
 import { AsParamsSchema, LegacyPersonSchema, TODO } from '@models'
 import { personOrGroupSparqlQuery } from '@services/sparql/queries'
-import { toUbbontTransformer } from '@transformers/item.transformer'
+import { ItemTransformer } from '@routes/sparql/items/item.transformer'
 import { toLinkedArtPersonTransformer } from '@transformers/person.transformer'
 import { HTTPException } from 'hono/http-exception'
 import { ContextDefinition, JsonLdDocument } from 'jsonld'
@@ -54,10 +54,10 @@ route.openapi(getItem, async (c) => {
   switch (as) {
     case 'la':
       transformer = toLinkedArtPersonTransformer
-      schema = ZodPersonSchema
+      schema = ZodPersonSchema as any
       break;
     case 'ubbont':
-      transformer = toUbbontTransformer
+      transformer = ItemTransformer.toUbbont
       break;
     default:
       throw new HTTPException(400, { message: 'Invalid value for "as" parameter' });

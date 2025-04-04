@@ -2,6 +2,7 @@ import { institutions } from '@/helpers/mappers/staticMapping';
 import { env } from '@config/env';
 import { TBaseMetadata } from '@models';
 import omitEmptyEs from 'omit-empty-es';
+import { coalesceLabel } from '@helpers/mappers/coalesceLabel';
 
 export const constructOwnership = (base: TBaseMetadata, data: any) => {
   const {
@@ -11,6 +12,8 @@ export const constructOwnership = (base: TBaseMetadata, data: any) => {
 
   delete data.owner
   delete data.storedAt
+
+  console.log(base.identifier);
 
   /**
    * Ownership is determined by the identifier of the object
@@ -41,16 +44,13 @@ export const constructOwnership = (base: TBaseMetadata, data: any) => {
   const keeper = owner ? {
     id: owner?.id,
     type: 'Group',
-    _label: owner?._label,
+    _label: coalesceLabel(owner?._label),
   } : undefined;
 
   const current_location = {
     id: storedAt?.identifier ? `${env.API_URL}/places/${storedAt?.identifier}` : 'https://data.ub.uib.no/place/storage',
     type: 'Place',
-    _label: storedAt?._label ?? {
-      no: ['Lager'],
-      en: ['Storage'],
-    },
+    _label: coalesceLabel(storedAt?._label),
   };
 
   return omitEmptyEs({

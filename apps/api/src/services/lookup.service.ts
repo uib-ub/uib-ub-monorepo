@@ -53,7 +53,6 @@ export async function lookupService(id: string) {
       if (res.boolean) {
         return service
       }
-      return
     })
   })
 
@@ -66,7 +65,6 @@ export async function lookupService(id: string) {
       if (res.numFound) {
         return service
       }
-      return
     })
   })
 

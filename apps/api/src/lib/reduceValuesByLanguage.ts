@@ -1,6 +1,7 @@
 /**
  * @description
- * This function takes an array of objects and returns an object with the keys of the objects as keys and the values of the objects as values in an array.
+ * This function takes an array of objects and returns an object with the 
+ * keys of the objects as keys and the values of the objects as values in an array.
  * @param {array} values
  * @example
  * const values = [

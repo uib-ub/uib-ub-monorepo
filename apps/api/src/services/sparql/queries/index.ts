@@ -138,30 +138,6 @@ export const listSubClassOfSparqlQuery = `
     }
   `
 
-export const listItemsSparqlQuery = `
-  ${SPARQL_PREFIXES}
-  CONSTRUCT {
-    ?uri a ?class ; 
-      dct:identifier ?id ;
-      ubbont:isDigitized ?isDigitized .
-  } WHERE { 
-    SERVICE <cache:> { 
-      SELECT ?uri ?class ?id ?isDigitized WHERE 
-        { 
-          ?uri rdf:type/rdfs:subClassOf* bibo:Document ;
-            a ?class ;
-            ubbont:showWeb true ;
-            dct:identifier ?id .
-          FILTER(STRENDS(STR(?uri), ?id))
-          BIND(EXISTS{?uri ubbont:hasRepresentation ?repr} AS ?isDigitized)
-        }
-      ORDER BY ?id
-      OFFSET %page
-      LIMIT %limit
-    }
-  }
-`
-
 export const itemSparqlQuery = `
   ${SPARQL_PREFIXES}
   CONSTRUCT {
@@ -315,46 +291,4 @@ export const manifestSparqlQuery = `
     BIND(str(?partXL) AS ?partXLString)
   }
   ORDER BY ?s ?repr ?part ?resource
-`
-
-export const filesetSparqlQuery = `
-  ${SPARQL_PREFIXES}
-  CONSTRUCT { 
-    ?s a ore:Aggregation ;
-      rdfs:label ?id ;
-      dct:hasPart ?singleCanvas ;
-      dct:hasPart ?parts .
-    ?singleCanvas a ubbont:Page ; 
-      rdfs:label "side 1" ;
-      ubbont:sequenceNr 1 ;
-      ubbont:hasResource ?part .
-    ?part ?p2 ?singlePartProps .
-    ?parts rdfs:label ?partsLabel ;
-      ubbont:sequenceNr ?partsSeq ;
-      ubbont:hasResource ?partsResource .
-    ?partsResource ?p3 ?o3 .
-  }
-  WHERE { 
-  VALUES ?id { "%id" }
-    ?s rdfs:label ?id ;
-       a ore:Aggregation .
-    OPTIONAL { 
-      ?s dct:hasPart ?part .
-      ?part ?p2 ?singlePartProps ;
-        a ubbont:DigitalResource .
-      FILTER(?p2 != ubbont:isResourceOf )
-      FILTER(?p2 != rdfs:type )
-    }
-    OPTIONAL { 
-      ?s dct:hasPart ?parts .
-      ?parts a ubbont:Page ;
-         rdfs:label ?partsLabel ;
-         ubbont:sequenceNr ?partsSeq ;
-         ubbont:hasResource ?partsResource .
-       ?partsResource ?p3 ?o3 .
-       FILTER(?p3 != ubbont:isResourceOf )
-       FILTER(?p3 != rdfs:type )
-    }
-    BIND(iri(concat("http://data.ub.uib.no/instance/page/", ?id, "_p1")) AS ?singleCanvas)
-  }
 `

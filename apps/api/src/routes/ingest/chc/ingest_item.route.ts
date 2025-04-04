@@ -7,7 +7,7 @@ import { useFrame } from '@helpers/useFrame'
 import executeQuery from '@lib/executeQuery'
 import { sqb } from '@lib/sparqlQueryBuilder'
 import { itemSparqlQuery } from '@services/sparql/queries'
-import { toLinkedArtItemTransformer } from '@transformers/item.transformer'
+import { ItemTransformer } from '@routes/sparql/items/item.transformer'
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { ContextDefinition, JsonLdDocument } from 'jsonld'
@@ -35,7 +35,7 @@ route.get('/items/:id',
       const withFloats = convertToFloat(fixedDates)
 
       const framed: JsonLdDocument = await useFrame({ data: withFloats, context: ubbontContext as ContextDefinition, type: 'HumanMadeObject', id: withFloats.id })
-      const response = await toLinkedArtItemTransformer(framed, CONTEXT)
+      const response = await ItemTransformer.toLinkedArt(framed, CONTEXT)
 
       const parsed = ZodHumanMadeObjectSchema.safeParse(response);
       if (parsed.success === false) {

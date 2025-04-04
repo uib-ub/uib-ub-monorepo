@@ -1,12 +1,8 @@
 import { DATA_SOURCES } from '@config/constants'
 import { cleanJsonld } from '@helpers/cleaners/cleanJsonLd'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import executeQuery from '@lib/executeQuery'
-import { sqb } from '@lib/sparqlQueryBuilder'
 import { PaginationParamsSchema, SourceParamsSchema } from '@models'
-import { listItemsSparqlQuery } from '@services/sparql/queries'
-import jsonld, { ContextDefinition } from 'jsonld'
-import ubbontContext from 'jsonld-contexts/src/ubbontContext'
+import { getItems } from './items.service'
 
 const route = new OpenAPIHono()
 
@@ -48,10 +44,7 @@ route.openapi(getList, async (c) => {
   const pageInt = parseInt(page)
   const limitInt = parseInt(limit)
   const SERVICE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
-  const query = sqb(listItemsSparqlQuery, { limit: limitInt, page: pageInt * limitInt })
-
-  const result = await executeQuery(query, SERVICE_URL)
-  const data = await jsonld.compact(result, ubbontContext as ContextDefinition)
+  const data = await getItems(SERVICE_URL, pageInt, limitInt)
 
   return c.json(cleanJsonld(data))
 })

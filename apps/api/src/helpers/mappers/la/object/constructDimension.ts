@@ -30,10 +30,7 @@ export const constructDimension = (data: any) => {
   if (pages) {
     pagesArray = [{
       type: "Dimension",
-      _label: {
-        no: [`Antall sider`],
-        en: [`Number of pages`],
-      },
+      _label: `Antall sider`,
       classified_as: [
         aatCountOfType,
       ],
@@ -45,10 +42,7 @@ export const constructDimension = (data: any) => {
   if (Number.isInteger(extent)) {
     pagesArray = [{
       type: "Dimension",
-      _label: {
-        no: [`Antall sider`],
-        en: [`Number of pages`],
-      },
+      _label: `Antall sider`,
       classified_as: [
         aatCountOfType,
       ],

@@ -15,7 +15,7 @@ let isRunning = false
 
 route.get('/file-sets',
   async (c) => {
-    const { index, limit = '250', page = '0', source, reindex } = c.req.query()
+    const { index, limit = '250', page = '0', source, overwrite = 'false' } = c.req.query()
 
     if (!source) {
       return c.text('Missing query parameters', 400)
@@ -24,16 +24,17 @@ route.get('/file-sets',
     if (isRunning) {
       return c.text('Ingest already running', 400)
     }
+    const limitInt = parseInt(limit)
+    const pageInt = parseInt(page)
+    const overwriteBool = overwrite === 'true'
 
     // Set isRunning to true to prevent multiple ingestions at the same time
     isRunning = true
 
     // Get the index name
-    const useIndex = index ?? await getIndexFromAlias(CHCSEARCHALIAS, INDICIES.file_set, reindex != undefined ? true : false)
+    const useIndex = index ?? await getIndexFromAlias(CHCSEARCHALIAS, INDICIES.file_set, overwriteBool)
     console.log("Using index:", useIndex)
 
-    const limitInt = parseInt(limit)
-    const pageInt = parseInt(page)
 
     const SOURCE_URL = DATA_SOURCES.filter(service => service.name === source)[0].url
     const CONTEXT = `${env.PROD_URL}/ns/ubbont/context.json`
@@ -123,7 +124,7 @@ route.get('/file-sets',
           });
 
           // Update aliases
-          if (reindex != undefined) {
+          if (!overwriteBool) {
             try {
               await client.indices.updateAliases({
                 body: {

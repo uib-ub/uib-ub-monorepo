@@ -60,26 +60,26 @@ export const IdParamsSchema = z.object({
 })
 
 export const SourceParamsSchema = z.object({
-  source: z.enum(['marcus', 'ska'])
+  source: z.enum(['spes'])
     .openapi({
       param: {
         name: 'source',
         in: 'path',
         required: true,
       },
-      example: 'marcus',
+      example: 'spes',
     })
 })
 
 export const LegacyItemSchema = z.object({
-  source: z.enum(['marcus', 'ska'])
+  source: z.enum(['spes'])
     .openapi({
       param: {
         name: 'source',
         in: 'path',
         required: true,
       },
-      example: 'marcus',
+      example: 'spes',
     }),
   id: z.string()
     .openapi({
@@ -93,14 +93,14 @@ export const LegacyItemSchema = z.object({
 })
 
 export const LegacyPersonSchema = z.object({
-  source: z.enum(['marcus', 'ska'])
+  source: z.enum(['spes'])
     .openapi({
       param: {
         name: 'source',
         in: 'path',
         required: true,
       },
-      example: 'marcus',
+      example: 'spes',
     }),
   id: z.string()
     .openapi({
@@ -114,14 +114,14 @@ export const LegacyPersonSchema = z.object({
 })
 
 export const LegacyGroupSchema = z.object({
-  source: z.enum(['marcus', 'ska'])
+  source: z.enum(['spes'])
     .openapi({
       param: {
         name: 'source',
         in: 'path',
         required: true,
       },
-      example: 'marcus',
+      example: 'spes',
     }),
   id: z.string()
     .openapi({

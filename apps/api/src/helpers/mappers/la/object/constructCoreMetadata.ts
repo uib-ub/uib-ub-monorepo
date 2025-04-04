@@ -2,6 +2,7 @@ import { classToAttMapping } from '@helpers/mappers/mapClassToClassifiedAs';
 import { aatReproductionsType } from '@helpers/mappers/staticMapping';
 import { TBaseMetadata } from '@models';
 import omitEmptyEs from 'omit-empty-es';
+import { coalesceLabel } from '@helpers/mappers/coalesceLabel';
 
 export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
   const {
@@ -47,8 +48,8 @@ export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
     "@context": context,
     id: newId,
     type: "HumanMadeObject",
-    _label,
-    _available: Array.isArray(_available) ? _available.reduce(function (a, b) { return a < b ? a : b; }) : _available, // When multiple dates, we want the earliest
+    _label: coalesceLabel(_label),
+    _available: Array.isArray(_available) ? _available.reduce((a, b) => a < b ? a : b, _available[0]) : _available, // When multiple dates, we want the earliest
     classified_as: [
       ...classified_as
     ],

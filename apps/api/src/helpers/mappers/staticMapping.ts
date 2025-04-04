@@ -1,44 +1,31 @@
 import { env } from '@config/env';
 import { getLanguage } from './getLanguage';
 
-export const institutions: { [key: string]: { id: string; type: string; _label: Record<string, string[]> } } = {
+export const institutions: { [key: string]: { id: string; type: string; _label: string } } = {
   uib: {
     id: `${env.API_URL}/groups/79543723-f0e9-40a6-bfb9-4830f080e887`,
     type: 'Group',
-    _label: {
-      no: ['Universitetet i Bergen'],
-      en: ['University of Bergen'],
-    },
+    _label: 'Universitetet i Bergen',
   },
   ubb: {
     id: `${env.API_URL}/groups/0f4d957a-5476-4e88-b2b6-71a06c1ecf9c`,
     type: "Group",
-    _label: {
-      no: ["Universitetsbiblioteket i Bergen"],
-      en: ["University of Bergen Library"],
-    }
+    _label: "Universitetsbiblioteket i Bergen",
   },
   spes: {
     id: `${env.API_URL}/groups/de88f626-4b67-4fef-9d88-6930e8b5c645`,
     type: "Group",
-    _label: {
-      no: ["Spesialsamlingene ved Universitetsbiblioteket i Bergen"],
-      en: ["Special collections atht the University of Bergen Library"],
-    }
+    _label: "Spesialsamlingene ved Universitetsbiblioteket i Bergen",
   },
   sab: {
     id: `${env.API_URL}/groups/statsarkivet-i-bergen`,
     type: 'Group',
-    _label: {
-      no: ['Statsarkivet i Bergen'],
-    },
+    _label: "Statsarkivet i Bergen",
   },
   bba: {
     id: `${env.API_URL}/groups/3f0ed65b-8e5c-484e-8805-89619ee56a77`,
     type: 'Group',
-    _label: {
-      no: ['Bergen byarkiv'],
-    },
+    _label: "Bergen byarkiv",
   }
 }
 
