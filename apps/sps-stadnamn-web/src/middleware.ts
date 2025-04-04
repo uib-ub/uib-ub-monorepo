@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
         return Response.redirect(baseUrl + "/uuid/" + data.fields.uuid, 302);
     }
 
-    if (path[1] == "uuid" && path[2].includes('.')) {
+    if (["uuid", "iiif"].includes(path[1]) && path.length > 2 && path[2].includes('.')) {
         const filename = path[2]
         const [uuid, extension] = filename.split('.')
         const data = await fetchDoc({ uuid });
