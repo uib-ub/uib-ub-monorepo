@@ -32,11 +32,11 @@ function buildAnnotation(image: any, manifestDataset: string) {
     "motivation": "painting",
     "target": `https://stadnamnportalen.uib.no/iiif/canvas/${image.canvasUuid}`,
     "body": {
-      "id": `https://iiif.test.ube.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}/full/max/0/default.${image.format}`,
+      "id": `https://iiif.test.ube.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}/full/max/0/default.jpg`,
       "type": "Image",
       "height": image.height,
       "width": image.width,
-      "format": "image/" + image.format,
+      "format": "image/jpg",
       "service": [
         {
           "id": `https://iiif.test.ube.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}`,
