@@ -1,5 +1,6 @@
 'use client'
 import { useState } from "react"
+import { PiCaretDown, PiCaretUp } from "react-icons/pi"
 
 
 export default function IIIFExpandSummary({summary}: {summary: string}) {
@@ -10,8 +11,8 @@ export default function IIIFExpandSummary({summary}: {summary: string}) {
          <span className={`${expanded ? '' : 'hidden'} overflow-hidden transition-all duration-300`}>
             {summary.slice(100)}
         </span>
-        <br/><button className="btn btn-outline btn-compact mt-2" onClick={() => setExpanded(!expanded)}>
-            {expanded ? 'Vis mindre' : 'Vis meir'}
+        <br/><button className="btn btn-outline btn-compact mt-2 gap-1 items-center pl-2" onClick={() => setExpanded(!expanded)}>
+            {expanded ? <><PiCaretUp aria-hidden="true" className="" /> Vis mindre</> : <><PiCaretDown aria-hidden="true" className="" /> Vis meir</>}
         </button>
         
        

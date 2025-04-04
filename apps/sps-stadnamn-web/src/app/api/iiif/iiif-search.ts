@@ -2,7 +2,7 @@ export const runtime = 'edge'
 
 import { postQuery } from '../_utils/post';
 
-export async function fetchIIIFSearch(collection: string, q: string, type: string, size: number) {
+export async function fetchIIIFSearch(collection: string, q?: string, type?: string, size?: number) {
   
 
   // Build query conditions
@@ -68,7 +68,7 @@ export async function fetchIIIFSearch(collection: string, q: string, type: strin
       }
     },
     "sort": q ? ["_score"] : ["order"],
-    "size": size,
+    "size": size || 1000,
     "fields": ["uuid", "order", "canvases.image", "canvases.height", "canvases.width", "type", "label.no", "label.none", "label.en", "audio.uuid"],
     "_source": false,
     "aggs": {

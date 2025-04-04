@@ -4,10 +4,11 @@ import ImageViewer from "./image-viewer";
 import { PiCaretLeft, PiCaretLineLeft, PiCaretLineRight, PiCaretRight, PiFolder } from "react-icons/pi";
 import CollectionExplorer from "./collection-explorer";
 import Link from "next/link";
-import { resolveLanguage } from "./iiif-utils";
+import { resolveLanguage } from "../iiif-utils";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import FileCard from "./file-card";
 import IIIFInfoSection from "./iiif-info-section";
+import IconLink from "@/components/ui/icon-link";
 
 
 export default async function IIIFPage({params}: {params: Promise<{slug: string[]}>}) {
@@ -29,7 +30,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
             <div className={`flex flex-col lg:grid lg:grid-cols-5 ${manifest?.type == 'Manifest' ? 'lg:min-h-[calc(100svh-20rem)]' : 'h-full'}`}>
                 <div className={`col-span-1 ${manifest?.type == 'Manifest' ? 'hidden lg:block' : 'block'} page-info bg-white break-words border-l-2 border-neutral-200 border-r border-neutral-200 lg:overflow-y-auto ${manifest?.type == 'Manifest' ? 'lg:max-h-[calc(100svh-20rem)]' : 'lg:max-h-[calc(100svh-3rem)]'} overflow-y-auto`}>
             
-                <IIIFInfoSection manifest={manifest} neighbours={neighbours} />
+                <IIIFInfoSection manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} />
                 
                 
                 </div>
@@ -40,9 +41,9 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                     {manifest?.audio && <div className="flex flex-col gap-4 items-center justify-center h-full hidden lg:flex">
                         <h2 className="text-2xl text-neutral-900 font-semibold">{resolveLanguage(manifest.audio.label)}</h2>
                         
-                       {true && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/stadnamn/${manifestDataset.toUpperCase()}/${manifest.audio.audioFilename}`} className="w-full max-w-md">
+                       <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/stadnamn/${manifestDataset.toUpperCase()}/${manifest.audio.uuid}.${manifest.audio.format}`} className="w-full max-w-md">
                             Your browser does not support the audio element.
-                        </audio>}
+                        </audio>
                     </div>}
                     
                     {isCollection && <CollectionExplorer manifest={manifest}/>}
@@ -51,7 +52,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                 
                 </div>
                 {manifest?.type == 'Manifest' && <div className="p-4 lg:hidden bg-white">
-                        <IIIFInfoSection manifest={manifest} neighbours={neighbours} />
+                        <IIIFInfoSection manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} />
                 </div>}
                 
                 
@@ -71,35 +72,19 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                     
                 
                 {neighbours.data && neighbours.total > 1 && <div className="flex items-center gap-2 lg:ml-auto p-6 lg:p-0">
-                        <Link
-                            href={`/iiif/${neighbours.data.first}`}
-                            className="flex items-center justify-center p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            aria-label="First page"
-                        >
+                        <IconLink label="Første element" href={`/iiif/${neighbours.data.first}`} className="flex items-center justify-center p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
                             <PiCaretLineLeft className="w-5 h-5" />
-                        </Link>
-                        <Link
-                            href={`/iiif/${neighbours.data.previous || neighbours.data.last}`}
-                            className="flex items-center justify-center p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            aria-label="Previous page"
-                        >
+                        </IconLink>
+                        <IconLink label="Forrige element" href={`/iiif/${neighbours.data.previous || neighbours.data.last}`} className="flex items-center justify-center p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
                             <PiCaretLeft className="w-5 h-5" />
-                        </Link>
+                        </IconLink>
                         <span className="text-neutral-700">{manifest.order} av {neighbours.total}</span>
-                        <Link
-                            href={`/iiif/${neighbours.data.next || neighbours.data.first}`}
-                            className="flex items-center justify-center p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            aria-label="Next page"
-                        >
+                        <IconLink label="Neste element" href={`/iiif/${neighbours.data.next || neighbours.data.first}`} className="flex items-center justify-center p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
                             <PiCaretRight className="w-5 h-5" />
-                        </Link>
-                         <Link
-                            href={`/iiif/${neighbours.data.last}`}
-                            className="flex items-center justify-center p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                            aria-label="Last page"
-                        >
+                        </IconLink>
+                         <IconLink label="Siste element" href={`/iiif/${neighbours.data.last}`} className="flex items-center justify-center p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
                             <PiCaretLineRight className="w-5 h-5" />
-                        </Link>
+                        </IconLink>
                     </div>}
                     </div>
 

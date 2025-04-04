@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PiArchiveDuotone, PiArchiveFill, PiArchiveThin, PiFileAudioThin } from "react-icons/pi";
 import Image from "next/image";
-import { resolveLanguage, resolveLanguageField } from "./iiif-utils";
+import { resolveLanguage, resolveLanguageField } from "../iiif-utils";
 
 
 

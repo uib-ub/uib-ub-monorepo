@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { fetchDoc } from '../../_utils/actions';
-import { resolveLanguage } from '@/app/iiif/[[...slug]]/iiif-utils';
+import { resolveLanguage } from '@/app/iiif/iiif-utils';
 
 export async function GET(request: Request) {
     const url = new URL(request.url);
