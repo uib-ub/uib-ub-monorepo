@@ -193,7 +193,7 @@ export async function buildManifest(request: Request, type: string) {
             manifest["items"] = [buildAudioCanvas(source.audio, manifestDataset)]
         }
 
-        return Response.json(source, {status: 200})
+        return Response.json(manifest, {status: 200})
     }
 
 
