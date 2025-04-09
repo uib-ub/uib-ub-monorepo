@@ -48,10 +48,10 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
         {manifest ?
                 <>
                 
-                <Link href={datasetPresentation[manifestDataset]?.license?.url} className="flex items-center gap-1 text-neutral-900 font-semibold mb-2 no-underline">
+                {datasetPresentation[manifestDataset]?.license?.url && <Link href={datasetPresentation[manifestDataset]?.license?.url} className="flex items-center gap-1 text-neutral-900 font-semibold mb-2 no-underline">
                     <PiCopyright aria-hidden="true" />
                     <span className="text-sm">Lisens: {datasetPresentation[manifestDataset]?.license?.name}</span>
-                </Link>
+                </Link>}
                 
 
         
@@ -99,7 +99,7 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
                     {manifest.alternativeManifests &&
                         <li className='flex flex-col'>
                             <span className='font-semibold text-neutral-800'>
-                                Skannevisning
+                                Andre visninger
                             </span>
                             {manifest.alternativeManifests.map((item: any, index: number) => (
                                 <span key={index}><Link href={`/iiif/${item.uuid}`}>{resolveLanguage(item.label)}</Link></span>
