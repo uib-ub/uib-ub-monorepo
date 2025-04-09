@@ -1,5 +1,5 @@
 import IIIFMetadataPanel from "./iiif-metadata-panel";
-import { PiCaretLeft, PiCaretLineLeft, PiCaretLineRight, PiCaretRight } from "react-icons/pi";
+import { PiArticle, PiCaretLeft, PiCaretLineLeft, PiCaretLineRight, PiCaretRight, PiFile, PiSpeakerHigh } from "react-icons/pi";
 import Link from "next/link";
 import { resolveLanguage } from "../iiif-utils";
 import IIIFExpandSummary from "./iiif-expand-summary";
@@ -52,9 +52,13 @@ export default async function IIIFInfoSection({manifest, neighbours, manifestDat
                                 <h1>{resolveLanguage(manifest.label)}</h1>
                                 {manifest.summary && (
                                     <div>
-                                        {resolveLanguage(manifest.summary).slice(0, 100)}
-                                        {resolveLanguage(manifest.summary).length > 100 && 
+                                        {resolveLanguage(manifest.summary).length > 150 ?
+                                        <>
+                                            {resolveLanguage(manifest.summary).split(' ').slice(0, 20).join(' ')}
                                             <IIIFExpandSummary summary={resolveLanguage(manifest.summary)}/>
+                                        </>
+                                        :
+                                            resolveLanguage(manifest.summary)
                                         }
                                     </div>
                                 )}
@@ -75,18 +79,21 @@ export default async function IIIFInfoSection({manifest, neighbours, manifestDat
                                         <li className='flex flex-col'>
                                             <span className='font-semibold text-neutral-800'>Elementer</span>
                                             <span className="flex items-center gap-1">
+                                                <PiFile aria-hidden="true"/>
                                                 {stats[0]?.aggregations?.total_manifests?.value?.toLocaleString('no-NO') || 0}
                                             </span>
                                         </li>
                                         <li className='flex flex-col'>
                                             <span className='font-semibold text-neutral-800'>Skannede sider</span>
                                             <span className="flex items-center gap-1">
+                                                <PiArticle aria-hidden="true"/>
                                                 {stats[0]?.aggregations?.total_images_count?.value?.toLocaleString('no-NO') || 0}
                                             </span>
                                         </li>
                                         <li className='flex flex-col'>
                                             <span className='font-semibold text-neutral-800'>Lydopptak</span>
                                             <span className="flex items-center gap-1">
+                                                <PiSpeakerHigh aria-hidden="true"/>
                                                 {stats[0]?.aggregations?.total_audio?.value?.toLocaleString('no-NO') || 0}
                                             </span>
                                         </li>
