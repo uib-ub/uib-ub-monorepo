@@ -242,7 +242,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
         </IconButton>
       </div>
 
-      <div className='absolute bottom-0 left-0 flex z-[1000] gap-2 text-xl p-2 text-white w-full'>
+      <div className='absolute top-0 right-0 flex z-[1000] gap-2 text-xl p-2 text-white'>
         {numberOfPages > 1 && <div className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
           <IconButton 
             onClick={() => viewer.current?.goToPage(currentPage - 1)}
@@ -260,10 +260,23 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
       
       <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}>
         {isFullScreen && (
-          <div className='fixed top-4 right-4 z-[9999] text-xl text-white'>
+          <div className='fixed top-4 right-4 z-[9999] text-xl text-white flex gap-2'>
+            {numberOfPages > 1 && <div className="rounded-full border-white items-center border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
+          <IconButton 
+            onClick={() => viewer.current?.goToPage(currentPage - 1)}
+            label="Forrige side">
+              <PiCaretLeftFill aria-hidden="true" />
+          </IconButton>
+          <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
+          <IconButton 
+            onClick={() => viewer.current?.goToPage(currentPage + 1)}
+            label="Neste side">
+              <PiCaretRightFill aria-hidden="true" />
+          </IconButton>
+        </div>}
             <IconButton 
               onClick={handleFullscreenClick}
-              className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
+              className="p-2 px-3 rounded-full border aspect-square bg-neutral-900 border-white shadow-sm items-center" 
               label="Lukk fullskjerm">
                 <PiXBold aria-hidden="true" />
             </IconButton>
