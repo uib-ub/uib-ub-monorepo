@@ -19,24 +19,23 @@ export default function FileCard({item, itemDataset, currentItem}: {item: any, i
 
     return <Link
     href={`/iiif/${item.uuid}`} 
-    className="flex flex-col items-center gap-2 no-underline bg-white shadow-md p-2 pt-4 rounded-md aria-[current=page]:bg-accent-900 aria-[current=page]:text-white"
+    className="flex flex-col h-full w-full items-center gap-2 no-underline bg-white shadow-md p-2 pt-4 rounded-md aria-[current=page]:bg-accent-900 aria-[current=page]:text-white"
     aria-current={item.uuid == currentItem ? "page" : undefined}>
     {type === 'Collection' && (
         <>
             <div className="flex items-center justify-center"><PiArchiveThin aria-hidden="true" className="text-8xl w-full h-full p-6" /></div>
-            {resolveLanguage(item.label)}
+            <span className="truncate w-full text-center">{resolveLanguage(item.label)}</span>
         </>
     )}
     {type == 'Manifest' && item.images && (
         <>
         
-        <div className="relative">
+        <div className="relative h-full w-full aspect-[16/9] object-cover">
             <Image 
                 className="bg-neutral-800 border border-neutral-200"
                 src={thumbnail} 
                 alt={resolveLanguage(item.label)} 
-                width={width}
-                height={height}
+                fill
             />
             { canvasCount > 1 && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center bg-white text-neutral-900 rounded-full p-1 px-3 font-semibold text-sm shadow-md">
             {canvasCount}
@@ -44,7 +43,7 @@ export default function FileCard({item, itemDataset, currentItem}: {item: any, i
             </div>
             }
         </div>
-            <span className="flex items-center gap-1 truncate">
+            <span className="truncate w-full text-center">
                 
                 
                 {resolveLanguage(item.label)}
@@ -60,7 +59,7 @@ export default function FileCard({item, itemDataset, currentItem}: {item: any, i
                 <div className="flex-1 flex items-center justify-center">
                     <div className="flex items-center justify-center"><PiFileAudioThin aria-hidden="true" className="w-full h-full p-6 text-8xl" /></div>
                 </div>
-                <span className="flex items-center gap-1 truncate">
+                <span className="truncate w-full text-center">
                     {resolveLanguage(item.label)}
                 </span>
             </>
