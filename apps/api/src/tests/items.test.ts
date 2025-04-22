@@ -1,4 +1,4 @@
-import { env } from '@config/env'
+import { env } from '@env'
 import server from '@main'
 
 describe('Items', () => {

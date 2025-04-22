@@ -1,7 +1,7 @@
-import client from '@config/apis/esClient'
-import { env } from '@config/env'
+import client from '@shared/clients/es-client'
+import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import { PaginationParamsSchema } from '@models'
+import { PaginationParamsSchema } from '@shared/models'
 
 const route = new OpenAPIHono()
 

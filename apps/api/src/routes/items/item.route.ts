@@ -1,7 +1,8 @@
-import client from '@config/apis/esClient'
+import client from '@shared/clients/es-client'
+import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import { FailureSchema, IdParamsSchema, ItemParamsSchema, TODO } from '@models'
-import { toManifestTransformer } from '@transformers/manifest.transformer'
+import { FailureSchema, IdParamsSchema, ItemParamsSchema, TODO } from '@shared/models'
+import { toManifestTransformer } from '@shared/transformers/manifest.transformer'
 
 interface Document {
   [key: string]: any
@@ -116,7 +117,13 @@ route.openapi(getItem, async (c) => {
       return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
     }
 
-    return c.json(reorderDocument(item as Document, desiredOrder))
+    // Rewrite _id to use the id from the URL parameter
+    const itemWithNewId = {
+      ...item,
+      id: `${env.PROD_URL}/items/${item.id}`
+    }
+
+    return c.json(reorderDocument(itemWithNewId as Document, desiredOrder))
   } catch (error) {
     console.error(error)
     return c.json({ error: true, message: "Ups, something went wrong!" }, 404)

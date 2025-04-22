@@ -14,10 +14,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@hono/zod-validator": "0.4.3",
     "json-schema-to-typescript": "^11.0.5",
     "tiged": "^2.12.5",
-    "typescript": "^5.1.6",
     "ts-to-zod": "^3.8.5",
-    "@hono/zod-validator": "0.4.3"
+    "typescript": "^5.8.3"
   }
 }

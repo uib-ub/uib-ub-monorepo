@@ -370,6 +370,17 @@ GROUP BY ?homepage ?id
 HAVING(count(?o) > 1)
 ```
 
+
+### Get all languages
+
+```sparql
+SELECT DISTINCT ?lang WHERE {
+  ?id ?p ?string
+  FILTER(isLiteral(?string))
+  BIND(lang(?string) AS ?lang)
+}
+```
+
 ## Prefixes
 
 ```sparql
@@ -436,3 +447,4 @@ PREFIX lexvo: <http://lexvo.org/ontology#>
 PREFIX cc: <http://creativecommons.org/ns#>
 PREFIX iiif_prezi: <http://iiif.io/api/presentation/3#>
 ```
+
