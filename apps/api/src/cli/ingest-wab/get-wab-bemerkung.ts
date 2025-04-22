@@ -122,11 +122,12 @@ export async function getWabBemerkung(id: string) {
     const compacted = await jsonld.compact(expanded, contexts.wabLegacyContext)
     delete compacted["@context"]
 
-    if (compacted['http://data.ub.uib.no/ontology/existsContainsWord' ?? 'existsContainsWord']) {
+    if (compacted['http://data.ub.uib.no/ontology/existsContainsWord'] ?? compacted['existsContainsWord']) {
       const describe: any = await describeWabBemerkung(id);
 
       compacted.containsWord = describe.containsWord
-      delete compacted['http://data.ub.uib.no/ontology/existsContainsWord' ?? 'existsContainsWord']
+      delete compacted['http://data.ub.uib.no/ontology/existsContainsWord']
+      delete compacted['existsContainsWord']
     }
 
     // Recreate ES suggest prop from the graph

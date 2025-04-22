@@ -1,4 +1,4 @@
-import { getWabBemerkung } from '@services/sparql/wab/get-wab-bemerkung';
+import { getWabBemerkung } from '@cli/ingest-wab/get-wab-bemerkung';
 
 export async function resolveWabIds(ids: any): Promise<any> {
   try {

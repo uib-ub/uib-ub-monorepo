@@ -1,15 +1,15 @@
 import { DATA_SOURCES } from '@shared/constants';
-import { isObjectEmpty } from '@lib/isObjectEmpty';
+import { isObjectEmpty } from '@shared/utils/isObjectEmpty';
 import * as jsonld from 'jsonld';
 import contexts from 'jsonld-contexts';
 
-const SKA_API = DATA_SOURCES.filter((service) => service.name === 'spes')[0].url;
+const SKA_API = DATA_SOURCES.filter((service) => service.name === 'ska')[0].url;
 
 export async function getSkaOrganization() {
   const query = `
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
     PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>   
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 

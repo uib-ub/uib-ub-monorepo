@@ -58,5 +58,3 @@ export const ingestItem = async (id: string) => {
     console.error('Error replacing/inserting document:', err);
   }
 }
-
-ingestItem('ubb-bros-00001')

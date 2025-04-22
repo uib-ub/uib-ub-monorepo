@@ -1,17 +1,14 @@
 import { bulkIndexData } from '@shared/lib/indexers/utils/bulkIndexData';
 import { flatMapDataForBulkIndexing } from '@shared/lib/indexers/utils/flatMapDataForBulkIndexing';
-import { OpenAPIHono } from '@hono/zod-openapi';
-import { listWabBemerkung } from '@services/sparql/wab/list-wab-bemerkung';
-import { resolveWabIds } from '@services/sparql/wab/resolveWabIds';
+import { listWabBemerkung } from '@cli/ingest-wab/list-wab-bemerkung';
+import { resolveWabIds } from '@cli/ingest-wab/resolve-wab-ids';
 
 interface IndexDataResponse {
   count: number;
   errors: string[];
 }
 
-const route = new OpenAPIHono();
-
-route.get('/wab', async (c) => {
+export const ingestWab = async () => {
   const index = "search-legacy-wab"
   const page = 0
   try {
@@ -57,19 +54,17 @@ route.get('/wab', async (c) => {
 
     console.log(`Indexed ${totalIndexed} items of ${totalFetched} ids in total into "${index}" from the source "wab". It took ${minutes}:${seconds} minutes.`);
 
-    return c.json({
+    return {
       index,
       timeTaken: `${minutes}:${seconds} minutes`,
       ingested: totalIndexed,
       ...(errors.length && { errors: errors }),
-    });
+    };
 
   } catch (error) {
-    return c.json({
+    return {
       page,
       error
-    }, 400)
+    }
   }
-})
-
-export default route;
+}

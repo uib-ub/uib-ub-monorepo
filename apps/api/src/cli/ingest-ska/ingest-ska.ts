@@ -1,24 +1,28 @@
 import { bulkIndexData } from '@shared/lib/indexers/utils/bulkIndexData';
 import { chunk } from '@shared/lib/indexers/utils/chunk';
 import { flatMapDataForBulkIndexing } from '@shared/lib/indexers/utils/flatMapDataForBulkIndexing';
-import { OpenAPIHono } from '@hono/zod-openapi';
-import { getSkaAgents } from '@services/sparql/ska/getSkaAgents';
-import { getSkaDocuments } from '@services/sparql/ska/getSkaDocuments';
-import { getSkaTopics } from '@services/sparql/ska/getSkaTopics';
+import { getSkaAgents } from '@cli/ingest-ska/get-ska-agents';
+import { getSkaDocuments } from '@cli/ingest-ska/get-ska-documents';
+import { getSkaTopics } from '@cli/ingest-ska/get-ska-topics';
 
 interface IndexDataResponse {
   count: number;
   errors: string[];
 }
 
-const route = new OpenAPIHono();
+interface IngestSkaResponse {
+  agents: IndexDataResponse;
+  documents: IndexDataResponse;
+  topics: IndexDataResponse;
+}
 
-route.get('/ska', async (c) => {
+
+export const ingestSka = async (): Promise<IngestSkaResponse> => {
   const index = "search-legacy-ska"
   try {
-    let agentsReport = {}
-    let documentsReport = {}
-    let topicsReport = {}
+    let agentsReport: IndexDataResponse = { count: 0, errors: [] }
+    let documentsReport: IndexDataResponse = { count: 0, errors: [] }
+    let topicsReport: IndexDataResponse = { count: 0, errors: [] }
 
     const agents: any = await getSkaAgents()
     if (agents.length > 0) {
@@ -70,15 +74,13 @@ route.get('/ska', async (c) => {
         };
       }, Promise.resolve({ count: 0, errors: [] }));
     }
-    return c.json({
+    return {
       agents: agentsReport,
       documents: documentsReport,
       topics: topicsReport,
-    })
+    }
 
   } catch (error) {
     console.error(error);
   }
-})
-
-export default route;
+}
