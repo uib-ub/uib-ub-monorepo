@@ -2,7 +2,8 @@ import client from '@shared/clients/es-client'
 import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 import { FailureSchema, IdParamsSchema, ItemParamsSchema, TODO } from '@shared/models'
-import { toManifestTransformer } from '@shared/transformers/manifest.transformer'
+import { toManifestTransformer } from '@/routes/items/manifest.transformer'
+import { constructIIIFStructure } from '@shared/mappers/iiif/constructIIIFStructure'
 
 interface Document {
   [key: string]: any
@@ -90,7 +91,8 @@ route.openapi(getItem, async (c) => {
 
       const item = data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-items'))._source
 
-      return c.json(await toManifestTransformer(item, fileset))
+      const manifest = constructIIIFStructure(item, fileset)
+      return c.json(manifest)
     } catch (error) {
       console.error(error)
       return c.json({ error: true, message: "Ups, something went wrong!" }, 404)

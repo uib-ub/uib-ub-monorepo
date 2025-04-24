@@ -32,6 +32,7 @@
     "pretty-time": "^1.1.0",
     "rate-limiter-flexible": "5.0.0",
     "rtl-detect-intl": "^0.1.2",
+    "sparql-http-client": "^3.0.1",
     "types": "*",
     "zod": "3.24.2"
   },

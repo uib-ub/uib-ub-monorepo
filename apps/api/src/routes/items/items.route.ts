@@ -59,14 +59,14 @@ route.openapi(getList, async (c) => {
         }
       },
     ],
-    _source: ["_label", "id"],
+    _source: ["_label", "id", "type", "_available", "_modified"],
   })
 
   return c.json(
     data.hits.hits.map((hit: any) => {
       return {
         ...hit._source,
-        id: `${env.API_URL}/items/${hit._source.id}`,
+        id: `${env.PROD_URL}/items/${hit._source.id}`,
       }
     })
   )
