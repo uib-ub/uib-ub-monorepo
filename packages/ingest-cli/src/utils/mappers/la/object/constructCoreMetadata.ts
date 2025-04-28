@@ -34,6 +34,10 @@ export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
   delete data.hasClause // Ignore this for now
   delete data.logo // Logo is not allowed on object
   delete data['foaf:logo'] // Logo is not allowed on object
+  // These are not allowed on object, but are present in the data.
+  // An Activity must be created that points to the object.
+  delete data.acquiredFrom
+  delete data.formerOwner
 
   // @TODO: This is a hack to get the classified_as field to work.
   const classified_as = [

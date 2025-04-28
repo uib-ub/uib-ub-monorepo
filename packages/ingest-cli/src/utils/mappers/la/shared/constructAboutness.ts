@@ -45,21 +45,6 @@ export const constructAboutness = async (data: any) => {
     date,
   } = data;
 
-  const type = mapToGeneralClass(hasType)
-  const isPublication = Publication.includes(hasType);
-
-  /**
-   * Encodes the versions based on the provided identifiers in the hasVersion array and the this object. 
-   * The identifiers are sorted and joined with an underscore. The resulting string is then encoded to base64.
-   * 
-   * NOTE! The data in the dataset is not to be trusted. Not all objects with versions link to each other.
-   * This means there could be two or more clusters of versions that are linked via one object. This should
-   * be handled in a data cleaning process.
-   * 
-   * @returns The encoded base64 strings based on a string containing an ordered list of identifiers.
-   */
-  const visualItemVersionId = hasVersion ? btoa([{ identifier: data.identifier }, ...hasVersion].map((version: any) => version.identifier).sort((a, b) => a.localeCompare(b)).join('_')) : undefined;
-
   if (
     !hasType &&
     !description &&
@@ -73,7 +58,6 @@ export const constructAboutness = async (data: any) => {
     !internalNote &&
     !hasTranscription &&
     !provenance &&
-    !reference &&
     !typeOfDamage &&
     !abstract &&
     !language &&
@@ -85,6 +69,7 @@ export const constructAboutness = async (data: any) => {
     !hasVersion &&
     !originalCreator &&
     !profession &&
+    !reference &&
     !references &&
     !rodeNr &&
     !extent &&
@@ -106,7 +91,6 @@ export const constructAboutness = async (data: any) => {
   delete data.producedIn
   delete data.hasTranscription
   delete data.provenance
-  delete data.reference
   delete data.typeOfDamage
   delete data.abstract
   delete data.language
@@ -118,7 +102,8 @@ export const constructAboutness = async (data: any) => {
   delete data.hasVersion
   delete data.originalCreator
   delete data.profession
-  delete data.references
+  // delete data.reference
+  // delete data.references
   delete data.rodeNr
   delete data.depiction // TODO: Not mapped as it is the inverse of depicts
   delete data.pageStart
@@ -147,6 +132,21 @@ export const constructAboutness = async (data: any) => {
   let rodeNrArray: any[] = []
   let paginationArray: any[] = []
 
+  const type = mapToGeneralClass(hasType)
+  const isPublication = Publication.includes(hasType);
+
+  /**
+   * Encodes the versions based on the provided identifiers in the hasVersion array and the this object. 
+   * The identifiers are sorted and joined with an underscore. The resulting string is then encoded to base64.
+   * 
+   * NOTE! The data in the dataset is not to be trusted. Not all objects with versions link to each other.
+   * This means there could be two or more clusters of versions that are linked via one object. This should
+   * be handled in a data cleaning process.
+   * 
+   * @returns The encoded base64 strings based on a string containing an ordered list of identifiers.
+   */
+  const visualItemVersionId = hasVersion ? btoa([{ identifier: data.identifier }, ...hasVersion].map((version: any) => version.identifier).sort((a, b) => a.localeCompare(b)).join('_')) : undefined;
+
   // if there is a link to a html file, we need to fetch the content and convert it to markdown
   if (hasTranscription?.includes('.html')) {
     const response = await fetch(hasTranscription);
@@ -167,20 +167,25 @@ export const constructAboutness = async (data: any) => {
     }]
   };
 
-  if (references) {
-    referencesArray = Object.entries(references).map(([key, value]: [string, any]) => {
-      return {
-        type: "LinguisticObject",
-        classified_as: [
-          aatRelatedTextualReferencesType,
-        ],
-        language: [
-          getLanguage(key)
-        ],
-        content: NodeHtmlMarkdown.translate(value[0]),
-        format: 'text/markdown',
-      }
-    });
+  if (references && references.length > 0) {
+    // Filter to only include references with @value property
+    const textReferences = references.filter((ref: any) => ref['@value']);
+
+    if (textReferences.length > 0) {
+      referencesArray = textReferences.map((ref: any) => {
+        return {
+          type: "LinguisticObject",
+          classified_as: [
+            aatRelatedTextualReferencesType,
+          ],
+          language: [
+            getLanguage(ref['@language'] || 'no')
+          ],
+          content: NodeHtmlMarkdown.translate(ref['@value']),
+          format: 'text/markdown',
+        }
+      });
+    }
   }
 
   // This is ubbont:reference (strings), not to be confused with 

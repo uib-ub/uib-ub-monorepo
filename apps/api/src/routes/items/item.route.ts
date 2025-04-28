@@ -2,36 +2,16 @@ import client from '@shared/clients/es-client'
 import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 import { FailureSchema, IdParamsSchema, ItemParamsSchema, TODO } from '@shared/models'
-import { toManifestTransformer } from '@/routes/items/manifest.transformer'
 import { constructIIIFStructure } from '@shared/mappers/iiif/constructIIIFStructure'
-
-interface Document {
-  [key: string]: any
-}
-
-const desiredOrder: string[] = ['@context', 'id', 'type', '_label', '_available', '_modified', 'identified_by']
-
-function reorderDocument(doc: Document, order: string[]): Document {
-  const reordered: Document = {};
-
-  // First, add all keys from the desired order that exist in the document
-  for (const key of order) {
-    if (key in doc) {
-      reordered[key] = doc[key];
-    }
-  }
-
-  // Then, add any remaining keys from the document
-  for (const key in doc) {
-    if (!order.includes(key)) {
-      reordered[key] = doc[key];
-    }
-  }
-
-  return reordered;
-}
+import { reorderDocument, sqb, useFrame } from 'utils'
+import { endpointUrl } from '@shared/clients/sparql-chc-client'
+import { itemQuery } from './item-query'
+import ubbontContext from 'jsonld-contexts/src/ubbontContext'
+import { ContextDefinition } from 'jsonld'
 
 const route = new OpenAPIHono()
+
+const desiredOrder: string[] = ['@context', 'id', 'type', '_label', '_available', '_modified', 'identified_by']
 
 const ItemSchema = z.record(z.string()).openapi('Item')
 
@@ -66,6 +46,26 @@ export const getItem = createRoute({
 route.openapi(getItem, async (c) => {
   const id = c.req.param('id')
   const as = c.req.query('as')
+
+  if (as === 'ubbont') {
+    try {
+      const response = await fetch(`${endpointUrl}?query=${encodeURIComponent(sqb(itemQuery, { id }))}&output=json`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch item: ${response.statusText}`);
+      }
+      const data = await response.json();
+      // Check if data is empty by checking if it's falsy, has no keys, or is an empty object
+      if (!data || Object.keys(data).length === 0) {
+        return c.json({ error: true, message: 'Not found' }, 404)
+      }
+
+      let framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'HumanMadeObject' });
+      framed['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"]
+      return c.json(framed);
+    } catch (error) {
+      throw new Error(`Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
 
   if (as === 'iiif') {
     try {

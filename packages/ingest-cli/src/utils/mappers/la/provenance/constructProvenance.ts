@@ -3,8 +3,9 @@ import { coalesceLabel } from 'utils';
 import { aatProvenanceActivityType, institutions } from '../staticMapping';
 import omitEmptyEs from 'omit-empty-es';
 import { getLAApiType } from '../mapToGeneralClass';
+import { TBaseMetadata } from '@/utils/ingest-items/fetch-item';
 
-export const constructProvenance = (data: any) => {
+export const constructProvenance = (base: TBaseMetadata, data: any) => {
   const {
     acquiredFrom,
     formerOwner,
@@ -23,8 +24,9 @@ export const constructProvenance = (data: any) => {
     relationArray = acquiredFrom.map((actor: any) => {
       const { path, type } = getLAApiType(actor.type);
       return {
+        '@context': ['https://linked.art/ns/v1/linked-art.json', 'https://api.ub.uib.no/ns/ubbont/context.json'],
         type: "Activity",
-        _label: "Acquisition",
+        _label: `Acquisition of ${data._label}`,
         classified_as: [
           aatProvenanceActivityType,
         ],
@@ -37,7 +39,7 @@ export const constructProvenance = (data: any) => {
             },
             transferred_title_of: [
               {
-                id: `${env.PROD_URL}/items/${data.identifier}`,
+                id: `${env.PROD_URL}/items/${base.identifier}`,
                 type: data.type,
                 _label: data._label
               }
@@ -62,14 +64,18 @@ export const constructProvenance = (data: any) => {
     formerOwnerArray = formerOwner.map((actor: any) => {
       const { path, type } = getLAApiType(actor.type);
       return {
-        id: `${env.PROD_URL}/provenance/${data.identifier}`,
+        '@context': ['https://linked.art/ns/v1/linked-art.json', 'https://api.ub.uib.no/ns/ubbont/context.json'],
+        id: `${env.PROD_URL}/provenance/${base.identifier}`,
         type: 'Activity',
+        classified_as: [
+          aatProvenanceActivityType,
+        ],
         _label: `Transfer of ${data._label}`,
         part: [{
           type: 'Transfer',
           transferred: [
             {
-              id: `${env.PROD_URL}/items/${data.identifier}`,
+              id: `${env.PROD_URL}/items/${base.identifier}`,
               type: data.type,
               _label: data._label
             }

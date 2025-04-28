@@ -341,7 +341,6 @@ const ubbontContext = {
       "@id": "dct:references",
       "@container": [
         "@set",
-        "@language"
       ]
     },
     "Room": {

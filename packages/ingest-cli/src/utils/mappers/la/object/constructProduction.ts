@@ -15,7 +15,9 @@ export const constructProduction = (data: any) => {
     'ubbont:madeBefore': madeBeforeDate,
     technique,
     commissionedBy,
-    reproducedBy
+    reproducedBy,
+    long,
+    lat,
   } = data;
 
   if (!maker && !created && !createdYear && !madeAfter && !madeAfterDate && !madeBefore && !madeBeforeDate && !technique && !commissionedBy && !reproducedBy) return data;
@@ -30,11 +32,14 @@ export const constructProduction = (data: any) => {
   delete data.technique
   delete data.commissionedBy
   delete data.reproducedBy
+  delete data.long
+  delete data.lat
 
   let start = madeAfter || madeAfterDate?.['@value'] || undefined;
   let end = madeBefore || madeBeforeDate?.['@value'] || undefined;
   let makerArray: any[] = [];
   let reproducedByArray: any[] = [];
+  let tookPlaceAt: any = undefined;
 
   if (start && end) {
     [start, end] = checkIntervalValidity(start, end);
@@ -75,6 +80,15 @@ export const constructProduction = (data: any) => {
     })
   };
 
+  if (long && lat) {
+    tookPlaceAt = [{
+      id: `${env.PROD_URL}/places/${long}/${lat}`,
+      type: 'Place',
+      _label: `${long}, ${lat}`,
+      defined_by_geojson: `{"type":"Feature","geometry":{"type":"Point","coordinates":[-${lat},${long}]}}`
+    }]
+  }
+
   return omitEmptyEs({
     ...data,
     produced_by: {
@@ -99,6 +113,7 @@ export const constructProduction = (data: any) => {
         }
       }) ?? undefined,
       timespan: timespan ?? undefined,
+      took_place_at: tookPlaceAt ?? undefined,
     }
   });
 };

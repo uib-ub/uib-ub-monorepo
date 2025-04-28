@@ -1,4 +1,4 @@
-import { crmE55TypeSchema, crmE7ActivitySchema, crmE8AcquisitionSchema, crmP104IIsSubjectToSchema, crmP50HasCurrentKeeperSchema, crmP7TookPlaceAtSchema } from 'src/la/zod/linked_art';
+import { crmE55TypeSchema, crmE7ActivitySchema, crmP104IIsSubjectToSchema, crmP7TookPlaceAtSchema } from 'src/la/zod/linked_art';
 import { z } from "@hono/zod-openapi";
 
 export const langLabelSchema = z.record(z.string(), z.array(z.string()));
@@ -8,10 +8,7 @@ export const UBBClassExtension = z.object({
   _modified: z.string(),
   subject_to: z.lazy(() => crmP104IIsSubjectToSchema),
   current_permanent_location: z.lazy(() => crmP7TookPlaceAtSchema).optional(),
-  // Use current_permanent_custodian instead of current_keeper
-  //current_keeper: z.lazy(() => crmP50HasCurrentKeeperSchema.optional()),
   was_used_for: z.lazy(() => z.array(crmE7ActivitySchema)).optional(),
-  changed_ownership_through: z.lazy(() => z.array(crmE8AcquisitionSchema)).optional(),
   // _links: HalSchema,
 });
 
@@ -21,4 +18,8 @@ export const UBBTimeSpanExtension = z.object({
 
 export const UBBRightExtension = z.object({
   inherit_from: z.lazy(() => crmE55TypeSchema).optional(),
+})
+
+export const UBBPlaceExtension = z.object({
+  defined_by_geojson: z.string().optional(),
 })

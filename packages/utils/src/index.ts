@@ -9,3 +9,4 @@ export * from "./pipe";
 export * from "./checkIntervalValidity";
 export * from "./coalesceLabel";
 export * from "./useFrame";
+export * from "./reorderJson";

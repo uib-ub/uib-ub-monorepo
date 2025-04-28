@@ -4,41 +4,68 @@ export const constructAssertions = (data: any) => {
   const {
     relation,
     relationToString,
+    references,
   } = data;
-
-  const references = data['dct:references']
 
   if (
     !relation &&
-    !relationToString
+    !relationToString &&
+    !references
   ) return data;
 
   delete data.relation
   delete data.relationToString
-  delete data['dct:references']
+  delete data.references
 
   let relationArray: any[] = []
-  // TODO: finish this. 
-  // let relationToStringArray: any[] = []
+  let referenceStrings: any[] = []
+  let referenceObjects: any[] = []
 
-  if (relation || references) {
-    relationArray = [...(relation ?? []), ...(references ?? [])].map((relation: any) => {
-      return {
-        type: "AttributeAssignment",
-        assigned_property: "relation",
-        assigned: {
-          id: relation.id,
-          type: relation.type,
-          _label: relation._label,
-        }
+  // Split references into two arrays based on their shape
+  if (references) {
+    references.forEach((ref: any) => {
+      if ('@value' in ref) {
+        referenceStrings.push({
+          type: "AttributeAssignment",
+          assigned_property: "referenceText",
+          assigned: {
+            value: ref['@value'],
+            language: ref['@language']
+          }
+        })
+      } else if ('id' in ref) {
+        referenceObjects.push({
+          type: "AttributeAssignment",
+          assigned_property: "relation",
+          assigned: {
+            id: ref.id,
+            type: ref.type,
+            _label: ref._label,
+          }
+        })
       }
-    });
+    })
+  }
+
+  // Handle regular relations
+  if (relation) {
+    relationArray = relation.map((rel: any) => ({
+      type: "AttributeAssignment",
+      assigned_property: "relation",
+      assigned: {
+        id: rel.id,
+        type: rel.type,
+        _label: rel._label,
+      }
+    }));
   }
 
   return omitEmptyEs({
     ...data,
     attributed_by: [
       ...relationArray,
+      ...referenceStrings,
+      ...referenceObjects
     ]
   });
 }

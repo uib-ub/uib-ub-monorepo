@@ -8,7 +8,6 @@ import { constructDigitalIntegration } from '../mappers/la/shared/constructDigit
 import { constructCoreMetadata } from '../mappers/la/object/constructCoreMetadata';
 import { constructIdentifiers } from '../mappers/la/shared/constructIdentifiers';
 import { constructProduction } from '../mappers/la/object/constructProduction';
-import { constructProvenance } from '../mappers/la/object/constructProvenance';
 import { constructCollection } from '../mappers/la/object/constructCollection';
 import { constructDimension } from '../mappers/la/object/constructDimension';
 import { constructAssertions } from '../mappers/la/shared/constructAssertions';
@@ -187,7 +186,6 @@ export const mapItemToLinkedArt = async (data: UbbontItem): Promise<JsonLdDocume
     dto = constructCoreMetadata(base, dto);
     dto = constructIdentifiers(dto);
     dto = constructProduction(dto);
-    dto = constructProvenance(dto);
     dto = constructCollection(dto);
     dto = constructDigitalIntegration(dto);
     dto = await constructAboutness(dto);
