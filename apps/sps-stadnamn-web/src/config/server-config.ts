@@ -178,7 +178,49 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       cadastre: false,
       sort: ["_score", "label.keyword"]
     },
-    
+    frogn: {
+      display: 'table',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    gjerd: {
+      display: 'table',
+      adm: 3,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    sorum: {
+      display: 'table',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    kven: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    snor: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    herad: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    seta: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    }
+
     
   }
 
