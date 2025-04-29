@@ -151,21 +151,21 @@ export default function DatasetBrowser() {
             <h2 className='!text-neutral-800 font-semibold !text-base !mt-0 !p-0 xl:!h-8 !mb-2 items-center flex !font-sans sr-only xl:not-sr-only'>Treff: {filteredDatasets.length} / {Object.keys(datasetPresentation).length -1}</h2>
           
           <ul className="flex flex-col w-full divide-y !p-0 gap-2">
-            {filteredDatasets.map((dataset) => (
-          <li key={dataset} className={`h-full sm:my-0 !py-0 w-full grid grid-cols-6 relative ${searchParams.get('dataset') == dataset ? 'bg-accent-50' : ''}`}>
+            {filteredDatasets.map((itemDataset) => (
+          <li key={itemDataset} className={`h-full sm:my-0 !py-0 w-full grid grid-cols-6 relative ${searchParams.get('dataset') == itemDataset ? 'bg-accent-50' : ''}`}>
               <div className='flex flex-col col-span-2 xl:col-span-1 w-full pt-4'>
-                <Image src={datasetPresentation[dataset].img} alt="Illustrasjon" aria-describedby={dataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
+                <Image src={datasetPresentation[itemDataset].img} alt="Illustrasjon" aria-describedby={itemDataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
             
-              <small id={dataset + "_attribution"} className="text-neutral-700 text-xs p-1 sr-only">{datasetPresentation[dataset].imageAttribution}</small>
+              <small id={itemDataset + "_attribution"} className="text-neutral-700 text-xs p-1 sr-only">{datasetPresentation[itemDataset].imageAttribution}</small>
               </div>
               
               <div className="p-2 px-4 md:p-4 col-span-4 xl:col-span-5 flex flex-col">
-                <h3 className="md:text-lg font-semibold !mt-0 !pt-0">{datasetTitles[dataset]}</h3>
+                <h3 className="md:text-lg font-semibold !mt-0 !pt-0">{datasetTitles[itemDataset]}</h3>
                 <div className="text-sm space-y-4 break-words">
-                <p>{isMobile ? datasetShortDescriptions[dataset] : datasetDescriptions[dataset]}</p>          
+                <p>{isMobile ? datasetShortDescriptions[itemDataset] : datasetDescriptions[itemDataset]}</p>          
               </div>
               
-              <DatasetToolbar/>
+              <DatasetToolbar itemDataset={itemDataset}/>
              
               </div>
               

@@ -141,7 +141,7 @@ export default async function Home() {
             </div>}
             <div className="flex flex-col justify-between flex-1 min-w-0 items-center">
               <div className="flex flex-col items-center">
-                <h2 className="text-2xl text-neutral-900 font-serif mb-1 flex items-center gap-2">
+                <h2 className="text-2xl text-neutral-800 font-serif mb-1 flex items-center gap-2">
                   {card.title}
                 </h2>
                 {card.description && (
@@ -152,7 +152,7 @@ export default async function Home() {
               </div>
               {card.stat && (
                 <span className="flex flex-row items-center gap-2 text-neutral-900 text-2xl font-serif rounded-full mt-2" style={{ fontVariantNumeric: "tabular-nums" }}>
-                  {React.cloneElement(card.icon, { className: "text-xl text-primary-600" })} {card.stat}
+                  {false && React.cloneElement(card.icon, { className: "text-xl text-primary-600" })} {card.stat}
                 </span>
               )}
             </div>

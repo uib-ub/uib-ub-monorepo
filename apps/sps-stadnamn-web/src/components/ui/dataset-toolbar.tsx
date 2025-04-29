@@ -5,34 +5,33 @@ import { PiCaretRight, PiMagnifyingGlass, PiTreeView, PiWall } from "react-icons
 import { datasetPresentation, datasetTitles } from "@/config/metadata-config";
 import { GlobalContext } from "@/app/global-provider";
 import { useContext } from "react";
-import { useDataset, useMode } from "@/lib/search-params";
+import { useMode } from "@/lib/search-params";
 
 const icons: {[key: string]: JSX.Element} ={
     "base": <PiWall className="text-neutral-800" aria-hidden="true"/>,
   };
 
-export default function DatasetToolbar() {
-    const dataset = useDataset()
+export default function DatasetToolbar({itemDataset}: {itemDataset: string}) {
     const mode = useMode()
     const pathname = usePathname()
     const { pinnedFilters } = useContext(GlobalContext)
 
     return <nav className="mt-auto flex flex-col md:flex-row gap-2">
               <Link aria-current={(pathname == '/search' && mode == 'map') ? 'page' : false}
-                      href={`/search?dataset=${dataset}${pinnedFilters[dataset] ? `&${new URLSearchParams(pinnedFilters[dataset]).toString()}` : ''}`} 
+                      href={`/search?dataset=${itemDataset}${pinnedFilters[itemDataset] ? `&${new URLSearchParams(pinnedFilters[itemDataset]).toString()}` : ''}`} 
                       className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-50 border border-neutral-200 rounded-md w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
                         <PiMagnifyingGlass aria-hidden="true"/> Søk
                 </Link>
-                {Object.entries(datasetPresentation[dataset]?.subindices || {}).map(([key, value]) => (
-                    <Link key={key} href={`/search?dataset=${key}&mode=list${pinnedFilters[dataset] ? `&${new URLSearchParams(pinnedFilters[dataset]).toString()}` : ''}`} 
+                {Object.entries(datasetPresentation[itemDataset]?.subindices || {}).map(([key, value]) => (
+                    <Link key={key} href={`/search?dataset=${key}&mode=list${pinnedFilters[itemDataset] ? `&${new URLSearchParams(pinnedFilters[itemDataset]).toString()}` : ''}`} 
                     className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-50 border border-neutral-200 rounded-md w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
                         {icons[value.icon]} {datasetTitles[key][0].toUpperCase() + datasetTitles[key].slice(1)}
                     </Link>
                 ))}
                 
-            { treeSettings[dataset] && <Link href={`/search?dataset=${dataset}&nav=tree`} className="flex whitespace-nowrap items-center rounded-md gap-1 no-underline bg-neutral-50 border border-neutral-200 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2"><PiTreeView className="text-neutral-800" aria-hidden="true"/>Register</Link>}
+            { treeSettings[itemDataset] && <Link href={`/search?dataset=${itemDataset}&nav=tree`} className="flex whitespace-nowrap items-center rounded-md gap-1 no-underline bg-neutral-50 border border-neutral-200 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2"><PiTreeView className="text-neutral-800" aria-hidden="true"/>Register</Link>}
 
-            <Link href={`/info/datasets/${dataset}`} className="flex whitespace-nowrap items-center rounded-md gap-1 no-underline bg-neutral-50 border border-neutral-200 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2">Les meir<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
+            <Link href={`/info/datasets/${itemDataset}`} className="flex whitespace-nowrap items-center rounded-md gap-1 no-underline bg-neutral-50 border border-neutral-200 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2">Les meir<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
 
         </nav>
     
