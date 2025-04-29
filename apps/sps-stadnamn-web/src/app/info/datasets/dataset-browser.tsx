@@ -3,9 +3,8 @@
 import { useState, useEffect, useContext} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import Image from 'next/image'
-import { PiCaretDown, PiCaretRight, PiCaretUp } from 'react-icons/pi';
+import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import DatasetToolbar from '@/components/ui/dataset-toolbar';
 import { GlobalContext } from '@/app/global-provider';
 
@@ -166,7 +165,7 @@ export default function DatasetBrowser() {
                 <p>{isMobile ? datasetShortDescriptions[dataset] : datasetDescriptions[dataset]}</p>          
               </div>
               
-              <DatasetToolbar dataset={dataset}/>
+              <DatasetToolbar/>
              
               </div>
               

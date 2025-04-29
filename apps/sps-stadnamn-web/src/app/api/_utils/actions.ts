@@ -132,7 +132,13 @@ export async function fetchSOSI(sosiCode: string) {
                             "term": {
                                 "_index": `search-stadnamn-${process.env.SN_ENV}-search`
                             }
-                        }
+                        },
+                        {
+                            "term": {
+                                "_index": `search-stadnamn-${process.env.SN_ENV}-nbas`
+                            }
+                        }                        
+
                     ]
                 }
             },
@@ -148,7 +154,7 @@ export async function fetchSOSI(sosiCode: string) {
     }
 }
 
-    const [res, status] = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-vocab`, query)
+    const [res, status] = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-vocab,-search-stadnamn-${process.env.SN_ENV}-iiif_*`, query)
     if (status != 200) {
         return {error: "Failed to fetch stats", status: status}
     }

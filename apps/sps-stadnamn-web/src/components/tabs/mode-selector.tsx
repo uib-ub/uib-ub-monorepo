@@ -1,20 +1,20 @@
 import { useSearchParams } from "next/navigation";
-import { useQueryState } from "nuqs";
 import { PiBookOpen, PiBookOpenFill, PiMapTrifold, PiMapTrifoldFill, PiRows, PiRowsFill, PiTable, PiTableFill } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
-import { useDataset } from "@/lib/search-params";
+import { useDataset, useMode } from "@/lib/search-params";
+import { contentSettings } from "@/config/server-config";
 
 export default function ModeSelector() {
     const searchParams = useSearchParams()
-    const mode = searchParams.get('mode') || 'map'
     const doc = searchParams.get('doc')
     const dataset = useDataset()
-    const { isMobile, setPreferredTab } = useContext(GlobalContext)
+    const mode = useMode()
+    const { setPreferredTab } = useContext(GlobalContext)
 
     return <div className={`flex ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''}`} role="tablist">
-            <ClickableIcon aria-selected={mode == 'map' ? true : false}
+            {contentSettings[dataset]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
                       onClick={() => {
                         setPreferredTab(dataset, 'map')
                       }}
@@ -24,7 +24,7 @@ export default function ModeSelector() {
                       className="flex  m-1 h-8 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-950 aria-selected:shadow-inner">
                         { mode == 'map' ? <PiMapTrifoldFill className="text-2xl xl:text-xl" aria-hidden="true"/>  : <PiMapTrifold className="text-2xl xl:text-xl" aria-hidden="true"/>}
 
-            </ClickableIcon>
+            </ClickableIcon>}
 
             <ClickableIcon add={{mode: 'table', nav: searchParams.get('nav') == 'results' ? 'filters' : searchParams.get('nav')}} 
                         onClick={() => {

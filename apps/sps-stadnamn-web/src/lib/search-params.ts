@@ -1,6 +1,7 @@
 import { useSearchParams } from 'next/navigation'
 import { fieldConfig } from '@/config/search-config';
 import { parseAsInteger, useQueryState } from 'nuqs';
+import { contentSettings } from '@/config/server-config';
 
 export function useQueryWithout(omit : string[]) {
     const params = useSearchParams()
@@ -17,6 +18,12 @@ export function useQueryStringWithout(omit : string[]) {
 export function useDataset() {
     const searchParams = useSearchParams()
     return searchParams?.get('dataset') || 'search'
+}
+
+export function useMode() {
+    const searchParams = useSearchParams()
+    const dataset = useDataset()
+    return searchParams?.get('mode') || contentSettings[dataset]?.display || 'map'
 }
 
 

@@ -3,16 +3,15 @@
 import { useState } from "react";
 import { PiCaretDown, PiCaretUp } from "react-icons/pi";
 import { usePathname, useSearchParams } from "next/navigation";
-
+import { useDataset, useMode } from "@/lib/search-params";
 export default function CollapsibleHeading(props: {
   title: string;
   children: React.ReactNode;
   alwaysOpen?: boolean;
   headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }) {
-  const searchParams = useSearchParams();
   const pathname = usePathname()
-  const mode = searchParams.get('mode') || 'map'
+  const mode = useMode()
   // If the route is uuid
   const landingPage = pathname.startsWith('/uuid/')
   const alwaysOpen = landingPage || mode != 'map'

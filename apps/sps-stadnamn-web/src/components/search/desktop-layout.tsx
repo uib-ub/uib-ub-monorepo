@@ -1,14 +1,7 @@
 'use client'
-import SearchResults from "./results/search-results"
-import TreeResults from "./results/tree-results"
 import MapExplorer from "./map-explorer"
-import { useQueryState } from "nuqs"
-import { useDataset, useSearchQuery } from "@/lib/search-params"
+import { useDataset, useMode } from "@/lib/search-params"
 import StatusSection from "./status-section"
-import Facets from "./facets/facet-section"
-import CadastralSubdivisions from "../children/cadastral-subdivisions"
-import { treeSettings } from "@/config/server-config"
-import DatasetDrawer from "./datasets/dataset-drawer"
 import TableExplorer from "./table/table-explorer"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
@@ -20,20 +13,17 @@ import DocInfo from "./info/doc-info"
 import ListExplorer from "./list/list-explorer"
 import LeftWindow from "../tabs/left-window"
 import ChildrenWindow from "../children/children-window"
+import { treeSettings } from "@/config/server-config"
 
 
-export default function DesktopLayout() {
-    const [doc, setDoc] = useQueryState('doc')
-    const [mode, setMode] = useQueryState('mode', {history: 'push', defaultValue: 'map'})
+export default function DesktopLayout() {    
     const dataset = useDataset()
-    const { parentLoading, parentData, docLoading, docData, docView } = useContext(DocContext)
-    const { childrenLoading, childrenData, childrenCount, shownChildrenCount } = useContext(ChildrenContext)
+    const { parentLoading, parentData, docLoading, docData } = useContext(DocContext)
+    const { childrenLoading } = useContext(ChildrenContext)
     const searchParams = useSearchParams()
     const parent = searchParams.get('parent')
-    const sourceLabel = searchParams.get('sourceLabel')
-    const sourceDataset = searchParams.get('sourceDataset')
-
-
+    const mode = useMode()
+    const doc = searchParams.get('doc')
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
 

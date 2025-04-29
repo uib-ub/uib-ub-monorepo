@@ -7,12 +7,11 @@ import { fetchIIIFStats } from "@/app/api/iiif/iiif-stats";
 import IconLink from "@/components/ui/icon-link";
 
 export default async function IIIFInfoSection({manifest, neighbours, manifestDataset}: {manifest: any, neighbours: any, manifestDataset: string}) {
-    const stats = manifest ? null : await fetchIIIFStats()
+    const stats = manifest?.childCount || await fetchIIIFStats(manifest?.uuid)
     return <>
 
 {manifest?.type == 'Collection' && neighbours.data && neighbours.total > 1 && (
                     <nav className="flex flex-col items-center justify-center w-full  border-b border-neutral-200 flex border-b border-neutral-200 bg-neutral-50 divide-y divide-neutral-200">                        
-                        
                         <div className="flex items-center gap-2 w-full p-4">
                             {neighbours.data.first != manifest.uuid ? <IconLink label="Første mappe" href={`/iiif/${neighbours.data.first}`} className="btn btn-outline btn-compact !p-2">
                                 <PiCaretLineLeft aria-hidden="true"/>
@@ -46,11 +45,9 @@ export default async function IIIFInfoSection({manifest, neighbours, manifestDat
                    
                 )}
 
-                    {
-                        manifest ? (
                             <div className="flex flex-col gap-2 p-4 w-full bg-white">
-                                <h1>{resolveLanguage(manifest.label)}</h1>
-                                {manifest.summary && (
+                                <h1>{manifest ? resolveLanguage(manifest.label) : 'Arkivressurser'}</h1>
+                                {manifest?.summary && 
                                     <div>
                                         {resolveLanguage(manifest.summary).length > 150 ?
                                         <>
@@ -61,46 +58,41 @@ export default async function IIIFInfoSection({manifest, neighbours, manifestDat
                                             resolveLanguage(manifest.summary)
                                         }
                                     </div>
-                                )}
+                                }
+                                {!manifest && <p>Digitalisert arkivmateriale ordna etter opphavsinstitusjon. Ordninga gjeld det digitaliserte materialet, eksempelvis med mappestrukturer frå dokumentasjonsprosjektet, men vi har så langt det er mogleg lenka til metadata for det fysiske materialet i arkivportalen.</p>}
                                 
                                 <IIIFMetadataPanel manifest={manifest} manifestDataset={manifestDataset}/>
 
-                            </div>
-                        ) : (
-                            <>
-                                <div className="flex flex-col gap-2 p-4 w-full bg-white">
-                                    <h1>Arkivressurser</h1>
-                                    <p>Digitalisert arkivmateriale som så langt det er mulig er delt inn og sortert i tråd med det fysiske materialet.</p>
-                                    <p>I noen datasett har vi brukt mer enn én ordning av materialet, for eksempel med og uten gruppering av sedler på oppslagsord. De samme skannede sidene kan derfor forekomme i to elementer.</p>
-                                </div>
 
-                                {stats && (
-                                    <ul className="text-base p-4">
+                                {(stats || manifest?.childCount) && manifest?.type != 'Manifest' && (
+                                    <ul className="text-base !p-0">
                                         <li className='flex flex-col'>
                                             <span className='font-semibold text-neutral-800'>Elementer</span>
                                             <span className="flex items-center gap-1">
                                                 <PiFile aria-hidden="true"/>
-                                                {stats[0]?.aggregations?.total_manifests?.value?.toLocaleString('no-NO') || 0}
+                                                {stats?.manifests?.toLocaleString('no-NO') || 0}
                                             </span>
                                         </li>
-                                        <li className='flex flex-col'>
+                                        {(stats?.images || stats?.reusedImages) ? <li className='flex flex-col'>
                                             <span className='font-semibold text-neutral-800'>Skannede sider</span>
                                             <span className="flex items-center gap-1">
                                                 <PiArticle aria-hidden="true"/>
-                                                {stats[0]?.aggregations?.total_images_count?.value?.toLocaleString('no-NO') || 0}
+                                                {stats?.images ? stats?.images?.toLocaleString('no-NO') : <>{stats?.reusedImages?.toLocaleString('no-NO')} (gjenbrukte)</>}
                                             </span>
-                                        </li>
-                                        <li className='flex flex-col'>
+                                        </li> : null}
+                                        
+                                        {stats?.audio ? <li className='flex flex-col'>
                                             <span className='font-semibold text-neutral-800'>Lydopptak</span>
                                             <span className="flex items-center gap-1">
                                                 <PiSpeakerHigh aria-hidden="true"/>
-                                                {stats[0]?.aggregations?.total_audio?.value?.toLocaleString('no-NO') || 0}
+                                                {stats?.audio?.toLocaleString('no-NO') || 0}
                                             </span>
-                                        </li>
+                                        </li> : null}
                                     </ul>
                                 )}
-                            </>
-                        )}
+
+                            </div>
+                        
 
                         
                         

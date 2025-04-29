@@ -1,7 +1,7 @@
 'use client'
 import Breadcrumbs from "@/components/layout/breadcrumbs"
 import { PiArchive, PiArchiveFill, PiArchiveThin, PiArticle, PiArticleFill, PiFileAudio, PiFileAudioThin, PiFileFill, PiHouse, PiMagnifyingGlass, PiSpeakerSlashThin, PiX } from "react-icons/pi"
-import { useState, useEffect, useRef, Fragment } from "react"
+import { useState, useEffect, useRef, Fragment, useCallback } from "react"
 import Link from "next/link";
 import Thumbnail from "@/components/image-viewer/thumbnail";
 import ClientThumbnail from "@/components/doc/client-thumbnail";
@@ -16,13 +16,11 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
     const [searchQuery, setSearchQuery] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [results, setResults] = useState<any[]>([]);
-    const [size, setSize] = useState(40);
+    const [size, setSize] = useState(50);
     const [loading, setLoading] = useState(false);
     const [typeCounts, setTypeCounts] = useState<any>([]);
     const [total, setTotal] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
-    // Store the original collections data to use for breadcrumbs
-    const height = 240
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
 
     useEffect(() => {
@@ -52,7 +50,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             });
     }, [manifest?.uuid, searchQuery, size]);
 
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
         if (!containerRef.current || loading || total <= size) return;
         
         const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -60,7 +58,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             setSize(prev => prev + 100);
             setLoading(true);
         }
-    };
+    }, [loading, total, size]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -68,7 +66,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             container.addEventListener('scroll', handleScroll);
             return () => container.removeEventListener('scroll', handleScroll);
         }
-    }, [loading, total]);
+    }, [loading, total, handleScroll]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -86,11 +84,11 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
     };
 
     return (
-        <div ref={containerRef} className="flex flex-col gap-4 p-4 lg:overflow-y-auto lg:max-h-[calc(100vh-3rem)] stable-scrollbar">
+        <div ref={containerRef} className="flex flex-col gap-4 p-4 lg:overflow-y-auto lg:h-[calc(100svh-3rem)] stable-scrollbar">
             <div className="flex flex-col lg:flex-row gap-2">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && 
-                <div className="w-full min-h-[40px] pb-4 lg:pb-0">
+                <div className="w-full">
                     <Breadcrumbs
                         homeUrl="/iiif"
                         homeLabel="Arkivressurser"

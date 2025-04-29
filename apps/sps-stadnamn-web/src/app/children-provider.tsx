@@ -1,16 +1,14 @@
 'use client'
-import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
+import { createContext, useContext, useEffect, useState, useRef } from 'react'
 import { useSearchParams } from 'next/navigation';
-import { useDataset } from '@/lib/search-params';
+import { useDataset, useMode } from '@/lib/search-params';
 import { parseAsInteger } from 'nuqs';
 import { useQueryState } from 'nuqs';
-import { SearchContext } from './search-provider';
 import { DocContext } from './doc-provider';
 import { GlobalContext } from './global-provider';
 import { addPadding } from '@/lib/map-utils';
-import { treeSettings } from '@/config/server-config';
 import { groupSameCoordinates } from '@/lib/map-utils';
-import { request } from 'http';
+import { treeSettings } from '@/config/server-config';
 
 
 interface ChildrenContextData {
@@ -61,7 +59,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
 
     const parent = searchParams.get('parent')
     const doc = searchParams.get('doc')
-    const mode = searchParams.get('mode') || 'map'
+    const mode = useMode()
     const sourceLabel = searchParams.get('sourceLabel')
     const sourceDataset = searchParams.get('sourceDataset')
     

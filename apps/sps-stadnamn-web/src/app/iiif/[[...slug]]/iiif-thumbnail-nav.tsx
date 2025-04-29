@@ -29,9 +29,9 @@ export default function IIIFThumbnailNav({manifest, neighbours, manifestDataset}
 
     return (
         <div className="relative col-span-5 h-full">
-        <div className={`w-full flex flex-col bg-neutral-50 gap-4 z-[2000] py-4  ${isOpen ? 'lg:absolute lg:bottom-0 lg:left-0 lg:p-4' : 'lg:!h-12 lg:py-8 lg:px-4'}`}>
+        <div className={`w-full flex flex-col bg-neutral-50 gap-4 z-[2000] p-4  ${isOpen ? 'lg:absolute lg:bottom-0 lg:left-0 lg:p-4' : 'lg:!h-12 lg:py-8'}`}>
                 
-                <div className="flex flex-col lg:flex-row items-center gap-2 px-4 pb-4 lg:pb-0 items-center h-full">
+                <div className="flex flex-col lg:flex-row items-center gap-2 pb-4 lg:pb-0 items-center h-full">
                     <Breadcrumbs 
                         homeUrl="/iiif"
                         homeLabel="Arkivressurser"
@@ -61,7 +61,7 @@ export default function IIIFThumbnailNav({manifest, neighbours, manifestDataset}
                         <button className="btn btn-outline items-center gap-2 hidden lg:flex" aria-expanded={isOpen} aria-controls="thumbnail-nav" onClick={() => setIsOpen(!isOpen)}>
                             {isOpen ? <PiCaretDown className="w-5 h-5" /> : <PiCaretUp className="w-5 h-5" />}
                             
-                            Forhåndsvisninger</button>
+                            Forhåndsvisningar</button>
                     </div>}
                     
                     </div>
@@ -72,7 +72,7 @@ export default function IIIFThumbnailNav({manifest, neighbours, manifestDataset}
                 
 
                 
-                <nav className="hidden lg:grid grid-cols-2 lg:grid-cols-7 items-center gap-2 w-full px-4 pb-4" id="thumbnail-nav">
+                <nav className="hidden lg:grid grid-cols-2 lg:grid-cols-7 items-center gap-2 w-full pb-4" id="thumbnail-nav">
                     {isOpen && neighbours.data && neighbours.total > 1 && neighbours.data.neighbours.map((neighbour: any, index: number) => (
                             <div key={index} className="h-full w-full">
                                 <FileCard item={neighbour._source} itemDataset={manifestDataset} currentItem={manifest?.uuid}/>

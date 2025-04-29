@@ -37,7 +37,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                 </div>
             
                           
-                <div className={`w-full lg:col-span-4 !min-h-[40svh] ${manifest?.type == 'Manifest' ? 'max-h-[60svh] lg:max-h-full' : 'lg:max-h-[calc(100svh-3rem)]'} bg-neutral-200`}>
+                <div className={`w-full lg:col-span-4 bg-neutral-200`}>
                     {isImage && <ImageViewer images={manifest.images} manifestDataset={manifestDataset} manifestId={manifest.uuid}/>}
                     {manifest?.audio && <div className="flex flex-col gap-4 items-center justify-center h-full hidden lg:flex">
                         <h2 className="text-2xl text-neutral-900 font-semibold">{resolveLanguage(manifest.audio.label)}</h2>

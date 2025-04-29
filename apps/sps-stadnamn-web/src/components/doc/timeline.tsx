@@ -2,13 +2,13 @@ import { useSearchParams } from "next/navigation";
 import Clickable from "../ui/clickable/clickable";
 import { GlobalContext } from "@/app/global-provider";
 import { useContext } from "react";
+import { useDataset, useMode } from "@/lib/search-params";
 
 export default function Timeline({arr, parent}: {arr: { label: string; year: string }[], parent: string}) {
   const grouped: Record<string,string[]> = {};
   const searchParams = useSearchParams()
-  const doc = searchParams.get('doc')
   const sourceLabel = searchParams.get('sourceLabel')
-  const mode = searchParams.get('mode') || 'map'
+  const mode = useMode()
   const { isMobile } = useContext(GlobalContext)
 
   arr?.forEach(item => {

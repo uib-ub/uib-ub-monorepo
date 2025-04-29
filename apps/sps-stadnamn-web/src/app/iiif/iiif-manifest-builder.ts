@@ -1,6 +1,6 @@
 import { fetchDoc } from "@/app/api/_utils/actions";
 import { postQuery } from "@/app/api/_utils/post";
-import { datasetPresentation } from "@/config/metadata-config";
+import { datasetPresentation, licenses } from "@/config/metadata-config";
 import { ensureArrayValues } from "@/app/iiif/iiif-utils";
 
 
@@ -114,6 +114,7 @@ export async function buildManifest(request: Request, type: string) {
     
     const source = doc._source
     const manifestDataset = doc._index.split('-')[2].replace('iiif_', '')
+    const license = datasetPresentation[manifestDataset]?.license || licenses.ccby4
 
     if (type == 'collection') {
         const items_query = {
@@ -132,7 +133,7 @@ export async function buildManifest(request: Request, type: string) {
         const collection_manifest: Record<string, any> = {
         "@context": "http://iiif.io/api/presentation/3/context.json",
         "id": `https://stadnamnportalen.uib.no/iiif/collection/${doc._source.uuid}`,
-        "rights": datasetPresentation[manifestDataset].license.url,
+        "rights": license.url,
         "type": source.type,
         "label": source.label,
         "items": []
@@ -161,7 +162,7 @@ export async function buildManifest(request: Request, type: string) {
             "@context": "http://iiif.io/api/presentation/3/context.json",
             "id": `https://stadnamnportalen.uib.no/iiif/manifest/${doc._source.uuid}`,
             "partOf": `https://stadnamnportalen.uib.no/iiif/collection/${doc._source.partOf}`,
-            "rights": datasetPresentation[manifestDataset].license.url,
+            "rights": license.url,
             "type": "Manifest",
             "label": source.label,
         }

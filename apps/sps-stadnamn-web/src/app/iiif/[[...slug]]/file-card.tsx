@@ -37,7 +37,7 @@ export default function FileCard({item, itemDataset, currentItem}: {item: any, i
                 alt={resolveLanguage(item.label)} 
                 fill
             />
-            { canvasCount > 1 && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center bg-white text-neutral-900 rounded-full p-1 px-3 font-semibold text-sm shadow-md">
+            { canvasCount > 1 && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90 flex items-center justify-center bg-neutral-900 text-white aspect-square rounded-full p-1 px-3 font-semibold text-sm shadow-md">
             {canvasCount}
 
             </div>

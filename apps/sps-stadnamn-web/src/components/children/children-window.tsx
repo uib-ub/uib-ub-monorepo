@@ -23,8 +23,7 @@ export default function ChildrenWindow() {
     const parent = searchParams.get('parent')
     const sourceLabel = searchParams.get('sourceLabel')
     const sourceDataset = searchParams.get('sourceDataset')
-    const { isMobile, preferredTabs } = useContext(GlobalContext)
-    const mode = searchParams.get('mode') || 'map'
+    const { isMobile } = useContext(GlobalContext)
 
     return <>
     <div className="flex flex-col h-full">

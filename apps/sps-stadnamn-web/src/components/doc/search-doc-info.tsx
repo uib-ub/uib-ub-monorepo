@@ -1,4 +1,4 @@
-import { PiArchive, PiArchiveFill, PiBookOpen, PiBooksFill, PiCaretLeft, PiCaretRight, PiDatabaseFill, PiFiles, PiFilesFill, PiInfoFill } from "react-icons/pi";
+import { PiDatabaseFill } from "react-icons/pi";
 import Clickable from "../ui/clickable/clickable";
 import Timeline from "../doc/timeline";
 import { datasetTitles } from "@/config/metadata-config";
@@ -6,9 +6,8 @@ import { useSearchParams } from "next/navigation";
 import Etymology from "../search/info/etymology";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
-import { useDataset } from "@/lib/search-params";
+import { useDataset, useMode } from "@/lib/search-params";
 import AudioExplorer from "./audio-explorer";
-import ChildrenWindow from "../children/children-window";
 
 
 
@@ -18,9 +17,9 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
     const parent = searchParams.get('parent')
     const sourceLabel = searchParams.get('sourceLabel')
     const sourceDataset = searchParams.get('sourceDataset')
-    const mode = searchParams.get('mode') || 'map'
     const { isMobile } = useContext(GlobalContext)
     const dataset = useDataset()
+    const mode = useMode()
     
     const attestationLabels = docSource.attestations?.map((item: any) => item.label)
     const uniqueLabels = new Set<string>(docSource.altLabels?.filter((label: string) => label !== docSource.label && !attestationLabels?.includes(label)))

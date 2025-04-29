@@ -2,33 +2,32 @@ export const runtime = 'edge'
 
 import { postQuery } from '../_utils/post';
 
-export async function fetchIIIFStats() {
+export async function fetchIIIFStats(manifestUuid?: string) {
   'use server'
-  const stats = await postQuery('iiif_*', {
+  console.log(manifestUuid)
+  const [stats, status] = await postQuery('iiif_*', {
     size: 0,
-    query: {
-      bool: {
-        must_not: {
-          exists: {
-            field: "partOf"
-          }
+    query: manifestUuid 
+      ? {
+          term: { "collections.uuid": manifestUuid }
         }
-      }
-    },
+      : {
+          match_all: {}
+        },
     aggs: {
-      total_images: {
-        sum: {
-          field: "childCount.image"
-        }
-      },
       total_manifests: {
         sum: {
           field: "childCount.manifests"
         }
       },
-      total_images_count: {
+      total_images: {
         sum: {
           field: "childCount.images"
+        }
+      },
+      total_reused_images: {
+        sum: {
+          field: "childCount.reusedImages"
         }
       },
       total_audio: {
@@ -38,6 +37,16 @@ export async function fetchIIIFStats() {
       }
     }
   })
-  return stats
+
+  if (status !== 200) {
+    return null
+  }
+
+  return  {
+    manifests: stats?.aggregations?.total_manifests?.value,
+    images: stats?.aggregations?.total_images?.value,
+    reusedImages: stats?.aggregations?.total_reused_images?.value,
+    audio: stats?.aggregations?.total_audio?.value
+  }
 }
 

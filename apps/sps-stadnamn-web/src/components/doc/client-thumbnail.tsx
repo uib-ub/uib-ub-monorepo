@@ -6,30 +6,57 @@ import Link from "next/link"
 import { useContext, useEffect, useState } from "react"
 import { PiCaretLeft, PiCaretRight, PiDatabaseFill, PiFiles, PiFilesFill } from "react-icons/pi"
 
-export default function ClientThumbnail({ images }: { images: {manifest: string, dataset: string}[] }) {
+export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) {
     const [imgIndex, setImgIndex] = useState(0)
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
-    const [width, setWidth] = useState<number | null>(null)
     const height = 240
+    const width = 320
+    const aspectRatio = height / width
     const dataset = useDataset()
     const { docDataset } = useContext(DocContext)
 
+    const [manifest, setManifest] = useState<string | null>(null)
+    const [manifestUuid, setManifestUuid] = useState<string | null>(null)
+    const [manifestDataset, setManifestDataset] = useState<string | null>(null)
+    const [manifestLoading, setManifestLoading] = useState(true)
+
     useEffect(() => {
-        const manifest = images[imgIndex].manifest
-        const imgDataset = images[imgIndex].dataset
-        const fetchThumbnail = async (url: string) => {
+        const fetchManifest= async (url: string) => {
             const response = await fetch(url)
             const data = await response.json()
-            const [, originalWidth, originalHeight] = data?.thumbnail?.[0]?.id.match(/\/full\/(\d+),(\d+)\//) || []
-            const newWidth = originalWidth ? Math.round((parseInt(originalWidth, 10) * height) / parseInt(originalHeight, 10)) : null
-            const baseUrl = data?.thumbnail?.[0]?.id.split('/full/')[0]
-            const newThumbnailUrl = `${baseUrl}/full/${newWidth},${height}/0/default.jpg`
-            setWidth(newWidth)
-            setThumbnailUrl(newThumbnailUrl)
+            console.log("DATA", data)
+            const source = data?.hits?.hits?.[0]?._source
+            setManifest(source)
+            setManifestUuid(source.uuid)
+            const dataset = data?.hits?.hits?.[0]?._index.split("-")[2].split("_")[1]
+            setManifestDataset(dataset)
+            setThumbnailUrl(`https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${source.images[0].uuid}/0,0,${source.images[0].width},${Math.round(source.images[0].width*aspectRatio)}/${width*2},${height*2}/0/default.jpg`)
+            setManifestLoading(false)
         }
 
-        fetchThumbnail(`https://iiif.test.ubbe.no/iiif/manifest${imgDataset == 'bsn' ? '' : `/stadnamn/${imgDataset.toUpperCase()}`}/${manifest}.json`)
-    }, [imgIndex, height])
+
+        if (Array.isArray(iiif)) {
+            fetchManifest(`api/doc?uuid=${iiif[imgIndex]}&dataset=iiif_*`)
+        } else {
+            fetchManifest(`api/doc?uuid=${iiif}&dataset=iiif_*`)
+        }
+    }, [iiif, imgIndex])
+
+    return <>
+    
+    {manifestLoading ? (
+        <div className="w-full aspect-[16/9] bg-neutral-200 animate-pulse border border-neutral-200"></div>
+    ) : (
+        <Link href={"/iiif/" + manifestUuid} className="w-full aspect-[16/9] relative block border border-neutral-200">
+            <Image
+                src={thumbnailUrl || "/"} 
+                alt="Seddel"
+                className="object-cover"
+                fill
+                />
+        </Link>
+    )}
+    </>
 
     return <div className="flex flex-col gap-1">
         
