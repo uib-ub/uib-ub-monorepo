@@ -1,12 +1,9 @@
 'use client'
 import { useState, useRef, useEffect, useContext } from "react";
-import { PiCaretLeft, PiList, PiMagnifyingGlass } from 'react-icons/pi';
+import { PiCaretLeft, PiList } from 'react-icons/pi';
 import NavBar from "./nav-bar";
-import IconButton from "@/components/ui/icon-button";
 import { usePathname, useSearchParams } from "next/navigation";
 import { GlobalContext } from "./global-provider";
-import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import Clickable from "@/components/ui/clickable/clickable";
 import Link from "next/link";
 
 export default function Menu() {

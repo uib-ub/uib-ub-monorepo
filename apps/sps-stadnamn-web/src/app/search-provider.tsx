@@ -73,7 +73,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     
     useEffect(() => {
         setCurrentUrl("/search?" + searchParamsString)
-    }, [searchParamsString])
+    }, [searchParamsString, setCurrentUrl])
     
 
 

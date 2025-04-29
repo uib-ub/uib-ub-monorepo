@@ -1,6 +1,5 @@
 import IIIFMetadataPanel from "./iiif-metadata-panel";
 import { PiArticle, PiCaretLeft, PiCaretLineLeft, PiCaretLineRight, PiCaretRight, PiFile, PiSpeakerHigh } from "react-icons/pi";
-import Link from "next/link";
 import { resolveLanguage } from "../iiif-utils";
 import IIIFExpandSummary from "./iiif-expand-summary";
 import { fetchIIIFStats } from "@/app/api/iiif/iiif-stats";

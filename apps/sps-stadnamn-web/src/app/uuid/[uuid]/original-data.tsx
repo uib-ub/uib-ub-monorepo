@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react';
-import { PiCaretDown, PiCaretUp, PiWarning, PiWarningFill } from 'react-icons/pi';
+import { PiCaretDown, PiCaretUp, PiWarningFill } from 'react-icons/pi';
 export default function OriginalData({rawData}: {rawData: Record<string, any>}) {
     const [expanded, setExpanded] = useState(false);
 
