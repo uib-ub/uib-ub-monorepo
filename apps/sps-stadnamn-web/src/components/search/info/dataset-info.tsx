@@ -42,7 +42,7 @@ export default function DatasetInfo() {
             {dataset == 'search' && <Clickable add={{nav: 'filters', facet: 'datasets'}} className="flex gap-1 items-center justify-self-end no-underline"><PiFunnel aria-hidden="true" className=""/>Vel kjeldedatasett</Clickable>}
             <Link className="flex gap-1 items-center no-underline" href={dataset == 'search' ? "/info/search" : "/info/datasets/" + dataset}>Les meir <PiCaretRight aria-hidden="true" className='text-primary-600'/></Link>
             </div>
-            { false && <DatasetToolbar/>}
+            { false && <DatasetToolbar itemDataset={dataset}/>}
             
         </div>
     )
