@@ -40,57 +40,51 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
         } else {
             fetchManifest(`api/doc?uuid=${iiif}&dataset=iiif_*`)
         }
-    }, [iiif, imgIndex])
-
-    return <>
-    
-    {manifestLoading ? (
-        <div className="w-full aspect-[16/9] bg-neutral-200 animate-pulse border border-neutral-200"></div>
-    ) : (
-        <Link href={"/iiif/" + manifestUuid} className="w-full aspect-[16/9] relative block border border-neutral-200">
-            <Image
-                src={thumbnailUrl || "/"} 
-                alt="Seddel"
-                className="object-cover"
-                fill
-                />
-        </Link>
-    )}
-    </>
+    }, [iiif, imgIndex, aspectRatio])
 
     return <div className="flex flex-col gap-1">
+        {manifestLoading ? (
+            <div className="w-full aspect-[16/9] bg-neutral-200 animate-pulse border border-neutral-200"></div>
+        ) : (
+            <Link href={"/iiif/" + manifestUuid} className="w-full aspect-[16/9] relative block border border-neutral-200">
+                <Image
+                    src={thumbnailUrl || "/"} 
+                    alt="Seddel"
+                    className="object-cover"
+                    fill
+                    />
+            </Link>
+        )}
         
-        {thumbnailUrl && width && height && <Link href={"/iiif/" + images[imgIndex].manifest}><Image width={width} height={height} src={thumbnailUrl} alt="Seddel" /></Link>}
         <div className="flex gap-1 justify-between">
-        {dataset == 'search' && docDataset != images[imgIndex].dataset && (
-            <span className="flex items-center gap-2 text-neutral-800 min-w-0">
-                <span className="truncate">{datasetTitles[images[imgIndex].dataset]}</span>
-            </span>
-        )}
-        {images.length > 1 && (
-          <div className="flex ml-auto">
-              <button 
-                onClick={() => setImgIndex(prev => prev > 0 ? prev - 1 : images.length - 1)}
-                className="btn btn-outline btn-compact grow md:grow-0"
-                aria-label="Forrige bilde"
-              >
-                <PiCaretLeft />
-              </button>
-              <div className="flex gap-2">
-              <span className="px-3 py-1 rounded-sm border-neutral-400">
-                {imgIndex + 1}/{images.length}
-              </span>
-              </div>
-              <button
-                onClick={() => setImgIndex(prev => prev < images.length - 1 ? prev + 1 : 0)} 
-                className="btn btn-outline btn-compact grow md:grow-0"
-                aria-label="Neste bilde"
-              >
-                <PiCaretRight />
-              </button>
-
-          </div>
-        )}
+            {manifestDataset && dataset == 'search' && docDataset != manifestDataset && (
+                <span className="flex items-center gap-2 text-neutral-800 min-w-0">
+                    <span className="truncate">{datasetTitles[manifestDataset]}</span>
+                </span>
+            )}
+            {Array.isArray(iiif) && iiif.length > 1 && (
+                <div className="flex ml-auto">
+                    <button 
+                        onClick={() => setImgIndex(prev => prev > 0 ? prev - 1 : iiif.length - 1)}
+                        className="btn btn-outline btn-compact grow md:grow-0"
+                        aria-label="Forrige bilde"
+                    >
+                        <PiCaretLeft />
+                    </button>
+                    <div className="flex gap-2">
+                        <span className="px-3 py-1 rounded-sm border-neutral-400">
+                            {imgIndex + 1}/{iiif.length}
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => setImgIndex(prev => prev < iiif.length - 1 ? prev + 1 : 0)} 
+                        className="btn btn-outline btn-compact grow md:grow-0"
+                        aria-label="Neste bilde"
+                    >
+                        <PiCaretRight />
+                    </button>
+                </div>
+            )}
         </div>
     </div>
 }
