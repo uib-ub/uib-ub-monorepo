@@ -5,7 +5,6 @@ import { contentSettings } from "@/config/server-config"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
-import { useState } from "react"
 import { facetConfig, fieldConfig } from "@/config/search-config"
 
 

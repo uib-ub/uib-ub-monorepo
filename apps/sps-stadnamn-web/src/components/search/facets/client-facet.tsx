@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQueryStringWithout, useSearchQuery, useDataset } from '@/lib/search-params';
-import { PiTrashFill, PiSortAscending, PiSortDescending, PiFunnelSimple, PiFunnel, PiFunnelFill } from 'react-icons/pi';
+import { useSearchQuery, useDataset } from '@/lib/search-params';
+import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
 import { fieldConfig } from '@/config/search-config';
@@ -15,7 +15,6 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = removeFilterParams(facetName)
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
-  const filterCleared = useQueryStringWithout([facetName, 'page'])
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
   const {facetOptions, updatePinnedFilters } = useContext(GlobalContext)

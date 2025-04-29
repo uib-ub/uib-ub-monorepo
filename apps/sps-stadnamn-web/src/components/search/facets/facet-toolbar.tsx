@@ -1,15 +1,14 @@
 import { GlobalContext } from "@/app/global-provider";
-import { SearchContext } from "@/app/search-provider";
 import IconButton from "@/components/ui/icon-button";
 import { facetConfig } from "@/config/search-config";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useContext, useState } from "react";
-import { PiFunnelSimple, PiPushPin, PiPushPinFill, PiPushPinSlash, PiSortDescending, PiTrashFill, PiPushPinSlashFill, PiSortAscendingLight, PiSortAscending, PiTrash } from "react-icons/pi";
+import { useContext } from "react";
+import { PiFunnelSimple, PiPushPin, PiPushPinSlash, PiSortDescending, PiSortAscending, PiTrash } from "react-icons/pi";
 
 export default function FacetToolbar() {
     const dataset = useDataset()
-    const {facetOptions, updateFacetOption, updatePinnedFilters, pinnedFilters} = useContext(GlobalContext)
+    const {facetOptions, updateFacetOption, updatePinnedFilters } = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet') || 'adm'
     const {facetFilters} = useSearchQuery()

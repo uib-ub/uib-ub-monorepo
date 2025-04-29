@@ -1,9 +1,8 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiArchive, PiArchiveFill, PiArchiveThin, PiBookOpenThin, PiBookThin, PiDatabase, PiDatabaseFill, PiDatabaseThin, PiMapPinThin, PiMapTrifoldThin, PiMarkerCircleThin, PiTableThin, PiTag, PiTagFill, PiTagThin, PiWallThin } from 'react-icons/pi';
-import Link from 'next/link';
+import { PiArchive, PiBookOpenThin, PiDatabase, PiTag } from 'react-icons/pi';
 import { PiMagnifyingGlass } from 'react-icons/pi';
-import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
+import Link from 'next/link';
 import { datasetTitles, datasetPresentation, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/footer';
 import { fetchStats } from '@/app/api/_utils/actions';

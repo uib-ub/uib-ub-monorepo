@@ -75,7 +75,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
         viewer.current.viewport.goHome();
       }
 
-  }, [images]);
+  }, [images, manifestDataset, manifestId]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {

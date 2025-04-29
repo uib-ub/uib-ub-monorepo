@@ -8,7 +8,7 @@ import { GlobalContext } from "@/app/global-provider"
 
 export default function ListExplorer() {
     const searchParams = useSearchParams()
-    const { tableData, totalHits, isLoading } = useContext(SearchContext)
+    const { tableData, totalHits } = useContext(SearchContext)
     const { isMobile } = useContext(GlobalContext)
 
     return <div  className='flex flex-col py-2 gap-4 h-full'>

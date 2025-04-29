@@ -17,7 +17,6 @@ import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
-import { GlobalContext } from "@/app/global-provider";
 import { useSearchParams } from "next/navigation";
 import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
@@ -35,14 +34,11 @@ export default function MapExplorer() {
   const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
   const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
   const [viewResults, setViewResults] = useState<any>(null)
-  const { searchQueryString, searchFilterParamsString } = useSearchQuery()
+  const { searchQueryString } = useSearchQuery()
   const dataset = useDataset()
-  const { childrenData, childrenMarkers, childrenLoading, childrenBounds } = useContext(ChildrenContext)
-  const { isMobile } = useContext(GlobalContext)
+  const { childrenMarkers, childrenLoading, childrenBounds } = useContext(ChildrenContext)
   const programmaticChange = useRef(false)
   const searchParams = useSearchParams()
-  const sourceLabel = searchParams.get('sourceLabel')
-  const sourceDataset = searchParams.get('sourceDataset')
   const parent = searchParams.get('parent')
 
   if (searchParams.get('error') == 'true') {

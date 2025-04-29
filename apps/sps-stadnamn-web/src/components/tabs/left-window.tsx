@@ -11,7 +11,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 
 export default function LeftWindow() {
     const dataset = useDataset()
-    const { totalHits, isLoading } = useContext(SearchContext)
+    const { totalHits } = useContext(SearchContext)
     const { searchFilterParamsString } = useSearchQuery()
     const searchParams = useSearchParams()
     const mode = useMode()
