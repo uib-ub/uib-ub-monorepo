@@ -84,7 +84,6 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
   bsn:  (source: any) => {
     return <>
     <div className='space-y-2'>
-      {JSON.stringify(source.rawData)}
     {source.rawData?.original?.stnavn?.komm ?
      <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData.stnavn?.komm}</div>
      : source.rawData?.supplemented?.merknad && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.supplemented?.merknad}</div>

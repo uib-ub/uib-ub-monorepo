@@ -162,7 +162,6 @@ export default async function Home() {
       </div>
     </nav>
     </div>
-    {JSON.stringify(iiifStats)}
 
 
 
