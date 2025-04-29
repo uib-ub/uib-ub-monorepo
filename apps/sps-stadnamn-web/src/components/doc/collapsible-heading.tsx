@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { PiCaretDown, PiCaretUp } from "react-icons/pi";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useDataset, useMode } from "@/lib/search-params";
+import { usePathname } from "next/navigation";
+import { useMode } from "@/lib/search-params";
 export default function CollapsibleHeading(props: {
   title: string;
   children: React.ReactNode;

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiHouseFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiDownloadSimple } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiDownloadSimple } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
-import { useParams, useSearchParams, usePathname } from 'next/navigation';
 import ErrorMessage from '../error-message';
 import {
   AlertDialog,

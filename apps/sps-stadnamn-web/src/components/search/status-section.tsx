@@ -6,7 +6,7 @@ import { PiInfoFill, PiWarningFill } from 'react-icons/pi';
 import ModeSelector from '../tabs/mode-selector';
 import { GlobalContext } from '@/app/global-provider';
 import SortSelector from './sort/sort-selector'
-import { useDataset, useMode } from '@/lib/search-params';
+import { useMode } from '@/lib/search-params';
 
 export default function StatusSection() {
     const { resultBounds, isLoading, coordinatesError, searchError } = useContext(SearchContext)

@@ -13,9 +13,6 @@ export default function Facets() {
     const dataset = useDataset()
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet') || 'adm'
-
-    const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
-
     const availableFacets = facetConfig[dataset]
 
 

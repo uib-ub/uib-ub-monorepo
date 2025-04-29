@@ -1,11 +1,9 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { useDataset } from '@/lib/search-params';
-import { useRef, useEffect, useContext } from 'react';
-import { PiArrowRight, PiBookOpen, PiBookOpenBold, PiBookOpenTextBold, PiDatabase, PiInfoFill, PiTag } from 'react-icons/pi';
+import { useRef } from 'react';
+import { PiBookOpen } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
-import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { getFieldValue } from '@/lib/utils';
 
 

@@ -1,11 +1,7 @@
 'use client'
 import Breadcrumbs from "@/components/layout/breadcrumbs"
-import { PiArchive, PiArchiveFill, PiArchiveThin, PiArticle, PiArticleFill, PiFileAudio, PiFileAudioThin, PiFileFill, PiHouse, PiMagnifyingGlass, PiSpeakerSlashThin, PiX } from "react-icons/pi"
+import { PiMagnifyingGlass, PiX } from "react-icons/pi"
 import { useState, useEffect, useRef, Fragment, useCallback } from "react"
-import Link from "next/link";
-import Thumbnail from "@/components/image-viewer/thumbnail";
-import ClientThumbnail from "@/components/doc/client-thumbnail";
-import Image from "next/image";
 import { resolveLanguage } from "../iiif-utils";
 import Spinner from "@/components/svg/Spinner";
 import FileCard from "./file-card";

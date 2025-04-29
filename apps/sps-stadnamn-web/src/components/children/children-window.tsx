@@ -1,9 +1,9 @@
 'use client'
 import { useContext } from "react";
-import { PiBookOpen, PiBookOpenFill, PiHouse, PiHouseFill, PiTag, PiTagFill, PiTrashFill, PiTreeView, PiX, PiXBold } from "react-icons/pi";
+import { PiBookOpen, PiTrashFill, PiX, PiXBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { treeSettings } from "@/config/server-config";
-import { getGnr, getValueByPath } from "@/lib/utils";
+import { getGnr } from "@/lib/utils";
 import { ChildrenContext } from "@/app/children-provider";import { DocContext } from "@/app/doc-provider";
 import { useDataset } from "@/lib/search-params";
 import Clickable from "../ui/clickable/clickable";

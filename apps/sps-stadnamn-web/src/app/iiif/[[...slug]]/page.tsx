@@ -1,14 +1,9 @@
 import { fetchDoc } from "@/app/api/_utils/actions"
 import { fetchIIIFNeighbours } from "@/app/api/iiif/neighbours";
 import ImageViewer from "./image-viewer";
-import { PiCaretLeft, PiCaretLineLeft, PiCaretLineRight, PiCaretRight, PiFolder } from "react-icons/pi";
 import CollectionExplorer from "./collection-explorer";
-import Link from "next/link";
 import { resolveLanguage } from "../iiif-utils";
-import Breadcrumbs from "@/components/layout/breadcrumbs";
-import FileCard from "./file-card";
 import IIIFInfoSection from "./iiif-info-section";
-import IconLink from "@/components/ui/icon-link";
 import IIIFThumbnailNav from "./iiif-thumbnail-nav";
 
 

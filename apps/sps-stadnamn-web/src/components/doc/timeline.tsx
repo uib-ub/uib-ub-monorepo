@@ -2,7 +2,7 @@ import { useSearchParams } from "next/navigation";
 import Clickable from "../ui/clickable/clickable";
 import { GlobalContext } from "@/app/global-provider";
 import { useContext } from "react";
-import { useDataset, useMode } from "@/lib/search-params";
+import { useMode } from "@/lib/search-params";
 
 export default function Timeline({arr, parent}: {arr: { label: string; year: string }[], parent: string}) {
   const grouped: Record<string,string[]> = {};

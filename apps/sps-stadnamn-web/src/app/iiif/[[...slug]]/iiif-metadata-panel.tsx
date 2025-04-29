@@ -1,12 +1,10 @@
 'use client'
-import IconButton from "@/components/ui/icon-button"
-import IconLink from "@/components/ui/icon-link"
 import Link from "next/link"
-import { PiArchive, PiArrowLeft, PiArticle, PiArticleFill, PiCopyright, PiCopyrightFill, PiFile, PiFileAudio, PiFileFill, PiImage, PiInfo, PiInfoFill, PiSpeakerHigh, PiSpeakerLow, PiTreeView, PiTreeViewFill } from "react-icons/pi"
+import { PiCopyright } from "react-icons/pi"
 import { resolveLanguage } from "../iiif-utils"
 import { datasetPresentation, licenses } from "@/config/metadata-config"
 import Image from "next/image"
-import { useState, useEffect } from 'react'
+
 
 const addLinks = (text: string | any) => {
     const textString = String(text);

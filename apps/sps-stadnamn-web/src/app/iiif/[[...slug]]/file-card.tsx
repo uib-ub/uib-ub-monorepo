@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PiArchiveDuotone, PiArchiveFill, PiArchiveThin, PiFileAudioThin } from "react-icons/pi";
+import { PiArchiveThin, PiFileAudioThin } from "react-icons/pi";
 import Image from "next/image";
 import { resolveLanguage } from "../iiif-utils";
 
@@ -11,7 +11,6 @@ export default function FileCard({item, itemDataset, currentItem}: {item: any, i
     const width = 240
     const aspectRatio = height / width
     const canvasWidth = item?.images?.[0]?.width
-    const canvasHeight = item?.images?.[0]?.height
     const canvasCount = item?.images?.length
     const image = item?.images?.[0].uuid
     const type = item?.type
