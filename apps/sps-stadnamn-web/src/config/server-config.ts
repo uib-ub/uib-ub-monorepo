@@ -3,49 +3,76 @@ export interface ContentSettingsItem {
   adm?: number; // Deepest level of adm
   cadastre?: boolean; // If the dataset contains standardized cadastral data
   sort?: any[]; // Custom sort array
+  fields?: string[]; // Custom fields to include in the search
 }
 
 export interface TreeSettingsItem {
-  subunit?: string, 
+  subunit: string, 
   subunitLabel?: string,
-  sort: string[], 
-  aggSort: string, 
+  sort: string[], // Sort cadastral units
+  aggSort: string, // Sort aggregated divisions above the cadastral unit (e. g. municipalities)
   filter?: any, 
   showNumber?: boolean,
-  leaf?: string
+  leaf: string,
+  parentName: string,
+  geoSort?: string
 }
 
 export const treeSettings: Record<string, TreeSettingsItem> = {
   m1838: {
-    subunit: "rawData.MNR",
+    subunit: "misc.MNR",
     subunitLabel: "Matrikkelnummer",
-    leaf: "rawData.LNR",
+    parentName: "misc.gardLabel",
+    leaf: "misc.LNR",
     sort: ["cadastralIndex"],
-    aggSort: "rawData.Lenke_til_skannet_matrikkel.keyword"
+    aggSort: "link.keyword",
+    geoSort: "misc.LNR.keyword"
   },
   m1886: {
     subunit: "cadastre__gnr",
+    parentName: "misc.gardsnamn",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr"],
-    aggSort: "rawData.knr.keyword"
+    sort: ["cadastre__gnr", "cadastre__bnr"],
+    aggSort: "misc.knr.keyword",
+    geoSort: "misc.bnr.keyword"
   },
   mu1950: {
     subunit: "cadastre__gnr",
+    parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr"],
+    sort: ["cadastre__gnr", "cadastre__bnr"],
     aggSort: "knr.keyword",
     showNumber: true,
+    geoSort: "misc.BNR.keyword"
+  },
+  m2010: {
+    subunit: "cadastre__gnr",
+    parentName: "misc.Gardsnamn",
+    leaf: "cadastre__bnr",
+    sort: ["cadastre__gnr", "cadastre__bnr"],
+    aggSort: "knr.keyword",
+    geoSort: "misc.BNR.keyword"
+  },
+  /*
+  rygh: {
+    subunit: "rawData.Gnr",
+    parentName: "label",
+    leaf: "rawData.Bnr",
+    sort: ["rawData.Gnr", "rawData.Bnr"],
+    aggSort: "rawData.KNR.keyword",
+    showNumber: true
   }
+    */
 }
-
-
 
 
   export const contentSettings: Record<string, ContentSettingsItem> = {
     search: {
       display: 'map',
-      adm: 3,
-      sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] // add "ranking" in order to favor results with snid and multiple attestations
+      adm: 0,
+      sort: ["_score", "label.keyword"]
+      //adm: 3,
+      //sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] //  "ranking" added in order to favor results with snid and multiple attestations
     },
     bsn: {
       display: 'map',
@@ -60,9 +87,11 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     leks: {
       display: 'map',
       adm: 2,
+      sort: ["_score", "label.keyword"],
     },
     leks_g: {
       display: 'table',
+      sort: ["_score", "label.keyword"],
     },
     m1838: {
       display: 'map',
@@ -115,6 +144,84 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       adm: 2,
       cadastre: false // not cleaned yet
     },
+    ssr2020: {
+      display: 'map',
+      adm: 2,
+      cadastre: false // not cleaned yet
+    },
+    nrk: {
+      display: 'map',
+      adm: 2,
+      cadastre: false
+    },
+    gn2019: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    ft1900: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    ft1910: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    m2010: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    frogn: {
+      display: 'table',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    gjerd: {
+      display: 'table',
+      adm: 3,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    sorum: {
+      display: 'table',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    kven: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    snor: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    herad: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    seta: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    }
+
+    
   }
 
 
@@ -161,5 +268,8 @@ export const getSortArray = (dataset: string): (string | object)[] => {
 
     return sortArray
   }
+
+
+
   
 

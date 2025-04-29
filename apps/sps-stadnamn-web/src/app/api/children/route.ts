@@ -1,75 +1,14 @@
 export const runtime = 'edge'
-import { postQuery } from "../_utils/post";
-export async function GET(request: Request) {
+import { fetchChildren } from "../_utils/actions"
 
-    // Extract uuids from comma separated parameter in request
-    const searchParams = new URLSearchParams(new URL(request.url).search)
-    const snid = searchParams.get('snid');
-    const uuid = searchParams.get('uuid');
-    let uuids = searchParams.get('uuids')?.split(',');
-    const geo = searchParams.get('geo') &&  {
-                                                aggs: {
-                                                    viewport: {
-                                                        geo_bounds: {
-                                                            field: "location",
-                                                            wrap_longitude: true
-                                                        }
-                                                    }
-                                                }
-                                            }
+export async function POST(request: Request) {
+    const body = await request.json()
+    const [data, status] = await fetchChildren({
+        uuids: body.children,
+        mode: body.mode,
+        within: body.within,
+        dataset: body.dataset
+    })
 
-
-
-    if (snid) {
-        const query = {
-            size: 1000,
-            query: {
-                term: {
-                    "snid.keyword": snid
-                }
-            },
-            ...geo || {}
-        }
-
-
-        const data = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
-        return Response.json(data)
-
-    }
-
-    // If the list of children is too long to be passed as a query parameter
-    if (!uuids) {
-        const query = {
-            query: {
-                term: {
-                    "uuid": uuid
-                }
-            },
-            _source: ["children"]
-        }
-
-        const data = await postQuery("search", query)
-
-        if (!data.hits.hits) {
-            return Response.json([])
-        }
-
-        uuids = data.hits.hits[0]._source.children
-
-    }
- 
-    const query = {
-        size: 1000,
-        query: {
-            terms: {
-                "uuid": uuids
-            }
-        },
-        ...geo || {}
-    }
-
-
-    const data = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
-
-    return Response.json(data)
-  }
+    return Response.json(data, { status: status })
+}

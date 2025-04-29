@@ -1,2 +1,2 @@
-import ContentLayout from '@/components/layout/ContentLayout'
+import ContentLayout from '@/components/layout/content-layout'
 export default ContentLayout

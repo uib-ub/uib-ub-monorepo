@@ -1,4 +1,33 @@
-export function extractFacets(request: Request ) {
+import { datasetTypes } from "@/config/metadata-config";
+
+export const RESERVED_PARAMS = [
+  'q',
+  'display',
+  'dataset',
+  'page',
+  'asc',
+  'desc',
+  'fulltext',
+  'facetSort',
+  'fields',
+  'size',
+  'from',
+  'topLeftLat',
+  'topLeftLng',
+  'bottomRightLat',
+  'bottomRightLng',
+  'doc',
+  'sourceLabel',
+  'sourceDataset',
+  'facetSearch',
+  'totalHits',
+  'facets',
+  'zoom',
+  'point',
+  'datasetTag',
+] as const;
+
+export function extractFacets(request: Request) {
   const urlParams = new URL(request.url).searchParams;
 
   const termFilters = []
@@ -8,33 +37,35 @@ export function extractFacets(request: Request ) {
   const serverFacets: { [key: string]: string[] } = {};
 
   for (const [key, value] of urlParams.entries()) {
-    switch (key) {
-      case 'q':
-      case 'display': // Display mode. For now table is the only possible value. Map is default
-      case 'dataset':
-      case 'page':
-      case 'asc':
-      case 'desc':
-      case 'field':
-      case 'facetSort':
-      case 'size':
-      case 'topLeftLat':
-      case 'topLeftLng':
-      case 'bottomRightLat':
-      case 'bottomRightLng':
-      case 'facetSearch':
-      case 'facets':
-        filteredParams[key] = urlParams.get(key)!;
-        break;
-      default:
-        const facets = key == 'adm' ? clientFacets : serverFacets;
-        if (!facets[key]) {
-          facets[key] = [];
-        }
-        facets[key].push(value);
+    if (RESERVED_PARAMS.includes(key as any)) {
+      filteredParams[key] = urlParams.get(key)!;
+    } else {
+      const facets = key == 'adm' ? clientFacets : serverFacets;
+      if (!facets[key]) {
+        facets[key] = [];
+      }
+      facets[key].push(value);
     }
   }
 
+  // Handle dataset tag (non-categorical dataset type) filter for datasets
+  if (filteredParams.datasetTag) {
+    const datasetTag = filteredParams.datasetTag;
+    const matchingDatasets = Object.entries(datasetTypes)
+      .filter(([_, types]) => types.includes(datasetTag))
+      .map(([dataset]) => dataset);
+    
+    if (matchingDatasets.length > 0) {
+      termFilters.push({
+        "bool": {
+          "should": [{
+            "terms": { "datasets.keyword": matchingDatasets }
+          }],
+          "minimum_should_match": 1
+        }
+      });
+    }
+  }
 
   // Hierarchical facet 
   if (Object.keys(clientFacets).length) {
@@ -54,7 +85,6 @@ export function extractFacets(request: Request ) {
           ...clientFacets.adm.filter((value: string) => value.slice(0,6) == "_false").map((value: string) => {
             // Split the value to separate the levels and remove the "_false" prefix
             const levels = value.slice(8).split('__').filter(val => val.length).reverse();
-            console.log("LEVELS", levels)
             const mustClauses = levels.map((level, index) => ({
               "term": { [`adm${index+1}.keyword`]: level }
             }));

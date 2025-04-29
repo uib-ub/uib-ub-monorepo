@@ -8,7 +8,8 @@ export interface SubindexPresentation {
     alt?: string;
     imageAttribution?: string;
     description?: string;
-    initPage?: string;
+    initMode?: string;
+    icon: string;
   }
 }
 
@@ -21,33 +22,48 @@ export interface DatasetPresentation {
     attribution: string;
     links?: {title?: string, href: string, text?: string}[];
     subindices?: SubindexPresentation;
-    initPage?: string;
+    initMode?: string;
   }
 }
 
 export const datasetTitles: DatasetTitles = {
+    search: "Overordna søk",
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
-    nbas: "Den nasjonale stadnamnbasen",
+    //nbas: "Den nasjonale stadnamnbasen",
     nbas_k: "innsamlingskart",
+    nbas_reykjavik: "Den nasjonale stadnamnbasen (Legacy data)",
     m1838: "Matrikkelen 1838", 
-    m1886: "Matrikkelen av 1886",
+    m1886: "Matrikkelen 1886",
     mu1950: "Matrikkelutkastet 1950", 
-    search: "Stadnamnsøk",
     skul: "Skulebarnsoppskriftene",
     leks: "Norsk stadnamnleksikon",
     leks_g: "grunnord",
     ostf: "Bustadnavn i Østfold",
     sof: "Fylkesarkivet i Sogn og Fjordane",
     tot: "Totennavn",
-    ssr2016: "Sentralt stadnamnregister 2016",
+    ssr2016: "Kartverket 2016",
+    ssr2020: "Kartverket 2020",
+    nrk: "NRKs gamle stadnamnarkiv",
+    gn2019: "Geonames 2019",
+    ft1900: "Folketellingen 1900",
+    ft1910: "Folketellingen 1910",
+    m2010: "Matrikkelen 2010",
+    frogn: "Frognmaterialet",
+    gjerd: "Gjerdrumundersøkelsen",
+    sorum: "Sørummaterialet",
+    kven: "Kvenske stedsnavn",
+    snor: "Stedsnavn i Norge",
+    herad: "Heradsregisteret",
+    seta: "Seternamnarkivet"
+
 }
 
 export const datasetDescriptions: Record<string, string> = {
   bsn: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig.",
-  hord: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det mulig òg å lytte til den lokale uttalen.",
-  rygh: "Norske Gaardnavne er en digital utgivelse av bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning.",
+  hord: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
+  rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924. Oppslagsverket inneholder bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning.",
   ostf: `Bustadnavn i Østfold er en utgivelse over bebyggelsesnavna (bustadnavna) i Østfold herredsvis (22 herred etter den gamle inndelinga). Navneforskerne Tom Schmidt og Margit Harsson ved Seksjon for navnegransking (UiO) sto for redigering og utgiving av serien, som bygger på et originalmanus av navnegranskeren Kåre Hoel (1922-1989), en navnegranskerkollega. Serien ble utgitt mellom 1994 og 2021 og består av i alt 20 bind. Verket er en sterkt utvidet og revidert utgave av Oluf Ryghs Norske Gaardnavne (bind 1 Smaalenenes Amt, 1897). Rygh begrenset seg i all hovedsak til navn på matrikkelgårdene, men nå er også navn på andre bebyggelser tatt opp til drøfting, samtidig som gårdsnavnene gis en fyldig behandling - både språklig og kulturhistorisk.`,
   leks: "Norsk stadnamnleksikon er ei digital utgiving av stadnamn frå heile Noreg og er eit søk som gir forklaring på opphavet av viktige stadnamn i Noreg. Det er mogleg å søkja på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn og samstundes alle administrative inndelingane i Noreg frå før 2020. Den digitale Norsk stadnamnleksikon er ei vidareføring av siste trykte utgåve frå 1997.",
   nbas: "Den nasjonale stedsnavnbasen inneholder om lag 700 000 navn totalt (fordelte på kortsamlinger fra herredsregistret, seternavnregisteret, en del enkeltsamlinger, og stedsnavnsamlingen ved Universitetet i Bergen. Hvert navnekort inneholder navneform, uttale og informasjon om tilhørighet til kommune og fylke. I mange tilfelder er også gardsnummer oppgitt. I tillegg inneholder basen 3 700 originale innsamlingskart.",
@@ -55,9 +71,47 @@ export const datasetDescriptions: Record<string, string> = {
   m1886: "Matrikkelen av 1886 er en oversikt over jordeiendommer i hele landet, angitt med navn, matrikkelnummer og verdi. Som noe nytt ble gardsnummer og bruksnummer tatt i bruk. Alle landets fylker, untatt Finnmark er dekket, og for hvert bruksnummer er angitt gards- og bruksnavn, i alt nesten 208 000 matrikler. Matrikelen regnes for å være den første moderne matrikkel, fastsatt etter det systemet vi kjenner i dag.",
   mu1950: "Matrikkelutkastet av 1950 var forberedelsen til en ny matrikkel for hele Norge, men oppgaven ble aldri fullført, og man brukte i stedet kommunale eiendomsregistre. Utkastet dekker samlet sett over 767 000 matrikler fra landkommunene i alle fylker unntatt Finnmark. Hver matrikkel er angitt med gards- og bruksnavn, matrikkelnummer og verdi.",
   skul: "Skulebarnsoppskriftene var en landsdekkende dugnad i perioden 1931-1935, der skoleelever samlet inn stedsnavn fra egne bruk. Det ble samlet inn stedsnavn fra i alt 9700 matrikkelgårder i 13 fylker. Innsamlingsprosjektet ble organisert av navnegranskeren Gustav Indrebø (1889 - 1942), og omfatter totalt over 1 million navn. Dette datasettet omfatter inntil videre alene fylkene Nordland og Troms.",
-  sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordana, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare.",
+  sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordane, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på åttitalet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vert òg foretatt i enkelte kommunar seinare.",
   tot: "Totennavn er en samling av navn på garder, bruk, småbruk, forsvunne stedsnavn, skogteiger og jorder fra hele Toten. Materialet baserer seg på kjeldemateriale samlet inn til Norsk stedsnavnarkiv ved Universitetet i Oslo. Arbeidet er utført av Trond Nygård på oppdrag for daværende Seksjon for navnegransking. Prosjektet ble sluttført i 2007. Kartfesting er uført på Språksamlingane i 2024.", 
-  ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur."
+  ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur.",
+  ssr2020: "Sentralt stadnamnregister, Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
+  nrk: "NRKs gamle stadnamnarkiv vart laga rundt 1960. Arkivet har tilrådd uttale for 2000 ulike stadnamn i Noreg. I datasettet finn du tilrådd uttale frå det gamle arkivet. Ver merksam på at uttale av stadnamn kan endre seg over tid, og at uttalen som var tilrådd på 1960-talet ikkje nødvendigvis samsvarar med uttalen i dag.",
+  m2010: "Matrikkelen 2010 er eit datasett utvikla av Språksamlingane, basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret) - eit offentleg register over faste eigedomar i Noreg. Registeret vart ført av Statens kartverk for kvar kommune med opplysningar om alle grunneigedomar, festegrunnar som hadde eige grunnboksblad i tinglysingsregisteret, samt anna som hadde eige grunnboksblad, til dømes eigarseksjonar. I tillegg til eigedomen si nemning og stadfesting inneheldt GAB-registeret opplysningar om kva for ein eigedom den var utskild frå, arealet, eigarforhold, adresse og bygningsdata. GAB-registeret er i dag avløyst av matrikkelen.",
+  frogn: "",
+  gjerd: "",
+  sorum: "",
+  kven: "",
+  snor: "",
+  herad: "",
+  seta: ""
+}
+
+
+export const datasetShortDescriptions: Record<string, string> = {
+  search: "Overordna søk henter data frå alle datasetta og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder.",
+  bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
+  hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
+  rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924.",
+  ostf: "En 20-binds serie utgitt mellom 1994 og 2021, som dekker bosetningsnavn i det tidligere Østfold fylke.",
+  leks: "Digital utgåve av Norsk Stadnamnleksikon (1997) som forklarar opphavet til viktige stadnamn i Noreg, inkludert norske, samiske og kvenske namn, samt administrative inndelingar.",
+  nbas: "Inneholder omtrent 700 000 navn fra ulike samlinger, der hvert navnekort inkluderer navneformen, uttalen og informasjon om kommunen og fylket.",
+  m1838: "Norges første omfattende matrikkel fra 1800-tallet, som dekker hele landet unntatt Finnmark.",
+  mu1950: "Utkast til en ny nasjonal matrikkel som aldri ble fullført. Den dekket over 767 000 oppføringer av eiendommer fra landkommuner.",
+  m1886: "Regnes som Norges første moderne matrikkel, og introduserte gårds- og bruksnumre for hele landet bortsett fra Finnmark.",
+  skul: "Eit landsdekkjande prosjekt frå 1931–1935 der skulebarn samla inn over 1 million stadnamn frå 9 700 registrerte gardar i 13 fylke.",
+  sof: "Eit omfattande materiale som er resultatet av ei stor innsamling av stadnamn på 1980-talet frå Sogn og Fjordane og Møre og Romsdal.",
+  tot: "En samling av ulike stedsnavn fra Toten-regionen, basert på kildemateriale samlet inn for Norsk stadnamnarkiv ved Universitetet i Oslo.",
+  ssr2016: "Basert på Kartverket sitt første frie stadnamndatasett frå 2000. Databasen var i bruk fram til 2016 då Kartverket si noverande datastruktur vart lansert.",
+  ssr2020: "Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
+  nrk: "NRKs stadnamnarkiv frå 1960 inneheld tilrådd uttale for 2000 stadnamn i Noreg. Uttalen kan ha endra seg sidan den gong.",
+  m2010: "Eit datasett basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret), som var eit offentleg register over faste eigedomar i Noreg.",
+  frogn: "",
+  gjerd: "",
+  sorum: "",
+  kven: "",
+  snor: "",
+  herad: "",
+  seta: ""
 }
 
 
@@ -76,6 +130,19 @@ export const publishDates: Record<string, string> = {
   sof: "2024-06-13",
   tot: "2024-08-26",
   ssr2016: "2024-09-10",
+  ssr2020: "2025-03-04",
+  nrk: "2025-03-06",
+  gn2019: "2025-03-13",
+  ft1900: "2025-03-13",
+  ft1910: "2025-03-13",
+  m2010: "2025-03-13",
+  frogn: "2025-04-23",
+  gjerd: "2025-04-23",
+  sorum: "2025-04-24",
+  kven: "2025-04-24",
+  snor: "2025-04-25",
+  herad: "2025-04-25",
+  seta: "2025-04-25"
 }
 
 
@@ -90,6 +157,13 @@ export const licenses: Record<string, {name: string, url: string}> = {
 
 
 export const datasetPresentation: DatasetPresentation = {
+      search: {
+        img: "icon.svg",
+        alt: "Kart over Norge med stedsnavn",
+        imageAttribution: "Kartverket",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
       bsn: {
         img: "/datasets/ubb-spr-bp-0001_sm.jpg",
         alt: "En kvinnelig arkivar eller kontorist sitter ved et skrivebord foran en stor rekke arkivskuffer.",
@@ -115,7 +189,7 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/Østfold_gml_herredsinndeling.png",
         alt: "Verket bygger på den gamle herredsinndelinga i Østfold",
         imageAttribution: "Bustadnavn i Østfold",
-        attribution: "Kåre Hoel, Margit Harson og Tom Schmidt. Beriket av Språksamlingene", 
+        attribution: "Kåre Hoel, Margit Harsson og Tom Schmidt. Beriket av Språksamlingene", 
         license: licenses.ccby4,
       },
       leks: {
@@ -124,12 +198,13 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "Skanna av Språksamlingane",
         license: licenses.ccby4,
         attribution: "Berit Sandnes. Berika av Språksamlingane", 
-        initPage: "info",
         subindices: {
           leks_g: {
-            initPage: "info",
+            initMode: "list",
+            icon: "base"
         }},
       },      
+      /*
       nbas: {
         img: "/datasets/vincent-botta-wYD_wfifJVs-unsplash.jpg",
         imageAttribution: "Vincent Botta, Unsplash.com",
@@ -142,6 +217,7 @@ export const datasetPresentation: DatasetPresentation = {
         //  }
         //},
       },
+      */
       m1838: {
         img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
         alt: "Utsnitt fra Matrikkelen 1838, Bykle anneks",
@@ -192,7 +268,97 @@ export const datasetPresentation: DatasetPresentation = {
         attribution: "Statens kartverk og Språksamlingane",
         license: licenses.ccby4,
       },
-
+      ssr2020: {
+        img: "/datasets/ssr2016.png",
+        alt: "Kartutsnitt over Kartverket",
+        imageAttribution: "Statens kartverk",
+        attribution: "Statens kartverk og Språksamlingane",
+        license: licenses.ccby4,
+      },
+      nrk: {
+        img: "/datasets/nrk.png",
+        alt: "NRK",
+        imageAttribution: "NRK",
+        attribution: "NRK",
+        license: licenses.ccby4,
+      },
+      gn2019: {
+        img: "/datasets/geonames.png",
+        alt: "Geonames",
+        imageAttribution: "Geonames",
+        attribution: "Geonames",
+        license: licenses.ccby4,
+      },
+      ft1900: {
+        img: "/datasets/ft1900.png",
+        alt: "Folketellingen 1900",
+        imageAttribution: "Folketellingen 1900",
+        attribution: "Folketellingen 1900",
+        license: licenses.ccby4,
+      },
+      ft1910: {
+        img: "/datasets/ft1910.png",
+        alt: "Folketellingen 1910",
+        imageAttribution: "Folketellingen 1910",
+        attribution: "Folketellingen 1910",
+        license: licenses.ccby4,
+      },
+      m2010: {
+        img: "/datasets/m2010.png",
+        alt: "Matrikkelen 2010",
+        imageAttribution: "Matrikkelen 2010",
+        attribution: "Matrikkelen 2010",
+        license: licenses.ccby4,
+      }, 
+      frogn: {
+        img: "/datasets/Frogn_komm.svg.png",
+        alt: "Våpen for Frogn kommune i Akershus fylke",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      gjerd: {
+        img: "/datasets/Gjerdrum_komm.svg.png",
+        alt: "Gjerdrumundersøkelsen",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      sorum: {
+        img: "/datasets/Sørum_komm.svg.png",
+        alt: "Våpen for Sørum kommune i Akershus fylke",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      kven: {
+        img: "/datasets/Flag_of_the_Kven_people.svg.png",
+        alt: "Kvenske stedsnavn",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      snor: {
+        img: "/datasets/snor.png",
+        alt: "Stedsnavn i Norge",
+        imageAttribution: "",
+        attribution: "Språkrådet og Språksamlingene",
+        license: licenses.ccby4,
+      },
+      herad: {
+        img: "/datasets/herad.png",
+        alt: "Herad",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      seta: {
+        img: "/datasets/ubb-kk-ncn-0275_md.jpg",
+        alt: "Stølen til gården Seim i Grøndalen, Røldal.",
+        imageAttribution: "Foto: Knud Knudsen. Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      }
 }
 
 export const subpages: Record<string, string[]> = {
@@ -200,8 +366,7 @@ export const subpages: Record<string, string[]> = {
 }
 
 export const featureNames: Record<string, string> = {
-  "image": "Sedler",
-  "image_tmp": "Sedler (kommer)",
+  "image": "Faksimiler",
   "audio": "Lydopptak",
   "phonetic": "Lydskrift",
   "coordinates": "Koordinater",
@@ -209,50 +374,67 @@ export const featureNames: Record<string, string> = {
   "maps": "Skannede kart",
   "base": "Grunnord",
   "prep": "Preposisjoner",
+  "digi": "Digitalisert materiale" // Inkluderer eksternt materiale
 }
 
 export const typeNames: Record<string, string> = {
-  "sprak": "Språksamlingenes arkiv",
+  "sprak": "Språksamlinganes arkiv", // Fysisk materiale oppbevart i Språksamlingene
   "encyclopedia": "Oppslagsverk",
   "database": "Database",
-  "public": "Offentlig register",
+  "public": "Offentleg register",
+  "collection": "Djupinnsamling" // Toponomastic collection
 }
 
 
 
 
 export const datasetFeatures: Record<string, string[]> = {
-  bsn: ["image"],
-  hord: ["audio", "coordinates", "phonetic"],
-  rygh: ["phonetic"],
-  nbas: ["image", "maps"],
+  bsn: ["image", "digi"],
+  hord: ["audio", "coordinates", "phonetic", "digi"],
+  rygh: ["phonetic", "digi"],
+  nbas: ["image", "digi", "maps"],
   m1838: ["link"],
   m1886: ["link"],
   mu1950: ["link"],
-  skul: ["image_tmp"],
-  leks: ["phonetic", "base"],
+  skul: ["image", "digi"],
+  leks: ["phonetic", "base", "digi"],
   ostf: ["link"],
   sof: ["link", "coordinates", "phonetic"],
   tot: ["phonetic"],
   ssr2016: ["link"],
+  ssr2020: ["link"],
+  nrk: ["phonetic", "image", "digi"],
+  gn2019: ["link"],
+  frogn: ["phonetic"],
+  gjerd: ["phonetic"],
+  sorum: ["phonetic"],
+  herad: ["image", "digi"],
+  seta: ["image", "digi"]
 }
 
 export const datasetTypes: Record<string, string[]> = {
-  bsn: ["sprak"],
-  hord: ["sprak", "database"],
-  rygh: ["encyclopedia"],
-  nbas: ["sprak", "database"],
+  bsn: ["sprak", "collection"],
+  hord: ["sprak", "database", "collection"],
+  rygh: ["encyclopedia", "collection"],
+  herad: ["sprak", "collection"],
+  seta: ["sprak", "collection"],
   m1838: ["public"],
   m1886: ["public"],
   mu1950: ["public", "sprak"],
-  skul: ["sprak"],
-  leks: ["encyclopedia"],
-  ostf: ["encyclopedia"],
-  sof: ["database"],
-  tot: ["database", "sprak"],
-  ssr2016: ["database"],
+  skul: ["sprak", "collection"],
+  leks: ["encyclopedia", "collection"],
+  ostf: ["encyclopedia", "collection"],
+  sof: ["database", "collection"],
+  tot: ["database", "sprak", "collection"],
+  ssr2016: ["database", "public"],
+  ssr2020: ["database", "public"],
+  nrk: ["database", "collection"],
+  gn2019: ["database", "public"],
+  m2010: ["database", "public"],
+  gjerd: ["collection"],
+  sorum: ["collection"],
+  frogn: ["collection"],
+  kven: ["database"],
+  snor: ["database", "collection"],
 }
-
-
-
 

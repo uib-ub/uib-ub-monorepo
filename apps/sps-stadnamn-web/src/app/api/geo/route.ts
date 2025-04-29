@@ -61,7 +61,7 @@ else {
     query.query = geo_query
 }
 
-  const data = await postQuery(dataset, query)
+  const [data, status] = await postQuery(dataset, query)
 
-  return Response.json(data);
+  return Response.json(data, {status: status})
 }
