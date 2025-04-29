@@ -31,7 +31,7 @@ export const datasetTitles: DatasetTitles = {
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
-    nbas: "Den nasjonale stadnamnbasen",
+    //nbas: "Den nasjonale stadnamnbasen",
     nbas_k: "innsamlingskart",
     nbas_reykjavik: "Den nasjonale stadnamnbasen (Legacy data)",
     m1838: "Matrikkelen 1838", 
@@ -49,7 +49,15 @@ export const datasetTitles: DatasetTitles = {
     gn2019: "Geonames 2019",
     ft1900: "Folketellingen 1900",
     ft1910: "Folketellingen 1910",
-    m2010: "Matrikkelen 2010"
+    m2010: "Matrikkelen 2010",
+    frogn: "Frognmaterialet",
+    gjerd: "Gjerdrumundersøkelsen",
+    sorum: "Sørummaterialet",
+    kven: "Kvenske stedsnavn",
+    snor: "Stedsnavn i Norge",
+    herad: "Heradsregisteret",
+    seta: "Seternamnarkivet"
+
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -68,7 +76,14 @@ export const datasetDescriptions: Record<string, string> = {
   ssr2016: "Datasettet Sentralt stadnamnregister 2016 bygger på kartverkets første gratis stadnamndatasett, opprinneleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg at søkja på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart og i 2016 vart det noverande SSR lansert med ny datastruktur.",
   ssr2020: "Sentralt stadnamnregister, Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
   nrk: "NRKs gamle stadnamnarkiv vart laga rundt 1960. Arkivet har tilrådd uttale for 2000 ulike stadnamn i Noreg. I datasettet finn du tilrådd uttale frå det gamle arkivet. Ver merksam på at uttale av stadnamn kan endre seg over tid, og at uttalen som var tilrådd på 1960-talet ikkje nødvendigvis samsvarar med uttalen i dag.",
-  m2010: "Matrikkelen 2010 er eit datasett utvikla av Språksamlingane, basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret) - eit offentleg register over faste eigedomar i Noreg. Registeret vart ført av Statens kartverk for kvar kommune med opplysningar om alle grunneigedomar, festegrunnar som hadde eige grunnboksblad i tinglysingsregisteret, samt anna som hadde eige grunnboksblad, til dømes eigarseksjonar. I tillegg til eigedomen si nemning og stadfesting inneheldt GAB-registeret opplysningar om kva for ein eigedom den var utskild frå, arealet, eigarforhold, adresse og bygningsdata. GAB-registeret er i dag avløyst av matrikkelen."
+  m2010: "Matrikkelen 2010 er eit datasett utvikla av Språksamlingane, basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret) - eit offentleg register over faste eigedomar i Noreg. Registeret vart ført av Statens kartverk for kvar kommune med opplysningar om alle grunneigedomar, festegrunnar som hadde eige grunnboksblad i tinglysingsregisteret, samt anna som hadde eige grunnboksblad, til dømes eigarseksjonar. I tillegg til eigedomen si nemning og stadfesting inneheldt GAB-registeret opplysningar om kva for ein eigedom den var utskild frå, arealet, eigarforhold, adresse og bygningsdata. GAB-registeret er i dag avløyst av matrikkelen.",
+  frogn: "",
+  gjerd: "",
+  sorum: "",
+  kven: "",
+  snor: "",
+  herad: "",
+  seta: ""
 }
 
 
@@ -89,7 +104,14 @@ export const datasetShortDescriptions: Record<string, string> = {
   ssr2016: "Basert på Kartverket sitt første frie stadnamndatasett frå 2000. Databasen var i bruk fram til 2016 då Kartverket si noverande datastruktur vart lansert.",
   ssr2020: "Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
   nrk: "NRKs stadnamnarkiv frå 1960 inneheld tilrådd uttale for 2000 stadnamn i Noreg. Uttalen kan ha endra seg sidan den gong.",
-  m2010: "Eit datasett basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret), som var eit offentleg register over faste eigedomar i Noreg."
+  m2010: "Eit datasett basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret), som var eit offentleg register over faste eigedomar i Noreg.",
+  frogn: "",
+  gjerd: "",
+  sorum: "",
+  kven: "",
+  snor: "",
+  herad: "",
+  seta: ""
 }
 
 
@@ -113,7 +135,14 @@ export const publishDates: Record<string, string> = {
   gn2019: "2025-03-13",
   ft1900: "2025-03-13",
   ft1910: "2025-03-13",
-  m2010: "2025-03-13"
+  m2010: "2025-03-13",
+  frogn: "2025-04-23",
+  gjerd: "2025-04-23",
+  sorum: "2025-04-24",
+  kven: "2025-04-24",
+  snor: "2025-04-25",
+  herad: "2025-04-25",
+  seta: "2025-04-25"
 }
 
 
@@ -175,6 +204,7 @@ export const datasetPresentation: DatasetPresentation = {
             icon: "base"
         }},
       },      
+      /*
       nbas: {
         img: "/datasets/vincent-botta-wYD_wfifJVs-unsplash.jpg",
         imageAttribution: "Vincent Botta, Unsplash.com",
@@ -187,6 +217,7 @@ export const datasetPresentation: DatasetPresentation = {
         //  }
         //},
       },
+      */
       m1838: {
         img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
         alt: "Utsnitt fra Matrikkelen 1838, Bykle anneks",
@@ -278,6 +309,55 @@ export const datasetPresentation: DatasetPresentation = {
         imageAttribution: "Matrikkelen 2010",
         attribution: "Matrikkelen 2010",
         license: licenses.ccby4,
+      }, 
+      frogn: {
+        img: "/datasets/Frogn_komm.svg.png",
+        alt: "Våpen for Frogn kommune i Akershus fylke",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      gjerd: {
+        img: "/datasets/Gjerdrum_komm.svg.png",
+        alt: "Gjerdrumundersøkelsen",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      sorum: {
+        img: "/datasets/Sørum_komm.svg.png",
+        alt: "Våpen for Sørum kommune i Akershus fylke",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      kven: {
+        img: "/datasets/Flag_of_the_Kven_people.svg.png",
+        alt: "Kvenske stedsnavn",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      snor: {
+        img: "/datasets/snor.png",
+        alt: "Stedsnavn i Norge",
+        imageAttribution: "",
+        attribution: "Språkrådet og Språksamlingene",
+        license: licenses.ccby4,
+      },
+      herad: {
+        img: "/datasets/herad.png",
+        alt: "Herad",
+        imageAttribution: "",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      seta: {
+        img: "/datasets/ubb-kk-ncn-0275_md.jpg",
+        alt: "Stølen til gården Seim i Grøndalen, Røldal.",
+        imageAttribution: "Foto: Knud Knudsen. Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
       }
 }
 
@@ -286,8 +366,7 @@ export const subpages: Record<string, string[]> = {
 }
 
 export const featureNames: Record<string, string> = {
-  "image": "Sedler",
-  "image_tmp": "Sedler (kommer)",
+  "image": "Faksimiler",
   "audio": "Lydopptak",
   "phonetic": "Lydskrift",
   "coordinates": "Koordinater",
@@ -295,43 +374,50 @@ export const featureNames: Record<string, string> = {
   "maps": "Skannede kart",
   "base": "Grunnord",
   "prep": "Preposisjoner",
+  "digi": "Digitalisert materiale" // Inkluderer eksternt materiale
 }
 
 export const typeNames: Record<string, string> = {
-  "sprak": "Språksamlinganes arkiv",
+  "sprak": "Språksamlinganes arkiv", // Fysisk materiale oppbevart i Språksamlingene
   "encyclopedia": "Oppslagsverk",
   "database": "Database",
   "public": "Offentleg register",
-  "collection": "Djupinnsamling"
+  "collection": "Djupinnsamling" // Toponomastic collection
 }
 
 
 
 
 export const datasetFeatures: Record<string, string[]> = {
-  bsn: ["image"],
-  hord: ["audio", "coordinates", "phonetic"],
-  rygh: ["phonetic"],
-  nbas: ["image", "maps"],
+  bsn: ["image", "digi"],
+  hord: ["audio", "coordinates", "phonetic", "digi"],
+  rygh: ["phonetic", "digi"],
+  nbas: ["image", "digi", "maps"],
   m1838: ["link"],
   m1886: ["link"],
   mu1950: ["link"],
-  skul: ["image_tmp"],
-  leks: ["phonetic", "base"],
+  skul: ["image", "digi"],
+  leks: ["phonetic", "base", "digi"],
   ostf: ["link"],
   sof: ["link", "coordinates", "phonetic"],
   tot: ["phonetic"],
   ssr2016: ["link"],
   ssr2020: ["link"],
-  nrk: ["phonetic"],
-  gn2019: ["link"]
+  nrk: ["phonetic", "image", "digi"],
+  gn2019: ["link"],
+  frogn: ["phonetic"],
+  gjerd: ["phonetic"],
+  sorum: ["phonetic"],
+  herad: ["image", "digi"],
+  seta: ["image", "digi"]
 }
 
 export const datasetTypes: Record<string, string[]> = {
   bsn: ["sprak", "collection"],
   hord: ["sprak", "database", "collection"],
   rygh: ["encyclopedia", "collection"],
-  nbas: ["sprak", "database"],
+  herad: ["sprak", "collection"],
+  seta: ["sprak", "collection"],
   m1838: ["public"],
   m1886: ["public"],
   mu1950: ["public", "sprak"],
@@ -344,7 +430,11 @@ export const datasetTypes: Record<string, string[]> = {
   ssr2020: ["database", "public"],
   nrk: ["database", "collection"],
   gn2019: ["database", "public"],
-  m2010: ["database", "public"]
-
+  m2010: ["database", "public"],
+  gjerd: ["collection"],
+  sorum: ["collection"],
+  frogn: ["collection"],
+  kven: ["database"],
+  snor: ["database", "collection"],
 }
 

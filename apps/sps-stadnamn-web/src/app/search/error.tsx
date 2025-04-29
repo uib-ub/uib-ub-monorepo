@@ -1,10 +1,8 @@
 'use client' // Error boundaries must be Client Components
- 
-import ErrorMessage from '@/components/error-message'
 import Spinner from '@/components/svg/Spinner'
 import { usePlausible } from 'next-plausible'
 import { useEffect, useState } from 'react'
-import { PiWarningCircle, PiWarningFill, PiSpinner, PiArrowClockwise, PiBugBeetle, PiCheckCircle, PiCheck } from 'react-icons/pi'
+import { PiArrowClockwise, PiCheck } from 'react-icons/pi'
  
 export default function Error({
   error,

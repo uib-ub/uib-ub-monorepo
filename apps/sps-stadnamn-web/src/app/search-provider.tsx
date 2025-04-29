@@ -5,7 +5,7 @@ import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
-import { addPadding } from '@/lib/map-utils';
+import { useMode } from '@/lib/search-params';
 
 interface SearchContextData {
     resultData: any;
@@ -40,7 +40,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const searchParams = useSearchParams()
     const dataset = useDataset()
     const { setCurrentUrl, isMobile, pinnedFilters, preferredTabs } = useContext(GlobalContext)
-    const mode = searchParams.get('mode') || 'map'
+    const mode = useMode()
     const useTableData = mode != 'map' && preferredTabs[dataset] != 'map'
     
 
@@ -73,7 +73,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     
     useEffect(() => {
         setCurrentUrl("/search?" + searchParamsString)
-    }, [searchParamsString])
+    }, [searchParamsString, setCurrentUrl])
     
 
 

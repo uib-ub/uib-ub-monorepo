@@ -1,12 +1,10 @@
 'use client'
-import { useState, useContext, useEffect, Fragment } from 'react'
+import { useState, useContext } from 'react'
 import ErrorMessage from '@/components/error-message'
 import { DocContext } from '@/app/doc-provider'
-import { usePathname, useSearchParams } from 'next/navigation'
 import { ChildrenContext } from '@/app/children-provider' 
 import { datasetTitles } from '@/config/metadata-config'
 import SourceItem from './source-item'
-import { useQueryState } from 'nuqs'
 import { GlobalContext } from '@/app/global-provider'
 
 export default function SourceList() {

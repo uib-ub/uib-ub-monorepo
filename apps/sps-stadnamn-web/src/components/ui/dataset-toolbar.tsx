@@ -1,18 +1,19 @@
 import { treeSettings } from "@/config/server-config";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useQueryState } from "nuqs";
+import { usePathname } from "next/navigation";
 import { PiCaretRight, PiMagnifyingGlass, PiTreeView, PiWall } from "react-icons/pi";
 import { datasetPresentation, datasetTitles } from "@/config/metadata-config";
 import { GlobalContext } from "@/app/global-provider";
 import { useContext } from "react";
+import { useDataset, useMode } from "@/lib/search-params";
 
 const icons: {[key: string]: JSX.Element} ={
     "base": <PiWall className="text-neutral-800" aria-hidden="true"/>,
   };
 
-export default function DatasetToolbar({ dataset }: { dataset: string }) {
-    const mode = useQueryState('mode', { defaultValue: 'map' })[0]
+export default function DatasetToolbar() {
+    const dataset = useDataset()
+    const mode = useMode()
     const pathname = usePathname()
     const { pinnedFilters } = useContext(GlobalContext)
 

@@ -1,8 +1,6 @@
 import { fetchSNIDParent } from "@/app/api/_utils/actions"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
-import { PiCaretRight } from "react-icons/pi"
-
 
 export default async function ServerParent({uuid}: {uuid: string}) {
     const parent = await fetchSNIDParent(uuid)

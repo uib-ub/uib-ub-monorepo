@@ -20,12 +20,14 @@ export async function GET(request: Request) {
     size: zoom > 16 ? 300 : 200,
     fields: ["label", "location", "uuid", "sosi", "children", "placeScore", "within"],
     sort: dataset === 'search' ? [
+      /*
       {
         "placeScore": "desc"
       },
       {
         "ranking": "asc"
       },
+      */
       {
         "uuid": "asc"
       }

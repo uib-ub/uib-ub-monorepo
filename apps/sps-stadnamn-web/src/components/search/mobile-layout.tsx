@@ -1,10 +1,10 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiBinocularsFill, PiBookOpen, PiDatabase, PiDatabaseFill, PiFunnel, PiFunnelFill, PiInfoFill, PiListBullets, PiTreeViewFill } from "react-icons/pi";
+import { PiBookOpen, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from "react-icons/pi";
 import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
-import { useDataset, useSearchQuery } from "@/lib/search-params";
+import { useDataset, useSearchQuery, useMode } from "@/lib/search-params";
 import Facets from "./facets/facet-section";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
@@ -20,7 +20,6 @@ import { DocContext } from "@/app/doc-provider";
 import DocInfo from "./info/doc-info";
 import DocSkeleton from "./info/doc-skeleton";
 import ChildrenWindow from "../children/children-window";
-import { GlobalContext } from "@/app/global-provider";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -40,12 +39,11 @@ export default function MobileLayout() {
     const { totalHits, isLoading } = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
-    const mode = useQueryState('mode', {defaultValue: 'map'})[0]
     const dataset = useDataset()
+    const mode = useMode()
     const parent = searchParams.get('parent')
     const { childrenData } = useContext(ChildrenContext)
-    const { parentData, docLoading } = useContext(DocContext)
-    const { preferredTabs } = useContext(GlobalContext)
+    const { docLoading } = useContext(DocContext)
 
 
 

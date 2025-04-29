@@ -1,5 +1,3 @@
-import { fetchChildren } from '@/app/api/_utils/actions'
-import SourceItem from '@/components/children/source-item'
 import { datasetTitles } from '@/config/metadata-config'
 import { resultRenderers } from '@/config/result-renderers'
 import { defaultResultRenderer } from '@/config/result-renderers'

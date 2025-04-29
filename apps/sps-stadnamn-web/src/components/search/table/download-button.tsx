@@ -1,6 +1,6 @@
 import { facetConfig } from "@/config/search-config";
 import { useDataset, useSearchQuery } from "@/lib/search-params";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { PiDownload, PiX } from "react-icons/pi";
 import {
     AlertDialog,
@@ -13,9 +13,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
-import Link from "next/link";
-import { useContext } from "react";
-import { SearchContext } from "@/app/search-provider";
 import { contentSettings } from "@/config/server-config";
 
 

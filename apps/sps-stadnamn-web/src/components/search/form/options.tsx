@@ -1,4 +1,3 @@
-import { useDataset } from "@/lib/search-params";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { parseAsString, useQueryState } from "nuqs";
 import { PiCheck, PiFaders } from "react-icons/pi";
@@ -6,7 +5,6 @@ import { PiCheck, PiFaders } from "react-icons/pi";
 
 export default function Options() {
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
-    const dataset = useDataset()
     const toggleFulltext = () => {
         setFulltext(prev => prev == 'on' ? 'off' : 'on');
     };

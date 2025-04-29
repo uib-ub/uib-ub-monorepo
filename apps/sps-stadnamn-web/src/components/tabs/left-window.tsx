@@ -1,23 +1,20 @@
 import { treeSettings } from "@/config/server-config";
-import { useDataset, useSearchQuery } from "@/lib/search-params";
-import { PiBinoculars, PiBinocularsFill, PiCaretUp, PiDatabase, PiFunnel, PiFunnelFill, PiListBullets, PiTreeView, PiTreeViewFill, PiX } from "react-icons/pi";
-import Clickable from "../ui/clickable/clickable";
+import { useDataset, useMode, useSearchQuery } from "@/lib/search-params";
+import { PiCaretUp, PiDatabase, PiFunnel, PiListBullets, PiTreeView } from "react-icons/pi";
 import { SearchContext } from "@/app/search-provider";
 import { useContext, useState, useEffect, useTransition } from "react";
-import { useQueryState } from "nuqs";
 import TreeResults from "../search/results/tree-results";
 import Facets from "../search/facets/facet-section";
 import DatasetDrawer from "../search/datasets/dataset-drawer";
 import SearchResults from "../search/results/search-results";
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function LeftWindow() {
     const dataset = useDataset()
-    const { totalHits, isLoading } = useContext(SearchContext)
-    const mode = useQueryState('mode', {defaultValue: 'map'})[0]
+    const { totalHits } = useContext(SearchContext)
     const { searchFilterParamsString } = useSearchQuery()
     const searchParams = useSearchParams()
+    const mode = useMode()
     const nav = searchParams.get('nav') || 'datasets'
     const [windowCollapsed, setWindowCollapsed] = useState(false)
     const router = useRouter()

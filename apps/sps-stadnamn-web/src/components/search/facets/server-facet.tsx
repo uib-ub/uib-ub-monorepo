@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext, ChangeEvent } from 'react';
-import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
-import { useQueryStringWithout, useDataset, useSearchQuery } from '@/lib/search-params';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
-import { PiSortAscending, PiSortDescending, PiFunnelSimple, PiMagnifyingGlass, PiTrashFill } from 'react-icons/pi';
+import { PiMagnifyingGlass } from 'react-icons/pi';
 
 import { datasetTitles, typeNames, datasetTypes } from '@/config/metadata-config';
 

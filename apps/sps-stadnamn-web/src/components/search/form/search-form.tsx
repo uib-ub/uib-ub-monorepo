@@ -6,13 +6,12 @@ import { useQueryState } from 'nuqs';
 import { datasetTitles } from '@/config/metadata-config';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { fulltextFields } from '@/config/search-config';
-import { useDataset, useSearchQuery } from '@/lib/search-params';
+import { useDataset, useMode, useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import Clickable from '@/components/ui/clickable/clickable';
-
 
 
 export default function SearchForm() {
@@ -26,7 +25,7 @@ export default function SearchForm() {
     const dataset = useDataset()
 
     const { facetFilters } = useSearchQuery()
-    const mode = searchParams.get('mode') || 'map'
+    const mode = useMode()
     
 
     const clearQuery = () => {

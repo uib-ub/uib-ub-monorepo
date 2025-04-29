@@ -1,5 +1,3 @@
-
-
 import type { NextRequest } from 'next/server'
 import { fetchDoc, fetchSNID, fetchSNIDParent } from './app/api/_utils/actions'
 import { defaultDoc2jsonld, doc2jsonld } from './config/rdf-config'
@@ -22,6 +20,7 @@ export async function middleware(request: NextRequest) {
         if (!datasetTitles[dataset]) {
                 return Response.redirect(baseUrl + "/search", 302)
         }
+        return
 
     }
 
@@ -54,11 +53,10 @@ export async function middleware(request: NextRequest) {
         return Response.redirect(baseUrl + "/uuid/" + data.fields.uuid, 302);
     }
 
-    if (path[1] == "uuid" && path[2].includes('.')) {
-
+    if (["uuid", "iiif"].includes(path[1]) && path.length > 2 && path[2].includes('.')) {
         const filename = path[2]
         const [uuid, extension] = filename.split('.')
-        const data = await fetchDoc({ uuid});
+        const data = await fetchDoc({ uuid });
 
         if (extension == 'geojson') {
             const geojson = {
@@ -96,8 +94,6 @@ export async function middleware(request: NextRequest) {
             return Response.json(data);
         }
     }
-
-
     
 }
 
@@ -109,6 +105,7 @@ export async function middleware(request: NextRequest) {
         '/find-snid/:uuid*',
         '/search',
         '/view/:path*',
+        '/iiif/:path*',
     ],
     
   }

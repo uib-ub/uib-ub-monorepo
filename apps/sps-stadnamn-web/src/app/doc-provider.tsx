@@ -1,7 +1,7 @@
 'use client'
 import { createContext, MutableRefObject, useRef } from 'react'
 import { useState, useEffect } from 'react';
-import { useDataset, useSearchQuery } from '@/lib/search-params';
+import { useDataset } from '@/lib/search-params';
 import { useSearchParams } from 'next/navigation';
 
 interface DocContextData {

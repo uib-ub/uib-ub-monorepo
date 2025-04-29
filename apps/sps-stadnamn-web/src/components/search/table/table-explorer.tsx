@@ -1,10 +1,10 @@
 import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
-import { useDataset, useSearchQuery } from "@/lib/search-params"
+import { useDataset, useMode } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import { Fragment, useContext, useState } from "react"
-import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretUp, PiDownload, PiInfoFill, PiMapPin, PiMapPinFill } from "react-icons/pi"
+import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretUp, PiMapPinFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
@@ -27,7 +27,7 @@ export default function TableExplorer() {
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const localStorageKey = `visibleColumns_${dataset}`;
 
-    const mode = searchParams.get('mode') || 'map'
+    const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
 
     const [visibleColumns, setVisibleColumns] = useState<string[]>(['adm', ...facetConfig[dataset].filter(item => item.table).map(facet => facet.key)])

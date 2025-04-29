@@ -1,23 +1,13 @@
 import Link from 'next/link';
 import React, { Fragment } from 'react';
 import parse from 'html-react-parser';
-
-
-import FacetsInfobox from '@/components/doc/facets-infobox';
-import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
-
-
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
     const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
     return [...new Set(altLabels)].join(', ')
   }
-
-
-
-
 
 
 
@@ -129,8 +119,9 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     */
     return <>
     <div className='space-y-2'>
-    { altLabels && <div><strong className="text-neutral-900">Andre navneformer (kan inneholde fonemisk skrift): </strong>{altLabels}</div>}
+    { altLabels && <div><strong className="text-neutral-900">Andre navneformer*: </strong>{altLabels}</div>}
     {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
+    { altLabels && <div className='text-sm text-neutral-700'>* feltene for fonemisk skrift (uttale) og navneformer var sammenblandet i den opprinnelige databasen. Vi har derfor slått dem sammen under fellesbetegnelsen «andre navneformer».</div>}
     </div>
     {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
     </>
@@ -194,6 +185,11 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       }      
       </>
     },
+    tot: (source: any) => {
+      return <>
+      {source.misc?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.Kommentar}</>}
+      </>
+    },
     ssr2016: null,
     ssr2020: null,
     nrk: (source: any) => {
@@ -214,5 +210,21 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     },
     ft1900: null,
     ft1910: null,
-    m2010: null
+    m2010: null,
+    frogn: (source: any) => {
+      return <>
+      {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
+      </>
+    },
+    gjerd: (source: any) => {
+      return <>
+      {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
+      </>
+    },
+    sorum: (source: any) => {
+      return <>
+      {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
+      </>
+    }
+    
   }

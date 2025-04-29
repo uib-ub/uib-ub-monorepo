@@ -1,9 +1,8 @@
 "use client"
-import { useContext, useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { infoPageRenderers } from '@/config/info-renderers';
-import { DocContext } from '@/app/doc-provider';
 import { datasetTitles } from '@/config/metadata-config';
-import { PiBookOpen, PiCaretRight, PiFiles, PiMagnifyingGlass } from 'react-icons/pi';
+import { PiBookOpen } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';

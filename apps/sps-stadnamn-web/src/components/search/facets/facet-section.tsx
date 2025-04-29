@@ -5,7 +5,6 @@ import { contentSettings } from "@/config/server-config"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
-import { useState } from "react"
 import { facetConfig, fieldConfig } from "@/config/search-config"
 
 
@@ -13,9 +12,6 @@ export default function Facets() {
     const dataset = useDataset()
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet') || 'adm'
-
-    const [loadingFacet, setLoadingFacet] = useState<string | null>(null)
-
     const availableFacets = facetConfig[dataset]
 
 

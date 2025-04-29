@@ -10,6 +10,11 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: '**.ubbe.no',
+
+      },
+      {
+        protocol: 'https',
+        hostname: 'iiif.io',
       }
     ],
   },

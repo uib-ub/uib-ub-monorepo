@@ -1,18 +1,16 @@
 import DocInfo from "./doc-info";
-import { useState } from "react";
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
 import { useContext } from "react";
 import DocSkeleton from "./doc-skeleton";
 import { useSearchParams } from "next/navigation";
-import { useDataset } from "@/lib/search-params";
+import { useDataset, useMode } from "@/lib/search-params";
 import Spinner from "@/components/svg/Spinner";
 import { treeSettings } from "@/config/server-config";
 import CadastralSubdivisions from "@/components/children/cadastral-subdivisions";
 import SourceList from "../../children/source-list";
 import Clickable from "@/components/ui/clickable/clickable";
-import { PiArchiveFill, PiArrowLeft, PiBooksFill, PiCaretLeft, PiFilesFill, PiInfoFill, PiRows, PiTable, PiTableFill, PiTag, PiTagFill, PiTreeViewFill, PiX } from "react-icons/pi";
-import { GlobalContext } from "@/app/global-provider";
+import { PiBooksFill, PiCaretLeft, PiInfoFill, PiTreeViewFill, PiX } from "react-icons/pi";
 
 
 export default function DocExplorer({hidden}: {hidden: boolean}) {
@@ -22,8 +20,7 @@ export default function DocExplorer({hidden}: {hidden: boolean}) {
     const doc = searchParams.get('doc')
     const dataset = useDataset()
     const parent = searchParams.get('parent')
-    const mode = searchParams.get('mode') || 'map'
-    const { isMobile } = useContext(GlobalContext)
+    const mode = useMode()
 
     
     return <>

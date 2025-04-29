@@ -2,14 +2,13 @@
 import WithinLabel from "./within-label"
 import { fieldConfig } from "@/config/search-config"
 import { datasetTitles, typeNames } from "@/config/metadata-config"
-import { useDataset, useSearchQuery } from "@/lib/search-params"
+import { useDataset, useMode, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiPushPinFill, PiTrash, PiX } from "react-icons/pi"
 import { parseAsString, useQueryState } from "nuqs"
 import { DocContext } from "@/app/doc-provider"
 import { useContext } from "react"
-import { treeSettings } from "@/config/server-config"
-import { getFieldValue, getGnr, getValueByPath } from "@/lib/utils"
+import { getGnr } from "@/lib/utils"
 import { GlobalContext } from "@/app/global-provider"
 
 
@@ -18,6 +17,7 @@ export default function ActiveFilters() {
     const { searchQuery, facetFilters } = useSearchQuery()
     const searchParams = useSearchParams()
     const dataset = useDataset()
+    const mode = useMode()
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const { parentData } = useContext(DocContext)
     const [parent, setParent] = useQueryState('parent')
@@ -114,7 +114,7 @@ export default function ActiveFilters() {
 
     const gnr =  getGnr(parentData, dataset)
 
-    const mode = searchParams.get('mode') || 'map'
+
 
     return (
       <>

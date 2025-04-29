@@ -17,7 +17,6 @@ import { useDataset, useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
-import { GlobalContext } from "@/app/global-provider";
 import { useSearchParams } from "next/navigation";
 import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
@@ -35,14 +34,11 @@ export default function MapExplorer() {
   const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
   const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
   const [viewResults, setViewResults] = useState<any>(null)
-  const { searchQueryString, searchFilterParamsString } = useSearchQuery()
+  const { searchQueryString } = useSearchQuery()
   const dataset = useDataset()
-  const { childrenData, childrenMarkers, childrenLoading, childrenBounds } = useContext(ChildrenContext)
-  const { isMobile } = useContext(GlobalContext)
+  const { childrenMarkers, childrenLoading, childrenBounds } = useContext(ChildrenContext)
   const programmaticChange = useRef(false)
   const searchParams = useSearchParams()
-  const sourceLabel = searchParams.get('sourceLabel')
-  const sourceDataset = searchParams.get('sourceDataset')
   const parent = searchParams.get('parent')
 
   if (searchParams.get('error') == 'true') {
@@ -403,7 +399,13 @@ useEffect(() => {
     if (!bounds) return [];
     
     const zoomLevel = mapInstance.current?.getZoom() || 0;
-    if (zoomLevel < 10) return [];
+    // Don't show high resolution grids when zoomed out
+    if (zoomLevel < 5) return [];
+    if (zoomLevel < 7 && h3Resolution > 4) return [];
+    if (zoomLevel < 9 && h3Resolution > 5) return [];
+    if (zoomLevel < 11 && h3Resolution > 6) return [];
+    if (zoomLevel < 13 && h3Resolution > 7) return [];
+    if (zoomLevel < 15 && h3Resolution > 8) return [];
     
     const north = bounds.getNorth();
     const south = bounds.getSouth();
@@ -492,12 +494,43 @@ useEffect(() => {
                   positions={polygon}
                   pathOptions={{
                     color: '#666',
-                    weight: 1,
-                    opacity: 0.5,
-                    fillOpacity: 0.1
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0
                   }}
                 />
               ))}
+
+              {/* Add blue hexagon for parent h3 cell */}
+              {parentData?._source?.h3 && (
+                <>
+                  <Polygon
+                    positions={h3.cellToBoundary(parentData._source.h3)}
+                    pathOptions={{
+                      color: '#0066ff',
+                      weight: 2,
+                      opacity: 1,
+                      fillOpacity: 0.5
+                    }}
+                  />
+                  {/* Add surrounding hexagons with lighter color */}
+                  {h3.gridDisk(parentData._source.h3, 1)
+                    .filter(hexId => hexId !== parentData._source.h3)
+                    .map(hexId => (
+                      <Polygon
+                        key={hexId}
+                        positions={h3.cellToBoundary(hexId)}
+                        pathOptions={{
+                          color: '#0066ff',
+                          weight: 1,
+                          opacity: 0.5,
+                          fillOpacity: 0.2
+                        }}
+                      />
+                    ))
+                  }
+                </>
+              )}
 
               {true ? null : markerBounds && markerBounds?.length === 2 && (
                 <Rectangle 
@@ -734,9 +767,9 @@ useEffect(() => {
           {showH3Grid && (
             <div className="px-4 py-2 flex items-center gap-2">
               <button 
-                onClick={() => setH3Resolution(Math.max(6, h3Resolution - 1))}
+                onClick={() => setH3Resolution(Math.max(0, h3Resolution - 1))}
                 className="p-1 rounded bg-neutral-100 hover:bg-neutral-200 disabled:opacity-50"
-                disabled={h3Resolution <= 6}
+                disabled={h3Resolution <= 0}
               >
                 -
               </button>

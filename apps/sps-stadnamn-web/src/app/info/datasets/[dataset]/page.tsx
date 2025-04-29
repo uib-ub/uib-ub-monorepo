@@ -1,11 +1,11 @@
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { datasetFeatures, datasetPresentation, datasetTitles, featureNames } from "@/config/metadata-config"
 import { datasetDescriptions, datasetShortDescriptions, datasetTypes, typeNames } from "@/config/metadata-config"
-import { PiArticleFill, PiFileAudioFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill } from "react-icons/pi"
+import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill } from "react-icons/pi"
 
 const icons: {[key: string]: JSX.Element} ={
     "image": <PiArticleFill aria-hidden="true"/>,
-    "audio": <PiFileAudioFill aria-hidden="true"/>,
+    "audio": <PiSpeakerHighFill aria-hidden="true"/>,
     "phonetic": <PiEarFill aria-hidden="true"/>,
     "coordinates": <PiMapPinLineFill aria-hidden="true"/>,
     "link": <PiLinkSimpleFill aria-hidden="true"/>,

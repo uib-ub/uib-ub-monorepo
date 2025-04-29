@@ -1,6 +1,5 @@
 'use client'
 import { fieldConfig } from "@/config/search-config"
-import { treeSettings } from "@/config/server-config"
 import { PiBookOpen } from "react-icons/pi"
 import Clickable from "../ui/clickable/clickable"
 import { getBnr, getFieldValue } from "@/lib/utils"
@@ -16,7 +15,7 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
     const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
         return { key, label: value.label }
     })
-    const { leaf  } = treeSettings[dataset]
+
 
     const LinkWrapper = ({ uuid, children }: { uuid: string, children: React.ReactNode }) => {
         const commonProps = {

@@ -7,10 +7,10 @@ const DynamicImageViewer = dynamic(() => import('@/components/image-viewer/dynam
 });
 
 
-const ImageViewer = ({manifest}: {manifest: any}) => {
+const ImageViewer = ({images, manifestDataset, manifestId}: {images: Record<string, any>[], manifestDataset: string, manifestId: string}) => {
   return (
     <div className="h-full w-full">
-        <DynamicImageViewer manifest={manifest} />
+        <DynamicImageViewer images={images} manifestDataset={manifestDataset} manifestId={manifestId} />
     </div>
   )
 }

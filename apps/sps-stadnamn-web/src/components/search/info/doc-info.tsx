@@ -2,11 +2,11 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiWarningFill, PiX, PiTag, PiInfoFill, PiArrowElbowLeftUp, PiCaretLeft, PiTableFill, PiInfinityBold, PiMagnifyingGlassBold, PiTable, PiCaretRight, PiTagFill, PiBooksFill } from "react-icons/pi"
+import { PiX, PiTag, PiInfoFill, PiCaretLeft } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import Clickable from "@/components/ui/clickable/clickable"
-import { useDataset } from "@/lib/search-params"
+import { useDataset, useMode } from "@/lib/search-params"
 import { useContext, useMemo } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { treeSettings } from "@/config/server-config"
@@ -37,13 +37,9 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
     const docSource = docData._source
     const parent = searchParams.get('parent')
-    const mode = searchParams.get('mode') || 'map'
+    const mode = useMode()
     const doc = searchParams.get('doc')
     const { isMobile, sosiVocab, preferredTabs } = useContext(GlobalContext)
-    const center = searchParams.get('center')
-    const zoom = searchParams.get('zoom')
-    const sourceLabel = searchParams.get('sourceLabel')
-    const sourceDataset = searchParams.get('sourceDataset')
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -167,9 +163,9 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
       }
 
-        { (docSource.images?.length > 0 || docSource.image?.manifest) && mode != 'list' && <div>
+        { docSource.iiif && mode != 'list' && <div>
         <h3 className="!mt-0 !py-0">Sedler</h3>
-        <ClientThumbnail images={docSource.images || [{manifest: docSource.image.manifest, dataset: docDataset}]}/>
+        <ClientThumbnail iiif={docSource.iiif}/>
         </div>}
 
 
@@ -204,7 +200,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             Varig side
           </Link>
 
-          { !parent && docSource.datasets.length > 1 && (
+          { !parent && docSource.datasets?.length > 1 && (
             <Clickable 
               className="btn btn-primary gap-2"
               remove={["sourceLabel", "sourceDataset"]}

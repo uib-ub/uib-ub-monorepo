@@ -1,9 +1,9 @@
 'use client'
 import { useContext } from "react";
-import { PiBookOpen, PiBookOpenFill, PiHouse, PiHouseFill, PiTag, PiTagFill, PiTrashFill, PiTreeView, PiX, PiXBold } from "react-icons/pi";
+import { PiBookOpen, PiTrashFill, PiX, PiXBold } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { treeSettings } from "@/config/server-config";
-import { getGnr, getValueByPath } from "@/lib/utils";
+import { getGnr } from "@/lib/utils";
 import { ChildrenContext } from "@/app/children-provider";import { DocContext } from "@/app/doc-provider";
 import { useDataset } from "@/lib/search-params";
 import Clickable from "../ui/clickable/clickable";
@@ -23,8 +23,7 @@ export default function ChildrenWindow() {
     const parent = searchParams.get('parent')
     const sourceLabel = searchParams.get('sourceLabel')
     const sourceDataset = searchParams.get('sourceDataset')
-    const { isMobile, preferredTabs } = useContext(GlobalContext)
-    const mode = searchParams.get('mode') || 'map'
+    const { isMobile } = useContext(GlobalContext)
 
     return <>
     <div className="flex flex-col h-full">

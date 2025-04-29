@@ -5,7 +5,7 @@ import { treeSettings } from '@/config/server-config';
 import { useSearchParams } from 'next/navigation';
 import { DocContext } from '@/app/doc-provider';
 import { GlobalContext } from '@/app/global-provider';
-
+import { useMode } from '@/lib/search-params';
 export default function TreeItem({hit}: {hit: any}) {
     const searchParams = useSearchParams()
     const { isMobile } = useContext(GlobalContext)
@@ -13,7 +13,7 @@ export default function TreeItem({hit}: {hit: any}) {
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null)
-    const mode = searchParams.get('mode') || 'map'
+    const mode = useMode()
     
     const { docData } = useContext(DocContext)
 

@@ -69,8 +69,10 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
   export const contentSettings: Record<string, ContentSettingsItem> = {
     search: {
       display: 'map',
-      adm: 3,
-      sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] //  "ranking" added in order to favor results with snid and multiple attestations
+      adm: 0,
+      sort: ["_score", "label.keyword"]
+      //adm: 3,
+      //sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] //  "ranking" added in order to favor results with snid and multiple attestations
     },
     bsn: {
       display: 'map',
@@ -151,7 +153,75 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       display: 'map',
       adm: 2,
       cadastre: false
+    },
+    gn2019: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    ft1900: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    ft1910: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    m2010: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    frogn: {
+      display: 'table',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    gjerd: {
+      display: 'table',
+      adm: 3,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    sorum: {
+      display: 'table',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    kven: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    snor: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    herad: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
+    seta: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
     }
+
+    
   }
 
 
