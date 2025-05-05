@@ -1,6 +1,6 @@
-import { treeSettings } from "@/config/server-config";
+import { contentSettings, treeSettings } from "@/config/server-config";
 import { useDataset, useMode, useSearchQuery } from "@/lib/search-params";
-import { PiCaretUp, PiDatabase, PiFunnel, PiListBullets, PiTreeView } from "react-icons/pi";
+import { PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight } from "react-icons/pi";
 import { SearchContext } from "@/app/search-provider";
 import { useContext, useState, useEffect, useTransition } from "react";
 import TreeResults from "../search/results/tree-results";
@@ -8,6 +8,8 @@ import Facets from "../search/facets/facet-section";
 import DatasetDrawer from "../search/datasets/dataset-drawer";
 import SearchResults from "../search/results/search-results";
 import { useSearchParams, useRouter } from "next/navigation";
+import ClientFacet from "../search/facets/client-facet";
+import IconButton from "../ui/icon-button";
 
 export default function LeftWindow() {
     const dataset = useDataset()
@@ -42,7 +44,8 @@ export default function LeftWindow() {
                 const newParams = new URLSearchParams(searchParams)
                 if (tabName === 'datasets') {
                     newParams.delete('nav')
-                } else {
+                } 
+                else {
                     newParams.set('nav', tabName)
                 }
                 router.push(`?${newParams.toString()}`, { 
@@ -51,43 +54,56 @@ export default function LeftWindow() {
                 setWindowCollapsed(false)
                 localStorage.setItem('leftWindowCollapsed', 'false')
             })
-        }
+        } 
     }
 
-    return <><div className="flex overflow-x-auto rounded-md">
-              <button
+    return <><div className="flex overflow-x-auto rounded-md p-1 gap-2">
+              <IconButton
+                      label="Datasett"
                       onClick={() => handleTabClick('datasets')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('datasets')}
-                      className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 no-underline w-full p-2 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
-                        {isTabActive('datasets') ? <PiCaretUp aria-hidden="true" className="xl:hidden"/>  : <PiDatabase className="xl:hidden" aria-hidden="true"/>}<span className={"sr-only xl:not-sr-only"}>Datasett</span>
-                </button>
+                      className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-900 aria-expanded:shadow-inner">
+                        {isTabActive('datasets') ? <PiDatabaseFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+                </IconButton>
                 
-                {treeSettings[dataset] && <button 
+                {treeSettings[dataset] && <IconButton
+                      label="Register"
                       onClick={() => handleTabClick('tree')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('tree')}
-                      className="flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
-                        {isTabActive('tree') ? <PiCaretUp aria-hidden="true" className="xl:hidden"/>  : <PiTreeView aria-hidden="true" className="xl:hidden"/>}<span className="sr-only xl:not-sr-only">Register</span>
-                </button>
+                      className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-950 aria-expanded:shadow-inner">
+                        {isTabActive('tree') ? <PiTreeViewFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+                </IconButton>
                 }
-                
-                        <button 
+                {contentSettings[dataset].adm && <IconButton
+                      label="Område"
+                      onClick={() => handleTabClick('adm')}
+                      aria-controls="left-window-content"
+                      aria-expanded={isTabActive('adm')}
+                      className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
+          
+                {isTabActive('adm') ? <PiMapPinAreaFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiMapPinAreaLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+                </IconButton>
+                }
+                <IconButton
+                      label="Filter"
                       onClick={() => handleTabClick('filters')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('filters')}
-                      className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 xl:px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner`}>
-                       {isTabActive('filters') ? <PiCaretUp aria-hidden="true" className="xl:hidden"/>  : <PiFunnel aria-hidden="true" className="xl:hidden"/>}<span className={"sr-only xl:not-sr-only"}>Avgrens</span>
-                </button>
+                      className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
+                       {isTabActive('filters') ? <PiFunnelFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiFunnelLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+                </IconButton>
 
                 {searchFilterParamsString && mode == 'map' && <button 
                       onClick={() => handleTabClick('results')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('results')}
-                      className={`flex m-1 whitespace-nowrap rounded-md items-center basis-1 gap-1 no-underline w-full p-2 xl:px-4 lg:w-auto lg:p-1 lg:px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner ml-auto 2xl:ml-0`}>
-                        {isTabActive('results') ? <PiCaretUp aria-hidden="true" className="xl:hidden"/> : <PiListBullets aria-hidden="true" className="xl:hidden"/>}<span className="sr-only xl:not-sr-only">Treff</span>
-                        {isTabActive('results') ? <span className="results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>
-                        : <span className="results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full px-1 text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>}
+                      className="flex whitespace-nowrap rounded items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-3 pr-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-900 aria-expanded:shadow-inner ml-auto">
+                        <span className="text-neutral-900 font-semibold uppercase tracking-wider">Treff</span>
+                        {isTabActive('results') ? <span className="results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>
+                        : <span className="results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>}
+                        
                 </button>}
 
         </div>
@@ -101,6 +117,10 @@ export default function LeftWindow() {
         
         { nav == 'filters' &&
                 <Facets/>
+        }
+        {
+            nav == 'adm' &&
+            <ClientFacet facetName='adm' />
         }
         { searchFilterParamsString && nav == 'results' &&
             <SearchResults/>

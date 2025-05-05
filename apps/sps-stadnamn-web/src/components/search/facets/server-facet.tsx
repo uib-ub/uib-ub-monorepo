@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, ChangeEvent } from 'react';
+import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
@@ -19,7 +19,7 @@ export default function ServerFacet() {
   const [isLoading, setIsLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
-  const {facetOptions, pinnedFilters, updatePinnedFilters} = useContext(GlobalContext)
+  const {facetOptions, pinnedFilters, updatePinnedFilters, isMobile} = useContext(GlobalContext)
   const availableFacets = useMemo(() => facetConfig[dataset], [dataset]);
   const facet = searchParams.get('facet')
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
@@ -127,9 +127,9 @@ export default function ServerFacet() {
   return (
     <>
     { !isLoading &&
-    <div className="flex flex-col gap-2 border-b border-neutral-300 py-4">
+    <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
-    {!fieldConfig[dataset][facet].featuredFacet && <select onChange={switchFacet} value={facet} className='border rounded-md border-neutral-300 p-1'>
+    {isMobile && !fieldConfig[dataset][facet].featuredFacet && <select onChange={switchFacet} value={facet} className='border rounded-md border-neutral-300 p-1'>
               {availableFacets.filter(f => !f.child && !f.featuredFacet)?.map((item, index) => (
             <option key={index} value={item.key}>{item.label}</option>
         ))}
