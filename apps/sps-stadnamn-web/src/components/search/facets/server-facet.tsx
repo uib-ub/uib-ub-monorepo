@@ -26,14 +26,8 @@ export default function ServerFacet() {
   const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
 
   useEffect(() => {
-    // Handle redirect if invalid facet
+    // Return if no facet or invalid facet
     if (!facet || !availableFacets.some(f => f.key === facet)) {
-      const defaultFacet = availableFacets[0]?.key;
-      if (defaultFacet) {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('facet', defaultFacet);
-        router.replace(`?${params.toString()}`, { scroll: false });
-      }
       return
     }
 
