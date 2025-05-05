@@ -6,7 +6,6 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { facetConfig, fieldConfig } from "@/config/search-config"
-import { useRouter } from "next/navigation"
 import { PiCaretDown, PiCaretUp } from "react-icons/pi"
 
 
@@ -15,7 +14,6 @@ export default function Facets() {
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet') || 'adm'
     const availableFacets = facetConfig[dataset]
-    const router = useRouter()
 
 
       return (
@@ -25,42 +23,19 @@ export default function Facets() {
             <div key={f.key}>
             <Clickable type="button" 
                        aria-expanded={facet == f.key} 
-                       className="w-full flex justify-between p-2"
+                       className="w-full flex justify-between p-2 my-1 rounded-md aria-expanded:bg-neutral-50 aria-expanded:shadow-inner"
                        aria-controls={f.key + '-collapsible'} 
                        remove={['facet']}
                        add={f.key !== facet ? {facet: f.key} : {}}>
               {f.label}
               {facet == f.key ? <PiCaretUp className="inline self-center text-primary-600" /> : <PiCaretDown className="inline self-center text-primary-600" />}
             </Clickable>
-            <div id={f.key + '-collapsible'} className={`${facet == f.key ? 'block' : 'hidden'}`}>
+            <div id={f.key + '-collapsible'} className={`${facet == f.key ? 'block mt-2' : 'hidden'}`}>
               <ServerFacet/>
             </div>
             </div>
           )}
 
-
-        { false && contentSettings[dataset]?.adm && <>
-
-          <Clickable type="button" role="tab" aria-selected={facet == 'adm'} remove={['facet']} className='rounded-tabs'>
-          
-          Område
-          
-          </Clickable>
-
-
-          {availableFacets.filter(f => f.featuredFacet).map(f => 
-            <Clickable key={f.key} type="button" role="tab" aria-selected={facet == f.key} add={{facet: f.key}} className='rounded-tabs'>
-              {f.label}
-            </Clickable>
-          )}
-
-          <Clickable type="button" role="tab" aria-selected={facet != 'adm' && !fieldConfig[dataset][facet]?.featuredFacet} add={{facet: availableFacets.find(f => !f.featuredFacet && !f.child)?.key || null}} className='rounded-tabs'>
-          Meir
-          </Clickable>
-
-          </>
-          
-        }
         </div>
 
         </>
