@@ -57,7 +57,7 @@ export default function LeftWindow() {
         } 
     }
 
-    return <><div className="flex overflow-x-auto rounded-md p-1 gap-2">
+    return <><div className="flex overflow-x-auto rounded-md p-1 gap-1">
               <IconButton
                       label="Datasett"
                       onClick={() => handleTabClick('datasets')}
@@ -67,16 +67,16 @@ export default function LeftWindow() {
                         {isTabActive('datasets') ? <PiDatabaseFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
                 </IconButton>
                 
-                {treeSettings[dataset] && <IconButton
+                {treeSettings[dataset] ? <IconButton
                       label="Register"
                       onClick={() => handleTabClick('tree')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('tree')}
                       className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-950 aria-expanded:shadow-inner">
                         {isTabActive('tree') ? <PiTreeViewFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
-                </IconButton>
-                }
-                {contentSettings[dataset].adm && <IconButton
+                </IconButton> : null}
+
+                {contentSettings[dataset].adm ? <IconButton
                       label="Område"
                       onClick={() => handleTabClick('adm')}
                       aria-controls="left-window-content"
@@ -84,7 +84,7 @@ export default function LeftWindow() {
                       className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-950 aria-expanded:shadow-inner">
           
                 {isTabActive('adm') ? <PiMapPinAreaFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiMapPinAreaLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
-                </IconButton>
+                </IconButton>  : null
                 }
                 <IconButton
                       label="Filter"
@@ -107,7 +107,7 @@ export default function LeftWindow() {
                 </button>}
 
         </div>
-        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-6.5rem)] py-3 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
+        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-6.5rem)] pb-3 pt-1 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
                 
 
         { nav == 'tree' && 
@@ -119,7 +119,7 @@ export default function LeftWindow() {
                 <Facets/>
         }
         {
-            nav == 'adm' &&
+            nav == 'adm' && contentSettings[dataset].adm &&
             <ClientFacet facetName='adm' />
         }
         { searchFilterParamsString && nav == 'results' &&
