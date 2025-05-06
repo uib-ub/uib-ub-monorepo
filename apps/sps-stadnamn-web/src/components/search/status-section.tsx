@@ -14,7 +14,7 @@ export default function StatusSection() {
     const { isMobile } = useContext(GlobalContext)
 
     return <div className="flex flex-col gap-2"> 
-    <div className={`flex gap-1 flex-wrap items-center ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''} ${isMobile ? 'mx-1 mt-1' : ''}`}>
+    <div className={`flex gap-1 flex-wrap items-center ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''}`}>
     <ModeSelector/>
     {mode == 'list' && <SortSelector/>}
 
