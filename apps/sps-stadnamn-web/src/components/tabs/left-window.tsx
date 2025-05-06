@@ -1,6 +1,6 @@
 import { contentSettings, treeSettings } from "@/config/server-config";
 import { useDataset, useMode, useSearchQuery } from "@/lib/search-params";
-import { PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight } from "react-icons/pi";
+import { PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiInfo, PiInfoBold, PiInfoDuotone, PiInfoFill, PiInfoLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight } from "react-icons/pi";
 import { SearchContext } from "@/app/search-provider";
 import { useContext, useState, useEffect, useTransition } from "react";
 import TreeResults from "../search/results/tree-results";
@@ -57,14 +57,14 @@ export default function LeftWindow() {
         } 
     }
 
-    return <><div className="flex overflow-x-auto rounded-md p-1 gap-1">
+    return <><div className="flex overflow-x-auto rounded-md p-2 gap-1">
               <IconButton
-                      label="Datasett"
+                      label="Søkevisning"
                       onClick={() => handleTabClick('datasets')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('datasets')}
                       className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-900 aria-expanded:shadow-inner">
-                        {isTabActive('datasets') ? <PiDatabaseFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+                        {isTabActive('datasets') ? <PiInfoFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiInfoLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
                 </IconButton>
                 
                 {treeSettings[dataset] ? <IconButton
@@ -107,7 +107,7 @@ export default function LeftWindow() {
                 </button>}
 
         </div>
-        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-6.5rem)] pb-3 pt-1 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
+        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-7rem)] py-3 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
                 
 
         { nav == 'tree' && 

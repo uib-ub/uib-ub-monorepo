@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState} from 'react';
+import { Fragment, useContext, useEffect, useState} from 'react';
 import { datasetTitles, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
 import { PiCaretRight } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
@@ -15,6 +15,7 @@ export default function DatasetSelector() {
   const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
   const dataset = useDataset()
   const { isMobile } = useContext(GlobalContext)
+  const [showAll, setShowAll] = useState(false)
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,14 +52,13 @@ export default function DatasetSelector() {
           <label htmlFor="titleSearch" className="sr-only">Søk i datasett</label>
           <input
               id='titleSearch'
-              autoFocus={isMobile ? false : true }
               autoComplete="off"
               className='rounded-sm border border-gray-400 text-base px-2 py-1'
               type="text"
               value={searchTerm}
               onChange={handleSearchChange}
             />
-            <Link href="/info/datasets" className="ml-auto no-underline mt-1 flex items-center gap-1">Utforsk datasettene<PiCaretRight aria-hidden="true" className="text-primary-600 inline"/></Link>
+            <Link href="/info/datasets" className="ml-auto no-underline mt-1 flex items-center gap-1">Utforsk datasetta<PiCaretRight aria-hidden="true" className="text-primary-600 inline"/></Link>
         
 
           </div>
@@ -66,22 +66,36 @@ export default function DatasetSelector() {
           <div>
           
           <ul className="flex flex-col w-full divide-y mt-4">
-            {filteredDatasets.map((dataset) => (
-          <li key={dataset} className="flex w-full ">
+            {filteredDatasets
+              .filter((dataset, index) => showAll ? true : (index < 4 || filteredDatasets.length < 6))
+              .map((dataset, index) => (
+                <Fragment key={dataset}>
+                  <li className="flex w-full ">
+                    <Clickable link only={{dataset, q: searchParams.get('q'), nav: 'datasets' }} 
+                                className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline">
+                      <strong className="font-semibold">{datasetTitles[dataset]}</strong>{" | "}
+                      
+                      {datasetShortDescriptions[dataset]}      
+                    </Clickable>
+                  </li>
+                  {filteredDatasets.length > 5 && index === 3 && !showAll && (
+                    <li className="w-full flex justify-center py-4">
+                      <button onClick={() => setShowAll(true)} className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline">
+                        Vis alle
+                      </button>
+                    </li>
+                  )}
+                  {index == filteredDatasets.length - 1 && showAll && (
+                    <li className="w-full flex justify-center py-4">
+                      <button onClick={() => setShowAll(false)} className="rounded-full bg-neutral-100 font-semibold px-8 py-2 no-underline">
+                        Vis færre
+                      </button>
+                    </li>
+                  )}
 
-              
-              <Clickable link only={{dataset, q: searchParams.get('q'), nav: 'datasets' }} 
-                          className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline">
-                <strong className="font-semibold">{datasetTitles[dataset]}</strong>{" | "}
-                
-                {datasetShortDescriptions[dataset]}      
-              </Clickable>
-
-              
-              
-          </li>
-        ))}
-      </ul>
+                </Fragment>
+              ))}
+          </ul>
       </div>
         </>
     
