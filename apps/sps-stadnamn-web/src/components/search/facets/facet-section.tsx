@@ -6,7 +6,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { facetConfig, fieldConfig } from "@/config/search-config"
-import { PiCaretDown, PiCaretUp } from "react-icons/pi"
+import { PiCaretDown, PiCaretUp, PiFileX } from "react-icons/pi"
 
 
 export default function Facets() {
@@ -18,17 +18,21 @@ export default function Facets() {
 
       return (
         <>
-        <div className="flex flex-col divide-y divide-neutral-300">
+        <div className="flex flex-col divide-y divide-neutral-200">
           {availableFacets.map(f => 
             <div key={f.key}>
             <Clickable type="button" 
                        aria-expanded={facet == f.key} 
-                       className="w-full flex justify-between p-2 my-1 rounded-md aria-expanded:bg-neutral-50 aria-expanded:shadow-inner"
+                       className="w-full flex justify-between p-3 aria-expanded:border-b aria-expanded:border-neutral-200"
                        aria-controls={f.key + '-collapsible'} 
                        remove={['facet']}
                        add={f.key !== facet ? {facet: f.key} : {}}>
-              {f.label}
-              {facet == f.key ? <PiCaretUp className="inline self-center text-primary-600" /> : <PiCaretDown className="inline self-center text-primary-600" />}
+              <div className="flex flex-wrap gap-4">
+              <span className="text-lg">{f.label}</span>
+              {f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
+              </div>
+              {facet == f.key ? <PiCaretUp className="inline self-center text-primary-600 text-xl" /> : <PiCaretDown className="inline self-center text-primary-600 text-xl" />}
+              
             </Clickable>
             <div id={f.key + '-collapsible'} className={`${facet == f.key ? 'block mt-2' : 'hidden'}`}>
               <ServerFacet/>
