@@ -221,7 +221,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },
     ssr2016: {
-      uuid, label, adm, adm1, adm2,
+      uuid, label, adm, adm1, adm2, sosi,
       "misc.Stedsnavn_lokalId": {label: "SSR-nummer", facet},
       "misc.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
       "misc.language": {label: "Språk", facet},
