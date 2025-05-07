@@ -12,6 +12,7 @@ interface SearchContextData {
     tableData: any;
     isLoading: boolean;
     searchError: Record<string, string> | null;
+    setSearchError: (value: Record<string, string> | null) => void;
     coordinatesError: boolean;
     setCoordinatesError: (value: boolean) => void;
     totalHits: Record<string, any> | null;
@@ -23,6 +24,7 @@ interface SearchContextData {
     tableData: null,
     isLoading: true,
     searchError: null,
+    setSearchError: () => {},
     coordinatesError: false,
     setCoordinatesError: () => {},
     totalHits: null,
