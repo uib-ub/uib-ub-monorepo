@@ -28,7 +28,7 @@ export default function Facets() {
                        remove={['facet']}
                        add={f.key !== facet ? {facet: f.key} : {}}>
               <div className="flex flex-wrap gap-4">
-              <span className="text-lg">{f.label}</span>
+              <span className="text-xl">{f.label}</span>
               {f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
               {facet == f.key ? <PiCaretUp className="inline self-center text-primary-600 text-xl" /> : <PiCaretDown className="inline self-center text-primary-600 text-xl" />}
