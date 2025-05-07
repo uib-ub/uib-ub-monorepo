@@ -19,7 +19,7 @@ interface FacetConfigItem extends FieldConfigItem {
   key: string; 
 }
  
-const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, superFacet] = Array(8).fill(true);
+const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet] = Array(7).fill(true);
 
 const sosi = {label: "Lokalitetstype", description: "SOSI-standarden", facet, table, result}
 const cadastre = {"within": {label: "Gard", result},
