@@ -76,7 +76,7 @@ export default function DatasetSelector() {
                       <div className={`flex flex-col gap-6 p-4 w-full ${itemDataset == dataset ? 'bg-accent-50 border-l-4 border-accent-600' : ''}`}>
                         <div className="flex-1 gap-2">
                           {isMobile ? <h4 className="text-lg font-semibold text-neutral-900 mb-1">{datasetTitles[itemDataset]}</h4> : <h3 className="text-lg font-semibold text-neutral-900 mb-1">{datasetTitles[itemDataset]}</h3>}
-                          <p className="text-neutral-700">{datasetShortDescriptions[itemDataset]}</p>      
+                          <p className="text-neutral-700 text-sm">{datasetShortDescriptions[itemDataset]}</p>      
                         </div>
                         {itemDataset == dataset ? 
                         <em className='text-neutral-700 ml-auto'>Gjeldande søkevisning</em>
