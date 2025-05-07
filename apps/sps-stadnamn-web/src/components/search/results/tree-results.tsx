@@ -94,7 +94,7 @@ export default function TreeResults() {
   { groupBy == 'adm2' && <h2 className="text-lg m-2 font-serif">Kommuner</h2> }
   { !groupBy && <h2 className="text-lg mx-2 font-serif">Garder</h2> }
 
-  <ul className="flex flex-col">
+  <ul className="flex flex-col divide-y divide-neutral-200">
 
   {groupBy ? cadastralData?.aggregations?.[groupBy]?.buckets
   .sort((a: any, b: any)=> treeSettings[dataset]?.aggSort ? a.aggNum.buckets[0]?.key.localeCompare(b.aggNum.buckets[0]?.key) : a.aggNum.localeCompare(b?.key))
