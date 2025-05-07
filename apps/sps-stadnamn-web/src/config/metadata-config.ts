@@ -28,6 +28,7 @@ export interface DatasetPresentation {
 
 export const datasetTitles: DatasetTitles = {
     search: "Overordna søk",
+    all: "Alle kjeldeoppslag",
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
@@ -61,6 +62,8 @@ export const datasetTitles: DatasetTitles = {
 }
 
 export const datasetDescriptions: Record<string, string> = {
+  search: "Overordna søk henter data frå alle datasetta og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder.",
+  all: "Kjeldeoppslag",
   bsn: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig.",
   hord: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924. Oppslagsverket inneholder bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning.",
@@ -77,18 +80,22 @@ export const datasetDescriptions: Record<string, string> = {
   ssr2020: "Sentralt stadnamnregister, Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
   nrk: "NRKs gamle stadnamnarkiv vart laga rundt 1960. Arkivet har tilrådd uttale for 2000 ulike stadnamn i Noreg. I datasettet finn du tilrådd uttale frå det gamle arkivet. Ver merksam på at uttale av stadnamn kan endre seg over tid, og at uttalen som var tilrådd på 1960-talet ikkje nødvendigvis samsvarar med uttalen i dag.",
   m2010: "Matrikkelen 2010 er eit datasett utvikla av Språksamlingane, basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret) - eit offentleg register over faste eigedomar i Noreg. Registeret vart ført av Statens kartverk for kvar kommune med opplysningar om alle grunneigedomar, festegrunnar som hadde eige grunnboksblad i tinglysingsregisteret, samt anna som hadde eige grunnboksblad, til dømes eigarseksjonar. I tillegg til eigedomen si nemning og stadfesting inneheldt GAB-registeret opplysningar om kva for ein eigedom den var utskild frå, arealet, eigarforhold, adresse og bygningsdata. GAB-registeret er i dag avløyst av matrikkelen.",
+  gn2019: "GeoNames er ein brukarstyrt geografisk database grunnlagt i 2005 og tilgjengeleg via ulike netttenester under Creative Commons-lisens Wikipedia. Databasen inneheld over 25 millionar geografiske namn for meir enn 11,8 millionar unike stader globalt, med meir enn 600.000 norske stadnamn. Data inkluderer stadnamn på fleire språk, koordinatar, høgde over havet, folketal, administrative inndelingar og postnummer. Alle koordinatar brukar World Geodetic System 1984 (WGS84). Brukarar kan redigere og forbetre databasen gjennom eit wiki-grensesnitt Geonames, noko som gjer GeoNames til eit levande og stadig oppdatert geografisk oppslagsverk. Dette datasettet er basert på eit uttrekk frå 2019, men oppdaterast jevnleg.",
+  ft1900: "Folketeljinga 1900 vart gjennomført 3. desember 1900 i Noreg, då landet hadde 2 239 880 personar som heimehøyrande folkemengd. Heile befolkninga skulle registrerast der kvar enkelt oppheldt seg. Datamaterialet inneheld omtrent 160 000 stadnamn. Folketeljinga er oppbevart i statsarkiva, er fullstendig mikrofilma og tilgjengeleg i skanna og søkbar form i Digitalarkivet. Statistikken viser befolkningsoversikt fordelt på byar, heradskommunar og amt, der både landdistrikt og byar er inkludert for kvart amt. Folketeljinga er oppbevart i statsarkiva og er òg i si heilheit tilgjengeleg i søkbar form i Digitalarkivet.",
+  ft1910: "Folketeljinga 1910 vart gjennomført 1. desember 1910 i Noreg, då landet hadde 2 391 782 heimehøyrande innbyggjarar. Datamaterialet inneheld omtrent 175 000 stadnamn. For første gong vart befolkninga beden om å oppgi statsborgarskap i stadet, omtrent 41 000 personar, der tre fjerdedelar var svenske. Statistikken viser befolkningsoversikt fordelt på byar, heradskommunar og amt, der både landdistrikt og byar er inkludert for kvart amt. Folketeljinga er oppbevart i statsarkiva og er òg i si heilheit tilgjengeleg i søkbar form i Digitalarkivet, publisert då tausheitsplikta på 100 år opphøyrde i 2010.",
   frogn: "",
   gjerd: "",
   sorum: "",
-  kven: "",
-  snor: "",
-  herad: "",
-  seta: ""
+  kven: "Datasettet kvenske stedsnavn dokumenterer navnetradisjoner i Troms og Finnmark som vitner om flere hundre års bosetting og kulturell tilhørighet. Kvensk stedsnavntjeneste – Paikannimipalvelus redigerer og oppdaterer databasen som del av Språkrådets stedsnavntjeneste. Områdene med kvenske stedsnavn har oftest flerspråklig navnebruk med kvenske, samiske og norske navn, som Vesisaari–Čáhcesuolu–Vadsø og Tromssa–Romssa–Tromsø, mens andre steder har kun kvenske navn, som Maanlaita i Skallelv. Datasettet inneholder nærmere 8500 navneartikler. Viktige kilder er Sentralt stedsnavnregister (SSR) med 4-5000 kvenske navn og ca. 12.400 navnesedler innsamlet av finske forskere mellom 1970-1990, oppbevart i Namnarkivet i Helsingfors med kopier ved Universitetet i Tromsø og Kvensk stedsnavntjeneste.",
+  snor: "Er eit landsdekkande datasett knytt til tilskotsordninga for innsamling og registrering av stadnamn. Databasen inneheld om lag 170 000 norske, samiske og kvenske stadnamn, og vart oppretta for å ta vare på og registrere stadnamn som elles ville gå tapt. Per 2025 inneheld basen namn frå 158 kommunar, der meir enn 95 kommunar har over 50 registrerte namn kvar. Alle innsamlings- og registreringsprosjekt som får støtte gjennom tilskotsordninga, må leggje inn stadnamna i denne databasen.",
+  herad: "Heradsregisteret er ei omfattande samling i Norsk stadnamnarkiv som inneheld om lag 400.000 stadnamn frå heile Noreg. Kvar oppslag i registeret inneheld informasjon om namnet, uttalen, administrativ tilhøyrsle og kartreferansar. Tilleggsinformasjon om namnet eller lokaliteten er vanleg.Samlinga var grunnstammen i \"Den nasjonale stedsnavnbasen\". Samlinga bidrar med unik dokumentasjon av norske stadnamn.",
+  seta: "Seternamnakrivet er ei omfattande samling som inneheld 50.000 namn på setrar. Samlinga var opprinneleg organisert i to seddelsamlingar — ei ordna etter herad og ei for heile landet. Registeret vart skanna i samband med Dokumentasjonsprosjektet og gjekk i skanna versjon som del av \"Den nasjonale stadnamnbasen\"."
 }
 
 
 export const datasetShortDescriptions: Record<string, string> = {
   search: "Overordna søk henter data frå alle datasetta og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder.",
+  all: "Kjeldeoppslag",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924.",
@@ -105,13 +112,16 @@ export const datasetShortDescriptions: Record<string, string> = {
   ssr2020: "Kartverkets offisielle register over stadnamn i Noreg, slik det var i 2020.",
   nrk: "NRKs stadnamnarkiv frå 1960 inneheld tilrådd uttale for 2000 stadnamn i Noreg. Uttalen kan ha endra seg sidan den gong.",
   m2010: "Eit datasett basert på GAB-registeret (Grunneiendom-, adresse- og bygnings-registeret), som var eit offentleg register over faste eigedomar i Noreg.",
+  gn2019: "GeoNames 2019 gir over 600 000 norske stedsnavn med koordinater, høgde, administrative inndelinger og språkvarianter.",
+  ft1900: "Folketellingen 1900 inneholder ca. 160 000 stedsnavn brukt i befolkningsstatistikk, tilgjengelig i Digitalarkivet.",
+  ft1910: "Folketellingen 1910 inneholder ca. 175 000 stedsnavn og informasjon om statsborgerskap, tilgjengelig i Digitalarkivet.",
   frogn: "",
   gjerd: "",
   sorum: "",
-  kven: "",
+  kven: "Kvenske stedsnavn fra Troms og Finnmark, med nær 8 500 navneartikler fra SSR og finske forskere, og flerspråklig navnebruk.",
   snor: "",
-  herad: "",
-  seta: ""
+  herad: "Heradsregisteret samler ca. 400 000 norske stedsnavn med uttale, administrativ tilhørighet og kartreferanser.",
+  seta: "Seternamnarkivet inneholder 50 000 navn på setrer fra hele landet, digitalisert fra to historiske kortsamlinger."
 }
 
 
@@ -158,6 +168,13 @@ export const licenses: Record<string, {name: string, url: string}> = {
 
 export const datasetPresentation: DatasetPresentation = {
       search: {
+        img: "icon.svg",
+        alt: "Kart over Norge med stedsnavn",
+        imageAttribution: "Kartverket",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      all: {
         img: "icon.svg",
         alt: "Kart over Norge med stedsnavn",
         imageAttribution: "Kartverket",
