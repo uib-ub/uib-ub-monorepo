@@ -13,7 +13,7 @@ export default function ModeSelector() {
     const mode = useMode()
     const { setPreferredTab, isMobile } = useContext(GlobalContext)
 
-    return <div className={`flex ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'px-1 pt-1' : ''}`} role="tablist">
+    return <div className={`inline-flex ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">
             {contentSettings[dataset]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
                       onClick={() => {
                         setPreferredTab(dataset, 'map')
@@ -21,7 +21,7 @@ export default function ModeSelector() {
                       role="tab"
                       label="Kart"
                       remove={['mode']}
-                      className="flex m-1 h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
+                      className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
                         { mode == 'map' ? <PiMapTrifoldFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiMapTrifoldLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
 
             </ClickableIcon>}
@@ -33,7 +33,7 @@ export default function ModeSelector() {
                         role="tab"
                         label="Tabell"
                         aria-selected={mode == 'table' ? true : false}
-                        className="flex m-1 h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
+                        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
                             {mode == 'table' ? <PiTableFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiTableLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
             </ClickableIcon>
 
@@ -44,14 +44,14 @@ export default function ModeSelector() {
                         role="tab"
                         label="Liste"
                         aria-selected={mode == 'list' ? true : false}
-                        className="flex m-1 h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
+                        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
                             {mode == 'list' ? <PiRowsFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiRowsLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
             </ClickableIcon>
             { mode != 'map' && doc && <ClickableIcon add={{mode: 'doc'}} 
                         role="tab"
                         label="Dokument"
                         aria-selected={mode == 'doc' ? true : false}
-                        className="flex m-1 h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
+                        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline lg:w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
                             {mode == 'doc' ? <PiBookOpenFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
             </ClickableIcon>}
 
