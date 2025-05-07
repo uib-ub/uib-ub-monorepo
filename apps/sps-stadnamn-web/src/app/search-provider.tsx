@@ -144,7 +144,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
       }, [searchQueryString, size, searchFilterParamsString, useTableData, asc, desc, page, perPage, isMobile])
 
 
-  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, coordinatesError, setCoordinatesError}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, coordinatesError, setCoordinatesError, setSearchError}}>{children}</SearchContext.Provider>
 }
 
 
