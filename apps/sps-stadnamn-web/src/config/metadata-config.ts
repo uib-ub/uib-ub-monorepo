@@ -446,7 +446,7 @@ export const datasetTypes: Record<string, string[]> = {
   ssr2016: ["database", "public"],
   ssr2020: ["database", "public"],
   nrk: ["database", "collection"],
-  gn2019: ["database", "public"],
+  gn2019: ["database"],
   m2010: ["database", "public"],
   gjerd: ["collection"],
   sorum: ["collection"],
