@@ -1,23 +1,26 @@
 import { contentSettings, treeSettings } from "@/config/server-config";
 import { useDataset, useMode, useSearchQuery } from "@/lib/search-params";
-import { PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiInfo, PiInfoBold, PiInfoDuotone, PiInfoFill, PiInfoLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight } from "react-icons/pi";
+import { PiCaretLeft, PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiInfo, PiInfoBold, PiInfoDuotone, PiInfoFill, PiInfoLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight } from "react-icons/pi";
 import { SearchContext } from "@/app/search-provider";
 import { useContext, useState, useEffect, useTransition } from "react";
 import TreeResults from "../search/results/tree-results";
 import Facets from "../search/facets/facet-section";
-import DatasetDrawer from "../search/datasets/dataset-drawer";
 import SearchResults from "../search/results/search-results";
 import { useSearchParams, useRouter } from "next/navigation";
 import ClientFacet from "../search/facets/client-facet";
 import IconButton from "../ui/icon-button";
+import DatasetSelector from "../search/datasets/dataset-selector";
+import DatasetInfo from "../search/info/dataset-info";
+import Clickable from "../ui/clickable/clickable";
+import Spinner from "../svg/Spinner";
 
 export default function LeftWindow() {
     const dataset = useDataset()
-    const { totalHits } = useContext(SearchContext)
+    const { totalHits, isLoading } = useContext(SearchContext)
     const { searchFilterParamsString } = useSearchQuery()
     const searchParams = useSearchParams()
     const mode = useMode()
-    const nav = searchParams.get('nav') || 'datasets'
+    const nav = searchParams.get('nav') || 'datasetInfo'
     const [windowCollapsed, setWindowCollapsed] = useState(false)
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
@@ -42,7 +45,7 @@ export default function LeftWindow() {
             setWindowCollapsed(false)
             startTransition(() => {
                 const newParams = new URLSearchParams(searchParams)
-                if (tabName === 'datasets') {
+                if (tabName === 'datasetInfo') {
                     newParams.delete('nav')
                 } 
                 else {
@@ -59,16 +62,24 @@ export default function LeftWindow() {
 
     return <><div className="flex overflow-x-auto rounded-md p-2 gap-1">
               <IconButton
-                      label="Søkevisning"
+                      label="Om søkevisningen"
+                      onClick={() => handleTabClick('datasetInfo')}
+                      aria-controls="left-window-content"
+                      aria-expanded={isTabActive('datasetInfo')}
+                      className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-900 aria-expanded:shadow-inner">
+                        {isTabActive('datasetInfo') ? <PiInfoFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiInfoLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+                </IconButton>
+                <IconButton
+                      label="Datasett"
                       onClick={() => handleTabClick('datasets')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('datasets')}
                       className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-900 aria-expanded:shadow-inner">
-                        {isTabActive('datasets') ? <PiInfoFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiInfoLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+                        {isTabActive('datasets') ? <PiDatabaseFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
                 </IconButton>
                 
                 {treeSettings[dataset] ? <IconButton
-                      label="Register"
+                      label="Hierarki"
                       onClick={() => handleTabClick('tree')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('tree')}
@@ -99,15 +110,18 @@ export default function LeftWindow() {
                       onClick={() => handleTabClick('results')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('results')}
-                      className="flex whitespace-nowrap rounded items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-3 pr-2 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-900 aria-expanded:shadow-inner ml-auto">
+                      className="flex whitespace-nowrap rounded items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-900 aria-expanded:shadow-inner ml-auto">
                         <span className="text-neutral-900 font-semibold uppercase tracking-wider">Treff</span>
-                        {isTabActive('results') ? <span className="results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>
-                        : <span className="results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>}
-                        
-                </button>}
+                        { isLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
+                        {isTabActive('results') ? <span className={`results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
+                            {totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>
+                        : <span className={`results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>}
+                        </>}
+                </button>
+                }
 
         </div>
-        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-7rem)] py-3 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
+        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-7.5rem)] py-6 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
                 
 
         { nav == 'tree' && 
@@ -124,13 +138,18 @@ export default function LeftWindow() {
         }
         { searchFilterParamsString && nav == 'results' &&
             <SearchResults/>
-
+        }
+        { nav == 'datasetInfo' &&     
+            <DatasetInfo/>  
         }
         
-
-        
          { nav == 'datasets' &&     
-            <DatasetDrawer/>
+            <section className="flex flex-col gap-2">
+            <h2 className="text-xl px-2" >
+            {dataset == 'search' ? 'Datasett' : 'Andre datasett'}
+          </h2>
+            <DatasetSelector/>
+            </section>
                 
         }
         </div>
