@@ -39,8 +39,7 @@ export default function DatasetInfo() {
                 {subindex && <Link href={`/search?dataset=${infoDataset}`} className="btn btn-neutral">Søk i {datasetTitles[infoDataset]}</Link>}
             </div>}
             <div className="flex gap-2 mt-2">
-            <Link className="flex gap-1 items-center no-underline btn btn-outline btn-compact" href={dataset == 'search' ? "/info/search" : "/info/datasets/" + dataset}>Les meir</Link>
-            {dataset == 'search' && <Clickable add={{nav: 'filters', facet: 'datasets'}} className="flex gap-1 items-center justify-self-end no-underline btn btn-outline btn-compact">Vel kjeldedatasett</Clickable>}
+            <Link className="flex gap-1 items-center no-underline" href={dataset == 'search' ? "/info/search" : "/info/datasets/" + dataset}>Les meir <PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
             </div>
             
         </div>
