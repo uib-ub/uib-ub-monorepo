@@ -14,12 +14,13 @@ export default function StatusSection() {
     const { isMobile } = useContext(GlobalContext)
 
     return <div className="flex flex-col gap-2"> 
-    <div className={`flex gap-1 flex-wrap items-center ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''}`}>
+    <div className={`flex gap-1 flex-wrap w-fit ${mode != 'map' ? 'items-center' : ''} ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''}`}>
     <ModeSelector/>
-    {mode == 'list' && <SortSelector/>}
+    
 
-    { (mode != 'doc') && <ActiveFilters/> }
+    { (mode != 'doc') && <div className="flex flex-wrap xl:flex-row h-full p-2 xl:p-1 gap-1"><ActiveFilters/> </div> }
     </div>
+    {mode == 'list' && <div className="flex flex-wrap xl:flex-row h-full p-2 px-6 gap-1"><SortSelector/></div>}
     { (mode == 'map' && !isLoading && !resultBounds?.length && !searchError) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}
     { searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
         <PiWarningFill className="inline text-xl"/> 
