@@ -52,7 +52,7 @@ export default async function Home() {
       description: "Faksimiler og lydopptak",
     },
     {
-      href: "/info/sources",
+      href: "/search?dataset=all",
       icon: <PiBookOpenThin aria-hidden="true" />,
       stat: stats?.datasetDocs?.toLocaleString('nb-NO'),
       title: "Kjeldeoppslag",
