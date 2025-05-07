@@ -56,7 +56,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
           link 
           add={{sourceLabel: label, parent: doc}} 
           remove={["sourceLabel", "sourceDataset"]} 
-          className={`no-underline border rounded-md px-3 py-1
+          className={`btn btn-outline btn-compact
             ${isActive ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'} text-neutral-950`}
           aria-current={isActive ? 'page' : undefined}
         >
@@ -72,7 +72,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
         <Timeline arr={docSource.attestations} parent={docSource.uuid}/>
       </>}
 
-      <ul className='flex flex-col xl:flex-row xl:flex-wrap gap-1 !list-none !p-0'>
+      <ul className='flex flex-col xl:flex-row xl:flex-wrap gap-2 !list-none !p-0'>
         
         {docSource.datasets.map((dataset: string, index: number) => {
           const isActive = parent && sourceDataset === dataset
@@ -80,10 +80,7 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
             <Clickable 
                
               className={`
-                flex items-center gap-1 
-                no-underline border rounded-md rounded-full 
-                pr-3 pl-2 py-2 xl:py-1 
-                w-full
+                btn btn-outline btn-compact flex items-center gap-2 text-base !pl-2
                 ${isActive ? '!bg-accent-800 text-white border-accent-800' : 'bg-white border-neutral-200'}
               `}
               add={{
