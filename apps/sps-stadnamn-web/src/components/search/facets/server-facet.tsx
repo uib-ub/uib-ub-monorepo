@@ -19,7 +19,7 @@ export default function ServerFacet() {
   const [isLoading, setIsLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
-  const {facetOptions, pinnedFilters, updatePinnedFilters, isMobile} = useContext(GlobalContext)
+  const {facetOptions, pinnedFilters, updatePinnedFilters } = useContext(GlobalContext)
   const availableFacets = useMemo(() => facetConfig[dataset], [dataset]);
   const facet = searchParams.get('facet')
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
@@ -123,11 +123,6 @@ export default function ServerFacet() {
     { !isLoading &&
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
-    {isMobile && !fieldConfig[dataset][facet].featuredFacet && <select onChange={switchFacet} value={facet} className='border rounded-md border-neutral-300 p-1'>
-              {availableFacets.filter(f => !f.child && !f.featuredFacet)?.map((item, index) => (
-            <option key={index} value={item.key}>{item.label}</option>
-        ))}
-    </select>}
     {dataset == 'search' && facet == 'datasets' && 
     <div className='flex gap-2'>
       <div className='flex flex-wrap gap-2'>
@@ -144,7 +139,7 @@ export default function ServerFacet() {
           .map(([type, label]) => (
           <button 
             key={type}
-            className='px-2 py-1 text-sm rounded-md border border-neutral-300 hover:bg-neutral-100'
+            className='btn btn-outline btn-compact'
             onClick={() => {
               setClientSearch('');
               const params = new URLSearchParams(searchParams.toString());
