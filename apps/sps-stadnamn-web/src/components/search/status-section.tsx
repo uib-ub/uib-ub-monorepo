@@ -9,7 +9,7 @@ import SortSelector from './sort/sort-selector'
 import { useMode } from '@/lib/search-params';
 
 export default function StatusSection() {
-    const { resultBounds, isLoading, coordinatesError, searchError, setSearchError } = useContext(SearchContext)
+    const { resultBounds, isLoading, coordinatesError, searchError, setSearchError, totalHits } = useContext(SearchContext)
     const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
 
@@ -21,7 +21,8 @@ export default function StatusSection() {
     { (mode != 'doc') && <div className="flex flex-wrap xl:flex-row h-full p-2 xl:p-1 gap-1"><ActiveFilters/> </div> }
     </div>
     {mode == 'list' && <div className="flex flex-wrap xl:flex-row h-full p-2 px-6 gap-1"><SortSelector/></div>}
-    { (mode == 'map' && !isLoading && !resultBounds?.length && !searchError) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}
+    { (mode == 'map' && !isLoading && !resultBounds?.length && !searchError && totalHits?.value > 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}
+    { (mode == 'map' && !isLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff</div> : null}
     { searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
         <PiWarningFill className="inline text-xl"/> 
         <span>Kunne ikkje hente søkeresultat</span>
