@@ -11,7 +11,7 @@ export default async function ServerParent({uuid}: {uuid: string}) {
     
 
     return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
-        <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Overordna søk</h2>
+        <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Stadnamnsøk</h2>
         <h3 className="!m-0 !p-0 font-serif !text-xl !font-normal flex items-center gap-2">
             {parent.fields.label}
         </h3>

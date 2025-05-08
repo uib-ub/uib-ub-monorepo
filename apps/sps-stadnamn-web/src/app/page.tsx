@@ -35,28 +35,28 @@ export default async function Home() {
       icon: <PiTag aria-hidden="true"/>,
       stat: stats?.snidCount?.toLocaleString('nb-NO'),
       title: "Stadnamn",
-      description: "Stadnamn gruppert av Språksamlingane",
+      description: "Stadnamn samanstilt av Språksamlingane",
     },
     {
       href: "/info/datasets",
       icon: <PiDatabase aria-hidden="true"/>,
       stat: stats?.datasetCount?.toLocaleString('nb-NO'),
       title: "Datasett",
-      description: "Finn søkevisningar tilpassa einskilde datasett",
+      description: "Datasetta stadnamnsøket er basert på",
     },
     {
       href: "/iiif",
       icon: <PiArchive aria-hidden="true"/>,
       stat: (iiifStats?.images + iiifStats?.audio).toLocaleString('nb-NO'),
-      title: "Arkivressurser",
-      description: "Faksimiler og lydopptak",
+      title: "Arkiv",
+      description: "Arkivressurser som faksimiler og lydopptak",
     },
     {
       href: "/search?dataset=all",
       icon: <PiBookOpenThin aria-hidden="true" />,
       stat: stats?.datasetDocs?.toLocaleString('nb-NO'),
-      title: "Kjeldeoppslag",
-      description: "Søk på tvers av datasetta, utan gruppering på stadnamn",
+      title: "Kjelder",
+      description: "Alle oppslag i grunnlagsdatasetta",
     },
     /*
     
@@ -183,7 +183,7 @@ export default async function Home() {
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
           <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}`}>
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
-              <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
+              <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full border-2 border-neutral-200 rounded-md"/>
             </div>
             <div className="py-4 md:px-6 pb-0 flex flex-col">
               <h3 className="text-2xl group-hover:underline decoration-2 decoration-primary-400 underline-offset-4">{card.title}</h3>
@@ -202,7 +202,7 @@ export default async function Home() {
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
           <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}`}>
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
-              <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
+              <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full border-2 border-neutral-200 rounded-md"/>
             </div>
             <div className="py-4 md:px-6 pb-0 flex flex-col">
               <h3 className="text-2xl group-hover:underline decoration-2 decoration-primary-400 underline-offset-4">{card.title}</h3>

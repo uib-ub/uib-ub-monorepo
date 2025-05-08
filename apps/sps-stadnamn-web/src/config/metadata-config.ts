@@ -27,7 +27,7 @@ export interface DatasetPresentation {
 }
 
 export const datasetTitles: DatasetTitles = {
-    search: "Overordna søk",
+    search: "Stadnamnsøk",
     all: "Alle kjeldeoppslag",
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
@@ -62,8 +62,8 @@ export const datasetTitles: DatasetTitles = {
 }
 
 export const datasetDescriptions: Record<string, string> = {
-  search: "Overordna søk henter data frå alle datasetta og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder.",
-  all: "Kjeldeoppslag",
+  search: "Stadnamnsøk er Språksamlinganes overordna søk, som samanstiller data frå ei rekke datasett og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder.",
+  all: "Grunnlagsdata",
   bsn: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig.",
   hord: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924. Oppslagsverket inneholder bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning.",
@@ -94,8 +94,8 @@ export const datasetDescriptions: Record<string, string> = {
 
 
 export const datasetShortDescriptions: Record<string, string> = {
-  search: "Overordna søk henter data frå alle datasetta og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder.",
-  all: "Kjeldeoppslag",
+  search: "Stadnamnsøk er Språksamlinganes overordna søk, som samanstiller data frå ei rekke datasett og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta blir her lista opp som kjelder.",
+  all: "Grunnlagsdata",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924.",
@@ -120,7 +120,7 @@ export const datasetShortDescriptions: Record<string, string> = {
   sorum: "",
   kven: "Kvenske stedsnavn fra Troms og Finnmark, med nær 8 500 navneartikler fra SSR og finske forskere, og flerspråklig navnebruk.",
   snor: "",
-  herad: "Heradsregisteret samler ca. 400 000 norske stedsnavn med uttale, administrativ tilhørighet og kartreferanser.",
+  herad: "Heradsregisteret er ein del av Norsk stadnamnarkiv, og var grunnstammen i \"Den nasjonale stadnamnbasen\" utvikla ved UiO",
   seta: "Seternamnarkivet inneholder 50 000 navn på setrer fra hele landet, digitalisert fra to historiske kortsamlinger."
 }
 
@@ -356,16 +356,16 @@ export const datasetPresentation: DatasetPresentation = {
         license: licenses.ccby4,
       },
       snor: {
-        img: "/datasets/snor.png",
-        alt: "Stedsnavn i Norge",
-        imageAttribution: "",
+        img: "/datasets/sprakradet_logo.png",
+        alt: "Språkrådets logo",
+        imageAttribution: "Språkrådet",
         attribution: "Språkrådet og Språksamlingene",
         license: licenses.ccby4,
       },
       herad: {
-        img: "/datasets/herad.png",
-        alt: "Herad",
-        imageAttribution: "",
+        img: "/datasets/Akersdalen_(1949).jpg",
+        alt: "Akersdalen (senere kalt Groruddalen), omtrent på den tiden Aker ble innlemmet i Oslo.",
+        imageAttribution: "Oslo byarkiv, Wikimedia Commons",
         attribution: "Språksamlingene",
         license: licenses.ccby4,
       },
