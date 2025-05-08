@@ -5,7 +5,6 @@ import Results from "./results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
 import { useDataset, useSearchQuery, useMode } from "@/lib/search-params";
-import Facets from "./facets/facet-section";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
 import CadastralSubdivisions from "../children/cadastral-subdivisions";
@@ -20,6 +19,8 @@ import { DocContext } from "@/app/doc-provider";
 import DocInfo from "./info/doc-info";
 import DocSkeleton from "./info/doc-skeleton";
 import ChildrenWindow from "../children/children-window";
+import FacetSection from "./facets/facet-section";
+import ActiveFilters from "./form/active-filters";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -35,7 +36,7 @@ export default function MobileLayout() {
     
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
-    const { searchFilterParamsString } = useSearchQuery()
+    const { searchFilterParamsString, facetFilters } = useSearchQuery()
     const { totalHits, isLoading } = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
@@ -212,7 +213,7 @@ export default function MobileLayout() {
                 <h2 className="sr-only">
                     {drawerContent == 'results' && 'Treff'}
                     {drawerContent == 'datasets' && 'Datasett'}
-                    {drawerContent == 'filters' && 'Avgrens'}
+                    {drawerContent == 'filters' && 'Filter'}
                     {drawerContent == 'tree' && 'Register'}
                     {drawerContent == 'info' && 'Oppslag'}
                     
@@ -226,13 +227,24 @@ export default function MobileLayout() {
             </>}
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
+                    <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Treff <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span></h2>
                 <Results/>
                 </section>
             
              }
             { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') && <DatasetDrawer/> }
-            { drawerContent == 'filters' && 
-                <Facets/> 
+            { (drawerContent == 'filters' || drawerContent == 'adm') && 
+                <>
+                <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
+                {facetFilters.length > 0 && <div className="flex flex-col">
+                
+                <div className="flex flex-wrap gap-2 py-2 border-b border-neutral-200">
+                <ActiveFilters/>
+                </div>
+                </div>}
+                <FacetSection/> 
+                </>
+                
             }
             { drawerContent == 'cadastre' && 
                 <CadastralSubdivisions dataset={dataset} doc={doc} childrenData={childrenData} landingPage={false}/>
@@ -257,7 +269,8 @@ export default function MobileLayout() {
                     {treeSettings[dataset] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
 
                     {doc && <button aria-label="Oppslag" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiBookOpen className="text-3xl"/></button>}
-                    { <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' ? 'page' : 'false'}  className="toolbar-button"><PiFunnel className="text-3xl"/></button>}
+                    { <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}  className="toolbar-button"><PiFunnel className="text-3xl"/>
+                    {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</button>}
                     <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={(drawerContent &&["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button"><PiDatabase className="text-3xl"/></button>
 
             </div>

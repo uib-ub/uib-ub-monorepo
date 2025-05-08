@@ -1,3 +1,5 @@
+import { datasetTitles } from "./metadata-config";
+
 export interface FieldConfigItem {
   label?: string;
   result?: boolean; // Show in result list
@@ -12,7 +14,7 @@ export interface FieldConfigItem {
   docLink?: string; // Link to another document
   cadastreTable?: boolean; // Show in cadastre table
   featuredFacet?: boolean; // Show in custom facet
-  child?: string; // Child facet. The parent facet is handled client side, the child is handled server side
+  child?: string; // Child facet. The parent facet is handled client side, the child is handled server side,
 }
 
 interface FacetConfigItem extends FieldConfigItem {
@@ -28,7 +30,7 @@ const cadastre = {"within": {label: "Gard", result},
                 }
 const uuid = {label: "UUID", result}
 const label = {label: "Namn", result}
-const adm = {label: "Område"}
+const adm = {label: "Områdeinndeling", facet}
 const adm1 = {label: "Fylke", result} // Necessary for it to be included in fields
 const adm2 = {label: "Kommune", result} // Necessary for it to be included in fields
 const adm3 = {label: "Sogn, bydel eller tidlegare kommune", result}
@@ -444,3 +446,6 @@ export const fulltextFields = Object.entries(fieldConfig).reduce((acc, [dataset,
     }));
   return acc;
 }, {} as Record<string, { key: string, label: string }[]>);
+
+
+

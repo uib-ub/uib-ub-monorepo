@@ -18,7 +18,7 @@ export default function StatusSection() {
     <ModeSelector/>
     
 
-    { (mode != 'doc') && <div className="flex flex-wrap xl:flex-row h-full p-2 xl:p-1 gap-1"><ActiveFilters/> </div> }
+    { (mode != 'doc' && !isMobile) && <div className="flex flex-wrap xl:flex-row h-full p-2 xl:p-1 gap-1"><ActiveFilters/> </div> }
     </div>
     {mode == 'list' && <div className="flex flex-wrap xl:flex-row h-full p-2 px-6 gap-1"><SortSelector/></div>}
     { (mode == 'map' && !isLoading && !resultBounds?.length && !searchError && totalHits?.value > 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}

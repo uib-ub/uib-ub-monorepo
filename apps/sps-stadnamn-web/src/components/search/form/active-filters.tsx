@@ -23,7 +23,7 @@ export default function ActiveFilters() {
     const [parent, setParent] = useQueryState('parent')
     const [sourceLabel, setSourceLabel] = useQueryState('sourceLabel')
     const [sourceDataset, setSourceDataset] = useQueryState('sourceDataset')
-    const {facetOptions, updatePinnedFilters, pinnedFilters} = useContext(GlobalContext)
+    const {facetOptions, updatePinnedFilters, pinnedFilters, isMobile} = useContext(GlobalContext)
     const visibleUnpinnedFilters = facetFilters.filter(([key, value]) => 
         pinnedFilters[dataset]?.some(([pinnedKey, pinnedValue]) => pinnedKey === key && pinnedValue === value)
     )
@@ -119,7 +119,7 @@ export default function ActiveFilters() {
     return (
       <>
         { fulltext == 'on' && 
-            <button className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => setFulltext('off')}>
+            <button className={`rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${(mode == 'map' && !isMobile) ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => setFulltext('off')}>
             Fulltekst 
             <PiX className="inline text-lg" aria-hidden="true"/>
             </button> }
@@ -127,19 +127,19 @@ export default function ActiveFilters() {
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 
-                  className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+                  className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
               >
                 <PiPushPinFill className="inline text-lg text-neutral-800" aria-hidden="true"/>
                 {getFieldLabel(key, value)}
                 <PiX className="inline text-lg" aria-hidden="true"/>
               </button>
           ))}
-          {unpinnedFilters.length > 1 && !parent && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
+          {unpinnedFilters.length > 1 && !parent && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' && !isMobile ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
             {!parentData && unpinnedFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 
-                  className={`text-neutral-950  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+                  className={`text-neutral-950  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
               >
                 {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
               </button>

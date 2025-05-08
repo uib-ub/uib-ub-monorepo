@@ -4,7 +4,7 @@ import { PiCaretLeft, PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, Pi
 import { SearchContext } from "@/app/search-provider";
 import { useContext, useState, useEffect, useTransition } from "react";
 import TreeResults from "../search/results/tree-results";
-import Facets from "../search/facets/facet-section";
+import FacetSection from "../search/facets/facet-section";
 import SearchResults from "../search/results/search-results";
 import { useSearchParams, useRouter } from "next/navigation";
 import ClientFacet from "../search/facets/client-facet";
@@ -88,7 +88,7 @@ export default function LeftWindow() {
                 </IconButton> : null}
 
                 {contentSettings[dataset].adm ? <IconButton
-                      label="Område"
+                      label="Områdeinndeling"
                       onClick={() => handleTabClick('adm')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('adm')}
@@ -130,11 +130,16 @@ export default function LeftWindow() {
 
         
         { nav == 'filters' &&
-                <Facets/>
+                <FacetSection/>
         }
         {
             nav == 'adm' && contentSettings[dataset].adm &&
+            <div className="flex flex-col gap-2">
+            <h2 className="text-xl px-2 border-b border-neutral-200 pb-2" >
+            Områdeinndeling
+          </h2>
             <ClientFacet facetName='adm' />
+            </div>
         }
         { searchFilterParamsString && nav == 'results' &&
             <SearchResults/>
@@ -144,12 +149,12 @@ export default function LeftWindow() {
         }
         
          { nav == 'datasets' &&     
-            <section className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
             <h2 className="text-xl px-2" >
             {dataset == 'search' ? 'Datasett' : 'Andre datasett'}
           </h2>
             <DatasetSelector/>
-            </section>
+            </div>
                 
         }
         </div>
