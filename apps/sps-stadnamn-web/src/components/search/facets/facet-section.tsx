@@ -44,7 +44,7 @@ export default function FacetSection() {
               
             </Clickable>
             <div id={f.key + '-collapsible'} className={`${isExpanded ? 'block mt-2' : 'hidden'}`}>
-              {f.key == 'adm' ? <ClientFacet facetName={f.key} /> : <ServerFacet/>}
+              {isExpanded && (f.key == 'adm' ? <ClientFacet facetName={f.key} /> : <ServerFacet/>)}
             </div>
             </div>
           )
