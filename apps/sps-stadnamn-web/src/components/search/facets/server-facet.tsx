@@ -48,7 +48,8 @@ export default function ServerFacet() {
 
       setFacetLoading(false);
     })
-  }, [paramsExceptFacet, dataset, facet, facetSearch, sortMode, availableFacets, router, searchParams])
+  }, [facet, availableFacets, paramsExceptFacet, facetSearch, sortMode])
+
 
   // Return null if we don't have a valid facet
   if (!facet || !availableFacets.some(f => f.key === facet)) {
