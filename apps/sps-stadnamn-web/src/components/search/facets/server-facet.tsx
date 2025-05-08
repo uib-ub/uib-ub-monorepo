@@ -46,7 +46,7 @@ export default function ServerFacet() {
         setFacetAggregation(es_data.aggregations?.[facet])
       }
 
-      setIsLoading(false);
+      setFacetLoading(false);
     })
   }, [paramsExceptFacet, dataset, facet, facetSearch, sortMode, availableFacets, router, searchParams])
 
