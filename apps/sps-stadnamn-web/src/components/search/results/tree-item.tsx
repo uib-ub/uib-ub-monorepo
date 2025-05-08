@@ -31,7 +31,7 @@ export default function TreeItem({hit}: {hit: any}) {
     return  <li className="flex flex-grow">        
 
 
-            <Clickable link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-800"
+            <Clickable link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-100 aria-[current='page']:border-l-4 border-accent-700"
                     aria-current={(parent == hit.fields.uuid || doc == hit.fields.uuid || docData?._source?.within == hit.fields.uuid) ? 'page' : undefined}
                     only={{
                         dataset: docDataset,
