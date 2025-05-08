@@ -8,6 +8,7 @@ import { datasetTitles, typeNames, datasetTypes } from '@/config/metadata-config
 
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
+import { getSkeletonLength } from '@/lib/utils';
 
 
 export default function ServerFacet() {
@@ -16,7 +17,7 @@ export default function ServerFacet() {
   const searchParams = useSearchParams()
   const { removeFilterParams } = useSearchQuery()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
+  const [facetLoading, setFacetLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const {facetOptions, pinnedFilters, updatePinnedFilters } = useContext(GlobalContext)
@@ -120,7 +121,6 @@ export default function ServerFacet() {
 
   return (
     <>
-    { !isLoading &&
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
     {dataset == 'search' && facet == 'datasets' && 
@@ -170,11 +170,12 @@ export default function ServerFacet() {
     <FacetToolbar/>
     </div>
     </div>
-    { facetAggregation?.buckets.length ?
+
+    { (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[dataset][facet].label}`}</legend>
       <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
-        {facetAggregation?.buckets
+        {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .filter(filterDatasetsByTags)
           .map((item: any, index: number) => 
             (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(datasetTitles[item.key])) && (
@@ -184,12 +185,22 @@ export default function ServerFacet() {
                   {renderLabel(facet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
                 </label>
               </li>
-          ))}
+          ))
+          : <li>
+              <div className="flex flex-col gap-3">
+                {Array.from({length: 6}).map((_, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div style={{width: getSkeletonLength(index, 8, 16) + 'rem'}} className="h-4 bg-neutral-200 rounded-full animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
+            </li>
+        }
       </ul>
     </fieldset>
     : <div role="status" aria-live="polite" className='px-2 p-2 rounded-sm bg-neutral-50 border border-neutral-300'>Ingen treff</div>
     }
     </div>
-  } </>)
+   </>)
 
 }
