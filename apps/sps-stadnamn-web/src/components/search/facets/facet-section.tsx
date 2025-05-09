@@ -20,6 +20,8 @@ export default function FacetSection() {
         ? facetConfig['all'].filter(f => f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1)).sort((a, b) => (a.key === 'indexDataset' ? -1 : b.key === 'indexDataset' ? 1 : (b?.datasets?.length || 0) - (a?.datasets?.length || 0)))
         : facetConfig[dataset];
     const nav = searchParams.get('nav')
+    const [showAll, setShowAll] = useState(false)
+
     return (
         <>
         <div className="flex flex-col divide-y divide-neutral-200">
