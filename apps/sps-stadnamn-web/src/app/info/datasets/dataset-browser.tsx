@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useContext} from 'react';
-import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
+import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions, publishDates } from '@/config/metadata-config'
 import Image from 'next/image'
 import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
@@ -253,8 +253,28 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
               <small id={itemDataset + "_attribution"} className="text-neutral-700 text-xs p-1 sr-only">{datasetPresentation[itemDataset].imageAttribution}</small>
               </div>
               
-              <div className="p-2 px-4 md:p-4 col-span-4 xl:col-span-5 flex flex-col">
-                <h3 className="md:text-lg font-semibold !mt-0 !pt-0">{datasetTitles[itemDataset]}</h3>
+              <div className="p-2 px-4 md:p-4 col-span-4 xl:col-span-5 flex flex-col gap-1">
+                <h3 className="md:text-lg font-semibold !m-0 !p-0">{datasetTitles[itemDataset]}</h3>
+                <div className="flex flex-wrap gap-4">
+                  {stats?.datasets[itemDataset]?.doc_count && (
+                    <div className="flex items-center gap-2 rounded-md">
+                      <span className="text-sm font-medium text-neutral-600 uppercase tracking-wide">oppslag</span>
+                      <span className="text-base font-semibold text-neutral-800">{stats.datasets[itemDataset].doc_count.toLocaleString()}</span>
+                    </div>
+                  )}
+                  {publishDates[itemDataset] && (
+                    <div className="flex items-center gap-2 rounded-md">
+                      <span className="text-sm font-medium text-neutral-600 uppercase tracking-wide">lagt til</span>
+                      <span className="text-base font-semibold text-neutral-800">{new Date(publishDates[itemDataset]).toLocaleDateString('no')}</span>
+                    </div>
+                  )}
+                  {datasetTypes[itemDataset]?.includes('updated') && (
+                    <div className="flex items-center gap-2 rounded-md">
+                      <span className="text-sm font-medium text-neutral-600 uppercase tracking-wide">oppdatert</span>
+                      <span className="text-base font-semibold text-neutral-800">{new Date(parseInt(stats?.datasets[itemDataset]?.timestamp) * 1000).toLocaleDateString('no')}</span>
+                    </div>
+                  )}
+                </div>
                 <div className="text-sm space-y-4 break-words">
                 <p>{isMobile ? datasetShortDescriptions[itemDataset] : datasetDescriptions[itemDataset]}</p>          
               </div>
