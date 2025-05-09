@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSearchQuery, useDataset } from '@/lib/search-params';
 import { PiFunnel } from 'react-icons/pi';
