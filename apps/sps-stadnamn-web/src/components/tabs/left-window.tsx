@@ -70,7 +70,7 @@ export default function LeftWindow() {
                         {isTabActive('datasetInfo') ? <PiInfoFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiInfoLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
                 </IconButton>
                 <IconButton
-                      label="Datasett"
+                      label="Datasett og søkevisningar"
                       onClick={() => handleTabClick('datasets')}
                       aria-controls="left-window-content"
                       aria-expanded={isTabActive('datasets')}
@@ -151,7 +151,7 @@ export default function LeftWindow() {
          { nav == 'datasets' &&     
             <div className="flex flex-col gap-2">
             <h2 className="text-xl px-2" >
-            {dataset == 'search' ? 'Datasett' : 'Andre datasett'}
+            {(dataset == 'search' || dataset == 'all') ? 'Datasett og søkevisningar' : 'Andre søkevisningar'}
           </h2>
             <DatasetSelector/>
             </div>
