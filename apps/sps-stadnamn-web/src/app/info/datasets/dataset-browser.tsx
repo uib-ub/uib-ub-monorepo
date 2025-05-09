@@ -236,8 +236,19 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
           <ul className="flex flex-col w-full divide-y !p-0 gap-2">
             {filteredDatasets.map((itemDataset) => (
           <li key={itemDataset} className={`h-full sm:my-0 !py-0 w-full grid grid-cols-6 relative ${searchParams.get('dataset') == itemDataset ? 'bg-accent-50' : ''}`}>
-              <div className='flex flex-col col-span-2 xl:col-span-1 w-full pt-4'>
-                <Image src={datasetPresentation[itemDataset].img} alt="Illustrasjon" aria-describedby={itemDataset + "_attribution"} width="512" height="512" className="object-cover w-full aspect-square sepia-[25%] grayscale-[50%]"/>
+              <div className={`flex flex-col col-span-2 xl:col-span-1 w-full pt-4 ${datasetPresentation[itemDataset].img.endsWith('.svg') ? 'bg-neutral-100 p-4' : ''}`}>
+                <Image 
+                  src={datasetPresentation[itemDataset].img} 
+                  alt="Illustrasjon" 
+                  aria-describedby={itemDataset + "_attribution"} 
+                  width="512" 
+                  height="512" 
+                  className={`w-full aspect-square sepia-[25%] grayscale-[50%] ${
+    datasetPresentation[itemDataset].img.endsWith('.svg') 
+      ? 'object-contain' 
+      : 'object-cover'
+  }`}
+                />
             
               <small id={itemDataset + "_attribution"} className="text-neutral-700 text-xs p-1 sr-only">{datasetPresentation[itemDataset].imageAttribution}</small>
               </div>
