@@ -72,7 +72,7 @@ export default function DatasetSelector() {
               .map((itemDataset, index) => (
                 <Fragment key={itemDataset}>
                   <li className="flex w-full">
-                    { dataset == 'search' ?
+                    { (dataset == 'search' || dataset == 'all') ?
                       <div className={`flex flex-col gap-6 p-4 w-full ${itemDataset == dataset ? 'bg-accent-50 border-l-4 border-accent-600' : ''}`}>
                         <div className="flex-1 gap-2">
                           {isMobile ? <h4 className="text-lg font-semibold text-neutral-900 mb-1">{datasetTitles[itemDataset]}</h4> : <h3 className="text-lg font-semibold text-neutral-900 mb-1">{datasetTitles[itemDataset]}</h3>}
@@ -90,10 +90,10 @@ export default function DatasetSelector() {
                             <PiMagnifyingGlass className="text-neutral-600 text-lg" aria-hidden="true"/>Søkevisning
                           </Clickable>
 
-                          {itemDataset != 'all' && <Clickable 
+                          {itemDataset != 'all' && itemDataset != 'search' && <Clickable 
                             className="btn btn-outline xl:btn-compact flex items-center gap-2 text-base !pl-2" 
                             link 
-                            add={{datasets: itemDataset, nav: 'filters', facet: 'datasets'}} 
+                            add={dataset == 'all' ? {indexDataset: itemDataset, nav: 'filters', facet: 'indexDataset'} : {datasets: itemDataset, nav: 'filters', facet: 'datasets'}} 
                           >
                             <PiFunnel className="text-neutral-600 text-lg" aria-hidden="true"/>
                             Bruk som filter
