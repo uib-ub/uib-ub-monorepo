@@ -35,7 +35,6 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       setFacetAggregation(es_data.aggregations?.adm1)
       setFacetIsLoading(false);
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paramsExceptFacet, dataset]
     )
 
