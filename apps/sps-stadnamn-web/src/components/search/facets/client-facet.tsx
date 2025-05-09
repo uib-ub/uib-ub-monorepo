@@ -13,7 +13,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const dataset = useDataset()
   const { removeFilterParams, facetFilters } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
-  const paramsExceptFacet = removeFilterParams(facetName)
+  const paramsExceptFacet = useMemo(() => removeFilterParams(facetName), [removeFilterParams, facetName])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
