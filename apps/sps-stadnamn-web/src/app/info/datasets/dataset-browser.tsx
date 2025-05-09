@@ -1,4 +1,3 @@
-
 'use client'
 import { useState, useEffect, useContext} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
@@ -7,6 +6,12 @@ import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import DatasetToolbar from '@/components/ui/dataset-toolbar';
 import { GlobalContext } from '@/app/global-provider';
+import { fieldConfig } from '@/config/search-config';
+
+interface FieldWithDatasets {
+  label: string;
+  datasets: string[];
+}
 
 export default function DatasetBrowser() {
   const searchParams = useSearchParams()
@@ -14,12 +19,30 @@ export default function DatasetBrowser() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [stats, setStats] = useState<any>(null);
   const [expandedOption, setExpandedOption] = useState<string | null>(null);
+  const [showAllFields, setShowAllFields] = useState(false);
 
   const allFeatures = Object.keys(featureNames);
   const allTypes = Object.keys(typeNames);
+  const totalValidDatasets = Object.keys(datasetTitles)
+    .filter(dataset => !dataset.includes("_") && dataset !== 'search' && dataset !== 'all').length;
 
   const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
   const { isMobile } = useContext(GlobalContext)
+
+const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((acc, field) => {
+  if (!field.label || !field.datasets) return acc;
+  
+  const existingField = acc.find(f => f.label === field.label);
+  if (existingField) {
+    existingField.datasets = [...new Set([...existingField.datasets, ...field.datasets])];
+  } else {
+    acc.push({ label: field.label, datasets: field.datasets });
+  }
+  return acc;
+}, [])
+  .filter(field => field.datasets.length < totalValidDatasets)
+  .sort((a, b) => b.datasets.length - a.datasets.length)
+  .map(f => f.label);
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,12 +53,21 @@ export default function DatasetBrowser() {
     const titleMatch: string[] = []
     const contentMatch: string[] = []
     const first_filtering = Object.keys(datasetTitles).filter(dataset => !dataset.includes("_"))
-          .filter(dataset => dataset != 'search')
+          .filter(dataset => dataset != 'search' && dataset != 'all')
           .filter(dataset =>
-            selectedFilters.every(filter => 
-              (datasetFeatures as {[key: string]: string[]})[dataset]?.includes(filter) || 
-              (datasetTypes as {[key: string]: string[]})[dataset]?.includes(filter)
-            )
+            selectedFilters.every(filter => {
+              // Check if it's a feature
+              if (Object.keys(featureNames).includes(filter)) {
+                return (datasetFeatures as {[key: string]: string[]})[dataset]?.includes(filter);
+              }
+              // Check if it's a type
+              if (Object.keys(typeNames).includes(filter)) {
+                return (datasetTypes as {[key: string]: string[]})[dataset]?.includes(filter);
+              }
+              // If it's neither, it must be a field - check in fieldConfig
+              const fieldEntry = Object.values(fieldConfig.all).find(f => f.label === filter);
+              return fieldEntry?.datasets?.includes(dataset) || false;
+            })
           )
     // Datasets match
     if (searchTerm?.length) {
@@ -100,7 +132,10 @@ export default function DatasetBrowser() {
           <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'resources' ? null : 'resources')} aria-controls="dataset-resources" aria-expanded={expandedOption == 'resources'}>
             {expandedOption == 'resources' ? <PiCaretUp aria-hidden="true"/> : <PiCaretDown aria-hidden="true"/>}
             Ressurser</button>
-          <div className="ml-auto xl:sr-only" role="status" aria-live="polite">{filteredDatasets.length} / {Object.keys(datasetPresentation).length -1}</div>
+          <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'fields' ? null : 'fields')} aria-controls="dataset-fields" aria-expanded={expandedOption == 'fields'}>
+            {expandedOption == 'fields' ? <PiCaretUp aria-hidden="true"/> : <PiCaretDown aria-hidden="true"/>}
+            Felt</button>
+          <div className="ml-auto xl:sr-only" role="status" aria-live="polite">{filteredDatasets.length} / {totalValidDatasets}</div>
           </div>
           
             
@@ -145,10 +180,58 @@ export default function DatasetBrowser() {
                 }}
                 )}
             </ul>}
+
+            { expandedOption == 'fields' && <div>
+              <ul id="dataset-fields" className="flex flex-wrap xl:flex-col gap-x-4 mt-2 gap-y-2 justify-equal !list-none">
+                {allFields
+                  .slice(0, showAllFields ? undefined : 10)
+                  .map(fieldLabel => {
+                    // Get all datasets that have this field by finding the original field config entry
+                    const fieldEntry = Object.values(fieldConfig.all).find(f => f.label === fieldLabel);
+                    if (!fieldEntry?.datasets) return null;
+                    
+                    const resultCount = filteredDatasets.filter(dataset => 
+                      fieldEntry.datasets?.includes(dataset)
+                    ).length;
+
+                    if (resultCount > 0) {
+                      return (
+                        <li key={fieldLabel} className='space-x-1'>
+                          <input
+                            type="checkbox"
+                            id={fieldLabel}
+                            checked={selectedFilters.includes(fieldLabel)}
+                            onChange={() => handleFilterChange(fieldLabel)}
+                          />
+                          <label htmlFor={fieldLabel}>{fieldLabel} <span className='rounded-sm p-0 px-1 bg-neutral-800 text-white text-xs'>{resultCount}</span></label>
+                        </li>
+                      );
+                    }
+                  })}
+              </ul>
+              {allFields.length > 15 && (
+                <button 
+                  onClick={() => setShowAllFields(!showAllFields)}
+                  className="flex items-center gap-1 mt-4 text-neutral-800"
+                >
+                  {showAllFields ? (
+                    <>
+                      <PiCaretUp aria-hidden="true" />
+                      Vis færre
+                    </>
+                  ) : (
+                    <>
+                      <PiCaretDown aria-hidden="true" />
+                      {`Vis alle felt (${allFields.length})`}
+                    </>
+                  )}
+                </button>
+              )}
+            </div>}
           </div>
           
           <div className='xl:col-span-3'>
-            <h2 className='!text-neutral-800 font-semibold !text-base !mt-0 !p-0 xl:!h-8 !mb-2 items-center flex !font-sans sr-only xl:not-sr-only'>Treff: {filteredDatasets.length} / {Object.keys(datasetPresentation).length -1}</h2>
+            <h2 className='!text-neutral-800 font-semibold !text-base !mt-0 !p-0 xl:!h-8 !mb-2 items-center flex !font-sans sr-only xl:not-sr-only'>Treff: {filteredDatasets.length} / {totalValidDatasets}</h2>
           
           <ul className="flex flex-col w-full divide-y !p-0 gap-2">
             {filteredDatasets.map((itemDataset) => (
