@@ -135,10 +135,19 @@ export async function fetchSOSI(sosiCode: string) {
                         },
                         {
                             "term": {
-                                "_index": `search-stadnamn-${process.env.SN_ENV}-nbas`
+                                "_index": `search-stadnamn-${process.env.SN_ENV}-nbas*`
                             }
-                        }                        
-
+                        },
+                        {
+                            "term": {
+                                "_index": `search-stadnamn-${process.env.SN_ENV}-vocab`
+                            }
+                        },
+                        {
+                            "term": {
+                                "_index": `search-stadnamn-${process.env.SN_ENV}-iiif_*`
+                            }
+                        }               
                     ]
                 }
             },
