@@ -50,6 +50,10 @@ export default function ActiveFilters() {
         if (name == 'datasetTag') {
           return typeNames[value] || value
         }
+
+        if (name == 'indexDataset') {
+          return datasetTitles[value] || value
+        }
   
         if (name == 'within') {
           return <WithinLabel/>

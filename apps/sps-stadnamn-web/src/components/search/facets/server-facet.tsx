@@ -67,6 +67,7 @@ export default function ServerFacet() {
   const renderLabel = (key: string, label: string) => {
     if (label == '_false') return '[ingen verdi]'
     if (key == 'datasets') return datasetTitles[label]
+    if (key == 'indexDataset') return datasetTitles[label.split('-')[2]]
     return label
   }
 
@@ -83,18 +84,27 @@ export default function ServerFacet() {
     params.delete('center')
     params.delete('doc')
     
-    // Add back all values except the one we're toggling
-    existingValues
-      .filter(v => v !== value)
-      .forEach(v => params.append(facet, v));
+    // For indexDataset, convert all values to dataset tags before filtering
+    if (facet === 'indexDataset') {
+      const currentValue = value.split('-')[2];
+      existingValues
+        .filter(v => v !== currentValue)
+        .forEach(v => params.append(facet, v));
+    } else {
+      // For other facets, handle as before
+      existingValues
+        .filter(v => v !== value)
+        .forEach(v => params.append(facet, v));
+    }
 
-    
-
-    
     // Add the value if being checked
     if (beingChecked) {
-      params.append(facet, value);
-
+      if (facet === 'indexDataset') {
+        const datasetTag = value.split('-')[2];
+        params.append(facet, datasetTag);
+      } else {
+        params.append(facet, value);
+      }
     }
 
     if (facetOptions[dataset]?.[facet]?.pinningActive) {
@@ -102,22 +112,28 @@ export default function ServerFacet() {
           : pinnedFilters[dataset]?.filter(([k, v]) => (k == facet && v == value) ? false : true))
     }
 
-  
-
-
-  
     router.push(`?${params.toString()}`, { scroll: false });
   };
     
 
   const filterDatasetsByTags = (item: any) => {
-    if (facet === 'datasets' && searchParams.getAll('datasetTag').length > 0) {
+    if ((facet === 'datasets' || facet === 'indexDataset') && searchParams.getAll('datasetTag').length > 0) {
       // Check if the dataset (item.key) has all the required dataset tags
       return searchParams.getAll('datasetTag').every(tag => 
         datasetTypes[item.key]?.includes(tag)
       );
     }
     return true;
+  };
+
+  const isChecked = (facet: string, itemKey: string) => {
+    const existingValues = searchParams.getAll(facet);
+    if (facet === 'indexDataset') {
+      // For indexDataset, compare against the dataset tag portion
+      const datasetTag = itemKey.split('-')[2];
+      return existingValues.includes(datasetTag);
+    }
+    return existingValues.includes(itemKey.toString());
   };
 
   return (
@@ -161,7 +177,7 @@ export default function ServerFacet() {
     }
     <div className='flex gap-2'>
     <div className='relative grow'>
-      <input aria-label="Søk i fasett" onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
+      <input aria-label="Søk i fasett" onChange={(e) => (facet == 'datasets' || facet == 'indexDataset') ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
       <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
         <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
@@ -179,10 +195,17 @@ export default function ServerFacet() {
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .filter(filterDatasetsByTags)
           .map((item: any, index: number) => 
-            (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(datasetTitles[item.key])) && (
+            (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(renderLabel(facet, item.key))) && (
               <li key={index}>
                 <label>
-                  <input type="checkbox" checked={searchParams.getAll(facet).includes(item.key.toString()) ? true : false} className='mr-2' name={facet} value={item.key} onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}/>
+                  <input 
+                    type="checkbox" 
+                    checked={isChecked(facet, item.key)} 
+                    className='mr-2' 
+                    name={facet} 
+                    value={item.key} 
+                    onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
+                  />
                   {renderLabel(facet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
                 </label>
               </li>

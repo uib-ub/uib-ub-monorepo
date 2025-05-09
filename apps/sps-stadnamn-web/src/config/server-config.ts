@@ -76,7 +76,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     },
     all: {
       display: 'map',
-      adm: 0,
+      adm: 3,
       cadastre: false,
       sort: ["_score", "label.keyword"]
     },

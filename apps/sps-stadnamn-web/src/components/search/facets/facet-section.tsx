@@ -8,14 +8,17 @@ import ServerFacet from "./server-facet"
 import { facetConfig, fieldConfig } from "@/config/search-config"
 import { PiCaretDown, PiCaretUp, PiFileX } from "react-icons/pi"
 import { GlobalContext } from "@/app/global-provider"
-import { useContext } from "react"
+import { useContext, useState } from "react"
+import { datasetTitles } from "@/config/metadata-config"
 
 export default function FacetSection() {
     const dataset = useDataset()
     const searchParams = useSearchParams()
     const { isMobile } = useContext(GlobalContext)
     const facet = searchParams.get('facet') || 'adm'
-    const availableFacets = facetConfig[dataset]
+    const availableFacets = dataset == 'all' 
+        ? facetConfig['all'].filter(f => f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1)).sort((a, b) => (a.key === 'indexDataset' ? -1 : b.key === 'indexDataset' ? 1 : (b?.datasets?.length || 0) - (a?.datasets?.length || 0)))
+        : facetConfig[dataset];
     const nav = searchParams.get('nav')
     return (
         <>
@@ -38,7 +41,9 @@ export default function FacetSection() {
                            : {nav: 'filters', facet: f.key}}>
               <div className="flex flex-wrap gap-4">
               <span className="text-xl">{f.label}</span>
-              {f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
+              {dataset == 'all' && (f.datasets?.length || 0) > 1 && <em className="text-neutral-700 text-sm self-center">{f.datasets?.length} datasett</em>}
+              {dataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
+              {dataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
               {isExpanded ? <PiCaretUp className="inline self-center text-primary-600 text-xl" /> : <PiCaretDown className="inline self-center text-primary-600 text-xl" />}
               

@@ -38,7 +38,7 @@ export async function GET(request: Request) {
         : {
             [facets[i]]: {
               terms: {
-                field: `${facets[i]}.keyword`,
+                field: facets[i] === 'indexDataset' ? '_index' : `${facets[i]}.keyword`,
                 missing: "_false",
                 size: params.facetSearch ? 10 : 50,
                 ...params.facetSort ? { order: { _key: params.facetSort } } : {},

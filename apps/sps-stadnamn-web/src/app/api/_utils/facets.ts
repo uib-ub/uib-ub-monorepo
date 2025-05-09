@@ -135,6 +135,18 @@ export function extractFacets(request: Request) {
             }
           }
         });
+
+      } else if (key == 'indexDataset') {
+        termFilters.push({
+          "bool": {
+            "should": values.map(value => ({
+              "term": {
+                "_index": `search-stadnamn-${process.env.SN_ENV}-${value}`
+              }
+            })),
+            "minimum_should_match": 1
+          }
+        });
       } else {
           termFilters.push({
             "bool": {

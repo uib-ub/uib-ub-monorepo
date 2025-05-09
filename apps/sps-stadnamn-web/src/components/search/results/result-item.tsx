@@ -6,6 +6,7 @@ import { PiBookOpen } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
+import { datasetTitles } from '@/config/metadata-config';
 
 
 
@@ -51,10 +52,10 @@ export default function ResultItem({hit}: {hit: any}) {
                 <span>{hit.fields.children.length} kjelder</span>
                 </span>
                 
-            :<span className="self-center flex gap-1 items-center">
+            :<span className="self-center flex gap-1 items-center max-w-32 truncate">
                 
                 
-                <PiBookOpen aria-hidden="true"/>Kjelde
+                {datasetTitles[hit.fields.datasets[0]]}
                 
                 </span>
             
@@ -62,6 +63,11 @@ export default function ResultItem({hit}: {hit: any}) {
              }
             </div>
             }
+            {dataset == "all" && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">
+                <span className="self-center gap-1 items-center max-w-32 truncate">
+                    {datasetTitles[docDataset]}
+                </span>
+            </div>}
             
             {hit.highlight && snippetRenderer ? <> | {detailsRenderer(hit, 'map')} {snippetRenderer(hit)}  </>
             : <p>
