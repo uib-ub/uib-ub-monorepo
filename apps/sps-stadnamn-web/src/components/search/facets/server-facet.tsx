@@ -120,7 +120,7 @@ export default function ServerFacet() {
     if ((facet === 'datasets' || facet === 'indexDataset') && searchParams.getAll('datasetTag').length > 0) {
       // Check if the dataset (item.key) has all the required dataset tags
       return searchParams.getAll('datasetTag').every(tag => 
-        datasetTypes[item.key]?.includes(tag)
+        datasetTypes[facet == 'indexDataset' ? item.key.split('-')[2] : item.key]?.includes(tag)
       );
     }
     return true;
