@@ -6,6 +6,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function formatNumber(num: number): string {
+  if (num >= 1000000) {
+      return `${Math.round(num / 1000000)}m`;
+  }
+  if (num >= 1000) {
+      return `${Math.round(num / 1000)}k`;
+  }
+  return num.toString();
+}
+
 // Repeat search params instead of comma separated values
 // If searchparam contains array: amd=Hello&adm=World => [["adm", "hello"], ["adm", "world"]] instead of {adm: ["hello", "world"]}
 export function repeatingSearchParams(searchParams: Record<string, string | string[]>): URLSearchParams {

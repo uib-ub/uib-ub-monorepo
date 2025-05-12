@@ -21,6 +21,7 @@ import DocSkeleton from "./info/doc-skeleton";
 import ChildrenWindow from "../children/children-window";
 import FacetSection from "./facets/facet-section";
 import ActiveFilters from "./form/active-filters";
+import { formatNumber } from "@/lib/utils";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -227,7 +228,7 @@ export default function MobileLayout() {
             </>}
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
-                    <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Treff <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span></h2>
+                    <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Treff <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && formatNumber(totalHits.value)}</span></h2>
                 <Results/>
                 </section>
             
@@ -265,7 +266,7 @@ export default function MobileLayout() {
                                 onClick={() => swtichTab('results')} 
                                 aria-current={drawerContent == 'results' ? 'page' : 'false'} 
                                 className="toolbar-button">
-                                    <PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span></button>}
+                                    <PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && formatNumber(totalHits.value)}</span></button>}
                     {treeSettings[dataset] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
 
                     {doc && <button aria-label="Oppslag" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiBookOpen className="text-3xl"/></button>}

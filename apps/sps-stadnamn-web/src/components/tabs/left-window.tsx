@@ -11,8 +11,8 @@ import ClientFacet from "../search/facets/client-facet";
 import IconButton from "../ui/icon-button";
 import DatasetSelector from "../search/datasets/dataset-selector";
 import DatasetInfo from "../search/info/dataset-info";
-import Clickable from "../ui/clickable/clickable";
 import Spinner from "../svg/Spinner";
+import { formatNumber } from "@/lib/utils";
 
 export default function LeftWindow() {
     const dataset = useDataset()
@@ -114,8 +114,8 @@ export default function LeftWindow() {
                         <span className="text-neutral-900 font-semibold uppercase tracking-wider">Treff</span>
                         { isLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
                         {isTabActive('results') ? <span className={`results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
-                            {totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>
-                        : <span className={`results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && totalHits?.value >= 10000 ? `${Math.round(totalHits.value/1000)}k` : totalHits?.value || '0'}</span>}
+                            {totalHits && formatNumber(totalHits.value)}</span>
+                        : <span className={`results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
                         </>}
                 </button>
                 }
