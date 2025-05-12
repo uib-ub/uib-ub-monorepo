@@ -7,7 +7,7 @@ export async function postQuery(dataset: string, query: any, retry: boolean = tr
     const token = endpoint == process.env.ES_ENDPOINT ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
     let res
     try {
-        res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${datasetQuery}/_search`, {
+        res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ export async function postQuery(dataset: string, query: any, retry: boolean = tr
     
     if (!res.ok) {
         if (retry) {
-            return postQuery(datasetQuery, query, false);
+            return postQuery(dataset, query, false);
         } else {
             const contentType = res.headers.get('Content-Type');
             if (contentType && contentType.includes('application/json')) {
