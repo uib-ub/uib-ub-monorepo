@@ -140,7 +140,7 @@ export default function ServerFacet() {
     <>
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
-    {dataset == 'search' && facet == 'datasets' && 
+    {((dataset =='search' && facet == 'datasets') || (dataset == 'all' && facet == 'indexDataset')) && 
     <div className='flex gap-2'>
       <div className='flex flex-wrap gap-2'>
         {Object.entries(typeNames)
@@ -151,7 +151,7 @@ export default function ServerFacet() {
             // Only show types that exist in the current facet buckets
             return facetAggregation?.buckets
               .filter(filterDatasetsByTags)
-              .some((item: any) => datasetTypes[item.key]?.includes(type));
+              .some((item: any) => datasetTypes[facet == 'datasets' ? item.key : item.key.split('-')[2]]?.includes(type));
           })
           .map(([type, label]) => (
           <button 

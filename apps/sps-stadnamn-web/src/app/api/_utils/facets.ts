@@ -56,14 +56,25 @@ export function extractFacets(request: Request) {
       .map(([dataset]) => dataset);
     
     if (matchingDatasets.length > 0) {
-      termFilters.push({
-        "bool": {
-          "should": [{
-            "terms": { "datasets.keyword": matchingDatasets }
-          }],
-          "minimum_should_match": 1
-        }
-      });
+      if (filteredParams.dataset == 'all') {
+        termFilters.push({
+          "bool": {
+            "should": [{
+              "terms": { "_index": matchingDatasets.map(dataset => `search-stadnamn-${process.env.SN_ENV}-${dataset}`) }
+            }],
+            "minimum_should_match": 1
+          }
+        });
+      } else {
+        termFilters.push({
+            "bool": {
+              "should": [{
+                "terms": { "datasets.keyword": matchingDatasets }
+              }],
+              "minimum_should_match": 1
+            }
+          });
+      }
     }
   }
 
