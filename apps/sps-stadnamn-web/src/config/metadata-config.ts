@@ -18,6 +18,8 @@ export interface DatasetPresentation {
     img: string;
     alt: string;
     imageAttribution: string;
+    imageLicense?: {name: string, url: string};
+    imageUrl?: {name: string, url: string};
     license: {name: string, url: string};
     attribution: string;
     links?: {title?: string, href: string, text?: string}[];
@@ -57,7 +59,8 @@ export const datasetTitles: DatasetTitles = {
     kven: "Kvenske stedsnavn",
     snor: "Stedsnavn i Norge",
     herad: "Heradsregisteret",
-    seta: "Seternamnarkivet"
+    seta: "Seternamnarkivet",
+    osm: "OpenStreetMap 2019"
 
 }
 
@@ -162,6 +165,10 @@ export const licenses: Record<string, {name: string, url: string}> = {
     name: "CC BY 4.0",
     url: "https://creativecommons.org/licenses/by/4.0/deed.no"
   },
+  ccbyncsa3: {
+    name: "CC BY-NC-SA 3.0",
+    url: "https://creativecommons.org/licenses/by-nc-sa/3.0/deed.no"
+  }
   }
 
 
@@ -279,51 +286,54 @@ export const datasetPresentation: DatasetPresentation = {
         license: licenses.ccby4,
       },
       ssr2016: {
-        img: "/datasets/ssr2016.png",
-        alt: "Kartutsnitt over Kartverket",
+        img: "/datasets/Logo ståande, WEB-fargar.svg",
+        alt: "Kartverkets logo",
         imageAttribution: "Statens kartverk",
         attribution: "Statens kartverk og Språksamlingane",
         license: licenses.ccby4,
       },
       ssr2020: {
         img: "/datasets/Logo ståande, WEB-fargar.svg",
-        alt: "Kartutsnitt over Kartverket",
+        alt: "Kartverkets logo",
         imageAttribution: "Statens kartverk",
         attribution: "Statens kartverk og Språksamlingane",
         license: licenses.ccby4,
       },
       nrk: {
-        img: "/datasets/nrk.png",
-        alt: "NRK",
-        imageAttribution: "NRK",
+        img: "/datasets/Norsk-rikskringkasting-Logo.svg",
+        alt: "NRKs logo",
+        imageAttribution: "	Norsk rikskringkasting",
         attribution: "NRK",
         license: licenses.ccby4,
       },
       gn2019: {
-        img: "/datasets/geonames.png",
+        img: "/datasets/geonames_logo_icon_171110.svg",
         alt: "Geonames",
         imageAttribution: "Geonames",
         attribution: "Geonames",
         license: licenses.ccby4,
       },
       ft1900: {
-        img: "/datasets/ft1900.png",
-        alt: "Folketellingen 1900",
-        imageAttribution: "Folketellingen 1900",
-        attribution: "Folketellingen 1900",
+        img: "/datasets/042sAXjQ1pbw.jpg",
+        alt: "Punchedamer i arbeid i Statistisk Centralbureau ved folketellingen 1900",
+        imageAttribution: "Foto: Colditz, Caroline",
+        imageUrl: {"name": "oslobilder.no", "url": "http://www.oslobilder.no/NTM/NTM%20C%2011164"},
+        imageLicense: licenses.ccbyncsa3,
+        attribution: "Statistisk sentralbyrå, beriket av Språksamlingene",
         license: licenses.ccby4,
       },
       ft1910: {
         img: "/datasets/ft1910.png",
-        alt: "Folketellingen 1910",
-        imageAttribution: "Folketellingen 1910",
-        attribution: "Folketellingen 1910",
+        alt: "Foto: Ukjent ca 1900-1910",
+        imageAttribution: "Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        imageUrl: {"name": "marcus.uib.no", "url": "https://marcus.uib.no/instance/photograph/ubb-bros-04220"},
+        attribution: "Statistisk sentralbyrå, beriket av Språksamlingene",
         license: licenses.ccby4,
       },
       m2010: {
-        img: "/datasets/m2010.png",
-        alt: "Matrikkelen 2010",
-        imageAttribution: "Matrikkelen 2010",
+        img: "/datasets/Logo ståande, WEB-fargar.svg",
+        alt: "Kartverkets logo",
+        imageAttribution: "Statens kartverk",
         attribution: "Matrikkelen 2010",
         license: licenses.ccby4,
       }, 
@@ -336,7 +346,7 @@ export const datasetPresentation: DatasetPresentation = {
       },
       gjerd: {
         img: "/datasets/Gjerdrum_komm.svg",
-        alt: "Gjerdrumundersøkelsen",
+        alt: "Våpen for Gjerdrum kommune i Akershus fylke",
         imageAttribution: "",
         attribution: "Språksamlingene",
         license: licenses.ccby4,
@@ -373,7 +383,22 @@ export const datasetPresentation: DatasetPresentation = {
         img: "/datasets/ubb-kk-ncn-0275_md.jpg",
         alt: "Stølen til gården Seim i Grøndalen, Røldal.",
         imageAttribution: "Foto: Knud Knudsen. Avdeling for spesialsamlinger, Universitetsbiblioteket i Bergen",
+        imageUrl: {"name": "marcus.uib.no", "url": "https://marcus.uib.no/instance/photograph/ubb-kk-ncn-0275"},
         attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      wikid: {
+        img: "/datasets/Wikidata-logo.svg",
+        alt: "Wikidata",
+        imageAttribution: "Wikimedia Foundation",
+        attribution: "Wikidata",
+        license: licenses.ccby4,
+      },
+      osm: {
+        img: "/datasets/osm.png",
+        alt: "Kartutsnitt fra OpenStreetMap",
+        imageAttribution: "OpenStreetMap",
+        attribution: "OpenStreetMap",
         license: licenses.ccby4,
       }
 }
