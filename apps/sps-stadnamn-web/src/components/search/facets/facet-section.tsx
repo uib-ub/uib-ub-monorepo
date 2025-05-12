@@ -25,7 +25,7 @@ export default function FacetSection() {
     return (
         <>
         <div className="flex flex-col divide-y divide-neutral-200">
-          {availableFacets.filter(f => f.key != 'adm' || isMobile).map(f => {
+          {availableFacets.filter(f => !f.child && (f.key != 'adm' || isMobile)).map(f => {
             const isExpanded = f.key == 'adm' ? nav == 'adm' : facet == f.key
             return (
             <div key={f.key}>
