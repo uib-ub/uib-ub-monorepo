@@ -32,7 +32,7 @@ const cadastre = {"within": {label: "Gard", result},
                 }
 const uuid = {label: "UUID", result}
 const label = {label: "Namn", result}
-const adm = {label: "Områdeinndeling", facet}
+const adm = {label: "Områdeinndeling"}
 const adm1 = {label: "Fylke", result} // Necessary for it to be included in fields
 const adm2 = {label: "Kommune", result} // Necessary for it to be included in fields
 const adm3 = {label: "Sogn, bydel eller tidlegare kommune", result}
