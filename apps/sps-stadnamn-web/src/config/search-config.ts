@@ -175,11 +175,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     herad: {
       uuid, label, adm, adm1, adm2, sosi, ...html,
-      "rawData.herred": {label: "Kommune", facet},
-      "rawData.fylke": {label: "Fylke", facet},
-      "rawData.kommunenummer": {label: "Kommunenummer", facet},
-      "rawData.Kjelde": {label: "Kjelde", facet},
-      "rawData.Språk": {label: "Språk", facet},
+      "misc.herred": {label: "Kommune", facet},
+      "misc.fylke": {label: "Fylke", facet},
+      "misc.kommunenummer": {label: "Kommunenummer", facet},
+      //"misc.lokalitetstype_nsdb": {label: "Lokalitetstype", facet}, Alle uspesifisert
+      "misc.Kjelde": {label: "Kjelde", facet},
+      "misc.Språk": {label: "Språk", facet},
       snid,
       gnidu
       
