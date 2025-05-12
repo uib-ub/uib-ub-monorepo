@@ -99,7 +99,7 @@ export async function fetchSOSI(sosiCode: string) {
   }
 
 
-  export async function fetchStats() {
+  export async function fetchStats(dataset?: string) {
     'use server'
     const query = {
     "size": 0,
@@ -132,18 +132,17 @@ export async function fetchSOSI(sosiCode: string) {
                             "term": {
                                 "_index": `search-stadnamn-${process.env.SN_ENV}-search`
                             }
-                        },
-                        {
-                            "term": {
-                                "_index": `search-stadnamn-${process.env.SN_ENV}-vocab`
+                        },           
+                    ],
+                    ...(dataset ? {
+                        "must": [
+                            {
+                                "term": {
+                                    "_index": `search-stadnamn-${process.env.SN_ENV}-${dataset}`
+                                }
                             }
-                        },
-                        {
-                            "wildcard": {
-                                "_index": "*_*"
-                            }
-                        }             
-                    ]
+                        ]
+                    } : {})
                 }
             },
             "aggs": {
