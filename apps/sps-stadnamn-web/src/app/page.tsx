@@ -100,8 +100,6 @@ export default async function Home() {
     <StoredFilters/>
   </Form>
   </div>
-  
-
   { false && stats && <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col sm:flex-row gap-4 lg:gap-6">
   <li className="flex flex-col items-center text-base">
       Stadnamnoppslag
