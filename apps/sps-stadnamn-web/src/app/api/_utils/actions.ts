@@ -157,7 +157,7 @@ export async function fetchSOSI(sosiCode: string) {
     }
 }
 
-    const [res, status] = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-vocab,-search-stadnamn-${process.env.SN_ENV}-iiif_*`, query)
+    const [res, status] = await postQuery(`search,search-stadnamn-${process.env.SN_ENV}-all`, query)
     if (status != 200) {
         return {error: "Failed to fetch stats", status: status}
     }
