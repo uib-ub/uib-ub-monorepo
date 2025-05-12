@@ -422,6 +422,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 const baseAllConfig = {
   uuid, label, adm, adm1, adm2, sosi, identifiers, cadastre,
   "indexDataset": {label: "Datasett", facet},
+  "datasetTag": {label: "Datasettstype", facet, omitLabel, child: "indexDataset"},
 };
 
 fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
