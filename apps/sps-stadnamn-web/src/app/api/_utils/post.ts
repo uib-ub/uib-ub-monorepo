@@ -1,6 +1,4 @@
 export async function postQuery(dataset: string, query: any, retry: boolean = true) {
-    const datasetQuery = dataset == "all" ? 
-    `*,-search-stadnamn-${process.env.SN_ENV}-vocab,-search-stadnamn-${process.env.SN_ENV}-iiif_*,-search-stadnamn-${process.env.SN_ENV}-search,-search-stadnamn-${process.env.SN_ENV}-nbas*,-search-stadnamn-${process.env.SN_ENV}-leks_g` : dataset
     
     const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
     console.log("ENDPOINT", endpoint)
