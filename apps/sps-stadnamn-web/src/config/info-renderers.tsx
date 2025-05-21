@@ -211,7 +211,14 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     },
     ft1900: null,
     ft1910: null,
-    m2010: null,
+    m2010: (source: any) => {
+      return <>
+      <div className='space-y-2'>
+        <strong>Opphavleg oppslagsord:</strong><InfoPopover>Oppslagsorda i den opphavlege databasen var alle med store bokstavar og inneheldt romartal. Vi måtte difor prøve å finne rett bruk av store og små bokstavar og fjerne romartala.</InfoPopover>
+        {source.sosi == 'gard' ? source.misc.Gardsnamn : source.misc.Bruksnamn}
+      </div>
+      </>
+    },
     frogn: (source: any) => {
       return <>
       {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
