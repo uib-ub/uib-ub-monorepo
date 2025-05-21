@@ -737,8 +737,8 @@ useEffect(() => {
     <div className={`absolute top-12 lg:top-auto right-0 flex-col lg:flex-row p-2 gap-2 lg:gap-1 lg:bottom-0 lg:left-1/2 lg:transform lg:-translate-x-1/2 flex justify-center p-2 gap-2 text-white z-[3001]`}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <IconButton label="Bakgrunnskart" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
-            <PiStackSimpleFill />
+          <IconButton label="Bakgrunnskart" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
+            <PiStackSimpleFill className="lg:text-xl" />
           </IconButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
@@ -824,9 +824,15 @@ useEffect(() => {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <IconButton onClick={zoomIn} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn"><PiMagnifyingGlassPlusFill /></IconButton>
-      <IconButton onClick={zoomOut} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut"><PiMagnifyingGlassMinusFill /></IconButton>
-      <IconButton onClick={getMyLocation} side="top" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon"><PiNavigationArrowFill/></IconButton>
+      <IconButton onClick={zoomIn} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn">
+        <PiMagnifyingGlassPlusFill className="lg:text-xl" />
+      </IconButton>
+      <IconButton onClick={zoomOut} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut">
+        <PiMagnifyingGlassMinusFill className="lg:text-xl" />
+      </IconButton>
+      <IconButton onClick={getMyLocation} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
+        <PiNavigationArrowFill className="lg:text-xl" />
+      </IconButton>
     </div>
   </>
 }
