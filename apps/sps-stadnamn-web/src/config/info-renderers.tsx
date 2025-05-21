@@ -3,6 +3,7 @@ import React, { Fragment } from 'react';
 import parse from 'html-react-parser';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
+import InfoPopover from '@/components/ui/info-popover';
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
     const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
@@ -119,9 +120,9 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     */
     return <>
     <div className='space-y-2'>
-    { altLabels && <div><strong className="text-neutral-900">Andre navneformer*: </strong>{altLabels}</div>}
+    { altLabels && <div><strong className="text-neutral-900">Andre namneformer</strong><InfoPopover>Felta for fonemisk skrift (uttale) og namneformer var samanblanda i den opphavlege databasen. Vi har difor slått dei saman under fellesnemninga «andre namneformer».</InfoPopover> {altLabels}</div>} 
     {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
-    { altLabels && <div className='text-sm text-neutral-700'>* feltene for fonemisk skrift (uttale) og navneformer var sammenblandet i den opprinnelige databasen. Vi har derfor slått dem sammen under fellesbetegnelsen «andre navneformer».</div>}
+
     </div>
     {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
     </>
