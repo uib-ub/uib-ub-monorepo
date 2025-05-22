@@ -25,20 +25,18 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     const dataset = "rygh"
     return <Fragment key={index}>
     
-      <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "rawData.KNR": source.rawData.KNR}}>{source.rawData.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable>
-      { item.gnr && <>- <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "rawData.Gnr": item.gnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
-      { item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "rawData.Gnr": item.gnr.toString(), "rawData.Bnr": item.bnr.toString(), "rawData.KNR": source.rawData.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
+      <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "misc.KNR": source.misc.KNR}}>{source.misc.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable>
+      { item.gnr && <>- <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "misc.Gnr": item.gnr.toString(), "misc.KNR": source.misc.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
+      { item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "misc.Bnr": item.bnr.toString(), "misc.KNR": source.misc.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-600' /></Clickable> </>}
       
 
-
-  
    </Fragment>
    })}
    </div>   
     }
 
     {source.content?.html && <div className="inline-flex flex-col inner-slate">
-     <div className='border-b border-neutral-200 p-4'><Link href={source.rawData.Lenke_til_originalside} className='whitespace-nowrap inline'>Bind {source.rawData.Bind}, s. {source.rawData.Side}</Link></div>
+     <div className='border-b border-neutral-200 p-4'><Link href={source.link} className='whitespace-nowrap inline'>Bind {source.misc.Bind}, s. {source.misc.Side}</Link></div>
     <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
 
     </div>
