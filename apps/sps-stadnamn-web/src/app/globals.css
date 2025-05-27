@@ -360,6 +360,10 @@
            transition-all duration-200 hover:bg-neutral-200 aria-selected:hover:bg-accent-700;
   }
 
+  strong {
+    @apply font-semibold;
+  }
+
 }
 
 
