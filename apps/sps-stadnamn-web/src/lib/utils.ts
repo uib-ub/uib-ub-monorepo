@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatNumber(num: number): string {
   if (num >= 1000000) {
-      return `${Math.round(num / 1000000)}m`;
+      return `${Math.round(num / 1000000)}M`;
   }
   if (num >= 1000) {
       return `${Math.round(num / 1000)}k`;
