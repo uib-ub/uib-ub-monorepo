@@ -1,4 +1,4 @@
-import { PiQuestionFill } from "react-icons/pi";
+import { PiQuestion, PiQuestionFill } from "react-icons/pi";
 import { useId } from "react";
 
 export default function InfoPopover({ children }: { children?: React.ReactNode }) {
@@ -12,9 +12,9 @@ export default function InfoPopover({ children }: { children?: React.ReactNode }
                 popoverTarget={popoverId}
                 style={{ ['anchorName' as any]: anchorName }}
                 className="inline ml-1 text-primary-600"
-                aria-label="More information"
+                aria-label="Merknad"
             >
-                <PiQuestionFill />
+                <PiQuestion />
             </button>
             <div
                 id={popoverId}
