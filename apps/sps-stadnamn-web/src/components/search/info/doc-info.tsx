@@ -156,7 +156,15 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       { docDataset == 'search' && <SearchDocInfo docSource={docSource}/> }
       
       
-      { docDataset && infoPageRenderers[docDataset]?.( docSource) }
+      
+      {docDataset && (() => {
+        try {
+          return infoPageRenderers[docDataset]?.(docSource);
+        } catch (error: any) {
+          return <ErrorMessage className="py-4" error={{error: error.message}} message="Det har oppstått ein feil."/>
+        }
+      })()}
+
       { filteredFacets.length > 0 && 
         <CollapsibleHeading title="Detaljar">
             <FacetsInfobox source={docSource} docDataset={docDataset} filteredFacets={filteredFacets}/>
