@@ -2,20 +2,12 @@ import { getSortArray, treeSettings } from '@/config/server-config'
 import { postQuery } from './post'
 import { fieldConfig } from '@/config/search-config'
 
-const detectEnv = (retry: boolean) => {
-    const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
-    const token = endpoint == process.env.ES_ENDPOINT ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
-    return { endpoint, token }
-}
-
-
-
-
-
-export async function fetchDoc(params: {uuid: string | string[], dataset?: string}, retry: boolean = true) {
+export async function fetchDoc(params: {uuid: string | string[], dataset?: string}) {
     'use server'
     const { uuid, dataset } = params
-    const { endpoint, token } = detectEnv(retry)
+    // TODO: use the same variable name in prod and test
+    const endpoint = process.env.SN_ENV == 'prod' ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
+    const token = process.env.SN_ENV == 'prod' ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
 
     // Post a search query for the document
     const query = {
@@ -41,10 +33,6 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
 
     if (!res.ok) {
         const errorResponse = await res.json();
-        if (retry) {
-            console.log("RETRYING WITH FALLBACK")
-            return fetchDoc(params, retry = false);
-        }
         if (errorResponse.error) {
             return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
         }
@@ -79,7 +67,7 @@ export async function fetchSOSI(sosiCode: string) {
     'use server'
     const res = await fetch("https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype.json", {
         method: 'GET',
-        cache: 'force-cache'
+        //cache: 'force-cache'
     })
 
     if (!res.ok) {
