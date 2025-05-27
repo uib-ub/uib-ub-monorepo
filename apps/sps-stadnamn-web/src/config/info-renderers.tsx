@@ -118,7 +118,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     */
     return <>
     <div className='space-y-2'>
-    { altLabels && <div><strong className="text-neutral-900">Andre namneformer</strong><InfoPopover>Felta for fonemisk skrift (uttale) og namneformer var samanblanda i den opphavlege databasen. Vi har difor slått dei saman under fellesnemninga «andre namneformer».</InfoPopover> {altLabels}</div>} 
+    { altLabels && <div><strong className="text-neutral-900">Andre namneformer</strong><InfoPopover>Felta for fonemisk skrift (uttale) og namneformer var samanblanda i den opphavlege databasen. Vi har derfor slått dei saman under fellesnemninga «andre namneformer».</InfoPopover> {altLabels}</div>} 
     {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
 
     </div>
