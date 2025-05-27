@@ -159,7 +159,6 @@ export const publishDates: Record<string, string> = {
 }
 
 
-
 export const licenses: Record<string, {name: string, url: string}> = {
   ccby4: {
     name: "CC BY 4.0",
