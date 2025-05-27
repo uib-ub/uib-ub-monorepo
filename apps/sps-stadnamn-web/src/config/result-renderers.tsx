@@ -141,13 +141,13 @@ export const resultRenderers: ResultRenderers = {
   rygh: {
     title: (hit: any, display: string) => {
       if (display == 'table') return defaultTitle(hit)
-      return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && ` (${getFieldValue(hit, 'sosi').toLowerCase()})`}</>
+      return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')?.join(', ').toLowerCase()})`}</>}</>
     },
     snippet: (hit: any) => {
       return hit.highlight?.['content.html'][0] && formatHighlight(hit.highlight['content.html'][0])
     },
     details: (hit: any, display: string) => {
-      return cadastreAdm(getFieldValue(hit, 'rawData.KNR'), getFieldValue(hit, 'rawData.Gnr'), getFieldValue(hit, 'rawData.Bnr'), "/", hit, display)
+      return cadastreAdm(getFieldValue(hit, 'misc.KNR'), getFieldValue(hit, 'misc.Gnr'), getFieldValue(hit, 'misc.Bnr'), "/", hit, display)
     }
   },
   leks: {
