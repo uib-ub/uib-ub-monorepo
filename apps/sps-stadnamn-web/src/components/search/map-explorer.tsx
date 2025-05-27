@@ -787,8 +787,8 @@ useEffect(() => {
       </DropdownMenu>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <IconButton label="Markørar" className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
-            <PiMapPinLineFill />
+          <IconButton label="Markørar" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
+            <PiMapPinLineFill className="lg:text-xl" />
           </IconButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
