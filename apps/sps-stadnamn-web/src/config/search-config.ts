@@ -97,10 +97,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       uuid, label, adm, adm1, adm2, sosi, ...html,
       "misc.Lokalitetstype": {label: "Lokalitetstype", table, facet},
       "misc.Bind": {label: "Bind", table, facet},
-      "misc.Side": {label: "Sidetall", table, facet, additionalParams: ["rawData.Bind"]},
+      "misc.Side": {label: "Sidetall", table, facet, additionalParams: ["misc.Bind"]},
       "misc.KNR": {label: "Kommunenummer", table, facet},
-      "misc.Gnr": {label: "Gardsnummer", table, facet, additionalParams: ["rawData.KNR"]},
-      "misc.Bnr": {label: "Bruksnummer", table, facet, additionalParams: ["rawData.KNR", "rawData.Gnr"]},
+      "misc.Gnr": {label: "Gardsnummer", table, facet, additionalParams: ["misc.KNR"]},
+      "misc.Bnr": {label: "Bruksnummer", table, facet, additionalParams: ["misc.KNR", "misc.Gnr"]},
       ...identifiers,
 
     },
