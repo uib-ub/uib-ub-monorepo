@@ -253,7 +253,7 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
               <small id={itemDataset + "_attribution"} className="text-neutral-700 text-xs p-1 sr-only">{datasetPresentation[itemDataset].imageAttribution}</small>
               </div>
               
-              <div className="p-2 px-4 md:p-4 col-span-4 xl:col-span-5 flex flex-col gap-1">
+              <div className="p-2 px-4 md:p-4 col-span-4 xl:col-span-5 flex flex-col gap-2">
                 <h3 className="md:!text-xl font-semibold !m-0 !p-0">{datasetTitles[itemDataset]}</h3>
                 <DatasetStats statsItem={stats?.datasets[itemDataset]} itemDataset={itemDataset}/>
                 <div className="text-sm space-y-4 break-words">
