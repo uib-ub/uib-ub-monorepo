@@ -121,7 +121,7 @@ export default function LeftWindow() {
                 }
 
         </div>
-        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-7.5rem)] py-6 border-t border-neutral-200 ${windowCollapsed || isPending ? "hidden" : ""}`}>
+        <div id="left-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-7.5rem)] py-6 border-t border-neutral-200 ${(windowCollapsed || isPending) ? "hidden" : ""}`}>
                 
 
         { nav == 'tree' && 
