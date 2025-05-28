@@ -87,6 +87,7 @@ export default function ChildrenProvider({ children }: {  children: React.ReactN
         const requestBody: Record<string,any> = {mode}
         if (dataset == 'search') {
             requestBody.children = parentData?._source?.children
+            requestBody.dataset = 'all'
         }
         else {
             requestBody.within = parent
