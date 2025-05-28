@@ -77,6 +77,7 @@ export default function SearchForm() {
                 type="text" 
                 ref={input} 
                 name="q" 
+                autoFocus={true}
                 value={inputValue} 
                 onChange={(event) => setInputValue(event.target.value)} 
                 className={`bg-transparent ${dataset == 'search' ? 'px-4' : 'pr-4 pl-2'} focus:outline-none flex w-full shrink`}
