@@ -63,10 +63,11 @@ export default function SearchForm() {
     return pathname == '/search' ? <>   
         <div className="sr-only xl:not-sr-only flex !mx-4 divide-x-2 divide-primary-400 gap-2 overflow-clip items-center content-center"><Link href="/" scroll={false} className="text-base font-serif uppercase no-underline">Stadnamnportalen</Link><h1 className="!text-lg text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
         <div className="h-full flex grow">
-        <Form ref={form} action="/search" className="flex w-full items-center h-full" onSubmit={() => setAllowFlyTo(true)}>
-            
+
+            <Form ref={form} action="/search" className="flex w-full items-center h-full relative group focus-within:after:content-[''] focus-within:after:absolute focus-within:after:bottom-0 focus-within:after:left-0 focus-within:after:right-0 focus-within:after:h-0.5 focus-within:after:bg-primary-500" onSubmit={() => setAllowFlyTo(true)}>
+
             <div className='flex w-full h-full items-center bg-white border-x-2 border-neutral-200 group px-2'>
-            {(!isMobile || dataset == 'search') ? <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
+            {(!isMobile || dataset == 'search') ? <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-600 group-focus-within:text-primary-600" aria-hidden="true"/>
             : <Clickable only={{dataset: 'search', zoom: searchParams.get('zoom'), center: searchParams.get('center')}} aria-hidden="true" className="flex no-underline max-w-[50%] text-sm flex-nowrap items-center gap-1 bg-accent-700 text-white rounded-md px-2 py-1 whitespace-nowrap"><span className="truncate">{datasetTitles[dataset]}</span><PiX className="text-xs" aria-hidden="true"/></Clickable>
             }
             <label htmlFor="search-input" className="sr-only">Søk</label>
