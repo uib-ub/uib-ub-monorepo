@@ -423,7 +423,6 @@ export const typeNames: Record<string, string> = {
   "database": "Database",
   "public": "Offentleg register",
   "collection": "Djupinnsamling", // Toponomastic collection
-  "updated": "Jevnlig oppdatert"
 }
 
 
@@ -467,7 +466,7 @@ export const datasetTypes: Record<string, string[]> = {
   sof: ["database", "collection"],
   tot: ["database", "sprak", "collection"],
   ssr2016: ["database", "public"],
-  ssr2020: ["database", "public", "updated"],
+  ssr2020: ["database", "public"],
   nrk: ["database", "collection"],
   gn2019: ["database"],
   m2010: ["database", "public"],
