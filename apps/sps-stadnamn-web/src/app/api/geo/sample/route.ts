@@ -12,12 +12,14 @@ export async function GET(request: Request) {
   const dataset = filteredParams.dataset || 'search' // == 'search' ? '*' : filteredParams.dataset;
 
   const sortArray = getSortArray(dataset)
-  const zoom = parseInt(filteredParams.zoom)
+  const zoom: number = parseInt(filteredParams.zoom)
   const totalHits = filteredParams.totalHits
+
+  const zoomSize: Record<number, number> = { 16: 300, 17: 600, 18: 2000}
 
 
   const query: Record<string,any> = {
-    size: zoom > 16 ? 300 : 200,
+    size: zoomSize[zoom] || 200,
     fields: ["label", "location", "uuid", "sosi", "children", "placeScore", "within"],
     sort: dataset === 'search' ? [
       /*
