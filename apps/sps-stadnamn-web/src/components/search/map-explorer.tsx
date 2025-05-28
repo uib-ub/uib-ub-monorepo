@@ -21,6 +21,7 @@ import { useSearchParams } from "next/navigation";
 import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
+import { useRouter } from "next/navigation";
 
 
 export default function MapExplorer() {
@@ -32,14 +33,18 @@ export default function MapExplorer() {
   const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
   const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
   const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
-  const [doc, setDoc] = useQueryState('doc', { history: 'push', scroll: true })
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
   const dataset = useDataset()
   const { childrenMarkers, childrenLoading, childrenBounds } = useContext(ChildrenContext)
   const programmaticChange = useRef(false)
   const searchParams = useSearchParams()
+  
+  const router = useRouter()
+
   const parent = searchParams.get('parent')
+  const doc = searchParams.get('doc')
+  
 
   if (searchParams.get('error') == 'true') {
     throw new Error('Simulated client side error');
@@ -369,13 +374,20 @@ useEffect(() => {
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
+
+        const newQueryParams = new URLSearchParams(searchParams)
         
         if (selected.fields?.children?.length == 1) {
-          setDoc(selected.fields.children[0])
+          console.log("CHILD", selected)
+          newQueryParams.set('docDataset', selected.fields?.datasets?.[0] || 'all')
+          newQueryParams.set('doc', selected.fields.children[0])
         }
         else {
-          setDoc(selected?.fields?.uuid[0] || selected?._source?.uuid)
+          newQueryParams.set('doc', selected?.fields?.uuid[0])
+          newQueryParams.delete('docDataset')
         }
+
+        router.push(`?${newQueryParams.toString()}`)
 
         if (hits && hits.length > 1) {
           setSameMarkerList([...hits].sort((a, b) => a.fields.label[0].localeCompare(b.fields.label[0], 'nb')))
@@ -502,7 +514,7 @@ useEffect(() => {
               ))}
 
               {/* Add blue hexagon for parent h3 cell */}
-              {parentData?._source?.h3 && (
+              {showH3Grid && parentData?._source?.h3 && (
                 <>
                   <Polygon
                     positions={h3.cellToBoundary(parentData._source.h3)}

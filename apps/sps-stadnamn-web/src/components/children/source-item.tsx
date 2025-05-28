@@ -28,8 +28,10 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                 aria-current={(doc == getFieldValue(hit, 'uuid')) ? 'page' : undefined}
                 ref={itemRef}
                 className="group no-underline flex gap-1 items-center rounded-full"
+                remove={['docDataset']}
                 add={{
                     doc: getFieldValue(hit, 'children')?.length === 1 ? getFieldValue(hit, 'children')[0] : getFieldValue(hit, 'uuid'),
+                    docDataset: docDataset,
                     parent: parent && docDataset == 'search' ? getFieldValue(hit, 'uuid') : null,
                 }}
             >

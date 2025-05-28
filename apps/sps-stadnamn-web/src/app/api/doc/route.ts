@@ -16,7 +16,7 @@ export async function GET(request: Request) {
         };
 
         const [initialData, initialStatus] = await postQuery(dataset, initialQuery);
-        
+                
         // If we found a result, return it
         if (initialData?.hits?.total?.value > 0) {
             return Response.json(initialData, { status: initialStatus });

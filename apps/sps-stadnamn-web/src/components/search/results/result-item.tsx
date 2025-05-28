@@ -38,9 +38,10 @@ export default function ResultItem({hit}: {hit: any}) {
     return  <li className="flex flex-grow">
         <Clickable link ref={itemRef} className="w-full h-full py-2 px-2 md:px-2 hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4 border-accent-700" 
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
-                    remove={['sourceDataset', 'sourceLabel']}
+                    remove={['sourceDataset', 'sourceLabel', 'docDataset']}
                     add={{
                         doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
+                        ...(hit.fields?.datasets?.length === 1 ? {docDataset: hit.fields.datasets[0]} : {}),
                         ...(parent && !isMobile) ? {parent: docDataset == 'search' ? hit.fields.uuid : hit.fields?.within} : {},
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}

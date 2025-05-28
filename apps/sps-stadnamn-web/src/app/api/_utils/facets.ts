@@ -25,6 +25,7 @@ export const RESERVED_PARAMS = [
   'zoom',
   'point',
   'datasetTag',
+  'docDataset'
 ] as const;
 
 export function extractFacets(request: Request) {

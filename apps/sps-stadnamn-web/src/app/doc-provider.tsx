@@ -54,6 +54,8 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const [docAdm, setDocAdm] = useState<string | null>(null)
     const [snidParent, setSnidParent] = useState<string | null>(null)
 
+    const childDocDataset = searchParams.get('docDataset')
+
     useEffect(() => {
         if (parent) {
             setParentLoading(true)
@@ -101,7 +103,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     useEffect(() => {
         if (doc) {
             setDocLoading(true)
-            fetch(`/api/doc?uuid=${doc}${(dataset != 'search' && dataset) ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
+            fetch(`/api/doc?uuid=${doc}&dataset=${childDocDataset || dataset}`).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setDocData(data.hits.hits[0])
                     setDocDataset(data.hits.hits[0]._index.split('-')[2])
@@ -120,7 +122,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
             setDocAdm(null)
         }
     }   
-    , [doc, dataset, setDocData])
+    , [doc, dataset, childDocDataset, setDocData])
 
     
     /*

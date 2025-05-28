@@ -100,7 +100,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                   </Clickable>
           :
                 <Clickable 
-                  remove={["doc"]} 
+                  remove={["doc", "docDataset"]} 
                   className="text-2xl" 
                   aria-label="Lukk">
                   <PiX aria-hidden="true"/>
