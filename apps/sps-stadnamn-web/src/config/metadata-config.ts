@@ -418,7 +418,7 @@ export const featureNames: Record<string, string> = {
 }
 
 export const typeNames: Record<string, string> = {
-  "sprak": "Språksamlinganes arkiv", // Fysisk materiale oppbevart i Språksamlingene
+  "sprak": "Språksamlingane", // Fysisk materiale oppbevart i Språksamlingene
   "encyclopedia": "Oppslagsverk",
   "database": "Database",
   "public": "Offentleg register",
