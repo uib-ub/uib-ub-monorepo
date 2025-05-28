@@ -89,7 +89,7 @@ export default function SearchForm() {
             <ClickableIcon  onClick={() => { clearQuery() }} 
                             remove={['q']}
                             // Replace results with filters if no facetFilters
-                            add={{nav: nav == 'results' && facetFilters.length == 0 ? 'filters' : 'results'}}
+                            add={{nav: (nav == 'results' && facetFilters.length == 0) ? 'filters' : 'results'}}
                             label="Tøm søk" className="px-2"><PiX className="text-lg"/></ClickableIcon> }
             </div>
             {fulltextFields[dataset]?.length > 0 && 
