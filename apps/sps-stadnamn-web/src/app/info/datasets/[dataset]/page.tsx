@@ -39,7 +39,8 @@ export default async function DatasetPage({params}: {params: Promise<{dataset: s
         <div className="xl:w-2/3">
         <Breadcrumbs parentUrl={["/info", "/info/datasets"]} parentName={["Informasjon", "Datasett"]} currentName={datasetTitles[dataset]}/>
         <h1>{datasetTitles[dataset]}</h1>
-        <ul className='flex flex-wrap gap-2 !px-0 !pt-0 !mt-0 text-neutral-900'>
+        <div className="flex flex-col gap-2">
+        <ul className='flex flex-wrap gap-2 !px-0 text-neutral-900'>
                 {datasetTypes[dataset]?.map((type) => (
                     <li key={type} className="flex items-center gap-1">
                     {icons[type]}
@@ -48,6 +49,7 @@ export default async function DatasetPage({params}: {params: Promise<{dataset: s
                 ))}
                 </ul>
         <DatasetStats statsItem={stats?.datasets[dataset]} itemDataset={dataset}/>
+        
         <p>{datasetDescriptions[dataset]}</p>
         <div className="space-y-2">
                 <h4>Ressurser</h4>
@@ -59,6 +61,7 @@ export default async function DatasetPage({params}: {params: Promise<{dataset: s
                     </li>
                 ))}
                 </ul>
+        </div>
         </div>
         </div>
         <div className='xl:w-1/3'>
