@@ -22,7 +22,7 @@ export default function SourceList() {
         <div className="xl:mb-8 instance-info flex flex-col gap-2"> 
             {Object.entries(sourceChildren || {}).map(([docDataset, docs]: [string, any[]]) => (
                 <div key={docDataset}>
-                    <h3 className="!text-base uppercase  !font-sans border-b border-neutral-200 px-2 !pb-1 !mt-0">{datasetTitles[docDataset]}</h3>
+                    <h3 className="!text-base font-semibold  !font-sans border-b border-neutral-200 px-2 !pb-1 !mt-0">{datasetTitles[docDataset]}</h3>
                     <ul className="!p-0 divide-y divide-neutral-200 gap-2" aria-live="polite">
                         {docs.map((doc: Record<string, any>) => (
                             <li key={doc._id} className="flex flex-grow !p-0 !m-0">
