@@ -119,7 +119,7 @@ export default function ServerFacet() {
   const filterDatasetsByTags = (item: any) => {
     if ((facet === 'datasets' || facet === 'indexDataset') && searchParams.getAll('datasetTag').length > 0) {
       // Check if the dataset (item.key) has all the required dataset tags
-      return searchParams.getAll('datasetTag').every(tag => 
+      return searchParams.getAll('datasetTag').some(tag => 
         datasetTypes[facet == 'indexDataset' ? item.key.split('-')[2] : item.key]?.includes(tag)
       );
     }
@@ -141,39 +141,27 @@ export default function ServerFacet() {
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
     {((dataset =='search' && facet == 'datasets') || (dataset == 'all' && facet == 'indexDataset')) && 
-    <div className='flex gap-2'>
-      <div className='flex flex-wrap gap-2'>
-        {Object.entries(typeNames)
-          .filter(([type]) => {
-            // Don't show already selected types
-            if (searchParams.getAll('datasetTag').includes(type)) return false;
-            
-            // Only show types that exist in the current facet buckets
-            return facetAggregation?.buckets
-              .filter(filterDatasetsByTags)
-              .some((item: any) => datasetTypes[facet == 'datasets' ? item.key : item.key.split('-')[2]]?.includes(type));
-          })
-          .map(([type, label]) => (
-          <button 
-            key={type}
-            className='btn btn-outline btn-compact'
-            onClick={() => {
+        <label className="flex items-center gap-2 px-2 border border-neutral-200 rounded-md py-1 px-2">
+          <input
+            type="checkbox"
+            checked={searchParams.getAll('datasetTag').includes('collection')}
+            onChange={(e) => {
               setClientSearch('');
               const params = new URLSearchParams(searchParams.toString());
               const existingTags = params.getAll('datasetTag');
-              if (!existingTags.includes(type)) {
-                params.append('datasetTag', type);
+              if (e.target.checked && !existingTags.includes('collection')) {
+                params.append('datasetTag', 'collection');
+              } else if (!e.target.checked) {
+                params.delete('datasetTag');
+                existingTags.filter(tag => tag !== 'collection').forEach(tag => params.append('datasetTag', tag));
               }
               router.push(`?${params.toString()}`, { scroll: false });
             }}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-    </div>
-    
-    
+            className="form-checkbox"
+          />
+          
+          <span>Stadnamninnsamlingar</span>
+        </label>
     }
     <div className='flex gap-2'>
     <div className='relative grow'>
