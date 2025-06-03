@@ -34,13 +34,6 @@ export default function SearchForm() {
     }  
     
 
-    useEffect(() => {
-        setInputValue(searchParams.get('q') || '')
-        // Focus input when dataset changes
-        if (!searchParams.get("q") && searchParams.get('dataset') && input.current) {
-            input.current.focus()
-        }
-    }, [searchParams])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
