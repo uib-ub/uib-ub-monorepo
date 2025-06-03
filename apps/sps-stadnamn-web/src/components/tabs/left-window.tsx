@@ -140,15 +140,6 @@ export default function LeftWindow() {
             <DatasetInfo/>  
         }
         
-         { nav == 'datasets' &&     
-            <div className="flex flex-col gap-2">
-            <h2 className="text-xl px-2" >
-            {(dataset == 'search' || dataset == 'all') ? 'Datasett og søkevisningar' : 'Andre søkevisningar'}
-          </h2>
-            <DatasetSelector/>
-            </div>
-                
-        }
         </div>
         </>
     
