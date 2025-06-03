@@ -473,7 +473,7 @@ export const datasetTypes: Record<string, string[]> = {
   gjerd: ["collection"],
   sorum: ["collection"],
   frogn: ["collection"],
-  kven: ["database"],
+  kven: ["database", "collection"],
   snor: ["database", "collection"],
 }
 
