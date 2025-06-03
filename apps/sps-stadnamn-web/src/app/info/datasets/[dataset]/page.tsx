@@ -1,7 +1,7 @@
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { datasetFeatures, datasetPresentation, datasetTitles, featureNames } from "@/config/metadata-config"
 import { datasetDescriptions, datasetShortDescriptions, datasetTypes, typeNames } from "@/config/metadata-config"
-import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill } from "react-icons/pi"
+import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill, PiMicroscope, PiMicroscopeFill, PiBoxArrowDown, PiBoxArrowDownFill } from "react-icons/pi"
 import DatasetStats from "../dataset-stats";
 import { fetchStats } from "@/app/api/_utils/actions";
 
