@@ -16,7 +16,8 @@ const icons: {[key: string]: JSX.Element} ={
     "sprak": <PiArchiveFill aria-hidden="true"/>,
     "encyclopedia": <PiBooksFill aria-hidden="true"/>,
     "database": <PiDatabaseFill aria-hidden="true"/>,
-    "public": <PiGavelFill aria-hidden="true"/>
+    "public": <PiGavelFill aria-hidden="true"/>,
+    "collection": <PiBoxArrowDownFill aria-hidden="true"/>
 
   };
 
