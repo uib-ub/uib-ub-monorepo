@@ -91,7 +91,7 @@ export default function SearchForm() {
                             remove={['q']}
                             // Replace results with filters if no facetFilters
                             add={{nav: (nav == 'results' && facetFilters.length == 0) ? 'filters' : 'results'}}
-                            label="Tøm søk"><PiX className="text-2xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800"/></ClickableIcon> }
+                            label="Tøm søk"><PiX className="text-2xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></ClickableIcon> }
             </div>
             {fulltextFields[dataset]?.length > 0 && 
                 <Options/>
@@ -102,7 +102,7 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''}/>}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''}/>}
             {mode == 'doc' && preferredTabs[dataset] && preferredTabs[dataset] != 'map' && <input type="hidden" name="mode" value={preferredTabs[dataset] || ''}/>}
-            <button className="pr-4" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-2xl lg:text-xl shrink-0 ml-2 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
+            <button className="mr-3 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-2xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
         </Form>
         </div>
         
