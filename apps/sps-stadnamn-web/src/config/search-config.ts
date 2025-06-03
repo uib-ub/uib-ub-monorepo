@@ -83,7 +83,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
     hord: {
       uuid, label, adm, adm1, adm2, link, ...image,
-      "archive.institution": {label: "Arkivtilvising", table, facet, featuredFacet},
+      "misc.subset": {label: "Arkivtilvising", table, facet, featuredFacet},
+      "rawData.arkivTilvising": {label: "Arkivtilvising", table, facet, featuredFacet},
       "adm3": {label: "Tidligere kommune", result},
       "rawData.merknader": {label: "Merknader", fulltext},
       "rawData.kommuneNr": {label: "Kommunenummer", table, facet},
