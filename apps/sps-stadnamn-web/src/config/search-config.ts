@@ -53,6 +53,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
       uuid, label, adm, adm1, adm2, link, ...image, 
       "datasets": {label: "Grunnlagsdatasett", facet, omitLabel, result, featuredFacet},
+      sosi,
       "datasetTag": {label: "Datasettstype", facet, omitLabel, child: "datasets"},
       ...labelDefaults,
       "adm3": {label: "Sogn, bydel eller tidlegare kommune", result},
@@ -62,7 +63,6 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       snid,
       "gnidu": {label: "GNIDu", facet},
       //"midu": {label: "MIDu", facet}, Not present
-      sosi
     },
     bsn: {
       uuid, label, adm, adm1, adm2,
