@@ -95,7 +95,7 @@ export const datasetDescriptions: Record<string, string> = {
 
 
 export const datasetShortDescriptions: Record<string, string> = {
-  search: "Stadnamnsøk er Språksamlinganes overordna søk, som samanstiller data frå ei rekke datasett og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta er lista opp som kjelder.",
+  search: "Stadnamnsøk er eit overordna søk som samanstiller data frå ei rekke datasett og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta er lista opp som kjelder.",
   all: "Avansert søk på tvers av grunnlagsdatasetta. Merk at dette søket kan vere tregare enn stadnamnsøk, og felta er ikkje like standardiserte. Det er derfor meist eigna til å samanlikne eit utval datasett på felt som overlappar.",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
