@@ -80,7 +80,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         <div className={`absolute top-0 lg:top-2 right-0 flex gap-2`}>
           {snidParent && dataset == 'search' && mode == 'map' &&
             <ClickableIcon label="Gå til stadnamnoppslag" 
-                           add={{doc: snidParent}} 
+                           add={{doc: snidParent, docDataset: dataset}} 
                            aria-hidden="true" 
                            className={`${parent && isMobile ? 'btn btn-outline btn-compact' : ''}`}>
                             {dataset == 'search' ? isMobile ? <PiCaretLeft className="text-2xl"/> :<PiCaretLeft className="text-2xl"/> : <PiTag className="text-2xl"/>}

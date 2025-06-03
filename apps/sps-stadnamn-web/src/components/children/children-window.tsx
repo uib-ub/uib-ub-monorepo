@@ -35,7 +35,7 @@ export default function ChildrenWindow() {
                 link
                 aria-current={doc == parent ? 'page' : undefined}
                 className="group p-1 flex gap-1 no-underline items-center rounded-full"
-                add={{doc: parent}}>
+                add={{doc: parent, docDataset: dataset}}>
                 <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
                     <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
                 </div>
