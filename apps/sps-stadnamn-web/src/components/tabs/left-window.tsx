@@ -69,14 +69,6 @@ export default function LeftWindow() {
                       className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-900 aria-expanded:shadow-inner">
                         {isTabActive('datasetInfo') ? <PiInfoFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiInfoLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
                 </IconButton>
-                <IconButton
-                      label="Datasett og søkevisningar"
-                      onClick={() => handleTabClick('datasets')}
-                      aria-controls="left-window-content"
-                      aria-expanded={isTabActive('datasets')}
-                      className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-900 aria-expanded:shadow-inner">
-                        {isTabActive('datasets') ? <PiDatabaseFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
-                </IconButton>
                 
                 {treeSettings[dataset] ? <IconButton
                       label="Hierarki"
