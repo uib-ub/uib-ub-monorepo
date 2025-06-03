@@ -192,11 +192,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                   Stadnamnside
                 </Link>
             }
-            {dataset == 'search' && docDataset != dataset &&
-                <Clickable link className="btn btn-neutral gap-2" only={{dataset: docDataset, doc}}>
-                  Eiga søkevisning
-                </Clickable>
-            }
 
             
 
