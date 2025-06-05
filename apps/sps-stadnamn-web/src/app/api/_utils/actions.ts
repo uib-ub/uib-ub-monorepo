@@ -6,8 +6,8 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
     'use server'
     const { uuid, dataset } = params
     // TODO: use the same variable name in prod and test
-    const endpoint = process.env.SN_ENV == 'prod' ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
-    const token = process.env.SN_ENV == 'prod' ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
+    const endpoint = process.env.STADNAMN_ES_ENDPOINT
+    const token = process.env.STADNAMN_ES_TOKEN
 
     // Post a search query for the document
     const query = {
