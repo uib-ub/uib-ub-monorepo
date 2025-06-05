@@ -255,7 +255,7 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
               
               <div className="p-2 px-4 md:p-4 col-span-4 xl:col-span-5 flex flex-col gap-2">
                 <h3 className="md:!text-xl font-semibold !m-0 !p-0">{datasetTitles[itemDataset]}</h3>
-                <DatasetStats statsItem={stats?.datasets[itemDataset]} itemDataset={itemDataset}/>
+                <DatasetStats statsItem={stats?.datasets?.[itemDataset]} itemDataset={itemDataset}/>
                 <div className="text-sm space-y-4 break-words">
                 <p>{isMobile ? datasetShortDescriptions[itemDataset] : datasetDescriptions[itemDataset]}</p>          
               </div>
