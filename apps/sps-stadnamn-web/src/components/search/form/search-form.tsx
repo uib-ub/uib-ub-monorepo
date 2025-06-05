@@ -59,9 +59,9 @@ export default function SearchForm() {
             <h1 className="!text-lg text-neutral-800 px-2 truncate">{datasetTitles[dataset]}</h1></div>   
         <div className="h-full flex grow">
 
-            <Form ref={form} action="/search" className="flex w-full bg-white focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600" onSubmit={() => setAllowFlyTo(true)}>
+            <Form ref={form} action="/search" className="flex w-full h-full" onSubmit={() => setAllowFlyTo(true)}>
 
-            <div className='flex w-full h-full items-center'>
+            <div className='flex w-full pr-1 bg-white focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600'>
             {(isMobile && dataset != 'search') && <Clickable only={{dataset: 'search', zoom: searchParams.get('zoom'), center: searchParams.get('center')}} aria-hidden="true" className="flex no-underline max-w-[50%] text-sm flex-nowrap items-center gap-1 bg-accent-700 text-white rounded-md px-2 py-1 whitespace-nowrap"><span className="truncate">{datasetTitles[dataset]}</span><PiX className="text-xs" aria-hidden="true"/></Clickable>
             }
             <label htmlFor="search-input" className="sr-only">Søk</label>
@@ -74,7 +74,7 @@ export default function SearchForm() {
                 autoFocus={true}
                 value={inputValue} 
                 onChange={(event) => setInputValue(event.target.value)} 
-                className={`bg-transparent ${dataset == 'search' ? 'px-4' : 'pr-4 pl-2'} focus:outline-none flex w-full shrink`}
+                className={`bg-transparent ${dataset == 'search' ? 'px-4' : 'pr-4 pl-4'} focus:outline-none flex w-full shrink`}
             />
             
             {searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
