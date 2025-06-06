@@ -2,7 +2,7 @@
 import { datasetTitles } from '@/config/metadata-config';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { PiDatabase, PiCircle, PiTag, PiMagnifyingGlass, PiArrowClockwise } from 'react-icons/pi';
+import { PiDatabase, PiCircle, PiTag, PiMagnifyingGlass, PiArrowClockwise, PiX, PiCheck } from 'react-icons/pi';
 
 interface IndexData {
   index: string;
@@ -243,6 +243,9 @@ export default function StatusPage() {
               .sort((a, b) => a.index.localeCompare(b.index))
               .map((index) => {
               const title = [index.index.split('-').slice(2).join('-')]
+              const envAliases = index.aliases.filter(alias => !alias.includes('-all'))
+              const sourceAliases = index.aliases.filter(alias => alias.includes('-all'))
+              const sourceAliasEnvs = sourceAliases.map(alias => alias.split('-')[2])
             
               return (
               <div key={index.index} className="bg-white shadow-lg rounded-xl border border-neutral-200 overflow-hidden hover:shadow-xl transition-shadow duration-200">
@@ -288,9 +291,9 @@ export default function StatusPage() {
                         <PiTag className="text-neutral-500 text-sm" />
                         <span className="font-medium text-neutral-900 text-sm">Environment Aliases</span>
                       </div>
-                      {index.aliases.some(alias => !alias.includes('-all')) ? (
+                      {envAliases.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
-                          {index.aliases.filter((alias) => !alias.includes('-all')).map((alias) => {
+                          {envAliases.map((alias) => {
                             const environment = alias.split('-')[2]
                             const color = {
                               'local': 'neutral',
@@ -313,41 +316,37 @@ export default function StatusPage() {
                     </div>
 
                     {/* Source Aliases */}
-                    {index.aliases.some(alias => alias.includes('-all')) ? <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <PiDatabase className="text-neutral-500 text-sm" />
-                        <span className="font-medium text-neutral-900 text-sm">Included in cross-dataset search</span>
-                      </div>
-                      
-                        <div className="flex flex-wrap gap-2">
-                          {index.aliases.filter((alias) => alias.includes('-all')).map((alias) => {
-                            const environment = alias.split('-')[2]
-                            const color = {
-                              'local': 'neutral',
-                              'dev': 'accent',
-                              'prod': 'primary',
-                            }[environment]
-                            return (
-                              <span
-                                key={alias}
-                                className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-${color}-100 text-${color}-800 border border-${color}-200`}
-                              >
-                                {environment}
-                              </span>
-                            )
-                          })}
+                    {sourceAliases.length > 0 ? (
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <PiCheck className="text-neutral-500 text-sm" />
+                          <span className="font-medium text-neutral-900 text-sm flex items-center gap-2">
+                            Included in cross-dataset search
+                          </span>
                         </div>
-                      
-                    </div>
-                    :
-                    <div className="text-sm text-neutral-500 italic">Not included in cross-dataset search</div>
-                    }
+                        {envAliases.some(envAlias => !sourceAliasEnvs.includes(envAlias.split('-')[2])) && (
+                          <div className="flex items-center gap-2 mb-2">
+                            <PiX className="text-yellow-500 text-sm" />
+                            <span className="font-medium text-yellow-900 text-sm flex items-center gap-2">
+                              Warning: Not all environments have cross-search aliases
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 mb-2">
+                        <PiX className="text-neutral-500 text-sm" />
+                        <span className="font-medium text-neutral-900 text-sm flex items-center gap-2">
+                          Not included in cross-dataset search
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             );
-            })}
-          </div>
+          })}
+        </div>
         ) : (
           <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-6 text-center">
             <PiDatabase className="mx-auto text-4xl text-neutral-400 mb-4" />
