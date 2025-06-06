@@ -110,9 +110,9 @@ export default function StatusPage() {
 
   const getStatusColor = (status: string): string => {
     switch (status.toLowerCase()) {
-      case 'open': return 'text-green-600';
-      case 'close': return 'text-red-600';
-      case 'unknown': return 'text-yellow-600';
+      case 'green': return 'text-green-600';
+      case 'yellow': return 'text-yellow-600';
+      case 'red': return 'text-red-600';
       default: return 'text-neutral-600';
     }
   };

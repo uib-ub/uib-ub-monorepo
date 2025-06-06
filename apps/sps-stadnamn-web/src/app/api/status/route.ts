@@ -60,7 +60,7 @@ export async function GET(request: Request) {
                     const indexCountResult = await indexCountResponse.json();
                     docCount = indexCountResult.count || 0;
                 }
-
+                
                 const indexStats = statsResult.indices[indexName];
                 
                 // Extract creation date from stats or fetch from settings if not available
@@ -68,7 +68,6 @@ export async function GET(request: Request) {
                 if (indexStats?.primaries?.store?.creation_date) {
                     creationDate = new Date(parseInt(indexStats.primaries.store.creation_date)).toISOString();
                 }
-                console.log(indexStats.primaries)
 
                 return {
                     index: indexName,
@@ -76,7 +75,7 @@ export async function GET(request: Request) {
                     doc_count: docCount,
                     size_in_bytes: indexStats?.total?.store?.size_in_bytes || 0,
                     creation_date: creationDate,
-                    status: indexStats ? 'open' : 'unknown'
+                    status: indexStats?.health
                 };
             })
         );
