@@ -177,30 +177,30 @@ export default function StatusPage() {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="flex flex-col gap-6">
+    <main className="container mx-auto px-4 py-6">
+      <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <PiDatabase className="text-3xl text-primary-600" />
-            <h1 className="text-3xl font-serif text-neutral-900">Dataset Status</h1>
+            <PiDatabase className="text-2xl text-primary-600" />
+            <h1 className="text-2xl font-serif text-neutral-900">Dataset Status</h1>
           </div>
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
           >
-            <PiArrowClockwise className={`text-lg ${refreshing ? 'animate-spin' : ''}`} />
+            <PiArrowClockwise className={`text-base ${refreshing ? 'animate-spin' : ''}`} />
             <span>{refreshing ? 'Updating...' : 'Update'}</span>
           </button>
         </div>
         
         {/* Filters and Search */}
         {statusData?.indices && statusData.indices.length > 0 && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {/* Filter radio buttons */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
               <span className="text-sm font-medium text-neutral-700">Filter by environment:</span>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3">
                 {[
                   { value: 'all', label: 'All' },
                   { value: 'local', label: 'Local' },
@@ -208,7 +208,7 @@ export default function StatusPage() {
                   { value: 'prod', label: 'Prod' },
                   { value: 'no-aliases', label: 'No aliases' }
                 ].map((filter) => (
-                  <label key={filter.value} className="flex items-center gap-2 cursor-pointer">
+                  <label key={filter.value} className="flex items-center gap-1.5 cursor-pointer">
                     <input
                       type="radio"
                       name="environment-filter"
@@ -225,20 +225,20 @@ export default function StatusPage() {
             
             {/* Search field */}
             <div className="relative max-w-md">
-              <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 text-lg" />
+              <PiMagnifyingGlass className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-neutral-400 text-base" />
               <input
                 type="text"
                 placeholder="Search indices..."
                 value={searchTerm}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                className="w-full pl-8 pr-3 py-1.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
               />
             </div>
           </div>
         )}
         
         {statusData?.indices && statusData.indices.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {getFilteredIndices()
               .sort((a, b) => a.index.localeCompare(b.index))
               .map((index) => {
@@ -248,15 +248,15 @@ export default function StatusPage() {
               const sourceAliasEnvs = sourceAliases.map(alias => alias.split('-')[2])
             
               return (
-              <div key={index.index} className="bg-white shadow-lg rounded-xl border border-neutral-200 overflow-hidden hover:shadow-xl transition-shadow duration-200">
-                <div className="p-6">
+              <div key={index.index} className="bg-white shadow-md rounded-lg border border-neutral-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
+                <div className="p-3">
                   {/* Header Section */}
-                  <div className="flex flex-col gap-3 pb-4 border-b border-neutral-100">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-xl font-semibold text-neutral-900 font-mono break-all">
+                  <div className="flex flex-col gap-2 pb-2 border-b border-neutral-100">
+                    <div className="flex items-start justify-between gap-2">
+                      <h2 className="text-base font-semibold text-neutral-900 font-mono break-all leading-tight">
                         {title}
                       </h2>
-                      <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-50">
+                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-neutral-50 flex-shrink-0">
                         <PiCircle className={`text-sm ${getStatusColor(index.status)}`} />
                         <span className={`text-sm font-medium ${getStatusColor(index.status)} capitalize`}>
                           {index.status}
@@ -266,17 +266,17 @@ export default function StatusPage() {
                   </div>
 
                   {/* Stats Section */}
-                  <div className="py-4 border-b border-neutral-100">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-base font-medium text-neutral-600">Documents</span>
-                      <span className="text-lg text-neutral-900 font-mono">
+                  <div className="py-2 border-b border-neutral-100 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-neutral-600">Documents</span>
+                      <span className="text-base text-neutral-900 font-mono">
                         {index.doc_count.toLocaleString('nb-NO')}
                       </span>
                     </div>
                     {extractTransformationDate(index.index) && (
                       <div className="flex items-center justify-between">
-                        <span className="text-base font-medium text-neutral-600">Transformed</span>
-                        <span className="text-lg text-neutral-900 font-mono">
+                        <span className="text-sm font-medium text-neutral-600">Transformed</span>
+                        <span className="text-sm text-neutral-900 font-mono">
                           {extractTransformationDate(index.index)}
                         </span>
                       </div>
@@ -284,15 +284,15 @@ export default function StatusPage() {
                   </div>
 
                   {/* Aliases Section */}
-                  <div className="pt-4 space-y-4">
+                  <div className="pt-2 space-y-2">
                     {/* Env Aliases */}
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-1 mb-1">
                         <PiTag className="text-neutral-500 text-sm" />
                         <span className="font-medium text-neutral-900 text-sm">Environment Aliases</span>
                       </div>
                       {envAliases.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1">
                           {envAliases.map((alias) => {
                             const environment = alias.split('-')[2]
                             const color = {
@@ -303,7 +303,7 @@ export default function StatusPage() {
                             return (
                               <span
                                 key={alias}
-                                className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-${color}-100 text-${color}-800 border border-${color}-200`}
+                                className={`inline-flex items-center px-2 py-0.5 rounded text-sm font-medium bg-${color}-100 text-${color}-800 border border-${color}-200`}
                               >
                                 {environment}
                               </span>
@@ -318,26 +318,26 @@ export default function StatusPage() {
                     {/* Source Aliases */}
                     {sourceAliases.length > 0 ? (
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <PiCheck className="text-neutral-500 text-sm" />
-                          <span className="font-medium text-neutral-900 text-sm flex items-center gap-2">
-                            Included in cross-dataset search
+                        <div className="flex items-center gap-1 mb-1">
+                          <PiCheck className="text-green-500 text-sm" />
+                          <span className="font-medium text-neutral-900 text-sm">
+                            Cross-search enabled
                           </span>
                         </div>
                         {envAliases.some(envAlias => !sourceAliasEnvs.includes(envAlias.split('-')[2])) && (
-                          <div className="flex items-center gap-2 mb-2">
+                          <div className="flex items-center gap-1">
                             <PiX className="text-yellow-500 text-sm" />
-                            <span className="font-medium text-yellow-900 text-sm flex items-center gap-2">
-                              Warning: Not all environments have cross-search aliases
+                            <span className="font-medium text-yellow-900 text-sm">
+                              Warning: Incomplete coverage
                             </span>
                           </div>
                         )}
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-1">
                         <PiX className="text-neutral-500 text-sm" />
-                        <span className="font-medium text-neutral-900 text-sm flex items-center gap-2">
-                          Not included in cross-dataset search
+                        <span className="font-medium text-neutral-900 text-sm">
+                          No cross-search
                         </span>
                       </div>
                     )}
@@ -348,18 +348,18 @@ export default function StatusPage() {
           })}
         </div>
         ) : (
-          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-6 text-center">
-            <PiDatabase className="mx-auto text-4xl text-neutral-400 mb-4" />
-            <h2 className="text-lg font-semibold text-neutral-700 mb-2">No Indices Found</h2>
-            <p className="text-neutral-600">No Elasticsearch indices are currently available.</p>
+          <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 text-center">
+            <PiDatabase className="mx-auto text-3xl text-neutral-400 mb-3" />
+            <h2 className="text-base font-semibold text-neutral-700 mb-1">No Indices Found</h2>
+            <p className="text-sm text-neutral-600">No Elasticsearch indices are currently available.</p>
           </div>
         )}
 
         {/* Summary */}
         {statusData?.indices && getFilteredIndices().length > 0 && (
-          <div className="bg-neutral-50 rounded-lg p-4">
-            <h3 className="font-semibold text-neutral-900 mb-2">Summary</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div className="bg-neutral-50 rounded-lg p-3">
+            <h3 className="font-semibold text-neutral-900 mb-2 text-base">Summary</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
               <div className="flex flex-col">
                 <span className="text-neutral-600">
                   {selectedFilter === 'all' ? 'Total' : 'Filtered'} Indices
