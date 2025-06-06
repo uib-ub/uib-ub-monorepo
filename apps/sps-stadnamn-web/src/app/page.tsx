@@ -55,8 +55,8 @@ export default async function Home() {
       href: "/search?dataset=all",
       icon: <PiBookOpenThin aria-hidden="true" />,
       stat: stats?.datasetDocs?.toLocaleString('nb-NO'),
-      title: "Kjelder",
-      description: "Alle oppslag i grunnlagsdatasetta",
+      title: "Grunnlagsdata",
+      description: "Individuelle oppslag i grunnlagsdatasetta",
     },
     /*
     
