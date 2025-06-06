@@ -181,8 +181,7 @@ export default function StatusPage() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <PiDatabase className="text-2xl text-primary-600" />
-            <h1 className="text-2xl font-serif text-neutral-900">Dataset Status</h1>
+            <h1 className="text-2xl font-serif text-neutral-900">Index Status</h1>
           </div>
           <button
             onClick={handleRefresh}
@@ -190,7 +189,7 @@ export default function StatusPage() {
             className="flex items-center gap-2 px-3 py-1.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
           >
             <PiArrowClockwise className={`text-base ${refreshing ? 'animate-spin' : ''}`} />
-            <span>{refreshing ? 'Updating...' : 'Update'}</span>
+            <span>{refreshing ? 'Reloading...' : 'Reload indices'}</span>
           </button>
         </div>
         
@@ -248,7 +247,17 @@ export default function StatusPage() {
               const sourceAliasEnvs = sourceAliases.map(alias => alias.split('-')[2])
             
               return (
-              <div key={index.index} className="bg-white shadow-md rounded-lg border border-neutral-200 overflow-hidden hover:shadow-lg transition-shadow duration-200">
+              <div key={index.index} className="bg-white shadow-md rounded-lg border border-neutral-200 overflow-hidden hover:shadow-lg transition-shadow duration-200 relative">
+                {/* Fading overlay when refreshing */}
+                {refreshing && (
+                  <div 
+                    className="absolute inset-0 bg-white/80 rounded-lg z-10" 
+                    style={{
+                      animation: 'fade 0.8s ease-in-out infinite alternate'
+                    }}
+                  />
+                )}
+                
                 <div className="p-3">
                   {/* Header Section */}
                   <div className="flex flex-col gap-2 pb-2 border-b border-neutral-100">
@@ -287,10 +296,6 @@ export default function StatusPage() {
                   <div className="pt-2 space-y-2">
                     {/* Env Aliases */}
                     <div>
-                      <div className="flex items-center gap-1 mb-1">
-                        <PiTag className="text-neutral-500 text-sm" />
-                        <span className="font-medium text-neutral-900 text-sm">Environment Aliases</span>
-                      </div>
                       {envAliases.length > 0 ? (
                         <div className="flex flex-wrap gap-1">
                           {envAliases.map((alias) => {
