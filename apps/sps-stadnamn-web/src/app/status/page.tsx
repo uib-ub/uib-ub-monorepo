@@ -242,7 +242,7 @@ export default function StatusPage() {
             {getFilteredIndices()
               .sort((a, b) => a.index.localeCompare(b.index))
               .map((index) => {
-              const title = [index.index.split('-')[2]]
+              const title = [index.index.split('-').slice(2).join('-')]
             
               return (
               <div key={index.index} className="bg-white shadow-lg rounded-xl border border-neutral-200 overflow-hidden hover:shadow-xl transition-shadow duration-200">
