@@ -6,6 +6,7 @@
  * @returns The cleaned JSON-LD object.
  */
 export function normalizeJsonLdToArray(jsonld: any): any[] {
-  delete jsonld['@context'] // Delete annoying @context key
-  return (jsonld['@graph'] ?? [jsonld]) // If there is only one result, it is not an array
+  // Create a new object without the @context key
+  const { '@context': _, ...rest } = jsonld;
+  return (rest['@graph'] ?? [rest]); // If there is only one result, it is not an array
 }
