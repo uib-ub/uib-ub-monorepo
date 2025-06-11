@@ -11,7 +11,7 @@ export default function CadastreBreadcrumb({source, docDataset, subunitName}: {s
     const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
     return <div>
       <Clickable link className="breadcrumb-link text-base" 
-                 add={{doc: source.within, parent: mode != 'map' ? source.within : null}}>{parentLabel}
+                 add={{doc: source.within, docDataset: docDataset, parent: mode != 'map' ? source.within : null}}>{parentLabel}
       </Clickable>
       <span className="mx-2">/</span>{currentName}</div>
   }
