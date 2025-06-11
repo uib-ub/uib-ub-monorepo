@@ -383,7 +383,7 @@ useEffect(() => {
         }
         else {
           newQueryParams.set('doc', selected?.fields?.uuid[0])
-          newQueryParams.set('docDataset', selected?.fields?.datasets?.[0] || 'all')
+          newQueryParams.set('docDataset', selected?._index.split('-')[2])
         }
 
         router.push(`?${newQueryParams.toString()}`)
