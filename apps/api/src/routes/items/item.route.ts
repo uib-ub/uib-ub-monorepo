@@ -83,13 +83,17 @@ route.openapi(getItem, async (c) => {
         return c.json({ error: true, message: 'Not found' }, 404)
       }
 
-      const fileset = data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-fileset'))._source.data
+      const fileset = data?.hits?.hits?.find((hit: any) => hit._index.startsWith('search-chc-fileset'))?._source?.data
 
       if (!fileset) {
         return c.json({ error: true, message: 'Item has not been digitized' }, 404)
       }
 
-      const item = data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-items'))._source
+      const item = data?.hits?.hits?.find((hit: any) => hit._index.startsWith('search-chc-items'))?._source
+
+      if (!item) {
+        return c.json({ error: true, message: 'Item has not been catalogued' }, 404)
+      }
 
       const manifest = constructIIIFStructure(item, fileset)
       return c.json(manifest)
@@ -100,7 +104,7 @@ route.openapi(getItem, async (c) => {
   }
 
   try {
-    const data: TODO = await client.search({
+    const data: TODO = await client.search<any>({
       index: `search-chc`,
       query: {
         match_phrase: {
@@ -109,11 +113,15 @@ route.openapi(getItem, async (c) => {
       }
     })
 
-    if (data.hits?.total.value === 0) {
+    if (data?.hits?.total?.value === 0) {
       return c.json({ error: true, message: 'Not found' }, 404)
     }
 
-    const item = data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-items'))._source
+    const item = data?.hits?.hits?.find((hit: any) => hit._index.startsWith('search-chc-items'))?._source
+
+    if (!item) {
+      return c.json({ error: true, message: 'Item has not been catalogued' }, 404)
+    }
 
     if (item > 1) {
       return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)

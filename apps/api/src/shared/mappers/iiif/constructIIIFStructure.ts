@@ -20,7 +20,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
   console.log("🚀 ~ constructIIIFStructure ~ filesetID:", filesetID)
 
   const thumbnail = getThumbnailVisualItem(item)
-  const manifestID = `${env.API_URL}/items/${filesetID}?as=iiif`
+  const manifestID = `${env.PROD_URL}/items/${filesetID}?as=iiif`
   const homepage = `https://marcus.uib.no/items/${filesetID}`
 
   //const mainType = get
@@ -130,7 +130,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
       });
       manifest.setSeeAlso([
         {
-          id: `${env.API_URL}/items/${filesetID}?as=json`,
+          id: `${env.API_URL}/items/${filesetID}`,
           type: "Dataset",
           label: {
             en: ["Object description in JSON format"],
