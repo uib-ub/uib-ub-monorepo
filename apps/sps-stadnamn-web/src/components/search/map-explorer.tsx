@@ -378,13 +378,12 @@ useEffect(() => {
         const newQueryParams = new URLSearchParams(searchParams)
         
         if (selected.fields?.children?.length == 1) {
-          console.log("CHILD", selected)
           newQueryParams.set('docDataset', selected.fields?.datasets?.[0] || 'all')
           newQueryParams.set('doc', selected.fields.children[0])
         }
         else {
           newQueryParams.set('doc', selected?.fields?.uuid[0])
-          newQueryParams.delete('docDataset')
+          newQueryParams.set('docDataset', selected?.fields?.datasets?.[0] || 'all')
         }
 
         router.push(`?${newQueryParams.toString()}`)
