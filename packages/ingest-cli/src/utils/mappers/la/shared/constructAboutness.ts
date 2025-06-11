@@ -106,8 +106,8 @@ export const constructAboutness = async (data: any) => {
   // delete data.references
   delete data.rodeNr
   delete data.depiction // TODO: Not mapped as it is the inverse of depicts
-  delete data.pageStart
-  delete data.pageEnd
+  // delete data.pageStart // We need to send this to Dimension for calculating the page count
+  // delete data.pageEnd
   delete data.date
 
   let descriptionArray: any[] = [];
@@ -525,7 +525,7 @@ export const constructAboutness = async (data: any) => {
         classified_as: [
           aatPublishingType,
         ],
-        timespan: getTimeSpan(publishedYear ?? issued, undefined, undefined),
+        timespan: getTimeSpan(publishedYear?.['@value'] ?? publishedYear ?? issued?.[0]?.['@value'] ?? issued?.[0], undefined, undefined),
         took_place_at: placeOfPublication ? placeOfPublication.map((place: any) => {
           return {
             id: `${env.PROD_URL}/places/${place.identifier}`,

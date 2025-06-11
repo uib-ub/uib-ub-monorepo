@@ -11,6 +11,10 @@ import { ingestSka } from './utils/ingest-ska/ingest-ska';
 import { putTemplates } from './utils/tempates/es_templates';
 import { ingestItem } from './utils/ingest-items/ingest-item';
 import { version } from "../package.json";
+import { ingestPeople } from './utils/ingest-people/ingest-people';
+import { ingestPerson } from './utils/ingest-people/ingest-person';
+import { ingestGroups } from './utils/ingest-groups/ingest-groups';
+import { ingestGroup } from './utils/ingest-groups/ingest-group';
 
 const program = new Command();
 program
@@ -40,6 +44,12 @@ program
           break;
         case 'filesets':
           await ingestFilesets(limit, page, overwrite);
+          break;
+        case 'people':
+          await ingestPeople(limit, page, overwrite);
+          break;
+        case 'groups':
+          await ingestGroups(limit, page, overwrite);
           break;
         case 'wab':
           await ingestWab();
@@ -74,6 +84,37 @@ program
     }
   });
 
+program
+  .command('ingest-person')
+  .description('Ingest a single person by ID')
+  .argument('<id>', 'ID of the person to ingest')
+  .action(async (id) => {
+    console.log(`Ingesting person with ID: ${id}`);
+
+    try {
+      await ingestPerson(id);
+      console.log(`Successfully ingested person with ID: ${id}`);
+    } catch (error) {
+      console.error(`Error ingesting person with ID ${id}:`, error);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('ingest-group')
+  .description('Ingest a single group by ID')
+  .argument('<id>', 'ID of the group to ingest')
+  .action(async (id) => {
+    console.log(`Ingesting group with ID: ${id}`);
+
+    try {
+      await ingestGroup(id);
+      console.log(`Successfully ingested group with ID: ${id}`);
+    } catch (error) {
+      console.error(`Error ingesting group with ID ${id}:`, error);
+      process.exit(1);
+    }
+  });
 // Templates command
 program
   .command('templates')

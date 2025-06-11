@@ -1,4 +1,4 @@
-import { endpointUrl } from '../../../../../apps/api/src/shared/clients/sparql-chc-client';
+import { endpointUrl } from '@/clients/sparql-chc-client';
 
 const query = `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>

@@ -1,4 +1,4 @@
-import { endpointUrl } from '../../../../../apps/api/src/shared/clients/sparql-chc-client';
+import { endpointUrl } from '@/clients/sparql-chc-client';
 import { SPARQL_PREFIXES } from '../../constants';
 import jsonld, { JsonLdDocument, ContextDefinition } from 'jsonld';
 import ubbontContext from 'jsonld-contexts/src/ubbontContext';

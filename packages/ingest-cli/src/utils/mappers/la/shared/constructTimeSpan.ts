@@ -36,7 +36,6 @@ const getDateFromDate = (unix: number) => {
  */
 export const getTimeSpan = (date: any, after: any, before: any) => {
   if (!date && !after && !before) return undefined
-
   try {
     if (date) {
       const e = edtf(date, { types: ['Year', 'Date', 'Interval', 'Season'] })

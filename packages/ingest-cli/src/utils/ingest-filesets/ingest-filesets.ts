@@ -77,11 +77,12 @@ export const ingestFilesets = async (limit = 100, page = 0, overwrite = false) =
     }
 
     // If no more items to fetch, break the loop
-    // If no more items to fetch, break the loop
-    if (status.fetched >= status.totalCount) {
+    if (data.length < limit || (status.fetched >= status.totalCount)) {
       console.log(`Finished ingesting in ${pretty(Number(status.runtime))}`);
       console.log(`Indexed ${status.indexed} filesets of ${status.totalCount}`);
-      console.log(`Failed to index ${status.fetched - status.indexed} filesets`);
+      if (status.fetched - status.indexed > 0) {
+        console.log(`Failed to index ${status.fetched - status.indexed} filesets`);
+      }
 
       // Update aliases
       if (!overwrite) {

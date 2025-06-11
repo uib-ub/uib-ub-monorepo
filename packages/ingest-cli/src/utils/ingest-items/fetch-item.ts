@@ -1,4 +1,4 @@
-import { endpointUrl } from '../../clients/sparql-chc-client';
+import { endpointUrl } from '@/clients/sparql-chc-client';
 import { SPARQL_PREFIXES } from '../../constants';
 import { sqb, useFrame } from 'utils';
 import { JsonLdDocument, ContextDefinition } from 'jsonld';
@@ -190,7 +190,7 @@ export const mapItemToLinkedArt = async (data: UbbontItem): Promise<JsonLdDocume
     dto = constructDigitalIntegration(dto);
     dto = await constructAboutness(dto);
     dto = constructDimension(dto);
-    dto = constructAssertions(dto);
+    dto = constructAssertions(base, dto);
     dto = constructOwnership(base, dto);
     dto = constructCorrespondance(dto);
     dto = await constructSubjectTo(base, dto);

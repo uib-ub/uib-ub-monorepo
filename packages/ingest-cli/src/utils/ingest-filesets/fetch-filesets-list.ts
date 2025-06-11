@@ -1,4 +1,4 @@
-import { endpointUrl } from '../../clients/sparql-chc-client';
+import { endpointUrl } from '@/clients/sparql-chc-client';
 import { sqb } from 'utils';
 
 export type InputItem = {

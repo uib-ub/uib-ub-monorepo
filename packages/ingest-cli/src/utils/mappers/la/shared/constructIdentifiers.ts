@@ -1,10 +1,11 @@
 import { getLanguage } from '../getLanguage';
-import { aatAlternativeTitlesType, aatConstructedTitlesType, aatFirstNameType, aatHistoricalTermsType, aatIsbnType, aatLastNameType, aatPreferredTermsType, aatPrimaryNameType } from '../staticMapping';
+import { aatAlternativeTitlesType, aatBirthNameType, aatConstructedTitlesType, aatFirstNameType, aatHistoricalTermsType, aatIsbnType, aatLastNameType, aatPreferredTermsType, aatPrefixesType, aatPrimaryNameType, aatPseudonymsType, aatSuffixesType, uibVolumeNumberType } from '../staticMapping';
 import omitEmptyEs from 'omit-empty-es';
 
 export const constructIdentifiers = (data: any) => {
   const {
     _label,
+    title,
     alternative,
     altLabel,
     identifier,
@@ -15,8 +16,14 @@ export const constructIdentifiers = (data: any) => {
     name,
     firstName,
     familyName,
+    birthName,
+    pseudonym,
     isbn,
-    title,
+    honorificPrefix,
+    'schema:honorificPrefix': schemaHonorificPrefix,
+    honorificSuffix,
+    'schema:honorificSuffix': schemaHonorificSuffix,
+    volume,
   } = data;
 
   if (
@@ -31,8 +38,15 @@ export const constructIdentifiers = (data: any) => {
     !name &&
     !firstName &&
     !familyName &&
+    !birthName &&
+    !pseudonym &&
+    !honorificPrefix &&
+    !schemaHonorificPrefix &&
+    !honorificSuffix &&
+    !schemaHonorificSuffix &&
     !isbn &&
-    !title
+    !title &&
+    !volume
   ) {
     return data;
   }
@@ -49,7 +63,17 @@ export const constructIdentifiers = (data: any) => {
   delete data.name;
   delete data.firstName;
   delete data.familyName;
+  delete data.birthName;
+  delete data.pseudonym;
+  delete data.honorificPrefix;
+  delete data.honorificSuffix;
   delete data.isbn;
+  delete data['schema:honorificPrefix'];
+  delete data['schema:honorificSuffix'];
+
+  if (volume && data.hasType.includes('Article')) {
+    delete data.volume;
+  }
 
   let names: any[] = [];
   let titles: any[] = [];
@@ -57,6 +81,7 @@ export const constructIdentifiers = (data: any) => {
   let bibsysArray: any[] = [];
   let viafArray: any[] = [];
   let isbnArray: any[] = [];
+  let volumeArray: any[] = [];
 
   if (isbn) {
     isbnArray = [{
@@ -81,7 +106,7 @@ export const constructIdentifiers = (data: any) => {
   }
 
   if (bibsysID) {
-    bibsysArray = bibsysArray.map((id: string) => {
+    bibsysArray = bibsysID.map((id: string) => {
       return {
         _label: `${id}`,
         type: 'Identifier',
@@ -107,7 +132,6 @@ export const constructIdentifiers = (data: any) => {
   }
 
   const id = [{
-    _label: `${identifier}`,
     type: 'Identifier',
     classified_as: [
       aatPreferredTermsType,
@@ -115,35 +139,77 @@ export const constructIdentifiers = (data: any) => {
     content: identifier,
   }];
 
+  if (volume && !data.hasType.includes('Article')) {
+    volumeArray = [
+      {
+        type: "Identifier",
+        classified_as: [
+          uibVolumeNumberType,
+        ],
+        content: volume,
+      }
+    ]
+  }
+
   if (name) {
     names = [
       {
         type: "Name",
         classified_as: [
           aatPrimaryNameType,
-          (Array.isArray(name) ? name[0] : name).includes('[', 0) ? aatConstructedTitlesType : undefined,
+          (Array.isArray(name) ? (typeof name[0] === 'string' ? name[0] : name[0]['@value']) : name).includes('[', 0) ? aatConstructedTitlesType : undefined,
         ],
-        content: Array.isArray(name) ? name[0] : name,
+        content: Array.isArray(name) ? (typeof name[0] === 'string' ? name[0] : name[0]['@value']) : (typeof name === 'string' ? name : name['@value']),
         language: [
-          getLanguage('no')
+          Array.isArray(name) && typeof name[0] === 'object' && name[0]['@language']
+            ? getLanguage(name[0]['@language'])
+            : getLanguage('no')
         ],
         part: [
+          (honorificPrefix || schemaHonorificPrefix ? {
+            type: "Name",
+            classified_as: [
+              aatPrefixesType,
+            ],
+            content: honorificPrefix || schemaHonorificPrefix,
+          } : undefined),
           (firstName ? {
             type: "Name",
             classified_as: [
               aatFirstNameType,
             ],
-            content: Array.isArray(firstName) ? firstName[0] : firstName,
+            content: Array.isArray(firstName) ? (typeof firstName[0] === 'string' ? firstName[0] : firstName[0]['@value']) : (typeof firstName === 'string' ? firstName : firstName['@value']),
           } : undefined),
           (familyName ? {
             type: "Name",
             classified_as: [
               aatLastNameType,
             ],
-            content: Array.isArray(familyName) ? familyName[0] : familyName,
-          } : undefined)
+            content: Array.isArray(familyName) ? (typeof familyName[0] === 'string' ? familyName[0] : familyName[0]['@value']) : (typeof familyName === 'string' ? familyName : familyName['@value']),
+          } : undefined),
+          (honorificSuffix || schemaHonorificSuffix ? {
+            type: "Name",
+            classified_as: [
+              aatSuffixesType,
+            ],
+            content: honorificSuffix || schemaHonorificSuffix,
+          } : undefined),
         ],
-      }
+      },
+      (birthName ? {
+        type: "Name",
+        classified_as: [
+          aatBirthNameType,
+        ],
+        content: birthName,
+      } : undefined),
+      ...(pseudonym ? pseudonym.map((p: string) => ({
+        type: "Name",
+        classified_as: [
+          aatPseudonymsType,
+        ],
+        content: p,
+      })) : [])
     ]
   }
 
@@ -162,8 +228,8 @@ export const constructIdentifiers = (data: any) => {
           ]
         };
       })
-    }))[0] : []),
-    ...(!title ? [
+    })).flatMap((x: any) => x) : []),
+    ...(!title && data.type.includes('HumanMadeObject') ? [
       {
         type: "Name",
         classified_as: [
@@ -201,7 +267,7 @@ export const constructIdentifiers = (data: any) => {
           ]
         };
       })
-    }))[0] : []),
+    })).flatMap((x: any) => x) : []),
     ...(altLabel ? (Object.entries(altLabel).map(([key, value]: [string, any]) => {
       return value.map((val: string) => {
         return {
@@ -216,7 +282,7 @@ export const constructIdentifiers = (data: any) => {
           ]
         };
       })
-    }))[0] : []),
+    })).flatMap((x: any) => x) : []),
   ];
 
   return omitEmptyEs({
@@ -229,6 +295,7 @@ export const constructIdentifiers = (data: any) => {
       ...bibsysArray,
       ...viafArray,
       ...isbnArray,
+      ...volumeArray,
     ],
   });
 };

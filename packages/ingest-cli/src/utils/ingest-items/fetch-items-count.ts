@@ -1,4 +1,4 @@
-import { endpointUrl } from '../../clients/sparql-chc-client';
+import { endpointUrl } from '@/clients/sparql-chc-client';
 
 const query = `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -12,7 +12,6 @@ SERVICE <cache:> {
   SELECT ?uri WHERE 
     { 
       ?uri rdf:type/rdfs:subClassOf* bibo:Document ;
-        ubbont:showWeb true ;
         dct:identifier ?id .
       FILTER(STRENDS(STR(?uri), ?id))
     }

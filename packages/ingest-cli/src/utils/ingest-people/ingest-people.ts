@@ -4,14 +4,14 @@ import { bulkIndexData } from '../indexers/utils/bulkIndexData'
 import { flatMapDataForBulkIndexing } from '../indexers/utils/flatMapDataForBulkIndexing'
 import pretty from 'pretty-time'
 import { getIndexFromAlias } from '../indexers/utils/getIndexFromAlias'
-import { fetchItemsCount } from './fetch-items-count'
-import { fetchItemsList, InputItem } from './fetch-items-list'
-import { fetchAndProcessItem } from './fetch-item'
+import { fetchAndProcessPerson } from './fetch-person'
+import { InputItem, fetchPeopleList } from './fetch-people-list'
+import { fetchPeopleCount } from './fetch-people-count'
 
 export const resolveItems = async (items: InputItem[]) => {
   try {
     const promises = items
-      .map(item => fetchAndProcessItem(item.identifier))
+      .map(item => fetchAndProcessPerson(item.identifier))
       .filter(Boolean)
     return await Promise.all(promises)
   } catch (error) {
@@ -19,12 +19,19 @@ export const resolveItems = async (items: InputItem[]) => {
   }
 }
 
-export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
-  const count = await fetchItemsCount()
-  console.log("🚀 ~ ingestItems ~ count:", count)
+export const ingestPeople = async (limit = 100, page = 0, overwrite = false) => {
+  const count = await fetchPeopleCount()
 
   // Get the index name
-  const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.items, overwrite)
+  const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.people, overwrite)
+  // Create index if it doesn't exist
+  const exists = await client.indices.exists({ index: useIndex })
+  if (!exists) {
+    console.log(`Creating new index ${useIndex}`)
+    await client.indices.create({
+      index: useIndex,
+    })
+  }
 
   // Set initial values
   let status = {
@@ -34,14 +41,15 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
     indexed: page * limit,    // Assume all previous pages were indexed
     runtime: BigInt(0),
   }
+  console.log("🚀 ~ ingestPeople ~ status:", status)
 
-  console.log(`Starting ingester from page ${page} (offset: ${page * limit}) using the index ${useIndex} (with ${CHC_SEARCH_ALIAS} as alias)`)
+  console.log(`Starting ingester using the index ${useIndex} (with ${CHC_SEARCH_ALIAS} as alias)`)
 
   while (true) {
     console.log('Fetching page', status.currentPage);
     // Fetch ids
     const t0 = process.hrtime.bigint();
-    const data = await fetchItemsList(status.currentPage * limit, limit);
+    const data = await fetchPeopleList(status.currentPage * limit, limit);
     const t1 = process.hrtime.bigint();
     console.log('├── Fetched', data.length, 'ids in', pretty(Number(t1) - Number(t0)));
 
@@ -58,7 +66,7 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
       const t6 = process.hrtime.bigint();
       const bulkPayload = flatMapDataForBulkIndexing(resolved, useIndex);
       const t7 = process.hrtime.bigint();
-      console.log('├── Prepared the payload for bulk indexing,', bulkPayload.length / 2, 'items in', pretty(Number(t7) - Number(t6)));
+      console.log('├── Prepared the payload for bulk indexing.', bulkPayload.length / 2, 'items in', pretty(Number(t7) - Number(t6)));
 
       // Index data
       const t8 = process.hrtime.bigint();
@@ -70,7 +78,6 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
       // Update status
       status.currentPage += 1;
       status.runtime += process.hrtime.bigint() - t0;
-      console.log(`Total runtime: ${pretty(Number(status.runtime))}`);
 
     } catch (iterationError) {
       console.log('Error in loop iteration:', iterationError);
@@ -80,9 +87,9 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
     // If no more items to fetch, break the loop
     if (data.length < limit || (status.fetched >= status.totalCount)) {
       console.log(`Finished ingesting in ${pretty(Number(status.runtime))}`);
-      console.log(`Indexed ${status.indexed} items of ${status.totalCount}`);
+      console.log(`Indexed ${status.indexed} filesets of ${status.totalCount}`);
       if (status.fetched - status.indexed > 0) {
-        console.log(`Failed to index ${status.fetched - status.indexed} items`);
+        console.log(`Failed to index ${status.fetched - status.indexed} persons`);
       }
 
       // Update aliases
@@ -93,7 +100,7 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
               actions: [
                 {
                   remove: {
-                    index: `${CHC_INDICIES.items}_*`,
+                    index: `${CHC_INDICIES.file_set}_*`,
                     alias: CHC_SEARCH_ALIAS,
                   },
                 },
@@ -106,12 +113,17 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
               ],
             },
           });
+
           console.log('Aliases updated');
+
         } catch (error) {
           console.log('Error updating aliases:', error);
+
           return;
+
         }
       }
+
       return
     }
   }

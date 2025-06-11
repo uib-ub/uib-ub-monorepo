@@ -8,23 +8,30 @@ export const constructDimension = (data: any) => {
     extent,
     height,
     width,
+    pageStart,
+    pageEnd
   } = data;
 
   if (
     !pages &&
     !height &&
     !width &&
-    !extent
+    !extent &&
+    !pageStart &&
+    !pageEnd
   ) return data;
 
   delete data.pages;
   delete data.extent;
   delete data.height;
   delete data.width;
+  delete data.pageStart;
+  delete data.pageEnd;
 
   let pagesArray: any[] = [];
   let heightArray: any[] = []
   let widthArray: any[] = []
+  let calculatedPaginationArray: any[] = []
 
   // add dimensions
   if (pages) {
@@ -47,6 +54,19 @@ export const constructDimension = (data: any) => {
         aatCountOfType,
       ],
       value: parseInt(extent),
+      unit: aatPagesMeasurementUnitType,
+    }]
+  }
+
+
+  if (pageStart && pageEnd) {
+    calculatedPaginationArray = [{
+      type: "Dimension",
+      _label: `Antall sider`,
+      classified_as: [
+        aatCountOfType,
+      ],
+      value: parseInt(pageEnd) - parseInt(pageStart) + 1,
       unit: aatPagesMeasurementUnitType,
     }]
   }
@@ -83,6 +103,7 @@ export const constructDimension = (data: any) => {
       ...heightArray,
       ...widthArray,
       ...pagesArray,
+      ...calculatedPaginationArray,
     ],
   });
 }

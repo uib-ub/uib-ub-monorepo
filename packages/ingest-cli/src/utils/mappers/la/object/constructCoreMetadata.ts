@@ -38,6 +38,8 @@ export const constructCoreMetadata = (base: TBaseMetadata, data: any) => {
   // An Activity must be created that points to the object.
   delete data.acquiredFrom
   delete data.formerOwner
+  delete data.volume // Should be an identifier on the volume
+  delete data['dct:publisher'] // Mapping gets complicated because of HumanMadeObject vs LinguisticObject 
 
   // @TODO: This is a hack to get the classified_as field to work.
   const classified_as = [

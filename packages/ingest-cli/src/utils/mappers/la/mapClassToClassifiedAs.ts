@@ -313,4 +313,20 @@ export const classToAttMapping: { [key: string]: { mapping: string, behavior: st
     mapping: "http://vocab.getty.edu/aat/300026769",
     behavior: ["individuals"],
   },
+  Company: {
+    mapping: "http://vocab.getty.edu/aat/300160084",
+    behavior: ["individuals"],
+  },
+  Organization: {
+    mapping: "http://vocab.getty.edu/aat/300025948",
+    behavior: ["individuals"],
+  },
+  Person: {
+    mapping: "http://vocab.getty.edu/aat/300024979",
+    behavior: ["individuals"],
+  },
+  Family: {
+    mapping: "http://vocab.getty.edu/aat/300055474",
+    behavior: ["individuals"],
+  },
 }
