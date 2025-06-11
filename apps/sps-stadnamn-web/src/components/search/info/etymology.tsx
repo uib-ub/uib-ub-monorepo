@@ -118,7 +118,7 @@ export default function Etymology({ etymologyDataset, uuids }: EtymologyProps) {
                         </div>
                         {searchParams.get('doc') ? <Clickable
                             link
-                            add={{doc: sourceDocUuid, parent: doc}}
+                            add={{doc: sourceDocUuid, parent: doc, docDataset: etymologyDataset}}
                             className="no-underline flex items-center gap-2 font-semibold">
                             <PiBookOpen className="text-lg text-primary-600" aria-hidden="true"/>
                             {datasetTitles[etymologyDataset]}
