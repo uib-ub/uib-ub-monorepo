@@ -430,9 +430,16 @@ fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) =>
   if (dataset !== 'search') { // skip combined search and if in baseAllConfig
     Object.entries(fields).forEach(([key, config]) => {
       if (!config.label) return; // Skip fields without labels
+
       
-      // Create a simplified config object with label, facet and result always true
-      const simplifiedConfig = { label: config.label, facet, result, datasets: [dataset]};
+      // Create a simplified config object with label, facet and result, unless fulltext is true
+      const simplifiedConfig = { 
+        label: config.label, 
+        facet: !config.fulltext, 
+        result: !config.fulltext, 
+        datasets: [dataset]
+      };
+      
 
       // Check if the key exists in baseAllConfig
       if (key in baseAllConfig) {
