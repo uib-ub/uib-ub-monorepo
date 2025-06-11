@@ -2,7 +2,7 @@ export * from "./stringifyObject";
 export * from "./pickSegmentFromEndOfUrl";
 export * from "./reduceValuesByLanguage";
 export * from "./sparqlQueryBuilder";
-export * from "./useFrame";
+// Removed duplicate export of "useFrame"
 export * from "./isObjectEmpty";
 export * from "./normalizeJsonLdToArray";
 export * from "./pipe";
