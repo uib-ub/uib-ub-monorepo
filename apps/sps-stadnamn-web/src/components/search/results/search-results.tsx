@@ -70,18 +70,32 @@ export default function SearchResults() {
           ))
           : totalHits?.value ? (
             <>
-              <GroupedItems resultData={resultData}/>
-              {additionalResults.length > 0 && 
-                Array.from({ length: Math.ceil(additionalResults.length / 40) }).map((_, batchIndex) => {
-                  const batchResults = additionalResults.slice(batchIndex * 40, (batchIndex + 1) * 40);
-                  return (
-                    <GroupedItems 
-                      key={`batch-${batchIndex + 1}`}
-                      resultData={batchResults}
-                    />
-                  );
-                })
-              }
+              {/* Only use GroupedItems if total results > 20, otherwise use ResultItem directly */}
+              {totalHits.value > 10 ? (
+                <>
+                  <GroupedItems resultData={resultData}/>
+                  {additionalResults.length > 0 && 
+                    Array.from({ length: Math.ceil(additionalResults.length / 40) }).map((_, batchIndex) => {
+                      const batchResults = additionalResults.slice(batchIndex * 40, (batchIndex + 1) * 40);
+                      return (
+                        <GroupedItems 
+                          key={`batch-${batchIndex + 1}`}
+                          resultData={batchResults}
+                        />
+                      );
+                    })
+                  }
+                </>
+              ) : (
+                <>
+                  {resultData.map((hit: any) => (
+                    <ResultItem key={hit._id} hit={hit} />
+                  ))}
+                  {additionalResults.map((hit: any) => (
+                    <ResultItem key={hit._id} hit={hit} />
+                  ))}
+                </>
+              )}
             </>
           ) : null}
 
