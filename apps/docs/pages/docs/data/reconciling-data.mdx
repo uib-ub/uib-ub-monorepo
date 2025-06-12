@@ -2,50 +2,6 @@ import { useData } from 'nextra/hooks'
 import { useMDXComponents } from 'nextra/mdx'
 import { Steps } from 'nextra/components'
 
-export const getStaticProps = async () => {
-  const response = await fetch('https://api-ub.vercel.app/registries')
-  const data = await response.json()
-  return {
-    props: {
-      ssg: data
-    }
-  }
-}
- 
-export const NextraRegistries = () => {
-  const data = useData()
-  return (
-    <div>
-      <h2>ConceptSchemes</h2>
-      {data.map((item) => (
-        <div key={item.id}>
-          <h3>{item.prefLabel?.none[0] || item.prefLabel || 'Missing label'}</h3>
-          <p className="flex gap-5 items-baseline">
-          <a 
-            href={`https://api-ub.vercel.app/registries/${item.identifier}`} 
-            className='inline-flex items-center justify-center rounded-md text-md font-bold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-emerald-700 text-white shadow hover:bg-primary/90 h-10 px-8 mt-3'
-          >
-          Download JSON
-          </a> 
-            <strong>{item.pages} concepts.</strong> 
-            <a href={item.id.replace('data.ub', 'marcus')}>Link to Marcus.</a>
-          </p>
-          {item.hasTopConcept && (
-            <>
-            <h4>Top concepts</h4>
-            <ul>
-              {item.hasTopConcept && item.hasTopConcept.map((concept) => (
-                <li key={concept.id}>{concept.label?.none[0] || concept.label || 'Missing label'}</li>
-              ))} 
-            </ul> 
-            </>
-           )}
-        </div>
-      ))}
-    </div>
-  )
-}
-
 # Reconciling data
 
 UB-SPES have used vocabulariets/concept schemes/registries from the very start. From card catalogues to controlled strings and SKOS Concepts. The data is available in the [UB-SPES SPARQL endpoint](https://sparql.ub.uib.no/sparql) and the concept schemes are available at [marcus.uib.no/conceptschemes](https://marcus.uib.no/conceptschemes). "Løvetann emneregister" is also included.
@@ -86,6 +42,8 @@ UB-SPES have used vocabulariets/concept schemes/registries from the very start. 
 
 ## Workflow
 
+*NB!:* JSON representation of registries is not currently available!
+
 <Steps>
 ### Download the data
  
@@ -101,4 +59,3 @@ Export the reconciled data as RDF/XML or Turtle and upload to the [Marcus SPARQL
 
 </Steps>
  
-<NextraRegistries />

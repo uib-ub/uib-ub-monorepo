@@ -669,6 +669,7 @@ export type CrmP9ConsistsOf = (
   | SciS19_Encounter_Event1
   | CrmE9_Move
   | CrmE7_Activity2
+  | { type: "Transfer" }
 )[];
 /**
  * The class of the entity

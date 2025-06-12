@@ -9,7 +9,8 @@ import { rateLimiter } from './middlewares/rate-limiter'
 import { env } from './env'
 import item from './routes/items/item.route'
 import items from './routes/items/items.route'
-import lookupId from './routes/lookup.route'
+import person from './routes/person/person.route'
+import group from './routes/group/group.route'
 import ns from './routes/ns.route'
 import reference from './routes/references.route'
 
@@ -39,9 +40,10 @@ app.get('/', (c) => {
 
 app.route('/items', items)
 app.route('/items', item)
+app.route('/person', person)
+app.route('/group', group)
 // The reference route is the OpenAPI documentation UI.
 app.route('/reference', reference)
-app.route('/lookup', lookupId)
 // The ns route is for the context files.
 app.route('/ns', ns)
 
