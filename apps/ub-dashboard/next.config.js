@@ -13,6 +13,15 @@ const nextConfig = {
       fullUrl: true,
     },
   },
+  webpack: (config, { isServer }) => {
+    // Handle native modules
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      'rdf-canonize-native': false,
+    };
+
+    return config;
+  },
 }
 
 module.exports = nextConfig
