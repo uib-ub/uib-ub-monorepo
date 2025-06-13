@@ -60,7 +60,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
       {(((docDataset && dataset != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
 
-        { dataset == 'search' && docDataset != 'search' && <div className="flex gap-1  items-center">
+        { dataset == 'all' && <div className="flex gap-1  items-center">
           
           <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
