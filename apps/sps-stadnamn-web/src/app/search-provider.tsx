@@ -87,7 +87,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             url = `/api/search/table?size=${perPage}${searchQueryString ? `&${searchQueryString}`: ''}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
         }
         else {
-            url = `/api/search/map?${searchQueryString}&size=${size}`
+            url = `/api/search/map?${searchQueryString}&size=40`
         }
         
         fetch(url)
