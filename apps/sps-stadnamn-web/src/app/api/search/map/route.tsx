@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   }
     
   const query: Record<string,any> = {
-    "track_total_hits": 5000000,
+    "track_total_hits": 10000000,
     "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
     ...filteredParams.from ? {from: filteredParams.from} : {},
     ...highlight ? {highlight} : {},
