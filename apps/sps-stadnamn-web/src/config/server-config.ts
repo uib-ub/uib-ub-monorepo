@@ -78,7 +78,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       display: 'map',
       adm: 3,
       cadastre: false,
-      sort: ["_score", "label.keyword"]
+      sort: ["_score", "gnidu.keyword"]
     },
     bsn: {
       display: 'map',
