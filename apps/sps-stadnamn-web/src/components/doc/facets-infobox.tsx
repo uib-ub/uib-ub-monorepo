@@ -44,7 +44,7 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
     
 
     const subitemRenderer = (item: any) => {
-      if (dataset == docDataset) {
+      if (dataset == docDataset || dataset == 'all') {
         return (
           <Link className="no-underline flex items-center gap-1" 
                 href={item.hrefParams ? buildHref(item.hrefParams) : item.href || serialize({dataset,  [item.key]: item.value, nav: 'results'})}>
