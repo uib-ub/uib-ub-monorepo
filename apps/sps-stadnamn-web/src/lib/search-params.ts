@@ -17,7 +17,7 @@ export function useQueryStringWithout(omit : string[]) {
 
 export function useDataset() {
     const searchParams = useSearchParams()
-    return searchParams?.get('dataset') || 'search'
+    return searchParams?.get('dataset') || 'all'
 }
 
 export function useMode() {
