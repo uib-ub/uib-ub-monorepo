@@ -4,7 +4,7 @@ export async function postQuery(dataset: string, query: any) {
     const endpoint = process.env.STADNAMN_ES_ENDPOINT
     const token = process.env.STADNAMN_ES_TOKEN
     let res
-    
+
     try {
         res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search`, {
         method: 'POST',

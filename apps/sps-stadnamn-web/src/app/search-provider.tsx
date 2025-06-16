@@ -6,6 +6,7 @@ import { parseAsInteger, useQueryState } from 'nuqs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
 import { useMode } from '@/lib/search-params';
+import { trimResultData } from '@/lib/utils';
 
 interface SearchContextData {
     resultData: any;
@@ -31,7 +32,7 @@ interface SearchContextData {
     resultBounds: null,
     });
 
- 
+    
 export default function SearchProvider({ children }: {  children: React.ReactNode }) {
     const [resultData, setResultData] = useState<any[] | null>(null)
     const [tableData, setTableData] = useState<any[] | null>(null)
@@ -87,7 +88,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             url = `/api/search/table?size=${perPage}${searchQueryString ? `&${searchQueryString}`: ''}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
         }
         else {
-            url = `/api/search/map?${searchQueryString}&size=40`
+            url = `/api/search/map?${searchQueryString}&size=20`
         }
         
         fetch(url)
@@ -104,7 +105,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             }
             else {
                 const newBounds = es_data.aggregations?.viewport.bounds
-                setResultData(es_data.hits.hits)
+                setResultData(trimResultData(es_data.hits.hits, es_data.hits.total.value))
                 setTotalHits(es_data.hits.total)
                 if (newBounds?.top_left && newBounds?.bottom_right) {
                     // Temporary fix for null island and similar errors
