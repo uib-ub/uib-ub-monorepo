@@ -154,6 +154,8 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             
       
       { docDataset == 'search' && <SearchDocInfo docSource={docSource}/> }
+
+      { docSource.attestations && <Timeline arr={docSource.attestations} parent={docSource.uuid}/> }
       
       
       
