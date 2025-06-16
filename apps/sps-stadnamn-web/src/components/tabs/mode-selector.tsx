@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
 import { useDataset, useMode } from "@/lib/search-params";
 import { contentSettings } from "@/config/server-config";
+import { DocContext } from "@/app/doc-provider";
 
 export default function ModeSelector() {
     const searchParams = useSearchParams()
@@ -12,6 +13,7 @@ export default function ModeSelector() {
     const dataset = useDataset()
     const mode = useMode()
     const { setPreferredTab, isMobile } = useContext(GlobalContext)
+    const {docDataset} = useContext(DocContext)
 
     return <div className={`inline-flex ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">
             {contentSettings[dataset]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
