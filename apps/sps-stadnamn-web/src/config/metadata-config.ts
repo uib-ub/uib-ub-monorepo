@@ -30,7 +30,7 @@ export interface DatasetPresentation {
 
 export const datasetTitles: DatasetTitles = {
     search: "Stadnamnsøk",
-    all: "Grunnlagsdata",
+    all: "Søk",
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
