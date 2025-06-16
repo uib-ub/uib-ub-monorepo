@@ -13,6 +13,7 @@ import DatasetSelector from "../search/datasets/dataset-selector";
 import DatasetInfo from "../search/info/dataset-info";
 import Spinner from "../svg/Spinner";
 import { formatNumber } from "@/lib/utils";
+import DatasetFacet from "../search/facets/dataset-facet";
 
 export default function LeftWindow() {
     const dataset = useDataset()

@@ -4,7 +4,7 @@ import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 
-import { datasetTitles, typeNames, datasetTypes } from '@/config/metadata-config';
+import { datasetTitles } from '@/config/metadata-config';
 
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
@@ -22,7 +22,7 @@ export default function ServerFacet() {
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const {facetOptions, pinnedFilters, updatePinnedFilters } = useContext(GlobalContext)
   const availableFacets = useMemo(() => facetConfig[dataset], [dataset]);
-  const facet = searchParams.get('facet')
+  const facet = searchParams.get('facet') || searchParams.get('nav')
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
 
@@ -56,18 +56,9 @@ export default function ServerFacet() {
     return null;
   }
 
-  const switchFacet = (event: ChangeEvent<HTMLSelectElement>) => {
-    const facet = event.target.value
-    event.preventDefault()
-    const newParams = new URLSearchParams(searchParams.toString())
-    newParams.set('facet', facet)
-    router.push(`?${newParams.toString()}`, { scroll: false });
-  }
-
   const renderLabel = (key: string, label: string) => {
     if (label == '_false') return '[ingen verdi]'
     if (key == 'datasets') return datasetTitles[label]
-    if (key == 'indexDataset') return datasetTitles[label.split('-')[2]]
     return label
   }
 
@@ -84,27 +75,14 @@ export default function ServerFacet() {
     params.delete('center')
     params.delete('doc')
     
-    // For indexDataset, convert all values to dataset tags before filtering
-    if (facet === 'indexDataset') {
-      const currentValue = value.split('-')[2];
-      existingValues
-        .filter(v => v !== currentValue)
-        .forEach(v => params.append(facet, v));
-    } else {
-      // For other facets, handle as before
-      existingValues
-        .filter(v => v !== value)
-        .forEach(v => params.append(facet, v));
-    }
+    existingValues
+      .filter(v => v !== value)
+      .forEach(v => params.append(facet, v));
+    
 
     // Add the value if being checked
     if (beingChecked) {
-      if (facet === 'indexDataset') {
-        const datasetTag = value.split('-')[2];
-        params.append(facet, datasetTag);
-      } else {
-        params.append(facet, value);
-      }
+      params.append(facet, value);
     }
 
     if (facetOptions[dataset]?.[facet]?.pinningActive) {
@@ -116,23 +94,8 @@ export default function ServerFacet() {
   };
     
 
-  const filterDatasetsByTags = (item: any) => {
-    if ((facet === 'datasets' || facet === 'indexDataset') && searchParams.getAll('datasetTag').length > 0) {
-      // Check if the dataset (item.key) has all the required dataset tags
-      return searchParams.getAll('datasetTag').some(tag => 
-        datasetTypes[facet == 'indexDataset' ? item.key.split('-')[2] : item.key]?.includes(tag)
-      );
-    }
-    return true;
-  };
-
   const isChecked = (facet: string, itemKey: string) => {
     const existingValues = searchParams.getAll(facet);
-    if (facet === 'indexDataset') {
-      // For indexDataset, compare against the dataset tag portion
-      const datasetTag = itemKey.split('-')[2];
-      return existingValues.includes(datasetTag);
-    }
     return existingValues.includes(itemKey.toString());
   };
 
@@ -140,32 +103,9 @@ export default function ServerFacet() {
     <>
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
-    {((dataset =='search' && facet == 'datasets') || (dataset == 'all' && facet == 'indexDataset')) && 
-        <label className="flex items-center gap-2 px-2 border border-neutral-200 rounded-md py-1 px-2">
-          <input
-            type="checkbox"
-            checked={searchParams.getAll('datasetTag').includes('collection')}
-            onChange={(e) => {
-              setClientSearch('');
-              const params = new URLSearchParams(searchParams.toString());
-              const existingTags = params.getAll('datasetTag');
-              if (e.target.checked && !existingTags.includes('collection')) {
-                params.append('datasetTag', 'collection');
-              } else if (!e.target.checked) {
-                params.delete('datasetTag');
-                existingTags.filter(tag => tag !== 'collection').forEach(tag => params.append('datasetTag', tag));
-              }
-              router.push(`?${params.toString()}`, { scroll: false });
-            }}
-            className="form-checkbox"
-          />
-          
-          <span>Stadnamninnsamlingar</span>
-        </label>
-    }
     <div className='flex gap-2'>
     <div className='relative grow'>
-      <input aria-label="Søk i fasett" onChange={(e) => (facet == 'datasets' || facet == 'indexDataset') ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
+      <input aria-label="Søk i fasett" onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
       <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
         <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
@@ -181,7 +121,6 @@ export default function ServerFacet() {
       <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[dataset][facet].label}`}</legend>
       <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
-          .filter(filterDatasetsByTags)
           .map((item: any, index: number) => 
             (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(renderLabel(facet, item.key))) && (
               <li key={index}>

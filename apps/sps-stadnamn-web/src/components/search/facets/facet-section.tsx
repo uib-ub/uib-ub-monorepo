@@ -16,11 +16,12 @@ export default function FacetSection() {
     const searchParams = useSearchParams()
     const { isMobile } = useContext(GlobalContext)
     const facet = searchParams.get('facet') || 'adm'
+    const indexDatasets = searchParams.getAll('indexDataset')
+    
     const availableFacets = dataset == 'all' 
-        ? facetConfig['all'].filter(f => f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1)).sort((a, b) => (a.key === 'indexDataset' ? -1 : b.key === 'indexDataset' ? 1 : (b?.datasets?.length || 0) - (a?.datasets?.length || 0)))
+        ? facetConfig['all'].filter(f => indexDatasets.length > 0 ? f.datasets?.find((d: string) => indexDatasets.includes(d)) : f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1)).sort((a, b) => (a.key === 'indexDataset' ? -1 : b.key === 'indexDataset' ? 1 : (b?.datasets?.length || 0) - (a?.datasets?.length || 0)))
         : facetConfig[dataset];
     const nav = searchParams.get('nav')
-    const [showAll, setShowAll] = useState(false)
 
     return (
         <>

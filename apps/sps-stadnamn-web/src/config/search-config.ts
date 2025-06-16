@@ -16,6 +16,7 @@ export interface FieldConfigItem {
   featuredFacet?: boolean; // Show in custom facet
   child?: string; // Child facet. The parent facet is handled client side, the child is handled server side,
   datasets?: string[]; // Datasets that contain this field - used in cross-dataset search
+  indexDataset?: string[]; // Used to filter by _index
   altField?: string; // Add this new property
 }
 
