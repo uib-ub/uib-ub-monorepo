@@ -81,7 +81,7 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
                 </div>
             ))}
           </div>
-          {dataset !== docDataset && (
+          {dataset !== docDataset && dataset !== 'all' && (
             <Clickable
               link 
               only={{dataset: docDataset, doc: source.uuid}}
