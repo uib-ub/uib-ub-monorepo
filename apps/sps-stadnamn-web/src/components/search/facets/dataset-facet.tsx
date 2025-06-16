@@ -113,6 +113,8 @@ export default function DatasetFacet() {
               setClientSearch('');
               const params = new URLSearchParams(searchParams.toString());
               const existingTags = params.getAll('datasetTag');
+              const existingDatasets = params.getAll('indexDataset');
+              existingDatasets.filter(dataset => !datasetTypes[dataset]?.includes('collection')).forEach(dataset => params.delete('indexDataset', dataset));
               if (e.target.checked && !existingTags.includes('collection')) {
                 params.append('datasetTag', 'collection');
               } else if (!e.target.checked) {
