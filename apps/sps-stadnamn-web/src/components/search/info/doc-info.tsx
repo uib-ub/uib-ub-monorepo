@@ -22,6 +22,7 @@ import SearchDocInfo from "@/components/doc/search-doc-info"
 import { facetConfig } from "@/config/search-config"
 import { getFieldValue } from "@/lib/utils"
 import ErrorMessage from "@/components/error-message"
+import Timeline from "@/components/doc/timeline"
 
 
 
