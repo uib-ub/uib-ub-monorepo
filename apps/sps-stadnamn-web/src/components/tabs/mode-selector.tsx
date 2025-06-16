@@ -47,7 +47,7 @@ export default function ModeSelector() {
                         className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2 aria-selected:bg-neutral-100 text-neutral-900 aria-selected:shadow-inner">
                             {mode == 'list' ? <PiRowsFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiRowsLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
             </ClickableIcon>
-            { mode != 'map' && doc && <ClickableIcon add={{mode: 'doc'}} 
+            { mode != 'map' && doc && <ClickableIcon add={{mode: 'doc', docDataset: docDataset}} 
                         role="tab"
                         label="Dokument"
                         aria-selected={mode == 'doc' ? true : false}
