@@ -3,23 +3,14 @@ import { useState } from "react"
 import { PiCaretDown, PiCaretUp } from "react-icons/pi"
 import ResultItem from "./result-item"
 import { gridDisk } from "h3-js"
+import { useSearchParams } from "next/navigation"
+import Clickable from "@/components/ui/clickable/clickable"
 
 
 
 export default function GroupedItems({ resultData }: {resultData: any[]}) {
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
-
-  const toggleGroup = (key: string) => {
-    setExpandedGroups(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(key)) {
-        newSet.delete(key)
-      } else {
-        newSet.add(key)
-      }
-      return newSet
-    })
-  }
+    const searchParams = useSearchParams()
+    const expanded = searchParams.get('expanded')
   
   
   
@@ -86,9 +77,11 @@ export default function GroupedItems({ resultData }: {resultData: any[]}) {
       {Object.entries(groupedResults).map(([key, items]) => (
         items.length > 1 ? (
           <li key={key}>
-            <button 
-              onClick={() => toggleGroup(key)}
-              aria-expanded={expandedGroups.has(key)}
+            
+            <Clickable 
+              add={expanded != btoa(encodeURIComponent(key)) ? {'expanded': btoa(encodeURIComponent(key))} : {}}
+              remove={['doc', 'expanded']}
+              aria-expanded={expanded == btoa(encodeURIComponent(key))}
               aria-controls={`${key}-group`}
               className={`w-full flex flex-col py-3 px-2 text-left hover:bg-neutral-50 group aria-expanded:border-b aria-expanded:border-l-4 aria-expanded:border-neutral-200 aria-expanded:bg-neutral-100`}
             >
@@ -101,12 +94,12 @@ export default function GroupedItems({ resultData }: {resultData: any[]}) {
                   <span className={`text-sm bg-neutral-100 rounded-full px-2.5 py-1 flex items-center gap-2 group-aria-expanded:bg-neutral-700 group-aria-expanded:text-white`}>
                     {items.length}
                   </span>
-                  {expandedGroups.has(key) ? <PiCaretUp /> : <PiCaretDown />}
+                  {expanded == btoa(encodeURIComponent(key)) ? <PiCaretUp /> : <PiCaretDown />}
                 </div>
               </div>
               
-            </button>
-            <ul id={`${key}-group`} className={!expandedGroups.has(key) ? 'hidden' : 'px-2 pb-2'}>
+            </Clickable>
+            <ul id={`${key}-group`} className={expanded != btoa(encodeURIComponent(key)) ? 'hidden' : 'px-2 pb-2'}>
               {items.map((hit) => (
                 <ResultItem key={hit._id} hit={hit}/>
               ))}

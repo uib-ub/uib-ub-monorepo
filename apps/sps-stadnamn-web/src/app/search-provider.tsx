@@ -88,7 +88,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             url = `/api/search/table?size=${perPage}${searchQueryString ? `&${searchQueryString}`: ''}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
         }
         else {
-            url = `/api/search/map?${searchQueryString}&size=20`
+            url = `/api/search/map?${searchQueryString}&size=0`
         }
         
         fetch(url)
@@ -98,15 +98,16 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             }
             return response.json()})
         .then(es_data => {
+
+            setTotalHits(es_data.hits.total)
             
             if (useTableData) {
                 setTableData(es_data.hits.hits)
-                setTotalHits(es_data.hits.total)
             }
             else {
                 const newBounds = es_data.aggregations?.viewport.bounds
                 setResultData(trimResultData(es_data.hits.hits, es_data.hits.total.value))
-                setTotalHits(es_data.hits.total)
+                
                 if (newBounds?.top_left && newBounds?.bottom_right) {
                     // Temporary fix for null island and similar errors
                     let limitedBounds = [

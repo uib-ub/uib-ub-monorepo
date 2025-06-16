@@ -8,8 +8,9 @@ import { fieldConfig, resultConfig } from '@/config/search-config';
 
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
-  const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
-  const { highlight, simple_query_string } = getQueryString(filteredParams, true)
+  const dataset = filteredParams.dataset || 'all'  // == 'search' ? '*' : filteredParams.dataset;
+  const sorted = parseInt(filteredParams.size) > 0
+  const { highlight, simple_query_string } = getQueryString(filteredParams, sorted)
 
   let sortArray: (string | object)[] = []
     
@@ -59,6 +60,7 @@ export async function GET(request: Request) {
       }
     }
   }
+
   
   const [data, status] = await postQuery(dataset, query)
   return Response.json(data, {status: status})

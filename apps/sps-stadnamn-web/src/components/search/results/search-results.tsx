@@ -15,7 +15,7 @@ const PER_PAGE = 100
 export default function SearchResults() {
     const { resultData, totalHits, isLoading, searchError } = useContext(SearchContext)
 
-    const [additionalResults, setAdditionalResults] = useState<any[]>([])
+    const [resultGroups, setResultGroups] = useState<any[]>([])
     const [loadingAdditionalResults, setLoadingAdditionalResults] = useState(false)
     const [offset, setOffset] = useState(0)
     const {searchQueryString } = useSearchQuery()
@@ -23,12 +23,12 @@ export default function SearchResults() {
 
     // Reset when search query changes
     useEffect(() => {
-      setAdditionalResults([])
-      setOffset(resultData?.length || 0)
-    }, [resultData])
+      setResultGroups([])
+      setOffset(0)
+    }, [searchQueryString])
 
     const loadMore = () => {
-      setOffset(resultData.length + additionalResults.reduce((acc, curr) => acc + curr.length, 0))
+      setOffset(resultData.length + resultGroups.reduce((acc, curr) => acc + curr.length, 0))
     }
 
 
@@ -37,7 +37,7 @@ export default function SearchResults() {
 
 
     useEffect(() => {
-      if (offset === 0) return;
+      //if (offset === 0) return;
       setLoadingAdditionalResults(true)
       const url = `/api/search/map?${searchQueryString}&size=${PER_PAGE}&from=${offset}`
       fetch(url)
@@ -49,14 +49,13 @@ export default function SearchResults() {
           return response.json()
         })
         .then(es_data => {
-          setAdditionalResults(prev => [...prev, trimResultData(es_data.hits.hits, es_data.hits.total.value)])
+          setResultGroups(prev => [...prev, trimResultData(es_data.hits.hits, es_data.hits.total.value)])
         })
         .finally(() => setLoadingAdditionalResults(false))
     }, [searchQueryString, offset, totalHits])
 
     return (
       <>
-        {/* Add detailed count breakdown */}
         <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200'>
           {/* Loading states */}
           {isLoading ? Array.from({length: 10}).map((_, i) => (
@@ -72,12 +71,12 @@ export default function SearchResults() {
 
 
                   <>
-                  <GroupedItems resultData={resultData}/>
-                  { additionalResults.length > 0 && Array.from({length: additionalResults.length + (resultData.length + additionalResults.reduce((acc, curr) => acc + curr.length, 0) < totalHits?.value ? 1 : 0)}).map((_, i: number) => {
-                    if (i < additionalResults.length) {
+
+                  { resultGroups.length > 0 && Array.from({length: resultGroups.length + (resultData.length + resultGroups.reduce((acc, curr) => acc + curr.length, 0) < totalHits?.value ? 1 : 0)}).map((_, i: number) => {
+                    if (i < resultGroups.length) {
                       return (
                     <GroupedItems 
-                    resultData={additionalResults[i]}
+                    resultData={resultGroups[i]}
 
                     key={i}
                     />
@@ -109,7 +108,7 @@ export default function SearchResults() {
                           className="bg-neutral-100 p-4 rounded-full w-full block"
                           key={i}
                         >
-                          Last fleire resultater
+                          Last fleire resultat
                         </button>
                       </li>
                     )
@@ -123,7 +122,7 @@ export default function SearchResults() {
 
                 ) : (
                 <>
-                  {resultData.map((hit: any) => (
+                  {resultGroups[0]?.map((hit: any) => (
                     <ResultItem key={hit._id} hit={hit} />
                   ))}
                 </>
@@ -138,7 +137,7 @@ export default function SearchResults() {
               <strong>{searchError.status}</strong> Det har oppstått ein feil
             </div>
           </div>
-        ) : !isLoading && !resultData?.length && (
+        ) : !isLoading && !totalHits?.value && (
           <div className="flex justify-center">
             <div role="status" aria-live="polite" className="text-neutral-950 pb-4">
               Ingen søkeresultater
