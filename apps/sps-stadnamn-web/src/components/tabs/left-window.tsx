@@ -80,6 +80,15 @@ export default function LeftWindow() {
                         {isTabActive('tree') ? <PiTreeViewFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
                 </IconButton> : null}
 
+                <IconButton
+                      label="Datasett"
+                      onClick={() => handleTabClick('datasets')}
+                      aria-controls="left-window-content"
+                      aria-expanded={isTabActive('datasets')}
+                      className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-950 aria-expanded:shadow-inner">
+                        {isTabActive('datasets') ? <PiDatabaseFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+                </IconButton>
+
                 {contentSettings[dataset].adm ? <IconButton
                       label="Områdeinndeling"
                       onClick={() => handleTabClick('adm')}
@@ -132,6 +141,14 @@ export default function LeftWindow() {
             Områdeinndeling
           </h2>
             <ClientFacet facetName='adm' />
+            </div>
+        }
+        { nav == 'datasets' &&
+        <div className="flex flex-col gap-2">
+        <h2 className="text-xl px-2 border-b border-neutral-200 pb-2" >
+        Datasett
+      </h2>
+            <DatasetFacet/>
             </div>
         }
         { searchFilterParamsString && nav == 'results' &&
