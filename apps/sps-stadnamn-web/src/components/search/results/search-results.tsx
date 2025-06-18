@@ -11,7 +11,7 @@ import { useSearchQuery } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
 
 
-const PER_PAGE = 20
+const PER_PAGE = 30
 
 export default function SearchResults() {
     const { resultData, totalHits, isLoading, searchError } = useContext(SearchContext)
