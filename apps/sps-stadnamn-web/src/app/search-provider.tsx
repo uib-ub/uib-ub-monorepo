@@ -32,7 +32,7 @@ interface SearchContextData {
     resultBounds: null,
     });
 
-    
+
 export default function SearchProvider({ children }: {  children: React.ReactNode }) {
     const [resultData, setResultData] = useState<any[] | null>(null)
     const [tableData, setTableData] = useState<any[] | null>(null)
@@ -106,7 +106,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
             }
             else {
                 const newBounds = es_data.aggregations?.viewport.bounds
-                setResultData(trimResultData(es_data.hits.hits, es_data.hits.total.value))
+                setResultData(es_data.hits.hits)
                 
                 if (newBounds?.top_left && newBounds?.bottom_right) {
                     // Temporary fix for null island and similar errors
