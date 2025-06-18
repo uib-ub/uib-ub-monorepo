@@ -7,7 +7,8 @@ export type BaseParamProps = {
     href?: string;
     children: React.ReactNode;
     link?: boolean;
+    onClick?: (event: React.MouseEvent) => void;
     [x: string]: any;
 }
 
-export type ParamProps = BaseParamProps & (OnlyParams | AddParams | RemoveParams);
+export type ParamProps = BaseParamProps & (OnlyParams | AddParams | RemoveParams | { only?: never; add?: never; remove?: never });
