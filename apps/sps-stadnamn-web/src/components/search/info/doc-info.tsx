@@ -190,7 +190,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
         <div className="flex gap-2 flex-wrap mt-2 pt-4 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-2">
         
-            {dataset != 'search' && docSource.snid &&
+            {false && dataset != 'search' && docSource.snid &&
                 <Link className="btn btn-neutral gap-2" href={`/find-snid/${docSource.uuid}`}>
                   Stadnamnside
                 </Link>
