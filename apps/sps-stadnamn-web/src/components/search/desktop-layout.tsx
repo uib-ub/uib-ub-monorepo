@@ -14,6 +14,10 @@ import ListExplorer from "./list/list-explorer"
 import LeftWindow from "../tabs/left-window"
 import ChildrenWindow from "../children/children-window"
 import { treeSettings } from "@/config/server-config"
+import SimilarWindow from "../children/similar-window"
+import { PiListBullets, PiMagnifyingGlass } from "react-icons/pi"
+import Clickable from "../ui/clickable/clickable"
+import { stringToBase64Url } from "@/lib/utils"
 
 
 export default function DesktopLayout() {    
@@ -24,6 +28,7 @@ export default function DesktopLayout() {
     const parent = searchParams.get('parent')
     const mode = useMode()
     const doc = searchParams.get('doc')
+    const expanded = searchParams.get('expanded') 
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
 
@@ -85,7 +90,20 @@ export default function DesktopLayout() {
         </div>
         : null
 
-        }       
+        }    
+        {
+            expanded ? 
+            <div className="lg:rounded-md lg:shadow-lg !z-[3001] bg-white flex flex-col instance-info justify-start lg:min-h-[10svh] lg:max-h-[40svh] lg:w-[30svw] 2xl:w-[25svw] mt-2">
+                <SimilarWindow/>
+            </div>
+            : doc ? 
+                <div className="lg:rounded-md lg:shadow-lg !z-[3001] bg-white mt-2">
+                    <Clickable className="w-full btn btn-primary h-full flex items-center justify-center gap-2 px-4 py-2 text-lg" add={{expanded: stringToBase64Url(`gnidu-${docData?.fields?.gnidu[0]}-${encodeURIComponent(docData?.fields?.label[0])}`)}}>
+                        <PiListBullets className="text-xl" aria-hidden="true"/> Liknande oppslag
+                    </Clickable>
+                </div>
+            : null
+        }   
 
         </div>
         }
