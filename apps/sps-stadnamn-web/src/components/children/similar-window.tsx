@@ -41,7 +41,7 @@ export default function SimilarWindow() {
         <div className={`flex w-full items-center p-1 lg:p-0 shadow-md py-2`}>
                     
     <h2 className="text-neutral-800 uppercase font-semibold tracking-wider text-sm !font-sans !text-base ! text-neutral-800 px-4 py-1 ">
-        Liknande oppslag
+        Relaterte treff
         
            
         </h2>
