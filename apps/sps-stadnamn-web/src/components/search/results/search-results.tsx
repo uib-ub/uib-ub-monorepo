@@ -60,35 +60,34 @@ export default function SearchResults() {
     return (
       <>
         <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200'>
-
-          {Array.from({length: 1 + Math.min(PER_PAGE + (parseInt(page || '0') * PER_PAGE), totalHits?.value)}).map((_, i) => {
-            if (isLoadingResults) {
-              return (
-            <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={i}>
+          {/* Render existing results */}
+          {collapsedResults.map((hit, index) => (
+            <ResultItem key={hit._id} hit={hit} />
+          ))}
+          
+          {/* Render loading skeletons */}
+          {isLoadingResults && Array.from({length: PER_PAGE}).map((_, i) => (
+            <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={`skeleton-${collapsedResults.length + i}`}>
               <div className="bg-neutral-200 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
               <div className="bg-neutral-200 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
             </li>
-            )
-            } else if (i < collapsedResults.length) {
-              return <ResultItem key={collapsedResults[i]._id} hit={collapsedResults[i]} />
-            } else if (i === collapsedResults.length && collapsedResults.reduce((acc, curr) => acc + (curr.inner_hits?.gnidu?.hits?.total?.value || 0), 0) < totalHits?.value) {
-              return <button 
-                type="button" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  const newUrl = new URLSearchParams(searchParams)
-                  newUrl.set('page', (parseInt(page || '0') + 1).toString())
-                  router.push(`?${	newUrl.toString()}`);
-                }} 
-                key={i} 
-                className="bg-neutral-100 p-4 rounded-full w-full block"
-              >
-                Last fleire resultat
-              </button>
-            }
-          })}
+          ))}
           
-            
+          {/* Render "load more" button */}
+          {!isLoadingResults && collapsedResults.reduce((acc, curr) => acc + (curr.inner_hits?.gnidu?.hits?.total?.value || 0), 0) < totalHits?.value && (
+            <button 
+              type="button" 
+              onClick={(e) => {
+                e.preventDefault();
+                const newUrl = new URLSearchParams(searchParams)
+                newUrl.set('page', (parseInt(page || '0') + 1).toString())
+                router.push(`?${newUrl.toString()}`);
+              }} 
+              className="bg-neutral-100 p-4 rounded-full w-full block"
+            >
+              Last fleire resultat
+            </button>
+          )}
         </ul>
         
         {searchError ? (
