@@ -1,6 +1,7 @@
 import { treeSettings } from "@/config/server-config"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { Base64UrlEncoder, Base64UrlDecoder } from 'next-base64-encoder'
  
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -140,3 +141,32 @@ export const trimResultData = (resultData: any[], totalHits: number) => {
 
   return trimmedResultData?.length > 0 ? trimmedResultData : resultData
 }
+
+
+
+/**
+ * Converts a string to base64url format
+ * @param str The string to encode
+ * @returns The base64url encoded string
+ */
+export const stringToBase64Url = (str: string): string => {
+  // First convert string to binary array
+  const byteArray = new TextEncoder().encode(str);
+  // Then use Base64UrlDecoder to convert binary array to base64url string
+  const base64UrlDecoder = new Base64UrlDecoder();
+  return base64UrlDecoder.decode(byteArray);
+}
+
+/**
+ * Converts a base64url string back to its original string
+ * @param base64Url The base64url encoded string
+ * @returns The decoded string
+ */
+export const base64UrlToString = (base64Url: string): string => {
+  // First use Base64UrlEncoder to convert base64url string to binary array
+  const base64UrlEncoder = new Base64UrlEncoder();
+  const byteArray = base64UrlEncoder.encode(base64Url);
+  // Then convert binary array back to string
+  return new TextDecoder().decode(byteArray);
+}
+  
