@@ -2,7 +2,7 @@ import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiX, PiTag, PiInfoFill, PiCaretLeft } from "react-icons/pi"
+import { PiX, PiTag, PiInfoFill, PiCaretLeft, PiInfoLight, PiTreeViewLight, PiTreeViewFill, PiDatabaseLight, PiDatabaseFill, PiMapPinAreaLight, PiMapPinAreaFill, PiFunnelLight, PiFunnelFill } from "react-icons/pi"
 import ClientThumbnail from "../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import Clickable from "@/components/ui/clickable/clickable"
@@ -23,6 +23,7 @@ import { facetConfig } from "@/config/search-config"
 import { getFieldValue } from "@/lib/utils"
 import ErrorMessage from "@/components/error-message"
 import Timeline from "@/components/doc/timeline"
+import IconButton from "@/components/ui/icon-button"
 
 
 
@@ -88,7 +89,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
           </ClickableIcon>}
           
 
-          {!isMobile && ( mode == 'doc' ?
+          {!isMobile && mode == 'doc' &&
                   <Clickable 
                     remove={["mode", "sourceDataset", "sourceLabel", "parent"]} 
                     add={preferredTabs[dataset] ? {mode: preferredTabs[dataset]} : {}}
@@ -99,24 +100,14 @@ export default function DocInfo({docParams}: {docParams?: any}) {
                     {preferredTabs[dataset] == 'list' && 'Tilbake til listen'}
 
                   </Clickable>
-          :
-                <Clickable 
-                  remove={["doc", "docDataset"]} 
-                  className="text-2xl" 
-                  aria-label="Lukk">
-                  <PiX aria-hidden="true"/>
-                </Clickable>
-        )}
+          }
+         
 
 
         </div>
         
  
         </div>}
-
-
-      
-
 
         <div className="flex gap-2"><h2>{docSource.label}</h2>
         </div>
@@ -152,6 +143,8 @@ export default function DocInfo({docParams}: {docParams?: any}) {
             }       
 
         </div>
+
+       
             
       
       { docDataset == 'search' && <SearchDocInfo docSource={docSource}/> }
@@ -188,60 +181,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>}
 
 
-        <div className="flex gap-2 flex-wrap mt-2 pt-4 text-neutral-950 border-t border-neutral-200 text-lg lg:text-base pb-2">
         
-            {false && dataset != 'search' && docSource.snid &&
-                <Link className="btn btn-neutral gap-2" href={`/find-snid/${docSource.uuid}`}>
-                  Stadnamnside
-                </Link>
-            }
-
-            
-
-          
-        
-            
-          <CopyLink uuid={docSource.uuid} className="btn btn-neutral"/> 
-          
-          <Link href={"/uuid/" + docSource.uuid} className="btn btn-neutral">
-            Varig side
-          </Link>
-
-          { !parent && docSource.datasets?.length > 1 && (
-            <Clickable 
-              className="btn btn-primary gap-2"
-              remove={["sourceLabel", "sourceDataset"]}
-              add={{
-                parent: docSource.uuid,
-                doc: docSource.uuid,
-                ...(mode != 'map' && !isMobile ? {mode: 'doc'} : {})
-              }}
-              link={isMobile || mode != 'map' ? undefined : true}
-              aria-expanded={isMobile ? undefined : parent ? true : false}
-              aria-controls={isMobile ? undefined : 'children-window'}
-            >
-              Kjelder
-            </Clickable>
-
-        )}
-
-        {treeSettings[dataset] && docSource.sosi === 'gard' && mode != 'doc' && (!parent || mode == 'list') &&
-
-        <Clickable link className="btn btn-primary gap-2" 
-                  add={{parent: docSource.uuid,
-                    ...mode != 'map' ? {doc: docSource.uuid, mode: 'doc'} : {}
-                  }}>
-          Underordna bruk
-        </Clickable>
-        }
-
-            
-            
-
-
-
-   
-        </div>
         
         </article>
 

@@ -1,7 +1,7 @@
 
 'use client'
 import { useContext, useEffect, useState } from 'react';
-import DatasetInfo from '../info/dataset-info';
+import DatasetInfo from '../details/dataset-info';
 import DatasetSelector from './dataset-selector';
 import { useDataset } from '@/lib/search-params';
 import { PiCaretDown, PiCaretUp } from 'react-icons/pi';

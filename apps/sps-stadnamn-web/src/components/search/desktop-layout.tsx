@@ -8,17 +8,18 @@ import { DocContext } from "@/app/doc-provider"
 import Spinner from "../svg/Spinner"
 import { useSearchParams } from "next/navigation"
 import { ChildrenContext } from "@/app/children-provider"
-import DocSkeleton from "./info/doc-skeleton"
-import DocInfo from "./info/doc-info"
+import DocSkeleton from "../doc/doc-skeleton"
+import DocInfo from "./details/doc-info"
 import ListExplorer from "./list/list-explorer"
-import LeftWindow from "../tabs/left-window"
+import NavWindow from "../tabs/nav-window"
 import ChildrenWindow from "../children/children-window"
 import { treeSettings } from "@/config/server-config"
-import SimilarWindow from "../children/similar-window"
-import { PiListBullets, PiMagnifyingGlass } from "react-icons/pi"
-import Clickable from "../ui/clickable/clickable"
-import { stringToBase64Url } from "@/lib/utils"
-
+import { PiBinoculars, PiBinocularsLight, PiBookOpen, PiBookOpenLight, PiBooks, PiCaretLeft, PiCaretRight, PiClockCounterClockwiseLight, PiClockLight, PiDatabaseLight, PiEye, PiFileText, PiFunnelLight, PiInfinity, PiInfoLight, PiListBullets, PiListBulletsLight, PiListMagnifyingGlass, PiListMagnifyingGlassLight, PiMagnifyingGlass, PiTimerLight, PiTreeViewLight, PiX } from "react-icons/pi"
+import IconButton from "../ui/icon-button"
+import ClickableIcon from "../ui/clickable/clickable-icon"
+import CopyLink from "../doc/copy-link"
+import Link from "next/link"
+import DetailsWindow from "../tabs/details-window"
 
 export default function DesktopLayout() {    
     const dataset = useDataset()
@@ -28,7 +29,8 @@ export default function DesktopLayout() {
     const parent = searchParams.get('parent')
     const mode = useMode()
     const doc = searchParams.get('doc')
-    const expanded = searchParams.get('expanded') 
+    const details = searchParams.get('details') || 'info'
+    const nav = searchParams.get('nav')
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   
 
@@ -36,17 +38,29 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full max-h-full w-[40svw] lg:w-full overflow-y-auto lg:overflow-y-hidden">
         
 
-        <section aria-label="Søkeverktøy" className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'hidden lg:flex' : 'flex'}`}>
+        { (!doc || mode == 'map') && <section aria-label="Søkeverktøy" className={`lg:absolute left-2 top-2 flex-col  ${(nav || mode == 'map' )? 'lg:w-[calc(25svw-1rem)] max-w-[40svw]' : ''} !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'hidden lg:flex' : 'flex'}`}>
+        <NavWindow/>        
+        </section> }
 
-        <LeftWindow/>
-        
-       
 
-        </section>
+
+
+
+
+        { mode != 'map' && doc && <section className={`lg:absolute left-2 top-2 flex-col  ${details? 'lg:w-[calc(25svw-1rem)] max-w-[40svw]' : ''} !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'hidden lg:flex' : 'flex'}`}>
+
+            <DetailsWindow/>
+
+
+
+            </section>
+        }
 
         <div className={`absolute 
                 ${(mode == 'doc' && parent) ? 'left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(50svw-1rem)]' 
-                                            :  'left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)]'} 
+                                            :  (mode == 'map' || nav || details) ? 'left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)]'
+                                            : 'left-20'}
+                                        
                 ${mode == 'map' ? 'top-0   lg:max-w-[calc(50svw-0.5rem)] z-[2000]'
                                 : 'top-2 bg-white rounded-md shadow-lg max-h-[calc(100svh-4rem)] overflow-y-auto stable-scrollbar' } 
                 flex flex-col pb-6`}>
@@ -69,41 +83,10 @@ export default function DesktopLayout() {
 
 
        { mode == 'map' && (doc || parent) &&
-        <div className="lg:absolute lg:right-0 lg:top-0 flex flex-col lg:items-end lg:p-2 lg:pb-6 lg:justify-between lg:gap-4 h-full">
-        <div className={`flex flex-col  lg:w-[30svw] 2xl:w-[25svw] !z-[3001] ${parent ? ' lg:min-h-[25svh]' :  'lg:max-h-[calc(100svh - 2rem)] lg:min-h-[25svh]'}`}>
-        {doc && !docLoading && docData?._source && <div className={`bg-white relative lg:rounded-md lg:shadow-lg break-words pr-4 pl-4  py-2 overflow-y-auto stable-scrollbar ${parent && parent == doc ? 'hidden lg:block' : ''}`}>
-            <DocInfo/>
-        </div>}
-        { docLoading && <div className="bg-white relative lg:rounded-md lg:shadow-lg break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
+        <div className="lg:absolute right-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md hidden lg:flex">
         
-        </div>
-        { parent && (dataset == 'search' || treeSettings[dataset]) ?
-         <div id="children-window" className={`lg:rounded-md lg:shadow-lg !z-[3001] bg-white flex ${parent != doc ? 'mt-2' : ''} flex flex-col instance-info   ${childrenLoading ? 'p-4 justify-center items-center' : 'justify-start'} lg:min-h-[30svh] lg:max-h-[30svh] ${dataset == 'search' ? 'lg:w-[30svw] 2xl:w-[25svw]' : 'lg:max-w-[45svw] lg:min-w-[25svw]'}`}>
-            {childrenLoading ? <Spinner className="h-16 w-16 " status="Lastar kjelder"/> : <>
-            
-            { parentData && (dataset == 'search' || treeSettings[dataset]) &&
-                <ChildrenWindow/>
-            }
-            </>
-            }
-         
-        </div>
-        : null
-
-        }    
-        {
-            expanded ? 
-            <div className="lg:rounded-md lg:shadow-lg !z-[3001] bg-white flex flex-col instance-info justify-start lg:min-h-[10svh] lg:max-h-[40svh] lg:w-[30svw] 2xl:w-[25svw] mt-2">
-                <SimilarWindow/>
-            </div>
-            : doc ? 
-                <div className="lg:rounded-md lg:shadow-lg !z-[3001] bg-white mt-2">
-                    <Clickable className="w-full btn btn-primary h-full flex items-center justify-center gap-2 px-4 py-2 text-lg" add={{expanded: stringToBase64Url(`gnidu-${docData?.fields?.gnidu[0]}-${encodeURIComponent(docData?.fields?.label[0])}`)}}>
-                        <PiListBullets className="text-xl" aria-hidden="true"/> Liknande oppslag
-                    </Clickable>
-                </div>
-            : null
-        }   
+        
+        <DetailsWindow/> 
 
         </div>
         }

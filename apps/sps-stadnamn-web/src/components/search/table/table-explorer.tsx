@@ -169,17 +169,19 @@ export default function TableExplorer() {
                             </tr>
                         </thead>
                         <tbody>
+                            
                         { !isLoading ? tableData?.map((hit: any) => (
                             <Fragment key={hit._id}>
                             <tr>
+                                {/* TODO: investigate whether rowgroup is still needed */}
                                 <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'} className="!p-0">
                                     <div className="flex gap-1 items-center">
                                         <Clickable className="flex group items-center gap-2 p-2 no-underline"
                                             link
-                                            remove={['parent']}
+                                            remove={['nav']}
                                             aria-current={doc == hit._source?.uuid}
                                             add={{doc: hit._source?.uuid, 
-                                                ...!isMobile && (mode == 'list' || mode == 'table') ? {mode: 'doc'} : {},
+                                                docDataset: hit._index.split('_')[2],
                                                 ...(hit._source.children?.length || (treeSettings[dataset] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
                                             }}
                                         >

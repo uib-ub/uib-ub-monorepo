@@ -9,7 +9,7 @@ export default function CadastreBreadcrumb({source, docDataset, subunitName}: {s
     const mode = searchParams.get('mode') || contentSettings[docDataset]?.display || 'map'
     const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
     const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) + " " + source.label
-    return <div>
+    return <div className="my-2">
       <Clickable link className="breadcrumb-link text-base" 
                  add={{doc: source.within, docDataset: docDataset, parent: mode != 'map' ? source.within : null}}>{parentLabel}
       </Clickable>

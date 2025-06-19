@@ -2,7 +2,7 @@ import DocInfo from "./doc-info";
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
 import { useContext } from "react";
-import DocSkeleton from "./doc-skeleton";
+import DocSkeleton from "../../doc/doc-skeleton";
 import { useSearchParams } from "next/navigation";
 import { useDataset, useMode } from "@/lib/search-params";
 import Spinner from "@/components/svg/Spinner";

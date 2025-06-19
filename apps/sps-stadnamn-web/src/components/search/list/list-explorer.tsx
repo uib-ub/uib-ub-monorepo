@@ -3,7 +3,7 @@ import { useContext } from "react"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
 import ClientThumbnail from "@/components/doc/client-thumbnail"
-import DocInfo from "../info/doc-info"
+import DocInfo from "../details/doc-info"
 import { GlobalContext } from "@/app/global-provider"
 
 export default function ListExplorer() {
