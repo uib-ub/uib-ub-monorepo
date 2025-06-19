@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
-import { PiMagnifyingGlass } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight } from 'react-icons/pi';
 
 import { datasetTitles, typeNames, datasetTypes, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config';
 
@@ -10,6 +10,8 @@ import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
 import { getSkeletonLength } from '@/lib/utils';
 import { SearchContext } from '@/app/search-provider';
+import IconButton from '@/components/ui/icon-button';
+import Link from 'next/link';
 
 
 export default function DatasetFacet() {
@@ -21,6 +23,7 @@ export default function DatasetFacet() {
   const [facetLoading, setFacetLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   const {facetOptions, pinnedFilters, updatePinnedFilters } = useContext(GlobalContext)
   const availableFacets = useMemo(() => facetConfig[dataset], [dataset]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
@@ -100,6 +103,18 @@ export default function DatasetFacet() {
 
   };
 
+  const toggleDescription = (itemKey: string) => {
+    setExpandedDescriptions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemKey)) {
+        newSet.delete(itemKey);
+      } else {
+        newSet.add(itemKey);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <>
     <div className="flex flex-col gap-2 pb-4">
@@ -145,7 +160,7 @@ export default function DatasetFacet() {
     { (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">Filtreringsalternativer for datasett</legend>
-      <ul role="status" aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200 stable-scrollbar xl:overflow-y-auto'>
+      <ul role="status" aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200 xl:overflow-y-auto'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .filter(filterDatasetsByTags)
           .map((item: any) => {
@@ -166,21 +181,44 @@ export default function DatasetFacet() {
           .map(({item, titleMatch, descriptionMatch}: {item: any, titleMatch: boolean, descriptionMatch: boolean}, index: number) =>  {
             
             if (!clientSearch?.length || descriptionMatch || titleMatch) {
+                const isExpanded = expandedDescriptions.has(item.key);
                 return  (
               <li key={index} className='py-2'>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={isChecked(item.key)} 
-                    className='mr-2' 
-                    name='indexDataset' 
-                    value={item.key} 
-                    onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
-                  />
-                  <span className='font-semibold text-neutral-950'>{renderLabel(item.key)}</span> <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
-                  <div className='text-sm text-neutral-800'>{datasetShortDescriptions[item.key.split('-')[2]]}</div>
-                </label>
-                
+                <div className='flex items-start gap-2'>
+                  <label className='flex items-center gap-2 flex-1'>
+                    <input 
+                      type="checkbox" 
+                      checked={isChecked(item.key)} 
+                      className='mr-2' 
+                      name='indexDataset' 
+                      value={item.key} 
+                      onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
+                    />
+                    <span className='font-semibold text-neutral-950'>{renderLabel(item.key)}</span> 
+                    <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count.toLocaleString('nb-NO', { useGrouping: true })}</span>
+                  </label>
+                  <IconButton
+                    label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse for ${renderLabel(item.key)}`}
+                    onClick={() => toggleDescription(item.key)}
+                    className="rounded-full btn btn-outline btn-compact p-1"
+                    aria-label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse for ${renderLabel(item.key)}`}
+                  >
+                    <PiCaretDown className="w-4 h-4" />
+                  </IconButton>
+                </div>
+                {isExpanded && (
+                  <div className='mt-2 ml-6 mb-2'>
+                    {datasetShortDescriptions[item.key.split('-')[2]]}
+                    <div className="flex mt-2">
+                      <Link
+                        href={`info/datasets/${item.key.split('-')[2]}`}
+                        className="flex items-center gap-1 no-underline"
+                      >
+                        Les meir <PiCaretRight className="text-lg text-primary-600" />
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </li>
             )
           }

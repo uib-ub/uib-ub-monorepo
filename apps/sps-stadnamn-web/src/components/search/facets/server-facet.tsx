@@ -133,7 +133,7 @@ export default function ServerFacet() {
                     value={item.key} 
                     onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
                   />
-                  {renderLabel(facet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count}</span>
+                  {renderLabel(facet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count.toLocaleString('nb-NO', { useGrouping: true })}</span>
                 </label>
               </li>
           ))
