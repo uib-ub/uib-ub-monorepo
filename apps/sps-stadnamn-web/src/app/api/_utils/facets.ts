@@ -26,7 +26,7 @@ export const RESERVED_PARAMS = [
   'point',
   'datasetTag',
   'docDataset',
-  'expanded'
+  'group'
 ] as const;
 
 export function extractFacets(request: Request) {

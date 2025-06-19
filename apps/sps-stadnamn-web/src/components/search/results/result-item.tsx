@@ -19,7 +19,6 @@ export default function ResultItem({hit}: {hit: any}) {
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const parent = searchParams.get('parent')
-    const expanded = searchParams.get('expanded')
     const { isMobile } = useContext(GlobalContext)
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title

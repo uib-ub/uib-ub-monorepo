@@ -3,6 +3,7 @@ import { createContext, MutableRefObject, useRef } from 'react'
 import { useState, useEffect } from 'react';
 import { useDataset } from '@/lib/search-params';
 import { useSearchParams } from 'next/navigation';
+import { base64UrlToString } from '@/lib/utils';
 
 interface DocContextData {
     docData: any;
@@ -17,6 +18,9 @@ interface DocContextData {
     docAdm: string | null;
     snidParent: string | null;
     docView: MutableRefObject<Record<string, string> | null> | null;
+    groupData: any[] | null;
+    groupLoading: boolean;
+    groupError: Record<string, string> | null;
 }
 
 export const DocContext = createContext<DocContextData>({
@@ -32,6 +36,9 @@ export const DocContext = createContext<DocContextData>({
     docAdm: null,
     snidParent: null,
     docView: null,
+    groupData: null,
+    groupLoading: true,
+    groupError: null,
 });
 
 export default function DocProvider({ children }: {  children: React.ReactNode }) {
@@ -55,6 +62,12 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const [snidParent, setSnidParent] = useState<string | null>(null)
 
     const childDocDataset = searchParams.get('docDataset')
+
+    const group = searchParams.get('group')
+    const [groupLoading, setGroupLoading] = useState<boolean>(true)
+    const [groupError, setGroupError] = useState<Record<string, string> | null>(null)
+    const [groupData, setGroupData] = useState<any[] | null>(null)
+    const details = searchParams.get('details') || 'info'
 
     useEffect(() => {
         if (parent) {
@@ -99,6 +112,29 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     }, [doc, docDataset, docData?._source?.uuid])
 
 
+    useEffect(() => {
+        if (group) {
+
+            const url = `/api/search/group?group=${group}&fuzzy=${details == 'info' ? 0 : 2}`
+            fetch(url).then(res => res.json()).then(data => {
+                if (data.hits?.hits?.length) {
+                    setGroupData(data.hits.hits)
+                }
+            }).catch(err => {
+                setGroupError(err)
+            }).finally(() => {
+                setGroupLoading(false)
+            })
+        }
+        else {
+            setGroupData(null)
+            setGroupLoading(false)
+        }
+    }, [group, details])
+            
+    
+
+
 
     useEffect(() => {
         if (doc) {
@@ -125,24 +161,6 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     , [doc, dataset, childDocDataset, setDocData])
 
     
-    /*
-
-    useEffect(() => {
-        if (!parent && !sameMarkerList && docData?._source?.location?.coordinates) {
-            const coordinates = [...docData._source.location.coordinates]
-            const point = coordinates.reverse().join(',')
-            fetch(`/api/location?point=${point}&doc=${doc}&${searchQueryString}`).then(res => 
-                res.json()).then(data => {
-                    if (data.hits?.hits?.length && data.hits?.hits.some((hit: any) => hit.fields.uuid[0] != doc)) {
-                        setSameMarkerList(data.hits?.hits)
-                    }
-                    else {
-                        setSameMarkerList([])
-                    }
-            })
-        }
-    }, [dataset, searchQueryString, docData, parent, doc, sameMarkerList])
-    */
 
 
     
@@ -163,6 +181,9 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         docAdm,
         snidParent,
         docView,
+        groupData,
+        groupLoading,
+        groupError,
   }}>{children}</DocContext.Provider>
 }
 
