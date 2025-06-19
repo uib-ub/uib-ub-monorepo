@@ -27,7 +27,7 @@ export default function SearchResults() {
     useEffect(() => {
       setCollapsedResults([])
       const newUrl = new URLSearchParams(searchParams)
-      newUrl.set('page', '0')
+      newUrl.delete('page')
       router.push(`?${	newUrl.toString()}`);
 
     }, [searchQueryString])
@@ -35,9 +35,8 @@ export default function SearchResults() {
 
 
     useEffect(() => {
-      //if (offset === 0) return;
       setIsLoadingResults(true)
-      const url = `/api/search/collapsed?${searchQueryString}&size=${collapsedResults.length == 0 && page ? PER_PAGE * (parseInt(page) + 1): PER_PAGE}&from=${collapsedResults.length || 0}`
+      const url = `/api/search/collapsed?${searchQueryString}&size=${(page ? PER_PAGE * (parseInt(page) + 1) : PER_PAGE)}&from=${(page ? parseInt(page) : 0) * PER_PAGE || 0}`
       fetch(url)
         .then(response => {
           if (!response.ok) {
@@ -47,11 +46,8 @@ export default function SearchResults() {
           return response.json()
         })
         .then(es_data => {
-          // Filter out any duplicates based on _id before updating state
-          const newHits = es_data.hits.hits.filter(
-            (newHit: any) => !collapsedResults.some((existingHit: any) => existingHit._id === newHit._id)
-          )
-          setCollapsedResults(prev => [...prev, ...newHits])
+
+          setCollapsedResults(prev => [...prev, ...es_data.hits.hits.filter((hit: any) => !prev.find((prevHit: any) => prevHit._id === hit._id))])
         })
         .finally(() => setIsLoadingResults(false))
     }, [searchQueryString, page])
@@ -61,7 +57,9 @@ export default function SearchResults() {
         <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200'>
           {/* Render existing results */}
           {collapsedResults.map((hit, index) => (
-            <ResultItem key={hit._id} hit={hit} />
+           
+              <ResultItem key={hit._id} hit={hit} />
+
           ))}
           
           {/* Render loading skeletons */}
