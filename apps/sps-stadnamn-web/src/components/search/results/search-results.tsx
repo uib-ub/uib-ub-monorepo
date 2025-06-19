@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./result-item";
 import { getSkeletonLength, trimResultData } from "@/lib/utils";
-import GroupedItems from "./grouped-items"
 import { useSearchQuery } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
 
