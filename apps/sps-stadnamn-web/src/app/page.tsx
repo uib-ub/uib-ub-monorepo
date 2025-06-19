@@ -32,32 +32,27 @@ export default async function Home() {
   const navCards = [
     {
       href: "/search",
-      icon: <PiTag aria-hidden="true"/>,
-      stat: stats?.snidCount?.toLocaleString('nb-NO'),
-      title: "Stadnamn",
-      description: "Stadnamn samanstilt av Språksamlingane",
+      icon: <PiBookOpenThin aria-hidden="true" />,
+      stat: stats?.datasetDocs?.toLocaleString('nb-NO'),
+      title: "Stadnamnsøk",
+      description: "Søk i alle kjeldeoppslaga i stadnamnportalen",
     },
+
     {
       href: "/info/datasets",
       icon: <PiDatabase aria-hidden="true"/>,
       stat: stats?.datasetCount?.toLocaleString('nb-NO'),
       title: "Datasett",
-      description: "Datasetta stadnamnsøket er basert på",
+      description: "Få oversikt over kjeldegrunnlaget i Stadnamnportalen",
     },
     {
       href: "/iiif",
       icon: <PiArchive aria-hidden="true"/>,
       stat: (iiifStats?.images + iiifStats?.audio).toLocaleString('nb-NO'),
       title: "Arkiv",
-      description: "Arkivressurser som faksimiler og lydopptak",
+      description: "Hierarkisk utforsker for arkivressurser som faksimiler og lydopptak",
     },
-    {
-      href: "/search?dataset=all",
-      icon: <PiBookOpenThin aria-hidden="true" />,
-      stat: stats?.datasetDocs?.toLocaleString('nb-NO'),
-      title: "Grunnlagsdata",
-      description: "Individuelle oppslag i grunnlagsdatasetta",
-    },
+    
     /*
     
     {
@@ -100,6 +95,8 @@ export default async function Home() {
     <StoredFilters/>
   </Form>
   </div>
+
+
   { false && stats && <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col sm:flex-row gap-4 lg:gap-6">
   <li className="flex flex-col items-center text-base">
       Stadnamnoppslag
@@ -127,7 +124,7 @@ export default async function Home() {
 
 
     <nav className="w-full flex flex-col items-center mt-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-5xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-5xl">
         {navCards.map((card, idx) => (
           <Link
             key={card.title + idx}
