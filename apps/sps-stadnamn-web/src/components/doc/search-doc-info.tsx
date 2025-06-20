@@ -3,7 +3,6 @@ import Clickable from "../ui/clickable/clickable";
 import Timeline from "../doc/timeline";
 import { datasetTitles } from "@/config/metadata-config";
 import { useSearchParams } from "next/navigation";
-import Etymology from "../search/details/etymology";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
 import { useDataset, useMode } from "@/lib/search-params";
