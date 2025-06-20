@@ -36,7 +36,7 @@ export async function GET(request: Request) {
       ...dataset == '*' ? new Set(Object.values(resultConfig).flat()) : resultConfig[dataset],
       ...filteredParams.size == '1000' ? Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => key) : []
     ],
-    //"sort": sortArray,
+    "sort": [{ "uuid": "asc" }],
     "_source": false
   }
 

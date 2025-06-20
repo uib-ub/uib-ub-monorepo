@@ -3,19 +3,19 @@ import { useDataset, useMode, useSearchQuery } from "@/lib/search-params";
 import { PiCaretLeft, PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiInfo, PiInfoBold, PiInfoDuotone, PiInfoFill, PiInfoLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight, PiX } from "react-icons/pi";
 import { SearchContext } from "@/app/search-provider";
 import { useContext, useState, useEffect, useTransition } from "react";
-import TreeResults from "../search/results/tree-results";
-import FacetSection from "../search/facets/facet-section";
-import SearchResults from "../search/results/search-results";
+import TreeResults from "./results/tree-results";
+import FacetSection from "./facets/facet-section";
+import SearchResults from "./results/search-results";
 import { useSearchParams, useRouter } from "next/navigation";
-import ClientFacet from "../search/facets/client-facet";
-import IconButton from "../ui/icon-button";
-import DatasetInfo from "../search/details/dataset-info";
-import Spinner from "../svg/Spinner";
+import ClientFacet from "./facets/client-facet";
+import IconButton from "../../ui/icon-button";
+import DatasetInfo from "../details/dataset-info";
+import Spinner from "../../svg/Spinner";
 import { formatNumber } from "@/lib/utils";
-import DatasetFacet from "../search/facets/dataset-facet";
-import ClickableIcon from "../ui/clickable/clickable-icon";
+import DatasetFacet from "./facets/dataset-facet";
+import ClickableIcon from "../../ui/clickable/clickable-icon";
 import Link from "next/link";
-import Clickable from "../ui/clickable/clickable";
+import Clickable from "../../ui/clickable/clickable";
 
 export default function NavWindow() {
     const dataset = useDataset()

@@ -18,9 +18,6 @@ interface DocContextData {
     docAdm: string | null;
     snidParent: string | null;
     docView: MutableRefObject<Record<string, string> | null> | null;
-    groupData: any[] | null;
-    groupLoading: boolean;
-    groupError: Record<string, string> | null;
 }
 
 export const DocContext = createContext<DocContextData>({
@@ -36,9 +33,6 @@ export const DocContext = createContext<DocContextData>({
     docAdm: null,
     snidParent: null,
     docView: null,
-    groupData: null,
-    groupLoading: true,
-    groupError: null,
 });
 
 export default function DocProvider({ children }: {  children: React.ReactNode }) {
@@ -62,12 +56,6 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const [snidParent, setSnidParent] = useState<string | null>(null)
 
     const childDocDataset = searchParams.get('docDataset')
-
-    const group = searchParams.get('group')
-    const [groupLoading, setGroupLoading] = useState<boolean>(true)
-    const [groupError, setGroupError] = useState<Record<string, string> | null>(null)
-    const [groupData, setGroupData] = useState<any[] | null>(null)
-    const details = searchParams.get('details') || 'info'
 
     useEffect(() => {
         if (parent) {
@@ -111,28 +99,6 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     }
     }, [doc, docDataset, docData?._source?.uuid])
 
-
-    useEffect(() => {
-        if (group) {
-
-            const url = `/api/search/group?group=${group}&fuzzy=${details == 'info' ? 0 : 2}`
-            fetch(url).then(res => res.json()).then(data => {
-                if (data.hits?.hits?.length) {
-                    setGroupData(data.hits.hits)
-                }
-            }).catch(err => {
-                setGroupError(err)
-            }).finally(() => {
-                setGroupLoading(false)
-            })
-        }
-        else {
-            setGroupData(null)
-            setGroupLoading(false)
-        }
-    }, [group, details])
-            
-    
 
 
 
@@ -181,9 +147,6 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         docAdm,
         snidParent,
         docView,
-        groupData,
-        groupLoading,
-        groupError,
   }}>{children}</DocContext.Provider>
 }
 

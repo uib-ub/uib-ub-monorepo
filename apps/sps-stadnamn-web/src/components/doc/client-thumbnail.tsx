@@ -24,7 +24,6 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
         const fetchManifest= async (url: string) => {
             const response = await fetch(url)
             const data = await response.json()
-            console.log("DATA", data)
             const source = data?.hits?.hits?.[0]?._source
             setManifest(source)
             setManifestUuid(source.uuid)

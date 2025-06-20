@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { PiBracketsCurlyBold } from 'react-icons/pi'
 import Thumbnail from '@/components/image-viewer/thumbnail'
 import CollapsibleHeading from '@/components/doc/collapsible-heading'
-import CoordinateInfo from '@/components/search/details/coordinate-info'
+import CoordinateInfo from '@/components/search/details/doc/coordinate-info'
 import { treeSettings } from '@/config/server-config'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
 import ServerSourcesList from './server-sources-list'
@@ -95,11 +95,6 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
 
       </div>
-      {(docData?._source?.datasets?.includes('leks') || docData?._source?.datasets?.includes('rygh')) && 
-      <div className="mt-4">
-    <Etymology etymologyDataset={docData?._source?.datasets?.includes('leks') ? 'leks' : 'rygh'} uuids={[docData?._source.children]}/>
-    </div>
-    }
       
       </span>
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](docData?._source) : null }

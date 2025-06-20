@@ -41,10 +41,10 @@ export default function ResultItem({hit}: {hit: any}) {
                     aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
                     remove={['sourceDataset', 'sourceLabel', 'docDataset', 'group']}
                     add={{
-                        doc: hit.fields?.children?.length === 1 ? hit.fields.children[0] : hit.fields.uuid,
+                        doc: hit.fields.uuid,
                         ...(hit.fields?.datasets?.length === 1 ? {docDataset: hit.fields.datasets[0]} : {}),
                         ...(parent && !isMobile) ? {parent: docDataset == 'search' ? hit.fields.uuid : hit.fields?.within} : {},
-                        ...(hit.fields.gnidu) ? {group: stringToBase64Url(`snid_${hit.fields.snid[0]}_${hit.fields.label[0]}`)} : {},
+                        ...(hit.fields.snid) ? {group: stringToBase64Url(`snid_${hit.fields.snid[0]}_${hit.fields.label[0]}`)} : {},
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>

@@ -9,9 +9,9 @@ import Spinner from "../svg/Spinner"
 import { useSearchParams } from "next/navigation"
 import { ChildrenContext } from "@/app/children-provider"
 import DocSkeleton from "../doc/doc-skeleton"
-import DocInfo from "./details/doc-info"
+import DocInfo from "./details/doc/doc-info"
 import ListExplorer from "./list/list-explorer"
-import NavWindow from "../tabs/nav-window"
+import NavWindow from "./nav/nav-window"
 import ChildrenWindow from "../children/children-window"
 import { treeSettings } from "@/config/server-config"
 import { PiBinoculars, PiBinocularsLight, PiBookOpen, PiBookOpenLight, PiBooks, PiCaretLeft, PiCaretRight, PiClockCounterClockwiseLight, PiClockLight, PiDatabaseLight, PiEye, PiFileText, PiFunnelLight, PiInfinity, PiInfoLight, PiListBullets, PiListBulletsLight, PiListMagnifyingGlass, PiListMagnifyingGlassLight, PiMagnifyingGlass, PiTimerLight, PiTreeViewLight, PiX } from "react-icons/pi"
@@ -19,7 +19,7 @@ import IconButton from "../ui/icon-button"
 import ClickableIcon from "../ui/clickable/clickable-icon"
 import CopyLink from "../doc/copy-link"
 import Link from "next/link"
-import DetailsWindow from "../tabs/details-window"
+import DetailsWindow from "./details/details-window"
 
 export default function DesktopLayout() {    
     const dataset = useDataset()
@@ -29,7 +29,7 @@ export default function DesktopLayout() {
     const parent = searchParams.get('parent')
     const mode = useMode()
     const doc = searchParams.get('doc')
-    const details = searchParams.get('details') || 'info'
+    const details = searchParams.get('details') || 'doc'
     const nav = searchParams.get('nav')
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)] lg:h-[calc(100svh-3rem)]">   

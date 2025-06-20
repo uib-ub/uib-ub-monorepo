@@ -2,13 +2,13 @@ import DocInfo from "./doc-info";
 import { DocContext } from "@/app/doc-provider";
 import { ChildrenContext } from "@/app/children-provider";
 import { useContext } from "react";
-import DocSkeleton from "../../doc/doc-skeleton";
+import DocSkeleton from "../../../doc/doc-skeleton";
 import { useSearchParams } from "next/navigation";
 import { useDataset, useMode } from "@/lib/search-params";
 import Spinner from "@/components/svg/Spinner";
 import { treeSettings } from "@/config/server-config";
 import CadastralSubdivisions from "@/components/children/cadastral-subdivisions";
-import SourceList from "../../children/source-list";
+import SourceList from "../../../children/source-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import { PiBooksFill, PiCaretLeft, PiInfoFill, PiTreeViewFill, PiX } from "react-icons/pi";
 

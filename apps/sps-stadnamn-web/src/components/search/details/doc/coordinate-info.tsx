@@ -1,7 +1,8 @@
 'use client'
 import { PiMapPin  } from 'react-icons/pi';
-import CoordinateType from './coordinate-type';
+
 import Link from 'next/link';
+import CoordinateType from './coordinate-type';
 
 function convertDMS(lat: number, lon: number): string {
 

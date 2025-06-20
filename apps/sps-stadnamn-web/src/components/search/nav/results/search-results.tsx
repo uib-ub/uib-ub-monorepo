@@ -65,8 +65,8 @@ export default function SearchResults() {
           {/* Render loading skeletons */}
           {isLoadingResults && Array.from({length: PER_PAGE}).map((_, i) => (
             <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={`skeleton-${collapsedResults.length + i}`}>
-              <div className="bg-neutral-200 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
-              <div className="bg-neutral-200 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
+              <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
+              <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
             </li>
           ))}
           

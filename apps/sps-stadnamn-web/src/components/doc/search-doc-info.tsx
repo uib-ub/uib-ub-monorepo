@@ -35,9 +35,6 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
         }
 
     
-    {(docSource.datasets.includes('leks') || docSource.datasets.includes('rygh')) && 
-    <Etymology etymologyDataset={docSource.datasets.includes('leks') ? 'leks' : 'rygh'} uuids={[docSource.children]}/>
-    }
             
             
             

@@ -1,14 +1,14 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
 import { PiBookOpen, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from "react-icons/pi";
-import Results from "./results/search-results";
+import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
 import { useDataset, useSearchQuery, useMode } from "@/lib/search-params";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
 import CadastralSubdivisions from "../children/cadastral-subdivisions";
-import TreeResults from "./results/tree-results";
+import TreeResults from "./nav/results/tree-results";
 import DatasetDrawer from "./datasets/dataset-drawer";
 import TableExplorer from "./table/table-explorer";
 import { treeSettings } from "@/config/server-config";
@@ -16,10 +16,10 @@ import { useSearchParams } from "next/navigation";
 import ListExplorer from "./list/list-explorer";
 import { ChildrenContext } from "@/app/children-provider";
 import { DocContext } from "@/app/doc-provider";
-import DocInfo from "./details/doc-info";
+import DocInfo from "./details/doc/doc-info";
 import DocSkeleton from "../doc/doc-skeleton";
 import ChildrenWindow from "../children/children-window";
-import FacetSection from "./facets/facet-section";
+import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
 import { formatNumber } from "@/lib/utils";
 
