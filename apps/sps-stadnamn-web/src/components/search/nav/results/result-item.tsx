@@ -7,7 +7,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 import { datasetTitles } from '@/config/metadata-config';
-import { stringToBase64Url } from '@/lib/utils';
+import { base64UrlToString, stringToBase64Url } from '@/lib/utils';
 
 
 
@@ -16,6 +16,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')
+    const group = searchParams.get('group')
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const parent = searchParams.get('parent')
@@ -38,7 +39,7 @@ export default function ResultItem({hit}: {hit: any}) {
 
     return  <li className="flex flex-grow">
         <Clickable link ref={itemRef} className="w-full h-full p-3 flex items-center hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4 border-accent-700" 
-                    aria-current={(doc == hit.fields.uuid || hit.fields.children?.includes(doc)) ? 'page' : undefined}
+                    aria-current={(doc == hit.fields.uuid || (hit.fields?.group && group == base64UrlToString(hit.fields?.group?.[0]))) ? 'page' : undefined}
                     remove={['sourceDataset', 'sourceLabel', 'docDataset', 'group']}
                     add={{
                         doc: hit.fields.uuid,

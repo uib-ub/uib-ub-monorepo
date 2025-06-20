@@ -1,6 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBookOpenLight, PiListBulletsLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight } from "react-icons/pi"
-import IconButton from "../../ui/icon-button"
+import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiLink, PiArrowsOut, PiArrowLeft, PiArrowRight, PiMapPinLight, PiGps } from "react-icons/pi"
 import Link from "next/link"
 import DocInfo from "./doc/doc-info"
 import { useSearchParams } from "next/navigation"
@@ -11,6 +10,7 @@ import CopyLink from "../../doc/copy-link"
 import { useMode } from "@/lib/search-params"
 import GroupDetails from "./group/group-details"
 import { GroupContext } from "@/app/group-provider"
+import { GlobalContext } from "@/app/global-provider"
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
@@ -18,6 +18,7 @@ export default function DetailsWindow() {
     const doc = searchParams.get('doc')
     const { docLoading, docData } = useContext(DocContext)
     const mode = useMode()
+    const { setAllowFlyTo } = useContext(GlobalContext)
 
     const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
     const ownPosition = groupData?.findIndex((doc) => doc._id == docData?._id)
@@ -58,8 +59,8 @@ export default function DetailsWindow() {
     </ClickableIcon>
   </div>
 
-  {details == "doc" && <div className="flex flex-wrap gap-2 justify-between p-2 ">
-    {groupTotal?.value && groupTotal?.value > 1 && <div className="flex gap-2 h-10">    
+  {details == "doc" && <div className="flex flex-wrap gap-2 justify-between p-2 border-b border-neutral-200">
+    {ownPosition !== undefined && groupTotal?.value && groupTotal?.value > 1 && !groupLoading && <div className="flex gap-2 h-10">    
       
       <ClickableIcon 
         label="Forrige" 
@@ -81,10 +82,10 @@ export default function DetailsWindow() {
   </div>}
   <div className="flex gap-2 h-10">
  
-<CopyLink uuid={docData?._source?.uuid} className="btn btn-outline btn-compact"/> 
+<CopyLink uuid={docData?._source?.uuid} className={`btn btn-outline btn-compact ${groupLoading ? 'hidden' : ''}`}/> 
 
-<Link href={"/uuid/" + docData?._source?.uuid} className="btn btn-outline btn-compact">
-  Varig side <PiCaretRight className="text-xl" aria-hidden="true"/>
+<Link href={`${process.env.NODE_ENV == 'development' ? '': 'https://purl.org/stadnamn'}/uuid/${docData?._source?.uuid}`} className={`btn btn-outline btn-compact flex items-center gap-2 ${groupLoading ? 'hidden' : ''}`}>
+  <PiArrowsOut className="text-xl" aria-hidden="true"/> Åpne
 </Link>
 
 
@@ -94,7 +95,7 @@ export default function DetailsWindow() {
 
 
 
-  {details == "doc" && doc && !docLoading && docData?._source && <div className="lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] p-4 pb-8 border-neutral-200 ">
+  {details == "doc" && doc && docData?._source && <div className={`lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] p-4 border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
 
  
       <DocInfo/>
@@ -107,7 +108,19 @@ export default function DetailsWindow() {
     </div>}
 
 
-  { docLoading && details == "doc" && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
+  { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
+
+
+  {/* TODO: move coordinate info out of doc info and add button to locate in map
+  { details == 'doc' && docData?._source && <div className="flex flex-wrap gap-2 justify-between p-2 border-t border-neutral-200">
+    <div className="flex gap-2 h-10">
+      {docData?._source.location && <ClickableIcon label="Vis på kart" className="btn btn-outline btn-compact" remove={["center", "zoom"]} add={{zoom: '18', center: docData?._source.location.coordinates.toReversed().join(',')}}>
+        <PiMapPinLight className="text-xl" aria-hidden="true"/>
+      </ClickableIcon>}
+    </div>
+  </div>}
+  */}
+  
 
   
 

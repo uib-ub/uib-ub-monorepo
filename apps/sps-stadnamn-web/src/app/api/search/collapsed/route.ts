@@ -25,6 +25,7 @@ export async function GET(request: Request) {
     "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
     ...filteredParams.from ? {from: filteredParams.from} : {},
     ...highlight ? {highlight} : {},
+    "track_scores": true,
     "collapse": {
       "field": "snid.keyword",
       "inner_hits": {
@@ -36,7 +37,7 @@ export async function GET(request: Request) {
       ...dataset == '*' ? new Set(Object.values(resultConfig).flat()) : resultConfig[dataset],
       ...filteredParams.size == '1000' ? Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => key) : []
     ],
-    "sort": [{ "uuid": "asc" }],
+    "sort": [ { "_score": "desc" }],
     "_source": false
   }
 
