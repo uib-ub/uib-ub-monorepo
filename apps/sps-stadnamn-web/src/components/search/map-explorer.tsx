@@ -727,8 +727,8 @@ useEffect(() => {
 
                       // Handle both Polygon and MultiPolygon types
                       const coordinates = geoJSON.type === 'MultiPolygon' 
-                        ? geoJSON.coordinates 
-                        : [geoJSON.coordinates];
+                        ? (geoJSON as any).coordinates 
+                        : [(geoJSON as any).coordinates];
 
                       return coordinates.map((polygon: number[][][], index: number) => (
                         <Polygon
