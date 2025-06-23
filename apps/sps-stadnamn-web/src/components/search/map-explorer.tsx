@@ -22,6 +22,7 @@ import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
 import { useRouter } from "next/navigation";
+import wkt from 'wellknown';
 
 
 export default function MapExplorer() {
@@ -717,10 +718,40 @@ useEffect(() => {
                 return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children[0], group.children)} />
               })}
 
+              {docData?._source?.area && (
+                <Fragment>
+                  {(() => {
+                    try {
+                      const geoJSON = wkt.parse(docData._source.area);
+                      if (!geoJSON) return null;
 
+                      // Handle both Polygon and MultiPolygon types
+                      const coordinates = geoJSON.type === 'MultiPolygon' 
+                        ? geoJSON.coordinates 
+                        : [geoJSON.coordinates];
 
-                  
-                  
+                      return coordinates.map((polygon: number[][][], index: number) => (
+                        <Polygon
+                          key={`area-${index}`}
+                          positions={polygon.map(ring => 
+                            // WKT uses [lon, lat] while Leaflet uses [lat, lon]
+                            ring.map(([lon, lat]) => [lat, lon])
+                          )}
+                          pathOptions={{
+                            color: '#0066ff',
+                            weight: 2,
+                            opacity: 0.8,
+                            fillOpacity: 0.2
+                          }}
+                        />
+                      ));
+                    } catch (error) {
+                      console.error('Failed to parse WKT:', error);
+                      return null;
+                    }
+                  })()}
+                </Fragment>
+              )}
 
               { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
               

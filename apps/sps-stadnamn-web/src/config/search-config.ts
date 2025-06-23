@@ -66,6 +66,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "gnidu": {label: "GNIDu", facet},
       //"midu": {label: "MIDu", facet}, Not present
     },
+    core_gnidu: {
+      label
+
+    },
     bsn: {
       uuid, label, adm, adm1, adm2,
       "rawData.komm": {label: "Beskrivelse", fulltext},

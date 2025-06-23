@@ -74,6 +74,12 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       //adm: 3,
       //sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] //  "ranking" added in order to favor results with snid and multiple attestations
     },
+    core_gnidu: {
+      display: 'map',
+      adm: 0,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
     all: {
       display: 'map',
       adm: 3,
