@@ -13,7 +13,7 @@ export default function RootWords({hit}: {hit: any}) {
     useEffect(() => {
         if (hit.inner_hits?.group?.hits?.total?.value > 1) {
         setIsLoadingRootWords(true)
-        const url = `/api/search?${searchQueryString}&group=${stringToBase64Url('grunnord')}&size=10&dataset=*_g`
+        const url = `/api/search/collapsed?${searchQueryString}&group=${stringToBase64Url('grunnord')}&size=10&dataset=*_g`
         fetch(url)
           .then(response => {
             if (!response.ok) {

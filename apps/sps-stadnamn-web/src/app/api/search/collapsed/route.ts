@@ -1,8 +1,8 @@
 export const runtime = 'edge'
 
-import { extractFacets } from '../_utils/facets'
-import { getQueryString } from '../_utils/query-string';
-import { postQuery } from '../_utils/post';
+import { extractFacets } from '../../_utils/facets'
+import { getQueryString } from '../../_utils/query-string';
+import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
@@ -36,11 +36,13 @@ export async function GET(request: Request) {
         "inner_hits": {
           "name": collapse,
           "size": 0,
+          "_source": "false",
+          "fields": ["label", "uuid", "sosi", "description"]
         }
       }
     } : {}),
     "fields": [
-      "group", "label", "adm1", "adm2", "uuid",
+      "group", "label", "adm1", "adm2", "uuid", "sosi", "description" // Todo: adapt to whether it's used in the search or in the show more
     ],
     "sort": [
 

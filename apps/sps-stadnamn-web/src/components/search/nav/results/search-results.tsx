@@ -43,7 +43,7 @@ export default function SearchResults() {
 
     useEffect(() => {
       setIsLoadingResults(true)
-      const url = `/api/search?${searchQueryString}&collapse=group&size=${(page ? PER_PAGE * (parseInt(page) + 1) : PER_PAGE)}&from=${(page ? parseInt(page) : 0) * PER_PAGE || 0}`
+      const url = `/api/search/collapsed?${searchQueryString}&collapse=group&size=${(page ? PER_PAGE * (parseInt(page) + 1) : PER_PAGE)}&from=${(page ? parseInt(page) : 0) * PER_PAGE || 0}`
       fetch(url)
         .then(response => {
           if (!response.ok) {

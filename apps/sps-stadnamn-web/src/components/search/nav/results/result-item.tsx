@@ -22,6 +22,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const docDataset = hit._index.split('-')[2]
     const parent = searchParams.get('parent')
     const { isMobile } = useContext(GlobalContext)
+    const details = searchParams.get('details') || 'doc'
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
@@ -53,7 +54,7 @@ export default function ResultItem({hit}: {hit: any}) {
                         doc: hit.fields.uuid,
                         ...(hit.fields?.datasets?.length === 1 ? {docDataset: hit.fields.datasets[0]} : {}),
                         ...(parent && !isMobile) ? {parent: docDataset == 'search' ? hit.fields.uuid : hit.fields?.within} : {},
-                        ...(hit.inner_hits?.group?.hits?.total?.value > 1 && hit.fields.group) ? {group: stringToBase64Url(hit.fields.group[0])} : {},
+                        ...(details != 'doc' || (hit.inner_hits?.group?.hits?.total?.value > 1 && hit.fields.group)) ? {group: stringToBase64Url(hit.fields.group[0])} : {},
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>

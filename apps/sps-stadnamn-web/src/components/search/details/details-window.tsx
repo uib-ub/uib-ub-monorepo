@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars } from "react-icons/pi"
+import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp } from "react-icons/pi"
 import Link from "next/link"
 import DocInfo from "./doc/doc-info"
 import { useSearchParams } from "next/navigation"
@@ -11,6 +11,8 @@ import { useMode } from "@/lib/search-params"
 import GroupDetails from "./group/group-details"
 import { GroupContext } from "@/app/group-provider"
 import IconLink from "@/components/ui/icon-link"
+import Clickable from "@/components/ui/clickable/clickable"
+import ResultItem from "../nav/results/result-item"
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
@@ -35,22 +37,14 @@ export default function DetailsWindow() {
     return <>
     <div className={`flex overflow-x-auto p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
     <ClickableIcon
-        label="Oppslag"
-        remove={["details"]} 
-        aria-selected={details == "doc"}
-        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
-        <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>
-    </ClickableIcon>
-    
-    <ClickableIcon
-        label="Liknande treff"
+        label="Utforsk treff i nærleiken"
         remove={["details"]} 
         add={{details: "group"}}
         aria-selected={details == "group"}
-        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-inner relative">
-        <PiBinocularsLight className="text-3xl text-neutral-900" aria-hidden="true"/>
-    </ClickableIcon>
+        className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-innere">
+        <PiBinoculars className="text-3xl text-neutral-900 group-aria-selected:text-accent-800" aria-hidden="true"/>
 
+    </ClickableIcon>
     <ClickableIcon
         label="Tidslinje"
         remove={["details"]} 
@@ -59,6 +53,17 @@ export default function DetailsWindow() {
         className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
         <PiClockCounterClockwiseLight className="text-3xl text-neutral-900" aria-hidden="true"/>
     </ClickableIcon>
+    <ClickableIcon
+        label="Oppslag"
+        remove={["details"]} 
+        aria-selected={details == "doc"}
+        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
+        <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>
+    </ClickableIcon>
+    
+    
+
+    
     <ClickableIcon
             label="Lukk"
             remove={["doc", "docDataset", "group"]} 
@@ -71,7 +76,7 @@ export default function DetailsWindow() {
 
     {(groupTotal?.value || !group) ?
     
-    <div className={`flex flex-wrap gap-2 justify-between p-2 border-b border-neutral-200 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
+    <div className={`flex flex-wrap gap-2 p-2 border-b border-neutral-200 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
     {groupTotal?.value && groupTotal.value > 1 && <div className="flex gap-2 h-10">    
       
       <ClickableIcon 
@@ -92,6 +97,7 @@ export default function DetailsWindow() {
         <PiCaretRight className="xl:text-xl" aria-hidden="true"/>
       </ClickableIcon>
   </div>}
+
   <div className="flex gap-2 h-10">
 
     {(groupData && groupData?.length > 1)  ?
@@ -111,6 +117,7 @@ export default function DetailsWindow() {
       </Link>
       </>
   }
+  
       
 
   </div>
@@ -130,11 +137,16 @@ export default function DetailsWindow() {
 
 
 
-  {details == "doc" && doc && docData?._source && <div className={`lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] p-4 border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
+  {details == "doc" && doc && docData?._source && <div className={`lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
 
  
       <DocInfo/>
-  </div>}
+
+
+  </div>
+}
+
+
   
 
 
