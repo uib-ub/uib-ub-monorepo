@@ -6,7 +6,6 @@ import { parseAsInteger, useQueryState } from 'nuqs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
 import { useMode } from '@/lib/search-params';
-import { trimResultData } from '@/lib/utils';
 
 interface SearchContextData {
     resultData: any;

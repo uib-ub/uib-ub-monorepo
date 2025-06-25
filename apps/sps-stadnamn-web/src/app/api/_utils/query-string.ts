@@ -20,10 +20,10 @@ function modifyQuery(query: string) {
   return escapedQuery;
 }
 
-export function getQueryString(params: { [key: string]: string | null }, sorted: boolean = false) {
+export function getQueryString(params: { [key: string]: string | null }) {
   const fulltext = params.fulltext == 'on'
 
-  let simple_query_string: any = params.q ? {
+  const simple_query_string: any = params.q ? {
       query_string: {
       query: modifyQuery(params.q),
       allow_leading_wildcard: true,
@@ -32,27 +32,6 @@ export function getQueryString(params: { [key: string]: string | null }, sorted:
     }} : null
 
 
-    if (simple_query_string && sorted) {
-      simple_query_string = {
-        function_score: {
-          query: simple_query_string,
-          functions: [
-            {
-              script_score: {
-                script: {
-                  source: "doc['label.keyword'].size()!=0 && doc['label.keyword'].value == params.query ? 100 : _score",
-                  params: {
-                    query: params.q
-                  }
-                }
-              }
-            }
-          ],
-          score_mode: "first",
-          boost_mode: "replace"
-        }
-      }
-    }
 
   
     //const test = fulltext && params.dataset ? Object.fromEntries(fulltextFields[params.dataset].map(item => ([item.key, {}]))) : {}

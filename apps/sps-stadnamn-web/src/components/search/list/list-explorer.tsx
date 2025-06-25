@@ -22,7 +22,7 @@ export default function ListExplorer() {
                                 
                                 { isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail iiif={images}/></div>}
                                 <div className="flex flex-col px-4 w-full">
-                                <DocInfo docParams={{docDataset, docData: item, snidParent: null, sameMarkerList: []}}/>
+                                <DocInfo docParams={{docDataset, docData: item, sameMarkerList: []}}/>
                                 </div>
                                 { !isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail iiif={images}/></div>}
                                 

@@ -1,48 +1,42 @@
 export const runtime = 'edge'
 
-import { base64UrlToString } from '@/lib/utils';
 import { postQuery } from '../_utils/post';
+import { base64UrlToString } from '@/lib/utils';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  const base64group = searchParams.get('base64');
+  const size = parseInt(searchParams.get('size') || '1000')
 
-  const groupType = searchParams.get('groupType');
-  const groupId = searchParams.get('groupId');
-  const groupLabel = searchParams.get('groupLabel');
-  const fuzzy = parseInt(searchParams.get('fuzzy') || '0')
-  const size = parseInt(searchParams.get('size') || '100')
+  const group = base64UrlToString(base64group || '')
+  if (!base64group) {
+    return Response.json({ error: 'base64 parameter is required' }, { status: 400 });
+  }
+
+  
+
 
   // Build the query
   
   const query = {
     size: size,
     _source: false,
-    fields: ['uuid', 'label', 'gnidu', 'h3'],
-    sort: [{ "uuid": "asc" }],
-    query: {
-      bool: {
-        must: [
-          { term: { [groupType!]: groupId } },
-          ...(fuzzy == 1 ? [
-            {
-              match: {
-                label: {
-                  query: groupLabel,
-                  fuzziness: 1,
-                  operator: "or"
-                }
-              }
-            },
-            {
-              must_not: [
-                { term: { "label.keyword": groupLabel } }
-              ]
-            }
-          ] : []),
-        ]
+    fields: ['uuid', 'label', 'gnidu', 'h3', 'group'],
+    sort: [
+      {
+        boost: {
+          order: "desc",
+          missing: "_last"
+        }
       }
+    ],
+    query: {
+      term: { group},
     }
   };
+
+  console.log("GROUP QUERY", query)
+
   
 
   const [data, status] = await postQuery('all', query);

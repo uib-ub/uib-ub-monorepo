@@ -30,11 +30,10 @@ import IconButton from "@/components/ui/icon-button"
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
     const dataset = useDataset()
-    let { docDataset, docData, snidParent, sameMarkerList } = useContext(DocContext)
+    let { docDataset, docData, sameMarkerList } = useContext(DocContext)
     if (docParams) {
         docDataset = docParams.docDataset
         docData = docParams.docData
-        snidParent = docParams.snidParent
         sameMarkerList = docParams.sameMarkerList
     }
 
@@ -64,7 +63,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
         { dataset == 'all' && <div className="flex gap-1  items-center">
           
-          <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
+          <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{docDataset?.includes('_') ? datasetTitles[docDataset.split('_')[0]] + " – " : ''}{datasetTitles[docDataset as string]}</span>
           
         <IconLink label="Om datasettet" 
               href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
@@ -80,13 +79,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
         { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
         <div className={`absolute top-0 lg:top-2 right-0 flex gap-2`}>
-          {snidParent && dataset == 'search' && mode == 'map' &&
-            <ClickableIcon label="Gå til stadnamnoppslag" 
-                           add={{doc: snidParent, docDataset: dataset}} 
-                           aria-hidden="true" 
-                           className={`${parent && isMobile ? 'btn btn-outline btn-compact' : ''}`}>
-                            {dataset == 'search' ? isMobile ? <PiCaretLeft className="text-2xl"/> :<PiCaretLeft className="text-2xl"/> : <PiTag className="text-2xl"/>}
-          </ClickableIcon>}
           
 
           {!isMobile && mode == 'doc' &&

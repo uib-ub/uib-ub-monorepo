@@ -23,6 +23,7 @@ import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
+import { stringToBase64Url } from "@/lib/utils";
 
 
 export default function MapExplorer() {
@@ -378,14 +379,13 @@ useEffect(() => {
 
         const newQueryParams = new URLSearchParams(searchParams)
         
-        if (selected.fields?.children?.length == 1) {
-          newQueryParams.set('docDataset', selected.fields?.datasets?.[0] || 'all')
-          newQueryParams.set('doc', selected.fields.children[0])
-        }
-        else {
+
           newQueryParams.set('doc', selected?.fields?.uuid[0])
           newQueryParams.set('docDataset', selected?._index.split('-')[2])
-        }
+
+          if (selected.fields?.group) {
+            newQueryParams.set('group', stringToBase64Url(selected.fields.group[0]))
+          }
 
         router.push(`?${newQueryParams.toString()}`)
 

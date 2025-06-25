@@ -2,12 +2,13 @@
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useDataset } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
-import { PiBookOpen } from 'react-icons/pi';
+import { PiBookOpen, PiWall, PiWallFill } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 import { datasetTitles } from '@/config/metadata-config';
 import { base64UrlToString, stringToBase64Url } from '@/lib/utils';
+import RootWords from './root-words';
 
 
 
@@ -26,6 +27,9 @@ export default function ResultItem({hit}: {hit: any}) {
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
     const snippetRenderer = resultRenderers[dataset]?.snippet || defaultResultRenderer.snippet
 
+    const isGrunnord = docDataset?.includes('_g')
+    const isSelected = (doc == hit.fields.uuid || (hit.fields?.group && group == stringToBase64Url(hit.fields?.group?.[0])))
+
 
     useEffect(() => {
         // Scroll into view if section changes to results
@@ -38,48 +42,46 @@ export default function ResultItem({hit}: {hit: any}) {
     
 
     return  <li className="flex flex-grow">
-        <Clickable link ref={itemRef} className="w-full h-full p-3 flex items-center hover:bg-neutral-50 no-underline aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4 border-accent-700" 
-                    aria-current={(doc == hit.fields.uuid || (hit.fields?.group && group == base64UrlToString(hit.fields?.group?.[0]))) ? 'page' : undefined}
+        { isGrunnord ?
+        <RootWords hit={hit}/>
+
+        :
+        <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline  ${isGrunnord ? "my-2 rounded-md border border-neutral-200 aria-[current='page']:bg-accent-50 aria-[current='page']:border-accent-700" : "border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4 "}`} 
+                    aria-current={isSelected ? 'page' : undefined}
                     remove={['sourceDataset', 'sourceLabel', 'docDataset', 'group']}
                     add={{
                         doc: hit.fields.uuid,
                         ...(hit.fields?.datasets?.length === 1 ? {docDataset: hit.fields.datasets[0]} : {}),
                         ...(parent && !isMobile) ? {parent: docDataset == 'search' ? hit.fields.uuid : hit.fields?.within} : {},
-                        ...(hit.fields.snid) ? {group: stringToBase64Url(`snid_${hit.fields.snid[0]}_${hit.fields.label[0]}`)} : {},
+                        ...(hit.inner_hits?.group?.hits?.total?.value > 1 && hit.fields.group) ? {group: stringToBase64Url(hit.fields.group[0])} : {},
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
-            <div>
-                <span className="text-neutral-950">{titleRenderer(hit, 'map')}</span>
-                {dataset == 'search' && <div className="float-right flex flex-col gap-1 text-neutral-950 text-sm">  { hit.fields?.children?.length > 1 ? 
-                <span className="self-center flex gap-1 items-center">
-                    <span>{hit.fields.children.length} kjelder</span>
-                    </span>
+                        
+            <div className="flex flex-col w-full">
+
+                <span className="text-neutral-950 flex items-center">
+                    {titleRenderer(hit, 'map')}
                     
-                :<span className="self-center flex gap-1 items-center max-w-32 truncate">
-                    
-                    
-                    {datasetTitles[hit.fields.datasets[0]]}
-                    
-                    </span>
-                
-                    
-                 }
-                </div>
-                }
+                </span>
+
                 {hit.highlight && snippetRenderer ? (
                     <> | {detailsRenderer(hit, 'map')} {snippetRenderer(hit)}  </>
                 ) : (
                     <p>{detailsRenderer(hit, 'map')}</p>
                 )}
             </div>
-            {dataset == "all" && hit.inner_hits?.gnidu?.hits?.total?.value > 1 && (
-                <div className="ml-auto flex items-center rounded-full bg-neutral-100 text-neutral-950 text-sm px-2.5 py-1">
-                    {hit.inner_hits?.gnidu?.hits?.total?.value}
+            {dataset == "all" && hit.inner_hits?.group?.hits?.total?.value > 1 && (
+                <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 ${
+                    isSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-950'
+                }`}>
+                    {hit.inner_hits?.group?.hits?.total?.value}
                 </div>
             )}
+
             
             </Clickable>
+            }
             </li>
 }
 

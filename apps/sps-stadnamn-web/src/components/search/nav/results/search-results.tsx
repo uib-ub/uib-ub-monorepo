@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./result-item";
-import { getSkeletonLength, trimResultData } from "@/lib/utils";
+import { getSkeletonLength } from "@/lib/utils";
 import { useSearchQuery } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
 
@@ -23,20 +23,27 @@ export default function SearchResults() {
     const {searchQueryString } = useSearchQuery()
 
 
+
     // Reset when search query changes
+    
     useEffect(() => {
       setCollapsedResults([])
-      const newUrl = new URLSearchParams(searchParams)
-      newUrl.delete('page')
-      router.push(`?${	newUrl.toString()}`);
-
     }, [searchQueryString])
+
+    useEffect(() => {
+      if (searchQueryString) {
+        const newUrl = new URLSearchParams(searchParams)
+        newUrl.delete('page')
+        router.push(`?${newUrl.toString()}`)
+      }
+    }, [searchQueryString, searchParams, router])
+    
 
 
 
     useEffect(() => {
       setIsLoadingResults(true)
-      const url = `/api/search/collapsed?${searchQueryString}&size=${(page ? PER_PAGE * (parseInt(page) + 1) : PER_PAGE)}&from=${(page ? parseInt(page) : 0) * PER_PAGE || 0}`
+      const url = `/api/search?${searchQueryString}&collapse=group&size=${(page ? PER_PAGE * (parseInt(page) + 1) : PER_PAGE)}&from=${(page ? parseInt(page) : 0) * PER_PAGE || 0}`
       fetch(url)
         .then(response => {
           if (!response.ok) {
@@ -71,7 +78,7 @@ export default function SearchResults() {
           ))}
           
           {/* Render "load more" button */}
-          {!isLoadingResults && collapsedResults.reduce((acc, curr) => acc + (curr.inner_hits?.gnidu?.hits?.total?.value || 0), 0) < totalHits?.value && (
+          {!isLoadingResults && collapsedResults.reduce((acc, curr) => acc + (curr.inner_hits?.group?.hits?.total?.value || 0), 0) < totalHits?.value && (
             <button 
               type="button" 
               onClick={(e) => {

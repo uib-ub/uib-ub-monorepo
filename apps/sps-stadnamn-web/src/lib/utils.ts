@@ -111,37 +111,6 @@ export function getBnr(hit: any, dataset: string) {
 }
 
 
-export const trimResultData = (resultData: any[], totalHits: number) => {
-  // Trim all elements at the end that have the same gnidu as the last element
-  const lastResult = resultData[resultData.length - 1]?.["fields"]
-  const firstResult = resultData[0]?.["fields"]
-  if (resultData.length == totalHits || !lastResult || !firstResult) {
-      return resultData
-  }
-
-  if (lastResult.label == firstResult.label) {
-      if (lastResult.gnidu && firstResult.gnidu && lastResult.gnidu[0] == firstResult.gnidu[0]) {
-          return resultData
-      }
-  }
-  let trimIndex = resultData.length;
-
-  for (let i = resultData.length - 1; i >= 0; i--) {
-      if (resultData[i]["fields"]?.label?.[0] !== lastResult?.label?.[0]) {
-          break;
-      }
-
-      if ((resultData[i]["fields"].gnidu && lastResult.gnidu && resultData[i]["fields"].gnidu[0] !== lastResult.gnidu[0]) || (resultData[i]["fields"].h3 && lastResult.h3 && resultData[i]["fields"].h3[0] !== lastResult.h3[0])) {
-          break;
-      }
-      trimIndex = i -1;
-  }
-  const trimmedResultData = resultData.slice(0, trimIndex);
-
-  return trimmedResultData?.length > 0 ? trimmedResultData : resultData
-}
-
-
 
 /**
  * Converts a string to base64url format

@@ -21,6 +21,9 @@ export async function GET(request: Request) {
   const query: Record<string,any> = {
     size: zoomSize[zoom] || 200,
     fields: ["label", "location", "uuid", "sosi", "children", "placeScore", "within"],
+    collapse: {
+      field: "group"
+    },
     sort: dataset === 'search' ? [
       /*
       {

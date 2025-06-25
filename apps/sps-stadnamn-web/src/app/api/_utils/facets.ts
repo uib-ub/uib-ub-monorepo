@@ -1,4 +1,5 @@
 import { datasetTypes } from "@/config/metadata-config";
+import { base64UrlToString } from "@/lib/utils";
 
 export const RESERVED_PARAMS = [
   'q',
@@ -26,7 +27,7 @@ export const RESERVED_PARAMS = [
   'point',
   'datasetTag',
   'docDataset',
-  'group'
+  'collapse'
 ] as const;
 
 export function extractFacets(request: Request) {
@@ -130,8 +131,20 @@ export function extractFacets(request: Request) {
       const hasTrue = values.includes("_true");
       const filteredValues = values.filter(value => value !== "_false" && value !== "_true");
 
+      if (key == 'group') {
+        termFilters.push({
+          "bool": {
+            "should": values.map(value => ({
+              "term": { "group": base64UrlToString(value) }
+            })),
+            "minimum_should_match": 1
+          }
+        });
+      }
+
+
       // Handle nested properties
-      if (key.includes('__')) {
+      else if (key.includes('__')) {
         const [base, nested] = key.split('__');
         termFilters.push({
           "nested": {
