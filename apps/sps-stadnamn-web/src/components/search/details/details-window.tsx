@@ -28,7 +28,7 @@ export default function DetailsWindow() {
     
 
     return <>
-    <div className={`flex overflow-x-auto p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
+    <div className={`flex p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
     {groupTotal?.value && <ClickableIcon label="Valde treff" 
           remove={["details"]} 
           add={{details: "group"}}
