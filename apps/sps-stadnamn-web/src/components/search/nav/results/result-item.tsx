@@ -54,7 +54,7 @@ export default function ResultItem({hit}: {hit: any}) {
                         doc: hit.fields.uuid,
                         ...(hit.fields?.datasets?.length === 1 ? {docDataset: hit.fields.datasets[0]} : {}),
                         ...(parent && !isMobile) ? {parent: docDataset == 'search' ? hit.fields.uuid : hit.fields?.within} : {},
-                        ...(details != 'doc' || (hit.inner_hits?.group?.hits?.total?.value > 1 && hit.fields.group)) ? {group: stringToBase64Url(hit.fields.group[0])} : {},
+                        ...(hit.fields.group && (details != 'doc' || hit.inner_hits?.group?.hits?.total?.value > 1)) ? {group: stringToBase64Url(hit.fields.group[0])} : {},
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>

@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp } from "react-icons/pi"
+import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp, PiListBullets, PiListBulletsLight } from "react-icons/pi"
 import Link from "next/link"
 import DocInfo from "./doc/doc-info"
 import { useSearchParams } from "next/navigation"
@@ -13,6 +13,8 @@ import { GroupContext } from "@/app/group-provider"
 import IconLink from "@/components/ui/icon-link"
 import Clickable from "@/components/ui/clickable/clickable"
 import ResultItem from "../nav/results/result-item"
+import HitNavigation from "./hit-navigation"
+import FuzzyExplorer from "./fuzzy/fuzzy-explorer"
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
@@ -25,34 +27,20 @@ export default function DetailsWindow() {
     const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
     
 
-    const [ownPosition, setOwnPosition] = useState<number | undefined>(undefined)
-
-    useEffect(() => {
-      if (groupData && docData && !groupLoading && groupData?.find(doc => doc._id == docData?._id) !== undefined) {
-        setOwnPosition(groupData?.findIndex((doc) => doc._id == docData?._id))
-      }
-    }, [groupData, docData, groupLoading])
-
-
     return <>
     <div className={`flex overflow-x-auto p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
-    <ClickableIcon
-        label="Utforsk treff i nærleiken"
-        remove={["details"]} 
-        add={{details: "group"}}
-        aria-selected={details == "group"}
-        className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-innere">
-        <PiBinoculars className="text-3xl text-neutral-900 group-aria-selected:text-accent-800" aria-hidden="true"/>
-
-    </ClickableIcon>
-    <ClickableIcon
-        label="Tidslinje"
-        remove={["details"]} 
-        add={{details: "timeline"}}
-        aria-selected={details == "timeline"}
-        className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
-        <PiClockCounterClockwiseLight className="text-3xl text-neutral-900" aria-hidden="true"/>
-    </ClickableIcon>
+    {groupTotal?.value && <ClickableIcon label="Valde treff" 
+          remove={["details"]} 
+          add={{details: "group"}}
+          aria-selected={details == "group"}
+          className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-inner relative group">
+      <PiListBulletsLight className="text-3xl text-neutral-900" aria-hidden="true"/>
+      {groupTotal?.value && groupTotal.value > 0 && (
+        <span className="absolute -top-1 -right-1 bg-primary-600 group-aria-selected:bg-accent-800 text-white text-xs rounded-full min-w-[1.25rem] h-5 flex items-center justify-center px-1 font-medium">
+          {groupTotal.value}
+        </span>
+      )}
+    </ClickableIcon>}
     <ClickableIcon
         label="Oppslag"
         remove={["details"]} 
@@ -60,6 +48,16 @@ export default function DetailsWindow() {
         className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
         <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>
     </ClickableIcon>
+    <ClickableIcon
+        label="Finn andre navneformer"
+        remove={["details"]} 
+        add={{details: "fuzzy"}}
+        aria-selected={details == "fuzzy"}
+        className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-innere">
+        <PiBinoculars className="text-3xl text-neutral-900 group-aria-selected:text-accent-800" aria-hidden="true"/>
+
+    </ClickableIcon>
+    
     
     
 
@@ -77,26 +75,7 @@ export default function DetailsWindow() {
     {(groupTotal?.value || !group) ?
     
     <div className={`flex flex-wrap gap-2 p-2 border-b border-neutral-200 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
-    {groupTotal?.value && groupTotal.value > 1 && <div className="flex gap-2 h-10">    
-      
-      <ClickableIcon 
-        label="Forrige" 
-        className="btn btn-outline btn-compact" 
-        add={{doc: groupData?.[ownPosition !== undefined ? ownPosition - 1 : 0]?.fields?.uuid?.[0]}}
-        disabled={ownPosition === undefined || ownPosition <= 0}
-      >
-        <PiCaretLeft className="xl:text-xl" aria-hidden="true"/>
-      </ClickableIcon>
-      <span className="text-neutral-900 self-center w-10 text-center">{ownPosition ? ownPosition + 1 : 1}/{groupTotal?.value}</span>
-      <ClickableIcon 
-        label="Neste" 
-        className="btn btn-outline btn-compact" 
-        add={{doc: groupData?.[ownPosition !== undefined ? ownPosition + 1 : 0]?.fields.uuid?.[0]}}
-        disabled={ownPosition === undefined || ownPosition >= (groupData?.length || 0) - 1}
-      >
-        <PiCaretRight className="xl:text-xl" aria-hidden="true"/>
-      </ClickableIcon>
-  </div>}
+    <HitNavigation/>
 
   <div className="flex gap-2 h-10">
 
@@ -152,6 +131,10 @@ export default function DetailsWindow() {
 
   {details == "group" && <div className="lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] p-4 pb-8 border-neutral-200 ">
     <GroupDetails/>
+    </div>}
+
+    {details == "fuzzy" && <div className="lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] p-4 pb-8 border-neutral-200 ">
+    <FuzzyExplorer/>
     </div>}
 
 

@@ -34,9 +34,6 @@ export async function GET(request: Request) {
       term: { group},
     }
   };
-
-  console.log("GROUP QUERY", query)
-
   
 
   const [data, status] = await postQuery('all', query);
