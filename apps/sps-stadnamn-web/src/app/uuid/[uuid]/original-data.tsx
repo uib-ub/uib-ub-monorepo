@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react';
-import { PiCaretDown, PiCaretUp, PiWarningFill } from 'react-icons/pi';
+import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiWarningFill } from 'react-icons/pi';
 export default function OriginalData({rawData}: {rawData: Record<string, any>}) {
     const [expanded, setExpanded] = useState(false);
 
@@ -9,7 +9,7 @@ export default function OriginalData({rawData}: {rawData: Record<string, any>}) 
         <>
        <h2 className="!m-0 !p-0">
         <button className="flex items-center gap-1" onClick={() => setExpanded(currentValue => !currentValue)} aria-controls="original_data_list" aria-expanded={expanded}>
-            Grunnlagsdata { expanded ? <PiCaretUp className="text2xl inline text-primary-600"/> : <PiCaretDown className="text2xl text-primary-600"/>} </button>
+            Grunnlagsdata { expanded ? <PiCaretUpBold className="text2xl inline text-primary-600"/> : <PiCaretDownBold className="text2xl text-primary-600"/>} </button>
       </h2>
         <div id="original_data_list">
         {expanded &&

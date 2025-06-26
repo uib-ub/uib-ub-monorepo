@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PiCaretDown, PiCaretUp } from "react-icons/pi";
+import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold } from "react-icons/pi";
 import { usePathname } from "next/navigation";
 import { useMode } from "@/lib/search-params";
 export default function CollapsibleHeading(props: {
@@ -33,7 +33,7 @@ export default function CollapsibleHeading(props: {
   return <div className="">
     <HeadingTag className="!mt-0 !py-0"><button className="text-left w-full text-neutral-900 flex items-center gap-1" aria-expanded={open} aria-controls={props.title + '-collapsible'} onClick={() => setOpen(!open)}>
         
-        {props.title} {open ? <PiCaretUp className="inline self-center text-primary-600" /> : <PiCaretDown className="inline self-center text-primary-600" />}</button></HeadingTag>
+        {props.title} {open ? <PiCaretUpBold className="inline self-center text-primary-600" /> : <PiCaretDownBold className="inline self-center text-primary-600" />}</button></HeadingTag>
         
     <div id={props.title + '-collapsible'} className={`${open ? 'block py-2' : 'hidden'}`}>
         {props.children}

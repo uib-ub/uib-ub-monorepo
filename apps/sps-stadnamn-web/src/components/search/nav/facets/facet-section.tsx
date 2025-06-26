@@ -6,7 +6,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { facetConfig, fieldConfig } from "@/config/search-config"
-import { PiCaretDown, PiCaretUp, PiFileX } from "react-icons/pi"
+import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiFileX } from "react-icons/pi"
 import { GlobalContext } from "@/app/global-provider"
 import { useContext, useState } from "react"
 import { datasetTitles } from "@/config/metadata-config"
@@ -17,16 +17,17 @@ export default function FacetSection() {
     const { isMobile } = useContext(GlobalContext)
     const facet = searchParams.get('facet') || 'adm'
     const indexDatasets = searchParams.getAll('indexDataset')
+    const filterDataset = dataset == 'all' ? indexDatasets.length == 1 ? indexDatasets[0] : 'all' : dataset
     
-    const availableFacets = dataset == 'all' 
+    const availableFacets = filterDataset == 'all'
         ? facetConfig['all'].filter(f => indexDatasets.length > 0 ? f.datasets?.find((d: string) => indexDatasets.includes(d)) : f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1)).sort((a, b) => (a.key === 'indexDataset' ? -1 : b.key === 'indexDataset' ? 1 : (b?.datasets?.length || 0) - (a?.datasets?.length || 0)))
-        : facetConfig[dataset];
+        : facetConfig[filterDataset];
     const nav = searchParams.get('nav')
 
     return (
         <>
         <div className="flex flex-col divide-y divide-neutral-200">
-          {availableFacets.filter(f => !f.child && (f.key != 'adm' || isMobile)).map(f => {
+          {availableFacets.filter(f => !f.child && (f.key != 'adm' || isMobile) && f.key != 'indexDataset').map(f => {
             const isExpanded = f.key == 'adm' ? nav == 'adm' : facet == f.key
             return (
             <div key={f.key}>
@@ -44,11 +45,11 @@ export default function FacetSection() {
                            : {nav: 'filters', facet: f.key}}>
               <div className="flex flex-wrap gap-4">
               <span className="text-xl">{f.label}</span>
-              {dataset == 'all' && (f.datasets?.length || 0) > 1 && <em className="text-neutral-700 text-sm self-center">{f.datasets?.length} datasett</em>}
-              {dataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
-              {dataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
+              {filterDataset == 'all' && (f.datasets?.length || 0) > 1 && <em className="text-neutral-700 text-sm self-center">{f.datasets?.length} datasett</em>}
+              {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
+              {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
-              {isExpanded ? <PiCaretUp className="inline self-center text-primary-600 text-xl" /> : <PiCaretDown className="inline self-center text-primary-600 text-xl" />}
+              {isExpanded ? <PiCaretUpBold className="inline self-center text-primary-600 text-xl" /> : <PiCaretDownBold className="inline self-center text-primary-600 text-xl" />}
               
             </Clickable>
             <div id={f.key + '-collapsible'} className={`${isExpanded ? 'block mt-2' : 'hidden'}`}>

@@ -433,7 +433,7 @@ const baseAllConfig = {
 };
 
 fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
-  if (dataset !== 'search') { // skip combined search and if in baseAllConfig
+  if (dataset !== 'search') {
     Object.entries(fields).forEach(([key, config]) => {
       if (!config.label) return; // Skip fields without labels
 
@@ -441,7 +441,7 @@ fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) =>
       // Create a simplified config object with label, facet and result, unless fulltext is true
       const simplifiedConfig = { 
         label: config.label, 
-        facet: !config.fulltext, 
+        facet: config.facet,
         result: !config.fulltext, 
         datasets: [dataset]
       };
@@ -457,33 +457,20 @@ fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) =>
         return;
       }
 
-      // Find if we already have a field with this label
-      const existingEntry = Object.entries(acc).find(([_, fieldConfig]) => 
-        fieldConfig.label === config.label && fieldConfig.label !== undefined
-      );
-
-      if (!existingEntry) {
-        // First time seeing this label, create new entry
-        acc[key] = simplifiedConfig;
-      } else {
-        const [existingKey, existingConfig] = existingEntry;
-        
-        if (key !== existingKey) {
-          // Same label but different key
-          // 1. Update the existing entry's datasets
-          acc[existingKey].datasets = [...(existingConfig.datasets || []), dataset];
-          
-          // 2. Create a new entry with only label and result, and add existingKey as altField
-          acc[key] = {
-            label: config.label,
-            result,
-            datasets: [dataset],
-            altField: existingKey  // Add the existing key as altField
-          };
-        } else {
+      // Check if we already have a field with this exact key
+      if (key in acc) {
+        // Check if the existing field has the same label
+        if (acc[key].label === config.label) {
           // Same key and label - just update datasets
           acc[key].datasets = [...(acc[key].datasets || []), dataset];
+        } else {
+          // Same key but different label - create new entry with a unique key
+          const uniqueKey = `${key}_${dataset}`;
+          acc[uniqueKey] = simplifiedConfig;
         }
+      } else {
+        // First time seeing this key, create new entry
+        acc[key] = simplifiedConfig;
       }
     });
   }
@@ -491,6 +478,7 @@ fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) =>
 }, { ...baseAllConfig } as Record<string, FieldConfigItem>)
 
 
+console.log(fieldConfig.all)
 
 
 export const facetConfig: Record<string, FacetConfigItem[]> = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {

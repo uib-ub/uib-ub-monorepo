@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions, publishDates } from '@/config/metadata-config'
 import Image from 'next/image'
-import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
+import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import DatasetToolbar from '@/components/ui/dataset-toolbar';
 import { GlobalContext } from '@/app/global-provider';
@@ -127,13 +127,13 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
           
           <div className="flex gap-4 mt-2">
           <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'type' ? null : 'type')} aria-controls="dataset-type" aria-expanded={expandedOption == 'type'}>
-            {expandedOption == 'type' ? <PiCaretUp aria-hidden="true"/> : <PiCaretDown aria-hidden="true"/>}
+            {expandedOption == 'type' ? <PiCaretUpBold aria-hidden="true"/> : <PiCaretDownBold aria-hidden="true"/>}
             Datasettype</button>
           <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'resources' ? null : 'resources')} aria-controls="dataset-resources" aria-expanded={expandedOption == 'resources'}>
-            {expandedOption == 'resources' ? <PiCaretUp aria-hidden="true"/> : <PiCaretDown aria-hidden="true"/>}
+            {expandedOption == 'resources' ? <PiCaretUpBold aria-hidden="true"/> : <PiCaretDownBold aria-hidden="true"/>}
             Ressurser</button>
           <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'fields' ? null : 'fields')} aria-controls="dataset-fields" aria-expanded={expandedOption == 'fields'}>
-            {expandedOption == 'fields' ? <PiCaretUp aria-hidden="true"/> : <PiCaretDown aria-hidden="true"/>}
+            {expandedOption == 'fields' ? <PiCaretUpBold aria-hidden="true"/> : <PiCaretDownBold aria-hidden="true"/>}
             Felt</button>
           <div className="ml-auto xl:sr-only" role="status" aria-live="polite">{filteredDatasets.length} / {totalValidDatasets}</div>
           </div>
@@ -216,12 +216,12 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
                 >
                   {showAllFields ? (
                     <>
-                      <PiCaretUp aria-hidden="true" />
+                      <PiCaretUpBold aria-hidden="true" />
                       Vis færre
                     </>
                   ) : (
                     <>
-                      <PiCaretDown aria-hidden="true" />
+                      <PiCaretDownBold aria-hidden="true" />
                       {`Vis alle felt (${allFields.length})`}
                     </>
                   )}

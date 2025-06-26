@@ -48,6 +48,8 @@ export function extractFacets(request: Request) {
         facets[key] = [];
       }
       facets[key].push(value);
+
+      
     }
   }
 
@@ -173,6 +175,7 @@ export function extractFacets(request: Request) {
             "minimum_should_match": 1
           }
         });
+
       } else {
           termFilters.push({
             "bool": {

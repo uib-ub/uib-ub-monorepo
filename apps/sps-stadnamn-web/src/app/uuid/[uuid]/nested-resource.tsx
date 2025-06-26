@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PiCaretDown, PiCaretUp } from "react-icons/pi";
+import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold } from "react-icons/pi";
 import { usePathname, useRouter } from "next/navigation";
 
 interface NestedResourceProps {
@@ -69,8 +69,8 @@ export default function NestedResource({ uri, children, parentUuid, childUuids =
         >
           {uri}
           {open ? 
-            <PiCaretUp className="w-4 h-4 text-primary-600" aria-hidden="true" /> : 
-            <PiCaretDown className="w-4 h-4 text-primary-600" aria-hidden="true" />
+            <PiCaretUpBold className="w-4 h-4 text-primary-600" aria-hidden="true" /> : 
+            <PiCaretDownBold className="w-4 h-4 text-primary-600" aria-hidden="true" />
           }
         </button>
       </div>

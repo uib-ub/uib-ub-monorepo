@@ -1,5 +1,5 @@
 import { useQueryState } from "nuqs"
-import { PiArrowCounterClockwise, PiCaretDown, PiSortAscending, PiSortDescending } from "react-icons/pi"
+import { PiArrowCounterClockwise, PiCaretDown, PiCaretDownBold, PiSortAscending, PiSortDescending } from "react-icons/pi"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { facetConfig } from "@/config/search-config"
 import { useDataset } from "@/lib/search-params"
@@ -61,7 +61,7 @@ export default function SortSelector() {
                         type="button" 
                         className="btn btn-outline btn-compact pl-2"
                     >
-                        <PiCaretDown className="text-xl mr-2"/>
+                        <PiCaretDownBold className="text-xl mr-2"/>
                         Sorter{currentLabel ? `: ${currentLabel}` : ''}
                     </button>
                 </DropdownMenuTrigger>

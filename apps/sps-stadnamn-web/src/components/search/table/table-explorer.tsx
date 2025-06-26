@@ -4,7 +4,7 @@ import { useDataset, useMode } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import { Fragment, useContext, useState } from "react"
-import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretUp, PiMapPinFill } from "react-icons/pi"
+import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiMapPinFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
@@ -82,7 +82,7 @@ export default function TableExplorer() {
                     <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
                     <div className='flex gap-2 mt-2 xl:mt-0'>
                     <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => setColumnSelectorOpen(!columnSelectorOpen)} aria-expanded={columnSelectorOpen} aria-controls={columnSelectorOpen ? 'column-selector' : undefined}>
-                        { columnSelectorOpen ? <PiCaretUp className='text-xl mr-2' aria-hidden="true"/> : <PiCaretDown className='text-xl mr-2' aria-hidden="true"/> }           
+                        { columnSelectorOpen ? <PiCaretUpBold className='text-xl mr-2' aria-hidden="true"/> : <PiCaretDownBold className='text-xl mr-2' aria-hidden="true"/> }           
                         Kolonner
                     </button>
                     { // Reset button if visible columns is different from default

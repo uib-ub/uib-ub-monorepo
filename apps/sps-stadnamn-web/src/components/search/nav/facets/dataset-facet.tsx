@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
-import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold } from 'react-icons/pi';
 
 import { datasetTitles, typeNames, datasetTypes, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config';
 
@@ -203,7 +203,7 @@ export default function DatasetFacet() {
                     className="rounded-full btn btn-outline btn-compact p-1"
                     aria-label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse for ${renderLabel(item.key)}`}
                   >
-                    <PiCaretDown className="w-4 h-4" />
+                    <PiCaretDownBold className="w-4 h-4" />
                   </IconButton>
                 </div>
                 {isExpanded && (

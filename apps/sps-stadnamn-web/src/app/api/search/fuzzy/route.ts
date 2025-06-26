@@ -8,16 +8,12 @@ import { getSortArray } from '@/config/server-config';
 export async function POST(request: Request) {
   const body = await request.json();
 
-  const label = body.label
-  const altLabels = body.altLabels || []
-  const attestations = body.attestations || []
+  const searchTerms = body.searchTerms
   const h3 = body.h3
-  const snid = body.snid
   const gnidu = body.gnidu
-  console.log("BODY",body)
 
   const query: Record<string,any> = {
-    "size":  (h3 || snid || gnidu) ? 1000 : 10,
+    "size":  (h3 || gnidu) ? 1000 : 10,
     "track_scores": true,
     "sort": [
       {
@@ -30,7 +26,7 @@ export async function POST(request: Request) {
         }
       },
     ],
-    "_source": ["group", "label", "adm1", "adm2", "uuid", "sosi", "description", "attestations", "year","snid", "gnidu", "h3"],
+    "_source": ["group", "label", "adm1", "adm2", "uuid", "sosi", "description", "attestations", "year", "gnidu", "h3"],
     "highlight": {
       "fields": {
         "label": {},
@@ -53,11 +49,8 @@ export async function POST(request: Request) {
     }
   }
 
-  // Collect all search terms from text parameters
-  const searchTerms: string[] = []
-  if (label) searchTerms.push(label)
-  if (altLabels.length > 0) searchTerms.push(...altLabels)
-  if (attestations.length > 0) searchTerms.push(...attestations)
+
+
 
   // Define target fields with their boost values
   const targetFields = [
@@ -67,14 +60,15 @@ export async function POST(request: Request) {
   ]
 
   // Build many-to-many fuzzy search clauses
-  searchTerms.forEach(searchTerm => {
+  searchTerms.forEach((searchTerm: string) => {
     targetFields.forEach(({ field, boost }) => {
       boolQuery.bool.should.push({
         "match": {
           [field]: {
             "query": searchTerm,
             "boost": boost,
-            "fuzziness": (h3 || snid || gnidu) ? "AUTO" : 1
+            "fuzziness": (h3 || gnidu) ? "AUTO" : 1,
+            "analyzer": "norwegian"
           }
         }
       })
@@ -94,14 +88,6 @@ export async function POST(request: Request) {
     identifierQuery.bool.should.push({
       "terms": {
         "h3": h3
-      }
-    })
-  }
-
-  if (snid) {
-    identifierQuery.bool.should.push({
-      "term": {
-        "snid": snid
       }
     })
   }

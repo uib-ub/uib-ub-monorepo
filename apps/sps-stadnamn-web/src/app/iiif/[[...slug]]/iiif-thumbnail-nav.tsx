@@ -1,7 +1,7 @@
 'use client'
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { resolveLanguage } from "../iiif-utils";
-import { PiCaretDown, PiCaretLeft, PiCaretLineLeft, PiCaretLineRight, PiCaretRight, PiCaretUp } from "react-icons/pi";
+import { PiCaretDown, PiCaretDownBold, PiCaretLeft, PiCaretLeftBold, PiCaretLineLeft, PiCaretLineLeftBold, PiCaretLineRight, PiCaretRight, PiCaretRightBold, PiCaretUp, PiCaretUpBold } from "react-icons/pi";
 import IconLink from "@/components/ui/icon-link";
 import Link from "next/link";
 import FileCard from "./file-card";
@@ -46,20 +46,20 @@ export default function IIIFThumbnailNav({manifest, neighbours, manifestDataset}
                 {neighbours.data && neighbours.total > 1 && <div className="flex flex-wrap justify-center items-center lg:justify-start lg:flex-nowrap items-center gap-2 lg:ml-auto p-6 lg:p-0">
                     <span className="text-neutral-700 lg:hidden !w-full text-center text-xl">{manifest.order}/{neighbours.total}</span>
                         <IconLink label="Første element" href={`/iiif/${neighbours.data.first}`} className="flex btn btn-outline items-center justify-center p-4 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <PiCaretLineLeft className="w-10 h-10 lg:w-5 lg:h-5" />
+                            <PiCaretLineLeftBold className="w-10 h-10 lg:w-5 lg:h-5" />
                         </IconLink>
                         <IconLink label="Forrige element" href={`/iiif/${neighbours.data.previous || neighbours.data.last}`} className="flex btn btn-outline items-center justify-center p-4 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <PiCaretLeft className="w-10 h-10 lg:w-5 lg:h-5" />
+                            <PiCaretLeftBold className="w-10 h-10 lg:w-5 lg:h-5" />
                         </IconLink>
                         <span className="text-neutral-700 hidden lg:block px-4">{manifest.order}/{neighbours.total}</span>
                         <IconLink label="Neste element" href={`/iiif/${neighbours.data.next || neighbours.data.first}`} className="flex btn btn-outline items-center justify-center p-4 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <PiCaretRight className="w-10 h-10 lg:w-5 lg:h-5" />
+                            <PiCaretRightBold className="w-10 h-10 lg:w-5 lg:h-5" />
                         </IconLink>
                          <IconLink label="Siste element" href={`/iiif/${neighbours.data.last}`} className="flex btn btn-outline items-center justify-center p-4 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
                             <PiCaretLineRight className="w-10 h-10 lg:w-5 lg:h-5" />
                         </IconLink>
                         <button className="btn btn-outline items-center gap-2 hidden lg:flex" aria-expanded={isOpen} aria-controls="thumbnail-nav" onClick={() => setIsOpen(!isOpen)}>
-                            {isOpen ? <PiCaretDown className="w-5 h-5" /> : <PiCaretUp className="w-5 h-5" />}
+                            {isOpen ? <PiCaretDownBold className="w-5 h-5" /> : <PiCaretUpBold className="w-5 h-5" />}
                             
                             Forhåndsvisningar</button>
                     </div>}

@@ -37,28 +37,9 @@ return (
         
         <div className={`ml-6 flex gap-1`}>
         <span className='mr-2 my-1'>{year}</span>
-        <div className="flex flex-wrap gap-1 whitespace-nowrap">
-              {labels.map((label, i) => { 
-                const isActive = sourceLabel === label && (mode == 'map' || mode == 'doc');
-                return (
-                  <span key={i}>
-                    <Clickable 
-                      add={{sourceLabel: label, 
-                            parent: parent, 
-                            doc: parent,
-                            ...(mode != 'map' && !isMobile ? {mode: 'doc'} : {})
-                          }} 
-                      remove={["sourceLabel", "sourceDataset"]} 
-                      className={`btn btn-outline btn-compact max-w-[50svw] xl:max-w-[15svw] truncate
-                        ${isActive ? '!bg-accent-700 text-white border-accent-700' : 'bg-white border-neutral-200'}`}
-                      aria-current={isActive ? 'page' : undefined}
-                      link={isMobile || mode != 'list' ? undefined : true}
-                    >
-                      {label}
-                    </Clickable>
-                  </span>
-                );
-              })}
+        <div className="flex flex-wrap p-1 whitespace-nowrap">
+              {labels.join(', ')}
+
         </div>
         </div>
       </li>

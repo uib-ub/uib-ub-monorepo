@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from 'react';
 import DatasetInfo from '../details/dataset-info';
 import DatasetSelector from './dataset-selector';
 import { useDataset } from '@/lib/search-params';
-import { PiCaretDown, PiCaretUp } from 'react-icons/pi';
 import { GlobalContext } from '@/app/global-provider';
 
 
