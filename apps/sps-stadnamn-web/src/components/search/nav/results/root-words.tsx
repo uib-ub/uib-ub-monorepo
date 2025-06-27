@@ -29,9 +29,9 @@ export default function RootWords({hit}: {hit: any}) {
           .finally(() => setIsLoadingRootWords(false))
         }
         else {
-            setRootWords([])
+            setRootWords([hit])
         }
-      }, [searchQueryString, hit.inner_hits?.group?.hits?.total?.value])
+      }, [searchQueryString, hit])
 
     // Group words by label and count their occurrences across indices
     const groupedWords = rootWords.reduce((acc, word) => {
@@ -49,14 +49,9 @@ export default function RootWords({hit}: {hit: any}) {
     }, {} as Record<string, { label: string, indices: Set<string>, id: string }>)
 
     return (
-        <div className="w-full h-full mb-3 mx-2 flex flex-col gap-2">
-            <em className="flex items-center gap-1 font-semibold text-neutral-800">Grunnord</em>
+        <div className="w-full h-full mb-3 flex flex-col gap-2 mx-2">
+            <strong className="uppercase font-semibold text-neutral-800 text-sm">Grunnord</strong>
             <ul className="flex flex-wrap gap-2">
-                {hit.inner_hits?.group?.hits?.total?.value <= 1 ? (
-                    <li key={hit._id} className={`btn btn-outline flex items-center gap-2 ${hit.inner_hits?.group?.hits?.total?.value > 1 ? 'pr-3' : ''}`}>
-                        {hit.fields.label[0]}
-                    </li>
-                ) : null}
                 
                 {isLoadingRootWords ? (
                     <>
@@ -67,7 +62,13 @@ export default function RootWords({hit}: {hit: any}) {
                     Object.values(groupedWords)
                         .map((word: any) => (
                             <li key={word.id}>
-                            <Clickable className={`btn btn-outline flex items-center gap-2 ${word.indices.size > 1 ? 'pr-3' : ''}`}>
+                            <Clickable link 
+                                       add={{
+                                        doc: word.fields?.uuid?.[0],
+                                        ...(word.indices.size > 1 ? {group: stringToBase64Url("grunnord_" + word.label)} : {}),
+                                        docDataset: word?._index?.split('_')[2]
+                                       }}
+                                       className={`btn btn-outline flex items-center gap-2 ${word.indices.size > 1 ? 'pr-3' : ''}`}>
                                 {word.label}
                                 {word.indices.size > 1 && <span className="text-xs bg-neutral-100 px-2 py-0.5 rounded-full">
                                     {word.indices.size}
@@ -76,6 +77,7 @@ export default function RootWords({hit}: {hit: any}) {
                             </li>
                         ))
                 )}
+                
             </ul>
             {/* List them with counts for each word if they occur in more than one dataset */}
         </div>
