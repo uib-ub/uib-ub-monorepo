@@ -1,4 +1,4 @@
-export async function postQuery(dataset: string, query: any) {
+export async function postQuery(dataset: string, query: any, search_type?: string) {
     
     // TODO: use the same variable name in prod and test
     const endpoint = process.env.STADNAMN_ES_ENDPOINT
@@ -6,7 +6,7 @@ export async function postQuery(dataset: string, query: any) {
     let res
 
     try {
-        res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search`, {
+        res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search${search_type ? `?search_type=${search_type}` : ''}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

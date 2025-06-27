@@ -63,58 +63,14 @@ export async function GET(request: Request) {
 
   if (simple_query_string && termFilters.length) {
     query.query = {
-      "script_score": {
-        "query": {
-          "bool": {
-            "must": simple_query_string,              
-            "filter": termFilters
-          }
-        },
-        "script": {
-          "source": `
-            String label = doc['label.keyword'].size() > 0 ? doc['label.keyword'].value : '';
-            double boost = doc['boost'].size() > 0 ? doc['boost'].value : 1.0;
-            
-            if (params.queryText.length() > 0) {
-              if (label.toLowerCase().equals(params.queryText.toLowerCase())) {
-                return 1000 * boost;
-              } else if (label.toLowerCase().contains(params.queryText.toLowerCase())) {
-                return 100 * boost;
-              }
-            }
-            return Math.log(label.length() + 1) * boost;
-          `,
-          "params": {
-            "queryText": queryText
-          }
-        }
+      "bool": {
+        "must": simple_query_string,              
+        "filter": termFilters
       }
     }
   }
   else if (simple_query_string) {
-    query.query = {
-      "script_score": {
-        "query": simple_query_string,
-        "script": {
-          "source": `
-            String label = doc['label.keyword'].size() > 0 ? doc['label.keyword'].value : '';
-            double boost = doc['boost'].size() > 0 ? doc['boost'].value : 1.0;
-            
-            if (params.queryText.length() > 0) {
-              if (label.toLowerCase().equals(params.queryText.toLowerCase())) {
-                return 1000 * boost;
-              } else if (label.toLowerCase().contains(params.queryText.toLowerCase())) {
-                return 100 * boost;
-              }
-            }
-            return Math.log(label.length() + 1) * boost;
-          `,
-          "params": {
-            "queryText": queryText
-          }
-        }
-      }
-    }
+    query.query = simple_query_string
   }
   else if (termFilters.length) {
     query.query = {"bool": {
@@ -124,7 +80,7 @@ export async function GET(request: Request) {
   }
 
   
-  const [data, status] = await postQuery(dataset, query)
+  const [data, status] = await postQuery(dataset, query, "dfs_query_then_fetch")
   return Response.json(data, {status: status})
   
 }
