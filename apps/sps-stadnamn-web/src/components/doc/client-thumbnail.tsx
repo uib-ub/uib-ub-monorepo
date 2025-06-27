@@ -46,11 +46,11 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
             <div className="w-full aspect-[16/9] bg-neutral-200 animate-pulse border border-neutral-200"></div>
         ) : (
             <Link href={"/iiif/" + manifestUuid} className="w-full aspect-[16/9] relative block border border-neutral-200">
-                <Image
+                <img
                     src={thumbnailUrl || "/"} 
                     alt="Seddel"
                     className="object-cover"
-                    fill
+                    
                     />
             </Link>
         )}
