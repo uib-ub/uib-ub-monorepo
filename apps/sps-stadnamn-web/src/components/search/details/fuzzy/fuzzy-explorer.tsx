@@ -7,19 +7,22 @@ import { datasetTitles } from "@/config/metadata-config"
 import { base64UrlToString } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { useContext, useState, useEffect, useCallback } from "react"
-import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa } from "react-icons/pi"
+import { PiBookOpen, PiBookOpenFill, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa } from "react-icons/pi"
 import * as h3 from 'h3-js';
 
-type ViewMode = 'timeline' | 'names'
 type FilterMode = 'both' | 'h3' | 'gnidu'
 
 export default function FuzzyExplorer() {
 
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
-    const [viewMode, setViewMode] = useState<ViewMode>('timeline')
-    const [filterMode, setFilterMode] = useState<FilterMode>('both')
-    const { sosiVocab, setPrevDocUrl } = useContext(GlobalContext)
     const searchParams = useSearchParams()
+    const parentNav = searchParams.get('parentNav') || 'timeline'
+    const parent = searchParams.get('parent')
+    const doc = searchParams.get('doc')
+    
+    const [filterMode, setFilterMode] = useState<FilterMode>('both')
+    const { sosiVocab } = useContext(GlobalContext)
+    
     const { parentData } = useContext(DocContext)
 
     const [fuzzyResult, setFuzzyResult] = useState<any[] | null>(null)
@@ -52,7 +55,7 @@ export default function FuzzyExplorer() {
                 const nameStr = name as string
                 let groupKey
                 
-                if (viewMode === 'timeline') {
+                if (parentNav === 'timeline') {
 
                     const year = source.attestations?.find((att: any) => att.label === nameStr)?.year || source.year || null
                     groupKey = year || 'no-year'
@@ -77,7 +80,7 @@ export default function FuzzyExplorer() {
         
         const groups = Array.from(groupMap.values())
         
-        if (viewMode === 'timeline') {
+        if (parentNav === 'timeline') {
             return groups.sort((a, b) => {
                 if (a.year === null && b.year === null) return 0
                 if (a.year === null) return 1
@@ -87,7 +90,7 @@ export default function FuzzyExplorer() {
         } else {
             return groups
         }
-    }, [viewMode])
+    }, [parentNav])
 
     useEffect(() => {
         
@@ -98,7 +101,7 @@ export default function FuzzyExplorer() {
             const processName = (name: string) => {
                 name = name.trim().replace("-", " ")
                 if (name.includes(' ')) {
-                    name =  name.replace(/(?:^|[\s,])(vestre|nordre|[søndre|østre|mellem|mellom|[Yyt])(?=\s|$)/giu, '').trim()
+                    name =  name.replace(/(?:^|[\s,])(vestre|nordre|[søndre|østre|austre|mellem|mellom|[Yy]tt?re)(?=\s|$)/giu, '').trim()
 
                     
 
@@ -203,56 +206,36 @@ export default function FuzzyExplorer() {
     
 
     return <div className={`${fuzzyResultLoading ? 'opacity-50' : ''}`}>
-        <div className="flex gap-2 justify-between">
 
-        <h2 className="text-neutral-900">Finn namneformer</h2>
+        <h2 className="text-neutral-900 text-lg">Finn namneformer - {parentNav == 'timeline' ? 'Tidslinje' : 'Liste'}</h2>
+        <p className="block">Liknande namn i nærleiken av 
+            <Clickable link add={{doc: parent, details: 'doc'}} className="bg-accent-100 no-underline text-accent-800 px-2 align-bottom mx-1 rounded-md inline-flex items-center gap-2">
+            {parent == doc ? <PiBookOpenFill className="text-sm" aria-hidden="true"/> : <PiBookOpen className="text-sm" aria-hidden="true"/>} 
+            {parentData?._source.label}
+            </Clickable>
+        </p>
         
 
-        <div className=" flex items-center gap-4">
-            <div className="flex bg-neutral-100 rounded-lg p-0.5">
-                <button
-                    onClick={() => setViewMode('timeline')}
-                    className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium transition-colors ${
-                        viewMode === 'timeline' 
-                            ? 'bg-white text-neutral-900 shadow-sm' 
-                            : 'text-neutral-600 hover:text-neutral-900'
-                    }`}
-                >
-                    Tidslinje
-                </button>
-                <button
-                    onClick={() => setViewMode('names')}
-                    className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium transition-colors ${
-                        viewMode === 'names' 
-                            ? 'bg-white text-neutral-900 shadow-sm' 
-                            : 'text-neutral-600 hover:text-neutral-900'
-                    }`}
-                >
-                    Namn
-                </button>
-            </div>
-            
-        </div>
-        </div>
 
-        <ul className={`${viewMode === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
+
+        <ul className={`${parentNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
             {groups.map((group, index) => {
-                const groupId = `${viewMode}-${group.key}`
+                const groupId = `${parentNav}-${group.key}`
                 const groupsWithYears = groups.filter(g => g.year)
                 const indexInYearGroups = groupsWithYears.findIndex(g => g.key === group.key)
                 const isLastYearGroup = indexInYearGroups === groupsWithYears.length - 1
                 
                 return (
-                    <li key={groupId} className={viewMode === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
-                        {viewMode === 'timeline' && group.year && (
+                    <li key={groupId} className={parentNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
+                        {parentNav === 'timeline' && group.year && (
                             <>
                                 <div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLastYearGroup ? 'h-4' : 'h-full'} ${indexInYearGroups === 0 ? 'mt-2' : ''}`}></div>
                                 <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2`}></div>
                             </>
                         )}
                         
-                        <div className={viewMode === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
-                            {viewMode === 'timeline' && (
+                        <div className={parentNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
+                            {parentNav === 'timeline' && (
                                 <span className="mr-2 my-1 mt-1 font-medium text-neutral-600">
                                     {group.year || 'Utan årstal'}
                                 </span>
@@ -286,20 +269,16 @@ export default function FuzzyExplorer() {
                                                         return (
                                                             <li key={uniqueKey} className="flex w-full">
                                                                 <Clickable 
-                                                                    link={viewMode === 'timeline'} 
+                                                                    link={parentNav === 'timeline'} 
                                                                     className="flex flex-col w-full gap-1.5 py-2 items-start hover:bg-neutral-50 rounded-md px-3 -mx-3 transition-colors no-underline" 
-                                                                    remove={['group']}
                                                                     add={{details: "doc", doc: doc._source?.uuid}}
-                                                                    onClick={() => {
-                                                                        setPrevDocUrl("/search?" + searchParams.toString())
-                                                                    }}
                                                                 >
                                                                     <span className="font-medium text-sm text-neutral-600 uppercase tracking-wider">{datasetTitles[doc._index.split('-')[2]]}</span>
 
                                                                     {doc._source?.sosi && (
                                                                         <div className="flex items-center gap-2 text-neutral-900">
                                                                             <span className="font-medium">
-                                                                                {viewMode === 'timeline' ? (
+                                                                                {parentNav === 'timeline' ? (
                                                                                     <><strong>{doc._source.label}</strong> ({sosiVocab[doc._source.sosi]?.label})</>
                                                                                 ) : (
                                                                                     sosiVocab[doc._source.sosi]?.label || doc._source.label

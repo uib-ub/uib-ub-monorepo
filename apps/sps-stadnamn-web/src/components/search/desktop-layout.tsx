@@ -85,7 +85,7 @@ export default function DesktopLayout() {
 
 
 
-       { mode == 'map' && (doc || parent) &&
+       { mode == 'map' && (doc || parent) && searchParams.get('details') &&
         <div className="lg:absolute right-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md hidden lg:flex">
         
         

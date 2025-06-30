@@ -21,10 +21,11 @@ export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const doc = searchParams.get('doc')
+    const parent = searchParams.get('parent')
     const { docLoading, docData } = useContext(DocContext)
     const mode = useMode()
     const group = searchParams.get('group')
-    const { prevDocUrl, setPrevDocUrl } = useContext(GlobalContext)
+
 
     const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
     
@@ -45,7 +46,7 @@ export default function DetailsWindow() {
     </ClickableIcon>}
     <ClickableIcon
         label="Oppslag"
-        remove={["details"]} 
+        add={{details: "doc"}} 
         aria-selected={details == "doc" || (details == "group" &&  !groupData)}
         className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
         <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>
@@ -53,19 +54,10 @@ export default function DetailsWindow() {
      
     
   
-    <ClickableIcon
-        label="Namneformer"
-        remove={["details"]} 
-        add={{details: "fuzzy"}}
-        aria-selected={details == "fuzzy"}
-        className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-innere">
-        <PiBinoculars className="text-3xl text-neutral-900 group-aria-selected:text-accent-800" aria-hidden="true"/>
-
-    </ClickableIcon>
         
     <ClickableIcon
             label="Lukk"
-            remove={["doc", "group", "parent"]} 
+            remove={["doc", "group", "details"]} 
             className="ml-auto" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>
@@ -78,24 +70,22 @@ export default function DetailsWindow() {
     
 
 
-    {(groupTotal?.value || !group || prevDocUrl) ?
+    {(groupTotal?.value || (!group && docData)) ?
     
     <div className={`flex flex-wrap gap-2 p-2 border-b border-neutral-200 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
-    <HitNavigation/>
+    {!parent || parent == doc ? 
+      <HitNavigation/>
+      :
+      <Clickable link add={{doc: parent}} className="btn btn-outline btn-compact flex items-center gap-2">
+        <PiCaretLeftBold className="text-md text-neutral-900" aria-hidden="true"/> Tilbake
+      </Clickable>
+      }
+
 
     
 
   <div className="flex gap-2 h-10">
-  {prevDocUrl && <Link
-
-        href={prevDocUrl}
-        onClick={() => {
-          setPrevDocUrl(null)
-        }}
-        className="btn btn-outline h-10 flex items-center gap-2">
-        <PiCaretLeftBold className="text-md text-neutral-900" aria-hidden="true"/> Tilbake
-    </Link>
-    }
+    
 
     
 
@@ -153,9 +143,6 @@ export default function DetailsWindow() {
     <GroupDetails/>
     </div>}
 
-    {details == "fuzzy" && <div className="lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] p-4 pb-8 border-neutral-200 ">
-    <FuzzyExplorer/>
-    </div>}
 
 
     { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
@@ -163,13 +150,13 @@ export default function DetailsWindow() {
 
 
   { details == 'doc' && docData?._source && <div className="flex flex-wrap gap-2 justify-between p-2 border-t border-neutral-200">
-    <div className={`flex gap-2 h-10 ${docLoading ? 'opacity-50' : ''}`}>
+    <div className={`flex gap-2 h-10 w-full ${docLoading ? 'opacity-50' : ''}`}>
       {docData?._source.location ? <>
       <ClickableIcon label="Vis på kart" className="btn btn-outline btn-compact" remove={["center", "zoom"]} add={{zoom: '18', center: docData?._source.location.coordinates.toReversed().join(',')}}>
         <PiMapPinLight className="text-xl" aria-hidden="true"/>
       </ClickableIcon>
-      <Clickable className="btn btn-primary btn-compact flex items-center gap-2 ml-auto" remove={["details"]} add={{parent: docData?._source.uuid}}>
-        <PiBinoculars className="text-xl" aria-hidden="true"/> Namneformer
+      <Clickable className="btn btn-primary btn-compact flex items-center gap-2 ml-auto text-lg" add={{parent: docData?._source.uuid, parentNav: 'timeline'}}>
+        <PiBinoculars className="text-xl" aria-hidden="true"/> Finn namneformer
       </Clickable>
 
 

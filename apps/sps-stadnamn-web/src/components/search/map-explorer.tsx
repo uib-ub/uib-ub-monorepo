@@ -41,6 +41,7 @@ export default function MapExplorer() {
   const { childrenMarkers, childrenLoading, childrenBounds } = useContext(ChildrenContext)
   const programmaticChange = useRef(false)
   const searchParams = useSearchParams()
+  const details = searchParams.get('details') || 'doc'
   
   const router = useRouter()
 
@@ -382,6 +383,7 @@ useEffect(() => {
 
           newQueryParams.set('doc', selected?.fields?.uuid[0])
           newQueryParams.set('docDataset', selected?._index.split('-')[2])
+          newQueryParams.set('details', details)
 
           if (selected.fields?.group) {
             newQueryParams.set('group', stringToBase64Url(selected.fields.group[0]))
