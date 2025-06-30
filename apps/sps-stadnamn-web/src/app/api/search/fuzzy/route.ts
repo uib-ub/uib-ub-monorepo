@@ -58,7 +58,6 @@ export async function POST(request: Request) {
             "query": searchTerm,
             "boost": boost,
             "fuzziness": (h3 || gnidu) ? "AUTO" : 1,
-            "analyzer": "norwegian"
           }
         }
       })
