@@ -221,7 +221,7 @@ export default function FuzzyExplorer() {
                 </Clickable>
             </div>
         </div>
-       
+
         <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
             {groups.map((group, index) => {
                 const groupId = `${fuzzyNav}-${group.key}`
