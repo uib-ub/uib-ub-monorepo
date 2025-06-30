@@ -7,7 +7,7 @@ import { datasetTitles } from "@/config/metadata-config"
 import { base64UrlToString } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { useContext, useState, useEffect, useCallback } from "react"
-import { PiBookOpen, PiBookOpenFill, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa } from "react-icons/pi"
+import { PiBookOpen, PiBookOpenFill, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa, PiList } from "react-icons/pi"
 import * as h3 from 'h3-js';
 import SourceItem from "@/components/children/source-item"
 
@@ -18,13 +18,6 @@ export default function FuzzyExplorer() {
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
     const searchParams = useSearchParams()
     const fuzzyNav = searchParams.get('fuzzyNav') || 'timeline'
-    const parent = searchParams.get('parent')
-    const doc = searchParams.get('doc')
-    
-    const [filterMode, setFilterMode] = useState<FilterMode>('both')
-    const { sosiVocab } = useContext(GlobalContext)
-    
-    const { parentData } = useContext(DocContext)
 
     const [fuzzyResult, setFuzzyResult] = useState<any[] | null>(null)
     const [fuzzyResultLoading, setFuzzyResultLoading] = useState<boolean>(false)
@@ -190,7 +183,7 @@ export default function FuzzyExplorer() {
             })
         }
         
-    }, [groupData, setFuzzyResultError, processResults, filterMode])
+    }, [groupData, setFuzzyResultError, processResults])
 
 
     useEffect(() => {
@@ -206,7 +199,34 @@ export default function FuzzyExplorer() {
     
 
     return <div className={`${fuzzyResultLoading ? 'opacity-50' : ''}`}>        
-        <p><strong>{groupName}</strong> | Liknande namn i nærområdet</p>
+        <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-serif">{groupName}</h3>
+            
+            <div className="flex bg-neutral-100 rounded-lg p-1">
+                <Clickable
+                    add={{ fuzzyNav: 'timeline' }}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline ${
+                        fuzzyNav === 'timeline' 
+                            ? 'bg-white text-neutral-900 shadow-sm' 
+                            : 'text-neutral-700 hover:text-neutral-900'
+                    }`}
+                >
+                    <PiClock className="text-base" />
+                    Tidslinje
+                </Clickable>
+                <Clickable
+                    add={{ fuzzyNav: 'list' }}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline ${
+                        fuzzyNav === 'list' 
+                            ? 'bg-white text-neutral-900 shadow-sm' 
+                            : 'text-neutral-700 hover:text-neutral-900'
+                    }`}
+                >
+                    <PiList className="text-base" />
+                    Liste
+                </Clickable>
+            </div>
+        </div>
        
         <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
             {groups.map((group, index) => {
@@ -226,7 +246,7 @@ export default function FuzzyExplorer() {
                         
                         <div className={fuzzyNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
                             {fuzzyNav === 'timeline' && (
-                                <span className="mr-2 my-1 mt-1 font-medium text-neutral-600">
+                                <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
                                     {group.year || 'Utan årstal'}
                                 </span>
                             )}
@@ -247,7 +267,7 @@ export default function FuzzyExplorer() {
                                                     {isNameExpanded ? <PiCaretUpBold className="text-sm" aria-hidden="true"/> : <PiCaretDownBold className="text-sm" aria-hidden="true"/>}
                                                 </div>
                                                 <span className="font-medium">{name}</span>
-                                                <span className="text-xs text-neutral-500">({nameResults.length})</span>
+                                                <span className="text-sm text-neutral-700">({nameResults.length})</span>
                                             </div>
                                             
                                             {isNameExpanded && (
@@ -265,7 +285,7 @@ export default function FuzzyExplorer() {
                                                         
                                                         return Object.entries(datasetGroups).map(([dataset, items]: [string, any]) => (
                                                             <div key={dataset} className="mb-3 last:mb-0">
-                                                                <span className="font-medium text-sm text-neutral-600 uppercase tracking-wider">
+                                                                <span className="font-medium text-sm text-neutral-700 uppercase tracking-wider">
                                                                     {datasetTitles[dataset]}
                                                                 </span>
                                                                 <ul className="flex flex-col mt-1 divide-y divide-neutral-200 w-full">
