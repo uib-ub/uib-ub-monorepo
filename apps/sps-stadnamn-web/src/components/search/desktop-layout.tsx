@@ -20,14 +20,14 @@ import ClickableIcon from "../ui/clickable/clickable-icon"
 import CopyLink from "../doc/copy-link"
 import Link from "next/link"
 import DetailsWindow from "./details/details-window"
-import ParentWindow from "./parent/parent-window"
+import FuzzyWindow from "./fuzzy/fuzzy-window"
 
 export default function DesktopLayout() {    
     const dataset = useDataset()
     const { parentLoading, parentData, docLoading, docData } = useContext(DocContext)
     const { childrenLoading } = useContext(ChildrenContext)
     const searchParams = useSearchParams()
-    const parent = searchParams.get('parent')
+    const fuzzyNav = searchParams.get('fuzzyNav')
     const mode = useMode()
     const doc = searchParams.get('doc')
     const details = searchParams.get('details') || 'doc'
@@ -40,7 +40,7 @@ export default function DesktopLayout() {
         
 
         { (!doc || mode == 'map') && <section aria-label="Søkeverktøy" className={`lg:absolute left-2 top-2 flex-col  ${(nav || mode == 'map' )? 'lg:w-[calc(25svw-1rem)] max-w-[40svw]' : ''} !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'hidden lg:flex' : 'flex'}`}>
-        {parent ? <ParentWindow/> : <NavWindow/>}       
+        {fuzzyNav ? <FuzzyWindow/> : <NavWindow/>}       
         </section> }
 
         

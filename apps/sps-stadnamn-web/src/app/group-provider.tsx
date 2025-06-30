@@ -36,7 +36,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     useEffect(() => {
         if (group) {
             setGroupLoading(true)
-            const url = `/api/search/collapsed?${searchQueryString}&size=1000&group=${group}`
+            const url = `/api/search/group?${searchQueryString}&group=${group}`
 
             fetch(url).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {

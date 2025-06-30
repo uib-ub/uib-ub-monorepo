@@ -21,33 +21,11 @@ export async function GET(request: Request) {
     sortArray = getSortArray(dataset)
   }
 
-
     
   const query: Record<string,any> = {
-    "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
-    ...filteredParams.from ? {from: filteredParams.from} : {},
-    ...highlight ? {highlight} : {},
-    "track_scores": true,
-    "collapse": {
-      "field": "group",
-      "inner_hits": {
-        "name": "group",
-        "size": 0,
-      }
-    },
+    "size":  1000,
     "fields": [
-      "group", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", // Todo: adapt to whether it's used in the search or in the show more
-    ],
-    "sort": [
-      {
-        _score: "desc"
-      },
-      {
-        boost: {
-          order: "desc",
-          missing: "_last"
-        }
-      },
+      "group", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", "gnidu", "snid" // Todo: adapt to whether it's used in the search or in the show more
     ],
     "_source": false
   }
@@ -71,7 +49,7 @@ export async function GET(request: Request) {
   }
 
   
-  const [data, status] = await postQuery(dataset, query, "dfs_query_then_fetch")
+  const [data, status] = await postQuery(dataset, query)
   return Response.json(data, {status: status})
   
 }

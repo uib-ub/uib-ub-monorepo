@@ -8,44 +8,24 @@ import { GroupContext } from "@/app/group-provider"
 
 import { GlobalContext } from "@/app/global-provider"
 import DocInfo from "../details/doc/doc-info"
-import FuzzyExplorer from "../details/fuzzy/fuzzy-explorer"
+import FuzzyExplorer from "./fuzzy-explorer"
 import Clickable from "@/components/ui/clickable/clickable"
 
-export default function ParentWindow() {
+export default function FuzzyWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const mode = useMode()
-    const parentNav = searchParams.get('parentNav') || 'list'
     
 
     return <>
     <div className={`flex p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
+        <h2 className="text-neutral-900 text-xl self-center flex items-center gap-2 px-2">Finn namneformer</h2>
 
-                <ClickableIcon
-                    add={{parentNav: 'timeline'}}
-                    label="Tidslinje"
-                    aria-expanded={parentNav == 'timeline'}
-                    className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-950 aria-expanded:shadow-inner"
-                >
-                    {parentNav == 'timeline' ? <PiClockFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiClockLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
-                </ClickableIcon>
-                <ClickableIcon
-                label="Liste"
-                    add={{parentNav: 'list'}}
-                    aria-expanded={parentNav == 'list'}
-                    className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 aria-expanded:bg-neutral-100 text-neutral-950 aria-expanded:shadow-inner"
-                >
-                    {parentNav == 'list' ? <PiListBulletsFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiListBulletsLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
-                </ClickableIcon>
-
-
-
-
-  
         
+
     <ClickableIcon
             label="Lukk"
-            remove={["parent", "parentNav"]} 
+            remove={["fuzzyNav"]} 
             className="ml-auto" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>

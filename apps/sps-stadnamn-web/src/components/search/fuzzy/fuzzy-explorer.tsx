@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation"
 import { useContext, useState, useEffect, useCallback } from "react"
 import { PiBookOpen, PiBookOpenFill, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa } from "react-icons/pi"
 import * as h3 from 'h3-js';
+import SourceItem from "@/components/children/source-item"
 
 type FilterMode = 'both' | 'h3' | 'gnidu'
 
@@ -16,7 +17,7 @@ export default function FuzzyExplorer() {
 
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
     const searchParams = useSearchParams()
-    const parentNav = searchParams.get('parentNav') || 'timeline'
+    const fuzzyNav = searchParams.get('fuzzyNav') || 'timeline'
     const parent = searchParams.get('parent')
     const doc = searchParams.get('doc')
     
@@ -27,8 +28,11 @@ export default function FuzzyExplorer() {
 
     const [fuzzyResult, setFuzzyResult] = useState<any[] | null>(null)
     const [fuzzyResultLoading, setFuzzyResultLoading] = useState<boolean>(false)
-    const [setFuzzyResultError] = useState<any | null>(null)
+    const [fuzzyResultError, setFuzzyResultError] = useState<any | null>(null)
     const [groups, setGroups] = useState<any[]>([])
+
+    const { groupData } = useContext(GroupContext)
+    const group = searchParams.get('group')
 
 
     const toggleGroupExpansion = (groupId: string) => {
@@ -55,7 +59,7 @@ export default function FuzzyExplorer() {
                 const nameStr = name as string
                 let groupKey
                 
-                if (parentNav === 'timeline') {
+                if (fuzzyNav === 'timeline') {
 
                     const year = source.attestations?.find((att: any) => att.label === nameStr)?.year || source.year || null
                     groupKey = year || 'no-year'
@@ -80,7 +84,7 @@ export default function FuzzyExplorer() {
         
         const groups = Array.from(groupMap.values())
         
-        if (parentNav === 'timeline') {
+        if (fuzzyNav === 'timeline') {
             return groups.sort((a, b) => {
                 if (a.year === null && b.year === null) return 0
                 if (a.year === null) return 1
@@ -90,90 +94,86 @@ export default function FuzzyExplorer() {
         } else {
             return groups
         }
-    }, [parentNav])
+    }, [fuzzyNav])
 
     useEffect(() => {
         
-        if (parentData) {
+        if (group && groupData) {
             setFuzzyResultLoading(true)
             const requestBody: any = {}
+            const decodedGroup: string = base64UrlToString(group)
+            const firstUnderscore = decodedGroup.indexOf('_')
+            const secondUnderscore = decodedGroup.indexOf('_', firstUnderscore + 1)
+            const groupType = decodedGroup.substring(0, firstUnderscore)
+            const groupValue = decodedGroup.substring(firstUnderscore + 1, secondUnderscore)
+
+            const seenNames = new Set<string>()
+            const allNames: string[] = []
+            const allGnidu: Set<string> = new Set()
+            const allSnid: Set<string> = new Set()
+            
+            
 
             const processName = (name: string) => {
                 name = name.trim().replace("-", " ")
                 if (name.includes(' ')) {
                     name =  name.replace(/(?:^|[\s,])(vestre|nordre|[søndre|østre|austre|mellem|mellom|[Yy]tt?re)(?=\s|$)/giu, '').trim()
-
-                    
-
                     // Remove repeating caps
                     name = name.replace(/([A-Z])\1+/gu, '$1')
-
-
-
                 }
 
                 return name
             }
 
-            // Use Set for automatic deduplication
-            const searchTermsSet = new Set<string>()
-            
-            if (parentData._source.label) {
-                const processed = processName(parentData._source.label)
-                if (processed.length > 0) {
-                    searchTermsSet.add(processed)
-                } else {
-                    searchTermsSet.add(parentData._source.label)
+            groupData.forEach((item: any) => {
+                const fields = item.fields;
+                if (fields?.gnidu) {
+                    fields.gnidu.forEach((gnidu: string) => {
+                        allGnidu.add(gnidu)
+                    })
                 }
-            }
 
-            if (parentData._source.altLabels) {
-                parentData._source.altLabels.forEach((label: string) => {
-                    const processed = processName(label)
-                    if (processed.length > 0) {
-                        searchTermsSet.add(processed) 
-                    } else {
-                        searchTermsSet.add(label)
+                if (fields?.snid) {
+                    allSnid.add(fields.snid)
+                }
+
+                ['label', 'altLabels', 'attestations.label'].forEach((field: string) => {
+                    if (fields?.[field]) {
+                        fields[field].forEach((label: string) => {
+                            if (!seenNames.has(label)) {
+                                seenNames.add(label);
+                                allNames.push(processName(label));
+                            }
+                        });
                     }
-                })
-            }
+                });
+            });
 
-            if (parentData._source.attestations) {
-                parentData._source.attestations.forEach((attestation: any) => {
-                    const processed = processName(attestation.label)
-                    if (processed.length > 0) {
-                        searchTermsSet.add(processed) 
-                    } else {
-                        searchTermsSet.add(attestation.label)
-                    }
-                })
-            }
-
-            // Convert Set to array for the API
-            if (searchTermsSet.size > 0) {
-                requestBody.searchTerms = Array.from(searchTermsSet)
-                console.log("Search terms", requestBody.searchTerms)
+            // Use the processed names
+            if (allNames.length > 0) {
+                requestBody.searchTerms = [...new Set(allNames.filter(Boolean))];
+                console.log("Search terms", requestBody.searchTerms);
             } else {
-                console.log("No search terms found")
-                return
+                console.log("No search terms found");
+                return;
             }
 
-            if (parentData._source.h3 && filterMode !== 'gnidu') {
-                const neighbours = h3.gridDisk(parentData._source.h3, 1)
+            
+
+            if (groupType === 'h3') {
+                const neighbours = h3.gridDisk(groupValue, 1)
                 requestBody.h3 = neighbours
             }
 
-            if (parentData._source.snid) {
-                requestBody.snid = parentData._source.snid
+
+            if (allSnid.size > 0) {
+                requestBody.snid = Array.from(allSnid)
             }
             
-            if (parentData._source.gnidu && filterMode !== 'h3') {
-                if (Array.isArray(parentData._source.gnidu)) {
-                    requestBody.gnidu = parentData._source.gnidu
-                } else {
-                    requestBody.gnidu = [parentData._source.gnidu]
-                }
+            if (allGnidu.size > 0) {
+                requestBody.gnidu = Array.from(allGnidu)
             }
+
 
             fetch('/api/search/fuzzy', {
                 method: 'POST',
@@ -190,7 +190,7 @@ export default function FuzzyExplorer() {
             })
         }
         
-    }, [parentData, setFuzzyResultError, processResults, filterMode])
+    }, [groupData, setFuzzyResultError, processResults, filterMode])
 
 
     useEffect(() => {
@@ -202,40 +202,30 @@ export default function FuzzyExplorer() {
 
 
 
-
+    const groupName = group && base64UrlToString(group).split('_').slice(2).join('_')
     
 
-    return <div className={`${fuzzyResultLoading ? 'opacity-50' : ''}`}>
-
-        <h2 className="text-neutral-900 text-lg">Finn namneformer - {parentNav == 'timeline' ? 'Tidslinje' : 'Liste'}</h2>
-        <p className="block">Liknande namn i nærleiken av 
-            <Clickable link add={{doc: parent, details: 'doc'}} className="bg-accent-100 no-underline text-accent-800 px-2 align-bottom mx-1 rounded-md inline-flex items-center gap-2">
-            {parent == doc ? <PiBookOpenFill className="text-sm" aria-hidden="true"/> : <PiBookOpen className="text-sm" aria-hidden="true"/>} 
-            {parentData?._source.label}
-            </Clickable>
-        </p>
-        
-
-
-
-        <ul className={`${parentNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
+    return <div className={`${fuzzyResultLoading ? 'opacity-50' : ''}`}>        
+        <p><strong>{groupName}</strong> | Liknande namn i nærområdet</p>
+       
+        <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
             {groups.map((group, index) => {
-                const groupId = `${parentNav}-${group.key}`
+                const groupId = `${fuzzyNav}-${group.key}`
                 const groupsWithYears = groups.filter(g => g.year)
                 const indexInYearGroups = groupsWithYears.findIndex(g => g.key === group.key)
                 const isLastYearGroup = indexInYearGroups === groupsWithYears.length - 1
                 
                 return (
-                    <li key={groupId} className={parentNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
-                        {parentNav === 'timeline' && group.year && (
+                    <li key={groupId} className={fuzzyNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
+                        {fuzzyNav === 'timeline' && group.year && (
                             <>
                                 <div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLastYearGroup ? 'h-4' : 'h-full'} ${indexInYearGroups === 0 ? 'mt-2' : ''}`}></div>
                                 <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2`}></div>
                             </>
                         )}
                         
-                        <div className={parentNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
-                            {parentNav === 'timeline' && (
+                        <div className={fuzzyNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
+                            {fuzzyNav === 'timeline' && (
                                 <span className="mr-2 my-1 mt-1 font-medium text-neutral-600">
                                     {group.year || 'Utan årstal'}
                                 </span>
@@ -261,39 +251,39 @@ export default function FuzzyExplorer() {
                                             </div>
                                             
                                             {isNameExpanded && (
-                                                <ul className="flex flex-col ml-5 mt-1 divide-y divide-neutral-200 w-full">
-                                                    {nameResults.map((resultItem: any, resultIndex: number) => {
-                                                        const doc = resultItem.doc
-                                                        const uniqueKey = `${doc._id}-${resultItem.highlightedName}-${resultIndex}`
+                                                <div className="flex flex-col ml-5 mt-1 w-full">
+                                                    {(() => {
+                                                        // Group results by dataset
+                                                        const datasetGroups = nameResults.reduce((acc: any, resultItem: any) => {
+                                                            const dataset = resultItem.doc._index.split('-')[2]
+                                                            if (!acc[dataset]) {
+                                                                acc[dataset] = []
+                                                            }
+                                                            acc[dataset].push(resultItem)
+                                                            return acc
+                                                        }, {})
                                                         
-                                                        return (
-                                                            <li key={uniqueKey} className="flex w-full">
-                                                                <Clickable 
-                                                                    link={parentNav === 'timeline'} 
-                                                                    className="flex flex-col w-full gap-1.5 py-2 items-start hover:bg-neutral-50 rounded-md px-3 -mx-3 transition-colors no-underline" 
-                                                                    add={{details: "doc", doc: doc._source?.uuid}}
-                                                                >
-                                                                    <span className="font-medium text-sm text-neutral-600 uppercase tracking-wider">{datasetTitles[doc._index.split('-')[2]]}</span>
-
-                                                                    {doc._source?.sosi && (
-                                                                        <div className="flex items-center gap-2 text-neutral-900">
-                                                                            <span className="font-medium">
-                                                                                {parentNav === 'timeline' ? (
-                                                                                    <><strong>{doc._source.label}</strong> ({sosiVocab[doc._source.sosi]?.label})</>
-                                                                                ) : (
-                                                                                    sosiVocab[doc._source.sosi]?.label || doc._source.label
-                                                                                )}
-                                                                            </span>
-                                                                            {doc._source?.description && (
-                                                                                <span className="text-neutral-600">• {doc._source.description}</span>
-                                                                            )}
-                                                                        </div>
-                                                                    )}
-                                                                </Clickable>
-                                                            </li>
-                                                        )
-                                                    })}
-                                                </ul>
+                                                        return Object.entries(datasetGroups).map(([dataset, items]: [string, any]) => (
+                                                            <div key={dataset} className="mb-3 last:mb-0">
+                                                                <span className="font-medium text-sm text-neutral-600 uppercase tracking-wider">
+                                                                    {datasetTitles[dataset]}
+                                                                </span>
+                                                                <ul className="flex flex-col mt-1 divide-y divide-neutral-200 w-full">
+                                                                    {(items as any[]).map((resultItem: any, resultIndex: number) => {
+                                                                        const doc = resultItem.doc
+                                                                        const uniqueKey = `${doc._id}-${resultItem.highlightedName}-${resultIndex}`
+                                                                        
+                                                                        return (
+                                                                            <li key={uniqueKey} className="flex w-full">
+                                                                                <SourceItem hit={doc} isMobile={false}/>
+                                                                            </li>
+                                                                        )
+                                                                    })}
+                                                                </ul>
+                                                            </div>
+                                                        ))
+                                                    })()}
+                                                </div>
                                             )}
                                         </li>
                                     )

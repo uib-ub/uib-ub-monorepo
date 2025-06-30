@@ -10,7 +10,7 @@ import { userAgent } from "next/server";
 import { headers } from "next/headers";
 import SearchForm from "@/components/search/form/search-form";
 import GlobalProvider from "./global-provider";
-import { fetchSOSIVocab } from "./api/_utils/actions";
+import { fetchVocab } from "./api/_utils/actions";
  
 const serif = Source_Serif_4({
   subsets: ['latin'],
@@ -44,8 +44,7 @@ export default async function RootLayout({
   const device = userAgent({ headers: headersList }).device;
   const isMobile = device.type === 'mobile'
 
-  const sosiVocab = await fetchSOSIVocab();
-
+  const { coordinateVocab, sosiVocab } = await fetchVocab();
 
   return (
     <html lang="no" className={`${serif.variable} ${sans.className} h-full w-full`}>
@@ -55,7 +54,7 @@ export default async function RootLayout({
       <body className="flex flex-col w-full h-full relative">
         
         <NuqsAdapter>
-        <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab}>
+        <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>

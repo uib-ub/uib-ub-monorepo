@@ -21,10 +21,7 @@ export async function GET(request: Request) {
     
   const query: Record<string,any> = {
     "track_total_hits": 10000000,
-    "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
-    ...filteredParams.from ? {from: filteredParams.from} : {},
-    ...highlight ? {highlight} : {},
-    ...!filteredParams.from ? { // Omitted if just loading additional results
+    "size":  0,
       "aggs": {
         "viewport": {
           "geo_bounds": {
@@ -32,13 +29,7 @@ export async function GET(request: Request) {
             "wrap_longitude": true
           },
         },
-      }
-    } : {},
-    "fields": [
-      ...dataset == '*' ? new Set(Object.values(resultConfig).flat()) : resultConfig[dataset],
-      ...filteredParams.size == '1000' ? Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => key) : []
-    ],
-    "sort": sortArray,
+      },
     "_source": false
   }
 

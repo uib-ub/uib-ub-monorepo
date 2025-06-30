@@ -84,7 +84,7 @@ export default async function Home() {
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
     <div className="flex flex-col gap-6">
-  <h1 className="self-center text-5xl text-neutral-900 sr-only md:not-sr-only">Stadnamnportalen</h1>
+  <h1 className="self-center text-5xl text-neutral-900 sr-only md:not-sr-only !px-2">Stadnamnportalen</h1>
   
   <Form className="grid grid-cols-4 md:grid-cols-6 items-center justify-center gap-3" action="search">
    

@@ -16,6 +16,7 @@ export const GlobalContext = createContext({
   pinnedFilters: {} as Record<string, [string, string][]>,
   updateFacetOption: (facetName: string, options: Partial<FacetOption>) => {},
   updatePinnedFilters: (filters: [string, string][]) => {},
+  coordinateVocab: {} as Record<string, any>,
   sosiVocab: {} as Record<string, any>,
   allowFlyTo: false,
   setAllowFlyTo: (allowFlyTo: boolean) => {},
@@ -23,7 +24,7 @@ export const GlobalContext = createContext({
   setPreferredTab: (dataset: string, tab: string) => {},
 });
 
-export default function GlobalProvider({ children, isMobile, sosiVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any> }) {
+export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
   const [pinnedFilters, setPinnedFilters] = useState<Record<string, [string, string][]>>({});
@@ -106,6 +107,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
         pinnedFilters,
         updatePinnedFilters,
         sosiVocab,
+        coordinateVocab,
         allowFlyTo,
         setAllowFlyTo,
         preferredTabs,

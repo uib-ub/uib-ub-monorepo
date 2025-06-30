@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp, PiListBullets, PiListBulletsLight, PiCaretLeftBold, PiXBold, PiMapPinLight, PiArrowLeft } from "react-icons/pi"
+import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp, PiListBullets, PiListBulletsLight, PiCaretLeftBold, PiXBold, PiMapPinLight, PiArrowLeft, PiBinocularsBold } from "react-icons/pi"
 import Link from "next/link"
 import DocInfo from "./doc/doc-info"
 import { useSearchParams } from "next/navigation"
@@ -14,17 +14,21 @@ import IconLink from "@/components/ui/icon-link"
 import Clickable from "@/components/ui/clickable/clickable"
 import ResultItem from "../nav/results/result-item"
 import HitNavigation from "./hit-navigation"
-import FuzzyExplorer from "./fuzzy/fuzzy-explorer"
+import FuzzyExplorer from "../fuzzy/fuzzy-explorer"
 import { GlobalContext } from "@/app/global-provider"
+import { base64UrlToString, stringToBase64Url } from "@/lib/utils"
+import CoordinateType from "./doc/coordinate-type"
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const doc = searchParams.get('doc')
-    const parent = searchParams.get('parent')
+    const fuzzyNav = searchParams.get('fuzzyNav')
     const { docLoading, docData } = useContext(DocContext)
     const mode = useMode()
     const group = searchParams.get('group')
+
+    const { coordinateVocab } = useContext(GlobalContext)
 
 
     const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
@@ -33,7 +37,7 @@ export default function DetailsWindow() {
     return <>
     <div className={`flex p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
     { groupTotal?.value && <ClickableIcon label="Valde treff" 
-          remove={["details"]} 
+          remove={["details", "fuzzyNav"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}
           className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-inner relative group">
@@ -57,7 +61,7 @@ export default function DetailsWindow() {
         
     <ClickableIcon
             label="Lukk"
-            remove={["doc", "group", "details"]} 
+            remove={["doc", "details", ...(fuzzyNav ? [] : ['group'])]} 
             className="ml-auto" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>
@@ -70,16 +74,10 @@ export default function DetailsWindow() {
     
 
 
-    {(groupTotal?.value || (!group && docData)) ?
+    {(groupTotal?.value || (!fuzzyNav && docData)) ?
     
     <div className={`flex flex-wrap gap-2 p-2 border-b border-neutral-200 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
-    {!parent || parent == doc ? 
-      <HitNavigation/>
-      :
-      <Clickable link add={{doc: parent}} className="btn btn-outline btn-compact flex items-center gap-2">
-        <PiCaretLeftBold className="text-md text-neutral-900" aria-hidden="true"/> Tilbake
-      </Clickable>
-      }
+    {!fuzzyNav && <HitNavigation/>}
 
 
     
@@ -89,7 +87,7 @@ export default function DetailsWindow() {
 
     
 
-    {(groupData && groupData?.length > 1)  ?
+    {(!fuzzyNav && groupData && groupData?.length > 1)  ?
     <>
  
       <CopyLink uuid={docData?._source?.uuid} isIconButton={true} className="btn btn-outline btn-compact"/> 
@@ -148,16 +146,26 @@ export default function DetailsWindow() {
     { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
 
 
-
   { details == 'doc' && docData?._source && <div className="flex flex-wrap gap-2 justify-between p-2 border-t border-neutral-200">
     <div className={`flex gap-2 h-10 w-full ${docLoading ? 'opacity-50' : ''}`}>
       {docData?._source.location ? <>
       <ClickableIcon label="Vis på kart" className="btn btn-outline btn-compact" remove={["center", "zoom"]} add={{zoom: '18', center: docData?._source.location.coordinates.toReversed().join(',')}}>
         <PiMapPinLight className="text-xl" aria-hidden="true"/>
       </ClickableIcon>
-      <Clickable className="btn btn-primary btn-compact flex items-center gap-2 ml-auto text-lg" add={{parent: docData?._source.uuid, parentNav: 'timeline'}}>
-        <PiBinoculars className="text-xl" aria-hidden="true"/> Finn namneformer
-      </Clickable>
+
+
+      <span>{coordinateVocab[docData?._source.coordinateType]?.label}</span>
+
+
+
+      <ClickableIcon
+      label="Finn namneformer"
+      aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
+      disabled={fuzzyNav ? true : false}
+      
+      className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg" add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
+         <PiBinocularsFill className="text-xl text-white" aria-hidden="true"/>
+      </ClickableIcon>
 
 
       </> : <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">Utan koordinater</em>}

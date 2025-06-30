@@ -166,11 +166,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         </div>}
 
 
-        { docSource.location && <div>
-          <CollapsibleHeading title="Koordinatinformasjon">
-            <CoordinateInfo source={docSource}/>
-          </CollapsibleHeading>
-        </div>}
 
 
         

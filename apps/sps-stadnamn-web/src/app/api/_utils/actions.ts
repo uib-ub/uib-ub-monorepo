@@ -48,43 +48,35 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
   }
 
 
-export async function fetchSOSI(sosiCode: string) {
+  export async function fetchVocab() {
     'use server'
-    const res = await fetch("https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + sosiCode + ".json", {
-        method: 'GET'
+    const query = {
+        query: {
+            match_all: {}
+        },
+        _source: true,
+        size: 10000 // Adjust size as needed
+    }
+
+    const [res, status] = await postQuery('vocab_*', query)
+    if (status !== 200) {
+        return { error: "Failed to fetch vocab", status: status }
+    }
+
+    const coordinateVocab: Record<string, any> = {}
+    const sosiVocab: Record<string, any> = {}
+    res.hits.hits.forEach((hit: any) => {
+        if (hit._source.sosiCode) {
+            sosiVocab[hit._source.sosiCode] = hit._source
+        }
+        else {
+            coordinateVocab[hit._source.uuid] = hit._source
+        }
     })
 
-    if (!res.ok) {
-        // TODO: load backup json of all navneobjekttype
-        return {};
-    }
-  const data = await res.json()
-  return data
+    return {coordinateVocab, sosiVocab}
+}
 
-  }
-
-  export async function fetchSOSIVocab() {
-    'use server'
-    const res = await fetch("https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype.json", {
-        method: 'GET',
-        //cache: 'force-cache'
-    })
-
-    if (!res.ok) {
-        // TODO: load backup json of all navneobjekttype from elasticsearch
-        return {};
-    }
-    const data = await res.json()
-    
-    // Map containeditems to an object with codevalue as key
-    const mappedData = data.containeditems.reduce((acc: any, item: any) => {
-        acc[item.codevalue] = item;
-        return acc;
-    }, {});
-    
-    return mappedData;
-
-  }
 
 
   export async function fetchStats(dataset?: string) {

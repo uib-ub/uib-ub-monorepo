@@ -478,7 +478,7 @@ fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) =>
 }, { ...baseAllConfig } as Record<string, FieldConfigItem>)
 
 
-console.log(fieldConfig.all)
+//console.log(fieldConfig.all)
 
 
 export const facetConfig: Record<string, FacetConfigItem[]> = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
