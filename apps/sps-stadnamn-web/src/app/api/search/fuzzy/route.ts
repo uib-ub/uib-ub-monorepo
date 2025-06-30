@@ -68,7 +68,7 @@ export async function POST(request: Request) {
   const identifierQuery: any = {
     "bool": {
       "should": [],
-      "minimum_should_match": 0
+      "minimum_should_match": 1
     }
   }
 
