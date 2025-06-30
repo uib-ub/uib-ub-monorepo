@@ -56,7 +56,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     useEffect(() => {
         if (parent) {
             setParentLoading(true)
-            fetch(`/api/doc?uuid=${parent}${(dataset != 'search' && dataset) ? '&dataset=' + dataset : ''}`).then(res => res.json()).then(data => {
+            fetch(`/api/doc?uuid=${parent}`).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     parentData.current = data.hits.hits[0]
                     setDocAdm(data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1)

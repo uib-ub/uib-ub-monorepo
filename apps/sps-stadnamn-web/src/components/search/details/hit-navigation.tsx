@@ -24,8 +24,7 @@ export default function HitNavigation() {
       <ClickableIcon 
         label="Forrige" 
         className="btn btn-outline btn-compact" 
-        add={{doc: groupData?.[ownPosition !== undefined ? ownPosition - 1 : 0]?.fields?.uuid?.[0],
-          docDataset: groupData?.[ownPosition !== undefined ? ownPosition - 1 : 0]?._index.split('-')[2]
+        add={{doc: groupData?.[ownPosition !== undefined ? ownPosition - 1 : 0]?.fields?.uuid?.[0]
         }}
         disabled={ownPosition === undefined || ownPosition <= 0}
       >
@@ -35,7 +34,7 @@ export default function HitNavigation() {
       <ClickableIcon 
         label="Neste" 
         className="btn btn-outline btn-compact" 
-        add={{docDataset: groupData?.[ownPosition !== undefined ? ownPosition + 1 : 0]?._index.split('-')[2],  doc: groupData?.[ownPosition !== undefined ? ownPosition + 1 : 0]?.fields.uuid?.[0]}}
+        add={{doc: groupData?.[ownPosition !== undefined ? ownPosition + 1 : 0]?.fields.uuid?.[0]}}
         disabled={ownPosition === undefined || ownPosition >= (groupData?.length || 0) - 1}
       >
         <PiCaretRight className="xl:text-xl" aria-hidden="true"/>

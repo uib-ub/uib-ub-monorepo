@@ -181,7 +181,6 @@ export default function TableExplorer() {
                                             remove={['nav']}
                                             aria-current={doc == hit._source?.uuid}
                                             add={{doc: hit._source?.uuid, 
-                                                docDataset: hit._index.split('_')[2],
                                                 ...(hit._source.children?.length || (treeSettings[dataset] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
                                             }}
                                         >

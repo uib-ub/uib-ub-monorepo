@@ -66,7 +66,6 @@ export default function RootWords({hit}: {hit: any}) {
                                        add={{
                                         doc: word.fields?.uuid?.[0],
                                         ...(word.indices.size > 1 ? {group: stringToBase64Url("grunnord_" + word.label)} : {}),
-                                        docDataset: word?._index?.split('_')[2]
                                        }}
                                        className={`btn btn-outline flex items-center gap-2 ${word.indices.size > 1 ? 'pr-3' : ''}`}>
                                 {word.label}

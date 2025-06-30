@@ -33,7 +33,7 @@ export default function AudioExplorer({recordings}: {recordings: any[]}) {
         
     />
     <div className="flex py-2 gap-2">
-      <ClickableIcon label={'Kjelde: Hordanamn'} add={{doc: recording.uuid, docDataset: 'hord'}} remove={["sourceLabel", "sourceDataset"]} className="btn btn-outline">
+      <ClickableIcon label={'Kjelde: Hordanamn'} add={{doc: recording.uuid}} remove={["sourceLabel", "sourceDataset"]} className="btn btn-outline">
        
       <PiBookOpen className="text-lg text-neutral-800" aria-hidden="true"/>
       </ClickableIcon>

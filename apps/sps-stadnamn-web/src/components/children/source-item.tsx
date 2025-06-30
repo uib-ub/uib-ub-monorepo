@@ -32,7 +32,6 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                 add={{
                     doc: getFieldValue(hit, 'children')?.length === 1 ? getFieldValue(hit, 'children')[0] : getFieldValue(hit, 'uuid'),
                     details: 'doc',
-                    docDataset: docDataset,
                     parent: parent && docDataset == 'search' ? getFieldValue(hit, 'uuid') : null,
                 }}
             >

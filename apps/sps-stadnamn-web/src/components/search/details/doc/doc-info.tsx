@@ -192,7 +192,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
               const label = hit.fields?.label || hit._source?.label
               const docDataset = hit._index.split('-')[2]
 
-            return <Clickable link key={hit._id} role="tab" aria-selected={[uuid, children].includes(doc)} className="rounded-tabs" add={{doc: children ? children : uuid, docDataset: dataset}}>
+            return <Clickable link key={hit._id} role="tab" aria-selected={[uuid, children].includes(doc)} className="rounded-tabs" add={{doc: children ? children : uuid}}>
                 {label}
             </Clickable>
             }
