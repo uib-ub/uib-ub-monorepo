@@ -158,14 +158,14 @@ export default function DetailsWindow() {
 
 
 
-      <ClickableIcon
-      label="Finn namneformer"
+      <Clickable
+
       aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
       disabled={fuzzyNav ? true : false}
       
       className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg" add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
-         <PiBinocularsFill className="text-xl text-white" aria-hidden="true"/>
-      </ClickableIcon>
+         <PiBinocularsFill className="text-xl text-white" aria-hidden="true"/> Namneformer
+      </Clickable>
 
 
       </> : <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">Utan koordinater</em>}
