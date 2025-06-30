@@ -44,11 +44,8 @@ export default function FuzzyExplorer() {
             
             const allNames = Array.from(new Set(
                 (source.attestations?.map((att: any) => att.label) || [])
-                    .concat(highlight['label'] || [])
-                    .concat(highlight['altLabels'] || [])
                     .concat(source.label ? [source.label] : [])
                     .concat(source.altLabels || [])
-                    .concat(source.attestations?.map((att: any) => att.label) || [])
             ))
             
             allNames.forEach((name) => {

@@ -28,17 +28,6 @@ export async function POST(request: Request) {
       },
     ],
     "_source": ["group", "label", "adm1", "adm2", "uuid", "sosi", "description", "attestations", "year", "gnidu", "h3"],
-    "highlight": {
-      "fields": {
-        "label": {},
-        "altLabels": {},
-        "attestations.label": {}
-      },
-      "pre_tags": [""],
-      "post_tags": [""],
-      "fragment_size": 150,
-      "number_of_fragments": 3
-    }
   }
 
   // Build the query with bool structure
