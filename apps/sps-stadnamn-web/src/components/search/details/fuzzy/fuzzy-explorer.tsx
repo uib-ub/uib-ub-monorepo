@@ -6,23 +6,27 @@ import IconButton from "@/components/ui/icon-button"
 import { datasetTitles } from "@/config/metadata-config"
 import { base64UrlToString } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
-import { useContext, useState, useEffect } from "react"
+import { useContext, useState, useEffect, useCallback } from "react"
 import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa } from "react-icons/pi"
 import * as h3 from 'h3-js';
 
 type ViewMode = 'timeline' | 'names'
+type FilterMode = 'both' | 'h3' | 'gnidu'
 
 export default function FuzzyExplorer() {
 
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
     const [viewMode, setViewMode] = useState<ViewMode>('timeline')
-    const { sosiVocab } = useContext(GlobalContext)
-
-    const { docData } = useContext(DocContext)
+    const [filterMode, setFilterMode] = useState<FilterMode>('both')
+    const { sosiVocab, setPrevDocUrl } = useContext(GlobalContext)
+    const searchParams = useSearchParams()
+    const { parentData } = useContext(DocContext)
 
     const [fuzzyResult, setFuzzyResult] = useState<any[] | null>(null)
     const [fuzzyResultLoading, setFuzzyResultLoading] = useState<boolean>(false)
     const [setFuzzyResultError] = useState<any | null>(null)
+    const [groups, setGroups] = useState<any[]>([])
+
 
     const toggleGroupExpansion = (groupId: string) => {
         setExpandedGroups(prev => ({
@@ -31,8 +35,7 @@ export default function FuzzyExplorer() {
         }))
     }
 
-
-    const processResults = (results: any[]) => {
+    const processResults = useCallback((results: any[]) => {
         const groupMap = new Map()
         
         results.forEach(result => {
@@ -84,24 +87,27 @@ export default function FuzzyExplorer() {
         } else {
             return groups
         }
-    }
+    }, [viewMode])
 
     useEffect(() => {
-        if (docData) {
+        
+        if (parentData) {
             setFuzzyResultLoading(true)
             const requestBody: any = {}
 
             const processName = (name: string) => {
-                name =  name.replace(/(?:^|[\s,])(vestre|nordre|[søndre|østre|mellem|mellom|[Yyt])(?=\s|$)/gi, '').trim()
-                // Remove special characters
-                name = name.replace(/[^\w\s]/g, '').trim()
-                
+                name = name.trim().replace("-", " ")
+                if (name.includes(' ')) {
+                    name =  name.replace(/(?:^|[\s,])(vestre|nordre|[søndre|østre|mellem|mellom|[Yyt])(?=\s|$)/giu, '').trim()
 
-                // Remove repeating caps
-                name = name.replace(/([A-Z])\1+/g, '$1')
+                    
 
-                // Remove singleton letters
-                name = name.replace(/\b\w\b/g, '').trim()
+                    // Remove repeating caps
+                    name = name.replace(/([A-Z])\1+/gu, '$1')
+
+
+
+                }
 
                 return name
             }
@@ -109,17 +115,17 @@ export default function FuzzyExplorer() {
             // Use Set for automatic deduplication
             const searchTermsSet = new Set<string>()
             
-            if (docData._source.label) {
-                const processed = processName(docData._source.label)
+            if (parentData._source.label) {
+                const processed = processName(parentData._source.label)
                 if (processed.length > 0) {
                     searchTermsSet.add(processed)
                 } else {
-                    searchTermsSet.add(docData._source.label)
+                    searchTermsSet.add(parentData._source.label)
                 }
             }
 
-            if (docData._source.altLabels) {
-                docData._source.altLabels.forEach((label: string) => {
+            if (parentData._source.altLabels) {
+                parentData._source.altLabels.forEach((label: string) => {
                     const processed = processName(label)
                     if (processed.length > 0) {
                         searchTermsSet.add(processed) 
@@ -129,8 +135,8 @@ export default function FuzzyExplorer() {
                 })
             }
 
-            if (docData._source.attestations) {
-                docData._source.attestations.forEach((attestation: any) => {
+            if (parentData._source.attestations) {
+                parentData._source.attestations.forEach((attestation: any) => {
                     const processed = processName(attestation.label)
                     if (processed.length > 0) {
                         searchTermsSet.add(processed) 
@@ -149,20 +155,20 @@ export default function FuzzyExplorer() {
                 return
             }
 
-            if (docData._source.h3) {
-                const neighbours = h3.gridDisk(docData._source.h3, 1)
+            if (parentData._source.h3 && filterMode !== 'gnidu') {
+                const neighbours = h3.gridDisk(parentData._source.h3, 1)
                 requestBody.h3 = neighbours
             }
 
-            if (docData._source.snid) {
-                requestBody.snid = docData._source.snid
+            if (parentData._source.snid) {
+                requestBody.snid = parentData._source.snid
             }
             
-            if (docData._source.gnidu) {
-                if (Array.isArray(docData._source.gnidu)) {
-                    requestBody.gnidu = docData._source.gnidu
+            if (parentData._source.gnidu && filterMode !== 'h3') {
+                if (Array.isArray(parentData._source.gnidu)) {
+                    requestBody.gnidu = parentData._source.gnidu
                 } else {
-                    requestBody.gnidu = [docData._source.gnidu]
+                    requestBody.gnidu = [parentData._source.gnidu]
                 }
             }
 
@@ -181,37 +187,52 @@ export default function FuzzyExplorer() {
             })
         }
         
-    }, [docData, setFuzzyResultError])
+    }, [parentData, setFuzzyResultError, processResults, filterMode])
 
-    const groups = fuzzyResult ? processResults(fuzzyResult) : []
+
+    useEffect(() => {
+        if (fuzzyResult) {
+            setGroups(processResults(fuzzyResult))
+        }
+    }, [fuzzyResult, processResults])
+
+
+
+
+
+    
 
     return <div className={`${fuzzyResultLoading ? 'opacity-50' : ''}`}>
-        <h2 className="text-lg font-medium text-neutral-900 mb-2">Finn andre namneformer</h2>
-        <div className="mb-4 flex items-center gap-2">
-            <div className="flex bg-neutral-100 rounded-lg p-1">
+        <div className="flex gap-2 justify-between">
+
+        <h2 className="text-neutral-900">Finn namneformer</h2>
+        
+
+        <div className=" flex items-center gap-4">
+            <div className="flex bg-neutral-100 rounded-lg p-0.5">
                 <button
                     onClick={() => setViewMode('timeline')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium transition-colors ${
                         viewMode === 'timeline' 
                             ? 'bg-white text-neutral-900 shadow-sm' 
                             : 'text-neutral-600 hover:text-neutral-900'
                     }`}
                 >
-                    <PiClock className="text-base" />
                     Tidslinje
                 </button>
                 <button
                     onClick={() => setViewMode('names')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium transition-colors ${
                         viewMode === 'names' 
                             ? 'bg-white text-neutral-900 shadow-sm' 
                             : 'text-neutral-600 hover:text-neutral-900'
                     }`}
                 >
-                    <PiTextAa className="text-base" />
-                    Navn
+                    Namn
                 </button>
             </div>
+            
+        </div>
         </div>
 
         <ul className={`${viewMode === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
@@ -267,8 +288,11 @@ export default function FuzzyExplorer() {
                                                                 <Clickable 
                                                                     link={viewMode === 'timeline'} 
                                                                     className="flex flex-col w-full gap-1.5 py-2 items-start hover:bg-neutral-50 rounded-md px-3 -mx-3 transition-colors no-underline" 
-                                                                    remove={viewMode === 'timeline' ? ["group"] : undefined}
-                                                                    add={{details: "doc", doc: doc._source?.uuid, docDataset: doc._index.split('-')[2]}}
+                                                                    remove={['group']}
+                                                                    add={{details: "doc", doc: doc._source?.uuid}}
+                                                                    onClick={() => {
+                                                                        setPrevDocUrl("/search?" + searchParams.toString())
+                                                                    }}
                                                                 >
                                                                     <span className="font-medium text-sm text-neutral-600 uppercase tracking-wider">{datasetTitles[doc._index.split('-')[2]]}</span>
 

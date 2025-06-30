@@ -11,6 +11,8 @@ interface FacetOption {
 export const GlobalContext = createContext({
   currentUrl: null as string | null,    
   setCurrentUrl: (url: string | null) => {},
+  prevDocUrl: null as string | null,
+  setPrevDocUrl: (url: string | null) => {},
   isMobile: false,
   facetOptions: {} as Record<string, Record<string, Partial<FacetOption>>>,
   pinnedFilters: {} as Record<string, [string, string][]>,
@@ -25,6 +27,7 @@ export const GlobalContext = createContext({
 
 export default function GlobalProvider({ children, isMobile, sosiVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any> }) {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
+  const [prevDocUrl, setPrevDocUrl] = useState<string | null>(null);
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
   const [pinnedFilters, setPinnedFilters] = useState<Record<string, [string, string][]>>({});
   const dataset = useDataset()
@@ -100,6 +103,8 @@ export default function GlobalProvider({ children, isMobile, sosiVocab }: { chil
       value={{
         currentUrl,
         setCurrentUrl,
+        prevDocUrl,
+        setPrevDocUrl,
         isMobile,
         facetOptions,
         updateFacetOption,

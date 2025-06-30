@@ -20,9 +20,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const group = searchParams.get('group')
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
-    const parent = searchParams.get('parent')
-    const { isMobile } = useContext(GlobalContext)
-    const details = searchParams.get('details') || 'doc'
+    const { isMobile, setPrevDocUrl } = useContext(GlobalContext)
 
     const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
     const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
@@ -49,12 +47,14 @@ export default function ResultItem({hit}: {hit: any}) {
         :
         <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline  ${isGrunnord ? "my-2 rounded-md border border-neutral-200 aria-[current='page']:bg-accent-50 aria-[current='page']:border-accent-700" : "border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4 "}`} 
                     aria-current={isSelected ? 'page' : undefined}
-                    remove={['sourceDataset', 'sourceLabel', 'docDataset', 'group']}
+                    remove={['sourceDataset', 'sourceLabel', 'docDataset', 'group', 'parent']}
+                    onClick={() => {
+                        setPrevDocUrl(null)
+                    }}
                     add={{
                         doc: hit.fields.uuid,
-                        ...(hit.fields?.datasets?.length === 1 ? {docDataset: hit.fields.datasets[0]} : {}),
-                        ...(parent && !isMobile) ? {parent: docDataset == 'search' ? hit.fields.uuid : hit.fields?.within} : {},
-                        ...(hit.fields.group && (details != 'doc' || hit.inner_hits?.group?.hits?.total?.value > 1)) ? {group: stringToBase64Url(hit.fields.group[0])} : {},
+
+                        ...(hit.fields.group && hit.inner_hits?.group?.hits?.total?.value > 1) ? {group: stringToBase64Url(hit.fields.group[0])} : {},
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>

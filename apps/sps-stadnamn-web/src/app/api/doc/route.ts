@@ -10,6 +10,7 @@ export async function GET(request: Request) {
         // First attempt: search only by exact UUID
         const initialQuery = {
             size: 1,
+            terminate_after: 1,
             query: {
                 term: { uuid: uuid }
             }

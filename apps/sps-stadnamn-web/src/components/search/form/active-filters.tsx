@@ -10,6 +10,7 @@ import { DocContext } from "@/app/doc-provider"
 import { useContext } from "react"
 import { getGnr } from "@/lib/utils"
 import { GlobalContext } from "@/app/global-provider"
+import Clickable from "@/components/ui/clickable/clickable"
 
 
 export default function ActiveFilters() {
@@ -149,9 +150,10 @@ export default function ActiveFilters() {
               </button>
           ))}
           
-          {mode == 'map' && parentData?._source && <><button className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setParent(null)}>
+          {mode == 'map' && parentData?._source && <><Clickable className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" remove={['parent', 'details']}>
             {gnr ? gnr + ' ' +  parentData._source.label : parentData._source.label}
-            <PiX className="inline text-lg" aria-hidden="true"/></button>
+            <PiX className="inline text-lg" aria-hidden="true"/>
+            </Clickable>
             {sourceLabel && <button className="text-neutral-950 bg-white shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setSourceLabel(null)}>
             {sourceLabel}
             <PiX className="inline text-lg" aria-hidden="true"/></button>}

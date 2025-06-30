@@ -30,11 +30,10 @@ export default function FileCard({item, itemDataset, currentItem}: {item: any, i
         <>
         
         <div className="relative h-full w-full aspect-[16/9] object-cover">
-            <Image 
+            <img 
                 className="bg-neutral-800 border border-neutral-200"
                 src={thumbnail} 
                 alt={resolveLanguage(item.label)} 
-                fill
             />
             { canvasCount > 1 && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90 flex items-center justify-center bg-neutral-900 text-white aspect-square rounded-full p-1 px-3 font-semibold text-sm shadow-md">
             {canvasCount}

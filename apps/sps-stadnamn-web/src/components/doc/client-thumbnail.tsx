@@ -11,7 +11,7 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
     const height = 240
     const width = 320
-    const aspectRatio = height / width
+    const aspectRatio = 9 / 16
     const dataset = useDataset()
     const { docDataset } = useContext(DocContext)
 
@@ -29,7 +29,9 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
             setManifestUuid(source.uuid)
             const dataset = data?.hits?.hits?.[0]?._index.split("-")[2].split("_")[1]
             setManifestDataset(dataset)
-            setThumbnailUrl(`https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${source.images[0].uuid}/0,0,${source.images[0].width},${Math.round(source.images[0].width*aspectRatio)}/${width*2},${height*2}/0/default.jpg`)
+            const outputWidth = width * 2
+            const outputHeight = Math.round(outputWidth * (9/16))
+            setThumbnailUrl(`https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${source.images[0].uuid}/0,0,${source.images[0].width},${Math.round(source.images[0].width*aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`)
             setManifestLoading(false)
         }
 
@@ -49,7 +51,7 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
                 <img
                     src={thumbnailUrl || "/"} 
                     alt="Seddel"
-                    className="object-cover"
+                    className="object-contain"
                     
                     />
             </Link>

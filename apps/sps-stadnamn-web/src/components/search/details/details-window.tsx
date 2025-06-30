@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp, PiListBullets, PiListBulletsLight } from "react-icons/pi"
+import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp, PiListBullets, PiListBulletsLight, PiCaretLeftBold, PiXBold, PiMapPinLight, PiArrowLeft } from "react-icons/pi"
 import Link from "next/link"
 import DocInfo from "./doc/doc-info"
 import { useSearchParams } from "next/navigation"
@@ -15,6 +15,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import ResultItem from "../nav/results/result-item"
 import HitNavigation from "./hit-navigation"
 import FuzzyExplorer from "./fuzzy/fuzzy-explorer"
+import { GlobalContext } from "@/app/global-provider"
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
@@ -23,13 +24,14 @@ export default function DetailsWindow() {
     const { docLoading, docData } = useContext(DocContext)
     const mode = useMode()
     const group = searchParams.get('group')
+    const { prevDocUrl, setPrevDocUrl } = useContext(GlobalContext)
 
     const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
     
 
     return <>
     <div className={`flex p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
-    {groupTotal?.value && <ClickableIcon label="Valde treff" 
+    { groupTotal?.value && <ClickableIcon label="Valde treff" 
           remove={["details"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}
@@ -44,12 +46,15 @@ export default function DetailsWindow() {
     <ClickableIcon
         label="Oppslag"
         remove={["details"]} 
-        aria-selected={details == "doc"}
+        aria-selected={details == "doc" || (details == "group" &&  !groupData)}
         className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
         <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>
     </ClickableIcon>
+     
+    
+  
     <ClickableIcon
-        label="Finn andre navneformer"
+        label="Namneformer"
         remove={["details"]} 
         add={{details: "fuzzy"}}
         aria-selected={details == "fuzzy"}
@@ -57,27 +62,42 @@ export default function DetailsWindow() {
         <PiBinoculars className="text-3xl text-neutral-900 group-aria-selected:text-accent-800" aria-hidden="true"/>
 
     </ClickableIcon>
-    
-    
-    
-
-    
+        
     <ClickableIcon
             label="Lukk"
-            remove={["doc", "docDataset", "group"]} 
+            remove={["doc", "group", "parent"]} 
             className="ml-auto" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>
   </div>
 
+  
+
   {details == "doc" && <>
 
-    {(groupTotal?.value || !group) ?
+    
+
+
+    {(groupTotal?.value || !group || prevDocUrl) ?
     
     <div className={`flex flex-wrap gap-2 p-2 border-b border-neutral-200 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
     <HitNavigation/>
 
+    
+
   <div className="flex gap-2 h-10">
+  {prevDocUrl && <Link
+
+        href={prevDocUrl}
+        onClick={() => {
+          setPrevDocUrl(null)
+        }}
+        className="btn btn-outline h-10 flex items-center gap-2">
+        <PiCaretLeftBold className="text-md text-neutral-900" aria-hidden="true"/> Tilbake
+    </Link>
+    }
+
+    
 
     {(groupData && groupData?.length > 1)  ?
     <>
@@ -116,7 +136,7 @@ export default function DetailsWindow() {
 
 
 
-  {details == "doc" && doc && docData?._source && <div className={`lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
+  {(details == "doc" || (details == "group" &&  !groupData)) && doc && docData?._source && <div className={`lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-16rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
 
  
       <DocInfo/>
@@ -138,18 +158,29 @@ export default function DetailsWindow() {
     </div>}
 
 
-  { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
+    { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
 
 
-  {/* TODO: move coordinate info out of doc info and add button to locate in map
+
   { details == 'doc' && docData?._source && <div className="flex flex-wrap gap-2 justify-between p-2 border-t border-neutral-200">
-    <div className="flex gap-2 h-10">
-      {docData?._source.location && <ClickableIcon label="Vis på kart" className="btn btn-outline btn-compact" remove={["center", "zoom"]} add={{zoom: '18', center: docData?._source.location.coordinates.toReversed().join(',')}}>
+    <div className={`flex gap-2 h-10 ${docLoading ? 'opacity-50' : ''}`}>
+      {docData?._source.location ? <>
+      <ClickableIcon label="Vis på kart" className="btn btn-outline btn-compact" remove={["center", "zoom"]} add={{zoom: '18', center: docData?._source.location.coordinates.toReversed().join(',')}}>
         <PiMapPinLight className="text-xl" aria-hidden="true"/>
-      </ClickableIcon>}
+      </ClickableIcon>
+      <Clickable className="btn btn-primary btn-compact flex items-center gap-2 ml-auto" remove={["details"]} add={{parent: docData?._source.uuid}}>
+        <PiBinoculars className="text-xl" aria-hidden="true"/> Namneformer
+      </Clickable>
+
+
+      </> : <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">Utan koordinater</em>}
+
+      
     </div>
+
+
   </div>}
-  */}
+
   
 
   
