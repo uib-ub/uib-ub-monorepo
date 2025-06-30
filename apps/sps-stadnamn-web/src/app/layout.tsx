@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Menu from "./menu";
 import NavBar from "./nav-bar";
-import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
+import { Source_Sans_3, Source_Serif_4 } from 'next/font/google'
 import { Suspense } from "react";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import PlausibleProvider from 'next-plausible'
@@ -12,16 +12,18 @@ import SearchForm from "@/components/search/form/search-form";
 import GlobalProvider from "./global-provider";
 import { fetchSOSIVocab } from "./api/_utils/actions";
  
-const garamond = Cormorant_Garamond({
+const serif = Source_Serif_4({
   subsets: ['latin'],
-  weight: ["400", "600", "700"],
+  weight: ["400", "700"],
   display: 'swap',
-  variable: '--font-garamond',
+  variable: '--font-serif',
 })
 
-const opensans = Open_Sans({
+const sans = Source_Sans_3  ({
+  weight: ["400", "600", "700"],
   subsets: ['latin'],
-  display: 'swap',
+  display: 'swap'
+  
 })
  
 
@@ -46,7 +48,7 @@ export default async function RootLayout({
 
 
   return (
-    <html lang="no" className={`${garamond.variable} ${opensans.className} h-full w-full`}>
+    <html lang="no" className={`${serif.variable} ${sans.className} h-full w-full`}>
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
       </head>
