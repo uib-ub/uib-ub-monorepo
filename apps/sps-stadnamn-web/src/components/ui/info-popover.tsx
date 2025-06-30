@@ -21,7 +21,7 @@ export default function InfoPopover({ children }: { children?: React.ReactNode }
                 popover="auto"
                 // @ts-expect-error: anchor is not yet in React's type definitions
                 anchor={anchorName}
-                className="absolute p-4 rounded-md shadow-md bg-white border border-neutral-200 max-w-xs"
+                className="absolute p-4 rounded-md shadow-md bg-white border border-neutral-200 max-w-xs text-base"
                 style={{
                     top: "anchor(bottom)",
                     left: "anchor(center)",
