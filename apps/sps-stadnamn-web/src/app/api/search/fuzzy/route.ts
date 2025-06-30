@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   const targetFields = [
     { field: "label", boost: 3.0 },
     { field: "altLabels", boost: 2.0 },
-    { field: "attestations.label", boost: 1.0 }
+    //{ field: "attestations.label", boost: 1.0 }
   ]
 
   // Build many-to-many fuzzy search clauses

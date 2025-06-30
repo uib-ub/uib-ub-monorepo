@@ -130,7 +130,7 @@ export default function FuzzyExplorer() {
                     allSnid.add(fields.snid)
                 }
 
-                ['label', 'altLabels', 'attestations.label'].forEach((field: string) => {
+                ['label', 'altLabels'].forEach((field: string) => {
                     if (fields?.[field]) {
                         fields[field].forEach((label: string) => {
                             if (!seenNames.has(label)) {
