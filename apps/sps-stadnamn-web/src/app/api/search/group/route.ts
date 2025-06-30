@@ -6,12 +6,9 @@ import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const queryText = searchParams.get('q') || '';
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset || 'all'  // == 'search' ? '*' : filteredParams.dataset;
-  const { highlight, simple_query_string } = getQueryString(filteredParams)
-  const collapse = filteredParams.collapse
+  const { simple_query_string } = getQueryString(filteredParams)
 
   let sortArray: (string | object)[] = []
     
@@ -24,11 +21,25 @@ export async function GET(request: Request) {
     
   const query: Record<string,any> = {
     "size":  1000,
+    "track_scores": true,
     "fields": [
       "group", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", "gnidu", "snid" // Todo: adapt to whether it's used in the search or in the show more
     ],
+    "sort": [
+      {
+        _score: "desc"
+      },
+      {
+        boost: {
+          order: "desc",
+          missing: "_last"
+        }
+      },
+    ],
     "_source": false
   }
+
+  
 
   if (simple_query_string && termFilters.length) {
     query.query = {
@@ -49,7 +60,7 @@ export async function GET(request: Request) {
   }
 
   
-  const [data, status] = await postQuery(dataset, query)
+  const [data, status] = await postQuery(dataset, query, "dfs_query_then_fetch")
   return Response.json(data, {status: status})
   
 }
