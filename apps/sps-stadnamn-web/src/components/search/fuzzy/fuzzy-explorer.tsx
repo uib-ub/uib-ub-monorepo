@@ -46,6 +46,9 @@ export default function FuzzyExplorer() {
                 (source.attestations?.map((att: any) => att.label) || [])
                     .concat(highlight['label'] || [])
                     .concat(highlight['altLabels'] || [])
+                    .concat(source.label ? [source.label] : [])
+                    .concat(source.altLabels || [])
+                    .concat(source.attestations?.map((att: any) => att.label) || [])
             ))
             
             allNames.forEach((name) => {
@@ -183,7 +186,7 @@ export default function FuzzyExplorer() {
             })
         }
         
-    }, [groupData, setFuzzyResultError, processResults])
+    }, [groupData, setFuzzyResultError, processResults, group])
 
 
     useEffect(() => {
@@ -205,22 +208,16 @@ export default function FuzzyExplorer() {
             <div className="flex bg-neutral-100 rounded-lg p-1">
                 <Clickable
                     add={{ fuzzyNav: 'timeline' }}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline ${
-                        fuzzyNav === 'timeline' 
-                            ? 'bg-white text-neutral-900 shadow-sm' 
-                            : 'text-neutral-700 hover:text-neutral-900'
-                    }`}
+                    aria-pressed={fuzzyNav === 'timeline'}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline aria-pressed:bg-white aria-pressed:text-neutral-900 aria-pressed:shadow-sm aria-[pressed=false]:text-neutral-700 aria-[pressed=false]:hover:text-neutral-900`}
                 >
                     <PiClock className="text-base" />
                     Tidslinje
                 </Clickable>
                 <Clickable
                     add={{ fuzzyNav: 'list' }}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline ${
-                        fuzzyNav === 'list' 
-                            ? 'bg-white text-neutral-900 shadow-sm' 
-                            : 'text-neutral-700 hover:text-neutral-900'
-                    }`}
+                    aria-pressed={fuzzyNav === 'list'}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline aria-pressed:bg-white aria-pressed:text-neutral-900 aria-pressed:shadow-sm aria-[pressed=false]:text-neutral-700 aria-[pressed=false]:hover:text-neutral-900`}
                 >
                     <PiList className="text-base" />
                     Liste
