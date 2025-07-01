@@ -60,6 +60,7 @@ export default function DatasetFacet() {
     params.delete('zoom')
     params.delete('center')
     params.delete('doc')
+    params.delete('group')
     
     // For indexDataset, convert all values to dataset tags before filtering
     

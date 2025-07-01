@@ -46,9 +46,9 @@ export default function ResultItem({hit}: {hit: any}) {
         <RootWords hit={hit}/>
 
         :
-        <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline  ${isGrunnord ? "my-2 rounded-md border border-neutral-200 aria-[current='page']:bg-accent-50 aria-[current='page']:border-accent-700" : "border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4 "}`} 
+        <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline  ${isGrunnord ? "my-2 rounded-md border border-neutral-200 aria-[current='page']:bg-accent-50 aria-[current='page']:border-accent-700" : "border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4"}`} 
                     aria-current={isSelected ? 'page' : undefined}
-                    remove={['sourceDataset', 'sourceLabel', 'docDataset', 'group', 'parent']}
+                    remove={['sourceLabel', 'group', 'parent']}
                     add={{
                         doc: hit.fields.uuid,
                         details: details, 

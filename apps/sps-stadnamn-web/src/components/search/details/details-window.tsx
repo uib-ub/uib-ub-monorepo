@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp, PiListBullets, PiListBulletsLight, PiCaretLeftBold, PiXBold, PiMapPinLight, PiArrowLeft, PiBinocularsBold } from "react-icons/pi"
+import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp, PiListBullets, PiListBulletsLight, PiCaretLeftBold, PiXBold, PiMapPinLight, PiArrowLeft, PiBinocularsBold, PiListLight, PiMapPin, PiMapPinFill } from "react-icons/pi"
 import Link from "next/link"
 import DocInfo from "./doc/doc-info"
 import { useSearchParams } from "next/navigation"
@@ -35,36 +35,39 @@ export default function DetailsWindow() {
     
 
     return <>
-    <div className={`flex p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
-    { groupTotal?.value && <ClickableIcon label="Valde treff" 
+    <div className={`flex p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
+    { groupTotal?.value && <Clickable label="Valde treff" 
           remove={["details", "fuzzyNav"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}
-          className="flex whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-950 aria-selected:bg-neutral-100 aria-selected:shadow-inner relative group">
-      <PiListBulletsLight className="text-3xl text-neutral-900" aria-hidden="true"/>
+          className="flex whitespace-nowrap rounded relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
+      <PiListLight className="text-2xl text-neutral-900 xl:sr-only" aria-hidden="true"/>
+      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Valde treff</span>
       {groupTotal?.value && groupTotal.value > 0 && (
-        <span className="absolute -top-1 -right-1 bg-primary-600 group-aria-selected:bg-accent-800 text-white text-xs rounded-full min-w-[1.25rem] h-5 flex items-center justify-center px-1 font-medium">
+        <span className="aresults-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap px-1.5">
           {groupTotal.value}
         </span>
       )}
-    </ClickableIcon>}
-    <ClickableIcon
+    </Clickable>}
+
+    <Clickable
         label="Oppslag"
         add={{details: "doc"}} 
         aria-selected={details == "doc" || (details == "group" &&  !groupData)}
-        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-full lg:w-auto p-1 px-2 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
-        <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>
-    </ClickableIcon>
-     
+        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
+        <PiBookOpenLight className="text-xl text-neutral-900" aria-hidden="true"/>
+        <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Oppslag</span>
+    </Clickable>
+    <div className="flex gap-2 ml-auto">
     
-  
-        
+             
     <ClickableIcon
             label="Lukk"
-            remove={["doc", "details", ...(fuzzyNav ? [] : ['group'])]} 
-            className="ml-auto" >
+            remove={["doc", "details", ...(fuzzyNav ? [] : ['group'])]}
+            className="h-10 flex items-center p-1 pl-2" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>
+  </div>
   </div>
 
   
@@ -76,7 +79,7 @@ export default function DetailsWindow() {
 
     {(groupTotal?.value || (!fuzzyNav && docData)) ?
     
-    <div className={`flex flex-wrap gap-2 p-2 border-b border-neutral-200 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
+    <div className={`flex flex-wrap gap-2 p-2 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
     {!fuzzyNav && <HitNavigation/>}
 
 
@@ -124,7 +127,7 @@ export default function DetailsWindow() {
 
 
 
-  {(details == "doc" || (details == "group" &&  !groupData)) && doc && docData?._source && <div className={`lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-16rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
+  {(details == "doc" || (details == "group" &&  !groupData)) && doc && docData?._source && <div className={`overflow-y-auto border-y border-neutral-200 stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
 
  
       <DocInfo/>
@@ -137,7 +140,7 @@ export default function DetailsWindow() {
   
 
 
-  {details == "group" && <div className="lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] p-4 pb-8 border-neutral-200 ">
+  {details == "group" && <div className="overflow-y-auto stable-scrollbar max-h-[calc(100svh-10rem)] xl:max-h-[calc(100svh-12rem)] p-4 pb-8 border-y border-neutral-200 ">
     <GroupDetails/>
     </div>}
 
@@ -146,35 +149,40 @@ export default function DetailsWindow() {
     { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
 
 
-  { details == 'doc' && docData?._source && <div className="flex flex-wrap gap-2 justify-between p-2 border-t border-neutral-200">
-    <div className={`flex gap-2 h-10 w-full ${docLoading ? 'opacity-50' : ''}`}>
-      {docData?._source.location ? <>
-      <ClickableIcon label="Vis på kart" className="btn btn-outline btn-compact" remove={["center", "zoom"]} add={{zoom: '18', center: docData?._source.location.coordinates.toReversed().join(',')}}>
-        <PiMapPinLight className="text-xl" aria-hidden="true"/>
-      </ClickableIcon>
+  <div className={`flex gap-2 justify-between p-2 ${docLoading ? 'opacity-50' : ''}`}>
+    {doc && <div className="flex gap-2 h-10 min-w-0 flex-1">
+      {docData?._source.location ? (
+        <div className="flex items-center gap-1 min-w-0">
+          <PiMapPinFill className="text-neutral-600 flex-shrink-0" aria-hidden="true"/>
+          <span className="text-sm truncate">
+            {docData?._source.coordinateType 
+              ? coordinateVocab[docData?._source.coordinateType]?.label 
+              : docData?._source.coordinateType}
+          </span>
+        </div>
+      ) : (
+        <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">
+          Utan koordinater
+        </em>
+      )}
+    </div>}
 
 
-      <span>{coordinateVocab[docData?._source.coordinateType]?.label}</span>
 
-
-
+{!fuzzyNav &&
       <Clickable
 
       aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
-      disabled={fuzzyNav ? true : false}
       
-      className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg" add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
+      className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg whitespace-nowrap" remove={['details']} add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
          <PiBinocularsFill className="text-xl text-white" aria-hidden="true"/> Namneformer
       </Clickable>
+}
 
 
-      </> : <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">Utan koordinater</em>}
-
-      
-    </div>
 
 
-  </div>}
+  </div>
 
   
 

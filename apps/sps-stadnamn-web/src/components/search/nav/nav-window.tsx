@@ -78,7 +78,7 @@ export default function NavWindow() {
                       aria-expanded={nav == 'results'}
                       aria-controls="nav-window-content"
                       className="flex whitespace-nowrap rounded items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-900 aria-expanded:shadow-inner ml-auto">
-                        <span className="text-neutral-900 font-semibold uppercase tracking-wider">Treff</span>
+                        <span className="text-neutral-900 font-semibold">Treff</span>
                         { isLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
                         {nav == 'results' ? <span className={`results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
                             {totalHits && formatNumber(totalHits.value)}</span>
@@ -98,7 +98,7 @@ export default function NavWindow() {
                 </ClickableIcon>}
 
         </div>
-        <div id="nav-window-content" className={`lg:overflow-y-auto stable-scrollbar px-2 lg:max-h-[calc(100svh-9rem)] py-6 border-t border-neutral-200 ${(!nav || isPending) ? "hidden" : ""}`}>
+        <div id="nav-window-content" className={`overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-11rem)] xl:max-h-[calc(100svh-8.5rem)] py-6 border-t border-neutral-200 ${(!nav || isPending) ? "hidden" : ""}`}>
                 
 
         { nav == 'tree' && 

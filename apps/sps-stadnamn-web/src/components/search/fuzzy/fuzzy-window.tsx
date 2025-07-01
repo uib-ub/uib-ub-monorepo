@@ -20,7 +20,7 @@ export default function FuzzyWindow() {
 
     return <>
     <div className={`flex p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
-        <h2 className="text-neutral-900 text-xl self-center flex items-center px-2">Finn namneformer<InfoPopover>
+        <h2 className="text-neutral-900 text-xl self-center flex items-center px-2">Namneformer<InfoPopover>
         Få oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje er tekne med.
         </InfoPopover></h2>
 
@@ -37,7 +37,7 @@ export default function FuzzyWindow() {
   
 
 
-    <div className="lg:overflow-y-auto stable-scrollbar lg:max-h-[calc(100svh-12rem)] p-4 pb-8 border-neutral-200 ">
+    <div className="overflow-y-auto stable-scrollbar max-h-[calc(100svh-7rem)] 2xl:max-h-[calc(100svh-8.5rem)] p-4 pb-8 border-neutral-200 ">
     <FuzzyExplorer/>
     </div>
 

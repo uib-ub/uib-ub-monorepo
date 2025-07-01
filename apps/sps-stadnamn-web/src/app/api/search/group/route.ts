@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     "size":  1000,
     "track_scores": true,
     "fields": [
-      "group", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", "gnidu", "snid" // Todo: adapt to whether it's used in the search or in the show more
+      "group", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", "gnidu", "snid", "location" // Todo: adapt to whether it's used in the search or in the show more
     ],
     "sort": [
       {

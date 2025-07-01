@@ -74,6 +74,7 @@ export default function ServerFacet() {
     params.delete('zoom')
     params.delete('center')
     params.delete('doc')
+    params.delete('group')
     
     existingValues
       .filter(v => v !== value)

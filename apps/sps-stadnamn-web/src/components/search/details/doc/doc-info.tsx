@@ -172,7 +172,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
         </article>
 
-        {( mode == 'map' && sameMarkerList?.length && doc != parent) ?
+        {(false && mode == 'map' && sameMarkerList?.length && doc != parent) ?
         
     
         <div className="instance-info !pt-4 mt-4 pb-4 border-t border-t-neutral-200">

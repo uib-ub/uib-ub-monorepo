@@ -382,7 +382,6 @@ useEffect(() => {
         
 
           newQueryParams.set('doc', selected?.fields?.uuid[0])
-          newQueryParams.set('docDataset', selected?._index.split('-')[2])
           newQueryParams.set('details', details)
 
           if (selected.fields?.group) {

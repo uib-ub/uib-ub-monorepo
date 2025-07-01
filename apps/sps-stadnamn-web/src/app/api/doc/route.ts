@@ -11,6 +11,7 @@ export async function GET(request: Request) {
         const initialQuery = {
             size: 1,
             terminate_after: 1,
+            track_scores: false,
             query: {
                 term: { uuid: uuid }
             }
@@ -26,6 +27,8 @@ export async function GET(request: Request) {
         // Second attempt: include redirects
         const redirectQuery = {
             size: 1,
+            terminate_after: 1,
+            track_scores: false,
             query: {
                 term: { redirects: uuid }
             }
