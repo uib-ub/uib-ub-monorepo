@@ -5,6 +5,8 @@ export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
 
   const url = runtimeConfig.endpointUrl;
+  const credentials = `termportalen_test_read:${runtimeConfig.endpointUrlPass}`;
+  const authHeader = Buffer.from(credentials).toString("base64");
 
   if (event.context.params) {
     const query = genTermbaseQuery(event.context.params.id);
@@ -16,6 +18,7 @@ export default defineEventHandler(async (event) => {
         "Content-type": "application/sparql-query",
         Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/ld+json",
+        Authorization: `Basic ${authHeader}`,
       },
     });
 

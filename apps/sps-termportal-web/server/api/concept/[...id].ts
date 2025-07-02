@@ -3,6 +3,8 @@ import { termbaseUriPatterns } from "../../../utils/vars-termbase";
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.endpointUrl;
+  const credentials = `termportalen_test_read:${runtimeConfig.endpointUrlPass}`;
+  const authHeader = Buffer.from(credentials).toString("base64");
 
   const idArray = decodeURI(event.context.params.id).split("/");
   const termbase = idArray[0];
@@ -37,6 +39,7 @@ export default defineEventHandler(async (event) => {
         "Content-type": "application/sparql-query",
         Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/ld+json",
+        Authorization: `Basic ${authHeader}`,
       },
     }).then((value) => {
       clearTimeout(timer);
