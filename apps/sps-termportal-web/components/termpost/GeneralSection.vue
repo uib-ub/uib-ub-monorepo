@@ -51,7 +51,10 @@
         <TermpostTermDescription :flex="true" :data="[displayInfo?.subject]" />
       </TermpostTermProp>
       <TermpostTermProp
-        v-if="concept?.modified && !legacyTbs.includes(termbase)"
+        v-if="
+          concept?.modified &&
+          !termbaseConfig.base.legacyTermbases.includes(termbase)
+        "
         :flex="true"
         :label="$t('id.modified')"
       >
@@ -86,7 +89,7 @@
         </TermpostTermProp>
       </template>
       <TermpostTermProp
-        v-if="legacyTbs.includes(termbase) && concept"
+        v-if="termbaseConfig.base.legacyTermbases.includes(termbase) && concept"
         :flex="true"
         :label="$t('id.note')"
       >
@@ -95,56 +98,24 @@
           :data="[$t('id.noteTermbaseIsUnmaintained')]"
         />
       </TermpostTermProp>
-      <TermpostTermProp
-        v-if="
-          termbase === 'SNOMEDCT' &&
-          bootstrapData.termbase.SNOMEDCT?.versionNotesLink
-        "
-        :flex="true"
-        :label="$t('id.version')"
-      >
-        <TermpostTermDescription
-          :flex="true"
-          :data="[
-            [
-              `${$t('misc.snomedVersion')}, ${localizeSnomedVersionLabel()}`,
-              bootstrapData.termbase.SNOMEDCT?.versionNotesLink,
-            ],
-          ]"
-        />
-      </TermpostTermProp>
-      <TermpostTermProp
-        v-if="
-          termbase === 'SNOMEDCT' &&
-          bootstrapData.termbase.SNOMEDCT?.versionNotesLink
-        "
-        :flex="true"
-        :label="$t('id.browser')"
-      >
-        <TermpostTermDescription
-          :flex="true"
-          :data="[
-            [
-              `${$t('misc.snomedBrowser')}: ${displayInfo.pagetitle.value}`,
-              snomedConfig.linkBrowser(
-                bootstrapData.termbase.SNOMEDCT.versionEdition,
-                route.params.id
-              ),
-            ],
-          ]"
-        />
-      </TermpostTermProp>
+      <TermpostGeneralSectionSnomedExtras
+        :concept="concept"
+        :display-info="displayInfo"
+      />
+      <TermpostGeneralSectionSnExtras
+        :concept="concept"
+        :display-info="displayInfo"
+      />
     </TermpostTermSection>
   </div>
 </template>
 
 <script setup lang="ts">
-import { localizeSnomedVersionLabel } from "~/composables/locale";
+import { termbaseConfig } from "~/utils/vars-termbase";
 
 const route = useRoute();
 const locale = useLocale();
-const bootstrapData = useBootstrapData();
-const termbase = route.params.termbase;
+const termbase = route.params.termbase as string;
 
 const props = defineProps({
   concept: { type: Object, required: true },

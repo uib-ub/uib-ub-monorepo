@@ -1,6 +1,6 @@
 import { useI18n } from "vue-i18n";
-import { systemTermbases } from "~/utils/vars-termbase";
 import type { TermbaseId } from "~/utils/vars-termbase";
+import { termbaseConfig } from "~/utils/vars-termbase";
 
 export type LocalLangCode = "en" | "nb" | "nn";
 
@@ -108,7 +108,7 @@ export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
 export const useOrderedTermbases = () => {
   const bootstrapData = useBootstrapData();
   const termbases = Object.keys(bootstrapData.value.termbase).filter(
-    (tb) => !systemTermbases.includes(tb)
+    (tb) => !termbaseConfig.base.systemTermbases.includes(tb)
   );
 
   const sortedTermbases = termbases.sort((a, b) => {
