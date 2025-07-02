@@ -212,7 +212,9 @@
     "imageAltLabel": "Visualisering av omgrepet",
     "version": "Versjon",
     "browser": "Ekstern nettlesar",
-    "audience": "Målgruppemerknad"
+    "audience": "Målgruppemerknad",
+    "icsCode": "ICS-kode",
+    "source": "Kjelde"
   },
   "index": { "title": "Termportalen" },
   "search": {
