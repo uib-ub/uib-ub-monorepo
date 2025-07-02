@@ -68,16 +68,17 @@ export async function GET(request: Request) {
               }
             }
           },
+          {
+            range: {
+              boost: {
+                gte: 4
+              }
+            }
+          }
         ]
       }
     },
-    aggs: {
-      viewport: {
-        geo_bounds: {
-            field: "location"
-        },
-      }
-    }
+
       
     
   }
