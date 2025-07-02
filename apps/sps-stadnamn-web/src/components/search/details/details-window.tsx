@@ -174,8 +174,8 @@ export default function DetailsWindow() {
 
       aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
       
-      className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg whitespace-nowrap" remove={['details']} add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
-         <PiBinocularsFill className="text-xl text-white" aria-hidden="true"/> Namneformer
+      className="btn btn-outline btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg whitespace-nowrap" remove={['details']} add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
+         <PiBinocularsFill className="text-xl text-primary-500" aria-hidden="true"/> Namneformer
       </Clickable>
 }
 
