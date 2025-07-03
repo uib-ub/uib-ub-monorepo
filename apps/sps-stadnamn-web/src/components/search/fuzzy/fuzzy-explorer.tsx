@@ -253,7 +253,7 @@ export default function FuzzyExplorer() {
                                     
                                     return (
                                         <li key={name} className="flex flex-col w-full">
-                                            <div
+                                            <button
                                                 onClick={() => toggleGroupExpansion(nameId)}
                                                 className="text-left flex items-center gap-2 py-1 cursor-pointer hover:text-neutral-700 transition-colors"
                                             >
@@ -262,7 +262,7 @@ export default function FuzzyExplorer() {
                                                 </div>
                                                 <span className="font-medium">{name}</span>
                                                 <span className="text-sm text-neutral-700">({nameResults.length})</span>
-                                            </div>
+                                            </button>
                                             
                                             {isNameExpanded && (
                                                 <div className="flex flex-col ml-5 mt-1 w-full">
