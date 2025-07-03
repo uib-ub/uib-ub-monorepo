@@ -56,7 +56,7 @@ export default function DetailsWindow() {
         label="Oppslag"
         add={{details: "doc"}} 
         aria-selected={details == "doc" || (details == "group" &&  !groupData)}
-        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
+        className="flex h-10 whitespace-nowrap border border-neutral-200 rounded items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
         <PiBookOpenLight className="text-xl text-neutral-900" aria-hidden="true"/>
         <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Oppslag</span>
     </Clickable>
