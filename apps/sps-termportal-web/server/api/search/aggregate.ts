@@ -3,6 +3,8 @@ import { genSearchAggregateQuery } from "~/server/utils/genSearchAggregateQuery"
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.endpointUrl;
+  const credentials = `termportalen_test_read:${runtimeConfig.endpointUrlPass}`;
+  const authHeader = Buffer.from(credentials).toString("base64");
   const body = await readBody(event);
   const query = genSearchAggregateQuery(body);
 
@@ -13,6 +15,7 @@ export default defineEventHandler(async (event) => {
       "Content-type": "application/sparql-query",
       Referer: "termportalen.no", // TODO Referer problem
       Accept: "application/json",
+      Authorization: `Basic ${authHeader}`,
     },
   });
   return data.results.bindings.reduce(

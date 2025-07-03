@@ -212,7 +212,9 @@
     "imageAltLabel": "Visualisering av begrepet",
     "version": "Versjon",
     "browser": "Ekstern nettleser",
-    "audience": "Målgruppemerknad"
+    "audience": "Målgruppemerknad",
+    "icsCode": "ICS-kode",
+    "source": "Kilde"
   },
   "index": { "title": "Termportalen" },
   "search": {

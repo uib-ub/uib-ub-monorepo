@@ -29,10 +29,18 @@ export const termbaseUriPatterns: {
   },
 };
 
-export const snomedConfig = {
-  linkBrowser(edition: string, snomedId: string) {
-    return `https://browser.ihtsdotools.org/?perspective=full&conceptId1=${snomedId}&edition=MAIN/SNOMEDCT-NO/${edition}&release=&languages=no,en`;
+export const termbaseConfig = {
+  base: {
+    systemTermbases: ["DOMENE", "LISENS"],
+    legacyTermbases: ["NOT", "RTT"],
+  },
+  SN: {
+    termlexTermpostBaseUrl: "https://termlex.no/term",
+    standardOnlineBaseUrl: "https://online.standard.no/nb/",
+  },
+  SNOMEDCT: {
+    browserUrl(edition: string, snomedId: string) {
+      return `https://browser.ihtsdotools.org/?perspective=full&conceptId1=${snomedId}&edition=MAIN/SNOMEDCT-NO/${edition}&release=&languages=no,en`;
+    },
   },
 };
-
-export const systemTermbases = ["DOMENE", "LISENS"];

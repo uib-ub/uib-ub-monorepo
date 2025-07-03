@@ -211,7 +211,9 @@
     "imageAltLabel": "Visualization of the concept",
     "version": "Version",
     "browser": "External browser",
-    "audience": "Audience note"
+    "audience": "Audience note",
+    "icsCode": "ICS code",
+    "source": "Source"
   },
   "index": { "title": "Termportalen" },
   "search": {

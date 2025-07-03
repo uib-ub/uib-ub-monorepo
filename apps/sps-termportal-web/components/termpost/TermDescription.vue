@@ -4,7 +4,7 @@
     :key="d + 'key'"
     class="px-2"
     :class="{
-      'border-l-solid my-1 lg:my-2 pt-[0px] border-2 border-transparent border-l-gray-300 border-r-transparent hover:border-l-tpblue-200':
+      'border-l-solid my-1 border-2 border-transparent border-l-gray-300 border-r-transparent pt-[0px] hover:border-l-tpblue-200 lg:my-2':
         !flex,
     }"
   >
@@ -18,7 +18,7 @@
       />
       <AppLink
         v-else
-        class="underline hover:decoration-2 max-w-prose"
+        class="max-w-prose underline hover:decoration-2"
         :to="mainValue(d)[1]"
         >{{ mainValue(d)[0] }}</AppLink
       >
@@ -38,7 +38,7 @@
         prop !== 'equivalence' &&
         prop !== 'equivalencenote'
       "
-      class="grid-col-3 flex max-w-prose flex-wrap gap-x-8 gap-y-1 ml-0 md:ml-2 lg:ml-3"
+      class="grid-col-3 ml-0 flex max-w-prose flex-wrap gap-x-8 gap-y-1 md:ml-2 lg:ml-3"
       :class="{ 'mt-1.5': mainValue(d) }"
     >
       <TermpostTermProp
