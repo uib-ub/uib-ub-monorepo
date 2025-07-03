@@ -2,7 +2,7 @@
 import { createContext } from 'react'
 import { useState, useEffect } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 interface GroupContextData {
     groupData: any[] | null;
@@ -18,20 +18,19 @@ export const GroupContext = createContext<GroupContextData>({
     groupTotal: null,
 });
 
-export default function DocProvider({ children }: {  children: React.ReactNode }) {
+export default function GroupProvider({ children }: {  children: React.ReactNode }) {
     const searchParams = useSearchParams()
+    const router = useRouter()
     const group = searchParams.get('group')
     const [groupLoading, setGroupLoading] = useState<boolean>(true)
     const [groupError, setGroupError] = useState<Record<string, string> | null>(null)
     const [groupData, setGroupData] = useState<any[] | null>(null)
     const [groupTotal, setGroupTotal] = useState<{ value: number; relation: string } | null>(null)
-
+    const doc = searchParams.get('doc')
+    const docIndex = groupData?.findIndex(item => item.fields.uuid[0] === doc)
 
     const {searchQueryString } = useSearchQuery()
-
     const details = searchParams.get('details') || 'doc'
-
-
 
     useEffect(() => {
         if (group) {
@@ -56,17 +55,43 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         }
     }, [group, searchQueryString, details])
 
-
-
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!groupData || docIndex === undefined || docIndex === -1) return;
             
-    
+            if (!e.shiftKey) return;
+            
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const prevIndex = Math.max(0, docIndex - 1);
+                if (prevIndex !== docIndex) {
+                    const params = new URLSearchParams(searchParams);
+                    params.set('doc', groupData[prevIndex].fields.uuid[0]);
+                    router.push(`?${params.toString()}`);
+                }
+            }
+            
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                const nextIndex = Math.min(groupData.length - 1, docIndex + 1);
+                if (nextIndex !== docIndex) {
+                    const params = new URLSearchParams(searchParams);
+                    params.set('doc', groupData[nextIndex].fields.uuid[0]);
+                    router.push(`?${params.toString()}`);
+                }
+            }
+        };
 
-  return <GroupContext.Provider value={{
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [groupData, docIndex, searchParams, router]);
+
+    return <GroupContext.Provider value={{
         groupData,
         groupLoading,
         groupError,
         groupTotal
-  }}>{children}</GroupContext.Provider>
+    }}>{children}</GroupContext.Provider>
 }
 
 
