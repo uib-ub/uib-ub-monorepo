@@ -18,6 +18,7 @@ import FuzzyExplorer from "../fuzzy/fuzzy-explorer"
 import { GlobalContext } from "@/app/global-provider"
 import { base64UrlToString, stringToBase64Url } from "@/lib/utils"
 import CoordinateType from "./doc/coordinate-type"
+import CoordinateMenu from "./coordinate-menu"
 
 
 export default function DetailsWindow() {
@@ -29,7 +30,7 @@ export default function DetailsWindow() {
     const mode = useMode()
     const group = searchParams.get('group')
 
-    const { coordinateVocab } = useContext(GlobalContext)
+    
 
 
     const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
@@ -41,11 +42,11 @@ export default function DetailsWindow() {
           remove={["details", "fuzzyNav"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}
-          className="flex whitespace-nowrap rounded relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
+          className="flex whitespace-nowrap border border-neutral-200 rounded group relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
       <PiListLight className="text-2xl text-neutral-900 xl:sr-only" aria-hidden="true"/>
       <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Samanslåtte treff</span>
       {groupTotal?.value && groupTotal.value > 0 && (
-        <span className="aresults-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap px-1.5">
+        <span className={`aresults-badge bg-primary-200 ${groupTotal.value > 9 ? 'px-1.5': 'px-2'} text-primary-600 font-bold group-aria-selected:bg-accent-800 group-aria-selected:text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap`}>
           {groupTotal.value}
         </span>
       )}
@@ -150,42 +151,18 @@ export default function DetailsWindow() {
     { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
 
 
-  <div className={`flex gap-2 justify-between p-2 ${docLoading ? 'opacity-50' : ''}`}>
-    {doc && <div className="flex gap-2 h-10 min-w-0 w-full flex-1">
-      {docData?._source.location ? (
-        <div className="flex flex-col gap-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <PiMapPinFill className="text-neutral-600 flex-shrink-0" aria-hidden="true"/>
-            {false && <span className="text-sm truncate">
-              {docData._source.location.coordinates[1].toFixed(5)}, {docData._source.location.coordinates[0].toFixed(5)}
-            </span>}
-          </div>
-          <span className="text-sm truncate">
-           
-          </span>
-        </div>
-      ) : (
-        <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">
-          Utan koordinater
-        </em>
-      )}
-    </div>}
+  <div className="flex gap-2 justify-between p-2 items-center">
+    {doc && <CoordinateMenu/> }
 
-
-
-{!fuzzyNav &&
+    {!fuzzyNav &&
       <Clickable
-
-      aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
-      
-      className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg whitespace-nowrap" remove={['details']} add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
-         <PiBinocularsFill className="text-xl text-white" aria-hidden="true"/> Namneformer
+        aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
+        className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
+        remove={['details']} 
+        add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
+        <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/> Namneformer
       </Clickable>
-}
-
-
-
-
+    }
   </div>
 
   

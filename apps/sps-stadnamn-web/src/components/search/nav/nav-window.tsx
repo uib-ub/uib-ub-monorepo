@@ -77,12 +77,12 @@ export default function NavWindow() {
                       remove={nav === 'results' ? ["nav"] : []}
                       aria-expanded={nav == 'results'}
                       aria-controls="nav-window-content"
-                      className="flex whitespace-nowrap rounded items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-900 aria-expanded:shadow-inner ml-auto">
-                        <span className="text-neutral-900 font-semibold">Treff</span>
+                      className="flex whitespace-nowrap rounded border border-neutral-200 items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3 aria-expanded:bg-neutral-100 aria-expanded:text-neutral-900 aria-expanded:shadow-inner ml-auto">
+                        <span className="text-neutral-900">Treff</span>
                         { isLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
-                        {nav == 'results' ? <span className={`results-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
+                        {nav == 'results' ? <span className={`results-badge bg-accent-800 font-bold text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
                             {totalHits && formatNumber(totalHits.value)}</span>
-                        : <span className={`results-badge bg-primary-600 text-white shadow-sm left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
+                        : <span className={`results-badge text-primary-600 bg-primary-200 font-bold shadow-sm left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
                         </>}
                 </Clickable>
                 }
