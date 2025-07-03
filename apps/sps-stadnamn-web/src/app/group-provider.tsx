@@ -58,6 +58,14 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
+            // Check if the active element is a text input or textarea
+            const activeElement = document.activeElement;
+            if (activeElement?.tagName === 'INPUT' || 
+                activeElement?.tagName === 'TEXTAREA' || 
+                activeElement?.getAttribute('contenteditable') === 'true') {
+                return;
+            }
+
             if (!groupData || docIndex === undefined || docIndex === -1) return;
             
             if (!e.shiftKey) return;
