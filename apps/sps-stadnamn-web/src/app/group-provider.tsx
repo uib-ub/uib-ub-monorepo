@@ -31,6 +31,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
 
     const {searchQueryString } = useSearchQuery()
     const details = searchParams.get('details') || 'doc'
+    const fuzzyNav = searchParams.get('fuzzyNav')
 
     useEffect(() => {
         if (group) {
@@ -80,11 +81,42 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
                     router.push(`?${params.toString()}`);
                 }
             }
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const params = new URLSearchParams(searchParams);
+                if (fuzzyNav === 'list') {
+                    params.set('fuzzyNav', 'timeline');
+                    router.push(`?${params.toString()}`);
+                }
+                else if (fuzzyNav === 'timeline') {
+                    params.delete('fuzzyNav');
+                    params.set('details', 'doc');
+                    router.push(`?${params.toString()}`);
+                }
+                else if (details === 'doc' && groupTotal?.value) {
+                    params.set('details', 'group');
+                    router.push(`?${params.toString()}`);
+                }
+            }
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const params = new URLSearchParams(searchParams);
+                if (details === 'group') {
+                    params.set('details', 'doc');
+                }
+                else if (!fuzzyNav) {
+                    params.set('fuzzyNav', 'timeline');
+                }
+                else {
+                    params.set("fuzzyNav", "list")
+                }
+                router.push(`?${params.toString()}`);
+            }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [groupData, docIndex, searchParams, router]);
+    }, [groupData, docIndex, searchParams, router, details, fuzzyNav, groupTotal]);
 
     return <GroupContext.Provider value={{
         groupData,
