@@ -3,17 +3,14 @@ export const runtime = 'edge'
 import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
-import { getSortArray, treeSettings } from '@/config/server-config';
-import { FaGalacticSenate } from 'react-icons/fa';
+import { treeSettings } from '@/config/server-config';
 
 export async function GET(request: Request) {
   const {termFilters, filteredParams} = extractFacets(request)
   const { simple_query_string } = getQueryString(filteredParams)
   const dataset = filteredParams.dataset || 'search' // == 'search' ? '*' : filteredParams.dataset;
 
-  const sortArray = getSortArray(dataset)
   const zoom: number = parseInt(filteredParams.zoom)
-  const totalHits = filteredParams.totalHits
 
   const zoomSize: Record<number, number> = { 16: 300, 17: 600, 18: 2000}
 
@@ -25,19 +22,7 @@ export async function GET(request: Request) {
     collapse: {
       field: "group"
     },
-    sort: dataset === 'search' ? [
-      /*
-      {
-        "placeScore": "desc"
-      },
-      {
-        "ranking": "asc"
-      },
-      */
-      {
-        "uuid": "asc"
-      }
-    ] : treeSettings[dataset]?.geoSort ? [
+    sort: treeSettings[dataset]?.geoSort ? [
       {
         [treeSettings[dataset].geoSort]: {
           "missing": "_first",

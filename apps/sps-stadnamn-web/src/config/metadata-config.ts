@@ -41,7 +41,8 @@ export const datasetTitles: DatasetTitles = {
     mu1950: "Matrikkelutkastet 1950", 
     skul: "Skulebarnsoppskriftene",
     leks: "Norsk stadnamnleksikon",
-    leks_g: "grunnord",
+    leks_g: "Norsk stadnamnleksikon (Grunnord)",
+    rygh_g: "Norske Gaardnavne (Grunnord)",
     ostf: "Bustadnavn i Østfold",
     sof: "Fylkesarkivet i Sogn og Fjordane",
     tot: "Totennavn",
@@ -423,7 +424,7 @@ export const typeNames: Record<string, string> = {
   "encyclopedia": "Oppslagsverk",
   "database": "Database",
   "public": "Offentleg register",
-  "collection": "Stadnamninnsamlingar", // Toponomastic collection
+  "collection": "Stadnamngransking", // Toponomastic collection
 }
 
 
@@ -432,7 +433,7 @@ export const typeNames: Record<string, string> = {
 export const datasetFeatures: Record<string, string[]> = {
   bsn: ["image", "digi"],
   hord: ["audio", "coordinates", "phonetic", "digi"],
-  rygh: ["phonetic", "digi"],
+  rygh: ["phonetic", "digi", "base"],
   m1838: ["link"],
   m1886: ["link"],
   mu1950: ["link"],
@@ -477,4 +478,8 @@ export const datasetTypes: Record<string, string[]> = {
   kven: ["database", "collection"],
   snor: ["database", "collection"],
 }
+
+// Workaround to include grunnord in Stadnamngransking-filter
+datasetTypes["leks_g"] = datasetTypes["leks"]
+datasetTypes["rygh_g"] = datasetTypes["rygh"]
 

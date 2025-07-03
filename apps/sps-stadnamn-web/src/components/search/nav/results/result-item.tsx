@@ -42,11 +42,9 @@ export default function ResultItem({hit}: {hit: any}) {
     
 
     return  <li className="flex flex-grow">
-        { isGrunnord ?
-        <RootWords hit={hit}/>
+        
 
-        :
-        <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline  ${isGrunnord ? "my-2 rounded-md border border-neutral-200 aria-[current='page']:bg-accent-50 aria-[current='page']:border-accent-700" : "border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4"}`} 
+        <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4`} 
                     aria-current={isSelected ? 'page' : undefined}
                     remove={['sourceLabel', 'group', 'parent']}
                     add={{
@@ -59,6 +57,7 @@ export default function ResultItem({hit}: {hit: any}) {
                     }}>
                         
             <div className="flex flex-col w-full">
+            {isGrunnord && <strong className="uppercase font-semibold text-neutral-800 text-sm">Grunnord</strong>}
 
                 <span className="text-neutral-950 flex items-center">
                     {titleRenderer(hit, 'map')}
@@ -81,7 +80,7 @@ export default function ResultItem({hit}: {hit: any}) {
 
             
             </Clickable>
-            }
+            
             </li>
 }
 

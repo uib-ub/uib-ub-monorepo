@@ -111,6 +111,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
 
     },
+    rygh_g: {
+      uuid, label, ...text,
+    },
     leks: {
       uuid, label, adm, adm1, adm2,...html,
       "misc.Lokalitetstype": {label: "Lokalitetstype", table, facet},

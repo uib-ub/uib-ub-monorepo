@@ -63,7 +63,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
         { dataset == 'all' && <div className="flex gap-1  items-center">
           
-          <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{docDataset?.includes('_') ? datasetTitles[docDataset.split('_')[0]] + " – " : ''}{datasetTitles[docDataset as string]}</span>
+          <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
         <IconLink label="Om datasettet" 
               href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
@@ -153,7 +153,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         }
       })()}
 
-      { filteredFacets.length > 0 && 
+      { filteredFacets?.length > 0 && 
         <CollapsibleHeading title="Detaljar">
             <FacetsInfobox source={docSource} docDataset={docDataset} filteredFacets={filteredFacets}/>
         </CollapsibleHeading>

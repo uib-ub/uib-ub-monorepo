@@ -1,9 +1,11 @@
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import { datasetFeatures, datasetPresentation, datasetTitles, featureNames } from "@/config/metadata-config"
+import { datasetFeatures, datasetPresentation, datasetTitles, featureNames, subpages, publishDates } from "@/config/metadata-config"
 import { datasetDescriptions, datasetShortDescriptions, datasetTypes, typeNames } from "@/config/metadata-config"
 import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill, PiMicroscope, PiMicroscopeFill, PiBoxArrowDown, PiBoxArrowDownFill } from "react-icons/pi"
 import DatasetStats from "../dataset-stats";
 import { fetchStats } from "@/app/api/_utils/actions";
+
+import SubpageNav from '@/components/layout/subpage-nav'
 
 const icons: {[key: string]: JSX.Element} ={
     "image": <PiArticleFill aria-hidden="true"/>,
@@ -36,10 +38,11 @@ export default async function DatasetPage({params}: {params: Promise<{dataset: s
     const info = datasetPresentation[dataset]
     const stats = await fetchStats(dataset)
 
-    return <div className="flex flex-col md:flex-row gap-4 dataset-info">
+    return <div className="flex flex-col md:flex-row gap-4 page-info">
         <div className="xl:w-2/3">
-        <Breadcrumbs parentUrl={["/info", "/info/datasets"]} parentName={["Informasjon", "Datasett"]} currentName={datasetTitles[dataset]}/>
+        <Breadcrumbs parentUrl={"/info/datasets"} parentName={["Informasjon", "Datasett"]} currentName={datasetTitles[dataset]}/>
         <h1>{datasetTitles[dataset]}</h1>
+        <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2">
         <ul className='flex flex-wrap gap-2 !px-0 text-neutral-900'>
                 {datasetTypes[dataset]?.map((type) => (
@@ -49,20 +52,25 @@ export default async function DatasetPage({params}: {params: Promise<{dataset: s
                     </li>
                 ))}
                 </ul>
+        <ul className='flex flex-wrap gap-2 !px-0 !pt-1 !mt-0 text-neutral-900'>
+        {datasetFeatures[dataset]?.map((feature) => (
+            <li key={feature} className="flex items-center gap-1">
+            {icons[feature]}
+            <span>{featureNames[feature]}</span>
+            </li>
+        ))}
+        </ul>
+        </div>
         <DatasetStats statsItem={stats?.datasets[dataset]} itemDataset={dataset}/>
         
         <p>{datasetDescriptions[dataset]}</p>
-        <div className="space-y-2">
-                <h4>Ressurser</h4>
-                <ul className='flex flex-wrap gap-2 !px-0 !pt-1 !mt-0 text-neutral-900'>
-                {datasetFeatures[dataset]?.map((feature) => (
-                    <li key={feature} className="flex items-center gap-1">
-                    {icons[feature]}
-                    <span>{featureNames[feature]}</span>
-                    </li>
-                ))}
-                </ul>
-        </div>
+
+        { subpages[dataset]?.length &&
+                    <SubpageNav items={subpages[dataset].map((subpage, index) => { return { label: subpage, href: `${dataset}/${index+1}`} })}>
+                        <h2>Artikler</h2>
+                    </SubpageNav>
+                }
+        
         </div>
         </div>
         <div className='xl:w-1/3'>

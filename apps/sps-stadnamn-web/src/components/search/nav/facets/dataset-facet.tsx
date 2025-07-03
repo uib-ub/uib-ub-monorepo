@@ -121,7 +121,7 @@ export default function DatasetFacet() {
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
     {dataset == 'all' && 
-        <label className="flex items-center gap-2 px-2 border border-neutral-200 rounded-md py-1 px-2">
+        <label className="flex items-start gap-3 px-3 py-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
           <input
             type="checkbox"
             checked={searchParams.getAll('datasetTag').includes('collection')}
@@ -139,10 +139,12 @@ export default function DatasetFacet() {
               }
               router.push(`?${params.toString()}`, { scroll: false });
             }}
-            className="form-checkbox"
+            className="mt-1 h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-600"
           />
-          
-          <span>Stadnamninnsamlingar</span>
+          <div className="flex flex-col gap-0.5">
+            <span className="font-medium text-neutral-900">Stadnamngransking</span>
+            <span className="text-sm text-neutral-700">Vis berre datasett som har stadnamngransking som hovudformål</span>
+          </div>
         </label>
     }
     <div className='flex gap-2'>

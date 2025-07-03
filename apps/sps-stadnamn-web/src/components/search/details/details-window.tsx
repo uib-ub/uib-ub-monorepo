@@ -19,6 +19,7 @@ import { GlobalContext } from "@/app/global-provider"
 import { base64UrlToString, stringToBase64Url } from "@/lib/utils"
 import CoordinateType from "./doc/coordinate-type"
 
+
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
@@ -36,13 +37,13 @@ export default function DetailsWindow() {
 
     return <>
     <div className={`flex p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
-    { groupTotal?.value && <Clickable label="Valde treff" 
+    { groupTotal?.value && <Clickable label="Samanslåtte treff" 
           remove={["details", "fuzzyNav"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}
           className="flex whitespace-nowrap rounded relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
       <PiListLight className="text-2xl text-neutral-900 xl:sr-only" aria-hidden="true"/>
-      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Valde treff</span>
+      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Samanslåtte treff</span>
       {groupTotal?.value && groupTotal.value > 0 && (
         <span className="aresults-badge bg-accent-800 text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap px-1.5">
           {groupTotal.value}
@@ -150,14 +151,17 @@ export default function DetailsWindow() {
 
 
   <div className={`flex gap-2 justify-between p-2 ${docLoading ? 'opacity-50' : ''}`}>
-    {doc && <div className="flex gap-2 h-10 min-w-0 flex-1">
+    {doc && <div className="flex gap-2 h-10 min-w-0 w-full flex-1">
       {docData?._source.location ? (
-        <div className="flex items-center gap-1 min-w-0">
-          <PiMapPinFill className="text-neutral-600 flex-shrink-0" aria-hidden="true"/>
+        <div className="flex flex-col gap-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <PiMapPinFill className="text-neutral-600 flex-shrink-0" aria-hidden="true"/>
+            {false && <span className="text-sm truncate">
+              {docData._source.location.coordinates[1].toFixed(5)}, {docData._source.location.coordinates[0].toFixed(5)}
+            </span>}
+          </div>
           <span className="text-sm truncate">
-            {docData?._source.coordinateType 
-              ? coordinateVocab[docData?._source.coordinateType]?.label 
-              : docData?._source.coordinateType}
+           
           </span>
         </div>
       ) : (
@@ -174,8 +178,8 @@ export default function DetailsWindow() {
 
       aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
       
-      className="btn btn-outline btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg whitespace-nowrap" remove={['details']} add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
-         <PiBinocularsFill className="text-xl text-primary-500" aria-hidden="true"/> Namneformer
+      className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 ml-auto text-lg whitespace-nowrap" remove={['details']} add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
+         <PiBinocularsFill className="text-xl text-white" aria-hidden="true"/> Namneformer
       </Clickable>
 }
 

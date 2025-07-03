@@ -172,7 +172,7 @@ export default async function Home() {
   </div>
   <div className="flex flex-col items-center container gap-24">
   <section className="flex flex-col  gap-6" aria-labelledby="recently_added">
-    <h2 id="recently_added" className="font-serif text-3xl text-neutral-900">Sist lagt til</h2>
+    <h2 id="recently_added" className="font-serif text-3xl text-neutral-900 text-center">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
@@ -204,7 +204,7 @@ export default async function Home() {
     </ul>
 </section>
   <section className="flex flex-col gap-6" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl text-neutral-900">Utvalde datasett</h2>
+    <h2 id="dataset_showcase" className="font-serif text-3xl text-neutral-900 text-center">Utvalde datasett</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">

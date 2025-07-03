@@ -1,0 +1,15 @@
+import Breadcrumbs from '@/components/layout/breadcrumbs';
+import SubpageNav from '@/components/layout/subpage-nav';
+export const metadata = { title: 'Ordforklaringar' };
+
+<Breadcrumbs parentName={["Info"]} parentUrl={`/info`} currentName={metadata.title} />
+
+# Ordforklaringar
+<SubpageNav 
+        items={[
+          { label: "Lokalitetstypar", href: "definitions/sosi" },
+          { label: "Koordinattypar", href: "definitions/coordinatetypes" },
+
+
+        ]}
+      />

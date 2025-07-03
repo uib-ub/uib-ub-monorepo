@@ -47,6 +47,25 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
 
   }
 
+  export async function fetchSOSI(params: {sosiCode: string}) {
+    'use server'
+    const { sosiCode } = params
+
+    const query = {
+        query: {
+            term: {
+                "sosiCode": sosiCode
+            }
+        }
+    }
+
+    const [res, status] = await postQuery('vocab_sosi', query)
+    if (status !== 200) {
+        return { error: "Failed to fetch sosi", status: status }
+    }
+
+    return res.hits.hits[0]  // Return the first match
+}
 
   export async function fetchVocab() {
     'use server'

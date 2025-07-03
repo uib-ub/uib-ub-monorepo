@@ -7,11 +7,9 @@ import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const queryText = searchParams.get('q') || '';
   const {termFilters, filteredParams} = extractFacets(request)
   const dataset = filteredParams.dataset || 'all'  // == 'search' ? '*' : filteredParams.dataset;
   const { highlight, simple_query_string } = getQueryString(filteredParams)
-  const collapse = filteredParams.collapse
 
   let sortArray: (string | object)[] = []
     
@@ -35,7 +33,7 @@ export async function GET(request: Request) {
         "size": 0,
       }
     },
-    "fields": [
+    "fields": [ "boost",
       "group", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", // Todo: adapt to whether it's used in the search or in the show more
     ],
     "sort": [

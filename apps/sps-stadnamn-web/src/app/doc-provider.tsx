@@ -51,7 +51,6 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const [parentError, setParentError] = useState<Record<string, string> | null>(null)
     const [docAdm, setDocAdm] = useState<string | null>(null)
 
-    const childDocDataset = searchParams.get('docDataset')
 
     useEffect(() => {
         if (parent) {
@@ -101,7 +100,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
             setDocAdm(null)
         }
     }   
-    , [doc, dataset, childDocDataset, setDocData])
+    , [doc, dataset, setDocData])
 
     
 
