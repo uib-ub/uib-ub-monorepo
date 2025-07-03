@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { Fragment } from 'react';
 import parse from 'html-react-parser';
-import { PiMagnifyingGlass } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
 
@@ -36,7 +36,8 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     }
 
     {source.content?.html && <div className="inline-flex flex-col inner-slate">
-     <div className='border-b border-neutral-200 p-4'><Link href={source.link} className='whitespace-nowrap inline'>Bind {source.misc.Bind}, s. {source.misc.Side}</Link></div>
+     <div className='border-b border-neutral-200 p-4 flex flex-col gap-1'><Link href={source.link} className='whitespace-nowrap inline'>Bind {source.misc.Bind}, s. {source.misc.Side}</Link>
+     {source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-600' />Transkriberinga kan innehalde feil tegn, særleg i uttale. Følg lenka for korrekt Norvegia-lydskrift i den trykte utgåva.</span>}</div>
     <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
 
     </div>
