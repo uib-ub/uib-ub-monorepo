@@ -1,7 +1,7 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useRef } from 'react';
-import { PiBookOpen, PiMapPin, PiMapPinFill, PiMapPinLight } from 'react-icons/pi';
+import { PiBookOpen, PiMapPin, PiMapPinDuotone, PiMapPinFill, PiMapPinLight } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { getFieldValue } from '@/lib/utils';
@@ -27,10 +27,10 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             {hit?.fields?.location && <ClickableIcon
                 label="Vis på kart"
                 aria-current={(doc == getFieldValue(hit, 'uuid')) ? 'page' : undefined}
-                className="text-neutral-700 aria-[current='page']:text-accent-800"
+                className="text-neutral-700 aria-[current='page']:text-accent-800 p-1 hover:bg-neutral-100 rounded-full"
                 add={{doc: hit.fields.uuid[0]}}
             >
-                {doc == getFieldValue(hit, 'uuid') ? <PiMapPinFill className="text-xl" aria-hidden="true"/> : <PiMapPin className="text-xl" aria-hidden="true"/>}
+                {doc == getFieldValue(hit, 'uuid') ? <PiMapPinFill className="text-xl" aria-hidden="true"/> : <PiMapPinDuotone className="text-xl" aria-hidden="true"/>}
             </ClickableIcon>}
             <Clickable 
                 link
@@ -43,7 +43,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                 }}
             >
                 <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
-                    <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
+                    <PiBookOpen className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" />
                 </div>
                 {sourceTitle(hit)}
             </Clickable>

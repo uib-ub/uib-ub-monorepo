@@ -74,6 +74,14 @@ export default function DesktopLayout() {
         </div> }
 
 
+        {  fuzzyNav &&mode == 'map' && (doc || group) && searchParams.get('details') &&
+        <div className="lg:absolute lg:right-2 lg:top-2 flex-col max-w-[40svw] xl:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg xl:rounded-md xl:flex">
+        
+        <DetailsWindow/> 
+        </div>
+        }
+
+
 
         </div>
     
