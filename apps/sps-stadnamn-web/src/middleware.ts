@@ -55,44 +55,16 @@ export async function middleware(request: NextRequest) {
 
     if (["uuid", "iiif"].includes(path[1]) && path.length > 2 && path[2].includes('.')) {
         const filename = path[2]
-        const [uuid, extension] = filename.split('.')
-        const data = await fetchDoc({ uuid });
-
-        if (extension == 'geojson') {
-            const geojson = {
-                "type": "Feature",
-                "geometry": data._source.location,
-                "properties": {
-                    "id": data._source.uuid,
-                    "label": data._source.label,
-                    "rawData": data._source.rawData,
-                    "adm1": data._source.adm1,
-                    "adm2": data._source.adm2,
-                    "audio": data._source.audio
-                }
-            }
-            return Response.json(geojson);
-        }
-
-        if (extension == 'jsonld') {
-            const docDataset = data._index.split('-')[2]
-            let children
-            if (data._source?.children?.length > 0) {
-                console.log("CHILDREN_1", data._source.children)
-                children = await fetchDoc({ uuid: data._source.children})
-                console.log("CHILDREN_2", children)
-            }
-
-            console.log("CHILDREN_3", children)
-
-
-            const jsonld = doc2jsonld[docDataset as keyof typeof doc2jsonld] ? doc2jsonld[docDataset as keyof typeof doc2jsonld](data._source, children) : defaultDoc2jsonld(data._source, children)
-
-            return Response.json(jsonld);
-        }
-        if (extension == 'json') {
-            return Response.json(data);
-        }
+        
+        const apiUrl = `${baseUrl}/api/uuid/${filename}`;
+        console.log("API URL", apiUrl)
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+            return new Response('Not found', { status: 404 });
+        }        
+        const data = await response.json();
+        return Response.json(data);
     }
     
 }
