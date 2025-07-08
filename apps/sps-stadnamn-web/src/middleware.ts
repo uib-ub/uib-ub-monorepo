@@ -5,20 +5,32 @@ const baseUrl = process.env.VERCEL_ENV === 'production' ? 'https://stadnamnporta
 
 // Generic function to handle API calls with redirect or not found
 async function handleApiRedirect(apiUrl: string, redirectPathFn?: (data: any) => string) {
-    const response = await fetch(apiUrl);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
     
-    if (!response.ok) {
-        return new Response('Not found', { status: 404 });
+    try {
+        const response = await fetch(apiUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+            return new Response('Not found', { status: 404 });
+        }
+        
+        const data = await response.json();
+        
+        if (redirectPathFn) {
+            const redirectPath = redirectPathFn(data);
+            return Response.redirect(baseUrl + redirectPath, 302);
+        }
+        
+        return Response.json(data);
+    } catch (error: any) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            return new Response('Request timeout', { status: 408 });
+        }
+        throw error;
     }
-    
-    const data = await response.json();
-    
-    if (redirectPathFn) {
-        const redirectPath = redirectPathFn(data);
-        return Response.redirect(baseUrl + redirectPath, 302);
-    }
-    
-    return Response.json(data);
 }
 
 export async function middleware(request: NextRequest) {
@@ -64,7 +76,6 @@ export async function middleware(request: NextRequest) {
     if (["uuid", "iiif"].includes(path[1]) && path.length > 2 && path[2].includes('.')) {
         const filename = path[2]
         const apiUrl = `${baseUrl}/api/uuid/${filename}`;
-        console.log("API URL", apiUrl)
         return handleApiRedirect(apiUrl);
     }
 }
