@@ -71,7 +71,7 @@ export const constructDigitalIntegration = (data: any) => {
   }
 
   if (logoArray.length > 0) {
-    logoArray = logoArray.map((logo: string) => {
+    logoArray = logoArray.map((logo: string | { id: string }) => {
       return {
         type: 'VisualItem',
         digitally_shown_by: [
@@ -83,7 +83,7 @@ export const constructDigitalIntegration = (data: any) => {
               aatLogoType,
             ],
             access_point: [{
-              id: logo,
+              id: typeof logo === 'string' ? logo : logo.id,
               type: 'DigitalObject',
             }]
           }

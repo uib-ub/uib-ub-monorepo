@@ -32,6 +32,7 @@ const ubbontContext = {
     "locah": "http://data.archiveshub.ac.uk/def/",
     "lexvo": "http://lexvo.org/ontology#",
     "cc": "http://creativecommons.org/ns#",
+    "la": "https://linked.art/ns/terms/",
     "id": "@id",
     "type": "@type",
     "none": "@none",
@@ -62,6 +63,9 @@ const ubbontContext = {
     },
     "Production": {
       "@id": "crm:E12_Production"
+    },
+    "Set": {
+      "@id": "la:Set"
     },
     "producedBy": {
       "@id": "crm:P108i_was_produced_by",
