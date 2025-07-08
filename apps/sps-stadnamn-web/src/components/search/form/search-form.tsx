@@ -56,7 +56,7 @@ export default function SearchForm() {
     return pathname == '/search' ? <>   
         <div className="sr-only xl:not-sr-only flex !px-4 divide-x-2 divide-primary-400 gap-4 overflow-clip items-center content-center !w-[calc(25svw-0.5rem)]">
             <Link href="/" scroll={false} className="text-base font-serif uppercase no-underline">Stadnamnportalen</Link>
-            <h1 className="!text-lg text-neutral-800 px-4 truncate">{datasetTitles[dataset]}</h1></div>   
+            <h1 className="!text-lg text-neutral-800 px-3 truncate">{datasetTitles[dataset]}</h1></div>   
         <div className="h-full flex grow">
 
             <Form ref={form} action="/search" className="flex w-full h-full" onSubmit={() => setAllowFlyTo(true)}>
