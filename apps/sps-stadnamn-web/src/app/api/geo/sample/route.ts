@@ -53,13 +53,7 @@ export async function GET(request: Request) {
               }
             }
           },
-          {
-            range: {
-              boost: {
-                gte: 4
-              }
-            }
-          }
+
         ]
       }
     },
