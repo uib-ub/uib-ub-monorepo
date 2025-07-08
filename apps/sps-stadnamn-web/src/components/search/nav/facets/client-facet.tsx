@@ -111,9 +111,24 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   };
 
 
+  // Memoized RegExp factory to prevent memory leaks
+  const createSearchRegex = (() => {
+    const cache = new Map();
+    return (searchTerm: string) => {
+      if (!searchTerm) return null;
+      const escaped = searchTerm.replace("-", " ").replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const pattern = `(^|\\s)${escaped}`;
+      if (!cache.has(pattern)) {
+        cache.set(pattern, new RegExp(pattern, 'iu'));
+      }
+      return cache.get(pattern);
+    };
+  })();
+
+
   const facetSearch = (item: any, baseName: string, level: number): boolean => {
     if (!facetSearchQuery && level == 1) return true
-    if (facetSearchQuery && new RegExp(`(^|\\s)${facetSearchQuery.replace("-", " ").replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(item.key.replace("-", " "))) return true
+    if (facetSearchQuery && createSearchRegex(facetSearchQuery)?.test(item.key.replace("-", " "))) return true
     const childLevel = level +1
     if (item[baseName + childLevel]?.buckets.some((subitem: any) => facetSearch(subitem, baseName, childLevel))) {
       return true

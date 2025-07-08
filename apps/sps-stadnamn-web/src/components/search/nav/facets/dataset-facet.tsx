@@ -13,6 +13,20 @@ import { SearchContext } from '@/app/search-provider';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 
+// Memoized RegExp factory to prevent memory leaks
+const createSearchRegex = (() => {
+  const cache = new Map();
+  return (searchTerm: string) => {
+    if (!searchTerm) return null;
+    const escaped = searchTerm.replace(/[*.+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = `(^|\\s)${escaped}`;
+    if (!cache.has(pattern)) {
+      cache.set(pattern, new RegExp(pattern, 'iu'));
+    }
+    return cache.get(pattern);
+  };
+})();
+
 
 export default function DatasetFacet() {
   const router = useRouter()
@@ -116,6 +130,8 @@ export default function DatasetFacet() {
     });
   };
 
+
+
   return (
     <>
     <div className="flex flex-col gap-2 pb-4">
@@ -168,11 +184,11 @@ export default function DatasetFacet() {
           .filter(filterDatasetsByTags)
           .map((item: any) => {
             const label = renderLabel(item.key)
-            const regex = new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu')
-            const titleMatch = clientSearch?.length && regex.test(label)
+            const regex = createSearchRegex(clientSearch);
+            const titleMatch = clientSearch?.length && regex?.test(label)
             let descriptionMatch = null
             if (!titleMatch && clientSearch?.length) {
-                descriptionMatch = regex.test(datasetShortDescriptions[item.key.split('-')[2]])
+                descriptionMatch = regex?.test(datasetShortDescriptions[item.key.split('-')[2]])
             }
             return {item, titleMatch, descriptionMatch}
           })
