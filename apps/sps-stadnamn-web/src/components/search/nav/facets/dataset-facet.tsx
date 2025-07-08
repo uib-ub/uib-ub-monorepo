@@ -159,7 +159,7 @@ export default function DatasetFacet() {
           />
           <div className="flex flex-col gap-0.5">
             <span className="font-medium text-neutral-900">Stadnamngransking</span>
-            <span className="text-sm text-neutral-700">Vis berre datasett som har stadnamngransking som hovudformål</span>
+            <span className="text-sm text-neutral-700">Vis berre kjelder som har stadnamngransking som hovudformål</span>
           </div>
         </label>
     }
