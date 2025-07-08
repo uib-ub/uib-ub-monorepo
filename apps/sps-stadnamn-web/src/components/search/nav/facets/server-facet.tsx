@@ -100,6 +100,20 @@ export default function ServerFacet() {
     return existingValues.includes(itemKey.toString());
   };
 
+  // Memoized RegExp factory to prevent memory leaks
+  const createSearchRegex = (() => {
+    const cache = new Map();
+    return (searchTerm: string) => {
+      if (!searchTerm) return null;
+      const escaped = searchTerm.replace(/[*.+?^${}()|[\]\\]/g, '\\$&');
+      const pattern = `(^|\\s)${escaped}`;
+      if (!cache.has(pattern)) {
+        cache.set(pattern, new RegExp(pattern, 'iu'));
+      }
+      return cache.get(pattern);
+    };
+  })();
+
   return (
     <>
     <div className="flex flex-col gap-2 pb-4">
@@ -123,7 +137,7 @@ export default function ServerFacet() {
       <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .map((item: any, index: number) => 
-            (!clientSearch?.length || new RegExp(`(^|\\s)${clientSearch.replace(/[*.+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(renderLabel(facet, item.key))) && (
+            (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (
               <li key={index}>
                 <label>
                   <input 
