@@ -9,7 +9,6 @@ const meta = {
       "sidebar": false,
       "toc": false,
       "pagination": false,
-      "layout": "raw"
     }
   },
   "docs": {
@@ -20,7 +19,6 @@ const meta = {
     "title": "OpenAPI",
     "type": "page",
     "href": "https://api-ub.vercel.app/spec",
-    "newWindow": true
   }
 }
 
