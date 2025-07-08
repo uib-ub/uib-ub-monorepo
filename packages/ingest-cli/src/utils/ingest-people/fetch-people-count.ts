@@ -15,6 +15,7 @@ const query = `
           VALUES ?types { foaf:Person ubbont:Cataloguer }
           ?uri rdf:type ?types ;
             dct:identifier ?id .
+          FILTER(STRENDS(STR(?uri), LCASE(?id))) .
         }
     }
   }

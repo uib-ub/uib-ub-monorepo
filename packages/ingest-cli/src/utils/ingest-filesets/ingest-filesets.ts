@@ -7,6 +7,8 @@ import { getIndexFromAlias } from '../indexers/utils/getIndexFromAlias'
 import { fetchAndProcessFileset } from './fetch-fileset'
 import { InputItem, fetchFilesetsList } from './fetch-filesets-list'
 import { fetchFilesetsCount } from './fetch-filesets-count'
+import { ensureIndexAndTemplatesReady } from '../indexers/utils/ensureIndexAndTemplatesReady'
+import { putTemplates } from '../tempates/es_templates'
 
 export const resolveItems = async (items: InputItem[]) => {
   try {
@@ -24,6 +26,9 @@ export const ingestFilesets = async (limit = 100, page = 0, overwrite = false) =
 
   // Get the index name
   const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.file_set, overwrite)
+
+  // Ensure index exists
+  await ensureIndexAndTemplatesReady({ index: useIndex, putTemplates })
 
   // Set initial values
   let status = {

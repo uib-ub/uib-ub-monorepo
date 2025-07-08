@@ -1,5 +1,6 @@
+import { IndicesPutIndexTemplateRequest } from '@elastic/elasticsearch/lib/api/types';
 import { mappings } from './mappings';
-import { chcDataFieldTemplateComponent, chcIdTemplateComponent, chcLabelTemplateComponent, chcOwnersTemplateComponent, chcProductionTemplateComponent, chcSourceSettings } from './mappings/chc';
+import { chcDataFieldTemplateComponent, chcCorePropertiesTemplateComponent, chcLabelTemplateComponent, chcMemberOfTemplateComponent, chcOwnersTemplateComponent, chcProductionTemplateComponent, chcSourceSettings } from './mappings/chc';
 
 export const logTemplate = {
   "name": "log-template",
@@ -12,19 +13,23 @@ export const logTemplate = {
   }
 }
 
-export const chcTemplate = {
+export const chcTemplate: IndicesPutIndexTemplateRequest = {
   "name": "chc-settings",
   "index_patterns": ["search-chc*"],
   "composed_of": [
     chcSourceSettings.name,
     chcDataFieldTemplateComponent.name,
-    chcIdTemplateComponent.name,
+    chcCorePropertiesTemplateComponent.name,
     chcLabelTemplateComponent.name,
     chcOwnersTemplateComponent.name,
     chcProductionTemplateComponent.name,
+    chcMemberOfTemplateComponent.name,
   ],
   "template": {
     "settings": {
+      "index": {
+        "max_terms_count": 20000,
+      },
       "number_of_shards": 3,
       "number_of_replicas": 0,
       "max_ngram_diff": 20,
@@ -32,6 +37,7 @@ export const chcTemplate = {
       "analysis": {
         "analyzer": {
           "default": {
+            "type": "custom",
             "filter": ["lowercase", "norwegian_stop"],
             "tokenizer": "standard"
           },
@@ -67,54 +73,6 @@ export const chcTemplate = {
   "version": 3,
   "_meta": {
     "description": "Settings for CHC search indices containing items and entites."
-  }
-}
-
-export const manifestsTemplate = {
-  "name": "manifests-template",
-  "index_patterns": ["search-manifests-*"],
-  "template": {
-    "settings": {
-      "number_of_shards": "3",
-      "number_of_replicas": "0",
-      "max_ngram_diff": "20",
-      "analysis": {
-        "analyzer": {
-          "default": {
-            "filter": ["lowercase", "norwegian_stop"],
-            "tokenizer": "standard"
-          },
-          "ubb-whitespace": {
-            "type": "custom",
-            "tokenizer": "whitespace",
-            "filter": [
-              "lowercase",
-              "norwegian_stop"
-            ],
-          },
-        },
-        "filter": {
-          "norwegian_stop": {
-            "type": "stop",
-            "stopwords": "_norwegian_"
-          }
-        }
-      }
-    },
-    "mappings": {
-      "_source": {
-        "enabled": true
-      },
-      "properties": mappings.manifests.properties
-    },
-    "aliases": {
-      "search-manifests": {}
-    },
-  },
-  "priority": 500,
-  "version": 3,
-  "_meta": {
-    "description": "my custom"
   }
 }
 
@@ -229,11 +187,3 @@ export const wabTemplate = {
     "description": "my custom"
   }
 }
-
-/* 
-
-Add aliases, but i dont know what it means
-"aliases": {
-  "mydata": { }
-}
-*/
