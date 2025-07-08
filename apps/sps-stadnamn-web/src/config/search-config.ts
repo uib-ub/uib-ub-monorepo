@@ -41,7 +41,8 @@ const snid = {label: "Stadnamn ID", facet, omitLabel}
 const gnidu = {label: "GNIDu", facet, result}
 const midu = {label: "MIDu", facet}
 const h3 = {label: "H3", result}
-const identifiers = {snid, gnidu, midu, h3}
+const wikiAdm = {label: "Historisk kommune", result, table, facet}
+const identifiers = {snid, gnidu, midu, h3, wikiAdm}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
 const html = {"content.html": {label: "Tekstinnhald", fulltext}}
@@ -69,6 +70,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     core_gnidu: {
       label
 
+    },
+    wikidata: {
+      uuid, label, adm, adm1, adm2,
+      "misc.placeType": {label: "Lokalitetstype", table, facet},
     },
     bsn: {
       uuid, label, adm, adm1, adm2,
@@ -297,7 +302,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     m2010: {
       uuid, label, adm, adm1, adm2, sosi,
-      ...identifiers,
+      ...identifiers   
     },
     frogn: {
       uuid, label, adm, adm1, adm2,
