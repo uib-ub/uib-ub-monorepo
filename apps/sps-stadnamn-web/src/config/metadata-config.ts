@@ -60,13 +60,15 @@ export const datasetTitles: DatasetTitles = {
     snor: "Stadnamn i Noreg",
     herad: "Heradsregisteret",
     seta: "Seternamnarkivet",
-    osm: "OpenStreetMap 2019"
+    osm: "OpenStreetMap 2019",
+    wikidata: "Wikidata"
 
 }
 
 export const datasetDescriptions: Record<string, string> = {
   search: "Stadnamnsøk samanstiller data frå ei rekke datasett og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta er lista opp som kjelder.",
   all: "Avansert søk på tvers av grunnlagsdatasetta. Til skilnad frå det overordna søket er ikkje førekomster av same stadnamn slått saman, og felta er i liten grad standardiserte på tvers av datasett. Dette søket er derfor meist eigna til å samanlikne eit utval datasett på felt som overlappar.",
+  wikidata: "",
   bsn: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig.",
   hord: "Hordanamn er ei samling av stadnamn, især smånamn på åkrar, utmark, lier, tjern og fjell, m.m. I alt 179 000 stadnamn frå det tidligere Hordaland fylke er å finne i samlingen, fordelt på rundt 185 000 oppslag. Det er mulig å se informasjon om hvert stadnamn og se plasseringen til namnet i kartet. Uttale er ofte angitt og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
   rygh: "Digitalisert utgave av Oluf Ryghs standardverk for stedsnavn i Norge, opprinnelig utgitt i 18 bind i årene 1897-1924. Oppslagsverket inneholder bebyggelsesnavn fra hele Norge, unntatt Finnmark. Utgivelsen omfatter om lag 69 000 bostedsnavn, derav ca. 3 700 navnegardsnavn, 44 500 gardsnavn, 16 000 bruksnavn, 4 000 forsvunne navn og 1 000 navn på sokn og herreder. Hvert gardsnavn er angitt med uttale og følges historisk ned gjennom tidene og med en språklig tolkning.",
@@ -98,6 +100,7 @@ export const datasetDescriptions: Record<string, string> = {
 
 export const datasetShortDescriptions: Record<string, string> = {
   search: "Stadnamnsøk er eit overordna søk som samanstiller data frå ei rekke datasett og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta er lista opp som kjelder.",
+  wikidata: "",
   all: "Avansert søk på tvers av grunnlagsdatasetta. Merk at dette søket kan vere tregare enn stadnamnsøk, og felta er ikkje like standardiserte. Det er derfor meist eigna til å samanlikne eit utval datasett på felt som overlappar.",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert små namn for åkrar, utmark, lier, tjørn og fjell.",
@@ -130,6 +133,7 @@ export const datasetShortDescriptions: Record<string, string> = {
 
 export const publishDates: Record<string, string> = {
   bsn: "2024-05-29",
+  wikidata: "2025-07-07",
   hord: "2024-02-07",
   rygh: "2024-05-29",
   //nbas: "2024-05-29",
@@ -181,6 +185,13 @@ export const datasetPresentation: DatasetPresentation = {
         license: licenses.ccby4,
       },
       all: {
+        img: "icon.svg",
+        alt: "Kart over Norge med stedsnavn",
+        imageAttribution: "Kartverket",
+        attribution: "Språksamlingene",
+        license: licenses.ccby4,
+      },
+      wikidata: {
         img: "icon.svg",
         alt: "Kart over Norge med stedsnavn",
         imageAttribution: "Kartverket",

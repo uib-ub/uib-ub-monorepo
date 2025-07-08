@@ -219,7 +219,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     m2010: (source: any) => {
       return <>
       <div className='space-y-2'>
-        <strong>Opphavleg oppslagsord:</strong><InfoPopover>Oppslagsorda i den opphavlege databasen var hadde alle store bokstavar og inneheldt romartal.</InfoPopover>
+        <strong>Opphavleg:</strong><InfoPopover>Oppslagsorda i GAB-registeret hadde alle store bokstavar, og fleire av dei inneheldt romartal. Tilpassingane Språksamlingane har gjort kan innehalde feil. </InfoPopover>&nbsp;&nbsp;
         {source.sosi == 'gard' ? source.misc.Gardsnamn : source.misc.Bruksnamn}
       </div>
       </>
