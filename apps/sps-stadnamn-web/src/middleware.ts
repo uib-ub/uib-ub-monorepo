@@ -1,37 +1,47 @@
 import type { NextRequest } from 'next/server'
-import { fetchDoc, fetchSNID, fetchSNIDParent } from './app/api/_utils/actions'
-import { defaultDoc2jsonld, doc2jsonld } from './config/rdf-config'
 import { datasetTitles } from './config/metadata-config'
 
 const baseUrl = process.env.VERCEL_ENV === 'production' ? 'https://stadnamnportalen.uib.no' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
 
+// Generic function to handle API calls with redirect or not found
+async function handleApiRedirect(apiUrl: string, redirectPathFn?: (data: any) => string) {
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+        return new Response('Not found', { status: 404 });
+    }
+    
+    const data = await response.json();
+    
+    if (redirectPathFn) {
+        const redirectPath = redirectPathFn(data);
+        return Response.redirect(baseUrl + redirectPath, 302);
+    }
+    
+    return Response.json(data);
+}
 
 export async function middleware(request: NextRequest) {
-    // Extract uuid and extension from url
-    
     const url = new URL(request.url)
     const path = url.pathname.split('/')
-
-
 
     if (path[1] == 'search') {
         const dataset = url.searchParams.get('dataset') || 'search'
 
         if (!datasetTitles[dataset]) {
-                return Response.redirect(baseUrl + "/search", 302)
+            return Response.redirect(baseUrl + "/search", 302)
         }
         return
-
     }
 
     if (path[1] == 'view') {
         const searchParams = new URLSearchParams(url.searchParams)
         const dataset = path[2]
         if (path.length == 5 && path[3] == 'doc') {
-            return Response.redirect(baseUrl + "/uuid/" + path[4], 302)
+            return handleApiRedirect(`${baseUrl}/api/uuid/${path[4]}`, () => "/uuid/" + path[4]);
         }
         if (path.length == 5 && path[3] == 'iiif') {
-            return Response.redirect(baseUrl + "/iiif/" + path[4], 302)
+            return handleApiRedirect(`${baseUrl}/api/iiif/${path[4]}`, () => "/iiif/" + path[4]);
         }
         if (dataset != 'search') {
             searchParams.set('dataset', dataset)
@@ -40,37 +50,26 @@ export async function middleware(request: NextRequest) {
     }
     
     if (path[1] == 'snid') {
-        // redirect
         const snid = path[2]
-        const data = await fetchSNID(snid);
-        return Response.redirect(baseUrl + "/uuid/" + data.fields.uuid, 302);
+        const apiUrl = `${baseUrl}/api/snid?snid=${snid}`;
+        return handleApiRedirect(apiUrl, (data) => "/uuid/" + data.hits.hits[0].fields.uuid[0]);
     }
 
     if (path[1] == 'find-snid') {
-        // redirect
         const uuid = path[2]
-        const data = await fetchSNIDParent(uuid);
-        return Response.redirect(baseUrl + "/uuid/" + data.fields.uuid, 302);
+        const apiUrl = `${baseUrl}/api/snid?uuid=${uuid}`;
+        return handleApiRedirect(apiUrl, (data) => "/uuid/" + data.hits.hits[0].fields.uuid[0]);
     }
 
     if (["uuid", "iiif"].includes(path[1]) && path.length > 2 && path[2].includes('.')) {
         const filename = path[2]
-        
         const apiUrl = `${baseUrl}/api/uuid/${filename}`;
         console.log("API URL", apiUrl)
-        const response = await fetch(apiUrl);
-        
-        if (!response.ok) {
-            return new Response('Not found', { status: 404 });
-        }        
-        const data = await response.json();
-        return Response.json(data);
+        return handleApiRedirect(apiUrl);
     }
-    
 }
 
-
-  export const config = {
+export const config = {
     matcher: [
         '/uuid/:uuid*',
         '/snid/:snid*',
@@ -79,6 +78,5 @@ export async function middleware(request: NextRequest) {
         '/view/:path*',
         '/iiif/:path*',
     ],
-    
-  }
+}
 
