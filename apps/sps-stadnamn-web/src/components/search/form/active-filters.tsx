@@ -32,6 +32,9 @@ export default function ActiveFilters() {
         !pinnedFilters[dataset]?.some(([pinnedKey, pinnedValue]) => pinnedKey === key && pinnedValue === value)
     )
 
+    // Get boost_gt parameter for djupinnsamlingar filter
+    const boostGt = searchParams.get('boost_gt')
+
 
     const getFieldLabel = (name: string, value: string) => {
         
@@ -117,6 +120,8 @@ export default function ActiveFilters() {
       router.push(`?${newSearchParams.toString()}`)
     }
 
+
+
     const gnr =  getGnr(parentData, dataset)
 
 
@@ -128,6 +133,17 @@ export default function ActiveFilters() {
             Fulltekst 
             <PiX className="inline text-lg" aria-hidden="true"/>
             </button> }
+        
+        {/* Djupinnsamlingar chip */}
+        {boostGt === '3' && 
+            <button 
+                onClick={() => removeFilter('boost_gt', '3')} 
+                className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+            >
+                Djupinnsamlingar
+                <PiX className="inline text-lg" aria-hidden="true"/>
+            </button>
+        }
             {!parentData && visibleUnpinnedFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 

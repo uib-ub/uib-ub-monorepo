@@ -2,13 +2,13 @@ import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDataset, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
-import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 
 import { datasetTitles, typeNames, datasetTypes, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config';
 
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
-import { getSkeletonLength } from '@/lib/utils';
+import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import { SearchContext } from '@/app/search-provider';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
@@ -38,6 +38,7 @@ export default function DatasetFacet() {
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+  const [deepCollectionExpanded, setDeepCollectionExpanded] = useState(false);
   const {facetOptions, pinnedFilters, updatePinnedFilters } = useContext(GlobalContext)
   const availableFacets = useMemo(() => facetConfig[dataset], [dataset]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
@@ -130,6 +131,9 @@ export default function DatasetFacet() {
     });
   };
 
+  const toggleDeepCollectionDescription = () => {
+    setDeepCollectionExpanded(prev => !prev);
+  };
 
 
   return (
@@ -137,31 +141,43 @@ export default function DatasetFacet() {
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
     {dataset == 'all' && 
-        <label className="flex items-start gap-3 px-3 py-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
-          <input
-            type="checkbox"
-            checked={searchParams.getAll('datasetTag').includes('collection')}
-            onChange={(e) => {
-              setClientSearch('');
-              const params = new URLSearchParams(searchParams.toString());
-              const existingTags = params.getAll('datasetTag');
-              const existingDatasets = params.getAll('indexDataset');
-              existingDatasets.filter(dataset => !datasetTypes[dataset]?.includes('collection')).forEach(dataset => params.delete('indexDataset', dataset));
-              if (e.target.checked && !existingTags.includes('collection')) {
-                params.append('datasetTag', 'collection');
-              } else if (!e.target.checked) {
-                params.delete('datasetTag');
-                existingTags.filter(tag => tag !== 'collection').forEach(tag => params.append('datasetTag', tag));
-              }
-              router.push(`?${params.toString()}`, { scroll: false });
-            }}
-            className="mt-1 h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-600"
-          />
-          <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-neutral-900">Stadnamngransking</span>
-            <span className="text-sm text-neutral-700">Vis berre kjelder som har stadnamngransking som hovudformål</span>
+        <div className="px-3 py-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
+          <div className="flex items-start gap-3">
+            <label className="flex items-start gap-3 flex-1">
+              <input
+                type="checkbox"
+                checked={searchParams.get('boost_gt') === '3'}
+                onChange={(e) => {
+                  setClientSearch('');
+                  const params = new URLSearchParams(searchParams.toString());
+                  if (e.target.checked) {
+                    params.set('boost_gt', '3');
+                  } else {
+                    params.delete('boost_gt');
+                  }
+                  router.push(`?${params.toString()}`, { scroll: false });
+                }}
+                className="mt-1 h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-600"
+              />
+              <div className="flex flex-col gap-0.5">
+                <span className="font-medium text-neutral-900">Vis berre djupinnsamlingar</span>
+              </div>
+            </label>
+            <IconButton
+              label={`${deepCollectionExpanded ? 'Skjul' : 'Vis'} beskriving`}
+              onClick={toggleDeepCollectionDescription}
+              className="rounded-full btn btn-outline btn-compact p-1"
+              aria-label={`${deepCollectionExpanded ? 'Skjul' : 'Vis'} beskriving`}
+            >
+              {deepCollectionExpanded ? <PiCaretUpBold className="w-4 h-4" /> : <PiCaretDownBold className="w-4 h-4" />}
+            </IconButton>
           </div>
-        </label>
+          {deepCollectionExpanded && (
+            <div className="mt-2 ml-6 mb-2">
+              <span>Vis berre kjelder som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>
+            </div>
+          )}
+        </div>
     }
     <div className='flex gap-2'>
     <div className='relative grow'>

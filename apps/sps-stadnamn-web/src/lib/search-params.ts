@@ -37,14 +37,14 @@ export function useMode() {
 export function useSearchQuery() {
     const searchParams = useSearchParams()
     const dataset = useDataset()
-    const fields = ['q', ...Object.keys(fieldConfig[dataset])]
+    const validFields = ['q', ...Object.keys(fieldConfig[dataset])]
     const facetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const nav = searchParams.get('nav')
     const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
     
 
-    fields.forEach(field => {
+    validFields.forEach(field => {
         const values = searchParams.getAll(field)
         values.forEach(value => {
             searchQuery.append(field, value)
@@ -55,9 +55,19 @@ export function useSearchQuery() {
     })
 
     searchParams.forEach((value, key) => {
-        if (!fields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
+        if (!validFields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
             searchQuery.append(key, value)
             facetFilters.push([key, value])
+        } else {
+            // Handle range filters
+            const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);
+            if (comparisonMatch) {
+                const [, fieldName] = comparisonMatch;
+                if (validFields.includes(fieldName)) {
+                    searchQuery.append(key, value)
+                    //facetFilters.push([key, value])
+                }
+            }
         }
     })
 

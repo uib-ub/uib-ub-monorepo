@@ -18,13 +18,14 @@ export interface FieldConfigItem {
   datasets?: string[]; // Datasets that contain this field - used in cross-dataset search
   indexDataset?: string[]; // Used to filter by _index
   altField?: string; // Add this new property
+  numeric?: boolean;
 }
 
 interface FacetConfigItem extends FieldConfigItem {
   key: string; 
 }
  
-const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet] = Array(7).fill(true);
+const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric] = Array(8).fill(true);
 
 const sosi = {label: "Lokalitetstype (SOSI)", description: "SOSI-standarden", facet, table, result}
 const cadastre = {"within": {label: "Gard", result},
@@ -47,14 +48,17 @@ const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
 const html = {"content.html": {label: "Tekstinnhald", fulltext}}
 const text = {"content.text": {label: "Tekstinnhald", fulltext}}
+const boost = {numeric}
+
 const labelDefaults = {
   "altLabels": {label: "Andre namn", table, facet, result},
   "attestations": {label: "Kjeldeformer", table, result},
 }
+const required = {uuid, boost, label}
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {
-      uuid, label, adm, adm1, adm2, link, ...image, 
+      ...required, adm, adm1, adm2, link, ...image, 
       "datasets": {label: "Grunnlagsdatasett", facet, omitLabel, result, featuredFacet},
       sosi,
       "datasetTag": {label: "Datasettstype", facet, omitLabel, child: "datasets"},
@@ -72,11 +76,11 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
     },
     wikidata: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "misc.placeType": {label: "Lokalitetstype", table, facet},
     },
     bsn: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "rawData.komm": {label: "Beskrivelse", fulltext},
       "rawData.loktype.type": {label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table, facet},
       "rawData.oppskr.os_navn": {label: "Oppskriver", facet},
@@ -93,7 +97,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
 
     hord: {
-      uuid, label, adm, adm1, adm2, link, ...image,
+      ...required, adm, adm1, adm2, link, ...image,
       "misc.subset": {label: "Arkivtilvising", table, facet, featuredFacet},
       "rawData.arkivTilvising": {label: "Arkivtilvising", table, facet, featuredFacet},
       "adm3": {label: "Tidligere kommune", result},
@@ -106,7 +110,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },
     rygh: {
-      uuid, label, adm, adm1, adm2, sosi, ...html,
+      ...required, adm, adm1, adm2, sosi, ...html,
       "misc.Lokalitetstype": {label: "Lokalitetstype", table, facet},
       "misc.Bind": {label: "Bind", table, facet},
       "misc.Side": {label: "Sidetall", table, facet, additionalParams: ["misc.Bind"]},
@@ -117,10 +121,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
     },
     rygh_g: {
-      uuid, label, ...text,
+      ...required, ...text,
     },
     leks: {
-      uuid, label, adm, adm1, adm2,...html,
+      ...required, adm, adm1, adm2,...html,
       "misc.Lokalitetstype": {label: "Lokalitetstype", table, facet},
       "misc.Sisteledd": {label: "Sisteledd", facet},
       "misc.Kjelde": {label: "Kjelde", facet},
@@ -132,12 +136,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },
     leks_g: {
-      uuid, label, ...text,
+      ...required, ...text,
       "rawData.språk": {label: "Språk", facet},
       "rawData.kjelde": {label: "Kjelde", facet},
     },
     mu1950: {
-      uuid, label, adm, adm1, adm2, sosi, 
+      ...required, adm, adm1, adm2, sosi, 
       ...cadastre,
       "within": {label: "Gard", result},
       "knr": {label: "Knr", table, facet, result},
@@ -150,7 +154,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },  
     m1838: {
-      uuid, label, sosi, adm,
+      ...required, sosi, adm,
       "within": {label: "Gard"},
       "misc.MNR": {label: "Matrikkelnummer", result, table, facet},
       "knr": {label: "Kommunenummer", facet, result},
@@ -163,7 +167,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       
     },
     m1886: {
-      uuid, label, sosi, adm, adm1, adm2,
+      ...required, sosi, adm, adm1, adm2,
       "misc.knr": {label: "Kommunenummer", table, facet, result},
       "misc.gnr": {label: "Gardsnummer", table, facet, result, additionalParams: ["misc.knr"]},
       "misc.bnr": {label: "Bruksnummer", table, facet, result, additionalParams: ["misc.knr", "misc.gnr"]},
@@ -171,14 +175,14 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },
     skul: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "rawData.gnr": {label: "Gardsnummer", table, result, facet},
       "rawData.bnr": {label: "Bruksnummer", table, result, facet, additionalParams: ["rawData.gnr"]},
       "rawData.knr": {label: "knr", table, result, facet},
       ...identifiers,
     },
     nbas: {
-      uuid, label, adm, adm1, adm2, sosi, ...html,
+      ...required, adm, adm1, adm2, sosi, ...html,
       "rawData.herred": {label: "Kommune", facet},
       "rawData.fylke": {label: "Fylke", facet},
       "rawData.kommunenummer": {label: "Kommunenummer", facet},
@@ -189,7 +193,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       
     },
     herad: {
-      uuid, label, adm, adm1, adm2, sosi, ...html,
+      ...required, adm, adm1, adm2, sosi, ...html,
       "misc.herred": {label: "Kommune", facet},
       "misc.fylke": {label: "Fylke", facet},
       "misc.kommunenummer": {label: "Kommunenummer", facet},
@@ -201,7 +205,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       
     },
     seta: {
-      uuid, label, adm, adm1, adm2, sosi, ...html,
+      ...required, adm, adm1, adm2, sosi, ...html,
       "rawData.herred": {label: "Kommune", facet},
       "rawData.fylke": {label: "Fylke", facet},
       "rawData.kommunenummer": {label: "Kommunenummer", facet},
@@ -212,13 +216,13 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       
     },
     ostf: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "rawData.Bindsortering": {label: "Bind", facet},
       "rawData.GNID": {label: "GNID", facet, result},
       ...identifiers,
     },
     tot: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "misc.GNR": {label: "Gardsnummer", table, facet},
       "misc.BNR": {label: "Bruksnummer", table, facet, additionalParams: ["misc.GNR"]},
       "misc.KNR": {label: "Kommunenummer", table, facet},
@@ -236,7 +240,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },
     sof: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "misc.kulturKode.id": {label: "Kulturkode", facet, result},
       "misc.naturKode.id": {label: "Naturkode", facet, result},
       "rawData.Normform": {label: "Normert form", result, table, facet},
@@ -250,7 +254,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.Informant": {label: "Informant", result, table, facet},
     },
     ssr2016: {
-      uuid, label, adm, adm1, adm2, sosi,
+      ...required, adm, adm1, adm2, sosi,
       "misc.Stedsnavn_lokalId": {label: "SSR-nummer", facet},
       "misc.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
       "misc.language": {label: "Språk", facet},
@@ -258,7 +262,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },
     ssr2020: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "misc.Stedsnummer": {label: "Stedsnummer", facet, result}, 
       "misc.Språk": {label: "Språk", facet},
       "misc.Status_skrivemåte": {label: "Status", facet},
@@ -272,7 +276,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },
     nrk: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "rawData.Kategori": { label: "Kategori", result, table, facet },
       "rawData.IndeksNamn": { label: "Indeksnamn", result, table, facet },
       "rawData.Namn": { label: "Namn", result, table },
@@ -289,23 +293,23 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.SistEndra": { label: "Sist endra", table }
     },
     gn2019: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       ...identifiers,
     },
     ft1900: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       ...identifiers,
     },
     ft1910: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       ...identifiers,
     },
     m2010: {
-      uuid, label, adm, adm1, adm2, sosi,
+      ...required, adm, adm1, adm2, sosi,
       ...identifiers   
     },
     frogn: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "rawData.KOMMENTAR": { label: "Kommentar", fulltext, facet, table, result},
       "rawData.KARTBLAD": { label: "Kartblad", table, facet, result },
       "rawData.INNSAMLNR": { label: "Innsamlingsnummer", table, facet, result },
@@ -330,7 +334,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.ALT_OPPSLAG": { label: "Alternativt oppslag", table, facet }
     },
     gjerd: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "rawData.ID1": { label: "ID", result, table },
       "rawData.OPPSLAG": { label: "Oppslag", result, table, facet },
       "rawData.DEL_SAMLING": { label: "Del av samling", table, facet },
@@ -363,7 +367,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.EIER": { label: "Eigar", table, facet }
     },
     sorum: {
-      uuid, label, adm, adm1, adm2, adm3,
+      ...required, adm, adm1, adm2, adm3,
       "rawData.ID": { label: "ID", table, result },
       "rawData.KART": { label: "Kart", table, facet },
       "rawData.NGIDENT": { label: "NG-identifikator", table, facet },
@@ -397,7 +401,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.KOMMENTAR2": { label: "Kommentar 2", table, facet, fulltext },
     },
     kven: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       "misc.oppslagsform": { label: "Oppslagsform", result, table, facet },
       "misc.bare_fra_skriftlige_kilder": { label: "Bare fra skriftlige kilder", facet },
       "misc.publisert": { label: "Publisert", facet },
@@ -428,14 +432,15 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers,
     },
     snor: {
-      uuid, label, adm, adm1, adm2,
+      ...required, adm, adm1, adm2,
       ...identifiers,
     }
   }
 
 // First, store the original _index configuration
+// TODO: refactor so that required is not needed in the individual configs
 const baseAllConfig = {
-  uuid, label, adm, adm1, adm2, sosi, identifiers, cadastre,
+  ...required, adm, adm1, adm2, sosi, identifiers, cadastre,
   "indexDataset": {label: "Datasett", facet},
   "datasetTag": {label: "Datasettstype", facet, omitLabel, child: "indexDataset"},
 };

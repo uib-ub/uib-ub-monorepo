@@ -26,7 +26,7 @@ export const RESERVED_PARAMS = [
   'zoom',
   'point',
   'fuzzyNav',
-  'datasetTag',
+  'datasetTag'
 ] as const;
 
 export function extractFacets(request: Request) {
@@ -37,19 +37,43 @@ export function extractFacets(request: Request) {
 
   const clientFacets: { [key: string]: string[] } = {};
   const serverFacets: { [key: string]: string[] } = {};
+  const rangeFilters: { [key: string]: { [operator: string]: string } } = {};
 
   for (const [key, value] of urlParams.entries()) {
     if (RESERVED_PARAMS.includes(key as any)) {
       filteredParams[key] = urlParams.get(key)!;
     } else {
-      const facets = key == 'adm' ? clientFacets : serverFacets;
-      if (!facets[key]) {
-        facets[key] = [];
+      // Check for comparison operators (_gt, _gte, _lt, _lte)
+      const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);
+      if (comparisonMatch) {
+        const [, fieldName, operator] = comparisonMatch;
+        if (!rangeFilters[fieldName]) {
+          rangeFilters[fieldName] = {};
+        }
+        rangeFilters[fieldName][operator] = value;
+      } else {
+        const facets = key == 'adm' ? clientFacets : serverFacets;
+        if (!facets[key]) {
+          facets[key] = [];
+        }
+        facets[key].push(value);
       }
-      facets[key].push(value);
-
-      
     }
+  }
+
+  // Handle range filters (comparison operators)
+  for (const [fieldName, operators] of Object.entries(rangeFilters)) {
+    const rangeQuery: { [key: string]: any } = {};
+    
+    for (const [operator, value] of Object.entries(operators)) {
+      rangeQuery[operator] = value;
+    }
+    
+    termFilters.push({
+      "range": {
+        [fieldName]: rangeQuery
+      }
+    });
   }
 
   // Handle dataset tag (non-categorical dataset type) filter for datasets
@@ -190,7 +214,7 @@ export function extractFacets(request: Request) {
     }
   }
 
-  return {termFilters, filteredParams}
+  return {termFilters, filteredParams, rangeFilters}
 
 
 }
