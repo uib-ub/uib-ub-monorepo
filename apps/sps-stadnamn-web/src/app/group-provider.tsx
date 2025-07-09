@@ -9,6 +9,8 @@ interface GroupContextData {
     groupLoading: boolean;
     groupError: Record<string, string> | null;
     groupTotal: { value: number, relation: string } | null;
+    setInitialUrl: (url: string | null) => void;
+    initialUrl: string | null;
 }
 
 export const GroupContext = createContext<GroupContextData>({
@@ -16,6 +18,8 @@ export const GroupContext = createContext<GroupContextData>({
     groupLoading: true,
     groupError: null,
     groupTotal: null,
+    setInitialUrl: () => {},
+    initialUrl: null
 });
 
 export default function GroupProvider({ children }: {  children: React.ReactNode }) {
@@ -26,6 +30,8 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const [groupError, setGroupError] = useState<Record<string, string> | null>(null)
     const [groupData, setGroupData] = useState<any[] | null>(null)
     const [groupTotal, setGroupTotal] = useState<{ value: number; relation: string } | null>(null)
+    const [initialUrl, setInitialUrl] = useState<string | null>(null)
+    const [initialMode, setInitialMode] = useState<string | null>(null)
     const doc = searchParams.get('doc')
     const docIndex = groupData?.findIndex(item => item.fields.uuid[0] === doc)
 
@@ -66,11 +72,12 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
                 return;
             }
 
-            if (!groupData || docIndex === undefined || docIndex === -1) return;
+            
             
             if (!e.shiftKey) return;
             
             if (e.key === 'ArrowLeft') {
+                if (!groupData || docIndex === undefined || docIndex === -1) return;
                 e.preventDefault();
                 const prevIndex = Math.max(0, docIndex - 1);
                 if (prevIndex !== docIndex) {
@@ -82,6 +89,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
             
             if (e.key === 'ArrowRight') {
                 e.preventDefault();
+                if (!groupData || docIndex === undefined || docIndex === -1) return;
                 const nextIndex = Math.min(groupData.length - 1, docIndex + 1);
                 if (nextIndex !== docIndex) {
                     const params = new URLSearchParams(searchParams);
@@ -97,26 +105,38 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
                     router.push(`?${params.toString()}`);
                 }
                 else if (fuzzyNav === 'timeline') {
-                    params.delete('fuzzyNav');
-                    params.set('details', 'doc');
-                    router.push(`?${params.toString()}`);
+                    if (initialUrl) {
+                        router.push(initialUrl)
+                        setInitialUrl(null)
+                    }
+                    else {
+                        params.delete('fuzzyNav');
+                        params.set('details', 'doc');
+                        router.push(`?${params.toString()}`);
+                    }
                 }
-                else if (details === 'doc' && groupTotal?.value) {
-                    params.set('details', 'group');
+                else if (details === 'group') {
+                    params.set('details', 'doc');
                     router.push(`?${params.toString()}`);
                 }
             }
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
                 const params = new URLSearchParams(searchParams);
-                if (details === 'group') {
-                    params.set('details', 'doc');
+                
+                if (!fuzzyNav && details === 'doc' && groupTotal?.value && groupTotal.value > 1) {
+                    params.set('details', 'group');
                 }
                 else if (!fuzzyNav) {
                     params.set('fuzzyNav', 'timeline');
+                    params.delete('details')
+                    params.delete('doc')
+                    setInitialUrl(`?${searchParams.toString()}`)
+
                 }
-                else {
+                else if (fuzzyNav === 'timeline') {
                     params.set("fuzzyNav", "list")
+                    
                 }
                 router.push(`?${params.toString()}`);
             }
@@ -124,13 +144,15 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [groupData, docIndex, searchParams, router, details, fuzzyNav, groupTotal]);
+    }, [groupData, docIndex, searchParams, router, details, fuzzyNav, groupTotal, initialUrl]);
 
     return <GroupContext.Provider value={{
         groupData,
         groupLoading,
         groupError,
-        groupTotal
+        groupTotal,
+        setInitialUrl,
+        initialUrl
     }}>{children}</GroupContext.Provider>
 }
 

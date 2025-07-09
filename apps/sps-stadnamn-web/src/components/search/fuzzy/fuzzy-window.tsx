@@ -16,6 +16,7 @@ export default function FuzzyWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const mode = useMode()
+    const { initialUrl, setInitialUrl } = useContext(GroupContext)
     
 
     return <>
@@ -24,14 +25,24 @@ export default function FuzzyWindow() {
         Få oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
         </InfoPopover></h2>
 
-        
-
-    <ClickableIcon
+    {
+      initialUrl ?
+      <ClickableIcon
             label="Lukk"
-            remove={["fuzzyNav"]} 
+            only={Object.fromEntries(new URLSearchParams(initialUrl))}
+            onClick={() => setInitialUrl(null)}
             className="ml-auto" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>
+    :
+    <ClickableIcon
+            label="Lukk"
+            remove={["fuzzyNav", "doc"]} 
+            className="ml-auto" >
+            <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
+    </ClickableIcon>
+    }
+
   </div>
 
   
