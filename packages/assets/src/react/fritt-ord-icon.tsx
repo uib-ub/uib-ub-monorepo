@@ -1,18 +1,12 @@
 import * as React from "react";
 import type { SVGProps } from "react";
-import { Ref, forwardRef, memo } from "react";
-const SvgFrittOrdLogo = (
-  props: SVGProps<SVGSVGElement>,
-  ref: Ref<SVGSVGElement>
-) => (
+import { forwardRef, memo } from "react";
+
+const SvgFrittOrdLogo = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement>>((props, ref) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 475 1004"
-    fillRule="evenodd"
-    clipRule="evenodd"
-    strokeLinejoin="round"
-    strokeMiterlimit={2}
+    viewBox="0 0 32 32"
     ref={ref}
   >
     <style>
@@ -33,7 +27,7 @@ const SvgFrittOrdLogo = (
       fill="#0071a5"
     />
   </svg>
-);
-const ForwardRef = forwardRef(SvgFrittOrdLogo);
-const Memo = memo(ForwardRef);
+));
+SvgFrittOrdLogo.displayName = "SvgFrittOrdLogo";
+const Memo = memo(SvgFrittOrdLogo);
 export default Memo;
