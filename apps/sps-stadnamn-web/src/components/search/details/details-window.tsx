@@ -38,19 +38,7 @@ export default function DetailsWindow() {
 
     return <>
     <div className={`flex p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
-    { groupTotal?.value && <Clickable label="Gruppe" 
-          remove={["details", "fuzzyNav"]} 
-          add={{details: "group"}}
-          aria-selected={details == "group"}
-          className="flex whitespace-nowrap border border-neutral-200 rounded group relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
-      <PiListLight className="text-2xl text-neutral-900 xl:sr-only" aria-hidden="true"/>
-      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Gruppe</span>
-      {groupTotal?.value && groupTotal.value > 0 && (
-        <span className={`aresults-badge bg-primary-200 ${groupTotal.value > 9 ? 'px-1.5': 'px-2'} text-primary-600 font-bold group-aria-selected:bg-accent-800 group-aria-selected:text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap`}>
-          {groupTotal.value}
-        </span>
-      )}
-    </Clickable>}
+   
 
     <Clickable
         label="Oppslag"
@@ -60,6 +48,20 @@ export default function DetailsWindow() {
         {details == "doc" ? <PiBookOpenFill className="text-xl text-accent-800" aria-hidden="true"/> : <PiBookOpenLight className="text-xl text-accent-900" aria-hidden="true"/>}
         <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Oppslag</span>
     </Clickable>
+
+    { groupTotal?.value && groupTotal.value > 1 && <Clickable label="Valde treff" 
+          remove={["details", "fuzzyNav"]} 
+          add={{details: "group"}}
+          aria-selected={details == "group"}
+          className="flex whitespace-nowrap border border-neutral-200 rounded group relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
+      <PiListLight className="text-2xl text-neutral-900 xl:sr-only" aria-hidden="true"/>
+      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Valde treff</span>
+      {groupTotal?.value && groupTotal.value > 0 && (
+        <span className={`aresults-badge bg-primary-200 ${groupTotal.value > 9 ? 'px-1.5': 'px-2'} text-primary-600 font-bold group-aria-selected:bg-accent-800 group-aria-selected:text-white left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap`}>
+          {groupTotal.value}
+        </span>
+      )}
+    </Clickable>}
     <div className="flex gap-2 ml-auto">
     
              
