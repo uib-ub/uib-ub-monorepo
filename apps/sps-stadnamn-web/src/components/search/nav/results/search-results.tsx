@@ -121,18 +121,20 @@ export default function SearchResults() {
           
           {/* Render "load more" button */}
           {!isLoadingResults && collapsedResults.reduce((acc, curr) => acc + (curr.inner_hits?.group?.hits?.total?.value || 0), 0) < totalHits?.value && (
-            <button 
-              type="button" 
-              onClick={(e) => {
-                e.preventDefault();
-                const newUrl = new URLSearchParams(searchParams)
-                newUrl.set('page', (parseInt(page || '0') + 1).toString())
-                router.push(`?${newUrl.toString()}`);
-              }} 
-              className="bg-neutral-100 p-4 rounded-full w-full block"
-            >
-              Last fleire resultat
-            </button>
+            <li className="p-4 px-8">
+              <button 
+                type="button" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  const newUrl = new URLSearchParams(searchParams)
+                  newUrl.set('page', (parseInt(page || '0') + 1).toString())
+                  router.push(`?${newUrl.toString()}`);
+                }} 
+                className="bg-neutral-100 p-4 rounded-full w-full block"
+              >
+                Last fleire resultat
+              </button>
+            </li>
           )}
         </ul>
         
