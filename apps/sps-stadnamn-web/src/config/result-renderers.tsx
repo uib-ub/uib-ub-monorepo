@@ -100,7 +100,7 @@ const formatAdm = (hit: any) => {
   const adm1 = getFieldValue(hit, 'adm1')
   const adm2 = getFieldValue(hit, 'adm2')
   const adm3 = getFieldValue(hit, 'adm3')
-  return <>{adm3}{adm3 && ' – '}{multivalue(adm1)?.length > 0 && adm2 !== adm1 && adm2 + ', '}{adm1}</>
+  return <>{adm3}{adm3 && ' – '}{(adm2 &&multivalue(adm1)?.length > 0 && adm2 !== adm1) && adm2 + ', '}{adm1}</>
 }
 
 const cadastreAdm = (knr: string | undefined, gnr: string | undefined, bnr: string | undefined, sep: string, hit: any, display: string ) => {
