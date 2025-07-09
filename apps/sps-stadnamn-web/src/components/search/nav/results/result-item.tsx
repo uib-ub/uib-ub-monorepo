@@ -23,9 +23,9 @@ export default function ResultItem({hit}: {hit: any}) {
     const { isMobile } = useContext(GlobalContext)
     const details = searchParams.get('details') || 'doc'
 
-    const titleRenderer = resultRenderers[dataset]?.title || defaultResultRenderer.title
-    const detailsRenderer = resultRenderers[dataset]?.details || defaultResultRenderer.details
-    const snippetRenderer = resultRenderers[dataset]?.snippet || defaultResultRenderer.snippet
+    const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
+    const detailsRenderer = resultRenderers[docDataset]?.details || defaultResultRenderer.details
+    const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
     const isGrunnord = docDataset?.includes('_g')
     const isSelected = (doc == hit.fields.uuid || (hit.fields?.group && group == stringToBase64Url(hit.fields?.group?.[0])))
