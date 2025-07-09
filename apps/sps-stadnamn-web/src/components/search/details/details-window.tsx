@@ -33,7 +33,7 @@ export default function DetailsWindow() {
     
 
 
-    const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
+    const { groupData, groupLoading, groupTotal, setInitialUrl } = useContext(GroupContext)
     
 
     return <>
