@@ -82,7 +82,7 @@ export default function NavWindow() {
                         { isLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
                         {nav == 'results' ? <span className={`results-badge bg-accent-800 font-bold text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
                             {totalHits && formatNumber(totalHits.value)}</span>
-                        : <span className={`results-badge text-primary-600 bg-primary-200 font-bold shadow-sm left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
+                        : <span className={`results-badge text-primary-600 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
                         </>}
                 </Clickable>
                 }
