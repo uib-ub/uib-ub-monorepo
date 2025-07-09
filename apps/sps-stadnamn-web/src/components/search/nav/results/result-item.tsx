@@ -51,7 +51,7 @@ export default function ResultItem({hit}: {hit: any}) {
                         doc: hit.fields.uuid,
                         details: details, 
 
-                        ...(hit.fields.group && hit.inner_hits?.group?.hits?.total?.value > 1) ? {group: stringToBase64Url(hit.fields.group[0])} : {},
+                        ...(hit.fields.group ? {group: stringToBase64Url(hit.fields.group[0])} : {}),
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
