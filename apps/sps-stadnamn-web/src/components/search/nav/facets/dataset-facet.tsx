@@ -70,6 +70,8 @@ export default function DatasetFacet() {
     const existingValues = params.getAll(facet);
     params.delete('indexDataset');
 
+    params.delete('page')
+
     // reset because different markers should be shown
     params.delete('parent')
     params.delete('zoom')

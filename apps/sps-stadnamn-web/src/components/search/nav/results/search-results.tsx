@@ -1,6 +1,6 @@
 'use client'
 import { SearchContext } from "@/app/search-provider"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState, useCallback, useRef } from "react"
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
@@ -30,13 +30,6 @@ export default function SearchResults() {
       setCollapsedResults([])
     }, [searchQueryString])
 
-    useEffect(() => {
-      if (searchQueryString) {
-        const newUrl = new URLSearchParams(searchParams)
-        newUrl.delete('page')
-        router.push(`?${newUrl.toString()}`)
-      }
-    }, [searchQueryString, searchParams, router])
     
 
 
@@ -128,11 +121,12 @@ export default function SearchResults() {
                   e.preventDefault();
                   const newUrl = new URLSearchParams(searchParams)
                   newUrl.set('page', (parseInt(page || '0') + 1).toString())
+                  console.log("newUrl", newUrl.toString())
                   router.push(`?${newUrl.toString()}`);
                 }} 
                 className="bg-neutral-100 p-4 rounded-full w-full block"
               >
-                Last fleire resultat
+                Last fleire resultat {page}
               </button>
             </li>
           )}
