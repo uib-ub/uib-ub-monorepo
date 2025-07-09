@@ -1,8 +1,9 @@
-import { Layout, Navbar, Footer } from 'nextra-theme-docs'
+import { Layout, Navbar, Footer, LocaleSwitch } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import { UibIcon, UibUbEn } from 'assets'
-import './globals.css'
+import '../globals.css'
+import { FC, ReactNode } from 'react'
 
 export const metadata = {
   title: 'Dev @ UiB-UB',
@@ -17,7 +18,9 @@ const navbar = (
         <span>Dev @ UiB-UB</span>
       </div>
     }
-  />
+  >
+    <LocaleSwitch lite />
+  </Navbar>
 )
 
 const footer = (
@@ -28,9 +31,20 @@ const footer = (
   </Footer>
 )
 
-export default async function RootLayout({ children }) {
+type LayoutProps = Readonly<{
+  children: ReactNode
+  params: Promise<{
+    lang: string
+  }>
+}>
+
+const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
+  const { lang } = await params
+  let pageMap = await getPageMap(`/${lang}`)
+
+
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
+    <html lang={lang} dir="ltr" suppressHydrationWarning>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta property="og:title" content="Dev @ UiB-UB" />
@@ -40,13 +54,19 @@ export default async function RootLayout({ children }) {
       <body>
         <Layout
           navbar={navbar}
-          pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/uib-ub/uib-ub-monorepo"
+          pageMap={pageMap}
+          docsRepositoryBase="https://github.com/uib-ub/uib-ub-monorepo/tree/main/apps/docs"
           footer={footer}
+          i18n={[
+            { locale: 'nb', name: 'Norsk (Bokmål)' },
+            { locale: 'en', name: 'English' },
+          ]}
         >
           {children}
         </Layout>
       </body>
     </html>
   )
-} 
+}
+
+export default RootLayout
