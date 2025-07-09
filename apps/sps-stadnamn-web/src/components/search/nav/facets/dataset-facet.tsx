@@ -195,7 +195,7 @@ export default function DatasetFacet() {
     { (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">Filtreringsalternativer for datasett</legend>
-      <ul role="status" aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200 xl:overflow-y-auto'>
+      <ul role="status" aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .filter(filterDatasetsByTags)
           .map((item: any) => {
@@ -219,24 +219,52 @@ export default function DatasetFacet() {
                 const isExpanded = expandedDescriptions.has(item.key);
                 return  (
               <li key={index} className='py-2'>
-                <div className='flex items-start gap-2'>
-                  <label className='flex items-center gap-2 flex-1'>
+                <div className='flex items-start gap-2 lg:gap-1 xl:gap-2'>
+                  <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1">
                     <input 
                       type="checkbox" 
                       checked={isChecked(item.key)} 
-                      className='mr-2' 
-                      name='indexDataset' 
+                      className="mr-2 flex-shrink-0" 
+                      name="indexDataset" 
                       value={item.key} 
                       onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
                     />
-                    <span className='font-semibold text-neutral-950'>{renderLabel(item.key)}</span> 
-                    <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count.toLocaleString('nb-NO', { useGrouping: true })}</span>
+                    {/* --- Label and badge, last word grouping --- */}
+                    {(() => {
+                      const label = renderLabel(item.key) || '';
+                      const words = label.split(' ');
+                      const lastWord = words.pop();
+                      const firstPart = words.join(' ');
+
+                      return (
+                        <span className="text-neutral-950 break-words lg:text-sm xl:text-base">
+                          {firstPart ? (
+                            <>
+                              {firstPart + ' '}
+                              <span className="whitespace-nowrap">
+                                {lastWord}
+                                <span className="ml-2 bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full align-baseline">
+                                  {formatNumber(item.doc_count)}
+                                </span>
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {lastWord}
+                              <span className="ml-2 bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full align-baseline">
+                                {formatNumber(item.doc_count)}
+                              </span>
+                            </>
+                          )}
+                        </span>
+                      );
+                    })()}
                   </label>
                   <IconButton
-                    label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse for ${renderLabel(item.key)}`}
+                    label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                     onClick={() => toggleDescription(item.key)}
                     className="rounded-full btn btn-outline btn-compact p-1"
-                    aria-label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse for ${renderLabel(item.key)}`}
+                    aria-label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                   >
                     <PiCaretDownBold className="w-4 h-4" />
                   </IconButton>
@@ -249,7 +277,7 @@ export default function DatasetFacet() {
                         href={`info/datasets/${item.key.split('-')[2]}`}
                         className="flex items-center gap-1 no-underline"
                       >
-                        Les meir <PiCaretRight className="text-lg text-primary-600" />
+                        Les meir <PiCaretRight className="xl:text-lg text-primary-600" />
                       </Link>
                     </div>
                   </div>
