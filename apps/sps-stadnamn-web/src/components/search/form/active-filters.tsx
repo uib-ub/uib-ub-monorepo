@@ -64,8 +64,8 @@ export default function ActiveFilters() {
         }
           
           
-        if (values[0] == "_false") return (label || name) + "Nei"
-        if (value == "_true") return (label || name) + "Ja"
+        if (values[0] == "_false") return (label || name) + ": Nei"
+        if (value == "_true") return (label || name) + ": Ja"
         if (name == "datasets") {
           return datasetTitles[value] || value
         }
