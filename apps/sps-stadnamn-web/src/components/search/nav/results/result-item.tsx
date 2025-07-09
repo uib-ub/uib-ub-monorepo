@@ -60,7 +60,7 @@ export default function ResultItem({hit}: {hit: any}) {
             {isGrunnord && <strong className="uppercase font-semibold text-neutral-800 text-sm">Grunnord</strong>}
 
                 <span className="text-neutral-950 flex items-center">
-                    {titleRenderer(hit, 'map')}
+                    {titleRenderer(hit, 'map')} {isGrunnord && hit.inner_hits?.group?.hits?.total?.value > 1 && "..."}
                     
                 </span>
 
