@@ -160,7 +160,8 @@ export default function DetailsWindow() {
       <Clickable
         aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
-        remove={['details']} 
+        remove={['details', 'doc']} 
+        onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
         add={{group: stringToBase64Url(docData?._source.group), fuzzyNav: fuzzyNav || 'timeline'}}>
         <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/> Namneformer
       </Clickable>
