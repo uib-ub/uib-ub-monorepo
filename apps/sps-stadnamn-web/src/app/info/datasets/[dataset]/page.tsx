@@ -1,7 +1,7 @@
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { datasetFeatures, datasetPresentation, datasetTitles, featureNames, subpages, publishDates } from "@/config/metadata-config"
 import { datasetDescriptions, datasetShortDescriptions, datasetTypes, typeNames } from "@/config/metadata-config"
-import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill, PiMicroscope, PiMicroscopeFill, PiBoxArrowDown, PiBoxArrowDownFill } from "react-icons/pi"
+import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill, PiMicroscope, PiMicroscopeFill, PiBoxArrowDown, PiBoxArrowDownFill, PiBinary, PiBinaryFill } from "react-icons/pi"
 import DatasetStats from "../dataset-stats";
 import { fetchStats } from "@/app/api/_utils/actions";
 
@@ -19,7 +19,8 @@ const icons: {[key: string]: JSX.Element} ={
     "encyclopedia": <PiBooksFill aria-hidden="true"/>,
     "database": <PiDatabaseFill aria-hidden="true"/>,
     "public": <PiGavelFill aria-hidden="true"/>,
-    "collection": <PiBoxArrowDownFill aria-hidden="true"/>
+    "collection": <PiBoxArrowDownFill aria-hidden="true"/>,
+    "digi": <PiBinaryFill aria-hidden="true"/>
 
   };
 
@@ -41,20 +42,20 @@ export default async function DatasetPage({params}: {params: Promise<{dataset: s
     return <div className="flex flex-col md:flex-row gap-4 page-info">
         <div className="xl:w-2/3">
         <Breadcrumbs parentUrl={"/info/datasets"} parentName={["Informasjon", "Datasett"]} currentName={datasetTitles[dataset]}/>
-        <h1>{datasetTitles[dataset]}</h1>
+        <h1 className="mt-4">{datasetTitles[dataset]}</h1>
         <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2">
-        <ul className='flex flex-wrap gap-2 !px-0 text-neutral-900'>
+        <div className="flex flex-wrap gap-2">
+        <ul className='flex flex-wrap gap-2 !px-0 !py-0 !my-0 text-neutral-900'>
                 {datasetTypes[dataset]?.map((type) => (
-                    <li key={type} className="flex items-center gap-1">
+                    <li key={type} className="flex items-center gap-1 !py-0 !my-0">
                     {icons[type]}
                     <span>{typeNames[type]}</span>
                     </li>
                 ))}
                 </ul>
-        <ul className='flex flex-wrap gap-2 !px-0 !pt-1 !mt-0 text-neutral-900'>
+        <ul className='flex flex-wrap gap-2 !px-0 !py-0 !my-0 text-neutral-900'>
         {datasetFeatures[dataset]?.map((feature) => (
-            <li key={feature} className="flex items-center gap-1">
+            <li key={feature} className="flex items-center gap-1 !py-0 !my-0">
             {icons[feature]}
             <span>{featureNames[feature]}</span>
             </li>

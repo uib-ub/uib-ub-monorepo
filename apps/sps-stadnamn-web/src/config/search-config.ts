@@ -78,6 +78,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     wikidata: {
       ...required, adm, adm1, adm2,
       "misc.placeType": {label: "Lokalitetstype", table, facet},
+      "misc.overordnetSted": {label: "Overordnet sted2", table, facet},
+      "misc.adm": {label: "Overordnet sted", table, facet},
     },
     bsn: {
       ...required, adm, adm1, adm2,
@@ -95,7 +97,6 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...cadastre,
       ...identifiers,
     },
-
     hord: {
       ...required, adm, adm1, adm2, link, ...image,
       "misc.subset": {label: "Arkivtilvising", table, facet, featuredFacet},

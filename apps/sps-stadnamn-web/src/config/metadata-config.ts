@@ -435,14 +435,14 @@ export const typeNames: Record<string, string> = {
   "encyclopedia": "Oppslagsverk",
   "database": "Database",
   "public": "Offentleg register",
-  "collection": "Stadnamngransking", // Toponomastic collection
+  "collection": "Djupinnsamling", // Toponomastic collection
 }
 
 
 
 
 export const datasetFeatures: Record<string, string[]> = {
-  bsn: ["image", "digi"],
+  bsn: ["image"],
   hord: ["audio", "coordinates", "phonetic", "digi"],
   rygh: ["phonetic", "digi", "base"],
   m1838: ["link"],
