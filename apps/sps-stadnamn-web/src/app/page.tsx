@@ -176,7 +176,7 @@ export default async function Home() {
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
-          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}`}>
+          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?indexDataset=${card.code}`}>
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <div className={`h-full ${card.img.endsWith('.svg') ? 'bg-neutral-100' : ''}`}>
                 <Image 
