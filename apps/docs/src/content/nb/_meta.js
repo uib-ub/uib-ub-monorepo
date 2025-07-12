@@ -18,7 +18,7 @@ const meta = {
   "spec": {
     "title": "OpenAPI",
     "type": "page",
-    "href": "https://api-ub.vercel.app/spec",
+    "href": "/nb/apis/reference",
   }
 }
 

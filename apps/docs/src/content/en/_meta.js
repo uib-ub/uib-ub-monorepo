@@ -15,10 +15,14 @@ const meta = {
     "title": "Documentation",
     "type": "page"
   },
+  "developers": {
+    "title": "Developers",
+    "type": "page"
+  },
   "spec": {
-    "title": "OpenAPI",
+    "title": "APIs",
     "type": "page",
-    "href": "https://api-ub.vercel.app/spec",
+    "href": "/en/api/reference",
   }
 }
 
