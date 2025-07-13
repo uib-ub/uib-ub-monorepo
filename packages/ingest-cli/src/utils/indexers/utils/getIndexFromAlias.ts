@@ -10,19 +10,16 @@ import client from '../../../clients/es-client';
  * @returns The latest index name.
  */
 export const getIndexFromAlias = async (alias: string, index: string, overwrite = false) => {
-  // Finds the current index name in alias and based on the given indicesInAlias object find the latest index.
   let indicesInAlias;
   try {
-    console.log("🔍 Attempting to get alias:", alias);
+    // Attempt to get the alias; if it doesn't exist, that's fine (not an error)
     indicesInAlias = await client.indices.getAlias({ name: alias });
-    console.log("✅ Successfully got alias response");
   } catch (error) {
-    console.log("❌ Error occurred while getting alias:", error);
     if (error instanceof Error && error.message.includes('404')) {
-      // No alias found, return empty object to create first index
-      indicesInAlias = {};
+      // Alias does not exist yet; return the first index name
+      return `${index}_1`;
     } else {
-      // Server error or other issues
+      // Only log unexpected errors
       console.error('Error getting alias:', error);
       if (error instanceof Error) {
         throw new Error(`Failed to get alias "${alias}": ${error.message}`);
@@ -30,8 +27,8 @@ export const getIndexFromAlias = async (alias: string, index: string, overwrite 
       throw new Error(`Failed to get alias "${alias}": Unknown error`);
     }
   }
+
   // Find all indices that match our exact index pattern (base_number)
-  console.log("🚀 ~ getIndexFromAlias ~ indicesInAlias:", indicesInAlias)
   const matchingIndices = Object.keys(indicesInAlias).filter(k => k.startsWith(index));
 
   // Sort indices by their numeric suffix

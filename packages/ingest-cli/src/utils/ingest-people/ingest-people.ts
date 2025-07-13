@@ -7,6 +7,8 @@ import { getIndexFromAlias } from '../indexers/utils/getIndexFromAlias'
 import { fetchAndProcessPerson } from './fetch-person'
 import { InputItem, fetchPeopleList } from './fetch-people-list'
 import { fetchPeopleCount } from './fetch-people-count'
+import { ensureIndexAndTemplatesReady } from '../indexers/utils/ensureIndexAndTemplatesReady'
+import { putTemplates } from '../tempates/es_templates'
 
 export const resolveItems = async (items: InputItem[]) => {
   try {
@@ -24,14 +26,8 @@ export const ingestPeople = async (limit = 100, page = 0, overwrite = false) => 
 
   // Get the index name
   const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.people, overwrite)
-  // Create index if it doesn't exist
-  const exists = await client.indices.exists({ index: useIndex })
-  if (!exists) {
-    console.log(`Creating new index ${useIndex}`)
-    await client.indices.create({
-      index: useIndex,
-    })
-  }
+  // Ensure index exists
+  await ensureIndexAndTemplatesReady({ index: useIndex, putTemplates })
 
   // Set initial values
   let status = {
@@ -87,7 +83,7 @@ export const ingestPeople = async (limit = 100, page = 0, overwrite = false) => 
     // If no more items to fetch, break the loop
     if (data.length < limit || (status.fetched >= status.totalCount)) {
       console.log(`Finished ingesting in ${pretty(Number(status.runtime))}`);
-      console.log(`Indexed ${status.indexed} filesets of ${status.totalCount}`);
+      console.log(`Indexed ${status.indexed} people of ${status.totalCount}`);
       if (status.fetched - status.indexed > 0) {
         console.log(`Failed to index ${status.fetched - status.indexed} persons`);
       }
@@ -100,7 +96,7 @@ export const ingestPeople = async (limit = 100, page = 0, overwrite = false) => 
               actions: [
                 {
                   remove: {
-                    index: `${CHC_INDICIES.file_set}_*`,
+                    index: `${CHC_INDICIES.people}_*`,
                     alias: CHC_SEARCH_ALIAS,
                   },
                 },

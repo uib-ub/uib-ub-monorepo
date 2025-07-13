@@ -1,4 +1,4 @@
-import { endpointUrl } from '@/clients/sparql-chc-client';
+import { env } from '@/env';
 
 const query = `
   PREFIX bibo: <http://purl.org/ontology/bibo/>
@@ -7,22 +7,22 @@ const query = `
   PREFIX dct: <http://purl.org/dc/terms/>
   PREFIX ubbont: <http://data.ub.uib.no/ontology/>
   PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+  PREFIX dbo: <http://dbpedia.org/ontology/>
 
   SELECT (count(?uri) as ?count) WHERE { 
     SERVICE <cache:> { 
       SELECT ?uri WHERE 
         { 
-          VALUES ?types { foaf:Person ubbont:Cataloguer }
+          VALUES ?types { bibo:Collection }
           ?uri rdf:type ?types ;
             dct:identifier ?id .
-          FILTER(STRENDS(STR(?uri), LCASE(?id))) .
         }
     }
   }
 `
 
-export const fetchPeopleCount = async (): Promise<number> => {
-  const response = await fetch(`${endpointUrl}?query=${encodeURIComponent(query)}&output=json`)
+export const fetchSetsCount = async (): Promise<number> => {
+  const response = await fetch(`${env.SPARQL_CHC_ENDPOINT}?query=${encodeURIComponent(query)}&output=json`)
   const data = await response.json();
   return data.results.bindings[0].count.value;
 };
