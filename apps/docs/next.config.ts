@@ -12,14 +12,5 @@ export default withNextra({
     locales: ['nb', 'en'],
     defaultLocale: 'nb',
   },
-  redirects: async () => {
-    return [
-      {
-        source: '/',
-        destination: '/nb',
-        permanent: false,
-      },
-    ]
-  },
   transpilePackages: ['assets'],
 })
