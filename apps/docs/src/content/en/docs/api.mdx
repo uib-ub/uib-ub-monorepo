@@ -1,0 +1,48 @@
+# API @ UiB-UB
+
+The [University of Bergen Library](https://uib.no/ub)'s API are a work-in-progress. It aims to provide JSON-formatted data as a REST-style service that allows developers to explore and integrate the library’s public data into their projects. This API is the same tool that will power our websites.
+
+## RESTful API
+
+An [API](https://en.wikipedia.org/wiki/API) is a structured way that one software application can talk to another.
+
+The API is a RESTful API, which means that it uses HTTP requests to GET, PUT, POST and DELETE data. It uses standard HTTP response codes to indicate the success or failure of requests. In short, if you can do it in a browser, you can do it with our API.
+
+### OpenAPI
+
+The API is documented using the [OpenAPI](https://swagger.io/specification/) specification.
+
+* https://api.ub.uib.no/reference
+
+Currently four apis are documented:
+
+* [UiB-UB API](https://api.ub.uib.no/reference)
+* [Ordbokene API](https://v1.ordbokene.no/api/swagger.yml)
+* [SAMLA API v2](https://samla.no/viewer/api/v2/openapi.json)
+* [SAMLA API v1](https://samla.no/viewer/api/v1/openapi.json)
+
+
+## Example
+
+You can access the /items listing endpoint in our API by visiting the following URL to see all the published resources in our Special collections and The Norwegian Queer collection:
+
+https://api.ub.uib.no/items
+
+If you want to see data for just one items, you can use the /items/\{id\} detail endpoint. For example, here's a photograph by Jørgen Grinde:
+
+https://api.ub.uib.no/items/ubb-jg-n-0614-06
+
+Any valid id or _signature_ from these datasets will be resolved.
+
+You can add the `?as=iiif` or `?as=ubbont` query parameter to the endpoint to get the data in IIIF or the "raw" data. For example:
+
+* [Linked.art/CIDOC-CRM](https://api.ub.uib.no/items/ubb-jg-n-0614-06)
+* [IIIF](https://api.ub.uib.no/items/ubb-jg-n-0614-06?as=iiif)
+* [UBBONT](https://api.ub.uib.no/items/ubb-jg-n-0614-06?as=ubbont)
+
+## Resources
+
+* [OpenAPI Spec (swagger)](https://api-ub.vercel.app/spec)
+* [JSONLD Context](https://api-ub.vercel.app/ns/ubbont/context.json)
+* [UBBONT Ontology](https://api-ub.vercel.app/ns/ubbont/ubbont.owl)
+* [Linked.art/CIDOC-CRM](https://linked.art)

@@ -1,11 +1,12 @@
 import * as React from "react";
 import type { SVGProps } from "react";
-import { Ref, forwardRef, memo } from "react";
-const SvgNbIcon = (props: SVGProps<SVGSVGElement>, ref: Ref<SVGSVGElement>) => (
+import { forwardRef, memo } from "react";
+
+const SvgNbIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement>>((props, ref) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="2 3 115 164"
+    viewBox="0 0 32 32"
     ref={ref}
   >
     <g display="inline">
@@ -64,7 +65,7 @@ const SvgNbIcon = (props: SVGProps<SVGSVGElement>, ref: Ref<SVGSVGElement>) => (
       </g>
     </g>
   </svg>
-);
-const ForwardRef = forwardRef(SvgNbIcon);
-const Memo = memo(ForwardRef);
+));
+SvgNbIcon.displayName = "SvgNbIcon";
+const Memo = memo(SvgNbIcon);
 export default Memo;

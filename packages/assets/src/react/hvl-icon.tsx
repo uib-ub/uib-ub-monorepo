@@ -1,10 +1,8 @@
 import * as React from "react";
 import type { SVGProps } from "react";
-import { Ref, forwardRef, memo } from "react";
-const SvgHvlIcon = (
-  props: SVGProps<SVGSVGElement>,
-  ref: Ref<SVGSVGElement>
-) => (
+import { forwardRef, memo } from "react";
+
+const SvgHvlIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement>>((props, ref) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +19,7 @@ const SvgHvlIcon = (
       fillRule="nonzero"
     />
   </svg>
-);
-const ForwardRef = forwardRef(SvgHvlIcon);
-const Memo = memo(ForwardRef);
+));
+SvgHvlIcon.displayName = "SvgHvlIcon";
+const Memo = memo(SvgHvlIcon);
 export default Memo;

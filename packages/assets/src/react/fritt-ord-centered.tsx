@@ -1,10 +1,8 @@
 import * as React from "react";
 import type { SVGProps } from "react";
-import { Ref, forwardRef, memo } from "react";
-const SvgFrittOrdCentered = (
-  props: SVGProps<SVGSVGElement>,
-  ref: Ref<SVGSVGElement>
-) => (
+import { forwardRef, memo } from "react";
+
+const SvgFrittOrdCentered = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement>>((props, ref) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +23,7 @@ const SvgFrittOrdCentered = (
       fill="#0071a5"
     />
   </svg>
-);
-const ForwardRef = forwardRef(SvgFrittOrdCentered);
-const Memo = memo(ForwardRef);
+));
+SvgFrittOrdCentered.displayName = "SvgFrittOrdCentered";
+const Memo = memo(SvgFrittOrdCentered);
 export default Memo;

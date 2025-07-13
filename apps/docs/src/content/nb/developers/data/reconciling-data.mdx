@@ -1,0 +1,59 @@
+import { useData } from 'nextra/hooks'
+import { Steps } from 'nextra/components'
+
+# Avstemming av data
+
+UB-SPES har brukt vokabularer/konseptskjemaer/registre fra starten av. Fra kortkataloger til kontrollerte strenger og SKOS-konsepter. Dataene er tilgjengelige i [UB-SPES SPARQL endpoint](https://sparql.ub.uib.no/sparql) og konseptskjemaene er tilgjengelige på [marcus.uib.no/conceptschemes](https://marcus.uib.no/conceptschemes). "Løvetann emneregister" er også inkludert.
+
+## Status for konseptskjemaene
+ 
+1. Arabisk emneordregister
+    * Integrere i større skjema?
+1. Sudansamlingens stedsregister
+    * Fjerne siden det ikke er et konseptskjema?
+1. Språksamlinganes emneordregister
+    * Integrere i større skjema?
+1. Nordlandshandelens arkiv - Typologitermer
+    * Detaljert og godt vedlikeholdt, integrere i form/genre-skjema?
+1. Diplomsamlingens autoritetsregister
+    * Hovedsakelig steder og noen konsepter. Integrere i større skjema?
+1. Elektronisk litteratur emneregister
+    * Integrere i større skjema.
+1. test-manlib
+    * Fjerne siden det ikke er et konseptskjema? Test for å rydde opp i neste skjema?
+1. Manuskript- og librarsamlingens autoritetsregister
+    * Personer, steder og konsepter. Ofte om samme "ting". Integrere i større skjema? Rydde opp og mappe til HumOrd?
+1. Sudansamlingens autoritetsregister over familier og slekter (nisba)
+    * Fjerne siden det ikke er et konseptskjema? Bruke `Set` for å gruppere ting som dette?
+1. Sudansamlingens aktørregister
+    * Fjerne siden det ikke er et konseptskjema? Bruke `Set` for å gruppere ting som dette?
+1. Monumenter i Bergen
+    * Bruke `Set` for å gruppere ting som dette? Bør være ferdig, siden Tarje og Irene bare kom halvveis rundt Bergen.
+1. Billedsamlingens emneord
+    * I god stand. Sammenføye med KulturNav konseptskjema basert på dette?
+1. Fagregister 1927-1928
+    * Ok, siden det bruker gamle termer? Integrere i større skjema?
+1. Knudsen områder
+    * Beholde siden det fanger Knud Knudsens interesser og stedsnavn i Norge på den tiden.
+1. Løvetann emneord
+    * Del av tidsskriftet "Løvetann" og bør beholdes som sådan? 
+
+
+## Arbeidsflyt
+
+*NB!:* JSON-representasjon av registre er ikke tilgjengelig for øyeblikket!
+
+<Steps>
+### Last ned dataene
+ 
+Last ned ConceptScheme som JSON fra denne listen
+ 
+### Avstem
+ 
+Importer JSON til OpenRefine eller annet passende verktøy som PoolParty eller VocBench. Kulturnav støtter ikke Reconciliation Service API v0.2, så det kan ikke brukes direkte med OpenRefine. _En løsning bør finnes for dette._
+
+### Eksporter
+
+Eksporter de avstemte dataene som RDF/XML eller Turtle og last opp til [Marcus SPARQL endpoint](https://sparql.ub.uib.no/sparql)
+
+</Steps> 
