@@ -1,13 +1,7 @@
 const meta = {
   "index": "Introduksjon",
-  "monorepo": "Monorepo",
-  "platform": "Plattform",
-  "apis": "APIer",
-  "toolkit": "Verktøy",
-  "troubleshooting": "Feilsøking",
-  "apps": "Applikasjoner",
-  "frontend": "Frontend",
-  "data": "Data"
+  "api": "API",
+  "apps": "Apper",
 }
 
-export default meta
+export default meta 

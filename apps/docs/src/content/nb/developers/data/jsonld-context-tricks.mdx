@@ -1,0 +1,26 @@
+# JSON-LD context-triks
+
+Hjelpsomme tips om hvordan du jobber med UiB-UB datasett ved hjelp av JSONLD Contexts.
+
+## Opprett språkegenskaper egnet for indeksering
+
+`json-ld context` er en måte å definere et vokabular for et JSON-dokument. Det brukes til å definere betydningen av egenskaper i et JSON-dokument. Det brukes også til å definere betydningen av egenskaper i et JSON-LD-dokument. Konteksten er et JSON-objekt som mapper egenskapsnavn til IRIs. Konteksten kan brukes til å definere et standardspråk for egenskaper, og til å definere språkspesifikke egenskaper.
+
+Følgende eksempel viser hvordan du oppretter språkspesifikke egenskaper for indeksering i Elasticsearch.
+
+```json
+{
+  "@context": {
+    "ex": "http://example.com/vocab/",
+    "@language": "ja",
+    "name": { "@id": "ex:name", "@language": null },
+    "occupation": { "@id": "ex:occupation" },
+    "occupation_en": { "@id": "ex:occupation", "@language": "en" },
+    "occupation_cs": { "@id": "ex:occupation", "@language": "cs" }
+  },
+  "name": "Yagyū Muneyoshi",
+  "occupation": "忍者",
+  "occupation_en": "Ninja",
+  "occupation_cs": "Nindža",
+}
+``` 

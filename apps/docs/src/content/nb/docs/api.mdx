@@ -1,0 +1,48 @@
+# API @ UiB-UB
+
+[Universitetsbiblioteket i Bergen](https://uib.no/ub)s API er et arbeid under utvikling. Det har som mål å tilby JSON-formaterte data som en REST-stil tjeneste som lar utviklere utforske og integrere bibliotekets offentlige data i sine prosjekter. Dette APIet er det samme verktøyet som vil drive våre nettsider.
+
+## RESTful API
+
+Et [API](https://en.wikipedia.org/wiki/API) er en strukturerte måte som en programvareapplikasjon kan snakke med en annen.
+
+APIet er et RESTful API, som betyr at det bruker HTTP-forespørsler til å GET, PUT, POST og DELETE data. Det bruker standard HTTP-responskoder for å indikere suksess eller feil ved forespørsler. Kort sagt, hvis du kan gjøre det i en nettleser, kan du gjøre det med vårt API.
+
+### OpenAPI
+
+APIet er dokumentert ved hjelp av [OpenAPI](https://swagger.io/specification/)-spesifikasjonen.
+
+* https://api.ub.uib.no/reference
+
+For øyeblikket er fire APIer dokumentert:
+
+* [UiB-UB API](https://api.ub.uib.no/reference)
+* [Ordbokene API](https://v1.ordbokene.no/api/swagger.yml)
+* [SAMLA API v2](https://samla.no/viewer/api/v2/openapi.json)
+* [SAMLA API v1](https://samla.no/viewer/api/v1/openapi.json)
+
+
+## Eksempel
+
+Du kan få tilgang til /items listing endpoint i vårt API ved å besøke følgende URL for å se alle de publiserte ressursene i våre Spesialsamlinger og Norsk Skeiv Samling:
+
+https://api.ub.uib.no/items
+
+Hvis du vil se data for bare ett element, kan du bruke /items/\{id\} detalj-endepunktet. For eksempel, her er et fotografi av Jørgen Grinde:
+
+https://api.ub.uib.no/items/ubb-jg-n-0614-06
+
+Ethvert gyldig id eller _signatur_ fra disse datasettene vil bli løst.
+
+Du kan legge til `?as=iiif` eller `?as=ubbont` query-parameter til endepunktet for å få dataene i IIIF eller "rå" data. For eksempel:
+
+* [Linked.art/CIDOC-CRM](https://api.ub.uib.no/items/ubb-jg-n-0614-06)
+* [IIIF](https://api.ub.uib.no/items/ubb-jg-n-0614-06?as=iiif)
+* [UBBONT](https://api.ub.uib.no/items/ubb-jg-n-0614-06?as=ubbont)
+
+## Ressurser
+
+* [OpenAPI Spec (swagger)](https://api-ub.vercel.app/spec)
+* [JSONLD Context](https://api-ub.vercel.app/ns/ubbont/context.json)
+* [UBBONT Ontology](https://api-ub.vercel.app/ns/ubbont/ubbont.owl)
+* [Linked.art/CIDOC-CRM](https://linked.art) 

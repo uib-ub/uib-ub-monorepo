@@ -15,11 +15,15 @@ const meta = {
     "title": "Dokumentasjon",
     "type": "page"
   },
+  "developers": {
+    "title": "Utviklere",
+    "type": "page"
+  },
   "spec": {
-    "title": "OpenAPI",
+    "title": "APIer",
     "type": "page",
-    "href": "/nb/apis/reference",
+    "href": "/nb/api/reference",
   }
 }
 
-export default meta
+export default meta 

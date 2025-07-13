@@ -1,59 +1,59 @@
 # Monorepo
 
-The `uib-ub-monorepo` is a monorepo for the University of Bergen's fullstack team.
+`uib-ub-monorepo` er et monorepo for Universitetet i Bergens fullstack-team.
 
-## Getting started
+## Komme i gang
 
 ```sh
 git clone git@github.com:uib-ub/uib-ub-monorepo.git
 cd uib-ub-monorepo
 npm install
-# build all apps and packages
+# bygg alle apper og pakker
 npm run build
 ```
 
-### Develop
+### Utvikling
 
-Start all or just some apps and packages when developing.
+Start alle eller bare noen apper og pakker når du utvikler.
 
 ```sh
 npm run dev
-# Or use turbo for filtering of apps
+# Eller bruk turbo for filtrering av apper
 turbo run dev --filter="chc-*" --filter="api" --filter="docs"
 ```
 
-## Best practice
+## Beste praksis
 
-### Installing packages etc.
+### Installere pakker etc.
 
-Every app's `package.json` is mirrored in the monorepo's shared `package-lock.json` See ([Turborepo docs](https://turbo.build/repo/docs/handbook/package-installation)). This means:
+Hver apps `package.json` er speilet i monorepoets delte `package-lock.json`. Se ([Turborepo docs](https://turbo.build/repo/docs/handbook/package-installation)). Dette betyr:
 
-- Changes to `package.json` should be executed with the respective `npm` command and the monorepo's `package-lock.json` has to be updated and commited as well.
-- Before creating a new branch (that effects `package-lock.json`) one has to pull from origin. Merging conflicting changes in the shared `package-lock.json` is hard.
+- Endringer i `package.json` bør utføres med den respektive `npm`-kommandoen og monorepoets `package-lock.json` må oppdateres og committes også.
+- Før man oppretter en ny branch (som påvirker `package-lock.json`) må man pulle fra origin. Å merge konflikter i den delte `package-lock.json` er vanskelig.
 
-Common `npm` commands: 
+Vanlige `npm`-kommandoer: 
 
 - npm install
-- npm install \<package\> – Add package to root (mainly for devDependencies)
+- npm install \<package\> – Legg til pakke i root (hovedsakelig for devDependencies)
 - npm install \<package\> --workspace=\<workspace\>
 - npm install \<package\> -w \<workspace\>
 - npm uninstall \<package\> --workspace=\<workspace\>
 - npm update \<package\> --workspace=\<workspace\>
-- npm run build - Build all packages and apps
-- npm run dev - Develop all packages and apps
-- npm run lint - Lint all packages
-- npm run clean - Clean up all node_modules and dist folders (runs each package's clean script)
+- npm run build - Bygg alle pakker og apper
+- npm run dev - Utvikle alle pakker og apper
+- npm run lint - Lint alle pakker
+- npm run clean - Rydd opp i alle node_modules og dist mapper (kjører hver pakkes clean script)
 
-### Branch strategy
+### Branch-strategi
 
-#### Convention
+#### Konvensjon
 
-Branches should be prefixed with `fix` or `feature`, mostly...
+Brancher bør ha prefiks `fix` eller `feature`, for det meste...
 
 
 ```mermaid
 ---
-Monorepo merge strategy
+Monorepo merge-strategi
 ---
 %%{init: { 'logLevel': 'debug', 'theme': 'base' } }%%
     gitGraph
@@ -73,13 +73,13 @@ Monorepo merge strategy
        merge feature
 ```
 
-#### Ignored Build Step based on branch name
+#### Ignorert Build Step basert på branch-navn
 
-Vercel builds every app when a new branch is created. However, it provides a feature to ignore apps based on some logic: [Vercel docs](https://vercel.com/guides/how-do-i-use-the-ignored-build-step-field-on-vercel)
+Vercel bygger hver app når en ny branch opprettes. Men den tilbyr en funksjon for å ignorere apper basert på noe logikk: [Vercel docs](https://vercel.com/guides/how-do-i-use-the-ignored-build-step-field-on-vercel)
 
-We currently have the following behaviour configured in each app's **Vercel settings**: `Git>Ignored Build Step>Command`:
-Every app can define tags of the form `docs/` (docs), `sps/`, (group språksamlingane) `tp/` (termportalen) etc.
-Apps that don't include this command are always built.
+Vi har for øyeblikket følgende oppførsel konfigurert i hver apps **Vercel-innstillinger**: `Git>Ignored Build Step>Command`:
+Hver app kan definere tags på formen `docs/` (docs), `sps/`, (gruppe språksamlingane) `tp/` (termportalen) etc.
+Apper som ikke inkluderer denne kommandoen bygges alltid.
 
 ```bash
 if [[ "$VERCEL_GIT_COMMIT_REF" =~ .*/.* ]] && ! [[ "$VERCEL_GIT_COMMIT_REF" =~ .*(docs)/.* ]] ;
@@ -90,35 +90,35 @@ else
 fi
 ```
 
-Behaviour:
-- If no slash is present, no build is cancelled at this step
-- If a tag is defined in the branch name, building apps that don't have the tag is cancelled
-- `npx turbo-ignore` is called. See [docs](https://www.npmjs.com/package/turbo-ignore)
+Oppførsel:
+- Hvis ingen skråstrek er til stede, blir ingen build kansellert på dette trinnet
+- Hvis en tag er definert i branch-navnet, blir bygging av apper som ikke har taggen kansellert
+- `npx turbo-ignore` kalles. Se [docs](https://www.npmjs.com/package/turbo-ignore)
 
-Tags currently defined are:
+Tags som for øyeblikket er definert er:
 
 * **api**: `api/`
-  - Vercel project: **api-ub**
+  - Vercel-prosjekt: **api-ub**
 * **chc-exh-nt-web**: `exh/`
-  - Vercel project: **exh-nt**
+  - Vercel-prosjekt: **exh-nt**
 * **chc-web**: `chc/`
-  - Vercel project: **chc-web**
+  - Vercel-prosjekt: **chc-web**
 * **docs**: `docs/`
-  - Vercel project: **docs**
+  - Vercel-prosjekt: **docs**
 * **link-shortener**: `urls/`
-  - Vercel project: **ub-urls**
+  - Vercel-prosjekt: **ub-urls**
 * **sps-termportal-web**: `/sps` `tp/` `tpw/`
-  - Vercel project: **termportalen**
+  - Vercel-prosjekt: **termportalen**
 * **sps-termportal-admin**: `sps/` `tp/` `tpa/`
-  - Vercel project: **termportalen-admin**
+  - Vercel-prosjekt: **termportalen-admin**
 * **ub-dashboard**: `ubdash/`
-  - Vercel project: **ub-dashboard**
+  - Vercel-prosjekt: **ub-dashboard**
 * **sps-stadnamn-web**: `sps/` `stadnamn/`
-  - Vercel project: **stadnamn-web**
+  - Vercel-prosjekt: **stadnamn-web**
 
-## Dependency graph
+## Avhengighetsgraf
 
-This graph was generated by Turborepo 25.04.23.
+Denne grafen ble generert av Turborepo 25.04.23.
 
 ```mermaid
 graph TD
@@ -148,13 +148,13 @@ graph TD
 	LGSI("utils#build") --> YQKY("tsconfig#build")
 ```
 
-## Useful Links
+## Nyttige lenker
 
-Learn more about the power of Turborepo:
+Lær mer om kraften i Turborepo:
 
 - [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
 - [Caching](https://turborepo.org/docs/core-concepts/caching)
 - [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
 - [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
 - [Configuration Options](https://turborepo.org/docs/reference/configuration)
-- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference) 

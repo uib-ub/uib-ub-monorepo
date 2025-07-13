@@ -1,8 +1,8 @@
-# SPARQL Queries
+# SPARQL-spørringer
 
-## Queries
+## Spørringer
 
-### Filter on a specific class and start of signature
+### Filtrer på en spesifikk klasse og start av signatur
 
 
 ```sparql
@@ -16,7 +16,7 @@ LIMIT 1000
 ```
 
 
-### Count all properties used on a class
+### Tell alle egenskaper brukt på en klasse
 
 ```sparql
 SELECT ?predicate (COUNT(*) AS ?frequency)
@@ -29,7 +29,7 @@ ORDER BY DESC(?frequency)
 ```
 
 
-### Get all classes, all used properties and a sample value
+### Få alle klasser, alle brukte egenskaper og en eksempelverdi
 
 ```sparql
 SELECT DISTINCT ?type ?property (SAMPLE(?o) AS ?sample)
@@ -42,7 +42,7 @@ ORDER BY ?type ?property
 ```
 
 
-### Get same as above but as json objects
+### Få samme som over, men som json-objekter
 
 ```sparql
 CONSTRUCT {
@@ -61,7 +61,7 @@ ORDER BY ?type ?property
 ```
 
 
-### Find all props with english language
+### Finn alle egenskaper med engelsk språk
 
 ```sparql
 SELECT ?s ?p ?localizedString WHERE {
@@ -71,7 +71,7 @@ SELECT ?s ?p ?localizedString WHERE {
 ```
 
 
-### Find all descriptions in no and en, plus internalNote for the Jørgen Grinde collection
+### Finn alle beskrivelser på no og en, pluss internalNote for Jørgen Grinde-samlingen
 
 ```sparql
 PREFIX ubbont: <http://data.ub.uib.no/ontology/>
@@ -91,7 +91,7 @@ SELECT ?uri ?id ?desc_no ?desc_en ?alt_text WHERE {
 ```
 
 
-### Count the content in all collections
+### Tell innholdet i alle samlinger
 
 ```sparql
 SELECT ?s (count(?part) as ?total) WHERE {
@@ -105,7 +105,7 @@ order by desc(?total)
 ```
 
 
-### Get the top level collections
+### Få toppnivå-samlingene
 
 ```sparql
 SELECT DISTINCT ?uri ?label ?description ?logo WHERE {
@@ -122,7 +122,7 @@ ORDER BY ?label
 ```
 
 
-### Create a search IIIF collection for ... collections
+### Opprett en søk IIIF-samling for ... samlinger
 
 ```sparql
 CONSTRUCT 
@@ -168,7 +168,7 @@ ORDER BY ?itemId
 ```
 
 
-### Get the objects with the most props
+### Få objektene med flest egenskaper
 
 ```sparql
 SELECT ?id (COUNT(distinct ?p) AS ?props)
@@ -181,7 +181,7 @@ ORDER BY DESC(?props)
 ```
 
 
-### Get all concept schemes
+### Få alle konseptskjemaer
 
 ```sparql
 CONSTRUCT {
@@ -197,7 +197,7 @@ WHERE {
 }
 ```
 
-### Get a csv of all concepts
+### Få en csv av alle konsepter
 
 ```sparql
 SELECT 
@@ -218,7 +218,7 @@ WHERE {
 GROUP BY ?c ?id 
 ```
 
-### Get all authorities
+### Få alle autoriteter
 
 ```sparql
 SELECT DISTINCT
@@ -336,7 +336,7 @@ WHERE {
 GROUP BY ?id ?url ?identifier ?type ?schemaName ?match ?existsBroader ?existsNarrower ?available ?modified ?source
 ```
 
-### Find all datatypes per property
+### Finn alle datatyper per egenskap
 
 ```sparql
 SELECT ?p (COUNT(?o) AS ?dTypeCount) (MAX(?datatype) AS ?dtype)
@@ -348,7 +348,7 @@ FILTER (isLiteral(?o))
 GROUP BY datatype(?o) ?p
 ```
 
-### Instances with multiple _bibo:pages_
+### Instanser med multiple _bibo:pages_
 
 ```sparql
 select ?homepage ?id (GROUP_CONCAT(?o;SEPARATOR=", ") as ?pages) where {
@@ -361,7 +361,7 @@ HAVING(count(?o) > 1)
 ```
 
 
-### Get all languages
+### Få alle språk
 
 ```sparql
 SELECT DISTINCT ?lang WHERE {
@@ -371,7 +371,7 @@ SELECT DISTINCT ?lang WHERE {
 }
 ```
 
-### Check if there are errors in madeAfter and madeBefore
+### Sjekk om det er feil i madeAfter og madeBefore
 
 ```sparql
 PREFIX ubbont: <http://data.ub.uib.no/ontology/>
@@ -380,12 +380,12 @@ WHERE {
   ?subject ubbont:madeAfter ?madeAfter .
   ?subject ubbont:madeBefore ?madeBefore .
   
-  # Filter if you only want results where made is higher than date2
+  # Filtrer hvis du bare vil ha resultater hvor made er høyere enn date2
    FILTER(?madeAfter > ?madeBefore)
 }
 ```
 
-## Prefixes
+## Prefikser
 
 ```sparql
 PREFIX muna: <http://muna.xyz/model/0.1/>
@@ -450,5 +450,4 @@ PREFIX locah: <http://data.archiveshub.ac.uk/def/>
 PREFIX lexvo: <http://lexvo.org/ontology#>
 PREFIX cc: <http://creativecommons.org/ns#>
 PREFIX iiif_prezi: <http://iiif.io/api/presentation/3#>
-```
-
+``` 
