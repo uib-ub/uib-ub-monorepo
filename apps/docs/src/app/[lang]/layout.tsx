@@ -2,7 +2,7 @@ import { Layout, Navbar, Footer, LocaleSwitch } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import { UibIcon, UibUbEn } from 'assets'
-import '../globals.css'
+import '@/app/globals.css'
 import { FC, ReactNode } from 'react'
 
 export const metadata = {

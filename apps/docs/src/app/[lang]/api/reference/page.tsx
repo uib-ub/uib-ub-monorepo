@@ -1,4 +1,4 @@
-import { ClientWrapper } from '../../../_components/openapi'
+import { ClientWrapper } from '@/app/_components/openapi'
 
 export default function ReferencePage() {
   return (

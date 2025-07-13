@@ -35,11 +35,11 @@ export const ClientWrapper = () => {
               slug: 'uib-ub',
               url: uibUbApiUrl,
             },
-            {
+            /* {
               title: 'Ordbokene API',
               slug: 'ordbokene',
               url: 'https://v1.ordbokene.no/api/swagger.yml',
-            },
+            }, */
             {
               title: 'SAMLA API v2',
               slug: 'samla-v2',
