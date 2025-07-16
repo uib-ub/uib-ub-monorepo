@@ -4,10 +4,10 @@ import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
-  const { termFilters, filteredParams } = extractFacets(request)
+  const { termFilters, reservedParams } = extractFacets(request)
   const dataset = params.dataset// == 'search' ? '*' : params.dataset;
   const facets = params.facets?.split(',')
-  const { simple_query_string } = getQueryString(filteredParams)
+  const { simple_query_string } = getQueryString(reservedParams)
 
  let aggs;
  if (facets) {
@@ -40,7 +40,7 @@ export async function GET(request: Request) {
               terms: {
                 field: facets[i] === 'indexDataset' ? '_index' : `${facets[i]}.keyword`,
                 missing: "_false",
-                size: params.facetSearch ? 10 : 50,
+                size: params.facetSearch ? 10 : 100,
                 ...params.facetSort ? { order: { _key: params.facetSort } } : {},
               },
               ...(i < facets.length - 1 ? { aggs } : {})

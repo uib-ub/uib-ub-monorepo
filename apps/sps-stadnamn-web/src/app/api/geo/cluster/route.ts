@@ -7,14 +7,14 @@ import { getSortArray } from '@/config/server-config';
 import { FaGalacticSenate } from 'react-icons/fa';
 
 export async function GET(request: Request) {
-  const {termFilters, filteredParams} = extractFacets(request)
-  const { simple_query_string } = getQueryString(filteredParams)
-  const dataset = filteredParams.dataset || 'search' // == 'search' ? '*' : filteredParams.dataset;
+  const {termFilters, reservedParams} = extractFacets(request)
+  const { simple_query_string } = getQueryString(reservedParams)
+  const dataset = reservedParams.dataset || 'search' // == 'search' ? '*' : reservedParams.dataset;
 
   const sortArray = getSortArray(dataset)
-  const zoom = parseInt(filteredParams.zoom)
-  const totalHits = filteredParams.totalHits
-  //console.log(filteredParams.bottomRightLat, filteredParams.bottomRightLng)
+  const zoom = parseInt(reservedParams.zoom)
+  const totalHits = reservedParams.totalHits
+  //console.log(reservedParams.bottomRightLat, reservedParams.bottomRightLng)
   
 
   const zoomLevels  = {
@@ -48,9 +48,9 @@ export async function GET(request: Request) {
 
     // Return 1 if bottom of the screen above Norway or showing yan mayen
     // Bottom right for yan mayen: 67.68445072846762 12.568359375000002
-    if (filteredParams.bottomRightLat && parseFloat(filteredParams.bottomRightLat) > 71
+    if (reservedParams.bottomRightLat && parseFloat(reservedParams.bottomRightLat) > 71
       ||
-      (filteredParams.bottomRightLng && parseFloat(filteredParams.bottomRightLng) < 12.568359375000002 && parseFloat(filteredParams.bottomRightLat) > 67.68445072846762)
+      (reservedParams.bottomRightLng && parseFloat(reservedParams.bottomRightLng) < 12.568359375000002 && parseFloat(reservedParams.bottomRightLat) > 67.68445072846762)
   
   ) {
       return 1
@@ -85,7 +85,7 @@ export async function GET(request: Request) {
     tiles: {
         geotile_grid: {
             field: "location",
-            precision: filteredParams.zoom ? zoomLevels[filteredParams.zoom as keyof typeof zoomLevels] ?? 3 : 3,
+            precision: reservedParams.zoom ? zoomLevels[reservedParams.zoom as keyof typeof zoomLevels] ?? 3 : 3,
             //shard_size: 1
 
             
@@ -94,7 +94,7 @@ export async function GET(request: Request) {
             docs: {
                 top_hits: {
                     _source: ["label", "uuid"],
-                    size: zoom < 6 ? 20 : zoom == 18 ? 100 : 10,//topHitsSize[filteredParams.zoom as keyof typeof topHitsSize] ?? 20,
+                    size: zoom < 6 ? 20 : zoom == 18 ? 100 : 10,//topHitsSize[reservedParams.zoom as keyof typeof topHitsSize] ?? 20,
                     sort: dataset == 'search' ? [
                         {"ranking": "asc"}, 
                         {"uuid": "asc"}
@@ -123,12 +123,12 @@ export async function GET(request: Request) {
             geo_bounding_box: {
               location: {
                 top_left: {
-                  lat: filteredParams.topLeftLat,
-                  lon: filteredParams.topLeftLng,
+                  lat: reservedParams.topLeftLat,
+                  lon: reservedParams.topLeftLng,
                 },
                 bottom_right: {
-                  lat: filteredParams.bottomRightLat,
-                  lon: filteredParams.bottomRightLng,
+                  lat: reservedParams.bottomRightLat,
+                  lon: reservedParams.bottomRightLng,
                 }
               }
             }
@@ -136,7 +136,7 @@ export async function GET(request: Request) {
         ]
       }
     },
-    aggs: probability == 1 ? aggs : { // filteredParams.markerSample == 'false' || zoom < 7
+    aggs: probability == 1 ? aggs : { // reservedParams.markerSample == 'false' || zoom < 7
       sample: {
         random_sampler: {
           probability,

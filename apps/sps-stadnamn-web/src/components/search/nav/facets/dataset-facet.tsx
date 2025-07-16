@@ -289,10 +289,12 @@ export default function DatasetFacet() {
           }
           })
           : <li>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-6 my-3">
                 {Array.from({length: 6}).map((_, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <div style={{width: getSkeletonLength(index, 8, 16) + 'rem'}} className="h-4 bg-neutral-200 rounded-full animate-pulse"></div>
+                    <div className="w-4 h-4 bg-neutral-900/10 rounded-md animate-pulse"></div>
+                    <div style={{width: getSkeletonLength(index, 8, 16) + 'rem'}} className="h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
+                    <div className="w-6 h-6 ml-auto bg-neutral-900/10 rounded-full animate-pulse"></div>
                   </div>
                 ))}
               </div>

@@ -5,21 +5,21 @@ import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
 import { getSortArray } from '@/config/server-config';
 export async function GET(request: Request) {
-  const {termFilters, filteredParams} = extractFacets(request)
-  const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
-  const { highlight, simple_query_string } = getQueryString(filteredParams)
+  const {termFilters, reservedParams} = extractFacets(request)
+  const dataset = reservedParams.dataset || 'search'  // == 'search' ? '*' : reservedParams.dataset;
+  const { highlight, simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
     
     // Existing sorting logic
 
   // Add sorting from URL parameters
-  if (filteredParams.asc) {
-    sortArray = filteredParams.asc.split(',').map(field => ({
+  if (reservedParams.asc) {
+    sortArray = reservedParams.asc.split(',').map(field => ({
       [field]: { order: 'asc' }
     }));
-  } else if (filteredParams.desc) {
-    sortArray = filteredParams.desc.split(',').map(field => ({
+  } else if (reservedParams.desc) {
+    sortArray = reservedParams.desc.split(',').map(field => ({
       [field]: { order: 'desc' }
     }));
   }
@@ -31,9 +31,9 @@ export async function GET(request: Request) {
 
     
   const query: Record<string,any> = {
-    "size": filteredParams.size || 10000,
-    "from": filteredParams.from || 0,
-    "fields": filteredParams.fields?.split(',') || [],
+    "size": reservedParams.size || 10000,
+    "from": reservedParams.from || 0,
+    "fields": reservedParams.fields?.split(',') || [],
     "_source": false
   }
 

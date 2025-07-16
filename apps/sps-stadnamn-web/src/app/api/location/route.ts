@@ -4,11 +4,11 @@ import { postQuery } from "../_utils/post";
 import { getQueryString } from "../_utils/query-string";
 export async function GET(request: Request) {
 
-    const {termFilters, filteredParams} = extractFacets(request)
-    const coordinates = filteredParams?.point?.split(',')
+    const {termFilters, reservedParams} = extractFacets(request)
+    const coordinates = reservedParams?.point?.split(',')
     if (coordinates.length == 2) {
         
-        const { simple_query_string } = getQueryString(filteredParams)
+        const { simple_query_string } = getQueryString(reservedParams)
 
 
         const query: Record<string,any> = {
@@ -35,9 +35,9 @@ export async function GET(request: Request) {
             }
         }
 
-        const must_not = filteredParams.doc ? [{
+        const must_not = reservedParams.doc ? [{
             term: {
-                "within.keyword": filteredParams.doc
+                "within.keyword": reservedParams.doc
             }
         }] : undefined
 
@@ -68,7 +68,7 @@ export async function GET(request: Request) {
 
         //query.ignore_unmapped = true // Prevent error in datasets without location
 
-        const [data, status] = await postQuery(filteredParams.dataset || 'search', query)
+        const [data, status] = await postQuery(reservedParams.dataset || 'search', query)
         return Response.json(data, { status: status })
     }
   

@@ -6,9 +6,9 @@ import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
-  const {termFilters, filteredParams} = extractFacets(request)
-  const dataset = filteredParams.dataset || 'all'  // == 'search' ? '*' : filteredParams.dataset;
-  const { simple_query_string } = getQueryString(filteredParams)
+  const {termFilters, reservedParams} = extractFacets(request)
+  const dataset = reservedParams.dataset || 'all'  // == 'search' ? '*' : reservedParams.dataset;
+  const { simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
     
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     "size":  1000,
     "track_scores": true,
     "fields": [
-      "group", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", "gnidu", "snid", "location" // Todo: adapt to whether it's used in the search or in the show more
+      "group.id", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", "gnidu", "snid", "location" // Todo: adapt to whether it's used in the search or in the show more
     ],
     "sort": [
       {

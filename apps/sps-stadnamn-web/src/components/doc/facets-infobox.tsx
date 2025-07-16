@@ -65,11 +65,11 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
       const newParams = Object.fromEntries(Object.entries(params).filter(([key, value]) => value !== null && value !== ''));
       return serialize({dataset, nav: 'results', ...newParams})
     }
-    return <div className="flex flex-col gap-4 p-4 inner-slate">
-            <div className="flex flex-col sm:flex-row flex-wrap gap-8">
+    return <div className="flex flex-col gap-2 py-3">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-6">
             {items.map((item: Record<string,any> , index: number) => (
                 <div key={index} className="flex flex-col">
-                    <strong className="text-neutral-900">{item.title}</strong>
+                    <strong className="text-neutral-700">{item.title}</strong>
                     {item.items?.length == 1 && <p>{subitemRenderer(item.items[0])}</p>}                
                     {item.items?.length > 1 && <ul className="!list-none flex flex-wrap gap-x-4 !mx-0 !px-0"> 
                       {item.items.map((subItem: any, subIndex: number) => (

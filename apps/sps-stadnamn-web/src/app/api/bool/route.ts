@@ -4,9 +4,9 @@ import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
-  const { termFilters, filteredParams } = extractFacets(request)
+  const { termFilters, reservedParams } = extractFacets(request)
   const dataset = params.dataset// == 'search' ? '*' : params.dataset;
-  const { simple_query_string } = getQueryString(filteredParams)
+  const { simple_query_string } = getQueryString(reservedParams)
 /*
   const facets = ["image", "audio", "location", "cadastre"]
 

@@ -15,7 +15,7 @@ export default function CoordinateMenu() {
 
 
     return docData?._source.location ? (
-            <Link href={`info/coordinate-types/${docData._source.coordinateType}`} className="btn btn-outline btn-compact flex items-center gap-2 h-10 pr-4 max-w-[50%]">
+            <Link href={`info/coordinate-types/${docData._source.coordinateType}`} className="btn btn-outline btn-compact flex items-center gap-2 h-10 pr-4 min-w-0 shrink">
               <div className="flex items-center gap-2 min-w-0">
                 <PiMapPinFill className="text-xl text-neutral-600 flex-shrink-0" aria-hidden="true"/>
                 <span className="text-sm truncate block min-w-0">{docData._source.coordinateType ? coordinateVocab[docData._source.coordinateType].creator : datasetTitles[docDataset as string]}{!isOriginal && <span className="text-neutral-700"> (berika)</span>}</span>

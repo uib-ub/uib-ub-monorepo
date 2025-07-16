@@ -7,9 +7,9 @@ import { getSortArray } from '@/config/server-config';
 
 
 export async function GET(request: Request) {
-  const {termFilters, filteredParams} = extractFacets(request)
-  const dataset = filteredParams.dataset || 'search'  // == 'search' ? '*' : filteredParams.dataset;
-  const { highlight, simple_query_string } = getQueryString(filteredParams)
+  const {termFilters, reservedParams} = extractFacets(request)
+  const dataset = reservedParams.dataset || 'search'  // == 'search' ? '*' : reservedParams.dataset;
+  const { highlight, simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
     
@@ -25,10 +25,10 @@ export async function GET(request: Request) {
   };
 
   // Add sorting from URL parameters
-  if (filteredParams.asc) {
-    sortArray = filteredParams.asc.split(',').map(field => convertToNestedPath(field));
-  } else if (filteredParams.desc) {
-    sortArray = filteredParams.desc.split(',').map(field => ({
+  if (reservedParams.asc) {
+    sortArray = reservedParams.asc.split(',').map(field => convertToNestedPath(field));
+  } else if (reservedParams.desc) {
+    sortArray = reservedParams.desc.split(',').map(field => ({
       ...convertToNestedPath(field),
       [Object.keys(convertToNestedPath(field))[0]]: { 
         ...Object.values(convertToNestedPath(field))[0],
@@ -45,8 +45,8 @@ export async function GET(request: Request) {
     
   const query: Record<string,any> = {
     "track_total_hits": 5000000,
-    "size":  filteredParams.size || 10,
-    "from": filteredParams.from || 0,
+    "size":  reservedParams.size || 10,
+    "from": reservedParams.from || 0,
     ...highlight ? {highlight} : {},
     "sort": [...sortArray, {uuid: {order: 'asc'}}],
     "_source": true

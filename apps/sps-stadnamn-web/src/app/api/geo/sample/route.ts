@@ -6,11 +6,11 @@ import { postQuery } from '../../_utils/post';
 import { treeSettings } from '@/config/server-config';
 
 export async function GET(request: Request) {
-  const {termFilters, filteredParams} = extractFacets(request)
-  const { simple_query_string } = getQueryString(filteredParams)
-  const dataset = filteredParams.dataset || 'search' // == 'search' ? '*' : filteredParams.dataset;
+  const {termFilters, reservedParams} = extractFacets(request)
+  const { simple_query_string } = getQueryString(reservedParams)
+  const dataset = reservedParams.dataset || 'search' // == 'search' ? '*' : reservedParams.dataset;
 
-  const zoom: number = parseInt(filteredParams.zoom)
+  const zoom: number = parseInt(reservedParams.zoom)
 
   const zoomSize: Record<number, number> = { 16: 300, 17: 600, 18: 2000}
 
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     fields: ["label", "location", "uuid", "sosi", "children", "placeScore", "within"],
     track_total_hits: false,
     collapse: {
-      field: "group"
+      field: "group.id"
     },
     sort: treeSettings[dataset]?.geoSort ? [
       {
@@ -43,12 +43,12 @@ export async function GET(request: Request) {
             geo_bounding_box: {
               location: {
                 top_left: {
-                  lat: filteredParams.topLeftLat,
-                  lon: filteredParams.topLeftLng,
+                  lat: reservedParams.topLeftLat,
+                  lon: reservedParams.topLeftLng,
                 },
                 bottom_right: {
-                  lat: filteredParams.bottomRightLat,
-                  lon: filteredParams.bottomRightLng,
+                  lat: reservedParams.bottomRightLat,
+                  lon: reservedParams.bottomRightLng,
                 }
               }
             }

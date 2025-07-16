@@ -27,7 +27,7 @@ export async function POST(request: Request) {
         }
       },
     ],
-    "_source": ["group", "label", "adm1", "adm2", "uuid", "sosi", "description", "attestations", "year", "gnidu", "h3"],
+    "_source": ["group.id", "label", "adm1", "adm2", "uuid", "sosi", "description", "attestations", "year", "gnidu", "h3"],
   }
 
   // Build the query with bool structure

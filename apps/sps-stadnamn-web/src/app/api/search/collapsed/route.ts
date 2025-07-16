@@ -7,9 +7,9 @@ import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const {termFilters, filteredParams} = extractFacets(request)
-  const dataset = filteredParams.dataset || 'all'  // == 'search' ? '*' : filteredParams.dataset;
-  const { highlight, simple_query_string } = getQueryString(filteredParams)
+  const {termFilters, reservedParams} = extractFacets(request)
+  const dataset = reservedParams.dataset || 'all'  // == 'search' ? '*' : reservedParams.dataset;
+  const { highlight, simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
     
@@ -22,19 +22,19 @@ export async function GET(request: Request) {
 
     
   const query: Record<string,any> = {
-    "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
-    ...filteredParams.from ? {from: filteredParams.from} : {},
+    "size":  termFilters.length == 0 && !simple_query_string ? 0 : reservedParams.size  || 10,
+    ...reservedParams.from ? {from: reservedParams.from} : {},
     ...highlight ? {highlight} : {},
     "track_scores": true,
     "collapse": {
-      "field": "group",
+      "field": "group.id",
       "inner_hits": {
         "name": "group",
         "size": 0,
       }
     },
     "fields": [ "boost",
-      "group", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", // Todo: adapt to whether it's used in the search or in the show more
+      "group.id", "label", "group.adm1", "group.adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", // Todo: adapt to whether it's used in the search or in the show more
     ],
     "sort": [
       {

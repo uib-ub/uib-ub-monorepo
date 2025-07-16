@@ -86,9 +86,13 @@ export function useSearchQuery() {
         searchQuery.set('fulltext', 'on')
     }
 
-    const removeFilterParams = (key: string) => {
+    const removeFilterParams = (key: string | string[]) => {
         const outputUrl = new URLSearchParams(searchQuery)
-        outputUrl.delete(key)
+        if (Array.isArray(key)) {
+            key.forEach(k => outputUrl.delete(k))
+        } else {
+            outputUrl.delete(key)
+        }
         return outputUrl.toString()
     }
 

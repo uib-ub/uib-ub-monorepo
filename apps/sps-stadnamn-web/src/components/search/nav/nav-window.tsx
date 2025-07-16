@@ -1,6 +1,6 @@
 import { contentSettings, treeSettings } from "@/config/server-config";
 import { useDataset, useMode, useSearchQuery } from "@/lib/search-params";
-import { PiCaretLeft, PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiInfo, PiInfoBold, PiInfoDuotone, PiInfoFill, PiInfoLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight, PiX } from "react-icons/pi";
+import { PiCaretLeft, PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiInfo, PiInfoBold, PiInfoDuotone, PiInfoFill, PiInfoLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight, PiX, PiList } from "react-icons/pi";
 import { SearchContext } from "@/app/search-provider";
 import { useContext, useState, useEffect, useTransition } from "react";
 import TreeResults from "./results/tree-results";
@@ -16,6 +16,7 @@ import DatasetFacet from "./facets/dataset-facet";
 import ClickableIcon from "../../ui/clickable/clickable-icon";
 import Link from "next/link";
 import Clickable from "../../ui/clickable/clickable";
+import WikiAdmFacet from "./facets/wikiAdm-facet";
 
 export default function NavWindow() {
     const dataset = useDataset()
@@ -82,7 +83,7 @@ export default function NavWindow() {
                         { isLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
                         {nav == 'results' ? <span className={`results-badge bg-accent-800 font-bold text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
                             {totalHits && formatNumber(totalHits.value)}</span>
-                        : <span className={`results-badge text-primary-600 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
+                        : <span className={`results-badge text-primary-700 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
                         </>}
                 </Clickable>
                 }
@@ -110,12 +111,33 @@ export default function NavWindow() {
                 <FacetSection/>
         }
         {
-            nav == 'adm' && contentSettings[dataset].adm &&
+            (nav == 'adm' || nav == 'wikiAdm') && contentSettings[dataset].adm &&
             <div className="flex flex-col gap-2">
-            <h2 className="text-xl px-2 border-b border-neutral-200 pb-2" >
-            Områdeinndeling
-          </h2>
-            <ClientFacet facetName='adm' />
+                <div className="flex items-center justify-between pl-2 border-b border-neutral-200 pb-2">
+                    <h2 className="text-xl">
+                        Områdeinndeling
+                    </h2>
+                    <div className="flex bg-neutral-100 rounded-lg p-1">
+                        <Clickable
+                            aria-pressed={nav == 'adm'}
+                            add={nav !== 'adm' ? {nav: 'adm'} : {}}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline aria-pressed:bg-white aria-pressed:text-neutral-900 aria-pressed:shadow-sm aria-[pressed=false]:text-neutral-700 aria-[pressed=false]:hover:text-neutral-900`}
+                        >
+                            
+                            Dagens
+                        </Clickable>
+                        <Clickable
+                            aria-pressed={nav == 'wikiAdm'}
+                            add={nav !== 'wikiAdm' ? {nav: 'wikiAdm'} : {}}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline aria-pressed:bg-white aria-pressed:text-neutral-900 aria-pressed:shadow-sm aria-[pressed=false]:text-neutral-700 aria-[pressed=false]:hover:text-neutral-900`}
+                        >
+                            
+                            Historisk
+                        </Clickable>
+                    </div>
+                </div>
+                { nav == 'adm' && <ClientFacet facetName='adm' />}
+                { nav == 'wikiAdm' && <WikiAdmFacet />}
             </div>
         }
         { nav == 'datasets' &&

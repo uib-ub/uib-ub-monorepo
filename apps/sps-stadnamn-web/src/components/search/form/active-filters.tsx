@@ -47,7 +47,7 @@ export default function ActiveFilters() {
   
         // Add any special cases here
         if (values[0] == "_false" && name == "adm") {
-          if (values.length == 1) return "[utan distrikt]"
+          if (values.length == 1) return "[inga verdi]"
           return values[1] + " (utan underinndeling)"
         }
 

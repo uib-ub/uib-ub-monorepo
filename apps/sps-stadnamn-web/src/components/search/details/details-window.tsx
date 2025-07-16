@@ -57,7 +57,7 @@ export default function DetailsWindow() {
       <PiListLight className="text-2xl text-neutral-900 xl:sr-only" aria-hidden="true"/>
       <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Valde treff</span>
       {groupTotal?.value && groupTotal.value > 0 && (
-        <span className={`aresults-badge bg-primary-200 ${groupTotal.value > 9 ? 'px-1.5': 'px-2'} text-primary-600 font-bold group-aria-selected:bg-accent-800 group-aria-selected:text-white left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap`}>
+        <span className={`results-badge bg-primary-200 ${groupTotal.value > 9 ? 'px-1.5': 'px-2'} text-primary-700 font-bold group-aria-selected:bg-accent-800 group-aria-selected:text-white left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap`}>
           {groupTotal.value}
         </span>
       )}

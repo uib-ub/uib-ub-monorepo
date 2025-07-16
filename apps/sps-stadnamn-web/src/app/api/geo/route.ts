@@ -5,9 +5,9 @@ import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
 
 export async function GET(request: Request) {
-  const {termFilters, filteredParams} = extractFacets(request)
-  const { simple_query_string } = getQueryString(filteredParams)
-  const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
+  const {termFilters, reservedParams} = extractFacets(request)
+  const { simple_query_string } = getQueryString(reservedParams)
+  const dataset = reservedParams.dataset // == 'search' ? '*' : reservedParams.dataset;
 
   const query: Record<string,any> = {
     size: 200,
@@ -18,12 +18,12 @@ export async function GET(request: Request) {
 const geo_query = {geo_bounding_box: {
     location: {
         top_left: {
-          lat: filteredParams.topLeftLat ? parseFloat(filteredParams.topLeftLat) : 90,
-          lon: filteredParams.topLeftLng ? parseFloat(filteredParams.topLeftLng) : -180,
+          lat: reservedParams.topLeftLat ? parseFloat(reservedParams.topLeftLat) : 90,
+          lon: reservedParams.topLeftLng ? parseFloat(reservedParams.topLeftLng) : -180,
         },
         bottom_right: {
-          lat: filteredParams.bottomRightLat ? parseFloat(filteredParams.bottomRightLat) : -90,
-          lon: filteredParams.bottomRightLng ? parseFloat(filteredParams.bottomRightLng) : 180,
+          lat: reservedParams.bottomRightLat ? parseFloat(reservedParams.bottomRightLat) : -90,
+          lon: reservedParams.bottomRightLng ? parseFloat(reservedParams.bottomRightLng) : 180,
         },
     }}
 }

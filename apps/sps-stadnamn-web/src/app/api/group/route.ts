@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   const query = {
     size: size,
     _source: false,
-    fields: ['uuid', 'label', 'gnidu', 'h3', 'group'],
+    fields: ['uuid', 'label', 'gnidu', 'h3', 'group.id'],
     sort: [
       {
         boost: {
@@ -31,11 +31,13 @@ export async function GET(request: Request) {
       }
     ],
     query: {
-      term: { group},
+      term: { "group.id": group},
     }
   };
+
   
 
   const [data, status] = await postQuery('all', query);
+  console.log(data)
   return Response.json(data, { status });
 }

@@ -24,7 +24,12 @@ export default function ResultItem({hit}: {hit: any}) {
     const details = searchParams.get('details') || 'doc'
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
-    const detailsRenderer = resultRenderers[docDataset]?.details || defaultResultRenderer.details
+    const detailsRenderer = (hit: any) => {
+        const adm1 = hit.fields["group.adm1"]
+        const adm2 = hit.fields["group.adm2"]
+        const adm3 = hit.fields["group.adm3"]
+        return <>{adm2 ? adm2 + ', ' : ''}{adm1}</>
+    }
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
     const isGrunnord = docDataset?.includes('_g')
@@ -51,7 +56,7 @@ export default function ResultItem({hit}: {hit: any}) {
                         doc: hit.fields.uuid,
                         details: details, 
 
-                        ...(hit.fields.group ? {group: stringToBase64Url(hit.fields.group[0])} : {}),
+                        ...(hit.fields["group.id"] ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {}),
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
@@ -65,9 +70,9 @@ export default function ResultItem({hit}: {hit: any}) {
                 </span>
 
                 {hit.highlight && snippetRenderer ? (
-                    <> | {detailsRenderer(hit, 'map')} {snippetRenderer(hit)}  </>
+                    <> | {detailsRenderer(hit)} {snippetRenderer(hit)}  </>
                 ) : (
-                    <p>{detailsRenderer(hit, 'map')}</p>
+                    <p>{detailsRenderer(hit)}</p>
                 )}
             </div>
             {dataset == "all" && hit.inner_hits?.group?.hits?.total?.value > 1 && (

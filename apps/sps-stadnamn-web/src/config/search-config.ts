@@ -19,13 +19,14 @@ export interface FieldConfigItem {
   indexDataset?: string[]; // Used to filter by _index
   altField?: string; // Add this new property
   numeric?: boolean;
+  keyword?: boolean; // Is mapped as keyword in ES
 }
 
 interface FacetConfigItem extends FieldConfigItem {
   key: string; 
 }
  
-const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric] = Array(8).fill(true);
+const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric, keyword] = Array(9).fill(true);
 
 const sosi = {label: "Lokalitetstype (SOSI)", description: "SOSI-standarden", facet, table, result}
 const cadastre = {"within": {label: "Gard", result},
@@ -42,7 +43,7 @@ const snid = {label: "Stadnamn ID", facet, omitLabel}
 const gnidu = {label: "GNIDu", facet, result}
 const midu = {label: "MIDu", facet}
 const h3 = {label: "H3", result}
-const wikiAdm = {label: "Historisk kommune", result, table, facet}
+const wikiAdm = {label: "Historisk kommune", result, keyword}
 const identifiers = {snid, gnidu, midu, h3, wikiAdm}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
@@ -440,10 +441,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
 // First, store the original _index configuration
 // TODO: refactor so that required is not needed in the individual configs
-const baseAllConfig = {
-  ...required, adm, adm1, adm2, sosi, identifiers, cadastre,
+export const baseAllConfig: Record<string, FieldConfigItem> = {
+  ...required, adm, adm1, adm2, sosi, ...identifiers, ...cadastre, wikiAdm,
   "indexDataset": {label: "Datasett", facet},
-  "datasetTag": {label: "Datasettstype", facet, omitLabel, child: "indexDataset"},
+  "h3": {label: "H3", facet},
 };
 
 fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {

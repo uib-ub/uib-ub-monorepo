@@ -31,8 +31,9 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   }
 
   useEffect(() => {
-    fetch(`/api/facet?dataset=${dataset}&facets=adm1,adm2,adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
-      setFacetAggregation(es_data.aggregations?.adm1)
+    fetch(`/api/facet?dataset=${dataset}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
+      console.log(es_data)
+      setFacetAggregation(es_data.aggregations?.["group.adm1"])
       setFacetIsLoading(false);
     })
     }, [paramsExceptFacet, dataset]
@@ -130,7 +131,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     if (!facetSearchQuery && level == 1) return true
     if (facetSearchQuery && createSearchRegex(facetSearchQuery)?.test(item.key.replace("-", " "))) return true
     const childLevel = level +1
-    if (item[baseName + childLevel]?.buckets.some((subitem: any) => facetSearch(subitem, baseName, childLevel))) {
+    if (item["group." + baseName + childLevel]?.buckets.some((subitem: any) => facetSearch(subitem, baseName, childLevel))) {
       return true
     } 
     return false
@@ -139,14 +140,14 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
 
   const listItem = (item: any, index: number, baseName: string, path: string[], parentChecked: boolean) => {
-    const childAggregation = baseName + (path.length + 1);
+    const childAggregation = 'group.' + baseName + (path.length + 1);
     const checked = isChecked(baseName, path);
     let children = item[childAggregation]?.buckets
     children = children?.some((child: any) => child.key[0] != "_") ? children : []
     const filteredChildren = facetSearchQuery && children?.filter((subitem: any) => facetSearch(subitem, baseName, path.length +1))
 
     
-    const label = path[0] == "_false" ? (path.length == 1 ? "[utan distrikt]" : "[utan underinndeling]") : item.key   
+    const label = path[0] == "_false" ? (path.length == 1 ? "[inga verdi]" : "[utan underinndeling]") : item.key   
  
 
     return (
@@ -189,7 +190,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       </div>
       { facetAggregation?.buckets ?
       <fieldset>
-        <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[dataset][facetName].label}`}</legend>
+        <legend className="sr-only">{`Filtreringsalternativer for områdeinndeling`}</legend>
         <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
           {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
             listItem(item, index, facetName, [item.key], false)

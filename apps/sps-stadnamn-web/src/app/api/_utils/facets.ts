@@ -1,4 +1,5 @@
 import { datasetTypes } from "@/config/metadata-config";
+import { baseAllConfig } from "@/config/search-config";
 import { base64UrlToString } from "@/lib/utils";
 
 export const RESERVED_PARAMS = [
@@ -26,14 +27,15 @@ export const RESERVED_PARAMS = [
   'zoom',
   'point',
   'fuzzyNav',
-  'datasetTag'
+  'datasetTag',
+  'facetQuery'
 ] as const;
 
 export function extractFacets(request: Request) {
   const urlParams = new URL(request.url).searchParams;
 
   const termFilters = []
-  const filteredParams: { [key: string]: string } = {};
+  const reservedParams: { [key: string]: string } = {};
 
   const clientFacets: { [key: string]: string[] } = {};
   const serverFacets: { [key: string]: string[] } = {};
@@ -41,7 +43,7 @@ export function extractFacets(request: Request) {
 
   for (const [key, value] of urlParams.entries()) {
     if (RESERVED_PARAMS.includes(key as any)) {
-      filteredParams[key] = urlParams.get(key)!;
+      reservedParams[key] = urlParams.get(key)!;
     } else {
       // Check for comparison operators (_gt, _gte, _lt, _lte)
       const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);
@@ -77,14 +79,14 @@ export function extractFacets(request: Request) {
   }
 
   // Handle dataset tag (non-categorical dataset type) filter for datasets
-  if (filteredParams.datasetTag) {
-    const datasetTag = filteredParams.datasetTag;
+  if (reservedParams.datasetTag) {
+    const datasetTag = reservedParams.datasetTag;
     const matchingDatasets = Object.entries(datasetTypes)
       .filter(([_, types]) => types.includes(datasetTag))
       .map(([dataset]) => dataset);
     
     if (matchingDatasets.length > 0) {
-      if (filteredParams.dataset == 'all') {
+      if (reservedParams.dataset == 'all') {
         termFilters.push({
           "bool": {
             "should": [{
@@ -116,7 +118,7 @@ export function extractFacets(request: Request) {
             "bool": {
               "filter": value.split("__").reverse().map((value: string, index: number) => ({
                   
-                  "term":  { [`adm${index+1}.keyword`]: value }
+                  "term":  { [`group.adm${index+1}.keyword`]: value }
               }))
             }
           })),
@@ -125,7 +127,7 @@ export function extractFacets(request: Request) {
             // Split the value to separate the levels and remove the "_false" prefix
             const levels = value.slice(8).split('__').filter(val => val.length).reverse();
             const mustClauses = levels.map((level, index) => ({
-              "term": { [`adm${index+1}.keyword`]: level }
+              "term": { [`group.adm${index+1}.keyword`]: level }
             }));
           
             // The last level index is determined by the number of levels specified
@@ -135,7 +137,7 @@ export function extractFacets(request: Request) {
               "bool": {
                 "must": mustClauses,
                 "must_not": [{
-                  "exists": { "field": `adm${lastLevelIndex}.keyword` }
+                  "exists": { "field": `group.adm${lastLevelIndex}.keyword` }
                 }]
               }
             };
@@ -160,7 +162,7 @@ export function extractFacets(request: Request) {
         termFilters.push({
           "bool": {
             "should": values.map(value => ({
-              "term": { "group": base64UrlToString(value) }
+              "term": { "group.id": base64UrlToString(value) }
             })),
             "minimum_should_match": 1
           }
@@ -203,9 +205,9 @@ export function extractFacets(request: Request) {
           termFilters.push({
             "bool": {
               "should": [
-                ...(hasFalse ? [{"bool": {"must_not": {"exists": {"field": `${key}.keyword`}}}}] : []),
-                ...(hasTrue ? [{"exists": {"field": `${key}.keyword`}}] : []),
-                ...(filteredValues.length ? [{"terms": { [`${key}.keyword`]: filteredValues }}] : [])
+                ...(hasFalse ? [{"bool": {"must_not": {"exists": {"field": `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`}}}}] : []),
+                ...(hasTrue ? [{"exists": {"field": `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`}}] : []),
+                ...(filteredValues.length ? [{"terms": { [`${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`]: filteredValues }}] : [])
               ],
               "minimum_should_match": 1
             }
@@ -214,7 +216,7 @@ export function extractFacets(request: Request) {
     }
   }
 
-  return {termFilters, filteredParams, rangeFilters}
+  return {termFilters, reservedParams, rangeFilters}
 
 
 }

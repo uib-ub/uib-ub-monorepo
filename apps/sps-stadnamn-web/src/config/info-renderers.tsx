@@ -36,7 +36,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     }
 
     {source.content?.html && <div className="inline-flex flex-col inner-slate">
-     <div className='border-b border-neutral-200 p-4 flex flex-col gap-1'><Link href={source.link} className='whitespace-nowrap inline'>Bind {source.misc.Bind}, s. {source.misc.Side}</Link>
+     <div className='border-b border-neutral-200 p-4 flex flex-col gap-2'><Link href={source.link} className='whitespace-nowrap inline'>Bind {source.misc.Bind}, s. {source.misc.Side}</Link>
      {source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-600' />Transkriberinga kan innehalde feil teikn, særleg i uttale. Følg lenka for korrekt Norvegia-lydskrift i den trykte utgåva.</span>}</div>
     <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
 
