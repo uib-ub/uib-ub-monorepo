@@ -12,7 +12,7 @@ export default function WikiAdmFacet() {
   const { removeFilterParams } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const facetName = 'wikiAdm'
-  const paramsExceptFacet = removeFilterParams([facetName, 'adm1', 'adm2'])
+  const paramsExceptFacet = removeFilterParams([facetName])
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
@@ -40,36 +40,14 @@ export default function WikiAdmFacet() {
     });
   };
 
+  // Modify isChecked to check if any param starts with the QID
   const isChecked = (paramName: string, value: string) => {
-    return searchParams.has(paramName, value);
-  }
-
-  const toggleFilter = (beingChecked: boolean, paramName: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    // Remove existing value if present
-    params.delete(paramName);
-    params.delete('page');
-    params.delete('parent');
-    params.delete('zoom');
-    params.delete('center');
-    params.delete('doc');
-    params.delete('group');
-
-    // Add the value if being checked
-    if (beingChecked) {
-      params.append(paramName, value);
-    }
-
-    if (facetOptions[dataset]?.[paramName]?.pinningActive) {
-      updatePinnedFilters(beingChecked ? [...pinnedFilters[dataset], [paramName, value]] 
-          : pinnedFilters[dataset]?.filter(([k, v]) => (k == paramName && v == value) ? false : true))
-    }
-
-    router.push(`?${params.toString()}`, { scroll: false });
+    const allValues = searchParams.getAll(paramName);
+    return allValues.some(param => param.startsWith(value));
   };
 
-  const toggleCombinedFilter = (beingChecked: boolean, wikiId: string, adm1Value: string, adm2Value?: string) => {
+  // Replace toggleCombinedFilter with new version that handles both parent and child cases
+  const toggleCombinedFilter = (beingChecked: boolean, wikiId: string, adm1Value?: string, adm2Value?: string) => {
     const params = new URLSearchParams(searchParams.toString());
     
     // Remove navigation-related params
@@ -80,48 +58,53 @@ export default function WikiAdmFacet() {
     params.delete('doc');
     params.delete('group');
 
-    // Get all current values
-    const currentWikiAdm = params.getAll('wikiAdm');
-    const currentAdm1 = params.getAll('adm1');
-    const currentAdm2 = params.getAll('adm2');
-
-    // Remove all values temporarily
+    // Get current wikiAdm values
+    const currentValues = params.getAll('wikiAdm');
     params.delete('wikiAdm');
-    params.delete('adm1');
-    params.delete('adm2');
 
-    if (beingChecked) {
-      // Add back existing values
-      currentWikiAdm.forEach((value, index) => {
-        // Only add back if it's not the same wikiId we're adding
-        if (value !== wikiId) {
-          params.append('wikiAdm', value);
-          params.append('adm1', currentAdm1[index]);
-          if (currentAdm2[index]) {
-            params.append('adm2', currentAdm2[index]);
-          }
+    if (!adm1Value) {
+      // Parent checkbox logic
+      if (beingChecked) {
+        // Add the QID if no values with this QID exist
+        if (!currentValues.some(value => value.startsWith(`${wikiId}_`))) {
+          params.append('wikiAdm', wikiId);
         }
-      });
-
-      // Add the new combination
-      params.append('wikiAdm', wikiId);
-      params.append('adm1', adm1Value);
-      if (adm2Value) {
-        params.append('adm2', adm2Value);
+      } else {
+        // Remove all values that start with this QID
+        currentValues
+          .filter(value => !value.startsWith(`${wikiId}_`) && value !== wikiId)
+          .forEach(value => params.append('wikiAdm', value));
       }
     } else {
-      // Add back all values except the one we're removing
-      currentWikiAdm.forEach((value, index) => {
-        if (value !== wikiId || 
-            currentAdm1[index] !== adm1Value || 
-            (adm2Value && currentAdm2[index] !== adm2Value)) {
-          params.append('wikiAdm', value);
-          params.append('adm1', currentAdm1[index]);
-          if (currentAdm2[index]) {
-            params.append('adm2', currentAdm2[index]);
-          }
-        }
-      });
+      // Child checkbox logic
+      const valueToToggle = adm2Value 
+        ? `${wikiId}_${adm1Value}_${adm2Value}`
+        : `${wikiId}_${adm1Value}`;
+
+      if (beingChecked) {
+        // Add all existing values except the exact match if it exists
+        currentValues
+          .filter(value => value !== valueToToggle)
+          .forEach(value => params.append('wikiAdm', value));
+        // Add the new value
+        params.append('wikiAdm', valueToToggle);
+      } else {
+        // Add back all values except the exact match
+        currentValues
+          .filter(value => value !== valueToToggle)
+          .forEach(value => params.append('wikiAdm', value));
+      }
+    }
+
+    if (facetOptions[dataset]?.wikiAdm?.pinningActive) {
+      updatePinnedFilters(beingChecked 
+        ? [...pinnedFilters[dataset], ['wikiAdm', adm1Value 
+            ? (adm2Value ? `${wikiId}_${adm1Value}_${adm2Value}` : `${wikiId}_${adm1Value}`)
+            : wikiId]]
+        : pinnedFilters[dataset]?.filter(([k, v]) => (k === 'wikiAdm' && v === (adm1Value 
+            ? (adm2Value ? `${wikiId}_${adm1Value}_${adm2Value}` : `${wikiId}_${adm1Value}`)
+            : wikiId)) ? false : true)
+      );
     }
 
     router.push(`?${params.toString()}`, { scroll: false });
@@ -182,15 +165,10 @@ export default function WikiAdmFacet() {
                     <label className="flex items-center gap-2 flex-1">
                       <input 
                         type="checkbox" 
-                        checked={isChecked(facetName, item.key) && 
-                          // Add check for the specific adm1/adm2 values of the first path
-                          searchParams.has('adm1', item.adm1?.buckets[0]?.key) &&
-                          searchParams.has('adm2', item.adm1?.buckets[0]?.adm2?.buckets[0]?.key)}
+                        checked={isChecked(facetName, item.key)}
                         onChange={(e) => toggleCombinedFilter(
                           e.target.checked,
-                          item.key,
-                          item.adm1?.buckets[0]?.key,
-                          item.adm1?.buckets[0]?.adm2?.buckets[0]?.key
+                          item.key
                         )}
                         className="mr-2" 
                       />
@@ -232,10 +210,13 @@ export default function WikiAdmFacet() {
                                 <label className="flex items-center gap-2">
                                   <input 
                                     type="checkbox" 
-                                    checked={searchParams.has('wikiAdm', item.key) && 
-                                            searchParams.has('adm1', adm1.key) && 
-                                            searchParams.has('adm2', adm2.key)}
-                                    onChange={(e) => toggleCombinedFilter(e.target.checked, item.key, adm1.key, adm2.key)}
+                                    checked={isChecked(facetName, `${item.key}_${adm1.key}_${adm2.key}`)}
+                                    onChange={(e) => toggleCombinedFilter(
+                                      e.target.checked, 
+                                      item.key, 
+                                      adm1.key, 
+                                      adm2.key
+                                    )}
                                     className="mr-2" 
                                   />
                                   <span className="text-neutral-950">

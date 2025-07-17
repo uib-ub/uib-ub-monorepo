@@ -108,7 +108,7 @@ export function extractFacets(request: Request) {
     }
   }
 
-  // Hierarchical facet 
+  // Hierarchical facets
   if (Object.keys(clientFacets).length) {
     if (clientFacets.adm) {
       termFilters.push({
@@ -148,6 +148,39 @@ export function extractFacets(request: Request) {
 
       })
 
+    }
+
+    if (clientFacets.wikiAdm) {
+      termFilters.push({
+        "bool": {
+          "should": clientFacets.wikiAdm.map((value: string) => {
+            const parts = value.split('_');
+            const qid = parts[0];
+            
+            // If only QID is provided
+            if (parts.length === 1) {
+              return {
+                "term": { "wikiAdm": qid }
+              };
+            }
+            
+            // For concatenated values, extract adm1 and adm2
+            const adm1 = parts[1];
+            const adm2 = parts[2];
+            
+            return {
+              "bool": {
+                "must": [
+                  { "term": { "wikiAdm": qid } },
+                  { "term": { "adm1.keyword": adm1 } },
+                  ...(adm2 ? [{ "term": { "adm2.keyword": adm2 } }] : [])
+                ]
+              }
+            };
+          }),
+          "minimum_should_match": 1
+        }
+      });
     }
   }
 
