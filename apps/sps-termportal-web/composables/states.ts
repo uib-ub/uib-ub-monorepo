@@ -1,34 +1,4 @@
-import type { LangCode } from "./locale";
-import type { LabelPredicate, Matching, uiConfig } from "~~/utils/vars";
-import type { TermbaseId } from "~~/utils/vars-termbase";
 
-export interface SearchDataEntry {
-  predicate: string;
-  label: string;
-  link: string;
-  lang: string[];
-  samling: string;
-  matching: string;
-  translate?: string;
-  score?: string;
-}
-
-export interface SearchDataStats {
-  lang?: { [key in LangCode]: number };
-  samling?: { [key: TermbaseId]: number };
-  predicate?: { [key in LabelPredicate]: number };
-  matching?: { [key in Matching]: number };
-  context?: { string: number };
-}
-
-export interface SearchInterface {
-  term: string | null;
-  language: LangCode | "all";
-  translate: LangCode | "none";
-  domain: Object;
-  termbase: TermbaseId[];
-  useDomain: boolean;
-}
 
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
@@ -77,13 +47,6 @@ export const useShowSearchFilter = () =>
     uiConfig.wideUiBreakpoints.includes(useBreakpoint().value)
   );
 
-export interface SearchFilterData {
-  lang: LangCode[];
-  samling: string[];
-  predicate: LabelPredicate[];
-  matching: Matching[];
-  context: string[];
-}
 export const useSearchFilterSelection = () =>
   useState<SearchFilterData>("searchFilterSelection", () => ({
     lang: [],
@@ -122,8 +85,6 @@ export const useNavMenuExpanded = () =>
   useState<boolean>("navMenuExpanded", () => false);
 
 export const useTermpostContext = () => useState("termpostContext", () => true);
-export const useHeaderDisplayScope = () =>
-  useState("headerDisplayScope", () => "default");
 
 export const useBootstrapData = () =>
   useState<Object>("lazyLocales", () => ({

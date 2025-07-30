@@ -4,7 +4,7 @@
       <NavbarWrapper
         ref="navBarRef"
         :key="'navbar' + locale + orderedTermbases.length"
-        :context="headerDisplayScope"
+        :headersize="headerDisplayScope"
         class="tp-transition-slow z-50"
         :class="{
           'fixed top-0 drop-shadow-md': fixPosition,
@@ -12,14 +12,17 @@
         style="top: -54px"
       />
     </div>
-    <div v-if="headerDisplayScope === 'full'" class="flex px-4 xl:pl-0 w-full">
+    <div
+      v-if="headerDisplayScope === headerSize.Full"
+      class="flex w-full px-4 xl:pl-0"
+    >
       <SideBar class="w-0" />
       <div class="w-full max-w-6xl">
         <div class="flex justify-between">
           <HeaderSearchOptions />
           <button
-            class="border hover:border-gray-300 border-transparent rounded-[4px] hover:bg-gray-100 text-gray-600 hover:text-gray-800 flex justify-center h-7 ml-2"
-            @click="headerDisplayScope = 'default'"
+            class="ml-2 flex h-7 justify-center rounded-[4px] border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+            @click="headerDisplayScope = headerSize.Default"
           >
             <IconClose class="text-lg" />
             <span class="sr-only">Close</span>
@@ -31,17 +34,17 @@
     <div class="flex">
       <SideBar class="w-0" />
       <div
-        v-if="headerDisplayScope === 'default'"
-        class="flex justify-center max-w-6xl w-full mt-[-6px]"
+        v-if="headerDisplayScope === headerSize.Default"
+        class="mt-[-6px] flex w-full max-w-6xl justify-center"
       >
         <button
-          class="absolute border border-t-white border-gray-300 rounded-b-md bg-white h-[1.1em] mt-[6px] flex justify-center w-16"
-          @click="headerDisplayScope = 'full'"
+          class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border border-gray-300 border-t-white bg-white"
+          @click="headerDisplayScope = headerSize.Full"
         >
           <Icon
             name="mdi:chevron-down"
             size="1.6em"
-            class="text-gray-600 mt-[-7px]"
+            class="mt-[-7px] text-gray-600"
             aria-hidden="true"
           />
           <span class="sr-only">Expand domain panel</span>
@@ -52,7 +55,7 @@
     <div
       v-if="headerDisplayScope != 'minimal'"
       class="w-full pt-0"
-      :class="{ 'pt-1': headerDisplayScope === 'full' }"
+      :class="{ 'pt-1': headerDisplayScope === headerSize.Full }"
     >
       <div class="border-x border-b border-gray-300 border-x-white"></div>
     </div>
@@ -60,23 +63,24 @@
 </template>
 
 <script setup lang="ts">
+import { HeaderSize } from "~/types/enums";
+
 const route = useRoute();
 const locale = useLocale();
 const orderedTermbases = useOrderedTermbases();
-const headerDisplayScope = ref("default");
+
+const headerSize = HeaderSize;
+const headerDisplayScope = ref<HeaderSize>(HeaderSize.Default);
 
 watch(
   () => route.name,
   () => {
     if (route.name === "index") {
-      headerDisplayScope.value = "minimal";
-    } else if (
-      typeof route.name === "string" &&
-      ["tb-termbase", "om", "innstillinger"].includes(route.name)
-    ) {
-      headerDisplayScope.value = "default";
+      headerDisplayScope.value = HeaderSize.Minimal;
     } else if (route.name === "search") {
-      headerDisplayScope.value = "full";
+      headerDisplayScope.value = HeaderSize.Full;
+    } else {
+      headerDisplayScope.value = HeaderSize.Default;
     }
   },
   { immediate: true }

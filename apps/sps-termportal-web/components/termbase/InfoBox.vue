@@ -112,7 +112,6 @@
 
 <script setup lang="ts">
 import { localizeSnomedVersionLabel } from "~/composables/locale";
-import type { LangCode } from "~/composables/locale";
 
 const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();

@@ -1,29 +1,5 @@
 import { useI18n } from "vue-i18n";
-import type { TermbaseId } from "~/utils/vars-termbase";
 import { termbaseConfig } from "~/utils/vars-termbase";
-
-export type LocalLangCode = "en" | "nb" | "nn";
-
-export type LangCode =
-  | "ar"
-  | "da"
-  | "de"
-  | "en"
-  | "en-gb"
-  | "en-us"
-  | "fa-af"
-  | "fi"
-  | "fr"
-  | "it"
-  | "la"
-  | "nb"
-  | "nn"
-  | "pl"
-  | "ru"
-  | "so"
-  | "es"
-  | "sv"
-  | "ti";
 
 export const useLocale = () => {
   const i18n = useI18n();

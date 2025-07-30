@@ -1,4 +1,3 @@
-import { SearchOptions } from "~~/utils/vars";
 
 function getActivationStatus(data, hierarchy) {
   const result = [];

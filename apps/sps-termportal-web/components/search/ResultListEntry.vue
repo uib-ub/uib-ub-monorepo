@@ -90,7 +90,6 @@
 </template>
 
 <script setup lang="ts">
-import type { LangCode } from "~/composables/locale";
 const localeLangOrder = useLocaleLangOrder();
 
 const searchInterface = useSearchInterface();

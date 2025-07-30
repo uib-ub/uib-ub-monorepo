@@ -51,8 +51,6 @@
 
 <script setup lang="ts">
 import { uiConfig } from "../utils/vars";
-import type { FetchType } from "../composables/useFetchSearchData";
-import type { TermbaseId } from "~/utils/vars-termbase";
 
 const route = useRoute();
 const searchData = useSearchData();

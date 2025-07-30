@@ -2,7 +2,6 @@ import { createI18n } from "vue-i18n";
 import en from "../locales/en.json";
 import nb from "../locales/nb.json";
 import nn from "../locales/nn.json";
-import type { LocalLangCode } from "~/composables/locale";
 import { cookieLocaleOptions } from "~/utils/vars";
 
 export default defineNuxtPlugin(({ vueApp }) => {

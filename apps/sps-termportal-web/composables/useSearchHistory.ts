@@ -1,5 +1,4 @@
 import { StorageSerializers } from "@vueuse/core";
-import { SearchInterface } from "./states";
 
 /**
  * Store and load search history in/from local storage.

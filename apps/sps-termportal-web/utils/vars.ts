@@ -1,25 +1,3 @@
-import type { TermbaseId, Domains } from "./vars-termbase";
-import type { LangCode } from "~/composables/locale";
-
-export type QueryType = "search" | "concept" | "termbase";
-export type SearchQueryType = "entries" | "aggregate";
-
-export type LabelPredicate = "prefLabel" | "altLabel" | "hiddenLabel";
-export type Matching =
-  | "full"
-  | "full-cs"
-  | "full-ci"
-  | "startsWith-ci"
-  | "endsWith-ci"
-  | "subWord-ci"
-  | "contains-ci";
-export type MatchingNested = Matching | Matching[];
-
-export type SearchQueryResponse = {
-  head: { vars: string[] };
-  results: { bindings: any[] };
-};
-
 export const predicateOrder: LabelPredicate[] = [
   "prefLabel",
   "altLabel",
@@ -33,18 +11,6 @@ export const matchingOrder: Matching[] | Matching[][] = [
   "contains-ci",
 ];
 
-export type SemanticRelation =
-  | "narrower"
-  | "specializes"
-  | "isPartOf"
-  | "broader"
-  | "generalizes"
-  | "hasPart"
-  | "related"
-  | "seeAlso"
-  | "replaces"
-  | "replacedBy";
-
 export const semanticRelationTypes = {
   narrower: ["qualifiedNarrower", "concept"],
   specializes: ["hasGenericConceptRelation", "hasGenericConcept"],
@@ -57,22 +23,6 @@ export const semanticRelationTypes = {
   replaces: ["qualifiedReplaces", "concept"],
   replacedBy: ["qualifiedReplacedBy", "concept"],
 } as const;
-
-export interface SearchOptions {
-  type: QueryType;
-  subtype: SearchQueryType;
-  situation: string;
-  term: string;
-  language: (LangCode | "all")[];
-  translate: LangCode | "none";
-  termbase: TermbaseId[];
-  useDomain: boolean;
-  domain: (Domains | "all")[];
-  predicate: LabelPredicate[];
-  matching: (Matching | "all")[] | Matching[][];
-  limit: number;
-  offset: any;
-}
 
 export const searchOptionsInfo = {
   type: { default: "search" },

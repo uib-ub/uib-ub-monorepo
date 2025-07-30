@@ -1,20 +1,3 @@
-export type TermbaseId = string;
-
-export type Domains =
-  | "DOMENE-3AHumaniora"
-  | "DOMENE-3ANaturvitenskapTeknologi"
-  | "DOMENE-3ASamfunnsfag"
-  | "DOMENE-3AOkonomiAdministrasjon";
-
-type CollectionUriPatternKey =
-  | "bkg"
-  | "nav"
-  | "brreg"
-  | "bufdir"
-  | "fbk"
-  | "ex"
-  | "skatt";
-
 export const termbaseUriPatterns: {
   [key: TermbaseId]: { [key in CollectionUriPatternKey]: string };
 } = {

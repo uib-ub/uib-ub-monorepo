@@ -1,8 +1,5 @@
 import { useI18n } from "vue-i18n";
-import type { SemanticRelation } from "./vars";
 import { termbaseUriPatterns } from "./vars-termbase";
-import type { LangCode } from "~/composables/locale";
-import type { SearchDataEntry } from "~/composables/states";
 
 /**
  * Return unique intersection of two Arrays, sorted by order of first.

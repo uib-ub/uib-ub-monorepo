@@ -38,8 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import type { TermbaseId } from "~~/utils/vars-termbase";
-
 const route = useRoute();
 const router = useRouter();
 const termpostContext = useTermpostContext();

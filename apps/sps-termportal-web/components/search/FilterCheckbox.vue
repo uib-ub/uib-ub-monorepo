@@ -40,7 +40,6 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import type { SearchDataStats } from "~~/composables/states";
 
 const i18n = useI18n();
 const searchFilterSelection = useSearchFilterSelection();

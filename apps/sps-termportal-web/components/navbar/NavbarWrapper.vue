@@ -2,12 +2,15 @@
   <nav
     ref="navBar"
     class="box-content h-[50px] w-full bg-white"
-    :class="{ '': context != 'minimal' }"
+    :class="{ '': headersize != headerSize.Minimal }"
   >
     <div class="mx-auto flex h-full grow items-center justify-between">
       <div class="flex grow">
-        <NavbarLogos :context="context" />
-        <SearchField v-if="context !== 'minimal'" class="grow max-w-[51em]" />
+        <NavbarLogos :headersize="headersize" />
+        <SearchField
+          v-if="headersize !== headerSize.Minimal"
+          class="max-w-[51em] grow"
+        />
       </div>
       <div class="hidden lg:flex">
         <ul
@@ -34,13 +37,15 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+import { HeaderSize } from "~/types/enums";
 
 const i18n = useI18n();
 const bootstrapData = useBootstrapData();
 
-const defProps = defineProps({
-  context: { type: String, required: true },
-});
+const headerSize = HeaderSize;
+const props = defineProps<{
+  headersize: HeaderSize;
+}>();
 
 const navBar = ref<HTMLElement | null>(null);
 
