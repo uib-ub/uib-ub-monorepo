@@ -26,12 +26,12 @@
     :label="$t('id.browser')"
   >
     <TermpostTermDescription
-      :key="`${termbaseConfig.SN.termlexTermpostBaseUrl}/${conceptId}/${locale}`"
+      :key="`${appConfig.tb.SN.termlexTermpostBaseUrl}/${conceptId}/${locale}`"
       :flex="true"
       :data="[
         [
           `Termlex.no`,
-          `${termbaseConfig.SN.termlexTermpostBaseUrl}/${conceptId}/${
+          `${appConfig.tb.SN.termlexTermpostBaseUrl}/${conceptId}/${
             displayInfo?.conceptLanguages?.includes(locale) ? locale : 'nb'
           }`,
         ],
@@ -41,8 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { termbaseConfig } from "~/utils/vars-termbase";
-
+const appConfig = useAppConfig();
 const route = useRoute();
 const locale = useLocale();
 const termbase = route.params.termbase as string;
@@ -55,7 +54,7 @@ const props = defineProps({
 
 function standardIdToUrl(standardId: string) {
   return (
-    termbaseConfig.SN.standardOnlineBaseUrl +
+    appConfig.tb.SN.standardOnlineBaseUrl +
     standardId
       .toLowerCase()
       .replaceAll(" ", "-")

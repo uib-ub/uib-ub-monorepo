@@ -69,7 +69,6 @@ export default defineNuxtConfig({
     "/UDEUT": { redirect: "/tb/UDEUT" },
     "/UHR": { redirect: "/tb/UHR" },
   },
-  appConfig: {},
   runtimeConfig: {
     apiKey: uuidv4(),
     endpointUrl: "https://test.sparql.terminologi.ubbe.no/termwiki_test?query",

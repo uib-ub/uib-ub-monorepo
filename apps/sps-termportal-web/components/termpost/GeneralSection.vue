@@ -53,7 +53,7 @@
       <TermpostTermProp
         v-if="
           concept?.modified &&
-          !termbaseConfig.base.legacyTermbases.includes(termbase)
+          !appConfig.tb.base.legacyTermbases.includes(termbase)
         "
         :flex="true"
         :label="$t('id.modified')"
@@ -89,7 +89,7 @@
         </TermpostTermProp>
       </template>
       <TermpostTermProp
-        v-if="termbaseConfig.base.legacyTermbases.includes(termbase) && concept"
+        v-if="appConfig.tb.base.legacyTermbases.includes(termbase) && concept"
         :flex="true"
         :label="$t('id.note')"
       >
@@ -111,12 +111,11 @@
 </template>
 
 <script setup lang="ts">
-import { termbaseConfig } from "~/utils/vars-termbase";
-
 const route = useRoute();
 const locale = useLocale();
 const { getLaLo } = useLazyLocale();
 const termbase = route.params.termbase as string;
+const appConfig = useAppConfig();
 
 const props = defineProps({
   concept: { type: Object, required: true },
