@@ -78,5 +78,3 @@ export const licenseLinks = {
   "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED":
     "https://urn.fi/urn:nbn:fi:lb-2019071724",
 };
-
-export const uiConfig = { wideUiBreakpoints: ["xl", "2xl"] };

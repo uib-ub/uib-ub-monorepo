@@ -1,4 +1,4 @@
-
+import appConfig from "~/app.config";
 
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
@@ -44,7 +44,7 @@ export const useSearchDataStats = () =>
 
 export const useShowSearchFilter = () =>
   useState<boolean>("showSearchFilter", () =>
-    uiConfig.wideUiBreakpoints.includes(useBreakpoint().value)
+    appConfig.ui.wideBreakpoints.includes(useBreakpoint().value)
   );
 
 export const useSearchFilterSelection = () =>

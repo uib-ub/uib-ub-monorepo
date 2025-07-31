@@ -21,9 +21,10 @@ export default defineAppConfig({
       standardOnlineBaseUrl: "https://online.standard.no/nb/",
     },
     SNOMEDCT: {
-      browserUrl(edition: string, snomedId: string) {
+      browserUrl(edition: string, snomedId: string): string {
         return `https://browser.ihtsdotools.org/?perspective=full&conceptId1=${snomedId}&edition=MAIN/SNOMEDCT-NO/${edition}&release=&languages=no,en`;
       },
     },
   } as const,
+  ui: { wideBreakpoints: ["xl", "2xl"] },
 });

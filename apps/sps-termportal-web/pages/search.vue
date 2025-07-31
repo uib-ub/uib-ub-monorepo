@@ -50,8 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import { uiConfig } from "../utils/vars";
 import { FetchType } from "~/types/enums";
+
+const appConfig = useAppConfig();
 
 const route = useRoute();
 const searchData = useSearchData();
@@ -138,7 +139,7 @@ onMounted(() => {
   */
   if (searchInterface.value.term === null) {
     // display filter if screen size larger than lg
-    if (uiConfig.wideUiBreakpoints.includes(breakpoint.value)) {
+    if (appConfig.ui.wideBreakpoints.includes(breakpoint.value)) {
       showSearchFilter.value = true;
     }
 
