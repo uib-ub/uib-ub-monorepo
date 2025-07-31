@@ -1,10 +1,22 @@
 import { FetchType } from "./enums";
 
+const appConfig = useAppConfig();
+
 export {};
 
 declare global {
   // base
-  type TermbaseId = string;
+
+  type SpecialUriTermbase = (typeof appConfig.tb.base.specialUriTbs)[number];
+  type SystemTermbase = (typeof appConfig.tb.base.systemTermbases)[number];
+  type LegacyTermbase = (typeof appConfig.tb.base.legacyTermbases)[number];
+  type ConfiguredTermbase = Exclude<keyof typeof appConfig.tb, "base">;
+  type TermbaseId =
+    | ConfiguredTermbase
+    | SystemTermbase
+    | LegacyTermbase
+    | SpecialUriTermbase
+    | string;
 
   // language
   type LangCode =

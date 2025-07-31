@@ -1,6 +1,6 @@
-import { termbaseUriPatterns } from "../../../utils/vars-termbase";
-
 export default defineEventHandler(async (event) => {
+  const appConfig = useAppConfig();
+
   const runtimeConfig = useRuntimeConfig();
   const url = runtimeConfig.endpointUrl;
   const credentials = `termportalen_test_read:${runtimeConfig.endpointUrlPass}`;
@@ -13,14 +13,22 @@ export default defineEventHandler(async (event) => {
   let id: string;
   let uri: string;
   // FBK has subcollections that are part of the uri.
-  if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
+
+  if (
+    (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
+      termbase
+    )
+  ) {
+    const tbId = termbase as SpecialUriTermbase & ConfiguredTermbase;
+    type PatternKey = keyof (typeof appConfig.tb)[typeof tbId]["uriPatterns"];
+
+    base = appConfig.tb[tbId].uriPatterns[conceptIdArray[0] as PatternKey];
+    id = conceptIdArray.slice(1).join("/");
+    uri = base + id;
+  } else {
     base = runtimeConfig.public.base;
     id = `${termbase}-3A${conceptIdArray.join("/")}`;
     uri = id;
-  } else {
-    base = termbaseUriPatterns[termbase][conceptIdArray[0]];
-    id = conceptIdArray.slice(1).join("/");
-    uri = base + id;
   }
 
   const query = genConceptQuery(base, termbase, id);

@@ -38,6 +38,8 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig();
+
 const route = useRoute();
 const router = useRouter();
 const termpostContext = useTermpostContext();
@@ -49,16 +51,31 @@ const main = ref(null);
 const termbase = route.params.termbase as TermbaseId;
 const idArray = route.params.id as Array<string>;
 
-function getConceptId(termbase, idArray) {
+function getConceptId(termbase: TermbaseId, idArray: string[]): string {
+  const patternKey = idArray[0];
   let id: string;
   let mainConceptId: string;
-  if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
+  if (
+    (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
+      termbase
+    ) &&
+    Object.keys(appConfig.tb).includes(termbase)
+  ) {
+    const tbId = termbase as SpecialUriTermbase & ConfiguredTermbase;
+
+    if (Object.keys(appConfig.tb[tbId].uriPatterns).includes(patternKey)) {
+      type PatternKey = keyof (typeof appConfig.tb)[typeof tbId]["uriPatterns"];
+
+      const base = appConfig.tb[tbId].uriPatterns[patternKey as PatternKey];
+      id = idArray.slice(1).join("/");
+      mainConceptId = base + id;
+    } else {
+      id = `${termbase}-3A${idArray[0]}`;
+      mainConceptId = id;
+    }
+  } else {
     id = `${termbase}-3A${idArray[0]}`;
     mainConceptId = id;
-  } else {
-    const base = termbaseUriPatterns[termbase][idArray[0]];
-    id = idArray.slice(1).join("/");
-    mainConceptId = base + id;
   }
   return mainConceptId;
 }

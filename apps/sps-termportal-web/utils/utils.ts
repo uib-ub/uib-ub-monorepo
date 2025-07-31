@@ -1,5 +1,4 @@
 import { useI18n } from "vue-i18n";
-import { termbaseUriPatterns } from "./vars-termbase";
 
 /**
  * Return unique intersection of two Arrays, sorted by order of first.
@@ -248,10 +247,25 @@ export const getLangOptions = () => {
 };
 
 export function idOrUriToRoute(
-  termbaseId: string,
+  termbaseId: TermbaseId,
   idOrUri: string
 ): String | null {
-  if (!Object.keys(termbaseUriPatterns).includes(termbaseId)) {
+  const appConfig = useAppConfig();
+
+  if (
+    (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
+      termbaseId
+    )
+  ) {
+    const tbId = termbaseId as SpecialUriTermbase & ConfiguredTermbase;
+    const patterns = appConfig.tb[tbId].uriPatterns;
+    for (const [key, uri] of Object.entries(patterns)) {
+      if (idOrUri.startsWith(uri)) {
+        const id = idOrUri.replace(uri, "");
+        return `/${termbaseId}/${key}/${id}`;
+      }
+    }
+  } else {
     const runtimeConfig = useRuntimeConfig();
     return (
       "/" +
@@ -261,15 +275,6 @@ export function idOrUriToRoute(
         .replaceAll("/", "%2F") // Slashes are allowed in wiki pagenames, but cause problems with routing
         .replace("-3A", "/")
     );
-  } else {
-    const patterns =
-      termbaseUriPatterns[termbaseId as keyof typeof termbaseUriPatterns];
-    for (const pattern in patterns) {
-      if (idOrUri.startsWith(patterns[pattern])) {
-        const id = idOrUri.replace(patterns[pattern], "");
-        return `/${termbaseId}/${pattern}/${id}`;
-      }
-    }
   }
   return null;
 }
