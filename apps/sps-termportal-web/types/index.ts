@@ -1,3 +1,5 @@
+import { FetchType } from "./enums";
+
 export {};
 
 declare global {
@@ -73,7 +75,6 @@ declare global {
     | "contains-ci";
   type MatchingNested = Matching | Matching[];
 
-  type FetchType = "initial" | "options" | "filter" | "further";
   type AggregateKeys = LangCode | LabelPredicate | Matching | TermbaseId;
 
   interface SearchDataEntry {
@@ -120,7 +121,7 @@ declare global {
   interface SearchOptions {
     type: QueryType;
     subtype: SearchQueryType;
-    situation: string;
+    situation: FetchType;
     term: string;
     language: (LangCode | "all")[];
     translate: LangCode | "none";

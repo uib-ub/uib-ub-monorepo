@@ -22,4 +22,10 @@ export default defineNuxtPlugin(({ vueApp }) => {
   });
 
   vueApp.use(i18n);
+
+  return {
+    provide: {
+      i18n: i18n.global,
+    },
+  };
 });

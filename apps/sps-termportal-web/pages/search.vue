@@ -51,6 +51,7 @@
 
 <script setup lang="ts">
 import { uiConfig } from "../utils/vars";
+import { FetchType } from "~/types/enums";
 
 const route = useRoute();
 const searchData = useSearchData();
@@ -102,7 +103,7 @@ watch(
       term: searchInterface.value.term as string,
     });
     */
-    considerSearchFetching("initial");
+    considerSearchFetching(FetchType.Inital);
   }
 );
 
@@ -120,14 +121,14 @@ watch(
       allowSearchFetch.value = true;
     }
     // umTrackEvent("Search: Option change");
-    considerSearchFetching("options");
+    considerSearchFetching(FetchType.Options);
     usePushSearchOptionsToRoute();
   },
   { deep: true }
 );
 
 onMounted(() => {
-  considerSearchFetching("initial");
+  considerSearchFetching(FetchType.Inital);
 
   /*
   Set searchOptions state based on route query values.

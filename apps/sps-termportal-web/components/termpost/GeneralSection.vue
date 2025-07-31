@@ -13,7 +13,7 @@
           <TermpostTermDescription
             prop="link"
             :flex="true"
-            :data="[{ target: [lalof(concept.memberOf), '/tb/' + termbase] }]"
+            :data="[{ target: [getLaLo(concept.memberOf), '/tb/' + termbase] }]"
           />
         </TermpostTermProp>
         <TermpostTermProp
@@ -23,7 +23,7 @@
         >
           <TermpostTermDescription
             :flex="true"
-            :data="[lalof(concept.domene)]"
+            :data="[getLaLo(concept.domene)]"
           />
         </TermpostTermProp>
         <TermpostTermProp
@@ -115,6 +115,7 @@ import { termbaseConfig } from "~/utils/vars-termbase";
 
 const route = useRoute();
 const locale = useLocale();
+const { getLaLo } = useLazyLocale();
 const termbase = route.params.termbase as string;
 
 const props = defineProps({
@@ -122,7 +123,7 @@ const props = defineProps({
   displayInfo: { type: Object, required: true },
 });
 
-const timeDisplay = (data) => {
+const timeDisplay = (data: any) => {
   try {
     const date = new Date(data).toLocaleDateString(locale.value);
     const dispDate = date !== "Invalid Date" ? date : "";

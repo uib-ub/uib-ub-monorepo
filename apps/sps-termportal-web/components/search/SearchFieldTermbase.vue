@@ -36,6 +36,7 @@ const searchterm = useSearchterm();
 const searchtermTermbase = useSearchtermTermbase();
 const searchLanguageTermbase = useSearchLanguageTermbase();
 const searchTranslateTermbase = useSearchTranslateTermbase();
+const { getLaLo } = useLazyLocale();
 
 const items = ref([]);
 
@@ -53,7 +54,7 @@ const search = async (event) => {
   // items.value = [...Array(10).keys()].map((item) => event.query + "-" + item);
 };
 
-const termbaselabel = lalof(`${props.termbaseId}-3A${props.termbaseId}`);
+const termbaselabel = getLaLo(`${props.termbaseId}-3A${props.termbaseId}`);
 const placeholder = computed(() => {
   return (
     i18n.t("searchBar.search") +

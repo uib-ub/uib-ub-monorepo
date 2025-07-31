@@ -21,10 +21,10 @@
         >
           <client-only>
             <AppLink
-              v-if="mainConcept.memberOf !== lalof(mainConcept.memberOf)"
+              v-if="mainConcept.memberOf !== getLaLo(mainConcept.memberOf)"
               :to="'/tb/' + mainConcept?.memberOf.split('-3A')[1]"
             >
-              {{ lalof(mainConcept.memberOf) }}
+              {{ getLaLo(mainConcept.memberOf) }}
             </AppLink>
           </client-only>
         </div>
@@ -71,6 +71,7 @@
 <script setup lang="ts">
 const dataDisplayLanguages = useDataDisplayLanguages();
 const localeLangOrder = useLocaleLangOrder();
+const { getLaLo } = useLazyLocale();
 
 const termpostRef = ref(null);
 

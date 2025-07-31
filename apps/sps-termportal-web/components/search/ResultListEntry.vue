@@ -82,7 +82,7 @@
           </div>
         </div>
         <div class="max-w-[20em] lg:w-[20em] lg:pl-2">
-          {{ lalof(entryData.context) }}
+          {{ getLaLo(entryData.context) }}
         </div>
       </section>
     </AppLink>
@@ -90,6 +90,8 @@
 </template>
 
 <script setup lang="ts">
+const { getLaLo } = useLazyLocale();
+
 const localeLangOrder = useLocaleLangOrder();
 
 const searchInterface = useSearchInterface();

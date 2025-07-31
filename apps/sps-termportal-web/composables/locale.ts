@@ -16,6 +16,29 @@ export const useLocaleLangOrder = () => {
   return langOrder as Readonly<Ref<LangCode[]>>;
 };
 
+export function useLazyLocale() {
+  const bootstrapData = useBootstrapData();
+  const locale = useLocale();
+
+  /**
+   * Lazy Localization function with fallback based on localized language order.
+   *
+   * @param key - key to localize
+   * @returns Localized label or key if not label present
+   */
+  const getLaLo = (key: string): string => {
+    const label = languageOrder[locale.value]
+      .filter((lc) => Object.keys(languageOrder).includes(lc))
+      .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
+      .find((value) => value !== undefined);
+    return label ?? key;
+  };
+
+  return {
+    getLaLo,
+  };
+}
+
 export const dataDisplayOnlyLanguages = ["en-gb", "en-us"];
 
 export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
@@ -83,13 +106,14 @@ export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
 
 export const useOrderedTermbases = () => {
   const bootstrapData = useBootstrapData();
+  const { getLaLo } = useLazyLocale();
   const termbases = Object.keys(bootstrapData.value.termbase).filter(
     (tb) => !termbaseConfig.base.systemTermbases.includes(tb)
   );
 
   const sortedTermbases = termbases.sort((a, b) => {
-    const labelA = lalof(`${a}-3A${a}`);
-    const labelB = lalof(`${b}-3A${b}`);
+    const labelA = getLaLo(`${a}-3A${a}`);
+    const labelB = getLaLo(`${b}-3A${b}`);
 
     return labelA.localeCompare(labelB);
   });

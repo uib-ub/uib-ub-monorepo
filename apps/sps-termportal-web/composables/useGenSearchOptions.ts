@@ -1,3 +1,4 @@
+import { FetchType } from "~/types/enums";
 
 function getActivationStatus(data, hierarchy) {
   const result = [];
@@ -21,7 +22,7 @@ function getActivationStatus(data, hierarchy) {
   return result;
 }
 
-export default function (situation: string, options?: SearchOptions) {
+export default function (situation: FetchType, options?: SearchOptions) {
   const searchInterface = useSearchInterface();
   const searchFilterSelection = useSearchFilterSelection();
   const bootstrapData = useBootstrapData();
@@ -59,7 +60,7 @@ export default function (situation: string, options?: SearchOptions) {
     newOptions.domain = domainLst;
   }
 
-  if (situation === "filter" || situation === "further") {
+  if (situation === FetchType.Filter || situation === FetchType.Further) {
     if (searchFilterSelection.value.samling.length > 0) {
       newOptions.termbase = searchFilterSelection.value.samling;
     }
@@ -92,7 +93,7 @@ export default function (situation: string, options?: SearchOptions) {
   }
   const merged = options ? { ...newOptions, ...options } : newOptions;
 
-  if (situation === "autocomplete") {
+  if (situation === FetchType.Autocomplete) {
     const reduced = {
       term: merged.term,
       language: merged.language,
