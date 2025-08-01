@@ -27,4 +27,38 @@ export default defineAppConfig({
     },
   } as const,
   ui: { wideBreakpoints: ["xl", "2xl"] },
+  data: {
+    matching: [
+      "full",
+      "full-cs",
+      "full-ci",
+      "startsWith-ci",
+      "endsWith-ci",
+      "subWord-ci",
+      "contains-ci",
+    ] as const,
+    predicates: ["prefLabel", "altLabel", "hiddenLabel"] as const,
+    semanticRelations: {
+      narrower: ["qualifiedNarrower", "concept"],
+      specializes: ["hasGenericConceptRelation", "hasGenericConcept"],
+      isPartOf: ["hasPartitiveConceptRelation", "hasComprehensiveConcept"],
+      broader: ["qualifiedBroader", "concept"],
+      generalizes: ["hasGenericConceptRelation", "hasSpecificConcept"],
+      hasPart: ["hasPartitiveConceptRelation", "hasPartitiveConcept"],
+      related: ["isFromConceptIn", "hasToConcept"],
+      seeAlso: ["qualifiedSeeAlso", "concept"],
+      replaces: ["qualifiedReplaces", "concept"],
+      replacedBy: ["qualifiedReplacedBy", "concept"],
+    } as const,
+  },
+  search: {},
+  cookie: {
+    defaultOptions: { httpOnly: true, secure: true, sameSite: true },
+    localeOptions: {
+      httpOnly: false,
+      secure: true,
+      sameSite: true,
+      maxAge: 60 * 60 * 24 * 100,
+    },
+  },
 });

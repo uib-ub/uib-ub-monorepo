@@ -1,4 +1,4 @@
-import appConfig from "~/app.config";
+const appConfig = useAppConfig();
 
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({

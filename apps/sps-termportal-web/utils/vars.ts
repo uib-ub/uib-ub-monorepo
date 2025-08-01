@@ -1,29 +1,3 @@
-export const predicateOrder: LabelPredicate[] = [
-  "prefLabel",
-  "altLabel",
-  "hiddenLabel",
-];
-export const matchingOrder: Matching[] | Matching[][] = [
-  "full",
-  "startsWith-ci",
-  "endsWith-ci",
-  "subWord-ci",
-  "contains-ci",
-];
-
-export const semanticRelationTypes = {
-  narrower: ["qualifiedNarrower", "concept"],
-  specializes: ["hasGenericConceptRelation", "hasGenericConcept"],
-  isPartOf: ["PartitiveConceptRelation", "hasComprehensiveConcept"],
-  broader: ["qualifiedBroader", "concept"],
-  generalizes: ["hasGenericConceptRelation", "hasSpecificConcept"],
-  hasPart: ["PartitiveConceptRelation", "hasPartitiveConcept"],
-  related: ["isFromConceptIn", "hasToConcept"],
-  seeAlso: ["qualifiedSeeAlso", "concept"],
-  replaces: ["qualifiedReplaces", "concept"],
-  replacedBy: ["qualifiedReplacedBy", "concept"],
-} as const;
-
 export const searchOptionsInfo = {
   type: { default: "search" },
   subtype: { default: "" },

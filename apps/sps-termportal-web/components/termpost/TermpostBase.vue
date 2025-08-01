@@ -69,6 +69,8 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig();
+
 const dataDisplayLanguages = useDataDisplayLanguages();
 const localeLangOrder = useLocaleLangOrder();
 const { getLaLo } = useLazyLocale();
@@ -143,7 +145,9 @@ const displayInfo = computed(() => {
       hiddenLabelLength: data.value.meta?.maxLen.hiddenLabel,
     };
     // semantic relations
-    for (const relationType of Object.keys(semanticRelationTypes)) {
+    for (const relationType of Object.keys(
+      appConfig.data.semanticRelations
+    ) as SemanticRelation[]) {
       const relData = getRelationData(
         data.value?.concept,
         props.mainConceptId,

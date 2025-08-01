@@ -6,7 +6,6 @@ export {};
 
 declare global {
   // base
-
   type SpecialUriTermbase = (typeof appConfig.tb.base.specialUriTbs)[number];
   type SystemTermbase = (typeof appConfig.tb.base.systemTermbases)[number];
   type LegacyTermbase = (typeof appConfig.tb.base.legacyTermbases)[number];
@@ -42,19 +41,9 @@ declare global {
   type LocalLangCode = "en" | "nb" | "nn";
 
   // concept data
-  type SemanticRelation =
-    | "narrower"
-    | "specializes"
-    | "isPartOf"
-    | "broader"
-    | "generalizes"
-    | "hasPart"
-    | "related"
-    | "seeAlso"
-    | "replaces"
-    | "replacedBy";
+  type SemanticRelation = keyof typeof appConfig.data.semanticRelations;
 
-  type LabelPredicate = "prefLabel" | "altLabel" | "hiddenLabel";
+  type LabelPredicate = (typeof appConfig.data.predicates)[number];
 
   type Domains =
     | "DOMENE-3AHumaniora"
@@ -63,28 +52,12 @@ declare global {
     | "DOMENE-3AHelse_og_sosial"
     | "DOMENE-3AOkonomiAdministrasjon";
 
-  type CollectionUriPatternKey =
-    | "bkg"
-    | "nav"
-    | "brreg"
-    | "bufdir"
-    | "fbk"
-    | "ex"
-    | "skatt";
-
   // search
   type QueryType = "search" | "concept" | "termbase";
 
   type SearchQueryType = "entries" | "aggregate";
 
-  type Matching =
-    | "full"
-    | "full-cs"
-    | "full-ci"
-    | "startsWith-ci"
-    | "endsWith-ci"
-    | "subWord-ci"
-    | "contains-ci";
+  type Matching = (typeof appConfig.data.matching)[number];
   type MatchingNested = Matching | Matching[];
 
   type AggregateKeys = LangCode | LabelPredicate | Matching | TermbaseId;

@@ -7,7 +7,7 @@ import { useI18n } from "vue-i18n";
  * @param a - Array a
  * @param b - Array b
  */
-export function intersectUnique(a: any[], b: any[]): any[] {
+export function intersectUnique(a: readonly any[], b: readonly any[]): any[] {
   const setA = new Set(a);
   const setB = new Set(b);
   const intersection = new Set([...setA].filter((x) => setB.has(x)));
@@ -86,6 +86,9 @@ export function getRelationData(
   relationType: SemanticRelation,
   langOrder: Array<LangCode>
 ): Array<Array<string>> | null {
+  const appConfig = useAppConfig();
+  const semanticRelationTypes = appConfig.data.semanticRelations;
+
   let relationData = null;
   // Check if concept with id has relation of relationtype
   if (data[mainConceptId]?.[relationType]) {

@@ -4,7 +4,7 @@
     :id="`filterCard-${placement}`"
     class="h-full border-gray-300 pr-1 xl:border-r xl:pt-11"
   >
-    <div class="flex pb-2 pt-1 text-2xl justify-between pr-1">
+    <div class="flex justify-between pb-2 pr-1 pt-1 text-2xl">
       <div class="flex space-x-6">
         <h2>{{ $t("searchFilter.filter") }}</h2>
         <UtilsTransitionOpacity>
@@ -17,7 +17,7 @@
       </div>
       <button
         v-if="filterSelected"
-        class="px-1 text-gray-600 border border-transparent rounded-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+        class="rounded-sm border border-transparent px-1 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
         @click="
           resetSearchFilterSelection(),
             useFetchSearchData(useGenSearchOptions('filter'))
@@ -51,6 +51,7 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+const appConfig = useAppConfig();
 
 const showSearchFilter = useShowSearchFilter();
 const searchDataStats = useSearchDataStats();
@@ -97,7 +98,7 @@ const filterSections = () => {
       title: i18n.t("searchFilter.termproperty"),
       key: "predicate",
       data: intersectUnique(
-        predicateOrder,
+        appConfig.data.predicates,
         Object.keys(searchDataStats.value.predicate || {})
       ),
     },
@@ -105,7 +106,7 @@ const filterSections = () => {
       title: i18n.t("searchFilter.matching"),
       key: "matching",
       data: intersectUnique(
-        matchingOrder,
+        appConfig.data.matching,
         Object.keys(searchDataStats.value.matching || {})
       ),
     },
