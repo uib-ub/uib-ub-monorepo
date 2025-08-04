@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const queryParams = getQuery(event);
   const searchOptions = decodeSearchOptions(queryParams);
   const query = genAutocompleteQuery(searchOptions, runtimeConfig.public.base);
-  const instance = getFusekiInstanceInfo();
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
   const controller = new AbortController();
   const timer = setTimeout(() => {

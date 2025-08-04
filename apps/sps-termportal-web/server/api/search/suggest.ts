@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const body = await readBody(event);
   const query = genSuggestQuery(body.searchOptions, runtimeConfig.public.base);
-  const instance = getFusekiInstanceInfo();
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
   const controller = new AbortController();
   const timer = setTimeout(() => {

@@ -4,8 +4,10 @@ import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
   if (event.context.params) {
+    const runtimeConfig = useRuntimeConfig();
+
     const query = genTermbaseQuery(event.context.params.id);
-    const instance = getFusekiInstanceInfo();
+    const instance = getFusekiInstanceInfo(runtimeConfig);
 
     const data = await $fetch(instance.url, {
       method: "post",

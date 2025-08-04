@@ -2,7 +2,7 @@ import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const instance = getFusekiInstanceInfo();
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
   try {
     const queryLalo = genLazyLocalesQuery(runtimeConfig.public.base);

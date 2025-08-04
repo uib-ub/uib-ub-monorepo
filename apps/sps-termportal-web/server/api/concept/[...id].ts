@@ -3,7 +3,7 @@ import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const instance = getFusekiInstanceInfo();
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
   const idArray = decodeURI(event.context.params.id).split("/");
   const termbase = idArray[0];

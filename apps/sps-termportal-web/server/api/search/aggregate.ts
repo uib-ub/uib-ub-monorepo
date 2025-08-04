@@ -2,9 +2,11 @@ import { genSearchAggregateQuery } from "~/server/utils/genSearchAggregateQuery"
 import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
+  const runtimeConfig = useRuntimeConfig();
+
   const body = await readBody(event);
   const query = genSearchAggregateQuery(body);
-  const instance = getFusekiInstanceInfo();
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
   const data = await $fetch(instance.url, {
     method: "post",
