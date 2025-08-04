@@ -1,9 +1,7 @@
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import Link from 'next/link';
-import { PiCaretRight, PiFunnel, PiFunnelFill } from 'react-icons/pi';
+import { PiCaretRight } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
-import DatasetToolbar from '@/components/ui/dataset-toolbar';
-import Clickable from '@/components/ui/clickable/clickable';
 import { useDataset } from '@/lib/search-params';
 
 
