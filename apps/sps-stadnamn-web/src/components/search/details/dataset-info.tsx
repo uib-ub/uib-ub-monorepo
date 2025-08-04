@@ -4,13 +4,14 @@ import { PiCaretRight, PiFunnel, PiFunnelFill } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import DatasetToolbar from '@/components/ui/dataset-toolbar';
 import Clickable from '@/components/ui/clickable/clickable';
+import { useDataset } from '@/lib/search-params';
 
 
   
 
 export default function DatasetInfo() {
     const params = useSearchParams()
-    const dataset = params.get('dataset') || 'search'
+    const dataset = useDataset()
     const infoDataset = params.get('infoDataset') || dataset
     const [mainIndex, subindex] = (infoDataset).split("_")
 
