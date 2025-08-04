@@ -1,7 +1,7 @@
 import { Fragment, useContext, useEffect, useRef, useState, useCallback } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, baseMapProps, defaultBaseMap } from "@/config/basemap-config";
-import { PiCheckCircleFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
+import { PiCheckCircleFill, PiCornersOut, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/search-provider";
 import Spinner from "../svg/Spinner";
@@ -124,7 +124,7 @@ export default function MapExplorer() {
 
   useEffect(() => {
     // Check if the bounds are initialized
-    if (parent || !markerBounds?.length || !totalHits || isLoading) {
+    if (!markerBounds?.length || !totalHits || isLoading) {
       return;
     }
 
@@ -178,6 +178,10 @@ export default function MapExplorer() {
       .then(data => {
 
         setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
+        if (!data.hits.hits.length && resultBounds?.length && !isLoading && !zoom) {
+          mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+    
+        }
 
       })
 
@@ -191,7 +195,7 @@ export default function MapExplorer() {
       }
       );
 
-  }, [ markerBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, labelClusters, setCoordinatesError]);
+  }, [ markerBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, labelClusters, setCoordinatesError, resultBounds]);
 
 
 // Fly to results, doc or children
@@ -208,16 +212,6 @@ useEffect(() => {
 
   }, [mapInstance, isLoading, setCenter, doc, docData])
 
-
-  // When resultBounds changes
-  useEffect(() => {
-    if (resultBounds?.length && !zoom && !center && !isLoading) {
-      console.log("FLY 3");
-      console.log("FLYING TO", resultBounds)
-      mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18 });
-
-    }
-  }, [resultBounds, zoom, center, isLoading]);
 
 
 
@@ -839,6 +833,13 @@ useEffect(() => {
       </IconButton>
       <IconButton onClick={getMyLocation} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
         <PiNavigationArrowFill className="lg:text-xl" />
+      </IconButton>
+      <IconButton className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom til søkeresultat" onClick={() => {
+        if (resultBounds?.length) {
+          mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [200, 200] });
+        }
+      }}>
+        <PiCrop className="lg:text-xl" />
       </IconButton>
     </div>
   </>
