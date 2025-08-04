@@ -16,8 +16,18 @@ export default defineNuxtConfig({
     dataportenClientId: "",
     dataportenClientSecret: "",
     dataportenAuthorizedUsers: process.env.NUXT_DATAPORTEN_AUTHORIZED_USERS,
-    endpointUrl: "",
-    endpointUrlInternal: "",
+    fuseki: {
+      default: {
+        url: process.env.NUXT_ENDPOINT_URL,
+        user: process.env.NUXT_ENDPOINT_USER,
+        pass: process.env.NUXT_ENDPOINT_URL_PASS,
+      },
+      internal: {
+        url: process.env.NUXT_ENDPOINT_URL_INTERNAL,
+        user: process.env.NUXT_ENDPOINT_INTERNAL_USER,
+        pass: process.env.NUXT_ENDPOINT_URL_INTERNAL_PASS,
+      },
+    },
     elasticsearchUrl: process.env.NUXT_ELASTICSEARCH_URL,
     elasticsearchApiKey: process.env.NUXT_ELASTICSEARCH_API_KEY,
     public: {

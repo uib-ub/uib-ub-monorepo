@@ -5,15 +5,15 @@ import genOverviewQuery from "~/server/utils/genOverviewQuery";
 import genTermbaseDefinitionsMissing from "~/server/utils/genTermbaseDefinitionsMissing";
 import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticRelationsQuery";
 import genTermbaseSubjectValues from "~/server/utils/genTermbaseSubjectValues";
+import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  let url = runtimeConfig.endpointUrl;
   const queryParams = getQuery(event);
-
-  if (queryParams?.internal) {
-    url = runtimeConfig.endpointUrlInternal;
-  }
+  const instance = getFusekiInstanceInfo(
+    runtimeConfig,
+    queryParams?.internal ? "internal" : "default"
+  );
 
   const termbase = event.context.params?.termbase;
   const queryType = event.context.params?.query;
@@ -43,13 +43,14 @@ export default defineEventHandler(async (event) => {
     }
   };
 
-  const data = await $fetch(url, {
+  const data = await $fetch(instance.url, {
     method: "post",
     body: query(),
     headers: {
       "Content-type": "application/sparql-query",
       Referer: "termportalen.no", // TODO Referer problem
       Accept: "application/json",
+      Authorization: `Basic ${instance.authHeader}`,
     },
   });
 
