@@ -38,9 +38,9 @@ export async function middleware(request: NextRequest) {
     const path = url.pathname.split('/')
 
     if (path[1] == 'search') {
-        const dataset = url.searchParams.get('dataset') || 'search'
+        const dataset = url.searchParams.getAll('dataset') || ['all']
 
-        if (!datasetTitles[dataset]) {
+        if (!dataset.every(d => datasetTitles[d])) {
             return Response.redirect(baseUrl + "/search", 302)
         }
         return
