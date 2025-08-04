@@ -100,6 +100,9 @@ export default function ActiveFilters() {
 
     const clearFilters = () => {
       const newSearchParams = new URLSearchParams(searchParams)
+      facetFilters.forEach(([key, value]) => {
+        newSearchParams.delete(key)
+      })
       router.push(`?${newSearchParams.toString()}`)
     }
 
