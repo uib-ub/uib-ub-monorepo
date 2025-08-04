@@ -7,7 +7,6 @@ import { datasetTitles, datasetPresentation, publishDates, datasetShortDescripti
 import Footer from '../components/layout/footer';
 import { fetchStats } from '@/app/api/_utils/actions';
 import Form from "next/form";
-import StoredFilters from "./stored-filters";
 import React from 'react';
 import { fetchIIIFStats } from "./api/iiif/iiif-stats";
 
