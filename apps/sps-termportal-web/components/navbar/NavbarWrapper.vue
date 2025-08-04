@@ -39,6 +39,8 @@
 import { useI18n } from "vue-i18n";
 import { HeaderSize } from "~/types/enums";
 
+const appConfig = useAppConfig();
+
 const i18n = useI18n();
 const bootstrapData = useBootstrapData();
 
@@ -52,7 +54,7 @@ const navBar = ref<HTMLElement | null>(null);
 defineExpose({ navBar });
 
 watch(i18n.locale, () => {
-  const locale = useCookie("locale", cookieLocaleOptions);
+  const locale = useCookie("locale", appConfig.cookie.localeOptions);
   locale.value = i18n.locale.value;
 });
 </script>

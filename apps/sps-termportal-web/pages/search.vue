@@ -143,7 +143,7 @@ onMounted(() => {
       showSearchFilter.value = true;
     }
 
-    for (const [key, value] of Object.entries(searchOptionsInfo)) {
+    for (const [key, value] of Object.entries(appConfig.search.options)) {
       // Only set state if present in route
       // term can be empty string so the undefined check is neccessary
       if (route.query[value.q] !== undefined) {

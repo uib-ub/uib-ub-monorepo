@@ -51,7 +51,31 @@ export default defineAppConfig({
       replacedBy: ["qualifiedReplacedBy", "concept"],
     } as const,
   },
-  search: {},
+  search: {
+    options: {
+      type: { default: "search" },
+      subtype: { default: "" },
+      situation: { default: "" },
+      term: { q: "q", default: null },
+      language: { q: "ss", default: "all" },
+      translate: { q: "ms", default: "none" },
+      termbase: { q: "tb", default: [] },
+      domain: { q: "d", default: {} },
+      useDomain: { q: "ud", default: true },
+      predicate: { default: ["prefLabel", "altLabel", "hiddenLabel"] as const },
+      matching: {
+        default: [
+          ["full-cs", "full-ci"],
+          ["startsWith-ci"],
+          ["endsWith-ci"],
+          ["subWord-ci"],
+          ["contains-ci"],
+        ],
+      },
+      limit: { default: 30 },
+      offset: { default: undefined },
+    },
+  },
   cookie: {
     defaultOptions: { httpOnly: true, secure: true, sameSite: true },
     localeOptions: {

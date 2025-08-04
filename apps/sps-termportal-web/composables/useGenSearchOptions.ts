@@ -23,6 +23,9 @@ function getActivationStatus(data, hierarchy) {
 }
 
 export default function (situation: FetchType, options?: SearchOptions) {
+  const appConfig = useAppConfig();
+  const searchOptionsConfig = appConfig.search.options;
+
   const searchInterface = useSearchInterface();
   const searchFilterSelection = useSearchFilterSelection();
   const bootstrapData = useBootstrapData();
@@ -42,10 +45,10 @@ export default function (situation: FetchType, options?: SearchOptions) {
     domain: [Object.keys(searchInterface.value.domain)[0]], // TODO domain
     useDomain: searchInterface.value.useDomain,
     // default data
-    predicate: searchOptionsInfo.predicate.default,
-    matching: searchOptionsInfo.matching.default,
-    limit: searchOptionsInfo.limit.default,
-    offset: searchOptionsInfo.offset.default,
+    predicate: searchOptionsConfig.predicate.default,
+    matching: searchOptionsConfig.matching.default,
+    limit: searchOptionsConfig.limit.default,
+    offset: searchOptionsConfig.offset.default,
   };
 
   if (newOptions.term.length === 0) {

@@ -1,5 +1,3 @@
-const appConfig = useAppConfig();
-
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
     term: null,
@@ -44,7 +42,7 @@ export const useSearchDataStats = () =>
 
 export const useShowSearchFilter = () =>
   useState<boolean>("showSearchFilter", () =>
-    appConfig.ui.wideBreakpoints.includes(useBreakpoint().value)
+    useAppConfig().ui.wideBreakpoints.includes(useBreakpoint().value)
   );
 
 export const useSearchFilterSelection = () =>

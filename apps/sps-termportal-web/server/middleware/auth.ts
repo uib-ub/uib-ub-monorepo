@@ -1,5 +1,4 @@
 import { H3Event } from "h3";
-import { cookieDefaultOptions } from "~/utils/vars";
 
 /**
  * Set session cookie when not present or not up to date.
@@ -7,6 +6,9 @@ import { cookieDefaultOptions } from "~/utils/vars";
  * @param event - H3Event
  */
 function ensureToken(event: H3Event) {
+  // const appConfig = useAppConfig();
+  // const runtimeConfig = useRuntimeConfig();
+
   if (
     !getCookie(event, "session") ||
     getCookie(event, "session") !== useRuntimeConfig().apiKey
@@ -15,7 +17,7 @@ function ensureToken(event: H3Event) {
       event,
       "session",
       useRuntimeConfig().apiKey,
-      cookieDefaultOptions
+      useAppConfig().cookie.defaultOptions
     );
   }
 }
@@ -25,10 +27,10 @@ function ensureToken(event: H3Event) {
  */
 export default defineEventHandler((event) => {
   ensureToken(event);
-  const runtimeConfig = useRuntimeConfig();
+  // const runtimeConfig = useRuntimeConfig();
   const pathname = getRequestURL(event).pathname;
   if (pathname.startsWith("/api/") && !pathname.startsWith("/api/_content/")) {
-    if (getCookie(event, "session") !== runtimeConfig.apiKey) {
+    if (getCookie(event, "session") !== useRuntimeConfig().apiKey) {
       throw createError({
         statusCode: 500, // internally used for retry. ofetch defines list of retry codes statically
         message: "Internal Server Error",

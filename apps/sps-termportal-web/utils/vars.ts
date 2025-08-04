@@ -22,17 +22,6 @@ export const searchOptionsInfo = {
   offset: { default: undefined },
 };
 
-export const cookieDefaultOptions = {
-  httpOnly: true,
-  secure: true,
-  sameSite: true,
-};
-
-export const cookieLocaleOptions = {
-  ...cookieDefaultOptions,
-  ...{ httpOnly: false, maxAge: 60 * 60 * 24 * 100 },
-};
-
 // TODO get url fro wiki
 export const licenseLinks = {
   "LISENS-3ANo_Rights_Reserved_-28CC0-29":

@@ -2,10 +2,10 @@ import { createI18n } from "vue-i18n";
 import en from "../locales/en.json";
 import nb from "../locales/nb.json";
 import nn from "../locales/nn.json";
-import { cookieLocaleOptions } from "~/utils/vars";
 
 export default defineNuxtPlugin(({ vueApp }) => {
-  const cookie = useCookie("locale", cookieLocaleOptions);
+  const appConfig = useAppConfig();
+  const cookie = useCookie("locale", appConfig.cookie.localeOptions);
   const locale: LocalLangCode = (cookie.value as LocalLangCode) || "nb";
   cookie.value = "";
   cookie.value = locale;
